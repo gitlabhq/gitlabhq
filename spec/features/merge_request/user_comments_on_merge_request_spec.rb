@@ -51,6 +51,45 @@ RSpec.describe 'User comments on a merge request', :js do
     expect(page).to have_button('Resolve thread')
   end
 
+  array = [':', '@', '#', '%', '!', '~', '$', '[contact:']
+  array.each do |x|
+    it 'handles esc key correctly when atwho is active' do
+      page.within('.js-main-target-form') do
+        fill_in('note[note]', with: 'comment 1')
+        click_button('Comment')
+      end
+
+      wait_for_requests
+
+      page.within('.note') do
+        click_button('Reply to comment')
+        fill_in('note[note]', with: x)
+        send_keys :escape
+      end
+
+      wait_for_requests
+      expect(page.html).not_to include('Are you sure you want to cancel creating this comment?')
+    end
+  end
+
+  it 'handles esc key correctly when atwho is not active' do
+    page.within('.js-main-target-form') do
+      fill_in('note[note]', with: 'comment 1')
+      click_button('Comment')
+    end
+
+    wait_for_requests
+
+    page.within('.note') do
+      click_button('Reply to comment')
+      fill_in('note[note]', with: 'comment 2')
+      send_keys :escape
+    end
+
+    wait_for_requests
+    expect(page.html).to include('Are you sure you want to cancel creating this comment?')
+  end
+
   it 'loads new comment' do
     # Add new comment in background in order to check
     # if it's going to be loaded automatically for current user.

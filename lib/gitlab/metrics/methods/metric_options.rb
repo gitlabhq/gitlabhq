@@ -61,7 +61,7 @@ module Gitlab
         end
 
         def evaluate(&block)
-          instance_eval(&block) if block_given?
+          instance_eval(&block) if block
 
           self
         end

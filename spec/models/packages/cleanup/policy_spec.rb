@@ -9,6 +9,7 @@ RSpec.describe Packages::Cleanup::Policy, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
+
     it do
       is_expected
         .to validate_inclusion_of(:keep_n_duplicated_package_files)

@@ -1,4 +1,5 @@
 import { makeVar } from '@apollo/client/core';
+import { RUNNER_TYPENAME } from '../../constants';
 import typeDefs from './typedefs.graphql';
 
 /**
@@ -33,10 +34,16 @@ export const createLocalState = () => {
     typePolicies: {
       Query: {
         fields: {
-          checkedRunnerIds() {
+          checkedRunnerIds(_, { canRead, toReference }) {
             return Object.entries(checkedRunnerIdsVar())
+              .filter(([id]) => {
+                // Some runners may be deleted by the user separately.
+                // Skip dangling references, those not in the cache.
+                // See: https://www.apollographql.com/docs/react/caching/garbage-collection/#dangling-references
+                return canRead(toReference({ __typename: RUNNER_TYPENAME, id }));
+              })
               .filter(([, isChecked]) => isChecked)
-              .map(([key]) => key);
+              .map(([id]) => id);
           },
         },
       },
@@ -49,6 +56,13 @@ export const createLocalState = () => {
         ...checkedRunnerIdsVar(),
         [runner.id]: isChecked,
       });
+    },
+    setRunnersChecked({ runners, isChecked }) {
+      const newVal = runners.reduce(
+        (acc, { id }) => ({ ...acc, [id]: isChecked }),
+        checkedRunnerIdsVar(),
+      );
+      checkedRunnerIdsVar(newVal);
     },
     clearChecked() {
       checkedRunnerIdsVar({});

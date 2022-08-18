@@ -60,7 +60,7 @@ NOTE:
 
 Code shipped with GitLab needs to use a license approved by the Legal team. See the list of [existing approved licenses](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries).
 
-Notify the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/) when adding a new dependency that must be compiled. We must be able to compile the dependency on all supported platforms.
+Notify the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/) when adding a new dependency that must be compiled. We must be able to compile the dependency on all supported platforms.
 
 New services to be bundled with GitLab need to be available in the following environments.
 
@@ -83,7 +83,7 @@ In order for a service to be bundled for end-users or GitLab.com, it needs to be
 Dependencies should be kept up to date and be tracked for security updates. For the Rails codebase, the JavaScript and Ruby dependencies are
 scanned for vulnerabilities using GitLab [dependency scanning](../user/application_security/dependency_scanning/index.md).
 
-In addition, any system dependencies used in Omnibus packages or the Cloud Native images should be added to the [dependency update automation](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/maintenance/dependencies.io.html#adding-new-dependencies).
+In addition, any system dependencies used in Omnibus packages or the Cloud Native images should be added to the [dependency update automation](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/maintenance/dependencies.io.html#adding-new-dependencies).
 
 ## Release management
 

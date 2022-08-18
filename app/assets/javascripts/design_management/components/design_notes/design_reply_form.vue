@@ -90,7 +90,6 @@ export default {
   <form class="new-note common-note-form" @submit.prevent>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
-      :can-attach-file="false"
       :enable-autocomplete="true"
       :textarea-value="value"
       :markdown-docs-path="markdownDocsPath"

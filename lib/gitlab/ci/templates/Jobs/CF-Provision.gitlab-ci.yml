@@ -2,7 +2,7 @@ stages:
   - provision
 
 cloud_formation:
-  image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-cloudformation:latest'
+  image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-cloudformation:latest'
   stage: provision
   script:
     - gl-cloudformation create-stack

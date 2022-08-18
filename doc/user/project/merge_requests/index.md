@@ -41,7 +41,7 @@ To view merge requests for all projects in a group:
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
-## View all merge requests assigned to you
+### View all merge requests assigned to you
 
 To view all merge requests assigned to you:
 
@@ -52,13 +52,14 @@ To view all merge requests assigned to you:
 
 <!-- vale gitlab.FirstPerson = YES -->
 
-Or:
+or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>m</kbd>.
-- On the top bar, on the top right, select **{merge-request-open}** **Merge requests**.
-  Then select one of the following:
-  - [Review requests](reviews/index.md).
-  - Merge requests assigned.
+
+or:
+
+1. On the top bar, on the top right, select **{merge-request-open}** **Merge requests**.
+1. From the dropdown list, select **Assigned to you**.
 
 ## Filter the list of merge requests
 

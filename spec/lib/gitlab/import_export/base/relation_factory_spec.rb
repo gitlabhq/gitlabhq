@@ -139,6 +139,30 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory do
           expect(subject.value).to be_nil
         end
       end
+
+      context 'with duplicate assignees' do
+        let(:relation_sym) { :issues }
+        let(:relation_hash) do
+          { "title" => "title", "state" => "opened" }.merge(issue_assignees)
+        end
+
+        context 'when duplicate assignees are present' do
+          let(:issue_assignees) do
+            {
+              "issue_assignees" => [
+                IssueAssignee.new(user_id: 1),
+                IssueAssignee.new(user_id: 2),
+                IssueAssignee.new(user_id: 1),
+                { user_id: 3 }
+              ]
+            }
+          end
+
+          it 'removes duplicate assignees' do
+            expect(subject.issue_assignees.map(&:user_id)).to contain_exactly(1, 2)
+          end
+        end
+      end
     end
   end
 

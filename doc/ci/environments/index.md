@@ -21,7 +21,6 @@ GitLab:
 
 If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
 associated with your project, you can use it to assist with your deployments.
-You can even access a [web terminal](#web-terminals-deprecated) for your environment from within GitLab.
 
 ## View environments and deployments
 
@@ -373,6 +372,9 @@ To retry or rollback a deployment:
    - To roll back to a deployment, next to a previously successful deployment, select **Rollback environment**.
 
 ### Environment URL
+
+> - [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
 
 The [environment URL](../yaml/index.md#environmenturl) is displayed in a few
 places in GitLab:

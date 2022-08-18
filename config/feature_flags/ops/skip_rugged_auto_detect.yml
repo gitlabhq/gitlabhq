@@ -1,0 +1,8 @@
+---
+name: skip_rugged_auto_detect
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95330
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370708
+milestone: '15.3'
+type: ops
+group: group::gitaly
+default_enabled: true

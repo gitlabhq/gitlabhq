@@ -45,7 +45,7 @@ RSpec.describe Releases::UpdateService do
     end
 
     context 'when the release does not exist' do
-      let!(:release) { }
+      let!(:release) {}
 
       it_behaves_like 'a failed update'
     end

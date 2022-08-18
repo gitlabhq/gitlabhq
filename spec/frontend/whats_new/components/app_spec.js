@@ -64,7 +64,7 @@ describe('App', () => {
     buildWrapper();
 
     wrapper.vm.$store.state.features = [
-      { title: 'Whats New Drawer', url: 'www.url.com', release: 3.11 },
+      { name: 'Whats New Drawer', documentation_link: 'www.url.com', release: 3.11 },
     ];
     wrapper.vm.$store.state.drawerBodyHeight = MOCK_DRAWER_BODY_HEIGHT;
     await nextTick();
@@ -115,7 +115,7 @@ describe('App', () => {
 
     it('renders features when provided via ajax', () => {
       expect(actions.fetchItems).toHaveBeenCalled();
-      expect(wrapper.find('[data-test-id="feature-title"]').text()).toBe('Whats New Drawer');
+      expect(wrapper.find('[data-test-id="feature-name"]').text()).toBe('Whats New Drawer');
     });
 
     it('send an event when feature item is clicked', () => {

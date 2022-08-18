@@ -80,4 +80,16 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
 
     Gitlab::Tracking.event('Projects::GoogleCloud', action, **options)
   end
+
+  def gcp_projects
+    google_api_client = GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
+    google_api_client.list_projects
+  end
+
+  def refs
+    params = { per_page: 50 }
+    branches = BranchesFinder.new(project.repository, params).execute(gitaly_pagination: true)
+    tags = TagsFinder.new(project.repository, params).execute(gitaly_pagination: true)
+    (branches + tags).map(&:name)
+  end
 end

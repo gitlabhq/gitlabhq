@@ -255,7 +255,7 @@ It also displays the following information:
 | Field              | Description |
 |:-------------------|:------------|
 | Users in License   | The number of users you've paid for in the current license loaded on the system. The number does not change unless you [add seats](#add-seats-to-a-subscription) during your current subscription period. |
-| Billable users     | The daily count of billable users on your system. The count may change as you block or add users to your instance. |
+| Billable users     | The daily count of billable users on your system. The count may change as you block, deactivate, or add users to your instance. |
 | Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
 | Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
 
@@ -274,18 +274,18 @@ This file contains the information GitLab uses to manually process quarterly rec
 The **License Usage** CSV includes the following details:
 
 - License key
-- Email
+- Licensee email
 - License start date
 - License end date
 - Company
 - Generated at (the timestamp for when the file was exported)
 - Table of historical user counts for each day in the period:
-  - Date the count was recorded
-  - Active user count
+  - Timestamp the count was recorded
+  - Billable user count
 
 NOTES:
 
-- All timestamps are displayed in UTC.
+- All date timestamps are displayed in UTC.
 - A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
 ## Renew your subscription
@@ -312,7 +312,7 @@ the contact person who manages your subscription.
 
 It's important to regularly review your user accounts, because:
 
-- Stale user accounts that are not blocked count as billable users. You may pay more than you should
+- Stale user accounts may count as billable users. You may pay more than you should
   if you renew for too many users.
 - Stale user accounts can be a security risk. A regular review helps reduce this risk.
 
@@ -329,7 +329,7 @@ To view the number of _users over license_ go to the **Admin Area**.
 
 You purchase a license for 10 users.
 
-| Event                                              | Billable members | Maximum users |
+| Event                                              | Billable users | Maximum users |
 |:---------------------------------------------------|:-----------------|:--------------|
 | Ten users occupy all 10 seats.                     | 10               | 10            |
 | Two new users join.                                | 12               | 12            |

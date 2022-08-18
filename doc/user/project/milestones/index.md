@@ -44,6 +44,14 @@ To view the milestone list:
 In a project, GitLab displays milestones that belong to the project.
 In a group, GitLab displays milestones that belong to the group and all projects in the group.
 
+NOTE:
+If a project has issue tracking
+[turned off](../settings/index.md#configure-project-visibility-features-and-permissions),
+you can get to the milestones page
+by going to its URL. To do so, add: `/-/milestones` to your project or group URL.
+For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/milestones`.
+This is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
+
 ### View all milestones
 
 You can view all the milestones you have access to in the entire GitLab namespace.

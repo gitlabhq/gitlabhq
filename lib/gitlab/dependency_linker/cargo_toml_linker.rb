@@ -39,7 +39,11 @@ module Gitlab
       end
 
       def toml
-        @toml ||= TomlRB.parse(plain_text) rescue nil
+        @toml ||= begin
+          TomlRB.parse(plain_text)
+        rescue StandardError
+          nil
+        end
       end
     end
   end

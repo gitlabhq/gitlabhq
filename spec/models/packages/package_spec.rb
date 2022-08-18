@@ -131,7 +131,7 @@ RSpec.describe Packages::Package, type: :model do
       context 'conan package' do
         subject { build_stubbed(:conan_package) }
 
-        let(:fifty_one_characters) {'f_b' * 17}
+        let(:fifty_one_characters) { 'f_b' * 17 }
 
         it { is_expected.to allow_value('foo+bar').for(:name) }
         it { is_expected.to allow_value('foo_bar').for(:name) }
@@ -243,7 +243,7 @@ RSpec.describe Packages::Package, type: :model do
       context 'conan package' do
         subject { build_stubbed(:conan_package) }
 
-        let(:fifty_one_characters) {'1.2' * 17}
+        let(:fifty_one_characters) { '1.2' * 17 }
 
         it { is_expected.to allow_value('1.2').for(:version) }
         it { is_expected.to allow_value('1.2.3-beta').for(:version) }
@@ -441,7 +441,7 @@ RSpec.describe Packages::Package, type: :model do
       context 'npm package' do
         let_it_be(:group) { create(:group) }
         let_it_be(:project) { create(:project, namespace: group) }
-        let_it_be(:second_project) { create(:project, namespace: group)}
+        let_it_be(:second_project) { create(:project, namespace: group) }
 
         let(:package) { build(:npm_package, project: project, name: name) }
 

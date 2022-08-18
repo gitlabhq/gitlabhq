@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Internal::ErrorTracking do
   let(:secret_token) { Gitlab::CurrentSettings.error_tracking_access_token }
   let(:headers) do
-    { ::API::Internal::ErrorTracking::GITLAB_ERROR_TRACKING_TOKEN_HEADER => Base64.encode64(secret_token) }
+    { ::API::Internal::ErrorTracking::GITLAB_ERROR_TRACKING_TOKEN_HEADER => secret_token }
   end
 
   describe 'GET /internal/error_tracking/allowed' do

@@ -31,7 +31,6 @@ RSpec.describe 'Project > Settings > Packages & Registries > Container registry 
       subject
 
       within '[data-testid="container-expiration-policy-project-settings"]' do
-        click_button('Expand')
         select('Every day', from: 'Run cleanup')
         select('50 tags per image name', from: 'Keep the most recent:')
         fill_in('Keep tags matching:', with: 'stable')
@@ -50,7 +49,6 @@ RSpec.describe 'Project > Settings > Packages & Registries > Container registry 
       subject
 
       within '[data-testid="container-expiration-policy-project-settings"]' do
-        click_button('Expand')
         fill_in('Remove tags matching:', with: '*-production')
 
         submit_button = find('[data-testid="save-button"')
@@ -76,7 +74,6 @@ RSpec.describe 'Project > Settings > Packages & Registries > Container registry 
         subject
 
         within '[data-testid="container-expiration-policy-project-settings"]' do
-          click_button('Expand')
           expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
         end
       end
@@ -91,7 +88,6 @@ RSpec.describe 'Project > Settings > Packages & Registries > Container registry 
         subject
 
         within '[data-testid="container-expiration-policy-project-settings"]' do
-          click_button('Expand')
           expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
         end
       end

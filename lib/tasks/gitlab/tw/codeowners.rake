@@ -46,12 +46,12 @@ namespace :tw do
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),
       CodeOwnerRule.new('Gitaly', '@eread'),
-      CodeOwnerRule.new('Global Search', '@sselhorn'),
+      CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
       CodeOwnerRule.new('Import', '@eread'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
-      CodeOwnerRule.new('Integrations', '@kpaizee'),
+      CodeOwnerRule.new('Integrations', '@ashrafkhamis'),
       CodeOwnerRule.new('Knowledge', '@aqualls'),
-      CodeOwnerRule.new('Memory', '@sselhorn'),
+      CodeOwnerRule.new('Application Performance', '@sselhorn'),
       CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
       CodeOwnerRule.new('Observability', 'msedlakjakubowski'),
       CodeOwnerRule.new('Optimize', '@fneill'),
@@ -69,7 +69,7 @@ namespace :tw do
       CodeOwnerRule.new('Release', '@rdickenson'),
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
       CodeOwnerRule.new('Runner', '@sselhorn'),
-      CodeOwnerRule.new('Sharding', '@sselhorn'),
+      CodeOwnerRule.new('Pods', '@sselhorn'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
@@ -128,7 +128,7 @@ namespace :tw do
     if errors.present?
       puts "-----"
       puts "ERRORS - the following files are missing the correct metadata:"
-      errors.map { |file| puts file.gsub(Dir.pwd, ".")}
+      errors.map { |file| puts file.gsub(Dir.pwd, ".") }
     end
   end
 end

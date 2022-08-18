@@ -131,8 +131,7 @@ being modified after the database dump is created.
 
 ## Retain persistent volumes
 
-By default the [persistent
-volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+By default the [persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 used to store the underlying data for PostgreSQL is marked as `Delete`
 when the pods and pod claims that use the volume is deleted.
 

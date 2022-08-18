@@ -23,7 +23,7 @@ describe('Feature flags > Environments dropdown ', () => {
     });
   };
 
-  const findEnvironmentSearchInput = () => wrapper.find(GlSearchBoxByType);
+  const findEnvironmentSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findDropdownMenu = () => wrapper.find('.dropdown-menu');
 
   afterEach(() => {
@@ -91,7 +91,7 @@ describe('Feature flags > Environments dropdown ', () => {
       describe('with received data', () => {
         it('sets is loading to false', () => {
           expect(wrapper.vm.isLoading).toBe(false);
-          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+          expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
         });
 
         it('shows the suggestions', () => {
@@ -100,7 +100,7 @@ describe('Feature flags > Environments dropdown ', () => {
 
         it('emits event when a suggestion is clicked', async () => {
           const button = wrapper
-            .findAll(GlButton)
+            .findAllComponents(GlButton)
             .filter((b) => b.text() === 'production')
             .at(0);
           button.vm.$emit('click');
@@ -111,7 +111,7 @@ describe('Feature flags > Environments dropdown ', () => {
 
       describe('on click clear button', () => {
         beforeEach(async () => {
-          wrapper.find(GlButton).vm.$emit('click');
+          wrapper.findComponent(GlButton).vm.$emit('click');
           await nextTick();
         });
 
@@ -137,7 +137,7 @@ describe('Feature flags > Environments dropdown ', () => {
     });
 
     it('emits create event', async () => {
-      wrapper.findAll(GlButton).at(0).vm.$emit('click');
+      wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
       await nextTick();
       expect(wrapper.emitted('createClicked')).toEqual([['production']]);
     });

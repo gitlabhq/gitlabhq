@@ -6,7 +6,7 @@ import {
   PACKAGES_CLEANUP_POLICY_DESCRIPTION,
 } from '~/packages_and_registries/settings/project/constants';
 import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_cleanup_policy.query.graphql';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 
 import PackagesCleanupPolicyForm from './packages_cleanup_policy_form.vue';
 

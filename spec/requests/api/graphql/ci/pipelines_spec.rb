@@ -166,6 +166,35 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
     end
   end
 
+  describe '.job' do
+    let(:first_n) { var('Int') }
+    let(:query_path) do
+      [
+        [:project, { full_path: project.full_path }],
+        [:pipelines],
+        [:nodes],
+        [:job, { name: 'Job 1' }]
+      ]
+    end
+
+    let(:query) do
+      wrap_fields(query_graphql_path(query_path, :status))
+    end
+
+    before_all do
+      pipeline = create(:ci_pipeline, project: project)
+      create(:ci_build, pipeline: pipeline, name: 'Job 1', status: :failed, retried: true)
+      create(:ci_build, pipeline: pipeline, name: 'Job 1', status: :success)
+    end
+
+    it 'fetches the latest job with the given name' do
+      post_graphql(query, current_user: user)
+      expect(graphql_data_at(*query_path.map(&:first))).to contain_exactly a_hash_including(
+        'status' => 'SUCCESS'
+      )
+    end
+  end
+
   describe '.jobs' do
     let(:first_n) { var('Int') }
     let(:query_path) do

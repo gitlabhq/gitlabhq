@@ -6,10 +6,11 @@ import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue'
 describe('Issue Warning Component', () => {
   let wrapper;
 
-  const findIcon = (w = wrapper) => w.find(GlIcon);
-  const findLockedBlock = (w = wrapper) => w.find({ ref: 'locked' });
-  const findConfidentialBlock = (w = wrapper) => w.find({ ref: 'confidential' });
-  const findLockedAndConfidentialBlock = (w = wrapper) => w.find({ ref: 'lockedAndConfidential' });
+  const findIcon = (w = wrapper) => w.findComponent(GlIcon);
+  const findLockedBlock = (w = wrapper) => w.findComponent({ ref: 'locked' });
+  const findConfidentialBlock = (w = wrapper) => w.findComponent({ ref: 'confidential' });
+  const findLockedAndConfidentialBlock = (w = wrapper) =>
+    w.findComponent({ ref: 'lockedAndConfidential' });
 
   const createComponent = (props) =>
     shallowMount(NoteableWarning, {
@@ -73,7 +74,7 @@ describe('Issue Warning Component', () => {
     });
 
     it('renders warning icon', () => {
-      expect(wrapper.find(GlIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
     });
 
     it('does not render information about locked noteable', () => {
@@ -99,7 +100,7 @@ describe('Issue Warning Component', () => {
     });
 
     it('does not render warning icon', () => {
-      expect(wrapper.find(GlIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(false);
     });
 
     it('does not render information about locked noteable', () => {

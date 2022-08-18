@@ -13,14 +13,19 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
-    TEST_REPORT_FILE_TYPES = %w[junit].freeze
-    COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
-    CODEQUALITY_REPORT_FILE_TYPES = %w[codequality].freeze
-    ACCESSIBILITY_REPORT_FILE_TYPES = %w[accessibility].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
-    TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
-    SAST_REPORT_TYPES = %w[sast].freeze
-    SECRET_DETECTION_REPORT_TYPES = %w[secret_detection].freeze
+
+    REPORT_FILE_TYPES = {
+      sast: %w[sast],
+      secret_detection: %w[secret_detection],
+      test: %w[junit],
+      accessibility: %w[accessibility],
+      coverage: %w[cobertura],
+      codequality: %w[codequality],
+      terraform: %w[terraform],
+      sbom: %w[cyclonedx]
+    }.freeze
+
     DEFAULT_FILE_NAMES = {
       archive: nil,
       metadata: nil,
@@ -48,7 +53,8 @@ module Ci
       cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       requirements: 'requirements.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
-      api_fuzzing: 'gl-api-fuzzing-report.json'
+      api_fuzzing: 'gl-api-fuzzing-report.json',
+      cyclonedx: 'gl-sbom.cdx.zip'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -88,7 +94,8 @@ module Ci
       terraform: :raw,
       requirements: :raw,
       coverage_fuzzing: :raw,
-      api_fuzzing: :raw
+      api_fuzzing: :raw,
+      cyclonedx: :zip
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[
@@ -112,6 +119,7 @@ module Ci
       secret_detection
       requirements
       cluster_image_scanning
+      cyclonedx
     ].freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
@@ -152,36 +160,14 @@ module Ci
       where(file_type: types)
     end
 
+    REPORT_FILE_TYPES.each do |report_type, file_types|
+      scope "#{report_type}_reports", -> do
+        with_file_types(file_types)
+      end
+    end
+
     scope :all_reports, -> do
       with_file_types(REPORT_TYPES.keys.map(&:to_s))
-    end
-
-    scope :sast_reports, -> do
-      with_file_types(SAST_REPORT_TYPES)
-    end
-
-    scope :secret_detection_reports, -> do
-      with_file_types(SECRET_DETECTION_REPORT_TYPES)
-    end
-
-    scope :test_reports, -> do
-      with_file_types(TEST_REPORT_FILE_TYPES)
-    end
-
-    scope :accessibility_reports, -> do
-      with_file_types(ACCESSIBILITY_REPORT_FILE_TYPES)
-    end
-
-    scope :coverage_reports, -> do
-      with_file_types(COVERAGE_REPORT_FILE_TYPES)
-    end
-
-    scope :codequality_reports, -> do
-      with_file_types(CODEQUALITY_REPORT_FILE_TYPES)
-    end
-
-    scope :terraform_reports, -> do
-      with_file_types(TERRAFORM_REPORT_FILE_TYPES)
     end
 
     scope :erasable, -> do
@@ -225,7 +211,8 @@ module Ci
       browser_performance: 24, ## EE-specific
       load_performance: 25, ## EE-specific
       api_fuzzing: 26, ## EE-specific
-      cluster_image_scanning: 27 ## EE-specific
+      cluster_image_scanning: 27, ## EE-specific
+      cyclonedx: 28 ## EE-specific
     }
 
     # `file_location` indicates where actual files are stored.
@@ -257,6 +244,10 @@ module Ci
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
         errors.add(:base, _('Invalid file format with specified file type'))
       end
+    end
+
+    def self.file_types_for_report(report_type)
+      REPORT_FILE_TYPES.fetch(report_type)
     end
 
     def self.associated_file_types_for(file_type)

@@ -14,6 +14,7 @@ module Ci
 
       def execute
         @runner&.destroy
+        ServiceResponse.success
       end
     end
   end

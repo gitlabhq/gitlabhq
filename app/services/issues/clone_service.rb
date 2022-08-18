@@ -41,7 +41,6 @@ module Issues
     def update_new_entity
       # we don't call `super` because we want to be able to decide whether or not to copy all comments over.
       update_new_entity_description
-      copy_award_emoji
 
       if with_notes
         copy_notes
@@ -96,9 +95,14 @@ module Issues
     end
 
     def add_note_from
-      SystemNoteService.noteable_cloned(new_entity, target_project,
-        original_entity, current_user,
-        direction: :from)
+      SystemNoteService.noteable_cloned(
+        new_entity,
+        target_project,
+        original_entity,
+        current_user,
+        direction: :from,
+        created_at: new_entity.created_at
+      )
     end
 
     def add_note_to

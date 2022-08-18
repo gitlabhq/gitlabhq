@@ -83,7 +83,7 @@ describe('Board List Header Component', () => {
 
   const isCollapsed = () => wrapper.vm.list.collapsed;
 
-  const findAddIssueButton = () => wrapper.find({ ref: 'newIssueBtn' });
+  const findAddIssueButton = () => wrapper.findComponent({ ref: 'newIssueBtn' });
   const findTitle = () => wrapper.find('.board-title');
   const findCaret = () => wrapper.findByTestId('board-title-caret');
 

@@ -22,7 +22,7 @@ module Types
           type: Types::CustomEmojiType.connection_type,
           null: true,
           description: 'Custom emoji within this namespace.',
-          feature_flag: :custom_emoji
+          _deprecated_feature_flag: :custom_emoji
 
     field :share_with_group_lock,
           type: GraphQL::Types::Boolean,
@@ -85,6 +85,7 @@ module Types
 
     field :milestones,
           description: 'Milestones of the group.',
+          extras: [:lookahead],
           resolver: Resolvers::GroupMilestonesResolver
 
     field :boards,
@@ -183,10 +184,10 @@ module Types
           resolver: Resolvers::GroupLabelsResolver
 
     field :timelogs, ::Types::TimelogType.connection_type, null: false,
-          description: 'Time logged on issues and merge requests in the group and its subgroups.',
-          extras: [:lookahead],
-          complexity: 5,
-          resolver: ::Resolvers::TimelogResolver
+                                                           description: 'Time logged on issues and merge requests in the group and its subgroups.',
+                                                           extras: [:lookahead],
+                                                           complexity: 5,
+                                                           resolver: ::Resolvers::TimelogResolver
 
     field :descendant_groups, Types::GroupType.connection_type,
           null: true,
@@ -195,7 +196,7 @@ module Types
           resolver: Resolvers::GroupsResolver
 
     field :ci_variables,
-          Types::Ci::VariableType.connection_type,
+          Types::Ci::GroupVariableType.connection_type,
           null: true,
           description: "List of the group's CI/CD variables.",
           authorize: :admin_group,
@@ -215,6 +216,12 @@ module Types
           null: true,
           description: "Find contacts of this group.",
           resolver: Resolvers::Crm::ContactsResolver
+
+    field :contact_state_counts,
+          Types::CustomerRelations::ContactStateCountsType,
+          null: true,
+          description: 'Counts of contacts by state for the group.',
+          resolver: Resolvers::Crm::ContactStateCountsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
           resolver: Resolvers::WorkItems::TypesResolver,

@@ -11,13 +11,13 @@ module Gitlab
 
         expose_attribute :iid, :title, :description, :milestone_number,
                          :created_at, :updated_at, :state, :assignees,
-                         :label_names, :author
+                         :label_names, :author, :work_item_type_id
 
         # Builds an issue from a GitHub API response.
         #
         # issue - An instance of `Sawyer::Resource` containing the issue
         #         details.
-        def self.from_api_response(issue)
+        def self.from_api_response(issue, additional_data = {})
           user =
             if issue.user
               Representation::User.from_api_response(issue.user)
@@ -36,7 +36,8 @@ module Gitlab
             author: user,
             created_at: issue.created_at,
             updated_at: issue.updated_at,
-            pull_request: issue.pull_request ? true : false
+            pull_request: issue.pull_request ? true : false,
+            work_item_type_id: additional_data[:work_item_type_id]
           }
 
           new(hash)

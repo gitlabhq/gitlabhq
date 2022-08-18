@@ -1,12 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
-import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 import SidebarService, { gqClient } from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
-import toast from '~/vue_shared/plugins/global_toast';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Mock from './mock_data';
 
 jest.mock('~/flash');
@@ -120,95 +117,6 @@ describe('Sidebar mediator', () => {
 
       moveIssueSpy.mockRestore();
       urlSpy.mockRestore();
-    });
-  });
-
-  describe('toggleAttentionRequested', () => {
-    let requestAttentionMock;
-    let removeAttentionRequestMock;
-
-    beforeEach(() => {
-      requestAttentionMock = jest.spyOn(mediator.service, 'requestAttention').mockResolvedValue();
-      removeAttentionRequestMock = jest
-        .spyOn(mediator.service, 'removeAttentionRequest')
-        .mockResolvedValue();
-    });
-
-    it.each`
-      attentionIsCurrentlyRequested | serviceMethod
-      ${true}                       | ${'remove'}
-      ${false}                      | ${'add'}
-    `(
-      "calls the $serviceMethod service method when the user's attention request is set to $attentionIsCurrentlyRequested",
-      async ({ serviceMethod }) => {
-        const methods = {
-          add: requestAttentionMock,
-          remove: removeAttentionRequestMock,
-        };
-        mediator.store.reviewers = [{ id: 1, attention_requested: false, username: 'root' }];
-
-        await mediator.toggleAttentionRequested('reviewer', {
-          user: { id: 1, username: 'root' },
-          callback: jest.fn(),
-          direction: serviceMethod,
-        });
-
-        expect(methods[serviceMethod]).toHaveBeenCalledWith(1);
-        expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
-      },
-    );
-
-    it.each`
-      type          | method
-      ${'reviewer'} | ${'findReviewer'}
-    `('finds $type', ({ type, method }) => {
-      const methodSpy = jest.spyOn(mediator.store, method);
-
-      mediator.toggleAttentionRequested(type, { user: { id: 1 }, callback: jest.fn() });
-
-      expect(methodSpy).toHaveBeenCalledWith({ id: 1 });
-    });
-
-    it.each`
-      attentionRequested | toastMessage
-      ${true}            | ${'Removed attention request from @root'}
-      ${false}           | ${'Requested attention from @root'}
-    `(
-      'it creates toast $toastMessage when attention_requested is $attentionRequested',
-      async ({ attentionRequested, toastMessage }) => {
-        mediator.store.reviewers = [
-          { id: 1, attention_requested: attentionRequested, username: 'root' },
-        ];
-
-        await mediator.toggleAttentionRequested('reviewer', {
-          user: { id: 1, username: 'root' },
-          callback: jest.fn(),
-        });
-
-        expect(toast).toHaveBeenCalledWith(toastMessage);
-      },
-    );
-
-    describe('errors', () => {
-      beforeEach(() => {
-        jest
-          .spyOn(mediator.service, 'removeAttentionRequest')
-          .mockRejectedValueOnce(new Error('Something went wrong'));
-      });
-
-      it('shows an error message', async () => {
-        await mediator.toggleAttentionRequested('reviewer', {
-          user: { id: 1, username: 'root' },
-          callback: jest.fn(),
-          direction: 'remove',
-        });
-
-        expect(createFlash).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: 'Updating the attention request for root failed.',
-          }),
-        );
-      });
     });
   });
 });

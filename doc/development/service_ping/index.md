@@ -22,9 +22,7 @@ and sales teams understand how GitLab is used. The data helps to:
 Service Ping information is not anonymous. It's linked to the instance's hostname, but does
 not contain project names, usernames, or any other specific data.
 
-Sending a Service Ping payload is optional and you can [disable](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics) it on any
-self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances
-and can show your instance's usage statistics to your users.
+Service Ping is enabled by default. However, you can [disable](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics) it on any self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances and can show your instance's usage statistics to your users.
 
 ## Service Ping terminology
 
@@ -113,7 +111,7 @@ sequenceDiagram
 
 1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
 
-   > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag(../../user/feature_flags.md), enabled by default.
+   > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag](../../user/feature_flags.md), enabled by default.
    > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/295289) in GitLab 15.2. [Feature flag `measure_service_ping_metric_collection`](https://gitlab.com/gitlab-org/gitlab/-/issues/358128) removed.
 
 ```ruby

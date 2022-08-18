@@ -5,6 +5,11 @@ query workItemQuery($id: WorkItemID!) {
       id
     }
     title
+    userPermissions {
+      deleteWorkItem
+      updateWorkItem
+    }
+    confidential
     widgets {
       type
       ... on WorkItemWidgetHierarchy {
@@ -15,6 +20,7 @@ query workItemQuery($id: WorkItemID!) {
         children {
           nodes {
             id
+            confidential
             workItemType {
               id
             }

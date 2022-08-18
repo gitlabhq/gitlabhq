@@ -17,7 +17,7 @@ module TabHelper
       class: [*html_options[:class], gl_tabs_classes].join(' ')
     )
 
-    content = capture(&block) if block_given?
+    content = capture(&block) if block
     content_tag(:ul, content, html_options)
   end
 
@@ -35,7 +35,7 @@ module TabHelper
     link_classes = %w[nav-link gl-tab-nav-item]
     active_link_classes = %w[active gl-tab-nav-item-active]
 
-    if block_given?
+    if block
       # Shift params to skip the omitted "name" param
       html_options = options
       options = name
@@ -54,7 +54,7 @@ module TabHelper
     tab_class = %w[nav-item].push(*extra_tab_classes)
 
     content_tag(:li, class: tab_class) do
-      if block_given?
+      if block
         link_to(options, html_options, &block)
       else
         link_to(name, options, html_options)
@@ -150,7 +150,7 @@ module TabHelper
     o[:class] = [*o[:class], klass].join(' ')
     o[:class].strip!
 
-    if block_given?
+    if block
       content_tag(:li, capture(&block), o)
     else
       content_tag(:li, nil, o)

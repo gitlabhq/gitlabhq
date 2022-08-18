@@ -9,7 +9,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-    if ::Ci::Runners::AssignRunnerService.new(@runner, @project, current_user).execute
+    if ::Ci::Runners::AssignRunnerService.new(@runner, @project, current_user).execute.success?
       redirect_to edit_admin_runner_url(@runner), notice: s_('Runners|Runner assigned to project.')
     else
       redirect_to edit_admin_runner_url(@runner), alert: 'Failed adding runner to project'

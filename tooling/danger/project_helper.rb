@@ -63,6 +63,7 @@ module Tooling
         %r{\A((ee|jh)/)?app/views/} => [:frontend, :backend],
         %r{\A((ee|jh)/)?public/} => :frontend,
         %r{\A((ee|jh)/)?spec/(javascripts|frontend|frontend_integration)/} => :frontend,
+        %r{\A((ee|jh)/)?spec/contracts/consumer} => :frontend,
         %r{\A((ee|jh)/)?vendor/assets/} => :frontend,
         %r{\A((ee|jh)/)?scripts/frontend/} => :frontend,
         %r{(\A|/)(
@@ -117,6 +118,7 @@ module Tooling
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 
         %r{\A((ee|jh)/)?spec/features/} => :test,
+        %r{\A((ee|jh)/)?spec/contracts/} => :test,
         %r{\A((ee|jh)/)?spec/support/shared_examples/features/} => :test,
         %r{\A((ee|jh)/)?spec/support/shared_contexts/features/} => :test,
         %r{\A((ee|jh)/)?spec/support/helpers/features/} => :test,

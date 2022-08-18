@@ -1,12 +1,13 @@
 <script>
+import { s__ } from '~/locale';
+import RunnerSingleStat from '~/runner/components/stat/runner_single_stat.vue';
 import { STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '../../constants';
-import RunnerCount from './runner_count.vue';
-import RunnerStatusStat from './runner_status_stat.vue';
 
 export default {
   components: {
-    RunnerCount,
-    RunnerStatusStat,
+    RunnerSingleStat,
+    RunnerUpgradeStatusStats: () =>
+      import('ee_component/runner/components/stat/runner_upgrade_status_stats.vue'),
   },
   props: {
     scope: {
@@ -16,32 +17,67 @@ export default {
     variables: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
+    },
+  },
+  computed: {
+    stats() {
+      return [
+        {
+          key: STATUS_ONLINE,
+          props: {
+            skip: this.statusCountSkip(STATUS_ONLINE),
+            variables: { ...this.variables, status: STATUS_ONLINE },
+            variant: 'success',
+            title: s__('Runners|Online runners'),
+            metaText: s__('Runners|online'),
+          },
+        },
+        {
+          key: STATUS_OFFLINE,
+          props: {
+            skip: this.statusCountSkip(STATUS_OFFLINE),
+            variables: { ...this.variables, status: STATUS_OFFLINE },
+            variant: 'muted',
+            title: s__('Runners|Offline runners'),
+            metaText: s__('Runners|offline'),
+          },
+        },
+        {
+          key: STATUS_STALE,
+          props: {
+            skip: this.statusCountSkip(STATUS_STALE),
+            variables: { ...this.variables, status: STATUS_STALE },
+            variant: 'warning',
+            title: s__('Runners|Stale runners'),
+            metaText: s__('Runners|stale'),
+          },
+        },
+      ];
     },
   },
   methods: {
-    countVariables(vars) {
-      return { ...this.variables, ...vars };
-    },
     statusCountSkip(status) {
       // Show an empty result when we already filter by another status
       return this.variables.status && this.variables.status !== status;
     },
   },
-  STATUS_LIST: [STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE],
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-py-6">
-    <runner-count
-      v-for="status in $options.STATUS_LIST"
-      #default="{ count }"
-      :key="status"
+  <div class="gl-display-flex gl-flex-wrap gl-py-6">
+    <runner-single-stat
+      v-for="stat in stats"
+      :key="stat.key"
       :scope="scope"
-      :variables="countVariables({ status })"
-      :skip="statusCountSkip(status)"
-    >
-      <runner-status-stat class="gl-px-5" :status="status" :value="count" />
-    </runner-count>
+      v-bind="stat.props"
+      class="gl-px-5"
+    />
+
+    <runner-upgrade-status-stats
+      class="gl-display-contents"
+      :scope="scope"
+      :variables="variables"
+    />
   </div>
 </template>

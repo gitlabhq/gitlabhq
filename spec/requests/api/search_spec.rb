@@ -350,6 +350,17 @@ RSpec.describe API::Search do
           include_examples 'pagination', scope: :snippet_titles
         end
       end
+
+      it 'sets global search information for logging' do
+        expect(Gitlab::Instrumentation::GlobalSearchApi).to receive(:set_information).with(
+          type: 'basic',
+          level: 'global',
+          scope: 'issues',
+          search_duration_s: a_kind_of(Numeric)
+        )
+
+        get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
+      end
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do

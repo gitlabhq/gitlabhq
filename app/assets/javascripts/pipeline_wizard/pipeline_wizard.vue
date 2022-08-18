@@ -49,7 +49,7 @@ export default {
 <template>
   <div>
     <div class="gl-my-8">
-      <h2 class="gl-mb-4" data-testid="title">{{ title }}</h2>
+      <h1 class="gl-mb-4" data-testid="title">{{ title }}</h1>
       <p class="text-tertiary gl-font-lg gl-max-w-80" data-testid="description">
         {{ description }}
       </p>

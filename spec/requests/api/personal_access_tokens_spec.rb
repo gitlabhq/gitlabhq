@@ -34,7 +34,7 @@ RSpec.describe API::PersonalAccessTokens do
       context 'logged in as a non-Administrator' do
         let_it_be(:current_user) { create(:user) }
         let_it_be(:user) { create(:user) }
-        let_it_be(:token) { create(:personal_access_token, user: current_user)}
+        let_it_be(:token) { create(:personal_access_token, user: current_user) }
         let_it_be(:other_token) { create(:personal_access_token, user: user) }
         let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: current_user) }
 
@@ -100,7 +100,7 @@ RSpec.describe API::PersonalAccessTokens do
       it 'fails to return PAT because no PAT exists with this id' do
         get api(invalid_path, admin_user)
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

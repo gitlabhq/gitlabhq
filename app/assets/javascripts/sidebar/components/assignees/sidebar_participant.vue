@@ -1,5 +1,5 @@
 <script>
-import { GlAvatarLabeled, GlAvatarLink, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
 import { s__, sprintf } from '~/locale';
 
@@ -11,7 +11,6 @@ const AVAILABILITY_STATUS = {
 export default {
   components: {
     GlAvatarLabeled,
-    GlAvatarLink,
     GlIcon,
   },
   props: {
@@ -47,23 +46,21 @@ export default {
 </script>
 
 <template>
-  <gl-avatar-link>
-    <gl-avatar-labeled
-      :size="32"
-      :label="userLabel"
-      :sub-label="`@${user.username}`"
-      :src="user.avatarUrl || user.avatar || user.avatar_url"
-      class="gl-align-items-center gl-relative"
-    >
-      <template #meta>
-        <gl-icon
-          v-if="hasCannotMergeIcon"
-          name="warning-solid"
-          aria-hidden="true"
-          class="merge-icon"
-          :size="12"
-        />
-      </template>
-    </gl-avatar-labeled>
-  </gl-avatar-link>
+  <gl-avatar-labeled
+    :size="32"
+    :label="userLabel"
+    :sub-label="`@${user.username}`"
+    :src="user.avatarUrl || user.avatar || user.avatar_url"
+    class="gl-align-items-center gl-relative sidebar-participant"
+  >
+    <template #meta>
+      <gl-icon
+        v-if="hasCannotMergeIcon"
+        name="warning-solid"
+        aria-hidden="true"
+        class="merge-icon gl-left-6 gl-bottom-0"
+        :size="12"
+      />
+    </template>
+  </gl-avatar-labeled>
 </template>

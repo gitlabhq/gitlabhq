@@ -39,7 +39,7 @@ GET /users
 ]
 ```
 
-You can also search for users by name, username or public email by using `?search=`. For example. `/users?search=John`.
+You can also search for users by name, username, or public email by using `?search=`. For example. `/users?search=John`.
 
 In addition, you can lookup users by username:
 
@@ -425,9 +425,10 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## User creation
+## User creation **(FREE SELF)**
 
-> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - Ability to create an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
 Creates a new user. Note only administrators can create new
 users. Either `password`, `reset_password`, or `force_random_password`
@@ -452,7 +453,8 @@ Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       | User is an administrator - true or false (default)                                                                                                                 |
+| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false.
+| `auditor` **(PREMIUM)**               | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.                                                                                                      |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
@@ -482,9 +484,10 @@ Parameters:
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
-## User modification
+## User modification **(FREE SELF)**
 
-> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
 Modifies an existing user. Only administrators can change attributes of a user.
 
@@ -496,7 +499,8 @@ Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       | User is an administrator - true or false (default)                                                                                                                 |
+| `admin`                              | No       |User is an administrator. Valid values are `true` or `false`. Defaults to false.
+| `auditor` **(PREMIUM)**              | No       |  User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default)                                                                                                           |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
@@ -531,7 +535,7 @@ Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate.
 For example, when renaming the email address to some existing one.
 
-## Delete authentication identity from user
+## Delete authentication identity from user **(FREE SELF)**
 
 Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
 
@@ -546,7 +550,7 @@ Parameters:
 | `id`       | integer | yes      | ID of a user       |
 | `provider` | string  | yes      | External provider name |
 
-## User deletion
+## User deletion **(FREE SELF)**
 
 Deletes a user. Available only for administrators.
 This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
@@ -753,7 +757,7 @@ PUT /user/status
 | Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
 | -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `emoji`              | string | no       | Name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message`            | string | no       | Message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
+| `message`            | string | no       | Message to set as a status. It can also contain emoji codes. Cannot exceed 100 characters.                                                                                                                                                      |
 | `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
 
 When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
@@ -1069,7 +1073,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add SSH key for user
+## Add SSH key for user **(FREE SELF)**
 
 Create new key owned by specified user. Available only for administrator.
 
@@ -1104,7 +1108,7 @@ Parameters:
 |-----------|---------|----------|-------------|
 | `key_id`  | integer | yes      | SSH key ID  |
 
-## Delete SSH key for given user
+## Delete SSH key for given user **(FREE SELF)**
 
 Deletes key owned by a specified user. Available only for administrator.
 
@@ -1220,7 +1224,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
-Returns `204 No Content` on success, or `404 Not found` if the key cannot be found.
+Returns `204 No Content` on success or `404 Not Found` if the key cannot be found.
 
 ## List all GPG keys for given user
 
@@ -1282,7 +1286,7 @@ Example response:
   }
 ```
 
-## Add a GPG key for a given user
+## Add a GPG key for a given user **(FREE SELF)**
 
 Create new GPG key owned by the specified user. Available only for administrator.
 
@@ -1314,7 +1318,7 @@ Example response:
 ]
 ```
 
-## Delete a GPG key for a given user
+## Delete a GPG key for a given user **(FREE SELF)**
 
 Delete a GPG key owned by a specified user. Available only for administrator.
 
@@ -1364,7 +1368,7 @@ Parameters:
 
 - **none**
 
-## List emails for user
+## List emails for user **(FREE SELF)**
 
 Get a list of a specified user's emails. Available only for administrator
 
@@ -1439,7 +1443,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add email for user
+## Add email for user **(FREE SELF)**
 
 Create new email owned by specified user. Available only for administrator
 
@@ -1470,7 +1474,7 @@ Parameters:
 |------------|---------|----------|-------------|
 | `email_id` | integer | yes      | Email ID    |
 
-## Delete email for given user
+## Delete email for given user **(FREE SELF)**
 
 Deletes email owned by a specified user. Available only for administrator.
 
@@ -1485,7 +1489,7 @@ Parameters:
 | `id`       | integer | yes      | ID of specified user |
 | `email_id` | integer | yes      | Email ID             |
 
-## Block user
+## Block user **(FREE SELF)**
 
 Blocks the specified user. Available only for administrator.
 
@@ -1507,7 +1511,7 @@ Returns:
   - A user that is blocked through LDAP.
   - An internal user.
 
-## Unblock user
+## Unblock user **(FREE SELF)**
 
 Unblocks the specified user. Available only for administrator.
 
@@ -1524,7 +1528,7 @@ Parameters:
 Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
-## Deactivate user
+## Deactivate user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
@@ -1549,7 +1553,7 @@ Returns:
   - That has any activity in past 90 days. These users cannot be deactivated.
   - That is internal.
 
-## Activate user
+## Activate user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
@@ -1571,7 +1575,7 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
-## Ban user
+## Ban user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
@@ -1591,7 +1595,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to ban a user that is not active.
 
-## Unban user
+## Unban user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
@@ -1615,7 +1619,7 @@ Returns:
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
-## Get all impersonation tokens of a user
+## Get all impersonation tokens of a user **(FREE SELF)**
 
 Requires administrator access.
 
@@ -1670,7 +1674,7 @@ Example response:
 ]
 ```
 
-## Approve user
+## Approve user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263107) in GitLab 13.7.
 
@@ -1711,7 +1715,7 @@ Example Responses:
 { "message": "The user you are trying to approve is not pending approval" }
 ```
 
-## Reject user
+## Reject user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
 
@@ -1750,7 +1754,7 @@ Example Responses:
 { "message": "User does not have a pending request" }
 ```
 
-## Get an impersonation token of a user
+## Get an impersonation token of a user **(FREE SELF)**
 
 > Requires administrators permissions.
 
@@ -1789,7 +1793,7 @@ Example response:
 }
 ```
 
-## Create an impersonation token
+## Create an impersonation token **(FREE SELF)**
 
 Requires administrator access. Token values are returned once. Make sure you save it because you can't access
 it again.
@@ -1834,7 +1838,7 @@ Example response:
 }
 ```
 
-## Revoke an impersonation token
+## Revoke an impersonation token **(FREE SELF)**
 
 Requires administrator access.
 
@@ -1898,7 +1902,7 @@ Example response:
 }
 ```
 
-## Get user activities
+## Get user activities **(FREE SELF)**
 
 Pre-requisite:
 
@@ -1955,7 +1959,7 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## User memberships
+## User memberships **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 
@@ -1964,7 +1968,7 @@ Pre-requisite:
 - You must be an administrator.
 
 Lists all projects and groups a user is a member of.
-It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.
+It returns the `source_id`, `source_name`, `source_type`, and `access_level` of a membership.
 Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, are not included.
 Access levels are represented by an integer value. For more details, read about the meaning of [access level values](access_requests.md#valid-access-levels).
 
@@ -2009,7 +2013,7 @@ Example response:
 ]
 ```
 
-## Disable two factor authentication
+## Disable two factor authentication **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295260) in GitLab 15.2.
 

@@ -3,7 +3,7 @@
   announcement_date: "2022-01-22"
   removal_milestone: "15.0"
   removal_date: "2022-05-22"
-  breaking_change: false
+  breaking_change: true
   body: |
      Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
      `artifacts:reports:cobertura` keyword will be replaced by

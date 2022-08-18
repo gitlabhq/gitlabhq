@@ -27,6 +27,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
   end
 
   let(:exportable_path) { 'project' }
+  let(:logger) { Gitlab::Export::Logger.build }
   let(:json_writer) { instance_double('Gitlab::ImportExport::Json::LegacyWriter') }
   let(:hash) { { name: exportable.name, description: exportable.description }.stringify_keys }
   let(:include) { [] }
@@ -42,7 +43,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
   end
 
   subject do
-    described_class.new(exportable, relations_schema, json_writer, exportable_path: exportable_path)
+    described_class.new(exportable, relations_schema, json_writer, exportable_path: exportable_path, logger: logger)
   end
 
   describe '#execute' do
@@ -71,6 +72,21 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
         expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, array_including(issue.to_json))
 
         subject.execute
+      end
+
+      it 'logs the relation name and the number of records to export' do
+        allow(json_writer).to receive(:write_relation_array)
+        allow(logger).to receive(:info)
+
+        subject.execute
+
+        expect(logger).to have_received(:info).with(
+          importer: 'Import/Export',
+          message: "Exporting issues relation. Number of records to export: 16",
+          project_id: exportable.id,
+          project_name: exportable.name,
+          project_path: exportable.full_path
+        )
       end
 
       context 'default relation ordering' do
@@ -138,6 +154,21 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
 
         subject.execute
       end
+
+      it 'logs the relation name' do
+        allow(json_writer).to receive(:write_relation)
+        allow(logger).to receive(:info)
+
+        subject.execute
+
+        expect(logger).to have_received(:info).with(
+          importer: 'Import/Export',
+          message: 'Exporting group relation',
+          project_id: exportable.id,
+          project_name: exportable.name,
+          project_path: exportable.full_path
+        )
+      end
     end
 
     context 'with array relation' do
@@ -154,6 +185,21 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
         expect(json_writer).to receive(:write_relation_array).with(exportable_path, :project_members, array_including(project_member.to_json))
 
         subject.execute
+      end
+
+      it 'logs the relation name and the number of records to export' do
+        allow(json_writer).to receive(:write_relation_array)
+        allow(logger).to receive(:info)
+
+        subject.execute
+
+        expect(logger).to have_received(:info).with(
+          importer: 'Import/Export',
+          message: 'Exporting project_members relation. Number of records to export: 1',
+          project_id: exportable.id,
+          project_name: exportable.name,
+          project_path: exportable.full_path
+        )
       end
     end
 

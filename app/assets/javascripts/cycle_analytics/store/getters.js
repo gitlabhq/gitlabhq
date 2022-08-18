@@ -49,12 +49,6 @@ const dateRangeParams = ({ createdAfter, createdBefore }) => ({
   created_before: createdBefore ? dateFormat(createdBefore, dateFormats.isoDate) : null,
 });
 
-export const legacyFilterParams = ({ daysInPast }) => {
-  return {
-    'cycle_analytics[start_date]': daysInPast,
-  };
-};
-
 export const filterParams = (state) => {
   return {
     ...filterBarParams(state),

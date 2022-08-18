@@ -37,7 +37,7 @@ To link one issue to another:
    - **[is blocked by](#blocking-issues)**
 1. Input the issue number or paste in the full URL of the issue.
 
-   ![Adding a related issue](img/related_issues_add_v12_8.png)
+   ![Adding a related issue](img/related_issues_add_v15_3.png)
 
    Issues of the same project can be specified just by the reference number.
    Issues from a different project require additional information like the
@@ -54,7 +54,7 @@ To link one issue to another:
 When you have finished adding all linked issues, you can see
 them categorized so their relationships can be better understood visually.
 
-![Related issue block](img/related_issue_block_v12_8.png)
+![Related issue block](img/related_issue_block_v15_3.png)
 
 You can also add a linked issue from a commit message or the description in another issue or MR.
 [Learn more about crosslinking issues](crosslinking_issues.md).
@@ -66,7 +66,7 @@ right-side of each issue token to remove.
 
 Due to the bi-directional relationship, the relationship no longer appears in either issue.
 
-![Removing a related issue](img/related_issues_remove_v12_8.png)
+![Removing a related issue](img/related_issues_remove_v15_3.png)
 
 Access our [permissions](../../permissions.md) page for more information.
 

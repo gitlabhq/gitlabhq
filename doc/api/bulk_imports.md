@@ -27,7 +27,8 @@ POST /bulk_imports
 | `entities`                        | Array  | yes      | List of entities to import. |
 | `entities[source_type]`           | String | yes      | Source entity type (only `group_entity` is supported). |
 | `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. |
-| `entities[destination_name]`      | String | yes      | Destination slug for the entity. |
+| `entities[destination_name]`      | String | yes      | Deprecated: Use :destination_slug instead. Destination slug for the entity. |
+| `entities[destination_slug]`      | String | yes      | Destination slug for the entity. |
 | `entities[destination_namespace]` | String | no       | Destination namespace for the entity. |
 
 ```shell
@@ -41,7 +42,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
       {
         "source_full_path": "source/full/path",
         "source_type": "group_entity",
-        "destination_name": "destination_slug",
+        "destination_slug": "destination_slug",
         "destination_namespace": "destination/namespace/path"
       }
     ]
@@ -126,7 +127,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "bulk_import_id": 1,
         "status": "finished",
         "source_full_path": "source_group",
-        "destination_name": "destination_slug",
+        "destination_slug": "destination_slug",
         "destination_namespace": "destination_path",
         "parent_id": null,
         "namespace_id": 1,
@@ -140,7 +141,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "bulk_import_id": 2,
         "status": "failed",
         "source_full_path": "another_group",
-        "destination_name": "another_slug",
+        "destination_slug": "another_slug",
         "destination_namespace": "another_namespace",
         "parent_id": null,
         "namespace_id": null,

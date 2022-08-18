@@ -296,6 +296,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3767) in GitLab 14.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4054) in GitLab 14.6, support for dry-run mode.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from Praefect's database.
 
 The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster, and all state associated with a given repository including:
 
@@ -310,6 +311,9 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 - Replace `<virtual-storage>` with the name of the virtual storage containing the repository.
 - Replace `<repository>` with the relative path of the repository to remove.
+- In GitLab 15.3 and later, add `-db-only` to remove the Praefect database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
+  protect on-disk repository data from deletion when a valid repository is accidentally specified. If the database entry is accidentally deleted, re-track the repository with the
+  [`track-repository` command](#manually-track-repositories).
 - In GitLab 14.6 and later, add `-apply` to run the command outside of dry-run mode and remove the repository. For example:
 
   ```shell

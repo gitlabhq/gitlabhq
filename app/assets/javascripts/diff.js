@@ -175,6 +175,7 @@ export default class Diff {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   formatElementToObject = (element) => {
     const key = element.attributes['data-file-hash'].value;
     const name = element.attributes['data-diff-toggle-entity'].value;
@@ -192,6 +193,7 @@ export default class Diff {
     return $elements.toArray().map(diff.formatElementToObject).reduce(merge);
   };
 
+  // eslint-disable-next-line class-methods-use-this
   showRawViewer = (fileHash, elements) => {
     if (elements === undefined) return;
 
@@ -202,6 +204,7 @@ export default class Diff {
     elements.rawViewer.classList.remove('hidden');
   };
 
+  // eslint-disable-next-line class-methods-use-this
   showRenderedViewer = (fileHash, elements) => {
     if (elements === undefined) return;
 

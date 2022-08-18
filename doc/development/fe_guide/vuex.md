@@ -165,7 +165,7 @@ Instead of creating an mutation to toggle the loading state, we should:
 
 As a result, we can dispatch the `fetchNamespace` action from the component and it is responsible to commit  `REQUEST_NAMESPACE`, `RECEIVE_NAMESPACE_SUCCESS` and `RECEIVE_NAMESPACE_ERROR` mutations.
 
-> Previously, we were dispatching actions from the `fetchNamespace` action instead of committing mutation, so please don't be confused if you find a different pattern in the older parts of the codebase. However, we encourage leveraging a new pattern whenever you write new Vuex stores.
+> Previously, we were dispatching actions from the `fetchNamespace` action instead of committing mutation, so don't be confused if you find a different pattern in the older parts of the codebase. However, we encourage leveraging a new pattern whenever you write new Vuex stores.
 
 By following this pattern we guarantee:
 
@@ -364,8 +364,8 @@ export default initialState => ({
 
 We made the conscious decision to avoid this pattern to improve the ability to
 discover and search our frontend codebase. The same applies
-when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in [this
-discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
+when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in 
+[this discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
 
 > Consider a `someStateKey` is being used in the store state. You _may_ not be
 > able to grep for it directly if it was provided only by `el.dataset`. Instead,

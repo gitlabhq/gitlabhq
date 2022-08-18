@@ -33,11 +33,11 @@ describe('DashboardsDropdown', () => {
     });
   }
 
-  const findItems = () => wrapper.findAll(GlDropdownItem);
-  const findItemAt = (i) => wrapper.findAll(GlDropdownItem).at(i);
-  const findSearchInput = () => wrapper.find({ ref: 'monitorDashboardsDropdownSearch' });
-  const findNoItemsMsg = () => wrapper.find({ ref: 'monitorDashboardsDropdownMsg' });
-  const findStarredListDivider = () => wrapper.find({ ref: 'starredListDivider' });
+  const findItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findItemAt = (i) => wrapper.findAllComponents(GlDropdownItem).at(i);
+  const findSearchInput = () => wrapper.findComponent({ ref: 'monitorDashboardsDropdownSearch' });
+  const findNoItemsMsg = () => wrapper.findComponent({ ref: 'monitorDashboardsDropdownMsg' });
+  const findStarredListDivider = () => wrapper.findComponent({ ref: 'starredListDivider' });
   // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
   // eslint-disable-next-line no-restricted-syntax
   const setSearchTerm = (searchTerm) => wrapper.setData({ searchTerm });
@@ -127,7 +127,7 @@ describe('DashboardsDropdown', () => {
     });
 
     it('displays a star icon', () => {
-      const star = findItemAt(0).find(GlIcon);
+      const star = findItemAt(0).findComponent(GlIcon);
       expect(star.exists()).toBe(true);
       expect(star.attributes('name')).toBe('star');
     });
@@ -148,7 +148,7 @@ describe('DashboardsDropdown', () => {
     });
 
     it('displays no star icon', () => {
-      const star = findItemAt(0).find(GlIcon);
+      const star = findItemAt(0).findComponent(GlIcon);
       expect(star.exists()).toBe(false);
     });
 

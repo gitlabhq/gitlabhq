@@ -129,8 +129,8 @@ sudo apt-get install libkrb5-dev
 
 ### Git
 
-From GitLab 13.6, we recommend you use the [Git version provided by
-Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
+From GitLab 13.6, we recommend you use the 
+[Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 
 - Is always at the version required by GitLab.
@@ -239,8 +239,8 @@ sudo make install
 
 GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
-Linux. You can find downloads for other platforms at the [Go download
-page](https://go.dev/dl).
+Linux. You can find downloads for other platforms at the 
+[Go download page](https://go.dev/dl).
 
 ```shell
 # Remove former Go installation folder
@@ -555,19 +555,6 @@ sudo -u git -H cp config/puma.rb.example config/puma.rb
 # You should scale Puma workers and threads based on the number of CPU
 # cores you have available. You can get that number via the `nproc` command.
 sudo -u git -H editor config/puma.rb
-
-# Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
-sudo -u git -H git config --global gc.auto 0
-
-# Enable packfile bitmaps
-sudo -u git -H git config --global repack.writeBitmaps true
-
-# Enable push options
-# Refer to https://docs.gitlab.com/ee/user/project/push_options.html for more information.
-sudo -u git -H git config --global receive.advertisePushOptions true
-
-# Enable fsyncObjectFiles to reduce risk of repository corruption if the server crashes
-sudo -u git -H git config --global core.fsyncObjectFiles true
 
 # Configure Redis connection settings
 sudo -u git -H cp config/resque.yml.example config/resque.yml
@@ -1064,7 +1051,7 @@ See the [OmniAuth integration documentation](../integration/omniauth.md).
 ### Build your projects
 
 GitLab can build your projects. To enable that feature, you need runners to do that for you.
-See the [GitLab Runner section](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/#gitlab-runner) to install it.
+See the [GitLab Runner section](https://docs.gitlab.com/runner/) to install it.
 
 ### Adding your Trusted Proxies
 

@@ -113,7 +113,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyWorker do
   end
 
   describe '#remaining_work_count' do
-    subject { worker.remaining_work_count}
+    subject { worker.remaining_work_count }
 
     context 'with no policies' do
       it { is_expected.to eq(0) }

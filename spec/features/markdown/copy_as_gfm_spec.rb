@@ -109,10 +109,24 @@ RSpec.describe 'Copy as GFM', :js do
         <<~GFM,
           * [ ] Unchecked task
           * [x] Checked task
+          * [~] Inapplicable task
+          * [~] Inapplicable task with ~~del~~ and <s>strike</s> embedded
         GFM
-        <<~GFM
+        <<~GFM,
           1. [ ] Unchecked ordered task
           1. [x] Checked ordered task
+          1. [~] Inapplicable ordered task
+          1. [~] Inapplicable ordered task with ~~del~~ and <s>strike</s> embedded
+        GFM
+        <<~GFM
+          * [ ] Unchecked loose list task
+          * [x] Checked loose list task
+          * [~] Inapplicable loose list task
+
+            With a paragraph
+          * [~] Inapplicable loose list task with ~~del~~ and <s>strike</s> embedded
+
+            With a paragraph
         GFM
       )
 
@@ -605,7 +619,8 @@ RSpec.describe 'Copy as GFM', :js do
         '###### Heading',
         '**Bold**',
         '*Italics*',
-        '~~Strikethrough~~',
+        '~~Strikethrough (del)~~',
+        '<s>Strikethrough</s>',
         '---',
         # table
         <<~GFM,

@@ -5,7 +5,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsTab from '~/issues/show/components/incidents/timeline_events_tab.vue';
 import IncidentTimelineEventsList from '~/issues/show/components/incidents/timeline_events_list.vue';
-import IncidentTimelineEventForm from '~/issues/show/components/incidents/timeline_events_form.vue';
+import CreateTimelineEvent from '~/issues/show/components/incidents/create_timeline_event.vue';
 import timelineEventsQuery from '~/issues/show/components/incidents/graphql/queries/get_timeline_events.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/flash';
@@ -53,7 +53,7 @@ describe('TimelineEventsTab', () => {
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findTimelineEventsList = () => wrapper.findComponent(IncidentTimelineEventsList);
-  const findTimelineEventForm = () => wrapper.findComponent(IncidentTimelineEventForm);
+  const findCreateTimelineEvent = () => wrapper.findComponent(CreateTimelineEvent);
   const findAddEventButton = () => wrapper.findByText(timelineTabI18n.addEventButton);
 
   describe('Timeline events tab', () => {
@@ -143,18 +143,18 @@ describe('TimelineEventsTab', () => {
     });
 
     it('should not show a form by default', () => {
-      expect(findTimelineEventForm().isVisible()).toBe(false);
+      expect(findCreateTimelineEvent().isVisible()).toBe(false);
     });
 
     it('should show a form when button is clicked', async () => {
       await findAddEventButton().trigger('click');
 
-      expect(findTimelineEventForm().isVisible()).toBe(true);
+      expect(findCreateTimelineEvent().isVisible()).toBe(true);
     });
 
     it('should clear the form when button is clicked', async () => {
       const mockClear = jest.fn();
-      wrapper.vm.$refs.eventForm.clear = mockClear;
+      wrapper.vm.$refs.createEventForm.clearForm = mockClear;
 
       await findAddEventButton().trigger('click');
 
@@ -165,9 +165,9 @@ describe('TimelineEventsTab', () => {
       // open the form
       await findAddEventButton().trigger('click');
 
-      await findTimelineEventForm().vm.$emit('hide-incident-timeline-event-form');
+      await findCreateTimelineEvent().vm.$emit('hide-new-timeline-events-form');
 
-      expect(findTimelineEventForm().isVisible()).toBe(false);
+      expect(findCreateTimelineEvent().isVisible()).toBe(false);
     });
   });
 });

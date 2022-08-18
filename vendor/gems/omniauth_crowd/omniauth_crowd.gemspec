@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency(%q<rake>, [">= 0"])
   gem.add_development_dependency(%q<rack-test>, [">= 0"])
   gem.add_development_dependency(%q<rexml>, ["~> 3.2.5"])
-  gem.add_development_dependency(%q<rspec>, ["~> 3.0.0"])
+  gem.add_development_dependency(%q<rspec>, [">= 3.4"])
   gem.add_development_dependency(%q<webmock>, ["~> 3.0.0"])
   gem.add_development_dependency(%q<bundler>, ["> 1.0.0"])
 end

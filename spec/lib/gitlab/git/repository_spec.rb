@@ -1252,8 +1252,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#raw_changes_between' do
-    let(:old_rev) { }
-    let(:new_rev) { }
+    let(:old_rev) {}
+    let(:new_rev) {}
     let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
     context 'initial commit' do
@@ -1837,6 +1837,47 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#find_tag' do
+    it 'returns a tag' do
+      tag = repository.find_tag('v1.0.0')
+
+      expect(tag).to be_a_kind_of(Gitlab::Git::Tag)
+      expect(tag.name).to eq('v1.0.0')
+    end
+
+    shared_examples 'a nonexistent tag' do
+      it 'returns nil' do
+        expect(repository.find_tag('this-is-garbage')).to be_nil
+      end
+    end
+
+    context 'when asking for a non-existent tag' do
+      it_behaves_like 'a nonexistent tag'
+    end
+
+    context 'when Gitaly returns Internal error' do
+      before do
+        expect(repository.gitaly_ref_client)
+          .to receive(:find_tag)
+          .and_raise(GRPC::Internal, "tag not found")
+      end
+
+      it_behaves_like 'a nonexistent tag'
+    end
+
+    context 'when Gitaly returns tag_not_found error' do
+      before do
+        expect(repository.gitaly_ref_client)
+          .to receive(:find_tag)
+          .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
+                                        "tag was not found",
+                                        Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
+      end
+
+      it_behaves_like 'a nonexistent tag'
+    end
+  end
+
   describe '#languages' do
     it 'returns exactly the expected results' do
       languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
@@ -2017,17 +2058,14 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#set_full_path' do
     before do
-      repository_rugged.config["gitlab.fullpath"] = repository_path
+      repository.set_full_path(full_path: repository_path)
     end
 
     context 'is given a path' do
       it 'writes it to disk' do
         repository.set_full_path(full_path: "not-the/real-path.git")
 
-        config = File.read(File.join(repository_path, "config"))
-
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = not-the/real-path.git")
+        expect(repository.full_path).to eq('not-the/real-path.git')
       end
     end
 
@@ -2035,15 +2073,12 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'does not write it to disk' do
         repository.set_full_path(full_path: "")
 
-        config = File.read(File.join(repository_path, "config"))
-
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = #{repository_path}")
+        expect(repository.full_path).to eq(repository_path)
       end
     end
 
     context 'repository does not exist' do
-      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+      it 'raises NoRepository and does not call SetFullPath' do
         repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
 
         expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
@@ -2052,6 +2087,18 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           repository.set_full_path(full_path: 'foo/bar.git')
         end.to raise_error(Gitlab::Git::Repository::NoRepository)
       end
+    end
+  end
+
+  describe '#full_path' do
+    let(:full_path) { 'some/path' }
+
+    before do
+      repository.set_full_path(full_path: full_path)
+    end
+
+    it 'returns the full path' do
+      expect(repository.full_path).to eq(full_path)
     end
   end
 
@@ -2468,7 +2515,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#rename' do
-    let(:project) { create(:project, :repository)}
+    let(:project) { create(:project, :repository) }
     let(:repository) { project.repository }
 
     it 'moves the repository' do

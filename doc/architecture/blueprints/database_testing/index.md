@@ -127,7 +127,7 @@ An alternative approach we have discussed and abandoned is to "scrub" and anonym
 
 <!-- vale gitlab.Spelling = NO -->
 
-This effort is owned and driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/database/) with support from the [GitLab.com Reliability Datastores](https://about.gitlab.com/handbook/engineering/infrastructure/team/reliability/) team.
+This effort is owned and driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/) with support from the [GitLab.com Reliability Datastores](https://about.gitlab.com/handbook/engineering/infrastructure/team/reliability/) team.
 
 | Role                         | Who
 |------------------------------|-------------------------|

@@ -18,6 +18,7 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     context 'for a track+series email' do
       it { is_expected.to validate_presence_of(:track) }
       it { is_expected.to validate_presence_of(:series) }
+
       it {
         is_expected.to validate_uniqueness_of(:user_id)
           .scoped_to([:track, :series]).with_message('track series email has already been sent')
@@ -30,10 +31,12 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
       it { is_expected.to validate_presence_of(:campaign) }
       it { is_expected.not_to validate_presence_of(:track) }
       it { is_expected.not_to validate_presence_of(:series) }
+
       it {
         is_expected.to validate_uniqueness_of(:user_id)
           .scoped_to(:campaign).with_message('campaign email has already been sent')
       }
+
       it { is_expected.to validate_inclusion_of(:campaign).in_array(described_class::CAMPAIGNS) }
     end
 

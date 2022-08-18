@@ -21,7 +21,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
       end
 
       context 'with a stale password' do
-        let(:partial_password_hash) { build(:user, password: 'some_old_password').authenticatable_salt }
+        let(:partial_password_hash) { build(:user, password: User.random_password).authenticatable_salt }
         let(:session_hash) { { 'warden.user.user.key' => [[user.id], partial_password_hash] } }
 
         it 'sets current_user to nil' do

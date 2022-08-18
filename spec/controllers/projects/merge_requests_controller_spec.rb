@@ -1894,15 +1894,12 @@ RSpec.describe Projects::MergeRequestsController do
         # First run to insert test data from lets, which does take up some 30 queries
         get_ci_environments_status
 
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { get_ci_environments_status }.count
+        control_count = ActiveRecord::QueryRecorder.new { get_ci_environments_status }
 
         environment2 = create(:environment, project: forked)
         create(:deployment, :succeed, environment: environment2, sha: sha, ref: 'master', deployable: build)
 
-        # TODO address the last 3 queries
-        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63952 (3 queries)
-        leeway = 3
-        expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count + leeway)
+        expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count)
       end
     end
 
@@ -2039,25 +2036,50 @@ RSpec.describe Projects::MergeRequestsController do
   end
 
   describe 'POST #rebase' do
+    let(:other_params) { {} }
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: merge_request }.merge(other_params) }
+
     def post_rebase
-      post :rebase, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
+      post :rebase, params: params
     end
 
     before do
       allow(RebaseWorker).to receive(:with_status).and_return(RebaseWorker)
     end
 
-    def expect_rebase_worker_for(user)
-      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, false)
+    def expect_rebase_worker_for(user, skip_ci: false)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, skip_ci)
     end
 
     context 'successfully' do
-      it 'enqeues a RebaseWorker' do
-        expect_rebase_worker_for(user)
+      shared_examples 'successful rebase scheduler' do
+        it 'enqueues a RebaseWorker' do
+          expect_rebase_worker_for(user, skip_ci: skip_ci)
 
-        post_rebase
+          post_rebase
 
-        expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with skip_ci not specified' do
+        let(:skip_ci) { false }
+
+        it_behaves_like 'successful rebase scheduler'
+      end
+
+      context 'with skip_ci enabled' do
+        let(:skip_ci) { true }
+        let(:other_params) { { skip_ci: 'true' } }
+
+        it_behaves_like 'successful rebase scheduler'
+      end
+
+      context 'with skip_ci disabled' do
+        let(:skip_ci) { false }
+        let(:other_params) { { skip_ci: 'false' } }
+
+        it_behaves_like 'successful rebase scheduler'
       end
     end
 

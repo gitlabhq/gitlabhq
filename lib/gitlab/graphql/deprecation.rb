@@ -21,8 +21,18 @@ module Gitlab
       validate :milestone_is_string
       validate :reason_known_or_string
 
-      def self.parse(options)
-        new(**options) if options
+      def self.parse(alpha: nil, deprecated: nil)
+        options = alpha || deprecated
+        return unless options
+
+        if alpha
+          raise ArgumentError, '`alpha` and `deprecated` arguments cannot be passed at the same time' \
+            if deprecated
+
+          options[:reason] = :alpha
+        end
+
+        new(**options)
       end
 
       def initialize(reason: nil, milestone: nil, replacement: nil)
@@ -84,6 +94,10 @@ module Gitlab
         ].compact.join(' ')
       end
 
+      def alpha?
+        reason == REASON_ALPHA
+      end
+
       private
 
       attr_reader :reason, :milestone, :replacement
@@ -117,7 +131,7 @@ module Gitlab
       # Retruns 'Introduced in <milestone>' for :alpha deprecations.
       # Formatted to markdown or plain format.
       def changed_in_milestone(format: :plain)
-        verb = if reason == REASON_ALPHA
+        verb = if alpha?
                  'Introduced'
                else
                  'Deprecated'

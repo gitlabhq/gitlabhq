@@ -59,14 +59,43 @@ module Gitlab
           auth_hash['info']
         end
 
-        def get_info(key)
-          value = info[key]
+        def coerce_utf8(value)
           value.is_a?(String) ? Gitlab::Utils.force_utf8(value) : value
+        end
+
+        def get_info(key)
+          coerce_utf8(info[key])
+        end
+
+        def provider_config
+          Gitlab::Auth::OAuth::Provider.config_for(@provider) || {}
+        end
+
+        def provider_args
+          @provider_args ||= provider_config['args'].presence || {}
+        end
+
+        def get_from_auth_hash_or_info(key)
+          coerce_utf8(auth_hash[key]) || get_info(key)
+        end
+
+        # Allow for configuring a custom username claim per provider from
+        # the auth hash or use the canonical username or nickname fields
+        def gitlab_username_claim
+          provider_args.dig('gitlab_username_claim')&.to_sym
+        end
+
+        def username_claims
+          [gitlab_username_claim, :username, :nickname].compact
+        end
+
+        def get_username
+          username_claims.map { |claim| get_from_auth_hash_or_info(claim) }.find { |name| name.presence }
         end
 
         def username_and_email
           @username_and_email ||= begin
-            username  = get_info(:username).presence || get_info(:nickname).presence
+            username  = get_username
             email     = get_info(:email).presence
 
             username ||= generate_username(email)             if email

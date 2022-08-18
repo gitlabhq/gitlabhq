@@ -7,7 +7,7 @@ RSpec.describe Gitlab::RackAttack::InstrumentedCacheStore do
 
   let(:store) { ::ActiveSupport::Cache::NullStore.new }
 
-  subject { described_class.new(upstream_store: store)}
+  subject { described_class.new(upstream_store: store) }
 
   where(:operation, :params, :test_proc) do
     :fetch | [:key] | ->(s) { s.fetch(:key) }

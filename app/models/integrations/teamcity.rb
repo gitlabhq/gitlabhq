@@ -67,11 +67,11 @@ module Integrations
     end
 
     def build_page(sha, ref)
-      with_reactive_cache(sha, ref) {|cached| cached[:build_page] }
+      with_reactive_cache(sha, ref) { |cached| cached[:build_page] }
     end
 
     def commit_status(sha, ref)
-      with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+      with_reactive_cache(sha, ref) { |cached| cached[:commit_status] }
     end
 
     def calculate_reactive_cache(sha, ref)

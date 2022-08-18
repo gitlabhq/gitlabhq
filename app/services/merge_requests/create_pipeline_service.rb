@@ -50,7 +50,8 @@ module MergeRequests
     end
 
     def can_create_pipeline_in_target_project?(merge_request)
-      can?(current_user, :create_pipeline, merge_request.target_project) &&
+      merge_request.target_project.ci_allow_fork_pipelines_to_run_in_parent_project? &&
+        can?(current_user, :create_pipeline, merge_request.target_project) &&
         can_update_source_branch_in_target_project?(merge_request)
     end
 

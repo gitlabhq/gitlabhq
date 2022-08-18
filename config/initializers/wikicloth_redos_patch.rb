@@ -120,7 +120,7 @@ module WikiCloth
           key = params[0].to_s.strip
           key_options = params[1..].collect { |p| p.is_a?(Hash) ? { :name => p[:name].strip, :value => p[:value].strip } : p.strip }
           key_options ||= []
-          key_digest = Digest::SHA256.hexdigest(key_options.to_a.sort {|x,y| (x.is_a?(Hash) ? x[:name] : x) <=> (y.is_a?(Hash) ? y[:name] : y) }.inspect)
+          key_digest = Digest::SHA256.hexdigest(key_options.to_a.sort { |x,y| (x.is_a?(Hash) ? x[:name] : x) <=> (y.is_a?(Hash) ? y[:name] : y) }.inspect)
 
           return @options[:params][key] if @options[:params].has_key?(key)
           # if we have a valid cache fragment use it

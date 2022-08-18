@@ -1,5 +1,6 @@
-.js-group-name-and-path{ data: group_name_and_path_app_data(@group) }
+.js-group-name-and-path{ data: group_name_and_path_app_data.merge(new_subgroup: local_assigns[:new_subgroup].to_s) }
   = f.hidden_field :name, data: { js_name: 'name' }
   = f.hidden_field :path, maxlength: ::Namespace::URL_MAX_LENGTH, pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, data: { js_name: 'path' }
   = f.hidden_field :parent_id, value: @group.parent&.id, data: { js_name: 'parentId' }
+  = f.hidden_field :parent_full_path, value: @group.parent&.full_path, data: { js_name: 'parentFullPath' }
   = f.hidden_field :id, data: { js_name: 'groupId' }

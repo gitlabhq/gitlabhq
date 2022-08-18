@@ -112,8 +112,8 @@ RSpec.describe 'Dashboard Merge Requests' do
     end
 
     it 'includes assigned and reviewers in badge' do
-      within("span[aria-label='#{n_("%d merge request", "%d merge requests", 0) % 0}']") do
-        expect(page).to have_content('0')
+      within("span[aria-label='#{n_("%d merge request", "%d merge requests", 3) % 3}']") do
+        expect(page).to have_content('3')
       end
 
       find('.dashboard-shortcuts-merge_requests').click

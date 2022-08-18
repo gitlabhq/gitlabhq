@@ -1,0 +1,9 @@
+---
+table_name: namespace_details
+classes:
+- NamespaceDetail
+feature_categories:
+- subgroups
+description: Used to store details for namespaces
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958
+milestone: '15.3'

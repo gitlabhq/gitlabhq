@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.Possessive
+# Error: gitlab.Possessive
 #
 # The word GitLab should not be used in the possessive form.
 #

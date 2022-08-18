@@ -359,7 +359,7 @@ RSpec.describe Group do
     context 'parent is updated' do
       let(:new_parent) { create(:group) }
 
-      subject {group.update!(parent: new_parent, name: 'new name') }
+      subject { group.update!(parent: new_parent, name: 'new name') }
 
       it_behaves_like 'update on column', :traversal_ids
     end
@@ -803,6 +803,20 @@ RSpec.describe Group do
         result = described_class.for_authorized_project_members([user1.id, user2.id])
 
         expect(result).to match_array([internal_group])
+      end
+    end
+
+    describe '.project_creation_allowed' do
+      let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_4) { create(:group, project_creation_level: nil) }
+
+      it 'only includes groups where project creation is allowed' do
+        result = described_class.project_creation_allowed
+
+        expect(result).to include(group_2, group_3, group_4)
+        expect(result).not_to include(group_1)
       end
     end
 
@@ -2603,7 +2617,11 @@ RSpec.describe Group do
 
         it 'does not enable shared runners' do
           expect do
-            subject rescue nil
+            begin
+              subject
+            rescue StandardError
+              nil
+            end
 
             parent.reload
             group.reload
@@ -2704,7 +2722,11 @@ RSpec.describe Group do
 
         it 'does not allow descendants to override' do
           expect do
-            subject rescue nil
+            begin
+              subject
+            rescue StandardError
+              nil
+            end
 
             parent.reload
             group.reload
@@ -2848,7 +2870,7 @@ RSpec.describe Group do
       end
 
       context 'for subgroup project' do
-        let_it_be(:subgroup) { create(:group, :private, parent: group)}
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
         let_it_be(:project) { create(:project, group: subgroup, service_desk_enabled: true) }
 
         it { is_expected.to eq(true) }
@@ -3380,6 +3402,20 @@ RSpec.describe Group do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items }
       let(:feature_flag_method) { :work_items_feature_flag_enabled? }
+    end
+  end
+
+  describe '#work_items_mvc_2_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_mvc_2 }
+      let(:feature_flag_method) { :work_items_mvc_2_feature_flag_enabled? }
+    end
+  end
+
+  describe '#work_items_create_from_markdown_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_create_from_markdown }
+      let(:feature_flag_method) { :work_items_create_from_markdown_feature_flag_enabled? }
     end
   end
 

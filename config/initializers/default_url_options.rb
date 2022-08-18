@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 default_url_options = {
-  host:        Gitlab.config.gitlab.host,
-  protocol:    Gitlab.config.gitlab.protocol,
+  host: Gitlab.config.gitlab.host,
+  protocol: Gitlab.config.gitlab.protocol,
   script_name: Gitlab.config.gitlab.relative_url_root
 }
 

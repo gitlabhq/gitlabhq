@@ -136,7 +136,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
 
     context 'With RBAC enabled cluster' do
       let(:rbac) { true }
-      let(:role_binding_name) { "gitlab-#{namespace}"}
+      let(:role_binding_name) { "gitlab-#{namespace}" }
 
       before do
         cluster.platform_kubernetes.rbac!

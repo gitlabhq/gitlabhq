@@ -23,10 +23,10 @@ export default {
       return sprintf(__("%{userName}'s avatar"), { userName: this.user.name });
     },
     avatarUrl() {
-      return this.user.avatar || this.user.avatar_url || gon.default_avatar_url;
+      return this.user.avatarUrl || this.user.avatar_url || gon.default_avatar_url;
     },
     hasMergeIcon() {
-      return !this.user.can_merge;
+      return !this.user.mergeRequestInteraction?.canMerge;
     },
   },
 };

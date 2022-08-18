@@ -1,8 +1,5 @@
 <script>
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
 export default {
-  mixins: [glFeatureFlagMixin()],
   props: {
     value: {
       type: String,
@@ -23,10 +20,7 @@ export default {
 <template>
   <li>
     <div class="commit-message-editor">
-      <div
-        :class="{ 'gl-mb-3': glFeatures.restructuredMrWidget }"
-        class="d-flex flex-wrap align-items-center justify-content-between"
-      >
+      <div class="d-flex flex-wrap align-items-center justify-content-between gl-mb-3">
         <label class="col-form-label" :for="inputId">
           <strong>{{ label }}</strong>
         </label>

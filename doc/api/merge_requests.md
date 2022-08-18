@@ -825,6 +825,66 @@ Parameters:
 ]
 ```
 
+## Get single MR reviewers
+
+Get a list of merge request reviewers.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/reviewers
+```
+
+Parameters:
+
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
+
+```json
+[
+  {
+    "user": {
+      "id": 1,
+      "name": "John Doe1",
+      "username": "user1",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+      "web_url": "http://localhost/user1"
+    },
+    "updated_state_by": {
+      "id": 1,
+      "name": "John Doe1",
+      "username": "user1",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+      "web_url": "http://localhost/user1"
+    },
+    "state": "unreviewed",
+    "created_at": "2022-07-27T17:03:27.684Z"
+  },
+  {
+    "user": {
+      "id": 2,
+      "name": "John Doe2",
+      "username": "user2",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/10fc7f102be8de7657fb4d80898bbfe3?s=80&d=identicon",
+      "web_url": "http://localhost/user2"
+    },
+    "updated_state_by": {
+      "id": 1,
+      "name": "John Doe1",
+      "username": "user1",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+      "web_url": "http://localhost/user1"
+    },
+    "state": "reviewed",
+    "created_at": "2022-07-27T17:03:27.684Z"
+  }
+]
+```
+
 ## Get single MR commits
 
 Get a list of merge request commits.
@@ -1624,9 +1684,9 @@ This API returns specific HTTP status codes on failure:
 | HTTP Status | Message                                    | Reason                                                                                                                                   |
 |:------------|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | `401`       | `Unauthorized`                             | This user does not have permission to accept this merge request.                                                                         |
-| `405`       | `Method Not Allowed`                       | The merge request cannot be accepted because it is `Draft`, `Closed`, `Pipeline Pending Completion`, or `Failed`. `Success` is required. |
-| `406`       | `Branch cannot be merged`                  | The merge request can not be merged.                                                                                           |
+| `405`       | `Method Not Allowed`                       | The merge request is not able to be merged. |
 | `409`       | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source.                                                                      |
+| `422`       | `Branch cannot be merged`                  | The merge request failed to merge.                                                                                           |
 
 For additional important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 

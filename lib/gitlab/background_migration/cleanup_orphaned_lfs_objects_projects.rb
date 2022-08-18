@@ -62,7 +62,7 @@ module Gitlab
         batch = LfsObjectsProject.where(id: start_id..end_id)
 
         batch.each_batch(of: SUB_BATCH_SIZE) do |sub_batch|
-          first, last = sub_batch.pluck(Arel.sql('min(lfs_objects_projects.id), max(lfs_objects_projects.id)')).first
+          first, last = sub_batch.pick(Arel.sql('min(lfs_objects_projects.id), max(lfs_objects_projects.id)'))
 
           lfs_objects_without_association =
             LfsObjectsProject

@@ -3,7 +3,6 @@ import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
-import eventHub from './event_hub';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import JobsTable from './jobs_table.vue';
 import JobsTableEmptyState from './jobs_table_empty_state.vue';
@@ -108,16 +107,7 @@ export default {
       }
     },
   },
-  mounted() {
-    eventHub.$on('jobActionPerformed', this.handleJobAction);
-  },
-  beforeDestroy() {
-    eventHub.$off('jobActionPerformed', this.handleJobAction);
-  },
   methods: {
-    handleJobAction() {
-      this.$apollo.queries.jobs.refetch({ statuses: this.scope });
-    },
     fetchJobsByStatus(scope) {
       this.infiniteScrollingTriggered = false;
 
@@ -169,6 +159,7 @@ export default {
       v-if="shouldShowAlert"
       class="gl-mt-2"
       variant="danger"
+      data-testid="jobs-table-error-alert"
       dismissible
       @dismiss="isAlertDismissed = true"
     >

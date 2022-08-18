@@ -14,7 +14,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
     let(:ref) { merge_request.target_branch }
     let(:sha) { project.commit(ref).id }
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project, ref: ref) }
-    let!(:manual) { }
+    let!(:manual) {}
     let(:build) { create(:ci_build, :with_deployment, environment: environment.name, pipeline: pipeline) }
     let!(:deployment) { build.deployment }
 

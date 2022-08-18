@@ -152,8 +152,8 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a Job'
-          optional :job_variables_attributes, type: Array,
-            desc: 'User defined variables that will be included when running the job' do
+          optional :job_variables_attributes,
+                   type: Array, desc: 'User defined variables that will be included when running the job' do
             requires :key, type: String, desc: 'The name of the variable'
             requires :value, type: String, desc: 'The value of the variable'
           end

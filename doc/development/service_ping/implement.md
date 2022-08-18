@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Service Ping consists of two kinds of data:
 
 - **Counters**: Track how often a certain event happened over time, such as how many CI/CD pipelines have run.
-  They are monotonic and always trend up.
+  They are monotonic and usually trend up.
 - **Observations**: Facts collected from one or more GitLab instances and can carry arbitrary data.
   There are no general guidelines for how to collect those, due to the individual nature of that data.
 
@@ -94,7 +94,7 @@ add_metric('CountUsersAssociatingMilestonesToReleasesMetric', time_frame: 'all')
 ```
 
 WARNING:
-Counting over non-unique columns can lead to performance issues. For more information, see the [iterating tables in batches](../iterating_tables_in_batches.md) guide.
+Counting over non-unique columns can lead to performance issues. For more information, see the [iterating tables in batches](../database/iterating_tables_in_batches.md) guide.
 
 Examples:
 
@@ -269,9 +269,15 @@ Arguments:
 
 #### Ordinary Redis counters
 
-Example of implementation:
+Example of implementation: [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb), using Redis methods [`INCR`](https://redis.io/commands/incr) and [`GET`](https://redis.io/commands/get).
 
-Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
+Events are handled by counter classes in the `Gitlab::UsageDataCounters` namespace, inheriting from `BaseCounter`, that are either:
+
+1. Listed in [`Gitlab::UsageDataCounters::COUNTERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters.rb#L5) to be then included in `Gitlab::UsageData`.
+
+1. Specified in the metric definition using the `RedisMetric` instrumentation class as a `counter_class` option to be picked up using the [metric instrumentation](metrics_instrumentation.md) framework. Refer to the [Redis metrics](metrics_instrumentation.md#redis-metrics) documentation for an example implementation.
+
+Inheriting classes are expected to override `KNOWN_EVENTS` and `PREFIX` constants to build event names and associated metrics. For example, for prefix `issues` and events array `%w[create, update, delete]`, three metrics will be added to the Service Ping payload: `counts.issues_create`, `counts.issues_update` and `counts.issues_delete`.
 
 ##### `UsageData` API
 
@@ -316,7 +322,7 @@ Enabled by default in GitLab 13.7 and later.
 #### Redis HLL counters
 
 WARNING:
-HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount), data from
+HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount/), data from
 used HLL implementation is "approximated with a standard error of 0.81%".
 
 NOTE:
@@ -324,7 +330,7 @@ NOTE:
 
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
-Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PFCOUNT](https://redis.io/commands/pfcount).
+Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [PFCOUNT](https://redis.io/commands/pfcount/).
 
 ##### Add new events
 
@@ -371,14 +377,15 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    - In the controller using the `RedisTracking` module and the following format:
 
      ```ruby
-     track_redis_hll_event(*controller_actions, name:, if: nil, &block)
+     track_event(*controller_actions, name:, conditions: nil, destinations: [:redis_hll], &block)
      ```
 
      Arguments:
 
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
-     - `if`: optional custom conditions. Uses the same format as Rails callbacks.
+     - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
+     - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: [:redis_hll].
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
 
      Example:
@@ -389,7 +396,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
        include RedisTracking
 
        skip_before_action :authenticate_user!, only: :show
-       track_redis_hll_event :index, :show, name: 'users_visiting_projects'
+       track_event :index, :show, name: 'users_visiting_projects'
 
        def index
          render html: 'index'
@@ -688,7 +695,7 @@ pry(main)> Gitlab::UsageData.count(User.active)
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
 - GitLab.com's production database has a 15 second timeout.
-- Any single query must stay below the [1 second execution time](../query_performance.md#timing-guidelines-for-queries) with cold caches.
+- Any single query must stay below the [1 second execution time](../database/query_performance.md#timing-guidelines-for-queries) with cold caches.
 - Add a specialized index on columns involved to reduce the execution time.
 
 To understand the query's execution, we add the following information

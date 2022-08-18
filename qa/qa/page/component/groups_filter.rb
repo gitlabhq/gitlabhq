@@ -10,7 +10,7 @@ module QA
           super
 
           base.view 'app/views/shared/groups/_search_form.html.haml' do
-            element :groups_filter
+            element :groups_filter_field
           end
 
           base.view 'app/assets/javascripts/groups/components/groups.vue' do
@@ -22,7 +22,7 @@ module QA
 
         def has_filtered_group?(name)
           # Filter and submit to reload the page and only retrieve the filtered results
-          find_element(:groups_filter).set(name).send_keys(:return)
+          find_element(:groups_filter_field).set(name).send_keys(:return)
 
           # Since we submitted after filtering, the presence of
           # groups_list_tree_container means we have the complete filtered list

@@ -1,0 +1,241 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have correct elements 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <svg
+    aria-hidden="true"
+    class="gl-text-blue-500 gl-mr-3 gl-mt-1 gl-icon s24"
+    data-testid="status_scheduled-icon"
+    role="img"
+  >
+    <use
+      href="#status_scheduled"
+    />
+  </svg>
+   
+  <div
+    class="media-body gl-display-flex"
+  >
+     
+    <h4
+      class="gl-mr-3"
+      data-testid="statusText"
+    >
+      Set by 
+      <a
+        class="author-link inline"
+      >
+        <img
+          class="avatar avatar-inline s16"
+          src="no_avatar.png"
+        />
+         
+        <span
+          class="author"
+        >
+          
+        </span>
+      </a>
+       to be merged automatically when the pipeline succeeds
+    </h4>
+     
+    <div
+      class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto gl-mt-1"
+    >
+      <div>
+        <div
+          class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"
+          lazy=""
+          no-caret=""
+        >
+          <!---->
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle btn-default btn-sm gl-p-2! gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret"
+            type="button"
+          >
+            <!---->
+             
+            <svg
+              aria-hidden="true"
+              class="dropdown-icon gl-icon s16"
+              data-testid="ellipsis_v-icon"
+              role="img"
+            >
+              <use
+                href="#ellipsis_v"
+              />
+            </svg>
+             
+            <span
+              class="gl-new-dropdown-button-text gl-sr-only"
+            >
+              
+            </span>
+             
+            <svg
+              aria-hidden="true"
+              class="gl-button-icon dropdown-chevron gl-icon s16"
+              data-testid="chevron-down-icon"
+              role="img"
+            >
+              <use
+                href="#chevron-down"
+              />
+            </svg>
+          </button>
+          <ul
+            class="dropdown-menu dropdown-menu-right"
+            role="menu"
+            tabindex="-1"
+          >
+            <!---->
+          </ul>
+        </div>
+         
+        <button
+          class="btn gl-display-none gl-md-display-block gl-float-left btn-confirm btn-sm gl-button btn-confirm-tertiary js-cancel-auto-merge"
+          data-qa-selector="cancel_auto_merge_button"
+          data-testid="cancelAutomaticMergeButton"
+          type="button"
+        >
+          <!---->
+           
+          <!---->
+            
+          <span
+            class="gl-button-text"
+          >
+            
+      Cancel auto-merge
+    
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have correct elements 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <svg
+    aria-hidden="true"
+    class="gl-text-blue-500 gl-mr-3 gl-mt-1 gl-icon s24"
+    data-testid="status_scheduled-icon"
+    role="img"
+  >
+    <use
+      href="#status_scheduled"
+    />
+  </svg>
+   
+  <div
+    class="media-body gl-display-flex"
+  >
+     
+    <h4
+      class="gl-mr-3"
+      data-testid="statusText"
+    >
+      Set by 
+      <a
+        class="author-link inline"
+      >
+        <img
+          class="avatar avatar-inline s16"
+          src="no_avatar.png"
+        />
+         
+        <span
+          class="author"
+        >
+          
+        </span>
+      </a>
+       to be merged automatically when the pipeline succeeds
+    </h4>
+     
+    <div
+      class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto gl-mt-1"
+    >
+      <div>
+        <div
+          class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"
+          lazy=""
+          no-caret=""
+        >
+          <!---->
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle btn-default btn-sm gl-p-2! gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret"
+            type="button"
+          >
+            <!---->
+             
+            <svg
+              aria-hidden="true"
+              class="dropdown-icon gl-icon s16"
+              data-testid="ellipsis_v-icon"
+              role="img"
+            >
+              <use
+                href="#ellipsis_v"
+              />
+            </svg>
+             
+            <span
+              class="gl-new-dropdown-button-text gl-sr-only"
+            >
+              
+            </span>
+             
+            <svg
+              aria-hidden="true"
+              class="gl-button-icon dropdown-chevron gl-icon s16"
+              data-testid="chevron-down-icon"
+              role="img"
+            >
+              <use
+                href="#chevron-down"
+              />
+            </svg>
+          </button>
+          <ul
+            class="dropdown-menu dropdown-menu-right"
+            role="menu"
+            tabindex="-1"
+          >
+            <!---->
+          </ul>
+        </div>
+         
+        <button
+          class="btn gl-display-none gl-md-display-block gl-float-left btn-confirm btn-sm gl-button btn-confirm-tertiary js-cancel-auto-merge"
+          data-qa-selector="cancel_auto_merge_button"
+          data-testid="cancelAutomaticMergeButton"
+          type="button"
+        >
+          <!---->
+           
+          <!---->
+            
+          <span
+            class="gl-button-text"
+          >
+            
+      Cancel auto-merge
+    
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

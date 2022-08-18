@@ -54,16 +54,16 @@ RSpec.describe ::Gitlab::BareRepositoryImport::Repository do
   end
 
   context 'hashed storage' do
-    let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
     let(:hashed_path) { "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b" }
     let(:root_path) { TestEnv.repos_path }
     let(:repo_path) { File.join(root_path, "#{hashed_path}.git") }
     let(:wiki_path) { File.join(root_path, "#{hashed_path}.wiki.git") }
     let(:raw_repository) { Gitlab::Git::Repository.new('default', "#{hashed_path}.git", nil, nil) }
+    let(:full_path) { 'to/repo' }
 
     before do
       raw_repository.create_repository
-      raw_repository.set_full_path(full_path: 'to/repo')
+      raw_repository.set_full_path(full_path: full_path) if full_path
     end
 
     after do
@@ -95,15 +95,16 @@ RSpec.describe ::Gitlab::BareRepositoryImport::Repository do
         expect(subject).not_to be_processable
       end
 
-      it 'returns false when group and project name are missing' do
-        repository = Rugged::Repository.new(repo_path)
-        repository.config.delete('gitlab.fullpath')
-
-        expect(subject).not_to be_processable
-      end
-
       it 'returns true when group path and project name are present' do
         expect(subject).to be_processable
+      end
+
+      context 'group and project name are missing' do
+        let(:full_path) { nil }
+
+        it 'returns false' do
+          expect(subject).not_to be_processable
+        end
       end
     end
 

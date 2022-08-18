@@ -5,7 +5,7 @@ import component from '~/vue_shared/components/registry/details_row.vue';
 describe('DetailsRow', () => {
   let wrapper;
 
-  const findIcon = () => wrapper.find(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
   const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
 
   const mountComponent = (props) => {

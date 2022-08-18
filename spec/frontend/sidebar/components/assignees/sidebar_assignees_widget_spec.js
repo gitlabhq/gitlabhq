@@ -148,6 +148,7 @@ describe('Sidebar assignees widget', () => {
 
       expect(findAssignees().props('users')).toEqual([
         {
+          __typename: 'UserCore',
           id: 'gid://gitlab/User/2',
           avatarUrl:
             'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',

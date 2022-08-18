@@ -97,8 +97,10 @@ describe('Dashboard', () => {
       createShallowWrapper({ hasMetrics: true });
 
       await nextTick();
-      expect(wrapper.find(EmptyState).exists()).toBe(true);
-      expect(wrapper.find(EmptyState).props('selectedState')).toBe(dashboardEmptyStates.LOADING);
+      expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(EmptyState).props('selectedState')).toBe(
+        dashboardEmptyStates.LOADING,
+      );
     });
 
     it('hides the group panels when showPanels is false', async () => {
@@ -126,7 +128,7 @@ describe('Dashboard', () => {
   describe('panel containers layout', () => {
     const findPanelLayoutWrapperAt = (index) => {
       return wrapper
-        .find(GraphGroup)
+        .findComponent(GraphGroup)
         .findAll('[data-testid="dashboard-panel-layout-wrapper"]')
         .at(index);
     };
@@ -366,7 +368,7 @@ describe('Dashboard', () => {
   });
 
   describe('when all panels in the first group are loading', () => {
-    const findGroupAt = (i) => wrapper.findAll(GraphGroup).at(i);
+    const findGroupAt = (i) => wrapper.findAllComponents(GraphGroup).at(i);
 
     beforeEach(async () => {
       setupStoreWithDashboard(store);
@@ -409,7 +411,7 @@ describe('Dashboard', () => {
       setupStoreWithData(store);
 
       await nextTick();
-      wrapper.findAll(GraphGroup).wrappers.forEach((groupWrapper) => {
+      wrapper.findAllComponents(GraphGroup).wrappers.forEach((groupWrapper) => {
         expect(groupWrapper.props('isLoading')).toBe(false);
       });
     });
@@ -443,7 +445,7 @@ describe('Dashboard', () => {
   });
 
   describe('single panel expands to "full screen" mode', () => {
-    const findExpandedPanel = () => wrapper.find({ ref: 'expandedPanel' });
+    const findExpandedPanel = () => wrapper.findComponent({ ref: 'expandedPanel' });
 
     describe('when the panel is not expanded', () => {
       beforeEach(async () => {
@@ -457,7 +459,7 @@ describe('Dashboard', () => {
       });
 
       it('can set a panel as expanded', () => {
-        const panel = wrapper.findAll(DashboardPanel).at(1);
+        const panel = wrapper.findAllComponents(DashboardPanel).at(1);
 
         jest.spyOn(store, 'dispatch');
 
@@ -503,7 +505,7 @@ describe('Dashboard', () => {
       });
 
       it('displays a single panel and others are hidden', () => {
-        const panels = wrapper.findAll(MockPanel);
+        const panels = wrapper.findAllComponents(MockPanel);
         const visiblePanels = panels.filter((w) => w.isVisible());
 
         expect(findExpandedPanel().isVisible()).toBe(true);
@@ -523,7 +525,7 @@ describe('Dashboard', () => {
       });
 
       it('restores full dashboard by clicking `back`', () => {
-        wrapper.find({ ref: 'goBackBtn' }).vm.$emit('click');
+        wrapper.findComponent({ ref: 'goBackBtn' }).vm.$emit('click');
 
         expect(store.dispatch).toHaveBeenCalledWith(
           'monitoringDashboard/clearExpandedPanel',
@@ -551,21 +553,21 @@ describe('Dashboard', () => {
     });
 
     it('shows a group empty area', () => {
-      const emptyGroup = wrapper.findAll({ ref: 'empty-group' });
+      const emptyGroup = wrapper.findAllComponents({ ref: 'empty-group' });
 
       expect(emptyGroup).toHaveLength(1);
       expect(emptyGroup.is(GroupEmptyState)).toBe(true);
     });
 
     it('group empty area displays a NO_DATA state', () => {
-      expect(wrapper.findAll({ ref: 'empty-group' }).at(0).props('selectedState')).toEqual(
-        metricStates.NO_DATA,
-      );
+      expect(
+        wrapper.findAllComponents({ ref: 'empty-group' }).at(0).props('selectedState'),
+      ).toEqual(metricStates.NO_DATA);
     });
   });
 
   describe('drag and drop function', () => {
-    const findDraggables = () => wrapper.findAll(VueDraggable);
+    const findDraggables = () => wrapper.findAllComponents(VueDraggable);
     const findEnabledDraggables = () => findDraggables().filter((f) => !f.attributes('disabled'));
     const findDraggablePanels = () => wrapper.findAll('.js-draggable-panel');
     const findRearrangeButton = () => wrapper.find('.js-rearrange-button');
@@ -677,7 +679,7 @@ describe('Dashboard', () => {
     });
 
     it('hides dashboard header by default', () => {
-      expect(wrapper.find({ ref: 'prometheusGraphsHeader' }).exists()).toEqual(false);
+      expect(wrapper.findComponent({ ref: 'prometheusGraphsHeader' }).exists()).toEqual(false);
     });
 
     it('renders correctly', () => {
@@ -742,7 +744,7 @@ describe('Dashboard', () => {
     const panelIndex = 1; // skip expanded panel
 
     const getClipboardTextFirstPanel = () =>
-      wrapper.findAll(DashboardPanel).at(panelIndex).props('clipboardText');
+      wrapper.findAllComponents(DashboardPanel).at(panelIndex).props('clipboardText');
 
     beforeEach(async () => {
       setupStoreWithData(store);
@@ -770,7 +772,7 @@ describe('Dashboard', () => {
     // While the recommendation in the documentation is to test
     // with a data-testid attribute, I want to make sure that
     // the dashboard panels have a ref attribute set.
-    const getDashboardPanel = () => wrapper.find({ ref: panelRef });
+    const getDashboardPanel = () => wrapper.findComponent({ ref: panelRef });
 
     beforeEach(async () => {
       setupStoreWithData(store);

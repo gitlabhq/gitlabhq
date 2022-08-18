@@ -143,7 +143,7 @@ describe('RunnerList', () => {
         runnerType: INSTANCE_TYPE,
         filters: mockFilters,
         sort: mockOtherSort,
-        pagination: { page: 1 },
+        pagination: {},
       });
     });
   });
@@ -156,7 +156,7 @@ describe('RunnerList', () => {
       runnerType: null,
       filters: mockFilters,
       sort: mockDefaultSort,
-      pagination: { page: 1 },
+      pagination: {},
     });
   });
 
@@ -167,7 +167,7 @@ describe('RunnerList', () => {
       runnerType: null,
       filters: [],
       sort: mockOtherSort,
-      pagination: { page: 1 },
+      pagination: {},
     });
   });
 });

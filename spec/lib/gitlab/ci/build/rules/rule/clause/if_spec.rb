@@ -51,14 +51,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If do
           end
 
           it { is_expected.to eq(true) }
-
-          context 'when the FF ci_fix_rules_if_comparison_with_regexp_variable is disabled' do
-            before do
-              stub_feature_flags(ci_fix_rules_if_comparison_with_regexp_variable: false)
-            end
-
-            it { is_expected.to eq(false) }
-          end
         end
 
         context 'when comparison is false' do

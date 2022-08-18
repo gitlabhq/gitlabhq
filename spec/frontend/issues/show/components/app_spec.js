@@ -119,7 +119,7 @@ describe('Issuable output', () => {
 
         expect(findEdited().exists()).toBe(true);
         expect(findEdited().props('updatedByPath')).toMatch(/\/some_user$/);
-        expect(findEdited().props('updatedAt')).toBeTruthy();
+        expect(findEdited().props('updatedAt')).toBe(initialRequest.updated_at);
         expect(wrapper.vm.state.lock_version).toBe(initialRequest.lock_version);
       })
       .then(() => {
@@ -133,7 +133,7 @@ describe('Issuable output', () => {
         expect(findEdited().exists()).toBe(true);
         expect(findEdited().props('updatedByName')).toBe('Other User');
         expect(findEdited().props('updatedByPath')).toMatch(/\/other_user$/);
-        expect(findEdited().props('updatedAt')).toBeTruthy();
+        expect(findEdited().props('updatedAt')).toBe(secondRequest.updated_at);
       });
   });
 

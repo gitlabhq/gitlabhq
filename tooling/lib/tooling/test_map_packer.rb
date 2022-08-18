@@ -44,7 +44,7 @@ module Tooling
     end
 
     def traverse(tree, segments = [], &block)
-      return to_enum(__method__, tree, segments) unless block_given?
+      return to_enum(__method__, tree, segments) unless block
 
       if tree == MARKER
         return yield segments.join(SEPARATOR)

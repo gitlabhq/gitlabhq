@@ -1,8 +1,0 @@
----
-name: ci_retry_downstream_pipeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76115
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347424
-milestone: '14.6'
-type: development
-group: group::pipeline authoring
-default_enabled: false

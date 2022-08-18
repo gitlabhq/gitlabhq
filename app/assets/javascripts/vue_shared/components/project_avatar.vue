@@ -1,5 +1,6 @@
 <script>
 import { GlAvatar } from '@gitlab/ui';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
@@ -7,6 +8,14 @@ export default {
     GlAvatar,
   },
   props: {
+    projectId: {
+      type: [Number, String],
+      default: 0,
+      required: false,
+      validator(value) {
+        return typeof value === 'string' ? isGid(value) : true;
+      },
+    },
     projectName: {
       type: String,
       required: true,
@@ -31,6 +40,9 @@ export default {
     avatarAlt() {
       return this.alt ?? this.projectName;
     },
+    entityId() {
+      return isGid(this.projectId) ? getIdFromGraphQLId(this.projectId) : this.projectId;
+    },
   },
   AVATAR_SHAPE_OPTION_RECT,
 };
@@ -39,6 +51,7 @@ export default {
 <template>
   <gl-avatar
     :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+    :entity-id="entityId"
     :entity-name="projectName"
     :src="projectAvatarUrl"
     :alt="avatarAlt"

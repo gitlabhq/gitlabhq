@@ -52,15 +52,15 @@ module Ci
     belongs_to :ci_ref, class_name: 'Ci::Ref', foreign_key: :ci_ref_id, inverse_of: :pipelines
 
     has_internal_id :iid, scope: :project, presence: false,
-      track_if: -> { !importing? },
-      ensure_if: -> { !importing? },
-      init: ->(pipeline, scope) do
-        if pipeline
-          pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
-        elsif scope
-          ::Ci::Pipeline.where(**scope).maximum(:iid)
-        end
-      end
+                          track_if: -> { !importing? },
+                          ensure_if: -> { !importing? },
+                          init: ->(pipeline, scope) do
+                                  if pipeline
+                                    pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
+                                  elsif scope
+                                    ::Ci::Pipeline.where(**scope).maximum(:iid)
+                                  end
+                                end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
@@ -102,6 +102,7 @@ module Ci
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
     has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
+    # Only includes direct and not nested children
     has_many :child_pipelines, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :sourced_pipelines, source: :pipeline
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
     has_one :parent_pipeline, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :source_pipeline, source: :source_pipeline
@@ -389,7 +390,7 @@ module Ci
     end
 
     def self.latest_status(ref = nil)
-      newest_first(ref: ref).pluck(:status).first
+      newest_first(ref: ref).pick(:status)
     end
 
     def self.latest_successful_for_ref(ref)
@@ -592,26 +593,20 @@ module Ci
       canceled? && auto_canceled_by_id?
     end
 
-    def cancel_running(retries: 1)
-      preloaded_relations = [:project, :pipeline, :deployment, :taggings]
+    # Cancel a pipelines cancelable jobs and optionally it's child pipelines cancelable jobs
+    # retries - # of times to retry if errors
+    # cascade_to_children - if true cancels all related child pipelines for parent child pipelines
+    # auto_canceled_by_pipeline_id - store the pipeline_id of the pipeline that triggered cancellation
+    # execute_async - if true cancel the children asyncronously
+    def cancel_running(retries: 1, cascade_to_children: true, auto_canceled_by_pipeline_id: nil, execute_async: true)
+      update(auto_canceled_by_id: auto_canceled_by_pipeline_id) if auto_canceled_by_pipeline_id
 
-      retry_lock(cancelable_statuses, retries, name: 'ci_pipeline_cancel_running') do |cancelables|
-        cancelables.find_in_batches do |batch|
-          Preloaders::CommitStatusPreloader.new(batch).execute(preloaded_relations)
+      cancel_jobs(cancelable_statuses, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
 
-          batch.each do |job|
-            yield(job) if block_given?
-            job.cancel
-          end
-        end
-      end
-    end
-
-    def auto_cancel_running(pipeline, retries: 1)
-      update(auto_canceled_by: pipeline)
-
-      cancel_running(retries: retries) do |job|
-        job.auto_canceled_by = pipeline
+      if cascade_to_children
+        # cancel any bridges that could spin up new child pipelines
+        cancel_jobs(bridges_in_self_and_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
+        cancel_children(auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id, execute_async: execute_async)
       end
     end
 
@@ -953,6 +948,10 @@ module Ci
       Ci::Build.latest.where(pipeline: self_and_descendants)
     end
 
+    def bridges_in_self_and_descendants
+      Ci::Bridge.latest.where(pipeline: self_and_descendants)
+    end
+
     def environments_in_self_and_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
@@ -984,6 +983,11 @@ module Ci
     # With only parent-child pipelines
     def self_and_descendants
       object_hierarchy(project_condition: :same).base_and_descendants
+    end
+
+    # With only parent-child pipelines
+    def all_child_pipelines
+      object_hierarchy(project_condition: :same).descendants
     end
 
     def self_and_descendants_complete?
@@ -1152,6 +1156,10 @@ module Ci
       end
     end
 
+    def modified_paths_since(compare_to_sha)
+      project.repository.diff_stats(project.repository.merge_base(compare_to_sha, sha), sha).paths
+    end
+
     def all_worktree_paths
       strong_memoize(:all_worktree_paths) do
         project.repository.ls_files(sha)
@@ -1214,10 +1222,6 @@ module Ci
 
     def stage(name)
       stages.find_by(name: name)
-    end
-
-    def find_stage_by_name!(name)
-      stages.find_by!(name: name)
     end
 
     def full_error_messages
@@ -1320,6 +1324,42 @@ module Ci
     end
 
     private
+
+    def cancel_jobs(jobs, retries: 1, auto_canceled_by_pipeline_id: nil)
+      retry_lock(jobs, retries, name: 'ci_pipeline_cancel_running') do |statuses|
+        preloaded_relations = [:project, :pipeline, :deployment, :taggings]
+
+        statuses.find_in_batches do |status_batch|
+          relation = CommitStatus.where(id: status_batch)
+          Preloaders::CommitStatusPreloader.new(relation).execute(preloaded_relations)
+
+          relation.each do |job|
+            job.auto_canceled_by_id = auto_canceled_by_pipeline_id if auto_canceled_by_pipeline_id
+            job.cancel
+          end
+        end
+      end
+    end
+
+    # For parent child-pipelines only (not multi-project)
+    def cancel_children(auto_canceled_by_pipeline_id: nil, execute_async: true)
+      all_child_pipelines.each do |child_pipeline|
+        if execute_async
+          ::Ci::CancelPipelineWorker.perform_async(
+            child_pipeline.id,
+            auto_canceled_by_pipeline_id
+          )
+        else
+          child_pipeline.cancel_running(
+            # cascade_to_children is false because we iterate through children
+            # we also cancel bridges prior to prevent more children
+            cascade_to_children: false,
+            execute_async: execute_async,
+            auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id
+          )
+        end
+      end
+    end
 
     def add_message(severity, content)
       messages.build(severity: severity, content: content)

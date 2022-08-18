@@ -28,7 +28,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
+      expect(json_response.map { |snippet| snippet['id'] } ).to contain_exactly(
         public_snippet.id,
         internal_snippet.id,
         private_snippet.id)
@@ -75,7 +75,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
       it 'returns snippets available for user in given time range' do
         get api(path, personal_access_token: user_token)
 
-        expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
+        expect(json_response.map { |snippet| snippet['id'] } ).to contain_exactly(
           private_snippet_in_time_range1.id,
           private_snippet_in_time_range2.id)
       end
@@ -99,10 +99,10 @@ RSpec.describe API::Snippets, factory_default: :keep do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
+        expect(json_response.map { |snippet| snippet['id'] } ).to contain_exactly(
           public_snippet.id,
           public_snippet_other.id)
-        expect(json_response.map { |snippet| snippet['web_url']} ).to contain_exactly(
+        expect(json_response.map { |snippet| snippet['web_url'] } ).to contain_exactly(
           "http://localhost/-/snippets/#{public_snippet.id}",
           "http://localhost/-/snippets/#{public_snippet_other.id}")
         expect(json_response[0]['files'].first).to eq snippet_blob_file(public_snippet_other.blobs.first)
@@ -126,7 +126,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
       it 'returns public snippets available to user in given time range' do
         get api(path, personal_access_token: user_token)
 
-        expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
+        expect(json_response.map { |snippet| snippet['id'] } ).to contain_exactly(
           public_snippet_in_time_range.id)
       end
     end

@@ -8,7 +8,7 @@ RSpec.describe 'Issue Sidebar on Mobile' do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:issue) { create(:issue, project: project) }
-  let!(:user) { create(:user)}
+  let!(:user) { create(:user) }
 
   before do
     sign_in(user)

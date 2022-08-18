@@ -64,7 +64,7 @@ RSpec.describe Mutations::MergeRequests::SetLabels do
       end
 
       context 'when passing operation_mode as REMOVE' do
-        subject { mutation.resolve(project_path: merge_request.project.full_path, iid: merge_request.iid, label_ids: label_ids, operation_mode: Types::MutationOperationModeEnum.enum[:remove])}
+        subject { mutation.resolve(project_path: merge_request.project.full_path, iid: merge_request.iid, label_ids: label_ids, operation_mode: Types::MutationOperationModeEnum.enum[:remove]) }
 
         it 'removes the labels, without removing others' do
           merge_request.update!(labels: [label, label2])

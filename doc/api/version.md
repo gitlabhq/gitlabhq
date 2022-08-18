@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Version API **(FREE)**
 
+NOTE:
+We recommend you use the [Metadata API](metadata.md) instead of the Version API.
+It contains additional information and is aligned with the GraphQL metadata endpoint.
+
 Retrieve version information for this GitLab instance. Responds `200 OK` for
 authenticated users.
 

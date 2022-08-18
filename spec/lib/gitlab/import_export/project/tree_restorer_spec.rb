@@ -254,12 +254,27 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           end
         end
 
+        it 'has multiple merge request assignees' do
+          expect(MergeRequest.find_by(title: 'MR1').assignees).to contain_exactly(@user, *@existing_members)
+          expect(MergeRequest.find_by(title: 'MR2').assignees).to be_empty
+        end
+
+        it 'has multiple merge request reviewers' do
+          expect(MergeRequest.find_by(title: 'MR1').reviewers).to contain_exactly(@user, *@existing_members)
+          expect(MergeRequest.find_by(title: 'MR2').reviewers).to be_empty
+        end
+
         it 'has labels associated to label links, associated to issues' do
           expect(Label.first.label_links.first.target).not_to be_nil
         end
 
         it 'has project labels' do
           expect(ProjectLabel.count).to eq(3)
+        end
+
+        it 'has merge request approvals' do
+          expect(MergeRequest.find_by(title: 'MR1').approvals.pluck(:user_id)).to contain_exactly(@user.id, *@existing_members.map(&:id))
+          expect(MergeRequest.find_by(title: 'MR2').approvals).to be_empty
         end
 
         it 'has no group labels' do
@@ -589,7 +604,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         it 'issue system note metadata restored successfully' do
           note_content = 'created merge request !1 to address this issue'
-          note = project.issues.first.notes.find { |n| n.note.match(/#{note_content}/)}
+          note = project.issues.first.notes.find { |n| n.note.match(/#{note_content}/) }
 
           expect(note.noteable_type).to eq('Issue')
           expect(note.system).to eq(true)
@@ -1085,35 +1100,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
     end
   end
 
-  context 'when import_relation_object_persistence feature flag is enabled' do
-    before do
-      stub_feature_flags(import_relation_object_persistence: true)
-    end
+  context 'enable ndjson import' do
+    it_behaves_like 'project tree restorer work properly', :legacy_reader, true
 
-    context 'enable ndjson import' do
-      it_behaves_like 'project tree restorer work properly', :legacy_reader, true
-
-      it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
-    end
-
-    context 'disable ndjson import' do
-      it_behaves_like 'project tree restorer work properly', :legacy_reader, false
-    end
+    it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
   end
 
-  context 'when import_relation_object_persistence feature flag is disabled' do
-    before do
-      stub_feature_flags(import_relation_object_persistence: false)
-    end
-
-    context 'enable ndjson import' do
-      it_behaves_like 'project tree restorer work properly', :legacy_reader, true
-
-      it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
-    end
-
-    context 'disable ndjson import' do
-      it_behaves_like 'project tree restorer work properly', :legacy_reader, false
-    end
+  context 'disable ndjson import' do
+    it_behaves_like 'project tree restorer work properly', :legacy_reader, false
   end
 end

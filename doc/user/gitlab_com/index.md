@@ -96,7 +96,7 @@ Projects are permanently deleted after a seven-day delay.
 
 If you are on:
 
-- Premium tier and above, you can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
+- Premium tier and above, you can disable this by changing the [group setting](../group/manage.md#enable-delayed-project-deletion).
 - Free tier, you cannot disable this setting or restore projects.
 
 ## Inactive project deletion
@@ -322,7 +322,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 
 Some of these settings are in the process being adjusted. For example, the value
 for `shared_buffers` is quite high, and we are
-[considering adjusting it](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/4985).
+[considering adjusting it](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4985).
 
 ## Puma
 
@@ -336,8 +336,8 @@ documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There
-are also informational headers with this response detailed in [rate
-limiting responses](#rate-limiting-responses).
+are also informational headers with this response detailed in 
+[rate limiting responses](#rate-limiting-responses).
 
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
@@ -358,9 +358,9 @@ after the limits change in January, 2021:
 | **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute              |
 | **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour |
 
-More details are available on the rate limits for [protected
-paths](#protected-paths-throttle) and [raw
-endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+More details are available on the rate limits for 
+[protected paths](#protected-paths-throttle) and 
+[raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
@@ -398,7 +398,7 @@ following section.
 
 If you receive a `403 Forbidden` error for all requests to GitLab.com,
 check for any automated processes that may be triggering a block. For
-assistance, contact [GitLab Support](https://support.gitlab.com/hc/en-us)
+assistance, contact [GitLab Support](https://support.gitlab.com)
 with details, such as the affected IP address.
 
 #### Git and container registry failed authentication ban
@@ -424,13 +424,9 @@ For performance reasons, if a query returns more than 10,000 records, [GitLab ex
 
 ### Visibility settings
 
-If created before GitLab 12.2 (July 2019), these items have the
+Projects, groups, and snippets have the
 [Internal visibility](../public_access.md#internal-projects-and-groups)
-setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
-
-- Projects
-- Groups
-- Snippets
+setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ### SSH maximum number of connections
 

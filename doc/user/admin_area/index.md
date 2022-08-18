@@ -169,6 +169,20 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 
+#### User identities
+
+> The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
+
+When using authentication providers, administrators can see the identities for a user:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. From the list of users, select a user.
+1. Select **Identities**.
+
+This list shows the user's identities, including SCIM identities. Administrators can use this information to troubleshoot SCIM-related issues and confirm
+the identities being used for an account.
+
 #### User Permission Export **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
@@ -221,7 +235,7 @@ The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and
 
 ### Prevent a user from creating groups
 
-By default, users can create groups. To prevent a user from creating groups:
+By default, users can create groups. To prevent a user from creating a top level group:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users** (`/admin/users`).
@@ -229,6 +243,8 @@ By default, users can create groups. To prevent a user from creating groups:
 1. Select **Edit**.
 1. Clear the **Can create group** checkbox.
 1. Select **Save changes**.
+
+It is also possible to [limit which roles can create a subgroup within a group](../group/subgroups/index.md#change-who-can-create-subgroups).
 
 ### Administering Groups
 
@@ -250,7 +266,7 @@ sort order is by **Last created**.
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../group/index.md#create-a-group) select **New group**.
+To [Create a new group](../group/manage.md#create-a-group) select **New group**.
 
 ### Administering Topics
 
@@ -421,7 +437,7 @@ For multi-node systems we recommend ingesting the logs into services like Elasti
 
 The contents of these log files can be useful when troubleshooting a problem.
 
-For details of these log files and their contents, see [Log system](../../administration/logs.md).
+For details of these log files and their contents, see [Log system](../../administration/logs/index.md).
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
 

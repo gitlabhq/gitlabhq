@@ -52,6 +52,28 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers::SleepingLock, :clean_gitlab_redis_
       end
     end
 
+    context 'when the lease is obtained already' do
+      let!(:lease) { stub_exclusive_lease_taken(key) }
+
+      context 'when retries are not specified' do
+        it 'retries to obtain a lease and raises an error' do
+          expect(lease).to receive(:try_obtain).exactly(10).times
+
+          expect { subject.obtain }.to raise_error('Failed to obtain a lock')
+        end
+      end
+
+      context 'when specified retries are above the maximum attempts' do
+        let(:max_attempts) { 100 }
+
+        it 'retries to obtain a lease and raises an error' do
+          expect(lease).to receive(:try_obtain).exactly(65).times
+
+          expect { subject.obtain(max_attempts) }.to raise_error('Failed to obtain a lock')
+        end
+      end
+    end
+
     context 'when the lease is held elsewhere' do
       let!(:lease) { stub_exclusive_lease_taken(key) }
       let(:max_attempts) { 7 }

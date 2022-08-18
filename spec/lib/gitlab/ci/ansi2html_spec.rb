@@ -210,8 +210,8 @@ RSpec.describe Gitlab::Ci::Ansi2html do
     let(:section_start_time) { Time.new(2017, 9, 20).utc }
     let(:section_duration) { 3.seconds }
     let(:section_end_time) { section_start_time + section_duration }
-    let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K"}
-    let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K"}
+    let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K" }
+    let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K" }
     let(:section_start_html) do
       '<div class="section-start"' \
       " data-timestamp=\"#{section_start_time.to_i}\" data-section=\"#{class_name(section_name)}\"" \
@@ -258,13 +258,13 @@ RSpec.describe Gitlab::Ci::Ansi2html do
     it_behaves_like 'a legit section'
 
     context 'section name includes $' do
-      let(:section_name) { 'my_$ection'}
+      let(:section_name) { 'my_$ection' }
 
       it_behaves_like 'forbidden char in section_name'
     end
 
     context 'section name includes <' do
-      let(:section_name) { '<a_tag>'}
+      let(:section_name) { '<a_tag>' }
 
       it_behaves_like 'forbidden char in section_name'
     end

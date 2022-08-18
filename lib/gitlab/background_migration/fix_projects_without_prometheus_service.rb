@@ -137,7 +137,7 @@ module Gitlab
       def create_sql(from_id, to_id)
         <<~SQL
           WITH created_records AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
-            INSERT INTO services (project_id, #{DEFAULTS.keys.map { |key| %("#{key}")}.join(',')}, created_at, updated_at)
+            INSERT INTO services (project_id, #{DEFAULTS.keys.map { |key| %("#{key}") }.join(',')}, created_at, updated_at)
             #{select_insert_values_sql(from_id, to_id)}
             RETURNING *
           )

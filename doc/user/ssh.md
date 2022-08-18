@@ -304,8 +304,10 @@ Verify that your SSH key was added correctly.
 
 The following commands use the example hostname `gitlab.example.com`. Replace this example hostname with your GitLab instance's hostname, for example, `git@gitlab.com`.
 
-1. For GitLab.com, to ensure you're connecting to the correct server, confirm the
-   [SSH host keys fingerprints](gitlab_com/index.md#ssh-host-keys-fingerprints).
+1. To ensure you're connecting to the correct server, check the server's SSH host keys fingerprint. For:
+   - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/index.md#ssh-host-keys-fingerprints) documentation.
+   - GitLab.com or another GitLab instance, see `gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints` where `gitlab.example.com` is `gitlab.com` (for
+     GitLab.com) or the address of the GitLab instance.
 1. Open a terminal and run this command, replacing `gitlab.example.com` with your
    GitLab instance URL:
 

@@ -4,6 +4,7 @@
 - page_title       user_display_name(@user)
 - page_description @user.bio unless @user.blocked? || !@user.confirmed?
 - page_itemtype    'http://schema.org/Person'
+- add_page_specific_style 'page_bundles/profile'
 - link_classes = "flex-grow-1 mx-1 "
 
 = content_for :meta_tags do
@@ -42,16 +43,18 @@
           = sprite_icon('user')
       - if current_user && current_user.id != @user.id
         - if current_user.following?(@user)
-          = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
-            = _('Unfollow')
+          = form_tag user_unfollow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
+            = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-w-full', data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do
+              = _('Unfollow')
         - else
-          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-confirm', method: :post, data: { qa_selector: 'follow_user_link' } do
-            = _('Follow')
+          = form_tag user_follow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
+            = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
+              = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder
         = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon_for_user(@user, 90, current_user: current_user), class: "avatar s90", alt: '', itemprop: 'image'
+          = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
 
       - if @user.blocked? || !@user.confirmed?
         .user-info
@@ -65,14 +68,14 @@
             - if @user.pronouns.present?
               %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
                 = "(#{@user.pronouns})"
-            - if @user&.status && user_status_set_to_busy?(@user.status)
+            - if @user.status&.busy?
               %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
 
           - if @user.pronunciation.present?
             .gl-align-items-center
               %p.gl-mb-4.gl-text-gray-500= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
 
-          - if show_status_emoji?(@user.status)
+          - if @user.status&.customized?
             .cover-status.gl-display-inline-flex.gl-align-items-center
               = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
               = markdown_field(@user.status, :message)

@@ -40,7 +40,14 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       expect { execute }.not_to change { artifact_with_file.file.exists? }
     end
 
-    it 'deletes the artifact records' do
+    it 'deletes the artifact records and logs them' do
+      expect(Gitlab::Ci::Artifacts::Logger)
+        .to receive(:log_deleted)
+        .with(
+          match_array([artifact_with_file, artifact_without_file]),
+          'Ci::JobArtifacts::DestroyBatchService#execute'
+        )
+
       expect { subject }.to change { Ci::JobArtifact.count }.by(-2)
     end
 

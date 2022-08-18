@@ -126,12 +126,19 @@ module Gitlab
           end
         end
 
+        # When an assignee (or any other listed association) did not exist in the members mapper, the importer is
+        # assigned. We only need to assign each user once.
         def remove_duplicate_assignees
-          return unless @relation_hash['issue_assignees']
+          associations = %w[issue_assignees merge_request_assignees merge_request_reviewers approvals]
 
-          # When an assignee did not exist in the members mapper, the importer is
-          # assigned. We only need to assign each user once.
-          @relation_hash['issue_assignees'].uniq!(&:user_id)
+          associations.each do |association|
+            next unless @relation_hash.key?(association)
+            next unless @relation_hash[association].is_a?(Array)
+            next if @relation_hash[association].empty?
+
+            @relation_hash[association].select! { |record| record.respond_to?(:user_id) }
+            @relation_hash[association].uniq!(&:user_id)
+          end
         end
 
         def generate_imported_object

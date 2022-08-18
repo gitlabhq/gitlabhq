@@ -71,7 +71,12 @@ describe('Sidebar Confidentiality Form', () => {
   it('creates a flash if mutation contains errors', async () => {
     createComponent({
       mutate: jest.fn().mockResolvedValue({
-        data: { issuableSetConfidential: { errors: ['Houston, we have a problem!'] } },
+        data: {
+          issuableSetConfidential: {
+            issuable: { confidential: false },
+            errors: ['Houston, we have a problem!'],
+          },
+        },
       }),
     });
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
@@ -80,6 +85,24 @@ describe('Sidebar Confidentiality Form', () => {
     expect(createFlash).toHaveBeenCalledWith({
       message: 'Houston, we have a problem!',
     });
+  });
+
+  it('emits `closeForm` event with confidentiality value when mutation is successful', async () => {
+    createComponent({
+      mutate: jest.fn().mockResolvedValue({
+        data: {
+          issuableSetConfidential: {
+            issuable: { confidential: true },
+            errors: [],
+          },
+        },
+      }),
+    });
+
+    findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
+    await waitForPromises();
+
+    expect(wrapper.emitted('closeForm')).toEqual([[{ confidential: true }]]);
   });
 
   describe('when issue is not confidential', () => {

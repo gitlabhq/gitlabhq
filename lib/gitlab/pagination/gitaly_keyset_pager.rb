@@ -12,9 +12,11 @@ module Gitlab
         @project = project
       end
 
-      # It is expected that the given finder will respond to `execute` method with `gitaly_pagination: true` option
+      # It is expected that the given finder will respond to `execute` method with `gitaly_pagination:` option
       # and supports pagination via gitaly.
       def paginate(finder)
+        return finder.execute(gitaly_pagination: false) if no_pagination?
+
         return paginate_via_gitaly(finder) if keyset_pagination_enabled?(finder)
         return paginate_first_page_via_gitaly(finder) if paginate_first_page?(finder)
 
@@ -25,6 +27,10 @@ module Gitlab
       end
 
       private
+
+      def no_pagination?
+        params[:pagination] == 'none'
+      end
 
       def keyset_pagination_enabled?(finder)
         return false unless params[:pagination] == "keyset"

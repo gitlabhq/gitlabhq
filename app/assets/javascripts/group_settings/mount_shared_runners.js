@@ -5,7 +5,7 @@ export default (containerId = 'update-shared-runners-form') => {
   const containerEl = document.getElementById(containerId);
 
   const {
-    updatePath,
+    groupId,
     sharedRunnersSetting,
     parentSharedRunnersSetting,
     runnerEnabledValue,
@@ -16,7 +16,7 @@ export default (containerId = 'update-shared-runners-form') => {
   return new Vue({
     el: containerEl,
     provide: {
-      updatePath,
+      groupId,
       sharedRunnersSetting,
       parentSharedRunnersSetting,
       runnerEnabledValue,

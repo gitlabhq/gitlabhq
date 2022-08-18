@@ -211,7 +211,7 @@ module Network
 
       # Visit branching chains
       leaves.each do |l|
-        parents = l.parents(@map).select {|p| p.space == 0}
+        parents = l.parents(@map).select { |p| p.space == 0 }
         parents.each do |p|
           place_chain(p, l.time)
         end

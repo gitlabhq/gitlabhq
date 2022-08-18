@@ -56,7 +56,7 @@ describe('ExpirationDatepicker', () => {
   };
 
   const findInput = () => wrapper.find('input');
-  const findDatepicker = () => wrapper.find(GlDatepicker);
+  const findDatepicker = () => wrapper.findComponent(GlDatepicker);
 
   afterEach(() => {
     wrapper.destroy();

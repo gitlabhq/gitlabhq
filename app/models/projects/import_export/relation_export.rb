@@ -3,6 +3,20 @@
 module Projects
   module ImportExport
     class RelationExport < ApplicationRecord
+      DESIGN_REPOSITORY_RELATION = 'design_repository'
+      LFS_OBJECTS_RELATION = 'lfs_objects'
+      REPOSITORY_RELATION = 'repository'
+      ROOT_RELATION = 'project'
+      SNIPPETS_REPOSITORY_RELATION = 'snippets_repository'
+      UPLOADS_RELATION = 'uploads'
+      WIKI_REPOSITORY_RELATION = 'wiki_repository'
+
+      EXTRA_RELATION_LIST = [
+        DESIGN_REPOSITORY_RELATION, LFS_OBJECTS_RELATION, REPOSITORY_RELATION, ROOT_RELATION,
+        SNIPPETS_REPOSITORY_RELATION, UPLOADS_RELATION, WIKI_REPOSITORY_RELATION
+      ].freeze
+      private_constant :EXTRA_RELATION_LIST
+
       self.table_name = 'project_relation_exports'
 
       belongs_to :project_export_job
@@ -17,6 +31,33 @@ module Projects
       validates :project_export_job, presence: true
       validates :relation, presence: true, length: { maximum: 255 }, uniqueness: { scope: :project_export_job_id }
       validates :status, numericality: { only_integer: true }, presence: true
+
+      scope :by_relation, -> (relation) { where(relation: relation) }
+
+      state_machine :status, initial: :queued do
+        state :queued, value: 0
+        state :started, value: 1
+        state :finished, value: 2
+        state :failed, value: 3
+
+        event :start do
+          transition queued: :started
+        end
+
+        event :finish do
+          transition started: :finished
+        end
+
+        event :fail_op do
+          transition [:queued, :started] => :failed
+        end
+      end
+
+      def self.relation_names_list
+        project_tree_relation_names = ::Gitlab::ImportExport::Reader.new(shared: nil).project_relation_names.map(&:to_s)
+
+        project_tree_relation_names + EXTRA_RELATION_LIST
+      end
     end
   end
 end

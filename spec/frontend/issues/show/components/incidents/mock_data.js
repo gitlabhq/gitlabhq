@@ -72,10 +72,14 @@ export const timelineEventsQueryEmptyResponse = {
 };
 
 export const timelineEventsCreateEventResponse = {
-  timelineEvent: {
-    ...mockEvents[0],
+  data: {
+    timelineEventCreate: {
+      timelineEvent: {
+        ...mockEvents[0],
+      },
+      errors: [],
+    },
   },
-  errors: [],
 };
 
 export const timelineEventsCreateEventError = {
@@ -103,3 +107,21 @@ const timelineEventDeleteData = (errors = []) => {
 export const timelineEventsDeleteEventResponse = timelineEventDeleteData();
 
 export const timelineEventsDeleteEventError = timelineEventDeleteData(['Item does not exist']);
+
+export const mockGetTimelineData = {
+  project: {
+    id: 'gid://gitlab/Project/19',
+    incidentManagementTimelineEvents: {
+      nodes: [
+        {
+          id: 'gid://gitlab/IncidentManagement::TimelineEvent/8',
+          note: 'another one2',
+          noteHtml: '<p>another one2</p>',
+          action: 'comment',
+          occurredAt: '2022-07-01T12:47:00Z',
+          createdAt: '2022-07-20T12:47:40Z',
+        },
+      ],
+    },
+  },
+};

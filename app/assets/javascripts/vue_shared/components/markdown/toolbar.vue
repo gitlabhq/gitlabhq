@@ -74,7 +74,7 @@ export default {
     </div>
     <span v-if="canAttachFile" class="uploading-container">
       <span class="uploading-progress-container hide">
-        <gl-icon name="media" />
+        <gl-icon name="paperclip" />
         <span class="attaching-file-message"></span>
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <span class="uploading-progress">0%</span>
@@ -82,7 +82,7 @@ export default {
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
-          <gl-icon name="media" />
+          <gl-icon name="paperclip" />
         </span>
         <span class="uploading-error-message"></span>
 
@@ -113,14 +113,6 @@ export default {
           </template>
         </gl-sprintf>
       </span>
-      <gl-button
-        icon="media"
-        variant="link"
-        category="primary"
-        class="markdown-selector button-attach-file gl-vertical-align-text-bottom"
-      >
-        {{ __('Attach a file') }}
-      </gl-button>
       <gl-button
         variant="link"
         category="primary"

@@ -22,8 +22,8 @@ describe('Comment Field Layout Component', () => {
     confidential_issues_docs_path: CONFIDENTIAL_ISSUES_DOCS_PATH,
   };
 
-  const findIssuableNoteWarning = () => wrapper.find(NoteableWarning);
-  const findEmailParticipantsWarning = () => wrapper.find(EmailParticipantsWarning);
+  const findIssuableNoteWarning = () => wrapper.findComponent(NoteableWarning);
+  const findEmailParticipantsWarning = () => wrapper.findComponent(EmailParticipantsWarning);
   const findErrorAlert = () => wrapper.findByTestId('comment-field-alert-container');
 
   const createWrapper = (props = {}, slots = {}) => {

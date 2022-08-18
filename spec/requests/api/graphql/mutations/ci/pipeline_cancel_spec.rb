@@ -40,7 +40,7 @@ RSpec.describe 'PipelineCancel' do
     expect(build).not_to be_canceled
   end
 
-  it "cancels all cancelable builds from a pipeline" do
+  it 'cancels all cancelable builds from a pipeline', :sidekiq_inline do
     build = create(:ci_build, :running, pipeline: pipeline)
 
     post_graphql_mutation(mutation, current_user: user)

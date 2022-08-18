@@ -10,7 +10,6 @@ import {
   CLOSE_TO_LIMIT_MESSAGE,
   CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE,
   DANGER_ALERT_TITLE_PERSONAL_NAMESPACE,
-  WARNING_ALERT_TITLE_PERSONAL_NAMESPACE,
 } from '../constants';
 
 export default {
@@ -46,13 +45,6 @@ export default {
       return this.usersLimitDataset.purchasePath;
     },
     warningAlertTitle() {
-      if (this.usersLimitDataset.userNamespace) {
-        return sprintf(WARNING_ALERT_TITLE_PERSONAL_NAMESPACE, {
-          count: this.freeUsersLimit - this.membersCount,
-          members: this.pluralMembers(this.freeUsersLimit - this.membersCount),
-        });
-      }
-
       return sprintf(WARNING_ALERT_TITLE, {
         count: this.freeUsersLimit - this.membersCount,
         members: this.pluralMembers(this.freeUsersLimit - this.membersCount),

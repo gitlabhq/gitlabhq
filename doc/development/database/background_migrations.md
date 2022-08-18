@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 Background migrations are strongly discouraged in favor of the new [batched background migrations framework](batched_background_migrations.md).
-Please check that documentation and determine if that framework suits your needs and fall back
+Check that documentation and determine if that framework suits your needs and fall back
 to these only if required.
 
 Background migrations should be used to perform data migrations whenever a
@@ -368,9 +368,9 @@ A strategy to make the migration run faster is to schedule larger batches, and t
 within the background migration to perform multiple statements.
 
 The background migration helpers that queue multiple jobs such as
-`queue_background_migration_jobs_by_range_at_intervals` use [`EachBatch`](../iterating_tables_in_batches.md).
+`queue_background_migration_jobs_by_range_at_intervals` use [`EachBatch`](iterating_tables_in_batches.md).
 The example above has batches of 1000, where each queued job takes two seconds. If the query has been optimized
-to make the time for the delete statement within the [query performance guidelines](../query_performance.md),
+to make the time for the delete statement within the [query performance guidelines](query_performance.md),
 1000 may be the largest number of records that can be deleted in a reasonable amount of time.
 
 The minimum and most common interval for delaying jobs is two minutes. This results in two seconds

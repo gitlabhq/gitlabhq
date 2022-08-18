@@ -10,7 +10,7 @@ module BitbucketServer
       end
 
       def self.decorate(entries)
-        entries.map { |entry| new(entry)}
+        entries.map { |entry| new(entry) }
       end
 
       def self.convert_timestamp(time_usec)

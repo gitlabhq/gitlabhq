@@ -62,8 +62,8 @@ module Ci
       failed_archive_counter.increment
 
       Sidekiq.logger.warn(class: worker_name,
-        message: "Failed to archive trace. message: #{error.message}.",
-        job_id: job.id)
+                          message: "Failed to archive trace. message: #{error.message}.",
+                          job_id: job.id)
 
       Gitlab::ErrorTracking
         .track_and_raise_for_dev_exception(error,

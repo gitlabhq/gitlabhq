@@ -122,13 +122,15 @@ module Types
                        'Will not return saved replies if `saved_replies` feature flag is disabled.'
 
     field :gitpod_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Whether Gitpod is enabled at the user level.'
+                                                    description: 'Whether Gitpod is enabled at the user level.'
 
-    field :preferences_gitpod_path, GraphQL::Types::String, null: true,
+    field :preferences_gitpod_path,
+          GraphQL::Types::String,
+          null: true,
           description: 'Web path to the Gitpod section within user preferences.'
 
     field :profile_enable_gitpod_path, GraphQL::Types::String, null: true,
-          description: 'Web path to enable Gitpod for the user.'
+                                                               description: 'Web path to enable Gitpod for the user.'
 
     definition_methods do
       def resolve_type(object, context)

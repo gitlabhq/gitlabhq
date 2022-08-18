@@ -17,8 +17,8 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(project_id, recipients, push_data, options = {})
     options.symbolize_keys!
     options.reverse_merge!(
-      send_from_committer_email:  false,
-      disable_diffs:              false
+      send_from_committer_email: false,
+      disable_diffs: false
     )
     send_from_committer_email = options[:send_from_committer_email]
     disable_diffs = options[:disable_diffs]
@@ -64,14 +64,14 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
       send_email(
         recipient,
         project_id,
-        author_id:                 author_id,
-        ref:                       ref,
-        action:                    action,
-        compare:                   compare,
-        reverse_compare:           reverse_compare,
-        diff_refs:                 diff_refs,
+        author_id: author_id,
+        ref: ref,
+        action: action,
+        compare: compare,
+        reverse_compare: reverse_compare,
+        diff_refs: diff_refs,
         send_from_committer_email: send_from_committer_email,
-        disable_diffs:             disable_diffs
+        disable_diffs: disable_diffs
       )
 
     # These are input errors and won't be corrected even if Sidekiq retries

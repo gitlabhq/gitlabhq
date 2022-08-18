@@ -1,0 +1,13 @@
+---
+# Error: gitlab.VersionTextSingleLine
+#
+# Verifies that single-item version notes don't have a hyphen.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Version text with only a single item must not start with a hyphen.'
+link: https://docs.gitlab.com/ee/development/documentation/versions.html#add-a-version-history-item
+level: error
+scope: raw
+raw:
+  - '(\r|\n|\r\n){2}(> - .*)(\r|\n|\r\n){2}'

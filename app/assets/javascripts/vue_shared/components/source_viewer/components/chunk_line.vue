@@ -1,15 +1,14 @@
 <script>
-import { GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlSafeHtmlDirective } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { setAttributes } from '~/lib/utils/dom_utils';
 import { BIDI_CHARS, BIDI_CHARS_CLASS_LIST, BIDI_CHAR_TOOLTIP } from '../constants';
 
 export default {
-  components: {
-    GlLink,
-  },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     number: {
       type: Number,
@@ -20,6 +19,10 @@ export default {
       required: true,
     },
     language: {
+      type: String,
+      required: true,
+    },
+    blamePath: {
       type: String,
       required: true,
     },
@@ -35,9 +38,6 @@ export default {
       });
 
       return content;
-    },
-    firstLineClass() {
-      return { 'gl-mt-3!': this.number === 1 };
     },
   },
   methods: {
@@ -59,21 +59,26 @@ export default {
 </script>
 <template>
   <div class="gl-display-flex">
-    <div class="gl-p-0! gl-absolute gl-z-index-3 gl-border-r diff-line-num line-numbers">
-      <gl-link
+    <div
+      class="gl-p-0! gl-absolute gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
+    >
+      <a
+        v-if="glFeatures.fileLineBlame"
+        class="gl-user-select-none gl-shadow-none! file-line-blame"
+        :href="`${blamePath}#L${number}`"
+      ></a>
+      <a
         :id="`L${number}`"
-        class="gl-user-select-none gl-ml-5 gl-pr-3 gl-shadow-none! file-line-num diff-line-num"
-        :class="firstLineClass"
-        :to="`#L${number}`"
+        class="gl-user-select-none gl-shadow-none! file-line-num"
+        :href="`#L${number}`"
         :data-line-number="number"
       >
         {{ number }}
-      </gl-link>
+      </a>
     </div>
 
     <pre
-      class="gl-p-0! gl-w-full gl-overflow-visible! gl-ml-11! gl-border-none! code highlight gl-line-height-normal"
-      :class="firstLineClass"
+      class="gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-normal"
     ><code><span :id="`LC${number}`" v-safe-html="formattedContent" :lang="language" class="line" data-testid="content"></span></code></pre>
   </div>
 </template>

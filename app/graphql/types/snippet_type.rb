@@ -54,28 +54,28 @@ module Types
           null: false
 
     field :web_url, type: GraphQL::Types::String,
-          description: 'Web URL of the snippet.',
-          null: false
+                    description: 'Web URL of the snippet.',
+                    null: false
 
     field :raw_url, type: GraphQL::Types::String,
-          description: 'Raw URL of the snippet.',
-          null: false
+                    description: 'Raw URL of the snippet.',
+                    null: false
 
     field :blobs, type: Types::Snippets::BlobType.connection_type,
-          description: 'Snippet blobs.',
-          calls_gitaly: true,
-          null: true,
-          resolver: Resolvers::Snippets::BlobsResolver
+                  description: 'Snippet blobs.',
+                  calls_gitaly: true,
+                  null: true,
+                  resolver: Resolvers::Snippets::BlobsResolver
 
     field :ssh_url_to_repo, type: GraphQL::Types::String,
-          description: 'SSH URL to the snippet repository.',
-          calls_gitaly: true,
-          null: true
+                            description: 'SSH URL to the snippet repository.',
+                            calls_gitaly: true,
+                            null: true
 
     field :http_url_to_repo, type: GraphQL::Types::String,
-          description: 'HTTP URL to the snippet repository.',
-          calls_gitaly: true,
-          null: true
+                             description: 'HTTP URL to the snippet repository.',
+                             calls_gitaly: true,
+                             null: true
 
     markdown_field :description_html, null: true, method: :description
 

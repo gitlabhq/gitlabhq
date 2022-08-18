@@ -37,7 +37,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the template'
         optional :source_template_project_id, type: Integer,
-                 desc: 'The project id where a given template is being stored. This is useful when multiple templates from different projects have the same name'
+                                              desc: 'The project id where a given template is being stored. This is useful when multiple templates from different projects have the same name'
         optional :project, type: String, desc: 'The project name to use when expanding placeholders in the template. Only affects licenses'
         optional :fullname, type: String, desc: 'The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses'
       end

@@ -22,7 +22,6 @@ query accessTokensGetProjects(
       avatarUrl
     }
     pageInfo {
-      __typename
       ...PageInfo
     }
   }

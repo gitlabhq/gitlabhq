@@ -17,7 +17,7 @@ module Types
       @requires_argument = !!kwargs.delete(:requires_argument)
       @authorize = Array.wrap(kwargs.delete(:authorize))
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
-      @feature_flag = kwargs[:feature_flag]
+      @feature_flag = kwargs[:_deprecated_feature_flag]
       kwargs = check_feature_flag(kwargs)
       @deprecation = gitlab_deprecation(kwargs)
       after_connection_extensions = kwargs.delete(:late_extensions) || []
@@ -136,7 +136,7 @@ module Types
     end
 
     def check_feature_flag(args)
-      ff = args.delete(:feature_flag)
+      ff = args.delete(:_deprecated_feature_flag)
       return args unless ff.present?
 
       args[:description] = feature_documentation_message(ff, args[:description])

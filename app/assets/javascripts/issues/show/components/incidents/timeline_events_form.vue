@@ -1,21 +1,12 @@
 <script>
 import { GlDatepicker, GlFormInput, GlFormGroup, GlButton, GlIcon } from '@gitlab/ui';
-import { produce } from 'immer';
-import { sortBy } from 'lodash';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/graphql_shared/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { createAlert } from '~/flash';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
-import { sprintf } from '~/locale';
-import { getUtcShiftedDateNow } from './utils';
 import { timelineFormI18n } from './constants';
-
-import CreateTimelineEvent from './graphql/queries/create_timeline_event.mutation.graphql';
-import getTimelineEvents from './graphql/queries/get_timeline_events.query.graphql';
+import { getUtcShiftedDateNow } from './utils';
 
 export default {
-  name: 'IncidentTimelineEventForm',
+  name: 'TimelineEventsForm',
   restrictedToolBarItems: [
     'quote',
     'strikethrough',
@@ -38,112 +29,55 @@ export default {
   directives: {
     autofocusonshow,
   },
-  inject: ['fullPath', 'issuableId'],
   props: {
     hasTimelineEvents: {
       type: Boolean,
       required: true,
     },
+    isEventProcessed: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
-    // Create shifted date to force the datepicker to format in UTC
-    const utcShiftedDate = getUtcShiftedDateNow();
+    // if occurredAt is undefined, returns "now" in UTC
+    const placeholderDate = getUtcShiftedDateNow();
+
     return {
-      currentDate: utcShiftedDate,
-      currentHour: utcShiftedDate.getHours(),
-      currentMinute: utcShiftedDate.getMinutes(),
       timelineText: '',
-      createTimelineEventActive: false,
+      placeholderDate,
+      hourPickerInput: placeholderDate.getHours(),
+      minutePickerInput: placeholderDate.getMinutes(),
       datepickerTextInput: null,
     };
   },
+  computed: {
+    occurredAt() {
+      const [years, months, days] = this.datepickerTextInput.split('-');
+      const utcDate = new Date(
+        Date.UTC(years, months - 1, days, this.hourPickerInput, this.minutePickerInput),
+      );
+
+      return utcDate.toISOString();
+    },
+  },
   methods: {
     clear() {
-      const utcShiftedDate = getUtcShiftedDateNow();
-      this.currentDate = utcShiftedDate;
-      this.currentHour = utcShiftedDate.getHours();
-      this.currentMinute = utcShiftedDate.getMinutes();
-    },
-    hideIncidentTimelineEventForm() {
-      this.$emit('hide-incident-timeline-event-form');
+      const utcShiftedDateNow = getUtcShiftedDateNow();
+      this.placeholderDate = utcShiftedDateNow;
+      this.hourPickerInput = utcShiftedDateNow.getHours();
+      this.minutePickerInput = utcShiftedDateNow.getMinutes();
+      this.timelineText = '';
     },
     focusDate() {
       this.$refs.datepicker.$el.focus();
     },
-    updateCache(store, { data }) {
-      const { timelineEvent: event, errors } = data?.timelineEventCreate || {};
-
-      if (errors.length) {
-        return;
-      }
-
-      const variables = {
-        incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
-        fullPath: this.fullPath,
+    handleSave(addAnotherEvent) {
+      const eventDetails = {
+        note: this.timelineText,
+        occurredAt: this.occurredAt,
       };
-
-      const sourceData = store.readQuery({
-        query: getTimelineEvents,
-        variables,
-      });
-
-      const newData = produce(sourceData, (draftData) => {
-        const { nodes: draftEventList } = draftData.project.incidentManagementTimelineEvents;
-        draftEventList.push(event);
-        // ISOStrings sort correctly in lexical order
-        const sortedEvents = sortBy(draftEventList, 'occurredAt');
-        draftData.project.incidentManagementTimelineEvents.nodes = sortedEvents;
-      });
-
-      store.writeQuery({
-        query: getTimelineEvents,
-        variables,
-        data: newData,
-      });
-    },
-    createIncidentTimelineEvent(addOneEvent) {
-      this.createTimelineEventActive = true;
-      return this.$apollo
-        .mutate({
-          mutation: CreateTimelineEvent,
-          variables: {
-            input: {
-              incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
-              note: this.timelineText,
-              occurredAt: this.createDateString(),
-            },
-          },
-          update: this.updateCache,
-        })
-        .then(({ data = {} }) => {
-          const errors = data.timelineEventCreate?.errors;
-          if (errors.length) {
-            createAlert({
-              message: sprintf(this.$options.i18n.createError, { error: errors.join('. ') }, false),
-            });
-          }
-        })
-        .catch((error) => {
-          createAlert({
-            message: this.$options.i18n.createErrorGeneric,
-            captureError: true,
-            error,
-          });
-        })
-        .finally(() => {
-          this.createTimelineEventActive = false;
-          this.timelineText = '';
-          if (addOneEvent) {
-            this.hideIncidentTimelineEventForm();
-          }
-        });
-    },
-    createDateString() {
-      const [years, months, days] = this.datepickerTextInput.split('-');
-      const utcDate = new Date(
-        Date.UTC(years, months - 1, days, this.currentHour, this.currentMinute),
-      );
-      return utcDate.toISOString();
+      this.$emit('save-event', eventDetails, addAnotherEvent);
     },
   },
 };
@@ -165,7 +99,7 @@ export default {
         class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row datetime-picker"
       >
         <gl-form-group :label="__('Date')" class="gl-mt-5 gl-mr-5">
-          <gl-datepicker id="incident-date" #default="{ formattedDate }" v-model="currentDate">
+          <gl-datepicker id="incident-date" #default="{ formattedDate }" v-model="placeholderDate">
             <gl-form-input
               id="incident-date"
               ref="datepicker"
@@ -184,7 +118,7 @@ export default {
               <label label-for="timeline-input-hours" class="sr-only"></label>
               <gl-form-input
                 id="timeline-input-hours"
-                v-model="currentHour"
+                v-model="hourPickerInput"
                 data-testid="input-hours"
                 size="xs"
                 type="number"
@@ -194,7 +128,7 @@ export default {
               <label label-for="timeline-input-minutes" class="sr-only"></label>
               <gl-form-input
                 id="timeline-input-minutes"
-                v-model="currentMinute"
+                v-model="minutePickerInput"
                 class="gl-ml-3"
                 data-testid="input-minutes"
                 size="xs"
@@ -223,9 +157,10 @@ export default {
               <textarea
                 v-model="timelineText"
                 class="note-textarea js-gfm-input js-autosize markdown-area"
+                data-testid="input-note"
                 dir="auto"
                 data-supports-quick-actions="false"
-                :aria-label="__('Description')"
+                :aria-label="$options.i18n.description"
                 :placeholder="$options.i18n.areaPlaceholder"
               >
               </textarea>
@@ -238,26 +173,22 @@ export default {
           variant="confirm"
           category="primary"
           class="gl-mr-3"
-          :loading="createTimelineEventActive"
-          @click="createIncidentTimelineEvent(true)"
+          :loading="isEventProcessed"
+          @click="handleSave(false)"
         >
-          {{ __('Save') }}
+          {{ $options.i18n.save }}
         </gl-button>
         <gl-button
           variant="confirm"
           category="secondary"
           class="gl-mr-3 gl-ml-n2"
-          :loading="createTimelineEventActive"
-          @click="createIncidentTimelineEvent(false)"
+          :loading="isEventProcessed"
+          @click="handleSave(true)"
         >
           {{ $options.i18n.saveAndAdd }}
         </gl-button>
-        <gl-button
-          class="gl-ml-n2"
-          :disabled="createTimelineEventActive"
-          @click="hideIncidentTimelineEventForm"
-        >
-          {{ __('Cancel') }}
+        <gl-button class="gl-ml-n2" :disabled="isEventProcessed" @click="$emit('cancel')">
+          {{ $options.i18n.cancel }}
         </gl-button>
         <div class="gl-border-b gl-pt-5"></div>
       </gl-form-group>

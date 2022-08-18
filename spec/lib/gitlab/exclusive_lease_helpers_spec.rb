@@ -9,12 +9,12 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
   let(:unique_key) { SecureRandom.hex(10) }
 
   describe '#in_lock' do
-    subject { class_instance.in_lock(unique_key, **options) { } }
+    subject { class_instance.in_lock(unique_key, **options) {} }
 
     let(:options) { {} }
 
     context 'when unique key is not set' do
-      let(:unique_key) { }
+      let(:unique_key) {}
 
       it 'raises an error' do
         expect { subject }.to raise_error ArgumentError

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 In relational databases (including PostgreSQL), foreign keys provide a way to link
 two database tables together, and ensure data-consistency between them. In GitLab,
-[foreign keys](../foreign_keys.md) are vital part of the database design process.
+[foreign keys](foreign_keys.md) are vital part of the database design process.
 Most of our database tables have foreign keys.
 
 With the ongoing database [decomposition work](https://gitlab.com/groups/gitlab-org/-/epics/6168),
@@ -221,8 +221,8 @@ ON DELETE CASCADE;
 ```
 
 The migration must run after the `DELETE` trigger is installed and the loose
-foreign key definition is deployed. As such, it must be a [post-deployment
-migration](post_deployment_migrations.md) dated after the migration for the
+foreign key definition is deployed. As such, it must be a 
+[post-deployment migration](post_deployment_migrations.md) dated after the migration for the
 trigger. If the foreign key is deleted earlier, there is a good chance of
 introducing data inconsistency which needs manual cleanup:
 
@@ -251,8 +251,8 @@ When the loose foreign key definition is no longer needed (parent table is remov
 we need to remove the definition from the YAML file and ensure that we don't leave pending deleted
 records in the database.
 
-1. Remove the loose foreign key definition from the configuration (`config/gitlab_loose_foreign_keys.yml`).
 1. Remove the deletion tracking trigger from the parent table (if the parent table is still there).
+1. Remove the loose foreign key definition from the configuration (`config/gitlab_loose_foreign_keys.yml`).
 1. Remove leftover deleted records from the `loose_foreign_keys_deleted_records` table.
 
 Migration for removing the trigger:
@@ -395,8 +395,7 @@ We considered using these Rails features as an alternative to foreign keys but t
 For non-trivial objects that need to clean up data outside the
 database (for example, object storage) where you might wish to use `dependent: :destroy`,
 see alternatives in
-[Avoid `dependent: :nullify` and `dependent: :destroy` across
-databases](./multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
+[Avoid `dependent: :nullify` and `dependent: :destroy` across databases](multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
 
 ## Risks of loose foreign keys and possible mitigations
 

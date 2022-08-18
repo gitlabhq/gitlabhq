@@ -2,12 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Mutations::Ci::Runner::Update' do
+RSpec.describe Mutations::Ci::Runner::Update do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:runner) { create(:ci_runner, active: true, locked: false, run_untagged: true) }
-  let_it_be(:described_class) { Mutations::Ci::Runner::Update }
 
   let(:current_ctx) { { current_user: user } }
   let(:mutated_runner) { subject[:runner] }

@@ -103,7 +103,7 @@ module Gitlab
         return unless has_basic_credentials?(current_request)
 
         login, token = user_name_and_password(current_request)
-        user = User.by_login(login)
+        user = User.find_by_login(login)
 
         user if user && Gitlab::LfsToken.new(user).token_valid?(token)
       end

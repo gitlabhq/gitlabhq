@@ -20,7 +20,11 @@ module QA
           end
 
           def remove_content
-            text_area.send_keys([:command, 'a'], :backspace)
+            if page.driver.browser.capabilities.platform.include? "mac"
+              text_area.send_keys([:command, 'a'], :backspace)
+            else
+              text_area.send_keys([:control, 'a'], :backspace)
+            end
           end
 
           private

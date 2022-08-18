@@ -28,6 +28,7 @@ class Member < ApplicationRecord
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :member_namespace, inverse_of: :namespace_members, foreign_key: 'member_namespace_id', class_name: 'Namespace'
+  belongs_to :member_role
   has_one :member_task
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
@@ -58,6 +59,7 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
   validate :access_level_inclusion
+  validate :validate_member_role_access_level
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -428,6 +430,14 @@ class Member < ApplicationRecord
     errors.add(:access_level, "is not included in the list")
   end
 
+  def validate_member_role_access_level
+    return unless member_role_id
+
+    if access_level != member_role.base_access_level
+      errors.add(:member_role_id, _("role's base access level does not match the access level of the membership"))
+    end
+  end
+
   def send_invite
     # override in subclass
   end
@@ -455,6 +465,8 @@ class Member < ApplicationRecord
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
   # rubocop: disable CodeReuse/ServiceClass
+
+  # This method is overridden in the test environment, see stubbed_member.rb
   def refresh_member_authorized_projects(blocking:)
     UserProjectAccessChangedService.new(user_id).execute(blocking: blocking)
   end

@@ -65,7 +65,7 @@ describe('Alert Details Sidebar', () => {
         mountMethod: mount,
         alert: mockAlert,
       });
-      expect(wrapper.find(SidebarAssignees).exists()).toBe(true);
+      expect(wrapper.findComponent(SidebarAssignees).exists()).toBe(true);
     });
 
     it('should render side bar status dropdown', () => {
@@ -73,7 +73,7 @@ describe('Alert Details Sidebar', () => {
         mountMethod: mount,
         alert: mockAlert,
       });
-      expect(wrapper.find(SidebarStatus).exists()).toBe(true);
+      expect(wrapper.findComponent(SidebarStatus).exists()).toBe(true);
     });
   });
 });

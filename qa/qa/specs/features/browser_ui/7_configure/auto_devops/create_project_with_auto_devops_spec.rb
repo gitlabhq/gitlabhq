@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure',
-    only: { subdomain: :staging },
+    only: { subdomain: %i[staging staging-canary] },
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1198',
       type: :waiting_on

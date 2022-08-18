@@ -35,6 +35,10 @@ before we remove them.
 |-----------------------|--------------------------|
 | GitLab 15.0 or later  | OpenSearch 1.x or later  |
 
+If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
+a message is logged in the
+[`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file.
+
 If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [unpause indexing](#unpause-indexing).
 
 ## System requirements
@@ -53,7 +57,7 @@ each node should have:
 ## Install Elasticsearch
 
 Elasticsearch is *not* included in the Omnibus packages or when you install from
-source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
+source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
 
 You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
 service.
@@ -159,6 +163,12 @@ If you see an error such as `Permission denied - /home/git/gitlab-elasticsearch-
 may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to
 `/usr/local/bin/gitlab-elasticsearch-indexer`, which is where the binary is installed.
 
+### View indexing errors
+
+Errors from the [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer) are reported in
+the [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
+These errors may occur when indexing Git repository data.
+
 ## Enable Advanced Search
 
 For GitLab instances with more than 50GB repository data you can follow the instructions for [how to index large instances efficiently](#how-to-index-large-instances-efficiently) below.
@@ -212,7 +222,7 @@ The following Elasticsearch settings are available:
 | `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards`                      | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indices with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
 | `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value increases total disk space required by the index. |
-| `Limit the number of namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
+| `Limit the number of namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).|
 | `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Please refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | `AWS Region`                                          | The AWS region in which your OpenSearch Service is located. |
 | `AWS Access Key`                                      | The AWS access key. |
@@ -438,13 +448,13 @@ This should return something similar to:
 }
 ```
 
-In order to debug issues with the migrations you can check the [`elasticsearch.log` file](../../administration/logs.md#elasticsearchlog).
+In order to debug issues with the migrations you can check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog).
 
 ### Retry a halted migration
 
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
 it is halted and a notification is displayed in the Advanced Search integration settings.
-It is recommended to check the [`elasticsearch.log` file](../../administration/logs.md#elasticsearchlog) to
+It is recommended to check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog) to
 debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
 fixed the cause of the failure, select "Retry migration", and the migration is scheduled to be retried
 in the background.
@@ -462,8 +472,7 @@ Before doing a major version GitLab upgrade, you should have completed all
 migrations that exist up until the latest minor version before that major
 version. If you have halted migrations, these need to be resolved and
 [retried](#retry-a-halted-migration) before proceeding with a major version
-upgrade. Read more about [upgrading to a new major
-version](../../update/index.md#upgrading-to-a-new-major-version).
+upgrade. Read more about [upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
 
 ## GitLab Advanced Search Rake tasks
 
@@ -573,9 +582,9 @@ due to large volumes of data being indexed.
 
 WARNING:
 Indexing a large instance generates a lot of Sidekiq jobs.
-Make sure to prepare for this task by having a [Scalable and Highly Available
-Setup](../../administration/reference_architectures/index.md) or creating [extra
-Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
+Make sure to prepare for this task by having a
+[scalable setup](../../administration/reference_architectures/index.md) or creating
+[extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).
 1. Create empty indices:
@@ -774,8 +783,8 @@ additional process dedicated to indexing a set of queues (or queue group). This 
 ensure that indexing queues always have a dedicated worker, while the rest of the queues have
 another dedicated worker to avoid contention.
 
-For this purpose, use the [queue selector](../../administration/operations/extra_sidekiq_processes.md#queue-selector)
-option that allows a more general selection of queue groups using a [worker matching query](../../administration/operations/extra_sidekiq_routing.md#worker-matching-query).
+For this purpose, use the [queue selector](../../administration/sidekiq/extra_sidekiq_processes.md#queue-selector)
+option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/extra_sidekiq_routing.md#worker-matching-query).
 
 To handle these two queue groups, we generally recommend one of the following two options. You can either:
 
@@ -809,7 +818,7 @@ WARNING:
 When starting multiple processes, the number of processes cannot exceed the number of CPU
 cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
 to the available workload and concurrency settings. For more details, see how to
-[run multiple Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
+[run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 ### Two nodes, one process for each
 

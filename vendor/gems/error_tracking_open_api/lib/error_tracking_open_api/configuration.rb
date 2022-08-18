@@ -216,6 +216,13 @@ module ErrorTrackingOpenAPI
     # Returns Auth Settings hash for api client.
     def auth_settings
       {
+        'internalToken' =>
+          {
+            type: 'api_key',
+            in: 'header',
+            key: 'Gitlab-Error-Tracking-Token',
+            value: api_key_with_prefix('internalToken')
+          },
       }
     end
 

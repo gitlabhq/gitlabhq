@@ -196,7 +196,7 @@ module Gitlab
 
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
         with_duration do
-          if block_given?
+          if block
             yield
           else
             value
@@ -209,7 +209,7 @@ module Gitlab
 
       def redis_usage_data(counter = nil, &block)
         with_duration do
-          if block_given?
+          if block
             redis_usage_counter(&block)
           elsif counter.present?
             redis_usage_data_totals(counter)

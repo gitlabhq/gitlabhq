@@ -9,13 +9,13 @@ RSpec.describe 'doorkeeper access' do
 
   describe "unauthenticated" do
     it "returns authentication success" do
-      get api("/user"), params: { access_token: token.token }
+      get api("/user"), params: { access_token: token.plaintext_token }
       expect(response).to have_gitlab_http_status(:ok)
     end
 
     include_examples 'user login request with unique ip limit' do
       def request
-        get api('/user'), params: { access_token: token.token }
+        get api('/user'), params: { access_token: token.plaintext_token }
       end
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe 'doorkeeper access' do
 
   shared_examples 'forbidden request' do
     it 'returns 403 response' do
-      get api("/user"), params: { access_token: token.token }
+      get api("/user"), params: { access_token: token.plaintext_token }
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end

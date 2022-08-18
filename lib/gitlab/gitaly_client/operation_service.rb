@@ -44,8 +44,26 @@ module Gitlab
         end
 
         Gitlab::Git::Tag.new(@repository, response.tag)
-      rescue GRPC::FailedPrecondition => e
-        raise Gitlab::Git::Repository::InvalidRef, e
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
+        when :reference_exists
+          raise Gitlab::Git::Repository::TagExistsError
+        else
+          if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
+            raise Gitlab::Git::Repository::InvalidRef, e
+          end
+
+          raise
+        end
       end
 
       def user_create_branch(branch_name, user, start_point)
@@ -394,7 +412,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :operation_service,
                                      :user_commit_files, req_enum, timeout: GitalyClient.long_timeout,
-                                     remote_storage: start_repository.storage)
+                                     remote_storage: start_repository&.storage)
 
         if (pre_receive_error = response.pre_receive_error.presence)
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -517,7 +535,7 @@ module Gitlab
           commit_author_name: encode_binary(author_name),
           commit_author_email: encode_binary(author_email),
           start_branch_name: encode_binary(start_branch_name),
-          start_repository: start_repository.gitaly_repository,
+          start_repository: start_repository&.gitaly_repository,
           force: force,
           start_sha: encode_binary(start_sha),
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)

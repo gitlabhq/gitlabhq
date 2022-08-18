@@ -71,7 +71,7 @@ describe('Design management large image component', () => {
     image.trigger('error');
     await nextTick();
     expect(image.isVisible()).toBe(false);
-    expect(wrapper.find(GlIcon).element).toMatchSnapshot();
+    expect(wrapper.findComponent(GlIcon).element).toMatchSnapshot();
   });
 
   describe('zoom', () => {

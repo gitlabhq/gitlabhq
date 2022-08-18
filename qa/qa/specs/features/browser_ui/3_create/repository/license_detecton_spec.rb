@@ -28,16 +28,16 @@ module QA
       context 'on a project with a commonly used LICENSE',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366842' do
         it_behaves_like 'project license detection' do
-          let(:license_file_name) {'bsd-3-clause'}
-          let(:rendered_license_name) {'BSD 3-Clause "New" or "Revised" License'}
+          let(:license_file_name) { 'bsd-3-clause' }
+          let(:rendered_license_name) { 'BSD 3-Clause "New" or "Revised" License' }
         end
       end
 
       context 'on a project with a less commonly used LICENSE',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366843' do
         it_behaves_like 'project license detection' do
-          let(:license_file_name) {'GFDL-1.2-only'}
-          let(:rendered_license_name) {'Other'}
+          let(:license_file_name) { 'GFDL-1.2-only' }
+          let(:rendered_license_name) { 'Other' }
         end
       end
     end

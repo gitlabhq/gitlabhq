@@ -68,9 +68,9 @@ Check states using your browser's _styles inspector_ to toggle CSS pseudo-classe
 like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/css/reference/#pseudo-class),
 [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_and_edit_css/index.html#viewing-common-pseudo-classes)).
 
-- Account for all applicable states ([error](https://design.gitlab.com/content/error-messages),
+- Account for all applicable states ([error](https://design.gitlab.com/content/error-messages/),
   rest, loading, focus, hover, selected, disabled).
-- Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states),
+- Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states/),
   some data, and lots of data).
 - Account for states dependent on user role, user preferences, and subscription.
 - Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion/).
@@ -113,7 +113,7 @@ When the design is ready, _before_ starting its implementation:
 
 At any moment, but usually _during_ or _after_ the design's implementation:
 
-- Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contribute#contribute-an-issue)
+- Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contribute/#contribute-an-issue)
   for additions or enhancements to the design system.
 - Create issues with the [`~UX debt`](issue_workflow.md#technical-and-ux-debt)
   label for intentional deviations from the agreed-upon UX requirements due to

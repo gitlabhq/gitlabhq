@@ -23,7 +23,7 @@ describe('ActivityHistoryItem', () => {
   };
 
   const findHistoryItem = () => wrapper.findComponent(HistoryItem);
-  const findTimeAgo = () => wrapper.find(TimeAgoTooltip);
+  const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
   afterEach(() => {
     wrapper.destroy();

@@ -32,7 +32,8 @@
       "resolvable": { "type": "boolean" },
       "resolved_by": { "type": ["string", "null"] },
       "resolved_at": { "type": ["string", "null"] },
-      "confidential": { "type": ["boolean", "null"] }
+      "confidential": { "type": ["boolean", "null"] },
+      "internal": { "type": ["boolean", "null"] }
     },
     "required": [
       "id", "body", "attachment", "author", "created_at", "updated_at",

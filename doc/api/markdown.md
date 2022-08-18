@@ -1,12 +1,26 @@
 ---
-stage: Create
-group: Source Code
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Markdown API **(FREE)**
 
+Convert Markdown content to HTML.
+
 Available only in APIv4.
+
+## Required authentication
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `authenticate_markdown_api`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is enabled and authentication is required.
+To remove the requirement to authenticate, ask an administrator to
+[disable the feature flag](../administration/feature_flags.md) named `authenticate_markdown_api`.
+On GitLab.com, this feature is available.
+
+All API calls to the Markdown API must be [authenticated](index.md#authentication).
 
 ## Render an arbitrary Markdown document
 
@@ -18,10 +32,12 @@ POST /markdown
 | --------- | ------- | ------------- | ------------------------------------------ |
 | `text`    | string  | yes           | The Markdown text to render                |
 | `gfm`     | boolean | no            | Render text using GitLab Flavored Markdown. Default is `false` |
-| `project` | string  | no            | Use `project` as a context when creating references using GitLab Flavored Markdown. [Authentication](index.md#authentication) is required if a project is not public.  |
+| `project` | string  | no            | Use `project` as a context when creating references using GitLab Flavored Markdown  |
 
 ```shell
-curl --header Content-Type:application/json --data '{"text":"Hello world! :tada:", "gfm":true, "project":"group_example/project_example"}' "https://gitlab.example.com/api/v4/markdown"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type:application/json" \
+  --data '{"text":"Hello world! :tada:", "gfm":true, "project":"group_example/project_example"}' "https://gitlab.example.com/api/v4/markdown"
 ```
 
 Response example:

@@ -232,14 +232,14 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction do
       expect(connection).to receive(:execute).with('RESET idle_in_transaction_session_timeout; RESET lock_timeout').and_call_original
       expect(connection).to receive(:execute).with("SET lock_timeout TO '15ms'").and_call_original
 
-      subject.run { }
+      subject.run {}
     end
 
     it 'calls `sleep` after the first iteration fails, using the configured sleep time' do
       expect(subject).to receive(:run_block_with_lock_timeout).and_raise(ActiveRecord::LockWaitTimeout).twice
       expect(subject).to receive(:sleep).with(0.025)
 
-      subject.run { }
+      subject.run {}
     end
   end
 end

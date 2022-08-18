@@ -38,11 +38,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-pb-4">
-    <dt class="gl-mr-2">{{ label }}</dt>
-    <dd class="gl-mb-0">
-      <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-      <template v-if="value || $slots.value">
+  <div class="gl-display-contents">
+    <dt class="gl-mb-5 gl-mr-6 gl-max-w-26">{{ label }}</dt>
+    <dd class="gl-mb-5">
+      <template v-if="value || $scopedSlots.value">
         <slot name="value">{{ value }}</slot>
       </template>
       <span v-else class="gl-text-gray-500">{{ emptyValue }}</span>

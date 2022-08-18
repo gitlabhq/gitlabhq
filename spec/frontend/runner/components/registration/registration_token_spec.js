@@ -1,5 +1,5 @@
 import { GlToast } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RegistrationToken from '~/runner/components/registration/registration_token.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
@@ -11,28 +11,17 @@ describe('RegistrationToken', () => {
   let wrapper;
   let showToast;
 
+  Vue.use(GlToast);
+
   const findInputCopyToggleVisibility = () => wrapper.findComponent(InputCopyToggleVisibility);
 
-  const vueWithGlToast = () => {
-    const localVue = createLocalVue();
-    localVue.use(GlToast);
-    return localVue;
-  };
-
-  const createComponent = ({
-    props = {},
-    withGlToast = true,
-    mountFn = shallowMountExtended,
-  } = {}) => {
-    const localVue = withGlToast ? vueWithGlToast() : undefined;
-
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RegistrationToken, {
       propsData: {
         value: mockToken,
         inputId: 'token-value',
         ...props,
       },
-      localVue,
     });
 
     showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
@@ -68,14 +57,6 @@ describe('RegistrationToken', () => {
 
       expect(showToast).toHaveBeenCalledTimes(1);
       expect(showToast).toHaveBeenCalledWith('Registration token copied!');
-    });
-
-    it('does not fail when toast is not defined', () => {
-      createComponent({ withGlToast: false });
-      findInputCopyToggleVisibility().vm.$emit('copy');
-
-      // This block also tests for unhandled errors
-      expect(showToast).toBeNull();
     });
   });
 });

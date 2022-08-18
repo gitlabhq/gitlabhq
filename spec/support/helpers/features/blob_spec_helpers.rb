@@ -11,12 +11,4 @@ module BlobSpecHelpers
   def unset_default_button
     set_default_button('')
   end
-
-  def editor_value
-    evaluate_script('monaco.editor.getModels()[0].getValue()')
-  end
-
-  def set_editor_value(value)
-    execute_script("monaco.editor.getModels()[0].setValue('#{value}')")
-  end
 end

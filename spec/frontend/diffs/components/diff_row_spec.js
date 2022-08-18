@@ -239,7 +239,7 @@ describe('DiffRow', () => {
       const coverage = wrapper.find('.line-coverage.right-side');
 
       expect(coverage.attributes('title')).toContain('Test coverage: 5 hits');
-      expect(coverage.classes('coverage')).toBeTruthy();
+      expect(coverage.classes('coverage')).toBe(true);
     });
 
     it('for lines without coverage', () => {
@@ -248,7 +248,7 @@ describe('DiffRow', () => {
       const coverage = wrapper.find('.line-coverage.right-side');
 
       expect(coverage.attributes('title')).toContain('No test coverage');
-      expect(coverage.classes('no-coverage')).toBeTruthy();
+      expect(coverage.classes('no-coverage')).toBe(true);
     });
 
     it('for unknown lines', () => {
@@ -256,9 +256,9 @@ describe('DiffRow', () => {
       wrapper = createWrapper({ props, state: { coverageFiles } });
       const coverage = wrapper.find('.line-coverage.right-side');
 
-      expect(coverage.attributes('title')).toBeFalsy();
-      expect(coverage.classes('coverage')).toBeFalsy();
-      expect(coverage.classes('no-coverage')).toBeFalsy();
+      expect(coverage.attributes('title')).toBeUndefined();
+      expect(coverage.classes('coverage')).toBe(false);
+      expect(coverage.classes('no-coverage')).toBe(false);
     });
   });
 

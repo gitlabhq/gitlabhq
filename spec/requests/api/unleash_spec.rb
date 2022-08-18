@@ -8,8 +8,8 @@ RSpec.describe API::Unleash do
   let_it_be(:project, refind: true) { create(:project) }
 
   let(:project_id) { project.id }
-  let(:params) { }
-  let(:headers) { }
+  let(:params) {}
+  let(:headers) {}
 
   shared_examples 'authenticated request' do
     context 'when using instance id' do
@@ -57,7 +57,7 @@ RSpec.describe API::Unleash do
 
     context 'when using header' do
       let(:client) { create(:operations_feature_flags_client, project: project) }
-      let(:headers) { { "UNLEASH-INSTANCEID" => client.token }}
+      let(:headers) { { "UNLEASH-INSTANCEID" => client.token } }
 
       it 'responds with OK' do
         subject

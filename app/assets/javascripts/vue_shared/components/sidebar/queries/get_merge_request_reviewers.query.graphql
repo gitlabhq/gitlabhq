@@ -1,0 +1,26 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    issuable: mergeRequest(iid: $iid) {
+      id
+      reviewers {
+        nodes {
+          ...User
+          ...UserAvailability
+          mergeRequestInteraction {
+            canMerge
+            canUpdate
+            approved
+            reviewed
+          }
+        }
+      }
+      userPermissions {
+        updateMergeRequest
+      }
+    }
+  }
+}

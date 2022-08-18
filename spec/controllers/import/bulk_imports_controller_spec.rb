@@ -245,11 +245,11 @@ RSpec.describe Import::BulkImportsController do
         let(:bulk_import_params) do
           [{ "source_type" => "group_entity",
              "source_full_path" => "full_path",
-             "destination_name" => "destination_name",
+             "destination_slug" => "destination_name",
              "destination_namespace" => "root" },
            { "source_type" => "group_entity2",
              "source_full_path" => "full_path2",
-             "destination_name" => "destination_name2",
+             "destination_slug" => "destination_name2",
              "destination_namespace" => "root" }]
         end
 
@@ -258,7 +258,7 @@ RSpec.describe Import::BulkImportsController do
           session[:bulk_import_gitlab_url] = instance_url
         end
 
-        it 'executes BulkImpors::CreateService' do
+        it 'executes BulkImports::CreateService' do
           error_response = ServiceResponse.error(message: 'Record invalid', http_status: :unprocessable_entity)
 
           expect_next_instance_of(
@@ -275,6 +275,38 @@ RSpec.describe Import::BulkImportsController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq([{ "success" => true, "id" => bulk_import.id, "message" => nil },
                                        { "success" => false, "id" => nil, "message" => "Record invalid" }])
+        end
+
+        context 'when entity destination_name is specified' do
+          let(:bulk_import_params) do
+            [
+              {
+                "source_type" => "group_entity",
+                "source_full_path" => "full_path",
+                "destination_name" => "destination_name",
+                "destination_namespace" => "root"
+              }
+            ]
+          end
+
+          it 'replaces destination_name with destination_slug and executes BulkImports::CreateService' do
+            entity = {
+              "source_type" => "group_entity",
+              "source_full_path" => "full_path",
+              "destination_slug" => "destination_name",
+              "destination_namespace" => "root"
+            }
+
+            expect_next_instance_of(
+              ::BulkImports::CreateService, user, entity, { url: instance_url, access_token: pat }) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
+            end
+
+            post :create, params: { bulk_import: bulk_import_params }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to match_array([{ "success" => true, "id" => bulk_import.id, "message" => nil }])
+          end
         end
       end
     end

@@ -1,5 +1,13 @@
 <script>
-import { GlAlert, GlButton, GlDrawer, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlDrawer,
+  GlFormCheckbox,
+  GlFormGroup,
+  GlFormInput,
+  GlFormSelect,
+} from '@gitlab/ui';
 import { get as getPropValueByPath, isEmpty } from 'lodash';
 import { produce } from 'immer';
 import { MountingPortal } from 'portal-vue';
@@ -26,6 +34,7 @@ export default {
     GlAlert,
     GlButton,
     GlDrawer,
+    GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
     GlFormSelect,
@@ -113,7 +122,9 @@ export default {
       const { fields, model } = this;
 
       return fields.some((field) => {
-        return field.required && isEmpty(model[field.name]);
+        return (
+          field.required && isEmpty(model[field.name]) && typeof model[field.name] !== 'boolean'
+        );
       });
     },
     variables() {
@@ -216,6 +227,8 @@ export default {
       });
     },
     getFieldLabel(field) {
+      if (field.bool) return null;
+
       const optionalSuffix = field.required ? '' : ` ${MSG_OPTIONAL}`;
       return field.label + optionalSuffix;
     },
@@ -273,6 +286,9 @@ export default {
             v-model="model[field.name]"
             :options="field.values"
           />
+          <gl-form-checkbox v-else-if="field.bool" :id="field.name" v-model="model[field.name]"
+            ><span class="gl-font-weight-bold">{{ field.label }}</span></gl-form-checkbox
+          >
           <gl-form-input v-else :id="field.name" v-bind="field.input" v-model="model[field.name]" />
         </gl-form-group>
         <span class="gl-float-right">

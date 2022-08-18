@@ -12,7 +12,7 @@ module Gitlab
         expose_attribute :oid, :link, :size
 
         # Builds a lfs_object
-        def self.from_api_response(lfs_object)
+        def self.from_api_response(lfs_object, additional_data = {})
           new(
             oid: lfs_object.oid,
             link: lfs_object.link,

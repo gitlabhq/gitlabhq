@@ -40,6 +40,10 @@ is invalid, a tip is shown to help you fix the problem:
 
 ## Lint CI configuration
 
+NOTE:
+The **Lint** tab is replaced with the **Validate** tab in GitLab 15.3. The lint results are included
+in a successful [pipeline simulation](#simulate-a-cicd-pipeline).
+
 To test the validity of your GitLab CI/CD configuration before committing the changes,
 you can use the CI lint tool. To access it, go to **CI/CD > Editor** and select the **Lint** tab.
 
@@ -50,6 +54,15 @@ The results are updated in real-time. Any changes you make to the configuration 
 reflected in the CI lint. It displays the same results as the existing [CI Lint tool](../lint.md).
 
 ![Linting errors in a CI configuration](img/pipeline_editor_lint_v13_8.png)
+
+## Simulate a CI/CD pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
+
+To look for pipeline syntax and logic issues, you can simulate the creation of a
+GitLab CI/CD pipeline in the **Validate** tab. A pipeline simulation can help find
+problems such as incorrect `rules` and `needs` job dependencies, and is similar to
+simulations in the [CI Lint tool](../lint.md#simulate-a-pipeline).
 
 ## View included CI/CD configuration
 

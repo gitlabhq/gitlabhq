@@ -34,8 +34,8 @@ class EnvironmentSerializer < BaseSerializer
   # rubocop: disable CodeReuse/ActiveRecord
   def itemize(resource)
     items = resource.order('folder ASC')
-      .group('COALESCE(environment_type, name)')
-      .select('COALESCE(environment_type, name) AS folder',
+      .group('COALESCE(environment_type, id::text)', 'COALESCE(environment_type, name)')
+      .select('COALESCE(environment_type, id::text), COALESCE(environment_type, name) AS folder',
               'COUNT(*) AS size', 'MAX(id) AS last_id')
 
     # It makes a difference when you call `paginate` method, because
@@ -54,11 +54,7 @@ class EnvironmentSerializer < BaseSerializer
   def batch_load(resource)
     temp_deployment_associations = deployment_associations
 
-    resource = resource.preload(environment_associations.except(:last_deployment, :upcoming_deployment))
-
-    if ::Feature.enabled?(:batch_load_environment_last_deployment_group, resource.first&.project)
-      temp_deployment_associations[:deployable][:pipeline][:latest_successful_builds] = []
-    end
+    resource = resource.preload(environment_associations)
 
     Preloaders::Environments::DeploymentPreloader.new(resource)
       .execute_with_union(:last_deployment, temp_deployment_associations)
@@ -72,18 +68,14 @@ class EnvironmentSerializer < BaseSerializer
         environment.last_deployment&.commit&.try(:lazy_author)
         environment.upcoming_deployment&.commit&.try(:lazy_author)
 
-        if ::Feature.enabled?(:batch_load_environment_last_deployment_group, environment.project)
-          # Batch loading last_deployment_group which is called later by environment.stop_actions
-          environment.last_deployment_group
-        end
+        # Batch loading last_deployment_group which is called later by environment.stop_actions
+        environment.last_deployment_group
       end
     end
   end
 
   def environment_associations
     {
-      last_deployment: deployment_associations,
-      upcoming_deployment: deployment_associations,
       project: project_associations
     }
   end
@@ -101,7 +93,8 @@ class EnvironmentSerializer < BaseSerializer
         metadata: [],
         pipeline: {
           manual_actions: [:metadata, :deployment],
-          scheduled_actions: [:metadata]
+          scheduled_actions: [:metadata],
+          latest_successful_builds: []
         },
         project: project_associations,
         deployment: []

@@ -290,7 +290,6 @@ export default {
         <template v-else>
           <reply-placeholder
             v-if="!isFormVisible"
-            class="qa-discussion-reply"
             :placeholder-text="__('Reply…')"
             @focus="showForm"
           />

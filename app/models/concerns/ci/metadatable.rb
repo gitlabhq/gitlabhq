@@ -20,6 +20,8 @@ module Ci
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
       delegate :environment_auto_stop_in, to: :metadata, prefix: false, allow_nil: true
       delegate :set_cancel_gracefully, to: :metadata, prefix: false, allow_nil: false
+      delegate :id_tokens, to: :metadata, allow_nil: true
+
       before_create :ensure_metadata
     end
 
@@ -75,6 +77,14 @@ module Ci
 
     def interruptible=(value)
       ensure_metadata.interruptible = value
+    end
+
+    def id_tokens?
+      !!metadata&.id_tokens?
+    end
+
+    def id_tokens=(value)
+      ensure_metadata.id_tokens = value
     end
 
     private

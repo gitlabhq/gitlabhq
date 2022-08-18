@@ -2,6 +2,7 @@
 
 require 'action_dispatch/testing/test_request'
 require 'fileutils'
+require 'graphlyte'
 
 require_relative '../../../lib/gitlab/popen'
 
@@ -47,13 +48,31 @@ module JavaScriptFixturesHelpers
     path = Rails.root / base / query_path
     queries = Gitlab::Graphql::Queries.find(path)
     if queries.length == 1
-      queries.first.text(mode: Gitlab.ee? ? :ee : :ce )
+      query = queries.first.text(mode: Gitlab.ee? ? :ee : :ce )
+      inflate_query_with_typenames(query)
     else
       raise "Could not find query file at #{path}, please check your query_path" % path
     end
   end
 
   private
+
+  # Private: Parse a GraphQL query and inflate the fields with a __typename
+  #
+  # query - the GraqhQL query to parse
+  def inflate_query_with_typenames(query, doc: Graphlyte.parse(query))
+    typename_editor.edit(doc)
+
+    doc.to_s
+  end
+
+  def typename_editor
+    typename = Graphlyte::Syntax::Field.new(name: '__typename')
+
+    @editor ||= Graphlyte::Editor.new.on_field do |field|
+      field.selection << typename unless field.selection.empty? || field.selection.map(&:name).include?('__typename')
+    end
+  end
 
   # Private: Store a response object as fixture file
   #

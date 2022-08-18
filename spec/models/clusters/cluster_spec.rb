@@ -1278,14 +1278,14 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
         context 'generic timeout' do
           let(:connection_status) { { connection_status: :unreachable, connection_error: :http_error } }
-          let(:error_message) { 'Timed out connecting to server'}
+          let(:error_message) { 'Timed out connecting to server' }
 
           it { is_expected.to eq(**connection_status, **expected_nodes) }
         end
 
         context 'gateway timeout' do
           let(:connection_status) { { connection_status: :unreachable, connection_error: :http_error } }
-          let(:error_message) { '504 Gateway Timeout for GET https://kubernetes.example.com/api/v1'}
+          let(:error_message) { '504 Gateway Timeout for GET https://kubernetes.example.com/api/v1' }
 
           it { is_expected.to eq(**connection_status, **expected_nodes) }
         end

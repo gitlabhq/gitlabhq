@@ -69,6 +69,8 @@ module Gitlab
           object.noteable_id
         elsif object.respond_to?(:iid)
           object.iid
+        elsif object.respond_to?(:issuable_id)
+          object.issuable_id
         else
           raise(
             TypeError,

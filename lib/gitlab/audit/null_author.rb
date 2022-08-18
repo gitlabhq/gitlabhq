@@ -24,6 +24,8 @@ module Gitlab
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)
         elsif id == -2
           Gitlab::Audit::DeployTokenAuthor.new(name: name)
+        elsif id == -3
+          Gitlab::Audit::DeployKeyAuthor.new(name: name)
         else
           Gitlab::Audit::DeletedAuthor.new(id: id, name: name)
         end

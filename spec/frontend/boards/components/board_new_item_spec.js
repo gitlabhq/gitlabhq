@@ -44,7 +44,7 @@ describe('BoardNewItem', () => {
       it('finds an enabled create button', async () => {
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
 
-        wrapper.find(GlFormInput).vm.$emit('input', 'hello');
+        wrapper.findComponent(GlFormInput).vm.$emit('input', 'hello');
         await nextTick();
 
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(false);
@@ -53,7 +53,7 @@ describe('BoardNewItem', () => {
 
     describe('when the user types in a string with only spaces', () => {
       it('disables the Create Issue button', async () => {
-        wrapper.find(GlFormInput).vm.$emit('input', '    ');
+        wrapper.findComponent(GlFormInput).vm.$emit('input', '    ');
 
         await nextTick();
 
@@ -93,7 +93,7 @@ describe('BoardNewItem', () => {
         titleInput().setValue('Foo');
         await glForm().trigger('submit');
 
-        expect(wrapper.emitted('form-submit')).toBeTruthy();
+        expect(wrapper.emitted('form-submit')).toHaveLength(1);
         expect(wrapper.emitted('form-submit')[0]).toEqual([
           {
             title: 'Foo',
@@ -131,7 +131,7 @@ describe('BoardNewItem', () => {
         await glForm().trigger('reset');
 
         expect(titleInput().element.value).toBe('');
-        expect(wrapper.emitted('form-cancel')).toBeTruthy();
+        expect(wrapper.emitted('form-cancel')).toHaveLength(1);
       });
     });
   });

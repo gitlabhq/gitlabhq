@@ -11,7 +11,7 @@
   padding-right: $gutter_collapsed_width;
   background: $white;
   border-top: 1px solid $border-color;
-  transition: padding $sidebar-transition-duration;
+  transition: padding $gl-transition-duration-medium;
 
   .page-with-icon-sidebar & {
     padding-left: $contextual-sidebar-collapsed-width;

@@ -17,7 +17,7 @@ module Users
     end
 
     def execute(validate: true, check_password: false, &block)
-      yield(@user) if block_given?
+      yield(@user) if block
 
       user_exists = @user.persisted?
       @user.user_detail # prevent assignment

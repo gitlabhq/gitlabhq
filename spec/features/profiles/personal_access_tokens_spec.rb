@@ -146,12 +146,6 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     end
   end
 
-  it 'pushes `personal_access_tokens_scoped_to_projects` feature flag to the frontend' do
-    visit profile_personal_access_tokens_path
-
-    expect(page).to have_pushed_frontend_feature_flags(personalAccessTokensScopedToProjects: true)
-  end
-
   it "prefills token details" do
     name = 'My PAT'
     scopes = 'api,read_user'

@@ -170,13 +170,16 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the feature flag. |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
-| `milestone`         | no       | Milestone in which the feature was added.                      |
+| `milestone`         | no       | Milestone in which the feature flag was created. |
 | `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
 NOTE:
 All validations are skipped when running in `RAILS_ENV=production`.
 
 ## Create a new feature flag
+
+NOTE:
+GitLab Pages uses [a different process](../pages/index.md#feature-flags) for feature flags.
 
 The GitLab codebase provides [`bin/feature-flag`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/feature-flag),
 a dedicated tool to create new feature flag definitions.
@@ -422,6 +425,21 @@ Feature.enabled?(:a_feature, project) && Feature.disabled?(:a_feature_override, 
 /chatops run feature set a_feature true
 /chatops run feature set --project=gitlab-org/gitlab a_feature_override true
 ```
+
+#### Percentage-based actor selection
+
+When using the percentage rollout of actors on multiple feature flags, the actors for each feature flag are selected separately.
+
+For example, the following feature flags are enabled for a certain percentage of actors:
+
+```plaintext
+/chatops run chatops feature set feature-set-1 25 --actors
+/chatops run chatops feature set feature-set-2 25 --actors
+```
+
+If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.
+
+For more detail, see [This is how percentages work in Flipper](https://www.hackwithpassion.com/this-is-how-percentages-work-in-flipper).
 
 #### Use actors for verifying in production
 

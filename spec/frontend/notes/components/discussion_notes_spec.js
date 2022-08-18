@@ -61,13 +61,13 @@ describe('DiscussionNotes', () => {
     it('renders an element for each note in the discussion', () => {
       createComponent();
       const notesCount = discussionMock.notes.length;
-      const els = wrapper.findAll(NoteableNote);
+      const els = wrapper.findAllComponents(NoteableNote);
       expect(els.length).toBe(notesCount);
     });
 
     it('renders one element if replies groupping is enabled', () => {
       createComponent({ shouldGroupReplies: true });
-      const els = wrapper.findAll(NoteableNote);
+      const els = wrapper.findAllComponents(NoteableNote);
       expect(els.length).toBe(1);
     });
 

@@ -74,7 +74,7 @@ to your project's settings through the gear icon in the top right, and then
 navigating to **Pages**. Select the **Remove pages** button to delete your Pages
 website.
 
-![Remove pages](img/remove_pages.png)
+![Remove pages](img/remove_pages_v15_3.png)
 
 ## Subdomains of subdomains
 
@@ -296,9 +296,6 @@ Files listed under the public directory can be accessed through the Pages URL fo
 A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is enabled, and a user
 navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
-
-For Geo instances, 404 errors on Pages occur after promoting a secondary to a primary.
-Find more details in the [Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node)
 
 ### Cannot play media content on Safari
 

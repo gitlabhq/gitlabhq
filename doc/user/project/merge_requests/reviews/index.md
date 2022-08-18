@@ -36,13 +36,9 @@ To start your review:
 1. Select the **{comment}** **comment** icon in the gutter to expand the diff lines
    and display a comment box. In GitLab version 13.2 and later, you can
    [select multiple lines](#comment-on-multiple-lines).
-1. Write your first comment, and select **Start a review** below your comment:
-   ![Starting a review](img/mr_review_start.png)
-1. Continue adding comments to lines of code, and select the appropriate button after
-   you write a comment:
-   - **Add to review**: Keep this comment private and add to the current review.
-     These review comments are marked **Pending** and are visible only to you.
-   - **Add comment now**: Submits the specific comment as a regular comment instead of as part of the review.
+1. In the text area, write your first comment, then select **Start a review** below your comment.
+1. Continue adding comments to lines of code. After each comment, select **Add to review**.
+   Comments made as part of a review are visible only to you until you submit your review.
 1. Optional. You can use [quick actions](../../quick_actions.md) inside review comments.
    The comment shows the actions to perform after publication, but does not perform them
    until you submit your review.
@@ -60,8 +56,12 @@ displays next to your name.
 You can submit your completed review in multiple ways:
 
 - Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
-- When creating a review comment, select **Submit review**.
-- Scroll to the bottom of the screen and select **Submit review**.
+- Select **Finish review** and then **Submit review** in the footer at the bottom of the screen.
+
+Selecting **Finish review** opens a modal window to add an optional comment to summarize your review.
+You can also include quick actions:
+
+![Finish review with comment](img/mr_summary_comment_v15_3.png)
 
 When you submit your review, GitLab:
 
@@ -73,25 +73,25 @@ When you submit your review, GitLab:
 ### Resolve or unresolve thread with a comment
 
 Review comments can also resolve or unresolve [resolvable threads](../../../discussions/index.md#resolve-a-thread).
-When replying to a comment, a checkbox is displayed to resolve or unresolve
-the thread after publication.
+To resolve or unresolve a thread when replying to a comment:
 
-![Resolve checkbox](img/mr_review_resolve.png)
+1. In the comment text area, write your comment.
+1. Select or clear **Resolve thread**.
+1. Select **Add comment now** or **Add to review**.
 
-If a particular pending comment resolves or unresolves the thread, this is shown on the pending
-comment itself.
+Pending comments display information about the action to be taken when the comment is published:
 
-![Resolve status](img/mr_review_resolve2.png)
-
-![Unresolve status](img/mr_review_unresolve.png)
+- **{check-circle-filled}** Thread will be resolved.
+- **{check-circle}** Thread stays unresolved.
 
 ### Add a new comment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
 
-If you have a review in progress, you are presented with the option to **Add to review**:
+If you have a review in progress, you can also add a comment from the **Overview** tab by selecting
+ **Add to review**:
 
-![New thread](img/mr_review_new_comment_v13_11.png)
+![New thread](img/mr_review_new_comment_v15_3.png)
 
 ### Approval Rule information for Reviewers **(PREMIUM)**
 

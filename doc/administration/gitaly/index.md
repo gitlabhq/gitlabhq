@@ -70,7 +70,7 @@ the current status of these issues, please refer to the referenced issues and ep
 
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
-| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. Work is in-progress to update Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485), which is expected to resolve the issue.                                                                                                                                                                                                                                          | No known solution at this time. |
+| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | No known solution prior to GitLab 15.0. In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths-gitlab-150-and-later). In GitLab 15.3, the feature flag is enabled by default. |
 | Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
 
@@ -80,15 +80,30 @@ Gitaly Cluster does not support snapshot backups. Snapshot backups can cause iss
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
 during a restore, we recommend using the [official backup and restore Rake tasks](../../raketasks/backup_restore.md).
 
-If you are unable to use this method, please contact customer support for restoration help.
+The [incremental backup method](../../raketasks/backup_gitlab.md#incremental-repository-backups)
+can be used to speed up Gitaly Cluster backups.
 
-We are tracking in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) improvements to the
-[official backup and restore Rake tasks](../../raketasks/backup_restore.md) to add support for incremental backups. For
-more information, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/2094).
+If you are unable to use either method, please contact customer support for restoration help.
 
 ### What to do if you are on Gitaly Cluster experiencing an issue or limitation
 
 Please contact customer support for immediate help in restoration or recovery.
+
+## Directly accessing repositories
+
+GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client or any other tool,
+because Gitaly is being continuously improved and changed. These improvements may invalidate
+your assumptions, resulting in performance degradation, instability, and even data loss. For example:
+
+- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
+  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
+  interface.
+- [Gitaly Cluster](#gitaly-cluster) has optimizations, such as fault tolerance and
+  [distributed reads](#distributed-reads), that depend on the gRPC interface and database
+  to determine repository state.
+
+WARNING:
+Accessing Git repositories directly is done at your own risk and is not supported.
 
 ## Gitaly
 
@@ -140,6 +155,11 @@ Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be
 best suited by using Gitaly Cluster.
+
+### Backing up repositories
+
+When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../raketasks/backup_restore.md#prevent-writes-and-copy-the-git-repository-data)
+while copying repository data.
 
 ## Gitaly Cluster
 
@@ -297,11 +317,12 @@ follow the [hashed storage](../repository_storage_types.md#hashed-storage) schem
 
 #### Praefect-generated replica paths (GitLab 15.0 and later)
 
-> Introduced in GitLab 15.0 behind [a feature flag](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.0 [with a flag](../feature_flags.md) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.2.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4809) in GitLab 15.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md)
-named `gitaly_praefect_generated_replica_paths`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../feature_flags.md) named `gitaly_praefect_generated_replica_paths`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 
 When Gitaly Cluster creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
 internal to Gitaly Cluster and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster and later moved
@@ -525,12 +546,9 @@ To upgrade a Gitaly Cluster, follow the documentation for
 
 ### Downgrade Gitaly Cluster to a previous version
 
-If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted. In a cluster with:
+If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted.
 
-- A single Praefect node, this happens when GitLab itself is downgraded.
-- Multiple Praefect nodes, additional steps are required.
-
-To downgrade a Gitaly Cluster with multiple Praefect nodes:
+To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
 
 1. Stop the Praefect service on all Praefect nodes:
 
@@ -565,7 +583,7 @@ To downgrade a Gitaly Cluster with multiple Praefect nodes:
    gitlab-ctl start praefect
    ```
 
-## Migrate to Gitaly Cluster
+### Migrate to Gitaly Cluster
 
 WARNING:
 Some [known issues](#known-issues) exist in Gitaly Cluster. Review the following information before you continue.
@@ -587,7 +605,7 @@ To migrate to Gitaly Cluster:
 Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
-## Migrate off Gitaly Cluster
+### Migrate off Gitaly Cluster
 
 If the limitations and tradeoffs of Gitaly Cluster are found to be not suitable for your environment, you can Migrate
 off Gitaly Cluster to a sharded Gitaly instance:
@@ -595,22 +613,6 @@ off Gitaly Cluster to a sharded Gitaly instance:
 1. Create and configure a new [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
-
-## Do not bypass Gitaly
-
-GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client,
-because Gitaly is being continuously improved and changed. These improvements may invalidate
-your assumptions, resulting in performance degradation, instability, and even data loss. For example:
-
-- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
-  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
-  interface.
-- [Gitaly Cluster](#gitaly-cluster) has optimizations, such as fault tolerance and
-  [distributed reads](#distributed-reads), that depend on the gRPC interface and database
-  to determine repository state.
-
-WARNING:
-Accessing Git repositories directly is done at your own risk and is not supported.
 
 ## Direct access to Git in GitLab
 
@@ -683,8 +685,12 @@ To see if GitLab can access the repository file system directly, we use the foll
 - GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
   assume we have direct access.
 
-Direct Git access is enable by default in Omnibus GitLab because it fills in the correct repository
-paths in the GitLab configuration file `config/gitlab.yml`. This satisfies the UUID check.
+Versions of GitLab 15.3 and later disable direct Git access by default.
+
+For versions of GitLab prior to 15.3, direct Git access is enabled by
+default in Omnibus GitLab because it fills in the correct repository
+paths in the GitLab configuration file `config/gitlab.yml`. This
+satisfies the UUID check.
 
 ### Transition to Gitaly Cluster
 

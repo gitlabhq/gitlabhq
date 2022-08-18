@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import IncidentTimelineEventList from '~/issues/show/components/incidents/timeline_events_list.vue';
-import IncidentTimelineEventListItem from '~/issues/show/components/incidents/timeline_events_list_item.vue';
+import IncidentTimelineEventListItem from '~/issues/show/components/incidents/timeline_events_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import deleteTimelineEventMutation from '~/issues/show/components/incidents/graphql/queries/delete_timeline_event.mutation.graphql';

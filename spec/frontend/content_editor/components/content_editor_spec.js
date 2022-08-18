@@ -19,6 +19,7 @@ describe('ContentEditor', () => {
 
   const findEditorElement = () => wrapper.findByTestId('content-editor');
   const findEditorContent = () => wrapper.findComponent(EditorContent);
+  const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
   const createWrapper = (propsData = {}) => {
     renderMarkdown = jest.fn();
 
@@ -118,5 +119,18 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(wrapper.findComponent(FormattingBubbleMenu).exists()).toBe(true);
+  });
+
+  it.each`
+    event
+    ${'loading'}
+    ${'loadingSuccess'}
+    ${'loadingError'}
+  `('broadcasts $event event triggered by editor-state-observer component', ({ event }) => {
+    createWrapper();
+
+    findEditorStateObserver().vm.$emit(event);
+
+    expect(wrapper.emitted(event)).toHaveLength(1);
   });
 });

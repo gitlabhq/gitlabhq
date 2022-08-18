@@ -11,7 +11,7 @@ module Db
                   name: FFaker::Name.name,
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,
-                  password: '12345678'
+                  password: ::User.random_password
                 )
 
               ::AbuseReport.create(reporter: ::User.take, user: reported_user, message: 'User sends spam')

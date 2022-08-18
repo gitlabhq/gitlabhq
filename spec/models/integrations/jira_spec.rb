@@ -619,6 +619,18 @@ RSpec.describe Integrations::Jira do
         close_issue
       end
 
+      it_behaves_like 'Snowplow event tracking' do
+        subject { close_issue }
+
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { 'Integrations::Jira' }
+        let(:action) { 'perform_integrations_action' }
+        let(:namespace) { project.namespace }
+        let(:user) { current_user }
+        let(:label) { 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly' }
+        let(:property) { 'i_ecosystem_jira_service_close_issue' }
+      end
+
       it 'does not fail if remote_link.all on issue returns nil' do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return(nil)
 
@@ -961,6 +973,16 @@ RSpec.describe Integrations::Jira do
           .with('i_ecosystem_jira_service_cross_reference', values: user.id)
 
         subject
+      end
+
+      it_behaves_like 'Snowplow event tracking' do
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { 'Integrations::Jira' }
+        let(:action) { 'perform_integrations_action' }
+        let(:namespace) { project.namespace }
+        let(:user) { current_user }
+        let(:label) { 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly' }
+        let(:property) { 'i_ecosystem_jira_service_cross_reference' }
       end
     end
 

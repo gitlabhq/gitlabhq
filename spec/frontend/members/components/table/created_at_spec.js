@@ -39,7 +39,7 @@ describe('CreatedAt', () => {
     });
 
     it('uses `TimeAgoTooltip` component to display tooltip', () => {
-      expect(wrapper.find(TimeAgoTooltip).exists()).toBe(true);
+      expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(true);
     });
   });
 

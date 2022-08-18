@@ -9,7 +9,7 @@
 
 %div{ data: { testid: 'issue-title-input-field' } }
   = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,
-    autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', dir: 'auto'
+    autocomplete: 'off', class: 'form-control pad', dir: 'auto', data: { qa_selector: 'issuable_form_title_field' }
 
   - if issuable.respond_to?(:draft?)
     .form-text.text-muted

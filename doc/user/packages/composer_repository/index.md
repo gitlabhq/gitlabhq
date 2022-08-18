@@ -44,7 +44,7 @@ a group's namespace, rather than a user's namespace. Composer packages
 
 1. Run [`composer init`](https://getcomposer.org/doc/03-cli.md#init) and answer the prompts.
 
-   For namespace, enter your unique [namespace](../../../user/group/index.md#namespaces), like your GitLab username or group name.
+   For namespace, enter your unique [namespace](../../../user/namespace/index.md), like your GitLab username or group name.
 
    A file called `composer.json` is created:
 

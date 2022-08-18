@@ -333,14 +333,6 @@ class NotificationService
     end
   end
 
-  def attention_requested_of_merge_request(merge_request, current_user, user)
-    recipients = NotificationRecipients::BuildService.build_attention_requested_recipients(merge_request, current_user, user)
-
-    recipients.each do |recipient|
-      mailer.attention_requested_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
-    end
-  end
-
   # When we add labels to a merge request we should send an email to:
   #
   #  * watchers of the mr's labels
@@ -799,7 +791,7 @@ class NotificationService
     end
 
     recipients = NotificationRecipients::BuildService.build_recipients(target, current_user, action: "new")
-    recipients = recipients.select {|r| new_mentioned_users.include?(r.user) }
+    recipients = recipients.select { |r| new_mentioned_users.include?(r.user) }
 
     recipients.each do |recipient|
       mailer.send(method, recipient.user.id, target.id, current_user.id, recipient.reason).deliver_later

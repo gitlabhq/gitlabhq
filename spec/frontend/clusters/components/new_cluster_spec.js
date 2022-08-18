@@ -12,9 +12,9 @@ describe('NewCluster', () => {
     await nextTick();
   };
 
-  const findDescription = () => wrapper.find(GlSprintf);
+  const findDescription = () => wrapper.findComponent(GlSprintf);
 
-  const findLink = () => wrapper.find(GlLink);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   beforeEach(() => {
     return createWrapper();

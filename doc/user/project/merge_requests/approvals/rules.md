@@ -7,7 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Merge request approval rules **(PREMIUM)**
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
-be merged, and which users should do the approving. You can define approval rules:
+be merged, and which users should do the approving. They can be used in conjunction
+with [Code owners](#code-owners-as-eligible-approvers) to ensure that changes are
+reviewed both by the group maintaining the feature, and any groups responsible
+for specific areas of oversight.
+
+You can define approval rules:
 
 - [As project defaults](#add-an-approval-rule).
 - [Per merge request](#edit-or-override-merge-request-approval-rules).
@@ -127,7 +132,7 @@ users were not explicitly listed in the approval rules.
 ### Group approvers
 
 You can add a group of users as approvers, but those users count as approvers only if
-they have direct membership to the group. Group approvers are
+they have **direct membership** to the group. Inherited members do not count. Group approvers are
 restricted to only groups [with share access to the project](../../members/share_project_with_groups.md).
 
 A user's membership in an approvers group affects their individual ability to
@@ -172,15 +177,15 @@ oversight on proposed work. To enable approval permissions for these users witho
 granting them push access:
 
 1. [Create a protected branch](../../protected_branches.md)
-1. [Create a new group](../../../group/index.md#create-a-group).
-1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
+1. [Create a new group](../../../group/manage.md#create-a-group).
+1. [Add the user to the group](../../../group/manage.md#add-users-to-a-group),
    and select the Reporter role for the user.
 1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group-of-users),
    based on the Reporter role.
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
 1. Select **Add approval rule** or **Update approval rule** and target the protected branch.
-1. [Add the group](../../../group/index.md#create-a-group) to the permission list.
+1. [Add the group](../../../group/manage.md#create-a-group) to the permission list.
 
    ![Update approval rule](img/update_approval_rule_v13_10.png)
 
@@ -213,7 +218,8 @@ appreciated, but not required. To make an approval rule optional:
 
 ## Approvals for protected branches
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.8.
+> - **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
 
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an
@@ -223,10 +229,10 @@ approval rule for certain branches:
 1. Go to your project and select **Settings**.
 1. Expand **Merge request (MR) approvals**.
 1. Select a **Target branch**:
-   - To protect all branches, select **All branches**.
-   - To select a specific branch, select it from the list:
+   - To apply the rule to all branches, select **All branches**.
+   - To apply the rule to all protected branches, select **All protected branches** (GitLab 15.3 and later).
+   - To apply the rule to a specific branch, select it from the list:
 
-     ![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 1. To enable this configuration, read
    [Code Owner's approvals for protected branches](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch).
 

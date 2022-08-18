@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitAccess do
+RSpec.describe Gitlab::GitAccess, :aggregate_failures do
   include TermsHelper
   include GitHelpers
   include AdminModeHelper
@@ -78,9 +78,7 @@ RSpec.describe Gitlab::GitAccess do
           let(:auth_result_type) { :ci }
 
           it "doesn't block http pull" do
-            aggregate_failures do
-              expect { pull_access_check }.not_to raise_error
-            end
+            expect { pull_access_check }.not_to raise_error
           end
         end
       end
@@ -152,6 +150,15 @@ RSpec.describe Gitlab::GitAccess do
 
           it 'does not block pushes with "not found"' do
             expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
+          end
+
+          it 'logs' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              message: 'Actor was :ci',
+              project_id: project.id
+            ).once
+
+            pull_access_check
           end
         end
 
@@ -229,9 +236,9 @@ RSpec.describe Gitlab::GitAccess do
     end
 
     context 'key is expired' do
-      let(:actor) { create(:rsa_key_2048, :expired) }
+      let(:actor) { create(:deploy_key, :expired) }
 
-      it 'does not allow expired keys', :aggregate_failures do
+      it 'does not allow expired keys' do
         expect { pull_access_check }.to raise_forbidden('Your SSH key has expired.')
         expect { push_access_check }.to raise_forbidden('Your SSH key has expired.')
       end
@@ -242,7 +249,7 @@ RSpec.describe Gitlab::GitAccess do
         stub_application_setting(rsa_key_restriction: 4096)
       end
 
-      it 'does not allow keys which are too small', :aggregate_failures do
+      it 'does not allow keys which are too small' do
         expect(actor).not_to be_valid
         expect { pull_access_check }.to raise_forbidden('Your SSH key must be at least 4096 bits.')
         expect { push_access_check }.to raise_forbidden('Your SSH key must be at least 4096 bits.')
@@ -254,7 +261,7 @@ RSpec.describe Gitlab::GitAccess do
         stub_application_setting(rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
       end
 
-      it 'does not allow keys which are too small', :aggregate_failures do
+      it 'does not allow keys which are too small' do
         expect(actor).not_to be_valid
         expect { pull_access_check }.to raise_forbidden(/Your SSH key type is forbidden/)
         expect { push_access_check }.to raise_forbidden(/Your SSH key type is forbidden/)
@@ -263,7 +270,7 @@ RSpec.describe Gitlab::GitAccess do
   end
 
   it_behaves_like '#check with a key that is not valid' do
-    let(:actor) { build(:rsa_key_2048, user: user) }
+    let(:actor) { build(:deploy_key, user: user) }
   end
 
   it_behaves_like '#check with a key that is not valid' do
@@ -736,6 +743,15 @@ RSpec.describe Gitlab::GitAccess do
 
         context 'pull code' do
           it { expect { pull_access_check }.not_to raise_error }
+
+          it 'logs' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              message: 'Actor was :ci',
+              project_id: project.id
+            ).once
+
+            pull_access_check
+          end
         end
       end
     end
@@ -1163,13 +1179,13 @@ RSpec.describe Gitlab::GitAccess do
          -> { push_access_check }]
       end
 
-      it 'blocks access when the user did not accept terms', :aggregate_failures do
+      it 'blocks access when the user did not accept terms' do
         actions.each do |action|
           expect { action.call }.to raise_forbidden(/must accept the Terms of Service in order to perform this action/)
         end
       end
 
-      it 'allows access when the user accepted the terms', :aggregate_failures do
+      it 'allows access when the user accepted the terms' do
         accept_terms(user)
 
         actions.each do |action|

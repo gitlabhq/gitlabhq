@@ -17,8 +17,8 @@ Subscribe to the issue to follow its progress.
 
 Several mirroring methods exist:
 
-- [Push](push.md): for mirroring a GitLab repository to another location.
-- [Pull](pull.md): for mirroring a repository from another location to GitLab.
+- [Push](push.md): Mirror a repository from GitLab to another location.
+- [Pull](pull.md): Mirror a repository from another location to a GitLab Premium instance.
 - [Bidirectional](bidirectional.md) mirroring is also available, but can cause conflicts.
 
 Mirror a repository when:
@@ -112,6 +112,11 @@ GitLab supports these authentication methods:
 
 - [SSH authentication](#ssh-authentication).
 - Password.
+
+When using password authentication, ensure you specify the username.
+For a [project access token](../../settings/project_access_tokens.md) or
+[group access token](../../../group/settings/group_access_tokens.md),
+use the username (not token name) and the token as the password.
 
 ### SSH authentication
 
@@ -226,7 +231,7 @@ This error can occur when a firewall performs a `Deep SSH Inspection` on outgoin
 ### Could not read username: terminal prompts disabled
 
 If you receive this error after creating a new project using
-[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/):
+[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md):
 
 - In Bitbucket Cloud:
 

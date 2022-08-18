@@ -6,7 +6,6 @@ import { EXTENSION_ICONS } from '../../constants';
 export default {
   name: 'WidgetAccessibility',
   enablePolling: true,
-  telemetry: false,
   i18n: {
     loading: s__('Reports|Accessibility scanning results are being parsed'),
     error: s__('Reports|Accessibility scanning failed loading results'),
@@ -76,9 +75,9 @@ export default {
       return sprintf(s__('AccessibilityReport|Message: %{message}'), { message });
     },
     prepareReports() {
-      const { new_errors, existing_errors, resolved_errors } = this.collapsedData;
+      const { collapsedData } = this;
 
-      const newErrors = new_errors.map((error) => {
+      const newErrors = collapsedData.new_errors.map((error) => {
         return {
           header: __('New'),
           id: uniqueId('new-error-'),
@@ -92,7 +91,7 @@ export default {
         };
       });
 
-      const existingErrors = existing_errors.map((error) => {
+      const existingErrors = collapsedData.existing_errors.map((error) => {
         return {
           id: uniqueId('existing-error-'),
           text: this.formatText(error.code),
@@ -105,7 +104,7 @@ export default {
         };
       });
 
-      const resolvedErrors = resolved_errors.map((error) => {
+      const resolvedErrors = collapsedData.resolved_errors.map((error) => {
         return {
           id: uniqueId('resolved-error-'),
           text: this.formatText(error.code),

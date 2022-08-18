@@ -38,7 +38,7 @@ describe('UserAvatarList', () => {
   };
 
   const clickButton = () => {
-    const button = wrapper.find(GlButton);
+    const button = wrapper.findComponent(GlButton);
     button.vm.$emit('click');
   };
 
@@ -79,7 +79,7 @@ describe('UserAvatarList', () => {
       const items = createList(20);
       factory({ propsData: { items } });
 
-      const links = wrapper.findAll(UserAvatarLink);
+      const links = wrapper.findAllComponents(UserAvatarLink);
       const linkProps = links.wrappers.map((x) => x.props());
 
       expect(linkProps).toEqual(
@@ -105,7 +105,7 @@ describe('UserAvatarList', () => {
     it('renders all avatars if length is <= breakpoint', () => {
       factory();
 
-      const links = wrapper.findAll(UserAvatarLink);
+      const links = wrapper.findAllComponents(UserAvatarLink);
 
       expect(links.length).toEqual(props.items.length);
     });
@@ -113,7 +113,7 @@ describe('UserAvatarList', () => {
     it('does not show button', () => {
       factory();
 
-      expect(wrapper.find(GlButton).exists()).toBe(false);
+      expect(wrapper.findComponent(GlButton).exists()).toBe(false);
     });
   });
 
@@ -126,7 +126,7 @@ describe('UserAvatarList', () => {
     it('renders avatars up to breakpoint', () => {
       factory();
 
-      const links = wrapper.findAll(UserAvatarLink);
+      const links = wrapper.findAllComponents(UserAvatarLink);
 
       expect(links.length).toEqual(TEST_BREAKPOINT);
     });
@@ -138,7 +138,7 @@ describe('UserAvatarList', () => {
       });
 
       it('renders all avatars', () => {
-        const links = wrapper.findAll(UserAvatarLink);
+        const links = wrapper.findAllComponents(UserAvatarLink);
 
         expect(links.length).toEqual(props.items.length);
       });
@@ -147,7 +147,7 @@ describe('UserAvatarList', () => {
         clickButton();
 
         await nextTick();
-        const links = wrapper.findAll(UserAvatarLink);
+        const links = wrapper.findAllComponents(UserAvatarLink);
 
         expect(links.length).toEqual(TEST_BREAKPOINT);
       });

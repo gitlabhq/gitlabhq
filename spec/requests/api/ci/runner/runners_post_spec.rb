@@ -16,7 +16,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       context 'when invalid token is provided' do
         it 'returns 403 error' do
           allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-            allow(service).to receive(:execute).and_return(nil)
+            allow(service).to receive(:execute)
+              .and_return(ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden))
           end
 
           post api('/runners'), params: { token: 'invalid' }
@@ -58,7 +59,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(service).to receive(:execute)
               .once
               .with('valid token', a_hash_including(expected_params))
-              .and_return(new_runner)
+              .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
         end
 
@@ -113,7 +114,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               .once
               .with('valid token', a_hash_including('maintenance_note' => 'Some maintainer notes')
                 .and(excluding('maintainter_note' => anything)))
-              .and_return(new_runner)
+              .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
 
           request
@@ -139,7 +140,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(service).to receive(:execute)
               .once
               .with('valid token', a_hash_including(expected_params))
-              .and_return(new_runner)
+              .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
 
           request

@@ -23,7 +23,7 @@ module Boards
 
       def valid_move?
         new_position.present? && new_position != old_position &&
-          new_position >= 0 && new_position < board.lists.movable.size
+          new_position >= 0 && new_position <= board.lists.movable.last.position
       end
 
       def reorder_intermediate_lists

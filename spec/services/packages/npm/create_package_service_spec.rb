@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Npm::CreatePackageService do
-  let(:namespace) {create(:namespace)}
+  let(:namespace) { create(:namespace) }
   let(:project) { create(:project, namespace: namespace) }
   let(:user) { create(:user) }
   let(:version) { '1.0.1' }
@@ -129,7 +129,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
     end
 
     describe 'max file size validation' do
-      let(:max_file_size) { 5.bytes}
+      let(:max_file_size) { 5.bytes }
 
       shared_examples_for 'max file size validation failure' do
         it 'returns a 400 error', :aggregate_failures do
@@ -160,7 +160,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
         end
 
         context "when encoded package data is padded with '='" do
-          let(:max_file_size) { 4.bytes}
+          let(:max_file_size) { 4.bytes }
           # 'Hello' (size = 5 bytes) => 'SGVsbG8='
           let(:encoded_package_data) { 'SGVsbG8=' }
 
@@ -168,7 +168,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
         end
 
         context "when encoded package data is padded with '=='" do
-          let(:max_file_size) { 3.bytes}
+          let(:max_file_size) { 3.bytes }
           # 'Hell' (size = 4 bytes) => 'SGVsbA=='
           let(:encoded_package_data) { 'SGVsbA==' }
 

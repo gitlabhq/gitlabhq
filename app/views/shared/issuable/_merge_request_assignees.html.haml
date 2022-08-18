@@ -1,8 +1,0 @@
-- issuable.merge_request_assignees.take(count).each do |merge_request_assignee| # rubocop: disable CodeReuse/ActiveRecord
-  - assignee = merge_request_assignee.assignee
-  - assignee_tooltip = ( merge_request_assignee.attention_requested? ? s_("MrList|Attention requested from assignee %{name}") : s_("MrList|Assigned to %{name}") ) % { name: assignee.name}
-
-  = link_to_member(@project, assignee, name: false, title: assignee_tooltip, extra_class: "gl-flex-direction-row-reverse") do
-    - if merge_request_assignee.attention_requested?
-      %span.gl-display-inline-flex
-        = sprite_icon('attention-solid-sm', css_class: 'gl-text-orange-500 icon-overlap-and-shadow')

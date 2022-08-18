@@ -34,7 +34,13 @@ export default {
     PipelineGraphWrapper,
     TestReports,
   },
-  inject: ['defaultTabValue', 'failedJobsCount', 'failedJobsSummary', 'totalJobCount'],
+  inject: [
+    'defaultTabValue',
+    'failedJobsCount',
+    'failedJobsSummary',
+    'totalJobCount',
+    'testsCount',
+  ],
   computed: {
     showFailedJobsTab() {
       return this.failedJobsCount > 0;
@@ -81,11 +87,11 @@ export default {
       </template>
       <failed-jobs-app :failed-jobs-summary="failedJobsSummary" />
     </gl-tab>
-    <gl-tab
-      :title="$options.i18n.tabs.testsTitle"
-      :active="isActive($options.tabNames.tests)"
-      data-testid="tests-tab"
-    >
+    <gl-tab :active="isActive($options.tabNames.tests)" data-testid="tests-tab" lazy>
+      <template #title>
+        <span class="gl-mr-2">{{ $options.i18n.tabs.testsTitle }}</span>
+        <gl-badge size="sm" data-testid="tests-counter">{{ testsCount }}</gl-badge>
+      </template>
       <test-reports />
     </gl-tab>
     <slot></slot>

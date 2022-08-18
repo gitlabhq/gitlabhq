@@ -105,10 +105,15 @@ for more details.
 
 ## Batched background migrations for EE-only features
 
-All the background migration classes for EE-only features should be present in GitLab CE.
-For this purpose, create an empty class for GitLab CE, and extend it for GitLab EE
+All the background migration classes for EE-only features should be present in GitLab FOSS.
+For this purpose, create an empty class for GitLab FOSS, and extend it for GitLab EE
 as explained in the guidelines for
 [implementing Enterprise Edition features](../ee_features.md#code-in-libgitlabbackground_migration).
+
+NOTE:
+Background migration classes for EE-only features that use job arguments should define them
+in the GitLab FOSS class. This is required to prevent job arguments validation from failing when
+migration is scheduled in GitLab FOSS context.
 
 Batched Background migrations are simple classes that define a `perform` method. A
 Sidekiq worker then executes such a class, passing any arguments to it. All
@@ -131,6 +136,10 @@ queue_batched_background_migration(
   JOB_INTERVAL
   )
 ```
+
+NOTE:
+This helper raises an error if the number of provided job arguments does not match
+the number of [job arguments](#job-arguments) defined in `JOB_CLASS_NAME`.
 
 Make sure the newly-created data is either migrated, or
 saved in both the old and new version upon creation. Removals in
@@ -186,6 +195,115 @@ Bump to the [import/export version](../../user/project/settings/import_export.md
 be required, if importing a project from a prior version of GitLab requires the
 data to be in the new format.
 
+## Job arguments
+
+`BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.
+
+Batched migrations scheduled with `queue_batched_background_migration` **must** use the helper to define the job arguments:
+
+```ruby
+queue_batched_background_migration(
+  'CopyColumnUsingBackgroundMigrationJob',
+  TABLE_NAME,
+  'name', 'name_convert_to_text',
+  job_interval: DELAY_INTERVAL
+)
+```
+
+NOTE:
+If the number of defined job arguments does not match the number of job arguments provided when
+scheduling the migration, `queue_batched_background_migration` raises an error.
+
+In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert_to_text`:
+
+```ruby
+class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
+  job_arguments :copy_from, :copy_to
+
+  def perform
+    from_column = connection.quote_column_name(copy_from)
+    to_column = connection.quote_column_name(copy_to)
+
+    assignment_clause = "#{to_column} = #{from_column}"
+
+    each_sub_batch(operation_name: :update_all) do |relation|
+      relation.update_all(assignment_clause)
+    end
+  end
+end
+```
+
+### Additional filters
+
+By default, when creating background jobs to perform the migration, batched background migrations
+iterate over the full specified table. This iteration is done using the
+[`PrimaryKeyBatchingStrategy`](https://gitlab.com/gitlab-org/gitlab/-/blob/c9dabd1f4b8058eece6d8cb4af95e9560da9a2ee/lib/gitlab/database/migrations/batched_background_migration_helpers.rb#L17). If the table has 1000 records
+and the batch size is 100, the work is batched into 10 jobs. For illustrative purposes,
+`EachBatch` is used like this:
+
+```ruby
+# PrimaryKeyBatchingStrategy
+Namespace.each_batch(of: 100) do |relation|
+  relation.where(type: nil).update_all(type: 'User') # this happens in each background job
+end
+```
+
+In some cases, only a subset of records must be examined. If only 10% of the 1000 records
+need examination, apply a filter to the initial relation when the jobs are created:
+
+```ruby
+Namespace.where(type: nil).each_batch(of: 100) do |relation|
+  relation.update_all(type: 'User')
+end
+```
+
+In the first example, we don't know how many records will be updated in each batch.
+In the second (filtered) example, we know exactly 100 will be updated with each batch.
+
+`BatchedMigrationJob` provides a `scope_to` helper method to apply additional filters and achieve this:
+
+1. Create a new migration job class that inherits from `BatchedMigrationJob` and defines the additional filter:
+
+   ```ruby
+   class BackfillNamespaceType < BatchedMigrationJob
+     scope_to ->(relation) { relation.where(type: nil) }
+
+     def perform
+       each_sub_batch(operation_name: :update_all) do |sub_batch|
+         sub_batch.update_all(type: 'User')
+       end
+     end
+   end
+   ```
+
+1. In the post-deployment migration, enqueue the batched background migration:
+
+   ```ruby
+   class BackfillNamespaceType < Gitlab::Database::Migration[2.0]
+     MIGRATION = 'BackfillNamespaceType'
+     DELAY_INTERVAL = 2.minutes
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+     def up
+       queue_batched_background_migration(
+         MIGRATION,
+         :namespaces,
+         :id,
+         job_interval: DELAY_INTERVAL
+       )
+     end
+
+     def down
+       delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
+     end
+   end
+   ```
+
+NOTE:
+When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
+In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](../iterating_tables_in_batches.md).
+
 ## Example
 
 The `routes` table has a `source_type` field that's used for a polymorphic relationship.
@@ -221,8 +339,6 @@ background migration.
    correctly handled by the batched migration framework. Any subclass of
    `BatchedMigrationJob` is initialized with necessary arguments to
    execute the batch, as well as a connection to the tracking database.
-   Additional `job_arguments` set on the migration are passed to the
-   job's `perform` method.
 
 1. Add a new trigger to the database to update newly created and updated routes,
    similar to this example:
@@ -320,7 +436,7 @@ The default batching strategy provides an efficient way to iterate over primary 
 However, if you need to iterate over columns where values are not unique, you must use a
 different batching strategy.
 
-The `LooseIndexScanBatchingStrategy` batching strategy uses a special version of [`EachBatch`](../iterating_tables_in_batches.md#loose-index-scan-with-distinct_each_batch)
+The `LooseIndexScanBatchingStrategy` batching strategy uses a special version of [`EachBatch`](iterating_tables_in_batches.md#loose-index-scan-with-distinct_each_batch)
 to provide efficient and stable iteration over the distinct column values.
 
 This example shows a batched background migration where the `issues.project_id` column is used as
@@ -374,76 +490,8 @@ module Gitlab
 end
 ```
 
-### Adding filters to the initial batching
-
-By default, when creating background jobs to perform the migration, batched background migrations will iterate over the full specified table. This is done using the [`PrimaryKeyBatchingStrategy`](https://gitlab.com/gitlab-org/gitlab/-/blob/c9dabd1f4b8058eece6d8cb4af95e9560da9a2ee/lib/gitlab/database/migrations/batched_background_migration_helpers.rb#L17). This means if there are 1000 records in the table and the batch size is 100, there will be 10 jobs. For illustrative purposes, `EachBatch` is used like this:
-
-```ruby
-# PrimaryKeyBatchingStrategy
-Projects.all.each_batch(of: 100) do |relation|
-  relation.where(foo: nil).update_all(foo: 'bar') # this happens in each background job
-end
-```
-
-There are cases where we only need to look at a subset of records. Perhaps we only need to update 1 out of every 10 of those 1000 records. It would be best if we could apply a filter to the initial relation when the jobs are created:
-
-```ruby
-Projects.where(foo: nil).each_batch(of: 100) do |relation|
-  relation.update_all(foo: 'bar')
-end
-```
-
-In the `PrimaryKeyBatchingStrategy` example, we do not know how many records will be updated in each batch. In the filtered example, we know exactly 100 will be updated with each batch.
-
-The `PrimaryKeyBatchingStrategy` contains [a method that can be overwritten](https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/lib/gitlab/background_migration/batching_strategies/primary_key_batching_strategy.rb#L38-52) to apply additional filtering on the initial `EachBatch`.
-
-We can accomplish this by:
-
-1. Create a new class that inherits from `PrimaryKeyBatchingStrategy` and overrides the method using the desired filter (this may be the same filter used in the sub-batch):
-
-   ```ruby
-   # frozen_string_literal: true
-
-   module GitLab
-     module BackgroundMigration
-       module BatchingStrategies
-         class FooStrategy < PrimaryKeyBatchingStrategy
-           def apply_additional_filters(relation, job_arguments: [], job_class: nil)
-             relation.where(foo: nil)
-           end
-         end
-       end
-     end
-   end
-   ```
-
-1. In the post-deployment migration that queues the batched background migration, specify the new batching strategy using the `batch_class_name` parameter:
-
-   ```ruby
-   class BackfillProjectsFoo < Gitlab::Database::Migration[2.0]
-     MIGRATION = 'BackfillProjectsFoo'
-     DELAY_INTERVAL = 2.minutes
-     BATCH_CLASS_NAME = 'FooStrategy'
-
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
-
-     def up
-       queue_batched_background_migration(
-         MIGRATION,
-         :routes,
-         :id,
-         job_interval: DELAY_INTERVAL,
-         batch_class_name: BATCH_CLASS_NAME
-       )
-     end
-
-     def down
-       delete_batched_background_migration(MIGRATION, :routes, :id, [])
-     end
-   end
-   ```
-
-When applying a batching strategy, it is important to ensure the filter properly covered by an index to optimize `EachBatch` performance. See [the `EachBatch` docs for more information](../iterating_tables_in_batches.md).
+NOTE:
+[Additional filters](#additional-filters) defined with `scope_to` will be ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
 
 ## Testing
 

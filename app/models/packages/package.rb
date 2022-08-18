@@ -65,7 +65,7 @@ class Packages::Package < ApplicationRecord
   validates :name,
             uniqueness: {
               scope: %i[project_id version package_type],
-              conditions: -> { not_pending_destruction}
+              conditions: -> { not_pending_destruction }
             },
             unless: -> { pending_destruction? || conan? || debian_package? }
 
@@ -327,7 +327,7 @@ class Packages::Package < ApplicationRecord
   def normalized_pypi_name
     return name unless pypi?
 
-    name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/, '-').downcase
+    name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
   end
 
   private

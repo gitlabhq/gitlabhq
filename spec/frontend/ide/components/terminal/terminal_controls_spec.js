@@ -12,7 +12,7 @@ describe('IDE TerminalControls', () => {
       ...options,
     });
 
-    buttons = wrapper.findAll(ScrollButton);
+    buttons = wrapper.findAllComponents(ScrollButton);
   };
 
   it('shows an up and down scroll button', () => {

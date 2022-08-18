@@ -4,6 +4,8 @@ module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
   class RegisterJobService
+    include ::Gitlab::Ci::Artifacts::Logger
+
     attr_reader :runner, :metrics
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
@@ -220,8 +222,24 @@ module Ci
       # We need to use the presenter here because Gitaly calls in the presenter
       # may fail, and we need to ensure the response has been generated.
       presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter
+
+      log_artifacts_context(build)
+      log_build_dependencies_size(presented_build)
+
       build_json = ::API::Entities::Ci::JobRequest::Response.new(presented_build).to_json
       Result.new(build, build_json, true)
+    end
+
+    def log_build_dependencies_size(presented_build)
+      return unless ::Feature.enabled?(:ci_build_dependencies_artifacts_logger, type: :ops)
+
+      presented_build.all_dependencies.then do |dependencies|
+        size = dependencies.sum do |build|
+          build.available_artifacts? ? build.artifacts_file.size : 0
+        end
+
+        log_build_dependencies(size: size, count: dependencies.size) if size > 0
+      end
     end
 
     def assign_runner!(build, params)

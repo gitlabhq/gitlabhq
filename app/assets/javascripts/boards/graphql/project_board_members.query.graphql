@@ -2,10 +2,8 @@
 
 query ProjectBoardMembers($fullPath: ID!, $search: String) {
   workspace: project(fullPath: $fullPath) {
-    __typename
     id
     assignees: projectMembers(search: $search) {
-      __typename
       nodes {
         id
         user {

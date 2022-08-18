@@ -1,8 +1,0 @@
----
-name: use_traversal_ids_for_ancestor_scopes_with_inner_join
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83371
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356628
-milestone: '15.1'
-type: development
-group: group::workspace
-default_enabled: false

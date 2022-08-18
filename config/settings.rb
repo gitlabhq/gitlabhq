@@ -109,7 +109,11 @@ class Settings < Settingslogic
       constant = modul.constants.find { |name| modul.const_get(name, false) == current }
       value = constant.nil? ? default : modul.const_get(constant, false)
       if current.is_a? String
-        value = modul.const_get(current.upcase, false) rescue default
+        value = begin
+          modul.const_get(current.upcase, false)
+        rescue StandardError
+          default
+        end
       end
 
       value

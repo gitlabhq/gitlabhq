@@ -36,7 +36,7 @@ To add a secure file to a project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
-1. In the **Secure Files** section, select **Manage**.
+1. In the **Secure Files** section, select **Expand**.
 1. Select **Upload File**.
 1. Find the file to upload, select **Open**, and the file upload begins immediately.
    The file shows up in the list when the upload is complete.

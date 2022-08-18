@@ -83,6 +83,36 @@ RSpec.describe API::Support::GitAccessActor do
     end
   end
 
+  describe '#deploy_key_or_user' do
+    it 'returns a deploy key when the params contains deploy key' do
+      key = create(:deploy_key)
+      params = { key_id: key.id }
+
+      expect(described_class.from_params(params).deploy_key_or_user).to eq(key)
+    end
+
+    it 'returns a user when the params contains personal key' do
+      key = create(:key)
+      params = { key_id: key.id }
+
+      expect(described_class.from_params(params).deploy_key_or_user).to eq(key.user)
+    end
+
+    it 'returns a user when the params contains user id' do
+      user = create(:user)
+      params = { user_id: user.id }
+
+      expect(described_class.from_params(params).deploy_key_or_user).to eq(user)
+    end
+
+    it 'returns a user when the params contains user name' do
+      user = create(:user)
+      params = { username: user.username }
+
+      expect(described_class.from_params(params).deploy_key_or_user).to eq(user)
+    end
+  end
+
   describe '#username' do
     context 'when initialized with a User' do
       let(:user) { build(:user) }

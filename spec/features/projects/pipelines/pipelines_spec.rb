@@ -7,7 +7,7 @@ RSpec.describe 'Pipelines', :js do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }
-  let(:expected_detached_mr_tag) {'merge request'}
+  let(:expected_detached_mr_tag) { 'merge request' }
 
   context 'when user is logged in' do
     let(:user) { create(:user) }
@@ -710,6 +710,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it { expect(page).to have_content('Missing CI config file') }
+
           it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
             stub_ci_pipeline_to_return_yaml_file
 

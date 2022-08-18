@@ -99,10 +99,16 @@ module API
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
 
         use :pagination
-        optional :pagination, type: String, values: %w(legacy keyset), default: 'legacy', desc: 'Specify the pagination method'
+        optional :pagination, type: String, values: %w(legacy keyset none), default: 'legacy', desc: 'Specify the pagination method ("none" is only valid if "recursive" is true)'
 
-        given pagination: -> (value) { value == 'keyset' } do
+        given pagination: ->(value) { value == 'keyset' } do
           optional :page_token, type: String, desc: 'Record from which to start the keyset pagination'
+        end
+
+        given pagination: ->(value) { value == 'none' } do
+          given recursive: ->(value) { value == false } do
+            validates([:pagination], except_values: { value: 'none', message: 'cannot be "none" unless "recursive" is true' })
+          end
         end
       end
       get ':id/repository/tree', urgency: :low do

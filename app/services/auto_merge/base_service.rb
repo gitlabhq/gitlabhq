@@ -59,6 +59,7 @@ module AutoMerge
           !merge_request.broken? &&
           !merge_request.draft? &&
           merge_request.mergeable_discussions_state? &&
+          !merge_request.merge_blocked_by_other_mrs? &&
           yield
       end
     end

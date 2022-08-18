@@ -21,7 +21,7 @@ RSpec.describe 'getting an work item list for a project' do
     <<~QUERY
     edges {
       node {
-        #{all_graphql_fields_for('workItems'.classify)}
+        #{all_graphql_fields_for('workItems'.classify, max_depth: 2)}
       }
     }
     QUERY

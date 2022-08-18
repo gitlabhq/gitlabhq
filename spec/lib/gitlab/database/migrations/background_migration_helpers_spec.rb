@@ -37,12 +37,6 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
           freeze_time { example.run }
         end
 
-        before do
-          User.class_eval do
-            include EachBatch
-          end
-        end
-
         it 'returns the final expected delay' do
           Sidekiq::Testing.fake! do
             final_delay = model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)

@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Tags do
         end
 
         context 'when tags limit is reached' do
-          let(:config) { Array.new(50) {|i| "tag-#{i}" } }
+          let(:config) { Array.new(50) { |i| "tag-#{i}" } }
 
           it 'reports error' do
             expect(entry.errors)

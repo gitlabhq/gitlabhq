@@ -790,10 +790,10 @@ class ApplicationSetting < ApplicationRecord
 
   def parsed_kroki_url
     @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w(http https), enforce_sanitization: true)[0]
-  rescue Gitlab::UrlBlocker::BlockedUrlError => error
+  rescue Gitlab::UrlBlocker::BlockedUrlError => e
     self.errors.add(
       :kroki_url,
-      "is not valid. #{error}"
+      "is not valid. #{e}"
     )
   end
 

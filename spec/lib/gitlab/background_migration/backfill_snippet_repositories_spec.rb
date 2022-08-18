@@ -39,7 +39,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
 
   let(:file_name) { 'file_name.rb' }
   let(:content) { 'content' }
-  let(:ids) { snippets.pluck('MIN(id)', 'MAX(id)').first }
+  let(:ids) { snippets.pick('MIN(id)', 'MAX(id)') }
   let(:service) { described_class.new }
 
   subject { service.perform(*ids) }

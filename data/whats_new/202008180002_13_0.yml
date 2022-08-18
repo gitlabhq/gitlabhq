@@ -1,66 +1,66 @@
 ---
-- title: Gitaly Cluster for High Availability Git Storage
-  body: |
+- name: Gitaly Cluster for High Availability Git Storage
+  description: |
     GitLab now supports highly available Git storage without using NFS. High Availability (HA) configurations improve the availability of important systems, like Git storage, by removing single points of failure, detecting outages, and automatically switching to a replica.
 
     This means that an individual component of the system can fail without causing the end user to experience an outage. Access to Git repositories is critical to developers and businesses, because when an outage occurs, developers can’t push code, and deployments are blocked.
   stage: Create
   self-managed: true
   gitlab-com: false
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/administration/gitaly/praefect.html
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/administration/gitaly/praefect.html
   image_url: https://about.gitlab.com/images/13_0/praefect-architecture.png
   published_at: 2020-05-22
   release: 13.0
-- title: Auto Deploy to ECS
-  body: |
+- name: Auto Deploy to ECS
+  description: |
     Until now, there hasn’t been a simple way to deploy to Amazon Web Services. As a result, GitLab users had to  spend a lot of time figuring out their own configuration.
 
     In GitLab 13.0, Auto DevOps has been extended to support deployment to AWS! GitLab users who are deploying to AWS Elastic Container Service (ECS) can now take advantage of Auto DevOps, even if they are not using Kubernetes.
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/topics/autodevops/index.html#aws-ecs
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/topics/autodevops/index.html#aws-ecs
   image_url: https://docs.gitlab.com/ee/ci/img/ecs_dashboard_v12_9.png
   published_at: 2020-05-22
   release: 13.0
-- title: View Epic Hierarchy on a Roadmap
-  body: |
+- name: View Epic Hierarchy on a Roadmap
+  description: |
     When leveraging Multi-Level Epics, it can be difficult to keep track of where each child epic lives on the Roadmap.
 
     You can now quickly expand a parent epic on your roadmap to view all its child epics to ensure work is properly organized and your planned timeline is on track!
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: https://docs.gitlab.com/ee/user/group/roadmap/
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/roadmap/
   image_url: https://about.gitlab.com/images/13_0/Expand-Epic-Hierarchy-Roadmap_roadmap.png
   published_at: 2020-05-22
   release: 13.0
-- title: Versioned Snippets
-  body: |
+- name: Versioned Snippets
+  description: |
     Snippets in GitLab are now version controlled by a Git repository. When editing a Snippet, each change creates a commit.
 
     Snippets can also be cloned to make edits locally, and then pushed back to the Snippet repository.
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/snippets.html#versioned-snippets
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/snippets.html#versioned-snippets
   image_url: https://about.gitlab.com/images/13_0/phikai-versioned-snippets.png
   published_at: 2020-05-22
   release: 13.0
-- title: Dark Theme in the Web IDE
-  body: |
+- name: Dark Theme in the Web IDE
+  description: |
     For people who spend time working in code editors, the ability to customize the environment to match their preferences is important. Dark themes are some of the most [popular](https://marketplace.visualstudio.com/search?target=VSCode&category=Themes&sortBy=Installs) for other editors and important for providing a comfortable experience.
 
     That's why we're excited that the GitLab Web IDE is now completely themed dark for users who choose the **Dark** [syntax highlighting theme perference](https://docs.gitlab.com/ee/user/profile/preferences.html#syntax-highlighting-theme)!
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/project/web_ide/#themes
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/web_ide/#themes
   image_url: https://about.gitlab.com/images/13_0/phikai-web-ide-dark-theme.png
   published_at: 2020-05-22
   release: 13.0

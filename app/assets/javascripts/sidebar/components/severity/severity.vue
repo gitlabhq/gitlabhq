@@ -37,10 +37,10 @@ export default {
     <gl-icon
       :size="iconSize"
       :name="`severity-${severity.icon}`"
-      :class="[`icon-${severity.icon}`, { 'gl-mr-3': !iconOnly }]"
+      :class="[`icon-${severity.icon}`, { 'gl-mr-3 gl-flex-shrink-0': !iconOnly }]"
     />
-    <tooltip-on-truncate v-if="!iconOnly" :title="severity.label" class="gl-text-truncate">{{
-      severity.label
-    }}</tooltip-on-truncate>
+    <tooltip-on-truncate v-if="!iconOnly" :title="severity.label" class="gl-text-truncate">
+      {{ severity.label }}
+    </tooltip-on-truncate>
   </div>
 </template>

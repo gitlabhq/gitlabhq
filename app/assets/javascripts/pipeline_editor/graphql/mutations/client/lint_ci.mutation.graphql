@@ -13,7 +13,6 @@ mutation lintCI($endpoint: String, $content: String, $dry: Boolean) {
       only {
         refs
       }
-      afterScript
       stage
       tags
       when

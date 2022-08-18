@@ -85,9 +85,9 @@ describe('Design management design index page', () => {
   let wrapper;
   let router;
 
-  const findDiscussionForm = () => wrapper.find(DesignReplyForm);
-  const findSidebar = () => wrapper.find(DesignSidebar);
-  const findDesignPresentation = () => wrapper.find(DesignPresentation);
+  const findDiscussionForm = () => wrapper.findComponent(DesignReplyForm);
+  const findSidebar = () => wrapper.findComponent(DesignSidebar);
+  const findDesignPresentation = () => wrapper.findComponent(DesignPresentation);
 
   function createComponent(
     { loading = false } = {},
@@ -181,15 +181,15 @@ describe('Design management design index page', () => {
   it('sets loading state', () => {
     createComponent({ loading: true });
 
-    expect(wrapper.find(DesignPresentation).props('isLoading')).toBe(true);
-    expect(wrapper.find(DesignSidebar).props('isLoading')).toBe(true);
+    expect(wrapper.findComponent(DesignPresentation).props('isLoading')).toBe(true);
+    expect(wrapper.findComponent(DesignSidebar).props('isLoading')).toBe(true);
   });
 
   it('renders design index', () => {
     createComponent({ loading: false }, { data: { design } });
 
     expect(wrapper.element).toMatchSnapshot();
-    expect(wrapper.find(GlAlert).exists()).toBe(false);
+    expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
   });
 
   it('passes correct props to sidebar component', () => {

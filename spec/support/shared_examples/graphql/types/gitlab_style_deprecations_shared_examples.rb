@@ -69,4 +69,21 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
       'This feature is in Alpha. It can be changed or removed at any time. Introduced in 1.10.'
     )
   end
+
+  it 'supports :alpha' do
+    deprecable = subject(alpha: { milestone: '1.10' })
+
+    expect(deprecable.deprecation_reason).to eq(
+      'This feature is in Alpha. It can be changed or removed at any time. Introduced in 1.10.'
+    )
+  end
+
+  it 'does not allow :alpha and :deprecated together' do
+    expect do
+      subject(alpha: { milestone: '1.10' }, deprecated: { milestone: '1.10', reason: 'my reason' } )
+    end.to raise_error(
+      ArgumentError,
+      eq("`alpha` and `deprecated` arguments cannot be passed at the same time")
+    )
+  end
 end

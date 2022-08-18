@@ -19,9 +19,7 @@ export default class SidebarStore {
     this.humanTimeSpent = '';
     this.timeTrackingLimitToHours = timeTrackingLimitToHours;
     this.assignees = [];
-    this.addingAssignees = [];
     this.reviewers = [];
-    this.addingReviewers = [];
     this.isFetching = {
       assignees: true,
       reviewers: true,
@@ -77,20 +75,12 @@ export default class SidebarStore {
     if (!this.findAssignee(assignee)) {
       this.changing = true;
       this.assignees.push(assignee);
-
-      if (assignee.id !== this.currentUser.id) {
-        this.addingAssignees.push(assignee.id);
-      }
     }
   }
 
   addReviewer(reviewer) {
     if (!this.findReviewer(reviewer)) {
       this.reviewers.push(reviewer);
-
-      if (reviewer.id !== this.currentUser.id) {
-        this.addingReviewers.push(reviewer.id);
-      }
     }
   }
 
@@ -126,14 +116,12 @@ export default class SidebarStore {
     if (assignee) {
       this.changing = true;
       this.assignees = this.assignees.filter(({ id }) => id !== assignee.id);
-      this.addingAssignees = this.addingAssignees.filter(({ id }) => id !== assignee.id);
     }
   }
 
   removeReviewer(reviewer) {
     if (reviewer) {
       this.reviewers = this.reviewers.filter(({ id }) => id !== reviewer.id);
-      this.addingReviewers = this.addingReviewers.filter(({ id }) => id !== reviewer.id);
     }
   }
 
@@ -160,27 +148,5 @@ export default class SidebarStore {
 
   setMoveToProjectId(moveToProjectId) {
     this.moveToProjectId = moveToProjectId;
-  }
-
-  get currentUserHasAttention() {
-    if (!window.gon?.features?.mrAttentionRequests || !this.isMergeRequest) return false;
-
-    const currentUserId = this.currentUser.id;
-    const currentUserReviewer = this.findReviewer({ id: currentUserId });
-    const currentUserAssignee = this.findAssignee({ id: currentUserId });
-
-    return currentUserReviewer?.attention_requested || currentUserAssignee?.attention_requested;
-  }
-
-  get isAddingAssignee() {
-    return this.addingAssignees.length > 0;
-  }
-
-  get isAddingReviewer() {
-    return this.addingReviewers.length > 0;
-  }
-
-  get isMergeRequest() {
-    return this.issuableType === 'merge_request';
   }
 }

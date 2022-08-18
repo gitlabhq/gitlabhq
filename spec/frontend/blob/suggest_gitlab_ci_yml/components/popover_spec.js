@@ -98,7 +98,7 @@ describe('Suggest gitlab-ci.yml Popover', () => {
       const expectedAction = 'click_button';
       const expectedProperty = 'owner';
       const expectedValue = '10';
-      const dismissButton = wrapper.find(GlButton);
+      const dismissButton = wrapper.findComponent(GlButton);
       trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
 
       triggerEvent(dismissButton.element);

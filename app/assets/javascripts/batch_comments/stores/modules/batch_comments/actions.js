@@ -1,9 +1,12 @@
 import { isEmpty } from 'lodash';
+
 import createFlash from '~/flash';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
 import service from '../../../services/drafts_service';
+
 import * as types from './mutation_types';
 
 export const saveDraft = ({ dispatch }, draft) =>
@@ -15,6 +18,7 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
     .then((res) => res.data)
     .then((res) => {
       commit(types.ADD_NEW_DRAFT, res);
+
       return res;
     })
     .catch(() => {
@@ -29,6 +33,7 @@ export const createNewDraft = ({ commit }, { endpoint, data }) =>
     .then((res) => res.data)
     .then((res) => {
       commit(types.ADD_NEW_DRAFT, res);
+
       return res;
     })
     .catch(() => {

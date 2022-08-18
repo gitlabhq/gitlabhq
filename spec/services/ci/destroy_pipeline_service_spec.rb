@@ -90,15 +90,23 @@ RSpec.describe ::Ci::DestroyPipelineService do
       end
     end
 
-    context 'when pipeline is in cancelable state' do
-      before do
-        allow(pipeline).to receive(:cancelable?).and_return(true)
-      end
+    context 'when pipeline is in cancelable state', :sidekiq_inline do
+      let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
+      let!(:child_pipeline) { create(:ci_pipeline, :running, child_of: pipeline) }
+      let!(:child_build) { create(:ci_build, :running, pipeline: child_pipeline) }
 
-      it 'cancels the pipeline' do
-        expect(pipeline).to receive(:cancel_running)
+      it 'cancels the pipelines sync' do
+        # turn off deletion for all instances of pipeline to allow for testing cancellation
+        allow(pipeline).to receive_message_chain(:reset, :destroy!)
+        allow_next_found_instance_of(Ci::Pipeline) { |p| allow(p).to receive_message_chain(:reset, :destroy!) }
+
+        # ensure cancellation happens sync so we accumulate minutes
+        expect(::Ci::CancelPipelineWorker).not_to receive(:perform)
 
         subject
+
+        expect(build.reload.status).to eq('canceled')
+        expect(child_build.reload.status).to eq('canceled')
       end
     end
   end

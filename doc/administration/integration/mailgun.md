@@ -18,8 +18,8 @@ After completing the integration, Mailgun `temporary_failure` and `permanent_fai
 
 ## Configure your Mailgun domain
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the `/-/members/mailgun/permanent_failures` URL in GitLab 15.0.
-> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the URL to handle both temporary and permanent failures in GitLab 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the `/-/members/mailgun/permanent_failures` URL in GitLab 15.0.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the URL to handle both temporary and permanent failures in GitLab 15.0.
 
 Before you can enable Mailgun in GitLab, set up your own Mailgun endpoints to receive the webhooks.
 
@@ -47,6 +47,6 @@ you're ready to enable the Mailgun integration:
 1. On the left sidebar, go to **Settings > General** and expand the **Mailgun** section.
 1. Select the **Enable Mailgun** check box.
 1. Enter the Mailgun HTTP webhook signing key as described in
-   [the Mailgun documentation](https://documentation.mailgun.com/en/latest/user_manual.html#webhooks) and
+   [the Mailgun documentation](https://documentation.mailgun.com/en/latest/user_manual.html#webhooks-1) and
    shown in the [API security](https://app.mailgun.com/app/account/security/api_keys) section for your Mailgun account.
 1. Select **Save changes**.

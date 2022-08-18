@@ -29,6 +29,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         merge_user_id
         merge_when_pipeline_succeeds
         milestone_id
+        reviewer_ids
         source_branch
         source_project_id
         state_id
@@ -72,6 +73,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         human_time_estimate
         assignee_ids
         assignee_id
+        reviewer_ids
         labels
         state
         blocking_discussions_resolved

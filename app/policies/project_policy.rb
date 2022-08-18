@@ -209,6 +209,9 @@ class ProjectPolicy < BasePolicy
     analytics
     operations
     security_and_compliance
+    environments
+    feature_flags
+    releases
   ]
 
   features.each do |f|
@@ -366,7 +369,11 @@ class ProjectPolicy < BasePolicy
     prevent(:metrics_dashboard)
   end
 
-  rule { operations_disabled }.policy do
+  condition(:split_operations_visibility_permissions) do
+    ::Feature.enabled?(:split_operations_visibility_permissions, @subject)
+  end
+
+  rule { ~split_operations_visibility_permissions & operations_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:feature_flag))
     prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:sentry_issue))
@@ -377,6 +384,21 @@ class ProjectPolicy < BasePolicy
     prevent(:metrics_dashboard)
     prevent(:read_pod_logs)
     prevent(:read_prometheus)
+  end
+
+  rule { split_operations_visibility_permissions & environments_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:deployment))
+  end
+
+  rule { split_operations_visibility_permissions & feature_flags_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:feature_flag))
+    prevent(:admin_feature_flags_user_lists)
+    prevent(:admin_feature_flags_client)
+  end
+
+  rule { split_operations_visibility_permissions & releases_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:release))
   end
 
   rule { can?(:metrics_dashboard) }.policy do
@@ -470,6 +492,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_pipeline
     enable :admin_environment
     enable :admin_deployment
+    enable :destroy_deployment
     enable :admin_pages
     enable :read_pages
     enable :update_pages
@@ -497,6 +520,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_project_google_cloud
     enable :admin_secure_files
     enable :read_web_hooks
+    enable :read_upload
+    enable :destroy_upload
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

@@ -108,3 +108,5 @@ module QA
     end
   end
 end
+
+QA::Flow::Purchase.prepend_mod_with('Flow::Purchase', namespace: QA)

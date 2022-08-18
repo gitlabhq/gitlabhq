@@ -38,7 +38,7 @@ module BulkImports
         end
 
         def transform_path(import_entity, data)
-          data['path'] = import_entity.destination_name.parameterize
+          data['path'] = import_entity.destination_slug.parameterize
           data
         end
 

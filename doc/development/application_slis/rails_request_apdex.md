@@ -231,8 +231,7 @@ end
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the
-[error budget for stage
-groups](../stage_group_observability/index.md#error-budget). For this
+[error budget for stage groups](../stage_group_observability/index.md#error-budget). For this
 particular SLI, we have opted everyone out by default to give time to
 set the correct urgencies on endpoints before it affects a group's
 error budget.

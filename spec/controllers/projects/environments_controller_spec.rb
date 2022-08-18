@@ -233,7 +233,7 @@ RSpec.describe Projects::EnvironmentsController do
     end
 
     context "when environment params are invalid" do
-      let(:params) { environment_params.merge(environment: { name: '/foo/', external_url: '/git.gitlab.com' }) }
+      let(:params) { environment_params.merge(environment: { external_url: 'javascript:alert("hello")' }) }
 
       it 'returns bad request' do
         subject

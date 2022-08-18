@@ -7,7 +7,7 @@
       - else
         = sprite_icon('star-o', css_class: 'icon')
         %span= s_('ProjectOverview|Star')
-    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm star-count count' do
+    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm has-tooltip star-count count' do
       = @project.star_count
 
 - else
@@ -15,5 +15,5 @@
     = link_to new_user_session_path, class: 'gl-button btn btn-default btn-sm has-tooltip star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
       = sprite_icon('star-o', css_class: 'icon')
       %span= s_('ProjectOverview|Star')
-    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm star-count count' do
+    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm has-tooltip star-count count' do
       = @project.star_count

@@ -72,24 +72,32 @@ module Gitlab
           Collection.new(@variables.reject(&block))
         end
 
-        def expand_value(value, keep_undefined: false)
+        def expand_value(value, keep_undefined: false, expand_file_vars: true)
           value.gsub(Item::VARIABLES_REGEXP) do
-            match = Regexp.last_match
-            if match[:key]
-              # we matched variable
-              if variable = self[match[:key]]
-                variable.value
-              elsif keep_undefined
-                match[0]
-              end
+            match = Regexp.last_match # it is either a valid variable definition or a ($$ / %%)
+            full_match = match[0]
+            variable_name = match[:key]
+
+            next full_match unless variable_name # it is a ($$ / %%), so we don't touch it
+
+            # now we know that it is a valid variable definition: $VARIABLE_NAME / %VARIABLE_NAME / ${VARIABLE_NAME}
+
+            # we are trying to find a variable with key VARIABLE_NAME
+            variable = self[variable_name]
+
+            if variable # VARIABLE_NAME is an existing variable
+              next variable.value unless variable.file?
+
+              expand_file_vars ? variable.value : full_match
+            elsif keep_undefined
+              full_match # we do not touch the variable definition
             else
-              # we escape sequence
-              match[0]
+              nil # we remove the variable definition
             end
           end
         end
 
-        def sort_and_expand_all(keep_undefined: false)
+        def sort_and_expand_all(keep_undefined: false, expand_file_vars: true)
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?
 
@@ -103,7 +111,8 @@ module Gitlab
 
             # expand variables as they are added
             variable = item.to_runner_variable
-            variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined)
+            variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined,
+                                                                             expand_file_vars: expand_file_vars)
             new_collection.append(variable)
           end
 

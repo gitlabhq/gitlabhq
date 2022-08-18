@@ -131,7 +131,9 @@ const lazyLaunchPopover = debounce((mountPopover, event) => {
 let hasAddedLazyPopovers = false;
 
 export default function addPopovers(mountPopover = (instance) => instance.$mount()) {
-  if (!hasAddedLazyPopovers) {
+  // The web request fails for anonymous users so we don't want to show the popover when the user is not signed in.
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/351395#note_1039341458
+  if (window.gon?.current_user_id && !hasAddedLazyPopovers) {
     document.addEventListener('mouseover', (event) => lazyLaunchPopover(mountPopover, event));
     hasAddedLazyPopovers = true;
   }

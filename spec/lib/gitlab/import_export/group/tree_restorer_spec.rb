@@ -204,19 +204,5 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer do
     end
   end
 
-  context 'when import_relation_object_persistence feature flag is enabled' do
-    before do
-      stub_feature_flags(import_relation_object_persistence: true)
-    end
-
-    include_examples 'group restoration'
-  end
-
-  context 'when import_relation_object_persistence feature flag is disabled' do
-    before do
-      stub_feature_flags(import_relation_object_persistence: false)
-    end
-
-    include_examples 'group restoration'
-  end
+  include_examples 'group restoration'
 end

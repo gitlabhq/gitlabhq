@@ -39,6 +39,13 @@ RSpec.describe IssueEntity do
     expect(subject).to include(:time_estimate, :total_time_spent, :human_time_estimate, :human_total_time_spent)
   end
 
+  describe 'current_user' do
+    it 'has the exprected permissions' do
+      expect(subject[:current_user]).to include(:can_create_note, :can_update, :can_set_issue_metadata,
+                                                :can_award_emoji)
+    end
+  end
+
   context 'when issue got moved' do
     let(:public_project) { create(:project, :public) }
     let(:member) { create(:user) }

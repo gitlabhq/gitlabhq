@@ -1,8 +1,0 @@
-- issuable.merge_request_reviewers.take(count).each do |merge_request_reviewer| # rubocop: disable CodeReuse/ActiveRecord
-  - reviewer = merge_request_reviewer.reviewer
-  - reviewer_tooltip = ( merge_request_reviewer.attention_requested? ? s_("MrList|Attention requested from reviewer %{name}") : s_("MrList|Review requested from %{name}") ) % { name: reviewer.name}
-
-  = link_to_member(@project, reviewer, name: false, title: reviewer_tooltip, extra_class: "gl-flex-direction-row-reverse") do
-    - if merge_request_reviewer.attention_requested?
-      %span.gl-display-inline-flex
-        = sprite_icon('attention-solid-sm', css_class: 'gl-text-orange-500 icon-overlap-and-shadow')

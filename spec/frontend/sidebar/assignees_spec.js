@@ -70,7 +70,7 @@ describe('Assignee component', () => {
       wrapper.find('[data-testid="assign-yourself"]').trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted('assign-self')).toBeTruthy();
+      expect(wrapper.emitted('assign-self')).toHaveLength(1);
     });
   });
 

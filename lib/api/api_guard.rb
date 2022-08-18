@@ -48,7 +48,9 @@ module API
       include Gitlab::Auth::AuthFinders
 
       def access_token
-        super || find_personal_access_token_from_http_basic_auth
+        strong_memoize(:api_guard_access_token) do
+          super || find_personal_access_token_from_http_basic_auth
+        end
       end
 
       def find_current_user!

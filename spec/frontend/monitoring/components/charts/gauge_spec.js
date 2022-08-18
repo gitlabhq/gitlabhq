@@ -8,7 +8,7 @@ describe('Gauge Chart component', () => {
 
   let wrapper;
 
-  const findGaugeChart = () => wrapper.find(GlGaugeChart);
+  const findGaugeChart = () => wrapper.findComponent(GlGaugeChart);
 
   const createWrapper = ({ ...graphProps } = {}) => {
     wrapper = shallowMount(GaugeChart, {

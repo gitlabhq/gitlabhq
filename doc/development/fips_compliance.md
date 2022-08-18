@@ -12,12 +12,9 @@ to ensure a certain security floor is met by vendors selling products to U.S.
 Federal institutions.
 
 WARNING:
-GitLab is not FIPS compliant, even when built and run on a FIPS-enforcing
-system. Large parts of the build are broken, and many features use forbidden
-cryptographic primitives. Running GitLab on a FIPS-enforcing system is not
-supported and may result in data loss. This document is intended to help
-engineers looking to develop FIPS-related fixes. It is not intended to be used
-to run a production GitLab instance.
+You can build a FIPS-compliant instance of GitLab, but [not all features are included](#unsupported-features-in-fips-mode).
+A FIPS-compliant instance must be configured following the [FIPS install instructions](#install-gitlab-with-fips-compliance)
+exactly.
 
 There are two current FIPS standards: [140-2](https://en.wikipedia.org/wiki/FIPS_140-2)
 and [140-3](https://en.wikipedia.org/wiki/FIPS_140-3). At GitLab we usually
@@ -25,10 +22,7 @@ mean FIPS 140-2.
 
 ## Current status
 
-Read [Epic &5104](https://gitlab.com/groups/gitlab-org/-/epics/5104) for more
-information on the status of the investigation.
-
-GitLab is actively working towards FIPS compliance.
+GitLab is actively working towards FIPS compliance. Progress on this initiative can be tracked with this [FIPS compliance Epic](https://gitlab.com/groups/gitlab-org/-/epics/6452).
 
 ## FIPS compliance at GitLab
 
@@ -46,15 +40,40 @@ when FIPS mode is enabled.
 | Ubuntu 20.04 Libgcrypt Cryptographic Module              | [3902](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3902) | EC2 instances | `gpg`, `sshd` |
 | Amazon Linux 2 Kernel Crypto API Cryptographic Module    | [3709](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3709) | EKS nodes     | Linux kernel |
 | Amazon Linux 2 OpenSSL Cryptographic Module              | [3553](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3553) | EKS nodes     | NGINX |
-| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [3852](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3852) | EKS nodes     | UBI containers: Workhorse, Pages, Container Registry, Rails (Puma/Sidekiq), Security Analyzers |
+| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4271](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4271) | EKS nodes     | UBI containers: Workhorse, Pages, Container Registry, Rails (Puma/Sidekiq), Security Analyzers |
 | RedHat Enterprise Linux 8 Libgcrypt Cryptographic Module | [3784](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3784) | EKS nodes     | UBI containers: GitLab Shell, `gpg` |
 
 ### Supported Operating Systems
 
-The supported hybrid environments are:
+The supported hybrid platforms are:
 
-- Omnibus: Ubuntu 20.04 FIPS
-- EKS: Amazon Linux 2
+- Omnibus GitLab: Ubuntu 20.04 LTS
+- Cloud Native GitLab: Amazon Linux 2 (EKS)
+
+### Unsupported features in FIPS mode
+
+Some GitLab features may not work when FIPS mode is enabled. The following features
+are known to not work in FIPS mode. However, there may be additional features not
+listed here that also do not work properly in FIPS mode:
+
+- [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
+- [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
+- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
+- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md)
+  does not support operating in FIPS-compliant mode.
+- [License compliance](../user/compliance/license_compliance/index.md).
+- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
+  for yarn projects.
+- [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
+  supports a reduced set of [analyzers](../user/application_security/sast/#fips-enabled-images)
+  when operating in FIPS-compliant mode.
+- Advanced Search is currently not included in FIPS mode. It must not be enabled in order to be FIPS-compliant.  
+- [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
+
+Additionally, these package repositories are disabled in FIPS mode:
+
+- [Conan package repository](../user/packages/conan_repository/index.md).
+- [Debian package repository](../user/packages/debian_repository/index.md).
 
 ## FIPS validation at GitLab
 
@@ -281,6 +300,9 @@ gitlab:
   gitlab-mailroom:
     image:
       tag: master-fips
+  gitlab-pages:
+    image:
+      tag: master-fips
   migrations:
     image:
       tag: master-fips
@@ -299,18 +321,17 @@ gitlab:
 nginx-ingress:
   controller:
     image:
-      repository: registry.gitlab.com/stanhu/gitlab-test-images/k8s-staging-ingress-nginx/controller
-      tag: v1.2.0-beta.1
+      repository: registry.gitlab.com/gitlab-org/cloud-native/charts/gitlab-ingress-nginx/controller
+      tag: v1.2.1-fips
       pullPolicy: Always
-      digest: sha256:ace38833689ad34db4a46bc1e099242696eb800def88f02200a8615530734116
+      digest: sha256:c4222b7ab3836b9be2a7649cff4b2e6ead34286dfdf3a7b04eb34fdd3abb0334
 ```
 
 The above example shows a FIPS-enabled [`nginx-ingress`](https://github.com/kubernetes/ingress-nginx) image.
-See [this issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3153#note_917782207) for more details on
-how to build NGINX and the Ingress Controller.
+See our [Charts documentation on FIPS](https://docs.gitlab.com/charts/advanced/fips/index.html) for more details.
 
 You can also use release tags, but the versioning is tricky because each
-component may use its own versioning scheme. For example, for GitLab v15.1:
+component may use its own versioning scheme. For example, for GitLab v15.2:
 
 ```yaml
 global:
@@ -324,30 +345,33 @@ global:
 gitlab:
   gitaly:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   gitlab-exporter:
     image:
-      tag: 11.15.2-fips
+      tag: 11.17.1-fips
   gitlab-shell:
     image:
-      tag: v15.1.0-fips
+      tag: v14.9.0-fips
   gitlab-mailroom:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
+  gitlab-pages:
+    image:
+      tag: v1.61.0-fips
   migrations:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   sidekiq:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   toolbox:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   webservice:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
     workhorse:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
 ```
 
 ## FIPS Performance Benchmarking
@@ -416,29 +440,6 @@ def default_min_key_size(name)
   end
 end
 ```
-
-#### Unsupported features in FIPS mode
-
-Some GitLab features may not work when FIPS mode is enabled. The following features
-are known to not work in FIPS mode. However, there may be additional features not
-listed here that also do not work properly in FIPS mode:
-
-- [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
-- [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
-- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
-- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md)
-  does not support operating in FIPS-compliant mode.
-- [License compliance](../user/compliance/license_compliance/index.md).
-- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
-  for yarn projects.
-- [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
-  supports a reduced set of [analyzers](../user/application_security/sast/#fips-enabled-images)
-  when operating in FIPS-compliant mode.
-
-Additionally, these package repositories are disabled in FIPS mode:
-
-- [Conan package repository](../user/packages/conan_repository/index.md).
-- [Debian package repository](../user/packages/debian_repository/index.md).
 
 ## Nightly Omnibus FIPS builds
 

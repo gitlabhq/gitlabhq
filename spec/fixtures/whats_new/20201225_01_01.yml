@@ -1,7 +1,7 @@
 ---
-- title: It's gonna be a bright
-  body: |
+- name: It's gonna be a bright
+  description: |
     ## It's gonna be a bright
   self-managed: true
   gitlab-com: false
-  packages: ["Premium", "Ultimate"]
+  available_in: ["Premium", "Ultimate"]

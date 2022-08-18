@@ -53,8 +53,11 @@ tree:
     - project_members:
       - :user
     - merge_requests:
+      - :approvals
       - :metrics
       - :award_emoji
+      - :merge_request_assignees
+      - :merge_request_reviewers
       - notes:
         - :author
         - :award_emoji
@@ -120,6 +123,10 @@ included_attributes:
     - :username
   author:
     - :name
+  approvals:
+    - :user_id
+    - :created_at
+    - :updated_at
   ci_cd_settings:
     - :group_runners_enabled
     - :runner_token_expiration_interval
@@ -284,6 +291,9 @@ included_attributes:
     - :security_and_compliance_access_level
     - :container_registry_access_level
     - :package_registry_access_level
+    - :environments_access_level
+    - :feature_flags_access_level
+    - :releases_access_level
   prometheus_metrics:
     - :created_at
     - :updated_at
@@ -328,7 +338,6 @@ included_attributes:
     - :source_branch
     - :source_project_id
     - :author_id
-    - :assignee_id
     - :title
     - :created_at
     - :updated_at
@@ -587,6 +596,14 @@ included_attributes:
     - :author_id
   issue_assignees:
     - :user_id
+  merge_request_assignees:
+    - :user_id
+    - :created_at
+    - :state
+  merge_request_reviewers:
+    - :user_id
+    - :created_at
+    - :state
   sentry_issue:
     - :sentry_issue_identifier
   zoom_meetings:
@@ -640,7 +657,6 @@ included_attributes:
     - :auto_cancel_pending_pipelines
     - :autoclose_referenced_issues
     - :build_allow_git_fetch
-    - :build_coverage_regex
     - :build_timeout
     - :delete_error
     - :description
@@ -686,6 +702,9 @@ included_attributes:
     - :security_and_compliance_access_level
     - :container_registry_access_level
     - :package_registry_access_level
+    - :environments_access_level
+    - :feature_flags_access_level
+    - :releases_access_level
     - :allow_merge_on_skipped_pipeline
     - :auto_devops_deploy_strategy
     - :auto_devops_enabled
@@ -762,6 +781,9 @@ excluded_attributes:
     - :repository_size_limit
     - :external_webhook_token
     - :incident_management_issuable_escalation_statuses
+  approvals:
+    - :id
+    - :merge_request_id
   namespaces:
     - :runners_token
     - :runners_token_encrypted

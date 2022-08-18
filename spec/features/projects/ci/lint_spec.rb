@@ -16,16 +16,13 @@ RSpec.describe 'CI Lint', :js do
 
     visit project_ci_lint_path(project)
     editor_set_value(yaml_content)
-
-    wait_for('YAML content') do
-      find(content_selector).text.present?
-    end
   end
 
   describe 'YAML parsing' do
     shared_examples 'validates the YAML' do
       before do
         click_on 'Validate'
+        scroll_to(page.find('[data-testid="ci-lint-status"]'))
       end
 
       context 'YAML is correct' do

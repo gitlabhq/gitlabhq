@@ -22,6 +22,7 @@ module API
                     Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
+                    Gitlab::GrapeLogging::Loggers::TokenLogger.new,
                     Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new,
@@ -47,6 +48,12 @@ module API
     before do
       header['X-Frame-Options'] = 'SAMEORIGIN'
       header['X-Content-Type-Options'] = 'nosniff'
+
+      if Rails.application.config.content_security_policy && !Rails.application.config.content_security_policy_report_only
+        policy = ActionDispatch::ContentSecurityPolicy.new { |p| p.default_src :none }
+      end
+
+      request.env[ActionDispatch::ContentSecurityPolicy::Request::POLICY] = policy
     end
 
     before do

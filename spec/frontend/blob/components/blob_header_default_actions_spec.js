@@ -30,8 +30,8 @@ describe('Blob Header Default Actions', () => {
 
   beforeEach(() => {
     createComponent();
-    btnGroup = wrapper.find(GlButtonGroup);
-    buttons = wrapper.findAll(GlButton);
+    btnGroup = wrapper.findComponent(GlButtonGroup);
+    buttons = wrapper.findAllComponents(GlButton);
   });
 
   afterEach(() => {
@@ -69,9 +69,9 @@ describe('Blob Header Default Actions', () => {
       createComponent({
         activeViewer: RICH_BLOB_VIEWER,
       });
-      buttons = wrapper.findAll(GlButton);
+      buttons = wrapper.findAllComponents(GlButton);
 
-      expect(buttons.at(0).attributes('disabled')).toBeTruthy();
+      expect(buttons.at(0).attributes('disabled')).toBe('true');
     });
 
     it('does not render the copy button if a rendering error is set', () => {

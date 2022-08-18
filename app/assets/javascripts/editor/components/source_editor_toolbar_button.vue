@@ -52,6 +52,7 @@ export default {
     :icon="icon"
     :title="label"
     :aria-label="label"
+    data-qa-selector="editor_toolbar_button"
     @click="clickHandler"
   />
 </template>

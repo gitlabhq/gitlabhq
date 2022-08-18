@@ -44,7 +44,7 @@ describe('navigation tabs component', () => {
   });
 
   it('should render tabs', () => {
-    expect(wrapper.findAll(GlTab)).toHaveLength(data.length);
+    expect(wrapper.findAllComponents(GlTab)).toHaveLength(data.length);
   });
 
   it('should render active tab', () => {

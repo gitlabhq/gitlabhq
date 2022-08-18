@@ -11,7 +11,7 @@ module Gitlab
 
         expose_attribute :author, :note, :review_type, :submitted_at, :merge_request_id, :review_id
 
-        def self.from_api_response(review)
+        def self.from_api_response(review, additional_data = {})
           user = Representation::User.from_api_response(review.user) if review.user
 
           new(

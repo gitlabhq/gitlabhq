@@ -40,7 +40,13 @@ module Gitlab
             ::Ci::Pipeline
               .id_in(pipeline_ids)
               .with_only_interruptible_builds
-              .each { |cancelable| cancelable.auto_cancel_running(pipeline) }
+              .each do |cancelable_pipeline|
+                # cascade_to_children not needed because we iterate through descendants here
+                cancelable_pipeline.cancel_running(
+                  auto_canceled_by_pipeline_id: pipeline.id,
+                  cascade_to_children: false
+                )
+              end
           end
         end
       end

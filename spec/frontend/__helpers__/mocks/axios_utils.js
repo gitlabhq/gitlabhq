@@ -1,4 +1,6 @@
 import EventEmitter from 'events';
+// eslint-disable-next-line no-restricted-syntax
+import { setImmediate } from 'timers';
 
 const axios = jest.requireActual('~/lib/utils/axios_utils').default;
 

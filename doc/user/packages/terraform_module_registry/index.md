@@ -101,7 +101,7 @@ module "<module>" {
 }
 ```
 
-Where `<namespace>` is the [namespace](../../../user/group/index.md#namespaces) of the Terraform module registry.
+Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the Terraform module registry.
 
 ## Publish a Terraform module by using CI/CD
 
@@ -125,7 +125,7 @@ upload:
   script:
     - TERRAFORM_MODULE_NAME=$(echo "${TERRAFORM_MODULE_NAME}" | tr " _" -) # module-name must not have spaces or underscores, so translate them to hyphens
     - tar -vczf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
-    - 'curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}" 
+    - 'curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
          --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
          ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
   rules:

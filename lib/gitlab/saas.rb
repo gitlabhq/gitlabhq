@@ -52,6 +52,10 @@ module Gitlab
     def self.doc_url
       'https://docs.gitlab.com'
     end
+
+    def self.community_forum_url
+      'https://forum.gitlab.com'
+    end
   end
 end
 

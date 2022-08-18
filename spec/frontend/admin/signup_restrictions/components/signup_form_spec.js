@@ -28,7 +28,7 @@ describe('Signup Form', () => {
 
   const findForm = () => wrapper.findByTestId('form');
   const findInputCsrf = () => findForm().find('[name="authenticity_token"]');
-  const findFormSubmitButton = () => findForm().find(GlButton);
+  const findFormSubmitButton = () => findForm().findComponent(GlButton);
 
   const findDenyListRawRadio = () => queryByLabelText('Enter denylist manually');
   const findDenyListFileRadio = () => queryByLabelText('Upload denylist file');
@@ -36,7 +36,7 @@ describe('Signup Form', () => {
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
   const findUserCapInput = () => wrapper.findByTestId('user-cap-input');
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
 
   afterEach(() => {
     wrapper.destroy();

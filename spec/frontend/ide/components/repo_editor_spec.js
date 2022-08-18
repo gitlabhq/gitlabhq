@@ -145,8 +145,7 @@ describe('RepoEditor', () => {
     jest.clearAllMocks();
     // create a new model each time, otherwise tests conflict with each other
     // because of same model being used in multiple tests
-    // eslint-disable-next-line no-undef
-    monaco.editor.getModels().forEach((model) => model.dispose());
+    monacoEditor.getModels().forEach((model) => model.dispose());
     wrapper.destroy();
     wrapper = null;
   });
@@ -212,7 +211,7 @@ describe('RepoEditor', () => {
       it('renders markdown for tempFile', async () => {
         findPreviewTab().vm.$emit('click');
         await waitForPromises();
-        expect(wrapper.find(ContentViewer).html()).toContain(dummyFile.text.content);
+        expect(wrapper.findComponent(ContentViewer).html()).toContain(dummyFile.text.content);
       });
 
       describe('when file changes to non-markdown file', () => {

@@ -6,92 +6,295 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Uploads guide: Adding new uploads
 
-Here, we describe how to add a new upload route [accelerated](index.md#workhorse-assisted-uploads) by Workhorse.
+## Recommendations
 
-Upload routes belong to one of these categories:
+- When creating an uploader, [make it a subclass](#where-should-i-store-my-files) of `AttachmentUploader`
+- Add your uploader to the [tables](#tables) in this document
+- Do not add [new object storage buckets](#where-should-i-store-my-files)
+- Implement [direct upload](#implementing-direct-upload-support)
+- If you need to process your uploads, decide [where to do that](#processing-uploads)
 
-1. Rails controllers: uploads handled by Rails controllers.
-1. Grape API: uploads handled by a Grape API endpoint.
-1. GraphQL API: uploads handled by a GraphQL resolve function.
+## Background information
 
-WARNING:
-GraphQL uploads do not support [direct upload](index.md#direct-upload). Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details, follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
+- [CarrierWave Uploaders](#carrierwave-uploaders)
+- [GitLab modifications to CarrierWave](#gitlab-modifications-to-carrierwave)
 
-## Update Workhorse for the new route
+## Where should I store my files?
 
-For both the Rails controller and Grape API uploads, Workhorse must be updated to get the
-support for the new upload route.
+CarrierWave Uploaders determine where files get
+stored. When you create a new Uploader class you are deciding where to store the files of your new
+feature.
 
-1. Open a new issue in the [Workhorse tracker](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/new) describing precisely the new upload route:
-   - The route's URL.
-   - The upload encoding.
-   - If possible, provide a dump of the upload request.
-1. Implement and get the MR merged for this issue above.
-1. Ask the Maintainers of [Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) to create a new release. You can do that in the merge request
-   directly during the maintainer review, or ask for it in the `#workhorse` Slack channel.
-1. Bump the [Workhorse version file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_WORKHORSE_VERSION)
-   to the version you have from the previous points, or bump it in the same merge request that contains
-   the Rails changes. Refer to [Implementing the new route with a Rails controller](#implementing-the-new-route-with-a-rails-controller) or [Implementing the new route with a Grape API endpoint](#implementing-the-new-route-with-a-grape-api-endpoint) below.
+First of all, ask yourself if you need a new Uploader class. It is OK
+to use the same Uploader class for different mountpoints or different
+models.
 
-## Implementing the new route with a Rails controller
+If you do want or need your own Uploader class then you should make it
+a **subclass of `AttachmentUploader`**. You then inherit the storage
+location and directory scheme from that class. The directory scheme
+is:
 
-For a Rails controller upload, we usually have a `multipart/form-data` upload and there are a
-few things to do:
+```ruby
+File.join(model.class.underscore, mounted_as.to_s, model.id.to_s)
+```
 
-1. The upload is available under the parameter name you're using. For example, it could be an `artifact`
-   or a nested parameter such as `user[avatar]`. If you have the upload under the
-   `file` parameter, reading `params[:file]` should get you an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) instance.
-1. Generally speaking, it's a good idea to check if the instance is from the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) class. For example, see how we checked
-[that the parameter is indeed an `UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/commit/ea30fe8a71bf16ba07f1050ab4820607b5658719#51c0cc7a17b7f12c32bc41cfab3649ff2739b0eb_79_77).
+If you look around in the GitLab code base you will find quite a few
+Uploaders that have their own storage location. For object storage,
+this means Uploaders have their own buckets. We now **discourage**
+adding new buckets for the following reasons:
 
-WARNING:
-**Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
-instance using `UploadedFile#from_params`! This method can be unsafe to use depending on the `params`
-passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
-instance that [`multipart.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/middleware/multipart.rb)
-builds automatically for you.
+- Using a new bucket adds to development time because you need to make downstream changes in [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit), [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) and [CNG](https://gitlab.com/gitlab-org/build/CNG).
+- Using a new bucket requires GitLab.com Infrastructure changes, which slows down the roll-out of your new feature
+- Using a new bucket slows down adoption of your new feature for self-managed GitLab installation: people cannot start using your new feature until their local GitLab administrator has configured the new bucket.
 
-## Implementing the new route with a Grape API endpoint
+By using an existing bucket you avoid all this extra work
+and friction. The `Gitlab.config.uploads` storage location, which is what
+`AttachmentUploader` uses, is guaranteed to already be configured.
 
-For a Grape API upload, we can have a body or multipart upload. Things are slightly more complicated: two endpoints are needed. One for the
-Workhorse pre-upload authorization and one for accepting the upload metadata from Workhorse:
+## Implementing Direct Upload support
 
-1. Implement an endpoint with the URL + `/authorize` suffix that will:
-   - Check that the request is coming from Workhorse with the `require_gitlab_workhorse!` from the [API helpers](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/helpers.rb).
-   - Check user permissions.
-   - Set the status to `200` with `status 200`.
-   - Set the content type with `content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE`.
-   - Use your dedicated `Uploader` class (let's say that it's `FileUploader`) to build the response with `FileUploader.workhorse_authorize(params)`.
-1. Implement the endpoint for the upload request that will:
-   - Require all the `UploadedFile` objects as parameters.
-      - For example, if we expect a single parameter `file` to be an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) instance,
-use `requires :file, type: ::API::Validations::Types::WorkhorseFile`.
-      - Body upload requests have their upload available under the parameter `file`.
-   - Check that the request is coming from Workhorse with the `require_gitlab_workhorse!` from the
-[API helpers](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/helpers.rb).
-   - Check the user permissions.
-   - The remaining code of the processing. In this step, the code must read the parameter. For
-our example, it would be `params[:file]`.
+Below we will outline how to implement [direct upload](#direct-upload-via-workhorse) support.
 
-WARNING:
-**Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
-object using `UploadedFile#from_params`! This method can be unsafe to use depending on the `params`
-passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
-object that [`multipart.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/middleware/multipart.rb)
-builds automatically for you.
+Using direct upload is not always necessary but it is usually a good
+idea. Unless the uploads handled by your feature are both infrequent
+and small, you probably want to implement direct upload. An example of
+a feature with small and infrequent uploads is project avatars: these
+rarely change and the application imposes strict size limits on them.
 
-## Document Object Storage buckets and CarrierWave integration
+If your feature handles uploads that are not both infrequent and small,
+then not implementing direct upload support means that you are taking on
+technical debt. At the very least, you should make sure that you _can_
+add direct upload support later.
 
-When using Object Storage, GitLab expects each kind of upload to maintain its own bucket in the respective
-Object Storage destination. Moreover, the integration with CarrierWave is not used all the time.
-The [Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/)
-is investigating an approach that unifies Object Storage buckets into a single one and removes CarrierWave
-so as to simplify implementation and administration of uploads.
+To support Direct Upload you need two things:
 
-Therefore, document new uploads here by slotting them into the following tables:
+1. A pre-authorization endpoint in Rails
+1. A Workhorse routing rule
 
-- [Feature bucket details](#feature-bucket-details)
-- [CarrierWave integration](#carrierwave-integration)
+Workhorse does not know where to store your upload. To find out it
+makes a pre-authorization request. It also does not know whether or
+where to make a pre-authorization request. For that you need the
+routing rule.
+
+A note to those of us who remember,
+[Workhorse used to be a separate project](https://gitlab.com/groups/gitlab-org/-/epics/4826):
+it is not necessary anymore to break these two steps into separate merge
+requests. In fact it is probably easier to do both in one merge
+request.
+
+### Adding a Workhorse routing rule
+
+Routing rules are defined in
+[workhorse/internal/upstream/routes.go](https://gitlab.com/gitlab-org/gitlab/-/blob/adf99b5327700cf34a845626481d7d6fcc454e57/workhorse/internal/upstream/routes.go).
+They consist of:
+
+- An HTTP verb (usually "POST" or "PUT")
+- A path regular expression
+- An upload type: MIME multipart or "full request body"
+- Optionally, you can also match on HTTP headers like `Content-Type`
+
+Example:
+
+```golang
+u.route("PUT", apiProjectPattern+`packages/nuget/`, mimeMultipartUploader),
+```
+
+You should add a test for your routing rule to `TestAcceleratedUpload`
+in
+[workhorse/upload_test.go](https://gitlab.com/gitlab-org/gitlab/-/blob/adf99b5327700cf34a845626481d7d6fcc454e57/workhorse/upload_test.go).
+
+You should also manually verify that when you perform an upload
+request for your new feature, Workhorse makes a pre-authorization
+request. You can check this by looking at the Rails access logs. This
+is necessary because if you make a mistake in your routing rule you
+won't get a hard failure: you just end up using the less efficient
+default path.
+
+### Adding a pre-authorization endpoint
+
+We distinguish three cases: Rails controllers, Grape API endpoints and
+GraphQL resources.
+
+To start with the bad news: direct upload for GraphQL is currently not
+supported. The reason for this is that Workhorse does not parse
+GraphQL queries. Also see [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
+Consider accepting your file upload via Grape instead.
+
+For Grape pre-authorization endpoints, look for existing examples that
+implement `/authorize` routes. One example is the
+[POST `:id/uploads/authorize` endpoint](https://gitlab.com/gitlab-org/gitlab/-/blob/9ad53d623eecebb799ce89eada951e4f4a59c116/lib/api/projects.rb#L642-651).
+Note that this particular example is using FileUploader, which means
+that the upload will be stored in the storage location (bucket) of
+that Uploader class.
+
+For Rails endpoints you can use the
+[WorkhorseAuthorization concern](https://gitlab.com/gitlab-org/gitlab/-/blob/adf99b5327700cf34a845626481d7d6fcc454e57/app/controllers/concerns/workhorse_authorization.rb).
+
+## Processing uploads
+
+Some features require us to process uploads, for example to extract
+metadata from the uploaded file. There are a couple of different ways
+you can implement this. The main choice is _where_ to implement the
+processing, or "who is the processor".
+
+|Processor|Direct Upload possible?|Can reject HTTP request?|Implementation|
+|---|---|---|---|
+|Sidekiq|yes|no|Straightforward|
+|Workhorse|yes|yes|Complex|
+|Rails|no|yes|Easy|
+
+Processing in Rails looks appealing but it tends to lead to scaling
+problems down the road because you cannot use direct upload. You are
+then forced to rebuild your feature with processing in Workhorse. So
+if the requirements of your feature allows it, doing the processing in
+Sidekiq strikes a good balance between complexity and the ability to
+scale.
+
+## CarrierWave Uploaders
+
+GitLab uses a modified version of
+[CarrierWave](https://github.com/carrierwaveuploader/carrierwave) to
+manage uploads. Below we will describe how we use CarrierWave and how
+we modified it.
+
+The central concept of CarrierWave is the **Uploader** class. The
+Uploader defines where files get stored, and optionally contains
+validation and processing logic. To use an Uploader you must associate
+it with a text column on an ActiveRecord model. This called "mounting"
+and the column is called the "mountpoint". For example:
+
+```ruby
+class Project < ApplicationRecord
+  mount_uploader :avatar, AttachmentUploader
+end
+```
+
+Now if I upload an avatar called `tanuki.png` the idea is that in the
+`projects.avatar` column for my project, CarrierWave stores the string
+`tanuki.png`, and that the AttachmentUploader class contains the
+configuration data and directory schema. For example if the project ID
+is 123, the actual file may be in
+`/var/opt/gitlab/gitlab-rails/uploads/-/system/project/avatar/123/tanuki.png`.
+The directory
+`/var/opt/gitlab/gitlab-rails/uploads/-/system/project/avatar/123/`
+was chosen by the Uploader using among others configuration
+(`/var/opt/gitlab/gitlab-rails/uploads`), the model name (`project`),
+the model ID (`123`) and the mountpoint (`avatar`).
+
+> The Uploader determines the individual storage directory of your
+> upload. The mountpoint column in your model contains the filename.
+
+You never access the mountpoint column directly because CarrierWave
+defines a getter and setter on your model that operates on file handle
+objects.
+
+### Optional Uploader behaviors
+
+Besides determining the storage directory for your upload, a
+CarrierWave Uploader can implement several other behaviors via
+callbacks. Not all of these behaviors are usable in GitLab. In
+particular, you currently cannot use the `version` mechanism of
+CarrierWave. Things you can do include:
+
+- Filename validation
+- **Incompatible with direct upload:** One time pre-processing of file contents, e.g. image resizing
+- **Incompatible with direct upload:** Encryption at rest
+
+Note that CarrierWave pre-processing behaviors such as image resizing
+or encryption require local access to the uploaded file. This forces
+you to upload the processed file from Ruby. This flies against direct
+upload, which is all about _not_ doing the upload in Ruby. If you use
+direct upload with an Uploader with pre-processing behaviors then the
+pre-processing behaviors will be skipped silently.
+
+### CarrierWave Storage engines
+
+CarrierWave has 2 storage engines:
+
+|CarrierWave class|GitLab name|Description|
+|---|---|---|
+|`CarrierWave::Storage::File`|`ObjectStorage::Store::LOCAL` |Local files, accessed through the Ruby stdlib|
+| `CarrierWave::Storage::Fog`|`ObjectStorage::Store::REMOTE`|Cloud files, accessed through the [Fog gem](https://github.com/fog/fog)|
+
+GitLab uses both of these engines, depending on configuration.
+
+The normal way to choose a storage engine in CarrierWave is to use the
+`Uploader.storage` class method. In GitLab we do not do this; we have
+overridden `Uploader#storage` instead. This allows us to vary the
+storage engine file by file.
+
+### CarrierWave file lifecycle
+
+An Uploader is associated with two storage areas: regular storage and
+cache storage. Each has its own storage engine. If you assign a file
+to a mountpoint setter (`project.avatar =
+File.open('/tmp/tanuki.png')`) you will copy/move the file to cache
+storage as a side effect via the `cache!` method. To persist the file
+you must somehow call the `store!` method. This either happens via
+[ActiveRecord callbacks](https://github.com/carrierwaveuploader/carrierwave/blob/v1.3.2/lib/carrierwave/orm/activerecord.rb#L55)
+or by calling `store!` on an Uploader instance.
+
+Normally you do not need to interact with `cache!` and `store!` but if
+you need to debug GitLab CarrierWave modifications it is useful to
+know that they are there and that they always get called.
+Specifically, it is good to know that CarrierWave pre-processing
+behaviors (`process` etc.) are implemented as `before :cache` hooks,
+and in the case of direct upload, these hooks are ignored and do not
+run.
+
+> Direct upload skips all CarrierWave `before :cache` hooks.
+
+## GitLab modifications to CarrierWave
+
+GitLab uses a modified version of CarrierWave to make a number of things possible.
+
+### Migrating data between storage engines
+
+In
+[app/uploaders/object_storage.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/adf99b5327700cf34a845626481d7d6fcc454e57/app/uploaders/object_storage.rb)
+there is code for migrating user data between local storage and object
+storage. This code exists because for a long time, GitLab.com stored
+uploads on local storage via NFS. This changed when as part of an infrastructure
+migration we had to move the uploads to object storage.
+
+This is why the CarrierWave `storage` varies from upload to upload in
+GitLab, and why we have database columns like `uploads.store` or
+`ci_job_artifacts.file_store`.
+
+### Direct Upload via Workhorse
+
+Workhorse direct upload is a mechanism that lets us accept large
+uploads without spending a lot of Ruby CPU time. Workhorse is written
+in Go and goroutines have a much lower resource footprint than Ruby
+threads.
+
+Direct upload works as follows.
+
+1. Workhorse accepts a user upload request
+1. Workhorse pre-authenticates the request with Rails, and receives a temporary upload location
+1. Workhorse stores the file upload in the user's request to the temporary upload location
+1. Workhorse propagates the request to Rails
+1. Rails issues a remote copy operation to copy the uploaded file from its temporary location to the final location
+1. Rails deletes the temporary upload
+1. Workhorse deletes the temporary upload a second time in case Rails timed out
+
+Normally, `cache!` returns an instance of
+`CarrierWave::SanitizedFile`, and `store!` then
+[uploads that file using Fog](https://github.com/carrierwaveuploader/carrierwave/blob/v1.3.2/lib/carrierwave/storage/fog.rb#L327-L335).
+
+In the case of object storage, with the modifications specific to GitLab, the
+copying from the temporary location to the final location is
+implemented by Rails fooling CarrierWave. When CarrierWave tries to
+`cache!` the upload, we
+[return](https://gitlab.com/gitlab-org/gitlab/-/blob/59b441d578e41cb177406a9799639e7a5aa9c7e1/app/uploaders/object_storage.rb#L367)
+a `CarrierWave::Storage::Fog::File` file handle which points to the
+temporary file. During the `store!` phase, CarrierWave then
+[copies](https://github.com/carrierwaveuploader/carrierwave/blob/v1.3.2/lib/carrierwave/storage/fog.rb#L325)
+this file to its intended location.
+
+## Tables
+
+The Scalability::Frameworks team is going to make object storage and uploads more easy to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
 
 ### Feature bucket details
 

@@ -23,7 +23,7 @@ flexibility:
   and require their approval before work can merge.
 
 You can configure merge request approvals on a per-project basis, and
-[on the group level](../../../group/index.md#group-merge-request-approval-settings). Administrators of
+[on the group level](../../../group/manage.md#group-merge-request-approval-settings). Administrators of
 [GitLab Premium](https://about.gitlab.com/pricing/) and
 [GitLab Ultimate](https://about.gitlab.com/pricing/) self-managed GitLab instances
 can also configure approvals

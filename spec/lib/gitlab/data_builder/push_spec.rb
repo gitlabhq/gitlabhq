@@ -67,6 +67,7 @@ RSpec.describe Gitlab::DataBuilder::Push do
     it { expect(data[:project_id]).to eq(15) }
     it { expect(data[:commits].size).to eq(1) }
     it { expect(data[:total_commits_count]).to eq(1) }
+
     it 'contains project data' do
       expect(data[:project]).to be_a(Hash)
       expect(data[:project][:id]).to eq(15)

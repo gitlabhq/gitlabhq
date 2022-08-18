@@ -46,7 +46,7 @@ describe('WebIDE utils', () => {
           content: 'SELECT "éêė" from tablename',
           mimeType: 'application/sql',
         }),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it('returns true for ASCII only content for unknown types', () => {
@@ -56,7 +56,7 @@ describe('WebIDE utils', () => {
           content: 'plain text',
           mimeType: 'application/x-new-type',
         }),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('returns false for non-ASCII content for unknown types', () => {
@@ -66,7 +66,7 @@ describe('WebIDE utils', () => {
           content: '{"éêė":"value"}',
           mimeType: 'application/octet-stream',
         }),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it.each`

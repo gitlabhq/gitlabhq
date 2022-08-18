@@ -160,14 +160,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotMatches do
         let(:left_value) { 'abcde' }
 
         it { is_expected.to eq(false) }
-
-        context 'when the FF ci_fix_rules_if_comparison_with_regexp_variable is disabled' do
-          before do
-            stub_feature_flags(ci_fix_rules_if_comparison_with_regexp_variable: false)
-          end
-
-          it { is_expected.to eq(true) }
-        end
       end
 
       context 'when not matching' do

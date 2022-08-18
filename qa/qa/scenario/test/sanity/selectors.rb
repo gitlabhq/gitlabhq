@@ -19,7 +19,7 @@ module QA
             validators.flat_map(&:errors).tap do |errors|
               break if errors.none?
 
-              warn <<~EOS
+              warn <<~WARN
                 GitLab QA sanity selectors validation test detected problems
                 with your merge request!
 
@@ -42,15 +42,14 @@ module QA
                 contribute, please open an issue in GitLab QA issue tracker.
 
                 Please see errors described below.
-
-              EOS
+              WARN
 
               warn errors
             end
 
             validators.each(&:validate!)
 
-            puts 'Views / selectors validation passed!'
+            QA::Runtime::Logger.info('Views / selectors validation passed!')
           end
         end
       end

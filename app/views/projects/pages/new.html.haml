@@ -1,0 +1,7 @@
+- if Feature.enabled?(:use_pipeline_wizard_for_pages, @group)
+  #js-pages{ data: @pipeline_wizard_data }
+
+- else
+  = render 'header'
+
+  = render 'use'

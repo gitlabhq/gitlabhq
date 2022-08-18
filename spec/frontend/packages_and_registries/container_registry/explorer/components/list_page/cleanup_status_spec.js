@@ -90,18 +90,26 @@ describe('cleanup_status', () => {
     `(
       'when the status is $status is $visible that the extra icon is visible',
       ({ status, visible }) => {
-        mountComponent({ status });
+        mountComponent({ status, expirationPolicy: { next_run_at: '2063-04-08T01:44:03Z' } });
 
         expect(findExtraInfoIcon().exists()).toBe(visible);
       },
     );
+
+    it(`when the status is ${UNFINISHED_STATUS} & expirationPolicy does not exist the extra icon is not visible`, () => {
+      mountComponent({
+        status: UNFINISHED_STATUS,
+      });
+
+      expect(findExtraInfoIcon().exists()).toBe(false);
+    });
 
     it(`has a popover with a learn more link and a time frame for the next run`, () => {
       jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
 
       mountComponent({
         status: UNFINISHED_STATUS,
-        expirationPolicy: { next_run: '2063-04-08T01:44:03Z' },
+        expirationPolicy: { next_run_at: '2063-04-08T01:44:03Z' },
       });
 
       expect(findPopover().exists()).toBe(true);
@@ -113,7 +121,7 @@ describe('cleanup_status', () => {
     it('id matches popover target attribute', () => {
       mountComponent({
         status: UNFINISHED_STATUS,
-        next_run_at: '2063-04-08T01:44:03Z',
+        expirationPolicy: { next_run_at: '2063-04-08T01:44:03Z' },
       });
 
       const id = findExtraInfoIcon().attributes('id');

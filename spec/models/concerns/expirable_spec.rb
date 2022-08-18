@@ -16,6 +16,11 @@ RSpec.describe Expirable do
       it { expect(ProjectMember.expired).to match_array([expired]) }
     end
 
+    describe '.not_expired' do
+      it { expect(ProjectMember.not_expired).to include(no_expire, expire_later) }
+      it { expect(ProjectMember.not_expired).not_to include(expired) }
+    end
+
     describe '#expired?' do
       it { expect(no_expire.expired?).to eq(false) }
       it { expect(expire_later.expired?).to eq(false) }

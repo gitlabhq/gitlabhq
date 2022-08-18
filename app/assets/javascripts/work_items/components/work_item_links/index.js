@@ -1,15 +1,9 @@
 import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
-import createDefaultClient from '~/lib/graphql';
+import { createApolloProvider } from '../../graphql/provider';
 import WorkItemLinks from './work_item_links.vue';
 
-Vue.use(VueApollo);
 Vue.use(GlToast);
-
-const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
-});
 
 export default function initWorkItemLinks() {
   if (!window.gon.features.workItemsHierarchy) {
@@ -22,16 +16,20 @@ export default function initWorkItemLinks() {
     return;
   }
 
+  const { projectPath, wiHasIssueWeightsFeature } = workItemLinksRoot.dataset;
+
   // eslint-disable-next-line no-new
   new Vue({
     el: workItemLinksRoot,
     name: 'WorkItemLinksRoot',
-    apolloProvider,
+    apolloProvider: createApolloProvider(),
     components: {
       workItemLinks: WorkItemLinks,
     },
     provide: {
-      projectPath: workItemLinksRoot.dataset.projectPath,
+      projectPath,
+      fullPath: projectPath,
+      hasIssueWeightsFeature: wiHasIssueWeightsFeature,
     },
     render: (createElement) =>
       createElement('work-item-links', {

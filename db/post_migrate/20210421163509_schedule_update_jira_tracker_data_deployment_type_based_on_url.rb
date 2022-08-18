@@ -1,23 +1,12 @@
 # frozen_string_literal: true
 
 class ScheduleUpdateJiraTrackerDataDeploymentTypeBasedOnUrl < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
-  MIGRATION = 'UpdateJiraTrackerDataDeploymentTypeBasedOnUrl'
-  DELAY_INTERVAL = 2.minutes.to_i
-  BATCH_SIZE = 2_500
-
-  disable_ddl_transaction!
-
   def up
-    say "Scheduling #{MIGRATION} jobs"
-    queue_background_migration_jobs_by_range_at_intervals(
-      define_batchable_model('jira_tracker_data'),
-      MIGRATION,
-      DELAY_INTERVAL,
-      batch_size: BATCH_SIZE
-    )
+    # no-op (being re-run in 20220324152945_update_jira_tracker_data_deployment_type_based_on_url.rb)
+    # due to this migration causing this issue: https://gitlab.com/gitlab-org/gitlab/-/issues/336849
+    # The migration is rescheduled in
+    # db/post_migrate/20220725150127_update_jira_tracker_data_deployment_type_based_on_url.rb
+    # Related discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82103#note_862401816
   end
 
   def down

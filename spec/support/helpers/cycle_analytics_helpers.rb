@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module CycleAnalyticsHelpers
-  include GitHelpers
-
   def toggle_value_stream_dropdown
     page.find('[data-testid="dropdown-value-streams"]').click
   end
@@ -129,10 +127,6 @@ module CycleAnalyticsHelpers
     repository = project.repository
     oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
 
-    if Timecop.frozen?
-      mock_gitaly_multi_action_dates(repository, commit_time)
-    end
-
     commit_shas = Array.new(count) do |index|
       commit_sha = repository.create_file(user, generate(:branch), "content", message: message, branch_name: branch_name)
       repository.commit(commit_sha)
@@ -240,24 +234,5 @@ module CycleAnalyticsHelpers
       stage: 'dummy',
       pipeline: dummy_pipeline(project),
       protected: false)
-  end
-
-  def mock_gitaly_multi_action_dates(repository, commit_time)
-    allow(repository.raw).to receive(:multi_action).and_wrap_original do |m, user, kargs|
-      new_date = commit_time || Time.now
-      branch_update = m.call(user, **kargs)
-
-      if branch_update.newrev
-        commit = rugged_repo(repository).rev_parse(branch_update.newrev)
-
-        branch_update.newrev = commit.amend(
-          update_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{kargs[:branch_name]}",
-          author: commit.author.merge(time: new_date),
-          committer: commit.committer.merge(time: new_date)
-        )
-      end
-
-      branch_update
-    end
   end
 end

@@ -264,6 +264,8 @@ RSpec.describe Event do
     let(:project) { public_project }
     let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
+    let(:work_item) { create(:work_item, project: project, author: author) }
+    let(:confidential_work_item) { create(:work_item, :confidential, project: project, author: author) }
     let(:project_snippet) { create(:project_snippet, :public, project: project, author: author) }
     let(:personal_snippet) { create(:personal_snippet, :public, author: author) }
     let(:design) { create(:design, issue: issue, project: project) }
@@ -377,6 +379,28 @@ RSpec.describe Event do
         end
 
         include_examples 'visible to assignee and author', true
+      end
+    end
+
+    context 'work item event' do
+      context 'for non confidential work item' do
+        let(:target) { work_item }
+
+        include_examples 'visibility examples' do
+          let(:visibility) { visible_to_all }
+        end
+
+        include_examples 'visible to assignee and author', true
+      end
+
+      context 'for confidential work item' do
+        let(:target) { confidential_work_item }
+
+        include_examples 'visibility examples' do
+          let(:visibility) { visible_to_none_except(:member, :admin) }
+        end
+
+        include_examples 'visible to author', true
       end
     end
 
@@ -947,7 +971,7 @@ RSpec.describe Event do
     let_it_be(:user) { create(:user) }
     let_it_be(:note_on_project_snippet) { create(:note_on_project_snippet, author: user) }
     let_it_be(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: user) }
-    let_it_be(:other_note) { create(:note_on_issue, author: user)}
+    let_it_be(:other_note) { create(:note_on_issue, author: user) }
     let_it_be(:personal_snippet_event) { create(:event, :commented, project: nil, target: note_on_personal_snippet, author: user) }
     let_it_be(:project_snippet_event) { create(:event, :commented, project: note_on_project_snippet.project, target: note_on_project_snippet, author: user) }
     let_it_be(:other_event) { create(:event, :commented, project: other_note.project, target: other_note, author: user) }

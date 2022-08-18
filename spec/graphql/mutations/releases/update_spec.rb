@@ -9,8 +9,8 @@ RSpec.describe Mutations::Releases::Update do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
 
-  let_it_be(:tag) { 'v1.1.0'}
-  let_it_be(:name) { 'Version 1.0'}
+  let_it_be(:tag) { 'v1.1.0' }
+  let_it_be(:name) { 'Version 1.0' }
   let_it_be(:description) { 'The first release :rocket:' }
   let_it_be(:released_at) { Time.parse('2018-12-10').utc }
   let_it_be(:created_at) { Time.parse('2018-11-05').utc }

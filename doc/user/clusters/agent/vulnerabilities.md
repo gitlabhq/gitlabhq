@@ -16,6 +16,9 @@ You can also configure your agent so the vulnerabilities are displayed with othe
 You can use operational container scanning
 to scan container images in your cluster for security vulnerabilities.
 
+NOTE:
+In GitLab 15.0 and later, you do not need to install Starboard operator in the Kubernetes cluster.
+
 To begin scanning all resources in your cluster, add a `starboard`
 configuration block to your agent configuration with a `cadence` field
 containing a CRON expression for when the scans will be run.

@@ -224,6 +224,10 @@ module ObjectStorage
       def initialize(file)
         @file = file
       end
+
+      def file_path
+        @file.path
+      end
     end
 
     # allow to configure and overwrite the filename
@@ -275,9 +279,9 @@ module ObjectStorage
       end
     end
 
-    def use_open_file(&blk)
+    def use_open_file(unlink_early: true)
       Tempfile.open(path) do |file|
-        file.unlink
+        file.unlink if unlink_early
         file.binmode
 
         if file_storage?
@@ -291,6 +295,8 @@ module ObjectStorage
         file.seek(0, IO::SEEK_SET)
 
         yield OpenFile.new(file)
+      ensure
+        file.unlink unless unlink_early
       end
     end
 

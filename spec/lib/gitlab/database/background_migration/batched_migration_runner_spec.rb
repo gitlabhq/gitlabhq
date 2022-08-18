@@ -15,8 +15,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
   end
 
   before do
-    allow(Gitlab::Database::BackgroundMigration::HealthStatus).to receive(:evaluate)
-      .and_return(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Normal)
+    normal_signal = instance_double(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Normal, stop?: false)
+    allow(Gitlab::Database::BackgroundMigration::HealthStatus).to receive(:evaluate).and_return([normal_signal])
   end
 
   describe '#run_migration_job' do
@@ -77,14 +77,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
           end
 
           it 'puts migration on hold on stop signal' do
-            expect(health_status).to receive(:evaluate).and_return(stop_signal)
+            expect(health_status).to receive(:evaluate).and_return([stop_signal])
 
             expect { runner.run_migration_job(migration) }.to change { migration.on_hold? }
               .from(false).to(true)
           end
 
           it 'optimizes migration on normal signal' do
-            expect(health_status).to receive(:evaluate).and_return(normal_signal)
+            expect(health_status).to receive(:evaluate).and_return([normal_signal])
 
             expect(migration).to receive(:optimize!)
 
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
           end
 
           it 'optimizes migration on no signal' do
-            expect(health_status).to receive(:evaluate).and_return(not_available_signal)
+            expect(health_status).to receive(:evaluate).and_return([not_available_signal])
 
             expect(migration).to receive(:optimize!)
 
@@ -100,7 +100,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
           end
 
           it 'optimizes migration on unknown signal' do
-            expect(health_status).to receive(:evaluate).and_return(unknown_signal)
+            expect(health_status).to receive(:evaluate).and_return([unknown_signal])
 
             expect(migration).to receive(:optimize!)
 

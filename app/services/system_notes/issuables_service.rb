@@ -178,6 +178,24 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
     end
 
+    # Called when the hierarchy of a work item is changed
+    #
+    # noteable  - Noteable object that responds to `work_item_parent` and `work_item_children`
+    # project   - Project owning noteable
+    # author    - User performing the change
+    #
+    # Example Note text:
+    #
+    #   "added #1 as child Task"
+    #
+    # Returns the created Note object
+    def hierarchy_changed(work_item, action)
+      params = hierarchy_note_params(action, noteable, work_item)
+
+      create_note(NoteSummary.new(noteable, project, author, params[:parent_note_body], action: params[:parent_action]))
+      create_note(NoteSummary.new(work_item, project, author, params[:child_note_body], action: params[:child_action]))
+    end
+
     # Called when the description of a Noteable is changed
     #
     # noteable  - Noteable object that responds to `description`
@@ -255,12 +273,12 @@ module SystemNotes
     #
     # Example Note text:
     #
-    #   "marked the task Whatever as completed."
+    #   "marked the checklist item Whatever as completed."
     #
     # Returns the created Note object
     def change_task_status(new_task)
       status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-      body = "marked the task **#{new_task.source}** as #{status_label}"
+      body = "marked the checklist item **#{new_task.source}** as #{status_label}"
 
       issue_activity_counter.track_issue_description_changed_action(author: author) if noteable.is_a?(Issue)
 
@@ -294,13 +312,14 @@ module SystemNotes
     #
     # noteable_ref - Referenced noteable
     # direction    - symbol, :to or :from
+    # created_at   - timestamp for the system note, defaults to current time
     #
     # Example Note text:
     #
     #   "cloned to some_namespace/project_new#11"
     #
     # Returns the created Note object
-    def noteable_cloned(noteable_ref, direction)
+    def noteable_cloned(noteable_ref, direction, created_at: nil)
       unless [:to, :from].include?(direction)
         raise ArgumentError, "Invalid direction `#{direction}`"
       end
@@ -308,9 +327,11 @@ module SystemNotes
       cross_reference = noteable_ref.to_reference(project)
       body = "cloned #{direction} #{cross_reference}"
 
-      issue_activity_counter.track_issue_cloned_action(author: author) if noteable.is_a?(Issue) && direction == :to
+      if noteable.is_a?(Issue) && direction == :to
+        issue_activity_counter.track_issue_cloned_action(author: author, project: project)
+      end
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned'))
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned', created_at: created_at))
     end
 
     # Called when the confidentiality changes
@@ -365,36 +386,6 @@ module SystemNotes
     def cross_reference_exists?(mentioned_in)
       notes = noteable.notes.system
       existing_mentions_for(mentioned_in, noteable, notes).exists?
-    end
-
-    # Called when a user's attention has been requested for a Notable
-    #
-    # user - User's whos attention has been requested
-    #
-    # Example Note text:
-    #
-    #   "requested attention from @eli.wisoky"
-    #
-    # Returns the created Note object
-    def request_attention(user)
-      body = "requested attention from #{user.to_reference}"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'attention_requested'))
-    end
-
-    # Called when a user's attention request has been removed for a Notable
-    #
-    # user - User's whos attention request has been removed
-    #
-    # Example Note text:
-    #
-    #   "removed attention request from @eli.wisoky"
-    #
-    # Returns the created Note object
-    def remove_attention_request(user)
-      body = "removed attention request from #{user.to_reference}"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'attention_request_removed'))
     end
 
     # Called when a Noteable has been marked as the canonical Issue of a duplicate
@@ -505,6 +496,29 @@ module SystemNotes
 
     def track_cross_reference_action
       issue_activity_counter.track_issue_cross_referenced_action(author: author) if noteable.is_a?(Issue)
+    end
+
+    def hierarchy_note_params(action, parent, child)
+      return {} unless child && parent
+
+      child_type = child.issue_type.humanize(capitalize: false)
+      parent_type = parent.issue_type.humanize(capitalize: false)
+
+      if action == 'relate'
+        {
+          parent_note_body: "added #{child.to_reference} as child #{child_type}",
+          child_note_body: "added #{parent.to_reference} as parent #{parent_type}",
+          parent_action: 'relate_to_child',
+          child_action: 'relate_to_parent'
+        }
+      else
+        {
+          parent_note_body: "removed child #{child_type} #{child.to_reference}",
+          child_note_body: "removed parent #{parent_type} #{parent.to_reference}",
+          parent_action: 'unrelate_from_child',
+          child_action: 'unrelate_from_parent'
+        }
+      end
     end
   end
 end

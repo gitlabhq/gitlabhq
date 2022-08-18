@@ -16,11 +16,15 @@ module Gitlab
         end
 
         def pos_old
-          line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
+          line.match(/\-[0-9]*/)[0].to_i.abs
+        rescue StandardError
+          0
         end
 
         def pos_new
-          line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
+          line.match(/\+[0-9]*/)[0].to_i.abs
+        rescue StandardError
+          0
         end
 
         def first_line?

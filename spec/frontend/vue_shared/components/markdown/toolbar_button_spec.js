@@ -26,7 +26,7 @@ describe('toolbar_button', () => {
   });
 
   const getButtonShortcutsAttr = () => {
-    return wrapper.find(GlButton).attributes('data-md-shortcuts');
+    return wrapper.findComponent(GlButton).attributes('data-md-shortcuts');
   };
 
   describe('keyboard shortcuts', () => {

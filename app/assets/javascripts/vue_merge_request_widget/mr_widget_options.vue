@@ -1,7 +1,6 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import securityReportExtension from 'ee_else_ce/vue_merge_request_widget/extensions/security_reports';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -17,7 +16,6 @@ import { setFaviconOverlay } from '../lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
@@ -40,6 +38,7 @@ import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
 import ExtensionsContainer from './components/extensions/container';
+import WidgetContainer from './components/widget/app.vue';
 import { STATE_MACHINE, stateToComponentMap } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
@@ -59,9 +58,9 @@ export default {
   components: {
     Loading,
     ExtensionsContainer,
+    WidgetContainer,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
-    'mr-widget-related-links': WidgetRelatedLinks,
     MrWidgetAlertMessage,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
@@ -73,9 +72,7 @@ export default {
     'mr-widget-nothing-to-merge': NothingToMergeState,
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
-    'mr-widget-ready-to-merge': window.gon?.features?.restructuredMrWidget
-      ? () => import('./components/states/new_ready_to_merge.vue')
-      : ReadyToMergeState,
+    'mr-widget-ready-to-merge': () => import('./components/states/new_ready_to_merge.vue'),
     'sha-mismatch': ShaMismatch,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
@@ -163,12 +160,6 @@ export default {
     shouldRenderCodeQuality() {
       return this.mr?.codequalityReportsPath;
     },
-    shouldRenderRelatedLinks() {
-      return (
-        (Boolean(this.mr.relatedLinks) || this.mr.divergedCommitsCount > 0) &&
-        !this.mr.isNothingToMergeState
-      );
-    },
     shouldRenderSourceBranchRemovalStatus() {
       return (
         !this.mr.canRemoveSourceBranch &&
@@ -239,9 +230,6 @@ export default {
     shouldShowCodeQualityExtension() {
       return window.gon?.features?.refactorCodeQualityExtension;
     },
-    isRestructuredMrWidgetEnabled() {
-      return window.gon?.features?.restructuredMrWidget;
-    },
   },
   watch: {
     'mr.machineValue': {
@@ -273,11 +261,6 @@ export default {
     shouldRenderTestReport(newVal) {
       if (newVal) {
         this.registerTestReportExtension();
-      }
-    },
-    shouldRenderSecurityReport(newVal) {
-      if (newVal) {
-        this.registerSecurityReportExtension();
       }
     },
   },
@@ -535,11 +518,6 @@ export default {
         registerExtension(testReportExtension);
       }
     },
-    registerSecurityReportExtension() {
-      if (this.shouldRenderSecurityReport && this.shouldShowSecurityExtension) {
-        registerExtension(securityReportExtension);
-      }
-    },
   },
 };
 </script>
@@ -600,7 +578,11 @@ export default {
           </template>
         </mr-widget-alert-message>
       </div>
+
       <extensions-container :mr="mr" />
+
+      <widget-container v-if="mr" :mr="mr" />
+
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality && !shouldShowCodeQualityExtension"
         :head-blob-path="mr.headBlobPath"
@@ -638,23 +620,7 @@ export default {
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />
-        <ready-to-merge
-          v-if="isRestructuredMrWidgetEnabled && mr.commitsCount"
-          :mr="mr"
-          :service="service"
-        />
-        <div v-else class="mr-widget-info">
-          <mr-widget-related-links
-            v-if="shouldRenderRelatedLinks"
-            :state="mr.state"
-            :related-links="mr.relatedLinks"
-            :diverged-commits-count="mr.divergedCommitsCount"
-            :target-branch-path="mr.targetBranchPath"
-            class="mr-info-list gl-ml-7 gl-pb-5"
-          />
-
-          <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
-        </div>
+        <ready-to-merge v-if="mr.commitsCount" :mr="mr" :service="service" />
       </div>
     </div>
     <mr-widget-pipeline-container

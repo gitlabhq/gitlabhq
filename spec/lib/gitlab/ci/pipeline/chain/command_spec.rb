@@ -282,7 +282,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
     subject { command.ambiguous_ref? }
 
     context 'when ref is not ambiguous' do
-      it { is_expected. to eq(false) }
+      it { is_expected.to eq(false) }
     end
 
     context 'when ref is ambiguous' do
@@ -291,7 +291,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
         project.repository.add_branch(project.creator, 'ref', 'master')
       end
 
-      it { is_expected. to eq(true) }
+      it { is_expected.to eq(true) }
     end
   end
 

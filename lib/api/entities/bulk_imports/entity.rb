@@ -8,7 +8,8 @@ module API
         expose :bulk_import_id
         expose :status_name, as: :status
         expose :source_full_path
-        expose :destination_name
+        expose :destination_name # deprecated
+        expose :destination_slug
         expose :destination_namespace
         expose :parent_id
         expose :namespace_id

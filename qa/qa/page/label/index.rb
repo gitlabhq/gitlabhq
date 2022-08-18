@@ -7,26 +7,26 @@ module QA
         include Component::LazyLoader
 
         view 'app/views/shared/labels/_nav.html.haml' do
-          element :label_create_new
+          element :create_new_label_button
         end
 
         view 'app/views/shared/empty_states/_labels.html.haml' do
-          element :label_svg
+          element :label_svg_content
         end
 
         view 'app/views/shared/empty_states/_priority_labels.html.haml' do
-          element :label_svg
+          element :label_svg_content
         end
 
         def click_new_label_button
           # The 'labels.svg' takes a fraction of a second to load after which the "New label" button shifts up a bit
           # This can cause webdriver to miss the hit so we wait for the svg to load (implicitly with has_element?)
           # before clicking the button.
-          within_element(:label_svg) do
+          within_element(:label_svg_content) do
             has_element?(:js_lazy_loaded)
           end
 
-          click_element :label_create_new
+          click_element :create_new_label_button
         end
       end
     end

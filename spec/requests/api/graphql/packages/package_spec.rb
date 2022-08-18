@@ -18,7 +18,7 @@ RSpec.describe 'package details' do
   let(:depth) { 3 }
   let(:excluded) { %w[metadata apiFuzzingCiConfiguration pipeline packageFiles] }
   let(:metadata) { query_graphql_fragment('ComposerMetadata') }
-  let(:package_files) {all_graphql_fields_for('PackageFile')}
+  let(:package_files) { all_graphql_fields_for('PackageFile') }
   let(:package_global_id) { global_id_of(composer_package) }
   let(:package_details) { graphql_data_at(:package) }
 

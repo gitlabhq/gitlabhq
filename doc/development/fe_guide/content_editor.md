@@ -296,6 +296,7 @@ const builtInContentEditorExtensions = [
   Dropcursor,
   Emoji,
   // Other extensions
+]
 ```
 
 ### The Markdown serializer

@@ -416,8 +416,6 @@ $tabs-holder-z-index: 250;
   .label-branch {
     @include gl-font-monospace;
     font-size: 95%;
-    color: var(--gl-text-color, $gl-text-color);
-    font-weight: normal;
     overflow: hidden;
     word-break: break-all;
   }
@@ -477,8 +475,7 @@ $tabs-holder-z-index: 250;
       margin: 0 0 0 10px;
     }
 
-    .bold,
-    .gl-font-weight-bold {
+    .bold {
       font-weight: $gl-font-weight-bold;
       color: var(--gray-600, $gray-600);
       margin-left: 10px;
@@ -494,8 +491,7 @@ $tabs-holder-z-index: 250;
     }
 
     .spacing,
-    .bold,
-    .gl-font-weight-bold {
+    .bold {
       vertical-align: middle;
     }
 
@@ -600,6 +596,12 @@ $tabs-holder-z-index: 250;
 .mr-widget-body,
 .mr-widget-content {
   padding: $gl-padding;
+}
+
+.mr-widget-body-ready-merge {
+  @include media-breakpoint-down(sm) {
+    @include gl-p-3;
+  }
 }
 
 .mr-widget-border-top {
@@ -818,5 +820,23 @@ $tabs-holder-z-index: 250;
   .md-preview-holder {
     max-height: 180px;
     height: 180px;
+  }
+}
+
+.mr-widget-merge-details {
+  li:not(:last-child) {
+    @include gl-mb-3;
+  }
+}
+
+.mr-ready-merge-related-links,
+.mr-widget-merge-details {
+  a {
+    @include gl-text-decoration-underline;
+
+    &:hover,
+    &:focus {
+      @include gl-text-decoration-none;
+    }
   }
 }

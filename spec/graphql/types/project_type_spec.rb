@@ -37,7 +37,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       cluster_agent cluster_agents agent_configurations
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
-      recent_issue_boards ci_config_path_or_default ci_variables
+      timelog_categories fork_targets
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -195,8 +195,8 @@ RSpec.describe GitlabSchema.types['Project'] do
       expect(secure_analyzers['type']).to eq('string')
       expect(secure_analyzers['field']).to eq('SECURE_ANALYZERS_PREFIX')
       expect(secure_analyzers['label']).to eq('Image prefix')
-      expect(secure_analyzers['defaultValue']).to eq(secure_analyzers_prefix)
-      expect(secure_analyzers['value']).to eq(secure_analyzers_prefix)
+      expect(secure_analyzers['defaultValue']).to eq('$CI_TEMPLATE_REGISTRY_HOST/security-products')
+      expect(secure_analyzers['value']).to eq('$CI_TEMPLATE_REGISTRY_HOST/security-products')
       expect(secure_analyzers['size']).to eq('LARGE')
       expect(secure_analyzers['options']).to be_nil
     end

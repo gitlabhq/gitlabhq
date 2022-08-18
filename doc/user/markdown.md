@@ -190,8 +190,8 @@ end
 
 #### PlantUML
 
-To make PlantUML available in GitLab, a GitLab administrator must enable it. For more information, see the
-[PlantUML & GitLab](../administration/integration/plantuml.md) page.
+PlantUML integration is enabled on GitLab.com. To make PlantUML available in self-managed
+installation of GitLab, a GitLab administrator [must enable it](../administration/integration/plantuml.md).
 
 #### Kroki
 
@@ -376,6 +376,8 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 ### Task lists
 
+> Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
+
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
 
 You can add task lists anywhere Markdown is supported.
@@ -384,22 +386,28 @@ You can add task lists anywhere Markdown is supported.
 - In all other places, you cannot select the boxes. You must edit the Markdown manually
   by adding or removing an `x` in the brackets.
 
+Besides complete and incomplete, tasks can also be **inapplicable**. Selecting an inapplicable checkbox
+in an issue, merge request, or comment has no effect.
+
 To create a task list, follow the format of an ordered or unordered list:
 
 ```markdown
 - [x] Completed task
+- [~] Inapplicable task
 - [ ] Incomplete task
-  - [ ] Sub-task 1
-  - [x] Sub-task 2
+  - [x] Sub-task 1
+  - [~] Sub-task 2
   - [ ] Sub-task 3
 
 1. [x] Completed task
+1. [~] Inapplicable task
 1. [ ] Incomplete task
-   1. [ ] Sub-task 1
-   1. [x] Sub-task 2
+   1. [x] Sub-task 1
+   1. [~] Sub-task 2
+   1. [ ] Sub-task 3
 ```
 
-![Task list as rendered by GitLab](img/completed_tasks_v13_3.png)
+![Task list as rendered by GitLab](img/completed_tasks_v15_3.png)
 
 ### Table of contents
 
@@ -1397,6 +1405,42 @@ For example:
   Paragraph of first item.
 
 1. Another item
+
+---
+
+Ordered lists that are the first sub-item of an unordered list item must have a preceding blank line if they don't start with `1.`.
+
+**Good**
+
+```markdown
+- Unordered list item
+
+  5. First ordered list item
+```
+
+**Bad**
+
+```markdown
+- Unordered list item
+  5. First ordered list item
+```
+
+---
+
+CommonMark ignores blank lines between ordered and unordered list items, and considers them part of a single list. These are rendered as a
+_[loose](https://spec.commonmark.org/0.30/#loose)_ list. Each list item is enclosed in a paragraph tag and, therefore, has paragraph spacing and margins.
+This makes the list look like there is extra spacing between each item.
+
+For example:
+
+```markdown
+- First list item
+- Second list item
+
+- A different list
+```
+
+CommonMark ignores the blank line and renders this as one list with paragraph spacing.
 
 ### Superscripts / Subscripts
 

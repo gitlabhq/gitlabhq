@@ -119,10 +119,10 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   const getBatch = (page = startPage) =>
     axios
       .get(mergeUrlParams({ ...urlParams, page, per_page: perPage }, state.endpointBatch))
-      .then(({ data: { pagination, diff_files } }) => {
-        totalLoaded += diff_files.length;
+      .then(({ data: { pagination, diff_files: diffFiles } }) => {
+        totalLoaded += diffFiles.length;
 
-        commit(types.SET_DIFF_DATA_BATCH, { diff_files });
+        commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffFiles });
         commit(types.SET_BATCH_LOADING_STATE, 'loaded');
 
         if (!scrolledVirtualScroller) {
@@ -138,7 +138,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         }
 
         if (!isNoteLink && !state.currentDiffFileId) {
-          commit(types.SET_CURRENT_DIFF_FILE, diff_files[0]?.file_hash);
+          commit(types.SET_CURRENT_DIFF_FILE, diffFiles[0]?.file_hash);
         }
 
         if (isNoteLink) {
@@ -293,8 +293,8 @@ export const assignDiscussionsToDiff = (
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
-  const { file_hash, line_code, id } = removeDiscussion;
-  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash: file_hash, lineCode: line_code, id });
+  const { file_hash: fileHash, line_code: lineCode, id } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode, id });
 };
 
 export const toggleLineDiscussions = ({ commit }, options) => {

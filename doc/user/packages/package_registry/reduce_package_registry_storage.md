@@ -53,7 +53,7 @@ The package files are permanently deleted.
 
 ## Cleanup policy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
 
 Depending on the number of packages to remove, the process of manually deleting the packages can take a long time to finish.
 A cleanup policy defines a set of rules that, applied to a project, defines which package files you can automatically delete.

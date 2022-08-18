@@ -340,7 +340,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   describe '#list_new_commits' do
     let(:revisions) { [revision] }
     let(:gitaly_commits) { create_list(:gitaly_commit, 3) }
-    let(:expected_commits) { gitaly_commits.map { |c| Gitlab::Git::Commit.new(repository, c) }}
+    let(:expected_commits) { gitaly_commits.map { |c| Gitlab::Git::Commit.new(repository, c) } }
 
     subject do
       client.list_new_commits(revisions)

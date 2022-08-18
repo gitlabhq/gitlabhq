@@ -104,7 +104,7 @@ RSpec.describe Gitlab::PrometheusClient do
   end
 
   describe 'failure to reach a provided prometheus url' do
-    let(:prometheus_url) {"https://prometheus.invalid.example.com/api/v1/query?query=1"}
+    let(:prometheus_url) { "https://prometheus.invalid.example.com/api/v1/query?query=1" }
 
     shared_examples 'exceptions are raised' do
       Gitlab::HTTP::HTTP_ERRORS.each do |error|

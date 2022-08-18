@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 require 'gitlab_chronic_duration'
-require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
@@ -415,6 +414,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
 
       context 'when using changes with paths' do
         let(:config) { { changes: { paths: %w[app/ lib/ spec/ other/* paths/**/*.rb] } } }
+
+        it { is_expected.to eq(config) }
+      end
+
+      context 'when using changes with paths and compare_to' do
+        let(:config) { { changes: { paths: %w[app/ lib/ spec/ other/* paths/**/*.rb], compare_to: 'branch1' } } }
 
         it { is_expected.to eq(config) }
       end

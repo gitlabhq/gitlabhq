@@ -63,6 +63,27 @@ RSpec.describe WorkItemPolicy do
     end
   end
 
+  describe 'admin_work_item' do
+    context 'when user is reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:admin_work_item) }
+    end
+
+    context 'when user is guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:admin_work_item) }
+
+      context 'when guest authored the work item' do
+        let(:work_item_subject) { authored_work_item }
+        let(:current_user) { guest_author }
+
+        it { is_expected.to be_disallowed(:admin_work_item) }
+      end
+    end
+  end
+
   describe 'update_work_item' do
     context 'when user is reporter' do
       let(:current_user) { reporter }
@@ -157,6 +178,26 @@ RSpec.describe WorkItemPolicy do
         end
 
         it { is_expected.to be_disallowed(:admin_parent_link) }
+      end
+    end
+  end
+
+  describe 'set_work_item_metadata' do
+    context 'when user is reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:set_work_item_metadata) }
+    end
+
+    context 'when user is guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:set_work_item_metadata) }
+
+      context 'when the work item is not persisted yet' do
+        let(:work_item_subject) { build(:work_item, project: project) }
+
+        it { is_expected.to be_allowed(:set_work_item_metadata) }
       end
     end
   end

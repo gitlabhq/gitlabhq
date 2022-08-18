@@ -179,23 +179,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
           .to_hash
       end
 
-      where(:expression, :ff, :result) do
-        '$teststring =~ "abcde"'     | true  | true
-        '$teststring =~ "abcde"'     | false | true
-        '$teststring =~ $teststring' | true  | true
-        '$teststring =~ $teststring' | false | true
-        '$teststring =~ $pattern1'   | true  | true
-        '$teststring =~ $pattern1'   | false | false
-        '$teststring =~ $pattern2'   | true  | false
-        '$teststring =~ $pattern2'   | false | false
+      where(:expression, :result) do
+        '$teststring =~ "abcde"'     | true
+        '$teststring =~ $teststring' | true
+        '$teststring =~ $pattern1'   | true
+        '$teststring =~ $pattern2'   | false
       end
 
       with_them do
         let(:text) { expression }
-
-        before do
-          stub_feature_flags(ci_fix_rules_if_comparison_with_regexp_variable: ff)
-        end
 
         it { is_expected.to eq(result) }
       end

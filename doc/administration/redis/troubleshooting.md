@@ -167,4 +167,4 @@ production:
       port: 26379  # point to sentinel, not to redis port
 ```
 
-When in doubt, read the [Redis Sentinel documentation](https://redis.io/topics/sentinel).
+When in doubt, read the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation.

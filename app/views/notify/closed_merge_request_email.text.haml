@@ -2,7 +2,7 @@ Merge request #{@merge_request.to_reference} was closed by #{sanitize_name(@upda
 
 Merge request URL: #{project_merge_request_url(@merge_request.target_project, @merge_request)}
 
-= merge_path_description(@merge_request, 'to')
+= merge_path_description(@merge_request)
 
 Author: #{sanitize_name(@merge_request.author_name)}
 = assignees_label(@merge_request)

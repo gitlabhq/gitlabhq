@@ -12,7 +12,7 @@ RSpec.describe SnippetInputActionCollection do
   it { is_expected.to delegate_method(:[]).to(:actions) }
 
   describe '#to_commit_actions' do
-    subject { described_class.new(data).to_commit_actions}
+    subject { described_class.new(data).to_commit_actions }
 
     it 'translates all actions to commit actions' do
       transformed_action = action.merge(action: action_name.to_sym)
@@ -22,14 +22,14 @@ RSpec.describe SnippetInputActionCollection do
   end
 
   describe '#valid?' do
-    subject { described_class.new(data).valid?}
+    subject { described_class.new(data).valid? }
 
     it 'returns true' do
       expect(subject).to be true
     end
 
     context 'when any of the actions is invalid' do
-      let(:data) { [action, { action: 'foo' }, action]}
+      let(:data) { [action, { action: 'foo' }, action] }
 
       it 'returns false' do
         expect(subject).to be false

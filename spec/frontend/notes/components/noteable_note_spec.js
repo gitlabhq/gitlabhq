@@ -285,8 +285,22 @@ describe('issue_note', () => {
       await waitForPromises();
       expect(alertSpy).not.toHaveBeenCalled();
       expect(wrapper.vm.note.note_html).toBe(
-        '<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></p>\n',
+        '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">',
       );
+    });
+  });
+
+  describe('internal note', () => {
+    it('has internal note class for internal notes', () => {
+      createWrapper({ note: { ...note, confidential: true } });
+
+      expect(wrapper.classes()).toContain('internal-note');
+    });
+
+    it('does not have internal note class for external notes', () => {
+      createWrapper({ note });
+
+      expect(wrapper.classes()).not.toContain('internal-note');
     });
   });
 
@@ -357,7 +371,7 @@ describe('issue_note', () => {
       createWrapper();
       updateActions();
       wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', params);
-      expect(wrapper.emitted('handleUpdateNote')).toBeTruthy();
+      expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
     });
 
     it('does not stringify empty position', () => {

@@ -1,7 +1,7 @@
 ---
-- title: bright
-  body: |
+- name: bright
+  description: |
     ## bright
   self-managed: true
   gitlab-com: false
-  packages: ["Premium", "Ultimate"]
+  available_in: ["Premium", "Ultimate"]

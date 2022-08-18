@@ -1,8 +1,7 @@
-# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70779
 stages:
   - prepare
 
-# test for cache:when values
+# valid cache:when values
 job1:
   stage: prepare
   script:

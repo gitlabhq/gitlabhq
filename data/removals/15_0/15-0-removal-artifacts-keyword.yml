@@ -3,7 +3,7 @@
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"
   removal_date: "2022-05-22"
-  breaking_change: false
+  breaking_change: true
   body: |
      As of GitLab 15.0, the [`artifacts:reports:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
      keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) by

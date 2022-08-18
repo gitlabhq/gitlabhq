@@ -7,9 +7,12 @@ export {
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
   PULL_PACKAGE_TRACKING_ACTION,
   DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  DELETE_PACKAGE_FILES_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_DELETE_SELECTED_PACKAGE_FILE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
+  SELECT_PACKAGE_FILE_TRACKING_ACTION,
 } from '~/packages_and_registries/shared/constants';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
@@ -69,12 +72,23 @@ export const TRACKING_ACTION_DOWNLOAD_PACKAGE_ASSET = 'download_package_asset';
 export const TRACKING_ACTION_EXPAND_PACKAGE_ASSET = 'expand_package_asset';
 export const TRACKING_ACTION_COPY_PACKAGE_ASSET_SHA = 'copy_package_asset_sha';
 
+export const TRACKING_ACTION_CLICK_PIPELINE_LINK = 'click_pipeline_link_from_package';
+export const TRACKING_ACTION_CLICK_COMMIT_LINK = 'click_commit_link_from_package';
+
+export const TRACKING_LABEL_PACKAGE_HISTORY = 'package_history';
+
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package file.',
 );
 export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
   'PackageRegistry|Package file deleted successfully',
+);
+export const DELETE_PACKAGE_FILES_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while deleting the package assets.',
+);
+export const DELETE_PACKAGE_FILES_SUCCESS_MESSAGE = s__(
+  'PackageRegistry|Package assets deleted successfully',
 );
 export const FETCH_PACKAGE_DETAILS_ERROR_MESSAGE = s__(
   'PackageRegistry|Failed to load the package data',
@@ -162,5 +176,6 @@ export const CONAN_HELP_PATH = helpPagePath('user/packages/conan_repository/inde
 export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/index');
 export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/index');
 export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/index');
+export const PERSONAL_ACCESS_TOKEN_HELP_URL = helpPagePath('user/profile/personal_access_tokens');
 
 export const GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE = 10;

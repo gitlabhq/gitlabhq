@@ -29,7 +29,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
     describe 'POST /api/v4/jobs/request' do
       let!(:last_update) {}
-      let!(:new_update) { }
+      let!(:new_update) {}
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
       before do

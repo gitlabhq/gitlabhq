@@ -56,8 +56,9 @@ describe('Customer relations contact form wrapper', () => {
     ${'edit'}   | ${'Edit contact'} | ${'Contact has been updated.'} | ${updateContactMutation} | ${contacts[0].id}
     ${'create'} | ${'New contact'}  | ${'Contact has been added.'}   | ${createContactMutation} | ${null}
   `('in $mode mode', ({ mode, title, successMessage, mutation, existingId }) => {
+    const isEditMode = mode === 'edit';
+
     beforeEach(() => {
-      const isEditMode = mode === 'edit';
       mountComponent({ isEditMode });
 
       return waitForPromises();
@@ -82,7 +83,7 @@ describe('Customer relations contact form wrapper', () => {
     });
 
     it('renders correct fields prop', () => {
-      expect(findContactForm().props('fields')).toEqual([
+      const fields = [
         { name: 'firstName', label: 'First name', required: true },
         { name: 'lastName', label: 'Last name', required: true },
         { name: 'email', label: 'Email', required: true },
@@ -98,7 +99,9 @@ describe('Customer relations contact form wrapper', () => {
           ],
         },
         { name: 'description', label: 'Description' },
-      ]);
+      ];
+      if (isEditMode) fields.push({ name: 'active', label: 'Active', required: true, bool: true });
+      expect(findContactForm().props('fields')).toEqual(fields);
     });
 
     it('renders correct title prop', () => {

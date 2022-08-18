@@ -58,7 +58,7 @@ export default {
       return ListTypeTitles[ListType.label];
     },
     showSidebar() {
-      return this.sidebarType === LIST;
+      return this.sidebarType === LIST && this.isSidebarOpen;
     },
   },
   created() {
@@ -87,10 +87,9 @@ export default {
 <template>
   <mounting-portal mount-to="#js-right-sidebar-portal" name="board-settings-sidebar" append>
     <gl-drawer
-      v-if="showSidebar"
       v-bind="$attrs"
       class="js-board-settings-sidebar gl-absolute"
-      :open="isSidebarOpen"
+      :open="showSidebar"
       variant="sidebar"
       @close="unsetActiveId"
     >

@@ -12,11 +12,6 @@ GitLab version is, if you're upgrading to a major version, and so on.
 
 Make sure to read the whole page as it contains information related to every upgrade method.
 
-NOTE:
-Upgrade GitLab to the latest available patch release, for example `13.8.8` rather than `13.8.0`.
-This includes [versions you must stop at on the upgrade path](#upgrade-paths) as there may
-be fixes for issues relating to the upgrade process.
-
 The [maintenance policy documentation](../policy/maintenance.md)
 has additional information about upgrading, including:
 
@@ -46,9 +41,8 @@ There are also instructions when you want to
 
 ### Installation from source
 
-- [Upgrading Community Edition and Enterprise Edition from
-  source](upgrading_from_source.md) - The guidelines for upgrading Community
-  Edition and Enterprise Edition from source.
+- [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) - 
+  The guidelines for upgrading Community Edition and Enterprise Edition from source.
 - [Patch versions](patch_versions.md) guide includes the steps needed for a
   patch version, such as 13.2.0 to 13.2.1, and apply to both Community and Enterprise
   Editions.
@@ -89,7 +83,7 @@ Background migrations and batched migrations are not the same, so you should che
 complete before updating.
 
 Decrease the time required to complete these migrations by increasing the number of
-[Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
+[Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
 
 ### Background migrations
@@ -118,13 +112,13 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 For GitLab 14.0-14.9:
 
 ```shell
-sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
 For GitLab 14.10 and later:
 
 ```shell
-sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
 **For installations from source:**
@@ -133,14 +127,14 @@ For GitLab 14.0-14.9:
 
 ```shell
 cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
 For GitLab 14.10 and later:
 
 ```shell
 cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
 ### Batched background migrations
@@ -333,7 +327,14 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 ### What do you do if your Advanced Search migrations are stuck?
 
-See [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
+In GitLab 15.0, an Advanced Search migration named `DeleteOrphanedCommit` can be permanently stuck
+in a pending state across upgrades. This issue 
+[is corrected in GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89539).
+
+If you are a self-managed customer who uses GitLab 15.0 with Advanced Search, you will experience performance degradation.
+To clean up the migration, upgrade to 15.1 or later.
+
+For other Advanced Search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 ### What do you do for the error `Elasticsearch version not compatible`
 
@@ -380,6 +381,12 @@ accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
 `8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#14100) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+
+NOTE:
+When not explicitly specified, upgrade GitLab to the latest available patch
+release rather than the first patch release, for example `13.8.8` instead of `13.8.0`.
+This includes versions you must stop at on the upgrade path as there may
+be fixes for issues relating to the upgrade process.
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -458,13 +465,13 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
-### 15.2.0 (unreleased)
+### 15.2.0
 
 - GitLab installations that have multiple web nodes should be
   [upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
   configuration change in Rails that can result in inconsistent ETag key
   generation.
-- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../raketasks/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
+- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../administration/sidekiq/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
 
 ### 15.1.0
 
@@ -1033,8 +1040,8 @@ In 13.1.0, you must upgrade to either:
 Failure to do so results in internal errors in the Gitaly service in some RPCs due
 to the use of the new `--end-of-options` Git flag.
 
-Additionally, in GitLab 13.1.0, the version of [Rails was upgraded from 6.0.3 to
-6.0.3.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33454).
+Additionally, in GitLab 13.1.0, the version of 
+[Rails was upgraded from 6.0.3 to 6.0.3.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33454).
 The Rails upgrade included a change to CSRF token generation which is
 not backwards-compatible - GitLab servers with the new Rails version
 generate CSRF tokens that are not recognizable by GitLab servers

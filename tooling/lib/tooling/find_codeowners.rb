@@ -9,37 +9,10 @@ module Tooling
         puts section
 
         group_defintions.each do |group, list|
-          matched_files = git_ls_files.each_line.select do |line|
-            list[:allow].find do |pattern|
-              path = "/#{line.chomp}"
+          print_entries(group, list[:entries]) if list[:entries]
+          print_expanded_entries(group, list) if list[:allow]
 
-              path_matches?(pattern, path) &&
-                list[:deny].none? { |pattern| path_matches?(pattern, path) }
-            end
-          end
-
-          consolidated = consolidate_paths(matched_files)
-          consolidated_again = consolidate_paths(consolidated)
-
-          # Consider the directory structure is a tree structure:
-          # https://en.wikipedia.org/wiki/Tree_(data_structure)
-          # After we consolidated the leaf entries, it could be possible that
-          # we can consolidate further for the new leaves. Repeat this
-          # process until we see no improvements.
-          while consolidated_again.size < consolidated.size
-            consolidated = consolidated_again
-            consolidated_again = consolidate_paths(consolidated)
-          end
-
-          consolidated.each do |line|
-            path = line.chomp
-
-            if File.directory?(path)
-              puts "/#{path}/ #{group}"
-            else
-              puts "/#{path} #{group}"
-            end
-          end
+          puts
         end
       end
     end
@@ -50,10 +23,20 @@ module Tooling
       result.each do |section, group_defintions|
         group_defintions.each do |group, definitions|
           definitions.transform_values! do |rules|
-            rules[:keywords].flat_map do |keyword|
-              rules[:patterns].map do |pattern|
-                pattern % { keyword: keyword }
+            case rules
+            when Hash
+              case rules[:keywords]
+              when Array
+                rules[:keywords].flat_map do |keyword|
+                  rules[:patterns].map do |pattern|
+                    pattern % { keyword: keyword }
+                  end
+                end
+              else
+                rules[:patterns]
               end
+            when Array
+              rules
             end
           end
         end
@@ -117,6 +100,49 @@ module Tooling
     end
 
     private
+
+    def print_entries(group, entries)
+      entries.each do |entry|
+        puts "#{entry} #{group}"
+      end
+    end
+
+    def print_expanded_entries(group, list)
+      matched_files = git_ls_files.each_line.select do |line|
+        list[:allow].find do |pattern|
+          path = "/#{line.chomp}"
+
+          path_matches?(pattern, path) &&
+            (
+              list[:deny].nil? ||
+              list[:deny].none? { |pattern| path_matches?(pattern, path) }
+            )
+        end
+      end
+
+      consolidated = consolidate_paths(matched_files)
+      consolidated_again = consolidate_paths(consolidated)
+
+      # Consider the directory structure is a tree structure:
+      # https://en.wikipedia.org/wiki/Tree_(data_structure)
+      # After we consolidated the leaf entries, it could be possible that
+      # we can consolidate further for the new leaves. Repeat this
+      # process until we see no improvements.
+      while consolidated_again.size < consolidated.size
+        consolidated = consolidated_again
+        consolidated_again = consolidate_paths(consolidated)
+      end
+
+      consolidated.each do |line|
+        path = line.chomp
+
+        if File.directory?(path)
+          puts "/#{path}/ #{group}"
+        else
+          puts "/#{path} #{group}"
+        end
+      end
+    end
 
     def find_dir_maxdepth_1(dir)
       `find #{dir} -maxdepth 1`

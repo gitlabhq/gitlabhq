@@ -244,7 +244,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
       let(:headers) do
         case auth
         when :oauth
-          build_token_auth_header(token.token)
+          build_token_auth_header(token.plaintext_token)
         when :personal_access_token
           build_token_auth_header(personal_access_token.token)
         when :job_token
@@ -404,7 +404,7 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
 
   shared_examples 'handling all conditions' do
     context 'with oauth token' do
-      let(:headers) { build_token_auth_header(token.token) }
+      let(:headers) { build_token_auth_header(token.plaintext_token) }
 
       it_behaves_like 'handling different package names, visibilities and user roles'
     end
@@ -514,7 +514,7 @@ RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
 
   shared_examples 'handling all conditions' do
     context 'with oauth token' do
-      let(:headers) { build_token_auth_header(token.token) }
+      let(:headers) { build_token_auth_header(token.plaintext_token) }
 
       it_behaves_like 'handling different package names, visibilities and user roles'
     end
@@ -622,7 +622,7 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
 
   shared_examples 'handling all conditions' do
     context 'with oauth token' do
-      let(:headers) { build_token_auth_header(token.token) }
+      let(:headers) { build_token_auth_header(token.plaintext_token) }
 
       it_behaves_like 'handling different package names, visibilities and user roles'
     end

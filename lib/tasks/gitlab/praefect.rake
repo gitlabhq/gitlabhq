@@ -3,7 +3,9 @@
 namespace :gitlab do
   namespace :praefect do
     def int?(string)
-      true if Integer(string) rescue false
+      true if Integer(string)
+    rescue StandardError
+      false
     end
 
     def print_checksums(header, row)
@@ -43,7 +45,7 @@ namespace :gitlab do
         header.concat(sorted_replicas.map { |r| r.repository.storage_name })
 
         row = [project.name] << replicas_resp.primary.checksum
-        row.concat(sorted_replicas.map {|r| r.checksum})
+        row.concat(sorted_replicas.map { |r| r.checksum })
       rescue StandardError
         puts 'Something went wrong when getting replicas.'
         next

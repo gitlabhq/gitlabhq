@@ -8,6 +8,7 @@ export const simpleViewerMock = {
   language: 'javascript',
   path: 'some_file.js',
   webPath: 'some_file.js',
+  blamePath: 'blame/file.js',
   editBlobPath: 'some_file.js/edit',
   gitpodBlobUrl: 'https://gitpod.io#path/to/blob.js',
   ideEditPath: 'some_file.js/ide/edit',

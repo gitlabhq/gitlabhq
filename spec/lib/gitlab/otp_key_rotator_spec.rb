@@ -42,7 +42,7 @@ RSpec.describe Gitlab::OtpKeyRotator do
     it 'stores the calculated values in a spreadsheet' do
       rotation
 
-      expect(data).to match_array(users.map {|u| build_row(u) })
+      expect(data).to match_array(users.map { |u| build_row(u) })
     end
 
     context 'new key is too short' do

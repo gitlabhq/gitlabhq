@@ -267,7 +267,10 @@ The GitLab integration with Helm does not support installing applications when
 behind a proxy.
 
 To do so, inject proxy settings into the installation pods at runtime.
-For example, you can use a [`PodPreset`](https://v1-19.docs.kubernetes.io/docs/concepts/workloads/pods/podpreset/):
+For example, you can use a `PodPreset`:
+
+NOTE:
+[PodPreset was removed in Kubernetes v1.20](https://github.com/kubernetes/kubernetes/pull/94090).
 
 ```yaml
 apiVersion: settings.k8s.io/v1alpha1

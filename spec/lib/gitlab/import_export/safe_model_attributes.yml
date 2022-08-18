@@ -521,7 +521,6 @@ Project:
 - star_count
 - ci_id
 - shared_runners_enabled
-- build_coverage_regex
 - build_allow_git_fetchs
 - build_timeout
 - pending_delete
@@ -584,6 +583,9 @@ ProjectFeature:
 - security_and_compliance_access_level
 - container_registry_access_level
 - package_registry_access_level
+- environments_access_level
+- feature_flags_access_level
+- releases_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:
@@ -741,6 +743,14 @@ MergeRequestAssignee:
 - id
 - user_id
 - merge_request_id
+- created_at
+- state
+MergeRequestReviewer:
+- id
+- user_id
+- merge_request_id
+- created_at
+- state
 ProjectMetricsSetting:
 - project_id
 - external_dashboard_url
@@ -903,3 +913,7 @@ MergeRequest::CleanupSchedule:
 - completed_at
 - created_at
 - updated_at
+Approval:
+  - user_id
+  - created_at
+  - updated_at

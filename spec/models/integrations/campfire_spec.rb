@@ -11,7 +11,7 @@ RSpec.describe Integrations::Campfire do
 
   describe 'Validations' do
     it { is_expected.to validate_numericality_of(:room).is_greater_than(0).only_integer }
-    it { is_expected.to validate_length_of(:subdomain).is_at_most(63) }
+    it { is_expected.to validate_length_of(:subdomain).is_at_least(1).is_at_most(63).allow_blank }
     it { is_expected.to allow_value("foo").for(:subdomain) }
     it { is_expected.not_to allow_value("foo.bar").for(:subdomain) }
     it { is_expected.not_to allow_value("foo.bar/#").for(:subdomain) }

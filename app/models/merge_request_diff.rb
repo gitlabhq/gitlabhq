@@ -358,9 +358,9 @@ class MergeRequestDiff < ApplicationRecord
     return unless start_commit_sha || base_commit_sha
 
     Gitlab::Diff::DiffRefs.new(
-      base_sha:  base_commit_sha,
+      base_sha: base_commit_sha,
       start_sha: start_commit_sha,
-      head_sha:  head_commit_sha
+      head_sha: head_commit_sha
     )
   end
 
@@ -381,9 +381,9 @@ class MergeRequestDiff < ApplicationRecord
     likely_base_commit_sha = (first_commit&.parent || first_commit)&.sha
 
     Gitlab::Diff::DiffRefs.new(
-      base_sha:  likely_base_commit_sha,
+      base_sha: likely_base_commit_sha,
       start_sha: safe_start_commit_sha,
-      head_sha:  head_commit_sha
+      head_sha: head_commit_sha
     )
   end
 
@@ -706,8 +706,7 @@ class MergeRequestDiff < ApplicationRecord
     latest_id = MergeRequest
       .where(id: merge_request_id)
       .limit(1)
-      .pluck(:latest_merge_request_diff_id)
-      .first
+      .pick(:latest_merge_request_diff_id)
 
     latest_id && self.id < latest_id
   end

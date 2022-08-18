@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', :reliable do
     describe 'Custom issue templates' do
-      let(:template_name) { 'custom_issue_template'}
+      let(:template_name) { 'custom_issue_template' }
       let(:template_content) { 'This is a custom issue template test' }
 
       let(:template_project) do

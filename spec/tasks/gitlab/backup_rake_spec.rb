@@ -5,7 +5,11 @@ require 'rake_helper'
 RSpec.describe 'gitlab:app namespace rake task', :delete do
   let(:enable_registry) { true }
   let(:backup_tasks) { %w{db repo uploads builds artifacts pages lfs terraform_state registry packages} }
-  let(:backup_types) { %w{db repositories uploads builds artifacts pages lfs terraform_state registry packages} }
+  let(:backup_types) do
+    %w{main_db repositories uploads builds artifacts pages lfs terraform_state registry packages}.tap do |array|
+      array.insert(1, 'ci_db') if Gitlab::Database.has_config?(:ci)
+    end
+  end
 
   def tars_glob
     Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
@@ -151,7 +155,8 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
   describe 'backup' do
     before do
       # This reconnect makes our project fixture disappear, breaking the restore. Stub it out.
-      allow(ActiveRecord::Base.connection).to receive(:reconnect!)
+      allow(ApplicationRecord.connection).to receive(:reconnect!)
+      allow(Ci::ApplicationRecord.connection).to receive(:reconnect!)
     end
 
     let!(:project) { create(:project, :repository) }
@@ -199,7 +204,9 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         end
 
         it 'logs the progress to log file' do
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... [SKIPPED]")
+          ci_database_status = Gitlab::Database.has_config?(:ci) ? "[SKIPPED]" : "[DISABLED]"
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping main_database ... [SKIPPED]")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci_database ... #{ci_database_status}")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")

@@ -233,7 +233,7 @@ To push your repository and create a project:
       ```
 
    - For `gitlab.example.com`, use the domain name of the machine that hosts your Git repository.
-   - For `namespace`, use the name of your [namespace](../group/index.md#namespaces).
+   - For `namespace`, use the name of your [namespace](../namespace/index.md).
    - For `myproject`, use the name of your project.
    - Optional. To export existing repository tags, append the `--tags` flag to your `git push` command.
 1. Optional. To configure the remote:
@@ -290,7 +290,7 @@ To view your personal projects:
 ## Delete a project
 
 After you delete a project, projects in personal namespaces are deleted immediately. To delay deletion of projects in a group
-you can [enable delayed project removal](../group/index.md#enable-delayed-project-deletion).
+you can [enable delayed project removal](../group/manage.md#enable-delayed-project-deletion).
 
 To delete a project:
 
@@ -310,7 +310,7 @@ To delete a project:
 > - [Available to all users](https://gitlab.com/gitlab-org/gitlab/-/issues/346976) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
 
-When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
+When delayed project deletion is [enabled for a group](../group/manage.md#enable-delayed-project-deletion),
 projects within that group are not deleted immediately, but only after a delay.
 
 To view a list of all projects that are pending deletion:
@@ -371,7 +371,7 @@ To leave a project:
 1. Select a project.
 1. Select **Leave project**. The **Leave project** option only displays
 on the project dashboard when a project is part of a group under a
-[group namespace](../group/index.md#namespaces).
+[group namespace](../namespace/index.md).
 
 ## Use a project as a Go package
 

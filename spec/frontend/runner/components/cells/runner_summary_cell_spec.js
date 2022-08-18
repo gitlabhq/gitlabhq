@@ -1,3 +1,4 @@
+import { __ } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerSummaryCell from '~/runner/components/cells/runner_summary_cell.vue';
 import { INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
@@ -61,8 +62,16 @@ describe('RunnerTypeCell', () => {
     expect(wrapper.text()).toContain(mockDescription);
   });
 
-  it('Displays the runner ip address', () => {
-    expect(wrapper.text()).toContain(mockIpAddress);
+  it('Displays ip address', () => {
+    expect(wrapper.text()).toContain(`${__('IP Address')} ${mockIpAddress}`);
+  });
+
+  it('Displays no ip address', () => {
+    createComponent({
+      ipAddress: null,
+    });
+
+    expect(wrapper.text()).not.toContain(__('IP Address'));
   });
 
   it('Displays a custom slot', () => {

@@ -28,7 +28,7 @@ RSpec.describe 'projects/pipeline_schedules/_pipeline_schedule' do
       it 'non-owner can take ownership of pipeline' do
         render
 
-        expect(rendered).to have_link('Take ownership')
+        expect(rendered).to have_button('Take ownership')
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe 'projects/pipeline_schedules/_pipeline_schedule' do
       it 'owner cannot take ownership of pipeline' do
         render
 
-        expect(rendered).not_to have_link('Take ownership')
+        expect(rendered).not_to have_button('Take ownership')
       end
     end
   end

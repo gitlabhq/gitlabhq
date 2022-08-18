@@ -1,7 +1,0 @@
-fragment BlobViewer on SnippetBlobViewer {
-  collapsed
-  renderError
-  tooLarge
-  type
-  fileType
-}

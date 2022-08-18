@@ -17,7 +17,9 @@ module API
                  types: [Integer, String],
                  integer_none_any: true,
                  desc: 'Return merge requests which are assigned to the user with the given ID'
-        optional :assignee_username, type: Array[String], check_assignees_count: true,
+        optional :assignee_username,
+                 type: Array[String],
+                 check_assignees_count: true,
                  coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
                  desc: 'Return merge requests which are assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
@@ -129,7 +131,7 @@ module API
       end
 
       def self.sort_options_help
-        sort_options.map {|y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
+        sort_options.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
       end
     end
   end

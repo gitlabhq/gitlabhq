@@ -148,7 +148,7 @@ starting with `sentinel` prefix.
 Assuming that the Redis Sentinel is installed on the same instance as Redis
 primary with IP `10.0.0.1` (some settings might overlap with the primary):
 
-1. [Install Redis Sentinel](https://redis.io/topics/sentinel).
+1. [Install Redis Sentinel](https://redis.io/docs/manual/sentinel/).
 1. Edit `/etc/redis/sentinel.conf`:
 
    ```conf

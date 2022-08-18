@@ -1,86 +1,82 @@
-import Vue, { nextTick } from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { GlBadge } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ActivityBar from '~/ide/components/activity_bar.vue';
 import { leftSidebarViews } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
 
-describe('IDE activity bar', () => {
-  const Component = Vue.extend(ActivityBar);
-  let vm;
+describe('IDE ActivityBar component', () => {
+  let wrapper;
   let store;
 
-  const findChangesBadge = () => vm.$el.querySelector('.badge');
+  const findChangesBadge = () => wrapper.findComponent(GlBadge);
 
-  beforeEach(() => {
+  const mountComponent = (state) => {
     store = createStore();
-
-    Vue.set(store.state.projects, 'abcproject', {
-      web_url: 'testing',
+    store.replaceState({
+      ...store.state,
+      projects: { abcproject: { web_url: 'testing' } },
+      currentProjectId: 'abcproject',
+      ...state,
     });
-    Vue.set(store.state, 'currentProjectId', 'abcproject');
 
-    vm = createComponentWithStore(Component, store);
-  });
+    wrapper = shallowMount(ActivityBar, { store });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('updateActivityBarView', () => {
     beforeEach(() => {
-      jest.spyOn(vm, 'updateActivityBarView').mockImplementation(() => {});
-
-      vm.$mount();
+      mountComponent();
+      jest.spyOn(wrapper.vm, 'updateActivityBarView').mockImplementation(() => {});
     });
 
     it('calls updateActivityBarView with edit value on click', () => {
-      vm.$el.querySelector('.js-ide-edit-mode').click();
+      wrapper.find('.js-ide-edit-mode').trigger('click');
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.edit.name);
+      expect(wrapper.vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.edit.name);
     });
 
     it('calls updateActivityBarView with commit value on click', () => {
-      vm.$el.querySelector('.js-ide-commit-mode').click();
+      wrapper.find('.js-ide-commit-mode').trigger('click');
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.commit.name);
+      expect(wrapper.vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.commit.name);
     });
 
     it('calls updateActivityBarView with review value on click', () => {
-      vm.$el.querySelector('.js-ide-review-mode').click();
+      wrapper.find('.js-ide-review-mode').trigger('click');
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.review.name);
+      expect(wrapper.vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.review.name);
     });
   });
 
   describe('active item', () => {
-    beforeEach(() => {
-      vm.$mount();
-    });
-
     it('sets edit item active', () => {
-      expect(vm.$el.querySelector('.js-ide-edit-mode').classList).toContain('active');
+      mountComponent();
+
+      expect(wrapper.find('.js-ide-edit-mode').classes()).toContain('active');
     });
 
-    it('sets commit item active', async () => {
-      vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
+    it('sets commit item active', () => {
+      mountComponent({ currentActivityView: leftSidebarViews.commit.name });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.js-ide-commit-mode').classList).toContain('active');
+      expect(wrapper.find('.js-ide-commit-mode').classes()).toContain('active');
     });
   });
 
   describe('changes badge', () => {
     it('is rendered when files are staged', () => {
-      store.state.stagedFiles = [{ path: '/path/to/file' }];
-      vm.$mount();
+      mountComponent({ stagedFiles: [{ path: '/path/to/file' }] });
 
-      expect(findChangesBadge()).toBeTruthy();
-      expect(findChangesBadge().textContent.trim()).toBe('1');
+      expect(findChangesBadge().exists()).toBe(true);
+      expect(findChangesBadge().text()).toBe('1');
     });
 
     it('is not rendered when no changes are present', () => {
-      vm.$mount();
-      expect(findChangesBadge()).toBeFalsy();
+      mountComponent();
+
+      expect(findChangesBadge().exists()).toBe(false);
     });
   });
 });

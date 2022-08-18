@@ -12,6 +12,7 @@ RSpec.describe Integrations::Bugzilla do
       it { is_expected.to validate_presence_of(:project_url) }
       it { is_expected.to validate_presence_of(:issues_url) }
       it { is_expected.to validate_presence_of(:new_issue_url) }
+
       it_behaves_like 'issue tracker integration URL attribute', :project_url
       it_behaves_like 'issue tracker integration URL attribute', :issues_url
       it_behaves_like 'issue tracker integration URL attribute', :new_issue_url

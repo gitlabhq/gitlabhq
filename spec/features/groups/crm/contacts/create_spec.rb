@@ -22,7 +22,9 @@ RSpec.describe 'Create a CRM contact', :js do
     fill_in 'description', with: 'VIP'
     click_button 'Save changes'
 
-    expect(page).to have_content 'gitlab@example.com'
+    wait_for_requests
+
+    expect(group.contacts.first.email).to eq('gitlab@example.com')
     expect(page).to have_current_path("#{group_crm_contacts_path(group)}/", ignore_query: true)
   end
 end

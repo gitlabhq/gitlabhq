@@ -221,14 +221,13 @@ RSpec.describe 'Group' do
       let(:user) { create(:admin) }
 
       before do
-        visit new_group_path(parent_id: group.id)
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
       end
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'creates a nested group' do
-          click_link 'Create group'
-          fill_in 'Group name', with: 'bar'
-          click_button 'Create group'
+          fill_in 'Subgroup name', with: 'bar'
+          click_button 'Create subgroup'
 
           expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
           expect(page).to have_selector 'h1', text: 'bar'
@@ -237,7 +236,7 @@ RSpec.describe 'Group' do
 
       context 'when admin mode is disabled' do
         it 'is not allowed' do
-          expect(page).not_to have_button('Create group')
+          expect(page).not_to have_button('Create subgroup')
         end
       end
     end
@@ -250,11 +249,10 @@ RSpec.describe 'Group' do
         sign_out(:user)
         sign_in(user)
 
-        visit new_group_path(parent_id: group.id)
-        click_link 'Create group'
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
-        fill_in 'Group name', with: 'bar'
-        click_button 'Create group'
+        fill_in 'Subgroup name', with: 'bar'
+        click_button 'Create subgroup'
 
         expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
         expect(page).to have_selector 'h1', text: 'bar'
@@ -268,7 +266,7 @@ RSpec.describe 'Group' do
       end
 
       context 'when creating subgroup' do
-        let(:path) { new_group_path(parent_id: group.id) }
+        let(:path) { new_group_path(parent_id: group.id, anchor: 'create-group-pane') }
 
         it 'does not render recaptcha' do
           visit path
@@ -278,24 +276,50 @@ RSpec.describe 'Group' do
       end
     end
 
+    context 'when many parent groups are available' do
+      let_it_be(:group2) { create(:group, path: 'foo2') }
+      let_it_be(:group3) { create(:group, path: 'foo3') }
+
+      before do
+        group.add_owner(user)
+        group2.add_maintainer(user)
+        group3.add_developer(user)
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
+      end
+
+      it 'creates private subgroup' do
+        fill_in 'Subgroup name', with: 'bar'
+        click_button 'foo'
+
+        expect(page).to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo2')
+        expect(page).not_to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo3')
+
+        click_button 'foo2'
+        click_button 'Create subgroup'
+
+        expect(page).to have_current_path(group_path('foo2/bar'), ignore_query: true)
+        expect(page).to have_selector('h1', text: 'bar')
+        expect(page).to have_selector('.visibility-icon [data-testid="lock-icon"]')
+      end
+    end
+
     describe 'real-time group url validation', :js do
       let_it_be(:subgroup) { create(:group, path: 'sub', parent: group) }
 
       before do
         group.add_owner(user)
-        visit new_group_path(parent_id: group.id)
-        click_link 'Create group'
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
       end
 
       it 'shows a message if group url is available' do
-        fill_in 'Group URL', with: group.path
+        fill_in 'Subgroup slug', with: group.path
         wait_for_requests
 
         expect(page).to have_content('Group path is available')
       end
 
       it 'shows an error if group url is taken' do
-        fill_in 'Group URL', with: subgroup.path
+        fill_in 'Subgroup slug', with: subgroup.path
         wait_for_requests
 
         expect(page).to have_content("Group path is unavailable. Path has been replaced with a suggested available path.")
@@ -308,7 +332,7 @@ RSpec.describe 'Group' do
 
     sign_out(:user)
     sign_in(create(:user))
-    visit new_group_path(parent_id: group.id)
+    visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
     expect(page).to have_title('Not Found')
     expect(page).to have_content('Page Not Found')
@@ -354,7 +378,7 @@ RSpec.describe 'Group' do
     end
 
     it 'removes group', :sidekiq_might_not_need_inline do
-      expect { remove_with_confirm('Remove group', group.path) }.to change {Group.count}.by(-1)
+      expect { remove_with_confirm('Remove group', group.path) }.to change { Group.count }.by(-1)
       expect(group.members.all.count).to be_zero
       expect(page).to have_content "scheduled for deletion"
     end
@@ -507,8 +531,8 @@ RSpec.describe 'Group' do
       let_it_be(:storage_enforcement_date) { Date.today + 30 }
 
       before do
-        allow_next_found_instance_of(Group) do |grp|
-          allow(grp).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        allow_next_found_instance_of(Group) do |group|
+          allow(group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
         end
       end
 
@@ -518,8 +542,8 @@ RSpec.describe 'Group' do
       end
 
       it 'does not display the banner in a paid group page' do
-        allow_next_found_instance_of(Group) do |grp|
-          allow(grp).to receive(:paid?).and_return(true)
+        allow_next_found_instance_of(Group) do |group|
+          allow(group).to receive(:paid?).and_return(true)
         end
         visit group_path(group)
         expect_page_not_to_have_storage_enforcement_banner
@@ -534,8 +558,8 @@ RSpec.describe 'Group' do
         expect_page_not_to_have_storage_enforcement_banner
 
         storage_enforcement_date = Date.today + 13
-        allow_next_found_instance_of(Group) do |grp|
-          allow(grp).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        allow_next_found_instance_of(Group) do |group|
+          allow(group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
         end
         page.refresh
         expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
@@ -543,8 +567,12 @@ RSpec.describe 'Group' do
     end
 
     context 'with storage_enforcement_date not set' do
-      # This test should break and be rewritten after the implementation of the storage_enforcement_date
-      # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+      before do
+        allow_next_found_instance_of(Group) do |group|
+          allow(group).to receive(:storage_enforcement_date).and_return(nil)
+        end
+      end
+
       it 'does not display the banner in the group page' do
         stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
         visit group_path(group)
@@ -554,10 +582,10 @@ RSpec.describe 'Group' do
   end
 
   def expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
-    expect(page).to have_text "From #{storage_enforcement_date} storage limits will apply to this namespace"
+    expect(page).to have_text "Effective #{storage_enforcement_date}, namespace storage limits will apply"
   end
 
   def expect_page_not_to_have_storage_enforcement_banner
-    expect(page).not_to have_text "storage limits will apply to this namespace"
+    expect(page).not_to have_text "namespace storage limits will apply"
   end
 end

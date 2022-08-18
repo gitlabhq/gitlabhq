@@ -4,7 +4,6 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
   before_action :validate_gcp_token!
 
   def index
-    @google_cloud_path = project_google_cloud_configuration_path(project)
     js_data = {
       configurationUrl: project_google_cloud_configuration_path(project),
       deploymentsUrl: project_google_cloud_deployments_path(project),
@@ -40,9 +39,9 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
         redirect_to project_new_merge_request_path(project, merge_request: cloud_run_mr_params)
       end
     end
-  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => error
-    track_event('deployments#cloud_run', 'error_gcp', error)
-    flash[:warning] = _('Google Cloud Error - %{error}') % { error: error }
+  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => e
+    track_event('deployments#cloud_run', 'error_gcp', e)
+    flash[:warning] = _('Google Cloud Error - %{error}') % { error: e }
     redirect_to project_google_cloud_deployments_path(project)
   end
 

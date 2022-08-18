@@ -97,7 +97,7 @@ RSpec.describe AutoMergeService do
     end
 
     context 'when strategy is not present' do
-      let(:strategy) { }
+      let(:strategy) {}
 
       it 'returns nil' do
         is_expected.to be_nil
@@ -140,7 +140,7 @@ RSpec.describe AutoMergeService do
     end
 
     context 'when strategy is not specified' do
-      let(:strategy) { }
+      let(:strategy) {}
 
       it 'chooses the most preferred strategy' do
         is_expected.to eq(:merge_when_pipeline_succeeds)

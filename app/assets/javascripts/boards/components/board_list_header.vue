@@ -117,7 +117,7 @@ export default {
       return 'issues';
     },
     itemsTooltipLabel() {
-      return n__(`%d issue`, `%d issues`, this.boardLists?.issuesCount);
+      return n__(`%d issue`, `%d issues`, this.boardList?.issuesCount);
     },
     chevronTooltip() {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;

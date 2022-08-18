@@ -576,7 +576,7 @@ See `Gitlab::Geo.enabled?` and `Gitlab::Geo.license_allows?` methods.
 
 All Geo **secondary** sites are read-only.
 
-The general principle of a [read-only database](verifying_database_capabilities.md#read-only-database)
+The general principle of a [read-only database](database/verifying_database_capabilities.md#read-only-database)
 applies to all Geo **secondary** sites. So the
 `Gitlab::Database.read_only?` method will always return `true` on a
 **secondary** site.

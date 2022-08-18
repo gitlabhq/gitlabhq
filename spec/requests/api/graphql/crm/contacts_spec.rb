@@ -12,11 +12,11 @@ RSpec.describe 'getting CRM contacts' do
     create(
       :contact,
       group: group,
-      first_name: "ABC",
-      last_name: "DEF",
-      email: "ghi@test.com",
-      description: "LMNO",
-      state: "inactive"
+      first_name: "PQR",
+      last_name: "STU",
+      email: "aaa@test.com",
+      description: "YZ",
+      state: "active"
     )
   end
 
@@ -26,9 +26,9 @@ RSpec.describe 'getting CRM contacts' do
       group: group,
       first_name: "ABC",
       last_name: "DEF",
-      email: "vwx@test.com",
-      description: "YZ",
-      state: "active"
+      email: "ghi@test.com",
+      description: "LMNO",
+      state: "inactive"
     )
   end
 
@@ -36,9 +36,9 @@ RSpec.describe 'getting CRM contacts' do
     create(
       :contact,
       group: group,
-      first_name: "PQR",
-      last_name: "STU",
-      email: "aaa@test.com",
+      first_name: "JKL",
+      last_name: "MNO",
+      email: "vwx@test.com",
       description: "YZ",
       state: "active"
     )
@@ -51,7 +51,7 @@ RSpec.describe 'getting CRM contacts' do
   it_behaves_like 'sorted paginated query' do
     let(:sort_argument) { {} }
     let(:first_param) { 2 }
-    let(:all_records) { [contact_a, contact_b, contact_c] }
+    let(:all_records) { [contact_b, contact_c, contact_a] }
     let(:data_path) { [:group, :contacts] }
 
     def pagination_query(params)

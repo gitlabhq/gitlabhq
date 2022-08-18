@@ -1,3 +1,4 @@
+import { GlFormSelect } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
 import ItemState from '~/work_items/components/item_state.vue';
@@ -6,6 +7,7 @@ describe('ItemState', () => {
   let wrapper;
 
   const findLabel = () => wrapper.find('label').text();
+  const findFormSelect = () => wrapper.findComponent(GlFormSelect);
   const selectedValue = () => wrapper.find('option:checked').element.value;
 
   const clickOpen = () => wrapper.findAll('option').at(0).setSelected();
@@ -50,5 +52,19 @@ describe('ItemState', () => {
     await clickOpen();
 
     expect(wrapper.emitted('changed')).toBeUndefined();
+  });
+
+  describe('form select disabled prop', () => {
+    describe.each`
+      description            | disabled | value
+      ${'when not disabled'} | ${false} | ${undefined}
+      ${'when disabled'}     | ${true}  | ${'disabled'}
+    `('$description', ({ disabled, value }) => {
+      it(`renders form select component with disabled=${value}`, () => {
+        createComponent({ disabled });
+
+        expect(findFormSelect().attributes('disabled')).toBe(value);
+      });
+    });
   });
 });

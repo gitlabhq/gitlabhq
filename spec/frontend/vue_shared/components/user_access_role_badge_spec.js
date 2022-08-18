@@ -18,7 +18,7 @@ describe('UserAccessRoleBadge', () => {
       },
     });
 
-    const badge = wrapper.find(GlBadge);
+    const badge = wrapper.findComponent(GlBadge);
 
     expect(badge.exists()).toBe(true);
     expect(badge.html()).toContain('test slot content');

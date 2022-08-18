@@ -239,6 +239,13 @@ Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipelin
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
 
+## cloud native
+
+When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
+This version is different than the larger, more monolithic **Omnibus package** that is used to deploy GitLab.
+
+You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
+
 ## collapse
 
 Use **collapse** instead of **close** when you are talking about expanding or collapsing a section in the UI.
@@ -433,6 +440,17 @@ Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trad
 ## GitLab.com
 
 **GitLab.com** refers to the GitLab instance managed by GitLab itself.
+
+## GitLab Helm chart, GitLab chart
+
+To deploy a cloud-native version of GitLab, use:
+
+- The GitLab Helm chart (long version)
+- The GitLab chart (short version)
+
+Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native chart**.
+
+You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
 ## GitLab Flavored Markdown
 
@@ -1127,7 +1145,7 @@ in present tense, active voice.
 ## you, your, yours
 
 Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).
-Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone#point-of-view) of the reader.
+Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone/#point-of-view) of the reader.
 
 Use:
 

@@ -43,7 +43,11 @@ module Gitlab
 
       def valid_date?
         string_date = @spend_arg.match(DATE_REGEX)[0]
-        date = Date.parse(string_date) rescue nil
+        date = begin
+          Date.parse(string_date)
+        rescue StandardError
+          nil
+        end
 
         date_past_or_today?(date)
       end

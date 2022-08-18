@@ -199,7 +199,7 @@ describe('title area', () => {
 
       const message = findInfoMessages().at(0);
 
-      expect(message.find(GlLink).attributes('href')).toBe('bar');
+      expect(message.findComponent(GlLink).attributes('href')).toBe('bar');
       expect(message.text()).toBe('foo link');
     });
 

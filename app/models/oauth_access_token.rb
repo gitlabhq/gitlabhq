@@ -6,7 +6,6 @@ class OauthAccessToken < Doorkeeper::AccessToken
 
   alias_attribute :user, :resource_owner
 
-  scope :distinct_resource_owner_counts, ->(applications) { where(application: applications).distinct.group(:application_id).count(:resource_owner_id) }
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }
   scope :preload_application, -> { preload(:application) }
 
@@ -16,5 +15,15 @@ class OauthAccessToken < Doorkeeper::AccessToken
     else
       super
     end
+  end
+
+  # this method overrides a shortcoming upstream, more context:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/367888
+  def self.find_by_fallback_token(attr, plain_secret)
+    return unless fallback_secret_strategy && fallback_secret_strategy == Doorkeeper::SecretStoring::Plain
+    # token is hashed, don't allow plaintext comparison
+    return if plain_secret.starts_with?("$")
+
+    super
   end
 end

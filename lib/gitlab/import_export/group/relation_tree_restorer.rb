@@ -89,7 +89,7 @@ module Gitlab
         end
 
         def save_relation_object(relation_object, relation_key, relation_definition, relation_index)
-          if Feature.enabled?(:import_relation_object_persistence) && relation_object.new_record?
+          if relation_object.new_record?
             Gitlab::ImportExport::Base::RelationObjectSaver.new(
               relation_object: relation_object,
               relation_key: relation_key,

@@ -59,7 +59,7 @@ describe('GlModalVuex', () => {
         default: `<div>${TEST_SLOT}</div>`,
       },
     });
-    const glModal = wrapper.find(GlModal);
+    const glModal = wrapper.findComponent(GlModal);
 
     expect(glModal.props('modalId')).toBe(TEST_MODAL_ID);
     expect(glModal.text()).toContain(TEST_SLOT);
@@ -76,7 +76,7 @@ describe('GlModalVuex', () => {
         okVariant,
       },
     });
-    const glModal = wrapper.find(GlModal);
+    const glModal = wrapper.findComponent(GlModal);
 
     expect(glModal.attributes('title')).toEqual(title);
     expect(glModal.attributes('oktitle')).toEqual(title);
@@ -90,7 +90,7 @@ describe('GlModalVuex', () => {
       listeners: { ok },
     });
 
-    const glModal = wrapper.find(GlModal);
+    const glModal = wrapper.findComponent(GlModal);
     glModal.vm.$emit('ok');
 
     expect(ok).toHaveBeenCalledTimes(1);
@@ -101,7 +101,7 @@ describe('GlModalVuex', () => {
 
     factory();
 
-    const glModal = wrapper.find(GlModal);
+    const glModal = wrapper.findComponent(GlModal);
     glModal.vm.$emit('shown');
 
     expect(actions.show).toHaveBeenCalledTimes(1);
@@ -112,7 +112,7 @@ describe('GlModalVuex', () => {
 
     factory();
 
-    const glModal = wrapper.find(GlModal);
+    const glModal = wrapper.findComponent(GlModal);
     glModal.vm.$emit('hidden');
 
     expect(actions.hide).toHaveBeenCalledTimes(1);

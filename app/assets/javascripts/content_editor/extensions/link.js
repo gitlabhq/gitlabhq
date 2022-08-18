@@ -56,6 +56,11 @@ export default Link.extend({
       canonicalSrc: {
         default: null,
         parseHTML: (element) => element.dataset.canonicalSrc,
+        renderHTML: () => '',
+      },
+      isReference: {
+        default: false,
+        renderHTML: () => '',
       },
     };
   },

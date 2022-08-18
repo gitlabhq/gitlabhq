@@ -1,4 +1,23 @@
 - return unless google_tag_manager_enabled?
+- if Feature.enabled?(:gitlab_gtm_datalayer, type: :ops)
+  = javascript_tag do
+    :plain
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'functionality_storage': 'denied',
+        'region': ['EU', 'UK', 'PE', 'RU'],
+        'wait_for_update': 500
+      });
+      gtag('consent', 'default', {
+        'analytics_storage': 'granted',
+        'ad_storage': 'granted',
+        'functionality_storage': 'granted',
+        'wait_for_update': 500
+      });
 
 - if Feature.enabled?(:gtm_nonce, type: :ops)
   = javascript_tag nonce: content_security_policy_nonce do

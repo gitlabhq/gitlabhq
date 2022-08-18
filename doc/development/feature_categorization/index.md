@@ -10,8 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Each Sidekiq worker, controller action, or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
-of these to a [feature
-category](https://about.gitlab.com/handbook/product/categories/). This
+of these to a [feature category](https://about.gitlab.com/handbook/product/categories/). This
 is done for error budgeting, alert routing, and team attribution.
 
 The list of feature categories can be found in the file `config/feature_categories.yml`.
@@ -29,8 +28,7 @@ product categories. When this occurs, you can automatically update
 and generate a new version of the file, which needs to be committed to
 the repository.
 
-The [Scalability
-team](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
+The [Scalability team](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
 currently maintains the `feature_categories.yml` file. They will automatically be
 notified on Slack when the file becomes outdated.
 

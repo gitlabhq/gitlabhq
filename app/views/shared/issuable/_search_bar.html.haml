@@ -88,16 +88,6 @@
                   = render 'shared/issuable/user_dropdown_item',
                     user: User.new(username: '{{username}}', name: '{{name}}'),
                     avatar: { lazy: true, url: '{{avatar_url}}' }
-              - if current_user&.mr_attention_requests_enabled?
-                #js-dropdown-attention-requested.filtered-search-input-dropdown-menu.dropdown-menu
-                  - if current_user
-                    %ul{ data: { dropdown: true } }
-                      = render 'shared/issuable/user_dropdown_item',
-                        user: current_user
-                  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                    = render 'shared/issuable/user_dropdown_item',
-                      user: User.new(username: '{{username}}', name: '{{name}}'),
-                      avatar: { lazy: true, url: '{{avatar_url}}' }
               = render_if_exists 'shared/issuable/approver_dropdown'
               = render_if_exists 'shared/issuable/approved_by_dropdown'
               #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu

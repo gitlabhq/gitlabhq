@@ -36,6 +36,22 @@ RSpec.describe API::Topics do
       expect(json_response[2]['total_projects_count']).to eq(1)
     end
 
+    context 'with without_projects' do
+      let_it_be(:topic_4) { create(:topic, name: 'unassigned topic', total_projects_count: 0) }
+
+      it 'returns topics without assigned projects' do
+        get api('/topics'), params: { without_projects: true }
+
+        expect(json_response.map { |t| t['id'] }).to contain_exactly(topic_4.id)
+      end
+
+      it 'returns topics without assigned projects' do
+        get api('/topics'), params: { without_projects: false }
+
+        expect(json_response.map { |t| t['id'] }).to contain_exactly(topic_1.id, topic_2.id, topic_3.id, topic_4.id)
+      end
+    end
+
     context 'with search' do
       using RSpec::Parameterized::TableSyntax
 

@@ -5,7 +5,6 @@ $grid-size: 8px;
 $gutter-collapsed-width: 62px;
 $gutter-width: 290px;
 $gutter-inner-width: 250px;
-$sidebar-transition-duration: 0.3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 256px;
@@ -454,7 +453,6 @@ $default-icon-size: 16px;
 $layout-link-gray: #7e7c7c;
 $btn-side-margin: $grid-size;
 $btn-sm-side-margin: 7px;
-$btn-margin-5: 5px;
 $count-arrow-border: #dce0e5;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
@@ -880,8 +878,6 @@ $image-comment-cursor-top-offset: 12;
 Security & Compliance Carousel
 */
 $security-and-compliance-carousel-image-carousel-width: 1000px;
-$security-and-compliance-carousel-image-discover-button-width: 45%;
-$security-and-compliance-carousel-image-discover-buttons-max-width: 280px;
 $security-and-compliance-carousel-image-discover-footer-max-width: 500px;
 $security-and-compliance-carousel-image-discover-text-carousel-max-width: 650px;
 $security-and-compliance-carousel-image-discover-text-carousel-caption-height: 100%;

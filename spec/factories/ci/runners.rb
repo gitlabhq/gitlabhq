@@ -18,11 +18,11 @@ FactoryBot.define do
 
     after(:build) do |runner, evaluator|
       evaluator.projects.each do |proj|
-        runner.runner_projects << build(:ci_runner_project, project: proj)
+        runner.runner_projects << build(:ci_runner_project, runner: runner, project: proj)
       end
 
       evaluator.groups.each do |group|
-        runner.runner_namespaces << build(:ci_runner_namespace, namespace: group)
+        runner.runner_namespaces << build(:ci_runner_namespace, runner: runner, namespace: group)
       end
     end
 

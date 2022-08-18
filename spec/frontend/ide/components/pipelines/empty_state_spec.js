@@ -32,7 +32,7 @@ describe('~/ide/components/pipelines/empty_state.vue', () => {
     });
 
     it('renders empty state', () => {
-      expect(wrapper.find(GlEmptyState).props()).toMatchObject({
+      expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
         title: EmptyState.i18n.title,
         description: EmptyState.i18n.description,
         primaryButtonText: EmptyState.i18n.primaryButtonText,

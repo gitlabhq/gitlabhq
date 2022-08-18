@@ -31,9 +31,9 @@ underlying implementation for shared, distributed, highly-available
 (HA) file storage.
 
 Over time, we have built support for object storage across the
-application, solving specific problems in a [multitude of
-iterations](https://about.gitlab.com/company/team/structure/working-groups/object-storage/#company-efforts-on-uploads). This
-has led to increased complexity across the board, from development
+application, solving specific problems in a 
+[multitude of iterations](https://about.gitlab.com/company/team/structure/working-groups/object-storage/#company-efforts-on-uploads). 
+This has led to increased complexity across the board, from development
 (new features and bug fixes) to installation:
 
 - New GitLab installations require the creation and configuration of
@@ -67,10 +67,8 @@ has led to increased complexity across the board, from development
 The following is a brief description of the main directions we can take to
 remove the pain points affecting our object storage implementation.
 
-This is also available as [a YouTube
-video](https://youtu.be/X9V_w8hsM8E) recorded for the [Object Storage
-Working
-Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
+This is also available as [a YouTube video](https://youtu.be/X9V_w8hsM8E) recorded for the 
+[Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
 
 ### Simplify GitLab architecture by shipping MinIO
 
@@ -80,8 +78,8 @@ local storage and object storage.
 
 With local storage, there is the assumption of a shared storage
 between components. This can be achieved by having a single box
-installation, without HA, or with a NFS, which [we no longer
-recommend](../../../administration/nfs.md).
+installation, without HA, or with a NFS, which 
+[we no longer recommend](../../../administration/nfs.md).
 
 We have a testing gap on object storage. It also requires Workhorse
 and MinIO, which are not present in our pipelines, so too much is
@@ -136,8 +134,8 @@ access to new features without infrastructure chores.
 
 Our implementation is built on top of a 3rd-party framework where
 every object storage client is a 3rd-party library. Unfortunately some
-of them are unmaintained. [We have customers who cannot push 5GB Git
-LFS objects](https://gitlab.com/gitlab-org/gitlab/-/issues/216442),
+of them are unmaintained. 
+[We have customers who cannot push 5GB Git LFS objects](https://gitlab.com/gitlab-org/gitlab/-/issues/216442),
 but with such a vital feature implemented in 3rd-party libraries we
 are slowed down in fixing it, and we also rely on external maintainers
 to merge and release fixes.
@@ -147,8 +145,7 @@ Before the introduction of direct upload, using the
 library, _"a gem that provides a simple and extremely flexible way to
 upload files from Ruby applications."_, was the boring solution.
 However this is no longer our use-case, as we upload files from
-Workhorse, and we had to [patch CarrierWave's
-internals](https://gitlab.com/gitlab-org/gitlab/-/issues/285597#note_452696638)
+Workhorse, and we had to [patch CarrierWave's internals](https://gitlab.com/gitlab-org/gitlab/-/issues/285597#note_452696638)
 to support direct upload.
 
 A brief proposal covering CarrierWave removal and a new streamlined
@@ -217,7 +214,7 @@ Proposal:
 
 DRIs:
 
-The DRI for this blueprint is the [Object Storage Working
-Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
+The DRI for this blueprint is the 
+[Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
 
 <!-- vale gitlab.Spelling = YES -->

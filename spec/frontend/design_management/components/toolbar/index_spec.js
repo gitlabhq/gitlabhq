@@ -85,35 +85,35 @@ describe('Design management toolbar component', () => {
     createComponent();
 
     await nextTick();
-    expect(wrapper.find(DeleteButton).exists()).toBe(true);
+    expect(wrapper.findComponent(DeleteButton).exists()).toBe(true);
   });
 
   it('does not render delete button on non-latest version', async () => {
     createComponent(false, true, { isLatestVersion: false });
 
     await nextTick();
-    expect(wrapper.find(DeleteButton).exists()).toBe(false);
+    expect(wrapper.findComponent(DeleteButton).exists()).toBe(false);
   });
 
   it('does not render delete button when user is not logged in', async () => {
     createComponent(false, false);
 
     await nextTick();
-    expect(wrapper.find(DeleteButton).exists()).toBe(false);
+    expect(wrapper.findComponent(DeleteButton).exists()).toBe(false);
   });
 
   it('emits `delete` event on deleteButton `delete-selected-designs` event', async () => {
     createComponent();
 
     await nextTick();
-    wrapper.find(DeleteButton).vm.$emit('delete-selected-designs');
+    wrapper.findComponent(DeleteButton).vm.$emit('delete-selected-designs');
     expect(wrapper.emitted().delete).toBeTruthy();
   });
 
   it('renders download button with correct link', () => {
     createComponent();
 
-    expect(wrapper.find(GlButton).attributes('href')).toBe(
+    expect(wrapper.findComponent(GlButton).attributes('href')).toBe(
       '/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d',
     );
   });

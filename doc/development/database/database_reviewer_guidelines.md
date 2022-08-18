@@ -36,7 +36,7 @@ projects:
 
 Create the merge request [using the "Database reviewer" template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md),
 adding your expertise your profile YAML file. Assign to a database maintainer or the
-[Database Team's Engineering Manager](https://about.gitlab.com/handbook/engineering/development/enablement/database/).
+[Database Team's Engineering Manager](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/).
 
 After the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
 may recommend you as a database reviewer.
@@ -53,17 +53,17 @@ that require a more in-depth discussion between the database reviewers and maint
 - [Database Office Hours Agenda](https://docs.google.com/document/d/1wgfmVL30F8SdMg-9yY6Y8djPSxWNvKmhR5XmsvYX1EI/edit).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [YouTube playlist with past recordings](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp-kqXeiF7fF7cFYaKtdqXM).
 
-You should also join the [#database-lab](../understanding_explain_plans.md#database-lab-engine)
+You should also join the [#database-lab](understanding_explain_plans.md#database-lab-engine)
 Slack channel and get familiar with how to use Joe, the Slackbot that provides developers
 with their own clone of the production database.
 
 Understanding and efficiently using `EXPLAIN` plans is at the core of the database review process.
 The following guides provide a quick introduction and links to follow on more advanced topics:
 
-- Guide on [understanding EXPLAIN plans](../understanding_explain_plans.md).
+- Guide on [understanding EXPLAIN plans](understanding_explain_plans.md).
 - [Explaining the unexplainable series in `depesz`](https://www.depesz.com/tag/unexplainable/).
 
-We also have licensed access to The Art of PostgreSQL available, if you are interested in getting access please check out the
+We also have licensed access to The Art of PostgreSQL. If you are interested in getting access, check out the
 [issue (confidential)](https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/23).
 
 Finally, you can find various guides in the [Database guides](index.md) page that cover more specific
@@ -95,7 +95,7 @@ are three times as likely to be picked by the [Danger bot](../dangerbot.md) as o
 ## What to do if you feel overwhelmed
 
 Similar to all types of reviews, [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization).
-Database reviewers are expected to [review assigned merge requests in a timely manner](../code_review.md#review-turnaround-time)
+Database reviewers are expected to [review assigned merge requests in a timely manner](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-turnaround-time)
 or let the author know as soon as possible and help them find another reviewer or maintainer.
 
 We are doing reviews to help the rest of the GitLab team and, at the same time, get exposed

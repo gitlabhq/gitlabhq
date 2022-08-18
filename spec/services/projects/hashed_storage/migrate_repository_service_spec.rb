@@ -68,12 +68,10 @@ RSpec.describe Projects::HashedStorage::MigrateRepositoryService do
         service.execute
       end
 
-      it 'writes project full path to .git/config' do
+      it 'writes project full path to gitaly' do
         service.execute
 
-        rugged_config = rugged_repo(project.repository).config['gitlab.fullpath']
-
-        expect(rugged_config).to eq project.full_path
+        expect(project.repository.full_path).to eq project.full_path
       end
     end
 

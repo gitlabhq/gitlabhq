@@ -100,8 +100,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
     it_behaves_like 'does not include personal snippets'
 
     context 'with subgroups' do
-      let(:subgroup1) { create(:group, parent: namespace)}
-      let(:subgroup2) { create(:group, parent: subgroup1)}
+      let(:subgroup1) { create(:group, parent: namespace) }
+      let(:subgroup2) { create(:group, parent: subgroup1) }
 
       let(:project1) { create(:project, namespace: subgroup1) }
       let(:project2) { create(:project, namespace: subgroup2) }

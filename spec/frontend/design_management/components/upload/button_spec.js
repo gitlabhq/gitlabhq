@@ -34,7 +34,7 @@ describe('Design management upload button component', () => {
     it('Button `loading` prop is `true`', () => {
       createComponent({ isSaving: true });
 
-      const button = wrapper.find(GlButton);
+      const button = wrapper.findComponent(GlButton);
       expect(button.exists()).toBe(true);
       expect(button.props('loading')).toBe(true);
     });

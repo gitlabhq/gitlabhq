@@ -1,5 +1,4 @@
 <script>
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
@@ -7,7 +6,6 @@ export default {
   components: {
     statusIcon,
   },
-  mixins: [glFeatureFlagMixin()],
 };
 </script>
 <template>
@@ -16,7 +14,7 @@ export default {
       <status-icon status="warning" show-disabled-button />
     </div>
     <div class="media-body">
-      <span :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }" class="bold">
+      <span class="gl-ml-0! gl-text-body! bold">
         {{ s__('mrWidget|Merge unavailable: merge requests are read-only on archived projects.') }}
       </span>
     </div>

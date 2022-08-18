@@ -1,8 +1,9 @@
 import { GlSearchBoxByClick } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import JobLogControllers from '~/jobs/components/job_log_controllers.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import { backoffMockImplementation } from 'helpers/backoff_helper';
+import * as commonUtils from '~/lib/utils/common_utils';
 import { mockJobLog } from '../mock_data';
 
 const mockToastShow = jest.fn();
@@ -10,10 +11,15 @@ const mockToastShow = jest.fn();
 describe('Job log controllers', () => {
   let wrapper;
 
+  beforeEach(() => {
+    jest.spyOn(commonUtils, 'backOff').mockImplementation(backoffMockImplementation);
+  });
+
   afterEach(() => {
     if (wrapper?.destroy) {
       wrapper.destroy();
     }
+    commonUtils.backOff.mockReset();
   });
 
   const defaultProps = {
@@ -24,10 +30,11 @@ describe('Job log controllers', () => {
     isScrollBottomDisabled: false,
     isScrollingDown: true,
     isJobLogSizeVisible: true,
+    isComplete: true,
     jobLog: mockJobLog,
   };
 
-  const createWrapper = (props, jobLogSearch = false) => {
+  const createWrapper = (props, { jobLogJumpToFailures = false } = {}) => {
     wrapper = mount(JobLogControllers, {
       propsData: {
         ...defaultProps,
@@ -35,7 +42,7 @@ describe('Job log controllers', () => {
       },
       provide: {
         glFeatures: {
-          jobLogSearch,
+          jobLogJumpToFailures,
         },
       },
       data() {
@@ -58,6 +65,7 @@ describe('Job log controllers', () => {
   const findScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
   const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
   const findSearchHelp = () => wrapper.findComponent(HelpPopover);
+  const findScrollFailure = () => wrapper.find('[data-testid="job-controller-scroll-to-failure"]');
 
   describe('Truncate information', () => {
     describe('with isJobLogSizeVisible', () => {
@@ -109,9 +117,7 @@ describe('Job log controllers', () => {
         });
 
         it('emits scrollJobLogTop event on click', async () => {
-          findScrollTop().trigger('click');
-
-          await nextTick();
+          await findScrollTop().trigger('click');
 
           expect(wrapper.emitted().scrollJobLogTop).toHaveLength(1);
         });
@@ -131,9 +137,7 @@ describe('Job log controllers', () => {
         });
 
         it('does not emit scrollJobLogTop event on click', async () => {
-          findScrollTop().trigger('click');
-
-          await nextTick();
+          await findScrollTop().trigger('click');
 
           expect(wrapper.emitted().scrollJobLogTop).toBeUndefined();
         });
@@ -147,9 +151,7 @@ describe('Job log controllers', () => {
         });
 
         it('emits scrollJobLogBottom event on click', async () => {
-          findScrollBottom().trigger('click');
-
-          await nextTick();
+          await findScrollBottom().trigger('click');
 
           expect(wrapper.emitted().scrollJobLogBottom).toHaveLength(1);
         });
@@ -169,9 +171,7 @@ describe('Job log controllers', () => {
         });
 
         it('does not emit scrollJobLogBottom event on click', async () => {
-          findScrollBottom().trigger('click');
-
-          await nextTick();
+          await findScrollBottom().trigger('click');
 
           expect(wrapper.emitted().scrollJobLogBottom).toBeUndefined();
         });
@@ -201,41 +201,115 @@ describe('Job log controllers', () => {
         });
       });
     });
+
+    describe('scroll to failure button', () => {
+      describe('with feature flag disabled', () => {
+        it('does not display button', () => {
+          createWrapper();
+
+          expect(findScrollFailure().exists()).toBe(false);
+        });
+      });
+
+      describe('with red text failures on the page', () => {
+        let firstFailure;
+        let secondFailure;
+
+        beforeEach(() => {
+          jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(['mock-element']);
+
+          createWrapper({}, { jobLogJumpToFailures: true });
+
+          firstFailure = document.createElement('div');
+          firstFailure.className = 'term-fg-l-red';
+          document.body.appendChild(firstFailure);
+
+          secondFailure = document.createElement('div');
+          secondFailure.className = 'term-fg-l-red';
+          document.body.appendChild(secondFailure);
+        });
+
+        afterEach(() => {
+          if (firstFailure) {
+            firstFailure.remove();
+            firstFailure = null;
+          }
+
+          if (secondFailure) {
+            secondFailure.remove();
+            secondFailure = null;
+          }
+        });
+
+        it('is enabled', () => {
+          expect(findScrollFailure().props('disabled')).toBe(false);
+        });
+
+        it('scrolls to each failure', async () => {
+          jest.spyOn(firstFailure, 'scrollIntoView');
+
+          await findScrollFailure().trigger('click');
+
+          expect(firstFailure.scrollIntoView).toHaveBeenCalled();
+
+          await findScrollFailure().trigger('click');
+
+          expect(secondFailure.scrollIntoView).toHaveBeenCalled();
+
+          await findScrollFailure().trigger('click');
+
+          expect(firstFailure.scrollIntoView).toHaveBeenCalled();
+        });
+      });
+
+      describe('with no red text failures on the page', () => {
+        beforeEach(() => {
+          jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce([]);
+
+          createWrapper({}, { jobLogJumpToFailures: true });
+        });
+
+        it('is disabled', () => {
+          expect(findScrollFailure().props('disabled')).toBe(true);
+        });
+      });
+
+      describe('when the job log is not complete', () => {
+        beforeEach(() => {
+          jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(['mock-element']);
+
+          createWrapper({ isComplete: false }, { jobLogJumpToFailures: true });
+        });
+
+        it('is enabled', () => {
+          expect(findScrollFailure().props('disabled')).toBe(false);
+        });
+      });
+    });
   });
 
   describe('Job log search', () => {
-    describe('with feature flag off', () => {
-      it('does not display job log search', () => {
-        createWrapper();
-
-        expect(findJobLogSearch().exists()).toBe(false);
-        expect(findSearchHelp().exists()).toBe(false);
-      });
+    beforeEach(() => {
+      createWrapper();
     });
 
-    describe('with feature flag on', () => {
-      beforeEach(() => {
-        createWrapper({}, { jobLogSearch: true });
-      });
+    it('displays job log search', () => {
+      expect(findJobLogSearch().exists()).toBe(true);
+      expect(findSearchHelp().exists()).toBe(true);
+    });
 
-      it('displays job log search', () => {
-        expect(findJobLogSearch().exists()).toBe(true);
-        expect(findSearchHelp().exists()).toBe(true);
-      });
+    it('emits search results', () => {
+      const expectedSearchResults = [[[mockJobLog[6].lines[1], mockJobLog[6].lines[2]]]];
 
-      it('emits search results', () => {
-        const expectedSearchResults = [[[mockJobLog[6].lines[1], mockJobLog[6].lines[2]]]];
+      findJobLogSearch().vm.$emit('submit');
 
-        findJobLogSearch().vm.$emit('submit');
+      expect(wrapper.emitted('searchResults')).toEqual(expectedSearchResults);
+    });
 
-        expect(wrapper.emitted('searchResults')).toEqual(expectedSearchResults);
-      });
+    it('clears search results', () => {
+      findJobLogSearch().vm.$emit('clear');
 
-      it('clears search results', () => {
-        findJobLogSearch().vm.$emit('clear');
-
-        expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
-      });
+      expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
     });
   });
 });

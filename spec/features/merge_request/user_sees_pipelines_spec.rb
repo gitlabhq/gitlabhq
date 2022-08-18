@@ -78,8 +78,17 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
       it 'user visits merge request page' do
         page.within('.merge-request-tabs') do
-          expect(page).to have_no_link('Pipelines')
+          expect(page).to have_link('Pipelines')
         end
+      end
+
+      it 'shows empty state with run pipeline button' do
+        page.within('.merge-request-tabs') do
+          click_link('Pipelines')
+        end
+
+        expect(page).to have_content('There are currently no pipelines.')
+        expect(page.find('[data-testid="run_pipeline_button"]')).to have_text('Run pipeline')
       end
     end
   end

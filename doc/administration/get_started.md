@@ -37,8 +37,8 @@ Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m
 Get started:
 
 - Create a [project](../user/project/working_with_projects.md#create-a-project).
-- Create a [group](../user/group/index.md#create-a-group).
-- [Add members](../user/group/index.md#add-users-to-a-group) to the group.
+- Create a [group](../user/group/manage.md#create-a-group).
+- [Add members](../user/group/manage.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
 - Enable [external authorization control](../user/admin_area/settings/external_authorization.md#configuration).
@@ -144,7 +144,7 @@ You can restore a backup only to **the exact same version and type** (Community 
 
 ### Back up GitLab SaaS
 
-Backups of GitLab databases and filesystems are taken every 24 hours, and are kept for two weeks on a rolling schedule. All backups are encrypted.
+Backups of GitLab databases and file systems are taken every 24 hours, and are kept for two weeks on a rolling schedule. All backups are encrypted.
 
 - GitLab SaaS creates backups to ensure your data is secure, but you can't use these methods to export or back up your data yourself.
 - Issues are stored in the database. They can't be stored in Git itself.

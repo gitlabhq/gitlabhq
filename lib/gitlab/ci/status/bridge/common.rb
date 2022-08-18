@@ -16,11 +16,7 @@ module Gitlab
           def details_path
             return unless can?(user, :read_pipeline, downstream_pipeline)
 
-            if Feature.enabled?(:ci_retry_downstream_pipeline, subject.project)
-              project_job_path(subject.project, subject)
-            else
-              project_pipeline_path(downstream_project, downstream_pipeline)
-            end
+            project_pipeline_path(downstream_project, downstream_pipeline)
           end
 
           def has_action?

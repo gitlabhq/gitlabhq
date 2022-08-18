@@ -6,13 +6,8 @@ module QA
       class Groups < Page::Base
         include Page::Component::GroupsFilter
 
-        view 'app/views/shared/groups/_search_form.html.haml' do
-          element :groups_filter, 'search_field_tag :filter' # rubocop:disable QA/ElementWithPattern
-          element :groups_filter_placeholder, 'Search by name' # rubocop:disable QA/ElementWithPattern
-        end
-
         view 'app/views/dashboard/_groups_head.html.haml' do
-          element :new_group_button, 'link_to _("New group")' # rubocop:disable QA/ElementWithPattern
+          element :new_group_button
         end
 
         def has_group?(name)
@@ -26,7 +21,7 @@ module QA
         end
 
         def click_new_group
-          click_on 'New group'
+          click_element(:new_group_button)
         end
       end
     end

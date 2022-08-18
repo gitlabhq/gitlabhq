@@ -46,7 +46,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['spam_check_api_key']).to be_nil
       expect(json_response['wiki_page_max_content_bytes']).to be_a(Integer)
       expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
-      expect(json_response['personal_access_token_prefix']).to be_nil
+      expect(json_response['personal_access_token_prefix']).to eq('glpat-')
       expect(json_response['admin_mode']).to be(false)
       expect(json_response['whats_new_variant']).to eq('all_tiers')
       expect(json_response['user_deactivation_emails_enabled']).to be(true)

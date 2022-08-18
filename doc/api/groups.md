@@ -452,6 +452,7 @@ Example response:
       "open_issues_count":10,
       "ci_default_git_depth":50,
       "ci_forward_deployment_enabled":true,
+      "ci_allow_fork_pipelines_to_run_in_parent_project":true,
       "public_jobs":true,
       "build_timeout":3600,
       "auto_cancel_pending_pipelines":"enabled",
@@ -901,6 +902,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Update group
 
+> `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` are not available.
+To make them available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `limit_unique_project_downloads_per_namespace_user`.
+
 Updates the project group. Only available to group owners and administrators.
 
 ```plaintext
@@ -919,7 +927,7 @@ PUT /groups/:id
 | `emails_disabled`                                       | boolean | no       | Disable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
-| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
+| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
@@ -933,6 +941,9 @@ PUT /groups/:id
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
 | `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
+| `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
+| `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1407,6 +1418,155 @@ DELETE /groups/:id/ldap_group_links
 NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
+## SAML Group Links **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+
+List, get, add, and delete SAML group links.
+
+### List SAML group links
+
+Lists SAML group links.
+
+```plaintext
+GET /groups/:id/saml_group_links
+```
+
+Supported attributes:
+
+| Attribute | Type           | Required | Description                                                              |
+|:----------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+
+If successful, returns [`200`](index.md#status-codes) and the following
+response attributes:
+
+| Attribute          | Type   | Description                                                                          |
+|:-------------------|:-------|:-------------------------------------------------------------------------------------|
+| `[].name`          | string | Name of the SAML group                                                               |
+| `[].access_level`  | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+```
+
+Example response:
+
+```json
+[
+  {
+    "name": "saml-group-1",
+    "access_level": "Guest"
+  },
+  {
+    "name": "saml-group-2",
+    "access_level": "Maintainer"
+  }
+]
+```
+
+### Get SAML group link
+
+Get a SAML group link for the group.
+
+```plaintext
+GET /groups/:id/saml_group_links/:saml_group_name
+```
+
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                                                              |
+|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
+
+If successful, returns [`200`](index.md#status-codes) and the following
+response attributes:
+
+| Attribute      | Type   | Description                                                                          |
+|:---------------|:-------|:-------------------------------------------------------------------------------------|
+| `name`         | string | Name of the SAML group                                                               |
+| `access_level` | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
+```
+
+Example response:
+
+```json
+{
+"name": "saml-group-1",
+"access_level": "Guest"
+}
+```
+
+### Add SAML group link
+
+Adds a SAML group link for a group.
+
+```plaintext
+POST /groups/:id/saml_group_links
+```
+
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                                                                          |
+|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)             |
+| `saml_group_name`  | string         | yes      | Name of a SAML group                                                                 |
+| `access_level`     | string         | yes      | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+If successful, returns [`201`](index.md#status-codes) and the following
+response attributes:
+
+| Attribute      | Type   | Description                                                                          |
+|:---------------|:-------|:-------------------------------------------------------------------------------------|
+| `name`         | string | Name of the SAML group                                                               |
+| `access_level` | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+```
+
+Example response:
+
+```json
+{
+"name": "saml-group-1",
+"access_level": "Guest"
+}
+```
+
+### Delete SAML group link
+
+Deletes a SAML group link for the group.
+
+```plaintext
+DELETE /groups/:id/saml_group_links/:saml_group_name
+```
+
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                                                              |
+|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
+
+If successful, returns [`204`](index.md#status-codes) status code without any response body.
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
+```
+
 ## Namespaces in groups
 
 By default, groups only get 20 namespaces at a time because the API results are paginated.
@@ -1435,7 +1595,7 @@ documentation.
 
 ## Share Groups with Groups
 
-These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/index.md#share-a-group-with-another-group) page.
+These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/manage.md#share-a-group-with-another-group) page.
 
 ### Create a link to share a group with another group
 
@@ -1471,7 +1631,7 @@ DELETE /groups/:id/share/:group_id
 
 ### Get group push rules **(PREMIUM)**
 
-Get the [push rules](../user/group/index.md#group-push-rules) of a group.
+Get the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
 Only available to group owners and administrators.
 
@@ -1514,7 +1674,7 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ### Add group push rule **(PREMIUM)**
 
-Adds [push rules](../user/group/index.md#group-push-rules) to the specified group.
+Adds [push rules](../user/group/access_and_permissions.md#group-push-rules) to the specified group.
 
 Only available to group owners and administrators.
 
@@ -1608,7 +1768,7 @@ Response:
 
 ### Delete group push rule **(PREMIUM)**
 
-Deletes the [push rules](../user/group/index.md#group-push-rules) of a group.
+Deletes the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
 Only available to group owners and administrators.
 

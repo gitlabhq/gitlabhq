@@ -244,5 +244,88 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
 
       it_behaves_like 'successfully created timeline event'
     end
+
+    describe '.change_labels' do
+      subject(:execute) do
+        described_class.change_labels(incident, current_user, added_labels: added, removed_labels: removed)
+      end
+
+      let_it_be(:labels) { create_list(:label, 4, project: project) }
+
+      let(:expected_action) { 'label' }
+
+      context 'when there are neither added nor removed labels' do
+        let(:added) { [] }
+        let(:removed) { [] }
+
+        it 'responds with error', :aggregate_failures do
+          expect(execute).to be_error
+          expect(execute.message).to eq(_('There are no changed labels'))
+        end
+
+        it 'does not create timeline event' do
+          expect { execute }.not_to change { incident.incident_management_timeline_events.count }
+        end
+      end
+
+      context 'when there are only added labels' do
+        let(:added) { [labels[0], labels[1]] }
+        let(:removed) { [] }
+
+        let(:expected_note) { "@#{current_user.username} added #{added.map(&:to_reference).join(' ')} labels" }
+
+        it_behaves_like 'successfully created timeline event'
+      end
+
+      context 'when there are only removed labels' do
+        let(:added) { [] }
+        let(:removed) { [labels[2], labels[3]] }
+
+        let(:expected_note) { "@#{current_user.username} removed #{removed.map(&:to_reference).join(' ')} labels" }
+
+        it_behaves_like 'successfully created timeline event'
+      end
+
+      context 'when there are both added and removed labels' do
+        let(:added) { [labels[0], labels[1]] }
+        let(:removed) { [labels[2], labels[3]] }
+
+        let(:expected_note) do
+          added_note = "added #{added.map(&:to_reference).join(' ')} labels"
+          removed_note = "removed #{removed.map(&:to_reference).join(' ')} labels"
+
+          "@#{current_user.username} #{added_note} and #{removed_note}"
+        end
+
+        it_behaves_like 'successfully created timeline event'
+      end
+
+      context 'when there is a single added and single removed labels' do
+        let(:added) { [labels[0]] }
+        let(:removed) { [labels[3]] }
+
+        let(:expected_note) do
+          added_note = "added #{added.first.to_reference} label"
+          removed_note = "removed #{removed.first.to_reference} label"
+
+          "@#{current_user.username} #{added_note} and #{removed_note}"
+        end
+
+        it_behaves_like 'successfully created timeline event'
+      end
+
+      context 'when feature flag is disabled' do
+        let(:added) { [labels[0], labels[1]] }
+        let(:removed) { [labels[2], labels[3]] }
+
+        before do
+          stub_feature_flags(incident_timeline_events_from_labels: false)
+        end
+
+        it 'does not create timeline event' do
+          expect { execute }.not_to change { incident.incident_management_timeline_events.count }
+        end
+      end
+    end
   end
 end

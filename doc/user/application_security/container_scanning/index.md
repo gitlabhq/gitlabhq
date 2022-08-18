@@ -7,7 +7,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container Scanning **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in GitLab 10.4.
+> - Improved support for FIPS [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) in GitLab 13.6 by upgrading `CS_MAJOR_VERSION` from `2` to `3`.
+> - Integration with Trivy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) in GitLab 13.9 by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
+> - Integration with Clair [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/321451) in GitLab 13.9.
+> - Default container scanning with Trivy [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61850) in GitLab 14.0.
+> - Integration with Grype as an alternative scanner [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326279) in GitLab 14.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
 
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
@@ -19,7 +25,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/)
+GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/index.md)
 to ensure coverage for all of these dependency types. To cover as much of your risk area as
 possible, we encourage you to use all of our security scanners.
 
@@ -68,7 +74,7 @@ information directly in the merge request.
 
 To enable container scanning in your pipeline, you need the following:
 
-- Container Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
+- GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 - [GitLab Runner](https://docs.gitlab.com/runner/) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor on Linux/amd64.
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
@@ -79,7 +85,6 @@ To enable container scanning in your pipeline, you need the following:
 - If you're using a third-party container registry, you might need to provide authentication
   credentials through the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables).
   For more details on how to use these variables, see [authenticate to a remote registry](#authenticate-to-a-remote-registry).
-- GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 
 ## Configuration
 
@@ -224,7 +229,7 @@ container_scanning:
     CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN: "false"
 ```
 
-When you enable this feature, you may see [duplicate findings](../terminology/#duplicate-finding)
+When you enable this feature, you may see [duplicate findings](../terminology/index.md#duplicate-finding)
 in the [Vulnerability Report](../vulnerability_report/)
 if [Dependency Scanning](../dependency_scanning/)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings
@@ -680,7 +685,7 @@ It's possible to run the [GitLab container scanning tool](https://gitlab.com/git
 against a Docker container without needing to run it within the context of a CI job. To scan an
 image directly, follow these steps:
 
-1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop)
+1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop/)
    or [Docker Machine](https://github.com/docker/machine).
 
 1. Run the analyzer's Docker image, passing the image and tag you want to analyze in the
@@ -700,101 +705,21 @@ The results are stored in `gl-container-scanning-report.json`.
 
 ## Reports JSON format
 
-The container scanning tool emits a JSON report file. For more information, see the
-[schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
+The container scanning tool emits JSON reports which the [GitLab Runner](https://docs.gitlab.com/runner/)
+recognizes through the [`artifacts:reports`](../../../ci/yaml/#artifactsreports)
+keyword in the CI configuration file.
 
-Here's an example container scanning report:
+Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
+the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../vulnerability_report/pipeline.md)
+and become part of the [Vulnerability Report](../vulnerability_report/).
 
-```json-doc
-{
-  "version": "14.0.0",
-  "vulnerabilities": [
-    {
-      "id": "df52bc8ce9a2ae56bbcb0c4ecda62123fbd6f69b",
-      "category": "container_scanning",
-      "message": "CVE-2019-3462 in apt-1.4.8",
-      "description": "Incorrect sanitation of the 302 redirect field in HTTP transport method of apt versions 1.4.8 and earlier can lead to content injection by a MITM attacker, potentially leading to remote code execution on the target machine.",
-      "severity": "High",
-      "confidence": "Unknown",
-      "solution": "Upgrade apt from 1.4.8 to 1.4.9",
-      "scanner": {
-        "id": "trivy",
-        "name": "trivy"
-      },
-      "location": {
-        "dependency": {
-          "package": {
-            "name": "apt"
-          },
-          "version": "1.4.8"
-        },
-        "operating_system": "debian:9.4",
-        "image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256:bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e",
-        "default_branch_image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0:latest"
-      },
-      "identifiers": [
-        {
-          "type": "cve",
-          "name": "CVE-2019-3462",
-          "value": "CVE-2019-3462",
-          "url": "http://www.securityfocus.com/bid/106690"
-        }
-      ],
-      "links": [
-        {
-          "url": "http://www.securityfocus.com/bid/106690"
-        },
-        {
-          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-3462"
-        },
-        {
-          "url": "https://lists.apache.org/thread.html/8338a0f605bdbb3a6098bb76f666a95fc2b2f53f37fa1ecc89f1146f@%3Cdevnull.infra.apache.org%3E"
-        },
-        {
-          "url": "https://lists.debian.org/debian-lts-announce/2019/01/msg00013.html"
-        },
-        {
-          "url": "https://lists.debian.org/debian-lts-announce/2019/01/msg00014.html"
-        },
-        {
-          "url": "https://security.netapp.com/advisory/ntap-20190125-0002/"
-        },
-        {
-          "url": "https://usn.ubuntu.com/3863-1/"
-        },
-        {
-          "url": "https://usn.ubuntu.com/3863-2/"
-        },
-        {
-          "url": "https://usn.ubuntu.com/usn/usn-3863-1"
-        },
-        {
-          "url": "https://usn.ubuntu.com/usn/usn-3863-2"
-        },
-        {
-          "url": "https://www.debian.org/security/2019/dsa-4371"
-        }
-      ]
-    }
-  ],
-  "remediations": []
-  "scan": {
-    "scanner": {
-      "id": "trivy",
-      "name": "Trivy",
-      "url": "https://github.com/aquasecurity/trivy/",
-      "vendor": {
-        "name": "GitLab"
-      },
-      "version": "0.16.0"
-    },
-    "type": "container_scanning",
-    "start_time": "2021-04-14T19:45:58",
-    "end_time": "2021-04-14T19:46:18",
-    "status": "success"
-  }
-}
-```
+These reports must follow a format defined in the
+[security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/). See:
+
+- [Latest schema for the container scanning report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
+- [Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json)
+
+For more information, see [Security scanner integration](../../../development/integrations/secure.md).
 
 ## Security Dashboard
 
@@ -878,27 +803,5 @@ For information on this, see the [general Application Security troubleshooting s
 
 ## Changes
 
-- GitLab 13.6 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) better support for
-  [FIPS](https://csrc.nist.gov/publications/detail/fips/140/2/final) by upgrading the
-  `CS_MAJOR_VERSION` from `2` to `3`. Version `3` of the `container_scanning` Docker image uses
-  [`centos:centos8`](https://hub.docker.com/_/centos)
-  as the new base. It also removes the use of the [start.sh](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/merge_requests/77)
-  script and instead executes the analyzer by default. Any customizations made to the
-  `container_scanning` job's [`before_script`](../../../ci/yaml/index.md#before_script)
-  and [`after_script`](../../../ci/yaml/index.md#after_script)
-  blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
-  Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-cicd-variables)
-  variable.
-- GitLab 13.9 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) integration with
-  [Trivy](https://github.com/aquasecurity/trivy) by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
-- GitLab 13.9 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/321451) the integration with
-  [Clair](https://github.com/quay/clair/).
-- GitLab 14.0 [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61850)
-  an integration with [Trivy](https://github.com/aquasecurity/trivy)
-  as the default for container scanning, and also [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326279)
-  an integration with [Grype](https://github.com/anchore/grype)
-  as an alternative scanner.
-- GitLab 15.0 changed the major analyzer version from `4` to `5`.
-
-Other changes to the container scanning analyzer can be found in the project's
+Changes to the container scanning analyzer can be found in the project's
 [changelog](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/CHANGELOG.md).

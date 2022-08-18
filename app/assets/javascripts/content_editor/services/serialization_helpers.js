@@ -1,4 +1,5 @@
-import { uniq, isString, omit } from 'lodash';
+import { uniq, isString, omit, isFunction } from 'lodash';
+import { removeLastSlashInUrlPath, removeUrlProtocol } from '../../lib/utils/url_utility';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null },
@@ -306,12 +307,15 @@ export function renderHardBreak(state, node, parent, index) {
 }
 
 export function renderImage(state, node) {
-  const { alt, canonicalSrc, src, title } = node.attrs;
+  const { alt, canonicalSrc, src, title, isReference } = node.attrs;
 
   if (isString(src) || isString(canonicalSrc)) {
     const quotedTitle = title ? ` ${state.quote(title)}` : '';
+    const sourceExpression = isReference
+      ? `[${canonicalSrc}]`
+      : `(${state.esc(canonicalSrc || src)}${quotedTitle})`;
 
-    state.write(`![${state.esc(alt || '')}](${state.esc(canonicalSrc || src)}${quotedTitle})`);
+    state.write(`![${state.esc(alt || '')}]${sourceExpression}`);
   }
 }
 
@@ -327,16 +331,28 @@ export function renderCodeBlock(state, node) {
   state.closeBlock(node);
 }
 
-export function preserveUnchanged(render) {
+const expandPreserveUnchangedConfig = (configOrRender) =>
+  isFunction(configOrRender)
+    ? { render: configOrRender, overwriteSourcePreservationStrategy: false, inline: false }
+    : configOrRender;
+
+export function preserveUnchanged(configOrRender) {
   return (state, node, parent, index) => {
+    const { render, overwriteSourcePreservationStrategy, inline } = expandPreserveUnchangedConfig(
+      configOrRender,
+    );
+
     const { sourceMarkdown } = node.attrs;
     const same = state.options.changeTracker.get(node);
 
-    if (same) {
+    if (same && !overwriteSourcePreservationStrategy) {
       state.write(sourceMarkdown);
-      state.closeBlock(node);
+
+      if (!inline) {
+        state.closeBlock(node);
+      }
     } else {
-      render(state, node, parent, index);
+      render(state, node, parent, index, same, sourceMarkdown);
     }
   };
 }
@@ -488,24 +504,16 @@ const linkType = (sourceMarkdown) => {
   return LINK_HTML;
 };
 
-const removeUrlProtocol = (url) => url.replace(/^\w+:\/?\/?/, '');
-
-const normalizeUrl = (url) => decodeURIComponent(removeUrlProtocol(url));
+const normalizeUrl = (url) => decodeURIComponent(removeLastSlashInUrlPath(removeUrlProtocol(url)));
 
 /**
- * Validates that the provided URL is well-formed
+ * Validates that the provided URL is a valid GFM autolink
  *
  * @param {String} url
- * @returns Returns true when the browser’s URL constructor
- * can successfully parse the URL string
+ * @returns Returns true when the URL is a valid GFM autolink
  */
-const isValidUrl = (url) => {
-  try {
-    return new URL(url) && true;
-  } catch {
-    return false;
-  }
-};
+const isValidAutolinkURL = (url) =>
+  /(https?:\/\/)?([\w-])+\.{1}([a-zA-Z]{2,63})([/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/.test(url);
 
 const findChildWithMark = (mark, parent) => {
   let child;
@@ -542,7 +550,7 @@ const isAutoLink = (linkMark, parent) => {
   if (
     !child ||
     !child.isText ||
-    !isValidUrl(href) ||
+    !isValidAutolinkURL(href) ||
     normalizeUrl(child.text) !== normalizeUrl(href)
   ) {
     return false;
@@ -582,7 +590,11 @@ export const link = {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
-    const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
+    const { canonicalSrc, href, title, sourceMarkdown, isReference } = mark.attrs;
+
+    if (isReference) {
+      return `][${state.esc(canonicalSrc || href)}]`;
+    }
 
     if (linkType(sourceMarkdown) === LINK_HTML) {
       return closeTag('a');

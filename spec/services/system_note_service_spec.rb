@@ -134,15 +134,15 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.change_due_date' do
-    let(:due_date) { double }
+  describe '.change_start_date_or_due_date' do
+    let(:changed_dates) { double }
 
     it 'calls TimeTrackingService' do
       expect_next_instance_of(::SystemNotes::TimeTrackingService) do |service|
-        expect(service).to receive(:change_due_date).with(due_date)
+        expect(service).to receive(:change_start_date_or_due_date).with(changed_dates)
       end
 
-      described_class.change_due_date(noteable, project, author, due_date)
+      described_class.change_start_date_or_due_date(noteable, project, author, changed_dates)
     end
   end
 
@@ -156,30 +156,6 @@ RSpec.describe SystemNoteService do
       end
 
       described_class.change_status(noteable, project, author, status, source)
-    end
-  end
-
-  describe '.request_attention' do
-    let(:user) { double }
-
-    it 'calls IssuableService' do
-      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:request_attention).with(user)
-      end
-
-      described_class.request_attention(noteable, project, author, user)
-    end
-  end
-
-  describe '.remove_attention_request' do
-    let(:user) { double }
-
-    it 'calls IssuableService' do
-      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:remove_attention_request).with(user)
-      end
-
-      described_class.remove_attention_request(noteable, project, author, user)
     end
   end
 
@@ -375,13 +351,14 @@ RSpec.describe SystemNoteService do
   describe '.noteable_cloned' do
     let(:noteable_ref) { double }
     let(:direction) { double }
+    let(:created_at) { double }
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:noteable_cloned).with(noteable_ref, direction)
+        expect(service).to receive(:noteable_cloned).with(noteable_ref, direction, created_at: created_at)
       end
 
-      described_class.noteable_cloned(double, double, noteable_ref, double, direction: direction)
+      described_class.noteable_cloned(double, double, noteable_ref, double, direction: direction, created_at: created_at)
     end
   end
 
@@ -431,9 +408,22 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.created_timelog' do
+    let(:issue) { create(:issue, project: project) }
+    let(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
+
+    it 'calls TimeTrackingService' do
+      expect_next_instance_of(::SystemNotes::TimeTrackingService) do |service|
+        expect(service).to receive(:created_timelog)
+      end
+
+      described_class.created_timelog(noteable, project, author, timelog)
+    end
+  end
+
   describe '.remove_timelog' do
     let(:issue) { create(:issue, project: project) }
-    let(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800)}
+    let(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
     it 'calls TimeTrackingService' do
       expect_next_instance_of(::SystemNotes::TimeTrackingService) do |service|
@@ -740,6 +730,40 @@ RSpec.describe SystemNoteService do
       end
 
       described_class.delete_timeline_event(noteable, author)
+    end
+  end
+
+  describe '.relate_work_item' do
+    let(:work_item) { double('work_item', issue_type: :task) }
+    let(:noteable) { double }
+
+    before do
+      allow(noteable).to receive(:project).and_return(double)
+    end
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:hierarchy_changed).with(work_item, 'relate')
+      end
+
+      described_class.relate_work_item(noteable, work_item, double)
+    end
+  end
+
+  describe '.unrelate_wotk_item' do
+    let(:work_item) { double('work_item', issue_type: :task) }
+    let(:noteable) { double }
+
+    before do
+      allow(noteable).to receive(:project).and_return(double)
+    end
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:hierarchy_changed).with(work_item, 'unrelate')
+      end
+
+      described_class.unrelate_work_item(noteable, work_item, double)
     end
   end
 end

@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Utils do
     end
 
     it 'raises error for a non-string' do
-      expect {check_allowed_absolute_path_and_path_traversal!(nil, allowed_paths)}.to raise_error(StandardError)
+      expect { check_allowed_absolute_path_and_path_traversal!(nil, allowed_paths) }.to raise_error(StandardError)
     end
 
     it 'raises an exception if an absolute path is not allowed' do
@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe '.allowlisted?' do
-    let(:allowed_paths) { ['/home/foo', '/foo/bar', '/etc/passwd']}
+    let(:allowed_paths) { ['/home/foo', '/foo/bar', '/etc/passwd'] }
 
     it 'returns true if path is allowed' do
       expect(allowlisted?('/foo/bar', allowed_paths)).to be(true)

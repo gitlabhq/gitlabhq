@@ -38,10 +38,8 @@ module QA
             group_show.go_to_new_subgroup
 
             Page::Group::New.perform do |group_new|
-              group_new.click_create_group
               group_new.set_path(path)
-              group_new.set_visibility('Public')
-              group_new.create
+              group_new.create_subgroup
             end
 
             # Ensure that the group was actually created
@@ -61,6 +59,13 @@ module QA
 
       def api_get_path
         "/groups/#{CGI.escape(determine_full_path)}"
+      end
+
+      # Parameters included in the query URL
+      #
+      # @return [Hash]
+      def query_parameters
+        super.merge({ with_projects: false })
       end
 
       def api_post_body

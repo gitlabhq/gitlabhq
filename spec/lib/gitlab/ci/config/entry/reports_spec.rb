@@ -47,6 +47,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
         :dotenv | 'build.dotenv'
         :terraform | 'tfplan.json'
         :accessibility | 'gl-accessibility.json'
+        :cyclonedx | 'gl-sbom.cdx.zip'
       end
 
       with_them do

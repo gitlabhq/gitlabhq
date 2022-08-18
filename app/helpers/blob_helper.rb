@@ -98,9 +98,9 @@ module BlobHelper
       ref,
       path,
       blob: blob,
-      label:      _("Replace"),
-      action:     "replace",
-      btn_class:  "default",
+      label: _("Replace"),
+      action: "replace",
+      btn_class: "default",
       modal_type: "upload"
     )
   end
@@ -111,9 +111,9 @@ module BlobHelper
       ref,
       path,
       blob: blob,
-      label:      _("Delete"),
-      action:     "delete",
-      btn_class:  "default",
+      label: _("Delete"),
+      action: "delete",
+      btn_class: "default",
       modal_type: "remove"
     )
   end
@@ -298,7 +298,9 @@ module BlobHelper
 
   def readable_blob(options, path, project, ref)
     blob = options.fetch(:blob) do
-      project.repository.blob_at(ref, path) rescue nil
+      project.repository.blob_at(ref, path)
+    rescue StandardError
+      nil
     end
 
     blob if blob&.readable_text?

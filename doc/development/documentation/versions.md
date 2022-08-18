@@ -182,7 +182,7 @@ GitLab supports the current major version and two previous major versions.
 For example, if 15.0 is the current major version, all major and minor releases of
 GitLab 15.0, 14.0, and 13.0 are supported.
 
-[View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
+[View the list of supported versions](https://about.gitlab.com/support/statement-of-support/#version-support).
 
 If you see version history items or inline text that refers to unsupported versions, you can remove it.
 
@@ -198,8 +198,8 @@ We cannot guarantee future feature work, and promises
 like these can raise legal issues. Instead, say that an issue exists.
 For example:
 
-- Support for improvements is tracked `[in this issue](LINK)`.
-- You cannot do this thing, but `[an issue exists](LINK)` to change this behavior.
+- Support for improvements is proposed in issue `[issue-number](LINK-TO-ISSUE)`.
+- You cannot do this thing, but issue `[issue-number](LINK-TO-ISSUE)` proposes to change this behavior.
 
 You can say that we plan to remove a feature.
 

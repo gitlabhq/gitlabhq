@@ -1,5 +1,5 @@
-# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79335
-deploy-template:
+# valid only/except values
+only and except as array of strings:
   script:
     - echo "hello world"
   only:
@@ -7,12 +7,10 @@ deploy-template:
   except:
     - bar
 
-# null value allowed
-deploy-without-only:
+only as null value:
   extends: deploy-template
   only:
 
-# null value allowed
-deploy-without-except:
+except as null value:
   extends: deploy-template
   except:

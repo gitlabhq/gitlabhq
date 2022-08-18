@@ -14,8 +14,8 @@ embed Grafana panels using either:
 
 ## Use Grafana-rendered images
 
-You can embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html) panels as a
-[direct linked rendered image](https://grafana.com/docs/grafana/latest/reference/share_panel/#direct-link-rendered-image).
+You can embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html) panels as 
+[a direct link](https://grafana.com/docs/grafana/v7.5/sharing/share-panel/#use-direct-link).
 Your Grafana instance must:
 
 - Be available to the target user, either as a public dashboard or on the same network.
@@ -46,7 +46,7 @@ format. To embed panels from a Grafana instance, the data source must be:
 
 To set up the Grafana API in Grafana:
 
-1. In Grafana, [generate an Admin-level API Token](https://grafana.com/docs/grafana/latest/http_api/auth/#create-api-token).
+1. In Grafana, [generate an Admin-level API Token](https://grafana.com/docs/grafana/next/developers/http_api/auth/#create-api-token).
 1. In your GitLab project, go to **Settings > Monitor** and expand the **Grafana authentication**
    section.
 1. To enable the integration, check the **Active** checkbox.

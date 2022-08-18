@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { setTestTimeout } from 'helpers/timeout';
 import Clusters from '~/clusters/clusters_bundle';
 import axios from '~/lib/utils/axios_utils';
 import initProjectSelectDropdown from '~/project_select';
@@ -12,8 +11,6 @@ jest.mock('~/project_select');
 useMockLocationHelper();
 
 describe('Clusters', () => {
-  setTestTimeout(1000);
-
   let cluster;
   let mock;
 
@@ -60,9 +57,9 @@ describe('Clusters', () => {
       it('should show the creating container', () => {
         cluster.updateContainer(null, 'creating');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeFalsy();
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(false);
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(true);
         expect(window.location.reload).not.toHaveBeenCalled();
       });
 
@@ -70,9 +67,9 @@ describe('Clusters', () => {
         cluster.updateContainer(null, 'creating');
         cluster.updateContainer('creating', 'creating');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeFalsy();
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(false);
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(true);
         expect(window.location.reload).not.toHaveBeenCalled();
       });
     });
@@ -83,9 +80,9 @@ describe('Clusters', () => {
         cluster.updateContainer(null, 'creating');
         cluster.updateContainer('creating', 'created');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(true);
         expect(window.location.reload).toHaveBeenCalled();
         expect(cluster.setClusterNewlyCreated).toHaveBeenCalledWith(true);
       });
@@ -97,9 +94,9 @@ describe('Clusters', () => {
         cluster.updateContainer(null, 'created');
         cluster.updateContainer('created', 'created');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.successContainer.classList.contains('hidden')).toBeFalsy();
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(false);
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(true);
         expect(window.location.reload).not.toHaveBeenCalled();
         expect(cluster.setClusterNewlyCreated).toHaveBeenCalledWith(false);
       });
@@ -111,9 +108,9 @@ describe('Clusters', () => {
         cluster.updateContainer(null, 'created');
         cluster.updateContainer('created', 'created');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(true);
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(true);
         expect(window.location.reload).not.toHaveBeenCalled();
         expect(cluster.setClusterNewlyCreated).not.toHaveBeenCalled();
       });
@@ -123,11 +120,11 @@ describe('Clusters', () => {
       it('should show the error container', () => {
         cluster.updateContainer(null, 'errored', 'this is an error');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(true);
 
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(true);
 
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(false);
 
         expect(cluster.errorReasonContainer.textContent).toContain('this is an error');
       });
@@ -135,11 +132,11 @@ describe('Clusters', () => {
       it('should show `error` banner when previously `creating`', () => {
         cluster.updateContainer('creating', 'errored');
 
-        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBe(true);
 
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.successContainer.classList.contains('hidden')).toBe(true);
 
-        expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
+        expect(cluster.errorContainer.classList.contains('hidden')).toBe(false);
       });
     });
 

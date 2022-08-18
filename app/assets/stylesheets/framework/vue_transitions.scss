@@ -2,7 +2,7 @@
 .fade-leave-active,
 .fade-in-enter-active,
 .fade-out-leave-active {
-  transition: opacity $sidebar-transition-duration $general-hover-transition-curve;
+  transition: opacity $gl-transition-duration-medium $general-hover-transition-curve;
 }
 
 .fade-enter,

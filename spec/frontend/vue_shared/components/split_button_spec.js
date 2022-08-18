@@ -26,8 +26,9 @@ describe('SplitButton', () => {
     });
   };
 
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findDropdownItem = (index = 0) => findDropdown().findAll(GlDropdownItem).at(index);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdownItem = (index = 0) =>
+    findDropdown().findAllComponents(GlDropdownItem).at(index);
   const selectItem = async (index) => {
     findDropdownItem(index).vm.$emit('click');
 

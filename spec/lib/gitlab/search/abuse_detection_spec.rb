@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Search::AbuseDetection do
   subject { described_class.new(params) }
 
-  let(:params) {{ query_string: 'foobar' }}
+  let(:params) { { query_string: 'foobar' } }
 
   describe 'abusive scopes validation' do
     it 'allows only approved scopes' do

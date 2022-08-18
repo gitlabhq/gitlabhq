@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
 
   let(:lfs_attributes) do
     {
-      oid: 'oid',
+      oid: 'a' * 64,
       size: 1,
       link: 'http://www.gitlab.com/lfs_objects/oid'
     }

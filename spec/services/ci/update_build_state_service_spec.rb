@@ -33,6 +33,24 @@ RSpec.describe Ci::UpdateBuildStateService do
     end
   end
 
+  context 'when build has failed' do
+    let(:params) do
+      {
+        output: { checksum: 'crc32:12345678', bytesize: 123 },
+        state: 'failed',
+        failure_reason: 'script_failure',
+        exit_code: 7
+      }
+    end
+
+    it 'sends a build failed event to Snowplow' do
+      expect(::Ci::TrackFailedBuildWorker)
+        .to receive(:perform_async).with(build.id, params[:exit_code], params[:failure_reason])
+
+      subject.execute
+    end
+  end
+
   context 'when build does not have checksum' do
     context 'when state has changed' do
       let(:params) { { state: 'success' } }

@@ -16,7 +16,7 @@ describe('noteActions', () => {
   let actions;
   let axiosMock;
 
-  const findUserAccessRoleBadge = (idx) => wrapper.findAll(UserAccessRoleBadge).at(idx);
+  const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
 
   const mountNoteActions = (propsData, computed) => {
@@ -159,7 +159,7 @@ describe('noteActions', () => {
     });
   });
 
-  describe('when a user has access to edit an issue', () => {
+  describe('when a user can set metadata of an issue', () => {
     const testButtonClickTriggersAction = () => {
       axiosMock.onPut(`${TEST_HOST}/api/v4/projects/group/project/issues/1`).reply(() => {
         expect(actions.updateAssignees).toHaveBeenCalled();
@@ -176,7 +176,7 @@ describe('noteActions', () => {
       });
       store.state.noteableData = {
         current_user: {
-          can_update: true,
+          can_set_issue_metadata: true,
         },
       };
       store.state.userData = userDataMock;
@@ -189,6 +189,31 @@ describe('noteActions', () => {
 
     it('should be possible to assign the comment author', testButtonClickTriggersAction);
     it('should be possible to unassign the comment author', testButtonClickTriggersAction);
+  });
+
+  describe('when a user can update but not set metadata of an issue', () => {
+    beforeEach(() => {
+      wrapper = mountNoteActions(props, {
+        targetType: () => 'issue',
+      });
+      store.state.noteableData = {
+        current_user: {
+          can_update: true,
+          can_set_issue_metadata: false,
+        },
+      };
+      store.state.userData = userDataMock;
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+      axiosMock.restore();
+    });
+
+    it('should not be possible to assign or unassign the comment author', () => {
+      const assignUserButton = wrapper.find('[data-testid="assign-user"]');
+      expect(assignUserButton.exists()).toBe(false);
+    });
   });
 
   describe('when a user does not have access to edit an issue', () => {
@@ -241,7 +266,7 @@ describe('noteActions', () => {
     });
 
     it('shows a reply button', () => {
-      const replyButton = wrapper.find({ ref: 'replyButton' });
+      const replyButton = wrapper.findComponent({ ref: 'replyButton' });
 
       expect(replyButton.exists()).toBe(true);
     });
@@ -256,7 +281,7 @@ describe('noteActions', () => {
     });
 
     it('does not show a reply button', () => {
-      const replyButton = wrapper.find({ ref: 'replyButton' });
+      const replyButton = wrapper.findComponent({ ref: 'replyButton' });
 
       expect(replyButton.exists()).toBe(false);
     });
@@ -270,7 +295,7 @@ describe('noteActions', () => {
     });
 
     it('should render the right resolve button title', () => {
-      const resolveButton = wrapper.find({ ref: 'resolveButton' });
+      const resolveButton = wrapper.findComponent({ ref: 'resolveButton' });
 
       expect(resolveButton.exists()).toBe(true);
       expect(resolveButton.attributes('title')).toBe('Thread stays unresolved');

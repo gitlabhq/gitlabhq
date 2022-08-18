@@ -30,6 +30,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to validate_presence_of(:project_url) }
       it { is_expected.to validate_presence_of(:token) }
+
       it_behaves_like 'issue tracker integration URL attribute', :project_url
     end
 

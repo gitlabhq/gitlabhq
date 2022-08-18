@@ -20,7 +20,7 @@ class BackfillCadenceIdForBoardsScopedToIteration < Gitlab::Database::Migration[
 
   def down
     MigrationBoard.where.not(iteration_cadence_id: nil).each_batch(of: BATCH_SIZE) do |batch, index|
-      range = batch.pluck(Arel.sql('MIN(id)'), Arel.sql('MAX(id)')).first
+      range = batch.pick(Arel.sql('MIN(id)'), Arel.sql('MAX(id)'))
       delay = index * DELAY
 
       migrate_in(delay, MIGRATION, ['none', 'down', *range])
@@ -31,7 +31,7 @@ class BackfillCadenceIdForBoardsScopedToIteration < Gitlab::Database::Migration[
 
   def schedule_backfill_project_boards
     MigrationBoard.where(iteration_id: -4).where.not(project_id: nil).where(iteration_cadence_id: nil).each_batch(of: BATCH_SIZE) do |batch, index|
-      range = batch.pluck(Arel.sql('MIN(id)'), Arel.sql('MAX(id)')).first
+      range = batch.pick(Arel.sql('MIN(id)'), Arel.sql('MAX(id)'))
       delay = index * DELAY
 
       migrate_in(delay, MIGRATION, ['project', 'up', *range])
@@ -40,7 +40,7 @@ class BackfillCadenceIdForBoardsScopedToIteration < Gitlab::Database::Migration[
 
   def schedule_backfill_group_boards
     MigrationBoard.where(iteration_id: -4).where.not(group_id: nil).where(iteration_cadence_id: nil).each_batch(of: BATCH_SIZE) do |batch, index|
-      range = batch.pluck(Arel.sql('MIN(id)'), Arel.sql('MAX(id)')).first
+      range = batch.pick(Arel.sql('MIN(id)'), Arel.sql('MAX(id)'))
       delay = index * DELAY
 
       migrate_in(delay, MIGRATION, ['group', 'up', *range])

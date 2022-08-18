@@ -45,6 +45,7 @@ describe('Pipelines', () => {
     ciLintPath: '/ci/lint',
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
+
     ciRunnerSettingsPath: `${mockProjectPath}/-/settings/ci_cd#js-runners-settings`,
   };
 
@@ -654,7 +655,12 @@ describe('Pipelines', () => {
           // Mock init a polling cycle
           wrapper.vm.poll.options.notificationCallback(true);
 
-          findStagesDropdownToggle().trigger('click');
+          await findStagesDropdownToggle().trigger('click');
+          jest.runOnlyPendingTimers();
+
+          // cancelMock is getting overwritten in pipelines_service.js#L29
+          // so we have to spy on it again here
+          cancelMock = jest.spyOn(wrapper.vm.service.cancelationSource, 'cancel');
 
           await waitForPromises();
 
@@ -664,7 +670,8 @@ describe('Pipelines', () => {
         });
 
         it('stops polling & restarts polling', async () => {
-          findStagesDropdownToggle().trigger('click');
+          await findStagesDropdownToggle().trigger('click');
+          jest.runOnlyPendingTimers();
           await waitForPromises();
 
           expect(cancelMock).not.toHaveBeenCalled();

@@ -319,6 +319,13 @@ RSpec.describe 'New/edit issue', :js do
         end
       end
     end
+
+    describe 'when repository contains CONTRIBUTING.md' do
+      it 'has contribution guidelines prompt' do
+        text = _('Please review the %{linkStart}contribution guidelines%{linkEnd} for this project.') % { linkStart: nil, linkEnd: nil }
+        expect(find('#new_issue')).to have_text(text)
+      end
+    end
   end
 
   describe 'new issue with query parameters' do

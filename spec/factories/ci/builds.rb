@@ -504,6 +504,20 @@ FactoryBot.define do
       artifacts_expire_at { 1.minute.ago }
     end
 
+    trait :with_artifacts_paths do
+      options do
+        {
+          artifacts: {
+            name: 'artifacts_file',
+            untracked: false,
+            paths: ['out/'],
+            when: 'always',
+            expire_in: '7d'
+          }
+        }
+      end
+    end
+
     trait :with_commit do
       after(:build) do |build|
         commit = build(:commit, :without_author)
@@ -641,6 +655,19 @@ FactoryBot.define do
       options do
         {
           artifacts: { reports: { license_scanning: 'gl-license-scanning-report.json' } }
+        }
+      end
+    end
+
+    trait :multiple_report_artifacts do
+      options do
+        {
+            artifacts: {
+              reports: {
+                sast: 'gl-sast-report.json',
+                container_scanning: 'gl-container-scanning-report.json'
+              }
+            }
         }
       end
     end

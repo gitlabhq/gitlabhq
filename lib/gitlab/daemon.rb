@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
+  # DEPRECATED. Use Gitlab::BackgroundTask for new code instead.
   class Daemon
     # Options:
     # - recreate: We usually only allow a single instance per process to exist;

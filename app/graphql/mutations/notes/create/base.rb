@@ -21,7 +21,13 @@ module Mutations
         argument :confidential,
                   GraphQL::Types::Boolean,
                   required: false,
-                  description: 'Confidentiality flag of a note. Default is false.'
+                  description: 'Confidentiality flag of a note. Default is false.',
+                  deprecated: { reason: :renamed, replacement: 'internal', milestone: '15.3' }
+
+        argument :internal,
+                  GraphQL::Types::Boolean,
+                  required: false,
+                  description: 'Internal flag for a note. Default is false.'
 
         def resolve(args)
           noteable = authorized_find!(id: args[:noteable_id])
@@ -49,7 +55,7 @@ module Mutations
           {
             noteable: noteable,
             note: args[:body],
-            confidential: args[:confidential]
+            internal: args[:internal] || args[:confidential]
           }
         end
 

@@ -88,7 +88,7 @@ class Projects::CompareController < Projects::ApplicationController
   # target == start_ref == from
   def target_project
     strong_memoize(:target_project) do
-      next source_project unless compare_params.key?(:from_project_id)
+      next source_project.default_merge_request_target unless compare_params.key?(:from_project_id)
       next source_project if compare_params[:from_project_id].to_i == source_project.id
 
       target_project = target_projects(source_project).find_by_id(compare_params[:from_project_id])

@@ -25,7 +25,7 @@ module Gitlab
           relation = model_class.where(projects_table[:namespace_id].in(hierarchy_cte_sql)).where("#{quoted_column_name} >= ?", batch_min_value)
 
           relation.each_batch(of: batch_size, column: column_name) do |batch| # rubocop:disable Lint/UnreachableLoop
-            next_batch_bounds = batch.pluck(Arel.sql("MIN(#{quoted_column_name}), MAX(#{quoted_column_name})")).first
+            next_batch_bounds = batch.pick(Arel.sql("MIN(#{quoted_column_name}), MAX(#{quoted_column_name})"))
 
             break
           end

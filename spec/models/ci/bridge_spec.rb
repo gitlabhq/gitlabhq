@@ -25,6 +25,8 @@ RSpec.describe Ci::Bridge do
     expect(bridge).to have_many(:sourced_pipelines)
   end
 
+  it_behaves_like 'has ID tokens', :ci_bridge
+
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)
@@ -398,6 +400,18 @@ RSpec.describe Ci::Bridge do
       let(:options) { {} }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#downstream_project_path' do
+    context 'when trigger is defined' do
+      context 'when using variable expansion' do
+        let(:options) { { trigger: { project: 'my/$BRIDGE/project' } } }
+
+        it 'correctly expands variables' do
+          expect(bridge.downstream_project_path).to eq('my/cross/project')
+        end
+      end
     end
   end
 

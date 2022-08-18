@@ -316,6 +316,28 @@ services:
       alias: docker
 ```
 
+### Issues when authenticating to the Dependency Proxy from CI/CD jobs
+
+GitLab Runner will automatically authenticate to the Dependency Proxy. However, the underlying Docker engine is still subject to its [authorization resolving process](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/docs/configuration/advanced-configuration.md#precedence-of-docker-authorization-resolving).
+
+Misconfigurations in the authentication mechanism may cause `HTTP Basic: Access denied` and `403: Access forbidden` errors.
+
+You can use the job logs to view the authentication mechanism used to authenticate against the Dependency Proxy:
+
+```plaintext
+Authenticating with credentials from $DOCKER_AUTH_CONFIG
+```
+
+```plaintext
+Authenticating with credentials from /root/.docker/config.json
+```
+
+```plaintext
+Authenticating with credentials from job payload (GitLab Registry)
+```
+
+Make sure you are using the expected authentication mechanism.
+
 ### "Not Found" error when pulling image
 
 Docker errors similar to the following may indicate that the user running the build job doesn't have

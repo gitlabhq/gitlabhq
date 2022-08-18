@@ -212,6 +212,105 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     end
   end
 
+  describe '#tags' do
+    let(:path) { 'namespace/path/to/repository' }
+    let(:page_size) { 100 }
+    let(:last) { nil }
+    let(:response) do
+      [
+        {
+          name: '0.1.0',
+          digest: 'sha256:1234567890',
+          media_type: 'application/vnd.oci.image.manifest.v1+json',
+          size_bytes: 1234567890,
+          created_at: 5.minutes.ago
+        },
+        {
+          name: 'latest',
+          digest: 'sha256:1234567892',
+          media_type: 'application/vnd.oci.image.manifest.v1+json',
+          size_bytes: 1234567892,
+          created_at: 10.minutes.ago
+        }
+      ]
+    end
+
+    subject { client.tags(path, page_size: page_size, last: last) }
+
+    context 'with valid parameters' do
+      let(:expected) do
+        {
+          pagination: {},
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: page_size, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'with a response with a link header' do
+      let(:next_page_url) { 'http://sandbox.org/test?last=b' }
+      let(:expected) do
+        {
+          pagination: { next: { uri: URI(next_page_url) } },
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: page_size, next_page_url: next_page_url, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'with a large page size set' do
+      let(:page_size) { described_class::MAX_TAGS_PAGE_SIZE + 1000 }
+
+      let(:expected) do
+        {
+          pagination: {},
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: described_class::MAX_TAGS_PAGE_SIZE, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'with a last parameter set' do
+      let(:last) { 'test' }
+
+      let(:expected) do
+        {
+          pagination: {},
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: page_size, last: last, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'with non successful response' do
+      before do
+        stub_tags(path, page_size: page_size, status_code: 404)
+      end
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
   describe '.supports_gitlab_api?' do
     subject { described_class.supports_gitlab_api? }
 
@@ -388,5 +487,31 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     stub_request(:get, url)
       .with(headers: headers)
       .to_return(status: status_code, body: respond_with.to_json, headers: { 'Content-Type' => described_class::JSON_TYPE })
+  end
+
+  def stub_tags(path, page_size: nil, last: nil, next_page_url: nil, status_code: 200, respond_with: {})
+    params = { n: page_size, last: last }.compact
+
+    url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/tags/list/"
+
+    if params.present?
+      url += "?#{params.map { |param, val| "#{param}=#{val}" }.join('&')}"
+    end
+
+    request_headers = { 'Accept' => described_class::JSON_TYPE }
+    request_headers['Authorization'] = "bearer #{token}" if token
+
+    response_headers = { 'Content-Type' => described_class::JSON_TYPE }
+    if next_page_url
+      response_headers['Link'] = "<#{next_page_url}>; rel=\"next\""
+    end
+
+    stub_request(:get, url)
+      .with(headers: request_headers)
+      .to_return(
+        status: status_code,
+        body: respond_with.to_json,
+        headers: response_headers
+      )
   end
 end

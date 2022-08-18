@@ -26,9 +26,12 @@ support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/H
 - `/oauth/token`
 - `/oauth/userinfo`
 
-In addition to the headers listed for [simple requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests),
-only the `Authorization` header can be used for preflight requests. For example, the `X-Requested-With` header
-can't be used for preflight requests.
+Only certain headers can be used for preflight requests:
+
+- The headers listed for [simple requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests).
+- The `Authorization` header.
+
+For example, the `X-Requested-With` header can't be used for preflight requests.
 
 ## Supported OAuth 2.0 flows
 
@@ -258,8 +261,8 @@ Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.3) for a
 detailed flow description.
 
 NOTE:
-The Resource Owner Password Credentials is disabled for users with [two-factor
-authentication](../user/profile/account/two_factor_authentication.md) turned on.
+The Resource Owner Password Credentials is disabled for users with 
+[two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on.
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.
 

@@ -15,15 +15,15 @@ const actions = {
 describe('NoteHeader component', () => {
   let wrapper;
 
-  const findActionsWrapper = () => wrapper.find({ ref: 'discussionActions' });
+  const findActionsWrapper = () => wrapper.findComponent({ ref: 'discussionActions' });
   const findToggleThreadButton = () => wrapper.findByTestId('thread-toggle');
-  const findChevronIcon = () => wrapper.find({ ref: 'chevronIcon' });
-  const findActionText = () => wrapper.find({ ref: 'actionText' });
-  const findTimestampLink = () => wrapper.find({ ref: 'noteTimestampLink' });
-  const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
+  const findChevronIcon = () => wrapper.findComponent({ ref: 'chevronIcon' });
+  const findActionText = () => wrapper.findComponent({ ref: 'actionText' });
+  const findTimestampLink = () => wrapper.findComponent({ ref: 'noteTimestampLink' });
+  const findTimestamp = () => wrapper.findComponent({ ref: 'noteTimestamp' });
   const findInternalNoteIndicator = () => wrapper.findByTestId('internalNoteIndicator');
-  const findSpinner = () => wrapper.find({ ref: 'spinner' });
-  const findAuthorStatus = () => wrapper.find({ ref: 'authorStatus' });
+  const findSpinner = () => wrapper.findComponent({ ref: 'spinner' });
+  const findAuthorStatus = () => wrapper.findComponent({ ref: 'authorStatus' });
 
   const statusHtml =
     '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"';
@@ -228,7 +228,7 @@ describe('NoteHeader component', () => {
 
       const dispatchEvent = jest.spyOn(wrapper.vm.$refs.authorNameLink, 'dispatchEvent');
 
-      wrapper.find({ ref: 'authorUsernameLink' }).trigger('mouseenter');
+      wrapper.findComponent({ ref: 'authorUsernameLink' }).trigger('mouseenter');
 
       expect(dispatchEvent).toHaveBeenCalledWith(new Event('mouseenter'));
     });
@@ -238,7 +238,7 @@ describe('NoteHeader component', () => {
 
       const dispatchEvent = jest.spyOn(wrapper.vm.$refs.authorNameLink, 'dispatchEvent');
 
-      wrapper.find({ ref: 'authorUsernameLink' }).trigger('mouseleave');
+      wrapper.findComponent({ ref: 'authorUsernameLink' }).trigger('mouseleave');
 
       expect(dispatchEvent).toHaveBeenCalledWith(new Event('mouseleave'));
     });
@@ -266,8 +266,8 @@ describe('NoteHeader component', () => {
     it('toggles hover specific CSS classes on author name link', async () => {
       createComponent({ author });
 
-      const authorUsernameLink = wrapper.find({ ref: 'authorUsernameLink' });
-      const authorNameLink = wrapper.find({ ref: 'authorNameLink' });
+      const authorUsernameLink = wrapper.findComponent({ ref: 'authorUsernameLink' });
+      const authorNameLink = wrapper.findComponent({ ref: 'authorNameLink' });
 
       authorUsernameLink.trigger('mouseenter');
 

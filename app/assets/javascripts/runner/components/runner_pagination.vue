@@ -1,18 +1,12 @@
 <script>
-import { GlPagination } from '@gitlab/ui';
+import { GlKeysetPagination } from '@gitlab/ui';
 
 export default {
   components: {
-    GlPagination,
+    GlKeysetPagination,
   },
+  inheritAttrs: false,
   props: {
-    value: {
-      required: false,
-      type: Object,
-      default: () => ({
-        page: 1,
-      }),
-    },
     pageInfo: {
       required: false,
       type: Object,
@@ -20,46 +14,37 @@ export default {
     },
   },
   computed: {
-    prevPage() {
-      return this.pageInfo?.hasPreviousPage ? this.value.page - 1 : null;
+    paginationProps() {
+      return { ...this.pageInfo, ...this.$attrs };
     },
-    nextPage() {
-      return this.pageInfo?.hasNextPage ? this.value.page + 1 : null;
+    isShown() {
+      const { hasPreviousPage, hasNextPage } = this.pageInfo;
+      return hasPreviousPage || hasNextPage;
     },
   },
   methods: {
-    handlePageChange(page) {
-      if (page === 1) {
-        // Small optimization for first page
-        // If we have loaded using "first",
-        // page is already cached.
-        this.$emit('input', {
-          page,
-        });
-      } else if (page > this.value.page) {
-        this.$emit('input', {
-          page,
-          after: this.pageInfo.endCursor,
-        });
-      } else {
-        this.$emit('input', {
-          page,
-          before: this.pageInfo.startCursor,
-        });
-      }
+    prevPage() {
+      this.$emit('input', {
+        before: this.pageInfo.startCursor,
+      });
+    },
+    nextPage() {
+      this.$emit('input', {
+        after: this.pageInfo.endCursor,
+      });
     },
   },
 };
 </script>
 
 <template>
-  <gl-pagination
-    v-bind="$attrs"
-    :value="value.page"
-    :prev-page="prevPage"
-    :next-page="nextPage"
-    align="center"
-    class="gl-pagination"
-    @input="handlePageChange"
-  />
+  <div v-if="isShown" class="gl-text-center">
+    <gl-keyset-pagination
+      v-bind="paginationProps"
+      :prev-text="s__('Pagination|Prev')"
+      :next-text="s__('Pagination|Next')"
+      @prev="prevPage"
+      @next="nextPage"
+    />
+  </div>
 </template>

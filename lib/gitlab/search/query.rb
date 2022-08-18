@@ -13,7 +13,7 @@ module Gitlab
         @filters = []
         @filter_options = { default_parser: :downcase.to_proc }.merge(filter_opts)
 
-        self.instance_eval(&block) if block_given?
+        self.instance_eval(&block) if block
 
         @query = Gitlab::Search::ParsedQuery.new(*extract_filters)
         # set the ParsedQuery as our default delegator thanks to SimpleDelegator

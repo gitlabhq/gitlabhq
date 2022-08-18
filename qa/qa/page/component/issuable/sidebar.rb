@@ -35,7 +35,7 @@ module QA
             end
 
             base.view 'app/views/shared/issuable/_sidebar.html.haml' do
-              element :assignee_block
+              element :assignee_block_container
               element :milestone_block
             end
 
@@ -127,7 +127,7 @@ module QA
           private
 
           def wait_assignees_block_finish_loading
-            within_element(:assignee_block) do
+            within_element(:assignee_block_container) do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield

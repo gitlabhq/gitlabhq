@@ -26,12 +26,11 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
+  # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
-  has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
-  has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: true
-  has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: true
+  has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
 
-  has_one :upcoming_deployment, -> { upcoming.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
+  has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -56,8 +55,9 @@ class Environment < ApplicationRecord
 
   validates :external_url,
             length: { maximum: 255 },
-            allow_nil: true,
-            addressable_url: true
+            allow_nil: true
+
+  validate :safe_external_url
 
   delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
@@ -215,28 +215,11 @@ class Environment < ApplicationRecord
       deployable_id: last_deployment_pipeline.latest_builds.pluck(:id))
   end
 
-  # NOTE: Below assocation overrides is a workaround for issue https://gitlab.com/gitlab-org/gitlab/-/issues/339908
-  # It helps to avoid cross joins with the CI database.
-  # Caveat: It also overrides and losses the default AR caching mechanism.
-  # Read - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68870#note_677227727
-
-  # NOTE: Association Preloads does not use the overriden definitions below.
-  # Association Preloads when preloading uses the original definitions from the relationships above.
-  # https://github.com/rails/rails/blob/75ac626c4e21129d8296d4206a1960563cc3d4aa/activerecord/lib/active_record/associations/preloader.rb#L158
-  # But after preloading, when they are called it is using the overriden methods below.
-  # So we are checking for `association_cached?(:association_name)` in the overridden methods and calling `super` which inturn fetches the preloaded values.
-
-  # Overriding association
   def last_visible_deployable
-    return super if association_cached?(:last_visible_deployable)
-
     last_visible_deployment&.deployable
   end
 
-  # Overriding association
   def last_visible_pipeline
-    return super if association_cached?(:last_visible_pipeline)
-
     last_visible_deployable&.pipeline
   end
 
@@ -252,7 +235,6 @@ class Environment < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI_ENVIRONMENT_NAME', value: name)
       .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
-      .append(key: 'CI_ENVIRONMENT_TIER', value: tier)
   end
 
   def recently_updated_on_branch?(ref)
@@ -329,11 +311,7 @@ class Environment < ApplicationRecord
   end
 
   def last_deployment_group
-    if ::Feature.enabled?(:batch_load_environment_last_deployment_group, project)
-      Deployment.last_deployment_group_for_environment(self)
-    else
-      legacy_last_deployment_group
-    end
+    Deployment.last_deployment_group_for_environment(self)
   end
 
   def reset_auto_stop
@@ -492,6 +470,22 @@ class Environment < ApplicationRecord
   end
 
   private
+
+  # We deliberately avoid using AddressableUrlValidator to allow users to update their environments even if they have
+  # misconfigured `environment:url` keyword. The external URL is presented as a clickable link on UI and not consumed
+  # in GitLab internally, thus we sanitize the URL before the persistence to make sure the rendered link is XSS safe.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/337417
+  def safe_external_url
+    return unless self.external_url.present?
+
+    new_external_url = Addressable::URI.parse(self.external_url)
+
+    if Gitlab::Utils::SanitizeNodeLink::UNSAFE_PROTOCOLS.include?(new_external_url.normalized_scheme)
+      errors.add(:external_url, "#{new_external_url.normalized_scheme} scheme is not allowed")
+    end
+  rescue Addressable::URI::InvalidURIError
+    errors.add(:external_url, 'URI is invalid')
+  end
 
   def rollout_status_available?
     has_terminals?

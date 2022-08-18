@@ -109,7 +109,7 @@ module API
               ).execute(:rubygems, name: ::Packages::Rubygems::TEMPORARY_PACKAGE_NAME)
 
               file_params = {
-                file:      params[:file],
+                file: params[:file],
                 file_name: PACKAGE_FILENAME
               }
 

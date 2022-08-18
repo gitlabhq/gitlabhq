@@ -30,13 +30,12 @@ export default {
   data() {
     return {
       projects: {
+        ownerProjectId: null,
         items: [],
         pageInfo: {},
         count: 0,
       },
-      pagination: {
-        page: 1,
-      },
+      pagination: {},
     };
   },
   apollo: {
@@ -48,6 +47,7 @@ export default {
       update(data) {
         const { runner } = data;
         return {
+          ownerProjectId: runner?.ownerProject?.id,
           count: runner?.projectCount || 0,
           items: runner?.projects?.nodes || [],
           pageInfo: runner?.projects?.pageInfo || {},
@@ -76,6 +76,14 @@ export default {
       });
     },
   },
+  methods: {
+    isOwner(projectId) {
+      return projectId === this.projects.ownerProjectId;
+    },
+    onPaginationInput(value) {
+      this.pagination = value;
+    },
+  },
   I18N_NONE,
 };
 </script>
@@ -98,10 +106,16 @@ export default {
         :name="project.name"
         :full-name="project.nameWithNamespace"
         :avatar-url="project.avatarUrl"
+        :description="project.description"
+        :is-owner="isOwner(project.id)"
       />
     </template>
     <span v-else class="gl-text-gray-500">{{ $options.I18N_NONE }}</span>
 
-    <runner-pagination v-model="pagination" :disabled="loading" :page-info="projects.pageInfo" />
+    <runner-pagination
+      :disabled="loading"
+      :page-info="projects.pageInfo"
+      @input="onPaginationInput"
+    />
   </div>
 </template>

@@ -26,8 +26,8 @@ module Ci
       return {} unless config
 
       result = Gitlab::Ci::YamlProcessor.new(config, project: project,
-                                                     user:    current_user,
-                                                     sha:     sha).execute
+                                                     user: current_user,
+                                                     sha: sha).execute
 
       result.valid? ? result.variables_with_data : {}
     end

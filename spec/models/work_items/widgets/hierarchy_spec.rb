@@ -21,7 +21,7 @@ RSpec.describe WorkItems::Widgets::Hierarchy do
   end
 
   describe '#parent' do
-    let_it_be(:parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item_parent) }
+    let_it_be(:parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item_parent).reload }
 
     subject { described_class.new(parent_link.work_item).parent }
 
@@ -45,8 +45,8 @@ RSpec.describe WorkItems::Widgets::Hierarchy do
   end
 
   describe '#children' do
-    let_it_be(:parent_link1) { create(:parent_link, work_item_parent: work_item_parent, work_item: task) }
-    let_it_be(:parent_link2) { create(:parent_link, work_item_parent: work_item_parent) }
+    let_it_be(:parent_link1) { create(:parent_link, work_item_parent: work_item_parent, work_item: task).reload }
+    let_it_be(:parent_link2) { create(:parent_link, work_item_parent: work_item_parent).reload }
 
     subject { described_class.new(work_item_parent).children }
 

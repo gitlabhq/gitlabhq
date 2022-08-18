@@ -5,6 +5,7 @@ require 'rubocop'
 require 'yaml'
 
 require_relative '../todo_dir'
+require_relative '../cop_todo'
 
 module RuboCop
   module Formatter
@@ -14,26 +15,6 @@ module RuboCop
     # For example, this formatter stores offenses for `RSpec/VariableName`
     # in `.rubocop_todo/rspec/variable_name.yml`.
     class TodoFormatter < BaseFormatter
-      class Todo
-        attr_reader :cop_name, :files, :offense_count
-
-        def initialize(cop_name)
-          @cop_name = cop_name
-          @files = Set.new
-          @offense_count = 0
-          @cop_class = RuboCop::Cop::Registry.global.find_by_cop_name(cop_name)
-        end
-
-        def record(file, offense_count)
-          @files << file
-          @offense_count += offense_count
-        end
-
-        def autocorrectable?
-          @cop_class&.support_autocorrect?
-        end
-      end
-
       DEFAULT_BASE_DIRECTORY = File.expand_path('../../.rubocop_todo', __dir__)
 
       class << self
@@ -44,7 +25,7 @@ module RuboCop
 
       def initialize(output, _options = {})
         @directory = self.class.base_directory
-        @todos = Hash.new { |hash, cop_name| hash[cop_name] = Todo.new(cop_name) }
+        @todos = Hash.new { |hash, cop_name| hash[cop_name] = CopTodo.new(cop_name) }
         @todo_dir = TodoDir.new(directory)
         @config_inspect_todo_dir = load_config_inspect_todo_dir
         @config_old_todo_yml = load_config_old_todo_yml
@@ -65,8 +46,8 @@ module RuboCop
 
       def finished(_inspected_files)
         @todos.values.sort_by(&:cop_name).each do |todo|
-          yaml = to_yaml(todo)
-          path = @todo_dir.write(todo.cop_name, yaml)
+          todo.previously_disabled = previously_disabled?(todo)
+          path = @todo_dir.write(todo.cop_name, todo.to_yaml)
 
           output.puts "Written to #{relative_path(path)}\n"
         end
@@ -88,27 +69,6 @@ module RuboCop
       def relative_path(path)
         parent = File.expand_path('..', directory)
         path.delete_prefix("#{parent}/")
-      end
-
-      def to_yaml(todo)
-        yaml = []
-        yaml << '---'
-        yaml << '# Cop supports --auto-correct.' if todo.autocorrectable?
-        yaml << "#{todo.cop_name}:"
-
-        if previously_disabled?(todo)
-          yaml << "  # Offense count: #{todo.offense_count}"
-          yaml << '  # Temporarily disabled due to too many offenses'
-          yaml << '  Enabled: false'
-        end
-
-        yaml << '  Exclude:'
-
-        files = todo.files.sort.map { |file| "    - '#{file}'" }
-        yaml.concat files
-        yaml << ''
-
-        yaml.join("\n")
       end
 
       def check_multiple_configurations!

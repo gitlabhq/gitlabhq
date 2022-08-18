@@ -29,7 +29,7 @@ module Banzai
         @emoji_pattern ||=
           /(?<=[^[:alnum:]:]|\n|^)
           :(#{CustomEmoji::NAME_REGEXP}):
-          (?=[^[:alnum:]:]|$)/x
+          (?=[^[:alnum:]:]|$)/xo
       end
 
       def custom_emoji_name_element_filter(text)
@@ -58,7 +58,7 @@ module Banzai
       end
 
       def custom_emoji_candidates
-        doc.to_html.scan(/:(#{CustomEmoji::NAME_REGEXP}):/).flatten
+        doc.to_html.scan(/:(#{CustomEmoji::NAME_REGEXP}):/o).flatten
       end
 
       def all_custom_emoji

@@ -29,7 +29,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         # "Route Globbing" syntax (/*page) so that the route helpers do not encode
         # the slash character.
         get 'metrics(/:dashboard_path)(/*page)', constraints: { dashboard_path: /.+\.yml/, page: 'panel/new' },
-          to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
+                                                 to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
 
         namespace :metrics, module: :metrics do
           namespace :dashboards do
@@ -96,7 +96,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ci do
           resource :lint, only: [:show, :create]
           resource :pipeline_editor, only: [:show], controller: :pipeline_editor, path: 'editor'
-          resource :secure_files, only: [:show], controller: :secure_files, path: 'secure_files'
           resources :daily_build_group_report_results, only: [:index], constraints: { format: /(csv|json)/ }
           namespace :prometheus_metrics do
             resources :histograms, only: [:create], constraints: { format: 'json' }
@@ -157,7 +156,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
 
-          resource :packages_and_registries, only: [:show]
+          resource :packages_and_registries, only: [:show] do
+            get '/cleanup_image_tags', to: 'packages_and_registries#cleanup_tags'
+          end
         end
 
         resources :usage_quotas, only: [:index]
@@ -299,6 +300,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :terraform, only: [:index]
 
         namespace :google_cloud do
+          get '/', to: redirect('%{namespace_id}/%{project_id}/-/google_cloud/configuration')
+
           get '/configuration', to: 'configuration#index'
 
           resources :revoke_oauth, only: [:create]
@@ -358,6 +361,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
         get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
+        get 'work_items/*work_items_path' => 'work_items#index', as: :work_item
 
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
@@ -499,7 +503,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           defaults: { format: 'json' },
           constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
-      resource :pages, only: [:show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resource :pages, only: [:new, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do # rubocop: disable Cop/PutProjectRoutesUnderScope
           member do
             post :verify # rubocop:todo Cop/PutProjectRoutesUnderScope

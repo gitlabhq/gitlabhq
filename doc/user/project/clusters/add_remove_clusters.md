@@ -46,3 +46,27 @@ To remove the Kubernetes cluster integration:
 1. Go to your cluster details page.
 1. Select the **Advanced Settings** tab.
 1. Select either **Remove integration** or **Remove integration and resources**.
+
+### Remove clusters by using the Rails console **(FREE SELF)**
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+To find a cluster:
+
+``` ruby
+cluster = Clusters::Cluster.find(1)
+cluster = Clusters::Cluster.find_by(name: 'cluster_name')
+```
+
+To delete a cluster but not the associated resources:
+
+```ruby
+# Find users who have administrator access
+user = User.find_by(username: 'admin_user')
+
+# Find the cluster with the ID
+cluster = Clusters::Cluster.find(1)
+
+# Delete the cluster
+Clusters::DestroyService.new(user).execute(cluster)
+```

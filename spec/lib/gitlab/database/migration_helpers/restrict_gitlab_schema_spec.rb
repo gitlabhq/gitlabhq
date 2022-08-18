@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_analyzers: false, stub_feature_flags: false do
   let(:schema_class) { Class.new(Gitlab::Database::Migration[1.0]).include(described_class) }
 
+  # We keep only the GitlabSchemasValidateConnection analyzer running
+  around do |example|
+    Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed(false) do
+      example.run
+    end
+  end
+
   describe '#restrict_gitlab_migration' do
     it 'invalid schema raises exception' do
       expect { schema_class.restrict_gitlab_migration gitlab_schema: :gitlab_non_exisiting }

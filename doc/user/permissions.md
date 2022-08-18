@@ -39,10 +39,10 @@ usernames. A GitLab administrator can configure the GitLab instance to
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
 
-- For group owners. The role is inherited for a group's projects.
+- For group and project Owners. In GitLab 14.8 and earlier, the role is inherited for a group's projects.
 - For Administrators.
 
-Personal [namespace](group/index.md#namespaces) owners:
+Personal [namespace](namespace/index.md) owners:
 
 - Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
 - In GitLab 14.9 and later, for new projects in the namespace, are displayed as having the Owner role.
@@ -95,6 +95,7 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>View [Design Management](project/issues/design_management.md) pages                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [related issues](project/issues/related_issues.md)                                                                                        | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Set [weight](project/issues/issue_weight.md)                                                                                                   | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
+| [Issues]](project/issues/index.md):<br>Set [parent epic](group/epics/manage_epics.md#add-an-existing-issue-to-an-epic) |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [confidential issues](project/issues/confidential_issues.md)                                                                              | (*2*)    | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Close / reopen (*19*)                                                                                                                          |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Lock threads                                                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
@@ -214,18 +215,18 @@ The following table lists project permissions available for each role:
    [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
-4. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
+4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
 5. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets).
 6. Actions are limited only to records owned (referenced) by user.
-7. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
+7. When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
 8. For information on eligible approvers for merge requests, see
    [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).
 9. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 10. Users can only view events based on their individual actions.
 11. Project access tokens are supported for self-managed instances on Free and above. They are also
     supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
-12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access Developers and Maintainers are given.
-13. A Maintainer can't change project features visibility level if
+12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access given to Developers and Maintainers.
+13. A Maintainer or Owner can't change project features visibility level if
     [project visibility](public_access.md) is set to private.
 14. Attached design files are moved together with the issue even if the user doesn't have the
     Developer role.
@@ -333,10 +334,9 @@ which visibility level you select on project settings.
 ### Protected branches
 
 Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
-Additionally, you can customize permissions to allow or prevent project
-Maintainers and Developers from pushing to a protected branch. Read through the documentation on
-[protected branches](project/protected_branches.md)
-to learn more.
+Additionally, you can customize permissions to allow or prevent project Developers or Maintainers
+from pushing to a protected branch. Read through the documentation on
+[protected branches](project/protected_branches.md) to learn more.
 
 ### Value stream analytics permissions
 
@@ -412,7 +412,7 @@ The following table lists group permissions available for each role:
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓ (2)      | ✓ (2) |
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
-| Manage [group push rules](group/index.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/access_and_permissions.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |
@@ -439,9 +439,9 @@ The following table lists group permissions available for each role:
 2. Introduced in GitLab 12.2.
 3. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-   - The [group level](group/index.md#specify-who-can-add-projects-to-a-group).
+   - The [group level](group/manage.md#specify-who-can-add-projects-to-a-group).
 4. Does not apply to subgroups.
-5. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
+5. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 6. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 7. Users can only view events based on their individual actions.
 
@@ -600,7 +600,7 @@ for more information.
 ## LDAP users permissions
 
 LDAP user permissions can be manually overridden by an administrator.
-Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
+Read through the documentation on [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases
 

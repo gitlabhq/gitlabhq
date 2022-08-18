@@ -109,7 +109,7 @@ the various abstractions and what they can (not) reuse:
 
 | Abstraction            | Service classes  | Finders  | Presenters  | Serializers   | Model instance method   | Model class methods   | Active Record   | Worker
 |:-----------------------|:-----------------|:---------|:------------|:--------------|:------------------------|:----------------------|:----------------|:--------
-| Controller             | Yes              | Yes      | Yes         | Yes           | Yes                     | No                    | No              | No
+| Controller/API endpoint| Yes              | Yes      | Yes         | Yes           | Yes                     | No                    | No              | No
 | Service class          | Yes              | Yes      | No          | No            | Yes                     | No                    | No              | Yes
 | Finder                 | No               | No       | No          | No            | Yes                     | Yes                   | No              | No
 | Presenter              | No               | Yes      | No          | No            | Yes                     | Yes                   | No              | No
@@ -125,9 +125,11 @@ Everything in `app/controllers`.
 Controllers should not do much work on their own, instead they simply pass input
 to other classes and present the results.
 
-### Grape endpoint
+### API endpoints
 
-Everything in `lib/api`.
+Everything in `lib/api` (the REST API) and `app/graphql` (the GraphQL API).
+
+API endpoints have the same abstraction level as controllers.
 
 ### Service classes
 
@@ -144,6 +146,27 @@ or, create a new base class and update the list above.
 Legacy classes inherited from `BaseService` for historical reasons.
 
 In Service classes the use of `execute` and `#execute` is preferred over `call` and `#call`.
+
+Model properties should be passed to the constructor in a `params` hash, and will be assigned directly.
+
+To pass extra parameters (which need to be processed, and are not model properties),
+include an `options` hash in the constructor and store it in an instance variable:
+
+```ruby
+# container: Project, or Group
+# current_user: Current user
+# params: Model properties from the controller, already allowlisted with strong parameters
+# options: Configuration for this service, can be any of the following:
+#   notify: Whether to send a notifcation to the current user
+#   cc: Email address to copy when sending a notification 
+def initialize(container:, current_user: nil, params: {}, options: {})
+  super(container, current_user, params)
+  @options = options
+end
+```
+
+View the [initial discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90008#note_988744060)
+and [further discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90853#note_1053425083).
 
 Classes that are not service objects should be [created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts), such as in `lib`.
 
@@ -206,7 +229,27 @@ See [the documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/p
 Everything in `app/serializers`, used for presenting the response to a request,
 typically in JSON.
 
-### Model class methods
+### Models
+
+Classes and modules in `app/models` represent domain concepts that encapsulate both
+[data and behavior](https://en.wikipedia.org/wiki/Domain_model).
+
+These classes can interact directly with a data store (like ActiveRecord models) or
+can be a thin wrapper (Plain Old Ruby Objects) on top of ActiveRecord models to express a
+richer domain concept.
+
+[Entities and Value Objects](https://martinfowler.com/bliki/EvansClassification.html)
+that represent domain concepts are considered domain models.
+
+Some examples:
+
+- [`DesignManagement::DesignAtVersion`](https://gitlab.com/gitlab-org/gitlab/-/blob/b62ce98cff8e0530210670f9cb0314221181b77f/app/models/design_management/design_at_version.rb)
+  is a model that leverages validations to combine designs and versions.
+- [`Ci::Minutes::Usage`](https://gitlab.com/gitlab-org/gitlab/-/blob/ec52f19f7325410177c00fef06379f55ab7cab67/ee/app/models/ci/minutes/usage.rb)
+  is a Value Object that provides [CI/CD minutes usage](../ci/pipelines/cicd_minutes.md)
+  for a given namespace.
+
+#### Model class methods
 
 These are class methods defined by _GitLab itself_, including the following
 methods provided by Active Record:
@@ -220,7 +263,7 @@ methods provided by Active Record:
 Any other methods such as `find_by(some_column: X)` are not included, and
 instead fall under the "Active Record" abstraction.
 
-### Model instance methods
+#### Model instance methods
 
 Instance methods defined on Active Record models by _GitLab itself_. Methods
 provided by Active Record are not included, except for the following methods:
@@ -230,7 +273,7 @@ provided by Active Record are not included, except for the following methods:
 - `destroy`
 - `delete`
 
-### Active Record
+#### Active Record
 
 The API provided by Active Record itself, such as the `where` method, `save`,
 `delete_all`, and so on.

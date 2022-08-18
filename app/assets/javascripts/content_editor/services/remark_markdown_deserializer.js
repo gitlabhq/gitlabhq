@@ -1,4 +1,5 @@
 import { render } from '~/lib/gfm';
+import { isValidAttribute } from '~/lib/dompurify';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
 const wrappableTags = ['img', 'br', 'code', 'i', 'em', 'b', 'strong', 'a', 'strike', 's', 'del'];
@@ -125,6 +126,8 @@ const factorySpecs = {
     selector: 'img',
     getAttrs: (hastNode) => ({
       src: hastNode.properties.src,
+      canonicalSrc: hastNode.properties.identifier ?? hastNode.properties.src,
+      isReference: hastNode.properties.isReference === 'true',
       title: hastNode.properties.title,
       alt: hastNode.properties.alt,
     }),
@@ -154,7 +157,9 @@ const factorySpecs = {
     type: 'mark',
     selector: 'a',
     getAttrs: (hastNode) => ({
+      canonicalSrc: hastNode.properties.identifier ?? hastNode.properties.href,
       href: hastNode.properties.href,
+      isReference: hastNode.properties.isReference === 'true',
       title: hastNode.properties.title,
     }),
   },
@@ -170,6 +175,55 @@ const factorySpecs = {
     type: 'ignore',
     selector: (hastNode) => hastNode.type === 'comment',
   },
+
+  referenceDefinition: {
+    type: 'block',
+    selector: 'referencedefinition',
+    getAttrs: (hastNode) => ({
+      title: hastNode.properties.title,
+      url: hastNode.properties.url,
+      identifier: hastNode.properties.identifier,
+    }),
+  },
+
+  frontmatter: {
+    type: 'block',
+    selector: 'frontmatter',
+    getAttrs: (hastNode) => ({
+      language: hastNode.properties.language,
+    }),
+  },
+};
+
+const SANITIZE_ALLOWLIST = ['level', 'identifier', 'numeric', 'language', 'url', 'isReference'];
+
+const sanitizeAttribute = (attributeName, attributeValue, hastNode) => {
+  if (!attributeValue || SANITIZE_ALLOWLIST.includes(attributeName)) {
+    return attributeValue;
+  }
+
+  /**
+   * This is a workaround to validate the value of the canonicalSrc
+   * attribute using DOMPurify without passing the attribute name. canonicalSrc
+   * is not an allowed attribute in DOMPurify therefore the library will remove
+   * it regardless of its value.
+   *
+   * We want to preserve canonicalSrc, and we also want to make sure that its
+   * value is sanitized.
+   */
+  const validateAttributeAs = attributeName === 'canonicalSrc' ? 'src' : attributeName;
+
+  if (!isValidAttribute(hastNode.tagName, validateAttributeAs, attributeValue)) {
+    return null;
+  }
+
+  return attributeValue;
+};
+
+const attributeTransformer = {
+  transform: (attributeName, attributeValue, hastNode) => {
+    return sanitizeAttribute(attributeName, attributeValue, hastNode);
+  },
 };
 
 export default () => {
@@ -183,9 +237,20 @@ export default () => {
             factorySpecs,
             tree,
             wrappableTags,
+            attributeTransformer,
             markdown,
           }),
-        skipRendering: ['footnoteReference', 'footnoteDefinition', 'code'],
+        skipRendering: [
+          'footnoteReference',
+          'footnoteDefinition',
+          'code',
+          'definition',
+          'linkReference',
+          'imageReference',
+          'yaml',
+          'toml',
+          'json',
+        ],
       });
 
       return { document };

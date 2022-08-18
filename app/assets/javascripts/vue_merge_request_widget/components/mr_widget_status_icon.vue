@@ -1,24 +1,16 @@
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { GlLoadingIcon } from '@gitlab/ui';
 import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
     ciIcon,
-    GlButton,
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     status: {
       type: String,
       required: true,
-    },
-    showDisabledButton: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   computed: {
@@ -42,15 +34,5 @@ export default {
       </div>
       <ci-icon v-else :status="statusObj" :size="24" />
     </div>
-
-    <gl-button
-      v-if="!glFeatures.restructuredMrWidget && showDisabledButton"
-      category="primary"
-      variant="confirm"
-      data-testid="disabled-merge-button"
-      :disabled="true"
-    >
-      {{ s__('mrWidget|Merge') }}
-    </gl-button>
   </div>
 </template>

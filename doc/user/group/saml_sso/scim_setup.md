@@ -82,7 +82,7 @@ For a list of required attributes, refer to the [SCIM API documentation](../../.
 | `userPrincipalName`              | `emails[type eq "work"].value` |                     |
 | `mailNickname`                   | `userName`                     |                     |
 
-For guidance, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
+For guidance, you can view [an example configuration](example_saml_config.md#azure-active-directory).
 
 1. Below the mapping list select **Show advanced options > Edit attribute list for AppName**.
 1. Ensure the `id` is the primary and required field, and `externalId` is also required.
@@ -106,7 +106,7 @@ Before you start this section:
 
 - Check that you are using Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This product tier is required to use SCIM on Okta. To check which Okta product you are using, check your signed Okta contract, contact your Okta AE, CSM, or Okta support.
 - Complete the [GitLab configuration](#gitlab-configuration) process.
-- Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/), as described in the [Okta setup notes](index.md#okta-setup-notes).
+- Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/), as described in the [Okta setup notes](index.md#okta-setup-notes).
 - Check that your Okta SAML setup matches our documentation exactly, especially the NameID configuration. Otherwise, the Okta SCIM app may not work properly.
 
 After the above steps are complete:
@@ -219,6 +219,8 @@ This value is also used by SCIM to match users on the `id`, and is updated by SC
 It is important that this SCIM `id` and SCIM `externalId` are configured to the same value as the SAML `NameId`. SAML responses can be traced using [debugging tools](index.md#saml-debugging-tools), and any errors can be checked against our [SAML troubleshooting docs](index.md#troubleshooting).
 
 ### How do I verify user's SAML NameId matches the SCIM externalId
+
+Admins can use the Admin Area to [list SCIM identities for a user](../../admin_area/#user-identities).
 
 Group owners can see the list of users and the `externalId` stored for each user in the group SAML SSO Settings page.
 

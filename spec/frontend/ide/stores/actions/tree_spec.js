@@ -134,7 +134,7 @@ describe('Multi-file store tree actions', () => {
 
     it('toggles the tree open', async () => {
       await store.dispatch('toggleTreeOpen', tree.path);
-      expect(tree.opened).toBeTruthy();
+      expect(tree.opened).toBe(true);
     });
   });
 

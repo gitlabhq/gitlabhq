@@ -28,25 +28,26 @@ module Gitlab
       private
 
       def validate
-        pgrp = nil
+        pgrps = nil
         valid_archive = true
 
         validate_archive_path
 
         Timeout.timeout(TIMEOUT_LIMIT) do
-          stdin, stdout, stderr, wait_thr = Open3.popen3(command, pgroup: true)
-          stdin.close
+          stderr_r, stderr_w = IO.pipe
+          stdout, wait_threads = Open3.pipeline_r(*command, pgroup: true, err: stderr_w )
 
           # When validation is performed on a small archive (e.g. 100 bytes)
           # `wait_thr` finishes before we can get process group id. Do not
           # raise exception in this scenario.
-          pgrp = begin
+          pgrps = wait_threads.map do |wait_thr|
             Process.getpgid(wait_thr[:pid])
           rescue Errno::ESRCH
             nil
           end
+          pgrps.compact!
 
-          status = wait_thr.value
+          status = wait_threads.last.value
 
           if status.success?
             result = stdout.readline
@@ -64,20 +65,21 @@ module Gitlab
 
         ensure
           stdout.close
-          stderr.close
+          stderr_w.close
+          stderr_r.close
         end
 
         valid_archive
       rescue Timeout::Error
         log_error('Timeout reached during archive decompression')
 
-        Process.kill(-1, pgrp) if pgrp
+        pgrps.each { |pgrp| Process.kill(-1, pgrp) } if pgrps
 
         false
       rescue StandardError => e
         log_error(e.message)
 
-        Process.kill(-1, pgrp) if pgrp
+        pgrps.each { |pgrp| Process.kill(-1, pgrp) } if pgrps
 
         false
       end
@@ -91,7 +93,7 @@ module Gitlab
       end
 
       def command
-        "gzip -dc #{@archive_path} | wc -c"
+        [['gzip', '-dc', @archive_path], ['wc', '-c']]
       end
 
       def log_error(error)

@@ -10,7 +10,7 @@ module RuboCop
         include CodeReuseHelpers
 
         IN_CONTROLLER = 'Workers can not be used in a controller.'
-        IN_API = 'Workers can not be used in a Grape API.'
+        IN_API = 'Workers can not be used in an API endpoint.'
         IN_FINDER = 'Workers can not be used in a Finder.'
         IN_PRESENTER = 'Workers can not be used in a Presenter.'
         IN_SERIALIZER = 'Workers can not be used in a Serializer.'
@@ -32,7 +32,7 @@ module RuboCop
           message =
             if in_controller?(node)
               IN_CONTROLLER
-            elsif in_api?(node)
+            elsif in_api?(node) || in_graphql?(node)
               IN_API
             elsif in_finder?(node)
               IN_FINDER

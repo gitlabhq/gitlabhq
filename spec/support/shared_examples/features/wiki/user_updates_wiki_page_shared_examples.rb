@@ -140,7 +140,7 @@ RSpec.shared_examples 'User updates wiki page' do
     context 'when using the content editor' do
       context 'with feature flag on' do
         before do
-          click_button 'Edit rich text'
+          find('[data-testid="toggle-editing-mode-button"] label', text: 'Rich text').click
         end
 
         it_behaves_like 'edits content using the content editor'

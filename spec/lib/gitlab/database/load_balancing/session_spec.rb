@@ -132,7 +132,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Session do
     it 'does not prevent using primary if an exception is raised' do
       instance = described_class.new
 
-      instance.ignore_writes { raise ArgumentError } rescue ArgumentError
+      begin
+        instance.ignore_writes { raise ArgumentError }
+      rescue ArgumentError
+        nil
+      end
       instance.write!
 
       expect(instance).to be_using_primary

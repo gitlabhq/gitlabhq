@@ -18,7 +18,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
 
     expect(page).to have_current_path("/-/ide/project/#{project.full_path}/edit/master/-/LICENSE", ignore_query: true)
 
-    expect(page).to have_selector('.qa-file-templates-bar') # rubocop:disable QA/SelectorUsage
+    expect(page).to have_selector('[data-testid="file-templates-bar"]')
 
     select_template('MIT License')
 

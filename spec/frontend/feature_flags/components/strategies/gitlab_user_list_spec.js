@@ -24,10 +24,10 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
       propsData: { ...DEFAULT_PROPS, ...props },
     });
 
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   describe('with user lists', () => {
-    const findDropdownItem = () => wrapper.find(GlDropdownItem);
+    const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
 
     beforeEach(() => {
       Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [userList] });
@@ -69,10 +69,10 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
           r = resolve;
         }),
       );
-      const searchWrapper = wrapper.find(GlSearchBoxByType);
+      const searchWrapper = wrapper.findComponent(GlSearchBoxByType);
       searchWrapper.vm.$emit('input', 'new');
       await nextTick();
-      const loadingIcon = wrapper.find(GlLoadingIcon);
+      const loadingIcon = wrapper.findComponent(GlLoadingIcon);
 
       expect(loadingIcon.exists()).toBe(true);
       expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'new');

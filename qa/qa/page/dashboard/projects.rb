@@ -5,7 +5,7 @@ module QA
     module Dashboard
       class Projects < Page::Base
         view 'app/views/shared/projects/_search_form.html.haml' do
-          element :project_filter_form, required: true
+          element :project_filter_form_container, required: true
         end
 
         view 'app/views/shared/projects/_project.html.haml' do
@@ -24,7 +24,7 @@ module QA
         end
 
         def filter_by_name(name)
-          within_element(:project_filter_form) do
+          within_element(:project_filter_form_container) do
             fill_in :name, with: name
           end
         end
@@ -44,7 +44,7 @@ module QA
         end
 
         def clear_project_filter
-          fill_element(:project_filter_form, "")
+          fill_element(:project_filter_form_container, "")
         end
       end
     end

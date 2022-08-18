@@ -4,6 +4,7 @@ module Projects
   module Pipelines
     class StagesController < Projects::Pipelines::ApplicationController
       before_action :authorize_update_pipeline!
+      before_action :stage, only: [:play_manual]
 
       urgency :low, [
         :play_manual
@@ -26,7 +27,7 @@ module Projects
       private
 
       def stage
-        @pipeline_stage ||= pipeline.find_stage_by_name!(params[:stage_name])
+        @stage ||= pipeline.stage(params[:stage_name]).presence || render_404
       end
     end
   end

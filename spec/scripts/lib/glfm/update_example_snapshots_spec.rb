@@ -65,13 +65,19 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
       ## Strong
 
+      This example doesn't have an extension after the `example` keyword, so its
+      `source_specification` will be `commonmark`.
+
       ```````````````````````````````` example
       __bold__
       .
       <p><strong>bold</strong></p>
       ````````````````````````````````
 
-      ```````````````````````````````` example strong
+      This example has an extension after the `example` keyword, so its
+      `source_specification` will be `github`.
+
+      ```````````````````````````````` example some_extension_name
       __bold with more text__
       .
       <p><strong>bold with more text</strong></p>
@@ -131,6 +137,10 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       # Second GitLab-Specific Section with Examples
 
       ## Strong but with HTML
+
+      This example has the `gitlab` keyword after the `example` keyword, so its
+      `source_specification` will be `gitlab`.
+
 
       ```````````````````````````````` example gitlab strong
       <strong>

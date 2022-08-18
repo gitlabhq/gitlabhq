@@ -1,6 +1,6 @@
 = render Pajamas::AlertComponent.new(title: _('Too many changes to show.'),
   variant: :warning,
-  alert_options: { class: 'gl-mb-5' }) do |c|
+  alert_options: { class: 'gl-mb-5', data: { testid: "too-many-changes-alert" } }) do |c|
   = c.body do
     = message
 

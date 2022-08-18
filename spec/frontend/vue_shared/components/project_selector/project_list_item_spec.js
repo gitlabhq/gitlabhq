@@ -56,6 +56,7 @@ describe('ProjectListItem component', () => {
 
     expect(avatar.exists()).toBe(true);
     expect(avatar.props()).toMatchObject({
+      projectId: project.id,
       projectAvatarUrl: '',
       projectName: project.name_with_namespace,
     });

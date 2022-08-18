@@ -60,8 +60,8 @@ describe('IDE store file actions', () => {
 
     it('closes open files', () => {
       return store.dispatch('closeFile', localFile).then(() => {
-        expect(localFile.opened).toBeFalsy();
-        expect(localFile.active).toBeFalsy();
+        expect(localFile.opened).toBe(false);
+        expect(localFile.active).toBe(false);
         expect(store.state.openFiles.length).toBe(0);
       });
     });
@@ -269,7 +269,7 @@ describe('IDE store file actions', () => {
 
       it('sets the file as active', () => {
         return store.dispatch('getFileData', { path: localFile.path }).then(() => {
-          expect(localFile.active).toBeTruthy();
+          expect(localFile.active).toBe(true);
         });
       });
 
@@ -277,7 +277,7 @@ describe('IDE store file actions', () => {
         return store
           .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
           .then(() => {
-            expect(localFile.active).toBeFalsy();
+            expect(localFile.active).toBe(false);
           });
       });
 

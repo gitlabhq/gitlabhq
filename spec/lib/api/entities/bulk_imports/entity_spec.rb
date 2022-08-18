@@ -14,6 +14,7 @@ RSpec.describe API::Entities::BulkImports::Entity do
       :status,
       :source_full_path,
       :destination_name,
+      :destination_slug,
       :destination_namespace,
       :parent_id,
       :namespace_id,

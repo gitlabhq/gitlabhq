@@ -25,25 +25,25 @@ RSpec.describe JiraImportState do
       let(:project) { create(:project) }
 
       context 'when project has an initial jira_import' do
-        let!(:jira_import) { create(:jira_import_state, project: project)}
+        let!(:jira_import) { create(:jira_import_state, project: project) }
 
         it_behaves_like 'multiple running imports not allowed'
       end
 
       context 'when project has a scheduled jira_import' do
-        let!(:jira_import) { create(:jira_import_state, :scheduled, project: project)}
+        let!(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
 
         it_behaves_like 'multiple running imports not allowed'
       end
 
       context 'when project has a started jira_import' do
-        let!(:jira_import) { create(:jira_import_state, :started, project: project)}
+        let!(:jira_import) { create(:jira_import_state, :started, project: project) }
 
         it_behaves_like 'multiple running imports not allowed'
       end
 
       context 'when project has a failed jira_import' do
-        let!(:jira_import) { create(:jira_import_state, :failed, project: project)}
+        let!(:jira_import) { create(:jira_import_state, :failed, project: project) }
 
         it 'returns valid' do
           new_import = build(:jira_import_state, project: project)
@@ -54,7 +54,7 @@ RSpec.describe JiraImportState do
       end
 
       context 'when project has a finished jira_import' do
-        let!(:jira_import) { create(:jira_import_state, :finished, project: project)}
+        let!(:jira_import) { create(:jira_import_state, :finished, project: project) }
 
         it 'returns valid' do
           new_import = build(:jira_import_state, project: project)
@@ -83,40 +83,40 @@ RSpec.describe JiraImportState do
     let(:project) { create(:project) }
 
     context 'when jira import is in initial state' do
-      let!(:jira_import) { build(:jira_import_state, project: project)}
+      let!(:jira_import) { build(:jira_import_state, project: project) }
 
       it_behaves_like 'can transition', [:schedule, :do_fail]
       it_behaves_like 'cannot transition', [:start, :finish]
     end
 
     context 'when jira import is in scheduled state' do
-      let!(:jira_import) { build(:jira_import_state, :scheduled, project: project)}
+      let!(:jira_import) { build(:jira_import_state, :scheduled, project: project) }
 
       it_behaves_like 'can transition', [:start, :do_fail]
       it_behaves_like 'cannot transition', [:finish]
     end
 
     context 'when jira import is in started state' do
-      let!(:jira_import) { build(:jira_import_state, :started, project: project)}
+      let!(:jira_import) { build(:jira_import_state, :started, project: project) }
 
       it_behaves_like 'can transition', [:finish, :do_fail]
       it_behaves_like 'cannot transition', [:schedule]
     end
 
     context 'when jira import is in failed state' do
-      let!(:jira_import) { build(:jira_import_state, :failed, project: project)}
+      let!(:jira_import) { build(:jira_import_state, :failed, project: project) }
 
       it_behaves_like 'cannot transition', [:schedule, :finish, :do_fail]
     end
 
     context 'when jira import is in finished state' do
-      let!(:jira_import) { build(:jira_import_state, :finished, project: project)}
+      let!(:jira_import) { build(:jira_import_state, :finished, project: project) }
 
       it_behaves_like 'cannot transition', [:schedule, :do_fail, :start]
     end
 
     context 'after transition to scheduled' do
-      let!(:jira_import) { build(:jira_import_state, project: project)}
+      let!(:jira_import) { build(:jira_import_state, project: project) }
 
       it 'triggers the import job' do
         expect(Gitlab::JiraImport::Stage::StartImportWorker).to receive(:perform_async).and_return('some-job-id')
@@ -129,7 +129,7 @@ RSpec.describe JiraImportState do
     end
 
     context 'after transition to finished' do
-      let!(:jira_import) { build(:jira_import_state, :started, jid: 'some-other-jid', project: project)}
+      let!(:jira_import) { build(:jira_import_state, :started, jid: 'some-other-jid', project: project) }
 
       subject { jira_import.finish }
 
@@ -172,7 +172,7 @@ RSpec.describe JiraImportState do
     end
 
     context 'when jira import has no error_message' do
-      let(:jira_import) { build(:jira_import_state, project: project)}
+      let(:jira_import) { build(:jira_import_state, project: project) }
 
       it 'does not run the callback', :aggregate_failures do
         expect { jira_import.save! }.to change { JiraImportState.count }.by(1)
@@ -181,7 +181,7 @@ RSpec.describe JiraImportState do
     end
 
     context 'when jira import error_message does not exceed the limit' do
-      let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error')}
+      let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error') }
 
       it 'does not run the callback', :aggregate_failures do
         expect { jira_import.save! }.to change { JiraImportState.count }.by(1)
@@ -190,7 +190,7 @@ RSpec.describe JiraImportState do
     end
 
     context 'when error_message exceeds limit' do
-      let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error message longer than the limit')}
+      let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error message longer than the limit') }
 
       it 'truncates error_message to the limit', :aggregate_failures do
         expect { jira_import.save! }.to change { JiraImportState.count }.by(1)

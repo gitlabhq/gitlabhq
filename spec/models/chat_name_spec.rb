@@ -15,8 +15,8 @@ RSpec.describe ChatName do
   it { is_expected.to validate_presence_of(:team_id) }
   it { is_expected.to validate_presence_of(:chat_id) }
 
-  it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:service_id) }
-  it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:service_id, :team_id) }
+  it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:integration_id) }
+  it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:integration_id, :team_id) }
 
   it 'is removed when the project is deleted' do
     expect { subject.reload.integration.project.delete }.to change { ChatName.count }.by(-1)

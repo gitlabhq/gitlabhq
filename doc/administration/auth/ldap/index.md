@@ -75,7 +75,7 @@ To configure LDAP integration, add your LDAP server settings in:
 - `/home/git/gitlab/config/gitlab.yml` for source install instances.
 
 After configuring LDAP, to test the configuration, use the
-[LDAP check Rake task](../../raketasks/check.md#ldap-check).
+[LDAP check Rake task](../../raketasks/ldap.md#check).
 
 NOTE:
 The `encryption` value `simple_tls` corresponds to 'Simple TLS' in the LDAP
@@ -95,42 +95,42 @@ This example shows configuration for Omnibus GitLab instances:
 gitlab_rails['ldap_enabled'] = true
 gitlab_rails['prevent_ldap_sign_in'] = false
 gitlab_rails['ldap_servers'] = {
-'main' => {
-  'label' => 'LDAP',
-  'host' =>  'ldap.mydomain.com',
-  'port' => 389,
-  'uid' => 'sAMAccountName',
-  'encryption' => 'simple_tls',
-  'verify_certificates' => true,
-  'bind_dn' => '_the_full_dn_of_the_user_you_will_bind_with',
-  'password' => '_the_password_of_the_bind_user',
-  'tls_options' => {
-    'ca_file' => '',
-    'ssl_version' => '',
-    'ciphers' => '',
-    'cert' => '',
-    'key' => ''
-  },
-  'timeout' => 10,
-  'active_directory' => true,
-  'allow_username_or_email_login' => false,
-  'block_auto_created_users' => false,
-  'base' => 'dc=example,dc=com',
-  'user_filter' => '',
-  'attributes' => {
-    'username' => ['uid', 'userid', 'sAMAccountName'],
-    'email' => ['mail', 'email', 'userPrincipalName'],
-    'name' => 'cn',
-    'first_name' => 'givenName',
-    'last_name' => 'sn'
-  },
-  'lowercase_usernames' => false,
+  'main' => {
+    'label' => 'LDAP',
+    'host' =>  'ldap.mydomain.com',
+    'port' => 389,
+    'uid' => 'sAMAccountName',
+    'encryption' => 'simple_tls',
+    'verify_certificates' => true,
+    'bind_dn' => '_the_full_dn_of_the_user_you_will_bind_with',
+    'password' => '_the_password_of_the_bind_user',
+    'tls_options' => {
+      'ca_file' => '',
+      'ssl_version' => '',
+      'ciphers' => '',
+      'cert' => '',
+      'key' => ''
+    },
+    'timeout' => 10,
+    'active_directory' => true,
+    'allow_username_or_email_login' => false,
+    'block_auto_created_users' => false,
+    'base' => 'dc=example,dc=com',
+    'user_filter' => '',
+    'attributes' => {
+      'username' => ['uid', 'userid', 'sAMAccountName'],
+      'email' => ['mail', 'email', 'userPrincipalName'],
+      'name' => 'cn',
+      'first_name' => 'givenName',
+      'last_name' => 'sn'
+    },
+    'lowercase_usernames' => false,
 
-  # EE Only
-  'group_base' => '',
-  'admin_group' => '',
-  'external_groups' => [],
-  'sync_ssh_keys' => false
+    # EE Only
+    'group_base' => '',
+    'admin_group' => '',
+    'external_groups' => [],
+    'sync_ssh_keys' => false
   }
 }
 ```
@@ -248,33 +248,34 @@ The following example shows how to configure three LDAP servers in `gitlab.rb`:
 ```ruby
 gitlab_rails['ldap_enabled'] = true
 gitlab_rails['ldap_servers'] = {
-'main' => {
-  'label' => 'GitLab AD',
-  'host' =>  'ad.example.org',
-  'port' => 636,
-  ...
+  'main' => {
+    'label' => 'GitLab AD',
+    'host' =>  'ad.example.org',
+    'port' => 636,
+    ...
   },
 
-'secondary' => {
-  'label' => 'GitLab Secondary AD',
-  'host' =>  'ad-secondary.example.net',
-  'port' => 636,
-  ...
+  'secondary' => {
+    'label' => 'GitLab Secondary AD',
+    'host' =>  'ad-secondary.example.net',
+    'port' => 636,
+    ...
   },
 
-'tertiary' => {
-  'label' => 'GitLab Tertiary AD',
-  'host' =>  'ad-tertiary.example.net',
-  'port' => 636,
-  ...
+  'tertiary' => {
+    'label' => 'GitLab Tertiary AD',
+    'host' =>  'ad-tertiary.example.net',
+    'port' => 636,
+    ...
   }
-
 }
 ```
 
-This example results in the following sign-in page:
+This example results in a sign-in page with the following tabs:
 
-![Multiple LDAP servers sign in](img/multi_login.png)
+- **GitLab AD**.
+- **GitLab Secondary AD**.
+- **GitLab Tertiary AD**.
 
 ### Set up LDAP user filter
 
@@ -286,9 +287,9 @@ necessary, you can set up an LDAP user filter. The filter must comply with [RFC 
 
   ```ruby
   gitlab_rails['ldap_servers'] = {
-  'main' => {
-    # snip...
-    'user_filter' => '(employeeType=developer)'
+    'main' => {
+      # snip...
+      'user_filter' => '(employeeType=developer)'
     }
   }
   ```
@@ -363,9 +364,9 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
    ```ruby
    gitlab_rails['ldap_servers'] = {
-   'main' => {
-     # snip...
-     'lowercase_usernames' => true
+     'main' => {
+       # snip...
+       'lowercase_usernames' => true
      }
    }
    ```
@@ -444,15 +445,15 @@ If initially your LDAP configuration looked like:
 
 1. In `/etc/gitlab/gitlab.rb`:
 
-  ```ruby
-    gitlab_rails['ldap_servers'] = {
-    'main' => {
-      # snip...
-      'bind_dn' => 'admin',
-      'password' => '123'
-      }
-    }
-  ```
+   ```ruby
+     gitlab_rails['ldap_servers'] = {
+       'main' => {
+         # snip...
+         'bind_dn' => 'admin',
+         'password' => '123'
+       }
+     }
+   ```
 
 1. Edit the encrypted secret:
 

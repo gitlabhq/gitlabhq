@@ -99,6 +99,10 @@ class Issue < ApplicationRecord
   validates :project, presence: true
   validates :issue_type, presence: true
   validates :namespace, presence: true, if: -> { project.present? }
+  validates :work_item_type, presence: true
+
+  validate :due_date_after_start_date
+  validate :parent_link_confidentiality
 
   enum issue_type: WorkItems::Type.base_types
 
@@ -201,7 +205,7 @@ class Issue < ApplicationRecord
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
 
-  before_validation :ensure_namespace_id
+  before_validation :ensure_namespace_id, :ensure_work_item_type
 
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
@@ -257,17 +261,17 @@ class Issue < ApplicationRecord
       order = ::Gitlab::Pagination::Keyset::Order.build([
         ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: attribute_name,
-           column_expression: column,
-           order_expression: column.send(direction).send(nullable),
-           reversed_order_expression: column.send(reversed_direction).send(nullable),
-           order_direction: direction,
-           distinct: false,
-           add_to_projections: true,
-           nullable: nullable
+          column_expression: column,
+          order_expression: column.send(direction).send(nullable),
+          reversed_order_expression: column.send(reversed_direction).send(nullable),
+          order_direction: direction,
+          distinct: false,
+          add_to_projections: true,
+          nullable: nullable
         ),
         ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'id',
-           order_expression: arel_table['id'].desc
+          order_expression: arel_table['id'].desc
         )
       ])
       # rubocop: enable GitlabSecurity/PublicSend
@@ -288,6 +292,16 @@ class Issue < ApplicationRecord
     override :pg_full_text_search
     def pg_full_text_search(search_term)
       super.where('issue_search_data.project_id = issues.project_id')
+    end
+
+    override :full_search
+    def full_search(query, matched_columns: nil, use_minimum_char_limit: true)
+      return super if query.match?(IssuableFinder::FULL_TEXT_SEARCH_TERM_REGEX)
+
+      super.where(
+        'issues.title NOT SIMILAR TO :pattern OR issues.description NOT SIMILAR TO :pattern',
+        pattern: IssuableFinder::FULL_TEXT_SEARCH_TERM_PATTERN
+      )
     end
   end
 
@@ -660,6 +674,29 @@ class Issue < ApplicationRecord
 
   private
 
+  def due_date_after_start_date
+    return unless start_date.present? && due_date.present?
+
+    if due_date < start_date
+      errors.add(:due_date, 'must be greater than or equal to start date')
+    end
+  end
+
+  # Although parent/child relationship can be set only for WorkItems, we
+  # still need to validate it for Issue model too, because both models use
+  # same table.
+  def parent_link_confidentiality
+    return unless persisted?
+
+    if confidential? && WorkItems::ParentLink.has_public_children?(id)
+      errors.add(:confidential, _('confidential parent can not be used if there are non-confidential children.'))
+    end
+
+    if !confidential? && WorkItems::ParentLink.has_confidential_parent?(id)
+      errors.add(:confidential, _('associated parent is confidential and can not have non-confidential children.'))
+    end
+  end
+
   override :persist_pg_full_text_search_vector
   def persist_pg_full_text_search_vector(search_vector)
     Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
@@ -695,6 +732,12 @@ class Issue < ApplicationRecord
 
   def ensure_namespace_id
     self.namespace = project.project_namespace if project
+  end
+
+  def ensure_work_item_type
+    return if work_item_type_id.present? || work_item_type_id_change&.last.present?
+
+    self.work_item_type = WorkItems::Type.default_by_type(issue_type)
   end
 end
 

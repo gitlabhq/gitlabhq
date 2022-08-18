@@ -41,7 +41,7 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonWriter do
         file_path = File.join(path, exportable_path, "#{relation}.ndjson")
         subject.write_relation(exportable_path, relation, values[0])
 
-        expect {subject.write_relation(exportable_path, relation, values[1])}.to raise_exception("The #{file_path} already exist")
+        expect { subject.write_relation(exportable_path, relation, values[1]) }.to raise_exception("The #{file_path} already exist")
       end
     end
   end

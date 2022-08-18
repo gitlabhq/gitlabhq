@@ -26,6 +26,10 @@ module Gitlab
 
         hook_data[:assignees] = issuable.assignees.map(&:hook_attrs) if issuable.assignees.any?
 
+        if issuable.allows_reviewers? && issuable.reviewers.any?
+          hook_data[:reviewers] = issuable.reviewers.map(&:hook_attrs)
+        end
+
         hook_data
       end
 

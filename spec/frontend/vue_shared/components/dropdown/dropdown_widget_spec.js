@@ -8,7 +8,7 @@ describe('DropdownWidget component', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
 
   const createComponent = ({ props = {} } = {}) => {

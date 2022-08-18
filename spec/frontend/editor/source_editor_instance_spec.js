@@ -423,7 +423,7 @@ describe('Source Editor Instance', () => {
         'changes language of an attached model to "$expectedLanguage" when filepath is "$path"',
         ({ path, expectedLanguage }) => {
           seInstance.updateModelLanguage(path);
-          expect(instanceModel.getLanguageIdentifier().language).toBe(expectedLanguage);
+          expect(instanceModel.getLanguageId()).toBe(expectedLanguage);
         },
       );
     });

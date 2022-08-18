@@ -221,6 +221,7 @@ export default (resolvers = {}, config = {}) => {
   ac = new ApolloClient({
     typeDefs,
     link: appLink,
+    connectToDevTools: process.env.NODE_ENV !== 'production',
     cache: new InMemoryCache({
       ...cacheConfig,
       typePolicies: {

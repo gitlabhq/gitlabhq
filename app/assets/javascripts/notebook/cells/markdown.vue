@@ -1,6 +1,6 @@
 <script>
 import katex from 'katex';
-import marked from 'marked';
+import { marked } from 'marked';
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { sanitize } from '~/lib/dompurify';
 import { hasContent, markdownConfig } from '~/lib/utils/text_utility';

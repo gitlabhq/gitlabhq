@@ -81,6 +81,26 @@ RSpec.shared_examples 'returns packages' do |container_type, user_type|
   end
 end
 
+RSpec.shared_examples 'returns package' do |container_type, user_type|
+  context "for #{user_type}" do
+    before do
+      send(container_type)&.send("add_#{user_type}", user) unless user_type == :no_type
+    end
+
+    it 'returns success response' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:success)
+    end
+
+    it 'returns a valid response schema' do
+      subject
+
+      expect(response).to match_response_schema(single_package_schema)
+    end
+  end
+end
+
 RSpec.shared_examples 'returns packages with subgroups' do |container_type, user_type|
   context "with subgroups for #{user_type}" do
     before do

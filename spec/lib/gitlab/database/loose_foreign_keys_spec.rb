@@ -84,4 +84,32 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
       end
     end
   end
+
+  describe '.definitions' do
+    subject(:definitions) { described_class.definitions }
+
+    it 'contains at least all parent tables that have triggers' do
+      all_definition_parent_tables = definitions.map { |d| d.to_table }.to_set
+
+      triggers_query = <<~SQL
+        SELECT event_object_table, trigger_name
+        FROM information_schema.triggers
+        WHERE trigger_name LIKE '%_loose_fk_trigger'
+        GROUP BY event_object_table, trigger_name
+      SQL
+
+      all_triggers = ApplicationRecord.connection.execute(triggers_query)
+
+      all_triggers.each do |trigger|
+        table = trigger['event_object_table']
+        trigger_name = trigger['trigger_name']
+        error_message = <<~END
+          Missing a loose foreign key definition for parent table: #{table} with trigger: #{trigger_name}.
+          Loose foreign key definitions must be added before triggers are added and triggers must be removed before removing the loose foreign key definition.
+          Read more at https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html ."
+        END
+        expect(all_definition_parent_tables).to include(table), error_message
+      end
+    end
+  end
 end

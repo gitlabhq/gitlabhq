@@ -26,7 +26,7 @@ RSpec.describe 'gitlab:metrics_exporter:install' do
     let(:expected_clone_params) do
       {
         repo: 'https://gitlab.com/gitlab-org/gitlab-metrics-exporter.git',
-        version: 'main',
+        version: an_instance_of(String),
         target_dir: 'path/to/exporter'
       }
     end

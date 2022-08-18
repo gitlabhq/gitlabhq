@@ -26,6 +26,20 @@ const MULTIPLE_RESTRICTED = {
   status: 'error',
 };
 
+const EXPANDED_RESTRICTED = {
+  message: {
+    'email@example.com':
+      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
+    'email4@example.com':
+      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check the Domain denylist.",
+    'email5@example.com':
+      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check the Domain denylist.",
+    root:
+      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
+  },
+  status: 'error',
+};
+
 const EMAIL_TAKEN = {
   message: {
     'email@example.org': "The member's email address has already been taken",
@@ -41,4 +55,5 @@ export const invitationsApiResponse = {
   EMAIL_RESTRICTED,
   MULTIPLE_RESTRICTED,
   EMAIL_TAKEN,
+  EXPANDED_RESTRICTED,
 };

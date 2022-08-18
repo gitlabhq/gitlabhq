@@ -8,6 +8,11 @@ import {
   OPERATOR_IS,
   OPERATOR_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
+} from '~/work_items/constants';
 
 export const i18n = {
   anonymousSearchingMessage: __('You must sign in to search for specific terms.'),
@@ -146,6 +151,20 @@ export const TOKEN_TYPE_EPIC = 'epic_id';
 export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_CONTACT = 'crm_contact';
 export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
+
+export const TYPE_TOKEN_TASK_OPTION = { icon: 'task-done', title: 'task', value: 'task' };
+
+export const defaultWorkItemTypes = [
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
+];
+
+export const defaultTypeTokenOptions = [
+  { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
+  { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
+  { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
+];
 
 export const filters = {
   [TOKEN_TYPE_AUTHOR]: {

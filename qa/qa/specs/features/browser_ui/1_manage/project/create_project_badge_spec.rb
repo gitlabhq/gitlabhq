@@ -42,10 +42,6 @@ module QA
           expect(project.asset_exists?(expected_badge_image_url)).to be_truthy
         end
       end
-
-      after do
-        project&.remove_via_api!
-      end
     end
   end
 end

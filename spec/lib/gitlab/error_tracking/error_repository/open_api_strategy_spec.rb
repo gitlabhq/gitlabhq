@@ -430,7 +430,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
 
     it do
       is_expected
-        .to eq("#{config.scheme}://#{public_key}@#{config.host}/errortracking/api/v1/projects/api/#{project.id}")
+        .to eq("#{config.scheme}://#{public_key}@#{config.host}/errortracking/api/v1/projects/#{project.id}")
     end
   end
 end

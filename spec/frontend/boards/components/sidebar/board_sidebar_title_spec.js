@@ -46,10 +46,10 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
     });
   };
 
-  const findForm = () => wrapper.find(GlForm);
-  const findAlert = () => wrapper.find(GlAlert);
-  const findFormInput = () => wrapper.find(GlFormInput);
-  const findEditableItem = () => wrapper.find(BoardEditableItem);
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findFormInput = () => wrapper.findComponent(GlFormInput);
+  const findEditableItem = () => wrapper.findComponent(BoardEditableItem);
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
   const findTitle = () => wrapper.find('[data-testid="item-title"]');
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');

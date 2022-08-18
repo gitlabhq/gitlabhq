@@ -30,8 +30,8 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
     beforeEach(() => {
       wrapper = factory();
 
-      input = wrapper.find(GlFormInput);
-      formGroup = wrapper.find(ParameterFormGroup);
+      input = wrapper.findComponent(GlFormInput);
+      formGroup = wrapper.findComponent(ParameterFormGroup);
     });
 
     it('displays the current value', () => {
@@ -55,8 +55,8 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
     beforeEach(() => {
       wrapper = factory({ strategy: { parameters: { percentage: '101' } } });
 
-      input = wrapper.find(GlFormInput);
-      formGroup = wrapper.find(ParameterFormGroup);
+      input = wrapper.findComponent(GlFormInput);
+      formGroup = wrapper.findComponent(ParameterFormGroup);
     });
 
     it('shows errors', () => {
@@ -68,8 +68,8 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
     beforeEach(() => {
       wrapper = factory({ strategy: { parameters: { percentage: '3.14' } } });
 
-      input = wrapper.find(GlFormInput);
-      formGroup = wrapper.find(ParameterFormGroup);
+      input = wrapper.findComponent(GlFormInput);
+      formGroup = wrapper.findComponent(ParameterFormGroup);
     });
 
     it('shows errors', () => {

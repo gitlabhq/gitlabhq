@@ -73,7 +73,7 @@ RSpec.describe Ci::PipelineSchedule do
     end
 
     context 'when there are no runnable schedules' do
-      let!(:pipeline_schedule) { }
+      let!(:pipeline_schedule) {}
 
       it 'returns an empty array' do
         is_expected.to be_empty

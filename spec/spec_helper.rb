@@ -53,10 +53,8 @@ end
 require 'rainbow/ext/string'
 Rainbow.enabled = false
 
-# Require JH first because we need override some EE methods with JH methods,
-# if we load EE first, we can't find JH modules in prepend_mod method
-require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 require_relative('../ee/spec/spec_helper') if Gitlab.ee?
+require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -161,7 +159,6 @@ RSpec.configure do |config|
   config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
-  config.include CycleAnalyticsHelpers
   config.include FactoryBot::Syntax::Methods
   config.include FixtureHelpers
   config.include NonExistingRecordsHelpers
@@ -208,6 +205,7 @@ RSpec.configure do |config|
 
   include StubFeatureFlags
   include StubSnowplow
+  include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -334,6 +332,9 @@ RSpec.configure do |config|
       # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
       stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
 
+      # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/369875
+      stub_feature_flags(override_group_level_protected_environment_settings_permission: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags
@@ -389,6 +390,11 @@ RSpec.configure do |config|
 
   config.around(:example, :request_store) do |example|
     Gitlab::WithRequestStore.with_request_store { example.run }
+  end
+
+  config.around(:example, :enable_rugged) do |example|
+    # Skip tests that need rugged when using praefect DB.
+    example.run unless GitalySetup.praefect_with_db?
   end
 
   # previous test runs may have left some resources throttled
@@ -505,3 +511,16 @@ module TouchRackUploadedFile
 end
 
 Rack::Test::UploadedFile.prepend(TouchRackUploadedFile)
+
+# Monkey-patch to enable ActiveSupport::Notifications for Redis commands
+module RedisCommands
+  module Instrumentation
+    def process(commands, &block)
+      ActiveSupport::Notifications.instrument('redis.process_commands', commands: commands) do
+        super(commands, &block)
+      end
+    end
+  end
+end
+
+Redis::Client.prepend(RedisCommands::Instrumentation)

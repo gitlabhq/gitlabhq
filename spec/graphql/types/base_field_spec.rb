@@ -209,7 +209,7 @@ RSpec.describe Types::BaseField do
     describe '#visible?' do
       context 'and has a feature_flag' do
         let(:flag) { :test_feature }
-        let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, feature_flag: flag, null: false) }
+        let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, _deprecated_feature_flag: flag, null: false) }
         let(:context) { {} }
 
         before do
@@ -253,7 +253,7 @@ RSpec.describe Types::BaseField do
 
   describe '#description' do
     context 'feature flag given' do
-      let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, feature_flag: flag, null: false, description: 'Test description.') }
+      let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, _deprecated_feature_flag: flag, null: false, description: 'Test description.') }
       let(:flag) { :test_flag }
 
       it 'prepends the description' do
@@ -299,7 +299,7 @@ RSpec.describe Types::BaseField do
           end
 
           it 'returns the correct availability in the description' do
-            expect(field.description). to eq expected_description
+            expect(field.description).to eq expected_description
           end
         end
       end
@@ -313,11 +313,11 @@ RSpec.describe Types::BaseField do
       described_class.new(**base_args.merge(args))
     end
 
-    it 'interacts well with the `feature_flag` property' do
+    it 'interacts well with the `_deprecated_feature_flag` property' do
       field = subject(
         deprecated: { milestone: '1.10', reason: 'Deprecation reason' },
         description: 'Field description.',
-        feature_flag: 'foo_flag'
+        _deprecated_feature_flag: 'foo_flag'
       )
 
       expect(field.description).to start_with('Field description. Available only when feature flag `foo_flag` is enabled.')

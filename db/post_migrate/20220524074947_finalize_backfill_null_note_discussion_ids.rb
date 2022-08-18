@@ -12,7 +12,7 @@ class FinalizeBackfillNullNoteDiscussionIds < Gitlab::Database::Migration[2.0]
     Gitlab::BackgroundMigration.steal(MIGRATION)
 
     define_batchable_model('notes').where(discussion_id: nil).each_batch(of: BATCH_SIZE) do |batch|
-      range = batch.pluck('MIN(id)', 'MAX(id)').first
+      range = batch.pick('MIN(id)', 'MAX(id)')
 
       Gitlab::BackgroundMigration::BackfillNoteDiscussionId.new.perform(*range)
     end

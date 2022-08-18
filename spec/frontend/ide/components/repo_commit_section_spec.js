@@ -77,8 +77,10 @@ describe('RepoCommitSection', () => {
     });
 
     it('renders no changes text', () => {
-      expect(wrapper.find(EmptyState).text().trim()).toContain('No changes');
-      expect(wrapper.find(EmptyState).find('img').attributes('src')).toBe(TEST_NO_CHANGES_SVG);
+      expect(wrapper.findComponent(EmptyState).text().trim()).toContain('No changes');
+      expect(wrapper.findComponent(EmptyState).find('img').attributes('src')).toBe(
+        TEST_NO_CHANGES_SVG,
+      );
     });
   });
 
@@ -111,7 +113,7 @@ describe('RepoCommitSection', () => {
     });
 
     it('does not show empty state', () => {
-      expect(wrapper.find(EmptyState).exists()).toBe(false);
+      expect(wrapper.findComponent(EmptyState).exists()).toBe(false);
     });
   });
 
@@ -157,7 +159,7 @@ describe('RepoCommitSection', () => {
     });
 
     it('does not show empty state', () => {
-      expect(wrapper.find(EmptyState).exists()).toBe(false);
+      expect(wrapper.findComponent(EmptyState).exists()).toBe(false);
     });
   });
 
@@ -167,7 +169,7 @@ describe('RepoCommitSection', () => {
     beforeEach(async () => {
       createComponent();
 
-      inititializeSpy = jest.spyOn(wrapper.find(RepoCommitSection).vm, 'initialize');
+      inititializeSpy = jest.spyOn(wrapper.findComponent(RepoCommitSection).vm, 'initialize');
       store.state.viewer = 'diff';
 
       await wrapper.vm.reactivate();

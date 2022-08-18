@@ -106,7 +106,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
   end
 
   describe '#stop_working' do
-    subject { memory_killer.send(:stop_working)}
+    subject { memory_killer.send(:stop_working) }
 
     it 'changes enable? to false' do
       expect { subject }.to change { memory_killer.send(:enabled?) }
@@ -355,6 +355,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     let(:reason) { 'rss out of range reason description' }
     let(:queue) { 'default' }
     let(:running_jobs) { [{ jid: jid, worker_class: 'DummyWorker' }] }
+    let(:metrics) { memory_killer.instance_variable_get(:@metrics) }
     let(:worker) do
       Class.new do
         def self.name
@@ -389,6 +390,9 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
           soft_limit_rss: soft_limit_rss,
           reason: reason,
           running_jobs: running_jobs)
+
+      expect(metrics[:sidekiq_memory_killer_running_jobs]).to receive(:increment)
+        .with({ worker_class: "DummyWorker", deadline_exceeded: true })
 
       Gitlab::SidekiqDaemon::Monitor.instance.within_job(DummyWorker, jid, queue) do
         subject

@@ -27,7 +27,7 @@ namespace :gitlab do
         }.stringify_keys
 
         # Generate config.yml based on existing gitlab settings
-        File.open("config.yml", "w+") {|f| f.puts config.to_yaml }
+        File.open("config.yml", "w+") { |f| f.puts config.to_yaml }
 
         [
           %w(bin/install) + repository_storage_paths_args,

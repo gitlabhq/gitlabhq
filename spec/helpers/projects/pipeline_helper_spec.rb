@@ -27,7 +27,13 @@ RSpec.describe Projects::PipelineHelper do
         metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: project.namespace, project_id: project, format: :json),
         pipeline_iid: pipeline.iid,
         pipeline_project_path: project.full_path,
-        total_job_count: pipeline.total_size
+        total_job_count: pipeline.total_size,
+        summary_endpoint: summary_project_pipeline_tests_path(project, pipeline, format: :json),
+        suite_endpoint: project_pipeline_test_path(project, pipeline, suite_name: 'suite', format: :json),
+        blob_path: project_blob_path(project, pipeline.sha),
+        has_test_report: pipeline.has_reports?(Ci::JobArtifact.test_reports),
+        empty_state_image_path: match_asset_path('illustrations/empty-state/empty-test-cases-lg.svg'),
+        artifacts_expired_image_path: match_asset_path('illustrations/pipeline.svg')
       })
     end
   end

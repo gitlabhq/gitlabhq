@@ -41,8 +41,8 @@ module Banzai
         nodes_for_document = entry[:nodes]
 
         doc_data = {
-          document:                entry[:document],
-          total_reference_count:   nodes_for_document.count,
+          document: entry[:document],
+          total_reference_count: nodes_for_document.count,
           visible_reference_count: nodes_for_document.count
         }
 

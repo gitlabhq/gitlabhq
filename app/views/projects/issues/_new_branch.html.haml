@@ -6,11 +6,10 @@
   - create_mr_text = can_create_confidential_merge_request? ? _('Create confidential merge request') : _('Create merge request')
 
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
-  - create_mr_path = project_new_merge_request_path(@project, merge_request: { source_branch: @issue.to_branch_name, target_branch: @project.default_branch, issue_iid: @issue.iid })
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid, format: :json)
   - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
 
-  .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
+  .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path(from: @issue.to_branch_name, source_project: @project, to: @project.default_branch, mr_params: { issue_iid: @issue.iid }), create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.unavailable
       %button.gl-button.btn{ type: 'button', disabled: 'disabled' }
         = gl_loading_icon(inline: true, css_class: 'js-create-mr-spinner gl-button-icon gl-display-none')

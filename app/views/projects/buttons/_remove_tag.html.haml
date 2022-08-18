@@ -8,4 +8,4 @@
     - title = s_('TagsPage|Only a project maintainer or owner can delete a protected tag')
     - disabled = true
 
-= render Pajamas::ButtonComponent.new(variant: :default, icon: 'remove', button_options: { class: "js-delete-tag-button gl-ml-3\!", 'aria-label': s_('TagsPage|Delete tag'), title: title, disabled: disabled, data: { toggle: 'tooltip', container: 'body', path: project_tag_path(@project, tag.name), tag_name: tag.name, is_protected: protected_tag?(project, tag).to_s } })
+= render Pajamas::ButtonComponent.new(variant: :default, icon: 'remove', button_options: { class: "js-delete-tag-button", 'aria-label': s_('TagsPage|Delete tag'), title: title, disabled: disabled, data: { toggle: 'tooltip', container: 'body', path: project_tag_path(@project, tag.name), tag_name: tag.name, is_protected: protected_tag?(project, tag).to_s } })

@@ -64,7 +64,7 @@ variables:
   SAST_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 ```
 
 ### Making IaC analyzers available to all GitLab tiers
@@ -98,11 +98,11 @@ To configure IaC Scanning for a project you can:
 ### Configure IaC Scanning manually
 
 To enable IaC Scanning you must [include](../../../ci/yaml/index.md#includetemplate) the
-[`SAST-IaC.latest.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST-IaC.latest.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
+[`SAST-IaC.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
 
 ```yaml
 include:
-  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 ```
 
 The included template creates IaC scanning jobs in your CI/CD pipeline and scans
@@ -130,3 +130,24 @@ The IaC tool emits a JSON report file in the existing SAST report format. For mo
 
 The JSON report file can be downloaded from the CI pipelines page, or the
 pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`. For more information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
+
+## Troubleshooting
+
+### IaC debug logging
+
+To help troubleshoot IaC jobs, you can increase the [Secure scanner log verbosity](../sast/index.md#logging-level)
+by using a global CI/CD variable set to `debug`:
+
+```yaml
+variables:
+  SECURE_LOG_LEVEL: "debug"
+```
+
+### IaC Scanning findings show as `No longer detected` unexpectedly
+
+If a previously detected finding unexpectedly shows as `No longer detected`, it might
+be due to an update to the scanner. An update can disable rules that are found to
+be ineffective or false positives, and the findings are marked as `No longer detected`:
+
+- In GitLab 15.3, [secret detection in the KICS SAST IaC scanner was disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/346181),
+  so IaC findings in the "Passwords and Secrets" family show as `No longer detected`.

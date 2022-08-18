@@ -253,7 +253,7 @@ Use the toggles to enable or disable features in the project.
 | **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md). |
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
-| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/). |
+| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
 | **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
 
@@ -392,7 +392,7 @@ When you transfer a project to another namespace, you move the project to a diff
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) to which you are transferring.
+- You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
@@ -447,15 +447,16 @@ in GitLab 12.6, and then to [immediate deletion](https://gitlab.com/gitlab-org/g
 
 ### Delayed project deletion **(PREMIUM)**
 
-> [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
+> - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
+> - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 
-Projects can be deleted after a delay period. Multiple settings can affect whether
+Projects in a group (not a personal namespace) can be deleted after a delay period. Multiple settings can affect whether
 delayed project deletion is enabled for a particular project:
 
 - Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#delayed-project-deletion).
   You can enable delayed project deletion as the default setting for new groups, and configure the number of days for the
   delay. For GitLab.com, see the [GitLab.com settings](../../gitlab_com/index.md#delayed-project-deletion).
-- Group [settings](../../group/index.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
+- Group [settings](../../group/manage.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
   projects in the group.
 
 ### Delete a project immediately

@@ -40,7 +40,7 @@ module Ci
           key, value = scan_line!(line)
 
           variables[key] = Ci::JobVariable.new(job_id: artifact.job_id,
-            source: :dotenv, key: key, value: value)
+                                               source: :dotenv, key: key, value: value)
         end
       end
 

@@ -21,7 +21,7 @@ class Integration < ApplicationRecord
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat harbor irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
-    pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack zentao
+    pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack zentao
   ].freeze
 
   # TODO Shimo is temporary disabled on group and instance-levels.
@@ -47,6 +47,9 @@ class Integration < ApplicationRecord
   SECTION_TYPE_CONFIGURATION = 'configuration'
   SECTION_TYPE_CONNECTION = 'connection'
   SECTION_TYPE_TRIGGER = 'trigger'
+
+  SNOWPLOW_EVENT_ACTION = 'perform_integrations_action'
+  SNOWPLOW_EVENT_LABEL = 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly'
 
   attr_encrypted :properties,
                  mode: :per_attribute_iv,
@@ -89,7 +92,6 @@ class Integration < ApplicationRecord
 
   belongs_to :project, inverse_of: :integrations
   belongs_to :group, inverse_of: :integrations
-  has_one :service_hook, inverse_of: :integration, foreign_key: :service_id
 
   validates :project_id, presence: true, unless: -> { instance_level? || group_level? }
   validates :group_id, presence: true, unless: -> { instance_level? || project_level? }

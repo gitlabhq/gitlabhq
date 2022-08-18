@@ -14,7 +14,7 @@ module ActiveRecord
       @skip_schema_queries = skip_schema_queries
       @query_recorder_debug = ENV['QUERY_RECORDER_DEBUG'] || query_recorder_debug
       @log_file = log_file
-      record(&block) if block_given?
+      record(&block) if block
     end
 
     def record(&block)

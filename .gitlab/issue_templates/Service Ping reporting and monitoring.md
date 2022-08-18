@@ -1,6 +1,6 @@
-<!-- This issue template is used by https://about.gitlab.com/handbook/engineering/development/growth/product-intelligence/ for tracking effort around Service Ping reporting for GitLab.com -->
+<!-- This issue template is used by https://about.gitlab.com/handbook/engineering/development/analytics-section/product-intelligence/ for tracking effort around Service Ping reporting for GitLab.com -->
 
-The [Product Intelligence group](https://about.gitlab.com/handbook/engineering/development/growth/product-intelligence/) runs manual reporting of ServicePing for GitLab.com on a weekly basis. This issue captures:
+The [Product Intelligence group](https://about.gitlab.com/handbook/engineering/development/analytics/product-intelligence/) runs manual reporting of ServicePing for GitLab.com on a weekly basis. This issue:
 
 - Captures the work required to complete the reporting process,.
 - Captures the follow-up tasks that are focused on metrics performance verification.
@@ -123,7 +123,7 @@ If you get mentioned, check the failing metric and open an optimization issue.
 <!-- Do not edit below this line -->
 
 /confidential
-/label ~"group::product intelligence" ~"devops::growth" ~backend ~"section::growth" ~"Category:Service Ping"
+/label ~"group::product intelligence" ~"devops::analytics" ~backend ~"section::analytics" ~"Category:Service Ping"
 /epic https://gitlab.com/groups/gitlab-org/-/epics/6000
 /weight 5
 /title Monitor and Generate GitLab.com Service Ping

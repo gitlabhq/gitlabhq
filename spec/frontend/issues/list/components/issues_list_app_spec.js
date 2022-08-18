@@ -52,6 +52,12 @@ import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
+} from '~/work_items/constants';
 
 jest.mock('@sentry/browser');
 jest.mock('~/flash');
@@ -123,6 +129,7 @@ describe('CE IssuesListApp component', () => {
   const mountComponent = ({
     provide = {},
     data = {},
+    workItems = false,
     issuesQueryResponse = mockIssuesQueryResponse,
     issuesCountsQueryResponse = mockIssuesCountsQueryResponse,
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
@@ -141,6 +148,9 @@ describe('CE IssuesListApp component', () => {
       apolloProvider: createMockApollo(requestHandlers),
       router,
       provide: {
+        glFeatures: {
+          workItems,
+        },
         ...defaultProvide,
         ...provide,
       },
@@ -166,22 +176,6 @@ describe('CE IssuesListApp component', () => {
       wrapper = mountComponent();
       jest.runOnlyPendingTimers();
       return waitForPromises();
-    });
-
-    it('queries list with types `ISSUE` and `INCIDENT', () => {
-      const expectedTypes = ['ISSUE', 'INCIDENT', 'TEST_CASE'];
-
-      expect(mockIssuesQueryResponse).toHaveBeenCalledWith(
-        expect.objectContaining({
-          types: expectedTypes,
-        }),
-      );
-
-      expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
-        expect.objectContaining({
-          types: expectedTypes,
-        }),
-      );
     });
 
     it('renders', () => {
@@ -1024,6 +1018,21 @@ describe('CE IssuesListApp component', () => {
         });
       });
     });
+
+    describe('when "page-size-change" event is emitted by IssuableList', () => {
+      it('updates url params with new page size', async () => {
+        wrapper = mountComponent();
+        router.push = jest.fn();
+
+        findIssuableList().vm.$emit('page-size-change', 50);
+        await nextTick();
+
+        expect(router.push).toHaveBeenCalledTimes(1);
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({ first_page_size: 50 }),
+        });
+      });
+    });
   });
 
   describe('public visibility', () => {
@@ -1045,17 +1054,45 @@ describe('CE IssuesListApp component', () => {
     });
   });
 
-  describe('when "page-size-change" event is emitted by IssuableList', () => {
-    it('updates url params with new page size', async () => {
-      wrapper = mountComponent();
-      router.push = jest.fn();
+  describe('fetching issues', () => {
+    describe('when work_items feature flag is disabled', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ workItems: false });
+        jest.runOnlyPendingTimers();
+      });
 
-      findIssuableList().vm.$emit('page-size-change', 50);
-      await nextTick();
+      it('fetches issue, incident, and test case types', () => {
+        const types = [
+          WORK_ITEM_TYPE_ENUM_ISSUE,
+          WORK_ITEM_TYPE_ENUM_INCIDENT,
+          WORK_ITEM_TYPE_ENUM_TEST_CASE,
+        ];
 
-      expect(router.push).toHaveBeenCalledTimes(1);
-      expect(router.push).toHaveBeenCalledWith({
-        query: expect.objectContaining({ first_page_size: 50 }),
+        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
+        expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
+          expect.objectContaining({ types }),
+        );
+      });
+    });
+
+    describe('when work_items feature flag is enabled', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ workItems: true });
+        jest.runOnlyPendingTimers();
+      });
+
+      it('fetches issue, incident, test case, and task types', () => {
+        const types = [
+          WORK_ITEM_TYPE_ENUM_ISSUE,
+          WORK_ITEM_TYPE_ENUM_INCIDENT,
+          WORK_ITEM_TYPE_ENUM_TEST_CASE,
+          WORK_ITEM_TYPE_ENUM_TASK,
+        ];
+
+        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
+        expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
+          expect.objectContaining({ types }),
+        );
       });
     });
   });

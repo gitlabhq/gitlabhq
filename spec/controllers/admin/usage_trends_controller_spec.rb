@@ -13,5 +13,18 @@ RSpec.describe Admin::UsageTrendsController do
     it_behaves_like 'tracking unique visits', :index do
       let(:target_id) { 'i_analytics_instance_statistics' }
     end
+
+    it_behaves_like 'Snowplow event tracking' do
+      subject { get :index }
+
+      let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+      let(:category) { described_class.name }
+      let(:action) { 'perform_analytics_usage_action' }
+      let(:label) { 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly' }
+      let(:property) { 'i_analytics_instance_statistics' }
+      let(:namespace) { nil }
+      let(:project) { nil }
+      let(:user) { admin }
+    end
   end
 end

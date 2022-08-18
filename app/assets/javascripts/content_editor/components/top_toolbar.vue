@@ -93,7 +93,7 @@ export default {
       icon-name="list-task"
       class="gl-mx-2 gl-display-none gl-sm-display-inline"
       editor-command="toggleTaskList"
-      :label="__('Add a task list')"
+      :label="__('Add a checklist')"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-image-button

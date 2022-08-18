@@ -7,12 +7,12 @@ RSpec.describe 'Group issues page' do
   include DragTo
 
   let(:group) { create(:group) }
-  let(:project) { create(:project, :public, group: group)}
+  let(:project) { create(:project, :public, group: group) }
   let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
   context 'with shared examples', :js do
-    let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
+    let(:issuable) { create(:issue, project: project, title: "this is my created issuable") }
 
     include_examples 'project features apply to issuables', Issue
 
@@ -68,7 +68,7 @@ RSpec.describe 'Group issues page' do
 
   context 'issues list', :js do
     let(:subgroup) { create(:group, parent: group) }
-    let(:subgroup_project) { create(:project, :public, group: subgroup)}
+    let(:subgroup_project) { create(:project, :public, group: subgroup) }
     let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
     let!(:issue) { create(:issue, project: project, title: 'root group issue') }
     let!(:subgroup_issue) { create(:issue, project: subgroup_project, title: 'subgroup issue') }

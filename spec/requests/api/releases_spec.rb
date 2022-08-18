@@ -962,7 +962,7 @@ RSpec.describe API::Releases do
     context 'with milestones' do
       let(:subject) { post api("/projects/#{project.id}/releases", maintainer), params: params }
       let(:milestone) { create(:milestone, project: project, title: 'v1.0') }
-      let(:returned_milestones) { json_response['milestones'].map {|m| m['title']} }
+      let(:returned_milestones) { json_response['milestones'].map { |m| m['title'] } }
 
       before do
         params.merge!(milestone_params)
@@ -1120,7 +1120,7 @@ RSpec.describe API::Releases do
     end
 
     context 'when there are no corresponding releases' do
-      let!(:release) { }
+      let!(:release) {}
 
       it 'forbids the request' do
         put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
@@ -1158,7 +1158,7 @@ RSpec.describe API::Releases do
     end
 
     context 'with milestones' do
-      let(:returned_milestones) { json_response['milestones'].map {|m| m['title']} }
+      let(:returned_milestones) { json_response['milestones'].map { |m| m['title'] } }
 
       subject { put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params }
 
@@ -1310,7 +1310,7 @@ RSpec.describe API::Releases do
     end
 
     context 'when there are no corresponding releases' do
-      let!(:release) { }
+      let!(:release) {}
 
       it 'forbids the request' do
         delete api("/projects/#{project.id}/releases/v0.1", maintainer)

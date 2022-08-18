@@ -1,5 +1,5 @@
 .text-center
-  .svg-content.qa-label-svg
+  .svg-content{ data: { qa_selector: 'label_svg_content' } }
     = image_tag 'illustrations/priority_labels.svg'
   - if can?(current_user, :admin_label, @project)
     %p

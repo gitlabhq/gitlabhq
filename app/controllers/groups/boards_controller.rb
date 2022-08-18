@@ -10,8 +10,8 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:board_multi_select, group)
     push_frontend_feature_flag(:realtime_labels, group)
     experiment(:prominent_create_board_btn, subject: current_user) do |e|
-      e.control { }
-      e.candidate { }
+      e.control {}
+      e.candidate {}
     end.run
   end
 

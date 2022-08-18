@@ -8,16 +8,8 @@ describe('First pipeline card', () => {
   let wrapper;
   let trackingSpy;
 
-  const defaultProvide = {
-    runnerHelpPagePath: '/help/runners',
-  };
-
   const createComponent = () => {
-    wrapper = mount(FirstPipelineCard, {
-      provide: {
-        ...defaultProvide,
-      },
-    });
+    wrapper = mount(FirstPipelineCard);
   };
 
   const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name });
@@ -43,7 +35,7 @@ describe('First pipeline card', () => {
   });
 
   it('renders the link', () => {
-    expect(findRunnersLink().href).toContain(defaultProvide.runnerHelpPagePath);
+    expect(findRunnersLink().href).toBe(wrapper.vm.$options.RUNNER_HELP_URL);
   });
 
   describe('tracking', () => {

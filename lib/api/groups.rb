@@ -394,9 +394,10 @@ module API
 
       desc 'Transfer a group to a new parent group or promote a subgroup to a root group'
       params do
-        optional :group_id, type: Integer,
-          desc: 'The ID of the target group to which the group needs to be transferred to.'\
-                'If not provided, the source group will be promoted to a root group.'
+        optional :group_id,
+                 type: Integer,
+                 desc: 'The ID of the target group to which the group needs to be transferred to.'\
+                       'If not provided, the source group will be promoted to a root group.'
       end
       post ':id/transfer', feature_category: :subgroups do
         group = find_group!(params[:id])

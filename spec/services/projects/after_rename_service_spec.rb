@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AfterRenameService do
-  let(:rugged_config) { rugged_repo(project.repository).config }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::Hashed.new(project) }
   let!(:path_before_rename) { project.path }
@@ -71,10 +70,10 @@ RSpec.describe Projects::AfterRenameService do
         end
       end
 
-      it 'updates project full path in .git/config' do
+      it 'updates project full path in gitaly' do
         service_execute
 
-        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.full_path).to eq(project.full_path)
       end
 
       it 'updates storage location' do
@@ -173,10 +172,10 @@ RSpec.describe Projects::AfterRenameService do
         end
       end
 
-      it 'updates project full path in .git/config' do
+      it 'updates project full path in gitaly' do
         service_execute
 
-        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.full_path).to eq(project.full_path)
       end
 
       it 'updates storage location' do

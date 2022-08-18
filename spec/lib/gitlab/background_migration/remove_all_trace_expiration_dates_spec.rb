@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RemoveAllTraceExpirationDates, :migration, schema: 20220131000001 do
+RSpec.describe Gitlab::BackgroundMigration::RemoveAllTraceExpirationDates, :migration,
+               :suppress_gitlab_schemas_validate_connection, schema: 20220131000001 do
   subject(:perform) { migration.perform(1, 99) }
 
   let(:migration) { described_class.new }

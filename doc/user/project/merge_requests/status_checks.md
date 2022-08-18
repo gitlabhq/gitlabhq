@@ -10,6 +10,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/statu
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
+> - `failed` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329636) in GitLab 14.9.
 
 You can create a status check that sends merge request data to third-party tools.
 When users create, change, or close merge requests, GitLab sends a notification. The users or automated workflows
@@ -50,9 +51,8 @@ Merge requests return a `409 Conflict` error to any responses that do not refer 
 External status checks have the following states:
 
 - `pending` - The default state. No response can been received by the merge request from the external service.
-- `response received` - A response from the external service has been received and approved by it.
-
-Support for adding a `failed` state is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
+- `passed` - A response from the external service has been received and approved by it.
+- `failed` - A response from the external service has been received and denied by it.
 
 If something changes outside of GitLab, you can [set the status of an external status check](../../../api/status_checks.md#set-status-of-an-external-status-check)
 using the API. You don't need to wait for a merge request webhook payload to be sent first.
@@ -138,24 +138,18 @@ the status check and it **will not** be recoverable.
 
 ## Status checks widget
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
+> - UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
 
-The status checks widget displays in merge requests and shows the status of external
-status checks:
+The status checks widget displays in merge requests and displays the following statuses:
 
-![Status checks widget](img/status_checks_widget_passed_v14_0.png)
+- **pending** (**{status-neutral}**), while GitLab waits for a response from an external status check.
+- **success** (**{status-success}**) or **failed** (**{status-failed}**), when GitLab receives a response from an external status check.
 
 An organization might have a policy that does not allow merging merge requests if
 external status checks do not pass. However, the details in the widget are for informational
 purposes only. GitLab does not prevent merging of merge requests that fail status checks.
-
-While GitLab waits for a response from the external status check, the widget shows
-the status checks as `pending`:
-
-![Status checks widget pending](img/status_checks_widget_pending_v14_0.png)
-
-After GitLab [receives a response](../../../api/status_checks.md#set-status-of-an-external-status-check)
-from the external status check, the widget updates accordingly.
+Support to allow merges to be blocked when external status checks fail is proposed in epic [&8516](https://gitlab.com/groups/gitlab-org/-/epics/8516).
 
 NOTE:
 GitLab cannot guarantee that the external status checks are properly processed by

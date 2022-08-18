@@ -15,12 +15,25 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
   describe '#queue_batched_background_migration' do
     let(:pgclass_info) { instance_double('Gitlab::Database::PgClass', cardinality_estimate: 42) }
+    let(:job_class) do
+      Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+        def self.name
+          'MyJobClass'
+        end
+      end
+    end
 
     before do
       allow(Gitlab::Database::PgClass).to receive(:for_table).and_call_original
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
 
       allow(migration).to receive(:transaction_open?).and_return(false)
+
+      stub_const("Gitlab::Database::BackgroundMigration::BatchedMigration::JOB_CLASS_MODULE", '')
+      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigration) do |batched_migration|
+        allow(batched_migration).to receive(:job_class)
+          .and_return(job_class)
+      end
     end
 
     context 'when such migration already exists' do
@@ -42,7 +55,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
         expect do
           migration.queue_batched_background_migration(
-            'MyJobClass',
+            job_class.name,
             :projects,
             :id,
             [:id], [:id_convert_to_bigint],
@@ -62,7 +75,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
       expect do
         migration.queue_batched_background_migration(
-          'MyJobClass',
+          job_class.name,
           :projects,
           :id,
           job_interval: 5.minutes,
@@ -97,7 +110,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
       it 'sets the job interval to the minimum value' do
         expect do
-          migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: minimum_delay - 1.minute)
+          migration.queue_batched_background_migration(job_class.name, :events, :id, job_interval: minimum_delay - 1.minute)
         end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
         created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
@@ -107,26 +120,76 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
     end
 
     context 'when additional arguments are passed to the method' do
-      it 'saves the arguments on the database record' do
-        expect do
-          migration.queue_batched_background_migration(
-            'MyJobClass',
-            :projects,
-            :id,
-            'my',
-            'arguments',
-            job_interval: 5.minutes,
-            batch_max_value: 1000)
-        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+      context 'when the job class provides job_arguments_count' do
+        context 'when defined job arguments for the job class does not match provided arguments' do
+          it 'raises an error' do
+            expect do
+              migration.queue_batched_background_migration(
+                job_class.name,
+                :projects,
+                :id,
+                'my',
+                'arguments',
+                job_interval: 2.minutes)
+            end.to raise_error(RuntimeError, /Wrong number of job arguments for MyJobClass \(given 2, expected 0\)/)
+          end
+        end
 
-        expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to have_attributes(
-          job_class_name: 'MyJobClass',
-          table_name: 'projects',
-          column_name: 'id',
-          interval: 300,
-          min_value: 1,
-          max_value: 1000,
-          job_arguments: %w[my arguments])
+        context 'when defined job arguments for the job class match provided arguments' do
+          let(:job_class) do
+            Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+              def self.name
+                'MyJobClass'
+              end
+
+              job_arguments :foo, :bar
+            end
+          end
+
+          it 'saves the arguments on the database record' do
+            expect do
+              migration.queue_batched_background_migration(
+                job_class.name,
+                :projects,
+                :id,
+                'my',
+                'arguments',
+                job_interval: 5.minutes,
+                batch_max_value: 1000)
+            end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+
+            expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to have_attributes(
+              job_class_name: 'MyJobClass',
+              table_name: 'projects',
+              column_name: 'id',
+              interval: 300,
+              min_value: 1,
+              max_value: 1000,
+              job_arguments: %w[my arguments])
+          end
+        end
+      end
+
+      context 'when the job class does not provide job_arguments_count' do
+        let(:job_class) do
+          Class.new do
+            def self.name
+              'MyJobClass'
+            end
+          end
+        end
+
+        it 'does not raise an error' do
+          expect do
+            migration.queue_batched_background_migration(
+              job_class.name,
+              :projects,
+              :id,
+              'my',
+              'arguments',
+              job_interval: 2.minutes)
+          end.not_to raise_error
+        end
       end
     end
 
@@ -138,7 +201,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
         it 'creates the record with the current max value' do
           expect do
-            migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: 5.minutes)
+            migration.queue_batched_background_migration(job_class.name, :events, :id, job_interval: 5.minutes)
           end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
           created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
@@ -148,7 +211,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
         it 'creates the record with an active status' do
           expect do
-            migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: 5.minutes)
+            migration.queue_batched_background_migration(job_class.name, :events, :id, job_interval: 5.minutes)
           end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
           expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to be_active
@@ -158,7 +221,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       context 'when the database is empty' do
         it 'sets the max value to the min value' do
           expect do
-            migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: 5.minutes)
+            migration.queue_batched_background_migration(job_class.name, :events, :id, job_interval: 5.minutes)
           end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
           created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
@@ -168,7 +231,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
         it 'creates the record with a finished status' do
           expect do
-            migration.queue_batched_background_migration('MyJobClass', :projects, :id, job_interval: 5.minutes)
+            migration.queue_batched_background_migration(job_class.name, :projects, :id, job_interval: 5.minutes)
           end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
           expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to be_finished
@@ -181,7 +244,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         expect(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_ci)
 
         expect do
-          migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: 5.minutes)
+          migration.queue_batched_background_migration(job_class.name, :events, :id, job_interval: 5.minutes)
         end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
         created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last

@@ -35,7 +35,7 @@ module Gitlab
     end
 
     def self.key?(key)
-      key.is_a?(String) && key =~ /\A#{KEY_PREFIX}:\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
+      key.is_a?(String) && key =~ /\A#{KEY_PREFIX}:\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/o
     end
 
     attr_reader :key, :finished, :worker_label

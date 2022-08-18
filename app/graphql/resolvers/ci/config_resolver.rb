@@ -38,8 +38,8 @@ module Resolvers
           .validate(content, dry_run: dry_run)
 
         response(result)
-      rescue GRPC::InvalidArgument => error
-        Gitlab::ErrorTracking.track_and_raise_exception(error, sha: sha)
+      rescue GRPC::InvalidArgument => e
+        Gitlab::ErrorTracking.track_and_raise_exception(e, sha: sha)
       end
 
       private

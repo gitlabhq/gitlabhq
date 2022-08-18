@@ -99,7 +99,7 @@ describe('IDE pipelines list', () => {
         },
       );
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     });
 
     it('renders loading state', () => {
@@ -111,7 +111,7 @@ describe('IDE pipelines list', () => {
         },
       );
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 
@@ -128,7 +128,7 @@ describe('IDE pipelines list', () => {
     it('renders empty state when no latestPipeline', () => {
       createComponent({}, { ...defaultPipelinesLoadedState, latestPipeline: null });
 
-      expect(wrapper.find(EmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
       expect(wrapper.element).toMatchSnapshot();
     });
 
@@ -144,7 +144,7 @@ describe('IDE pipelines list', () => {
 
       it('renders ci icon', () => {
         createComponent({}, withLatestPipelineState);
-        expect(wrapper.find(CiIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
       });
 
       it('renders pipeline data', () => {
@@ -158,7 +158,7 @@ describe('IDE pipelines list', () => {
         const isLoadingJobs = true;
         createComponent({}, { ...withLatestPipelineState, stages, isLoadingJobs });
 
-        const jobProps = wrapper.findAll(GlTab).at(0).find(JobsList).props();
+        const jobProps = wrapper.findAllComponents(GlTab).at(0).findComponent(JobsList).props();
         expect(jobProps.stages).toBe(stages);
         expect(jobProps.loading).toBe(isLoadingJobs);
       });
@@ -169,7 +169,7 @@ describe('IDE pipelines list', () => {
         const isLoadingJobs = true;
         createComponent({}, { ...withLatestPipelineState, isLoadingJobs });
 
-        const jobProps = wrapper.findAll(GlTab).at(1).find(JobsList).props();
+        const jobProps = wrapper.findAllComponents(GlTab).at(1).findComponent(JobsList).props();
         expect(jobProps.stages).toBe(failedStages);
         expect(jobProps.loading).toBe(isLoadingJobs);
       });

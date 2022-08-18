@@ -74,13 +74,7 @@ export default {
     <status-icon :show-disabled-button="true" status="warning" />
 
     <div class="media-body space-children">
-      <span
-        :class="{
-          'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget,
-        }"
-        class="bold js-branch-text"
-        data-testid="widget-content"
-      >
+      <span class="gl-ml-0! gl-text-body! bold js-branch-text" data-testid="widget-content">
         <gl-sprintf :message="warning">
           <template #code="{ content }">
             <code>{{ content }}</code>

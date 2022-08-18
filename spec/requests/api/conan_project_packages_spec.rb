@@ -93,7 +93,7 @@ RSpec.describe API::ConanProjectPackages do
     end
 
     describe 'DELETE /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel' do
-      subject { delete api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}"), headers: headers}
+      subject { delete api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}"), headers: headers }
 
       it_behaves_like 'delete package endpoint'
     end

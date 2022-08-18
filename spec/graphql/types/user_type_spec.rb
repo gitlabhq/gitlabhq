@@ -49,7 +49,7 @@ RSpec.describe GitlabSchema.types['User'] do
   end
 
   describe 'name field' do
-    let_it_be(:admin) { create(:user, :admin)}
+    let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:user) { create(:user) }
     let_it_be(:requested_user) { create(:user, name: 'John Smith') }
     let_it_be(:requested_project_bot) { create(:user, :project_bot, name: 'Project bot') }

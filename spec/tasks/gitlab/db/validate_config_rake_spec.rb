@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
+RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_schemas_validate_connection do
   # We don't need to delete this data since it only modifies `ar_internal_metadata`
   # which would not be cleaned either by `DbCleaner`
   self.use_transactional_tests = false

@@ -177,10 +177,10 @@ describe('Environment table', () => {
       },
     });
 
-    wrapper.find(DeployBoard).vm.$emit('changeCanaryWeight', 40);
+    wrapper.findComponent(DeployBoard).vm.$emit('changeCanaryWeight', 40);
     await nextTick();
 
-    expect(wrapper.find(CanaryUpdateModal).props()).toMatchObject({
+    expect(wrapper.findComponent(CanaryUpdateModal).props()).toMatchObject({
       weight: 40,
       environment: mockItem,
     });

@@ -16,4 +16,21 @@ RSpec.describe Gitlab::Database::AsyncIndexes::PostgresAsyncIndex, type: :model 
     it { is_expected.to validate_presence_of(:definition) }
     it { is_expected.to validate_length_of(:definition).is_at_most(definition_limit) }
   end
+
+  describe 'scopes' do
+    let!(:async_index_creation) { create(:postgres_async_index) }
+    let!(:async_index_destruction) { create(:postgres_async_index, :with_drop) }
+
+    describe '.to_create' do
+      subject { described_class.to_create }
+
+      it { is_expected.to contain_exactly(async_index_creation) }
+    end
+
+    describe '.to_drop' do
+      subject { described_class.to_drop }
+
+      it { is_expected.to contain_exactly(async_index_destruction) }
+    end
+  end
 end

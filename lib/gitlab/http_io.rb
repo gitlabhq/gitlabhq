@@ -153,7 +153,7 @@ module Gitlab
           http.request(request)
         end
 
-        raise FailedToGetChunkError unless response.code == '200' || response.code == '206'
+        raise FailedToGetChunkError, "Unexpected response code: #{response.code}" unless response.code == '200' || response.code == '206'
 
         @chunk = response.body.force_encoding(Encoding::BINARY)
         @chunk_range = response.content_range

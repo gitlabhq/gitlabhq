@@ -49,7 +49,10 @@ module Mutations
         end
 
         def reset_token(scope)
-          ::Ci::Runners::ResetRegistrationTokenService.new(scope, current_user).execute if scope
+          return unless scope
+
+          result = ::Ci::Runners::ResetRegistrationTokenService.new(scope, current_user).execute
+          result.payload[:new_registration_token] if result.success?
         end
       end
     end

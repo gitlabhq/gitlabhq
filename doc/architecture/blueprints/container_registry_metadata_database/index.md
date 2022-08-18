@@ -78,7 +78,7 @@ The single entrypoint for the registry is the [HTTP API](https://gitlab.com/gitl
 | Operation                                                    | UI                 | Background               | Observations                                                 |
 | ------------------------------------------------------------ | ------------------ | ------------------------ | ------------------------------------------------------------ |
 | [Check API version](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#api-version-check) | **{check-circle}** Yes | **{check-circle}** Yes | Used globally to ensure that the registry supports the Docker Distribution V2 API, as well as for identifying whether GitLab Rails is talking to the GitLab Container Registry or a third-party one (used to toggle features only available in the former). |
-| [List repository tags](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#listing-image-tags) | **{check-circle}** Yes | **{check-circle}** Yes | Used to list and show tags in the UI. Used to list tags in the background for [cleanup policies](../../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) and [Geo replication](../../../administration/geo/replication/docker_registry.md). |
+| [List repository tags](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#listing-image-tags) | **{check-circle}** Yes | **{check-circle}** Yes | Used to list and show tags in the UI. Used to list tags in the background for [cleanup policies](../../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) and [Geo replication](../../../administration/geo/replication/container_registry.md). |
 | [Check if manifest exists](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#existing-manifests) | **{check-circle}** Yes | **{dotted-circle}** No | Used to get the digest of a manifest by tag. This is then used to pull the manifest and show the tag details in the UI. |
 | [Pull manifest](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pulling-an-image-manifest) | **{check-circle}** Yes | **{dotted-circle}** No | Used to show the image size and the manifest digest in the tag details UI. |
 | [Pull blob](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pulling-a-layer) | **{check-circle}** Yes | **{dotted-circle}** No | Used to show the configuration digest and the creation date in the tag details UI. |
@@ -148,7 +148,7 @@ The interaction between the registry and its clients, including GitLab Rails and
 
 Following the GitLab [Go standards and style guidelines](../../../development/go_guide), no ORM is used to manage the database, only the [`database/sql`](https://pkg.go.dev/database/sql) package from the Go standard library, a PostgreSQL driver ([`lib/pq`](https://pkg.go.dev/github.com/lib/pq?tab=doc)) and raw SQL queries, over a TCP connection pool.
 
-The design and development of the registry database adhere to the GitLab [database guidelines](../../../development/database/). Being a Go application, the required tooling to support the database will have to be developed, such as for running database migrations.
+The design and development of the registry database adhere to the GitLab [database guidelines](../../../development/database/index.md). Being a Go application, the required tooling to support the database will have to be developed, such as for running database migrations.
 
 Running *online* and [*post deployment*](../../../development/database/post_deployment_migrations.md) migrations is already supported by the registry CLI, as described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/database-migrations.md).
 
@@ -160,7 +160,7 @@ Although blobs are shared across repositories, manifest and tag metadata are sco
 
 #### GitLab.com
 
-Due to scale, performance and isolation concerns, for GitLab.com the registry database will be on a separate dedicated PostgreSQL cluster. Please see [#93](https://gitlab.com/gitlab-org/container-registry/-/issues/93) and [GitLab-com/gl-infra/infrastructure#10109](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10109) for additional context.
+Due to scale, performance and isolation concerns, for GitLab.com the registry database will be on a separate dedicated PostgreSQL cluster. Please see [#93](https://gitlab.com/gitlab-org/container-registry/-/issues/93) and [GitLab-com/gl-infra/reliability#10109](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10109) for additional context.
 
 The diagram below illustrates the architecture of the database cluster:
 
@@ -272,7 +272,7 @@ The expected registry behavior will be covered with integration tests, using a p
 
 Apart from unusual network and systems conditions, problematic migrations and data failures can also affect the database availability and, as a consequence, the registry availability.
 
-Database migrations will adhere to the same [development best practices](../../../development/database/) used for GitLab Rails, except Rails-specific methods and tools, as the registry is a Go application with no ORM, and migrations are therefore expressed with raw SQL statements. Regardless, all changes will require a review and approval from the Database team.
+Database migrations will adhere to the same [development best practices](../../../development/database/index.md) used for GitLab Rails, except Rails-specific methods and tools, as the registry is a Go application with no ORM, and migrations are therefore expressed with raw SQL statements. Regardless, all changes will require a review and approval from the Database team.
 
 Database migrations will be idempotent, with guard clauses used whenever necessary. It is also intended to guarantee that they are forward compatible. For a clustered environment, a node running registry version `N` should not cause any issues when the database schema is from version `N`+1.
 
@@ -280,9 +280,9 @@ Database migrations will be idempotent, with guard clauses used whenever necessa
 
 Adding one more component to the system makes it even more critical to guarantee that we have proper observability over the registry's behavior and its dependencies. It should be guaranteed that we have all the necessary tools in place before rolling out the new registry backed by the metadata database.
 
-For this purpose, [error reporting with Sentry](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11297), [improved structured logging](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10933), and [improved HTTP metrics](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10935) were already implemented and released. At the time of writing, the GitLab.com rollout is in progress.
+For this purpose, [error reporting with Sentry](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11297), [improved structured logging](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10933), and [improved HTTP metrics](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10935) were already implemented and released. At the time of writing, the GitLab.com rollout is in progress.
 
-Additionally, the Prometheus metrics will be augmented with [details on the database connection pool](https://gitlab.com/gitlab-org/container-registry/-/issues/238). These will be added to the registry Grafana dashboards, joining the existing HTTP API, deployment, and storage metrics. The database cluster for the registry [will also have metrics and alerts](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11447).
+Additionally, the Prometheus metrics will be augmented with [details on the database connection pool](https://gitlab.com/gitlab-org/container-registry/-/issues/238). These will be added to the registry Grafana dashboards, joining the existing HTTP API, deployment, and storage metrics. The database cluster for the registry [will also have metrics and alerts](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11447).
 
 Together, these resources should provide an adequate level of insight into the registry's performance and behavior.
 
@@ -343,7 +343,7 @@ A more detailed list of all tasks, as well as periodic progress updates can be f
 - [Proposal for continuous, on-demand online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/issues/199)
 - [Gradual migration proposal for the GitLab.com container registry](https://gitlab.com/gitlab-org/container-registry/-/issues/191)
 - [Create a self-serve registry deployment](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/316)
-- [Database cluster for container registry](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11154)
+- [Database cluster for container registry](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11154)
 
 ## Who
 

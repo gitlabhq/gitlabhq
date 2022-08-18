@@ -16,7 +16,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
 
   describe '#execute' do
     shared_examples 'token creation fails' do
-      let(:resource) { create(:project)}
+      let(:resource) { create(:project) }
 
       it 'does not add the project bot as a member' do
         expect { subject }.not_to change { resource.members.count }

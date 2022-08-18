@@ -6,7 +6,7 @@ module Gitlab
       include Gitlab::Utils::Gzip
       include Gitlab::Utils::StrongMemoize
 
-      EXPIRATION = 1.week
+      EXPIRATION = 1.day
       VERSION = 2
 
       delegate :diffable,     to: :@diff_collection
@@ -69,14 +69,14 @@ module Gitlab
 
       def key
         strong_memoize(:redis_key) do
-          [
-            'highlighted-diff-files',
-            diffable.cache_key,
-            VERSION,
+          options = [
             diff_options,
             Feature.enabled?(:use_marker_ranges, diffable.project),
             Feature.enabled?(:diff_line_syntax_highlighting, diffable.project)
-          ].join(":")
+          ]
+          options_for_key = OpenSSL::Digest::SHA256.hexdigest(options.join)
+
+          ['highlighted-diff-files', diffable.cache_key, VERSION, options_for_key].join(":")
         end
       end
 

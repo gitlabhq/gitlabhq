@@ -3,7 +3,7 @@
 = render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
 
 .results.gl-md-display-flex.gl-mt-3
-  - if %w(issues merge_requests).include?(@scope)
+  - if %w[issues merge_requests].include?(@scope)
     #js-search-sidebar{ class: search_bar_classes }
   .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
     - if @timeout

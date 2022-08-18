@@ -335,7 +335,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting 
     mail = find_email_for(user)
     expect(mail.to).to match_array([user.email])
     expect(mail.subject).to eq('Verify your identity')
-    code = mail.body.parts.first.to_s[/\d{#{VerifiesWithEmail::TOKEN_LENGTH}}/]
+    code = mail.body.parts.first.to_s[/\d{#{VerifiesWithEmail::TOKEN_LENGTH}}/o]
     reset_delivered_emails!
     code
   end

@@ -23,7 +23,11 @@ RSpec.describe 'Group variables', :js do
     it_behaves_like 'variable list'
   end
 
-  # TODO: Uncomment when the new graphQL app for variable settings
-  # is enabled.
-  # it_behaves_like 'variable list'
+  context 'with enabled ff `ci_variable_settings_graphql' do
+    before do
+      visit page_path
+    end
+
+    it_behaves_like 'variable list'
+  end
 end

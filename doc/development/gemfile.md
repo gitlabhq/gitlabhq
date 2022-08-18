@@ -61,8 +61,7 @@ to a gem, go through these steps:
        1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
        1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
        1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#publishing-a-project).
-   - See [issue
-     #325463](https://gitlab.com/gitlab-org/gitlab/-/issues/325463)
+   - See [issue #325463](https://gitlab.com/gitlab-org/gitlab/-/issues/325463)
      for an example.
    - In some cases we may want to move a gem to its own namespace. Some
      examples might be that it will naturally have more than one project
@@ -74,8 +73,8 @@ to a gem, go through these steps:
      apply if someone who currently works at GitLab wants to maintain
      the gem beyond their time working at GitLab.
 
-When publishing a gem to RubyGems.org, also note the section on [gem
-owners](https://about.gitlab.com/handbook/developer-onboarding/#ruby-gems)
+When publishing a gem to RubyGems.org, also note the section on 
+[gem owners](https://about.gitlab.com/handbook/developer-onboarding/#ruby-gems)
 in the handbook.
 
 ## Upgrade Rails
@@ -113,8 +112,7 @@ gem 'thor', '>= 1.1.1'
 ```
 
 Here we're using the operator `>=` (greater than or equal to) rather
-than `~>` ([pessimistic
-operator](https://thoughtbot.com/blog/rubys-pessimistic-operator))
+than `~>` ([pessimistic operator](https://thoughtbot.com/blog/rubys-pessimistic-operator))
 making it possible to upgrade `license_finder` or any other gem to a
 version that depends on `thor 1.2`.
 
@@ -134,15 +132,14 @@ that also relied on `thor` but had its version pinned to a vulnerable
 one. These changes are easy to miss in the `Gemfile.lock`. Pinning the
 version would result in a conflict that would need to be solved.
 
-To avoid upgrading indirect dependencies, we can use [`bundle update
---conservative`](https://bundler.io/man/bundle-update.1.html#OPTIONS).
+To avoid upgrading indirect dependencies, we can use 
+[`bundle update --conservative`](https://bundler.io/man/bundle-update.1.html#OPTIONS).
 
 When submitting a merge request including a dependency update,
 include a link to the Gem diff between the 2 versions in the merge request
 description. You can find this link on `rubygems.org`, select
 **Review Changes** to generate a comparison
 between the versions on `diffend.io`. For example, this is the gem
-diff for [`thor` 1.0.0 vs
-1.0.1](https://my.diffend.io/gems/thor/1.0.0/1.0.1). Use the
+diff for [`thor` 1.0.0 vs 1.0.1](https://my.diffend.io/gems/thor/1.0.0/1.0.1). Use the
 links directly generated from RubyGems, since the links from GitLab or other code-hosting
 platforms might not reflect the code that's actually published.

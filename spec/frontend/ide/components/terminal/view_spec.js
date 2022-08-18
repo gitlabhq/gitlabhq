@@ -66,7 +66,7 @@ describe('IDE TerminalView', () => {
   it('renders empty state', async () => {
     await factory();
 
-    expect(wrapper.find(TerminalEmptyState).props()).toEqual({
+    expect(wrapper.findComponent(TerminalEmptyState).props()).toEqual({
       helpPath: TEST_HELP_PATH,
       illustrationPath: TEST_SVG_PATH,
       ...getters.allCheck(),
@@ -79,7 +79,7 @@ describe('IDE TerminalView', () => {
     expect(actions.startSession).not.toHaveBeenCalled();
     expect(actions.hideSplash).not.toHaveBeenCalled();
 
-    wrapper.find(TerminalEmptyState).vm.$emit('start');
+    wrapper.findComponent(TerminalEmptyState).vm.$emit('start');
 
     expect(actions.startSession).toHaveBeenCalled();
     expect(actions.hideSplash).toHaveBeenCalled();
@@ -89,7 +89,7 @@ describe('IDE TerminalView', () => {
     state.isShowSplash = false;
     await factory();
 
-    expect(wrapper.find(TerminalEmptyState).exists()).toBe(false);
-    expect(wrapper.find(TerminalSession).exists()).toBe(true);
+    expect(wrapper.findComponent(TerminalEmptyState).exists()).toBe(false);
+    expect(wrapper.findComponent(TerminalSession).exists()).toBe(true);
   });
 });

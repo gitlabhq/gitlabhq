@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { debounce } from 'lodash';
 import DEFAULT_PROJECT_TEMPLATES from 'any_else_ce/projects/default_project_templates';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import Tracking from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
 import { ENTER_KEY } from '../lib/utils/keys';
 import axios from '../lib/utils/axios_utils';
@@ -109,8 +110,31 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
     );
   };
 
+  const projectPathValueListener = () => {
+    // eslint-disable-next-line no-param-reassign
+    $projectPathInput.oldInputValue = $projectPathInput.value;
+  };
+
+  const projectPathTrackListener = () => {
+    if ($projectPathInput.oldInputValue === $projectPathInput.value) {
+      // no change made to the input
+      return;
+    }
+
+    const trackEvent = 'user_input_path_slug';
+    const trackCategory = undefined; // will be default set in event method
+
+    Tracking.event(trackCategory, trackEvent, {
+      label: 'new_project_form',
+    });
+  };
+
   $projectPathInput.removeEventListener('keyup', projectPathInputListener);
   $projectPathInput.addEventListener('keyup', projectPathInputListener);
+  $projectPathInput.removeEventListener('focus', projectPathValueListener);
+  $projectPathInput.addEventListener('focus', projectPathValueListener);
+  $projectPathInput.removeEventListener('blur', projectPathTrackListener);
+  $projectPathInput.addEventListener('blur', projectPathTrackListener);
   $projectPathInput.removeEventListener('change', projectPathInputListener);
   $projectPathInput.addEventListener('change', projectPathInputListener);
 

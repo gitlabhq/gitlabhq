@@ -6,7 +6,7 @@ import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
 describe('File Icon component', () => {
   let wrapper;
   const findSvgIcon = () => wrapper.find('svg');
-  const findGlIcon = () => wrapper.find(GlIcon);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
   const getIconName = () =>
     findSvgIcon()
       .find('use')
@@ -61,7 +61,7 @@ describe('File Icon component', () => {
       loading: true,
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('should add a special class and a size class', () => {

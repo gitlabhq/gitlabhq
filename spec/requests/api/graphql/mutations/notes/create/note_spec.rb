@@ -79,21 +79,29 @@ RSpec.describe 'Adding a Note' do
 
     context 'for an issue' do
       let(:noteable) { create(:issue, project: project) }
-      let(:mutation) do
-        variables = {
+      let(:mutation) { graphql_mutation(:create_note, variables) }
+      let(:variables) do
+        {
           noteable_id: GitlabSchema.id_from_object(noteable).to_s,
-          body: body,
-          confidential: true
-        }
-
-        graphql_mutation(:create_note, variables)
+          body: body
+        }.merge(variables_extra)
       end
 
       before do
         project.add_developer(current_user)
       end
 
-      it_behaves_like 'a Note mutation with confidential notes'
+      context 'when using internal param' do
+        let(:variables_extra) { { internal: true } }
+
+        it_behaves_like 'a Note mutation with confidential notes'
+      end
+
+      context 'when using deprecated confidential param' do
+        let(:variables_extra) { { confidential: true } }
+
+        it_behaves_like 'a Note mutation with confidential notes'
+      end
     end
 
     context 'when body only contains quick actions' do

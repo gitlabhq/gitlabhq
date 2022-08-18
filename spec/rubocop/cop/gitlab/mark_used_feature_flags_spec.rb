@@ -217,8 +217,8 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
       allow(cop).to receive(:in_graphql_types?).and_return(true)
     end
 
-    include_examples 'sets flag as used', 'field :runners, Types::Ci::RunnerType.connection_type, null: true, feature_flag: :foo', 'foo'
-    include_examples 'sets flag as used', 'field :runners, null: true, feature_flag: :foo', 'foo'
+    include_examples 'sets flag as used', 'field :runners, Types::Ci::RunnerType.connection_type, null: true, _deprecated_feature_flag: :foo', 'foo'
+    include_examples 'sets flag as used', 'field :runners, null: true, _deprecated_feature_flag: :foo', 'foo'
     include_examples 'does not set any flags as used', 'field :solution'
     include_examples 'does not set any flags as used', 'field :runners, Types::Ci::RunnerType.connection_type'
     include_examples 'does not set any flags as used', 'field :runners, Types::Ci::RunnerType.connection_type, null: true, description: "hello world"'

@@ -96,6 +96,7 @@ module API
 
       params :optional_update_params_ce do
         optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Skip older deployment jobs that are still pending'
+        optional :ci_allow_fork_pipelines_to_run_in_parent_project, type: Boolean, desc: 'Allow fork merge request pipelines to run in parent project'
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
       end
@@ -130,6 +131,7 @@ module API
           :builds_access_level,
           :ci_config_path,
           :ci_default_git_depth,
+          :ci_allow_fork_pipelines_to_run_in_parent_project,
           :ci_forward_deployment_enabled,
           :ci_separated_caches,
           :container_registry_access_level,

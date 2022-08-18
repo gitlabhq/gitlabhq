@@ -22,6 +22,17 @@ RSpec.describe JwtController do
     end
   end
 
+  shared_examples 'a token that expires today' do
+    let(:pat) { create(:personal_access_token, user: user, scopes: ['api'], expires_at: Date.today ) }
+    let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
+
+    it 'fails authentication' do
+      get '/jwt/auth', params: parameters, headers: headers
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
   context 'authenticating against container registry' do
     context 'existing service' do
       subject! { get '/jwt/auth', params: parameters }
@@ -104,6 +115,7 @@ RSpec.describe JwtController do
 
           it_behaves_like 'rejecting a blocked user'
           it_behaves_like 'user logging'
+          it_behaves_like 'a token that expires today'
         end
       end
 
@@ -253,6 +265,7 @@ RSpec.describe JwtController do
       let(:credential_password) { personal_access_token.token }
 
       it_behaves_like 'with valid credentials'
+      it_behaves_like 'a token that expires today'
     end
 
     context 'with user credentials token' do

@@ -150,7 +150,7 @@ RSpec.describe 'User browses commits' do
       let(:ref) { project.repository.root_ref }
       let(:newrev) { project.repository.commit('master').sha }
       let(:short_newrev) { project.repository.commit('master').short_id }
-      let(:message) { 'Glob characters'}
+      let(:message) { 'Glob characters' }
 
       before do
         create_file_in_repo(project, ref, ref, filename, 'Test file', commit_message: message)

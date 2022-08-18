@@ -98,7 +98,7 @@ RSpec.describe Projects::HooksController do
     def it_renders_correctly
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:edit)
-      expect(response).to render_template('projects/hook_logs/_index')
+      expect(response).to render_template('shared/hook_logs/_index')
     end
   end
 

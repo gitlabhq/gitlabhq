@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GroupsHelper do
   include ApplicationHelper
+  include AvatarsHelper
 
   describe '#group_icon_url' do
     it 'returns an url for the avatar' do
@@ -132,6 +133,37 @@ RSpec.describe GroupsHelper do
       expect do
         helper.group_title(very_deep_nested_group)
       end.not_to exceed_query_limit(control_count)
+    end
+  end
+
+  describe '#group_title_link' do
+    let_it_be(:group) { create(:group, :with_avatar) }
+
+    let(:raw_link) { group_title_link(group, show_avatar: true) }
+    let(:document) { Nokogiri::HTML.parse(raw_link) }
+
+    describe 'link' do
+      subject(:link) { document.css('.group-path').first }
+
+      it 'uses the group name as innerText' do
+        expect(link.inner_text).to eq(group.name)
+      end
+
+      it 'links to the group path' do
+        expect(link.attr('href')).to eq(group_path(group))
+      end
+    end
+
+    describe 'icon' do
+      subject(:icon) { document.css('.avatar-tile').first }
+
+      it 'specifies the group name as the alt text' do
+        expect(icon.attr('alt')).to eq(group.name)
+      end
+
+      it 'uses the group\'s avatar_url' do
+        expect(icon.attr('src')).to eq(group.avatar_url)
+      end
     end
   end
 
@@ -420,9 +452,31 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#group_name_and_path_app_data' do
-    let_it_be(:group) { build(:group, name: 'My awesome group', path: 'my-awesome-group') }
+  describe '#subgroup_creation_data' do
+    let_it_be(:name) { 'parent group' }
+    let_it_be(:group) { build(:group, name: name) }
     let_it_be(:subgroup) { build(:group, parent: group) }
+
+    context 'when group has a parent' do
+      it 'returns expected hash' do
+        expect(subgroup_creation_data(subgroup)).to eq({
+          import_existing_group_path: '/groups/new#import-group-pane',
+          parent_group_name: name
+        })
+      end
+    end
+
+    context 'when group does not have a parent' do
+      it 'returns expected hash' do
+        expect(subgroup_creation_data(group)).to eq({
+          import_existing_group_path: '/groups/new#import-group-pane',
+          parent_group_name: nil
+        })
+      end
+    end
+  end
+
+  describe '#group_name_and_path_app_data' do
     let_it_be(:root_url) { 'https://gitlab.com/' }
 
     before do
@@ -432,17 +486,10 @@ RSpec.describe GroupsHelper do
 
     context 'when group has a parent' do
       it 'returns expected hash' do
-        expect(group_name_and_path_app_data(subgroup)).to match(
-          { base_path: 'https://gitlab.com/my-awesome-group', mattermost_enabled: 'true' }
-        )
-      end
-    end
-
-    context 'when group does not have a parent' do
-      it 'returns expected hash' do
-        expect(group_name_and_path_app_data(group)).to match(
-          { base_path: root_url, mattermost_enabled: 'true' }
-        )
+        expect(group_name_and_path_app_data).to match({
+          base_path: 'https://gitlab.com/',
+          mattermost_enabled: 'true'
+        })
       end
     end
   end
@@ -461,7 +508,7 @@ RSpec.describe GroupsHelper do
     it 'returns expected hash' do
       expect(helper.subgroups_and_projects_list_app_data(group)).to match({
         show_schema_markup: 'true',
-        new_subgroup_path: including("groups/new?parent_id=#{group.id}"),
+        new_subgroup_path: including("groups/new?parent_id=#{group.id}#create-group-pane"),
         new_project_path: including("/projects/new?namespace_id=#{group.id}"),
         new_subgroup_illustration: including('illustrations/subgroup-create-new-sm'),
         new_project_illustration: including('illustrations/project-create-new-sm'),

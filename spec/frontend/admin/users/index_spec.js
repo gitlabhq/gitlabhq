@@ -8,7 +8,7 @@ describe('initAdminUsersApp', () => {
   let wrapper;
   let el;
 
-  const findApp = () => wrapper.find(AdminUsersApp);
+  const findApp = () => wrapper.findComponent(AdminUsersApp);
 
   beforeEach(() => {
     el = document.createElement('div');
@@ -36,7 +36,7 @@ describe('initAdminUserActions', () => {
   let wrapper;
   let el;
 
-  const findUserActions = () => wrapper.find(UserActions);
+  const findUserActions = () => wrapper.findComponent(UserActions);
 
   beforeEach(() => {
     el = document.createElement('div');

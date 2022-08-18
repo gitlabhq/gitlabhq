@@ -8,16 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
 
-It is possible to define [Service Level Indicators
-(SLIs)](https://en.wikipedia.org/wiki/Service_level_indicator)
+It is possible to define [Service Level Indicators(SLIs)](https://en.wikipedia.org/wiki/Service_level_indicator)
 directly in the Ruby codebase. This keeps the definition of operations
 and their success close to the implementation and allows the people
 building features to easily define how these features should be
 monitored.
 
 Defining an SLI causes 2
-[Prometheus
-counters](https://prometheus.io/docs/concepts/metric_types/#counter)
+[Prometheus counters](https://prometheus.io/docs/concepts/metric_types/#counter)
 to be emitted from the rails application:
 
 - `gitlab_sli:<sli name>:total`: incremented for each operation.
@@ -47,10 +45,9 @@ for clarity, they define different metric names:
 As shown in this example, they can share a base name (`foo` in this example). We
 recommend this when they refer to the same operation.
 
-Before the first scrape, it is important to have [initialized the SLI
-with all possible
-label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics). This
-avoid confusing results when using these counters in calculations.
+Before the first scrape, it is important to have 
+[initialized the SLI with all possible label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics). 
+This avoid confusing results when using these counters in calculations.
 
 To initialize an SLI, use the `.initialize_sli` class method, for
 example:

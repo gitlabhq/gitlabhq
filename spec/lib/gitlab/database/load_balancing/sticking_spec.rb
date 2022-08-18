@@ -77,6 +77,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     let(:last_write_location) { 'foo' }
 
     before do
+      allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
+
       allow(sticking)
         .to receive(:last_write_location_for)
         .with(:user, 42)

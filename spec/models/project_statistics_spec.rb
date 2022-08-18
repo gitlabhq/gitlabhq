@@ -26,31 +26,20 @@ RSpec.describe ProjectStatistics do
   end
 
   describe 'statistics columns' do
-    it "support values up to 8 exabytes" do
-      statistics.update!(
-        commit_count: 8.exabytes - 1,
-        repository_size: 2.exabytes,
-        wiki_size: 1.exabytes,
-        lfs_objects_size: 2.exabytes,
-        build_artifacts_size: 1.exabyte,
-        snippets_size: 1.exabyte,
-        pipeline_artifacts_size: 512.petabytes - 1,
-        uploads_size: 512.petabytes,
-        container_registry_size: 12.petabytes
-      )
-
-      statistics.reload
-
-      expect(statistics.commit_count).to eq(8.exabytes - 1)
-      expect(statistics.repository_size).to eq(2.exabytes)
-      expect(statistics.wiki_size).to eq(1.exabytes)
-      expect(statistics.lfs_objects_size).to eq(2.exabytes)
-      expect(statistics.build_artifacts_size).to eq(1.exabyte)
-      expect(statistics.storage_size).to eq(8.exabytes - 1)
-      expect(statistics.snippets_size).to eq(1.exabyte)
-      expect(statistics.pipeline_artifacts_size).to eq(512.petabytes - 1)
-      expect(statistics.uploads_size).to eq(512.petabytes)
-      expect(statistics.container_registry_size).to eq(12.petabytes)
+    it "supports bigint values" do
+      expect do
+        statistics.update!(
+          commit_count: 3.gigabytes,
+          repository_size: 3.gigabytes,
+          wiki_size: 3.gigabytes,
+          lfs_objects_size: 3.gigabytes,
+          build_artifacts_size: 3.gigabytes,
+          snippets_size: 3.gigabytes,
+          pipeline_artifacts_size: 3.gigabytes,
+          uploads_size: 3.gigabytes,
+          container_registry_size: 3.gigabytes
+        )
+      end.not_to raise_error
     end
   end
 

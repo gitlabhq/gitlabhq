@@ -55,18 +55,30 @@ waitForCSSLoaded(() => {
         },
         attrs: {
           height: LANGUAGE_CHART_HEIGHT,
+          responsive: true,
         },
       });
     },
   });
 
+  const {
+    graphEndpoint,
+    graphEndDate,
+    graphStartDate,
+    graphRef,
+    graphCsvPath,
+  } = codeCoverageContainer.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el: codeCoverageContainer,
     render(h) {
       return h(CodeCoverage, {
         props: {
-          graphEndpoint: codeCoverageContainer.dataset?.graphEndpoint,
+          graphEndpoint,
+          graphEndDate,
+          graphStartDate,
+          graphRef,
+          graphCsvPath,
         },
       });
     },
@@ -91,6 +103,9 @@ waitForCSSLoaded(() => {
           xAxisTitle: __('Day of month'),
           yAxisTitle: __('No. of commits'),
           xAxisType: 'category',
+        },
+        attrs: {
+          responsive: true,
         },
       });
     },
@@ -125,6 +140,9 @@ waitForCSSLoaded(() => {
           yAxisTitle: __('No. of commits'),
           xAxisType: 'category',
         },
+        attrs: {
+          responsive: true,
+        },
       });
     },
   });
@@ -148,6 +166,9 @@ waitForCSSLoaded(() => {
           xAxisTitle: __('Hour (UTC)'),
           yAxisTitle: __('No. of commits'),
           xAxisType: 'category',
+        },
+        attrs: {
+          responsive: true,
         },
       });
     },

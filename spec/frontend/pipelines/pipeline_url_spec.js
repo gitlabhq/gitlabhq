@@ -61,14 +61,14 @@ describe('Pipeline Url Component', () => {
   describe('commit user avatar', () => {
     it('renders when commit author exists', () => {
       const pipelineBranch = mockPipelineBranch();
-      const { avatar_url, name, path } = pipelineBranch.pipeline.commit.author;
+      const { avatar_url: imgSrc, name, path } = pipelineBranch.pipeline.commit.author;
       createComponent(pipelineBranch);
 
       const component = wrapper.findComponent(UserAvatarLink);
       expect(component.exists()).toBe(true);
       expect(component.props()).toMatchObject({
         imgSize: 16,
-        imgSrc: avatar_url,
+        imgSrc,
         imgAlt: name,
         linkHref: path,
         tooltipText: name,

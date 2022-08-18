@@ -477,8 +477,8 @@ digraph G {
 
 #### PlantUML
 
-To make PlantUML available in GitLab, a GitLab administrator needs to enable it first.
-Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
+PlantUML integration is enabled on GitLab.com. To make PlantUML available in self-managed
+installation of GitLab, a GitLab administrator [must enable it](../administration/integration/plantuml.md).
 
 After PlantUML is enabled, enter your text in a `plantuml` block:
 

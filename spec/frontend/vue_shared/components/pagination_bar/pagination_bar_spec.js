@@ -64,7 +64,7 @@ describe('Pagination bar', () => {
       },
     });
 
-    expect(wrapper.find(GlDropdown).find('button').text()).toMatchInterpolatedText(
+    expect(wrapper.findComponent(GlDropdown).find('button').text()).toMatchInterpolatedText(
       `${CURRENT_PAGE_SIZE} items per page`,
     );
   });

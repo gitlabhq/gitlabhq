@@ -849,8 +849,8 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('marked the task **Task 1** as completed')
-          note2 = find_note('marked the task **Task 2** as completed')
+          note1 = find_note('marked the checklist item **Task 1** as completed')
+          note2 = find_note('marked the checklist item **Task 2** as completed')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -867,8 +867,8 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('marked the task **Task 1** as incomplete')
-          note2 = find_note('marked the task **Task 2** as incomplete')
+          note1 = find_note('marked the checklist item **Task 1** as incomplete')
+          note2 = find_note('marked the checklist item **Task 2** as incomplete')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -885,7 +885,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'does not create a system note for the task' do
-          task_note = find_note('marked the task **Task 2** as incomplete')
+          task_note = find_note('marked the checklist item **Task 2** as incomplete')
           description_notes = find_notes('description')
 
           expect(task_note).to be_nil
@@ -900,7 +900,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'does not create a system note referencing the position the old item' do
-          task_note = find_note('marked the task **Two** as incomplete')
+          task_note = find_note('marked the checklist item **Two** as incomplete')
           description_notes = find_notes('description')
 
           expect(task_note).to be_nil
@@ -985,6 +985,52 @@ RSpec.describe Issues::UpdateService, :mailer do
         it 'assigns the label once' do
           expect(result.labels).to contain_exactly(label3)
         end
+      end
+    end
+
+    context 'updating dates' do
+      subject(:result) { described_class.new(project: project, current_user: user, params: params).execute(issue) }
+
+      let(:updated_date) { 1.week.from_now.to_date }
+
+      shared_examples 'issue update service that triggers date updates' do
+        it 'triggers graphql date updated subscription' do
+          expect(GraphqlTriggers).to receive(:issuable_dates_updated).with(issue).and_call_original
+
+          result
+        end
+      end
+
+      shared_examples 'issue update service that does not trigger date updates' do
+        it 'does not trigger date updated subscriptions' do
+          expect(GraphqlTriggers).not_to receive(:issuable_dates_updated)
+
+          result
+        end
+      end
+
+      context 'when due_date is updated' do
+        let(:params) { { due_date: updated_date } }
+
+        it_behaves_like 'issue update service that triggers date updates'
+      end
+
+      context 'when start_date is updated' do
+        let(:params) { { start_date: updated_date } }
+
+        it_behaves_like 'issue update service that triggers date updates'
+      end
+
+      context 'when no date is updated' do
+        let(:params) { { title: 'should not trigger date updates' } }
+
+        it_behaves_like 'issue update service that does not trigger date updates'
+      end
+
+      context 'when update is not successful but date is provided' do
+        let(:params) { { title: '', due_date: updated_date } }
+
+        it_behaves_like 'issue update service that does not trigger date updates'
       end
     end
 

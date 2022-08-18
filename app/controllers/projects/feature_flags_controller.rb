@@ -111,9 +111,9 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
           .permit(:name, :description, :active,
                   scopes_attributes: [:id, :environment_scope, :active, :_destroy,
                                       strategies: [:name, parameters: [:groupId, :percentage, :userIds]]],
-                 strategies_attributes: [:id, :name, :user_list_id, :_destroy,
-                                         parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
-                                         scopes_attributes: [:id, :environment_scope, :_destroy]])
+                  strategies_attributes: [:id, :name, :user_list_id, :_destroy,
+                                          parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
+                                          scopes_attributes: [:id, :environment_scope, :_destroy]])
   end
 
   def feature_flag_json(feature_flag)

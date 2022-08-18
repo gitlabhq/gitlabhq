@@ -36,9 +36,10 @@ RSpec.describe 'Jobs/SAST-IaC.latest.gitlab-ci.yml' do
       let(:merge_request) { create(:merge_request, :simple, source_project: project) }
       let(:pipeline) { service.execute(merge_request).payload }
 
-      it 'has no jobs' do
+      it 'creates a pipeline with the expected jobs' do
         expect(pipeline).to be_merge_request_event
-        expect(build_names).to be_empty
+        expect(pipeline.errors.full_messages).to be_empty
+        expect(build_names).to match_array(%w(kics-iac-sast))
       end
     end
 

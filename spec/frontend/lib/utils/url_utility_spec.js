@@ -348,15 +348,13 @@ describe('URL utility', () => {
   describe('urlContainsSha', () => {
     it('returns true when there is a valid 40-character SHA1 hash in the URL', () => {
       shas.valid.forEach((sha) => {
-        expect(
-          urlUtils.urlContainsSha({ url: `http://urlstuff/${sha}/moreurlstuff` }),
-        ).toBeTruthy();
+        expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${sha}/moreurlstuff` })).toBe(true);
       });
     });
 
     it('returns false when there is not a valid 40-character SHA1 hash in the URL', () => {
       shas.invalid.forEach((str) => {
-        expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${str}/moreurlstuff` })).toBeFalsy();
+        expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${str}/moreurlstuff` })).toBe(false);
       });
     });
   });
@@ -555,18 +553,22 @@ describe('URL utility', () => {
 
   describe('relativePathToAbsolute', () => {
     it.each`
-      path                       | base                                  | result
-      ${'./foo'}                 | ${'bar/'}                             | ${'/bar/foo'}
-      ${'../john.md'}            | ${'bar/baz/foo.php'}                  | ${'/bar/john.md'}
-      ${'../images/img.png'}     | ${'bar/baz/foo.php'}                  | ${'/bar/images/img.png'}
-      ${'../images/Image 1.png'} | ${'bar/baz/foo.php'}                  | ${'/bar/images/Image 1.png'}
-      ${'/images/img.png'}       | ${'bar/baz/foo.php'}                  | ${'/images/img.png'}
-      ${'/images/img.png'}       | ${'/bar/baz/foo.php'}                 | ${'/images/img.png'}
-      ${'../john.md'}            | ${'/bar/baz/foo.php'}                 | ${'/bar/john.md'}
-      ${'../john.md'}            | ${'///bar/baz/foo.php'}               | ${'/bar/john.md'}
-      ${'/images/img.png'}       | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/images/img.png'}
-      ${'../images/img.png'}     | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/user/images/img.png'}
-      ${'../images/Image 1.png'} | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/user/images/Image%201.png'}
+      path                       | base                                     | result
+      ${'./foo'}                 | ${'bar/'}                                | ${'/bar/foo'}
+      ${'../john.md'}            | ${'bar/baz/foo.php'}                     | ${'/bar/john.md'}
+      ${'../images/img.png'}     | ${'bar/baz/foo.php'}                     | ${'/bar/images/img.png'}
+      ${'../images/Image 1.png'} | ${'bar/baz/foo.php'}                     | ${'/bar/images/Image 1.png'}
+      ${'/images/img.png'}       | ${'bar/baz/foo.php'}                     | ${'/images/img.png'}
+      ${'/images/img.png'}       | ${'bar/baz//foo.php'}                    | ${'/images/img.png'}
+      ${'/images//img.png'}      | ${'bar/baz/foo.php'}                     | ${'/images/img.png'}
+      ${'/images/img.png'}       | ${'/bar/baz/foo.php'}                    | ${'/images/img.png'}
+      ${'../john.md'}            | ${'/bar/baz/foo.php'}                    | ${'/bar/john.md'}
+      ${'../john.md'}            | ${'///bar/baz/foo.php'}                  | ${'/bar/john.md'}
+      ${'/images/img.png'}       | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/images/img.png'}
+      ${'/images/img.png'}       | ${'https://gitlab.com////user/project/'} | ${'https://gitlab.com/images/img.png'}
+      ${'/images////img.png'}    | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/images/img.png'}
+      ${'../images/img.png'}     | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/user/images/img.png'}
+      ${'../images/Image 1.png'} | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/user/images/Image%201.png'}
     `(
       'converts relative path "$path" with base "$base" to absolute path => "expected"',
       ({ path, base, result }) => {
@@ -809,13 +811,13 @@ describe('URL utility', () => {
     });
 
     it('should compare against the window location if no compare value is provided', () => {
-      expect(urlUtils.urlIsDifferent('different')).toBeTruthy();
-      expect(urlUtils.urlIsDifferent(current)).toBeFalsy();
+      expect(urlUtils.urlIsDifferent('different')).toBe(true);
+      expect(urlUtils.urlIsDifferent(current)).toBe(false);
     });
 
     it('should use the provided compare value', () => {
-      expect(urlUtils.urlIsDifferent('different', current)).toBeTruthy();
-      expect(urlUtils.urlIsDifferent(current, current)).toBeFalsy();
+      expect(urlUtils.urlIsDifferent('different', current)).toBe(true);
+      expect(urlUtils.urlIsDifferent(current, current)).toBe(false);
     });
   });
 
@@ -1056,6 +1058,30 @@ describe('URL utility', () => {
       const url = 'https://about.gitlab.com';
 
       expect(urlUtils.PROMO_URL).toBe(url);
+    });
+  });
+
+  describe('removeUrlProtocol', () => {
+    it.each`
+      input                   | output
+      ${'http://gitlab.com'}  | ${'gitlab.com'}
+      ${'https://gitlab.com'} | ${'gitlab.com'}
+      ${'foo:bar.com'}        | ${'bar.com'}
+      ${'gitlab.com'}         | ${'gitlab.com'}
+    `('transforms $input to $output', ({ input, output }) => {
+      expect(urlUtils.removeUrlProtocol(input)).toBe(output);
+    });
+  });
+
+  describe('removeLastSlashInUrlPath', () => {
+    it.each`
+      input                                     | output
+      ${'https://www.gitlab.com/path/'}         | ${'https://www.gitlab.com/path'}
+      ${'https://www.gitlab.com/?query=search'} | ${'https://www.gitlab.com?query=search'}
+      ${'https://www.gitlab.com/#fragment'}     | ${'https://www.gitlab.com#fragment'}
+      ${'https://www.gitlab.com/hello'}         | ${'https://www.gitlab.com/hello'}
+    `('transforms $input to $output', ({ input, output }) => {
+      expect(urlUtils.removeLastSlashInUrlPath(input)).toBe(output);
     });
   });
 });

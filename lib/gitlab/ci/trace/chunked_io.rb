@@ -22,7 +22,7 @@ module Gitlab
           @chunks_cache = []
           @tell = 0
           @size = calculate_size
-          yield self if block_given?
+          yield self if block
         end
 
         def close

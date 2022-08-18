@@ -9,6 +9,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormSelect,
+  GlSegmentedControl,
 } from '@gitlab/ui';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import axios from '~/lib/utils/axios_utils';
@@ -81,9 +82,11 @@ export default {
       newPage: s__('WikiPage|Create page'),
     },
     cancel: s__('WikiPage|Cancel'),
-    editSourceButtonText: s__('WikiPage|Edit source'),
-    editRichTextButtonText: s__('WikiPage|Edit rich text'),
   },
+  switchEditingControlOptions: [
+    { text: s__('Wiki Page|Source'), value: 'source' },
+    { text: s__('Wiki Page|Rich text'), value: 'richText' },
+  ],
   components: {
     GlAlert,
     GlIcon,
@@ -94,6 +97,7 @@ export default {
     GlSprintf,
     GlLink,
     GlButton,
+    GlSegmentedControl,
     MarkdownField,
     LocalStorageSync,
     ContentEditor: () =>
@@ -105,14 +109,15 @@ export default {
   inject: ['formatOptions', 'pageInfo'],
   data() {
     return {
+      editingMode: 'source',
       title: this.pageInfo.title?.trim() || '',
       format: this.pageInfo.format || 'markdown',
       content: this.pageInfo.content || '',
-      useContentEditor: false,
       commitMessage: '',
       isDirty: false,
       contentEditorRenderFailed: false,
       contentEditorEmpty: false,
+      switchEditingControlDisabled: false,
     };
   },
   computed: {
@@ -177,6 +182,9 @@ export default {
     isContentEditorActive() {
       return this.isMarkdownFormat && this.useContentEditor;
     },
+    useContentEditor() {
+      return this.editingMode === 'richText';
+    },
   },
   mounted() {
     this.updateCommitMessage();
@@ -193,16 +201,15 @@ export default {
         .then(({ data }) => data.body);
     },
 
-    toggleEditingMode() {
-      if (this.useContentEditor) {
+    toggleEditingMode(editingMode) {
+      this.editingMode = editingMode;
+      if (!this.useContentEditor && this.contentEditor) {
         this.content = this.contentEditor.getSerializedContent();
       }
-
-      this.useContentEditor = !this.useContentEditor;
     },
 
-    setUseContentEditor(value) {
-      this.useContentEditor = value;
+    setEditingMode(value) {
+      this.editingMode = value;
     },
 
     async handleFormSubmit(e) {
@@ -294,6 +301,14 @@ export default {
         },
       });
     },
+
+    enableSwitchEditingControl() {
+      this.switchEditingControlDisabled = false;
+    },
+
+    disableSwitchEditingControl() {
+      this.switchEditingControlDisabled = true;
+    },
   },
 };
 </script>
@@ -372,20 +387,21 @@ export default {
     <div class="row" data-testid="wiki-form-content-fieldset">
       <div class="col-sm-12 row-sm-5">
         <gl-form-group>
-          <div v-if="isMarkdownFormat" class="gl-display-flex gl-justify-content-end gl-mb-3">
-            <gl-button
+          <div v-if="isMarkdownFormat" class="gl-display-flex gl-justify-content-start gl-mb-3">
+            <gl-segmented-control
               data-testid="toggle-editing-mode-button"
               data-qa-selector="editing_mode_button"
-              :data-qa-mode="toggleEditingModeButtonText"
-              variant="link"
-              @click="toggleEditingMode"
-              >{{ toggleEditingModeButtonText }}</gl-button
-            >
+              class="gl-display-flex"
+              :checked="editingMode"
+              :options="$options.switchEditingControlOptions"
+              :disabled="switchEditingControlDisabled"
+              @input="toggleEditingMode"
+            />
           </div>
           <local-storage-sync
             storage-key="gl-wiki-content-editor-enabled"
-            :value="useContentEditor"
-            @input="setUseContentEditor"
+            :value="editingMode"
+            @input="setEditingMode"
           />
           <markdown-field
             v-if="!isContentEditorActive"
@@ -422,6 +438,9 @@ export default {
               :uploads-path="pageInfo.uploadsPath"
               @initialized="loadInitialContent"
               @change="handleContentEditorChange"
+              @loading="disableSwitchEditingControl"
+              @loadingSuccess="enableSwitchEditingControl"
+              @loadingError="enableSwitchEditingControl"
             />
             <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
           </div>

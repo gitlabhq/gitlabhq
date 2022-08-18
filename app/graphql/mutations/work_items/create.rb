@@ -13,6 +13,9 @@ module Mutations
 
       authorize :create_work_item
 
+      argument :confidential, GraphQL::Types::Boolean,
+               required: false,
+               description: 'Sets the work item confidentiality.'
       argument :description, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::WorkItemType, :description)

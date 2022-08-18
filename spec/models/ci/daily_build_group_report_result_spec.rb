@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::DailyBuildGroupReportResult do
-  let(:daily_build_group_report_result) { build(:ci_daily_build_group_report_result)}
+  let(:daily_build_group_report_result) { build(:ci_daily_build_group_report_result) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:last_pipeline) }

@@ -45,39 +45,6 @@ RSpec.describe NamespacesHelper do
     user_group.add_owner(user)
   end
 
-  describe '#namespaces_as_json' do
-    let(:result) { helper.namespaces_as_json(user) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    it 'returns the user\'s groups' do
-      json_data = Gitlab::Json.parse(result)
-
-      expect(result).to include('group')
-      expect(json_data['group']).to include(
-        "id" => user_group.id,
-        "name" => user_group.name,
-        "display_path" => user_group.full_path,
-        "human_name" => user_group.human_name
-      )
-    end
-
-    it 'returns the user\'s namespace' do
-      user_namespace = user.namespace
-      json_data = Gitlab::Json.parse(result)
-
-      expect(result).to include('user')
-      expect(json_data['user']).to include(
-        "id" => user_namespace.id,
-        "name" => user_namespace.name,
-        "display_path" => user_namespace.full_path,
-        "human_name" => user_namespace.human_name
-      )
-    end
-  end
-
   describe '#namespaces_options' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it 'returns groups without being a member for admin' do

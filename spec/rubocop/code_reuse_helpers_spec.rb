@@ -152,6 +152,26 @@ RSpec.describe RuboCop::CodeReuseHelpers do
     end
   end
 
+  describe '#in_graphql?' do
+    it 'returns true for a node in the FOSS GraphQL directory' do
+      node = build_and_parse_source('10', rails_root_join('app', 'graphql', 'foo.rb'))
+
+      expect(cop.in_graphql?(node)).to eq(true)
+    end
+
+    it 'returns true for a node in the EE GraphQL directory' do
+      node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'foo.rb'))
+
+      expect(cop.in_graphql?(node)).to eq(true)
+    end
+
+    it 'returns false for a node outside the GraphQL directory' do
+      node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
+
+      expect(cop.in_graphql?(node)).to eq(false)
+    end
+  end
+
   describe '#in_graphql_types?' do
     %w[
       app/graphql/types
@@ -169,7 +189,7 @@ RSpec.describe RuboCop::CodeReuseHelpers do
       app/graphql/resolvers
       app/foo
     ].each do |path|
-      it "returns true for a node in #{path}" do
+      it "returns false for a node in #{path}" do
         node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
 
         expect(cop.in_graphql_types?(node)).to eq(false)
@@ -252,6 +272,44 @@ RSpec.describe RuboCop::CodeReuseHelpers do
         build_and_parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
       expect(cop.in_lib_directory?(node, 'models')).to eq(false)
+    end
+  end
+
+  describe '#in_graphql_directory?' do
+    it 'returns true for a directory in the FOSS app/graphql directory' do
+      node = build_and_parse_source('10', rails_root_join('app', 'graphql', 'subdir', 'foo.rb'))
+
+      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(true)
+    end
+
+    it 'returns true for a directory in the EE app/graphql directory' do
+      node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'subdir', 'foo.rb'))
+
+      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(true)
+    end
+
+    it 'returns true for a directory in the EE app/graphql/ee directory' do
+      node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'ee', 'subdir', 'foo.rb'))
+
+      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(true)
+    end
+
+    it 'returns false for a directory in the FOSS app/graphql directory' do
+      node = build_and_parse_source('10', rails_root_join('app', 'graphql', 'anotherdir', 'foo.rb'))
+
+      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(false)
+    end
+
+    it 'returns false for a directory in the EE app/graphql directory' do
+      node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'anotherdir', 'foo.rb'))
+
+      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(false)
+    end
+
+    it 'returns false for a directory in the EE app/graphql/ee directory' do
+      node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'ee', 'anotherdir', 'foo.rb'))
+
+      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(false)
     end
   end
 

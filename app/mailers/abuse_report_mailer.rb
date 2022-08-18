@@ -11,8 +11,8 @@ class AbuseReportMailer < ApplicationMailer
     @abuse_report = AbuseReport.find(abuse_report_id)
 
     mail(
-      to:       Gitlab::CurrentSettings.abuse_notification_email,
-      subject:  "#{@abuse_report.user.name} (#{@abuse_report.user.username}) was reported for abuse"
+      to: Gitlab::CurrentSettings.abuse_notification_email,
+      subject: "#{@abuse_report.user.name} (#{@abuse_report.user.username}) was reported for abuse"
     )
   end
 

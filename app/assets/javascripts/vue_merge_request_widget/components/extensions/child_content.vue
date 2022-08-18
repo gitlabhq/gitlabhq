@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlLink, GlSafeHtmlDirective, GlModalDirective } from '@gitlab/ui';
+import Actions from '../action_buttons.vue';
 import StatusIcon from './status_icon.vue';
-import Actions from './actions.vue';
 import { generateText } from './utils';
 
 export default {

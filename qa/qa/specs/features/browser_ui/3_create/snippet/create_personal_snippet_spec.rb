@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :smoke, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326624', type: :investigating } do
+  RSpec.describe 'Create', :smoke do
     describe 'Personal snippet creation' do
       let(:snippet) do
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|

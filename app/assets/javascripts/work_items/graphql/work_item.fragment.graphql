@@ -5,9 +5,11 @@ fragment WorkItem on WorkItem {
   title
   state
   description
+  confidential
   workItemType {
     id
     name
+    iconName
   }
   userPermissions {
     deleteWorkItem
@@ -22,6 +24,7 @@ fragment WorkItem on WorkItem {
     ... on WorkItemWidgetAssignees {
       type
       allowsMultipleAssignees
+      canInviteMembers
       assignees {
         nodes {
           ...User
@@ -34,12 +37,11 @@ fragment WorkItem on WorkItem {
         id
         iid
         title
+        confidential
       }
       children {
-        edges {
-          node {
-            id
-          }
+        nodes {
+          id
         }
       }
     }

@@ -83,7 +83,11 @@ module Gitlab
         end
 
         def route_hash
-          @route_hash ||= Rails.application.routes.recognize_path(request_url, { method: request.request_method }) rescue {}
+          @route_hash ||= begin
+            Rails.application.routes.recognize_path(request_url, { method: request.request_method })
+          rescue StandardError
+            {}
+          end
         end
 
         def request_url

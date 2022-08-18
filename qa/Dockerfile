@@ -1,5 +1,5 @@
 ARG DOCKER_VERSION=20.10.14
-ARG CHROME_VERSION=101
+ARG CHROME_VERSION=103
 ARG QA_BUILD_TARGET=qa
 
 FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23 AS qa

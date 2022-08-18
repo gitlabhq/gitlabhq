@@ -40,6 +40,10 @@ class DeployKey < Key
     super || User.ghost
   end
 
+  def audit_details
+    title
+  end
+
   def has_access_to?(project)
     deploy_keys_project_for(project).present?
   end
@@ -61,5 +65,10 @@ class DeployKey < Key
     query = query.where(id: deploy_key) if deploy_key
 
     query
+  end
+
+  # This is used for the internal logic of AuditEvents::BuildService.
+  def impersonated?
+    false
   end
 end

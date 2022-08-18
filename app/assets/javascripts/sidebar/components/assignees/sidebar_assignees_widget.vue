@@ -149,6 +149,9 @@ export default {
     signedIn() {
       return this.currentUser.username !== undefined;
     },
+    issuableAuthor() {
+      return this.issuable?.author;
+    },
   },
   watch: {
     iid(_, oldIid) {
@@ -266,6 +269,7 @@ export default {
           :current-user="currentUser"
           :issuable-type="issuableType"
           :is-editing="edit"
+          :issuable-author="issuableAuthor"
           class="gl-w-full dropdown-menu-user gl-mt-n3"
           @toggle="collapseWidget"
           @error="showError"

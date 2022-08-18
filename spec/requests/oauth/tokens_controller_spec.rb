@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Oauth::TokensController do
   let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
   let(:other_headers) { {} }
-  let(:headers) { cors_request_headers.merge(other_headers)}
+  let(:headers) { cors_request_headers.merge(other_headers) }
   let(:allowed_methods) { 'POST, OPTIONS' }
 
   shared_examples 'cross-origin POST request' do

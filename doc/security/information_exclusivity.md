@@ -24,8 +24,8 @@ limitation.
 You can take steps to prevent unintentional sharing and information
 destruction. This limitation is the reason why only certain people are allowed
 to [add users to a project](../user/project/members/index.md)
-and why only a GitLab administrator can [force push a protected
-branch](../user/project/protected_branches.md).
+and why only a GitLab administrator can 
+[force push a protected branch](../user/project/protected_branches.md).
 
 <!-- ## Troubleshooting
 

@@ -77,8 +77,8 @@ module Gitlab
 
           def lines_in_source_diff(source_diff_lines, is_deleted_file, is_added_file)
             {
-              from: is_added_file ? Set[] : source_diff_lines.map {|l| l.old_pos}.to_set,
-              to: is_deleted_file ? Set[] : source_diff_lines.map {|l| l.new_pos}.to_set
+              from: is_added_file ? Set[] : source_diff_lines.map { |l| l.old_pos }.to_set,
+              to: is_deleted_file ? Set[] : source_diff_lines.map { |l| l.new_pos }.to_set
             }
           end
 

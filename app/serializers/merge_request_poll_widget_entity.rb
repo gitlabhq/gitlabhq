@@ -33,18 +33,7 @@ class MergeRequestPollWidgetEntity < Grape::Entity
 
   # Booleans
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state do |merge_request|
-    if Feature.enabled?(:change_response_code_merge_status, merge_request.project)
-      merge_request.mergeable_discussions_state?
-    else
-      # This avoids calling MergeRequest#mergeable_discussions_state without
-      # considering the state of the MR first. If a MR isn't mergeable, we can
-      # safely short-circuit it.
-      if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
-        merge_request.mergeable_discussions_state?
-      else
-        false
-      end
-    end
+    merge_request.mergeable_discussions_state?
   end
 
   expose :project_archived do |merge_request|

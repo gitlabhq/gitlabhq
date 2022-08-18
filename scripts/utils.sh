@@ -72,10 +72,6 @@ function setup_db() {
   run_timed_command "setup_db_praefect"
 }
 
-function install_api_client_dependencies_with_apk() {
-  run_timed_command "apk add --update openssl curl jq"
-}
-
 function install_gitlab_gem() {
   run_timed_command "gem install httparty --no-document --version 0.18.1"
   run_timed_command "gem install gitlab --no-document --version 4.17.0"
@@ -185,5 +181,5 @@ function danger_as_local() {
   # Force danger to skip CI source GitLab and fallback to "local only git repo".
   unset GITLAB_CI
   # We need to base SHA to help danger determine the base commit for this shallow clone.
-  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}" --dangerfile="${DANGER_DANGERFILE:-Dangerfile}"
 }

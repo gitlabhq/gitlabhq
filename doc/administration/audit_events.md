@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators
 on a [paid plan](https://about.gitlab.com/pricing/).
 
-GitLab system administrators can also view all audit events by accessing the [`audit_json.log` file](logs.md#audit_jsonlog).
+GitLab system administrators can also view all audit events by accessing the [`audit_json.log` file](logs/index.md#audit_jsonlog).
 The JSON audit log does not include events that are [only streamed](../development/audit_event_guide/index.md#event-streaming).
 
 You can:
@@ -115,7 +115,7 @@ From there, you can see the following actions:
 - Instance administrator started or stopped impersonation of a group member. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
 - Group deploy token was successfully created, revoked, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 - Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
-- [IP restrictions](../user/group/index.md#group-access-restriction-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
+- [IP restrictions](../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
 - Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356152) in GitLab 15.1, changes to the following merge request approvals settings:
   - Prevent approval by author.
@@ -123,6 +123,7 @@ From there, you can see the following actions:
   - Prevent editing approval rules in projects and merge requests.
   - Require user password to approve.
   - Remove all approvals when commits are added to the source branch.
+- Changes to streaming audit destination custom HTTP headers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
@@ -151,6 +152,7 @@ From there, you can see the following actions:
 - Added, removed, or updated protected branches
 - Release was added to a project
 - Release was updated
+- Release was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 13.5)
 - Release milestone associations changed
 - Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Permission to approve merge requests by committers was updated.
@@ -271,7 +273,7 @@ Don't see the event you want in any of the epics linked above? You can either:
 - Use the **Audit Event Proposal** issue template to
   [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to
   request it.
-- [Add it yourself](../development/audit_event_guide/).
+- [Add it yourself](../development/audit_event_guide/index.md).
 
 ### Removed events
 

@@ -114,10 +114,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
-    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1])}
-    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2])}
-    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: [])}
-    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request)}
+    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1]) }
+    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2]) }
+    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: []) }
+    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request) }
 
     describe '.review_requested' do
       it 'returns MRs that have any review requests' do
@@ -145,8 +145,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     describe '.attention' do
-      let_it_be(:merge_request5) { create(:merge_request, :unique_branches, assignees: [user2])}
-      let_it_be(:merge_request6) { create(:merge_request, :unique_branches, assignees: [user2])}
+      let_it_be(:merge_request5) { create(:merge_request, :unique_branches, assignees: [user2]) }
+      let_it_be(:merge_request6) { create(:merge_request, :unique_branches, assignees: [user2]) }
 
       before do
         assignee = merge_request6.find_assignee(user2)
@@ -2056,7 +2056,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         context 'when failed to find an actual head pipeline' do
           before do
-            allow(merge_request).to receive(:find_actual_head_pipeline) { }
+            allow(merge_request).to receive(:find_actual_head_pipeline) {}
           end
 
           it 'does not update the current head pipeline' do
@@ -3228,6 +3228,62 @@ RSpec.describe MergeRequest, factory_default: :keep do
         it 'returns true when skipping discussions check' do
           expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
         end
+      end
+    end
+  end
+
+  describe '#detailed_merge_status' do
+    subject(:detailed_merge_status) { merge_request.detailed_merge_status }
+
+    context 'when merge status is cannot_be_merged_rechecking' do
+      let(:merge_request) { create(:merge_request, merge_status: :cannot_be_merged_rechecking) }
+
+      it 'returns :checking' do
+        expect(detailed_merge_status).to eq(:checking)
+      end
+    end
+
+    context 'when merge status is preparing' do
+      let(:merge_request) { create(:merge_request, merge_status: :preparing) }
+
+      it 'returns :checking' do
+        expect(detailed_merge_status).to eq(:checking)
+      end
+    end
+
+    context 'when merge status is checking' do
+      let(:merge_request) { create(:merge_request, merge_status: :checking) }
+
+      it 'returns :checking' do
+        expect(detailed_merge_status).to eq(:checking)
+      end
+    end
+
+    context 'when merge status is unchecked' do
+      let(:merge_request) { create(:merge_request, merge_status: :unchecked) }
+
+      it 'returns :unchecked' do
+        expect(detailed_merge_status).to eq(:unchecked)
+      end
+    end
+
+    context 'when merge checks are a success' do
+      let(:merge_request) { create(:merge_request) }
+
+      it 'returns :mergeable' do
+        expect(detailed_merge_status).to eq(:mergeable)
+      end
+    end
+
+    context 'when merge status have a failure' do
+      let(:merge_request) { create(:merge_request) }
+
+      before do
+        merge_request.close!
+      end
+
+      it 'returns the failure reason' do
+        expect(detailed_merge_status).to eq(:not_open)
       end
     end
   end
@@ -4660,6 +4716,37 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#in_locked_state' do
+    let(:merge_request) { create(:merge_request, :opened) }
+
+    context 'when the merge request does not change state' do
+      it 'returns to previous state and has no errors on the object' do
+        expect(merge_request.opened?).to eq(true)
+
+        merge_request.in_locked_state do
+          expect(merge_request.locked?).to eq(true)
+        end
+
+        expect(merge_request.opened?).to eq(true)
+        expect(merge_request.errors).to be_empty
+      end
+    end
+
+    context 'when the merge request is merged while locked' do
+      it 'becomes merged and has no errors on the object' do
+        expect(merge_request.opened?).to eq(true)
+
+        merge_request.in_locked_state do
+          expect(merge_request.locked?).to eq(true)
+          merge_request.mark_as_merged!
+        end
+
+        expect(merge_request.merged?).to eq(true)
+        expect(merge_request.errors).to be_empty
+      end
+    end
+  end
+
   describe '#cleanup_refs' do
     subject { merge_request.cleanup_refs(only: only) }
 
@@ -5044,6 +5131,12 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:ci_pipeline) }
       let!(:model) { create(:merge_request, head_pipeline: parent) }
+    end
+  end
+
+  describe '#merge_blocked_by_other_mrs?' do
+    it 'returns false when there is no blocking merge requests' do
+      expect(subject.merge_blocked_by_other_mrs?).to be_falsy
     end
   end
 

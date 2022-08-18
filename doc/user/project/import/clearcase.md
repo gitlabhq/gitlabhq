@@ -11,8 +11,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 tools developed by IBM which also include a centralized version control system
 similar to Git.
 
-A good read of ClearCase's basic concepts is can be found in this [StackOverflow
-post](https://stackoverflow.com/a/645771/974710).
+A good read of ClearCase's basic concepts is can be found in this 
+[StackOverflow post](https://stackoverflow.com/a/645771/974710).
 
 The following table illustrates the main differences between ClearCase and Git:
 

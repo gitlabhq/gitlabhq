@@ -73,7 +73,7 @@ RSpec.describe Backup::GitalyBackup do
         let(:max_parallelism) { 3 }
 
         it 'passes parallel option through' do
-          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel', '3', '-layout', 'pointer', '-id', backup_id).and_call_original
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-parallel', '3', '-id', backup_id).and_call_original
 
           subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
@@ -84,7 +84,7 @@ RSpec.describe Backup::GitalyBackup do
         let(:storage_parallelism) { 3 }
 
         it 'passes parallel option through' do
-          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel-storage', '3', '-layout', 'pointer', '-id', backup_id).and_call_original
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3', '-id', backup_id).and_call_original
 
           subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
@@ -102,36 +102,6 @@ RSpec.describe Backup::GitalyBackup do
         stub_backup_setting(gitaly_backup_path: nil)
 
         expect { subject.start(:create, destination, backup_id: backup_id) }.to raise_error(::Backup::Error, 'gitaly-backup binary not found and gitaly_backup_path is not configured')
-      end
-
-      context 'feature flag incremental_repository_backup disabled' do
-        before do
-          stub_feature_flags(incremental_repository_backup: false)
-        end
-
-        it 'creates repository bundles', :aggregate_failures do
-          # Add data to the wiki, design repositories, and snippets, so they will be included in the dump.
-          create(:wiki_page, container: project)
-          create(:design, :with_file, issue: create(:issue, project: project))
-          project_snippet = create(:project_snippet, :repository, project: project)
-          personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
-
-          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything).and_call_original
-
-          subject.start(:create, destination, backup_id: backup_id)
-          subject.enqueue(project, Gitlab::GlRepository::PROJECT)
-          subject.enqueue(project, Gitlab::GlRepository::WIKI)
-          subject.enqueue(project, Gitlab::GlRepository::DESIGN)
-          subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
-          subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-          subject.finish!
-
-          expect(File).to exist(File.join(destination, project.disk_path + '.bundle'))
-          expect(File).to exist(File.join(destination, project.disk_path + '.wiki.bundle'))
-          expect(File).to exist(File.join(destination, project.disk_path + '.design.bundle'))
-          expect(File).to exist(File.join(destination, personal_snippet.disk_path + '.bundle'))
-          expect(File).to exist(File.join(destination, project_snippet.disk_path + '.bundle'))
-        end
       end
     end
 
@@ -208,7 +178,7 @@ RSpec.describe Backup::GitalyBackup do
       let(:max_parallelism) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel', '3', '-layout', 'pointer').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel', '3').and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
@@ -219,42 +189,10 @@ RSpec.describe Backup::GitalyBackup do
       let(:storage_parallelism) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel-storage', '3', '-layout', 'pointer').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3').and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
-      end
-    end
-
-    context 'feature flag incremental_repository_backup disabled' do
-      before do
-        stub_feature_flags(incremental_repository_backup: false)
-      end
-
-      it 'restores from repository bundles', :aggregate_failures do
-        copy_bundle_to_backup_path('project_repo.bundle', project.disk_path + '.bundle')
-        copy_bundle_to_backup_path('wiki_repo.bundle', project.disk_path + '.wiki.bundle')
-        copy_bundle_to_backup_path('design_repo.bundle', project.disk_path + '.design.bundle')
-        copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
-        copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
-
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything).and_call_original
-
-        subject.start(:restore, destination, backup_id: backup_id)
-        subject.enqueue(project, Gitlab::GlRepository::PROJECT)
-        subject.enqueue(project, Gitlab::GlRepository::WIKI)
-        subject.enqueue(project, Gitlab::GlRepository::DESIGN)
-        subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
-        subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-        subject.finish!
-
-        collect_commit_shas = -> (repo) { repo.commits('master', limit: 10).map(&:sha) }
-
-        expect(collect_commit_shas.call(project.repository)).to match_array(['393a7d860a5a4c3cc736d7eb00604e3472bb95ec'])
-        expect(collect_commit_shas.call(project.wiki.repository)).to match_array(['c74b9948d0088d703ee1fafeddd9ed9add2901ea'])
-        expect(collect_commit_shas.call(project.design_repository)).to match_array(['c3cd4d7bd73a51a0f22045c3a4c871c435dc959d'])
-        expect(collect_commit_shas.call(personal_snippet.repository)).to match_array(['3b3c067a3bc1d1b695b51e2be30c0f8cf698a06e'])
-        expect(collect_commit_shas.call(project_snippet.repository)).to match_array(['6e44ba56a4748be361a841e759c20e421a1651a1'])
       end
     end
 

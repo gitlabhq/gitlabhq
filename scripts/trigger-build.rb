@@ -382,9 +382,10 @@ module Trigger
     private
 
     def ops_gitlab_client
+      # No access token is needed here - we only use this client to trigger pipelines,
+      # and the trigger token authenticates the request to the pipeline
       @ops_gitlab_client ||= Gitlab.client(
-        endpoint: 'https://ops.gitlab.net/api/v4',
-        private_token: ENV['GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN']
+        endpoint: 'https://ops.gitlab.net/api/v4'
       )
     end
 

@@ -51,6 +51,7 @@ RSpec.describe Clusters::Integrations::PrometheusHealthCheckService, '#execute' 
       let(:prometheus_enabled) { false }
 
       it { expect(subject).to eq(nil) }
+
       include_examples 'no alert'
     end
 

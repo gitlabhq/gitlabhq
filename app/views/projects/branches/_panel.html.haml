@@ -7,12 +7,13 @@
 
 - return unless branches.any?
 
-.card
-  .card-header
+= render Pajamas::CardComponent.new(card_options: {class: 'gl-mb-5'}, body_options: {class: 'gl-py-0'}, footer_options: {class: 'gl-text-center'}) do |c|
+  - c.header do
     = panel_title
-  %ul.content-list.all-branches.qa-all-branches
-    - branches.first(overview_max_branches).each do |branch|
-      = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch), commit_status: @branch_pipeline_statuses[branch.name], show_commit_status: @branch_pipeline_statuses.any?
+  - c.body do
+    %ul.content-list.all-branches.qa-all-branches
+      - branches.first(overview_max_branches).each do |branch|
+        = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch), commit_status: @branch_pipeline_statuses[branch.name], show_commit_status: @branch_pipeline_statuses.any?
   - if branches.size > overview_max_branches
-    .card-footer.text-center
+    - c.footer do
       = link_to show_more_text, project_branches_filtered_path(project, state: state), id: "state-#{state}", data: { state: state }

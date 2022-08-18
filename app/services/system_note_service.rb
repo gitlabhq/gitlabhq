@@ -57,7 +57,7 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).unrelate_issuable(noteable_ref)
   end
 
-  # Called when the due_date of a Noteable is changed
+  # Called when the due_date or start_date of a Noteable is changed
   #
   # noteable  - Noteable object
   # project   - Project owning noteable
@@ -68,11 +68,15 @@ module SystemNoteService
   #
   #   "removed due date"
   #
-  #   "changed due date to September 20, 2018"
+  #   "changed due date to September 20, 2018 and changed start date to September 25, 2018"
   #
   # Returns the created Note object
-  def change_due_date(noteable, project, author, due_date)
-    ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_due_date(due_date)
+  def change_start_date_or_due_date(noteable, project, author, changed_dates)
+    ::SystemNotes::TimeTrackingService.new(
+      noteable: noteable,
+      project: project,
+      author: author
+    ).change_start_date_or_due_date(changed_dates)
   end
 
   # Called when the estimated time of a Noteable is changed
@@ -111,6 +115,24 @@ module SystemNoteService
     ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_time_spent
   end
 
+  # Called when a timelog is added to an issuable
+  #
+  # issuable   - Issuable object (Issue, WorkItem or MergeRequest)
+  # project    - Project owning the issuable
+  # author     - User performing the change
+  # timelog    - Created timelog
+  #
+  # Example Note text:
+  #
+  #   "subtracted 1h 15m of time spent"
+  #
+  #   "added 2h 30m of time spent"
+  #
+  # Returns the created Note object
+  def created_timelog(issuable, project, author, timelog)
+    ::SystemNotes::TimeTrackingService.new(noteable: issuable, project: project, author: author).created_timelog(timelog)
+  end
+
   # Called when a timelog is removed from a Noteable
   #
   # noteable  - Noteable object
@@ -132,14 +154,6 @@ module SystemNoteService
 
   def change_status(noteable, project, author, status, source = nil)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
-  end
-
-  def request_attention(noteable, project, author, user)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).request_attention(user)
-  end
-
-  def remove_attention_request(noteable, project, author, user)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).remove_attention_request(user)
   end
 
   # Called when 'merge when pipeline succeeds' is executed
@@ -256,8 +270,8 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_moved(noteable_ref, direction)
   end
 
-  def noteable_cloned(noteable, project, noteable_ref, author, direction:)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_cloned(noteable_ref, direction)
+  def noteable_cloned(noteable, project, noteable_ref, author, direction:, created_at: nil)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_cloned(noteable_ref, direction, created_at: created_at)
   end
 
   def mark_duplicate_issue(noteable, project, author, canonical_issue)
@@ -278,6 +292,18 @@ module SystemNoteService
 
   def cross_reference_disallowed?(mentioned, mentioned_in)
     ::SystemNotes::IssuablesService.new(noteable: mentioned).cross_reference_disallowed?(mentioned_in)
+  end
+
+  def relate_work_item(noteable, work_item, user)
+    ::SystemNotes::IssuablesService
+      .new(noteable: noteable, project: noteable.project, author: user)
+      .hierarchy_changed(work_item, 'relate')
+  end
+
+  def unrelate_work_item(noteable, work_item, user)
+    ::SystemNotes::IssuablesService
+      .new(noteable: noteable, project: noteable.project, author: user)
+      .hierarchy_changed(work_item, 'unrelate')
   end
 
   def zoom_link_added(issue, project, author)

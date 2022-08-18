@@ -16,6 +16,20 @@ module WorkItems
     validate :validate_parent_type
     validate :validate_same_project
     validate :validate_max_children
+    validate :validate_confidentiality
+
+    class << self
+      def has_public_children?(parent_id)
+        joins(:work_item).where(work_item_parent_id: parent_id, 'issues.confidential': false).exists?
+      end
+
+      def has_confidential_parent?(id)
+        link = find_by_work_item_id(id)
+        return false unless link
+
+        link.work_item_parent.confidential?
+      end
+    end
 
     private
 
@@ -54,6 +68,15 @@ module WorkItems
       max = persisted? ? MAX_CHILDREN : MAX_CHILDREN - 1
       if work_item_parent.child_links.count > max
         errors.add :work_item_parent, _('parent already has maximum number of children.')
+      end
+    end
+
+    def validate_confidentiality
+      return unless work_item_parent && work_item
+
+      if work_item_parent.confidential? && !work_item.confidential?
+        errors.add :work_item, _("cannot assign a non-confidential work item to a confidential "\
+                                 "parent. Make the work item confidential and try again.")
       end
     end
   end

@@ -26,7 +26,7 @@ module QA
       end
 
       let(:flag) { Pathname.new(file.path).basename('.yml').to_s }
-      let(:root) { '..'}
+      let(:root) { '..' }
 
       before do
         definition = <<~YAML
@@ -78,7 +78,7 @@ module QA
       end
 
       context 'with an EE feature flag' do
-        let(:root) { '../ee'}
+        let(:root) { '../ee' }
 
         include_examples 'gets flag value'
       end

@@ -92,10 +92,8 @@ RSpec.describe Ci::RunnersFinder do
           context 'set to an invalid value' do
             let(:upgrade_status) { :some_invalid_status }
 
-            it 'does not call with_upgrade_status' do
-              expect(Ci::Runner).not_to receive(:with_upgrade_status)
-
-              expect(execute).to match_array(Ci::Runner.all)
+            it 'raises ArgumentError' do
+              expect { execute }.to raise_error(ArgumentError)
             end
           end
 

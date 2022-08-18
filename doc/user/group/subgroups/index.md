@@ -47,6 +47,28 @@ graph TD
     end
 ```
 
+## View subgroups of a group
+
+Prerequisite:
+
+- To view private nested subgroups, you must be a direct or inherited member of
+the private subgroup.
+
+To view the subgroups of a group:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. Select the **Subgroups and projects** tab.
+1. To view a nested subgroup, expand a subgroup in the hierarchy list.
+
+### Private subgroups in public parent groups
+
+In the hierarchy list, public groups with a private subgroup have an expand option (**{chevron-down}**)
+for all users that indicate there is a subgroup. When users who are not direct or inherited members of
+the private subgroup select expand (**{chevron-down}**), the nested subgroup does not display.
+
+If you prefer to keep information about the presence of nested subgroups private, we advise that you only
+add private subgroups to private parent groups.
+
 ## Create a subgroup
 
 Prerequisites:
@@ -102,7 +124,7 @@ Subgroup members can:
 
 1. Be [direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
 1. [Inherit membership](../../project/members/index.md#inherited-membership) of the subgroup from the subgroup's parent group.
-1. Be a member of a group that was [shared with the subgroup's top-level group](../index.md#share-a-group-with-another-group).
+1. Be a member of a group that was [shared with the subgroup's top-level group](../manage.md#share-a-group-with-another-group).
 
 ```mermaid
 flowchart RL
@@ -161,7 +183,7 @@ In the screenshot above:
 - Administrator has the Owner role on group _Four_ and is a member of all subgroups. For that reason, as with User 3,
   the **Source** column indicates they are a direct member.
 
-Members can be [filtered by inherited or direct membership](../index.md#filter-a-group).
+Members can be [filtered by inherited or direct membership](../manage.md#filter-a-group).
 
 ### Override ancestor group membership
 

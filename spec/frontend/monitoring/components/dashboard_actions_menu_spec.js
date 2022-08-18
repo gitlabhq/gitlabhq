@@ -92,7 +92,7 @@ describe('Actions menu', () => {
       });
 
       it('renders custom metrics form fields', () => {
-        expect(wrapper.find(CustomMetricsFormFields).exists()).toBe(true);
+        expect(wrapper.findComponent(CustomMetricsFormFields).exists()).toBe(true);
       });
     });
 
@@ -316,7 +316,7 @@ describe('Actions menu', () => {
     });
 
     it('is not disabled', () => {
-      expect(findStarDashboardItem().attributes('disabled')).toBeFalsy();
+      expect(findStarDashboardItem().attributes('disabled')).toBeUndefined();
     });
 
     it('is disabled when starring is taking place', async () => {

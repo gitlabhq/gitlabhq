@@ -61,15 +61,18 @@ module Groups
     end
 
     def before_assignment_hook(group, params)
-      # overridden in EE
+      @full_path_before = group.full_path
+      @path_before = group.path
     end
 
     def renaming_group_with_container_registry_images?
+      renaming? && group.has_container_repository_including_subgroups?
+    end
+
+    def renaming?
       new_path = params[:path]
 
-      new_path &&
-        new_path != group.path &&
-        group.has_container_repository_including_subgroups?
+      new_path && new_path != @path_before
     end
 
     def container_images_error
@@ -83,6 +86,8 @@ module Groups
       end
 
       update_two_factor_requirement_for_subgroups
+
+      publish_event
     end
 
     def update_two_factor_requirement_for_subgroups
@@ -153,6 +158,21 @@ module Groups
 
       group.errors.add(:update_shared_runners, result[:message])
       false
+    end
+
+    def publish_event
+      return unless renaming?
+
+      event = Groups::GroupPathChangedEvent.new(
+        data: {
+          group_id: group.id,
+          root_namespace_id: group.root_ancestor.id,
+          old_path: @full_path_before,
+          new_path: group.full_path
+        }
+      )
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

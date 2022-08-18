@@ -74,6 +74,8 @@ RSpec.describe NewIssueWorker do
 
         it 'creates a new event record' do
           expect { worker.perform(issue.id, user.id) }.to change { Event.count }.from(0).to(1)
+
+          expect(Event.last).to have_attributes(target_id: issue.id, target_type: 'Issue')
         end
 
         it 'creates a notification for the mentioned user' do
@@ -88,6 +90,14 @@ RSpec.describe NewIssueWorker do
               .to receive(:execute)
 
           worker.perform(issue.id, user.id)
+        end
+
+        context 'when a class is set' do
+          it 'creates event with the correct type' do
+            expect { worker.perform(issue.id, user.id, 'WorkItem') }.to change { Event.count }.from(0).to(1)
+
+            expect(Event.last).to have_attributes(target_id: issue.id, target_type: 'WorkItem')
+          end
         end
       end
     end

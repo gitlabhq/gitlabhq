@@ -13,6 +13,7 @@ RSpec.describe 'Profile > Password' do
   end
 
   context 'Password authentication enabled' do
+    let(:new_password) { User.random_password }
     let(:user) { create(:user, password_automatically_set: true) }
 
     before do
@@ -23,7 +24,7 @@ RSpec.describe 'Profile > Password' do
     context 'User with password automatically set' do
       describe 'User puts different passwords in the field and in the confirmation' do
         it 'shows an error message' do
-          fill_passwords('mypassword', 'mypassword2')
+          fill_passwords(new_password, "#{new_password}2")
 
           page.within('.gl-alert-danger') do
             expect(page).to have_content("Password confirmation doesn't match Password")
@@ -31,7 +32,7 @@ RSpec.describe 'Profile > Password' do
         end
 
         it 'does not contain the current password field after an error' do
-          fill_passwords('mypassword', 'mypassword2')
+          fill_passwords(new_password, "#{new_password}2")
 
           expect(page).to have_no_field('user[current_password]')
         end
@@ -39,7 +40,7 @@ RSpec.describe 'Profile > Password' do
 
       describe 'User puts the same passwords in the field and in the confirmation' do
         it 'shows a success message' do
-          fill_passwords('mypassword', 'mypassword')
+          fill_passwords(new_password, new_password)
 
           page.within('[data-testid="alert-info"]') do
             expect(page).to have_content('Password was successfully updated. Please sign in again.')
@@ -79,7 +80,7 @@ RSpec.describe 'Profile > Password' do
   end
 
   context 'Change password' do
-    let(:new_password) { '22233344' }
+    let(:new_password) { User.random_password }
 
     before do
       sign_in(user)
@@ -156,6 +157,8 @@ RSpec.describe 'Profile > Password' do
   end
 
   context 'when password is expired' do
+    let(:new_password) { User.random_password }
+
     before do
       sign_in(user)
 
@@ -170,8 +173,8 @@ RSpec.describe 'Profile > Password' do
       expect(page).to have_current_path new_profile_password_path, ignore_query: true
 
       fill_in :user_password,      with: user.password
-      fill_in :user_new_password,  with: '12345678'
-      fill_in :user_password_confirmation, with: '12345678'
+      fill_in :user_new_password,  with: new_password
+      fill_in :user_password_confirmation, with: new_password
       click_button 'Set new password'
 
       expect(page).to have_current_path new_user_session_path, ignore_query: true

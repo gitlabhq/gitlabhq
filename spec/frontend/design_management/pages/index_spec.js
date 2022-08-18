@@ -111,8 +111,8 @@ describe('Design management index page', () => {
   const findDropzoneWrapper = () => wrapper.findByTestId('design-dropzone-wrapper');
   const findFirstDropzoneWithDesign = () => wrapper.findAllComponents(DesignDropzone).at(1);
   const findDesignsWrapper = () => wrapper.findByTestId('designs-root');
-  const findDesigns = () => wrapper.findAll(Design);
-  const draggableAttributes = () => wrapper.find(VueDraggable).vm.$attrs;
+  const findDesigns = () => wrapper.findAllComponents(Design);
+  const draggableAttributes = () => wrapper.findComponent(VueDraggable).vm.$attrs;
   const findDesignUploadButton = () => wrapper.findByTestId('design-upload-button');
   const findDesignToolbarWrapper = () => wrapper.findByTestId('design-toolbar-wrapper');
   const findDesignUpdateAlert = () => wrapper.findByTestId('design-update-alert');
@@ -120,8 +120,8 @@ describe('Design management index page', () => {
   async function moveDesigns(localWrapper) {
     await waitForPromises();
 
-    localWrapper.find(VueDraggable).vm.$emit('input', reorderedDesigns);
-    localWrapper.find(VueDraggable).vm.$emit('change', {
+    localWrapper.findComponent(VueDraggable).vm.$emit('input', reorderedDesigns);
+    localWrapper.findComponent(VueDraggable).vm.$emit('change', {
       moved: {
         newIndex: 0,
         element: designToMove,
@@ -369,7 +369,7 @@ describe('Design management index page', () => {
       findDropzone().vm.$emit('change', [{ name: 'test' }]);
       expect(mutate).toHaveBeenCalledWith(mutationVariables);
       expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
-      expect(wrapper.vm.isSaving).toBeTruthy();
+      expect(wrapper.vm.isSaving).toBe(true);
       expect(dropzoneClasses()).toContain('design-list-item');
       expect(dropzoneClasses()).toContain('design-list-item-new');
     });
@@ -399,7 +399,7 @@ describe('Design management index page', () => {
       await nextTick();
 
       expect(wrapper.vm.filesToBeSaved).toEqual([]);
-      expect(wrapper.vm.isSaving).toBeFalsy();
+      expect(wrapper.vm.isSaving).toBe(false);
       expect(wrapper.vm.isLatestVersion).toBe(true);
     });
 
@@ -412,7 +412,7 @@ describe('Design management index page', () => {
       wrapper.vm.onUploadDesignError();
       await nextTick();
       expect(wrapper.vm.filesToBeSaved).toEqual([]);
-      expect(wrapper.vm.isSaving).toBeFalsy();
+      expect(wrapper.vm.isSaving).toBe(false);
       expect(findDesignUpdateAlert().exists()).toBe(true);
       expect(findDesignUpdateAlert().text()).toBe(UPLOAD_DESIGN_ERROR);
     });

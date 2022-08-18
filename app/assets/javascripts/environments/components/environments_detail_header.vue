@@ -135,6 +135,7 @@ export default {
       >
       <gl-button
         v-if="shouldShowExternalUrlButton"
+        v-gl-tooltip.hover
         data-testid="metrics-button"
         :href="metricsPath"
         :title="$options.i18n.metricsButtonTitle"

@@ -8,9 +8,14 @@ module QA
     describe 'Project import' do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
+      let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address }
+      let(:dummy_url) { "https://example.com" }
 
       let(:created_by_pattern) { /\*Created by: \S+\*\n\n/ }
       let(:suggestion_pattern) { /suggestion:-\d+\+\d+/ }
+      let(:gh_link_pattern) { %r{https://github.com/#{github_repo}/(issues|pull)} }
+      let(:gl_link_pattern) { %r{#{gitlab_address}/#{imported_project.path_with_namespace}/-/(issues|merge_requests)} }
+      let(:event_pattern) { %r{(un)?assigned( to)? @\S+|mentioned in (issue|merge request) [!#]\d+|changed title from \*\*.*\*\* to \*\*.*\*\*} } # rubocop:disable Layout/LineLength
 
       let(:api_client) { Runtime::API::Client.as_admin }
 
@@ -83,14 +88,14 @@ module QA
       let(:gh_issue_comments) do
         logger.debug("= Fetching issue comments =")
         github_client.issues_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
-          hash[c.html_url.gsub(/\#\S+/, "")] << c.body # use base html url as key
+          hash[c.html_url.gsub(/\#\S+/, "")] << c.body&.gsub(gh_link_pattern, dummy_url) # use base html url as key
         end
       end
 
       let(:gh_pr_comments) do
         logger.debug("= Fetching pr comments =")
         github_client.pull_requests_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
-          hash[c.html_url.gsub(/\#\S+/, "")] << c.body # use base html url as key
+          hash[c.html_url.gsub(/\#\S+/, "")] << c.body&.gsub(gh_link_pattern, dummy_url) # use base html url as key
         end
       end
 
@@ -135,7 +140,7 @@ module QA
             target: {
               name: "GitLab",
               project_name: imported_project.path_with_namespace,
-              address: QA::Runtime::Scenario.gitlab_address,
+              address: gitlab_address,
               data: {
                 branches: gl_branches.length,
                 commits: gl_commits.length,
@@ -381,15 +386,16 @@ module QA
             end
 
             logger.debug("Fetching comments for mr '#{mr[:title]}'")
+            comments = resource
+              .comments(auto_paginate: true, attempts: 2)
+              .reject { |c| c[:system] || c[:body].match?(/^(\*\*Review:\*\*)|(\*Merged by:).*/) }
+
             [mr[:iid], {
               url: mr[:web_url],
               title: mr[:title],
               body: sanitize_description(mr[:description]) || '',
-              comments: resource
-                .comments(auto_paginate: true, attempts: 2)
-                # remove system notes
-                .reject { |c| c[:system] || c[:body].match?(/^(\*\*Review:\*\*)|(\*Merged by:).*/) }
-                .map { |c| sanitize_comment(c[:body]) }
+              events: events(comments),
+              comments: non_event_comments(comments)
             }]
           end.to_h
         end
@@ -412,24 +418,54 @@ module QA
             end
 
             logger.debug("Fetching comments for issue '#{issue[:title]}'")
+            comments = resource.comments(auto_paginate: true, attempts: 2)
+
             [issue[:iid], {
               url: issue[:web_url],
               title: issue[:title],
               body: sanitize_description(issue[:description]) || '',
-              comments: resource
-                .comments(auto_paginate: true, attempts: 2)
-                .map { |c| sanitize_comment(c[:body]) }
+              events: events(comments),
+              comments: non_event_comments(comments)
             }]
           end.to_h
         end
       end
 
-      # Remove added prefixes and legacy diff format from comments
+      # Fetch comments without events
+      #
+      # @param [Array] comments
+      # @return [Array]
+      def non_event_comments(comments)
+        comments
+          .reject { |c| c[:body].match?(event_pattern) }
+          .map { |c| sanitize_comment(c[:body]) }
+      end
+
+      # Events
+      #
+      # @param [Array] comments
+      # @return [Array]
+      def events(comments)
+        comments
+          .select { |c| c[:body].match?(event_pattern) }
+          .map { |c| c[:body] }
+      end
+
+      # Normalize comments and make them directly comparable
+      #
+      # * remove created by prefixes
+      # * unify suggestion format
+      # * replace github and gitlab urls - some of the links to objects get transformed to gitlab entities, some don't,
+      #   update all links to example.com for now
       #
       # @param [String] body
       # @return [String]
       def sanitize_comment(body)
-        body.gsub(created_by_pattern, "").gsub(suggestion_pattern, "suggestion\r")
+        body
+          .gsub(created_by_pattern, "")
+          .gsub(suggestion_pattern, "suggestion\r")
+          .gsub(gl_link_pattern, dummy_url)
+          .gsub(gh_link_pattern, dummy_url)
       end
 
       # Remove created by prefix from descripion

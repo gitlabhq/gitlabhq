@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe MergeRequests::Mergeability::RunChecksService do
   subject(:run_checks) { described_class.new(merge_request: merge_request, params: {}) }
 
-  let_it_be(:merge_request) { create(:merge_request) }
-
   describe '#execute' do
     subject(:execute) { run_checks.execute }
+
+    let_it_be(:merge_request) { create(:merge_request) }
 
     let(:params) { {} }
     let(:success_result) { Gitlab::MergeRequests::Mergeability::CheckResult.success }
@@ -23,7 +23,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
       end
 
       it 'is still a success' do
-        expect(execute.all?(&:success?)).to eq(true)
+        expect(execute.success?).to eq(true)
       end
     end
 
@@ -41,13 +41,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
           expect(service).not_to receive(:execute)
         end
 
-        # Since we're only marking one check to be skipped, we expect to receive
-        #   `# of checks - 1` success result objects in return
-        #
-        check_count = merge_request.mergeability_checks.count - 1
-        success_array = (1..check_count).each_with_object([]) { |_, array| array << success_result }
-
-        expect(execute).to match_array(success_array)
+        expect(execute.success?).to eq(true)
       end
     end
 
@@ -75,7 +69,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
               expect(service).to receive(:read).with(merge_check: merge_check).and_return(success_result)
             end
 
-            expect(execute).to match_array([success_result])
+            expect(execute.success?).to eq(true)
           end
         end
 
@@ -86,7 +80,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
               expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash).and_return(true)
             end
 
-            expect(execute).to match_array([success_result])
+            expect(execute.success?).to eq(true)
           end
         end
       end
@@ -97,7 +91,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
         it 'does not call the results store' do
           expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
 
-          expect(execute).to match_array([success_result])
+          expect(execute.success?).to eq(true)
         end
       end
 
@@ -109,8 +103,80 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
         it 'does not call the results store' do
           expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
 
-          expect(execute).to match_array([success_result])
+          expect(execute.success?).to eq(true)
         end
+      end
+    end
+  end
+
+  describe '#success?' do
+    subject(:success) { run_checks.success? }
+
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    context 'when the execute method has been executed' do
+      before do
+        run_checks.execute
+      end
+
+      context 'when all the checks succeed' do
+        it 'returns true' do
+          expect(success).to eq(true)
+        end
+      end
+
+      context 'when one check fails' do
+        before do
+          allow(merge_request).to receive(:open?).and_return(false)
+          run_checks.execute
+        end
+
+        it 'returns false' do
+          expect(success).to eq(false)
+        end
+      end
+    end
+
+    context 'when execute has not been exectued' do
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(/Execute needs to be called before/)
+      end
+    end
+  end
+
+  describe '#failure_reason' do
+    subject(:failure_reason) { run_checks.failure_reason }
+
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    context 'when the execute method has been executed' do
+      before do
+        run_checks.execute
+      end
+
+      context 'when all the checks succeed' do
+        it 'returns nil' do
+          expect(failure_reason).to eq(nil)
+        end
+      end
+
+      context 'when one check fails' do
+        before do
+          allow(merge_request).to receive(:open?).and_return(false)
+          run_checks.execute
+        end
+
+        it 'returns the open reason' do
+          expect(failure_reason).to eq(:not_open)
+        end
+      end
+    end
+
+    context 'when execute has not been exectued' do
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(/Execute needs to be called before/)
       end
     end
   end

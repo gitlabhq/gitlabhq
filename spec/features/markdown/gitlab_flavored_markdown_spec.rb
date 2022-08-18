@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "GitLab Flavored Markdown" do
+  include CycleAnalyticsHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }

@@ -124,7 +124,7 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       });
 
       it('clicked on link with view', () => {
-        expect(primaryLink.props('menuItem').view).toBeTruthy();
+        expect(primaryLink.props('menuItem').view).toBe(TEST_NAV_DATA.views.projects.namespace);
       });
 
       it('changes active view', () => {

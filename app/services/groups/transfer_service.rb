@@ -36,7 +36,7 @@ module Groups
         update_crm_objects(was_root_group)
       end
 
-      post_update_hooks(@updated_project_ids)
+      post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations
       update_pending_builds
 
@@ -44,9 +44,10 @@ module Groups
     end
 
     # Overridden in EE
-    def post_update_hooks(updated_project_ids)
+    def post_update_hooks(updated_project_ids, old_root_ancestor_id)
       refresh_project_authorizations
       refresh_descendant_groups if @new_parent_group
+      publish_event(old_root_ancestor_id)
     end
 
     def ensure_allowed_transfer
@@ -265,6 +266,18 @@ module Groups
       return if old_root_ancestor_id == @group.root_ancestor.id
 
       CustomerRelations::IssueContact.delete_for_group(@group)
+    end
+
+    def publish_event(old_root_ancestor_id)
+      event = ::Groups::GroupTransferedEvent.new(
+        data: {
+          group_id: group.id,
+          old_root_namespace_id: old_root_ancestor_id,
+          new_root_namespace_id: group.root_ancestor.id
+        }
+      )
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

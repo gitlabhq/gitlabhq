@@ -7,8 +7,9 @@ class AddIndexOnNameAndIdToPublicGroups < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :namespaces, [:name, :id], name: INDEX_NAME,
-      where: "type = 'Group' AND visibility_level = #{PUBLIC_VISIBILITY_LEVEL}"
+    add_concurrent_index :namespaces, [:name, :id],
+                         name: INDEX_NAME,
+                         where: "type = 'Group' AND visibility_level = #{PUBLIC_VISIBILITY_LEVEL}"
   end
 
   def down

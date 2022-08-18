@@ -154,7 +154,7 @@ describe('IssuableBody', () => {
 
   describe('template', () => {
     it('renders issuable-title component', () => {
-      const titleEl = wrapper.find(IssuableTitle);
+      const titleEl = wrapper.findComponent(IssuableTitle);
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.props()).toMatchObject({
@@ -165,7 +165,7 @@ describe('IssuableBody', () => {
     });
 
     it('renders issuable-description component', () => {
-      const descriptionEl = wrapper.find(IssuableDescription);
+      const descriptionEl = wrapper.findComponent(IssuableDescription);
 
       expect(descriptionEl.exists()).toBe(true);
       expect(descriptionEl.props('issuable')).toEqual(issuableBodyProps.issuable);
@@ -184,7 +184,7 @@ describe('IssuableBody', () => {
 
       await nextTick();
 
-      const editFormEl = wrapper.find(IssuableEditForm);
+      const editFormEl = wrapper.findComponent(IssuableEditForm);
       expect(editFormEl.exists()).toBe(true);
       expect(editFormEl.props()).toMatchObject({
         issuable: issuableBodyProps.issuable,
@@ -198,7 +198,7 @@ describe('IssuableBody', () => {
 
     describe('events', () => {
       it('component emits `edit-issuable` event bubbled via issuable-title', () => {
-        const issuableTitle = wrapper.find(IssuableTitle);
+        const issuableTitle = wrapper.findComponent(IssuableTitle);
 
         issuableTitle.vm.$emit('edit-issuable');
 
@@ -223,7 +223,7 @@ describe('IssuableBody', () => {
 
           await nextTick();
 
-          const issuableEditForm = wrapper.find(IssuableEditForm);
+          const issuableEditForm = wrapper.findComponent(IssuableEditForm);
 
           issuableEditForm.vm.$emit(eventName, eventObj, issuableMeta);
 

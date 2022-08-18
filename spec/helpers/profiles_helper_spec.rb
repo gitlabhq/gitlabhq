@@ -67,38 +67,6 @@ RSpec.describe ProfilesHelper do
     end
   end
 
-  describe "#user_status_set_to_busy?" do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:availability, :result) do
-      "busy"    | true
-      "not_set" | false
-      ""        | false
-      nil       | false
-    end
-
-    with_them do
-      it { expect(helper.user_status_set_to_busy?(OpenStruct.new(availability: availability))).to eq(result) }
-    end
-  end
-
-  describe "#show_status_emoji?" do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:message, :emoji, :result) do
-      "Some message" | UserStatus::DEFAULT_EMOJI | true
-      "Some message" | ""                        | true
-      ""             | "basketball"              | true
-      ""             | "basketball"              | true
-      ""             | UserStatus::DEFAULT_EMOJI | false
-      ""             | UserStatus::DEFAULT_EMOJI | false
-    end
-
-    with_them do
-      it { expect(helper.show_status_emoji?(OpenStruct.new(message: message, emoji: emoji))).to eq(result) }
-    end
-  end
-
   describe "#ssh_key_expiration_tooltip" do
     using RSpec::Parameterized::TableSyntax
 

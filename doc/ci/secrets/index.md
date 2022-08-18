@@ -88,7 +88,7 @@ To configure your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.
    - `VAULT_AUTH_ROLE` - Optional. The role to use when attempting to authenticate.
-     If no role is specified, Vault uses the [default role](https://www.vaultproject.io/api/auth/jwt#default_role)
+     If no role is specified, Vault uses the [default role](https://www.vaultproject.io/api-docs/auth/jwt#default_role)
      specified when the authentication method was configured.
    - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
    - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://www.vaultproject.io/docs/enterprise/namespaces) to use for reading secrets and authentication.
@@ -183,7 +183,7 @@ For a full list of `CI_JOB_JWT` claims, read the
 
 You can also specify some attributes for the resulting Vault tokens, such as time-to-live,
 IP address range, and number of uses. The full list of options is available in
-[Vault's documentation on creating roles](https://www.vaultproject.io/api/auth/jwt#create-role)
+[Vault's documentation on creating roles](https://www.vaultproject.io/api-docs/auth/jwt#create-role)
 for the JSON web token method.
 
 ## Using a self-signed Vault server

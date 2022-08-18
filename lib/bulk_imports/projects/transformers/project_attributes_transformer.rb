@@ -11,8 +11,8 @@ module BulkImports
           entity = context.entity
           visibility = data.delete('visibility')
 
-          project[:name] = entity.destination_name
-          project[:path] = entity.destination_name.parameterize
+          project[:name] = entity.destination_slug
+          project[:path] = entity.destination_slug.parameterize
           project[:created_at] = data['created_at']
           project[:import_type] = PROJECT_IMPORT_TYPE
           project[:visibility_level] = Gitlab::VisibilityLevel.string_options[visibility] if visibility.present?

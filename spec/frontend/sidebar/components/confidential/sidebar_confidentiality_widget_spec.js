@@ -132,6 +132,7 @@ describe('Sidebar Confidentiality Widget', () => {
   it('closes the form and dispatches an event when `closeForm` is emitted', async () => {
     createComponent();
     const el = wrapper.vm.$el;
+    const closeFormPayload = { confidential: true };
     jest.spyOn(el, 'dispatchEvent');
 
     await waitForPromises();
@@ -140,12 +141,12 @@ describe('Sidebar Confidentiality Widget', () => {
 
     expect(findConfidentialityForm().isVisible()).toBe(true);
 
-    findConfidentialityForm().vm.$emit('closeForm');
+    findConfidentialityForm().vm.$emit('closeForm', closeFormPayload);
     await nextTick();
     expect(findConfidentialityForm().isVisible()).toBe(false);
 
     expect(el.dispatchEvent).toHaveBeenCalled();
-    expect(wrapper.emitted('closeForm')).toHaveLength(1);
+    expect(wrapper.emitted('closeForm')).toEqual([[closeFormPayload]]);
   });
 
   it('emits `expandSidebar` event when it is emitted from child component', async () => {

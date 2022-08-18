@@ -244,10 +244,10 @@ class Repository
     end
   end
 
-  def add_branch(user, branch_name, ref)
+  def add_branch(user, branch_name, ref, expire_cache: true)
     branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
-    after_create_branch
+    after_create_branch(expire_cache: expire_cache)
 
     branch
   rescue Gitlab::Git::Repository::InvalidRef
@@ -337,9 +337,15 @@ class Repository
 
   def expire_branches_cache
     expire_method_caches(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
+    expire_protected_branches_cache
+
     @local_branches = nil
     @branch_exists_memo = nil
     @branch_names_include = nil
+  end
+
+  def expire_protected_branches_cache
+    ProtectedBranches::CacheService.new(project).refresh if project # rubocop:disable CodeReuse/ServiceClass
   end
 
   def expire_statistics_caches
@@ -646,8 +652,8 @@ class Repository
     return if licensee_object.name.blank?
 
     licensee_object
-  rescue Licensee::InvalidLicense => ex
-    Gitlab::ErrorTracking.track_exception(ex)
+  rescue Licensee::InvalidLicense => e
+    Gitlab::ErrorTracking.track_exception(e)
     nil
   end
   memoize_method :license
@@ -1072,9 +1078,9 @@ class Repository
     ) do |commit_id|
       merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
     end
-  rescue StandardError => error
+  rescue StandardError => e
     merge_request.update!(rebase_commit_sha: nil)
-    raise error
+    raise e
   end
 
   def squash(user, merge_request, message)

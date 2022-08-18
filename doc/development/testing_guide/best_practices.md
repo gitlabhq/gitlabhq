@@ -422,8 +422,8 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 ### System / Feature tests
 
 NOTE:
-Before writing a new system test, [please consider **not**
-writing one](testing_levels.md#consider-not-writing-a-system-test)!
+Before writing a new system test, 
+[please consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
@@ -909,8 +909,8 @@ By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
 If a test queues Sidekiq jobs and need them to be processed, the
 `:sidekiq_inline` trait can be used.
 
-The `:sidekiq_might_not_need_inline` trait was added when [Sidekiq inline mode was
-changed to fake mode](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15479)
+The `:sidekiq_might_not_need_inline` trait was added when 
+[Sidekiq inline mode was changed to fake mode](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15479)
 to all the tests that needed Sidekiq to actually process jobs. Tests with
 this trait should be either fixed to not rely on Sidekiq processing jobs, or their
 `:sidekiq_might_not_need_inline` trait should be updated to `:sidekiq_inline` if
@@ -1239,8 +1239,7 @@ The `match_schema` matcher allows validating that the subject matches a
 a JSON string or a JSON-compatible data structure.
 
 `match_response_schema` is a convenience matcher for using with a
-response object. from a [request
-spec](testing_levels.md#integration-tests).
+response object. from a [request spec](testing_levels.md#integration-tests).
 
 Examples:
 

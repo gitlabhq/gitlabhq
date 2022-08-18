@@ -37,10 +37,10 @@ class FinalizeCiStagesBigintConversion < ActiveRecord::Migration[6.1]
     fk_stage_id = concurrent_foreign_key_name(:ci_builds, :stage_id)
     fk_stage_id_tmp = "#{fk_stage_id}_tmp"
     add_concurrent_foreign_key :ci_builds, :ci_stages, column: :stage_id,
-                               target_column: :id_convert_to_bigint,
-                               name: fk_stage_id_tmp,
-                               on_delete: :cascade,
-                               reverse_lock_order: true
+                                                       target_column: :id_convert_to_bigint,
+                                                       name: fk_stage_id_tmp,
+                                                       on_delete: :cascade,
+                                                       reverse_lock_order: true
 
     # Now it's time to do things in a transaction
     with_lock_retries(raise_on_exhaustion: true) do
@@ -58,7 +58,7 @@ class FinalizeCiStagesBigintConversion < ActiveRecord::Migration[6.1]
 
       # Swap defaults
       execute "ALTER SEQUENCE ci_stages_id_seq OWNED BY #{TABLE_NAME}.id"
-      change_column_default TABLE_NAME, :id, -> { "nextval('ci_stages_id_seq'::regclass)"}
+      change_column_default TABLE_NAME, :id, -> { "nextval('ci_stages_id_seq'::regclass)" }
       change_column_default TABLE_NAME, :id_convert_to_bigint, 0
 
       # Swap pkey constraint

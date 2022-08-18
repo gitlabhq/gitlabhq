@@ -67,30 +67,10 @@ RSpec.describe Groups::UploadsController do
       end
 
       context "when not signed in" do
-        context "enforce_auth_checks_on_uploads feature flag" do
-          context "with flag enabled" do
-            before do
-              stub_feature_flags(enforce_auth_checks_on_uploads: true)
-            end
+        it "responds with appropriate status" do
+          show_upload
 
-            it "responds with appropriate status" do
-              show_upload
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
-
-          context "with flag disabled" do
-            before do
-              stub_feature_flags(enforce_auth_checks_on_uploads: false)
-            end
-
-            it "responds with status 200" do
-              show_upload
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -100,30 +80,10 @@ RSpec.describe Groups::UploadsController do
         end
 
         context "when the user doesn't have access to the model" do
-          context "enforce_auth_checks_on_uploads feature flag" do
-            context "with flag enabled" do
-              before do
-                stub_feature_flags(enforce_auth_checks_on_uploads: true)
-              end
+          it "responds with status 200" do
+            show_upload
 
-              it "responds with status 200" do
-                show_upload
-
-                expect(response).to have_gitlab_http_status(:ok)
-              end
-            end
-          end
-
-          context "with flag disabled" do
-            before do
-              stub_feature_flags(enforce_auth_checks_on_uploads: false)
-            end
-
-            it "responds with status 200" do
-              show_upload
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -135,30 +95,10 @@ RSpec.describe Groups::UploadsController do
       end
 
       context "when not signed in" do
-        context "enforce_auth_checks_on_uploads feature flag" do
-          context "with flag enabled" do
-            before do
-              stub_feature_flags(enforce_auth_checks_on_uploads: true)
-            end
+        it "responds with appropriate status" do
+          show_upload
 
-            it "responds with appropriate status" do
-              show_upload
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
-
-          context "with flag disabled" do
-            before do
-              stub_feature_flags(enforce_auth_checks_on_uploads: false)
-            end
-
-            it "responds with status 200" do
-              show_upload
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -168,30 +108,10 @@ RSpec.describe Groups::UploadsController do
         end
 
         context "when the user doesn't have access to the model" do
-          context "enforce_auth_checks_on_uploads feature flag" do
-            context "with flag enabled" do
-              before do
-                stub_feature_flags(enforce_auth_checks_on_uploads: true)
-              end
+          it "responds with status 200" do
+            show_upload
 
-              it "responds with status 200" do
-                show_upload
-
-                expect(response).to have_gitlab_http_status(:ok)
-              end
-            end
-          end
-
-          context "with flag disabled" do
-            before do
-              stub_feature_flags(enforce_auth_checks_on_uploads: false)
-            end
-
-            it "responds with status 200" do
-              show_upload
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

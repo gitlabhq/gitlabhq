@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Build do
+  include Ci::TemplateHelpers
+  include AfterNextHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
@@ -59,10 +62,35 @@ RSpec.describe Ci::Build do
 
   describe 'callbacks' do
     context 'when running after_create callback' do
-      it 'triggers asynchronous build hooks worker' do
-        expect(BuildHooksWorker).to receive(:perform_async)
+      it 'executes hooks' do
+        expect_next(described_class).to receive(:execute_hooks)
 
         create(:ci_build)
+      end
+
+      context 'when the execute_build_hooks_inline flag is disabled' do
+        before do
+          stub_feature_flags(execute_build_hooks_inline: false)
+        end
+
+        it 'uses the old job hooks worker' do
+          expect(::BuildHooksWorker).to receive(:perform_async).with(Ci::Build)
+
+          create(:ci_build)
+        end
+      end
+
+      context 'when the execute_build_hooks_inline flag is enabled for a project' do
+        before do
+          stub_feature_flags(execute_build_hooks_inline: project)
+        end
+
+        it 'executes hooks inline' do
+          expect(::BuildHooksWorker).not_to receive(:perform_async)
+          expect_next(described_class).to receive(:execute_hooks)
+
+          create(:ci_build, project: project)
+        end
       end
     end
   end
@@ -80,6 +108,8 @@ RSpec.describe Ci::Build do
       end
     end
   end
+
+  it_behaves_like 'has ID tokens', :ci_build
 
   describe '.manual_actions' do
     let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
@@ -1289,7 +1319,7 @@ RSpec.describe Ci::Build do
     let(:subject) { build.hide_secrets(data) }
 
     context 'hide runners token' do
-      let(:data) { "new #{project.runners_token} data"}
+      let(:data) { "new #{project.runners_token} data" }
 
       it { is_expected.to match(/^new x+ data$/) }
 
@@ -1303,7 +1333,7 @@ RSpec.describe Ci::Build do
     end
 
     context 'hide build token' do
-      let(:data) { "new #{build.token} data"}
+      let(:data) { "new #{build.token} data" }
 
       it { is_expected.to match(/^new x+ data$/) }
 
@@ -1331,6 +1361,43 @@ RSpec.describe Ci::Build do
         expect(metrics)
           .not_to have_received(:increment_trace_operation)
           .with(operation: :mutated)
+      end
+    end
+  end
+
+  describe 'state transition metrics' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { build.send(event) }
+
+    where(:ff_enabled, :state, :report_count, :trait) do
+      true  | :success! | 1 | :sast
+      true  | :cancel!  | 1 | :sast
+      true  | :drop!    | 2 | :multiple_report_artifacts
+      true  | :success! | 0 | :allowed_to_fail
+      true  | :skip!    | 0 | :pending
+      false | :success! | 0 | :sast
+    end
+
+    with_them do
+      let(:build) { create(:ci_build, trait, project: project, pipeline: pipeline) }
+      let(:event) { state }
+
+      context "when transitioning to #{params[:state]}" do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          stub_feature_flags(report_artifact_build_completed_metrics_on_build_completion: ff_enabled)
+        end
+
+        it 'increments build_completed_report_type metric' do
+          expect(
+            ::Gitlab::Ci::Artifacts::Metrics
+          ).to receive(
+            :build_completed_report_type_counter
+          ).exactly(report_count).times.and_call_original
+
+          subject
+        end
       end
     end
   end
@@ -1518,8 +1585,8 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#environment_deployment_tier' do
-    subject { build.environment_deployment_tier }
+  describe '#environment_tier_from_options' do
+    subject { build.environment_tier_from_options }
 
     let(:build) { described_class.new(options: options) }
     let(:options) { { environment: { deployment_tier: 'production' } } }
@@ -1530,6 +1597,30 @@ RSpec.describe Ci::Build do
       let(:options) { { environment: { name: 'production' } } }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#environment_tier' do
+    subject { build.environment_tier }
+
+    let(:options) { { environment: { deployment_tier: 'production' } } }
+    let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
+    let(:build) { described_class.new(options: options, environment: 'production', project: project) }
+
+    it { is_expected.to eq('production') }
+
+    context 'when options does not include deployment_tier' do
+      let(:options) { { environment: { name: 'production' } } }
+
+      it 'uses tier from environment' do
+        is_expected.to eq('development')
+      end
+
+      context 'when persisted environment is absent' do
+        let(:environment) { nil }
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 
@@ -1601,20 +1692,18 @@ RSpec.describe Ci::Build do
         end
 
         it 'returns an expanded environment name with a list of variables' do
-          expect(build).to receive(:simple_variables).once.and_call_original
-
           is_expected.to eq('review/host')
         end
 
         context 'when build metadata has already persisted the expanded environment name' do
           before do
-            build.metadata.expanded_environment_name = 'review/host'
+            build.metadata.expanded_environment_name = 'review/foo'
           end
 
           it 'returns a persisted expanded environment name without a list of variables' do
             expect(build).not_to receive(:simple_variables)
 
-            is_expected.to eq('review/host')
+            is_expected.to eq('review/foo')
           end
         end
       end
@@ -1642,14 +1731,6 @@ RSpec.describe Ci::Build do
         end
 
         it { is_expected.to eq('review/master') }
-
-        context 'when the FF ci_expand_environment_name_and_url is disabled' do
-          before do
-            stub_feature_flags(ci_expand_environment_name_and_url: false)
-          end
-
-          it { is_expected.to eq('review/${CI_COMMIT_REF_NAME}') }
-        end
       end
     end
 
@@ -1693,7 +1774,7 @@ RSpec.describe Ci::Build do
           end
 
           context 'with a dynamic value' do
-            let(:namespace) { 'deploy-$CI_COMMIT_REF_NAME'}
+            let(:namespace) { 'deploy-$CI_COMMIT_REF_NAME' }
 
             it { is_expected.to eq 'deploy-master' }
           end
@@ -1806,6 +1887,21 @@ RSpec.describe Ci::Build do
     end
 
     context 'build is erasable' do
+      context 'logging erase' do
+        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
+
+        it 'logs erased artifacts' do
+          expect(Gitlab::Ci::Artifacts::Logger)
+            .to receive(:log_deleted)
+            .with(
+              match_array(build.job_artifacts.to_a),
+              'Ci::Build#erase'
+            )
+
+          build.erase
+        end
+      end
+
       context 'when project is undergoing stats refresh' do
         let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
 
@@ -1908,7 +2004,14 @@ RSpec.describe Ci::Build do
       end
     end
 
-    it "erases erasable artifacts" do
+    it "erases erasable artifacts and logs them" do
+      expect(Gitlab::Ci::Artifacts::Logger)
+        .to receive(:log_deleted)
+        .with(
+          match_array(build.job_artifacts.erasable.to_a),
+          'Ci::Build#erase_erasable_artifacts!'
+        )
+
       subject
 
       expect(build.job_artifacts.erasable).to be_empty
@@ -2627,7 +2730,7 @@ RSpec.describe Ci::Build do
         build.update_columns(token_encrypted: nil)
       end
 
-      it { is_expected.to be_nil}
+      it { is_expected.to be_nil }
     end
   end
 
@@ -2812,6 +2915,7 @@ RSpec.describe Ci::Build do
             public: true,
             masked: false },
           { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true, masked: false },
+          { key: 'CI_TEMPLATE_REGISTRY_HOST', value: template_registry_host, public: true, masked: false },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
           { key: 'CI_PIPELINE_CREATED_AT', value: pipeline.created_at.iso8601, public: true, masked: false },
@@ -2929,7 +3033,7 @@ RSpec.describe Ci::Build do
           let(:expected_variables) do
             predefined_variables.map { |variable| variable.fetch(:key) } +
               %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
-                 CI_ENVIRONMENT_TIER CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_URL]
+                 CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_TIER CI_ENVIRONMENT_URL]
           end
 
           before do
@@ -3093,6 +3197,16 @@ RSpec.describe Ci::Build do
           end
 
           it_behaves_like 'containing environment variables'
+        end
+      end
+
+      context 'when environment_tier is updated in options' do
+        before do
+          build.update!(options: { environment: { name: 'production', deployment_tier: 'development' } })
+        end
+
+        it 'uses tier from options' do
+          is_expected.to include({ key: 'CI_ENVIRONMENT_TIER', value: 'development', public: true, masked: false })
         end
       end
 
@@ -3508,8 +3622,8 @@ RSpec.describe Ci::Build do
 
       context 'when gitlab-deploy-token does not exist for project' do
         it 'does not include deploy token variables' do
-          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD' }).to be_nil
         end
 
         context 'when gitlab-deploy-token exists for group' do
@@ -3527,8 +3641,8 @@ RSpec.describe Ci::Build do
             end
 
             it 'does not include deploy token variables' do
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER' }).to be_nil
+              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD' }).to be_nil
             end
           end
         end
@@ -3559,10 +3673,10 @@ RSpec.describe Ci::Build do
 
       context 'when harbor_integration does not exist' do
         it 'does not include harbor variables' do
-          expect(subject.find { |v| v[:key] == 'HARBOR_URL'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'HARBOR_PROJECT_NAME'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'HARBOR_USERNAME'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'HARBOR_PASSWORD'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_URL' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_PROJECT_NAME' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_USERNAME' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_PASSWORD' }).to be_nil
         end
       end
     end
@@ -3807,8 +3921,20 @@ RSpec.describe Ci::Build do
       build.enqueue
     end
 
-    it 'queues BuildHooksWorker' do
-      expect(BuildHooksWorker).to receive(:perform_async).with(build)
+    context 'when the execute_build_hooks_inline flag is disabled' do
+      before do
+        stub_feature_flags(execute_build_hooks_inline: false)
+      end
+
+      it 'queues BuildHooksWorker' do
+        expect(BuildHooksWorker).to receive(:perform_async).with(build)
+
+        build.enqueue
+      end
+    end
+
+    it 'executes hooks' do
+      expect(build).to receive(:execute_hooks)
 
       build.enqueue
     end
@@ -4526,7 +4652,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#each_report' do
-    let(:report_types) { Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES }
+    let(:report_types) { Ci::JobArtifact.file_types_for_report(:coverage) }
 
     let!(:codequality) { create(:ci_job_artifact, :codequality, job: build) }
     let!(:coverage) { create(:ci_job_artifact, :coverage_gocov_xml, job: build) }
@@ -4559,6 +4685,7 @@ RSpec.describe Ci::Build do
     end
 
     before do
+      allow(build).to receive(:execute_hooks)
       stub_artifacts_object_storage
     end
 
@@ -5499,7 +5626,7 @@ RSpec.describe Ci::Build do
       build.cancel_gracefully?
     end
 
-    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
 
     it 'cannot cancel gracefully' do
       expect(subject).to be false
@@ -5519,5 +5646,59 @@ RSpec.describe Ci::Build do
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) { create(:ci_build, user: create(:user)) }
     let!(:parent) { model.user }
+  end
+
+  describe '#clone' do
+    let_it_be(:user) { FactoryBot.build(:user) }
+
+    context 'when given new job variables' do
+      context 'when the cloned build has an action' do
+        it 'applies the new job variables' do
+          build = create(:ci_build, :actionable)
+          create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
+          create(:ci_job_variable, job: build, key: 'OLD_KEY', value: 'i will not live for long')
+
+          new_build = build.clone(current_user: user, new_job_variables_attributes: [
+            { key: 'TEST_KEY', value: 'new value' },
+            { key: 'NEW_KEY', value: 'exciting new value' }
+          ])
+          new_build.save!
+
+          expect(new_build.job_variables.count).to be(2)
+          expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY', 'NEW_KEY')
+          expect(new_build.job_variables.map(&:value)).to contain_exactly('new value', 'exciting new value')
+        end
+      end
+
+      context 'when the cloned build does not have an action' do
+        it 'applies the old job variables' do
+          build = create(:ci_build)
+          create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
+
+          new_build = build.clone(current_user: user, new_job_variables_attributes: [
+            { key: 'TEST_KEY', value: 'new value' }
+          ])
+          new_build.save!
+
+          expect(new_build.job_variables.count).to be(1)
+          expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY')
+          expect(new_build.job_variables.map(&:value)).to contain_exactly('old value')
+        end
+      end
+    end
+
+    context 'when not given new job variables' do
+      it 'applies the old job variables' do
+        build = create(:ci_build)
+        create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
+
+        new_build = build.clone(current_user: user)
+        new_build.save!
+
+        expect(new_build.job_variables.count).to be(1)
+        expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY')
+        expect(new_build.job_variables.map(&:value)).to contain_exactly('old value')
+      end
+    end
   end
 end

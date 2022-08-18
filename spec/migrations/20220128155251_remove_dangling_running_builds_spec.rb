@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!('remove_dangling_running_builds')
 
-RSpec.describe RemoveDanglingRunningBuilds do
+RSpec.describe RemoveDanglingRunningBuilds, :suppress_gitlab_schemas_validate_connection do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:project) { table(:projects).create!(namespace_id: namespace.id) }
   let(:runner) { table(:ci_runners).create!(runner_type: 1) }
@@ -47,6 +47,6 @@ RSpec.describe RemoveDanglingRunningBuilds do
     migrate!
 
     expect(running_metadata.reload).to be_present
-    expect { failed_metadata.reload } .to raise_error(ActiveRecord::RecordNotFound)
+    expect { failed_metadata.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
 end

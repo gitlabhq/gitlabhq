@@ -47,6 +47,10 @@ class IssueEntity < IssuableEntity
       can?(request.current_user, :update_issue, issue)
     end
 
+    expose :can_set_issue_metadata do |issue|
+      can?(request.current_user, :set_issue_metadata, issue)
+    end
+
     expose :can_award_emoji do |issue|
       can?(request.current_user, :award_emoji, issue)
     end

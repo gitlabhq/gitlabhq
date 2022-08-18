@@ -30,6 +30,7 @@ class User < ApplicationRecord
   include Gitlab::Auth::Otp::Fortinet
   include RestrictedSignup
   include StripAttribute
+  include EachBatch
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -69,8 +70,8 @@ class User < ApplicationRecord
   default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
-    key:       Gitlab::Application.secrets.otp_key_base,
-    mode:      :per_attribute_iv_and_salt,
+    key: Gitlab::Application.secrets.otp_key_base,
+    mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
@@ -222,6 +223,7 @@ class User < ApplicationRecord
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
+  has_many :project_callouts, class_name: 'Users::ProjectCallout'
   has_many :namespace_callouts, class_name: 'Users::NamespaceCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
@@ -272,10 +274,10 @@ class User < ApplicationRecord
   validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
-    message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
+                                                     message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
 
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
-    message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
+                                                            message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
 
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 
@@ -447,6 +449,11 @@ class User < ApplicationRecord
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :by_name, -> (names) { iwhere(name: Array(names)) }
+  scope :by_login, -> (login) do
+    return none if login.blank?
+
+    login.include?('@') ? iwhere(email: login) : iwhere(username: login)
+  end
   scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
   scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id).distinct) }
@@ -481,7 +488,6 @@ class User < ApplicationRecord
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
-  scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
@@ -691,33 +697,29 @@ class User < ApplicationRecord
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
-      if Feature.enabled?(:use_keyset_aware_user_search_query)
-        order = Gitlab::Pagination::Keyset::Order.build([
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'users_match_priority',
-            order_expression: sanitized_order_sql.asc,
-            add_to_projections: true,
-            distinct: false
-          ),
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'users_name',
-            order_expression: arel_table[:name].asc,
-            add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: false
-          ),
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'users_id',
-            order_expression: arel_table[:id].asc,
-            add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: true
-          )
-        ])
-        scope.reorder(order)
-      else
-        scope.reorder(sanitized_order_sql, :name)
-      end
+      order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'users_match_priority',
+          order_expression: sanitized_order_sql.asc,
+          add_to_projections: true,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'users_name',
+          order_expression: arel_table[:name].asc,
+          add_to_projections: true,
+          nullable: :not_nullable,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'users_id',
+          order_expression: arel_table[:id].asc,
+          add_to_projections: true,
+          nullable: :not_nullable,
+          distinct: true
+        )
+      ])
+      scope.reorder(order)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.
@@ -768,14 +770,8 @@ class User < ApplicationRecord
       true
     end
 
-    def by_login(login)
-      return unless login
-
-      if login.include?('@')
-        unscoped.iwhere(email: login).take
-      else
-        unscoped.iwhere(username: login).take
-      end
+    def find_by_login(login)
+      by_login(login).take
     end
 
     def find_by_username(username)
@@ -991,12 +987,12 @@ class User < ApplicationRecord
   def disable_two_factor!
     transaction do
       update(
-        otp_required_for_login:      false,
-        encrypted_otp_secret:        nil,
-        encrypted_otp_secret_iv:     nil,
-        encrypted_otp_secret_salt:   nil,
+        otp_required_for_login: false,
+        encrypted_otp_secret: nil,
+        encrypted_otp_secret_iv: nil,
+        encrypted_otp_secret_salt: nil,
         otp_grace_period_started_at: nil,
-        otp_backup_codes:            nil
+        otp_backup_codes: nil
       )
       self.u2f_registrations.destroy_all # rubocop: disable Cop/DestroyAll
       self.webauthn_registrations.destroy_all # rubocop: disable Cop/DestroyAll
@@ -1663,7 +1659,14 @@ class User < ApplicationRecord
   end
 
   def forkable_namespaces
-    @forkable_namespaces ||= [namespace] + manageable_groups(include_groups_with_developer_maintainer_access: true)
+    strong_memoize(:forkable_namespaces) do
+      personal_namespace = Namespace.where(id: namespace_id)
+
+      Namespace.from_union([
+        manageable_groups(include_groups_with_developer_maintainer_access: true),
+        personal_namespace
+      ])
+    end
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)
@@ -1808,16 +1811,6 @@ class User < ApplicationRecord
     end
   end
 
-  def attention_requested_open_merge_requests_count(force: false)
-    if Feature.enabled?(:uncached_mr_attention_requests_count, self)
-      MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
-    else
-      Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-        MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
-      end
-    end
-  end
-
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
@@ -1861,11 +1854,6 @@ class User < ApplicationRecord
   def invalidate_merge_request_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
     Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
-    invalidate_attention_requested_count
-  end
-
-  def invalidate_attention_requested_count
-    Rails.cache.delete(attention_request_cache_key)
   end
 
   def invalidate_todos_cache_counts
@@ -1875,10 +1863,6 @@ class User < ApplicationRecord
 
   def invalidate_personal_projects_count
     Rails.cache.delete(['users', id, 'personal_projects_count'])
-  end
-
-  def attention_request_cache_key
-    ['users', id, 'attention_requested_open_merge_requests_count']
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
@@ -2095,6 +2079,12 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  def dismissed_callout_for_project?(feature_name:, project:, ignore_dismissal_earlier_than: nil)
+    callout = project_callouts.find_by(feature_name: feature_name, project: project)
+
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
+  end
+
   # Load the current highest access by looking directly at the user's memberships
   def current_highest_access_level
     members.non_request.maximum(:access_level)
@@ -2124,6 +2114,11 @@ class User < ApplicationRecord
   def find_or_initialize_namespace_callout(feature_name, namespace_id)
     namespace_callouts
       .find_or_initialize_by(feature_name: ::Users::NamespaceCallout.feature_names[feature_name], namespace_id: namespace_id)
+  end
+
+  def find_or_initialize_project_callout(feature_name, project_id)
+    project_callouts
+      .find_or_initialize_by(feature_name: ::Users::ProjectCallout.feature_names[feature_name], project_id: project_id)
   end
 
   def can_trigger_notifications?
@@ -2158,6 +2153,10 @@ class User < ApplicationRecord
 
   def mr_attention_requests_enabled?
     Feature.enabled?(:mr_attention_requests, self)
+  end
+
+  def account_age_in_days
+    (Date.current - created_at.to_date).to_i
   end
 
   protected

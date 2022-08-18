@@ -13,6 +13,8 @@ code_quality:
   artifacts:
     paths:
       - gl-code-quality-report.json  # GitLab-specific
+  # extends generated values cannot overwrite values from included files
+  # Use !reference as a workaround here
   rules: !reference [".reports:rules:code_quality", rules]
   allow_failure: true
 

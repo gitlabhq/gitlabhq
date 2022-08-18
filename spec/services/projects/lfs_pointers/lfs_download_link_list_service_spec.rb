@@ -6,7 +6,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
   let(:lfs_endpoint) { "#{import_url}/info/lfs/objects/batch" }
   let!(:project) { create(:project, import_url: import_url) }
   let(:new_oids) { { 'oid1' => 123, 'oid2' => 125 } }
-  let(:headers) { { 'X-Some-Header' => '456' }}
+  let(:headers) { { 'X-Some-Header' => '456' } }
   let(:remote_uri) { URI.parse(lfs_endpoint) }
 
   let(:request_object) { HTTParty::Request.new(Net::HTTP::Post, '/') }

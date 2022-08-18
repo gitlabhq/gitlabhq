@@ -199,6 +199,7 @@ export default {
       :starting-from="firstChunk.startingFrom"
       :is-highlighted="firstChunk.isHighlighted"
       :language="firstChunk.language"
+      :blame-path="blob.blamePath"
     />
 
     <gl-loading-icon v-if="isLoading" size="sm" class="gl-my-5" />
@@ -213,6 +214,7 @@ export default {
       :is-highlighted="chunk.isHighlighted"
       :chunk-index="index"
       :language="chunk.language"
+      :blame-path="blob.blamePath"
       @appear="highlightChunk"
     />
   </div>

@@ -10,6 +10,10 @@ FactoryBot.define do
     issue_type { :issue }
     association :work_item_type, :default
 
+    trait :confidential do
+      confidential { true }
+    end
+
     trait :task do
       issue_type { :task }
       association :work_item_type, :default, :task

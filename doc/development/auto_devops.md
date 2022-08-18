@@ -20,8 +20,8 @@ based on your project contents. When Auto DevOps is enabled for a
 project, the user does not need to explicitly include any pipeline configuration
 through a [`.gitlab-ci.yml` file](../ci/yaml/index.md).
 
-In the absence of a `.gitlab-ci.yml` file, the [Auto DevOps CI
-template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+In the absence of a `.gitlab-ci.yml` file, the 
+[Auto DevOps CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 is used implicitly to configure the pipeline for the project. This
 template is a top-level template that includes other sub-templates,
 which then defines jobs.

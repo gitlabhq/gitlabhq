@@ -76,7 +76,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
 
         const promise = testAction(() => {}, null, {}, assertion.mutations, assertion.actions);
 
-        originalExpect(promise instanceof Promise).toBeTruthy();
+        originalExpect(promise instanceof Promise).toBe(true);
 
         return promise;
       });

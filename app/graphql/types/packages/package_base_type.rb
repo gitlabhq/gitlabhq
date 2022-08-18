@@ -10,12 +10,12 @@ module Types
 
       authorize :read_package
 
-      field :id, ::Types::GlobalIDType[::Packages::Package], null: false,
-            description: 'ID of the package.'
+      field :id, ::Types::GlobalIDType[::Packages::Package], null: false, description: 'ID of the package.'
 
       field :can_destroy, GraphQL::Types::Boolean, null: false, description: 'Whether the user can destroy the package.'
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
-      field :metadata, Types::Packages::MetadataType, null: true,
+      field :metadata, Types::Packages::MetadataType,
+        null: true,
         description: 'Package metadata.'
       field :name, GraphQL::Types::String, null: false, description: 'Name of the package.'
       field :package_type, Types::Packages::PackageTypeEnum, null: false, description: 'Package type.'

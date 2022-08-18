@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::Issue do
+  let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
+
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
@@ -60,6 +62,10 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
         expect(issue.updated_at).to eq(updated_at)
       end
 
+      it 'includes the work_item_type_id' do
+        expect(issue.work_item_type_id).to eq(work_item_type_id)
+      end
+
       it 'is not a pull request' do
         expect(issue.pull_request?).to eq(false)
       end
@@ -84,8 +90,10 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
       )
     end
 
+    let(:additional_data) { { work_item_type_id: work_item_type_id } }
+
     it_behaves_like 'an Issue' do
-      let(:issue) { described_class.from_api_response(response) }
+      let(:issue) { described_class.from_api_response(response, additional_data) }
     end
 
     it 'does not set the user if the response did not include a user' do
@@ -93,7 +101,7 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
         .to receive(:user)
         .and_return(nil)
 
-      issue = described_class.from_api_response(response)
+      issue = described_class.from_api_response(response, additional_data)
 
       expect(issue.author).to be_nil
     end
@@ -113,7 +121,8 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
           'author' => { 'id' => 4, 'login' => 'alice' },
           'created_at' => created_at.to_s,
           'updated_at' => updated_at.to_s,
-          'pull_request' => false
+          'pull_request' => false,
+          'work_item_type_id' => work_item_type_id
         }
       end
 

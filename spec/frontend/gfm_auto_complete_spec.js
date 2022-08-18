@@ -10,6 +10,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
+import { eventlistenersMockDefaultMap } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 
 describe('GfmAutoComplete', () => {
   const fetchDataMock = { fetchData: jest.fn() };
@@ -457,12 +458,12 @@ describe('GfmAutoComplete', () => {
 
     it('should be false with actual array data', () => {
       expect(
-        GfmAutoComplete.isLoading([{ title: 'Foo' }, { title: 'Bar' }, { title: 'Qux' }]),
+        GfmAutoComplete.isLoading([{ title: 'events' }, { title: 'Bar' }, { title: 'Qux' }]),
       ).toBe(false);
     });
 
     it('should be false with actual data item', () => {
-      expect(GfmAutoComplete.isLoading({ title: 'Foo' })).toBe(false);
+      expect(GfmAutoComplete.isLoading({ title: 'events' })).toBe(false);
     });
   });
 
@@ -882,6 +883,49 @@ describe('GfmAutoComplete', () => {
           lastName: xssPayload,
         }),
       ).toBe(`<li><small>${escapedPayload} ${escapedPayload}</small> ${escapedPayload}</li>`);
+    });
+  });
+
+  describe('autocomplete show eventlisteners', () => {
+    let $textarea;
+
+    beforeEach(() => {
+      setHTMLFixture('<textarea></textarea>');
+      $textarea = $('textarea');
+    });
+
+    it('sets correct eventlisteners when autocomplete features are enabled', () => {
+      const autocomplete = new GfmAutoComplete({});
+      autocomplete.setup($textarea);
+      autocomplete.setupAtWho($textarea);
+      /* eslint-disable-next-line no-underscore-dangle */
+      const events = $._data($textarea[0], 'events');
+      expect(
+        Object.keys(events)
+          .filter((x) => {
+            return x.startsWith('shown');
+          })
+          .map((e) => {
+            return { key: e, namespace: events[e][0].namespace };
+          }),
+      ).toEqual(expect.arrayContaining(eventlistenersMockDefaultMap));
+    });
+
+    it('sets no eventlisteners when features are disabled', () => {
+      const autocomplete = new GfmAutoComplete({});
+      autocomplete.setup($textarea, {});
+      autocomplete.setupAtWho($textarea);
+      /* eslint-disable-next-line no-underscore-dangle */
+      const events = $._data($textarea[0], 'events');
+      expect(
+        Object.keys(events)
+          .filter((x) => {
+            return x.startsWith('shown');
+          })
+          .map((e) => {
+            return { key: e, namespace: events[e][0].namespace };
+          }),
+      ).toStrictEqual([]);
     });
   });
 });

@@ -291,6 +291,14 @@ module QA
         ENV['JIRA_HOSTNAME']
       end
 
+      def jenkins_admin_username
+        ENV.fetch('QA_JENKINS_USER', 'administrator')
+      end
+
+      def jenkins_admin_password
+        ENV.fetch('QA_JENKINS_PASS', 'password')
+      end
+
       # this is set by the integrations job
       # which will allow bidirectional communication
       # between the app and the specs container
@@ -482,6 +490,10 @@ module QA
 
       def max_capybara_wait_time
         ENV.fetch('MAX_CAPYBARA_WAIT_TIME', 10).to_i
+      end
+
+      def use_public_ip_api?
+        enabled?(ENV['QA_USE_PUBLIC_IP_API'], default: false)
       end
 
       private

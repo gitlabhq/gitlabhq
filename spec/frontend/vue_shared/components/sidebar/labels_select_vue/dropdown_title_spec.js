@@ -41,7 +41,7 @@ describe('DropdownTitle', () => {
     });
 
     it('renders edit link', () => {
-      const editBtnEl = wrapper.find(GlButton);
+      const editBtnEl = wrapper.findComponent(GlButton);
 
       expect(editBtnEl.exists()).toBe(true);
       expect(editBtnEl.text()).toBe('Edit');
@@ -53,7 +53,7 @@ describe('DropdownTitle', () => {
       });
 
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).isVisible()).toBe(true);
     });
   });
 });

@@ -270,7 +270,7 @@ RSpec.describe Gitlab::Regex do
 
   context 'conan recipe components' do
     shared_examples 'accepting valid recipe components values' do
-      let(:fifty_one_characters) { 'f_a' * 17}
+      let(:fifty_one_characters) { 'f_a' * 17 }
 
       it { is_expected.to match('foobar') }
       it { is_expected.to match('foo_bar') }
@@ -374,12 +374,12 @@ RSpec.describe Gitlab::Regex do
       end
     end
 
-    it { is_expected.to match('0')}
+    it { is_expected.to match('0') }
     it { is_expected.to match('1') }
     it { is_expected.to match('03') }
     it { is_expected.to match('2.0') }
     it { is_expected.to match('01.2') }
-    it { is_expected.to match('10.2.3-beta')}
+    it { is_expected.to match('10.2.3-beta') }
     it { is_expected.to match('1.2-SNAPSHOT') }
     it { is_expected.to match('20') }
     it { is_expected.to match('20.3') }
@@ -454,7 +454,7 @@ RSpec.describe Gitlab::Regex do
 
     it { is_expected.to match('0.1') }
     it { is_expected.to match('2.0') }
-    it { is_expected.to match('1.2.0')}
+    it { is_expected.to match('1.2.0') }
     it { is_expected.to match('0100!0.0') }
     it { is_expected.to match('00!1.2') }
     it { is_expected.to match('1.0a') }

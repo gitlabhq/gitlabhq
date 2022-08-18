@@ -114,7 +114,7 @@ describe('Metric images tab', () => {
 
       await waitForPromises();
 
-      expect(findModal().attributes('visible')).toBeFalsy();
+      expect(findModal().attributes('visible')).toBeUndefined();
     });
 
     it('should add files and url when selected', async () => {

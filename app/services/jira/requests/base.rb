@@ -9,10 +9,10 @@ module Jira
 
       ERRORS = {
         connection: [Errno::ECONNRESET, Errno::ECONNREFUSED],
-        jira_ruby:  JIRA::HTTPError,
-        ssl:        OpenSSL::SSL::SSLError,
-        timeout:    [Timeout::Error, Errno::ETIMEDOUT],
-        uri:        [URI::InvalidURIError, SocketError]
+        jira_ruby: JIRA::HTTPError,
+        ssl: OpenSSL::SSL::SSLError,
+        timeout: [Timeout::Error, Errno::ETIMEDOUT],
+        uri: [URI::InvalidURIError, SocketError]
       }.freeze
       ALL_ERRORS = ERRORS.values.flatten.freeze
 

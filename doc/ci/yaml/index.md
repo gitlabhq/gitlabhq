@@ -171,11 +171,11 @@ Use `include:local` instead of symbolic links.
 
 **Possible inputs**:
 
-- A full path relative to the root directory (`/`).
+A full path relative to the root directory (`/`):
+
 - The YAML file must have the extension `.yml` or `.yaml`.
 - You can [use `*` and `**` wildcards in the file path](includes.md#use-includelocal-with-wildcard-file-paths).
-
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:local`**:
 
@@ -208,10 +208,10 @@ use `include:file`. You can use `include:file` in combination with `include:proj
 
 **Possible inputs**:
 
-- A full path, relative to the root directory (`/`). The YAML file must have the
-  extension `.yml` or `.yaml`.
+A full path, relative to the root directory (`/`):
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- The YAML file must have the extension `.yml` or `.yaml`.
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:file`**:
 
@@ -268,10 +268,11 @@ Use `include:remote` with a full URL to include a file from a different location
 
 **Possible inputs**:
 
-- A public URL accessible by an HTTP/HTTPS `GET` request. Authentication with the
-  remote URL is not supported. The YAML file must have the extension `.yml` or `.yaml`.
+A public URL accessible by an HTTP/HTTPS `GET` request:
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- Authentication with the remote URL is not supported.
+- The YAML file must have the extension `.yml` or `.yaml`.
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:remote`**:
 
@@ -296,9 +297,12 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 **Possible inputs**:
 
-- [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+A [CI/CD template](../examples/index.md#cicd-templates):
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- Templates are stored in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+  Not all templates are designed to be used with `include:template`, so check template
+  comments before using one.
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:template`**:
 
@@ -2136,7 +2140,7 @@ This example creates four paths of execution:
 
 - The maximum number of jobs that a single job can have in the `needs` array is limited:
   - For GitLab.com, the limit is 50. For more information, see our
-    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
+    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/7541).
   - For self-managed instances, the default limit is 50. This limit [can be changed](../../administration/cicd.md#set-the-needs-job-limit).
 - If `needs` refers to a job that uses the [`parallel`](#parallel) keyword,
   it depends on all jobs created in parallel, not just one job. It also downloads
@@ -2784,11 +2788,15 @@ which must be in the `$PATH`.
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
 you can use this image from the GitLab Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
 
+If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
+[install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**: The `release` subkeys:
 
 - [`tag_name`](#releasetag_name)
+- [`tag_message`](#releasetag_message) (optional)
 - [`name`](#releasename) (optional)
 - [`description`](#releasedescription)
 - [`ref`](#releaseref) (optional)
@@ -2832,8 +2840,6 @@ This example creates a release:
 - The `release` section executes after the `script` keyword and before the `after_script`.
 - A release is created only if the job's main script succeeds.
 - If the release already exists, it is not updated and the job with the `release` keyword fails.
-- If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
-  [install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
 
 **Related topics**:
 
@@ -2885,6 +2891,30 @@ job:
     description: 'Release description'
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+```
+
+#### `release:tag_message`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
+
+If the tag does not exist, the newly created tag is annotated with the message specifed by `tag_message`.
+If omitted, a lightweight tag is created.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A text string.
+
+**Example of `release:tag_message`**:
+
+```yaml
+  release_job:
+    stage: release
+    release:
+      tag_name: $CI_COMMIT_TAG
+      description: 'Release description'
+      tag_message: 'Annotated tag message'
 ```
 
 #### `release:name`
@@ -2965,7 +2995,7 @@ released_at: '2021-03-15T08:00:00Z'
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271454) in GitLab 13.12.
 
-Use `release:assets:links` to include [asset links](../../user/project/releases/index.md#release-assets) in the release.
+Use `release:assets:links` to include [asset links](../../user/project/releases/release_fields.md#release-assets) in the release.
 
 Requires `release-cli` version v0.4.0 or later.
 
@@ -3221,6 +3251,7 @@ branch or merge request pipelines.
 **Possible inputs**:
 
 - An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+- Alternatively, the array of file paths can be in [`rules:changes:paths`](#ruleschangespaths).
 
 **Example of `rules:changes`**:
 
@@ -3239,6 +3270,8 @@ docker build:
 - If `Dockerfile` has changed, add the job to the pipeline as a manual job, and the pipeline
   continues running even if the job is not triggered (`allow_failure: true`).
 - If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
+- [`rules:changes:paths`](#ruleschangespaths) is the same as `rules:changes` without
+  any subkeys.
 
 **Additional details**:
 
@@ -3249,6 +3282,74 @@ docker build:
 **Related topics**:
 
 - [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+
+##### `rules:changes:paths`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90171) in GitLab 15.2.
+
+Use `rules:changes` to specify that a job only be added to a pipeline when specific
+files are changed, and use `rules:changes:paths` to specify the files.
+
+`rules:changes:paths` is the same as using [`rules:changes`](#ruleschanges) without
+any subkeys. All additional details and related topics are the same.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+
+**Example of `rules:changes:paths`**:
+
+```yaml
+docker-build-1:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - Dockerfile
+
+docker-build-2:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - Dockerfile
+```
+
+In this example, both jobs have the same behavior.
+
+##### `rules:changes:compare_to`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
+
+Use `rules:changes:compare_to` to specify which ref to compare against for changes to the files
+listed under [`rules:changes:paths`](#ruleschangespaths).
+
+**Keyword type**: Job keyword. You can use it only as part of a job, and it must be combined with `rules:changes:paths`.
+
+**Possible inputs**:
+
+- A branch name, like `main`, `branch1`, or `refs/heads/branch1`.
+- A tag name, like `tag1` or `refs/tags/tag1`.
+- A commit SHA, like `2fg31ga14b`.
+
+**Example of `rules:changes:compare_to`**:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - Dockerfile
+        compare_to: 'refs/heads/branch1'
+```
+
+In this example, the `docker build` job is only included when the `Dockerfile` has changed
+relative to `refs/heads/branch1` and the pipeline source is a merge request event.
 
 #### `rules:exists`
 
@@ -3792,7 +3893,9 @@ Use `trigger` to start a downstream pipeline that is either:
 
 **Possible inputs**:
 
-- For multi-project pipelines, path to the downstream project.
+- For multi-project pipelines, path to the downstream project. CI/CD variables
+  [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
+  in GitLab 15.3 and later.
 - For child pipelines, path to the child pipeline CI/CD configuration file.
 
 **Example of `trigger` for multi-project pipeline**:
@@ -3830,6 +3933,8 @@ trigger_job:
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
   to forward these variables to downstream pipelines.
+- [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
+  are not available in trigger jobs.
 
 **Related topics**:
 
@@ -3860,6 +3965,17 @@ trigger_job:
 
 In this example, jobs from subsequent stages wait for the triggered pipeline to
 successfully complete before starting.
+
+**Additional details**:
+
+- [Optional manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
+  do not affect the status of the downstream pipeline or the upstream trigger job.
+  The downstream pipeline can complete successfully without running any optional manual jobs.
+- [Blocking manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
+  must run before the trigger job is marked as successful or failed. The trigger job
+  shows **pending** (**{status_pending}**) if the downstream pipeline status is
+  **waiting for manual action** (**{status_manual}**) due to manual jobs. By default,
+  jobs in later stages do not start until the trigger job completes.
 
 #### `trigger:forward`
 

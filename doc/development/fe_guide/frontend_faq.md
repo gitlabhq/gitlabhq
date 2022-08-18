@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Rules of Frontend FAQ
 
 1. **You talk about Frontend FAQ.**
-   Please share links to it whenever applicable, so more eyes catch when content
+   Share links to it whenever applicable, so more eyes catch when content
    gets outdated.
 1. **Keep it short and simple.**
    Whenever an answer needs more than two sentences it does not belong here.
@@ -17,7 +17,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
    Linking to relevant source code, issue / epic, or other documentation helps
    to understand the answer.
 1. **If you see something, do something.**
-   Please remove or update any content that is outdated as soon as you see it.
+   Remove or update any content that is outdated as soon as you see it.
 
 ## FAQ
 
@@ -101,7 +101,7 @@ axios.get(joinPaths(gon.gitlab_url, '-', 'foo'))
 axios.get(joinPaths(gon.relative_url_root, '-', 'foo'))
 ```
 
-Also, please try not to hardcode paths in the Frontend, but instead receive them from the Backend (see next section).
+Also, try not to hardcode paths in the Frontend, but instead receive them from the Backend (see next section).
 When referencing Backend rails paths, avoid using `*_url`, and use `*_path` instead.
 
 Example:

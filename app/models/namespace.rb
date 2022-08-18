@@ -40,15 +40,21 @@ class Namespace < ApplicationRecord
 
   PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
 
+  # The first date in https://docs.gitlab.com/ee/user/usage_quotas.html#namespace-storage-limit-enforcement-schedule
+  # Determines when we start enforcing namespace storage
+  MIN_STORAGE_ENFORCEMENT_DATE = Date.new(2022, 10, 19)
+
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
+  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: true
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
+  has_many :member_roles
 
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
@@ -76,6 +82,8 @@ class Namespace < ApplicationRecord
   has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
   has_many :work_items, inverse_of: :namespace
   has_many :issues, inverse_of: :namespace
+
+  has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
@@ -120,6 +128,7 @@ class Namespace < ApplicationRecord
            to: :namespace_settings, allow_nil: true
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
+  after_save :reload_namespace_details
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -559,9 +568,7 @@ class Namespace < ApplicationRecord
   def storage_enforcement_date
     return Date.current if Feature.enabled?(:namespace_storage_limit_bypass_date_check, self)
 
-    # should return something like Date.new(2022, 02, 03)
-    # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
-    nil
+    MIN_STORAGE_ENFORCEMENT_DATE
   end
 
   def certificate_based_clusters_enabled?
@@ -669,6 +676,12 @@ class Namespace < ApplicationRecord
     elsif group_namespace?
       errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user_namespace?
     end
+  end
+
+  def reload_namespace_details
+    return unless !project_namespace? && (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && namespace_details.present?
+
+    namespace_details.reset
   end
 
   def sync_share_with_group_lock_with_parent

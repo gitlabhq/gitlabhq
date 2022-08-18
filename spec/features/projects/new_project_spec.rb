@@ -3,14 +3,42 @@
 require 'spec_helper'
 
 RSpec.describe 'New project', :js do
-  include Select2Helper
   include Spec::Support::Helpers::Features::TopNavSpecHelpers
 
   context 'as a user' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     before do
       sign_in(user)
+    end
+
+    it 'shows the project description field when it should' do
+      description_label = 'Project description (optional)'
+
+      visit new_project_path
+      click_link 'Create blank project'
+
+      page.within('#blank-project-pane') do
+        expect(page).not_to have_content(description_label)
+      end
+
+      visit new_project_path
+      click_link 'Import project'
+
+      page.within('#import-project-pane') do
+        click_button 'Repository by URL'
+
+        expect(page).to have_content(description_label)
+      end
+
+      visit new_project_path
+      click_link 'Create from template'
+
+      page.within('#create-from-template-pane') do
+        find("[data-testid='use_template_#{Gitlab::ProjectTemplate.localized_templates_table.first.name}']").click
+
+        expect(page).to have_content(description_label)
+      end
     end
 
     it 'shows a message if multiple levels are restricted' do

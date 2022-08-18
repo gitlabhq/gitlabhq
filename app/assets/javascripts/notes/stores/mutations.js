@@ -7,7 +7,7 @@ import * as utils from './utils';
 export default {
   [types.ADD_NEW_NOTE](state, data) {
     const note = data.discussion ? data.discussion.notes[0] : data;
-    const { discussion_id, type } = note;
+    const { discussion_id: discussionId, type } = note;
     const [exists] = state.discussions.filter((n) => n.id === note.discussion_id);
     const isDiscussion = type === constants.DISCUSSION_NOTE || type === constants.DIFF_NOTE;
 
@@ -17,9 +17,9 @@ export default {
       if (!discussion) {
         discussion = {
           expanded: true,
-          id: discussion_id,
+          id: discussionId,
           individual_note: !isDiscussion,
-          reply_id: discussion_id,
+          reply_id: discussionId,
         };
 
         if (isDiscussion && isInMRPage()) {

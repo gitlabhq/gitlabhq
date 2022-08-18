@@ -569,6 +569,27 @@ RSpec.describe Issuable do
       end
     end
 
+    context 'merge_request update reviewers' do
+      let(:merge_request) { create(:merge_request) }
+      let(:user2) { create(:user) }
+
+      before do
+        merge_request.update!(reviewers: [user])
+        merge_request.update!(reviewers: [user, user2])
+        expect(Gitlab::DataBuilder::Issuable)
+          .to receive(:new).with(merge_request).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'reviewers' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
+          ))
+        merge_request.to_hook_data(user, old_associations: { reviewers: [user] })
+      end
+    end
+
     context 'incident severity is updated' do
       let(:issue) { create(:incident) }
 

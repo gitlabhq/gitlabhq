@@ -69,11 +69,14 @@ module API
         optional :key, type: String, desc: '`percentage_of_actors` or the default `percentage_of_time`'
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username or comma-separated multiple usernames'
-        optional :group, type: String,
+        optional :group,
+          type: String,
           desc: "A GitLab group's path, such as 'gitlab-org', or comma-separated multiple group paths"
-        optional :namespace, type: String,
+        optional :namespace,
+          type: String,
           desc: "A GitLab group or user namespace path, such as 'john-doe', or comma-separated multiple namespace paths"
-        optional :project, type: String,
+        optional :project,
+          type: String,
           desc: "A projects path, such as `gitlab-org/gitlab-ce`, or comma-separated multiple project paths"
         optional :force, type: Boolean, desc: 'Skip feature flag validation checks, ie. YAML definition'
 

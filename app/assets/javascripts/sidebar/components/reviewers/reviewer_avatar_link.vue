@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     cannotMerge() {
-      return this.issuableType === 'merge_request' && !this.user.can_merge;
+      return this.issuableType === 'merge_request' && !this.user.mergeRequestInteraction?.canMerge;
     },
     tooltipTitle() {
       if (this.cannotMerge && this.tooltipHasName) {
@@ -59,7 +59,7 @@ export default {
       };
     },
     reviewerUrl() {
-      return this.user.web_url;
+      return this.user.webUrl;
     },
   },
 };

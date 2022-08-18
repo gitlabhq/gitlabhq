@@ -285,14 +285,14 @@ describe('AlertDetails', () => {
       });
 
       it('displays a loading state when loading', () => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
 
     describe('error state', () => {
       it('displays a error state correctly', () => {
         mountComponent({ data: { errored: true } });
-        expect(wrapper.find(GlAlert).exists()).toBe(true);
+        expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
       });
 
       it('renders html-errors correctly', () => {
@@ -304,7 +304,7 @@ describe('AlertDetails', () => {
 
       it('does not display an error when dismissed', () => {
         mountComponent({ data: { errored: true, isErrorDismissed: true } });
-        expect(wrapper.find(GlAlert).exists()).toBe(false);
+        expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
       });
     });
 

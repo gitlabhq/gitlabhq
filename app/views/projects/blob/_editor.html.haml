@@ -42,7 +42,7 @@
   .file-editor.code
     - if Feature.enabled?(:source_editor_toolbar, current_user)
       #editor-toolbar
-    .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
+    .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true, qa_selector: 'source_editor_preview_container' } }<
       %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide

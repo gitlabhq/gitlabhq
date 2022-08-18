@@ -74,8 +74,7 @@ Do not use boolean operators such as `&&` and `||` within the rule DSL,
 as conditions within rule blocks are objects, not booleans. The same
 applies for ternary operators (`condition ? ... : ...`), and `if`
 blocks. These operators cannot be overridden, and are hence banned via a
-[custom
-cop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49771).
+[custom cop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49771).
 
 ## Scores, Order, Performance
 

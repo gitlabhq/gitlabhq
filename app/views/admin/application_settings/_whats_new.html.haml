@@ -1,7 +1,7 @@
 = gitlab_ui_form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-whats-new-settings'), html: { class: 'fieldset-form whats-new-settings' } do |f|
   = form_errors(@application_setting, pajamas_alert: true)
 
-  - whats_new_variants.keys.each do |variant|
+  - whats_new_variants.each_key do |variant|
     .gl-mb-4
       = f.gitlab_ui_radio_component :whats_new_variant, variant, whats_new_variants_label(variant), help_text: whats_new_variants_description(variant)
 

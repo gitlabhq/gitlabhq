@@ -25,7 +25,7 @@ To ensure access to your cluster is safe:
 - Each agent has a separate context (`kubecontext`).
 - Only the project where the agent is configured, and any additional projects you authorize, can access the agent in your cluster.
 
-You do not need to have a runner in the cluster with the agent.
+The CI/CD workflow requires runners to be registered with GitLab, but these runners do not have to be in the cluster where the agent is.
 
 ## GitLab CI/CD workflow steps
 
@@ -127,8 +127,8 @@ Run `kubectl config get-contexts`.
 
 ### Environments with both certificate-based and agent-based connections
 
-When you deploy to an environment that has both a [certificate-based
-cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent connection:
+When you deploy to an environment that has both a 
+[certificate-based cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent connection:
 
 - The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.

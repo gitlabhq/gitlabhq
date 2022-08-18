@@ -84,9 +84,9 @@ module AvatarsHelper
     end
 
     image_options = {
-      alt:   alt_text,
-      src:   avatar_url,
-      data:  data_attributes,
+      alt: alt_text,
+      src: avatar_url,
+      data: data_attributes,
       class: css_class,
       title: user_name
     }

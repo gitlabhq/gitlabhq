@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'Analytics fixtures shared context' do
+  include CycleAnalyticsHelpers
   include JavaScriptFixturesHelpers
 
   let_it_be(:group) { create(:group) }

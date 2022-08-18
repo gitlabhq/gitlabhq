@@ -12,11 +12,11 @@ The following document gives a few ideas for improving the pagination (sorting) 
 
 When ordering the columns it's advised to order by distinct columns only. Consider the following example:
 
-|`id`|`created_at`|
-|-|-|
-|1|2021-01-04 14:13:43|
-|2|2021-01-05 19:03:12|
-|3|2021-01-05 19:03:12|
+| `id` | `created_at`          |
+|------|-----------------------|
+| `1`  | `2021-01-04 14:13:43` |
+| `2`  | `2021-01-05 19:03:12` |
+| `3`  | `2021-01-05 19:03:12` |
 
 If we order by `created_at`, the result would likely depend on how the records are located on the disk.
 

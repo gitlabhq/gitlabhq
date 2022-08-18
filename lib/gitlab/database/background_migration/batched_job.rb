@@ -112,7 +112,7 @@ module Gitlab
         end
 
         def can_split?(exception)
-          attempts >= MAX_ATTEMPTS && TIMEOUT_EXCEPTIONS.include?(exception&.class) && batch_size > sub_batch_size
+          attempts >= MAX_ATTEMPTS && TIMEOUT_EXCEPTIONS.include?(exception&.class) && batch_size > sub_batch_size && batch_size > 1
         end
 
         def split_and_retry!
@@ -121,7 +121,7 @@ module Gitlab
 
             new_batch_size = batch_size / 2
 
-            raise SplitAndRetryError, 'Job cannot be split further' if new_batch_size < 1
+            break update!(attempts: 0) if new_batch_size < 1
 
             batching_strategy = batched_migration.batch_class.new(connection: self.class.connection)
             next_batch_bounds = batching_strategy.next_batch(

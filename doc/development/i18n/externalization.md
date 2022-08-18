@@ -85,7 +85,7 @@ Or:
 hello = _("Hello world!")
 ```
 
-Be careful when translating strings at the class or module level since these are only evaluated once
+Be careful when translating strings at the class or module level because these are only evaluated once
 at class load time. For example:
 
 ```ruby
@@ -299,16 +299,16 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 - In Ruby/HAML:
 
   ```ruby
-  _("Hello %{name}") % { name: 'Joe' } => 'Hello Joe'
+  format(_("Hello %{name}"), name: 'Joe') => 'Hello Joe'
   ```
 
 - In Vue:
 
   Use the [`GlSprintf`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/utilities-sprintf--sentence-with-link) component if:
 
-  - You need to include child components in the translation string.
-  - You need to include HTML in your translation string.
-  - You're using `sprintf` and need to pass `false` as the third argument to
+  - You are including child components in the translation string.
+  - You are including HTML in your translation string.
+  - You are using `sprintf` and are passing `false` as the third argument to
     prevent it from escaping placeholder values.
 
   For example:
@@ -482,7 +482,7 @@ Instead of this:
 
 ```ruby
 # incorrect usage example
-n_("%{project_name}", "%d projects selected", count) % { project_name: 'GitLab' }
+format(n_("%{project_name}", "%d projects selected", count), project_name: 'GitLab')
 ```
 
 ### Namespaces

@@ -345,34 +345,77 @@ RSpec.describe Projects::NotesController do
           }
         end
 
-        context 'when `confidential` parameter is not provided' do
-          it 'sets `confidential` to `false` in JSON response' do
+        context 'when parameter is not provided' do
+          it 'sets `confidential` and `internal` to `false` in JSON response' do
             create!
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['confidential']).to be false
+            expect(json_response['internal']).to be false
           end
         end
 
-        context 'when `confidential` parameter is `false`' do
-          let(:extra_note_params) { { confidential: false } }
+        context 'when is not a confidential note' do
+          context 'when using the `internal` parameter' do
+            let(:extra_note_params) { { internal: false } }
 
-          it 'sets `confidential` to `false` in JSON response' do
-            create!
+            it 'sets `confidential` and `internal` to `false` in JSON response' do
+              create!
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['confidential']).to be false
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['confidential']).to be false
+              expect(json_response['internal']).to be false
+            end
+          end
+
+          context 'when using deprecated `confidential` parameter' do
+            let(:extra_note_params) { { confidential: false } }
+
+            it 'sets `confidential` and `internal` to `false` in JSON response' do
+              create!
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['confidential']).to be false
+              expect(json_response['internal']).to be false
+            end
           end
         end
 
-        context 'when `confidential` parameter is `true`' do
-          let(:extra_note_params) { { confidential: true } }
+        context 'when is a confidential note' do
+          context 'when using the `internal` parameter' do
+            let(:extra_note_params) { { internal: true } }
 
-          it 'sets `confidential` to `true` in JSON response' do
-            create!
+            it 'sets `confidential` and `internal` to `true` in JSON response' do
+              create!
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['confidential']).to be true
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['confidential']).to be true
+              expect(json_response['internal']).to be true
+            end
+          end
+
+          context 'when using deprecated `confidential` parameter' do
+            let(:extra_note_params) { { confidential: true } }
+
+            it 'sets `confidential` and `internal` to `true` in JSON response' do
+              create!
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['confidential']).to be true
+              expect(json_response['internal']).to be true
+            end
+          end
+
+          context 'when `internal` parameter is `true` and `confidential` parameter is `false`' do
+            let(:extra_note_params) { { internal: true, confidential: false } }
+
+            it 'uses the `internal` param as source of truth' do
+              create!
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['confidential']).to be true
+              expect(json_response['internal']).to be true
+            end
           end
         end
       end

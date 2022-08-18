@@ -71,7 +71,7 @@ The following are important notes about 2FA:
   2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and
   is shared with 2FA-disabled group *B*, members of group *B* can access project *P*
   without 2FA. To ensure this scenario doesn't occur,
-  [prevent sharing of projects](../user/group/index.md#prevent-a-project-from-being-shared-with-groups)
+  [prevent sharing of projects](../user/group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups)
   for the 2FA-enabled group.
 - If you add additional members to a project within a group or subgroup that has
   2FA enabled, 2FA is **not** required for those individually added members.
@@ -129,6 +129,7 @@ sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_EN
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.
 > - It's deployed behind a feature flag, disabled by default.
+> - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. The feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
@@ -136,14 +137,20 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 Two-factor authentication can be enforced for Git over SSH operations. However, we recommend using
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead.
 
-The one-time password (OTP) verification can be done using a command:
+To perform one-time password (OTP) verification, run:
 
 ```shell
 ssh git@<hostname> 2fa_verify
 ```
 
-After the OTP is verified, Git over SSH operations can be used for a session duration of
-15 minutes (default) with the associated SSH key.
+Then authenticate by either:
+
+- Entering the correct OTP.
+- In GitLab 15.3 and later, responding to a device push notification if
+  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-one-time-password-using-fortiauthenticator).
+
+After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated
+SSH key.
 
 ### Security limitation
 

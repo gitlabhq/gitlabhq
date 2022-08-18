@@ -47,11 +47,11 @@ module Gitlab
       end
 
       def tag_ref?(ref)
-        ref =~ /^#{TAG_REF_PREFIX}.+/
+        ref =~ /^#{TAG_REF_PREFIX}.+/o
       end
 
       def branch_ref?(ref)
-        ref =~ /^#{BRANCH_REF_PREFIX}.+/
+        ref =~ /^#{BRANCH_REF_PREFIX}.+/o
       end
 
       def blank_ref?(ref)

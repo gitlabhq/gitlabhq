@@ -12,106 +12,188 @@ RSpec.describe 'Projects > Members > Manage members', :js do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :internal, namespace: group) }
 
+  let(:project_owner) { create(:user, name: "ProjectOwner", username: "project_owner") }
+  let(:project_maintainer) { create(:user, name: "ProjectMaintainer", username: "project_maintainer") }
+  let(:group_owner) { user1 }
+  let(:project_developer) { user2 }
+
   before do
-    sign_in(user1)
-    group.add_owner(user1)
+    project.add_maintainer(project_maintainer)
+    project.add_owner(project_owner)
+    group.add_owner(group_owner)
+
+    sign_in(group_owner)
   end
 
   it 'show members from project and group', :aggregate_failures do
-    project.add_developer(user2)
+    project.add_developer(project_developer)
 
     visit_members_page
 
-    expect(first_row).to have_content(user1.name)
-    expect(second_row).to have_content(user2.name)
+    expect(first_row).to have_content(group_owner.name)
+    expect(second_row).to have_content(project_developer.name)
   end
 
   it 'show user once if member of both group and project', :aggregate_failures do
-    project.add_developer(user1)
+    group.add_reporter(project_maintainer)
 
     visit_members_page
 
-    expect(first_row).to have_content(user1.name)
-    expect(second_row).to be_blank
+    expect(first_row).to have_content(group_owner.name)
+    expect(second_row).to have_content(project_maintainer.name)
+    expect(third_row).to have_content(project_owner.name)
+    expect(all_rows[3]).to be_blank
   end
 
-  it 'update user access level' do
-    project.add_developer(user2)
-
-    visit_members_page
-
-    page.within find_member_row(user2) do
-      click_button('Developer')
-      click_button('Reporter')
-
-      expect(page).to have_button('Reporter')
-    end
-  end
-
-  context 'when owner' do
-    it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
-      visit_members_page
-
-      click_on 'Invite members'
-
-      click_on 'Guest'
-      wait_for_requests
-
-      page.within '.dropdown-menu' do
-        expect(page).to have_button('Guest')
-        expect(page).to have_button('Reporter')
-        expect(page).to have_button('Developer')
-        expect(page).to have_button('Maintainer')
-        expect(page).to have_button('Owner')
-      end
-    end
-  end
-
-  context 'when maintainer' do
-    let(:maintainer) { create(:user) }
-
+  context 'update user access level' do
     before do
-      project.add_maintainer(maintainer)
-      sign_in(maintainer)
+      sign_in(current_user)
     end
 
-    it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
+    context 'as maintainer' do
+      let(:current_user) { project_maintainer }
+
+      it 'can update a non-Owner member' do
+        project.add_developer(project_developer)
+
+        visit_members_page
+
+        page.within find_member_row(project_developer) do
+          click_button('Developer')
+
+          page.within '.dropdown-menu' do
+            expect(page).not_to have_button('Owner')
+          end
+
+          click_button('Reporter')
+
+          expect(page).to have_button('Reporter')
+        end
+      end
+
+      it 'cannot update an Owner member' do
+        visit_members_page
+
+        page.within find_member_row(project_owner) do
+          expect(page).not_to have_button('Owner')
+        end
+      end
+    end
+
+    context 'as owner' do
+      let(:current_user) { group_owner }
+
+      it 'can update a project Owner member' do
+        visit_members_page
+
+        page.within find_member_row(project_owner) do
+          click_button('Owner')
+          click_button('Reporter')
+
+          expect(page).to have_button('Reporter')
+        end
+      end
+    end
+  end
+
+  context 'uses ProjectMember valid_access_level_roles for the invite members modal options', :aggregate_failures do
+    before do
+      sign_in(current_user)
+
       visit_members_page
 
       click_on 'Invite members'
 
       click_on 'Guest'
       wait_for_requests
+    end
 
-      page.within '.dropdown-menu' do
-        expect(page).to have_button('Guest')
-        expect(page).to have_button('Reporter')
-        expect(page).to have_button('Developer')
-        expect(page).to have_button('Maintainer')
-        expect(page).not_to have_button('Owner')
+    context 'when owner' do
+      let(:current_user) { project_owner }
+
+      it 'shows Owner in the dropdown' do
+        page.within '.dropdown-menu' do
+          expect(page).to have_button('Guest')
+          expect(page).to have_button('Reporter')
+          expect(page).to have_button('Developer')
+          expect(page).to have_button('Maintainer')
+          expect(page).to have_button('Owner')
+        end
+      end
+    end
+
+    context 'when maintainer' do
+      let(:current_user) { project_maintainer }
+
+      it 'does not show the Owner option' do
+        page.within '.dropdown-menu' do
+          expect(page).to have_button('Guest')
+          expect(page).to have_button('Reporter')
+          expect(page).to have_button('Developer')
+          expect(page).to have_button('Maintainer')
+          expect(page).not_to have_button('Owner')
+        end
       end
     end
   end
 
-  it 'remove user from project' do
-    other_user = create(:user)
-    project.add_developer(other_user)
+  describe 'remove user from project' do
+    before do
+      project.add_developer(project_developer)
 
-    visit_members_page
+      sign_in(current_user)
 
-    # Open modal
-    page.within find_member_row(other_user) do
-      click_button 'Remove member'
+      visit_members_page
     end
 
-    within_modal do
-      expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
-      click_button('Remove member')
+    context 'when maintainer' do
+      let(:current_user) { project_maintainer }
+
+      it 'can only remove non-Owner members' do
+        page.within find_member_row(project_owner) do
+          expect(page).not_to have_button('Remove member')
+        end
+
+        # Open modal
+        page.within find_member_row(project_developer) do
+          click_button 'Remove member'
+        end
+
+        within_modal do
+          expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
+          click_button('Remove member')
+        end
+
+        wait_for_requests
+
+        expect(members_table).not_to have_content(project_developer.name)
+        expect(members_table).to have_content(project_owner.name)
+      end
     end
 
-    wait_for_requests
+    context 'when owner' do
+      let(:current_user) { group_owner }
 
-    expect(members_table).not_to have_content(other_user.name)
+      it 'can remove any direct member' do
+        page.within find_member_row(project_owner) do
+          expect(page).to have_button('Remove member')
+        end
+
+        # Open modal
+        page.within find_member_row(project_owner) do
+          click_button 'Remove member'
+        end
+
+        within_modal do
+          expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
+          click_button('Remove member')
+        end
+
+        wait_for_requests
+
+        expect(members_table).not_to have_content(project_owner.name)
+      end
+    end
   end
 
   it_behaves_like 'inviting members', 'project-members-page' do
@@ -130,7 +212,7 @@ RSpec.describe 'Projects > Members > Manage members', :js do
       external_project_bot = create(:user, :project_bot, name: '_external_project_bot_')
       external_project = create(:project, group: external_group)
       external_project.add_maintainer(external_project_bot)
-      external_project.add_maintainer(user1)
+      external_project.add_maintainer(group_owner)
 
       visit_members_page
 
@@ -143,8 +225,8 @@ RSpec.describe 'Projects > Members > Manage members', :js do
 
         wait_for_requests
 
-        expect(page).to have_content(user1.name)
-        expect(page).to have_content(user2.name)
+        expect(page).to have_content(group_owner.name)
+        expect(page).to have_content(project_developer.name)
         expect(page).not_to have_content(internal_project_bot.name)
         expect(page).not_to have_content(external_project_bot.name)
       end
@@ -155,7 +237,7 @@ RSpec.describe 'Projects > Members > Manage members', :js do
     let_it_be(:project) { create(:project, :public) }
 
     before do
-      sign_out(user1)
+      sign_out(group_owner)
     end
 
     it 'does not show the Invite members button when not signed in' do
@@ -192,7 +274,7 @@ RSpec.describe 'Projects > Members > Manage members', :js do
     end
 
     it 'shows 2FA badge to user with "Maintainer" access level' do
-      project.add_maintainer(user1)
+      sign_in(project_maintainer)
 
       visit_members_page
 
@@ -209,7 +291,7 @@ RSpec.describe 'Projects > Members > Manage members', :js do
     end
 
     it 'does not show 2FA badge to users with access level below "Maintainer"' do
-      group.add_developer(user1)
+      group.add_developer(group_owner)
 
       visit_members_page
 

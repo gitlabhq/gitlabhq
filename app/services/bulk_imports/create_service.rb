@@ -64,7 +64,7 @@ module BulkImports
             bulk_import: bulk_import,
             source_type: entity[:source_type],
             source_full_path: entity[:source_full_path],
-            destination_name: entity[:destination_name],
+            destination_slug: entity[:destination_slug],
             destination_namespace: entity[:destination_namespace]
           )
         end

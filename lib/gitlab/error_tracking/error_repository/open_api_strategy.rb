@@ -13,6 +13,7 @@ module Gitlab
             config.scheme = api_url.scheme
             config.host = [api_url.host, api_url.port].compact.join(':')
             config.server_index = nil
+            config.api_key['internalToken'] = api_key
             config.logger = Gitlab::AppLogger
           end
         end
@@ -25,7 +26,7 @@ module Gitlab
         end
 
         def find_error(id)
-          api = open_api::ErrorsApi.new
+          api = build_api_client
           error = api.get_error(project_id, id)
 
           to_sentry_detailed_error(error)
@@ -43,7 +44,7 @@ module Gitlab
             limit: limit
           }.compact
 
-          api = open_api::ErrorsApi.new
+          api = build_api_client
           errors, _status, headers = api.list_errors_with_http_info(project_id, opts)
           pagination = pagination_from_headers(headers)
 
@@ -64,7 +65,7 @@ module Gitlab
           event = newest_event_for(id)
           return unless event
 
-          api = open_api::ErrorsApi.new
+          api = build_api_client
           error = api.get_error(project_id, id)
           return unless error
 
@@ -79,7 +80,7 @@ module Gitlab
 
           body = open_api::ErrorUpdatePayload.new(opts)
 
-          api = open_api::ErrorsApi.new
+          api = build_api_client
           api.update_error(project_id, id, body)
 
           true
@@ -100,7 +101,7 @@ module Gitlab
             config.base_path
           ].join('')
 
-          "#{base_url}/projects/api/#{project_id}"
+          "#{base_url}/projects/#{project_id}"
         end
 
         private
@@ -108,7 +109,7 @@ module Gitlab
         def event_for(id, sort:)
           opts = { sort: sort, limit: 1 }
 
-          api = open_api::ErrorsApi.new
+          api = build_api_client
           api.list_events(project_id, id, opts).first
         rescue ErrorTrackingOpenAPI::ApiError => e
           log_exception(e)
@@ -232,6 +233,14 @@ module Gitlab
           Gitlab::UrlBlocker.validate!(url, schemes: %w[http https], allow_localhost: true)
 
           URI(url)
+        end
+
+        def api_key
+          Gitlab::CurrentSettings.current_application_settings.error_tracking_access_token
+        end
+
+        def build_api_client
+          open_api::ErrorsApi.new
         end
 
         def log_exception(exception)

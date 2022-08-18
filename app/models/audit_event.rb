@@ -86,6 +86,18 @@ class AuditEvent < ApplicationRecord
     end
   end
 
+  def target_type
+    super || details[:target_type]
+  end
+
+  def target_id
+    details[:target_id]
+  end
+
+  def target_details
+    super || details[:target_details]
+  end
+
   private
 
   def sanitize_message

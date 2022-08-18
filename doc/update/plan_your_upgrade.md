@@ -14,7 +14,7 @@ General notes:
 - If possible, we recommend you test out the upgrade in a test environment before
   updating your production instance. Ideally, your test environment should mimic
   your production environment as closely as possible.
-- If [working with Support](https://about.gitlab.com/support/scheduling-upgrade-assistance.html)
+- If [working with Support](https://about.gitlab.com/support/scheduling-upgrade-assistance/)
   to create your plan, share details of your architecture, including:
   - How is GitLab installed?
   - What is the operating system of the node?
@@ -125,12 +125,11 @@ to your instance and then upgrade it for any relevant features you're using.
   - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions).
   - Account for any [version-specific changes](package/index.md#version-specific-changes).
   - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
-- Due to background migrations, plan to pause any further upgrades after upgrading
-  to a new major version.
+- Due to background migrations, plan to pause before any further upgrades.
   [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)
   before the next upgrade.
 - If available in your starting version, consider
-  [turning on maintenance mode](../administration/maintenance_mode/) during the
+  [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
   - On the top bar, select **Menu > Admin**, and look for the version of
@@ -167,6 +166,10 @@ If you're using Geo:
 After updating GitLab, upgrade your runners to match
 [your new GitLab version](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
+#### GitLab agent for Kubernetes
+
+If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/index.md#update-the-agent-version) to match your new GitLab version.
+
 #### Elasticsearch
 
 After updating GitLab, you may have to upgrade
@@ -185,7 +188,7 @@ If anything doesn't go as planned:
   - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) if
     you installed GitLab using the Helm Charts.
 - For support:
-  - [Contact GitLab Support](https://support.gitlab.com/hc) and,
+  - [Contact GitLab Support](https://support.gitlab.com) and,
     if you have one, your Technical Account Manager.
   - If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact)
     and [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),

@@ -31,10 +31,10 @@ describe('iPython notebook renderer', () => {
     wrapper = shallowMount(component, { propsData: { endpoint, relativeRawPath } });
   };
 
-  const findLoading = () => wrapper.find(GlLoadingIcon);
-  const findNotebookLab = () => wrapper.find(NotebookLab);
-  const findLoadErrorMessage = () => wrapper.find({ ref: 'loadErrorMessage' });
-  const findParseErrorMessage = () => wrapper.find({ ref: 'parsingErrorMessage' });
+  const findLoading = () => wrapper.findComponent(GlLoadingIcon);
+  const findNotebookLab = () => wrapper.findComponent(NotebookLab);
+  const findLoadErrorMessage = () => wrapper.findComponent({ ref: 'loadErrorMessage' });
+  const findParseErrorMessage = () => wrapper.findComponent({ ref: 'parsingErrorMessage' });
 
   beforeEach(() => {
     mock = new MockAdapter(axios);

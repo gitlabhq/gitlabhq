@@ -12,7 +12,7 @@ Running into a problem? Maybe this will help ¯\＿(ツ)＿/¯.
 
 ### This guide doesn't contain the issue I ran into
 
-If you run into a Frontend development issue that is not in this guide, please consider updating this guide with your issue and possible remedies. This way future adventurers can face these dragons with more success, being armed with your experience and knowledge.
+If you run into a Frontend development issue that is not in this guide, consider updating this guide with your issue and possible remedies. This way future adventurers can face these dragons with more success, being armed with your experience and knowledge.
 
 ## Testing issues
 

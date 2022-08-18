@@ -36,6 +36,7 @@ RSpec.describe AwarenessChannel, :clean_gitlab_redis_shared_state, type: :channe
           collaborator = {
             id: user.id,
             name: user.name,
+            username: user.username,
             avatar_url: user.avatar_url(size: 36),
             last_activity: Time.zone.now,
             last_activity_humanized: ActionController::Base.helpers.distance_of_time_in_words(
@@ -63,7 +64,7 @@ RSpec.describe AwarenessChannel, :clean_gitlab_redis_shared_state, type: :channe
         session = AwarenessSession.for("/test")
 
         expect { subscription.unsubscribe_from_channel }
-          .to change { session.size}.by(-1)
+          .to change { session.size }.by(-1)
       end
     end
   end

@@ -44,8 +44,8 @@ describe('IDE branch item', () => {
     });
     it('renders branch name and timeago', () => {
       expect(wrapper.text()).toContain(TEST_BRANCH.name);
-      expect(wrapper.find(Timeago).props('time')).toBe(TEST_BRANCH.committedDate);
-      expect(wrapper.find(GlIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(Timeago).props('time')).toBe(TEST_BRANCH.committedDate);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(false);
     });
 
     it('renders link to branch', () => {
@@ -60,6 +60,6 @@ describe('IDE branch item', () => {
   it('renders icon if is not active', () => {
     createComponent({ isActive: true });
 
-    expect(wrapper.find(GlIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
 });

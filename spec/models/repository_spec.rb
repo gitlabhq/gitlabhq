@@ -1469,6 +1469,20 @@ RSpec.describe Repository do
         expect(repository.find_branch(branch_name)).to be_nil
       end
     end
+
+    it 'expires branches cache' do
+      expect(repository).to receive(:expire_branches_cache)
+
+      subject
+    end
+
+    context 'when expire_cache: false' do
+      it 'does not expire branches cache' do
+        expect(repository).not_to receive(:expire_branches_cache)
+
+        repository.add_branch(user, branch_name, target, expire_cache: false)
+      end
+    end
   end
 
   shared_examples 'asymmetric cached method' do |method|
@@ -2263,7 +2277,31 @@ RSpec.describe Repository do
         .with(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
         .and_call_original
 
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
       repository.expire_branches_cache
+    end
+  end
+
+  describe '#expire_protected_branches_cache' do
+    it 'expires the cache' do
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
+      repository.expire_protected_branches_cache
+    end
+
+    context 'when repository does not have a project' do
+      let!(:snippet) { create(:personal_snippet, :repository) }
+
+      it 'does not expire the cache' do
+        expect(ProtectedBranches::CacheService).not_to receive(:new)
+
+        snippet.repository.expire_protected_branches_cache
+      end
     end
   end
 
@@ -3123,7 +3161,7 @@ RSpec.describe Repository do
       it 'after_create is not executed' do
         expect(repository).not_to receive(:after_create)
 
-        expect {repository.create_from_bundle(valid_bundle_path)}.to raise_error(::Gitlab::Git::BundleFile::InvalidBundleError)
+        expect { repository.create_from_bundle(valid_bundle_path) }.to raise_error(::Gitlab::Git::BundleFile::InvalidBundleError)
       end
     end
   end

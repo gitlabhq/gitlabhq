@@ -87,7 +87,7 @@ class MigrationSchemaValidator
 
   def find_migration_version(filename)
     file_basename = File.basename(filename)
-    version_match = /\A(?<version>\d{#{VERSION_DIGITS}})_/.match(file_basename)
+    version_match = /\A(?<version>\d{#{VERSION_DIGITS}})_/o.match(file_basename)
 
     die "#{filename} has an invalid migration version" if version_match.nil?
 

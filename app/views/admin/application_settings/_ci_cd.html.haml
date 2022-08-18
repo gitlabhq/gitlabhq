@@ -22,7 +22,7 @@
       .form-group
         = f.label :shared_runners_text, _('Shared runners details'), class: 'label-bold'
         = f.text_area :shared_runners_text, class: 'form-control gl-form-input', rows: 4
-        .form-text.text-muted= _("Add a custom message with details about the instance's shared runners. The message is visible in group and project CI/CD settings, in the Runners section. Markdown is supported.")
+        .form-text.text-muted= _("Add a custom message with details about the instance's shared runners. The message is visible when you view runners for projects and groups. Markdown is supported.")
       .form-group
         = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
         = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'

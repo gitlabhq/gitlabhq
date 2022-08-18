@@ -32,12 +32,12 @@ describe('Design management design sidebar component', () => {
   const originalGon = window.gon;
   let wrapper;
 
-  const findDiscussions = () => wrapper.findAll(DesignDiscussion);
+  const findDiscussions = () => wrapper.findAllComponents(DesignDiscussion);
   const findFirstDiscussion = () => findDiscussions().at(0);
   const findUnresolvedDiscussions = () => wrapper.findAll('[data-testid="unresolved-discussion"]');
   const findResolvedDiscussions = () => wrapper.findAll('[data-testid="resolved-discussion"]');
-  const findParticipants = () => wrapper.find(Participants);
-  const findResolvedCommentsToggle = () => wrapper.find(GlAccordionItem);
+  const findParticipants = () => wrapper.findComponent(Participants);
+  const findResolvedCommentsToggle = () => wrapper.findComponent(GlAccordionItem);
   const findNewDiscussionDisclaimer = () =>
     wrapper.find('[data-testid="new-discussion-disclaimer"]');
 
@@ -87,7 +87,7 @@ describe('Design management design sidebar component', () => {
   it('renders To-Do button', () => {
     createComponent();
 
-    expect(wrapper.find(DesignTodoButton).exists()).toBe(true);
+    expect(wrapper.findComponent(DesignTodoButton).exists()).toBe(true);
   });
 
   describe('when has no discussions', () => {

@@ -7,7 +7,7 @@ RSpec.describe Groups::DestroyService do
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
-  let!(:notification_setting) { create(:notification_setting, source: group)}
+  let!(:notification_setting) { create(:notification_setting, source: group) }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:remove_path)  { group.path + "+#{group.id}+deleted" }
 
@@ -72,6 +72,17 @@ RSpec.describe Groups::DestroyService do
           expect(TestEnv.storage_dir_exists?(project.repository_storage, group.path)).to be_falsey
           expect(TestEnv.storage_dir_exists?(project.repository_storage, remove_path)).to be_falsey
         end
+      end
+    end
+
+    context 'event store', :sidekiq_might_not_need_inline do
+      it 'publishes a GroupDeletedEvent' do
+        expect { destroy_group(group, user, async) }
+          .to publish_event(Groups::GroupDeletedEvent)
+          .with(
+            group_id: group.id,
+            root_namespace_id: group.root_ancestor.id
+          )
       end
     end
   end
@@ -271,7 +282,7 @@ RSpec.describe Groups::DestroyService do
         end
 
         context 'the shared_with group is deleted' do
-          let!(:group2_subgroup) { create(:group, :private, parent: group2)}
+          let!(:group2_subgroup) { create(:group, :private, parent: group2) }
           let!(:group2_subgroup_project) { create(:project, :private, group: group2_subgroup) }
 
           it 'updates project authorizations so users of both groups lose access', :aggregate_failures do

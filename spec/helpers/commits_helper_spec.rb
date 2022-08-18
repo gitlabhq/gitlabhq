@@ -153,15 +153,23 @@ RSpec.describe CommitsHelper do
   end
 
   describe "#conditionally_paginate_diff_files" do
-    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: diff_files) }
-    let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
-    let(:page) { nil }
+    let_it_be(:project) { create(:project, :repository) }
 
+    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: decorated_diff_files, project: project) }
+    let(:decorated_diff_files) do
+      diffs.map do |diff|
+        Gitlab::Diff::File.new(diff, repository: project.repository)
+      end
+    end
+
+    let(:diffs) { Gitlab::Git::DiffCollection.new(files) }
     let(:files) do
       Array.new(85).map do
         { too_large: false, diff: "" }
       end
     end
+
+    let(:page) { nil }
 
     subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, page: page, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE) }
 
@@ -203,8 +211,8 @@ RSpec.describe CommitsHelper do
     context "pagination is disabled" do
       let(:paginate) { false }
 
-      it "returns a standard DiffCollection" do
-        expect(subject).to be_a(Gitlab::Git::DiffCollection)
+      it "returns the unpaginated collection" do
+        expect(subject.size).to eq(85)
       end
     end
   end

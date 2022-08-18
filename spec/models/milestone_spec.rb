@@ -257,7 +257,7 @@ RSpec.describe Milestone do
     let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
     it 'returns milestones with a matching title' do
-      expect(described_class.search_title(milestone.title)) .to eq([milestone])
+      expect(described_class.search_title(milestone.title)).to eq([milestone])
     end
 
     it 'returns milestones with a partially matching title' do
@@ -272,7 +272,7 @@ RSpec.describe Milestone do
     it 'searches only on the title and ignores milestones with a matching description' do
       create(:milestone, title: 'bar', description: 'foo')
 
-      expect(described_class.search_title(milestone.title)) .to eq([milestone])
+      expect(described_class.search_title(milestone.title)).to eq([milestone])
     end
   end
 

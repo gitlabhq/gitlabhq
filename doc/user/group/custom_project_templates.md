@@ -30,7 +30,7 @@ To set up custom project templates in a group, add the subgroup that contains th
 project templates to the group settings:
 
 1. In the group, create a [subgroup](subgroups/index.md).
-1. [Add projects to the new subgroup](index.md#add-projects-to-a-group) as your templates.
+1. [Add projects to the new subgroup](manage.md#add-projects-to-a-group) as your templates.
 1. In the left menu for the group, select **Settings > General**.
 1. Expand **Custom project templates** and select the subgroup.
 

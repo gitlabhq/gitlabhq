@@ -147,7 +147,7 @@ Best practices for [client-side logging](logging.md) for GitLab frontend develop
 
 ## [Internationalization (i18n) and Translations](../i18n/externalization.md)
 
-Frontend internationalization support is described in [this document](../i18n/).
+Frontend internationalization support is described in [this document](../i18n/index.md).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
 ## [Troubleshooting](troubleshooting.md)

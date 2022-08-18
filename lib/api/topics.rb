@@ -12,6 +12,7 @@ module API
     end
     params do
       optional :search, type: String, desc: 'Return list of topics matching the search criteria'
+      optional :without_projects, type: Boolean, desc: 'Return list of topics without assigned projects'
       use :pagination
     end
     get 'topics' do

@@ -823,14 +823,14 @@ RSpec.describe Note do
       end
 
       context 'with :label action' do
-        let!(:metadata) {create(:system_note_metadata, note: note, action: :label)}
+        let!(:metadata) { create(:system_note_metadata, note: note, action: :label) }
 
         it_behaves_like 'system_note_metadata includes note action'
 
         it { expect(note.system_note_with_references?).to be_falsy }
 
         context 'with cross reference label note' do
-          let(:label) { create(:label, project: issue.project)}
+          let(:label) { create(:label, project: issue.project) }
           let(:note) { create(:system_note, note: "added #{label.to_reference} label", noteable: issue, project: issue.project) }
 
           it { expect(note.system_note_with_references?).to be_truthy }
@@ -838,14 +838,14 @@ RSpec.describe Note do
       end
 
       context 'with :milestone action' do
-        let!(:metadata) {create(:system_note_metadata, note: note, action: :milestone)}
+        let!(:metadata) { create(:system_note_metadata, note: note, action: :milestone) }
 
         it_behaves_like 'system_note_metadata includes note action'
 
         it { expect(note.system_note_with_references?).to be_falsy }
 
         context 'with cross reference milestone note' do
-          let(:milestone) { create(:milestone, project: issue.project)}
+          let(:milestone) { create(:milestone, project: issue.project) }
           let(:note) { create(:system_note, note: "added #{milestone.to_reference} milestone", noteable: issue, project: issue.project) }
 
           it { expect(note.system_note_with_references?).to be_truthy }
@@ -1130,7 +1130,7 @@ RSpec.describe Note do
   end
 
   describe '#cache_markdown_field' do
-    let(:html) { '<p>some html</p>'}
+    let(:html) { '<p>some html</p>' }
 
     before do
       allow(Banzai::Renderer).to receive(:cacheless_render_field).and_call_original
@@ -1789,6 +1789,70 @@ RSpec.describe Note do
 
         expect(note.last_edited_at).to be_like_time(1.day.ago)
         expect(note.updated_at).to be_like_time(Time.current)
+      end
+    end
+  end
+
+  shared_examples 'note that replaces task for checklist item in body text' do
+    subject { note.public_send(field_name) }
+
+    context 'when note is not a system note' do
+      let(:note) { create(:note, note: original_note_body) }
+
+      it { is_expected.to eq(unchanged_note_body) }
+    end
+
+    context 'when note is a system note' do
+      context 'when note noteable_type is not Issue' do
+        let(:note) { create(:note, :system, :on_merge_request, note: original_note_body) }
+
+        it { is_expected.to eq(unchanged_note_body) }
+      end
+
+      context 'when note noteable_type is Issue' do
+        let(:note) { create(:note, :system, :on_issue, note: original_note_body) }
+
+        it { is_expected.to eq(expected_text_replacement) }
+      end
+    end
+  end
+
+  describe '#note' do
+    let(:field_name) { :note }
+
+    it_behaves_like 'note that replaces task for checklist item in body text' do
+      let(:original_note_body) { 'marked the task **task 1** as completed' }
+      let(:unchanged_note_body) { original_note_body }
+      let(:expected_text_replacement) { 'marked the checklist item **task 1** as completed' }
+    end
+
+    it_behaves_like 'note that replaces task for checklist item in body text' do
+      let(:original_note_body) { 'marked the task **task 1** as incomplete' }
+      let(:unchanged_note_body) { original_note_body }
+      let(:expected_text_replacement) { 'marked the checklist item **task 1** as incomplete' }
+    end
+  end
+
+  describe '#note_html' do
+    let(:field_name) { :note_html }
+
+    it_behaves_like 'note that replaces task for checklist item in body text' do
+      let(:original_note_body) { 'marked the task **task 1** as completed' }
+      let(:unchanged_note_body) { '<p data-sourcepos="1:1-1:48" dir="auto">marked the task <strong>task 1</strong> as completed</p>' }
+      let(:expected_text_replacement) { '<p data-sourcepos="1:1-1:48" dir="auto">marked the checklist item <strong>task 1</strong> as completed</p>' }
+
+      before do
+        note.update_columns(note_html: unchanged_note_body)
+      end
+    end
+
+    it_behaves_like 'note that replaces task for checklist item in body text' do
+      let(:original_note_body) { 'marked the task **task 1** as incomplete' }
+      let(:unchanged_note_body) { '<p data-sourcepos="1:1-1:48" dir="auto">marked the task <strong>task 1</strong> as incomplete</p>' }
+      let(:expected_text_replacement) { '<p data-sourcepos="1:1-1:48" dir="auto">marked the checklist item <strong>task 1</strong> as incomplete</p>' }
+
+      before do
+        note.update_columns(note_html: unchanged_note_body)
       end
     end
   end

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
       before do
         allow(step).to receive(:workflow_rules_result)
           .and_return(
-            double(pass?: true, variables: { 'VAR1' => 'val2' })
+            double(pass?: true, variables: { 'VAR1' => 'val2', 'VAR2' => 3 })
           )
 
         step.perform!
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
       end
 
       it 'saves workflow_rules_result' do
-        expect(command.workflow_rules_result.variables).to eq({ 'VAR1' => 'val2' })
+        expect(command.workflow_rules_result.variables).to eq({ 'VAR1' => 'val2', 'VAR2' => 3 })
       end
     end
   end

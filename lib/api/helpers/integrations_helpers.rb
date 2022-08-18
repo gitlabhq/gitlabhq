@@ -328,14 +328,12 @@ module API
               type: String,
               desc: '(Advanced) The full URL for your Datadog site'
             },
-            # TODO: uncomment this field once :datadog_integration_logs_collection is rolled out
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/346339
-            # {
-            #   required: false,
-            #   name: :archive_trace_events,
-            #   type: Boolean,
-            #   desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
-            # },
+            {
+              required: false,
+              name: :archive_trace_events,
+              type: Boolean,
+              desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
+            },
             {
               required: false,
               name: :datadog_service,
@@ -678,6 +676,15 @@ module API
               desc: 'Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'
             }
           ],
+          'pumble' => [
+            {
+              required: true,
+              name: :webhook,
+              type: String,
+              desc: 'The Pumble chat webhook. For example, https://api.pumble.com/workspaces/x/...'
+            },
+            chat_notification_events
+          ].flatten,
           'pushover' => [
             {
               required: true,

@@ -37,14 +37,14 @@ module Repositories
 
       begin
         regex = Gitlab::UntrustedRegexp.new(@regex)
-      rescue RegexpError => ex
+      rescue RegexpError => e
         # The error messages produced by default are not very helpful, so we
         # raise a better one here. We raise the specific error here so its
         # message is displayed in the API (where we catch this specific
         # error).
         raise(
           Gitlab::Changelog::Error,
-          "The regular expression to use for finding the previous tag for a version is invalid: #{ex.message}"
+          "The regular expression to use for finding the previous tag for a version is invalid: #{e.message}"
         )
       end
 

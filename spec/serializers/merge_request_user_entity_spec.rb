@@ -18,8 +18,7 @@ RSpec.describe MergeRequestUserEntity do
     it 'exposes needed attributes' do
       is_expected.to include(
         :id, :name, :username, :state, :avatar_url, :web_url,
-        :can_merge, :can_update_merge_request, :reviewed, :approved,
-        :attention_requested
+        :can_merge, :can_update_merge_request, :reviewed, :approved
       )
     end
 
@@ -55,14 +54,6 @@ RSpec.describe MergeRequestUserEntity do
       it 'exposes the availibility attribute' do
         expect(subject[:availability]).to eq('busy')
       end
-    end
-
-    context 'attention_requested' do
-      before do
-        merge_request.find_assignee(user).update!(state: :attention_requested)
-      end
-
-      it { is_expected.to include(attention_requested: true ) }
     end
 
     describe 'performance' do

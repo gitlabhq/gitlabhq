@@ -6,6 +6,7 @@ import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { followUser, unfollowUser } from '~/api/user_api';
+import { mockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/flash');
 jest.mock('~/api/user_api', () => ({
@@ -51,6 +52,18 @@ describe('User Popover Component', () => {
   const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
   const findToggleFollowButton = () => wrapper.findByTestId('toggle-follow-button');
 
+  const itTracksToggleFollowButtonClick = (expectedLabel) => {
+    it('tracks click', async () => {
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+      await findToggleFollowButton().trigger('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', {
+        label: expectedLabel,
+      });
+    });
+  };
+
   const createWrapper = (props = {}) => {
     wrapper = mountExtended(UserPopover, {
       propsData: {
@@ -75,7 +88,7 @@ describe('User Popover Component', () => {
         },
       });
 
-      expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
     });
   });
 
@@ -89,7 +102,7 @@ describe('User Popover Component', () => {
 
     it('shows icon for location', () => {
       createWrapper();
-      const iconEl = wrapper.find(GlIcon);
+      const iconEl = wrapper.findComponent(GlIcon);
 
       expect(iconEl.props('name')).toEqual('location');
     });
@@ -102,8 +115,8 @@ describe('User Popover Component', () => {
   });
 
   describe('job data', () => {
-    const findWorkInformation = () => wrapper.find({ ref: 'workInformation' });
-    const findBio = () => wrapper.find({ ref: 'bio' });
+    const findWorkInformation = () => wrapper.findComponent({ ref: 'workInformation' });
+    const findBio = () => wrapper.findComponent({ ref: 'bio' });
     const bio = 'My super interesting bio';
 
     it('should show only bio if work information is not available', () => {
@@ -159,7 +172,7 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'profile').length,
+        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'profile').length,
       ).toEqual(1);
     });
 
@@ -172,7 +185,7 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'work').length,
+        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'work').length,
       ).toEqual(1);
     });
   });
@@ -338,8 +351,10 @@ describe('User Popover Component', () => {
         await axios.waitForAll();
 
         expect(wrapper.emitted().follow.length).toBe(1);
-        expect(wrapper.emitted().unfollow).toBeFalsy();
+        expect(wrapper.emitted().unfollow).toBeUndefined();
       });
+
+      itTracksToggleFollowButtonClick('follow_from_user_popover');
 
       describe('when an error occurs', () => {
         beforeEach(() => {
@@ -361,8 +376,8 @@ describe('User Popover Component', () => {
         it('emits no events', async () => {
           await axios.waitForAll();
 
-          expect(wrapper.emitted().follow).toBe(undefined);
-          expect(wrapper.emitted().unfollow).toBe(undefined);
+          expect(wrapper.emitted().follow).toBeUndefined();
+          expect(wrapper.emitted().unfollow).toBeUndefined();
         });
       });
     });
@@ -388,6 +403,8 @@ describe('User Popover Component', () => {
         expect(wrapper.emitted().unfollow.length).toBe(1);
       });
 
+      itTracksToggleFollowButtonClick('unfollow_from_user_popover');
+
       describe('when an error occurs', () => {
         beforeEach(async () => {
           unfollowUser.mockRejectedValue({});
@@ -406,8 +423,8 @@ describe('User Popover Component', () => {
         });
 
         it('emits no events', () => {
-          expect(wrapper.emitted().follow).toBe(undefined);
-          expect(wrapper.emitted().unfollow).toBe(undefined);
+          expect(wrapper.emitted().follow).toBeUndefined();
+          expect(wrapper.emitted().unfollow).toBeUndefined();
         });
       });
     });

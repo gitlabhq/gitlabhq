@@ -155,7 +155,11 @@ class UsersController < ApplicationController
   end
 
   def calendar_activities
-    @calendar_date = Date.parse(params[:date]) rescue Date.today
+    @calendar_date = begin
+      Date.parse(params[:date])
+    rescue StandardError
+      Date.today
+    end
     @events = contributions_calendar.events_by_date(@calendar_date).map(&:present)
 
     render 'calendar_activities', layout: false

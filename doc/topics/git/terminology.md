@@ -31,7 +31,7 @@ This copy is called a [**fork**](../../user/project/repository/forking_workflow.
 The process is called "creating a fork."
 
 When you fork a repository, you create a copy of the project in your own
-[namespace](../../user/group/#namespaces). You then have write permissions to modify the project files
+[namespace](../../user/namespace/index.md). You then have write permissions to modify the project files
 and settings.
 
 For example, you can fork this project, <https://gitlab.com/gitlab-tests/sample-project/>, into your namespace.

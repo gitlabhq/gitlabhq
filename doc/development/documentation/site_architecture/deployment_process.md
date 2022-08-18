@@ -142,6 +142,20 @@ graph LR
   B--"Unpacked documentation uploaded"-->C
 ```
 
+### Manually deploy to production
+
+GitLab Docs is deployed to production whenever the `Build docs.gitlab.com every 4 hours` scheduled pipeline runs. By
+default, this pipeline runs every four hours.
+
+Maintainers can [manually](../../../ci/pipelines/schedules.md#run-manually) run this pipeline to force a deployment to
+production:
+
+1. Go to the [scheduled pipelines](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules) for `gitlab-docs`.
+1. Next to `Build docs.gitlab.com every 4 hours`, select **Play** (**{play}**).
+
+The updated documentation is available in production after the `pages` and `pages:deploy` jobs
+complete in the new pipeline.
+
 ## Docker files
 
 The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/) contains all needed
@@ -150,10 +164,10 @@ Dockerfiles to build and deploy <https://docs.gitlab.com>. It is heavily inspire
 
 | Dockerfile                                                                                                                 | Docker image                  | Description                                                                                                                                                                                                                                                                           |
 |:---------------------------------------------------------------------------------------------------------------------------|:------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`Dockerfile.bootstrap`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.bootstrap)             | `gitlab-docs:bootstrap`       | Contains all the dependencies that are needed to build the website. If the gems are updated and `Gemfile{,.lock}` changes, the image must be rebuilt.                                                                                                                                 |
-| [`Dockerfile.builder.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.builder.onbuild) | `gitlab-docs:builder-onbuild` | Base image to build the docs website. It uses `ONBUILD` to perform all steps and depends on `gitlab-docs:bootstrap`.                                                                                                                                                                  |
-| [`Dockerfile.nginx.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.nginx.onbuild)     | `gitlab-docs:nginx-onbuild`   | Base image to use for building documentation archives. It uses `ONBUILD` to perform all required steps to copy the archive, and relies upon its parent `Dockerfile.builder.onbuild` that is invoked when building single documentation archives (see the `Dockerfile` of each branch) |
-| [`Dockerfile.archives`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.archives)               | `gitlab-docs:archives`        | Contains all the versions of the website in one archive. It copies all generated HTML files from every version in one location.                                                                                                                                                       |
+| [`bootstrap.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/bootstrap.Dockerfile)             | `gitlab-docs:bootstrap`       | Contains all the dependencies that are needed to build the website. If the gems are updated and `Gemfile{,.lock}` changes, the image must be rebuilt.                                                                                                                                 |
+| [`builder.onbuild.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/builder.onbuild.Dockerfile) | `gitlab-docs:builder-onbuild` | Base image to build the docs website. It uses `ONBUILD` to perform all steps and depends on `gitlab-docs:bootstrap`.                                                                                                                                                                  |
+| [`nginx.onbuild.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/nginx.onbuild.Dockerfile)     | `gitlab-docs:nginx-onbuild`   | Base image to use for building documentation archives. It uses `ONBUILD` to perform all required steps to copy the archive, and relies upon its parent `Dockerfile.builder.onbuild` that is invoked when building single documentation archives (see the `Dockerfile` of each branch) |
+| [`archives.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/archives.Dockerfile)               | `gitlab-docs:archives`        | Contains all the versions of the website in one archive. It copies all generated HTML files from every version in one location.                                                                                                                                                       |
 
 ### How to build the images
 

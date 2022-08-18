@@ -15,7 +15,7 @@ module Ci
     include Presentable
     include EachBatch
 
-    ignore_column :semver, remove_with: '15.3', remove_after: '2022-07-22'
+    ignore_column :semver, remove_with: '15.4', remove_after: '2022-08-22'
 
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
 
@@ -437,7 +437,12 @@ module Ci
         cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
-        self.update_columns(values) if persist_cached_data?
+        if persist_cached_data?
+          version_updated = values.include?(:version) && values[:version] != version
+
+          update_columns(values)
+          schedule_runner_version_update if version_updated
+        end
       end
     end
 
@@ -477,7 +482,7 @@ module Ci
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do
-      Ci::Runner.joins(:runner_version).where(runner_version: { status: upgrade_status })
+      joins(:runner_version).where(runner_version: { status: upgrade_status })
     end
 
     EXECUTOR_NAME_TO_TYPES = {
@@ -564,6 +569,12 @@ module Ci
       unless runner_namespaces.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
+    end
+
+    def schedule_runner_version_update
+      return unless version
+
+      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(version)
     end
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe 'overridden dynamic model helpers' do
-    let(:test_table) { '__test_batching_table' }
+    let(:test_table) { '_test_batching_table' }
 
     before do
       model.connection.execute(<<~SQL)
@@ -1022,6 +1022,40 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(Project.sum(:star_count)).to eq(2 * Project.count)
         end
       end
+
+      context 'when the table is write-locked' do
+        let(:test_table) { '_test_table' }
+        let(:lock_writes_manager) do
+          Gitlab::Database::LockWritesManager.new(
+            table_name: test_table,
+            connection: model.connection,
+            database_name: 'main'
+          )
+        end
+
+        before do
+          model.connection.execute(<<~SQL)
+            CREATE TABLE #{test_table} (id integer NOT NULL, value integer NOT NULL DEFAULT 0);
+
+            INSERT INTO #{test_table} (id, value)
+            VALUES (1, 1), (2, 2), (3, 3)
+          SQL
+
+          lock_writes_manager.lock_writes
+        end
+
+        it 'disables the write-lock trigger function' do
+          expect do
+            model.update_column_in_batches(test_table, :value, Arel.sql('1+1'), disable_lock_writes: true)
+          end.not_to raise_error
+        end
+
+        it 'raises an error if it does not disable the trigger function' do
+          expect do
+            model.update_column_in_batches(test_table, :value, Arel.sql('1+1'), disable_lock_writes: false)
+          end.to raise_error(ActiveRecord::StatementInvalid, /Table: "#{test_table}" is write protected/)
+        end
+      end
     end
 
     context 'when running inside the transaction' do
@@ -1080,6 +1114,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'renames a column concurrently' do
+          expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
           expect(model).to receive(:check_trigger_permissions!).with(:users)
 
           expect(model).to receive(:install_rename_triggers)
@@ -1112,6 +1148,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           let(:connection) { ActiveRecord::Migration.connection }
 
           before do
+            expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
             expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
               .with(:users, connection: connection).and_return(copy_trigger)
           end
@@ -1119,6 +1156,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           it 'copies the value to the new column using the type_cast_function', :aggregate_failures do
             expect(model).to receive(:copy_indexes).with(:users, :id, :new)
             expect(model).to receive(:add_not_null_constraint).with(:users, :new)
+            expect(model).to receive(:execute).with("SELECT set_config('lock_writes.users', 'false', true)")
             expect(model).to receive(:execute).with("UPDATE \"users\" SET \"new\" = cast_to_jsonb_with_default(\"users\".\"id\") WHERE \"users\".\"id\" >= #{user.id}")
             expect(copy_trigger).to receive(:create).with(:id, :new, trigger_name: nil)
 
@@ -1165,6 +1203,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           end
 
           it 'copies the default to the new column' do
+            expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
             expect(model).to receive(:change_column_default)
               .with(:users, :new, old_column.default)
 
@@ -1173,6 +1213,34 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
             model.rename_column_concurrently(:users, :old, :new)
           end
+        end
+      end
+
+      context 'when the table in the other database is write-locked' do
+        let(:test_table) { '_test_table' }
+        let(:lock_writes_manager) do
+          Gitlab::Database::LockWritesManager.new(
+            table_name: test_table,
+            connection: model.connection,
+            database_name: 'main'
+          )
+        end
+
+        before do
+          model.connection.execute(<<~SQL)
+            CREATE TABLE #{test_table} (id integer NOT NULL, value integer NOT NULL DEFAULT 0);
+
+            INSERT INTO #{test_table} (id, value)
+            VALUES (1, 1), (2, 2), (3, 3)
+          SQL
+
+          lock_writes_manager.lock_writes
+        end
+
+        it 'does not raise an error when renaming the column' do
+          expect do
+            model.rename_column_concurrently(test_table, :value, :new_value)
+          end.not_to raise_error
         end
       end
 
@@ -1246,6 +1314,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       it 'reverses the operations of cleanup_concurrent_column_rename' do
+        expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
         expect(model).to receive(:check_trigger_permissions!).with(:users)
 
         expect(model).to receive(:install_rename_triggers)
@@ -1302,6 +1372,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'copies the default to the old column' do
+          expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
           expect(model).to receive(:change_column_default)
             .with(:users, :old, new_column.default)
 
@@ -2438,7 +2510,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
 
     it 'sets the migration class name in the logs' do
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
 
       buffer.rewind
       expect(buffer.read).to include("\"class\":\"#{model.class}\"")
@@ -2452,7 +2524,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
         expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: raise_on_exhaustion)
 
-        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) { }
+        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) {}
       end
     end
 
@@ -2461,7 +2533,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
 
     it 'defaults to allowing subtransactions' do
@@ -2470,7 +2542,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: true)).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
   end
 

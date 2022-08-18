@@ -27,6 +27,7 @@ module Gitlab
 
           # Hack: Before we do actual reindexing work, create async indexes
           Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+          Gitlab::Database::AsyncIndexes.drop_pending_indexes! if Feature.enabled?(:database_async_index_destruction, type: :ops)
 
           automatic_reindexing
         end

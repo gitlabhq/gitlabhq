@@ -157,8 +157,8 @@ describe('AddIssuableForm', () => {
     describe('categorized issuables', () => {
       it.each`
         issuableType              | pathIdSeparator          | contextHeader          | contextFooter
-        ${issuableTypesMap.ISSUE} | ${PathIdSeparator.Issue} | ${'The current issue'} | ${'the following issue(s)'}
-        ${issuableTypesMap.EPIC}  | ${PathIdSeparator.Epic}  | ${'The current epic'}  | ${'the following epic(s)'}
+        ${issuableTypesMap.ISSUE} | ${PathIdSeparator.Issue} | ${'The current issue'} | ${'the following issues'}
+        ${issuableTypesMap.EPIC}  | ${PathIdSeparator.Epic}  | ${'The current epic'}  | ${'the following epics'}
       `(
         'show header text as "$contextHeader" and footer text as "$contextFooter" issuableType is set to $issuableType',
         ({ issuableType, contextHeader, contextFooter }) => {

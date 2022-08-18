@@ -309,25 +309,64 @@ RSpec.describe Ci::BuildRunnerPresenter do
   end
 
   describe '#runner_variables' do
-    subject { presenter.runner_variables }
+    subject(:runner_variables) { presenter.runner_variables }
 
     let_it_be(:project) { create(:project, :repository) }
-
-    shared_examples 'returns an array with the expected variables' do
-      it 'returns an array' do
-        is_expected.to be_an_instance_of(Array)
-      end
-
-      it 'returns the expected variables' do
-        is_expected.to eq(presenter.variables.to_runner_variables)
-      end
-    end
 
     let(:sha) { project.repository.commit.sha }
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
 
-    it_behaves_like 'returns an array with the expected variables'
+    it 'returns an array' do
+      is_expected.to be_an_instance_of(Array)
+    end
+
+    it 'returns the expected variables' do
+      is_expected.to eq(presenter.variables.to_runner_variables)
+    end
+
+    context 'when there are variables to expand' do
+      before_all do
+        create(:ci_variable, project: project,
+                             key: 'regular_var',
+                             value: 'value 1')
+        create(:ci_variable, project: project,
+                             key: 'file_var',
+                             value: 'value 2',
+                             variable_type: :file)
+        create(:ci_variable, project: project,
+                             key: 'var_with_variables',
+                             value: 'value 3 and $regular_var and $file_var and $undefined_var')
+      end
+
+      it 'returns variables with expanded' do
+        expect(runner_variables).to include(
+          { key: 'regular_var', value: 'value 1',
+            public: false, masked: false },
+          { key: 'file_var', value: 'value 2',
+            public: false, masked: false, file: true },
+          { key: 'var_with_variables', value: 'value 3 and value 1 and $file_var and $undefined_var',
+            public: false, masked: false }
+        )
+      end
+
+      context 'when the FF ci_stop_expanding_file_vars_for_runners is disabled' do
+        before do
+          stub_feature_flags(ci_stop_expanding_file_vars_for_runners: false)
+        end
+
+        it 'returns variables with expanded' do
+          expect(runner_variables).to include(
+            { key: 'regular_var', value: 'value 1',
+              public: false, masked: false },
+            { key: 'file_var', value: 'value 2',
+              public: false, masked: false, file: true },
+            { key: 'var_with_variables', value: 'value 3 and value 1 and value 2 and $undefined_var',
+              public: false, masked: false }
+          )
+        end
+      end
+    end
   end
 
   describe '#runner_variables subset' do

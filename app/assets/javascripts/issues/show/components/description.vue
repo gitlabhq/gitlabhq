@@ -133,7 +133,7 @@ export default {
   },
   computed: {
     workItemsEnabled() {
-      return this.glFeatures.workItems;
+      return this.glFeatures.workItemsCreateFromMarkdown;
     },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
@@ -302,7 +302,9 @@ export default {
       if (taskRegexMatches) {
         $tasks.text(this.taskStatus);
         $tasksShort.text(
-          `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`,
+          `${taskRegexMatches[1]}/${taskRegexMatches[2]} checklist item${
+            taskRegexMatches[2] > 1 ? 's' : ''
+          }`,
         );
       } else {
         $tasks.text('');
@@ -315,7 +317,7 @@ export default {
       }
 
       this.taskButtons = [];
-      const taskListFields = this.$el.querySelectorAll('.task-list-item');
+      const taskListFields = this.$el.querySelectorAll('.task-list-item:not(.inapplicable)');
 
       taskListFields.forEach((item, index) => {
         const taskLink = item.querySelector('.gfm-issue');
@@ -326,6 +328,7 @@ export default {
           }
           const workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
           this.addHoverListeners(taskLink, workItemId);
+          taskLink.classList.add('gl-link');
           taskLink.addEventListener('click', (e) => {
             e.preventDefault();
             this.openWorkItemDetailModal(taskLink);

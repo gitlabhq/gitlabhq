@@ -170,7 +170,7 @@ module GraphqlHelpers
   #     or `prepare` in app/graphql/types/range_input_type.rb, used by Types::TimeframeInputType
   def args_internal(field, args:, query_ctx:, parent:, extras:, query:)
     arguments = GraphqlHelpers.deep_transform_args(args, field)
-    arguments.merge!(extras.reject {|k, v| v == :not_given})
+    arguments.merge!(extras.reject { |k, v| v == :not_given })
   end
 
   # Pros:
@@ -185,7 +185,7 @@ module GraphqlHelpers
   # take internal style args, and force them into client style args
   def args_internal_prepared(field, args:, query_ctx:, parent:, extras:, query:)
     arguments = GraphqlHelpers.as_graphql_argument_literals(args)
-    arguments.merge!(extras.reject {|k, v| v == :not_given})
+    arguments.merge!(extras.reject { |k, v| v == :not_given })
 
     # Use public API to properly prepare the args for use by the resolver.
     # It uses `coerce_arguments` under the covers
@@ -307,14 +307,14 @@ module GraphqlHelpers
   end
 
   def graphql_mutation(name, input, fields = nil, &block)
-    raise ArgumentError, 'Please pass either `fields` parameter or a block to `#graphql_mutation`, but not both.' if fields.present? && block_given?
+    raise ArgumentError, 'Please pass either `fields` parameter or a block to `#graphql_mutation`, but not both.' if fields.present? && block
 
     name = name.graphql_name if name.respond_to?(:graphql_name)
     mutation_name = GraphqlHelpers.fieldnamerize(name)
     input_variable_name = "$#{input_variable_name_for_mutation(name)}"
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
 
-    fields = yield if block_given?
+    fields = yield if block
     fields ||= all_graphql_fields_for(mutation_field.type.to_type_signature)
 
     query = <<~MUTATION

@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlDatepicker } from '@gitlab/ui';
 import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
+import { getDateInFuture } from '~/lib/utils/datetime_utility';
 
 describe('~/access_tokens/components/expires_at_field', () => {
   let wrapper;
@@ -48,5 +49,13 @@ describe('~/access_tokens/components/expires_at_field', () => {
     createComponent({ maxDate });
 
     expect(findDatepicker().props('maxDate')).toStrictEqual(maxDate);
+  });
+
+  it('should set the default expiration date to be 30 days', () => {
+    const today = new Date();
+    const future = getDateInFuture(today, 30);
+    createComponent();
+
+    expect(findDatepicker().props('defaultDate')).toStrictEqual(future);
   });
 });

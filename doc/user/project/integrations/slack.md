@@ -77,13 +77,13 @@ The following triggers are available for Slack notifications:
 ## Troubleshooting
 
 If your Slack integration is not working, start troubleshooting by
-searching through the [Sidekiq logs](../../../administration/logs.md#sidekiqlog)
+searching through the [Sidekiq logs](../../../administration/logs/index.md#sidekiqlog)
 for errors relating to your Slack service.
 
 ### Something went wrong on our end
 
 You might get this generic error message in the GitLab UI.
-Review [the logs](../../../administration/logs.md#productionlog) to find
+Review [the logs](../../../administration/logs/index.md#productionlog) to find
 the error message and keep troubleshooting from there.
 
 ### `certificate verify failed`

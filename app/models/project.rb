@@ -53,6 +53,7 @@ class Project < ApplicationRecord
 
   ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
   ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
+  ignore_columns :build_coverage_regex, remove_after: '2022-10-22', remove_with: '15.5'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
@@ -131,6 +132,8 @@ class Project < ApplicationRecord
 
   after_save :save_topics
 
+  after_save :reload_project_namespace_details
+
   after_create -> { create_or_load_association(:project_feature) }
 
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -176,7 +179,7 @@ class Project < ApplicationRecord
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
-  has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
+  has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 
   def self.integration_association_name(name)
@@ -213,6 +216,7 @@ class Project < ApplicationRecord
   has_one :pipelines_email_integration, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_integration, class_name: 'Integrations::Pivotaltracker'
   has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project
+  has_one :pumble_integration, class_name: 'Integrations::Pumble'
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
   has_one :shimo_integration, class_name: 'Integrations::Shimo'
@@ -287,6 +291,8 @@ class Project < ApplicationRecord
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
 
   alias_method :members, :project_members
   has_many :users, through: :project_members
@@ -446,7 +452,8 @@ class Project < ApplicationRecord
            :repository_access_level, :package_registry_access_level, :pages_access_level,
            :metrics_dashboard_access_level, :analytics_access_level,
            :operations_access_level, :security_and_compliance_access_level,
-           :container_registry_access_level,
+           :container_registry_access_level, :environments_access_level, :feature_flags_access_level,
+           :releases_access_level,
            to: :project_feature, allow_nil: true
 
   delegate :show_default_award_emojis, :show_default_award_emojis=,
@@ -472,6 +479,7 @@ class Project < ApplicationRecord
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :opt_in_jwt, :opt_in_jwt=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
+  delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :separated_caches, :separated_caches=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :ci_cd_settings, allow_nil: true
@@ -663,6 +671,7 @@ class Project < ApplicationRecord
   scope :imported_from, -> (type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
+  scope :last_activity_before, -> (time) { where('projects.last_activity_at < ?', time) }
 
   scope :with_service_desk_key, -> (key) do
     # project_key is not indexed for now
@@ -814,7 +823,7 @@ class Project < ApplicationRecord
         (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
         ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})\/)?
         (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
-      }x
+      }xo
     end
 
     def reference_postfix
@@ -1041,6 +1050,7 @@ class Project < ApplicationRecord
   def emails_enabled?
     !emails_disabled?
   end
+
   override :lfs_enabled?
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
@@ -1675,7 +1685,13 @@ class Project < ApplicationRecord
   end
 
   def has_active_hooks?(hooks_scope = :push_hooks)
-    hooks.hooks_for(hooks_scope).any? || SystemHook.hooks_for(hooks_scope).any? || Gitlab::FileHook.any?
+    @has_active_hooks ||= {} # rubocop: disable Gitlab/PredicateMemoization
+
+    return @has_active_hooks[hooks_scope] if @has_active_hooks.key?(hooks_scope)
+
+    @has_active_hooks[hooks_scope] = hooks.hooks_for(hooks_scope).any? ||
+      SystemHook.hooks_for(hooks_scope).any? ||
+      Gitlab::FileHook.any?
   end
 
   def has_active_integrations?(hooks_scope = :push_hooks)
@@ -1757,8 +1773,8 @@ class Project < ApplicationRecord
     repository.after_create
 
     true
-  rescue StandardError => err
-    Gitlab::ErrorTracking.track_exception(err, project: { id: id, full_path: full_path, disk_path: disk_path })
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, project: { id: id, full_path: full_path, disk_path: disk_path })
     errors.add(:base, _('Failed to create repository'))
     false
   end
@@ -2254,6 +2270,7 @@ class Project < ApplicationRecord
         .concat(dependency_proxy_variables)
         .concat(auto_devops_variables)
         .concat(api_variables)
+        .concat(ci_template_variables)
     end
   end
 
@@ -2304,6 +2321,12 @@ class Project < ApplicationRecord
   def api_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+    end
+  end
+
+  def ci_template_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_TEMPLATE_REGISTRY_HOST', value: 'registry.gitlab.com')
     end
   end
 
@@ -2651,7 +2674,7 @@ class Project < ApplicationRecord
 
     {
       repository_storage: repository_storage,
-      pool_repository:    pool_repository || create_new_pool_repository
+      pool_repository: pool_repository || create_new_pool_repository
     }
   end
 
@@ -2880,6 +2903,12 @@ class Project < ApplicationRecord
     ci_cd_settings.forward_deployment_enabled?
   end
 
+  def ci_allow_fork_pipelines_to_run_in_parent_project?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.allow_fork_pipelines_to_run_in_parent_project?
+  end
+
   def ci_job_token_scope_enabled?
     return false unless ci_cd_settings
 
@@ -2984,6 +3013,14 @@ class Project < ApplicationRecord
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
 
+  def work_items_mvc_2_feature_flag_enabled?
+    group&.work_items_mvc_2_feature_flag_enabled? || Feature.enabled?(:work_items_mvc_2)
+  end
+
+  def work_items_create_from_markdown_feature_flag_enabled?
+    work_items_feature_flag_enabled? && (group&.work_items_create_from_markdown_feature_flag_enabled? || Feature.enabled?(:work_items_create_from_markdown))
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
     return unless Feature.enabled?(:record_projects_target_platforms, self)
@@ -3006,6 +3043,10 @@ class Project < ApplicationRecord
 
   def security_training_available?
     licensed_feature_available?(:security_training)
+  end
+
+  def destroy_deployment_by_id(deployment_id)
+    deployments.where(id: deployment_id).fast_destroy_all
   end
 
   private
@@ -3236,6 +3277,12 @@ class Project < ApplicationRecord
     end
 
     project_namespace.assign_attributes(attributes_to_sync)
+  end
+
+  def reload_project_namespace_details
+    return unless (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && project_namespace.namespace_details.present?
+
+    project_namespace.namespace_details.reset
   end
 
   # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)

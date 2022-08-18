@@ -178,7 +178,7 @@ RSpec.describe Gitlab::Ci::CronParser do
     end
 
     context 'when time crosses a Daylight Savings boundary' do
-      let(:cron) { '* 0 1 12 *'}
+      let(:cron) { '* 0 1 12 *' }
 
       # Note this previously only failed if the time zone is set
       # to a zone that observes Daylight Savings

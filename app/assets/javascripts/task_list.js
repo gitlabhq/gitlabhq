@@ -62,13 +62,21 @@ export default class TaskList {
       .prop('disabled', true);
   }
 
+  updateInapplicableTaskListItems(e) {
+    this.getTaskListTarget(e)
+      .find('.task-list-item-checkbox[data-inapplicable]')
+      .prop('disabled', true);
+  }
+
   disableTaskListItems(e) {
     this.getTaskListTarget(e).taskList('disable');
+    this.updateInapplicableTaskListItems();
   }
 
   enableTaskListItems(e) {
     this.getTaskListTarget(e).taskList('enable');
     this.disableNonMarkdownTaskListItems(e);
+    this.updateInapplicableTaskListItems(e);
   }
 
   enable() {

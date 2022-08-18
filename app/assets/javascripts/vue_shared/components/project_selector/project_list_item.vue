@@ -53,6 +53,7 @@ export default {
     >
       <gl-icon v-if="selected" class="js-selected-icon" name="mobile-issue-close" />
       <project-avatar
+        :project-id="project.id"
         :project-avatar-url="projectAvatarUrl"
         :project-name="projectNameWithNamespace"
         class="gl-mr-3"

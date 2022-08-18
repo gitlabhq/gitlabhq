@@ -1,19 +1,17 @@
-import { nextTick } from 'vue';
-import { createLocalVue, mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { GlBanner } from '@gitlab/ui';
 import App from '~/work_items_hierarchy/components/app.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('WorkItemsHierarchy App', () => {
   let wrapper;
   const createComponent = (props = {}, data = {}) => {
     wrapper = extendedWrapper(
       mount(App, {
-        localVue,
         provide: {
           illustrationPath: '/foo.svg',
           licensePlan: 'free',

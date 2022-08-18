@@ -39,8 +39,8 @@ describe('Ide File Row component', () => {
     wrapper = null;
   });
 
-  const findFileRowExtra = () => wrapper.find(FileRowExtra);
-  const findFileRow = () => wrapper.find(FileRow);
+  const findFileRowExtra = () => wrapper.findComponent(FileRowExtra);
+  const findFileRow = () => wrapper.findComponent(FileRow);
   const hasDropdownOpen = () => findFileRowExtra().props('dropdownOpen');
 
   it('fileRow component has listeners', async () => {

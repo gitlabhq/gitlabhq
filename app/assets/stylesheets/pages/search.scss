@@ -82,19 +82,17 @@ input[type='checkbox']:hover {
     min-width: $search-input-field-x-min-width;
   }
 
-  &.is-active {
-    &.is-searching {
-      .in-search-scope-help {
-        position: absolute;
-        top: $gl-spacing-scale-2;
-        right: 2.125rem;
-        z-index: 2;
-      }
+  &.is-searching {
+    .in-search-scope-help {
+      position: absolute;
+      top: $gl-spacing-scale-2;
+      right: 2.125rem;
+      z-index: 2;
     }
   }
 
-  &.is-not-searching {
-    .in-search-scope-help {
+  &.is-not-focused {
+    .gl-search-box-by-type-clear {
       display: none;
     }
   }
@@ -104,28 +102,11 @@ input[type='checkbox']:hover {
     box-shadow: none;
     border-color: transparent;
   }
-
-  &.is-active {
-    .keyboard-shortcut-helper {
-      display: none;
-    }
-  }
-
-  &.is-not-active {
-    .btn.gl-clear-icon-button,
-    .in-search-scope-help {
-      display: none;
-    }
-  }
 }
 
 .header-search-dropdown-menu {
   max-height: $dropdown-max-height;
-  top: $header-height;
-}
-
-.header-search-dropdown-content {
-  max-height: $dropdown-max-height;
+  top: 100%;
 }
 
 .search {

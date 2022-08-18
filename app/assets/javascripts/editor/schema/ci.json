@@ -245,6 +245,10 @@
             "terraform": {
               "$ref": "#/definitions/string_file_list",
               "description": "Path to file or list of files with terraform plan(s)."
+            },
+            "cyclonedx": {
+              "$ref": "#/definitions/string_file_list",
+              "markdownDescription": "Path to file or list of files with cyclonedx report(s). [Learn More](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscyclonedx)."
             }
           }
         }
@@ -292,7 +296,7 @@
             "project": {
               "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project`.",
               "type": "string",
-              "pattern": "\\S/\\S"
+              "pattern": "\\S/\\S|\\$(\\S+)"
             },
             "ref": {
               "description": "Branch/Tag/Commit-hash for the target project.",
@@ -606,11 +610,33 @@
       "markdownDescription": "Expression to evaluate whether additional attributes should be provided to the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesif)."
     },
     "changes": {
-      "type": "array",
       "markdownDescription": "Additional attributes will be provided to job if any of the provided paths matches a modified file. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#ruleschanges).",
-      "items": {
-        "type": "string"
-      }
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["paths"],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "description": "List of file paths.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "compare_to": {
+              "type": "string",
+              "description": "Ref for comparing changes."
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "exists": {
       "type": "array",
@@ -623,11 +649,11 @@
       "markdownDescription": "Defines environment variables for specific jobs. Job level property overrides global variables. If a job sets `variables: {}`, all global variables are turned off. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesvariables).",
       "anyOf": [
         {
-          "type": "object",   
+          "type": "object",
           "additionalProperties": {
             "type": ["string", "integer", "array"]
           }
-        }, 
+        },
         {
           "type": "array",
           "items": {
@@ -1203,6 +1229,10 @@
               "type": "string",
               "description": "The tag_name must be specified. It can refer to an existing Git tag or can be specified by the user.",
               "minLength": 1
+            },
+            "tag_message": {
+              "type": "string",
+              "description": "Message to use if creating a new annotated tag."
             },
             "description": {
               "type": "string",

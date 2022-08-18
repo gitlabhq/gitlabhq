@@ -9,8 +9,8 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
     create(:ci_build, pipeline: pipeline, runner: runner)
   end
 
-  let(:created_at) { }
-  let(:updated_at) { }
+  let(:created_at) {}
+  let(:updated_at) {}
 
   subject(:service) { described_class.new }
 

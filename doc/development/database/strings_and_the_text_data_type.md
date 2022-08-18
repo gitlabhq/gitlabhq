@@ -148,8 +148,9 @@ to update the `title_html` with a title that has more than 1024 characters, the 
 a database error.
 
 Adding or removing a constraint to an existing attribute requires that any application changes are
-deployed _first_, [otherwise servers still in the old version of the application may try to update the
-attribute with invalid values](../multi_version_compatibility.md#ci-artifact-uploads-were-failing).
+deployed _first_, 
+otherwise servers still in the old version of the application
+[may try to update the attribute with invalid values](../multi_version_compatibility.md#ci-artifact-uploads-were-failing).
 For these reasons, `add_text_limit` should run in a post-deployment migration.
 
 Still in our example, for the 13.0 milestone (current), consider that the following validation
@@ -188,7 +189,7 @@ migration or a background data migration:
 - If the data volume is less than `1,000` records, then the data migration can be executed within the post-migration.
 - If the data volume is higher than `1,000` records, it's advised to create a background migration.
 
-When unsure about which option to use, please contact the Database team for advice.
+When unsure about which option to use, contact the Database team for advice.
 
 Back to our example, the issues table is considerably large and frequently accessed, so we are going
 to add a background migration for the 13.0 milestone (current),

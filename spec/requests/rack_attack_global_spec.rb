@@ -104,8 +104,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     end
 
     context 'with the token in the OAuth headers' do
-      let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
-      let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
+      let(:request_args) { api_get_args_with_token_headers(api_partial_url, bearer_headers(token)) }
+      let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, bearer_headers(other_user_token)) }
 
       it_behaves_like 'rate-limited user based token-authenticated requests'
     end
@@ -131,8 +131,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       end
 
       context 'with the token in the OAuth headers' do
-        let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
-        let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
+        let(:request_args) { api_get_args_with_token_headers(api_partial_url, bearer_headers(token)) }
+        let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, bearer_headers(other_user_token)) }
 
         it_behaves_like 'rate-limited user based token-authenticated requests'
       end
@@ -1189,7 +1189,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       it 'request is authenticated by token in the OAuth headers' do
         expect_authenticated_request
 
-        get url, headers: oauth_token_headers(personal_access_token)
+        get url, headers: bearer_headers(personal_access_token)
       end
 
       it 'request is authenticated by token in basic auth' do
@@ -1206,7 +1206,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       it 'request is authenticated by token in query string' do
         expect_authenticated_request
 
-        get url, params: { access_token: oauth_token.token }
+        get url, params: { access_token: oauth_token.plaintext_token }
       end
 
       it 'request is authenticated by token in the headers' do

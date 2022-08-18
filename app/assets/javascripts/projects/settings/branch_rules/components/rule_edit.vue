@@ -1,15 +1,18 @@
 <script>
 import { GlFormGroup } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import BranchDropdown from './branch_dropdown.vue';
+import Protections from './protections/index.vue';
 
 export default {
   name: 'RuleEdit',
-  i18n: {
-    branch: __('Branch'),
+  i18n: { branch: s__('BranchRules|Branch') },
+  components: {
+    BranchDropdown,
+    GlFormGroup,
+    Protections,
   },
-  components: { BranchDropdown, GlFormGroup },
   props: {
     projectPath: {
       type: String,
@@ -19,20 +22,35 @@ export default {
   data() {
     return {
       branch: getParameterByName('branch'),
+      protections: {
+        membersAllowedToPush: [],
+        allowForcePush: false,
+        membersAllowedToMerge: [],
+        requireCodeOwnersApproval: false,
+      },
     };
   },
 };
 </script>
 
 <template>
-  <gl-form-group :label="$options.i18n.branch">
-    <branch-dropdown
-      id="branches"
-      v-model="branch"
-      class="gl-w-half"
-      :project-path="projectPath"
-      @createWildcard="branch = $event"
+  <div>
+    <gl-form-group :label="$options.i18n.branch">
+      <branch-dropdown
+        id="branches"
+        v-model="branch"
+        class="gl-w-half"
+        :project-path="projectPath"
+        @createWildcard="branch = $event"
+      />
+    </gl-form-group>
+
+    <protections
+      :protections="protections"
+      @change-allowed-to-push-members="protections.membersAllowedToPush = $event"
+      @change-allow-force-push="protections.allowForcePush = $event"
+      @change-allowed-to-merge-members="protections.membersAllowedToMerge = $event"
+      @change-require-code-owners-approval="protections.requireCodeOwnersApproval = $event"
     />
-  </gl-form-group>
-  <!-- TODO - Add branch protections (https://gitlab.com/gitlab-org/gitlab/-/issues/362212) -->
+  </div>
 </template>

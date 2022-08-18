@@ -32,15 +32,12 @@ module Backup
                   raise Error, "unknown backup type: #{type}"
                 end
 
-      args = []
+      args = ['-layout', 'pointer']
       args += ['-parallel', @max_parallelism.to_s] if @max_parallelism
       args += ['-parallel-storage', @storage_parallelism.to_s] if @storage_parallelism
-      if Feature.enabled?(:incremental_repository_backup)
-        args += ['-layout', 'pointer']
-        if type == :create
-          args += ['-incremental'] if incremental?
-          args += ['-id', backup_id] if backup_id
-        end
+      if type == :create
+        args += ['-incremental'] if incremental?
+        args += ['-id', backup_id] if backup_id
       end
 
       @input_stream, stdout, @thread = Open3.popen2(build_env, bin_path, command, '-path', backup_repos_path, *args)
@@ -97,7 +94,7 @@ module Backup
     def build_env
       {
         'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
-        'SSL_CERT_DIR'  => Gitlab::X509::Certificate.default_cert_dir
+        'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir
       }.merge(ENV)
     end
 

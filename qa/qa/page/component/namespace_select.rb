@@ -13,6 +13,7 @@ module QA
             element :namespaces_list
             element :namespaces_list_groups
             element :namespaces_list_item
+            element :namespaces_list_search
           end
         end
 
@@ -20,6 +21,10 @@ module QA
           click_element :namespaces_list
 
           within_element(:namespaces_list) do
+            find_element(:namespaces_list_search).fill_in(with: item)
+
+            wait_for_requests
+
             find_element(:namespaces_list_item, text: item).click
           end
         end

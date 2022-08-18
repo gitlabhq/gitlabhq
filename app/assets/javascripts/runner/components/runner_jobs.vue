@@ -27,9 +27,7 @@ export default {
         items: [],
         pageInfo: {},
       },
-      pagination: {
-        page: 1,
-      },
+      pagination: {},
     };
   },
   apollo: {
@@ -62,6 +60,11 @@ export default {
       return this.$apollo.queries.jobs.loading;
     },
   },
+  methods: {
+    onPaginationInput(value) {
+      this.pagination = value;
+    },
+  },
   I18N_NO_JOBS_FOUND,
 };
 </script>
@@ -74,6 +77,6 @@ export default {
     <runner-jobs-table v-else-if="jobs.items.length" :jobs="jobs.items" />
     <p v-else>{{ $options.I18N_NO_JOBS_FOUND }}</p>
 
-    <runner-pagination v-model="pagination" :disabled="loading" :page-info="jobs.pageInfo" />
+    <runner-pagination :disabled="loading" :page-info="jobs.pageInfo" @input="onPaginationInput" />
   </div>
 </template>

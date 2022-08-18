@@ -34,6 +34,8 @@ RSpec.describe 'getting a detailed sentry error' do
 
   context 'when data is loading via reactive cache' do
     before do
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
       post_graphql(query, current_user: current_user)
     end
 
@@ -47,6 +49,10 @@ RSpec.describe 'getting a detailed sentry error' do
       expect_any_instance_of(ErrorTracking::ProjectErrorTrackingSetting)
         .to receive(:issue_details)
         .and_return({ issue: sentry_detailed_error })
+
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+        .to receive(:track_event)
+        .with('error_tracking_view_details', values: current_user.id)
 
       post_graphql(query, current_user: current_user)
     end

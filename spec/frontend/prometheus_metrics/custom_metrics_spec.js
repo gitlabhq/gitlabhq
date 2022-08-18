@@ -50,39 +50,33 @@ describe('PrometheusMetrics', () => {
       customMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LOADING);
 
       expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toEqual(false);
-      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
-      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
-      expect(
-        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
-      ).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden')).toBe(true);
 
-      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toBeTruthy();
-      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBe(true);
     });
 
     it('should show metrics list when called with `list`', () => {
       customMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LIST);
 
-      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBe(true);
       expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
-      expect(
-        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
-      ).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden')).toBe(true);
 
       expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
-      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBe(true);
     });
 
     it('should show empty state when called with `empty`', () => {
       customMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
 
-      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBe(true);
       expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toEqual(false);
-      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
-      expect(
-        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
-      ).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden')).toBe(true);
 
       expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
       expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toEqual(false);
@@ -94,14 +88,12 @@ describe('PrometheusMetrics', () => {
 
       const $metricsListLi = customMetrics.$monitoredCustomMetricsList.find('li');
 
-      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBe(true);
       expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
-      expect(
-        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
-      ).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden')).toBe(true);
 
       expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
-      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBe(true);
 
       expect($metricsListLi.length).toEqual(metrics.length);
     });
@@ -114,10 +106,10 @@ describe('PrometheusMetrics', () => {
         false,
       );
 
-      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
-      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toBeTruthy();
-      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toBe(true);
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBe(true);
     });
   });
 });

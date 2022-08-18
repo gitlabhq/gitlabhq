@@ -10,6 +10,21 @@ const KEY_WEB_IDE = 'webide';
 const KEY_GITPOD = 'gitpod';
 const KEY_PIPELINE_EDITOR = 'pipeline_editor';
 
+export const i18n = {
+  modal: {
+    title: __('Enable Gitpod?'),
+    content: s__(
+      'Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}.',
+    ),
+    actionCancelText: __('Cancel'),
+    actionPrimaryText: __('Enable Gitpod'),
+  },
+  webIdeText: s__('WebIDE|Quickly and easily edit multiple files in your project.'),
+  webIdeTooltip: s__(
+    'WebIDE|Quickly and easily edit multiple files in your project. Press . to open',
+  ),
+};
+
 export default {
   components: {
     ActionsButton,
@@ -19,16 +34,7 @@ export default {
     GlLink,
     ConfirmForkModal,
   },
-  i18n: {
-    modal: {
-      title: __('Enable Gitpod?'),
-      content: s__(
-        'Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}.',
-      ),
-      actionCancelText: __('Cancel'),
-      actionPrimaryText: __('Enable Gitpod'),
-    },
-  },
+  i18n,
   props: {
     isFork: {
       type: Boolean,
@@ -207,8 +213,8 @@ export default {
       return {
         key: KEY_WEB_IDE,
         text: this.webIdeActionText,
-        secondaryText: __('Quickly and easily edit multiple files in your project.'),
-        tooltip: '',
+        secondaryText: this.$options.i18n.webIdeText,
+        tooltip: this.$options.i18n.webIdeTooltip,
         attrs: {
           'data-qa-selector': 'web_ide_button',
           'data-track-action': 'click_consolidated_edit_ide',

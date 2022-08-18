@@ -84,7 +84,14 @@ export default {
 <template>
   <content-editor-provider :content-editor="contentEditor">
     <div>
-      <editor-state-observer @docUpdate="notifyChange" @focus="focus" @blur="blur" />
+      <editor-state-observer
+        @docUpdate="notifyChange"
+        @focus="focus"
+        @blur="blur"
+        @loading="$emit('loading')"
+        @loadingSuccess="$emit('loadingSuccess')"
+        @loadingError="$emit('loadingError')"
+      />
       <content-editor-alert />
       <div
         data-testid="content-editor"

@@ -23,8 +23,8 @@ describe('Design management list item component', () => {
 
   const findDesignEvent = () => wrapper.findByTestId('design-event');
   const findImgFilename = (id = imgId) => wrapper.findByTestId(`design-img-filename-${id}`);
-  const findEventIcon = () => findDesignEvent().find(GlIcon);
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findEventIcon = () => findDesignEvent().findComponent(GlIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   function createComponent({
     notesCount = 0,
@@ -74,7 +74,7 @@ describe('Design management list item component', () => {
     beforeEach(async () => {
       createComponent();
       image = wrapper.find('img');
-      glIntersectionObserver = wrapper.find(GlIntersectionObserver);
+      glIntersectionObserver = wrapper.findComponent(GlIntersectionObserver);
 
       glIntersectionObserver.vm.$emit('appear');
       await nextTick();
@@ -86,7 +86,7 @@ describe('Design management list item component', () => {
 
     describe('before image is loaded', () => {
       it('renders loading spinner', () => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
 
@@ -105,7 +105,7 @@ describe('Design management list item component', () => {
         image.trigger('error');
         await nextTick();
         expect(image.isVisible()).toBe(false);
-        expect(wrapper.find(GlIcon).element).toMatchSnapshot();
+        expect(wrapper.findComponent(GlIcon).element).toMatchSnapshot();
       });
 
       describe('when imageV432x230 and image provided', () => {

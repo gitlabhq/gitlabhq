@@ -1,7 +1,6 @@
 query getJobs($fullPath: ID!, $after: String, $first: Int = 30, $statuses: [CiJobStatus!]) {
   project(fullPath: $fullPath) {
     id
-    __typename
     jobs(after: $after, first: $first, statuses: $statuses) {
       count
       pageInfo {
@@ -9,15 +8,12 @@ query getJobs($fullPath: ID!, $after: String, $first: Int = 30, $statuses: [CiJo
         hasNextPage
         hasPreviousPage
         startCursor
-        __typename
       }
       nodes {
-        __typename
         artifacts {
           nodes {
             downloadPath
             fileType
-            __typename
           }
         }
         allowFailure

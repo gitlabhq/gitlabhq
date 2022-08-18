@@ -289,10 +289,10 @@ smoke-test-job:
 
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
-- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
-- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
-- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
-- Project [predefined variables](../variables/predefined_variables.md)
+- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project).
+- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group).
+- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance).
+- Project [predefined variables](../variables/predefined_variables.md).
 - In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
 
   When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
@@ -322,7 +322,11 @@ include:
   file: '.compliance-gitlab-ci.yml'
 ```
 
-For an example of how you can include these predefined variables, and the variables' impact on CI/CD jobs,
+You cannot use variables defined in jobs, or in a global [`variables`](../yaml/index.md#variables)
+section which defines the default variables for all jobs. Includes are evaluated before jobs,
+so these variables cannot be used with `include`.
+
+For an example of how you can include predefined variables, and the variables' impact on CI/CD jobs,
 see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 
 ## Use `rules` with `include`

@@ -37,9 +37,11 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareMetricsReportsService'     => ->(project) { true },
+    'Ci::CompareMetricsReportsService' => ->(project) { true },
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
+
+  MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 100
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -47,13 +49,13 @@ class MergeRequest < ApplicationRecord
   belongs_to :iteration, foreign_key: 'sprint_id'
 
   has_internal_id :iid, scope: :target_project, track_if: -> { !importing? },
-    init: ->(mr, scope) do
-      if mr
-        mr.target_project&.merge_requests&.maximum(:iid)
-      elsif scope[:project]
-        where(target_project: scope[:project]).maximum(:iid)
-      end
-    end
+                        init: ->(mr, scope) do
+                                if mr
+                                  mr.target_project&.merge_requests&.maximum(:iid)
+                                elsif scope[:project]
+                                  where(target_project: scope[:project]).maximum(:iid)
+                                end
+                              end
 
   has_many :merge_request_diffs,
     -> { regular }, inverse_of: :merge_request
@@ -121,7 +123,8 @@ class MergeRequest < ApplicationRecord
     :force_remove_source_branch,
     :commit_message,
     :squash_commit_message,
-    :sha
+    :sha,
+    :skip_ci
   ].freeze
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -263,6 +266,7 @@ class MergeRequest < ApplicationRecord
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
   validate :validate_target_project, on: :create
+  validate :validate_reviewer_and_assignee_size_length, unless: :importing?
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -427,8 +431,7 @@ class MergeRequest < ApplicationRecord
   def self.total_time_to_merge
     join_metrics
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)
-      .pluck(MergeRequest::Metrics.time_to_merge_expression)
-      .first
+      .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
 
   after_save :keep_around_commit, unless: :importing?
@@ -927,9 +930,9 @@ class MergeRequest < ApplicationRecord
   # most recent data possible.
   def repository_diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha:  branch_merge_base_sha,
+      base_sha: branch_merge_base_sha,
       start_sha: target_branch_sha,
-      head_sha:  source_branch_sha
+      head_sha: source_branch_sha
     )
   end
 
@@ -990,6 +993,20 @@ class MergeRequest < ApplicationRecord
 
     errors.add :validate_fork,
                'Source project is not a fork of the target project'
+  end
+
+  def self.max_number_of_assignees_or_reviewers_message
+    # Assignees will be included in https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+    _("total must be less than or equal to %{size}") % { size: MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS }
+  end
+
+  def validate_reviewer_and_assignee_size_length
+    # Assigness will be added in a subsequent MR https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+    return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+    return true unless reviewers.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+
+    errors.add :reviewers,
+      -> (_object, _data) { MergeRequest.max_number_of_assignees_or_reviewers_message }
   end
 
   def merge_ongoing?
@@ -1170,17 +1187,30 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
+  def detailed_merge_status
+    if cannot_be_merged_rechecking? || preparing? || checking?
+      return :checking
+    elsif unchecked?
+      return :unchecked
+    end
+
+    checks = execute_merge_checks
+
+    if checks.success?
+      :mergeable
+    else
+      checks.failure_reason
+    end
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     if Feature.enabled?(:improved_mergeability_checks, self.project)
-      additional_checks = MergeRequests::Mergeability::RunChecksService.new(
-        merge_request: self,
-        params: {
-          skip_ci_check: skip_ci_check,
-          skip_discussions_check: skip_discussions_check
-        }
-      )
-      additional_checks.execute.all?(&:success?)
+      additional_checks = execute_merge_checks(params: {
+                                                 skip_ci_check: skip_ci_check,
+                                                 skip_discussions_check: skip_discussions_check
+                                               })
+      additional_checks.execute.success?
     else
       return false unless open?
       return false if draft?
@@ -1500,14 +1530,14 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.merge_train_ref?(ref)
-    %r{\Arefs/#{Repository::REF_MERGE_REQUEST}/\d+/train\z}.match?(ref)
+    %r{\Arefs/#{Repository::REF_MERGE_REQUEST}/\d+/train\z}o.match?(ref)
   end
 
   def in_locked_state
     lock_mr
     yield
   ensure
-    unlock_mr
+    unlock_mr if locked?
   end
 
   def update_and_mark_in_progress_merge_commit_sha(commit_id)
@@ -1985,6 +2015,10 @@ class MergeRequest < ApplicationRecord
     target_branch == project.default_branch
   end
 
+  def merge_blocked_by_other_mrs?
+    false # Overridden in EE
+  end
+
   private
 
   attr_accessor :skip_fetch_ref
@@ -2037,6 +2071,12 @@ class MergeRequest < ApplicationRecord
 
   def report_type_enabled?(report_type)
     !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+  end
+
+  def execute_merge_checks(params: {})
+    # rubocop: disable CodeReuse/ServiceClass
+    MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
+    # rubocop: enable CodeReuse/ServiceClass
   end
 end
 

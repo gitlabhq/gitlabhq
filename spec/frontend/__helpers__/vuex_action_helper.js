@@ -1,5 +1,7 @@
-/**
- * Helper for testing action with expected mutations inspired in
+// eslint-disable-next-line no-restricted-syntax
+import { setImmediate } from 'timers';
+
+/** Helper for testing action with expected mutations inspired in
  * https://vuex.vuejs.org/en/testing.html
  *
  * @param {(Function|Object)} action to be tested, or object of named parameters

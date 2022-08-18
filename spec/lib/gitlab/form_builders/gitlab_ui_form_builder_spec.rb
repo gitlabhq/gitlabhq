@@ -9,6 +9,40 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
   let_it_be(:form_builder) { described_class.new(:user, user, fake_action_view_base, {}) }
 
+  describe '#submit' do
+    context 'without pajamas_button enabled' do
+      subject(:submit_html) do
+        form_builder.submit('Save', class: 'gl-button btn-confirm custom-class', data: { test: true })
+      end
+
+      it 'renders a submit input' do
+        expected_html = <<~EOS
+        <input type="submit" name="commit" value="Save" class="gl-button btn-confirm custom-class" data-test="true" data-disable-with="Save" />
+        EOS
+
+        expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+
+    context 'with pajamas_button enabled' do
+      subject(:submit_html) do
+        form_builder.submit('Save', pajamas_button: true, class: 'custom-class', data: { test: true })
+      end
+
+      it 'renders a submit button' do
+        expected_html = <<~EOS
+        <button class="gl-button btn btn-md btn-confirm custom-class" data-test="true" type="submit">
+          <span class="gl-button-text">
+            Save
+          </span>
+        </button>
+        EOS
+
+        expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+  end
+
   describe '#gitlab_ui_checkbox_component' do
     context 'when not using slots' do
       let(:optional_args) { {} }
@@ -25,7 +59,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         it 'renders correct html' do
           expected_html = <<~EOS
             <div class="gl-form-checkbox custom-control custom-checkbox">
-              <input name="user[view_diffs_file_by_file]" type="hidden" value="0" />
+              <input name="user[view_diffs_file_by_file]" type="hidden" value="0" autocomplete="off" />
               <input class="custom-control-input" type="checkbox" value="1" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
               <label class="custom-control-label" for="user_view_diffs_file_by_file">
                 <span>Show one file at a time on merge request&#39;s Changes tab</span>
@@ -51,7 +85,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         it 'renders help text' do
           expected_html = <<~EOS
             <div class="gl-form-checkbox custom-control custom-checkbox">
-              <input name="user[view_diffs_file_by_file]" type="hidden" value="1" />
+              <input name="user[view_diffs_file_by_file]" type="hidden" value="1" autocomplete="off" />
               <input class="custom-control-input checkbox-foo-bar" type="checkbox" value="3" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
               <label class="custom-control-label label-foo-bar" for="user_view_diffs_file_by_file">
                 <span>Show one file at a time on merge request&#39;s Changes tab</span>
@@ -101,7 +135,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       it 'renders correct html' do
         expected_html = <<~EOS
           <div class="gl-form-checkbox custom-control custom-checkbox">
-            <input name="user[view_diffs_file_by_file]" type="hidden" value="0" />
+            <input name="user[view_diffs_file_by_file]" type="hidden" value="0" autocomplete="off" />
             <input class="custom-control-input" type="checkbox" value="1" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
             <label class="custom-control-label" for="user_view_diffs_file_by_file">
               <span>Show one file at a time on merge request&#39;s Changes tab</span>
@@ -191,6 +225,45 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         EOS
 
         expect(html_strip_whitespace(radio_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+  end
+
+  describe '#gitlab_ui_datepicker' do
+    subject(:datepicker_html) do
+      form_builder.gitlab_ui_datepicker(
+        :expires_at,
+        **optional_args
+      )
+    end
+
+    let(:optional_args) { {} }
+
+    context 'without optional arguments' do
+      it 'renders correct html' do
+        expected_html = <<~EOS
+          <input class="datepicker form-control gl-form-input" type="text" name="user[expires_at]" id="user_expires_at" />
+        EOS
+
+        expect(html_strip_whitespace(datepicker_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+
+    context 'with optional arguments' do
+      let(:optional_args) do
+        {
+          id: 'milk_gone_bad',
+          data: { action: 'throw' },
+          value: '2022-08-01'
+        }
+      end
+
+      it 'renders correct html' do
+        expected_html = <<~EOS
+          <input id="milk_gone_bad" data-action="throw" value="2022-08-01" class="datepicker form-control gl-form-input" type="text" name="user[expires_at]" />
+        EOS
+
+        expect(html_strip_whitespace(datepicker_html)).to eq(html_strip_whitespace(expected_html))
       end
     end
   end

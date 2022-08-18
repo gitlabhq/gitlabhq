@@ -13,20 +13,22 @@ module WorkItems
     # Base types need to exist on the DB on app startup
     # This constant is used by the DB seeder
     BASE_TYPES = {
-      issue:       { name: 'Issue', icon_name: 'issue-type-issue', enum_value: 0 },
-      incident:    { name: 'Incident', icon_name: 'issue-type-incident', enum_value: 1 },
-      test_case:   { name: 'Test Case', icon_name: 'issue-type-test-case', enum_value: 2 }, ## EE-only
+      issue: { name: 'Issue', icon_name: 'issue-type-issue', enum_value: 0 },
+      incident: { name: 'Incident', icon_name: 'issue-type-incident', enum_value: 1 },
+      test_case: { name: 'Test Case', icon_name: 'issue-type-test-case', enum_value: 2 }, ## EE-only
       requirement: { name: 'Requirement', icon_name: 'issue-type-requirements', enum_value: 3 }, ## EE-only
-      task:        { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 }
+      task: { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 }
     }.freeze
 
     WIDGETS_FOR_TYPE = {
-      issue: [Widgets::Assignees, Widgets::Description, Widgets::Hierarchy, Widgets::Weight],
+      issue: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate],
       incident: [Widgets::Description, Widgets::Hierarchy],
       test_case: [Widgets::Description],
       requirement: [Widgets::Description],
-      task: [Widgets::Assignees, Widgets::Description, Widgets::Hierarchy, Widgets::Weight]
+      task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate]
     }.freeze
+
+    WI_TYPES_WITH_CREATED_HEADER = %w[issue incident].freeze
 
     cache_markdown_field :description, pipeline: :single_line
 
@@ -83,3 +85,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::Type.prepend_mod

@@ -18,7 +18,7 @@ const createMountedWrapper = (props = {}) => {
 describe('DuplicateDashboardForm', () => {
   const defaultBranch = 'main';
 
-  const findByRef = (ref) => wrapper.find({ ref });
+  const findByRef = (ref) => wrapper.findComponent({ ref });
   const setValue = (ref, val) => {
     findByRef(ref).setValue(val);
   };

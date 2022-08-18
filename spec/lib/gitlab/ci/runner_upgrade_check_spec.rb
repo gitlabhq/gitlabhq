@@ -5,36 +5,35 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
   using RSpec::Parameterized::TableSyntax
 
-  describe '#check_runner_upgrade_status' do
-    subject(:result) { described_class.instance.check_runner_upgrade_status(runner_version) }
+  subject(:instance) { described_class.new(gitlab_version, runner_releases) }
+
+  describe '#check_runner_upgrade_suggestion' do
+    subject(:result) { instance.check_runner_upgrade_suggestion(runner_version) }
 
     let(:gitlab_version) { '14.1.1' }
     let(:parsed_runner_version) { ::Gitlab::VersionInfo.parse(runner_version, parse_suffix: true) }
-
-    before do
-      allow(described_class.instance).to receive(:gitlab_version)
-        .and_return(::Gitlab::VersionInfo.parse(gitlab_version))
-    end
+    let(:runner_releases) { instance_double(Gitlab::Ci::RunnerReleases) }
 
     context 'with failing Gitlab::Ci::RunnerReleases request' do
       let(:runner_version) { '14.1.123' }
-      let(:runner_releases_double) { instance_double(Gitlab::Ci::RunnerReleases) }
 
       before do
-        allow(Gitlab::Ci::RunnerReleases).to receive(:instance).and_return(runner_releases_double)
-        allow(runner_releases_double).to receive(:releases).and_return(nil)
+        allow(runner_releases).to receive(:releases).and_return(nil)
       end
 
       it 'returns :error' do
-        is_expected.to eq({ error: parsed_runner_version })
+        is_expected.to eq([parsed_runner_version, :error])
       end
     end
 
     context 'with available_runner_releases configured' do
-      before do
-        url = ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url
+      let(:runner_releases) { Gitlab::Ci::RunnerReleases.instance }
+      let(:runner_releases_url) do
+        ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url
+      end
 
-        WebMock.stub_request(:get, url).to_return(
+      before do
+        WebMock.stub_request(:get, runner_releases_url).to_return(
           body: available_runner_releases.map { |v| { name: v } }.to_json,
           status: 200,
           headers: { 'Content-Type' => 'application/json' }
@@ -53,7 +52,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
             let(:runner_version) { 'v14.0.1' }
 
             it 'returns :not_available' do
-              is_expected.to eq({ not_available: parsed_runner_version })
+              is_expected.to eq([parsed_runner_version, :not_available])
             end
           end
         end
@@ -68,7 +67,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           let(:runner_version) { nil }
 
           it 'returns :invalid_version' do
-            is_expected.to match({ invalid_version: anything })
+            is_expected.to match([anything, :invalid_version])
           end
         end
 
@@ -76,7 +75,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           let(:runner_version) { 'junk' }
 
           it 'returns :invalid_version' do
-            is_expected.to match({ invalid_version: anything })
+            is_expected.to match([anything, :invalid_version])
           end
         end
 
@@ -87,7 +86,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
             let(:runner_version) { 'v14.2.0' }
 
             it 'returns :not_available' do
-              is_expected.to eq({ not_available: parsed_runner_version })
+              is_expected.to eq([parsed_runner_version, :not_available])
             end
           end
         end
@@ -96,7 +95,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           let(:gitlab_version) { '14.0.1' }
 
           context 'with valid params' do
-            where(:runner_version, :expected_result, :expected_suggested_version) do
+            where(:runner_version, :expected_status, :expected_suggested_version) do
               'v15.0.0'                      | :not_available | '15.0.0' # not available since the GitLab instance is still on 14.x, a major version might be incompatible, and a patch upgrade is not available
               'v14.1.0-rc3'                  | :recommended   | '14.1.1' # recommended since even though the GitLab instance is still on 14.0.x, there is a patch release (14.1.1) available which might contain security fixes
               'v14.1.0~beta.1574.gf6ea9389'  | :recommended   | '14.1.1' # suffixes are correctly handled
@@ -116,7 +115,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
             end
 
             with_them do
-              it { is_expected.to eq({ expected_result => Gitlab::VersionInfo.parse(expected_suggested_version) }) }
+              it { is_expected.to eq([Gitlab::VersionInfo.parse(expected_suggested_version), expected_status]) }
             end
           end
         end
@@ -125,7 +124,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           let(:gitlab_version) { '13.9.0' }
 
           context 'with valid params' do
-            where(:runner_version, :expected_result, :expected_suggested_version) do
+            where(:runner_version, :expected_status, :expected_suggested_version) do
               'v14.0.0'                      | :recommended   | '14.0.2'  # recommended upgrade since 14.0.2 is available, even though the GitLab instance is still on 13.x and a major version might be incompatible
               'v13.10.1'                     | :not_available | '13.10.1' # not available since 13.10.1 is already ahead of GitLab instance version and is the latest patch update for 13.10.x
               'v13.10.0'                     | :recommended   | '13.10.1' # recommended upgrade since 13.10.1 is available
@@ -136,7 +135,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
             end
 
             with_them do
-              it { is_expected.to eq({ expected_result => Gitlab::VersionInfo.parse(expected_suggested_version) }) }
+              it { is_expected.to eq([Gitlab::VersionInfo.parse(expected_suggested_version), expected_status]) }
             end
           end
         end
@@ -152,7 +151,7 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
             let(:runner_version) { '14.11.0~beta.29.gd0c550e3' }
 
             it 'recommends 15.1.0 since 14.11 is an unknown release and 15.1.0 is available' do
-              is_expected.to eq({ recommended: Gitlab::VersionInfo.new(15, 1, 0) })
+              is_expected.to eq([Gitlab::VersionInfo.new(15, 1, 0), :recommended])
             end
           end
         end

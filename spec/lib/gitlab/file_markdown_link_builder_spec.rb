@@ -13,7 +13,7 @@ RSpec.describe Gitlab::FileMarkdownLinkBuilder do
   end
 
   describe 'markdown_link' do
-    let(:url) { "/uploads/#{filename}"}
+    let(:url) { "/uploads/#{filename}" }
 
     before do
       allow(custom_class).to receive(:secure_url).and_return(url)

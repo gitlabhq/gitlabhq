@@ -4,7 +4,7 @@ module InstanceConfigurationHelper
   def instance_configuration_cell_html(value, &block)
     return '-' unless value.to_s.presence
 
-    block_given? ? yield(value) : value
+    block ? yield(value) : value
   end
 
   def instance_configuration_host(host)

@@ -83,10 +83,10 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
 
     context 'with transactions disabled' do
       let(:migration) { double('migration', enable_lock_retries?: false) }
-      let(:receiver) { double('receiver', use_transaction?: false)}
+      let(:receiver) { double('receiver', use_transaction?: false) }
 
       it 'calls super method' do
-        p = proc { }
+        p = proc {}
 
         expect(receiver).to receive(:ddl_transaction).with(migration, &p)
 
@@ -95,11 +95,11 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
     end
 
     context 'with transactions enabled, but lock retries disabled' do
-      let(:receiver) { double('receiver', use_transaction?: true)}
+      let(:receiver) { double('receiver', use_transaction?: true) }
       let(:migration) { double('migration', enable_lock_retries?: false) }
 
       it 'calls super method' do
-        p = proc { }
+        p = proc {}
 
         expect(receiver).to receive(:ddl_transaction).with(migration, &p)
 
@@ -108,12 +108,12 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
     end
 
     context 'with transactions enabled and lock retries enabled' do
-      let(:receiver) { double('receiver', use_transaction?: true)}
+      let(:receiver) { double('receiver', use_transaction?: true) }
       let(:migration) { double('migration', migration_connection: connection, enable_lock_retries?: true) }
       let(:connection) { ActiveRecord::Base.connection }
 
       it 'calls super method' do
-        p = proc { }
+        p = proc {}
 
         expect(receiver).not_to receive(:ddl_transaction)
         expect_next_instance_of(Gitlab::Database::WithLockRetries) do |retries|

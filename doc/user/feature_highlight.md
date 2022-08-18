@@ -1,15 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: 'index.md'
+remove_date: '2022-10-29'
 ---
 
-# Feature highlight
+This document was moved to [another location](index.md).
 
-Feature highlights are represented by a pulsing blue dot. Hovering over the dot
-displays more information. They're used to emphasize certain features and
-highlight helpful information to the user.
-
-You can dismiss any feature highlight permanently by clicking the **Got it** link
-at the bottom of the information window. You cannot restore a feature highlight
-after you dismiss it.
+<!-- This redirect file can be deleted after <2022-10-29>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

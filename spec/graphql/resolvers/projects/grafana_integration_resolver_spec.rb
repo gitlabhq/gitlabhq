@@ -7,7 +7,7 @@ RSpec.describe Resolvers::Projects::GrafanaIntegrationResolver do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:grafana_integration) { create(:grafana_integration, project: project)}
+  let_it_be(:grafana_integration) { create(:grafana_integration, project: project) }
 
   describe '#resolve' do
     context 'when object is not a project' do
@@ -19,7 +19,7 @@ RSpec.describe Resolvers::Projects::GrafanaIntegrationResolver do
     end
 
     context 'when object is nil' do
-      it { expect(resolve_integration(obj: nil)).to eq nil}
+      it { expect(resolve_integration(obj: nil)).to eq nil }
     end
   end
 

@@ -212,10 +212,10 @@ apply more than one:
      [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
 
      ```shell
-     omnibus_gitconfig['system'] = {
+     gitaly['gitconfig'] = [
        # Set the http.postBuffer size, in bytes
-       "http" => ["postBuffer = 524288000"]
-     }
+       {key: "http.postBuffer", value: "524288000"},
+     ]
      ```
 
   1. After applying this change, apply the configuration change:

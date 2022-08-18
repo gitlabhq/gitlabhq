@@ -392,7 +392,7 @@ That's all of the required database changes.
   ```
 
 - [ ] Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
-- [ ] Add a custom factory name if needed in `def model_class_factory_name` in `ee/spec/services/geo/registry_consistency_service_spec.rb`.
+- [ ] Add a custom factory name if needed in `def model_class_factory_name` in `ee/spec/support/helpers/ee/geo_helpers.rb`.
 - [ ] Update `it 'creates missing registries for each registry class'` in `ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb`.
 - [ ] Add `cool_widget_registry` to `ActiveSupport::Inflector.inflections` in `config/initializers_before_autoloader/000_inflections.rb`.
 - [ ] Create `ee/spec/factories/geo/cool_widget_registry.rb`:
@@ -539,11 +539,6 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   - `geo_cool_widgets_verification_total`
   - `geo_cool_widgets_verified`
   - `geo_cool_widgets_verification_failed`
-- [ ] Add the following to the parameterized table in the `context 'Replicator stats' do` block in `ee/spec/models/geo_node_status_spec.rb`:
-
-  ```ruby
-  Geo::CoolWidgetReplicator | :cool_widget | :geo_cool_widget_registry
-  ```
 
 Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Nodes` view, and Prometheus.
 

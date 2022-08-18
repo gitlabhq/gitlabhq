@@ -101,6 +101,60 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
+## Get all pipelines triggered by a pipeline schedule
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368566) in GitLab 15.3.
+
+Get all pipelines triggered by a pipeline schedule in a project.
+
+```plaintext
+GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines
+```
+
+Supported attributes:
+
+| Attribute              | Type           | Required | Description |
+|------------------------|----------------|----------|-------------|
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/pipelines"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 47,
+    "iid": 12,
+    "project_id": 29,
+    "status": "pending",
+    "source": "scheduled",
+    "ref": "new-pipeline",
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "web_url": "https://example.com/foo/bar/pipelines/47",
+    "created_at": "2016-08-11T11:28:34.085Z",
+    "updated_at": "2016-08-11T11:32:35.169Z"
+  },
+  {
+    "id": 48,
+    "iid": 13,
+    "project_id": 29,
+    "status": "pending",
+    "source": "scheduled",
+    "ref": "new-pipeline",
+    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
+    "web_url": "https://example.com/foo/bar/pipelines/48",
+    "created_at": "2016-08-12T10:06:04.561Z",
+    "updated_at": "2016-08-12T10:09:56.223Z"
+  }
+]
+```
+
 ## Create a new pipeline schedule
 
 Create a new pipeline schedule of a project.

@@ -20,13 +20,6 @@ export default {
           this.mr.preventMerge,
       );
     },
-    shouldShowMergeControls() {
-      if (this.glFeatures.restructuredMrWidget) {
-        return this.restructuredWidgetShowMergeButtons;
-      }
-
-      return this.isMergeAllowed || this.isAutoMergeAvailable;
-    },
     mergeDisabledText() {
       if (this.pipeline?.status === PIPELINE_SKIPPED_STATUS) {
         return MERGE_DISABLED_SKIPPED_PIPELINE_TEXT;

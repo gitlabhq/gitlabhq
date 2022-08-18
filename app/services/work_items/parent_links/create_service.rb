@@ -41,10 +41,8 @@ module WorkItems
         params[:issuable_references]
       end
 
-      # TODO: Create system notes when work item's parent or children are updated
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/362213
       def create_notes(work_item)
-        # no-op
+        SystemNoteService.relate_work_item(issuable, work_item, current_user)
       end
 
       def target_issuable_type

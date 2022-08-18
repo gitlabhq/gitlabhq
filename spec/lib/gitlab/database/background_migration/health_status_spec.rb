@@ -12,30 +12,47 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
   end
 
   describe '.evaluate' do
-    subject(:evaluate) { described_class.evaluate(migration, indicator_class) }
+    subject(:evaluate) { described_class.evaluate(migration, [autovacuum_indicator_class]) }
 
     let(:migration) { build(:batched_background_migration, :active) }
 
-    let(:health_status) { 'Gitlab::Database::BackgroundMigration::HealthStatus' }
-    let(:indicator_class) { class_double("#{health_status}::Indicators::AutovacuumActiveOnTable") }
-    let(:indicator) { instance_double("#{health_status}::Indicators::AutovacuumActiveOnTable") }
+    let(:health_status) { Gitlab::Database::BackgroundMigration::HealthStatus }
+    let(:autovacuum_indicator_class) { health_status::Indicators::AutovacuumActiveOnTable }
+    let(:wal_indicator_class) { health_status::Indicators::WriteAheadLog }
+    let(:autovacuum_indicator) { instance_double(autovacuum_indicator_class) }
+    let(:wal_indicator) { instance_double(wal_indicator_class) }
 
     before do
-      allow(indicator_class).to receive(:new).with(migration.health_context).and_return(indicator)
+      allow(autovacuum_indicator_class).to receive(:new).with(migration.health_context).and_return(autovacuum_indicator)
     end
 
-    it 'returns a signal' do
+    context 'with default indicators' do
+      subject(:evaluate) { described_class.evaluate(migration) }
+
+      it 'returns a collection of signals' do
+        normal_signal = instance_double("#{health_status}::Signals::Normal", log_info?: false)
+        not_available_signal = instance_double("#{health_status}::Signals::NotAvailable", log_info?: false)
+
+        expect(autovacuum_indicator).to receive(:evaluate).and_return(normal_signal)
+        expect(wal_indicator_class).to receive(:new).with(migration.health_context).and_return(wal_indicator)
+        expect(wal_indicator).to receive(:evaluate).and_return(not_available_signal)
+
+        expect(evaluate).to contain_exactly(normal_signal, not_available_signal)
+      end
+    end
+
+    it 'returns a collection of signals' do
       signal = instance_double("#{health_status}::Signals::Normal", log_info?: false)
 
-      expect(indicator).to receive(:evaluate).and_return(signal)
+      expect(autovacuum_indicator).to receive(:evaluate).and_return(signal)
 
-      expect(evaluate).to eq(signal)
+      expect(evaluate).to contain_exactly(signal)
     end
 
     it 'logs interesting signals' do
       signal = instance_double("#{health_status}::Signals::Stop", log_info?: true)
 
-      expect(indicator).to receive(:evaluate).and_return(signal)
+      expect(autovacuum_indicator).to receive(:evaluate).and_return(signal)
       expect(described_class).to receive(:log_signal).with(signal, migration)
 
       evaluate
@@ -44,7 +61,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
     it 'does not log signals of no interest' do
       signal = instance_double("#{health_status}::Signals::Normal", log_info?: false)
 
-      expect(indicator).to receive(:evaluate).and_return(signal)
+      expect(autovacuum_indicator).to receive(:evaluate).and_return(signal)
       expect(described_class).not_to receive(:log_signal)
 
       evaluate
@@ -54,7 +71,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
       let(:error) { RuntimeError.new('everything broken') }
 
       before do
-        expect(indicator).to receive(:evaluate).and_raise(error)
+        expect(autovacuum_indicator).to receive(:evaluate).and_raise(error)
       end
 
       it 'does not fail' do
@@ -62,8 +79,10 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
       end
 
       it 'returns Unknown signal' do
-        expect(evaluate).to be_an_instance_of(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
-        expect(evaluate.reason).to eq("unexpected error: everything broken (RuntimeError)")
+        signal = evaluate.first
+
+        expect(signal).to be_an_instance_of(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+        expect(signal.reason).to eq("unexpected error: everything broken (RuntimeError)")
       end
 
       it 'reports the exception to error tracking' do

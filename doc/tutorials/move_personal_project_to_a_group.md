@@ -24,7 +24,7 @@ A group gives you some great benefits. For example, you can:
 
 However, if you're working in a [personal project](../user/project/working_with_projects.md#view-personal-projects),
 you can't use these features. Personal projects are created under your
-[personal namespace](../user/group/index.md#namespaces). They're not part of a group,
+[personal namespace](../user/namespace/index.md). They're not part of a group,
 so you can't get any of the benefits and features of a group.
 
 But don't worry! You can move your existing personal project to a group.

@@ -178,26 +178,6 @@ Feature.all
 Feature.all.map {|f| [f.name, f.state]}
 ```
 
-## Command Line
-
-### Check the GitLab version fast
-
-```shell
-grep -m 1 gitlab /opt/gitlab/version-manifest.txt
-```
-
-### Debugging SSH
-
-```shell
-GIT_SSH_COMMAND="ssh -vvv" git clone <repository>
-```
-
-### Debugging over HTTPS
-
-```shell
-GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone <repository>
-```
-
 ## Projects
 
 ### Clear a project's cache
@@ -326,7 +306,7 @@ Project.find_each do |p|
 end
 ```
 
-## Bulk update to change all the Jira integrations to Jira instance-level values
+### Bulk update to change all the Jira integrations to Jira instance-level values
 
 To change all Jira project to use the instance-level integration settings:
 
@@ -340,6 +320,25 @@ To change all Jira project to use the instance-level integration settings:
    ```
 
 1. Modify and save again the instance-level integration from the UI to propagate the changes to all the group-level and project-level integrations.
+
+### Check if Jira Cloud is linked to a namespace
+
+```ruby
+JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
+```
+
+### Check if Jira Cloud is linked to a project
+
+```ruby
+Project.find_by_full_path('path/to/project').jira_subscription_exists?
+```
+
+### Check if Jira Cloud URL is linked to any namespace
+
+```ruby
+installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
+installation.subscriptions
+```
 
 ### Bulk update to disable the Slack Notification service
 
@@ -422,33 +421,6 @@ Find and store an array of projects based on an SQL query:
 # Finds projects that end with '%ject'
 projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 => [#<Project id:12 root/my-first-project>>, #<Project id:13 root/my-second-project>>]
-```
-
-## Wikis
-
-### Recreate
-
-WARNING:
-This is a destructive operation, the Wiki becomes empty.
-
-A Projects Wiki can be recreated by this command:
-
-```ruby
-p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path
-
-GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)  ### deletes the wiki project from the filesystem
-
-p.create_wiki  ### creates the wiki project on the filesystem
-```
-
-## Issue boards
-
-### In case of issue boards not loading properly and it's getting time out. Call the Issue Rebalancing service to fix this
-
-```ruby
-p = Project.find_by_full_path('<username-or-group>/<project-name>')
-
-Issues::RelativePositionRebalancingService.new(p.root_namespace.all_projects).execute
 ```
 
 ## Imports and exports
@@ -855,52 +827,6 @@ Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
 
 ## SCIM
 
-### Fixing bad SCIM identities
-
-```ruby
-def delete_bad_scim(email, group_path)
-    output = ""
-    u = User.find_by_email(email)
-    uid = u.id
-    g = Group.find_by_full_path(group_path)
-    saml_prov_id = SamlProvider.find_by(group_id: g.id).id
-    saml = Identity.where(user_id: uid, saml_provider_id: saml_prov_id)
-    scim = ScimIdentity.where(user_id: uid , group_id: g.id)
-    if saml[0]
-      saml_eid = saml[0].extern_uid
-      output +=  "%s," % [email]
-      output +=  "SAML: %s," % [saml_eid]
-      if scim[0]
-        scim_eid = scim[0].extern_uid
-        output += "SCIM: %s" % [scim_eid]
-        if saml_eid == scim_eid
-          output += " Identities matched, not deleted \n"
-        else
-          scim[0].destroy
-          output += " Deleted \n"
-        end
-      else
-        output = "ERROR No SCIM identify found for: [%s]\n" % [email]
-        puts output
-        return 1
-      end
-    else
-      output = "ERROR No SAML identify found for: [%s]\n" % [email]
-      puts output
-      return 1
-    end
-      puts output
-    return 0
-end
-
-# In case of multiple emails
-emails = [email1, email2]
-
-emails.each do |e|
-  delete_bad_scim(e,'<group-path>')
-end
-```
-
 ### Find groups using an SQL query
 
 Find and store an array of groups based on an SQL query:
@@ -927,13 +853,13 @@ conflicting_permanent_redirects.destroy_all
 
 ## Merge requests
 
-### Close a merge request properly (if merged but still marked as open)
+### Close a merge request
 
 ```ruby
 u = User.find_by_username('<username>')
 p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
-MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
+MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 ```
 
 ### Delete a merge request
@@ -952,6 +878,21 @@ u = User.find_by_username('<username>')
 p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
 MergeRequests::RebaseService.new(project: m.target_project, current_user: u).execute(m)
+```
+
+### Set a merge request as merged
+
+Use when a merge request was accepted and the changes merged into the Git repository,
+but the merge request still shows as open.
+
+If the changes are not merged yet, this action causes the merge request to
+incorrectly show `merged into <branch-name>`.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
 ```
 
 ## CI
@@ -1063,6 +1004,9 @@ License.current.trial?
 
 # License ID for lookup on CustomersDot
 License.current.license_id
+
+# License data in Base64-encoded ASCII format
+License.current.data
 ```
 
 ### Check if a project feature is available on the instance
@@ -1378,16 +1322,6 @@ registry = Geo::SnippetRepositoryRegistry.find(registry_id)
 registry.replicator.send(:sync_repository)
 ```
 
-## Gitaly
-
-### Find available and used space
-
-A Gitaly storage resource can be polled through Rails to determine the available and used space.
-
-```ruby
-Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
-```
-
 ## Generate Service Ping
 
 The [Service Ping Guide](../../development/service_ping/index.md) in our developer documentation
@@ -1427,28 +1361,6 @@ Prints the metrics saved in `conversational_development_index_metrics`.
 
 ```shell
 rake gitlab:usage_data:generate_and_send
-```
-
-## Kubernetes integration
-
-Find cluster:
-
-```ruby
-cluster = Clusters::Cluster.find(1)
-cluster = Clusters::Cluster.find_by(name: 'cluster_name')
-```
-
-Delete cluster without associated resources:
-
-```ruby
-# Find users with the administrator access
-user = User.find_by(username: 'admin_user')
-
-# Find the cluster with the ID
-cluster = Clusters::Cluster.find(1)
-
-# Delete the cluster
-Clusters::DestroyService.new(user).execute(cluster)
 ```
 
 ## Elasticsearch

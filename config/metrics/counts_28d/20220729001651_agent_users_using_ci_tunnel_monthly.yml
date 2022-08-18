@@ -1,0 +1,26 @@
+---
+key_path: redis_hll_counters.kubernetes_agent.agent_users_using_ci_tunnel_monthly
+description: MAU of the Agent for Kubernetes CI/CD Tunnel
+product_section: ops
+product_stage: configure
+product_group: configure
+product_category: kubernetes_management
+value_type: number
+status: active
+milestone: "15.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61685
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - agent_users_using_ci_tunnel
+performance_indicator_type: []
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

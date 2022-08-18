@@ -35,7 +35,7 @@
 
 .boards-app {
   @include media-breakpoint-up(sm) {
-    transition: width $sidebar-transition-duration;
+    transition: width $gl-transition-duration-medium;
     width: 100%;
 
     &.is-compact {
@@ -349,7 +349,7 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
+    transition: width $gl-transition-duration-medium, padding $gl-transition-duration-medium;
   }
 
   &.boards-sidebar-slide-enter,

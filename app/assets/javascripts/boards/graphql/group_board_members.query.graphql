@@ -2,10 +2,8 @@
 
 query GroupBoardMembers($fullPath: ID!, $search: String) {
   workspace: group(fullPath: $fullPath) {
-    __typename
     id
     assignees: groupMembers(search: $search, relations: [DIRECT, DESCENDANTS, INHERITED]) {
-      __typename
       nodes {
         id
         user {

@@ -511,10 +511,10 @@ describe('mapToDashboardViewModel', () => {
 describe('uniqMetricsId', () => {
   [
     { input: { id: 1 }, expected: `${NOT_IN_DB_PREFIX}_1` },
-    { input: { metric_id: 2 }, expected: '2_undefined' },
-    { input: { metric_id: 2, id: 21 }, expected: '2_21' },
-    { input: { metric_id: 22, id: 1 }, expected: '22_1' },
-    { input: { metric_id: 'aaa', id: '_a' }, expected: 'aaa__a' },
+    { input: { metricId: 2 }, expected: '2_undefined' },
+    { input: { metricId: 2, id: 21 }, expected: '2_21' },
+    { input: { metricId: 22, id: 1 }, expected: '22_1' },
+    { input: { metricId: 'aaa', id: '_a' }, expected: 'aaa__a' },
   ].forEach(({ input, expected }) => {
     it(`creates unique metric ID with ${JSON.stringify(input)}`, () => {
       expect(uniqMetricsId(input)).toEqual(expected);

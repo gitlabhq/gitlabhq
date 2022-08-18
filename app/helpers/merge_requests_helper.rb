@@ -3,23 +3,12 @@
 module MergeRequestsHelper
   include Gitlab::Utils::StrongMemoize
 
-  def new_mr_path_from_push_event(event)
-    target_project = event.project.default_merge_request_target
-    project_new_merge_request_path(
-      event.project,
-      new_mr_from_push_event(event, target_project)
-    )
+  def create_mr_button_from_event?(event)
+    create_mr_button?(from: event.branch_name, source_project: event.project)
   end
 
-  def new_mr_from_push_event(event, target_project)
-    {
-      merge_request: {
-        source_project_id: event.project.id,
-        target_project_id: target_project.id,
-        source_branch: event.branch_name,
-        target_branch: target_project.repository.root_ref
-      }
-    }
+  def create_mr_path_from_push_event(event)
+    create_mr_path(from: event.branch_name, source_project: event.project)
   end
 
   def mr_css_classes(mr)
@@ -29,11 +18,31 @@ module MergeRequestsHelper
     classes.join(' ')
   end
 
-  def merge_path_description(merge_request, separator)
+  def merge_path_description(merge_request, with_arrow: false)
     if merge_request.for_fork?
-      "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.full_path}:#{@merge_request.target_branch}"
+      msg = if with_arrow
+              _("Project:Branches: %{source_project_path}:%{source_branch} → %{target_project_path}:%{target_branch}")
+            else
+              _("Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}")
+            end
+
+      msg % {
+        source_project_path: merge_request.source_project_path,
+        source_branch: merge_request.source_branch,
+        target_project_path: merge_request.target_project.full_path,
+        target_branch: merge_request.target_branch
+      }
     else
-      "Branches: #{@merge_request.source_branch} #{separator} #{@merge_request.target_branch}"
+      msg = if with_arrow
+              _("Branches: %{source_branch} → %{target_branch}")
+            else
+              _("Branches: %{source_branch} to %{target_branch}")
+            end
+
+      msg % {
+        source_branch: merge_request.source_branch,
+        target_branch: merge_request.target_branch
+      }
     end
   end
 
@@ -150,20 +159,11 @@ module MergeRequestsHelper
       review_requested_count = review_requested_merge_requests_count
       total_count = assigned_count + review_requested_count
 
-      counts = {
+      {
         assigned: assigned_count,
         review_requested: review_requested_count,
         total: total_count
       }
-
-      if current_user&.mr_attention_requests_enabled?
-        attention_requested_count = attention_requested_merge_requests_count
-
-        counts[:attention_requested_count] = attention_requested_count
-        counts[:total] = attention_requested_count
-      end
-
-      counts
     end
   end
 
@@ -223,10 +223,6 @@ module MergeRequestsHelper
 
   def review_requested_merge_requests_count
     current_user.review_requested_open_merge_requests_count
-  end
-
-  def attention_requested_merge_requests_count
-    current_user.attention_requested_open_merge_requests_count
   end
 
   def default_suggestion_commit_message

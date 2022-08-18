@@ -42,6 +42,48 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe 'validate and sanitize external url' do
+    let_it_be_with_refind(:environment) { create(:environment) }
+
+    where(:source_external_url, :expected_error_message) do
+      nil                                              | nil
+      'http://example.com'                             | nil
+      'example.com'                                    | nil
+      'www.example.io'                                 | nil
+      'http://$URL'                                    | nil
+      'http://$(URL)'                                  | nil
+      'custom://example.com'                           | nil
+      '1.1.1.1'                                        | nil
+      '$BASE_URL/${CI_COMMIT_REF_NAME}'                | nil
+      '$ENVIRONMENT_URL'                               | nil
+      'https://$SUB.$MAIN'                             | nil
+      'https://$SUB-$REGION.$MAIN'                     | nil
+      'https://example.com?param={()}'                 | nil
+      'http://XSS?x=<script>alert(1)</script>'         | nil
+      'https://user:${VARIABLE}@example.io'            | nil
+      'https://example.com/test?param={data}'          | nil
+      'http://${URL}'                                  | 'URI is invalid'
+      'https://${URL}.example/test'                    | 'URI is invalid'
+      'http://test${CI_MERGE_REQUEST_IID}.example.com' | 'URI is invalid'
+      'javascript:alert("hello")'                      | 'javascript scheme is not allowed'
+    end
+    with_them do
+      it 'sets an external URL or an error' do
+        environment.external_url = source_external_url
+
+        environment.valid?
+
+        if expected_error_message
+          expect(environment.errors[:external_url].first).to eq(expected_error_message)
+        else
+          expect(environment.errors[:external_url]).to be_empty,
+              "There were unexpected errors: #{environment.errors.full_messages}"
+          expect(environment.external_url).to eq(source_external_url)
+        end
+      end
+    end
+  end
+
   describe '.before_save' do
     it 'ensures environment tier when a new object is created' do
       environment = build(:environment, name: 'gprd', tier: nil)
@@ -194,7 +236,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     context 'when query is nil' do
-      let(:query) { }
+      let(:query) {}
 
       it 'raises an error' do
         expect { subject }.to raise_error(NoMethodError)
@@ -770,16 +812,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       it 'returns the successful deployment jobs for the last deployment pipeline' do
         expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(batch_load_environment_last_deployment_group: false)
-        end
-
-        it 'returns the successful deployment jobs for the last deployment pipeline' do
-          expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
-        end
-      end
     end
   end
 
@@ -817,8 +849,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   describe '#actions_for' do
     let(:deployment) { create(:deployment, :success, environment: environment) }
     let(:pipeline) { deployment.deployable.pipeline }
-    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_COMMIT_REF_NAME' )}
-    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production' )}
+    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_COMMIT_REF_NAME' ) }
+    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production' ) }
 
     it 'returns a list of actions with matching environment' do
       expect(environment.actions_for('review/master')).to contain_exactly(review_action)
@@ -993,178 +1025,29 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   describe '#last_visible_deployable' do
     subject { environment.last_visible_deployable }
 
-    context 'does not join across databases' do
-      let(:pipeline_a) { create(:ci_pipeline, project: project) }
-      let(:pipeline_b) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
-      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
-
-      before do
-        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
-      end
-
-      it 'for direct call' do
-        with_cross_joins_prevented do
-          expect(subject.id).to eq(ci_build_b.id)
-        end
-      end
-
-      it 'for preload' do
-        environment.reload
-
-        with_cross_joins_prevented do
-          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
-          expect(subject.id).to eq(ci_build_b.id)
-        end
-      end
+    let!(:deployment) do
+      create(:deployment, :success, project: project, environment: environment, deployable: deployable)
     end
 
-    context 'call after preload' do
-      it 'fetches from association cache' do
-        pipeline = create(:ci_pipeline, project: project)
-        ci_build = create(:ci_build, project: project, pipeline: pipeline)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
+    let!(:deployable) { create(:ci_build, :success, project: project) }
 
-        environment.reload
-        ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
-
-        query_count = ActiveRecord::QueryRecorder.new do
-          expect(subject.id).to eq(ci_build.id)
-        end.count
-
-        expect(query_count).to eq(0)
-      end
+    it 'fetches the deployable through the last visible deployment' do
+      is_expected.to eq(deployable)
     end
   end
 
   describe '#last_visible_pipeline' do
-    let(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    subject { environment.last_visible_pipeline }
 
-    let(:environment) { create(:environment, project: project) }
-    let(:commit) { project.commit }
-
-    let(:success_pipeline) do
-      create(:ci_pipeline, :success, project: project, user: user, sha: commit.sha)
+    let!(:deployment) do
+      create(:deployment, :success, project: project, environment: environment, deployable: deployable)
     end
 
-    let(:failed_pipeline) do
-      create(:ci_pipeline, :failed, project: project, user: user, sha: commit.sha)
-    end
+    let!(:deployable) { create(:ci_build, :success, project: project, pipeline: pipeline) }
+    let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
 
-    it 'uses the last deployment even if it failed' do
-      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-      ci_build = create(:ci_build, project: project, pipeline: pipeline)
-      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
-
-      last_pipeline = environment.last_visible_pipeline
-
-      expect(last_pipeline).to eq(pipeline)
-    end
-
-    it 'returns nil if there is no deployment' do
-      create(:ci_build, project: project, pipeline: success_pipeline)
-
-      expect(environment.last_visible_pipeline).to be_nil
-    end
-
-    it 'does not return an invisible pipeline' do
-      failed_pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-      ci_build_a = create(:ci_build, project: project, pipeline: failed_pipeline)
-      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_a, sha: commit.sha)
-      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-      ci_build_b = create(:ci_build, project: project, pipeline: pipeline)
-      create(:deployment, :created, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
-
-      last_pipeline = environment.last_visible_pipeline
-
-      expect(last_pipeline).to eq(failed_pipeline)
-    end
-
-    context 'does not join across databases' do
-      let(:pipeline_a) { create(:ci_pipeline, project: project) }
-      let(:pipeline_b) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
-      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
-
-      before do
-        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
-      end
-
-      subject { environment.last_visible_pipeline }
-
-      it 'for direct call' do
-        with_cross_joins_prevented do
-          expect(subject.id).to eq(pipeline_b.id)
-        end
-      end
-
-      it 'for preload' do
-        environment.reload
-
-        with_cross_joins_prevented do
-          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
-          expect(subject.id).to eq(pipeline_b.id)
-        end
-      end
-    end
-
-    context 'for the environment' do
-      it 'returns the last pipeline' do
-        pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-        ci_build = create(:ci_build, project: project, pipeline: pipeline)
-        create(:deployment, :success, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
-
-        last_pipeline = environment.last_visible_pipeline
-
-        expect(last_pipeline).to eq(pipeline)
-      end
-
-      context 'with multiple deployments' do
-        it 'returns the last pipeline' do
-          pipeline_a = create(:ci_pipeline, project: project, user: user)
-          pipeline_b = create(:ci_pipeline, project: project, user: user)
-          ci_build_a = create(:ci_build, project: project, pipeline: pipeline_a)
-          ci_build_b = create(:ci_build, project: project, pipeline: pipeline_b)
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_b)
-
-          last_pipeline = environment.last_visible_pipeline
-
-          expect(last_pipeline).to eq(pipeline_b)
-        end
-      end
-
-      context 'with multiple pipelines' do
-        it 'returns the last pipeline' do
-          create(:ci_build, project: project, pipeline: success_pipeline)
-          ci_build_b = create(:ci_build, project: project, pipeline: failed_pipeline)
-          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
-
-          last_pipeline = environment.last_visible_pipeline
-
-          expect(last_pipeline).to eq(failed_pipeline)
-        end
-      end
-    end
-
-    context 'call after preload' do
-      it 'fetches from association cache' do
-        pipeline = create(:ci_pipeline, project: project)
-        ci_build = create(:ci_build, project: project, pipeline: pipeline)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
-
-        environment.reload
-        ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
-
-        query_count = ActiveRecord::QueryRecorder.new do
-          expect(environment.last_visible_pipeline.id).to eq(pipeline.id)
-        end.count
-
-        expect(query_count).to eq(0)
-      end
+    it 'fetches the pipeline through the last visible deployment' do
+      is_expected.to eq(pipeline)
     end
   end
 

@@ -6,14 +6,15 @@ describe("What's new single feature", () => {
   let wrapper;
 
   const exampleFeature = {
-    title: 'Compliance pipeline configurations',
-    body:
+    name: 'Compliance pipeline configurations',
+    description:
       '<p data-testid="body-content">We are thrilled to announce that it is now possible to define enforceable pipelines that will run for any project assigned a corresponding <a href="https://en.wikipedia.org/wiki/Compliance_(psychology)" target="_blank" rel="noopener noreferrer" onload="alert(xss)">compliance</a> framework.</p>',
     stage: 'Manage',
     'self-managed': true,
     'gitlab-com': true,
-    packages: ['Ultimate'],
-    url: 'https://docs.gitlab.com/ee/user/project/settings/#compliance-pipeline-configuration',
+    available_in: ['Ultimate'],
+    documentation_link:
+      'https://docs.gitlab.com/ee/user/project/settings/#compliance-pipeline-configuration',
     image_url: 'https://img.youtube.com/vi/upLJ_equomw/hqdefault.jpg',
     published_at: '2021-04-22T00:00:00.000Z',
     release: '13.11',

@@ -46,7 +46,11 @@ module Gitlab
 
       def action_for_grape(env)
         endpoint = env[ENDPOINT_KEY]
-        route = endpoint.route rescue nil
+        route = begin
+          endpoint.route
+        rescue StandardError
+          nil
+        end
 
         "#{route.request_method} #{route.path}" if route
       end

@@ -29,6 +29,7 @@ describe('WorkItemState component', () => {
   const createComponent = ({
     state = STATE_OPEN,
     mutationHandler = mutationSuccessHandler,
+    canUpdate = true,
   } = {}) => {
     const { id, workItemType } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemState, {
@@ -39,6 +40,7 @@ describe('WorkItemState component', () => {
           state,
           workItemType,
         },
+        canUpdate,
       },
     });
   };
@@ -51,6 +53,20 @@ describe('WorkItemState component', () => {
     createComponent();
 
     expect(findItemState().props('state')).toBe(workItemQueryResponse.data.workItem.state);
+  });
+
+  describe('item state disabled prop', () => {
+    describe.each`
+      description             | canUpdate | value
+      ${'when cannot update'} | ${false}  | ${true}
+      ${'when can update'}    | ${true}   | ${false}
+    `('$description', ({ canUpdate, value }) => {
+      it(`renders item state component with disabled=${value}`, () => {
+        createComponent({ canUpdate });
+
+        expect(findItemState().props('disabled')).toBe(value);
+      });
+    });
   });
 
   describe('when updating the state', () => {

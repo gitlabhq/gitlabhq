@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Merge request < User customizes merge commit message', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
-  let(:issue_1) { create(:issue, project: project)}
-  let(:issue_2) { create(:issue, project: project)}
+  let(:issue_1) { create(:issue, project: project) }
+  let(:issue_2) { create(:issue, project: project) }
   let(:source_branch) { 'csv' }
   let(:target_branch) { 'master' }
   let(:squash) { false }

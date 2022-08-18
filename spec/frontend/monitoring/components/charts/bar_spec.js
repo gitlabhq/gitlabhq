@@ -33,7 +33,7 @@ describe('Bar component', () => {
       let chartData;
 
       beforeEach(() => {
-        glbarChart = barChart.find(GlBarChart);
+        glbarChart = barChart.findComponent(GlBarChart);
         chartData = barChart.vm.chartData[graphData.metrics[0].label];
       });
 

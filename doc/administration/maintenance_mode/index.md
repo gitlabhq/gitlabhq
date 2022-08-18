@@ -135,6 +135,8 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
   even if they finish running on the GitLab Runner.
 - Jobs in the `running` state for longer than the project's time limit do not time out.
 - Pipelines cannot be started, retried or canceled. No new jobs can be created either.
+- The status of the runners in `/admin/runners` won't be updated.
+- `gitlab-runner verify` will return the error `ERROR: Verifying runner... is removed`.
 
 After Maintenance Mode is disabled, new jobs are picked up again. Jobs that were
 in the `running` state before enabling Maintenance Mode resume and their logs start

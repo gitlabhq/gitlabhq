@@ -193,9 +193,9 @@ RSpec.describe LfsObject do
   end
 
   describe '.unreferenced_in_batches' do
-    let!(:unreferenced_lfs_object1) { create(:lfs_object, oid: '1') }
+    let!(:unreferenced_lfs_object1) { create(:lfs_object, oid: '1' * 64) }
     let!(:referenced_lfs_object) { create(:lfs_objects_project).lfs_object }
-    let!(:unreferenced_lfs_object2) { create(:lfs_object, oid: '2') }
+    let!(:unreferenced_lfs_object2) { create(:lfs_object, oid: '2' * 64) }
 
     it 'returns lfs objects in batches' do
       stub_const('LfsObject::BATCH_SIZE', 1)

@@ -15,6 +15,7 @@ module Projects
     has_many :project_topics, class_name: 'Projects::ProjectTopic'
     has_many :projects, through: :project_topics
 
+    scope :without_assigned_projects, -> { where(total_projects_count: 0) }
     scope :order_by_non_private_projects_count, -> { order(non_private_projects_count: :desc).order(id: :asc) }
     scope :reorder_by_similarity, -> (search) do
       order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [

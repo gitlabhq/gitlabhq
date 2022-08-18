@@ -6,7 +6,7 @@ RSpec.describe Gitlab::ErrorTracking::Logger do
   describe '.capture_exception' do
     let(:exception) { RuntimeError.new('boom') }
     let(:payload) { { foo: '123' } }
-    let(:log_entry) { { message: 'boom', context: payload }}
+    let(:log_entry) { { message: 'boom', context: payload } }
 
     it 'calls Gitlab::ErrorTracking::Logger.error with formatted log entry' do
       expect_next_instance_of(Gitlab::ErrorTracking::LogFormatter) do |log_formatter|

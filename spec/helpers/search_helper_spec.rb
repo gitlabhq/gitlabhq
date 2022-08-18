@@ -74,19 +74,21 @@ RSpec.describe SearchHelper do
         expect(result.keys).to match_array(%i[category id value label url avatar_url])
       end
 
-      it 'includes the users recently viewed issues', :aggregate_failures do
+      it 'includes the users recently viewed issues and project with correct order', :aggregate_failures do
         recent_issues = instance_double(::Gitlab::Search::RecentIssues)
         expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
         project1 = create(:project, :with_avatar, namespace: user.namespace)
         project2 = create(:project, namespace: user.namespace)
         issue1 = create(:issue, title: 'issue 1', project: project1)
         issue2 = create(:issue, title: 'issue 2', project: project2)
+        project = create(:project, title: 'the search term')
+        project.add_developer(user)
 
         expect(recent_issues).to receive(:search).with('the search term').and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
 
         results = search_autocomplete_opts("the search term")
 
-        expect(results.count).to eq(2)
+        expect(results.count).to eq(3)
 
         expect(results[0]).to include({
           category: 'Recent issues',
@@ -102,6 +104,13 @@ RSpec.describe SearchHelper do
           label: 'issue 2',
           url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
           avatar_url: '' # This project didn't have an avatar so set this to ''
+        })
+
+        expect(results[2]).to include({
+          category: 'Projects',
+          id: project.id,
+          label: project.full_name,
+          url: Gitlab::Routing.url_helpers.project_path(project)
         })
       end
 

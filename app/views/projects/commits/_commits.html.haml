@@ -41,7 +41,7 @@
         = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
 - if can_update_merge_request && context_commits&.empty?
-  = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mt-5', data: { context_commits_empty: 'true' } }) do
+  = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mt-5 add-review-item-modal-trigger', data: { context_commits_empty: 'true' } }) do
     = _('Add previously merged commits')
 
 - if commits.size == 0 && context_commits.nil?

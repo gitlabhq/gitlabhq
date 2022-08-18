@@ -1,7 +1,16 @@
 <script>
-import { GlAlert, GlSkeletonLoader, GlIcon, GlButton } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlSkeletonLoader,
+  GlLoadingIcon,
+  GlIcon,
+  GlBadge,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -11,8 +20,12 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
 } from '../constants';
+
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
+
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -24,9 +37,14 @@ import WorkItemInformation from './work_item_information.vue';
 
 export default {
   i18n,
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
     GlAlert,
+    GlBadge,
     GlButton,
+    GlLoadingIcon,
     GlSkeletonLoader,
     GlIcon,
     WorkItemAssignees,
@@ -38,6 +56,7 @@ export default {
     WorkItemWeight,
     WorkItemInformation,
     LocalStorageSync,
+    WorkItemTypeIcon,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -62,6 +81,7 @@ export default {
       error: undefined,
       workItem: {},
       showInfoBanner: true,
+      updateInProgress: false,
     };
   },
   apollo: {
@@ -114,7 +134,7 @@ export default {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
     },
     workItemWeight() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
     },
     workItemHierarchy() {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
@@ -122,8 +142,14 @@ export default {
     parentWorkItem() {
       return this.workItemHierarchy?.parent;
     },
+    parentWorkItemConfidentiality() {
+      return this.parentWorkItem?.confidential;
+    },
     parentUrl() {
       return `../../issues/${this.parentWorkItem?.iid}`;
+    },
+    workItemIconName() {
+      return this.workItem?.workItemType?.iconName;
     },
   },
   beforeDestroy() {
@@ -135,6 +161,54 @@ export default {
     dismissBanner() {
       this.showInfoBanner = false;
     },
+    toggleConfidentiality(confidentialStatus) {
+      this.updateInProgress = true;
+      let updateMutation = updateWorkItemMutation;
+      let inputVariables = {
+        id: this.workItemId,
+        confidential: confidentialStatus,
+      };
+
+      if (this.parentWorkItem) {
+        updateMutation = updateWorkItemTaskMutation;
+        inputVariables = {
+          id: this.parentWorkItem.id,
+          taskData: {
+            id: this.workItemId,
+            confidential: confidentialStatus,
+          },
+        };
+      }
+
+      this.$apollo
+        .mutate({
+          mutation: updateMutation,
+          variables: {
+            input: inputVariables,
+          },
+        })
+        .then(
+          ({
+            data: {
+              workItemUpdate: { errors, workItem, task },
+            },
+          }) => {
+            if (errors?.length) {
+              throw new Error(errors[0]);
+            }
+
+            this.$emit('workItemUpdated', {
+              confidential: workItem?.confidential || task?.confidential,
+            });
+          },
+        )
+        .catch((error) => {
+          this.error = error.message;
+        })
+        .finally(() => {
+          this.updateInProgress = false;
+        });
+    },
   },
   WORK_ITEM_VIEWED_STORAGE_KEY,
 };
@@ -142,7 +216,7 @@ export default {
 
 <template>
   <section class="gl-pt-5">
-    <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+    <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = undefined">
       {{ error }}
     </gl-alert>
 
@@ -153,33 +227,61 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
         <ul
           v-if="parentWorkItem"
-          class="list-unstyled gl-display-flex gl-mr-auto"
+          class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0"
           data-testid="work-item-parent"
         >
-          <li class="gl-ml-n4">
-            <gl-button icon="issues" category="tertiary" :href="parentUrl">{{
-              parentWorkItem.title
-            }}</gl-button>
-            <gl-icon name="chevron-right" :size="16" />
+          <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-overflow-hidden">
+            <gl-button
+              v-gl-tooltip.hover
+              class="gl-text-truncate gl-max-w-full"
+              icon="issues"
+              category="tertiary"
+              :href="parentUrl"
+              :title="parentWorkItem.title"
+              >{{ parentWorkItem.title }}</gl-button
+            >
+            <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
           </li>
-          <li class="gl-px-4 gl-py-3 gl-line-height-0">
-            <gl-icon name="task-done" />
+          <li
+            class="gl-px-4 gl-py-3 gl-line-height-0 gl-display-flex gl-align-items-center gl-overflow-hidden gl-flex-shrink-0"
+          >
+            <work-item-type-icon
+              :work-item-icon-name="workItemIconName"
+              :work-item-type="workItemType && workItemType.toUpperCase()"
+            />
             {{ workItemType }}
           </li>
         </ul>
-        <span
+        <work-item-type-icon
           v-else
+          :work-item-icon-name="workItemIconName"
+          :work-item-type="workItemType && workItemType.toUpperCase()"
+          show-text
           class="gl-font-weight-bold gl-text-secondary gl-mr-auto"
           data-testid="work-item-type"
-          >{{ workItemType }}</span
+        />
+        <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
+        <gl-badge
+          v-if="workItem.confidential"
+          v-gl-tooltip.bottom
+          :title="$options.i18n.confidentialTooltip"
+          variant="warning"
+          icon="eye-slash"
+          class="gl-mr-3 gl-cursor-help"
+          >{{ __('Confidential') }}</gl-badge
         >
         <work-item-actions
+          v-if="canUpdate || canDelete"
           :work-item-id="workItem.id"
           :can-delete="canDelete"
+          :can-update="canUpdate"
+          :is-confidential="workItem.confidential"
+          :is-parent-confidential="parentWorkItemConfidentiality"
           @deleteWorkItem="$emit('deleteWorkItem')"
+          @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="error = $event"
         />
         <gl-button
@@ -206,11 +308,13 @@ export default {
         :work-item-title="workItem.title"
         :work-item-type="workItemType"
         :work-item-parent-id="workItemParentId"
+        :can-update="canUpdate"
         @error="error = $event"
       />
       <work-item-state
         :work-item="workItem"
         :work-item-parent-id="workItemParentId"
+        :can-update="canUpdate"
         @error="error = $event"
       />
       <template v-if="workItemsMvc2Enabled">
@@ -221,6 +325,7 @@ export default {
           :assignees="workItemAssignees.assignees.nodes"
           :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
           :work-item-type="workItemType"
+          :can-invite-members="workItemAssignees.canInviteMembers"
           @error="error = $event"
         />
         <work-item-labels
@@ -229,15 +334,16 @@ export default {
           :can-update="canUpdate"
           @error="error = $event"
         />
-        <work-item-weight
-          v-if="workItemWeight"
-          class="gl-mb-5"
-          :can-update="canUpdate"
-          :weight="workItemWeight.weight"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-        />
       </template>
+      <work-item-weight
+        v-if="workItemWeight"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :weight="workItemWeight.weight"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="error = $event"
+      />
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"

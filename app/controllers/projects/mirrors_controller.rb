@@ -58,8 +58,8 @@ class Projects::MirrorsController < Projects::ApplicationController
     else
       render json: lookup
     end
-  rescue ArgumentError => err
-    render json: { message: err.message }, status: :bad_request
+  rescue ArgumentError => e
+    render json: { message: e.message }, status: :bad_request
   end
 
   private

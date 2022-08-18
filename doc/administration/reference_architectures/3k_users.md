@@ -425,14 +425,14 @@ all nodes.
 ## Configure Redis
 
 Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
-topology with a [Redis Sentinel](https://redis.io/topics/sentinel) service to watch and automatically
+topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service to watch and automatically
 start the failover procedure.
 
 Redis requires authentication if used with Sentinel. See
-[Redis Security](https://redis.io/topics/security) documentation for more
+[Redis Security](https://redis.io/docs/manual/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
 firewall rules to secure your Redis service.
-You are highly encouraged to read the [Redis Sentinel](https://redis.io/topics/sentinel) documentation
+You are highly encouraged to read the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation
 before configuring Redis with GitLab to fully understand the topology and
 architecture.
 
@@ -978,7 +978,8 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[Troubleshooting section](troubleshooting.md) before proceeding.
+[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+before proceeding.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2018,7 +2019,7 @@ the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#en
    failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
    address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
    on your database nodes. Before proceeding, see
-   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
+   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 

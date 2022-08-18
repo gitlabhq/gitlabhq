@@ -473,9 +473,7 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin({
-      globalAPI: true,
-    }),
+    new MonacoWebpackPlugin(),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
 
@@ -556,6 +554,11 @@ module.exports = {
           'app/assets/javascripts/vue_shared/components/empty_component.js',
         );
       }),
+
+    new webpack.NormalModuleReplacementPlugin(/markdown-it/, (resource) => {
+      // eslint-disable-next-line no-param-reassign
+      resource.request = path.join(ROOT_PATH, 'app/assets/javascripts/lib/markdown_it.js');
+    }),
 
     !IS_JH &&
       new webpack.NormalModuleReplacementPlugin(/^jh_component\/(.*)\.vue/, (resource) => {

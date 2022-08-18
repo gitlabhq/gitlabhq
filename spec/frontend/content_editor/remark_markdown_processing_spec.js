@@ -5,6 +5,7 @@ import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
+import Frontmatter from '~/content_editor/extensions/frontmatter';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Heading from '~/content_editor/extensions/heading';
@@ -15,6 +16,7 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
+import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
@@ -37,6 +39,7 @@ const tiptapEditor = createTestEditor({
     CodeBlockHighlight,
     FootnoteDefinition,
     FootnoteReference,
+    Frontmatter,
     HardBreak,
     Heading,
     HorizontalRule,
@@ -45,6 +48,7 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
+    ReferenceDefinition,
     Sourcemap,
     Strike,
     Table,
@@ -69,6 +73,7 @@ const {
     div,
     footnoteDefinition,
     footnoteReference,
+    frontmatter,
     hardBreak,
     heading,
     horizontalRule,
@@ -78,6 +83,7 @@ const {
     listItem,
     orderedList,
     pre,
+    referenceDefinition,
     strike,
     table,
     tableRow,
@@ -96,6 +102,7 @@ const {
     codeBlock: { nodeType: CodeBlockHighlight.name },
     footnoteDefinition: { nodeType: FootnoteDefinition.name },
     footnoteReference: { nodeType: FootnoteReference.name },
+    frontmatter: { nodeType: Frontmatter.name },
     hardBreak: { nodeType: HardBreak.name },
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
@@ -105,6 +112,7 @@ const {
     listItem: { nodeType: ListItem.name },
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
+    referenceDefinition: { nodeType: ReferenceDefinition.name },
     strike: { nodeType: Strike.name },
     table: { nodeType: Table.name },
     tableCell: { nodeType: TableCell.name },
@@ -253,7 +261,12 @@ describe('Client side Markdown processing', () => {
       expectedDoc: doc(
         paragraph(
           source('<img src="bar" alt="foo" />'),
-          image({ ...source('<img src="bar" alt="foo" />'), alt: 'foo', src: 'bar' }),
+          image({
+            ...source('<img src="bar" alt="foo" />'),
+            alt: 'foo',
+            canonicalSrc: 'bar',
+            src: 'bar',
+          }),
         ),
       ),
     },
@@ -271,7 +284,12 @@ describe('Client side Markdown processing', () => {
         ),
         paragraph(
           source('<img src="bar" alt="foo" />'),
-          image({ ...source('<img src="bar" alt="foo" />'), alt: 'foo', src: 'bar' }),
+          image({
+            ...source('<img src="bar" alt="foo" />'),
+            alt: 'foo',
+            src: 'bar',
+            canonicalSrc: 'bar',
+          }),
         ),
       ),
     },
@@ -284,6 +302,7 @@ describe('Client side Markdown processing', () => {
             {
               ...source('[GitLab](https://gitlab.com "Go to GitLab")'),
               href: 'https://gitlab.com',
+              canonicalSrc: 'https://gitlab.com',
               title: 'Go to GitLab',
             },
             'GitLab',
@@ -302,6 +321,7 @@ describe('Client side Markdown processing', () => {
               {
                 ...source('[GitLab](https://gitlab.com "Go to GitLab")'),
                 href: 'https://gitlab.com',
+                canonicalSrc: 'https://gitlab.com',
                 title: 'Go to GitLab',
               },
               'GitLab',
@@ -318,6 +338,7 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('www.commonmark.org'),
+              canonicalSrc: 'http://www.commonmark.org',
               href: 'http://www.commonmark.org',
             },
             'www.commonmark.org',
@@ -334,6 +355,7 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('www.commonmark.org/help'),
+              canonicalSrc: 'http://www.commonmark.org/help',
               href: 'http://www.commonmark.org/help',
             },
             'www.commonmark.org/help',
@@ -351,6 +373,7 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('hello+xyz@mail.example'),
+              canonicalSrc: 'mailto:hello+xyz@mail.example',
               href: 'mailto:hello+xyz@mail.example',
             },
             'hello+xyz@mail.example',
@@ -369,6 +392,7 @@ describe('Client side Markdown processing', () => {
             {
               sourceMapKey: null,
               sourceMarkdown: null,
+              canonicalSrc: 'https://gitlab.com',
               href: 'https://gitlab.com',
             },
             'https://gitlab.com',
@@ -398,6 +422,7 @@ hard line break`,
           image({
             ...source('![GitLab Logo](https://gitlab.com/logo.png "GitLab Logo")'),
             alt: 'GitLab Logo',
+            canonicalSrc: 'https://gitlab.com/logo.png',
             src: 'https://gitlab.com/logo.png',
             title: 'GitLab Logo',
           }),
@@ -591,7 +616,12 @@ two
             paragraph(
               source('List item with an image ![bar](foo.png)'),
               'List item with an image',
-              image({ ...source('![bar](foo.png)'), alt: 'bar', src: 'foo.png' }),
+              image({
+                ...source('![bar](foo.png)'),
+                alt: 'bar',
+                canonicalSrc: 'foo.png',
+                src: 'foo.png',
+              }),
             ),
           ),
         ),
@@ -940,8 +970,17 @@ Paragraph
         paragraph(
           source('[![moon](moon.jpg)](/uri)'),
           link(
-            { ...source('[![moon](moon.jpg)](/uri)'), href: '/uri' },
-            image({ ...source('![moon](moon.jpg)'), src: 'moon.jpg', alt: 'moon' }),
+            {
+              ...source('[![moon](moon.jpg)](/uri)'),
+              canonicalSrc: '/uri',
+              href: '/uri',
+            },
+            image({
+              ...source('![moon](moon.jpg)'),
+              canonicalSrc: 'moon.jpg',
+              src: 'moon.jpg',
+              alt: 'moon',
+            }),
           ),
         ),
       ),
@@ -971,12 +1010,26 @@ Paragraph
           source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
           strike(
             source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
-            link({ ...source('[moon](moon.jpg)'), href: 'moon.jpg' }, 'moon'),
+            link(
+              {
+                ...source('[moon](moon.jpg)'),
+                canonicalSrc: 'moon.jpg',
+                href: 'moon.jpg',
+              },
+              'moon',
+            ),
           ),
           strike(source('~[moon](moon.jpg) and [sun](sun.jpg)~'), ' and '),
           strike(
             source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
-            link({ ...source('[sun](sun.jpg)'), href: 'sun.jpg' }, 'sun'),
+            link(
+              {
+                ...source('[sun](sun.jpg)'),
+                href: 'sun.jpg',
+                canonicalSrc: 'sun.jpg',
+              },
+              'sun',
+            ),
           ),
         ),
       ),
@@ -1079,6 +1132,107 @@ _world_.
         ),
       ),
     },
+    {
+      markdown: `
+[GitLab][gitlab-url]
+
+[gitlab-url]: https://gitlab.com "GitLab"
+
+      `,
+      expectedDoc: doc(
+        paragraph(
+          source('[GitLab][gitlab-url]'),
+          link(
+            {
+              ...source('[GitLab][gitlab-url]'),
+              href: 'https://gitlab.com',
+              canonicalSrc: 'gitlab-url',
+              title: 'GitLab',
+              isReference: true,
+            },
+            'GitLab',
+          ),
+        ),
+        referenceDefinition(
+          {
+            ...source('[gitlab-url]: https://gitlab.com "GitLab"'),
+            identifier: 'gitlab-url',
+            url: 'https://gitlab.com',
+            title: 'GitLab',
+          },
+          '[gitlab-url]: https://gitlab.com "GitLab"',
+        ),
+      ),
+    },
+    {
+      markdown: `
+![GitLab Logo][gitlab-logo]
+
+[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"
+
+      `,
+      expectedDoc: doc(
+        paragraph(
+          source('![GitLab Logo][gitlab-logo]'),
+          image({
+            ...source('![GitLab Logo][gitlab-logo]'),
+            src: 'https://gitlab.com/gitlab-logo.png',
+            canonicalSrc: 'gitlab-logo',
+            alt: 'GitLab Logo',
+            title: 'GitLab Logo',
+            isReference: true,
+          }),
+        ),
+        referenceDefinition(
+          {
+            ...source('[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"'),
+            identifier: 'gitlab-logo',
+            url: 'https://gitlab.com/gitlab-logo.png',
+            title: 'GitLab Logo',
+          },
+          '[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"',
+        ),
+      ),
+    },
+    {
+      markdown: `
+---
+title: 'layout'
+---
+      `,
+      expectedDoc: doc(
+        frontmatter(
+          { ...source("---\ntitle: 'layout'\n---"), language: 'yaml' },
+          "title: 'layout'",
+        ),
+      ),
+    },
+    {
+      markdown: `
++++
+title: 'layout'
++++
+      `,
+      expectedDoc: doc(
+        frontmatter(
+          { ...source("+++\ntitle: 'layout'\n+++"), language: 'toml' },
+          "title: 'layout'",
+        ),
+      ),
+    },
+    {
+      markdown: `
+;;;
+{ title: 'layout' }
+;;;
+      `,
+      expectedDoc: doc(
+        frontmatter(
+          { ...source(";;;\n{ title: 'layout' }\n;;;"), language: 'json' },
+          "{ title: 'layout' }",
+        ),
+      ),
+    },
   ];
 
   const runOnly = examples.find((example) => example.only === true);
@@ -1090,7 +1244,7 @@ _world_.
       const trimmed = markdown.trim();
       const document = await deserialize(trimmed);
 
-      expect(expectedDoc).not.toBeFalsy();
+      expect(expectedDoc).not.toBe(false);
       expect(document.toJSON()).toEqual(expectedDoc.toJSON());
       expect(serialize(document)).toEqual(expectedMarkdown ?? trimmed);
     },
@@ -1155,4 +1309,72 @@ body {
       expect(tiptapEditor.getHTML()).toEqual(expectedHtml);
     },
   );
+
+  describe('attribute sanitization', () => {
+    // eslint-disable-next-line no-script-url
+    const protocolBasedInjectionSimpleNoSpaces = "javascript:alert('XSS');";
+    // eslint-disable-next-line no-script-url
+    const protocolBasedInjectionSimpleSpacesBefore = "javascript:    alert('XSS');";
+
+    const docWithImageFactory = (urlInput, urlOutput) => {
+      const input = `<img src="${urlInput}">`;
+
+      return {
+        input,
+        expectedDoc: doc(
+          paragraph(
+            source(input),
+            image({
+              ...source(input),
+              src: urlOutput,
+              canonicalSrc: urlOutput,
+            }),
+          ),
+        ),
+      };
+    };
+
+    const docWithLinkFactory = (urlInput, urlOutput) => {
+      const input = `<a href="${urlInput}">foo</a>`;
+
+      return {
+        input,
+        expectedDoc: doc(
+          paragraph(
+            source(input),
+            link({ ...source(input), href: urlOutput, canonicalSrc: urlOutput }, 'foo'),
+          ),
+        ),
+      };
+    };
+
+    it.each`
+      desc                                                                     | urlInput                                                                                                                                                                                                             | urlOutput
+      ${'protocol-based JS injection: simple, no spaces'}                      | ${protocolBasedInjectionSimpleNoSpaces}                                                                                                                                                                              | ${null}
+      ${'protocol-based JS injection: simple, spaces before'}                  | ${"javascript    :alert('XSS');"}                                                                                                                                                                                    | ${null}
+      ${'protocol-based JS injection: simple, spaces after'}                   | ${protocolBasedInjectionSimpleSpacesBefore}                                                                                                                                                                          | ${null}
+      ${'protocol-based JS injection: simple, spaces before and after'}        | ${"javascript    :   alert('XSS');"}                                                                                                                                                                                 | ${null}
+      ${'protocol-based JS injection: UTF-8 encoding'}                         | ${'javascript&#58;'}                                                                                                                                                                                                 | ${null}
+      ${'protocol-based JS injection: long UTF-8 encoding'}                    | ${'javascript&#0058;'}                                                                                                                                                                                               | ${null}
+      ${'protocol-based JS injection: long UTF-8 encoding without semicolons'} | ${'&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041'} | ${null}
+      ${'protocol-based JS injection: hex encoding'}                           | ${'javascript&#x3A;'}                                                                                                                                                                                                | ${null}
+      ${'protocol-based JS injection: long hex encoding'}                      | ${'javascript&#x003A;'}                                                                                                                                                                                              | ${null}
+      ${'protocol-based JS injection: hex encoding without semicolons'}        | ${'&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29'}                                                                                             | ${null}
+      ${'protocol-based JS injection: Unicode'}                                | ${"\u0001java\u0003script:alert('XSS')"}                                                                                                                                                                             | ${null}
+      ${'protocol-based JS injection: spaces and entities'}                    | ${"&#14;  javascript:alert('XSS');"}                                                                                                                                                                                 | ${null}
+      ${'vbscript'}                                                            | ${'vbscript:alert(document.domain)'}                                                                                                                                                                                 | ${null}
+      ${'protocol-based JS injection: preceding colon'}                        | ${":javascript:alert('XSS');"}                                                                                                                                                                                       | ${":javascript:alert('XSS');"}
+      ${'protocol-based JS injection: null char'}                              | ${"java\0script:alert('XSS')"}                                                                                                                                                                                       | ${"java�script:alert('XSS')"}
+      ${'protocol-based JS injection: invalid URL char'}                       | ${"java\\script:alert('XSS')"}                                                                                                                                                                                       | ${"java\\script:alert('XSS')"}
+    `('sanitize $desc:\n\tURL "$urlInput" becomes "$urlOutput"', ({ urlInput, urlOutput }) => {
+      const exampleFactories = [docWithImageFactory, docWithLinkFactory];
+
+      exampleFactories.forEach(async (exampleFactory) => {
+        const { input, expectedDoc } = exampleFactory(urlInput, urlOutput);
+        const document = await deserialize(input);
+
+        expect(document.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+    });
+  });
 });

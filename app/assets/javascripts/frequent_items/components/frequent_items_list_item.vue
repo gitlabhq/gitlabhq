@@ -75,6 +75,7 @@ export default {
       <project-avatar
         class="gl-float-left gl-mr-3"
         :project-avatar-url="avatarUrl"
+        :project-id="itemId"
         :project-name="itemName"
         aria-hidden="true"
       />

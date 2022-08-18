@@ -6,25 +6,86 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Dart.gitlab-ci.yml
 
-# https://hub.docker.com/r/google/dart
-image: google/dart:2.8.4
+# https://hub.docker.com/_/dart
+image: dart:2.17
 
 variables:
-  # Use to learn more:
-  # pub run test --help
+  # To learn more go to https://dart.dev/tools/dart-test
+  # Or run `dart test --help`
   PUB_VARS: "--platform vm --timeout 30s --concurrency=6 --test-randomize-ordering-seed=random --reporter=expanded"
+
+.use-pub-cache-bin:
+  # Define commands that need to be executed before each job.
+  before_script:
+    # Set PUB_CACHE either here or in the CI/CD Settings if you have multiple jobs that use dart commands.
+    # PUB_CACHE is used by the `dart pub` command, it needs to be set so package dependencies are stored at the project-level for CI/CD operations.
+    - export PUB_CACHE=".pub-cache"
+    - export PATH="$PATH:$HOME/$PUB_CACHE/bin"
+
+# Cache generated files and plugins between builds.
+.upload-cache:
+  cache:
+    when: 'on_success'
+    paths:
+      - .pub-cache/bin/
+      - .pub-cache/global_packages/
+      - .pub-cache/hosted/
+      - .dart_tool/
+      - .packages
 
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
-cache:
-  paths:
-    - .pub-cache/global_packages
+.download-cache:
+  cache:
+    paths:
+      - .dart_tool/
+      - .packages
+    policy: pull
 
-before_script:
-  - export PATH="$PATH:$HOME/.pub-cache/bin"
-  - pub get --no-precompile
-
-test:
-  stage: test
+install-dependencies:
+  stage: .pre
+  extends:
+    - .use-pub-cache-bin
+    - .upload-cache
   script:
-    - pub run test $PUB_VARS
+    - dart pub get --no-precompile
+
+build:
+  stage: build
+  needs:
+    - install-dependencies
+  extends:
+    - .use-pub-cache-bin
+    - .upload-cache
+  script:
+    - dart pub get --offline --precompile
+
+unit-test:
+  stage: test
+  needs:
+    - build
+  extends:
+    - .use-pub-cache-bin
+    - .download-cache
+  script:
+    - dart test $PUB_VARS
+
+lint-test:
+  stage: test
+  needs:
+    - install-dependencies
+  extends:
+    - .use-pub-cache-bin
+    - .download-cache
+  script:
+    - dart analyze .
+
+format-test:
+  stage: test
+  needs:
+    - install-dependencies
+  extends:
+    - .use-pub-cache-bin
+    - .download-cache
+  script:
+    - dart format --set-exit-if-changed bin/ lib/ test/

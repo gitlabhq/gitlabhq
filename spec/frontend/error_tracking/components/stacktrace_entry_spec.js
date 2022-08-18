@@ -36,10 +36,10 @@ describe('Stacktrace Entry', () => {
 
   it('should render stacktrace entry collapsed', () => {
     mountComponent({ lines });
-    expect(wrapper.find(StackTraceEntry).exists()).toBe(true);
-    expect(wrapper.find(ClipboardButton).exists()).toBe(true);
-    expect(wrapper.find(GlIcon).exists()).toBe(true);
-    expect(wrapper.find(FileIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(StackTraceEntry).exists()).toBe(true);
+    expect(wrapper.findComponent(ClipboardButton).exists()).toBe(true);
+    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(FileIcon).exists()).toBe(true);
     expect(wrapper.find('table').exists()).toBe(false);
   });
 
@@ -56,7 +56,7 @@ describe('Stacktrace Entry', () => {
     it('should hide collapse icon and render error fn name and error line when there is no code block', () => {
       const extraInfo = { errorLine: 34, errorFn: 'errorFn', errorColumn: 77 };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
-      expect(wrapper.find(GlIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(false);
       expect(trimText(findFileHeaderContent())).toContain(
         `in ${extraInfo.errorFn} at line ${extraInfo.errorLine}:${extraInfo.errorColumn}`,
       );

@@ -25,8 +25,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         expect(issue_event.source).to eq({ type: 'issue', id: 123456 })
       end
 
-      it 'includes the issue_db_id' do
-        expect(issue_event.issue_db_id).to eq(100500)
+      it 'includes the issue data' do
+        expect(issue_event.issue).to eq({ number: 2, pull_request: pull_request })
       end
 
       context 'when actor data present' do
@@ -77,8 +77,63 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         end
       end
 
+      context 'when milestone data is present' do
+        it 'includes the milestone_title' do
+          expect(issue_event.milestone_title).to eq('milestone title')
+        end
+      end
+
+      context 'when milestone data is empty' do
+        let(:with_milestone) { false }
+
+        it 'does not return such info' do
+          expect(issue_event.milestone_title).to eq nil
+        end
+      end
+
+      context 'when assignee and assigner data is present' do
+        it 'includes assignee and assigner details' do
+          expect(issue_event.assignee)
+            .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
+          expect(issue_event.assignee.id).to eq(5)
+          expect(issue_event.assignee.login).to eq('tom')
+
+          expect(issue_event.assigner)
+            .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
+          expect(issue_event.assigner.id).to eq(6)
+          expect(issue_event.assigner.login).to eq('jerry')
+        end
+      end
+
+      context 'when assignee and assigner data is empty' do
+        let(:with_assignee) { false }
+
+        it 'does not return such info' do
+          expect(issue_event.assignee).to eq nil
+          expect(issue_event.assigner).to eq nil
+        end
+      end
+
       it 'includes the created timestamp' do
         expect(issue_event.created_at).to eq('2022-04-26 18:30:53 UTC')
+      end
+    end
+
+    describe '#issuable_id' do
+      it 'returns issuable_id' do
+        expect(issue_event.issuable_id).to eq(2)
+      end
+    end
+
+    describe '#issuable_type' do
+      context 'when event related to issue' do
+        it { expect(issue_event.issuable_type).to eq('Issue') }
+      end
+
+      context 'when event related to pull request' do
+        let(:pull_request) { { url: FFaker::Internet.http_url } }
+
+        it { expect(issue_event.issuable_type).to eq('MergeRequest') }
       end
     end
 
@@ -92,8 +147,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
   describe '.from_api_response' do
     let(:response) do
       event_resource = Struct.new(
-        :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label,
-        :rename, :issue_db_id, :created_at, :performed_via_github_app, :source,
+        :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone,
+        :source, :assignee, :assigner, :issue, :created_at, :performed_via_github_app,
         keyword_init: true
       )
       user_resource = Struct.new(:id, :login, keyword_init: true)
@@ -106,10 +161,13 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         commit_id: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
         commit_url: 'https://api.github.com/repos/octocat/Hello-World/commits'\
           '/570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
-        rename: with_rename ? { from: 'old title', to: 'new title' } : nil,
-        source: { type: 'issue', id: 123456 },
-        issue_db_id: 100500,
         label: with_label ? { name: 'label title' } : nil,
+        rename: with_rename ? { from: 'old title', to: 'new title' } : nil,
+        milestone: with_milestone ? { title: 'milestone title' } : nil,
+        source: { type: 'issue', id: 123456 },
+        assignee: with_assignee ? user_resource.new(id: 5, login: 'tom') : nil,
+        assigner: with_assignee ? user_resource.new(id: 6, login: 'jerry') : nil,
+        issue: { 'number' => 2, 'pull_request' => pull_request },
         created_at: '2022-04-26 18:30:53 UTC',
         performed_via_github_app: nil
       )
@@ -118,6 +176,9 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:with_actor) { true }
     let(:with_label) { true }
     let(:with_rename) { true }
+    let(:with_milestone) { true }
+    let(:with_assignee) { true }
+    let(:pull_request) { nil }
 
     it_behaves_like 'an IssueEvent' do
       let(:issue_event) { described_class.from_api_response(response) }
@@ -139,8 +200,11 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
           'label_title' => (with_label ? 'label title' : nil),
           'old_title' => with_rename ? 'old title' : nil,
           'new_title' => with_rename ? 'new title' : nil,
+          'milestone_title' => (with_milestone ? 'milestone title' : nil),
           'source' => { 'type' => 'issue', 'id' => 123456 },
-          "issue_db_id" => 100500,
+          'assignee' => (with_assignee ? { 'id' => 5, 'login' => 'tom' } : nil),
+          'assigner' => (with_assignee ? { 'id' => 6, 'login' => 'jerry' } : nil),
+          'issue' => { 'number' => 2, 'pull_request' => pull_request },
           'created_at' => '2022-04-26 18:30:53 UTC',
           'performed_via_github_app' => nil
         }
@@ -149,6 +213,9 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
       let(:with_actor) { true }
       let(:with_label) { true }
       let(:with_rename) { true }
+      let(:with_milestone) { true }
+      let(:with_assignee) { true }
+      let(:pull_request) { nil }
 
       let(:issue_event) { described_class.from_json_hash(hash) }
     end

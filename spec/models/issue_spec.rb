@@ -69,7 +69,57 @@ RSpec.describe Issue do
   end
 
   describe 'validations' do
-    subject { issue.valid? }
+    subject(:valid?) { issue.valid? }
+
+    describe 'due_date_after_start_date' do
+      let(:today) { Date.today }
+
+      context 'when both values are not present' do
+        let(:issue) { build(:issue) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when start date is present and due date is not' do
+        let(:issue) { build(:work_item, start_date: today) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when due date is present and start date is not' do
+        let(:issue) { build(:work_item, due_date: today) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when both date values are present' do
+        context 'when due date is greater than start date' do
+          let(:issue) { build(:work_item, start_date: today, due_date: 1.week.from_now) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when due date is equal to start date' do
+          let(:issue) { build(:work_item, start_date: today, due_date: today) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when due date is before start date' do
+          let(:issue) { build(:work_item, due_date: today, start_date: 1.week.from_now) }
+
+          it { is_expected.to be_falsey }
+
+          it 'adds an error message' do
+            valid?
+
+            expect(issue.errors.full_messages).to contain_exactly(
+              'Due date must be greater than or equal to start date'
+            )
+          end
+        end
+      end
+    end
 
     describe 'issue_type' do
       let(:issue) { build(:issue, issue_type: issue_type) }
@@ -84,6 +134,54 @@ RSpec.describe Issue do
         let(:issue_type) { nil }
 
         it { is_expected.to eq(false) }
+      end
+    end
+
+    describe 'confidentiality' do
+      let_it_be(:project) { create(:project) }
+
+      context 'when parent and child are confidential' do
+        let_it_be(:parent) { create(:work_item, confidential: true, project: project) }
+        let_it_be(:child) { create(:work_item, :task, confidential: true, project: project) }
+        let_it_be(:link) { create(:parent_link, work_item: child, work_item_parent: parent) }
+
+        it 'does not allow to make child not-confidential' do
+          issue = Issue.find(child.id)
+          issue.confidential = false
+
+          expect(issue).not_to be_valid
+          expect(issue.errors[:confidential])
+            .to include('associated parent is confidential and can not have non-confidential children.')
+        end
+
+        it 'allows to make parent not-confidential' do
+          issue = Issue.find(parent.id)
+          issue.confidential = false
+
+          expect(issue).to be_valid
+        end
+      end
+
+      context 'when parent and child are not-confidential' do
+        let_it_be(:parent) { create(:work_item, project: project) }
+        let_it_be(:child) { create(:work_item, :task, project: project) }
+        let_it_be(:link) { create(:parent_link, work_item: child, work_item_parent: parent) }
+
+        it 'does not allow to make parent confidential' do
+          issue = Issue.find(parent.id)
+          issue.confidential = true
+
+          expect(issue).not_to be_valid
+          expect(issue.errors[:confidential])
+            .to include('confidential parent can not be used if there are non-confidential children.')
+        end
+
+        it 'allows to make child confidential' do
+          issue = Issue.find(child.id)
+          issue.confidential = true
+
+          expect(issue).to be_valid
+        end
       end
     end
   end
@@ -120,6 +218,61 @@ RSpec.describe Issue do
           subject.update!(title: 'title')
 
           expect(subject.metrics).to be_present
+        end
+      end
+    end
+
+    describe '#ensure_work_item_type' do
+      let_it_be(:issue_type) { create(:work_item_type, :issue, :default) }
+      let_it_be(:task_type) { create(:work_item_type, :issue, :default) }
+      let_it_be(:project) { create(:project) }
+
+      context 'when a type was already set' do
+        let_it_be(:issue, refind: true) { create(:issue, project: project) }
+
+        it 'does not fetch a work item type from the DB' do
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+          expect(WorkItems::Type).not_to receive(:default_by_type)
+
+          expect(issue).to be_valid
+        end
+
+        it 'does not fetch a work item type from the DB when updating the type' do
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+          expect(WorkItems::Type).not_to receive(:default_by_type)
+
+          issue.update!(work_item_type: task_type, issue_type: 'task')
+
+          expect(issue.work_item_type_id).to eq(task_type.id)
+        end
+
+        it 'ensures a work item type if updated to nil' do
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+
+          expect do
+            issue.update!(work_item_type: nil)
+          end.to not_change(issue, :work_item_type).from(issue_type)
+        end
+      end
+
+      context 'when no type was set' do
+        let_it_be(:issue, refind: true) { build(:issue, project: project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
+
+        it 'sets a work item type before validation' do
+          expect(issue.work_item_type_id).to be_nil
+
+          issue.save!
+
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+        end
+
+        it 'does not fetch type from DB if provided during update' do
+          expect(issue.work_item_type_id).to be_nil
+          expect(WorkItems::Type).not_to receive(:default_by_type)
+
+          issue.update!(work_item_type: task_type, issue_type: 'task')
+
+          expect(issue.work_item_type_id).to eq(task_type.id)
         end
       end
     end
@@ -289,7 +442,7 @@ RSpec.describe Issue do
 
   # TODO: Remove when NOT NULL constraint is added to the relationship
   describe '#work_item_type' do
-    let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }
+    let(:issue) { build(:issue, :incident, project: reusable_project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
 
     it 'returns a default type if the legacy issue does not have a work item type associated yet' do
       expect(issue.work_item_type_id).to be_nil
@@ -493,7 +646,7 @@ RSpec.describe Issue do
     let_it_be(:authorized_issue_a) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_b) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_c) { create(:issue, project: authorized_project2) }
-    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project )}
+    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project ) }
 
     let_it_be(:unauthorized_issue) { create(:issue, project: unauthorized_project) }
 
@@ -550,7 +703,7 @@ RSpec.describe Issue do
     subject { issue.can_move?(user) }
 
     context 'user is not a member of project issue belongs to' do
-      it { is_expected.to eq false}
+      it { is_expected.to eq false }
     end
 
     context 'user is reporter in project issue belongs to' do
@@ -1074,7 +1227,7 @@ RSpec.describe Issue do
       end
 
       context 'when issue is moved to a private project' do
-        let(:private_project) { build(:project, :private)}
+        let(:private_project) { build(:project, :private) }
 
         before do
           issue.update!(project: private_project) # move issue to private project
@@ -1618,6 +1771,22 @@ RSpec.describe Issue do
     describe '.order_closed_at_desc' do
       it 'orders on closed at' do
         expect(described_class.order_closed_at_desc.to_a).to eq([issue_a, issue_d, issue_b, issue_c_nil, issue_e_nil])
+      end
+    end
+  end
+
+  describe '#full_search' do
+    context 'when searching non-english terms' do
+      [
+        'abc 中文語',
+        '中文語cn',
+        '中文語'
+      ].each do |term|
+        it 'adds extra where clause to match partial index' do
+          expect(described_class.full_search(term).to_sql).to include(
+            "AND (issues.title NOT SIMILAR TO '[\\u0000-\\u218F]*' OR issues.description NOT SIMILAR TO '[\\u0000-\\u218F]*')"
+          )
+        end
       end
     end
   end

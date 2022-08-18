@@ -127,7 +127,7 @@ RSpec.describe Releases::Link do
   describe 'FILEPATH_REGEX with table' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:link) { build(:release_link)}
+    let(:link) { build(:release_link) }
 
     where(:reason, :filepath, :result) do
       'cannot contain `//`'         | '/https//www.example.com'     | be_invalid

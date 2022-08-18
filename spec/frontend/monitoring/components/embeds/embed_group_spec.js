@@ -58,14 +58,14 @@ describe('Embed Group', () => {
       metricsWithDataGetter.mockReturnValue([]);
       mountComponent();
 
-      expect(wrapper.find(GlCard).isVisible()).toBe(false);
+      expect(wrapper.findComponent(GlCard).isVisible()).toBe(false);
     });
 
     it('shows the component when chart data is loaded', () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent();
 
-      expect(wrapper.find(GlCard).isVisible()).toBe(true);
+      expect(wrapper.findComponent(GlCard).isVisible()).toBe(true);
     });
 
     it('is expanded by default', () => {
@@ -79,7 +79,7 @@ describe('Embed Group', () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
-      wrapper.find(GlButton).trigger('click');
+      wrapper.findComponent(GlButton).trigger('click');
 
       await nextTick();
       expect(wrapper.find('.gl-card-body').classes()).toContain('d-none');
@@ -93,11 +93,11 @@ describe('Embed Group', () => {
     });
 
     it('renders an Embed component', () => {
-      expect(wrapper.find(MetricEmbed).exists()).toBe(true);
+      expect(wrapper.findComponent(MetricEmbed).exists()).toBe(true);
     });
 
     it('passes the correct props to the Embed component', () => {
-      expect(wrapper.find(MetricEmbed).props()).toEqual(singleEmbedProps());
+      expect(wrapper.findComponent(MetricEmbed).props()).toEqual(singleEmbedProps());
     });
 
     it('adds the monitoring dashboard module', () => {
@@ -112,7 +112,7 @@ describe('Embed Group', () => {
     });
 
     it('passes the correct props to the dashboard Embed component', () => {
-      expect(wrapper.find(MetricEmbed).props()).toEqual(dashboardEmbedProps());
+      expect(wrapper.findComponent(MetricEmbed).props()).toEqual(dashboardEmbedProps());
     });
 
     it('adds the monitoring dashboard module', () => {
@@ -127,11 +127,11 @@ describe('Embed Group', () => {
     });
 
     it('creates Embed components', () => {
-      expect(wrapper.findAll(MetricEmbed)).toHaveLength(2);
+      expect(wrapper.findAllComponents(MetricEmbed)).toHaveLength(2);
     });
 
     it('passes the correct props to the Embed components', () => {
-      expect(wrapper.findAll(MetricEmbed).wrappers.map((item) => item.props())).toEqual(
+      expect(wrapper.findAllComponents(MetricEmbed).wrappers.map((item) => item.props())).toEqual(
         multipleEmbedProps(),
       );
     });
@@ -147,14 +147,14 @@ describe('Embed Group', () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
-      expect(wrapper.find(GlButton).text()).toBe('Hide chart');
+      expect(wrapper.findComponent(GlButton).text()).toBe('Hide chart');
     });
 
     it('has a plural label when there are multiple embeds', () => {
       metricsWithDataGetter.mockReturnValue([2]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
-      expect(wrapper.find(GlButton).text()).toBe('Hide charts');
+      expect(wrapper.findComponent(GlButton).text()).toBe('Hide charts');
     });
   });
 });

@@ -125,7 +125,7 @@ export default {
       <h4>{{ activePanel.title }}</h4>
 
       <p v-if="hasTextDetails">{{ details }}</p>
-      <component :is="details" v-else />
+      <component :is="details" v-else v-bind="activePanel.detailProps || {}" />
 
       <slot name="extra-description"></slot>
     </div>

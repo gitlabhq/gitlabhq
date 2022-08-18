@@ -12,13 +12,13 @@ module Types
 
         implements Types::WorkItems::WidgetInterface
 
-        field :parent, ::Types::WorkItemType, null: true,
-              description: 'Parent work item.',
-              complexity: 5
+        field :parent, ::Types::WorkItemType,
+          null: true, complexity: 5,
+          description: 'Parent work item.'
 
-        field :children, ::Types::WorkItemType.connection_type, null: true,
-              description: 'Child work items.',
-              complexity: 5
+        field :children, ::Types::WorkItemType.connection_type,
+          null: true, complexity: 5,
+          description: 'Child work items.'
 
         def children
           object.children.inc_relations_for_permission_check

@@ -6,6 +6,7 @@ import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
 import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
@@ -91,7 +92,7 @@ describe('issue_note_form component', () => {
 
       expect(conflictWarning.exists()).toBe(true);
       expect(conflictWarning.text().replace(/\s+/g, ' ').trim()).toBe(message);
-      expect(conflictWarning.find(GlLink).attributes('href')).toBe('#note_545');
+      expect(conflictWarning.findComponent(GlLink).attributes('href')).toBe('#note_545');
     });
   });
 
@@ -133,7 +134,7 @@ describe('issue_note_form component', () => {
 
     it('should link to markdown docs', () => {
       const { markdownDocsPath } = notesDataMock;
-      const markdownField = wrapper.find(MarkdownField);
+      const markdownField = wrapper.findComponent(MarkdownField);
       const markdownFieldProps = markdownField.props();
 
       expect(markdownFieldProps.markdownDocsPath).toBe(markdownDocsPath);
@@ -199,6 +200,21 @@ describe('issue_note_form component', () => {
         await nextTick();
 
         expect(wrapper.emitted().cancelForm).toHaveLength(1);
+      });
+
+      it('will not cancel form if there is an active at-who-active class', async () => {
+        wrapper.setProps({
+          ...props,
+        });
+        await nextTick();
+
+        const textareaEl = wrapper.vm.$refs.textarea;
+        const cancelButton = findCancelButton();
+        textareaEl.classList.add(AT_WHO_ACTIVE_CLASS);
+        cancelButton.vm.$emit('click');
+        await nextTick();
+
+        expect(wrapper.emitted().cancelForm).toBeUndefined();
       });
 
       it('should be possible to update the note', async () => {

@@ -28,7 +28,6 @@ function getErrorMessage(res) {
 export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = spriteIcon('paperclip', 'div-dropzone-icon s24');
-  const $attachButton = form.find('.button-attach-file');
   const $attachingFileMessage = form.find('.attaching-file-message');
   const $cancelButton = form.find('.button-cancel-uploading-files');
   const $retryLink = form.find('.retry-uploading-link');
@@ -89,8 +88,6 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       const shouldPad = processingFileCount >= 1;
 
       pasteText(response.link.markdown, shouldPad);
-      // Show 'Attach a file' link only when all files have been uploaded.
-      if (!processingFileCount) $attachButton.removeClass('hide');
       addFileToForm(response.link.url);
     },
     error: (file, errorMessage = __('Attaching the file failed.'), xhr) => {
@@ -104,7 +101,6 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
 
       $uploadingErrorContainer.removeClass('hide');
       $uploadingErrorMessage.html(message);
-      $attachButton.addClass('hide');
       $cancelButton.addClass('hide');
     },
     totaluploadprogress(totalUploadProgress) {
@@ -115,13 +111,11 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       // DOM elements already exist.
       // Instead of dynamically generating them,
       // we just either hide or show them.
-      $attachButton.addClass('hide');
       $uploadingErrorContainer.addClass('hide');
       $uploadingProgressContainer.removeClass('hide');
       $cancelButton.removeClass('hide');
     },
     removedfile: () => {
-      $attachButton.removeClass('hide');
       $cancelButton.addClass('hide');
       $uploadingProgressContainer.addClass('hide');
       $uploadingErrorContainer.addClass('hide');
@@ -282,11 +276,18 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     messageContainer.text(`${attachingMessage} -`);
   };
 
-  form.find('.markdown-selector').click(function onMarkdownClick(e) {
+  function handleAttachFile(e) {
     e.preventDefault();
     $(this).closest('.gfm-form').find('.div-dropzone').click();
     formTextarea.focus();
-  });
+  }
+
+  form.find('.markdown-selector').click(handleAttachFile);
+
+  const $attachFileButton = form.find('.js-attach-file-button');
+  if ($attachFileButton.length) {
+    $attachFileButton.get(0).addEventListener('click', handleAttachFile);
+  }
 
   return $formDropzone.get(0) ? Dropzone.forElement($formDropzone.get(0)) : null;
 }

@@ -189,25 +189,23 @@ export default {
               v-if="hasEnvironment"
               :href="environmentLink.link"
               data-testid="job-environment-link"
-              v-text="environmentLink.name"
-            />
+              >{{ environmentLink.name }}</gl-link
+            >
           </template>
           <template #clusterNameOrLink>
             <gl-link
               v-if="clusterNameOrLink.path"
               :href="clusterNameOrLink.path"
               data-testid="job-cluster-link"
-              v-text="clusterNameOrLink.name"
-            />
+              >{{ clusterNameOrLink.name }}</gl-link
+            >
             <template v-else>{{ clusterNameOrLink.name }}</template>
           </template>
           <template #kubernetesNamespace>{{ kubernetesNamespace }}</template>
           <template #deploymentLink>
-            <gl-link
-              :href="deploymentLink.path"
-              data-testid="job-deployment-link"
-              v-text="deploymentLink.name"
-            />
+            <gl-link :href="deploymentLink.path" data-testid="job-deployment-link">{{
+              deploymentLink.name
+            }}</gl-link>
           </template>
         </gl-sprintf>
       </p>

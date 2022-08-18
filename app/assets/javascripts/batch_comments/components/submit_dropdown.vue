@@ -1,8 +1,11 @@
 <script>
-import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup } from '@gitlab/ui';
+import $ from 'jquery';
+import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlLink } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import Autosave from '~/autosave';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -11,6 +14,7 @@ export default {
     GlIcon,
     GlForm,
     GlFormGroup,
+    GlLink,
     MarkdownField,
   },
   data() {
@@ -23,6 +27,11 @@ export default {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
   },
   mounted() {
+    this.autosave = new Autosave(
+      $(this.$refs.textarea),
+      `submit_review_dropdown/${this.getNoteableData.id}`,
+    );
+
     // We override the Bootstrap Vue click outside behaviour
     // to allow for clicking in the autocomplete dropdowns
     // without this override the submit dropdown will close
@@ -47,6 +56,8 @@ export default {
 
       await this.publishReview(noteData);
 
+      this.autosave.reset();
+
       if (window.mrTabs && this.note) {
         window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
         window.mrTabs.tabShown('show');
@@ -60,6 +71,9 @@ export default {
     },
   },
   restrictedToolbarItems: ['full-screen'],
+  helpPagePath: helpPagePath('user/project/merge_requests/reviews/index.html', {
+    anchor: 'submit-a-review',
+  }),
 };
 </script>
 
@@ -68,19 +82,27 @@ export default {
     ref="dropdown"
     right
     class="submit-review-dropdown"
+    data-qa-selector="submit_review_dropdown"
     variant="info"
-    category="secondary"
+    category="primary"
   >
     <template #button-content>
       {{ __('Finish review') }}
       <gl-icon class="dropdown-chevron" name="chevron-up" />
     </template>
     <gl-form data-testid="submit-gl-form" @submit.prevent="submitReview">
-      <gl-form-group
-        :label="__('Summary comment (optional)')"
-        label-for="review-note-body"
-        label-class="gl-mb-2"
-      >
+      <gl-form-group label-for="review-note-body" label-class="gl-mb-2">
+        <template #label>
+          {{ __('Summary comment (optional)') }}
+          <gl-link
+            :href="$options.helpPagePath"
+            :aria-label="__('More information')"
+            target="_blank"
+            class="gl-ml-2"
+          >
+            <gl-icon name="question-o" />
+          </gl-link>
+        </template>
         <div class="common-note-form gfm-form">
           <div
             class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-base gl-border-gray-100"
@@ -117,13 +139,14 @@ export default {
           </div>
         </div>
       </gl-form-group>
-      <div class="gl-display-flex gl-justify-content-end gl-mt-5">
+      <div class="gl-display-flex gl-justify-content-start gl-mt-5">
         <gl-button
           :loading="isSubmitting"
           variant="confirm"
           type="submit"
           class="js-no-auto-disable"
           data-testid="submit-review-button"
+          data-qa-selector="submit_review_button"
         >
           {{ __('Submit review') }}
         </gl-button>

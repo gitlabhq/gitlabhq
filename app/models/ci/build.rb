@@ -194,7 +194,7 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      run_after_commit { BuildHooksWorker.perform_async(build) }
+      run_after_commit { build.feature_flagged_execute_hooks }
     end
 
     class << self
@@ -285,7 +285,7 @@ module Ci
 
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
-          BuildHooksWorker.perform_async(build)
+          build.feature_flagged_execute_hooks
         end
       end
 
@@ -313,7 +313,7 @@ module Ci
         build.run_after_commit do
           build.ensure_persistent_ref
 
-          BuildHooksWorker.perform_async(build)
+          build.feature_flagged_execute_hooks
         end
       end
 
@@ -322,6 +322,8 @@ module Ci
           build.run_status_commit_hooks!
 
           Ci::BuildFinishedWorker.perform_async(id)
+
+          observe_report_types
         end
       end
 
@@ -340,8 +342,8 @@ module Ci
             # rubocop: disable CodeReuse/ServiceClass
             Ci::RetryJobService.new(build.project, build.user).execute(build)
             # rubocop: enable CodeReuse/ServiceClass
-          rescue Gitlab::Access::AccessDeniedError => ex
-            Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{ex}"
+          rescue Gitlab::Access::AccessDeniedError => e
+            Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
           end
         end
       end
@@ -490,11 +492,7 @@ module Ci
         if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
-          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project)
-            ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
-          else
-            ExpandVariables.expand(environment, -> { simple_variables })
-          end
+          ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
         end
       end
     end
@@ -527,8 +525,12 @@ module Ci
       self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
     end
 
-    def environment_deployment_tier
+    def environment_tier_from_options
       self.options.dig(:environment, :deployment_tier) if self.options
+    end
+
+    def environment_tier
+      environment_tier_from_options || persisted_environment.try(:tier)
     end
 
     def triggered_by?(current_user)
@@ -585,6 +587,7 @@ module Ci
         variables.concat(persisted_environment.predefined_variables)
 
         variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
+        variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier)
 
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and
@@ -777,9 +780,19 @@ module Ci
       pending? && !any_runners_online?
     end
 
+    def feature_flagged_execute_hooks
+      if Feature.enabled?(:execute_build_hooks_inline, project)
+        execute_hooks
+      else
+        BuildHooksWorker.perform_async(self)
+      end
+    end
+
     def execute_hooks
       return unless project
       return if user&.blocked?
+
+      ActiveRecord::Associations::Preloader.new.preload([self], { runner: :tags })
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
@@ -818,7 +831,11 @@ module Ci
         )
       end
 
-      job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
+      destroyed_artifacts = job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
+
+      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase_erasable_artifacts!')
+
+      destroyed_artifacts
     end
 
     def erase(opts = {})
@@ -831,7 +848,12 @@ module Ci
         )
       end
 
-      job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
+      # TODO: We should use DestroyBatchService here
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/369132
+      destroyed_artifacts = job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
+
+      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase')
+
       erase_trace!
       update_erased!(opts[:erased_by])
     end
@@ -983,7 +1005,7 @@ module Ci
 
     def collect_test_reports!(test_reports)
       test_reports.get_suite(test_suite_name).tap do |test_suite|
-        each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
+        each_report(Ci::JobArtifact.file_types_for_report(:test)) do |file_type, blob|
           Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
             blob,
             test_suite,
@@ -994,7 +1016,7 @@ module Ci
     end
 
     def collect_accessibility_reports!(accessibility_report)
-      each_report(Ci::JobArtifact::ACCESSIBILITY_REPORT_FILE_TYPES) do |file_type, blob|
+      each_report(Ci::JobArtifact.file_types_for_report(:accessibility)) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, accessibility_report)
       end
 
@@ -1002,7 +1024,7 @@ module Ci
     end
 
     def collect_codequality_reports!(codequality_report)
-      each_report(Ci::JobArtifact::CODEQUALITY_REPORT_FILE_TYPES) do |file_type, blob|
+      each_report(Ci::JobArtifact.file_types_for_report(:codequality)) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report)
       end
 
@@ -1010,7 +1032,7 @@ module Ci
     end
 
     def collect_terraform_reports!(terraform_reports)
-      each_report(::Ci::JobArtifact::TERRAFORM_REPORT_FILE_TYPES) do |file_type, blob, report_artifact|
+      each_report(::Ci::JobArtifact.file_types_for_report(:terraform)) do |file_type, blob, report_artifact|
         ::Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, terraform_reports, artifact: report_artifact)
       end
 
@@ -1079,7 +1101,10 @@ module Ci
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
-      drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
+      failure_reason ||= :unknown_failure
+      result = drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
+      ::Ci::TrackFailedBuildWorker.perform_async(id, exit_code, failure_reason)
+      result
     end
 
     def exit_codes_defined?
@@ -1147,6 +1172,21 @@ module Ci
           yield report_artifact.file_type, blob, report_artifact
         end
       end
+    end
+
+    def clone(current_user:, new_job_variables_attributes: [])
+      new_build = super
+
+      if action? && new_job_variables_attributes.any?
+        new_build.job_variables = []
+        new_build.job_variables_attributes = new_job_variables_attributes
+      end
+
+      new_build
+    end
+
+    def job_artifact_types
+      job_artifacts.map(&:file_type)
     end
 
     protected
@@ -1255,6 +1295,20 @@ module Ci
         ['has-available-runners', project.id],
         expires_in: RUNNERS_STATUS_CACHE_EXPIRATION
       ) { yield }
+    end
+
+    def observe_report_types
+      return unless ::Gitlab.com? && Feature.enabled?(:report_artifact_build_completed_metrics_on_build_completion)
+
+      report_types = options&.dig(:artifacts, :reports)&.keys || []
+
+      report_types.each do |report_type|
+        next unless Ci::JobArtifact::REPORT_TYPES.include?(report_type)
+
+        ::Gitlab::Ci::Artifacts::Metrics
+          .build_completed_report_type_counter(report_type)
+          .increment(status: status)
+      end
     end
   end
 end

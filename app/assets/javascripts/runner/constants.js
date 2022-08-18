@@ -1,5 +1,7 @@
 import { __, s__ } from '~/locale';
 
+export const RUNNER_TYPENAME = 'CiRunner'; // __typename
+
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
 
@@ -102,7 +104,6 @@ export const PARAM_KEY_TAG = 'tag';
 export const PARAM_KEY_SEARCH = 'search';
 
 export const PARAM_KEY_SORT = 'sort';
-export const PARAM_KEY_PAGE = 'page';
 export const PARAM_KEY_AFTER = 'after';
 export const PARAM_KEY_BEFORE = 'before';
 

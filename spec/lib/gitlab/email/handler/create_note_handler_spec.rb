@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
   it_behaves_like :note_handler_shared_examples do
     let(:recipient) { sent_notification.recipient }
 
-    let(:update_commands_only) { fixture_file('emails/update_commands_only_reply.eml')}
+    let(:update_commands_only) { fixture_file('emails/update_commands_only_reply.eml') }
     let(:no_content)           { fixture_file('emails/no_content_reply.eml') }
     let(:commands_in_reply)    { fixture_file('emails/commands_in_reply.eml') }
     let(:with_quick_actions)   { fixture_file('emails/valid_reply_with_quick_actions.eml') }
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
       end
 
       context 'with a secondary verified email address' do
-        let(:verified_email) { 'alan@adventuretime.ooo'}
+        let(:verified_email) { 'alan@adventuretime.ooo' }
         let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub('jake@adventuretime.ooo', verified_email) }
 
         before do

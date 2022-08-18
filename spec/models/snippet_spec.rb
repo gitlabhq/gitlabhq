@@ -571,8 +571,8 @@ RSpec.describe Snippet do
     context 'when some blobs are not retrievable from repository' do
       let(:snippet) { create(:snippet, :repository) }
       let(:container) { double(:container) }
-      let(:retrievable_filename) { 'retrievable_file'}
-      let(:unretrievable_filename) { 'unretrievable_file'}
+      let(:retrievable_filename) { 'retrievable_file' }
+      let(:unretrievable_filename) { 'unretrievable_file' }
 
       before do
         allow(snippet).to receive(:list_files).and_return([retrievable_filename, unretrievable_filename])

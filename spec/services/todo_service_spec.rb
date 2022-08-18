@@ -207,7 +207,7 @@ RSpec.describe TodoService do
         end
 
         it_behaves_like 'an incident management tracked event', :incident_management_incident_todo do
-          let(:current_user) { john_doe}
+          let(:current_user) { john_doe }
         end
       end
     end
@@ -1139,7 +1139,7 @@ RSpec.describe TodoService do
     it 'updates related todos for the user with the new_state' do
       method_call
 
-      expect(collection.all? { |todo| todo.reload.state?(new_state)}).to be_truthy
+      expect(collection.all? { |todo| todo.reload.state?(new_state) }).to be_truthy
     end
 
     if new_resolved_by
@@ -1247,17 +1247,6 @@ RSpec.describe TodoService do
       service.create_request_review_todo(target, author, reviewer)
 
       should_create_todo(user: reviewer, target: target, action: Todo::REVIEW_REQUESTED)
-    end
-  end
-
-  describe '#create_attention_requested_todo' do
-    let(:target) { create(:merge_request, author: author, source_project: project) }
-    let(:user) { create(:user) }
-
-    it 'creates a todo for user' do
-      service.create_attention_requested_todo(target, author, user)
-
-      should_create_todo(user: user, target: target, action: Todo::ATTENTION_REQUESTED)
     end
   end
 

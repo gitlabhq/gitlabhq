@@ -304,7 +304,7 @@ to add jobs to a pipeline:
 ```yaml
 docker build:
   variables:
-    DOCKERFILES_DIR: 'path/to/files/'
+    DOCKERFILES_DIR: 'path/to/files'
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - changes:
@@ -566,6 +566,9 @@ In blocking manual jobs:
 - Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
+
+When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/index.md#triggerstrategy),
+the type of manual job can affect the trigger job's status while the pipeline runs.
 
 ### Run a manual job
 
@@ -1004,6 +1007,26 @@ and can cause unexpected behavior, including:
 Additionally, rules with `changes` always evaluate as true in [scheduled pipelines](../pipelines/schedules.md).
 All files are considered to have changed when a scheduled pipeline runs, so jobs
 might always be added to scheduled pipelines that use `changes`.
+
+### File paths in CI/CD variables
+
+Be careful when using file paths in CI/CD variables. A trailing slash can appear correct
+in the variable definition, but can become invalid when expanded in `script:`, `changes:`,
+or other keywords. For example:
+
+```yaml
+docker_build:
+  variables:
+    DOCKERFILES_DIR: 'path/to/files/'  # This variable should not have a trailing '/' character
+  script: echo "A docker job"
+  rules:
+    - changes:
+        - $DOCKERFILES_DIR/*
+```
+
+When the `DOCKERFILES_DIR` variable is expanded in the `changes:` section, the full
+path becomes `path/to/files//*`. The double slashes might cause unexpected behavior
+depending on the keyword used, shell and OS of the runner, and so on.
 
 ### `You are not allowed to download code from this project.` error message
 

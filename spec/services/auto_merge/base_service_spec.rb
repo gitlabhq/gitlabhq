@@ -254,7 +254,7 @@ RSpec.describe AutoMerge::BaseService do
     subject { service.abort(merge_request, reason) }
 
     let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
-    let(:reason) { 'an error'}
+    let(:reason) { 'an error' }
 
     it_behaves_like 'Canceled or Dropped'
 

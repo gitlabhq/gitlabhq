@@ -292,7 +292,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
     end
 
     context 'when build does not have a dotenv artifact' do
-      let!(:artifact) { }
+      let!(:artifact) {}
 
       it 'raises an error' do
         expect { subject }.to raise_error(ArgumentError)

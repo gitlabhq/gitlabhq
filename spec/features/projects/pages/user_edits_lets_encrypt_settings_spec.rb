@@ -5,7 +5,8 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
   include LetsEncryptHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:project) { create(:project, pages_https_only: false) }
+  let_it_be_with_reload(:project) { create(:project, :pages_published, pages_https_only: false) }
+
   let(:user) { create(:user) }
   let(:role) { :maintainer }
   let(:certificate_pem) { attributes_for(:pages_domain)[:certificate] }

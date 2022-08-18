@@ -1,42 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: 'database/sha1_as_binary.md'
+remove_date: '2022-11-06'
 ---
 
-# Storing SHA1 Hashes As Binary
+This document was moved to [another location](database/sha1_as_binary.md).
 
-Storing SHA1 hashes as strings is not very space efficient. A SHA1 as a string
-requires at least 40 bytes, an additional byte to store the encoding, and
-perhaps more space depending on the internals of PostgreSQL.
-
-On the other hand, if one were to store a SHA1 as binary one would only need 20
-bytes for the actual SHA1, and 1 or 4 bytes of additional space (again depending
-on database internals). This means that in the best case scenario we can reduce
-the space usage by 50%.
-
-To make this easier to work with you can include the concern `ShaAttribute` into
-a model and define a SHA attribute using the `sha_attribute` class method. For
-example:
-
-```ruby
-class Commit < ActiveRecord::Base
-  include ShaAttribute
-
-  sha_attribute :sha
-end
-```
-
-This allows you to use the value of the `sha` attribute as if it were a string,
-while storing it as binary. This means that you can do something like this,
-without having to worry about converting data to the right binary format:
-
-```ruby
-commit = Commit.find_by(sha: '88c60307bd1f215095834f09a1a5cb18701ac8ad')
-commit.sha = '971604de4cfa324d91c41650fabc129420c8d1cc'
-commit.save
-```
-
-There is however one requirement: the column used to store the SHA has _must_ be
-a binary type. For Rails this means you need to use the `:binary` type instead
-of `:text` or `:string`.
+<!-- This redirect file can be deleted after <2022-11-06>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

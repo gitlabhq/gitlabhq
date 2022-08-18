@@ -18,11 +18,12 @@ module Gitlab
           end
         end
 
-        def initialize(exportable, relations_schema, json_writer, exportable_path:)
+        def initialize(exportable, relations_schema, json_writer, exportable_path:, logger: Gitlab::Export::Logger)
           @exportable = exportable
           @exportable_path = exportable_path
           @relations_schema = relations_schema
           @json_writer = json_writer
+          @logger = logger
         end
 
         def execute
@@ -36,6 +37,8 @@ module Gitlab
         end
 
         def serialize_root(exportable_path = @exportable_path)
+          log_relation_export('root')
+
           attributes = exportable.as_json(
             relations_schema.merge(include: nil, preloads: nil, unsafe: true))
 
@@ -60,9 +63,11 @@ module Gitlab
 
         private
 
-        attr_reader :json_writer, :relations_schema, :exportable
+        attr_reader :json_writer, :relations_schema, :exportable, :logger
 
         def serialize_many_relations(key, records, options)
+          log_relation_export(key, records.size)
+
           enumerator = Enumerator.new do |items|
             key_preloads = preloads&.dig(key)
 
@@ -106,6 +111,8 @@ module Gitlab
         end
 
         def serialize_many_each(key, records, options)
+          log_relation_export(key, records.size)
+
           enumerator = Enumerator.new do |items|
             records.each do |record|
               items << Raw.new(record.to_json(options))
@@ -116,6 +123,8 @@ module Gitlab
         end
 
         def serialize_single_relation(key, record, options)
+          log_relation_export(key)
+
           json = Raw.new(record.to_json(options))
 
           json_writer.write_relation(@exportable_path, key, json)
@@ -185,6 +194,18 @@ module Gitlab
           return unless record.is_a?(MergeRequest)
 
           record.merge_request_diff&.remove_cached_external_diff
+        end
+
+        def log_base_data
+          log = { importer: 'Import/Export' }
+          log.merge!(Gitlab::ImportExport::LogUtil.exportable_to_log_payload(exportable))
+          log
+        end
+
+        def log_relation_export(relation, size = nil)
+          message = "Exporting #{relation} relation"
+          message += ". Number of records to export: #{size}" if size
+          logger.info(message: message, **log_base_data)
         end
       end
     end

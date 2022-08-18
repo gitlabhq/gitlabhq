@@ -26,7 +26,7 @@ module Gitlab
             private_constant :IMPLEMENTED_OPERATIONS
 
             def data(&block)
-              return @metric_data&.call unless block_given?
+              return @metric_data&.call unless block
 
               @metric_data = block
             end

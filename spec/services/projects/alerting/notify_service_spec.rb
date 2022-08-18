@@ -56,6 +56,7 @@ RSpec.describe Projects::Alerting::NotifyService do
 
           it_behaves_like 'processes new firing alert'
           it_behaves_like 'properly assigns the alert properties'
+          include_examples 'handles race condition in alert creation'
 
           it 'passes the integration to alert processing' do
             expect(Gitlab::AlertManagement::Payload)
@@ -118,10 +119,10 @@ RSpec.describe Projects::Alerting::NotifyService do
         end
 
         context 'with overlong payload' do
-          let(:deep_size_object) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
+          let(:payload_raw) { { 'the-payload-is-too-big' => true } }
 
           before do
-            allow(Gitlab::Utils::DeepSize).to receive(:new).and_return(deep_size_object)
+            stub_const('::Gitlab::Utils::DeepSize::DEFAULT_MAX_DEPTH', 0)
           end
 
           it_behaves_like 'alerts service responds with an error and takes no actions', :bad_request

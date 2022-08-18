@@ -28,7 +28,7 @@ installation.
 
 ## Security
 
-- [Secure GitLab](../security/index.md#securing-your-gitlab-installation):
+- [Secure GitLab](../security/index.md):
   Recommended practices to secure your GitLab instance.
 - Sign up for the GitLab [Security Newsletter](https://about.gitlab.com/company/preference-center/) to get notified for security updates upon release.
 

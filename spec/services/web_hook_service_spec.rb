@@ -190,7 +190,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
 
     context 'when auth credentials are present' do
-      let_it_be(:url) {'https://example.org'}
+      let_it_be(:url) { 'https://example.org' }
       let_it_be(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
 
       it 'uses the credentials' do
@@ -205,7 +205,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
 
     context 'when auth credentials are partial present' do
-      let_it_be(:url) {'https://example.org'}
+      let_it_be(:url) { 'https://example.org' }
       let_it_be(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
 
       it 'uses the credentials anyways' do

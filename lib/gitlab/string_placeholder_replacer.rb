@@ -10,7 +10,7 @@ module Gitlab
     # placeholder will be returned.
 
     def self.replace_string_placeholders(string, placeholder_regex = nil, &block)
-      return string if string.blank? || placeholder_regex.blank? || !block_given?
+      return string if string.blank? || placeholder_regex.blank? || !block
 
       replace_placeholders(string, placeholder_regex, &block)
     end

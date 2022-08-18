@@ -4,10 +4,10 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deprecation guidelines
+# Deprecating GitLab features
 
-This page includes information about how and when to remove or make [breaking
-changes](../contributing/index.md#breaking-changes) to GitLab features.
+This page includes information about how and when to remove or make breaking changes
+to GitLab features.
 
 ## Terminology
 
@@ -37,6 +37,16 @@ changes](../contributing/index.md#breaking-changes) to GitLab features.
 
 ![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
 
+**Breaking change**:
+
+A "breaking change" is any change that requires users to make a corresponding change to their code, settings, or workflow. "Users" might be humans, API clients, or even code classes that "use" another class. Examples of breaking changes include:
+
+- Removing a user-facing feature without a replacement/workaround.
+- Changing the definition of an existing API (by doing things like re-naming query parameters or changing routes).
+- Removing a public method from a code class.
+
+A breaking change can be considered major if it affects many users, or represents a significant change in behavior.
+
 ## When can a feature be deprecated?
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
@@ -44,6 +54,12 @@ Deprecations should be announced on the [Deprecated feature removal schedule](..
 Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
 [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+
+## How are Community Contributions to a deprecated feature handled?
+
+Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.
+
+However, at GitLab, we [give agency](https://about.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
 
 ## When can a feature be removed/changed?
 

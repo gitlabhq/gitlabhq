@@ -1,5 +1,7 @@
 - if can?(current_user, :read_issue_link, @project)
   .js-related-issues-root{ data: { endpoint: project_issue_links_path(@project, @issue),
     can_add_related_issues: "#{can?(current_user, :admin_issue_link, @issue)}",
+    full_path: @project.full_path,
+    has_issue_weights_feature: @project.licensed_feature_available?(:issue_weights).to_s,
     help_path: help_page_path('user/project/issues/related_issues'),
-    show_categorized_issues: "false" } }
+    show_categorized_issues: @project.licensed_feature_available?(:blocked_issues).to_s } }

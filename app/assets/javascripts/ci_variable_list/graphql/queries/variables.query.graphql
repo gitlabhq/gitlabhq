@@ -1,0 +1,13 @@
+#import "~/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+
+query getVariables {
+  ciVariables {
+    nodes {
+      ...BaseCiVariable
+      ... on CiInstanceVariable {
+        masked
+        protected
+      }
+    }
+  }
+}

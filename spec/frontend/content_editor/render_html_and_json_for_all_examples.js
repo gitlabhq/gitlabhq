@@ -16,6 +16,7 @@ import FigureCaption from '~/content_editor/extensions/figure_caption';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import FootnotesSection from '~/content_editor/extensions/footnotes_section';
+import Frontmatter from '~/content_editor/extensions/frontmatter';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
@@ -26,6 +27,7 @@ import Italic from '~/content_editor/extensions/italic';
 import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
+import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
@@ -51,6 +53,7 @@ const tiptapEditor = createTestEditor({
     FootnoteDefinition,
     FootnoteReference,
     FootnotesSection,
+    Frontmatter,
     Figure,
     FigureCaption,
     HardBreak,
@@ -63,6 +66,7 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
+    ReferenceDefinition,
     Strike,
     Table,
     TableCell,

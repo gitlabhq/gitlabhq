@@ -207,9 +207,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Troubleshooting
 
-- [Log system](logs.md): Where to look for logs.
+- [Log system](logs/index.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
-- [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
 - [Navigating GitLab via Rails console](operations/rails_console.md)
 - [GitLab application limits](instance_limits.md)
 - [Responding to security incidents](../security/responding_to_security_incidents.md)
@@ -241,4 +240,4 @@ who are aware of the risks.
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)
 - GitLab.com-specific resources:
-  - [Group SAML/SCIM setup](troubleshooting/group_saml_scim.md)
+  - [Example group SAML and SCIM configurations](../user/group/saml_sso/example_saml_config.md)

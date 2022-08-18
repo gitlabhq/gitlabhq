@@ -37,8 +37,16 @@ class Admin::SystemInfoController < Admin::ApplicationController
   ].freeze
 
   def show
-    @cpus = Vmstat.cpu rescue nil
-    @memory = Vmstat.memory rescue nil
+    @cpus = begin
+      Vmstat.cpu
+    rescue StandardError
+      nil
+    end
+    @memory = begin
+      Vmstat.memory
+    rescue StandardError
+      nil
+    end
     mounts = Sys::Filesystem.mounts
 
     @disks = []
@@ -52,9 +60,9 @@ class Admin::SystemInfoController < Admin::ApplicationController
         disk = Sys::Filesystem.stat(mount.mount_point)
         @disks.push({
           bytes_total: disk.bytes_total,
-          bytes_used:  disk.bytes_used,
-          disk_name:   mount.name,
-          mount_path:  disk.path
+          bytes_used: disk.bytes_used,
+          disk_name: mount.name,
+          mount_path: disk.path
         })
       rescue Sys::Filesystem::Error
       end

@@ -77,6 +77,11 @@ export default {
       required: false,
       default: null,
     },
+    issuableAuthor: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -178,7 +183,7 @@ export default {
           [],
         );
 
-      return this.moveCurrentUserToStart(mergedSearchResults);
+      return this.moveCurrentUserAndAuthorToStart(mergedSearchResults);
     },
     isSearchEmpty() {
       return this.search === '';
@@ -196,14 +201,21 @@ export default {
     showCurrentUser() {
       return this.currentUser.username && !this.isCurrentUserInList && this.isSearchEmpty;
     },
+    showAuthor() {
+      return (
+        this.issuableAuthor &&
+        !this.users.some((user) => user.id === this.issuableAuthor.id) &&
+        this.isSearchEmpty
+      );
+    },
     selectedFiltered() {
       if (this.shouldShowParticipants) {
-        return this.moveCurrentUserToStart(this.value);
+        return this.moveCurrentUserAndAuthorToStart(this.value);
       }
 
       const foundUsernames = this.users.map(({ username }) => username);
       const filtered = this.value.filter(({ username }) => foundUsernames.includes(username));
-      return this.moveCurrentUserToStart(filtered);
+      return this.moveCurrentUserAndAuthorToStart(filtered);
     },
     selectedUserNames() {
       return this.value.map(({ username }) => username);
@@ -254,20 +266,22 @@ export default {
     showDivider(list) {
       return list.length > 0 && this.isSearchEmpty;
     },
-    moveCurrentUserToStart(users) {
-      if (!users) {
-        return [];
+    moveCurrentUserAndAuthorToStart(users = []) {
+      let sortedUsers = [...users];
+
+      const author = sortedUsers.find((user) => user.id === this.issuableAuthor?.id);
+      if (author) {
+        sortedUsers = [author, ...sortedUsers.filter((user) => user.id !== author.id)];
       }
-      const usersCopy = [...users];
-      const currentUser = usersCopy.find((user) => user.username === this.currentUser.username);
+
+      const currentUser = sortedUsers.find((user) => user.username === this.currentUser.username);
 
       if (currentUser) {
         currentUser.canMerge = this.currentUser.canMerge;
-        const index = usersCopy.indexOf(currentUser);
-        usersCopy.splice(0, 0, usersCopy.splice(index, 1)[0]);
+        sortedUsers = [currentUser, ...sortedUsers.filter((user) => user.id !== currentUser.id)];
       }
 
-      return usersCopy;
+      return sortedUsers;
     },
     setSearchKey(value) {
       this.search = value.trim();
@@ -298,7 +312,7 @@ export default {
       <gl-loading-icon
         v-if="isLoading"
         data-testid="loading-participants"
-        size="lg"
+        size="md"
         class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
       />
       <template v-else>
@@ -312,8 +326,8 @@ export default {
           >
             <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-weight-bold">{{
               $options.i18n.unassigned
-            }}</span></gl-dropdown-item
-          >
+            }}</span>
+          </gl-dropdown-item>
         </template>
         <gl-dropdown-divider v-if="showDivider(selectedFiltered)" />
         <gl-dropdown-item
@@ -342,7 +356,17 @@ export default {
             />
           </gl-dropdown-item>
         </template>
-        <gl-dropdown-divider v-if="showDivider(unselectedFiltered)" />
+        <gl-dropdown-item
+          v-if="showAuthor"
+          data-testid="issuable-author"
+          @click.native.capture.stop="selectAssignee(issuableAuthor)"
+        >
+          <sidebar-participant
+            :user="issuableAuthor"
+            :issuable-type="issuableType"
+            class="gl-pl-6!"
+          />
+        </gl-dropdown-item>
         <gl-dropdown-item
           v-for="unselectedUser in unselectedFiltered"
           :key="unselectedUser.id"

@@ -34,6 +34,7 @@ module Gitlab
       instrument_worker_id(payload)
       instrument_uploads(payload)
       instrument_rate_limiting_gates(payload)
+      instrument_global_search_api(payload)
     end
 
     def instrument_gitaly(payload)
@@ -129,6 +130,10 @@ module Gitlab
 
     def instrument_rate_limiting_gates(payload)
       payload.merge!(::Gitlab::Instrumentation::RateLimitingGates.payload)
+    end
+
+    def instrument_global_search_api(payload)
+      payload.merge!(::Gitlab::Instrumentation::GlobalSearchApi.payload)
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

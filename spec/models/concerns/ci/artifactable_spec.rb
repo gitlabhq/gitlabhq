@@ -46,8 +46,30 @@ RSpec.describe Ci::Artifactable do
       end
     end
 
+    context 'when file format is zip' do
+      context 'when artifact contains one file' do
+        let(:artifact) { build(:ci_job_artifact, :zip_with_single_file) }
+
+        it 'iterates blob once' do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+        end
+      end
+
+      context 'when artifact contains two files' do
+        let(:artifact) { build(:ci_job_artifact, :zip_with_multiple_files) }
+
+        it 'iterates blob two times' do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.exactly(2).times
+        end
+      end
+    end
+
     context 'when there are no adapters for the file format' do
-      let(:artifact) { build(:ci_job_artifact, :junit, file_format: :zip) }
+      let(:artifact) { build(:ci_job_artifact, :junit) }
+
+      before do
+        allow(artifact).to receive(:file_format).and_return(:unknown)
+      end
 
       it 'raises an error' do
         expect { |b| artifact.each_blob(&b) }.to raise_error(described_class::NotSupportedAdapterError)

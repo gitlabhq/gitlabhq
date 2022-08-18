@@ -30,7 +30,7 @@ export default {
 
   computed: {
     mergeError() {
-      const mergeError = this.mr.mergeError ? stripHtml(this.mr.mergeError, ' ').trim() : '';
+      const mergeError = this.prepareMergeError(this.mr.mergeError);
 
       return sprintf(
         s__('mrWidget|%{mergeError}.'),
@@ -76,6 +76,13 @@ export default {
         this.refresh();
       }
     },
+    prepareMergeError(mergeError) {
+      return mergeError
+        ? stripHtml(mergeError, ' ')
+            .replace(/(\.$|\s+)/g, ' ')
+            .trim()
+        : '';
+    },
   },
 };
 </script>
@@ -89,7 +96,9 @@ export default {
       <status-icon :show-disabled-button="true" status="warning" />
       <div class="media-body space-children">
         <span class="bold">
-          <span v-if="mr.mergeError" class="has-error-message"> {{ mergeError }} </span>
+          <span v-if="mr.mergeError" class="has-error-message" data-testid="merge-error">
+            {{ mergeError }}
+          </span>
           <span v-else> {{ s__('mrWidget|Merge failed.') }} </span>
           <span :class="{ 'has-custom-error': mr.mergeError }"> {{ timerText }} </span>
         </span>

@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Suggestions::FileSuggestion do
 
   let_it_be(:user) { create(:user) }
 
-  let_it_be(:file_path) { 'files/ruby/popen.rb'}
+  let_it_be(:file_path) { 'files/ruby/popen.rb' }
 
   let_it_be(:project) { create(:project, :repository) }
 

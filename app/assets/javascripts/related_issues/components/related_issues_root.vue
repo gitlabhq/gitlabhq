@@ -24,6 +24,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
 
 */
 import createFlash from '~/flash';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
   relatedIssuesRemoveErrorMap,
@@ -123,6 +124,14 @@ export default {
       return this.state.relatedIssues.find((issue) => issue.id === id);
     },
     onRelatedIssueRemoveRequest(idToRemove) {
+      if (isGid(idToRemove)) {
+        const deletedId = getIdFromGraphQLId(idToRemove);
+        this.state.relatedIssues = this.state.relatedIssues.filter(
+          (issue) => issue.id !== deletedId,
+        );
+        return;
+      }
+
       const issueToRemove = this.findRelatedIssueById(idToRemove);
 
       if (issueToRemove) {

@@ -26,4 +26,4 @@ needs.
 ## Features
 
 - [Audit events](audit_events.md)
-- [Log system](logs.md)
+- [Log system](logs/index.md)

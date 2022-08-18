@@ -52,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div class="ide-file-list qa-file-list">
+  <div class="ide-file-list" data-qa-selector="file_list_container">
     <template v-if="showLoading">
       <div v-for="n in 3" :key="n" class="multi-file-loading-container">
         <gl-skeleton-loader />

@@ -25,20 +25,13 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
     context 'when automatic deactivation of dormant users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)
-        stub_const("#{described_class.name}::PAUSE_SECONDS", 0)
       end
 
       it 'deactivates dormant users' do
-        freeze_time do
-          stub_const("#{described_class.name}::BATCH_SIZE", 1)
+        worker.perform
 
-          expect(worker).to receive(:sleep).twice
-
-          worker.perform
-
-          expect(User.dormant.count).to eq(0)
-          expect(User.with_no_activity.count).to eq(0)
-        end
+        expect(User.dormant.count).to eq(0)
+        expect(User.with_no_activity.count).to eq(0)
       end
 
       where(:user_type, :expected_state) do
@@ -77,6 +70,14 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
         worker.perform
 
         expect(inactive_recently_created.reload.state).to eq('active')
+      end
+
+      it 'triggers update of highest user role for deactivated users', :clean_gitlab_redis_shared_state do
+        [dormant, inactive].each do |user|
+          expect(UpdateHighestRoleWorker).to receive(:perform_in).with(anything, user.id)
+        end
+
+        worker.perform
       end
     end
 

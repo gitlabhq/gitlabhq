@@ -219,7 +219,7 @@ function create_application_secret() {
     kubectl create secret generic --namespace "${namespace}" \
       "shared-gitlab-initial-root-password" \
       --from-literal="password=${REVIEW_APPS_ROOT_PASSWORD}" \
-      --dry-run -o json | kubectl apply -f -
+      --dry-run=client -o json | kubectl apply -f -
   else
     echoinfo "The 'shared-gitlab-initial-root-password' secret already exists in the ${namespace} namespace."
   fi
@@ -232,7 +232,7 @@ function create_application_secret() {
     kubectl create secret generic --namespace "${namespace}" \
       "shared-gitlab-license" \
       --from-file=license="${REVIEW_APPS_EE_LICENSE_FILE}" \
-      --dry-run -o json | kubectl apply -f -
+      --dry-run=client -o json | kubectl apply -f -
   else
     echoinfo "The 'shared-gitlab-license' secret already exists in the ${namespace} namespace."
   fi

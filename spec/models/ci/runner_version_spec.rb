@@ -27,16 +27,11 @@ RSpec.describe Ci::RunnerVersion do
       create(:ci_runner_version, version: 'abc456', status: :available)
     end
 
-    let_it_be(:runner_version_unknown) do
-      create(:ci_runner_version, version: 'abc567', status: :unknown)
-    end
-
-    it 'contains any runner version that is not already recommended' do
+    it 'contains any valid or unprocessed runner version that is not already recommended' do
       is_expected.to match_array([
         runner_version_nil,
         runner_version_not_available,
-        runner_version_available,
-        runner_version_unknown
+        runner_version_available
       ])
     end
   end

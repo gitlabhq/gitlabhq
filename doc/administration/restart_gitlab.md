@@ -102,8 +102,8 @@ depend on those files.
 
 ## Installations from source
 
-If you have followed the official installation guide to [install GitLab from
-source](../install/installation.md), run the following command to restart GitLab:
+If you have followed the official installation guide to 
+[install GitLab from source](../install/installation.md), run the following command to restart GitLab:
 
 ```shell
 # For systems running systemd

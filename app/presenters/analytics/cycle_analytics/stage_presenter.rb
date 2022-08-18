@@ -28,7 +28,7 @@ module Analytics
             description: _('Time before an issue gets scheduled')
           },
           plan: {
-            title:  s_('CycleAnalyticsStage|Plan'),
+            title: s_('CycleAnalyticsStage|Plan'),
             description: _('Time before an issue starts implementation')
           },
           code: {

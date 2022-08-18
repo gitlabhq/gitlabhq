@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Rails/RakeEnvironment
 
 require_relative "qa"
 
@@ -86,4 +85,8 @@ namespace :test_resources do
     QA::Tools::TestResourcesHandler.new.download(args[:ci_project_name])
   end
 end
-# rubocop:enable Rails/RakeEnvironment
+
+desc "Deletes user's projects"
+task :delete_user_projects, [:delete_before, :dry_run] do |t, args|
+  QA::Tools::DeleteUserProjects.new(args).run
+end

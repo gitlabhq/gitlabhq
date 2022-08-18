@@ -8,7 +8,7 @@ describe('Heatmap component', () => {
   let wrapper;
   let store;
 
-  const findChart = () => wrapper.find(GlHeatmap);
+  const findChart = () => wrapper.findComponent(GlHeatmap);
 
   const graphData = heatmapGraphData();
 

@@ -17,7 +17,7 @@ module Gitlab
         # Builds a note from a GitHub API response.
         #
         # note - An instance of `Sawyer::Resource` containing the note details.
-        def self.from_api_response(note)
+        def self.from_api_response(note, additional_data = {})
           matches = note.html_url.match(NOTEABLE_TYPE_REGEX)
 
           if !matches || !matches[:type]

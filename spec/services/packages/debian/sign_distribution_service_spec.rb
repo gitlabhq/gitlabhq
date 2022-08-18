@@ -30,7 +30,7 @@ RSpec.describe Packages::Debian::SignDistributionService do
         end
 
         context 'with an existing key' do
-          let!(:key) { create("debian_#{container_type}_distribution_key", distribution: distribution)}
+          let!(:key) { create("debian_#{container_type}_distribution_key", distribution: distribution) }
 
           it 'returns the content signed', :aggregate_failures do
             expect(Packages::Debian::GenerateDistributionKeyService).not_to receive(:new)

@@ -28,7 +28,7 @@ describe('AdminUsersApp component', () => {
     });
 
     it('renders the admin users table with props', () => {
-      expect(wrapper.find(AdminUsersTable).props()).toEqual({
+      expect(wrapper.findComponent(AdminUsersTable).props()).toEqual({
         users,
         paths,
       });

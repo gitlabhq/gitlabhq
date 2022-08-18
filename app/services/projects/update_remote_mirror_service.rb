@@ -76,11 +76,11 @@ module Projects
 
       if message.present?
         Gitlab::AppJsonLogger.info(message: "Error synching remote mirror",
-          project_id: project.id,
-          project_path: project.full_path,
-          remote_mirror_id: remote_mirror.id,
-          lfs_sync_failed: lfs_sync_failed,
-          divergent_ref_list: response.divergent_refs)
+                                   project_id: project.id,
+                                   project_path: project.full_path,
+                                   remote_mirror_id: remote_mirror.id,
+                                   lfs_sync_failed: lfs_sync_failed,
+                                   divergent_ref_list: response.divergent_refs)
       end
 
       [failed, message]

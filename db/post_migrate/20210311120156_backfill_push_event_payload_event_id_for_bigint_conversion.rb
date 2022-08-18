@@ -11,7 +11,7 @@ class BackfillPushEventPayloadEventIdForBigintConversion < ActiveRecord::Migrati
     return unless should_run?
 
     backfill_conversion_of_integer_to_bigint :push_event_payloads, :event_id, primary_key: :event_id,
-      batch_size: 15000, sub_batch_size: 100
+                                                                              batch_size: 15000, sub_batch_size: 100
   end
 
   def down

@@ -4,7 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       class IssueEventImporter
-        attr_reader :issue_event, :project, :client, :user_finder
+        attr_reader :issue_event, :project, :client
 
         # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
         # project - An instance of `Project`.
@@ -13,26 +13,16 @@ module Gitlab
           @issue_event = issue_event
           @project = project
           @client = client
-          @user_finder = UserFinder.new(project, client)
         end
 
+        # TODO: Add MergeRequest events support
+        # https://gitlab.com/groups/gitlab-org/-/epics/7673
         def execute
-          case issue_event.event
-          when 'closed'
-            Gitlab::GithubImport::Importer::Events::Closed.new(project, author_id)
-              .execute(issue_event)
-          when 'reopened'
-            Gitlab::GithubImport::Importer::Events::Reopened.new(project, author_id)
-              .execute(issue_event)
-          when 'labeled', 'unlabeled'
-            Gitlab::GithubImport::Importer::Events::ChangedLabel.new(project, author_id)
-              .execute(issue_event)
-          when 'renamed'
-            Gitlab::GithubImport::Importer::Events::Renamed.new(project, author_id)
-              .execute(issue_event)
-          when 'cross-referenced'
-            Gitlab::GithubImport::Importer::Events::CrossReferenced.new(project, author_id)
-              .execute(issue_event)
+          return if issue_event.issuable_type == 'MergeRequest'
+
+          importer = event_importer_class(issue_event)
+          if importer
+            importer.new(project, client).execute(issue_event)
           else
             Gitlab::GithubImport::Logger.debug(
               message: 'UNSUPPORTED_EVENT_TYPE',
@@ -43,9 +33,23 @@ module Gitlab
 
         private
 
-        def author_id
-          id, _status = user_finder.author_id_for(issue_event, author_key: :actor)
-          id
+        def event_importer_class(issue_event)
+          case issue_event.event
+          when 'closed'
+            Gitlab::GithubImport::Importer::Events::Closed
+          when 'reopened'
+            Gitlab::GithubImport::Importer::Events::Reopened
+          when 'labeled', 'unlabeled'
+            Gitlab::GithubImport::Importer::Events::ChangedLabel
+          when 'renamed'
+            Gitlab::GithubImport::Importer::Events::Renamed
+          when 'milestoned', 'demilestoned'
+            Gitlab::GithubImport::Importer::Events::ChangedMilestone
+          when 'cross-referenced'
+            Gitlab::GithubImport::Importer::Events::CrossReferenced
+          when 'assigned', 'unassigned'
+            Gitlab::GithubImport::Importer::Events::ChangedAssignee
+          end
         end
       end
     end

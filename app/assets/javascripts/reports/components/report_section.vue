@@ -206,7 +206,6 @@ export default {
 
         <gl-button
           v-if="isCollapsible"
-          class="js-collapse-btn"
           data-testid="report-section-expand-button"
           data-qa-selector="expand_report_button"
           @click="toggleCollapsed"

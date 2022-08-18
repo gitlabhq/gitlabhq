@@ -30,9 +30,9 @@ module Featurable
 
   STRING_OPTIONS = HashWithIndifferentAccess.new({
     'disabled' => DISABLED,
-    'private'  => PRIVATE,
-    'enabled'  => ENABLED,
-    'public'   => PUBLIC
+    'private' => PRIVATE,
+    'enabled' => ENABLED,
+    'public' => PUBLIC
   }).freeze
 
   class_methods do
@@ -114,7 +114,7 @@ module Featurable
       self.errors.add(field, "cannot have public visibility level") if not_allowed
     end
 
-    (self.class.available_features - feature_validation_exclusion).each {|f| validator.call("#{f}_access_level")}
+    (self.class.available_features - feature_validation_exclusion).each { |f| validator.call("#{f}_access_level") }
   end
 
   # Features that we should exclude from the validation

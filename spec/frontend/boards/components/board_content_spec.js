@@ -67,12 +67,12 @@ describe('BoardContent', () => {
     });
 
     it('renders BoardContentSidebar', () => {
-      expect(wrapper.find(BoardContentSidebar).exists()).toBe(true);
+      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(true);
     });
 
     it('does not display EpicsSwimlanes component', () => {
-      expect(wrapper.find(EpicsSwimlanes).exists()).toBe(false);
-      expect(wrapper.find(GlAlert).exists()).toBe(false);
+      expect(wrapper.findComponent(EpicsSwimlanes).exists()).toBe(false);
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
     });
   });
 
@@ -82,7 +82,7 @@ describe('BoardContent', () => {
     });
 
     it('does not render BoardContentSidebar', () => {
-      expect(wrapper.find(BoardContentSidebar).exists()).toBe(false);
+      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(false);
     });
   });
 
@@ -92,7 +92,7 @@ describe('BoardContent', () => {
     });
 
     it('renders draggable component', () => {
-      expect(wrapper.find(Draggable).exists()).toBe(true);
+      expect(wrapper.findComponent(Draggable).exists()).toBe(true);
     });
   });
 
@@ -102,7 +102,7 @@ describe('BoardContent', () => {
     });
 
     it('does not render draggable component', () => {
-      expect(wrapper.find(Draggable).exists()).toBe(false);
+      expect(wrapper.findComponent(Draggable).exists()).toBe(false);
     });
   });
 });

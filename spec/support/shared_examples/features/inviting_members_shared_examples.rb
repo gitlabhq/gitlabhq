@@ -147,9 +147,9 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
         invite_member(user2.name, role: role, refresh: false)
 
-        expect(page).to have_selector(invite_modal_selector)
-        expect(page).to have_content "#{user2.name}: Access level should be greater than or equal to Developer " \
-                                     "inherited membership from group #{group.name}"
+        invite_modal = page.find(invite_modal_selector)
+        expect(invite_modal).to have_content "#{user2.name}: Access level should be greater than or equal to " \
+                                             "Developer inherited membership from group #{group.name}"
 
         page.refresh
 
@@ -166,31 +166,85 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
           group.add_maintainer(user3)
         end
 
-        it 'shows the user errors and then removes them from the form', :js do
+        it 'shows the partial user error and success and then removes them from the form', :js do
+          user4 = create(:user)
+          user5 = create(:user)
+          user6 = create(:user)
+          user7 = create(:user)
+
+          group.add_maintainer(user6)
+          group.add_maintainer(user7)
+
           visit subentity_members_page_path
 
-          invite_member([user2.name, user3.name], role: role, refresh: false)
+          invite_member([user2.name, user3.name, user4.name, user6.name, user7.name], role: role, refresh: false)
 
-          expect(page).to have_selector(invite_modal_selector)
-          expect(page).to have_selector(member_token_error_selector(user2.id))
-          expect(page).to have_selector(member_token_error_selector(user3.id))
-          expect(page).to have_text("The following 2 members couldn't be invited")
-          expect(page).to have_text("#{user2.name}: Access level should be greater than or equal to")
-          expect(page).to have_text("#{user3.name}: Access level should be greater than or equal to")
+          # we have more than 2 errors, so one will be hidden
+          invite_modal = page.find(invite_modal_selector)
+          expect(invite_modal).to have_text("The following 4 members couldn't be invited")
+          expect(invite_modal).to have_selector(limited_invite_error_selector, count: 2, visible: :visible)
+          expect(invite_modal).to have_selector(expanded_invite_error_selector, count: 2, visible: :hidden)
+          # unpredictability of return order means we can't rely on message showing in any order here
+          # so we will not expect on the message
+          expect_to_have_invalid_invite_indicator(invite_modal, user2, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user7, message: false)
+          expect_to_have_successful_invite_indicator(invite_modal, user4)
+          expect(invite_modal).to have_button('Show more (2)')
+
+          # now we want to test the show more errors count logic
+          remove_token(user7.id)
+
+          # count decreases from 4 to 3 and 2 to 1
+          expect(invite_modal).to have_text("The following 3 members couldn't be invited")
+          expect(invite_modal).to have_button('Show more (1)')
+
+          # we want to show this error now for user6
+          invite_modal.find(more_invite_errors_button_selector).click
+
+          # now we should see the error for all users and our collapse button text
+          expect(invite_modal).to have_selector(limited_invite_error_selector, count: 2, visible: :visible)
+          expect(invite_modal).to have_selector(expanded_invite_error_selector, count: 1, visible: :visible)
+          expect_to_have_invalid_invite_indicator(invite_modal, user2, message: true)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3, message: true)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6, message: true)
+          expect(invite_modal).to have_button('Show less')
+
+          # adds new token, but doesn't submit
+          select_members(user5.name)
+
+          expect_to_have_normal_invite_indicator(invite_modal, user5)
 
           remove_token(user2.id)
 
-          expect(page).not_to have_selector(member_token_error_selector(user2.id))
-          expect(page).to have_selector(member_token_error_selector(user3.id))
-          expect(page).to have_text("The following member couldn't be invited")
-          expect(page).not_to have_text("#{user2.name}: Access level should be greater than or equal to")
+          expect(invite_modal).to have_text("The following 2 members couldn't be invited")
+          expect(invite_modal).not_to have_selector(more_invite_errors_button_selector)
+          expect_to_have_invite_removed(invite_modal, user2)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6)
+          expect_to_have_successful_invite_indicator(invite_modal, user4)
+          expect_to_have_normal_invite_indicator(invite_modal, user5)
+
+          remove_token(user6.id)
+
+          expect(invite_modal).to have_text("The following member couldn't be invited")
+          expect_to_have_invite_removed(invite_modal, user6)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3)
+          expect_to_have_successful_invite_indicator(invite_modal, user4)
+          expect_to_have_normal_invite_indicator(invite_modal, user5)
 
           remove_token(user3.id)
 
-          expect(page).not_to have_selector(member_token_error_selector(user3.id))
-          expect(page).not_to have_text("The following member couldn't be invited")
-          expect(page).not_to have_text("Review the invite errors and try again")
-          expect(page).not_to have_text("#{user3.name}: Access level should be greater than or equal to")
+          expect(invite_modal).not_to have_text("The following member couldn't be invited")
+          expect(invite_modal).not_to have_text("Review the invite errors and try again")
+          expect_to_have_invite_removed(invite_modal, user3)
+          expect_to_have_successful_invite_indicator(invite_modal, user4)
+          expect_to_have_normal_invite_indicator(invite_modal, user5)
+
+          submit_invites
+
+          expect(page).not_to have_selector(invite_modal_selector)
 
           page.refresh
 
@@ -203,6 +257,10 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
             expect(page).to have_content('Maintainer')
             expect(page).not_to have_button('Maintainer')
           end
+
+          page.within find_invited_member_row(user4.name) do
+            expect(page).to have_button(role)
+          end
         end
 
         it 'only shows the error for an invalid formatted email and does not display other member errors', :js do
@@ -210,12 +268,12 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
           invite_member([user2.name, user3.name, 'bad@email'], role: role, refresh: false)
 
-          expect(page).to have_selector(invite_modal_selector)
-          expect(page).to have_text('email contains an invalid email address')
-          expect(page).not_to have_text("The following 2 members couldn't be invited")
-          expect(page).not_to have_text("Review the invite errors and try again")
-          expect(page).not_to have_text("#{user2.name}: Access level should be greater than or equal to")
-          expect(page).not_to have_text("#{user3.name}: Access level should be greater than or equal to")
+          invite_modal = page.find(invite_modal_selector)
+          expect(invite_modal).to have_text('email contains an invalid email address')
+          expect(invite_modal).not_to have_text("The following 2 members couldn't be invited")
+          expect(invite_modal).not_to have_text("Review the invite errors and try again")
+          expect(invite_modal).not_to have_text("#{user2.name}: Access level should be greater than or equal to")
+          expect(invite_modal).not_to have_text("#{user3.name}: Access level should be greater than or equal to")
         end
       end
     end

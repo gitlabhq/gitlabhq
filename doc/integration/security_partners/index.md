@@ -12,18 +12,18 @@ each security partner:
 
 <!-- vale gitlab.Spelling = NO -->
 
-- [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/gitlab/)
+- [Anchore](https://docs.anchore.com/current/docs/configuration/integration/ci_cd/gitlab/)
 - [Bridgecrew](https://docs.bridgecrew.io/docs/integrate-with-gitlab-self-managed)
 - [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
 - [Deepfactor](https://docs.deepfactor.io/hc/en-us/articles/1500008981941)
 - [GrammaTech](https://www.grammatech.com/codesonar-gitlab-integration)
 - [Indeni](https://docs.cloudrail.app/#/integrations/gitlab)
 - [JScrambler](https://docs.jscrambler.com/code-integrity/documentation/gitlab-ci-integration)
+- [Mend](https://www.mend.io/gitlab/)
 - [Semgrep](https://semgrep.dev/for/gitlab)
 - [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)
 - [Tenable](https://docs.tenable.com/tenableio/Content/ContainerSecurity/GetStarted.htm)
 - [Venafi](https://marketplace.venafi.com/details/gitlab-ci-cd/)
 - [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
-- [WhiteSource](https://www.whitesourcesoftware.com/gitlab/)
 
 <!-- vale gitlab.Spelling = YES -->

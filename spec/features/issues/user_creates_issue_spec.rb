@@ -151,7 +151,7 @@ RSpec.describe "User creates issue" do
           click_button 'Cancel'
         end
 
-        expect(page).to have_button('Attach a file')
+        expect(page).to have_selector('[data-testid="button-attach-file"]')
         expect(page).not_to have_button('Cancel')
         expect(page).not_to have_selector('.uploading-progress-container', visible: true)
       end
@@ -188,7 +188,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'does not hide the milestone select' do
-        expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
+        expect(page).to have_selector('[data-testid="issuable-milestone-dropdown"]')
       end
     end
 
@@ -204,7 +204,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'shows the milestone select' do
-        expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
+        expect(page).to have_selector('[data-testid="issuable-milestone-dropdown"]')
       end
 
       it 'hides the incident help text' do
@@ -265,7 +265,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'shows the milestone select' do
-        expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
+        expect(page).to have_selector('[data-testid="issuable-milestone-dropdown"]')
       end
 
       it 'hides the weight input' do

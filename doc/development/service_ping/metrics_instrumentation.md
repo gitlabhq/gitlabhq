@@ -29,7 +29,7 @@ A metric definition has the [`instrumentation_class`](metrics_dictionary.md) fie
 
 The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, `NumbersMetric` or `GenericMetric`.
 
-The current convention is that a single instrumentation class corresponds to a single metric. On a rare occasions, there are exceptions to that convention like [Redis metrics](#redis-metrics). To use a single instrumentation class for more than one metric, please reach out to one of the `@gitlab-org/growth/product-intelligence/engineers` members to consult about your case.
+The current convention is that a single instrumentation class corresponds to a single metric. On rare occasions, there are exceptions to that convention like [Redis metrics](#redis-metrics). To use a single instrumentation class for more than one metric, please reach out to one of the `@gitlab-org/analytics-section/product-intelligence/engineers` members to consult about your case.
 
 Using the instrumentation classes ensures that metrics can fail safe individually, without breaking the entire
  process of Service Ping generation.
@@ -38,12 +38,15 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 
 ## Database metrics
 
+You can use database metrics to track data kept in the database, for example, a count of issues that exist on a given instance.
+
 - `operation`: Operations for the given `relation`, one of `count`, `distinct_count`, `sum`, and `average`.
 - `relation`: `ActiveRecord::Relation` for the objects we want to perform the `operation`.
 - `start`: Specifies the start value of the batch counting, by default is `relation.minimum(:id)`.
 - `finish`: Specifies the end value of the batch counting, by default is `relation.maximum(:id)`.
 - `cache_start_and_finish_as`: Specifies the cache key for `start` and `finish` values and sets up caching them. Use this call when `start` and `finish` are expensive queries that should be reused between different metric calculations.
 - `available?`: Specifies whether the metric should be reported. The default is `true`.
+- `timestamp_column`: Optionally specifies timestamp column for metric used to filter records for time constrained metrics. The default is `created_at`.
 
 [Example of a merge request that adds a database metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60022).
 
@@ -149,6 +152,8 @@ end
 
 ## Redis metrics
 
+You can use Redis metrics to track events not kept in the database, for example, a count of how many times the search bar has been used.
+
 [Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66582).
 
 Count unique values for `source_code_pushes` event.
@@ -199,6 +204,9 @@ options:
 ```
 
 ## Redis HyperLogLog metrics
+ 
+You can use Redis HyperLogLog metrics to track events not kept in the database and incremented for unique values such as unique users,
+for example, a count of how many different users used the search bar.
 
 [Example of a merge request that adds a `RedisHLL` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61685).
 
@@ -282,6 +290,8 @@ instrumentation_class: 'IssuesBoardsCountMetric'
 ```
 
 ## Generic metrics
+
+You can use generic metrics for other metrics, for example, an instance's database version. Observations type of data will always have a Generic metric counter type.
 
 - `value`: Specifies the value of the metric.
 - `available?`: Specifies whether the metric should be reported. The default is `true`.

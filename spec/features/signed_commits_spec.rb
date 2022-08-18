@@ -93,7 +93,7 @@ RSpec.describe 'GPG signed commits' do
       page.find('.gpg-status-box', text: 'Unverified').click
 
       within '.popover' do
-        expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not verified to belong to the same user.'
+        expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not associated with the GPG Key.'
         expect(page).to have_content 'Bette Cartwright'
         expect(page).to have_content '@bette.cartwright'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"

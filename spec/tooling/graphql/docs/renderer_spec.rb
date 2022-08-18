@@ -347,6 +347,128 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
       it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
+    context 'when an argument is in alpha' do
+      let(:type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'AlphaTest'
+          description 'A thing with arguments in alpha'
+
+          field :foo,
+                type: GraphQL::Types::String,
+                null: false,
+                description: 'A description.' do
+                  argument :foo_arg, GraphQL::Types::String,
+                           required: false,
+                           description: 'Argument description.',
+                           alpha: { milestone: '101.2' }
+                end
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+         ##### `AlphaTest.foo`
+
+         A description.
+
+         Returns [`String!`](#string).
+
+         ###### Arguments
+
+         | Name | Type | Description |
+         | ---- | ---- | ----------- |
+         | <a id="alphatestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Introduced** in 101.2. This feature is in Alpha. It can be changed or removed at any time. Argument description. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
+    context 'when a field is in alpha' do
+      let(:type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'AlphaTest'
+          description 'A thing with fields in alpha'
+
+          field :foo,
+                type: GraphQL::Types::String,
+                null: false,
+                alpha: { milestone: '1.10' },
+                description: 'A description.'
+          field :foo_with_args,
+                type: GraphQL::Types::String,
+                null: false,
+                alpha: { milestone: '1.10' },
+                description: 'A description.' do
+                  argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
+                end
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+          ### `AlphaTest`
+
+          A thing with fields in alpha.
+
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="alphatestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Introduced** in 1.10. This feature is in Alpha. It can be changed or removed at any time. A description. |
+
+          #### Fields with arguments
+
+          ##### `AlphaTest.fooWithArgs`
+
+          A description.
+
+          WARNING:
+          **Introduced** in 1.10.
+          This feature is in Alpha. It can be changed or removed at any time.
+
+          Returns [`String!`](#string).
+
+          ###### Arguments
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="alphatestfoowithargsarg"></a>`arg` | [`Int`](#int) | Argity. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
+    context 'when a Query.field is in alpha' do
+      before do
+        query_type.field(
+          name: :bar,
+          type: type,
+          null: true,
+          description: 'A bar',
+          alpha: { milestone: '10.11' }
+        )
+      end
+
+      let(:type) { ::GraphQL::Types::Int }
+      let(:section) do
+        <<~DOC
+          ### `Query.bar`
+
+          A bar.
+
+          WARNING:
+          **Introduced** in 10.11.
+          This feature is in Alpha. It can be changed or removed at any time.
+
+          Returns [`Int`](#int).
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
     context 'when a field has an Enumeration type' do
       let(:type) do
         enum_type = Class.new(Types::BaseEnum) do

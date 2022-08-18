@@ -15,47 +15,37 @@ const PROVIDED_PROPS = {
 describe('User Avatar Image Component', () => {
   let wrapper;
 
+  const createWrapper = (props = {}, { glAvatarForAllUserAvatars } = {}) => {
+    wrapper = shallowMount(UserAvatarImage, {
+      propsData: {
+        ...PROVIDED_PROPS,
+        ...props,
+      },
+      provide: {
+        glFeatures: {
+          glAvatarForAllUserAvatars,
+        },
+      },
+    });
+  };
+
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('when `glAvatarForAllUserAvatars` feature flag enabled', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, {
-        propsData: {
-          ...PROVIDED_PROPS,
-        },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: true,
-          },
-        },
+  describe.each([
+    [false, true, true],
+    [true, false, true],
+    [true, true, true],
+    [false, false, false],
+  ])(
+    'when glAvatarForAllUserAvatars=%s and enforceGlAvatar=%s',
+    (glAvatarForAllUserAvatars, enforceGlAvatar, isUsingNewVersion) => {
+      it(`will render ${isUsingNewVersion ? 'new' : 'old'} version`, () => {
+        createWrapper({ enforceGlAvatar }, { glAvatarForAllUserAvatars });
+        expect(wrapper.findComponent(UserAvatarImageNew).exists()).toBe(isUsingNewVersion);
+        expect(wrapper.findComponent(UserAvatarImageOld).exists()).toBe(!isUsingNewVersion);
       });
-    });
-
-    it('should render `UserAvatarImageNew` component', () => {
-      expect(wrapper.findComponent(UserAvatarImageNew).exists()).toBe(true);
-      expect(wrapper.findComponent(UserAvatarImageOld).exists()).toBe(false);
-    });
-  });
-
-  describe('when `glAvatarForAllUserAvatars` feature flag disabled', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, {
-        propsData: {
-          ...PROVIDED_PROPS,
-        },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: false,
-          },
-        },
-      });
-    });
-
-    it('should render `UserAvatarImageOld` component', () => {
-      expect(wrapper.findComponent(UserAvatarImageNew).exists()).toBe(false);
-      expect(wrapper.findComponent(UserAvatarImageOld).exists()).toBe(true);
-    });
-  });
+    },
+  );
 });

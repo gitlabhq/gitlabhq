@@ -6,39 +6,39 @@ module SortingHelper
   # rubocop: disable Metrics/AbcSize
   def sort_options_hash
     {
-      sort_value_created_date      => sort_title_created_date,
-      sort_value_downvotes         => sort_title_downvotes,
-      sort_value_due_date          => sort_title_due_date,
-      sort_value_due_date_later    => sort_title_due_date_later,
-      sort_value_due_date_soon     => sort_title_due_date_soon,
-      sort_value_label_priority    => sort_title_label_priority,
-      sort_value_largest_group     => sort_title_largest_group,
-      sort_value_largest_repo      => sort_title_largest_repo,
-      sort_value_milestone         => sort_title_milestone,
-      sort_value_milestone_later   => sort_title_milestone_later,
-      sort_value_milestone_soon    => sort_title_milestone_soon,
-      sort_value_name              => sort_title_name,
-      sort_value_name_desc         => sort_title_name_desc,
-      sort_value_oldest_created    => sort_title_oldest_created,
-      sort_value_oldest_signin     => sort_title_oldest_signin,
-      sort_value_oldest_updated    => sort_title_oldest_updated,
-      sort_value_recently_created  => sort_title_recently_created,
-      sort_value_recently_signin   => sort_title_recently_signin,
-      sort_value_recently_updated  => sort_title_recently_updated,
-      sort_value_popularity        => sort_title_popularity,
-      sort_value_priority          => sort_title_priority,
-      sort_value_merged_date       => sort_title_merged_date,
-      sort_value_merged_recently   => sort_title_merged_recently,
-      sort_value_merged_earlier    => sort_title_merged_earlier,
-      sort_value_closed_date       => sort_title_closed_date,
-      sort_value_closed_recently   => sort_title_closed_recently,
-      sort_value_closed_earlier    => sort_title_closed_earlier,
-      sort_value_upvotes           => sort_title_upvotes,
-      sort_value_contacted_date    => sort_title_contacted_date,
+      sort_value_created_date => sort_title_created_date,
+      sort_value_downvotes => sort_title_downvotes,
+      sort_value_due_date => sort_title_due_date,
+      sort_value_due_date_later => sort_title_due_date_later,
+      sort_value_due_date_soon => sort_title_due_date_soon,
+      sort_value_label_priority => sort_title_label_priority,
+      sort_value_largest_group => sort_title_largest_group,
+      sort_value_largest_repo => sort_title_largest_repo,
+      sort_value_milestone => sort_title_milestone,
+      sort_value_milestone_later => sort_title_milestone_later,
+      sort_value_milestone_soon => sort_title_milestone_soon,
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
+      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_oldest_signin => sort_title_oldest_signin,
+      sort_value_oldest_updated => sort_title_oldest_updated,
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_recently_signin => sort_title_recently_signin,
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_popularity => sort_title_popularity,
+      sort_value_priority => sort_title_priority,
+      sort_value_merged_date => sort_title_merged_date,
+      sort_value_merged_recently => sort_title_merged_recently,
+      sort_value_merged_earlier => sort_title_merged_earlier,
+      sort_value_closed_date => sort_title_closed_date,
+      sort_value_closed_recently => sort_title_closed_recently,
+      sort_value_closed_earlier => sort_title_closed_earlier,
+      sort_value_upvotes => sort_title_upvotes,
+      sort_value_contacted_date => sort_title_contacted_date,
       sort_value_relative_position => sort_title_relative_position,
-      sort_value_size              => sort_title_size,
-      sort_value_expire_date       => sort_title_expire_date,
-      sort_value_title             => sort_title_title
+      sort_value_size => sort_title_size,
+      sort_value_expire_date => sort_title_expire_date,
+      sort_value_title => sort_title_title
     }
   end
   # rubocop: enable Metrics/AbcSize
@@ -47,19 +47,19 @@ module SortingHelper
     use_old_sorting = Feature.disabled?(:project_list_filter_bar) || current_controller?('admin/projects')
 
     options = {
-      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_latest_activity => sort_title_latest_activity,
       sort_value_recently_created => sort_title_created_date,
-      sort_value_name             => sort_title_name,
-      sort_value_name_desc        => sort_title_name_desc,
-      sort_value_stars_desc       => sort_title_stars
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
+      sort_value_stars_desc => sort_title_stars
     }
 
     if use_old_sorting
       options = options.merge({
-        sort_value_oldest_activity  => sort_title_oldest_activity,
-        sort_value_oldest_created   => sort_title_oldest_created,
+        sort_value_oldest_activity => sort_title_oldest_activity,
+        sort_value_oldest_created => sort_title_oldest_created,
         sort_value_recently_created => sort_title_recently_created,
-        sort_value_stars_desc       => sort_title_most_stars
+        sort_value_stars_desc => sort_title_most_stars
       })
     end
 
@@ -73,52 +73,52 @@ module SortingHelper
   def forks_sort_options_hash
     {
       sort_value_recently_created => sort_title_created_date,
-      sort_value_oldest_created   => sort_title_created_date,
-      sort_value_latest_activity  => sort_title_latest_activity,
-      sort_value_oldest_activity  => sort_title_latest_activity
+      sort_value_oldest_created => sort_title_created_date,
+      sort_value_latest_activity => sort_title_latest_activity,
+      sort_value_oldest_activity => sort_title_latest_activity
     }
   end
 
   def projects_sort_option_titles
     # Only used for the project filter search bar
     projects_sort_options_hash.merge({
-      sort_value_oldest_activity  => sort_title_latest_activity,
-      sort_value_oldest_created   => sort_title_created_date,
-      sort_value_name_desc        => sort_title_name,
-      sort_value_stars_asc        => sort_title_stars
+      sort_value_oldest_activity => sort_title_latest_activity,
+      sort_value_oldest_created => sort_title_created_date,
+      sort_value_name_desc => sort_title_name,
+      sort_value_stars_asc => sort_title_stars
     })
   end
 
   def projects_reverse_sort_options_hash
     {
-      sort_value_latest_activity  => sort_value_oldest_activity,
+      sort_value_latest_activity => sort_value_oldest_activity,
       sort_value_recently_created => sort_value_oldest_created,
-      sort_value_name             => sort_value_name_desc,
-      sort_value_stars_desc       => sort_value_stars_asc,
-      sort_value_oldest_activity  => sort_value_latest_activity,
-      sort_value_oldest_created   => sort_value_recently_created,
-      sort_value_name_desc        => sort_value_name,
-      sort_value_stars_asc        => sort_value_stars_desc
+      sort_value_name => sort_value_name_desc,
+      sort_value_stars_desc => sort_value_stars_asc,
+      sort_value_oldest_activity => sort_value_latest_activity,
+      sort_value_oldest_created => sort_value_recently_created,
+      sort_value_name_desc => sort_value_name,
+      sort_value_stars_asc => sort_value_stars_desc
     }
   end
 
   def forks_reverse_sort_options_hash
     {
       sort_value_recently_created => sort_value_oldest_created,
-      sort_value_oldest_created   => sort_value_recently_created,
-      sort_value_latest_activity  => sort_value_oldest_activity,
-      sort_value_oldest_activity  => sort_value_latest_activity
+      sort_value_oldest_created => sort_value_recently_created,
+      sort_value_latest_activity => sort_value_oldest_activity,
+      sort_value_oldest_activity => sort_value_latest_activity
     }
   end
 
   def groups_sort_options_hash
     {
-      sort_value_name             => sort_title_name,
-      sort_value_name_desc        => sort_title_name_desc,
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_oldest_created   => sort_title_oldest_created,
-      sort_value_latest_activity  => sort_title_recently_updated,
-      sort_value_oldest_activity  => sort_title_oldest_updated
+      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_latest_activity => sort_title_recently_updated,
+      sort_value_oldest_activity => sort_title_oldest_updated
     }
   end
 
@@ -136,27 +136,27 @@ module SortingHelper
 
   def milestones_sort_options_hash
     {
-      sort_value_due_date_soon    => sort_title_due_date_soon,
-      sort_value_due_date_later   => sort_title_due_date_later,
-      sort_value_start_date_soon  => sort_title_start_date_soon,
+      sort_value_due_date_soon => sort_title_due_date_soon,
+      sort_value_due_date_later => sort_title_due_date_later,
+      sort_value_start_date_soon => sort_title_start_date_soon,
       sort_value_start_date_later => sort_title_start_date_later,
-      sort_value_name             => sort_title_name_asc,
-      sort_value_name_desc        => sort_title_name_desc
+      sort_value_name => sort_title_name_asc,
+      sort_value_name_desc => sort_title_name_desc
     }
   end
 
   def branches_sort_options_hash
     {
-      sort_value_name             => sort_title_name,
-      sort_value_oldest_updated   => sort_title_oldest_updated,
+      sort_value_name => sort_title_name,
+      sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_updated => sort_title_recently_updated
     }
   end
 
   def tags_sort_options_hash
     {
-      sort_value_name             => sort_title_name,
-      sort_value_oldest_updated   => sort_title_oldest_updated,
+      sort_value_name => sort_title_name,
+      sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_updated => sort_title_recently_updated
     }
   end
@@ -240,7 +240,7 @@ module SortingHelper
   def audit_logs_sort_order_hash
     {
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_oldest_created   => sort_title_oldest_created
+      sort_value_oldest_created => sort_title_oldest_created
     }
   end
 
@@ -336,31 +336,31 @@ module SortingHelper
 
   def packages_sort_options_hash
     {
-      sort_value_recently_created  => sort_title_created_date,
-      sort_value_oldest_created    => sort_title_created_date,
-      sort_value_name              => sort_title_name,
-      sort_value_name_desc         => sort_title_name,
-      sort_value_version_desc      => sort_title_version,
-      sort_value_version_asc       => sort_title_version,
-      sort_value_type_desc         => sort_title_type,
-      sort_value_type_asc          => sort_title_type,
+      sort_value_recently_created => sort_title_created_date,
+      sort_value_oldest_created => sort_title_created_date,
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name,
+      sort_value_version_desc => sort_title_version,
+      sort_value_version_asc => sort_title_version,
+      sort_value_type_desc => sort_title_type,
+      sort_value_type_asc => sort_title_type,
       sort_value_project_name_desc => sort_title_project_name,
-      sort_value_project_name_asc  => sort_title_project_name
+      sort_value_project_name_asc => sort_title_project_name
     }
   end
 
   def packages_reverse_sort_order_hash
     {
-      sort_value_recently_created  => sort_value_oldest_created,
-      sort_value_oldest_created    => sort_value_recently_created,
-      sort_value_name              => sort_value_name_desc,
-      sort_value_name_desc         => sort_value_name,
-      sort_value_version_desc      => sort_value_version_asc,
-      sort_value_version_asc       => sort_value_version_desc,
-      sort_value_type_desc         => sort_value_type_asc,
-      sort_value_type_asc          => sort_value_type_desc,
+      sort_value_recently_created => sort_value_oldest_created,
+      sort_value_oldest_created => sort_value_recently_created,
+      sort_value_name => sort_value_name_desc,
+      sort_value_name_desc => sort_value_name,
+      sort_value_version_desc => sort_value_version_asc,
+      sort_value_version_asc => sort_value_version_desc,
+      sort_value_type_desc => sort_value_type_asc,
+      sort_value_type_asc => sort_value_type_desc,
       sort_value_project_name_desc => sort_value_project_name_asc,
-      sort_value_project_name_asc  => sort_value_project_name_desc
+      sort_value_project_name_asc => sort_value_project_name_desc
     }
   end
 

@@ -66,7 +66,7 @@ RSpec.describe API::Release::Links do
     end
 
     context 'when release does not exist' do
-      let!(:release) { }
+      let!(:release) {}
 
       it_behaves_like '404 response' do
         let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer) }
@@ -98,7 +98,7 @@ RSpec.describe API::Release::Links do
         end
 
         context 'when the release does not exists' do
-          let!(:release) { }
+          let!(:release) {}
 
           it_behaves_like '403 response' do
             let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member) }
@@ -409,7 +409,7 @@ RSpec.describe API::Release::Links do
     end
 
     context 'when there are no corresponding release link' do
-      let!(:release_link) { }
+      let!(:release_link) {}
 
       it_behaves_like '404 response' do
         let(:request) do
@@ -510,7 +510,7 @@ RSpec.describe API::Release::Links do
     end
 
     context 'when there are no corresponding release link' do
-      let!(:release_link) { }
+      let!(:release_link) {}
 
       it_behaves_like '404 response' do
         let(:request) do

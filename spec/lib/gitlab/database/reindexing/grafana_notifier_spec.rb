@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
   include Database::DatabaseHelpers
 
   let(:api_key) { "foo" }
-  let(:api_url) { "http://bar"}
+  let(:api_url) { "http://bar" }
   let(:additional_tag) { "some-tag" }
 
   let(:action) { create(:reindex_action) }

@@ -1,8 +1,0 @@
----
-name: restructured_mr_widget
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68565
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339181
-milestone: '14.3'
-type: development
-group: group::code review
-default_enabled: true

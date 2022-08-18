@@ -2,6 +2,10 @@
 require 'spec_helper'
 
 RSpec.shared_examples_for CounterAttribute do |counter_attributes|
+  before do
+    Gitlab::ApplicationContext.push(feature_category: 'test', caller_id: 'caller')
+  end
+
   it 'defines a Redis counter_key' do
     expect(model.counter_key(:counter_name))
       .to eq("project:{#{model.project_id}}:counters:CounterAttributeModel:#{model.id}:counter_name")
@@ -22,7 +26,21 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
           where(:increment) { [10, -3] }
 
           with_them do
-            it 'increments the counter in Redis' do
+            it 'increments the counter in Redis and logs it' do
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  message: 'Increment counter attribute',
+                  attribute: attribute,
+                  project_id: model.project_id,
+                  increment: increment,
+                  new_counter_value: 0 + increment,
+                  current_db_value: model.read_attribute(attribute),
+                  'correlation_id' => an_instance_of(String),
+                  'meta.feature_category' => 'test',
+                  'meta.caller_id' => 'caller'
+                )
+              )
+
               subject
 
               Gitlab::Redis::SharedState.with do |redis|
@@ -86,7 +104,21 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
         model.delayed_increment_counter(incremented_attribute, -3)
       end
 
-      it 'updates the record' do
+      it 'updates the record and logs it' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'Flush counter attribute to database',
+            attribute: incremented_attribute,
+            project_id: model.project_id,
+            increment: 7,
+            previous_db_value: 0,
+            new_db_value: 7,
+            'correlation_id' => an_instance_of(String),
+            'meta.feature_category' => 'test',
+            'meta.caller_id' => 'caller'
+          )
+        )
+
         expect { subject }.to change { model.reset.read_attribute(incremented_attribute) }.by(7)
       end
 
@@ -150,6 +182,34 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
         expect { subject }.to raise_error('could not delete key')
 
         expect(model.reset.read_attribute(incremented_attribute)).to eq(0)
+      end
+    end
+  end
+
+  describe '#clear_counter!' do
+    let(:attribute) { counter_attributes.first }
+
+    before do
+      model.increment_counter(attribute, 10)
+    end
+
+    it 'deletes the counter key for the given attribute and logs it' do
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        hash_including(
+          message: 'Clear counter attribute',
+          attribute: attribute,
+          project_id: model.project_id,
+          'correlation_id' => an_instance_of(String),
+          'meta.feature_category' => 'test',
+          'meta.caller_id' => 'caller'
+        )
+      )
+
+      model.clear_counter!(attribute)
+
+      Gitlab::Redis::SharedState.with do |redis|
+        key_exists = redis.exists(model.counter_key(attribute))
+        expect(key_exists).to be_falsey
       end
     end
   end

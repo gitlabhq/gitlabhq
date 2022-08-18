@@ -144,9 +144,9 @@ module Gitlab
         end
 
         def adjust_migration(active_migration)
-          signal = HealthStatus.evaluate(active_migration)
+          signals = HealthStatus.evaluate(active_migration)
 
-          if signal.is_a?(HealthStatus::Signals::Stop)
+          if signals.any?(&:stop?)
             active_migration.hold!
           else
             active_migration.optimize!

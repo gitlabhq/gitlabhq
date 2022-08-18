@@ -193,6 +193,7 @@ describe('init markdown', () => {
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [ ] '}
           ${'- [X] item'}                | ${'- [X] item\n- [ ] '}
+          ${'- [~] item'}                | ${'- [~] item\n- [ ] '}
           ${'- [ ] nbsp (U+00A0)'}       | ${'- [ ] nbsp (U+00A0)\n- [ ] '}
           ${'- item\n  - second'}        | ${'- item\n  - second\n  - '}
           ${'- - -'}                     | ${'- - -'}
@@ -205,6 +206,7 @@ describe('init markdown', () => {
           ${'1. [ ] item'}               | ${'1. [ ] item\n2. [ ] '}
           ${'1. [x] item'}               | ${'1. [x] item\n2. [ ] '}
           ${'1. [X] item'}               | ${'1. [X] item\n2. [ ] '}
+          ${'1. [~] item'}               | ${'1. [~] item\n2. [ ] '}
           ${'108. item'}                 | ${'108. item\n109. '}
           ${'108. item\n     - second'}  | ${'108. item\n     - second\n     - '}
           ${'108. item\n     1. second'} | ${'108. item\n     1. second\n     2. '}
@@ -228,11 +230,13 @@ describe('init markdown', () => {
           ${'- [ ] item\n- [ ] '}                  | ${'- [ ] item\n'}
           ${'- [x] item\n- [x] '}                  | ${'- [x] item\n'}
           ${'- [X] item\n- [X] '}                  | ${'- [X] item\n'}
+          ${'- [~] item\n- [~] '}                  | ${'- [~] item\n'}
           ${'- item\n  - second\n  - '}            | ${'- item\n  - second\n'}
           ${'1. item\n2. '}                        | ${'1. item\n'}
           ${'1. [ ] item\n2. [ ] '}                | ${'1. [ ] item\n'}
           ${'1. [x] item\n2. [x] '}                | ${'1. [x] item\n'}
           ${'1. [X] item\n2. [X] '}                | ${'1. [X] item\n'}
+          ${'1. [~] item\n2. [~] '}                | ${'1. [~] item\n'}
           ${'108. item\n109. '}                    | ${'108. item\n'}
           ${'108. item\n     - second\n     - '}   | ${'108. item\n     - second\n'}
           ${'108. item\n     1. second\n     1. '} | ${'108. item\n     1. second\n'}
@@ -298,6 +302,129 @@ describe('init markdown', () => {
           expect(textArea.value).toEqual(expected);
           expect(textArea.selectionStart).toBe(expected.length);
         });
+      });
+    });
+
+    describe('shifting selected lines left or right', () => {
+      const indentEvent = new KeyboardEvent('keydown', { key: ']', metaKey: true });
+      const outdentEvent = new KeyboardEvent('keydown', { key: '[', metaKey: true });
+
+      beforeEach(() => {
+        textArea.addEventListener('keydown', keypressNoteText);
+        textArea.addEventListener('compositionstart', compositionStartNoteText);
+        textArea.addEventListener('compositionend', compositionEndNoteText);
+      });
+
+      it.each`
+        selectionStart | selectionEnd | expected                | expectedSelectionStart | expectedSelectionEnd
+        ${0}           | ${0}         | ${'  012\n456\n89'}     | ${2}                   | ${2}
+        ${5}           | ${5}         | ${'012\n  456\n89'}     | ${7}                   | ${7}
+        ${10}          | ${10}        | ${'012\n456\n  89'}     | ${12}                  | ${12}
+        ${0}           | ${2}         | ${'  012\n456\n89'}     | ${0}                   | ${4}
+        ${1}           | ${2}         | ${'  012\n456\n89'}     | ${3}                   | ${4}
+        ${5}           | ${7}         | ${'012\n  456\n89'}     | ${7}                   | ${9}
+        ${0}           | ${7}         | ${'  012\n  456\n89'}   | ${0}                   | ${11}
+        ${2}           | ${9}         | ${'  012\n  456\n  89'} | ${4}                   | ${15}
+      `(
+        'indents the selected lines two spaces to the right',
+        ({
+          selectionStart,
+          selectionEnd,
+          expected,
+          expectedSelectionStart,
+          expectedSelectionEnd,
+        }) => {
+          const text = '012\n456\n89';
+          textArea.value = text;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+
+          textArea.dispatchEvent(indentEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+          expect(textArea.selectionEnd).toEqual(expectedSelectionEnd);
+        },
+      );
+
+      it('indents a blank line two spaces to the right', () => {
+        textArea.value = '012\n\n89';
+        textArea.setSelectionRange(4, 4);
+
+        textArea.dispatchEvent(indentEvent);
+
+        expect(textArea.value).toEqual('012\n  \n89');
+        expect(textArea.selectionStart).toEqual(6);
+        expect(textArea.selectionEnd).toEqual(6);
+      });
+
+      it.each`
+        selectionStart | selectionEnd | expected              | expectedSelectionStart | expectedSelectionEnd
+        ${0}           | ${0}         | ${'234\n 789\n  34'}  | ${0}                   | ${0}
+        ${3}           | ${3}         | ${'234\n 789\n  34'}  | ${1}                   | ${1}
+        ${7}           | ${7}         | ${'  234\n789\n  34'} | ${6}                   | ${6}
+        ${0}           | ${3}         | ${'234\n 789\n  34'}  | ${0}                   | ${1}
+        ${8}           | ${10}        | ${'  234\n789\n  34'} | ${7}                   | ${9}
+        ${14}          | ${15}        | ${'  234\n 789\n34'}  | ${12}                  | ${13}
+        ${0}           | ${15}        | ${'234\n789\n34'}     | ${0}                   | ${10}
+        ${3}           | ${13}        | ${'234\n789\n34'}     | ${1}                   | ${8}
+        ${6}           | ${6}         | ${'  234\n789\n  34'} | ${6}                   | ${6}
+      `(
+        'outdents the selected lines two spaces to the left',
+        ({
+          selectionStart,
+          selectionEnd,
+          expected,
+          expectedSelectionStart,
+          expectedSelectionEnd,
+        }) => {
+          const text = '  234\n 789\n  34';
+          textArea.value = text;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+
+          textArea.dispatchEvent(outdentEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+          expect(textArea.selectionEnd).toEqual(expectedSelectionEnd);
+        },
+      );
+
+      it('outdent a blank line has no effect', () => {
+        textArea.value = '012\n\n89';
+        textArea.setSelectionRange(4, 4);
+
+        textArea.dispatchEvent(outdentEvent);
+
+        expect(textArea.value).toEqual('012\n\n89');
+        expect(textArea.selectionStart).toEqual(4);
+        expect(textArea.selectionEnd).toEqual(4);
+      });
+
+      it('does not indent if meta is not set', () => {
+        const indentNoMetaEvent = new KeyboardEvent('keydown', { key: ']' });
+        const text = '012\n456\n89';
+        textArea.value = text;
+        textArea.setSelectionRange(0, 0);
+
+        textArea.dispatchEvent(indentNoMetaEvent);
+
+        expect(textArea.value).toEqual(text);
+      });
+
+      it.each`
+        keyEvent
+        ${new KeyboardEvent('keydown', { key: ']', metaKey: false })}
+        ${new KeyboardEvent('keydown', { key: ']', metaKey: true, shiftKey: true })}
+        ${new KeyboardEvent('keydown', { key: ']', metaKey: true, altKey: true })}
+        ${new KeyboardEvent('keydown', { key: ']', metaKey: true, ctrlKey: true })}
+      `('does not indent if meta is not set', ({ keyEvent }) => {
+        const text = '012\n456\n89';
+        textArea.value = text;
+        textArea.setSelectionRange(0, 0);
+
+        textArea.dispatchEvent(keyEvent);
+
+        expect(textArea.value).toEqual(text);
       });
     });
 
@@ -371,6 +498,15 @@ describe('init markdown', () => {
         it('does nothing if user preference disabled', () => {
           const event = new KeyboardEvent('keydown', { key: '[' });
           gon.markdown_surround_selection = false;
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(event);
+
+          expect(textArea.value).toEqual(text);
+        });
+
+        it('does nothing if meta is set', () => {
+          const event = new KeyboardEvent('keydown', { key: '[', metaKey: true });
 
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);

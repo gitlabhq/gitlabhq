@@ -3,12 +3,12 @@
 module AcceptsPendingInvitations
   extend ActiveSupport::Concern
 
-  def accept_pending_invitations
-    return unless resource.active_for_authentication?
+  def accept_pending_invitations(user: resource)
+    return unless user.active_for_authentication?
 
-    if resource.pending_invitations.load.any?
-      resource.accept_pending_invitations!
-      clear_stored_location_for_resource
+    if user.pending_invitations.load.any?
+      user.accept_pending_invitations!
+      clear_stored_location_for(user: user)
       after_pending_invitations_hook
     end
   end
@@ -17,8 +17,8 @@ module AcceptsPendingInvitations
     # no-op
   end
 
-  def clear_stored_location_for_resource
-    session_key = stored_location_key_for(resource)
+  def clear_stored_location_for(user:)
+    session_key = stored_location_key_for(user)
 
     session.delete(session_key)
   end

@@ -6,8 +6,8 @@ import BatchDeleteButton from '~/design_management/components/delete_button.vue'
 describe('Batch delete button component', () => {
   let wrapper;
 
-  const findButton = () => wrapper.find(GlButton);
-  const findModal = () => wrapper.find(GlModal);
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findModal = () => wrapper.findComponent(GlModal);
 
   function createComponent({ isDeleting = false } = {}, { slots = {} } = {}) {
     wrapper = shallowMount(BatchDeleteButton, {

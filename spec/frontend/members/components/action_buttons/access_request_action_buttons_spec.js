@@ -17,8 +17,8 @@ describe('AccessRequestActionButtons', () => {
     });
   };
 
-  const findRemoveMemberButton = () => wrapper.find(RemoveMemberButton);
-  const findApproveButton = () => wrapper.find(ApproveAccessRequestButton);
+  const findRemoveMemberButton = () => wrapper.findComponent(RemoveMemberButton);
+  const findApproveButton = () => wrapper.findComponent(ApproveAccessRequestButton);
 
   afterEach(() => {
     wrapper.destroy();

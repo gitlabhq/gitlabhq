@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_projects: [project]) }
 
-  let(:seeds_block) { }
+  let(:seeds_block) {}
   let(:command) { initialize_command }
   let(:pipeline) { build(:ci_pipeline, project: project) }
 
@@ -202,6 +202,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
         run_chain
 
         expect(rspec_variables['VAR1']).to eq('overridden var 1')
+      end
+    end
+
+    describe '#rule_variables' do
+      let(:config) do
+        {
+          variables: { VAR1: 11 },
+          workflow: {
+            rules: [{ if: '$CI_PIPELINE_SOURCE',
+                      variables: { SYMBOL: :symbol, STRING: "string", INTEGER: 1 } },
+                    { when: 'always' }]
+          },
+          rspec: { script: 'rake' }
+        }
+      end
+
+      let(:rspec_variables) { command.pipeline_seed.stages[0].statuses[0].variables.to_hash }
+
+      it 'correctly parses rule variables' do
+        run_chain
+
+        expect(rspec_variables['SYMBOL']).to eq("symbol")
+        expect(rspec_variables['STRING']).to eq("string")
+        expect(rspec_variables['INTEGER']).to eq("1")
       end
     end
 

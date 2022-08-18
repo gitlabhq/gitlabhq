@@ -170,7 +170,7 @@ export default {
       return this.targetType === 'issue';
     },
     canAssign() {
-      return this.getNoteableData.current_user?.can_update && this.isIssue;
+      return this.getNoteableData.current_user?.can_set_issue_metadata && this.isIssue;
     },
     displayAuthorBadgeText() {
       return sprintf(__('This user is the author of this %{noteable}.'), {

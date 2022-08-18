@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineEditorHelper do
+  include CycleAnalyticsHelpers
+
   let_it_be(:project) { create(:project) }
 
   describe 'can_view_pipeline_editor?' do
@@ -62,8 +64,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-path" => project.path,
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
-          "runner-help-page-path" => help_page_path('ci/runners/index'),
-          "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
+          "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
           "total-branches" => project.repository.branches.length,
           "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')
@@ -93,8 +94,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-path" => project.path,
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
-          "runner-help-page-path" => help_page_path('ci/runners/index'),
-          "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
+          "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
           "total-branches" => 0,
           "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')

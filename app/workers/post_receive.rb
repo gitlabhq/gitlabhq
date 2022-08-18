@@ -85,6 +85,7 @@ class PostReceive
     replicate_snippet_changes(snippet)
 
     expire_caches(post_received, snippet.repository)
+    snippet.touch
     Snippets::UpdateStatisticsService.new(snippet).execute
   end
 

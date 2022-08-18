@@ -40,10 +40,13 @@ RSpec.describe WorkItem do
     subject { build(:work_item).widgets }
 
     it 'returns instances of supported widgets' do
-      is_expected.to match_array([instance_of(WorkItems::Widgets::Description),
-                                  instance_of(WorkItems::Widgets::Hierarchy),
-                                  instance_of(WorkItems::Widgets::Assignees),
-                                  instance_of(WorkItems::Widgets::Weight)])
+      is_expected.to include(
+        instance_of(WorkItems::Widgets::Description),
+        instance_of(WorkItems::Widgets::Hierarchy),
+        instance_of(WorkItems::Widgets::Labels),
+        instance_of(WorkItems::Widgets::Assignees),
+        instance_of(WorkItems::Widgets::StartAndDueDate)
+      )
     end
   end
 
@@ -105,6 +108,62 @@ RSpec.describe WorkItem do
         let(:issue_type) { nil }
 
         it { is_expected.to eq(false) }
+      end
+    end
+
+    describe 'confidentiality' do
+      let_it_be(:project) { create(:project) }
+
+      context 'when parent and child are confidential' do
+        let_it_be(:parent) { create(:work_item, confidential: true, project: project) }
+        let_it_be(:child) { create(:work_item, :task, confidential: true, project: project) }
+        let_it_be(:link) { create(:parent_link, work_item: child, work_item_parent: parent) }
+
+        it 'does not allow to make child non-confidential' do
+          child.confidential = false
+
+          expect(child).not_to be_valid
+          expect(child.errors[:confidential])
+            .to include('associated parent is confidential and can not have non-confidential children.')
+        end
+
+        it 'allows to make parent non-confidential' do
+          parent.confidential = false
+
+          expect(parent).to be_valid
+        end
+      end
+
+      context 'when parent and child are non-confidential' do
+        let_it_be(:parent) { create(:work_item, project: project) }
+        let_it_be(:child) { create(:work_item, :task, project: project) }
+        let_it_be(:link) { create(:parent_link, work_item: child, work_item_parent: parent) }
+
+        it 'does not allow to make parent confidential' do
+          parent.confidential = true
+
+          expect(parent).not_to be_valid
+          expect(parent.errors[:confidential])
+            .to include('confidential parent can not be used if there are non-confidential children.')
+        end
+
+        it 'allows to make child confidential' do
+          child.confidential = true
+
+          expect(child).to be_valid
+        end
+      end
+
+      context 'when creating new child' do
+        let_it_be(:child) { build(:work_item, project: project) }
+
+        it 'does not allow to set confidential parent' do
+          child.work_item_parent = create(:work_item, confidential: true, project: project)
+
+          expect(child).not_to be_valid
+          expect(child.errors[:confidential])
+            .to include('associated parent is confidential and can not have non-confidential children.')
+        end
       end
     end
   end

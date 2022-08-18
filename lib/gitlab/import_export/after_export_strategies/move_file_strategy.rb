@@ -5,6 +5,7 @@ module Gitlab
     module AfterExportStrategies
       class MoveFileStrategy < BaseAfterExportStrategy
         def initialize(archive_path:)
+          super
           @archive_path = archive_path
         end
 

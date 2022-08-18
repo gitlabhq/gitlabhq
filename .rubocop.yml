@@ -290,6 +290,10 @@ Rails/MailerName:
     # See for the context on why it's excluded https://gitlab.com/gitlab-org/gitlab/-/issues/239356#note_956419227
     - 'app/mailers/notify.rb'
 
+Rails/RakeEnvironment:
+  # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
+  Enabled: false
+
 # GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
@@ -431,6 +435,10 @@ Naming/PredicateName:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93828#note_1050812797
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
 RSpec/FactoriesInMigrationSpecs:
   Enabled: true
   Include:
@@ -558,18 +566,6 @@ Graphql/Descriptions:
 RSpec/ImplicitSubject:
   Enabled: false
 
-RSpec/EmptyLineAfterHook:
-  Enabled: false
-
-RSpec/HooksBeforeExamples:
-  Enabled: false
-
-RSpec/EmptyLineAfterExample:
-  Enabled: false
-
-RSpec/Be:
-  Enabled: false
-
 RSpec/DescribedClass:
   Enabled: false
 
@@ -595,6 +591,18 @@ RSpec/HaveGitlabHttpStatus:
   Include:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+RSpec/ContextWording:
+  Prefixes:
+  - 'when'
+  - 'with'
+  - 'without'
+  - 'for'
+  - 'and'
+  - 'on'
+  - 'in'
+  - 'as'
+  - 'if'
 
 Style/MultilineWhenThen:
   Enabled: false
@@ -779,4 +787,7 @@ Style/ClassAndModuleChildren:
   Enabled: true
 
 Fips/OpenSSL:
+  Enabled: false
+
+Gemspec/AvoidExecutingGit:
   Enabled: false

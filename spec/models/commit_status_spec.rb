@@ -747,7 +747,7 @@ RSpec.describe CommitStatus do
     end
 
     context 'when failure_reason is nil' do
-      let(:reason) { }
+      let(:reason) {}
       let(:failure_reason) { 'unknown_failure' }
 
       it { is_expected.to be_unknown_failure }

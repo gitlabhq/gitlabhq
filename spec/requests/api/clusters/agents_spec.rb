@@ -101,7 +101,7 @@ RSpec.describe API::Clusters::Agents do
       expect do
         post(api("/projects/#{project.id}/cluster_agents", user),
              params: { name: 'some-agent' })
-      end.to change {project.cluster_agents.count}.by(1)
+      end.to change { project.cluster_agents.count }.by(1)
 
       aggregate_failures "testing response" do
         expect(response).to have_gitlab_http_status(:created)
@@ -139,7 +139,7 @@ RSpec.describe API::Clusters::Agents do
         delete api("/projects/#{project.id}/cluster_agents/#{agent.id}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end.to change {project.cluster_agents.count}.by(-1)
+      end.to change { project.cluster_agents.count }.by(-1)
     end
 
     it 'returns a 404 error when deleting non existent agent' do

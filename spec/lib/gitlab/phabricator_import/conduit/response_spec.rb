@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::PhabricatorImport::Conduit::Response do
-  let(:response) { described_class.new(Gitlab::Json.parse(fixture_file('phabricator_responses/maniphest.search.json')))}
+  let(:response) { described_class.new(Gitlab::Json.parse(fixture_file('phabricator_responses/maniphest.search.json'))) }
   let(:error_response) { described_class.new(Gitlab::Json.parse(fixture_file('phabricator_responses/auth_failed.json'))) }
 
   describe '.parse!' do

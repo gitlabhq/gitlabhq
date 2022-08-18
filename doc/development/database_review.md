@@ -113,6 +113,7 @@ the following preparations into account.
 
 - Ensure `db/structure.sql` is updated as [documented](migration_style_guide.md#schema-changes), and additionally ensure that the relevant version files under
 `db/schema_migrations` were added or removed.
+- Ensure that the Database Dictionary is updated as [documented](database/database_dictionary.md).
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
 - Add the output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations into the MR description.
@@ -179,7 +180,7 @@ Include in the MR description:
   - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
-  through the `#database-lab` Slack channel or through [ChatOps](understanding_explain_plans.md#chatops).
+  through the `#database-lab` Slack channel or through [ChatOps](database/understanding_explain_plans.md#chatops).
   - Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the
   `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`)
    projects provide enough data to serve as a good example.
@@ -187,7 +188,7 @@ Include in the MR description:
   - If your queries belong to a new feature in GitLab.com and thus they don't return data in production:
     - You may analyze the query and to provide the plan from a local environment.
     - `#database-lab` and [postgres.ai](https://postgres.ai/) both allow updates to data (`exec UPDATE issues SET ...`) and creation of new tables and columns (`exec ALTER TABLE issues ADD COLUMN ...`).
-  - More information on how to find the number of actual returned records in [Understanding EXPLAIN plans](understanding_explain_plans.md)
+  - More information on how to find the number of actual returned records in [Understanding EXPLAIN plans](database/understanding_explain_plans.md)
 - For query changes, it is best to provide both the SQL queries along with the
   plan _before_ and _after_ the change. This helps spot differences quickly.
 - Include data that shows the performance improvement, preferably in
@@ -200,7 +201,7 @@ Include in the MR description:
 
 #### Preparation when adding tables
 
-- Order columns based on the [Ordering Table Columns](ordering_table_columns.md) guidelines.
+- Order columns based on the [Ordering Table Columns](database/ordering_table_columns.md) guidelines.
 - Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently
@@ -225,7 +226,7 @@ Include in the MR description:
     - Consider [access patterns and data layout](database/layout_and_access_patterns.md) if new tables or columns are added.
   - Review migrations follow [database migration style guide](migration_style_guide.md),
     for example
-    - [Check ordering of columns](ordering_table_columns.md)
+    - [Check ordering of columns](database/ordering_table_columns.md)
     - [Check indexes are present for foreign keys](migration_style_guide.md#adding-foreign-key-constraints)
   - Ensure that migrations execute in a transaction or only contain
     concurrent index/foreign key helpers (with transactions disabled)
@@ -247,16 +248,16 @@ Include in the MR description:
     - Making numerous SQL queries per record in a dataset.
   - Review queries (for example, make sure batch sizes are fine)
   - Because execution time can be longer than for a regular migration,
-    it's suggested to treat background migrations as post migrations:
-    place them in `db/post_migrate` instead of `db/migrate`. Keep in mind
-    that post migrations are executed post-deployment in production.
+    it's suggested to treat background migrations as
+    [post migrations](migration_style_guide.md#choose-an-appropriate-migration-type):
+    place them in `db/post_migrate` instead of `db/migrate`.
   - If a migration [has tracking enabled](database/background_migrations.md#background-jobs-tracking),
     ensure `mark_all_as_succeeded` is called even if no work is done.
 - Check [timing guidelines for migrations](migration_style_guide.md#how-long-a-migration-should-take)
 - Check migrations are reversible and implement a `#down` method
 - Check new table migrations:
   - Are the stated access patterns and volume reasonable? Do the assumptions they're based on seem sound? Do these patterns pose risks to stability?
-  - Are the columns [ordered to conserve space](ordering_table_columns.md)?
+  - Are the columns [ordered to conserve space](database/ordering_table_columns.md)?
   - Are there foreign keys for references to other tables?
 - Check data migrations:
   - Establish a time estimate for execution on GitLab.com.
@@ -267,10 +268,10 @@ Include in the MR description:
   - Check for any overly complex queries and queries the author specifically
     points out for review (if any)
   - If not present, ask the author to provide SQL queries and query plans
-    (for example, by using [ChatOps](understanding_explain_plans.md#chatops) or direct
+    (for example, by using [ChatOps](database/understanding_explain_plans.md#chatops) or direct
     database access)
   - For given queries, review parameters regarding data distribution
-  - [Check query plans](understanding_explain_plans.md) and suggest improvements
+  - [Check query plans](database/understanding_explain_plans.md) and suggest improvements
     to queries (changing the query, schema or adding indexes and similar)
-  - General guideline is for queries to come in below [100ms execution time](query_performance.md#timing-guidelines-for-queries)
+  - General guideline is for queries to come in below [100ms execution time](database/query_performance.md#timing-guidelines-for-queries)
   - Avoid N+1 problems and minimize the [query count](merge_request_performance_guidelines.md#query-counts).

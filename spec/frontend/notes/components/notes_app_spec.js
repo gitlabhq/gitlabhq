@@ -4,7 +4,6 @@ import $ from 'jquery';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { setTestTimeout } from 'helpers/timeout';
 import waitForPromises from 'helpers/wait_for_promises';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
@@ -18,8 +17,6 @@ import '~/behaviors/markdown/render_gfm';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import * as mockData from '../mock_data';
-
-setTestTimeout(1000);
 
 const TYPE_COMMENT_FORM = 'comment-form';
 const TYPE_NOTES_LIST = 'notes-list';
@@ -359,7 +356,7 @@ describe('note_app', () => {
     });
 
     it('should listen hashchange event', () => {
-      const notesApp = wrapper.find(NotesApp);
+      const notesApp = wrapper.findComponent(NotesApp);
       const hash = 'some dummy hash';
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValueOnce(hash);
       const setTargetNoteHash = jest.spyOn(notesApp.vm, 'setTargetNoteHash');
@@ -439,7 +436,7 @@ describe('note_app', () => {
     });
 
     it('correctly finds only draft comments', () => {
-      const drafts = wrapper.findAll(DraftNote).wrappers;
+      const drafts = wrapper.findAllComponents(DraftNote).wrappers;
 
       expect(drafts.map((x) => x.props('draft'))).toEqual(
         mockData.draftComments.map(({ note }) => expect.objectContaining({ note })),

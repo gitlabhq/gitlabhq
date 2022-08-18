@@ -75,10 +75,11 @@ Email is processed correctly when a configured email address is present in one o
 (sorted in the order they are checked):
 
 - `To`
-- `References`
 - `Delivered-To`
 - `Envelope-To` or `X-Envelope-To`
 - `Received`
+
+The `References` header is also accepted, however it is used specifically to relate email responses to existing discussion threads. It is not used for creating issues by email.
 
 In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
 also checks accepted headers.

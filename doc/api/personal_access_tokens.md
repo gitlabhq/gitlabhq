@@ -91,7 +91,12 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ### Responses
 
-- `401: Unauthorized` if the user doesn't have access to the token they're requesting the ID or if the token with matching ID doesn't exist.
+> `404` HTTP status code [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93650) in GitLab 15.3.
+
+- `401: Unauthorized` if either:
+  - The user doesn't have access to the token with the specified ID.
+  - The token with the specified ID doesn't exist.
+- `404: Not Found` if the user is an administrator but the token with the specified ID doesn't exist.
 
 ## Revoke a personal access token
 

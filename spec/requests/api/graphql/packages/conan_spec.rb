@@ -8,7 +8,7 @@ RSpec.describe 'conan package details' do
   let_it_be(:package) { create(:conan_package, project: project) }
 
   let(:metadata) { query_graphql_fragment('ConanMetadata') }
-  let(:package_files_metadata) {query_graphql_fragment('ConanFileMetadata')}
+  let(:package_files_metadata) { query_graphql_fragment('ConanFileMetadata') }
 
   let(:query) do
     graphql_query_for(:package, { id: package_global_id }, <<~FIELDS)

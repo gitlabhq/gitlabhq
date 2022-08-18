@@ -32,6 +32,10 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
         expect(execute.message).to eq(message)
       end
 
+      it 'does not update the note' do
+        expect { execute }.not_to change { timeline_event.reload.note }
+      end
+
       it_behaves_like 'does not track incident management event', :incident_management_timeline_event_edited
     end
 
@@ -94,16 +98,7 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
       context 'when note is blank' do
         let(:params) { { note: '', occurred_at: occurred_at } }
 
-        it_behaves_like 'successful response'
-        it_behaves_like 'passing the correct was_changed value', :occurred_at
-
-        it 'does not update the note' do
-          expect { execute }.not_to change { timeline_event.reload.note }
-        end
-
-        it 'updates occurred_at' do
-          expect { execute }.to change { timeline_event.occurred_at }.to(params[:occurred_at])
-        end
+        it_behaves_like 'error response', "Note can't be blank"
       end
 
       context 'when occurred_at is nil' do
@@ -119,6 +114,12 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
         it 'does not update occurred_at' do
           expect { execute }.not_to change { timeline_event.reload.occurred_at }
         end
+      end
+
+      context 'when occurred_at is blank' do
+        let(:params) { { note: 'Updated note', occurred_at: '' } }
+
+        it_behaves_like 'error response', "Occurred at can't be blank"
       end
 
       context 'when both occurred_at and note is nil' do

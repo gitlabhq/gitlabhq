@@ -57,7 +57,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
 
     beforeEach(() => {
       wrapper = factory();
-      alerts = wrapper.findAll(GlAlert);
+      alerts = wrapper.findAllComponents(GlAlert);
     });
 
     it('should show any alerts', () => {
@@ -68,7 +68,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
     it('should emit a dismiss event for a dismissed alert', () => {
       alerts.at(0).vm.$emit('dismiss');
 
-      expect(wrapper.find(EmptyState).emitted('dismissAlert')).toEqual([[0]]);
+      expect(wrapper.findComponent(EmptyState).emitted('dismissAlert')).toEqual([[0]]);
     });
   });
 
@@ -78,8 +78,8 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
     });
 
     it('should show a loading icon and nothing else', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.findAll(GlEmptyState)).toHaveLength(0);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findAllComponents(GlEmptyState)).toHaveLength(0);
     });
   });
 
@@ -88,7 +88,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
 
     beforeEach(() => {
       wrapper = factory({ errorState: true });
-      emptyState = wrapper.find(GlEmptyState);
+      emptyState = wrapper.findComponent(GlEmptyState);
     });
 
     it('should show an error state if there has been an error', () => {
@@ -106,8 +106,8 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
 
     beforeEach(() => {
       wrapper = factory({ emptyState: true });
-      emptyState = wrapper.find(GlEmptyState);
-      emptyStateLink = emptyState.find(GlLink);
+      emptyState = wrapper.findComponent(GlEmptyState);
+      emptyStateLink = emptyState.findComponent(GlLink);
     });
 
     it('should show an empty state if it is empty', () => {

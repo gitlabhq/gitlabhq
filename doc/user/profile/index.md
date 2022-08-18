@@ -36,11 +36,11 @@ To change your password:
 1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.
 
-If you don't know your current password, select the **I forgot my password** link.
+If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the account's **primary** email address.
 
 ## Change your username
 
-Your username has a unique [namespace](../group/index.md#namespaces),
+Your username has a unique [namespace](../namespace/index.md),
 which is updated when you change your username. Before you change your username, read about
 [how redirects behave](../project/repository/index.md#what-happens-when-a-repository-path-changes).
 If you do not want to update the namespace, you can create a new user or group and transfer projects to it instead.

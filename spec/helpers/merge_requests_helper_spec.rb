@@ -27,6 +27,38 @@ RSpec.describe MergeRequestsHelper do
     end
   end
 
+  describe '#merge_path_description' do
+    let(:project) { create(:project) }
+    let(:forked_project) { fork_project(project) }
+    let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    where(:case_name, :mr, :with_arrow, :result) do
+      [
+        ['forked with arrow', ref(:merge_request_forked), true, lazy do
+                                                                  "Project:Branches: #{
+          mr.source_project_path}:#{mr.source_branch} → #{
+          mr.target_project.full_path}:#{mr.target_branch}"
+                                                                end],
+        ['forked default', ref(:merge_request_forked), false, lazy do
+                                                                "Project:Branches: #{
+          mr.source_project_path}:#{mr.source_branch} to #{
+            mr.target_project.full_path}:#{mr.target_branch}"
+                                                              end],
+        ['with arrow', ref(:merge_request), true, lazy { "Branches: #{mr.source_branch} → #{mr.target_branch}" }],
+        ['default', ref(:merge_request), false, lazy { "Branches: #{mr.source_branch} to #{mr.target_branch}" }]
+      ]
+    end
+
+    with_them do
+      subject { merge_path_description(mr, with_arrow: with_arrow) }
+
+      it {
+        is_expected.to eq(result)
+      }
+    end
+  end
+
   describe '#tab_link_for' do
     let(:merge_request) { create(:merge_request, :simple) }
     let(:options) { {} }
@@ -46,8 +78,7 @@ RSpec.describe MergeRequestsHelper do
     let(:user) do
       double(
         assigned_open_merge_requests_count: 1,
-        review_requested_open_merge_requests_count: 2,
-        attention_requested_open_merge_requests_count: 3
+        review_requested_open_merge_requests_count: 2
       )
     end
 
@@ -57,33 +88,12 @@ RSpec.describe MergeRequestsHelper do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    describe 'mr_attention_requests disabled' do
-      before do
-        allow(user).to receive(:mr_attention_requests_enabled?).and_return(false)
-      end
-
-      it "returns assigned, review requested and total merge request counts" do
-        expect(subject).to eq(
-          assigned: user.assigned_open_merge_requests_count,
-          review_requested: user.review_requested_open_merge_requests_count,
-          total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
-        )
-      end
-    end
-
-    describe 'mr_attention_requests enabled' do
-      before do
-        allow(user).to receive(:mr_attention_requests_enabled?).and_return(true)
-      end
-
-      it "returns assigned, review requested, attention requests and total merge request counts" do
-        expect(subject).to eq(
-          assigned: user.assigned_open_merge_requests_count,
-          review_requested: user.review_requested_open_merge_requests_count,
-          attention_requested_count: user.attention_requested_open_merge_requests_count,
-          total: user.attention_requested_open_merge_requests_count
-        )
-      end
+    it "returns assigned, review requested and total merge request counts" do
+      expect(subject).to eq(
+        assigned: user.assigned_open_merge_requests_count,
+        review_requested: user.review_requested_open_merge_requests_count,
+        total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
+      )
     end
   end
 
@@ -134,6 +144,7 @@ RSpec.describe MergeRequestsHelper do
       it 'returns reviewer label with no names' do
         expect(helper.reviewers_label(merge_request)).to eq("Reviewers: ")
       end
+
       it 'returns reviewer label only with include_value: false' do
         expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewers")
       end

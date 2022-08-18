@@ -37,6 +37,7 @@ export const getIssuesQueryResponse = {
             userDiscussionsCount: 4,
             webPath: 'project/-/issues/789',
             webUrl: 'project/-/issues/789',
+            type: 'issue',
             assignees: {
               nodes: [
                 {

@@ -25,7 +25,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 
 On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage (which comes after the
 `review` stage), the `review-qa-smoke` and `review-qa-reliable` jobs are automatically started. The `review-qa-smoke` runs
-the QA smoke suite and the `review-qa-reliable` executes E2E tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests).
+the QA smoke suite and the `review-qa-reliable` executes E2E tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests/).
 
 `review-qa-*` jobs ensure that end-to-end tests for the changes in the merge request pass in a live environment. This shifts the identification of e2e failures from an environment on the path to production to the merge request, to prevent breaking features on GitLab.com or costly GitLab.com deployment blockers. `review-qa-*` failures should be investigated with counterpart SET involvement if needed to help determine the root cause of the error.
 

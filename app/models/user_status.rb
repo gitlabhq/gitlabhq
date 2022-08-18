@@ -9,12 +9,12 @@ class UserStatus < ApplicationRecord
 
   CLEAR_STATUS_QUICK_OPTIONS = {
     '30_minutes' => 30.minutes,
-    '3_hours'    => 3.hours,
-    '8_hours'    => 8.hours,
-    '1_day'      => 1.day,
-    '3_days'     => 3.days,
-    '7_days'     => 7.days,
-    '30_days'    => 30.days
+    '3_hours' => 3.hours,
+    '8_hours' => 8.hours,
+    '1_day' => 1.day,
+    '3_days' => 3.days,
+    '7_days' => 7.days,
+    '30_days' => 30.days
   }.freeze
 
   belongs_to :user
@@ -31,6 +31,10 @@ class UserStatus < ApplicationRecord
 
   def clear_status_after=(value)
     self.clear_status_at = CLEAR_STATUS_QUICK_OPTIONS[value]&.from_now
+  end
+
+  def customized?
+    message.present? || emoji != UserStatus::DEFAULT_EMOJI
   end
 end
 

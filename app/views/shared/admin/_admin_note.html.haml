@@ -1,7 +1,7 @@
 - if @group.admin_note.present?
   - text = @group.admin_note.note
-  .card.border-info
-    .card-header.bg-info.gl-text-white
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-blue-500 gl-mb-5' }, header_options: { class: 'gl-bg-blue-500 gl-text-white' }) do |c|
+    - c.header do
       = s_('Admin|Admin notes')
-    .card-body
+    - c.body do
       %p= text

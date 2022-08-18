@@ -1,0 +1,212 @@
+@import 'mixins_and_variables_and_functions';
+
+.calendar-block {
+  padding-left: 0;
+  padding-right: 0;
+  border-top: 0;
+
+  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
+    overflow-x: auto;
+  }
+}
+
+.calendar-hint {
+  font-size: 12px;
+  direction: ltr;
+  margin-top: -23px;
+  float: right;
+}
+
+.cover-block {
+  text-align: center;
+  background: var(--gray-50, $gray-light);
+  padding-top: 44px;
+  position: relative;
+
+  .avatar-holder {
+    .avatar,
+    .identicon {
+      margin: 0 auto;
+      float: none;
+    }
+
+    .identicon {
+      border-radius: 50%;
+    }
+  }
+
+  .cover-title {
+    color: var(--gl-text-color, $gl-text-color);
+    font-size: 23px;
+
+    h1 {
+      color: var(--gl-text-color, $gl-text-color);
+      margin-bottom: 6px;
+      font-size: 23px;
+    }
+
+    .visibility-icon {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 18px;
+      color: color('gray');
+    }
+
+    p {
+      padding: 0 $gl-padding;
+      color: var(--gl-text-color, $gl-text-color);
+    }
+  }
+
+  .cover-controls {
+    @include media-breakpoint-up(sm) {
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+    }
+
+    &.left {
+      @include media-breakpoint-up(sm) {
+        left: 1.25rem;
+        right: auto;
+      }
+    }
+  }
+
+  &.user-cover-block {
+    padding: 24px 0 0;
+
+    .nav-links {
+      width: 100%;
+      float: none;
+
+      &.scrolling-tabs {
+        float: none;
+      }
+    }
+
+    li:first-child {
+      margin-left: auto;
+    }
+
+    li:last-child {
+      margin-right: auto;
+    }
+  }
+}
+
+// Middle dot divider between each element in a list of items.
+.middle-dot-divider {
+  @include middle-dot-divider;
+}
+
+.middle-dot-divider-sm {
+  @include media-breakpoint-up(sm) {
+    @include middle-dot-divider;
+  }
+}
+
+.profile-user-bio {
+  // Limits the width of the user bio for readability.
+  max-width: 600px;
+  margin: 10px auto;
+}
+
+.user-calendar {
+  text-align: center;
+  min-height: 172px;
+
+  .calendar {
+    display: inline-block;
+  }
+}
+
+.user-calendar-activities {
+  direction: ltr;
+
+  .str-truncated {
+    max-width: 70%;
+  }
+}
+
+.user-contrib-text {
+  font-size: 12px;
+  fill: $calendar-user-contrib-text;
+}
+
+.user-profile {
+  .profile-header {
+    margin: 0 $gl-padding;
+
+    &.with-no-profile-tabs {
+      margin-bottom: $gl-padding-24;
+    }
+
+    .avatar-holder {
+      width: 90px;
+      margin: 0 auto 10px;
+    }
+  }
+
+  .user-profile-nav {
+    font-size: 0;
+  }
+
+  .fade-right {
+    right: 0;
+  }
+
+  .fade-left {
+    left: 0;
+  }
+
+  .activities-block {
+    .event-item {
+      padding-left: 40px;
+    }
+
+    .gl-label-scoped {
+      --label-inset-border: inset 0 0 0 1px currentColor;
+    }
+
+    @include media-breakpoint-up(lg) {
+      margin-right: 5px;
+    }
+  }
+
+  .projects-block {
+    @include media-breakpoint-up(lg) {
+      margin-left: 5px;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .cover-block {
+      padding-top: 20px;
+    }
+
+    .user-profile-nav {
+      a {
+        margin-right: 0;
+      }
+    }
+
+    .activities-block {
+      .event-item {
+        padding-left: 0;
+      }
+    }
+  }
+}
+
+.linkedin-icon {
+  color: $linkedin;
+}
+
+.skype-icon {
+  color: $skype;
+}
+
+.twitter-icon {
+  color: $twitter;
+}

@@ -1,0 +1,23 @@
+---
+description: Integration usage event
+category: integrations class
+action: perform_integrations_action
+property_description: the name of the performed action
+identifiers:
+- project
+- user
+- namespace
+product_section: dev
+product_stage: ecosystem
+product_group: integrations
+product_category: integrations
+milestone: "15.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93468
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

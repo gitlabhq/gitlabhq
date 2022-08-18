@@ -23,6 +23,10 @@ module QA
             element :create_token_button
           end
 
+          base.view 'app/views/shared/access_tokens/_table.html.haml' do
+            element :revoke_button
+          end
+
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do
             element :api_label, '#{scope}_label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
@@ -54,7 +58,11 @@ module QA
 
         def fill_expiry_date(date)
           date = date.to_s if date.is_a?(Date)
-          Date.strptime(date, '%Y-%m-%d') rescue ArgumentError raise "Expiry date must be in YYYY-MM-DD format"
+          begin
+            Date.strptime(date, '%Y-%m-%d')
+          rescue ArgumentError
+            raise "Expiry date must be in YYYY-MM-DD format"
+          end
 
           fill_element(:expiry_date_field, date)
         end

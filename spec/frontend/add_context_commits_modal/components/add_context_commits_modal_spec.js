@@ -87,7 +87,7 @@ describe('AddContextCommitsModal', () => {
     it('enabled ok button when atleast one row is selected', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       await nextTick();
-      expect(findModal().attributes('ok-disabled')).toBeFalsy();
+      expect(findModal().attributes('ok-disabled')).toBe(undefined);
     });
   });
 
@@ -102,7 +102,7 @@ describe('AddContextCommitsModal', () => {
     it('an enabled ok button when atleast one row is selected', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       await nextTick();
-      expect(findModal().attributes('ok-disabled')).toBeFalsy();
+      expect(findModal().attributes('ok-disabled')).toBe(undefined);
     });
 
     it('a disabled ok button in first tab, when row is selected in second tab', () => {

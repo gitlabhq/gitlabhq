@@ -20,8 +20,6 @@ module MergeRequests
         merge_request.cache_merge_request_closes_issues!(current_user)
         merge_request.cleanup_schedule&.destroy
         merge_request.update_column(:merge_ref_sha, nil)
-
-        users.each { |user| user.invalidate_attention_requested_count }
       end
 
       merge_request

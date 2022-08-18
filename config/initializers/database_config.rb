@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+Rails.application.reloader.to_run(:before) do
+  # Make sure connects_to for Ci::ApplicationRecord gets called outside of config/routes.rb first
+  # See InitializerConnections.with_disabled_database_connections
+  Ci::ApplicationRecord
+end
+
 Gitlab.ee do
   if Gitlab::Geo.geo_database_configured?
     # Make sure connects_to for geo gets called outside of config/routes.rb first

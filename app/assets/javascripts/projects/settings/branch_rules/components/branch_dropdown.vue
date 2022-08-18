@@ -1,12 +1,24 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlDropdownDivider, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
+  GlSearchBoxByType,
+  GlSprintf,
+  GlLink,
+} from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { __, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import branchesQuery from '../queries/branches.query.graphql';
 
 export const i18n = {
-  fetchBranchesError: __('An error occurred while fetching branches.'),
-  noMatch: __('No matching results'),
+  fetchBranchesError: s__('BranchRules|An error occurred while fetching branches.'),
+  noMatch: s__('BranchRules|No matching results'),
+  branchHelpText: s__(
+    'BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/* are supported.',
+  ),
+  wildCardSearchHelp: s__('BranchRules|Create wildcard: %{searchTerm}'),
 };
 
 export default {
@@ -17,6 +29,8 @@ export default {
     GlDropdownItem,
     GlDropdownDivider,
     GlSearchBoxByType,
+    GlSprintf,
+    GlLink,
   },
   apollo: {
     branchNames: {
@@ -39,6 +53,10 @@ export default {
       },
     },
   },
+  searchInputDelay: 250,
+  wildcardsHelpPath: helpPagePath('user/project/protected_branches', {
+    anchor: 'configure-multiple-protected-branches-by-using-a-wildcard',
+  }),
   props: {
     projectPath: {
       type: String,
@@ -58,7 +76,9 @@ export default {
   },
   computed: {
     createButtonLabel() {
-      return sprintf(__('Create wildcard: %{searchTerm}'), { searchTerm: this.searchTerm });
+      return sprintf(this.$options.i18n.wildCardSearchHelp, {
+        searchTerm: this.searchTerm,
+      });
     },
     shouldRenderCreateButton() {
       return this.searchTerm && !this.branchNames.includes(this.searchTerm);
@@ -81,30 +101,37 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="value || branchNames[0]">
-    <gl-search-box-by-type
-      v-model.trim="searchTerm"
-      data-testid="branch-search"
-      debounce="250"
-      :is-loading="isLoading"
-    />
-    <gl-dropdown-item
-      v-for="branch in branchNames"
-      :key="branch"
-      :is-checked="isSelected(branch)"
-      is-check-item
-      @click="selectBranch(branch)"
-    >
-      {{ branch }}
-    </gl-dropdown-item>
-    <gl-dropdown-item v-if="!branchNames.length && !isLoading" data-testid="no-data">{{
-      $options.i18n.noMatch
-    }}</gl-dropdown-item>
-    <template v-if="shouldRenderCreateButton">
-      <gl-dropdown-divider />
-      <gl-dropdown-item data-testid="create-wildcard-button" @click="createWildcard">
-        {{ createButtonLabel }}
+  <div>
+    <gl-dropdown :text="value || branchNames[0]" class="gl-w-full">
+      <gl-search-box-by-type
+        v-model.trim="searchTerm"
+        data-testid="branch-search"
+        :debounce="$options.searchInputDelay"
+        :is-loading="isLoading"
+      />
+      <gl-dropdown-item
+        v-for="branch in branchNames"
+        :key="branch"
+        :is-checked="isSelected(branch)"
+        is-check-item
+        @click="selectBranch(branch)"
+      >
+        {{ branch }}
       </gl-dropdown-item>
-    </template>
-  </gl-dropdown>
+      <gl-dropdown-item v-if="!branchNames.length && !isLoading" data-testid="no-data">{{
+        $options.i18n.noMatch
+      }}</gl-dropdown-item>
+      <template v-if="shouldRenderCreateButton">
+        <gl-dropdown-divider />
+        <gl-dropdown-item data-testid="create-wildcard-button" @click="createWildcard">
+          {{ createButtonLabel }}
+        </gl-dropdown-item>
+      </template>
+    </gl-dropdown>
+    <gl-sprintf :message="$options.i18n.branchHelpText">
+      <template #link="{ content }">
+        <gl-link :href="$options.wildcardsHelpPath">{{ content }}</gl-link>
+      </template>
+    </gl-sprintf>
+  </div>
 </template>

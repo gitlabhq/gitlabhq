@@ -10,7 +10,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
   let modal;
   let mutate;
 
-  const findAlert = () => wrapper.find(GlAlert);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createComponent = () => {
     mutate = jest.fn().mockResolvedValue();
@@ -27,7 +27,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
         $apollo: { mutate },
       },
     });
-    modal = wrapper.find(GlModal);
+    modal = wrapper.findComponent(GlModal);
   };
 
   afterEach(() => {

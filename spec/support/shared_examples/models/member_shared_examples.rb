@@ -63,16 +63,23 @@ RSpec.shared_examples '#valid_level_roles' do |entity_name|
   let(:entity) { create(entity_name) } # rubocop:disable Rails/SaveBang
   let(:entity_member) { create("#{entity_name}_member", :developer, source: entity, user: member_user) }
   let(:presenter) { described_class.new(entity_member, current_user: member_user) }
-  let(:expected_roles) { { 'Developer' => 30, 'Maintainer' => 40, 'Reporter' => 20 } }
 
-  it 'returns all roles when no parent member is present' do
-    expect(presenter.valid_level_roles).to eq(entity_member.class.access_level_roles)
+  context 'when no parent member is present' do
+    let(:all_permissible_roles) { entity_member.class.permissible_access_level_roles(member_user, entity) }
+
+    it 'returns all permissible roles' do
+      expect(presenter.valid_level_roles).to eq(all_permissible_roles)
+    end
   end
 
-  it 'returns higher roles when a parent member is present' do
-    group.add_reporter(member_user)
+  context 'when parent member is present' do
+    before do
+      group.add_reporter(member_user)
+    end
 
-    expect(presenter.valid_level_roles).to eq(expected_roles)
+    it 'returns higher roles when a parent member is present' do
+      expect(presenter.valid_level_roles).to eq(expected_roles)
+    end
   end
 end
 

@@ -36,6 +36,7 @@ module QA
 
         it(
           'is allowed to push code to sub-group project via the CLI',
+          :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363345'
         ) do
           expect do
@@ -52,6 +53,7 @@ module QA
 
         it(
           'is allowed to create a file in sub-group project via the API',
+          :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
           expect do
@@ -68,6 +70,7 @@ module QA
 
         it(
           'is allowed to commit to sub-group project via the API',
+          :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
           expect do
@@ -116,6 +119,7 @@ module QA
 
         it(
           'is not allowed to push code to parent group project via the CLI',
+          :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363344'
         ) do
           expect do
@@ -148,6 +152,7 @@ module QA
 
         it(
           'is not allowed to commit to parent group project via the API',
+          :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363342'
         ) do
           expect do

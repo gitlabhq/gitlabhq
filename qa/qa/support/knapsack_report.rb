@@ -98,7 +98,7 @@ module QA
       #
       # @return [void]
       def setup_logger!
-        Knapsack.logger = QA::Runtime::Logger.logger
+        Knapsack.logger = logger
       end
 
       # Set knapsack environment variables
@@ -112,9 +112,9 @@ module QA
 
       # Logger instance
       #
-      # @return [Logger]
+      # @return [ActiveSupport::Logger]
       def logger
-        @logger ||= Knapsack.logger
+        QA::Runtime::Logger.logger
       end
 
       # GCS client

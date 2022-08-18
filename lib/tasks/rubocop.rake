@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Rails/RakeEnvironment
 
 unless Rails.env.production?
   require 'rubocop/rake_task'
@@ -63,5 +62,3 @@ unless Rails.env.production?
     end
   end
 end
-
-# rubocop:enable Rails/RakeEnvironment

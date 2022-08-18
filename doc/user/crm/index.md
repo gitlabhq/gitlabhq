@@ -169,7 +169,7 @@ You can also add, remove, or replace issue contacts using the
 [GraphQL](../../api/graphql/reference/index.md#mutationissuesetcrmcontacts)
 API.
 
-## Autocomplete contacts **(FREE SELF)**
+## Autocomplete contacts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `contacts_autocomplete`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.0.

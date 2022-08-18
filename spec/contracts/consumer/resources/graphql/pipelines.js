@@ -16,6 +16,27 @@ export async function getPipelineHeaderDataRequest(endpoint) {
   };
 
   return axios({
+    method: 'POST',
+    baseURL: url,
+    url: '/api/graphql',
+    headers: { Accept: '*/*' },
+    data: graphqlQuery,
+  });
+}
+
+export async function deletePipeline(endpoint) {
+  const { url } = endpoint;
+  const query = await extractGraphQLQuery(
+    'app/assets/javascripts/pipelines/graphql/mutations/delete_pipeline.mutation.graphql',
+  );
+  const graphqlQuery = {
+    query,
+    variables: {
+      id: 'gid://gitlab/Ci::Pipeline/316112',
+    },
+  };
+
+  return axios({
     baseURL: url,
     url: '/api/graphql',
     method: 'POST',

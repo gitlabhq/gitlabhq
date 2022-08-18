@@ -33,6 +33,7 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to validate_presence_of(:build_key) }
       it { is_expected.to validate_presence_of(:bamboo_url) }
+
       it_behaves_like 'issue tracker integration URL attribute', :bamboo_url
 
       describe '#username' do

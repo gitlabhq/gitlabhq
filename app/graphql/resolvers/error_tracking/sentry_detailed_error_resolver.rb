@@ -14,7 +14,7 @@ module Resolvers
         response = ::ErrorTracking::IssueDetailsService.new(
           project,
           current_user,
-          { issue_id: id.model_id }
+          { issue_id: id.model_id, tracking_event: :error_tracking_view_details }
         ).execute
         issue = response[:issue]
         issue.gitlab_project = project if issue

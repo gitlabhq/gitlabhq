@@ -5,7 +5,7 @@ class PrepareIndexesForTaggingBigintConversion < ActiveRecord::Migration[6.1]
 
   def up
     prepare_async_index :taggings, :id_convert_to_bigint, unique: true,
-      name: :index_taggings_on_id_convert_to_bigint
+                                                          name: :index_taggings_on_id_convert_to_bigint
 
     prepare_async_index :taggings, [:taggable_id_convert_to_bigint, :taggable_type],
       name: :i_taggings_on_taggable_id_convert_to_bigint_and_taggable_type

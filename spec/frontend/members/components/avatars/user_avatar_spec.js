@@ -33,7 +33,7 @@ describe('UserAvatar', () => {
   it("renders link to user's profile", () => {
     createComponent();
 
-    const link = wrapper.find(GlAvatarLink);
+    const link = wrapper.findComponent(GlAvatarLink);
 
     expect(link.exists()).toBe(true);
     expect(link.attributes()).toMatchObject({
@@ -77,7 +77,7 @@ describe('UserAvatar', () => {
     `('renders the "$badgeText" badge', ({ member, badgeText }) => {
       createComponent({ member });
 
-      expect(wrapper.find(GlBadge).text()).toBe(badgeText);
+      expect(wrapper.findComponent(GlBadge).text()).toBe(badgeText);
     });
 
     it('renders the "It\'s you" badge when member is current user', () => {

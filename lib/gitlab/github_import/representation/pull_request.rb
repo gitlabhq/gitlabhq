@@ -18,7 +18,7 @@ module Gitlab
         # Builds a PR from a GitHub API response.
         #
         # issue - An instance of `Sawyer::Resource` containing the PR details.
-        def self.from_api_response(pr)
+        def self.from_api_response(pr, additional_data = {})
           assignee = Representation::User.from_api_response(pr.assignee) if pr.assignee
           user = Representation::User.from_api_response(pr.user) if pr.user
           merged_by = Representation::User.from_api_response(pr.merged_by) if pr.merged_by

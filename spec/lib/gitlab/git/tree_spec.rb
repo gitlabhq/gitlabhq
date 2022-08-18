@@ -2,10 +2,11 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Tree, :seed_helper do
+RSpec.describe Gitlab::Git::Tree do
   let_it_be(:user) { create(:user) }
 
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+  let(:project) { create(:project, :repository) }
+  let(:repository) { project.repository.raw }
 
   shared_examples :repo do
     subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, pagination_params) }
@@ -103,10 +104,6 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
               contents: 'test'
             }]
           ).newrev
-        end
-
-        after do
-          ensure_seeds
         end
 
         it { expect(subdir_file.flat_path).to eq('files/flat/path/correct') }

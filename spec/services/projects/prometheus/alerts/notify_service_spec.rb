@@ -177,6 +177,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
 
         it { is_expected.to be_success }
+
         include_examples 'does not send alert notification emails'
         include_examples 'does not process incident issues'
       end
@@ -187,6 +188,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
 
         it { is_expected.to be_success }
+
         include_examples 'does not send alert notification emails'
       end
 
@@ -196,6 +198,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
 
         it { is_expected.to be_success }
+
         include_examples 'does not process incident issues'
       end
     end
@@ -313,11 +316,11 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     end
 
     context 'when the payload is too big' do
-      let(:payload) { { 'the-payload-is-too-big' => true } }
-      let(:deep_size_object) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
+      let(:payload_raw) { { 'the-payload-is-too-big' => true } }
+      let(:payload) { ActionController::Parameters.new(payload_raw).permit! }
 
       before do
-        allow(Gitlab::Utils::DeepSize).to receive(:new).and_return(deep_size_object)
+        stub_const('::Gitlab::Utils::DeepSize::DEFAULT_MAX_DEPTH', 0)
       end
 
       it_behaves_like 'alerts service responds with an error and takes no actions', :bad_request

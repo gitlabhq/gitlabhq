@@ -57,7 +57,7 @@ describe('Design management design todo button', () => {
   });
 
   it('renders TodoButton component', () => {
-    expect(wrapper.find(TodoButton).exists()).toBe(true);
+    expect(wrapper.findComponent(TodoButton).exists()).toBe(true);
   });
 
   describe('when design has a pending todo', () => {

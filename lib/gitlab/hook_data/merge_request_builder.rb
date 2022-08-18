@@ -22,6 +22,7 @@ module Gitlab
           merge_user_id
           merge_when_pipeline_succeeds
           milestone_id
+          reviewer_ids
           source_branch
           source_project_id
           state_id
@@ -38,6 +39,7 @@ module Gitlab
         %i[
           assignees
           labels
+          reviewers
           total_time_spent
           time_change
         ].freeze
@@ -60,6 +62,7 @@ module Gitlab
           human_time_estimate: merge_request.human_time_estimate,
           assignee_ids: merge_request.assignee_ids,
           assignee_id: merge_request.assignee_ids.first, # This key is deprecated
+          reviewer_ids: merge_request.reviewer_ids,
           labels: merge_request.labels_hook_attrs,
           state: merge_request.state, # This key is deprecated
           blocking_discussions_resolved: merge_request.mergeable_discussions_state?,

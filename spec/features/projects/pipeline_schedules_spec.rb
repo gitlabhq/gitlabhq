@@ -109,7 +109,12 @@ RSpec.describe 'Pipeline Schedules', :js do
         end
 
         it 'changes ownership of the pipeline' do
-          click_link 'Take ownership'
+          click_button 'Take ownership'
+
+          page.within('#pipeline-take-ownership-modal') do
+            click_link 'Take ownership'
+          end
+
           page.within('.pipeline-schedule-table-row') do
             expect(page).not_to have_content('No owner')
             expect(page).to have_link('Sidney Jones')

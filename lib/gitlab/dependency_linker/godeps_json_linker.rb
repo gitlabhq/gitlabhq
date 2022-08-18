@@ -12,10 +12,10 @@ module Gitlab
       def link_dependencies
         link_json('ImportPath') do |path|
           case path
-          when %r{\A(?<repo>github\.com/#{REPO_REGEX})/(?<path>.+)\z}
+          when %r{\A(?<repo>github\.com/#{REPO_REGEX})/(?<path>.+)\z}o
             "https://#{$~[:repo]}/tree/master/#{$~[:path]}"
-          when %r{\A(?<repo>gitlab\.com/#{NESTED_REPO_REGEX})\.git/(?<path>.+)\z},
-            %r{\A(?<repo>gitlab\.com/#{REPO_REGEX})/(?<path>.+)\z}
+          when %r{\A(?<repo>gitlab\.com/#{NESTED_REPO_REGEX})\.git/(?<path>.+)\z}o,
+            %r{\A(?<repo>gitlab\.com/#{REPO_REGEX})/(?<path>.+)\z}o
 
             "https://#{$~[:repo]}/-/tree/master/#{$~[:path]}"
           when /\Agolang\.org/

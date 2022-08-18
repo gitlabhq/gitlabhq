@@ -57,6 +57,7 @@ export const mockIssuable = {
     count: 2,
     completedCount: 1,
   },
+  type: 'issue',
 };
 
 export const mockIssuables = [

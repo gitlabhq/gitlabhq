@@ -17,16 +17,6 @@
 #                Corresponding feature flag should have `default_enabled` attribute set to `false`.
 #                This attribute is OPTIONAL and can be omitted, when `feature_flag` is missing no feature flag will be checked.
 ---
-- name: compliance_features_track_unique_visits_union
-  operator: OR
-  source: redis
-  time_frame: [7d, 28d]
-  events:
-    - 'g_compliance_audit_events'
-    - 'g_compliance_dashboard'
-    - 'i_compliance_audit_events'
-    - 'a_compliance_audit_events_api'
-    - 'i_compliance_credential_inventory'
 - name: incident_management_alerts_total_unique_counts
   operator: OR
   source: redis
@@ -59,6 +49,7 @@
   events:
     - users_creating_work_items
     - users_updating_work_item_title
+    - users_updating_work_item_dates
   feature_flag: track_work_items_activity
 - name: xmau_project_management
   operator: OR
@@ -67,6 +58,7 @@
   events:
     - users_creating_work_items
     - users_updating_work_item_title
+    - users_updating_work_item_dates
   feature_flag: track_work_items_activity
 - name: users_work_items
   operator: OR
@@ -75,4 +67,5 @@
   events:
     - users_creating_work_items
     - users_updating_work_item_title
+    - users_updating_work_item_dates
   feature_flag: track_work_items_activity

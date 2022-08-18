@@ -9,7 +9,7 @@ import { IssueType } from '~/issues/constants';
 import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
-import initRelatedIssues from '~/related_issues';
+import { initRelatedIssues } from '~/related_issues';
 import {
   initHeaderActions,
   initIncidentApp,

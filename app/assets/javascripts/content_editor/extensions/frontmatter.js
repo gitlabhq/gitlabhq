@@ -1,8 +1,15 @@
+import { lowlight } from 'lowlight/lib/core';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';
 
 export default CodeBlockHighlight.extend({
   name: 'frontmatter',
+
+  addOptions() {
+    return {
+      lowlight,
+    };
+  },
 
   addAttributes() {
     return {

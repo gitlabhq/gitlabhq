@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Verify::Uploads do
         end
 
         def perform_task
-          described_class.new(batch_size: 100).run_batches { }
+          described_class.new(batch_size: 100).run_batches {}
         end
       end
     end

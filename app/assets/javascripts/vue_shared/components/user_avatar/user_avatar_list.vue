@@ -21,7 +21,7 @@ export default {
       default: 10,
     },
     imgSize: {
-      type: Number,
+      type: [Number, Object],
       required: false,
       default: 20,
     },

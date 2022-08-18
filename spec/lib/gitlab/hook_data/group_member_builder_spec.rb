@@ -39,6 +39,7 @@ RSpec.describe Gitlab::HookData::GroupMemberBuilder do
         let(:event) { :create }
 
         it { expect(event_name).to eq('user_add_to_group') }
+
         it_behaves_like 'includes the required attributes'
       end
 
@@ -46,6 +47,7 @@ RSpec.describe Gitlab::HookData::GroupMemberBuilder do
         let(:event) { :update }
 
         it { expect(event_name).to eq('user_update_for_group') }
+
         it_behaves_like 'includes the required attributes'
       end
 
@@ -53,6 +55,7 @@ RSpec.describe Gitlab::HookData::GroupMemberBuilder do
         let(:event) { :destroy }
 
         it { expect(event_name).to eq('user_remove_from_group') }
+
         it_behaves_like 'includes the required attributes'
       end
     end

@@ -40,6 +40,7 @@ There are two places defined variables can be used. On the:
 | [`services:name`](../yaml/index.md#services)                          | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`services`](../yaml/index.md#services)                               | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`tags`](../yaml/index.md#tags)                                       | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35742) in GitLab 14.1. |
+| [`trigger` and `trigger:project`](../yaml/index.md#trigger)           | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367660) in GitLab 15.3. |
 | [`variables`](../yaml/index.md#variables)                             | yes              | GitLab/Runner          | The variable expansion is first made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab, and then any unrecognized or unavailable variables are expanded by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 
 ### `config.toml` file
@@ -131,10 +132,17 @@ These restrictions exist because `after_script` scripts are executed in a
 
 ## Persisted variables
 
-The following variables are known as "persisted":
+Some predefined variables are called "persisted".
+
+Pipeline-level persisted variables:
 
 - `CI_PIPELINE_ID`
+- `CI_PIPELINE_URL`
+
+Job-level persisted variables:
+
 - `CI_JOB_ID`
+- `CI_JOB_URL`
 - `CI_JOB_TOKEN`
 - `CI_JOB_STARTED_AT`
 - `CI_REGISTRY_USER`
@@ -143,7 +151,7 @@ The following variables are known as "persisted":
 - `CI_DEPLOY_USER`
 - `CI_DEPLOY_PASSWORD`
 
-They are:
+Persisted variables are:
 
 - Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
   - Runner.
@@ -151,6 +159,9 @@ They are:
 - Not supported:
   - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
   - In the `only`, `except`, and `rules` [variables expressions](../jobs/job_control.md#cicd-variable-expressions).
+
+[Pipeline trigger jobs](../yaml/index.md#trigger) cannot use job-level persisted variables,
+but can use pipeline-level persisted variables.
 
 Some of the persisted variables contain tokens and cannot be used by some definitions
 due to security reasons.

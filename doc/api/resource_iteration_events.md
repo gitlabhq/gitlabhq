@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229463) in GitLab 13.5.
 > - Moved to GitLab Premium in 13.9.
 
-Resource iteration events keep track of what happens to GitLab [issues](../user/project/issues/).
+Resource iteration events keep track of what happens to GitLab [issues](../user/project/issues/index.md).
 
 Use them to track which iteration was set, who did it, and when it happened.
 

@@ -22,7 +22,7 @@ describe('IDE store file mutations', () => {
         active: true,
       });
 
-      expect(localFile.active).toBeTruthy();
+      expect(localFile.active).toBe(true);
     });
 
     it('sets pending tab as not active', () => {
@@ -41,7 +41,7 @@ describe('IDE store file mutations', () => {
     it('adds into opened files', () => {
       mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
 
-      expect(localFile.opened).toBeTruthy();
+      expect(localFile.opened).toBe(true);
       expect(localState.openFiles.length).toBe(1);
     });
 
@@ -50,7 +50,7 @@ describe('IDE store file mutations', () => {
         mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
         mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
 
-        expect(localFile.opened).toBeFalsy();
+        expect(localFile.opened).toBe(false);
         expect(localState.openFiles.length).toBe(0);
       });
     });
@@ -162,7 +162,7 @@ describe('IDE store file mutations', () => {
 
       callMutationForFile(localFile);
 
-      expect(localFile.raw).toBeFalsy();
+      expect(localFile.raw).toEqual('');
       expect(localState.stagedFiles[0].raw).toBe('testing');
     });
 
@@ -172,7 +172,7 @@ describe('IDE store file mutations', () => {
 
       callMutationForFile(localFile);
 
-      expect(localFile.raw).toBeFalsy();
+      expect(localFile.raw).toEqual('');
       expect(localFile.content).toBe('testing');
     });
 
@@ -202,7 +202,7 @@ describe('IDE store file mutations', () => {
 
       callMutationForFile(localFile);
 
-      expect(localFile.raw).toBeFalsy();
+      expect(localFile.raw).toEqual('');
       expect(localState.stagedFiles[0].raw).toBe('testing');
     });
   });
@@ -239,7 +239,7 @@ describe('IDE store file mutations', () => {
       });
 
       expect(localFile.content).toBe('testing');
-      expect(localFile.changed).toBeTruthy();
+      expect(localFile.changed).toBe(true);
     });
 
     it('sets changed if file is a temp file', () => {
@@ -250,7 +250,7 @@ describe('IDE store file mutations', () => {
         content: '',
       });
 
-      expect(localFile.changed).toBeTruthy();
+      expect(localFile.changed).toBe(true);
     });
   });
 
@@ -329,7 +329,7 @@ describe('IDE store file mutations', () => {
       mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
 
       expect(localFile.content).toBe('');
-      expect(localFile.changed).toBeFalsy();
+      expect(localFile.changed).toBe(false);
     });
 
     it('adds to root tree if deleted', () => {
@@ -527,7 +527,7 @@ describe('IDE store file mutations', () => {
         changed: true,
       });
 
-      expect(localFile.changed).toBeTruthy();
+      expect(localFile.changed).toBe(true);
     });
   });
 

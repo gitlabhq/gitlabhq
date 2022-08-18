@@ -8,7 +8,6 @@ export function createMockClient(handlers = [], resolvers = {}, cacheOptions = {
   const cache = new InMemoryCache({
     possibleTypes,
     typePolicies,
-    addTypename: false,
     ...cacheOptions,
   });
 

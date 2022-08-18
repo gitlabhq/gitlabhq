@@ -1,0 +1,13 @@
+---
+# Warning: gitlab.HeadingDepth
+#
+# Checks that there are no headings greater than 3 levels
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: 'The subheading "%s" is nested too deeply. Headings deeper than H5 suggest the section or page should be refactored.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#headings-in-markdown
+level: warning
+scope: raw
+raw:
+  - '(?<=\n)#{5,}\s.*'

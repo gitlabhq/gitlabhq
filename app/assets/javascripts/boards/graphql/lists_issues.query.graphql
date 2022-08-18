@@ -17,7 +17,6 @@ query BoardListsEE(
       lists(id: $id, issueFilters: $filters) {
         nodes {
           id
-          issuesCount
           listType
           issues(first: $first, filters: $filters, after: $after) {
             edges {
@@ -41,7 +40,6 @@ query BoardListsEE(
       lists(id: $id, issueFilters: $filters) {
         nodes {
           id
-          issuesCount
           listType
           issues(first: $first, filters: $filters, after: $after) {
             edges {

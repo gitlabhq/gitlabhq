@@ -31,6 +31,11 @@ export default {
       required: false,
       default: null,
     },
+    canUpdate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     tracking() {
@@ -84,5 +89,5 @@ export default {
 </script>
 
 <template>
-  <item-title :title="workItemTitle" @title-changed="updateTitle" />
+  <item-title :title="workItemTitle" :disabled="!canUpdate" @title-changed="updateTitle" />
 </template>

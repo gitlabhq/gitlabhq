@@ -6,6 +6,7 @@ RSpec.describe QA::Support::Loglinking do
       it 'if correlation_id is empty' do
         expect(QA::Support::Loglinking.failure_metadata('')).to eq(nil)
       end
+
       it 'if correlation_id is nil' do
         expect(QA::Support::Loglinking.failure_metadata(nil)).to eq(nil)
       end
@@ -37,14 +38,14 @@ RSpec.describe QA::Support::Loglinking do
   describe '.sentry_url' do
     let(:url_hash) do
       {
-        :staging =>         'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
-        :staging_canary =>  'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny',
-        :staging_ref =>     'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
-        :pre =>             'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
-        :canary =>          'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
-        :production =>      'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny',
-        :foo =>             nil,
-        nil =>              nil
+        :staging => 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
+        :staging_canary => 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny',
+        :staging_ref => 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
+        :pre => 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
+        :canary => 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
+        :production => 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny',
+        :foo => nil,
+        nil => nil
       }
     end
 
@@ -60,14 +61,14 @@ RSpec.describe QA::Support::Loglinking do
   describe '.kibana_url' do
     let(:url_hash) do
       {
-        :staging =>         'https://nonprod-log.gitlab.net/',
-        :staging_canary =>  'https://nonprod-log.gitlab.net/',
-        :staging_ref =>     nil,
-        :pre =>             nil,
-        :canary =>          'https://log.gprd.gitlab.net/',
-        :production =>      'https://log.gprd.gitlab.net/',
-        :foo =>             nil,
-        nil =>              nil
+        :staging => 'https://nonprod-log.gitlab.net/',
+        :staging_canary => 'https://nonprod-log.gitlab.net/',
+        :staging_ref => nil,
+        :pre => nil,
+        :canary => 'https://log.gprd.gitlab.net/',
+        :production => 'https://log.gprd.gitlab.net/',
+        :foo => nil,
+        nil => nil
       }
     end
 
@@ -168,6 +169,7 @@ RSpec.describe QA::Support::Loglinking do
 
         expect(QA::Support::Loglinking.canary?).to eq(true)
       end
+
       it 'and not true returns false' do
         allow(QA::Support::Loglinking).to receive(:cookies).and_return({ 'gitlab_canary' => { name: 'gitlab_canary', value: 'false' } })
 

@@ -12,6 +12,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isExternal } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export default {
@@ -22,6 +23,7 @@ export default {
     GlAvatarLink,
     GlAvatarLabeled,
     TimeAgoTooltip,
+    WorkItemTypeIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -65,6 +67,16 @@ export default {
       required: false,
       default: null,
     },
+    issuableType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showWorkItemTypeIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     badgeVariant() {
@@ -81,8 +93,8 @@ export default {
 
       return sprintf(
         n__(
-          '%{completedCount} of %{count} task completed',
-          '%{completedCount} of %{count} tasks completed',
+          '%{completedCount} of %{count} checklist item completed',
+          '%{completedCount} of %{count} checklist items completed',
           count,
         ),
         { completedCount, count },
@@ -122,7 +134,13 @@ export default {
           </div>
         </div>
         <span>
-          {{ __('Created') }}
+          <template v-if="showWorkItemTypeIcon">
+            <work-item-type-icon :work-item-type="issuableType" show-text />
+            {{ __('created') }}
+          </template>
+          <template v-else>
+            {{ __('Created') }}
+          </template>
           <time-ago-tooltip data-testid="startTimeItem" :time="createdAt" />
           {{ __('by') }}
         </span>

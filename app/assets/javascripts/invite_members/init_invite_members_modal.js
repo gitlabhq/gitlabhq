@@ -20,6 +20,8 @@ export default (function initInviteMembersModal() {
         return false;
       }
 
+      const usersLimitDataset = JSON.parse(el.dataset.usersLimitDataset || '{}');
+
       inviteMembersModal = new Vue({
         el,
         name: 'InviteMembersModalRoot',
@@ -38,9 +40,10 @@ export default (function initInviteMembersModal() {
               projects: JSON.parse(el.dataset.projects || '[]'),
               usersFilter: el.dataset.usersFilter,
               filterId: parseInt(el.dataset.filterId, 10),
-              usersLimitDataset: convertObjectPropsToCamelCase(
-                JSON.parse(el.dataset.usersLimitDataset || '{}'),
-              ),
+              usersLimitDataset: convertObjectPropsToCamelCase({
+                ...usersLimitDataset,
+                user_namespace: parseBoolean(usersLimitDataset.user_namespace),
+              }),
             },
           }),
       });

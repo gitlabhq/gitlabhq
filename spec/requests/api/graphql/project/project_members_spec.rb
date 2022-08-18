@@ -48,24 +48,6 @@ RSpec.describe 'getting project members information' do
 
           expect_array_response(user_2)
         end
-
-        context 'when the use_keyset_aware_user_search_query FF is off' do
-          before do
-            stub_feature_flags(use_keyset_aware_user_search_query: false)
-          end
-
-          it 'raises error on the 2nd page due to missing cursor data' do
-            fetch_members(project: parent_project, args: { search: 'Same Name', first: 1 })
-
-            # user_2 because the "old" order was undeterministic (insert order), no tie-breaker column
-            expect_array_response(user_2)
-
-            next_cursor = graphql_data_at(:project, :projectMembers, :pageInfo, :endCursor)
-            fetch_members(project: parent_project, args: { search: 'Same Name', first: 1, after: next_cursor })
-
-            expect(graphql_errors.first['message']).to include('PG::UndefinedColumn')
-          end
-        end
       end
     end
   end

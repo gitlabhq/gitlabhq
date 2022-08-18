@@ -4,6 +4,7 @@ module QA
   module Resource
     class Project < Base
       include Events::Project
+      include Integrations::Project
       include Members
       include Visibility
 
@@ -20,13 +21,13 @@ module QA
                  :name,
                  :path,
                  :add_name_uuid,
-                 :description,
                  :runners_token,
                  :visibility,
                  :template_name,
                  :import,
                  :import_status,
-                 :import_error
+                 :import_error,
+                 :description
 
       attribute :group do
         Group.fabricate! do |group|
@@ -107,7 +108,7 @@ module QA
           end
 
           new_page.choose_name(@name)
-          new_page.add_description(@description)
+          new_page.add_description(@description) if @description
           new_page.set_visibility(@visibility)
           new_page.disable_initialize_with_sast
           new_page.disable_initialize_with_readme unless @initialize_with_readme
@@ -294,6 +295,21 @@ module QA
         )
       end
 
+      def change_path(new_path)
+        response = put(request_url(api_put_path), path: new_path)
+
+        unless response.code == HTTP_STATUS_OK
+          raise(
+            ResourceUpdateFailedError,
+            "Failed to update the project path to '#{new_path}'. Request returned (#{response.code}): `#{response}`."
+          )
+        end
+
+        # We need to manually set the path_with_namespace as reload! relies on it being correct and avoid 404s
+        result = parse_body(response)
+        @path_with_namespace = result[:path_with_namespace]
+      end
+
       def default_branch
         reload!.api_response[:default_branch] || Runtime::Env.default_branch
       end
@@ -458,10 +474,12 @@ module QA
 
         response = post(request_url(api_housekeeping_path), nil)
 
-        unless response.code == HTTP_STATUS_CREATED
-          raise ResourceQueryError,
-            "Could not perform housekeeping. Request returned (#{response.code}): `#{response.body}`."
-        end
+        return if response.code == HTTP_STATUS_CREATED
+
+        raise(
+          ResourceQueryError,
+          "Could not perform housekeeping. Request returned (#{response.code}): `#{response.body}`."
+        )
       end
 
       # Gets project statistics.

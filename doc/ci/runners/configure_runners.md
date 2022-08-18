@@ -722,11 +722,14 @@ variables:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
 
+NOTE:
+Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
+
 GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{JOB_ID}-artifacts-metadata.json`.
 
 ### Attestation format
 
-The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://in-toto.io/Statement/v0.1). The following fields are populated by default:
+The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://github.com/in-toto/attestation/tree/v0.1.0/spec). The following fields are populated by default:
 
 | Field  | Value  |
 | ------ | ------ |
@@ -863,7 +866,7 @@ Group runners are those that were created at the group level.
 
 ### View stale runner cleanup logs
 
-You can check the [Sidekiq logs](../../administration/logs.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
+You can check the [Sidekiq logs](../../administration/logs/index.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
 
 ```json
 {
@@ -889,3 +892,23 @@ Filter entries where stale runners were removed:
   }
 }
 ```
+
+## Determine which runners need to be upgraded **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
+
+The version of GitLab Runner used by your runners should be
+[kept up-to-date](https://docs.gitlab.com/runner/index.html#gitlab-runner-versions).
+
+To determine which runners need to be upgraded:
+
+1. View the list of runners:
+   - For a group, on the top bar, select **Menu > Groups** and on the left sidebar, select **CI/CD > Runners**.
+   - For the instance, select **Menu > Admin** and on the left sidebar, select **Runners**.
+
+1. Above the list of runners, view the status:
+   - **Outdated - recommended**: The runner does not have the latest `PATCH` version, which may make it vulnerable
+     to security or high severity bugs. Or, the runner is one or more `MAJOR` versions behind your GitLab instance, so some features may not be available or work properly.
+   - **Outdated - available**: Newer versions are available but upgrading is not critical.
+
+1. Filter the list by status to view which individual runners need to be upgraded.

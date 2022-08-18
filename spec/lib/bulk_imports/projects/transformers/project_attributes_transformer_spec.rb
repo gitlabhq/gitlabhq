@@ -15,7 +15,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
         source_type: :project_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'Destination Project Name',
+        destination_slug: 'Destination Project Name',
         destination_namespace: destination_group.full_path
       )
     end
@@ -32,12 +32,12 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
 
     subject(:transformed_data) { described_class.new.transform(context, data) }
 
-    it 'transforms name to destination name' do
-      expect(transformed_data[:name]).to eq(entity.destination_name)
+    it 'transforms name to destination slug' do
+      expect(transformed_data[:name]).to eq(entity.destination_slug)
     end
 
     it 'adds path as parameterized name' do
-      expect(transformed_data[:path]).to eq(entity.destination_name.parameterize)
+      expect(transformed_data[:path]).to eq(entity.destination_slug.parameterize)
     end
 
     it 'transforms visibility level' do
@@ -65,7 +65,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
             source_type: :project_entity,
             bulk_import: bulk_import,
             source_full_path: 'source/full/path',
-            destination_name: 'Destination Project Name',
+            destination_slug: 'Destination Project Name',
             destination_namespace: ''
           )
 

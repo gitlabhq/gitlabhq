@@ -16,9 +16,26 @@ to automatically manage your container registry usage.
 
 ## Check Container Registry Storage Use
 
-The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages,
-which doesn't include the Container Registry. To track work on this, see the epic
-[Storage management for the Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/7226).
+The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages.
+This page includes the Container Registry usage but is currently only available on GitLab.com.
+Measuring usage is only possible on the new version of the GitLab Container Registry backed by a
+metadata database. We are completing the [upgrade and migration of the GitLab.com Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523)
+first and only then will work on [making this available to self-managed installs](https://gitlab.com/groups/gitlab-org/-/epics/5521).
+
+Image layers stored in the Container Registry are deduplicated at the root namespace level.
+Therefore, if you tag the same 500MB image twice (either in the same repository or across distinct
+repositories under the same root namespace), it will only count towards the root namespace usage
+once. Similarly, if a given image layer is shared across multiple images, be those under the same
+container repository, project, group, or across different ones, that layer will count only once
+towards the root namespace usage.
+
+Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
+referenced exclusively by them are subject to [online garbage collection](index.md#delete-images)
+and automatically deleted after 24 hours if they remain unreferenced during that period.
+
+Image layers are stored on the storage backend in the original (usually compressed) format. This
+means that the measured size for any given image layer should match the size displayed on the
+corresponding [image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md#example-image-manifest).
 
 ## Cleanup policy
 

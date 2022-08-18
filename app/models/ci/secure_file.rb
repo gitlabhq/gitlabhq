@@ -3,10 +3,7 @@
 module Ci
   class SecureFile < Ci::ApplicationRecord
     include FileStoreMounter
-    include IgnorableColumns
     include Limitable
-
-    ignore_column :permissions, remove_with: '15.2', remove_after: '2022-06-22'
 
     FILE_SIZE_LIMIT = 5.megabytes.freeze
     CHECKSUM_ALGORITHM = 'sha256'
@@ -24,6 +21,7 @@ module Ci
     before_validation :assign_checksum
 
     scope :order_by_created_at, -> { order(created_at: :desc) }
+    scope :project_id_in, ->(ids) { where(project_id: ids) }
 
     default_value_for(:file_store) { Ci::SecureFileUploader.default_store }
 
@@ -46,3 +44,5 @@ module Ci
     end
   end
 end
+
+Ci::SecureFile.prepend_mod

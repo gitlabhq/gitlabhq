@@ -16,7 +16,9 @@ RSpec.shared_examples 'date sidebar widget' do
       page.within('[data-testid="sidebar-due-date"]') do
         today = Date.today.day
 
-        click_button 'Edit'
+        button = find_button('Edit')
+        scroll_to(button)
+        button.click
 
         click_button today.to_s
 

@@ -78,7 +78,7 @@ among other things.
 Follow [these instructions](https://publicsuffix.org/submit/) to submit your
 GitLab Pages subdomain. For instance, if your domain is `example.io`, you should
 request that `example.io` is added to the Public Suffix List. GitLab.com
-added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/-/issues/230).
+added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/230).
 
 ### DNS configuration
 
@@ -614,7 +614,7 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
 Setting the `propagate_correlation_id` to true allows installations behind a reverse proxy to generate
 and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy sets the header value `X-Request-ID`,
 the value propagates in the request chain.
-Users [can find the correlation ID in the logs](../troubleshooting/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
+Users [can find the correlation ID in the logs](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
 
 To enable the propagation of the correlation ID:
 
@@ -933,8 +933,8 @@ The following settings are:
 | `connection` | Various connection options described below. | |
 
 NOTE:
-If you want to stop using and disconnect the NFS server, you need to [explicitly disable
-local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
+If you want to stop using and disconnect the NFS server, you need to 
+[explicitly disable local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
 
 #### S3-compatible connection settings
 
@@ -1319,25 +1319,6 @@ and in your Pages log shows this error:
    sudo gitlab-ctl restart gitlab-pages
    ```
 
-### 404 error after promoting a Geo secondary to a primary node
-
-Pages files are not among the
-[supported data types](../geo/replication/datatypes.md#limitations-on-replicationverification) for replication in Geo. After a secondary node is promoted to a primary node, attempts to access a Pages site result in a `404 Not Found` error.
-
-It is possible to copy the subfolders and files in the [Pages path](#change-storage-path)
-to the new primary node to resolve this.
-For example, you can adapt the `rsync` strategy from the
-[moving repositories documentation](../operations/moving_repositories.md).
-Alternatively, run the CI pipelines of those projects that contain a `pages` job again.
-
-### 404 or 500 error when accessing GitLab Pages in a Geo setup
-
-Pages sites are only available on the primary Geo site, while the codebase of the project is available on all sites.
-
-If you try to access a Pages page on a secondary site, a 404 or 500 HTTP code is returned depending on the access control.
-
-Read more which [features don't support Geo replication/verification](../geo/replication/datatypes.md#limitations-on-replicationverification).
-
 ### Failed to connect to the internal GitLab API
 
 If you see the following error:
@@ -1495,7 +1476,7 @@ In GitLab 14.0-14.2 you can temporarily enable legacy storage and configuration 
 
 To do that:
 
-1. Please describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
+1. Describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

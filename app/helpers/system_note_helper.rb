@@ -30,6 +30,7 @@ module SystemNoteHelper
     'locked' => 'lock',
     'unlocked' => 'lock-open',
     'due_date' => 'calendar',
+    'start_date_or_due_date' => 'calendar',
     'health_status' => 'status-health',
     'designs_added' => 'doc-image',
     'designs_modified' => 'doc-image',

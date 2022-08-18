@@ -34,16 +34,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action only: [:show] do
     push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:restructured_mr_widget, project)
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)
     push_frontend_feature_flag(:refactor_code_quality_extension, project)
     push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
-    push_frontend_feature_flag(:rebase_without_ci_ui, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
-    push_frontend_feature_flag(:mr_attention_requests, current_user)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:paginated_mr_discussions, project)
     push_frontend_feature_flag(:mr_review_submit_comment, project)
@@ -367,7 +364,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rebase
-    @merge_request.rebase_async(current_user.id)
+    @merge_request.rebase_async(current_user.id, skip_ci: Gitlab::Utils.to_boolean(merge_params[:skip_ci], default: false))
 
     head :ok
   rescue MergeRequest::RebaseLockTimeout => e

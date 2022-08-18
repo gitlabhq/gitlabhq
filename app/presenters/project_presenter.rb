@@ -437,9 +437,9 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     project_new_blob_path(
       project,
       default_branch_or_main,
-      file_name:      file_name,
+      file_name: file_name,
       commit_message: commit_message,
-      branch_name:    branch_name,
+      branch_name: branch_name,
       **additional_params
     )
   end

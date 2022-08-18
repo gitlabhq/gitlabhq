@@ -1,10 +1,11 @@
 <script>
-import { GlAvatar, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlLink } from '@gitlab/ui';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
   components: {
     GlAvatar,
+    GlBadge,
     GlLink,
   },
   props: {
@@ -25,6 +26,16 @@ export default {
       required: false,
       default: null,
     },
+    description: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    isOwner: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   AVATAR_SHAPE_OPTION_RECT,
 };
@@ -41,7 +52,12 @@ export default {
         :size="48"
       />
     </gl-link>
-
-    <gl-link :href="href" class="gl-font-weight-bold gl-text-gray-900!">{{ fullName }}</gl-link>
+    <div>
+      <div class="gl-mb-1">
+        <gl-link :href="href" class="gl-font-weight-bold gl-text-gray-900!">{{ fullName }}</gl-link>
+        <gl-badge v-if="isOwner" variant="info">{{ s__('Runner|Owner') }}</gl-badge>
+      </div>
+      <div v-if="description">{{ description }}</div>
+    </div>
   </div>
 </template>

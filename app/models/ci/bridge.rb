@@ -19,7 +19,7 @@ module Ci
     belongs_to :project
     belongs_to :trigger_request
     has_many :sourced_pipelines, class_name: "::Ci::Sources::Pipeline",
-                                  foreign_key: :source_job_id
+                                 foreign_key: :source_job_id
 
     has_one :sourced_pipeline, class_name: "::Ci::Sources::Pipeline", foreign_key: :source_job_id
     has_one :downstream_pipeline, through: :sourced_pipeline, source: :pipeline
@@ -114,7 +114,12 @@ module Ci
 
     def downstream_project_path
       strong_memoize(:downstream_project_path) do
-        options&.dig(:trigger, :project)
+        project = options&.dig(:trigger, :project)
+        next unless project
+
+        scoped_variables.to_runner_variables.yield_self do |all_variables|
+          ::ExpandVariables.expand(project, all_variables)
+        end
       end
     end
 

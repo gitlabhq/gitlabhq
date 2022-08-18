@@ -115,7 +115,7 @@ graph RL
   Testing the value of a constant means copying it, resulting in extra effort without additional confidence that the value is correct.
 - **Vue components**:
   Computed properties, methods, and lifecycle hooks can be considered an implementation detail of components, are implicitly covered by component tests, and don't need to be tested.
-  For more information, see the [official Vue guidelines](https://vue-test-utils.vuejs.org/guides/#getting-started).
+  For more information, see the [official Vue guidelines](https://v1.test-utils.vuejs.org/guides/#getting-started).
 
 #### What to mock in unit tests
 
@@ -208,7 +208,7 @@ graph RL
   Similar to unit tests, background operations cannot be stopped or waited on. This means they continue running in the following tests and cause side effects.
 - **Child components**:
   Every component is tested individually, so child components are mocked.
-  See also [`shallowMount()`](https://vue-test-utils.vuejs.org/api/#shallowmount)
+  See also [`shallowMount()`](https://v1.test-utils.vuejs.org/api/#shallowmount)
 
 #### What *not* to mock in component tests
 

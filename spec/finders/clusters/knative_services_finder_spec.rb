@@ -88,6 +88,7 @@ RSpec.describe Clusters::KnativeServicesFinder do
       end
 
       it { is_expected.to be_truthy }
+
       it "discovers knative installation" do
         expect { subject }
           .to change { finder.cluster.kubeclient.knative_client.discovered }
@@ -102,6 +103,7 @@ RSpec.describe Clusters::KnativeServicesFinder do
       end
 
       it { is_expected.to be_falsy }
+
       it "does not discover knative installation" do
         expect { subject }.not_to change { cluster.kubeclient.knative_client.discovered }
       end

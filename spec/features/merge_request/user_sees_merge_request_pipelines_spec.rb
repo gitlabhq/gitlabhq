@@ -25,7 +25,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     }
   end
 
-  let(:expected_detached_mr_tag) {'merge request'}
+  let(:expected_detached_mr_tag) { 'merge request' }
 
   before do
     stub_application_setting(auto_devops_enabled: false)

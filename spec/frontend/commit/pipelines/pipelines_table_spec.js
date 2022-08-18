@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLoadingIcon, GlModal, GlTableLite } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlTableLite } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { TOAST_MESSAGE } from '~/pipelines/constants';
 import axios from '~/lib/utils/axios_utils';
 
@@ -26,10 +26,12 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findRunPipelineBtn = () => wrapper.findByTestId('run_pipeline_button');
   const findRunPipelineBtnMobile = () => wrapper.findByTestId('run_pipeline_button_mobile');
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findErrorEmptyState = () => wrapper.findByTestId('pipeline-error-empty-state');
+  const findEmptyState = () => wrapper.findByTestId('pipeline-empty-state');
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findModal = () => wrapper.findComponent(GlModal);
+  const findMrPipelinesDocsLink = () => wrapper.findByTestId('mr-pipelines-docs-link');
 
   const createComponent = (props = {}) => {
     wrapper = extendedWrapper(
@@ -73,7 +75,18 @@ describe('Pipelines table in Commits and Merge requests', () => {
       it('should render the empty state', () => {
         expect(findTableRows()).toHaveLength(0);
         expect(findLoadingState().exists()).toBe(false);
-        expect(findEmptyState().exists()).toBe(false);
+        expect(findErrorEmptyState().exists()).toBe(false);
+        expect(findEmptyState().exists()).toBe(true);
+      });
+
+      it('should render correct empty state content', () => {
+        expect(findRunPipelineBtn().exists()).toBe(true);
+        expect(findMrPipelinesDocsLink().attributes('href')).toBe(
+          '/help/ci/pipelines/merge_request_pipelines.md#prerequisites',
+        );
+        expect(findEmptyState().text()).toContain(
+          'To run a merge request pipeline, the jobs in the CI/CD configuration file must be configured to run in merge request pipelines.',
+        );
       });
     });
 
@@ -90,7 +103,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(findTable().exists()).toBe(true);
         expect(findTableRows()).toHaveLength(1);
         expect(findLoadingState().exists()).toBe(false);
-        expect(findEmptyState().exists()).toBe(false);
+        expect(findErrorEmptyState().exists()).toBe(false);
       });
 
       describe('with pagination', () => {
@@ -226,12 +239,14 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
       describe('failure', () => {
         const permissionsMsg = 'You do not have permission to run a pipeline on this branch.';
+        const defaultMsg =
+          'An error occurred while trying to run a new pipeline for this merge request.';
 
         it.each`
           status                                   | message
-          ${httpStatusCodes.BAD_REQUEST}           | ${permissionsMsg}
+          ${httpStatusCodes.BAD_REQUEST}           | ${defaultMsg}
           ${httpStatusCodes.UNAUTHORIZED}          | ${permissionsMsg}
-          ${httpStatusCodes.INTERNAL_SERVER_ERROR} | ${'An error occurred while trying to run a new pipeline for this merge request.'}
+          ${httpStatusCodes.INTERNAL_SERVER_ERROR} | ${defaultMsg}
         `('displays permissions error message', async ({ status, message }) => {
           const response = { response: { status } };
 
@@ -243,7 +258,13 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
           await waitForPromises();
 
-          expect(createFlash).toHaveBeenCalledWith({ message });
+          expect(createAlert).toHaveBeenCalledWith({
+            message,
+            primaryButton: {
+              text: 'Learn more',
+              link: '/help/ci/pipelines/merge_request_pipelines.md',
+            },
+          });
         });
       });
     });
@@ -293,7 +314,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
     });
 
     it('should render error state', () => {
-      expect(findEmptyState().text()).toBe(
+      expect(findErrorEmptyState().text()).toBe(
         'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
       );
     });

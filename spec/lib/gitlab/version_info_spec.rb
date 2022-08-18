@@ -79,11 +79,12 @@ RSpec.describe Gitlab::VersionInfo do
   describe '.unknown' do
     it { expect(@unknown).not_to be @v0_0_1 }
     it { expect(@unknown).not_to be described_class.new }
-    it { expect {@unknown > @v0_0_1}.to raise_error(ArgumentError) }
-    it { expect {@unknown < @v0_0_1}.to raise_error(ArgumentError) }
+    it { expect { @unknown > @v0_0_1 }.to raise_error(ArgumentError) }
+    it { expect { @unknown < @v0_0_1 }.to raise_error(ArgumentError) }
   end
 
   describe '.parse' do
+    it { expect(described_class.parse(described_class.new(1, 0, 0))).to eq(@v1_0_0) }
     it { expect(described_class.parse("1.0.0")).to eq(@v1_0_0) }
     it { expect(described_class.parse("1.0.0.1")).to eq(@v1_0_0) }
     it { expect(described_class.parse("1.0.0-ee")).to eq(@v1_0_0) }
@@ -131,6 +132,20 @@ RSpec.describe Gitlab::VersionInfo do
     it { expect(@v1_0_0.to_s).to eq("1.0.0") }
     it { expect(@v1_0_1_rc1.to_s).to eq("1.0.1-rc1") }
     it { expect(@unknown.to_s).to eq("Unknown") }
+  end
+
+  describe '.to_json' do
+    let(:correct_version) do
+      "{\"major\":1,\"minor\":0,\"patch\":1}"
+    end
+
+    let(:unknown_version) do
+      "{\"major\":0,\"minor\":0,\"patch\":0}"
+    end
+
+    it { expect(@v1_0_1.to_json).to eq(correct_version) }
+    it { expect(@v1_0_1_rc2.to_json).to eq(correct_version) }
+    it { expect(@unknown.to_json).to eq(unknown_version) }
   end
 
   describe '.hash' do

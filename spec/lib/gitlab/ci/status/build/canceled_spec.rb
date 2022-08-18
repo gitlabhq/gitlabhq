@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Canceled do
   end
 
   describe '.matches?' do
-    subject {described_class.matches?(build, user) }
+    subject { described_class.matches?(build, user) }
 
     context 'when build is canceled' do
       let(:build) { create(:ci_build, :canceled) }

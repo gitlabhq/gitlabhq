@@ -19,23 +19,23 @@ module ApplicationHelper
 
   def dispensable_render(...)
     render(...)
-  rescue StandardError => error
+  rescue StandardError => e
     if Feature.enabled?(:dispensable_render)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       nil
     else
-      raise error
+      raise e
     end
   end
 
   def dispensable_render_if_exists(...)
     render_if_exists(...)
-  rescue StandardError => error
+  rescue StandardError => e
     if Feature.enabled?(:dispensable_render)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       nil
     else
-      raise error
+      raise e
     end
   end
 
@@ -221,6 +221,16 @@ module ApplicationHelper
   # Convenient method for Rails helper
   def promo_host
     ApplicationHelper.promo_host
+  end
+
+  # This needs to be used outside of Rails
+  def self.community_forum
+    'https://forum.gitlab.com'
+  end
+
+  # Convenient method for Rails helper
+  def community_forum
+    ApplicationHelper.community_forum
   end
 
   def promo_url

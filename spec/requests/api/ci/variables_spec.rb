@@ -116,7 +116,7 @@ RSpec.describe API::Ci::Variables do
       it 'creates variable' do
         expect do
           post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true }
-        end.to change {project.variables.count}.by(1)
+        end.to change { project.variables.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
@@ -129,7 +129,7 @@ RSpec.describe API::Ci::Variables do
       it 'creates variable with optional attributes' do
         expect do
           post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file',  key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
-        end.to change {project.variables.count}.by(1)
+        end.to change { project.variables.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
@@ -142,7 +142,7 @@ RSpec.describe API::Ci::Variables do
       it 'does not allow to duplicate variable key' do
         expect do
           post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
-        end.to change {project.variables.count}.by(0)
+        end.to change { project.variables.count }.by(0)
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -268,7 +268,7 @@ RSpec.describe API::Ci::Variables do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
 
           expect(response).to have_gitlab_http_status(:no_content)
-        end.to change {project.variables.count}.by(-1)
+        end.to change { project.variables.count }.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
@@ -295,7 +295,7 @@ RSpec.describe API::Ci::Variables do
               delete api("/projects/#{project.id}/variables/key1", user), params: { 'filter[environment_scope]': 'production' }
 
               expect(response).to have_gitlab_http_status(:no_content)
-            end.to change {project.variables.count}.by(-1)
+            end.to change { project.variables.count }.by(-1)
 
             expect(var1.reload).to be_present
             expect { var2.reload }.to raise_error(ActiveRecord::RecordNotFound)

@@ -50,7 +50,8 @@ repository with Git LFS. For example, if you want to upload a very large file an
 check it into your Git repository:
 
 ```shell
-git clone git@gitlab.example.com:group/project.git
+git clone git@gitlab.example.com:group/my-sample-project.git
+cd my-sample-project
 git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
@@ -70,6 +71,8 @@ LFS doesn't work properly for people cloning the project:
 
 ```shell
 git add .gitattributes
+git commit -am "Added .gitattributes to capture LFS tracking"
+git push origin main
 ```
 
 Cloning the repository works the same as before. Git automatically detects the
@@ -78,7 +81,7 @@ command with a SSH URL, you have to enter your GitLab credentials for HTTP
 authentication.
 
 ```shell
-git clone git@gitlab.example.com:group/project.git
+git clone git@gitlab.example.com:group/my-sample-project.git
 ```
 
 If you already cloned the repository and you want to get the latest LFS object
@@ -93,7 +96,7 @@ and are not pushed to the remote repository.
 
 ### Migrate an existing repository to Git LFS
 
-Read the documentation on how to [migrate an existing Git repository with Git LFS](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.1.ronn).
+Read the documentation on how to [migrate an existing Git repository with Git LFS](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.adoc).
 
 ### Removing objects from LFS
 
@@ -112,8 +115,7 @@ See the documentation on [File Locking](../../../user/project/file_lock.md).
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46572) in GitLab 13.6.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62539) in GitLab 14.0. Feature flag `include_lfs_blobs_in_archive` removed.
 
-Prior to GitLab 13.5, [project source
-downloads](../../../user/project/repository/index.md) would include Git
+Prior to GitLab 13.5, [project source downloads](../../../user/project/repository/index.md) would include Git
 LFS pointers instead of the actual objects. For example, LFS pointers
 look like the following:
 
@@ -214,7 +216,7 @@ This behavior is caused by Git LFS using HTTPS connections by default when a
 To prevent this from happening, set the LFS URL in project Git configuration:
 
 ```shell
-git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
+git config --add lfs.url "http://gitlab.example.com/group/my-sample-project.git/info/lfs"
 ```
 
 ### Credentials are always required when pushing an object

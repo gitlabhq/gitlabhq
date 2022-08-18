@@ -42,12 +42,12 @@ describe('Confirm Modal', () => {
 
     it('should emit `confirmed` event on `primary` modal event', () => {
       findGlModal().vm.$emit('primary');
-      expect(wrapper.emitted('confirmed')).toBeTruthy();
+      expect(wrapper.emitted('confirmed')).toHaveLength(1);
     });
 
     it('should emit closed` event on `hidden` modal event', () => {
       modal.vm.$emit('hidden');
-      expect(wrapper.emitted('closed')).toBeTruthy();
+      expect(wrapper.emitted('closed')).toHaveLength(1);
     });
   });
 

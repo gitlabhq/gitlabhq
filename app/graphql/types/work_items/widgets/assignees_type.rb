@@ -12,14 +12,17 @@ module Types
 
         implements Types::WorkItems::WidgetInterface
 
-        field :assignees, Types::UserType.connection_type, null: true,
-              description: 'Assignees of the work item.'
+        field :assignees, Types::UserType.connection_type,
+          null: true,
+          description: 'Assignees of the work item.'
 
-        field :allows_multiple_assignees, GraphQL::Types::Boolean, null: true, method: :allows_multiple_assignees?,
-              description: 'Indicates whether multiple assignees are allowed.'
+        field :allows_multiple_assignees, GraphQL::Types::Boolean,
+          null: true, method: :allows_multiple_assignees?,
+          description: 'Indicates whether multiple assignees are allowed.'
 
-        field :can_invite_members, GraphQL::Types::Boolean, null: false, resolver_method: :can_invite_members?,
-              description: 'Indicates whether the current user can invite members to the work item\'s project.'
+        field :can_invite_members, GraphQL::Types::Boolean,
+          null: false, resolver_method: :can_invite_members?,
+          description: 'Indicates whether the current user can invite members to the work item\'s project.'
 
         def can_invite_members?
           Ability.allowed?(current_user, :admin_project_member, object.work_item.project)

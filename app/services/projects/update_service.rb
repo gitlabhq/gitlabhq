@@ -121,6 +121,8 @@ module Projects
       end
 
       update_pending_builds if runners_settings_toggled?
+
+      publish_event
     end
 
     def after_rename_service(project)
@@ -208,6 +210,18 @@ module Projects
       else
         []
       end
+    end
+
+    def publish_event
+      return unless project.archived_previously_changed?
+
+      event = Projects::ProjectArchivedEvent.new(data: {
+        project_id: @project.id,
+        namespace_id: @project.namespace_id,
+        root_namespace_id: @project.root_namespace.id
+      })
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

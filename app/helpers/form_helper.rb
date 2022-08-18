@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [], pajamas_alert: false)
+  def form_errors(model, type: 'form', truncate: [], pajamas_alert: true)
     errors = model.errors
 
     return unless errors.any?
@@ -25,26 +25,27 @@ module FormHelper
       tag.li(message)
     end.join.html_safe
 
-    if pajamas_alert
-      render Pajamas::AlertComponent.new(
-        variant: :danger,
-        title: headline,
-        dismissible: false,
-        alert_options: { id: 'error_explanation', class: 'gl-mb-5' }
-      ) do |c|
-        c.body do
-          tag.ul(class: 'gl-pl-5 gl-mb-0') do
-            messages
-          end
+    render Pajamas::AlertComponent.new(
+      variant: :danger,
+      title: headline,
+      dismissible: false,
+      alert_options: { id: 'error_explanation', class: 'gl-mb-5' }
+    ) do |c|
+      c.body do
+        tag.ul(class: 'gl-pl-5 gl-mb-0') do
+          messages
         end
       end
+    end
+  end
+
+  def dropdown_max_select(data)
+    return data[:'max-select'] unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+
+    if data[:'max-select'] && data[:'max-select'] < MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      data[:'max-select']
     else
-      tag.div(class: 'alert alert-danger', id: 'error_explanation') do
-        tag.h4(headline) <<
-          tag.ul do
-            messages
-          end
-      end
+      MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
     end
   end
 
@@ -165,7 +166,12 @@ module FormHelper
 
     new_options[:title] = _('Select reviewer(s)')
     new_options[:data][:'dropdown-header'] = _('Reviewer(s)')
-    new_options[:data].delete(:'max-select')
+
+    if Feature.enabled?(:limit_reviewer_and_assignee_size)
+      new_options[:data][:'max-select'] = MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+    else
+      new_options[:data].delete(:'max-select')
+    end
 
     new_options
   end

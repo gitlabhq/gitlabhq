@@ -4,6 +4,6 @@ module CommitSignatures
   class SshSignature < ApplicationRecord
     include CommitSignature
 
-    belongs_to :key, optional: false
+    belongs_to :key, optional: true
   end
 end

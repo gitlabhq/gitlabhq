@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Cluster agent registration', :js do
   let_it_be(:project) { create(:project, :custom_repo, files: { '.gitlab/agents/example-agent-1/config.yaml' => '' }) }
   let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:token) { Devise.friendly_token }
 
   before do
     allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
@@ -18,7 +19,7 @@ RSpec.describe 'Cluster agent registration', :js do
       allow(client).to receive(:get_connected_agents).and_return([])
     end
 
-    allow(Devise).to receive(:friendly_token).and_return('example-agent-token')
+    allow(Devise).to receive(:friendly_token).and_return(token)
 
     sign_in(current_user)
     visit project_clusters_path(project)
@@ -33,7 +34,7 @@ RSpec.describe 'Cluster agent registration', :js do
     click_button('Register')
 
     expect(page).to have_content('You cannot see this token again after you close this window.')
-    expect(page).to have_content('example-agent-token')
+    expect(page).to have_content(token)
     expect(page).to have_content('helm upgrade --install')
     expect(page).to have_content('example-agent-2')
 

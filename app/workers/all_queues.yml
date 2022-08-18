@@ -1551,15 +1551,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: pipeline_background:archive_trace
-  :worker_name: ArchiveTraceWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: pipeline_background:ci_archive_trace
   :worker_name: Ci::ArchiveTraceWorker
   :feature_category: :continuous_integration
@@ -1647,6 +1638,15 @@
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_track_failed_build
+  :worker_name: Ci::TrackFailedBuildWorker
+  :feature_category: :static_application_security_testing
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []
@@ -1774,15 +1774,6 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent: false
-  :tags: []
-- :name: pipeline_processing:build_finished
-  :worker_name: BuildFinishedWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :cpu
-  :weight: 5
   :idempotent: false
   :tags: []
 - :name: pipeline_processing:build_queue
@@ -2109,6 +2100,15 @@
   :weight: 2
   :idempotent: false
   :tags: []
+- :name: ci_cancel_pipeline
+  :worker_name: Ci::CancelPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
   :feature_category: :continuous_integration
@@ -2121,6 +2121,15 @@
 - :name: ci_job_artifacts_expire_project_build_artifacts
   :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
   :feature_category: :build_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: ci_runners_process_runner_version_update
+  :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
+  :feature_category: :runner_fleet
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2252,8 +2261,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
-  :tags:
-  - :needs_own_queue
+  :tags: []
 - :name: emails_on_push
   :worker_name: EmailsOnPushWorker
   :feature_category: :source_code_management
@@ -2551,11 +2559,38 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_create_approval_event
+  :worker_name: MergeRequests::CreateApprovalEventWorker
+  :feature_category: :code_review
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_create_approval_note
+  :worker_name: MergeRequests::CreateApprovalNoteWorker
+  :feature_category: :code_review
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :source_code_management
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_execute_approval_hooks
+  :worker_name: MergeRequests::ExecuteApprovalHooksWorker
+  :feature_category: :code_review
+  :has_external_dependencies: true
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -2574,6 +2609,15 @@
   :feature_category: :code_review
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_resolve_todos_after_approval
+  :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
+  :feature_category: :code_review
+  :has_external_dependencies: false
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -2812,6 +2856,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: projects_import_export_relation_export
+  :worker_name: Projects::ImportExport::RelationExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_inactive_projects_deletion_notification
   :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
   :feature_category: :compliance_management
@@ -3018,8 +3071,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
-  :tags:
-  - :needs_own_queue
+  :tags: []
 - :name: snippets_schedule_bulk_repository_shard_moves
   :worker_name: Snippets::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly

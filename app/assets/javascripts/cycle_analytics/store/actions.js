@@ -1,7 +1,6 @@
 import {
   getProjectValueStreamStages,
   getProjectValueStreams,
-  getProjectValueStreamMetrics,
   getValueStreamStageMedian,
   getValueStreamStageRecords,
   getValueStreamStageCounts,
@@ -50,24 +49,6 @@ export const fetchValueStreams = ({ commit, dispatch, state }) => {
     .then(({ data }) => dispatch('receiveValueStreamsSuccess', data))
     .catch(({ response: { status } }) => {
       commit(types.RECEIVE_VALUE_STREAMS_ERROR, status);
-    });
-};
-export const fetchCycleAnalyticsData = ({
-  state: {
-    endpoints: { requestPath },
-  },
-  getters: { legacyFilterParams },
-  commit,
-}) => {
-  commit(types.REQUEST_CYCLE_ANALYTICS_DATA);
-
-  return getProjectValueStreamMetrics(requestPath, legacyFilterParams)
-    .then(({ data }) => commit(types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS, data))
-    .catch(() => {
-      commit(types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR);
-      createFlash({
-        message: __('There was an error while fetching value stream summary data.'),
-      });
     });
 };
 
@@ -153,7 +134,6 @@ export const fetchStageCountValues = ({
 
 export const fetchValueStreamStageData = ({ dispatch }) =>
   Promise.all([
-    dispatch('fetchCycleAnalyticsData'),
     dispatch('fetchStageData'),
     dispatch('fetchStageMedians'),
     dispatch('fetchStageCountValues'),
@@ -178,6 +158,11 @@ export const setDateRange = ({ dispatch, commit }, { createdAfter, createdBefore
 };
 
 export const setInitialStage = ({ dispatch, commit, state: { stages } }, stage) => {
+  if (!stages.length && !stage) {
+    commit(types.SET_NO_ACCESS_ERROR);
+    return null;
+  }
+
   const selectedStage = stage || stages[0];
   commit(types.SET_SELECTED_STAGE, selectedStage);
   return dispatch('fetchValueStreamStageData');

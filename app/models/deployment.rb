@@ -206,11 +206,6 @@ class Deployment < ApplicationRecord
     end
   end
 
-  def self.distinct_on_environment
-    order('environment_id, deployments.id DESC')
-      .select('DISTINCT ON (environment_id) deployments.*')
-  end
-
   def self.find_successful_deployment!(iid)
     success.find_by!(iid: iid)
   end
@@ -438,7 +433,7 @@ class Deployment < ApplicationRecord
   def tier_in_yaml
     return unless deployable
 
-    deployable.environment_deployment_tier
+    deployable.environment_tier_from_options
   end
 
   private

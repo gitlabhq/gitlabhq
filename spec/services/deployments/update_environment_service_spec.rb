@@ -112,7 +112,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       end
 
       context 'when external URL is invalid' do
-        let(:external_url) { 'google.com' }
+        let(:external_url) { 'javascript:alert("hello")' }
 
         it 'fails to update the tier due to validation error' do
           expect { subject.execute }.not_to change { environment.tier }
@@ -123,7 +123,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
             .with(an_instance_of(described_class::EnvironmentUpdateFailure),
                   project_id: project.id,
                   environment_id: environment.id,
-                  reason: %q{External url is blocked: Only allowed schemes are http, https})
+                  reason: %q{External url javascript scheme is not allowed})
             .once
 
           subject.execute
@@ -307,14 +307,6 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       end
 
       it { is_expected.to eq('http://appname-master.example.com') }
-
-      context 'when the FF ci_expand_environment_name_and_url is disabled' do
-        before do
-          stub_feature_flags(ci_expand_environment_name_and_url: false)
-        end
-
-        it { is_expected.to eq('http://${STACK_NAME}.example.com') }
-      end
     end
 
     context 'when yaml environment does not have url' do

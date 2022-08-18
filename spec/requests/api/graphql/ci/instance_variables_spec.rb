@@ -57,4 +57,16 @@ RSpec.describe 'Query.ciVariables' do
       expect(graphql_data.dig('ciVariables')).to be_nil
     end
   end
+
+  context 'when the user is unauthenticated' do
+    let_it_be(:user) { nil }
+
+    it 'returns nothing' do
+      create(:ci_instance_variable, value: 'verysecret', masked: true)
+
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data.dig('ciVariables')).to be_nil
+    end
+  end
 end

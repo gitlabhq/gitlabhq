@@ -148,7 +148,7 @@ describe('ProjectDropdown', () => {
     });
 
     it('emits `error` event', () => {
-      expect(wrapper.emitted('error')).toBeTruthy();
+      expect(wrapper.emitted('error')).toHaveLength(1);
     });
   });
 

@@ -44,6 +44,10 @@ class IssuablePolicy < BasePolicy
   rule { can?(:read_issue) & can?(:developer_access) }.policy do
     enable :admin_incident_management_timeline_event
   end
+
+  rule { can?(:reporter_access) }.policy do
+    enable :create_timelog
+  end
 end
 
 IssuablePolicy.prepend_mod_with('IssuablePolicy')

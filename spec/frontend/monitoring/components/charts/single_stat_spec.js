@@ -15,7 +15,7 @@ describe('Single Stat Chart component', () => {
     });
   };
 
-  const findChart = () => wrapper.find(GlSingleStat);
+  const findChart = () => wrapper.findComponent(GlSingleStat);
 
   beforeEach(() => {
     createComponent();

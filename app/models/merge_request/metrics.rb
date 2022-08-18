@@ -41,8 +41,7 @@ class MergeRequest::Metrics < ApplicationRecord
 
   def self.total_time_to_merge
     with_valid_time_to_merge
-      .pluck(time_to_merge_expression)
-      .first
+      .pick(time_to_merge_expression)
   end
 end
 

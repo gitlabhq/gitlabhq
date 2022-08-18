@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User sees closing issues message', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
-  let(:issue_1) { create(:issue, project: project)}
-  let(:issue_2) { create(:issue, project: project)}
+  let(:issue_1) { create(:issue, project: project) }
+  let(:issue_2) { create(:issue, project: project) }
   let(:merge_request) do
     create(
       :merge_request,

@@ -69,6 +69,12 @@ RSpec.describe Issues::CreateService do
         expect(issue.issue_customer_relations_contacts).to be_empty
       end
 
+      it 'calls NewIssueWorker with correct arguments' do
+        expect(NewIssueWorker).to receive(:perform_async).with(Integer, user.id, 'Issue')
+
+        issue
+      end
+
       context 'when a build_service is provided' do
         let(:issue) { described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params, build_service: build_service).execute }
 
@@ -139,6 +145,12 @@ RSpec.describe Issues::CreateService do
             expect(IncidentManagement::TimelineEvents::CreateService)
               .to receive(:create_incident)
               .with(a_kind_of(Issue), reporter)
+
+            issue
+          end
+
+          it 'calls NewIssueWorker with correct arguments' do
+            expect(NewIssueWorker).to receive(:perform_async).with(Integer, reporter.id, 'Issue')
 
             issue
           end

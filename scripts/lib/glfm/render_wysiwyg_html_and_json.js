@@ -1,6 +1,5 @@
 import fs from 'fs';
 import jsYaml from 'js-yaml';
-import { setTestTimeout } from 'jest/__helpers__/timeout';
 import { renderHtmlAndJsonForAllExamples } from 'jest/content_editor/render_html_and_json_for_all_examples';
 
 /* eslint-disable no-undef */
@@ -24,7 +23,7 @@ jest.mock('~/emoji');
 // This script should be invoked via jest with the a command similar to the following:
 // yarn jest --testMatch '**/render_wysiwyg_html_and_json.js' ./scripts/lib/glfm/render_wysiwyg_html_and_json.js
 it('serializes html to prosemirror json', async () => {
-  setTestTimeout(20000);
+  jest.setTimeout(20000);
 
   const inputMarkdownTempfilePath = process.env.INPUT_MARKDOWN_YML_PATH;
   expect(inputMarkdownTempfilePath).not.toBeUndefined();

@@ -11,7 +11,7 @@ When developing a feature that requires architectural design, or changing the fu
 A Frontend Architect is an expert who makes high-level Frontend design decisions
 and decides on technical standards, including coding standards and frameworks.
 
-Architectural decisions should be accessible to everyone, so please document
+Architectural decisions should be accessible to everyone, so document
 them in the relevant Merge Request discussion or by updating our documentation
 when appropriate.
 
@@ -19,7 +19,7 @@ You can find the Frontend Architecture experts on the [team page](https://about.
 
 ## Widget Architecture
 
-The [Plan stage](https://about.gitlab.com/handbook/engineering/development/dev/fe-plan/)
+The [Plan stage](https://about.gitlab.com/handbook/engineering/development/dev/plan-project-management/)
 is refactoring the right sidebar to consist of **widgets**. They have a specific architecture to be
 reusable and to expose an interface that can be used by external Vue applications on the page.
 Learn more about the [widget architecture](widgets.md).

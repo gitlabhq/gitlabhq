@@ -294,7 +294,7 @@ RSpec.describe 'User edit profile' do
     end
 
     context 'user menu' do
-      let(:issue) { create(:issue, project: project)}
+      let(:issue) { create(:issue, project: project) }
       let(:project) { create(:project) }
 
       def open_modal(button_text)
@@ -536,7 +536,7 @@ RSpec.describe 'User edit profile' do
     end
 
     context 'User time preferences', :js do
-      let(:issue) { create(:issue, project: project)}
+      let(:issue) { create(:issue, project: project) }
       let(:project) { create(:project) }
 
       before do

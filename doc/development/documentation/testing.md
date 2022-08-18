@@ -81,6 +81,36 @@ This requires you to either:
 
 ### Documentation link tests
 
+Merge requests containing changes to Markdown (`.md`) files run a `docs-lint links`
+job, which runs two types of link checks. In both cases, links with destinations
+that begin with `http` or `https` are considered external links, and skipped:
+
+- `bundle exec nanoc check internal_links`: Tests links to internal pages.
+- `bundle exec nanoc check internal_anchors`: Tests links to subheadings (anchors) on internal pages.
+
+Failures from these tests are displayed at the end of the test results in the **Issues found!** area.
+For example, failures in the `internal_anchors` test follow this format:
+
+```plaintext
+[ ERROR ] internal_anchors - Broken anchor detected!
+  - source file `/tmp/gitlab-docs/public/ee/user/application_security/api_fuzzing/index.html`
+  - destination `/tmp/gitlab-docs/public/ee/development/code_review.html`
+  - link `../../../development/code_review.html#review-response-slo`
+  - anchor `#review-response-slo`
+```
+
+- **Source file**: The full path to the file containing the error. To find the
+  file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
+- **Destination**: The full path to the file not found by the test. To find the
+  file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
+- **Link**: The actual link the script attempted to find.
+- **Anchor**: If present, the subheading (anchor) the script attempted to find.
+
+Check for multiple instances of the same broken link on each page reporting an error.
+Even if a specific broken link appears multiple times on a page, the test reports it only once.
+
+#### Run document link tests locally
+
 To execute documentation link tests locally:
 
 1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
@@ -219,12 +249,12 @@ You can use markdownlint:
 
 ### Vale
 
-[Vale](https://docs.errata.ai/vale/about/) is a grammar, style, and word usage linter for the
+[Vale](https://vale.sh/) is a grammar, style, and word usage linter for the
 English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) file located in the root
 directory of projects.
 
-Vale supports creating [custom tests](https://docs.errata.ai/vale/styles) that extend any of
+Vale supports creating [custom tests](https://vale.sh/docs/topics/styles/) that extend any of
 several types of checks, which we store in the `.linting/vale/styles/gitlab` directory in the
 documentation directory of projects.
 
@@ -241,7 +271,7 @@ This configuration is also used in build pipelines, where
 
 You can use Vale:
 
-- [On the command line](https://docs.errata.ai/vale/cli).
+- [On the command line](https://vale.sh/docs/vale-cli/structure/).
 - [In a code editor](#configure-editors).
 - [In a Git hook](#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
@@ -250,7 +280,8 @@ You can use Vale:
 
 Vale returns three types of results:
 
-- **Error** - For branding and trademark issues, and words or phrases with ambiguous meanings.
+- **Error** - For branding guidelines, trademark guidelines, and anything that causes content on
+  the docs site to render incorrectly.
 - **Warning** - For Technical Writing team style preferences.
 - **Suggestion** - For basic technical writing tenets and best practices.
 
@@ -304,7 +335,30 @@ For example, a page that scores `12` before a set of changes, and `9` after, ind
 general complexity level of the page.
 
 The readability score is calculated based on the number of words per sentence, and the number
-of syllables per word. For more information, see [the Vale documentation](https://docs.errata.ai/vale/styles#metric).
+of syllables per word. For more information, see [the Vale documentation](https://vale.sh/docs/topics/styles/#metric).
+
+#### When to add a new Vale rule
+
+It's tempting to add a Vale rule for every style guide rule. However, we should be
+mindful of the effort to create and enforce a Vale rule, and the noise it creates.
+
+In general, follow these guidelines:
+
+- If you add an [error-level Vale rule](#vale-result-types), you must fix
+  the existing occurrences of the issue in the documentation before you can add the rule.
+
+  If there are too many issues to fix in a single merge request, add the rule at a
+  `warning` level. Then, fix the existing issues in follow-up merge requests.
+  When the issues are fixed, promote the rule to an `error`.
+
+- If you add a warning-level or suggestion-level rule, consider:
+
+  - How many more warnings or suggestions it creates in the Vale output. If the
+    number of additional warnings is significant, the rule might be too broad.
+
+  - How often an author might ignore it because it's acceptable in the context.
+    If the rule is too subjective, it cannot be adequately enforced and creates
+    unnecessary additional warnings.
 
 ### Install linters
 
@@ -399,8 +453,6 @@ To configure Vale in your editor, install one of the following as appropriate:
   In this setup the `markdownlint` checker is set as a "next" checker from the defined `vale` checker.
   Enabling this custom Vale checker provides error linting from both Vale and markdownlint.
 
-We don't use [Vale Server](https://docs.errata.ai/vale-server/install).
-
 ### Configure pre-push hooks
 
 Git [pre-push hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) allow Git users to:
@@ -479,7 +531,7 @@ document:
 Whenever possible, exclude only the problematic rule and lines.
 
 For more information, see
-[Vale's documentation](https://docs.errata.ai/vale/scoping#markup-based-configuration).
+[Vale's documentation](https://vale.sh/docs/topics/scoping/).
 
 ### Disable markdownlint tests
 

@@ -115,9 +115,9 @@ These are reason why these changes are needed:
 
 ## Iterations
 
-This work is being done as part of dedicated epic: [Improve internal usage of
-Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). This epic
-describes a meta reasons for making these changes.
+This work is being done as part of dedicated epic: 
+[Improve internal usage of Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). 
+This epic describes a meta reasons for making these changes.
 
 ## Who
 

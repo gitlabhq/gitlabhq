@@ -65,6 +65,12 @@ RSpec.describe WorkItems::CreateService do
         expect(work_item.description).to eq('please fix')
         expect(work_item.work_item_type.base_type).to eq('issue')
       end
+
+      it 'calls NewIssueWorker with correct arguments' do
+        expect(NewIssueWorker).to receive(:perform_async).with(Integer, current_user.id, 'WorkItem')
+
+        service_result
+      end
     end
 
     context 'when params are invalid' do
@@ -170,7 +176,7 @@ RSpec.describe WorkItems::CreateService do
           let_it_be(:parent) { create(:work_item, :task, project: project) }
 
           it_behaves_like 'fails creating work item and returns errors' do
-            let(:error_message) { 'only Issue and Incident can be parent of Task.'}
+            let(:error_message) { 'only Issue and Incident can be parent of Task.' }
           end
         end
 
@@ -197,7 +203,7 @@ RSpec.describe WorkItems::CreateService do
         end
 
         it_behaves_like 'fails creating work item and returns errors' do
-          let(:error_message) { 'No matching task found. Make sure that you are adding a valid task ID.'}
+          let(:error_message) { 'No matching task found. Make sure that you are adding a valid task ID.' }
         end
       end
     end

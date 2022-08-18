@@ -26,12 +26,43 @@ describe('GitlabVersionCheck', () => {
     wrapper = shallowMount(GitlabVersionCheck);
   };
 
+  const dummyGon = {
+    relative_url_root: '/',
+  };
+
+  let originalGon;
+
   afterEach(() => {
     wrapper.destroy();
     mock.restore();
+    window.gon = originalGon;
   });
 
   const findGlBadge = () => wrapper.findComponent(GlBadge);
+
+  describe.each`
+    root                 | description
+    ${'/'}               | ${'not used (uses its own (sub)domain)'}
+    ${'/gitlab'}         | ${'custom path'}
+    ${'/service/gitlab'} | ${'custom path with 2 depth'}
+  `('path for version_check.json', ({ root, description }) => {
+    describe(`when relative url is ${description}: ${root}`, () => {
+      beforeEach(async () => {
+        originalGon = window.gon;
+        window.gon = { ...dummyGon };
+        window.gon.relative_url_root = root;
+        createComponent(defaultResponse);
+        await waitForPromises(); // Ensure we wrap up the axios call
+      });
+
+      it('reflects the relative url setting', () => {
+        expect(mock.history.get.length).toBe(1);
+
+        const pathRegex = new RegExp(`^${root}`);
+        expect(mock.history.get[0].url).toMatch(pathRegex);
+      });
+    });
+  });
 
   describe('template', () => {
     describe.each`

@@ -10,7 +10,7 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter do
   let(:secondary_email)     { create(:email, :confirmed) }
   let(:user)                { create(:user) }
 
-  let(:trailer)             { "#{FFaker::Lorem.word}-by:"}
+  let(:trailer)             { "#{FFaker::Lorem.word}-by:" }
 
   let(:commit_message)      { trailer_line(trailer, user.name, user.email) }
   let(:commit_message_html) { commit_html(commit_message) }

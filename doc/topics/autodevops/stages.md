@@ -199,7 +199,7 @@ see the documentation.
 ## Auto Secret Detection
 
 > - Introduced in GitLab 13.1.
-> - Select functionality [made available](../../user/application_security/secret_detection/#making-secret-detection-available-to-all-gitlab-tiers) in all tiers in GitLab 13.3
+> - Select functionality [made available](../../user/application_security/secret_detection/index.md#making-secret-detection-available-to-all-gitlab-tiers) in all tiers in GitLab 13.3
 
 Secret Detection uses the
 [Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. Auto Secret Detection requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
@@ -458,8 +458,8 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
    ```
 
 1. If you have an in-cluster PostgreSQL database installed with
-   `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the [guide to upgrade
-   PostgreSQL](upgrading_postgresql.md).
+   `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the
+   [guide to upgrade PostgreSQL](upgrading_postgresql.md).
 
 1. If you are deploying your application for the first time and are using
    GitLab 12.9 or 12.10, set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`.

@@ -8,21 +8,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Moved to GitLab Premium in 13.9.
 
-Code Owners define who owns specific files or directories in a repository.
+Code Owners define who develops and maintains a feature, and own the resulting
+files or directories in a repository.
 
 - The users you define as Code Owners are displayed in the UI when you browse directories.
 - You can set your merge requests so they must be approved by Code Owners before merge.
 - You can protect a branch and allow only Code Owners to approve changes to the branch.
 
-If you don't want to use Code Owners for approvals, you can
-[configure rules](merge_requests/approvals/rules.md) instead.
+Use Code Owners and approvers together with
+[approval rules](merge_requests/approvals/rules.md) to build a flexible approval
+workflow:
+
+- Use **Code Owners** to define the users who have domain expertise for specific paths in your repository.
+- Use **Approvers** and **Approval rules** to define domains of expertise (such as a security team)
+  that are not scoped to specific file paths in your repository.
+  - **Approvers** define the users.
+  - **Approval rules** define when these users can approve work, and whether or not their approval is required.
+
+For example:
+
+| Type | Name | Scope  | Comment    |
+|------|------|--------|------------|
+| Approval rule            | UX                   | All files     | A user experience (UX) team member reviews the user experience of all changes made in your project. |
+| Approval rule            | Security             | All files     | A security team member reviews all changes for vulnerabilities.                                     |
+| Code Owner approval rule | Frontend: Code Style | `*.css` files | A frontend engineer reviews CSS file changes for adherence to project style standards.              |
+| Code Owner approval rule | Backend: Code Review | `*.rb` files  | A backend engineer reviews the logic and code style of Ruby files.                                  |
 
 ## Set up Code Owners
 
-You can use Code Owners to specify users or [shared groups](members/share_project_with_groups.md)
-that are responsible for specific files and directories in a repository.
-
-To set up Code Owners:
+Create a `CODEOWNERS` file to specify users or [shared groups](members/share_project_with_groups.md)
+that are responsible for specific files and directories in a repository. Each repository
+can have a single `CODEOWNERS` file. To create it:
 
 1. Choose the location where you want to specify Code Owners:
    - In the root directory of the repository
@@ -59,24 +75,38 @@ Next steps:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) in GitLab 12.1.
 > - Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
 
-You can use members of groups and subgroups as Code Owners for a project.
+You can use members of groups and subgroups as Code Owners for projects:
 
-For example, if you have these groups:
+```mermaid
+graph TD
+    A[Parent group X] -->|owns| B[Project A]
+    A -->|contains| C[Subgroup Y]
+    C -->|owns| D[Project B]
+    A-. inherits ownership .-> D
+```
 
-- **Group X** (`group-x`) with **Project A** in it.
-- **Subgroup Y** (`group-x/subgroup-y`), which belongs to **Group X**, with **Project B** in it.
+In this example:
 
-The eligible Code Owners:
+- **Parent group X** (`group-x`) owns **Project A**.
+- **Parent group X** also contains a subgroup, **Subgroup Y**. (`group-x/subgroup-y`)
+- **Subgroup Y** owns **Project B**.
 
-- For **Project A** are the members of **Group X** only, because **Project A** doesn't belong to **Subgroup Y**.
-- For **Project B** are the members of both **Group X** and **Subgroup Y**.
+The eligible Code Owners are:
 
-![Eligible Code Owners](img/code_owners_members_v13_4.png)
+- **Project A**: the members of **Group X** only, because **Project A** doesn't belong to **Subgroup Y**.
+- **Project B**: the members of both **Group X** and **Subgroup Y**.
 
 You can [invite](members/share_project_with_groups.md) **Subgroup Y** to **Project A**
 so that their members also become eligible Code Owners.
 
-![Invite subgroup members to become eligible Code Owners](img/code_owners_invite_members_v13_4.png)
+```mermaid
+graph LR
+    A[Parent group X] -->|owns| B[Project A]
+    A -->|also contains| C[Subgroup Y]
+    C -.->D{Invite Subgroup Y<br/>to Project A?} -.->|yes| F[Approvals can be<br/> required] -.-> B
+    D{Invite Subgroup Y<br/>to Project A?} -.->|no| I[Subgroup Y cannot be<br /> an approver] -.-> B
+    C -.->E{Add Subgroup Y<br/>as Code Owners<br/>to Project A?} -.->|yes| H[Approvals can only<br/>be optional] -.-> B
+```
 
 If you do not invite **Subgroup Y** to **Project A**, but make them Code Owners, their approval
 of the merge request becomes optional.

@@ -8,7 +8,6 @@ import { __ } from '~/locale';
 import '~/behaviors/markdown/render_gfm';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import autosave from '../mixins/autosave';
-import { INTERNAL_NOTE_CLASSES } from '../constants';
 import noteAttachment from './note_attachment.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteEditedText from './note_edited_text.vue';
@@ -55,11 +54,6 @@ export default {
       required: false,
       default: '',
     },
-    isInternalNote: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     ...mapGetters(['getDiscussion', 'suggestionsCount', 'getSuggestionsFilePaths']),
@@ -100,12 +94,6 @@ export default {
       });
 
       return escape(suggestion);
-    },
-    internalNoteContainerClasses() {
-      if (this.isInternalNote && !this.isEditing) {
-        return INTERNAL_NOTE_CLASSES;
-      }
-      return '';
     },
   },
   mounted() {
@@ -179,54 +167,52 @@ export default {
     }"
     class="note-body"
   >
-    <div :class="internalNoteContainerClasses" data-testid="note-internal-container">
-      <suggestions
-        v-if="hasSuggestion && !isEditing"
-        :suggestions="note.suggestions"
-        :suggestions-count="suggestionsCount"
-        :batch-suggestions-info="batchSuggestionsInfo"
-        :note-html="note.note_html"
-        :line-type="lineType"
-        :help-page-path="helpPagePath"
-        :default-commit-message="commitMessage"
-        :failed-to-load-metadata="failedToLoadMetadata"
-        @apply="applySuggestion"
-        @applyBatch="applySuggestionBatch"
-        @addToBatch="addSuggestionToBatch"
-        @removeFromBatch="removeSuggestionFromBatch"
-      />
-      <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
-      <note-form
-        v-if="isEditing"
-        ref="noteForm"
-        :note-body="noteBody"
-        :note-id="note.id"
-        :line="line"
-        :note="note"
-        :save-button-title="saveButtonTitle"
-        :help-page-path="helpPagePath"
-        :discussion="discussion"
-        :resolve-discussion="note.resolve_discussion"
-        @handleFormUpdate="handleFormUpdate"
-        @cancelForm="formCancelHandler"
-      />
-      <!-- eslint-disable vue/no-mutating-props -->
-      <textarea
-        v-if="canEdit"
-        v-model="note.note"
-        :data-update-url="note.path"
-        class="hidden js-task-list-field"
-        dir="auto"
-      ></textarea>
-      <!-- eslint-enable vue/no-mutating-props -->
-      <note-edited-text
-        v-if="note.last_edited_at"
-        :edited-at="note.last_edited_at"
-        :edited-by="note.last_edited_by"
-        action-text="Edited"
-        class="note_edited_ago"
-      />
-    </div>
+    <suggestions
+      v-if="hasSuggestion && !isEditing"
+      :suggestions="note.suggestions"
+      :suggestions-count="suggestionsCount"
+      :batch-suggestions-info="batchSuggestionsInfo"
+      :note-html="note.note_html"
+      :line-type="lineType"
+      :help-page-path="helpPagePath"
+      :default-commit-message="commitMessage"
+      :failed-to-load-metadata="failedToLoadMetadata"
+      @apply="applySuggestion"
+      @applyBatch="applySuggestionBatch"
+      @addToBatch="addSuggestionToBatch"
+      @removeFromBatch="removeSuggestionFromBatch"
+    />
+    <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
+    <note-form
+      v-if="isEditing"
+      ref="noteForm"
+      :note-body="noteBody"
+      :note-id="note.id"
+      :line="line"
+      :note="note"
+      :save-button-title="saveButtonTitle"
+      :help-page-path="helpPagePath"
+      :discussion="discussion"
+      :resolve-discussion="note.resolve_discussion"
+      @handleFormUpdate="handleFormUpdate"
+      @cancelForm="formCancelHandler"
+    />
+    <!-- eslint-disable vue/no-mutating-props -->
+    <textarea
+      v-if="canEdit"
+      v-model="note.note"
+      :data-update-url="note.path"
+      class="hidden js-task-list-field"
+      dir="auto"
+    ></textarea>
+    <!-- eslint-enable vue/no-mutating-props -->
+    <note-edited-text
+      v-if="note.last_edited_at"
+      :edited-at="note.last_edited_at"
+      :edited-by="note.last_edited_by"
+      action-text="Edited"
+      class="note_edited_ago"
+    />
     <note-awards-list
       v-if="note.award_emoji && note.award_emoji.length"
       :note-id="note.id"

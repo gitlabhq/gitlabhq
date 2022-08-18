@@ -88,9 +88,7 @@ describe('RunnerList', () => {
     createComponent({}, mountExtended);
 
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
-      'never contacted paused',
-    );
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('never contacted');
 
     // Runner summary
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(
@@ -124,10 +122,10 @@ describe('RunnerList', () => {
       expect(findCell({ fieldKey: 'checkbox' }).find('input').exists()).toBe(true);
     });
 
-    it('Emits a checked event', () => {
+    it('Emits a checked event', async () => {
       const checkbox = findCell({ fieldKey: 'checkbox' }).find('input');
 
-      checkbox.setChecked();
+      await checkbox.setChecked();
 
       expect(wrapper.emitted('checked')).toHaveLength(1);
       expect(wrapper.emitted('checked')[0][0]).toEqual({

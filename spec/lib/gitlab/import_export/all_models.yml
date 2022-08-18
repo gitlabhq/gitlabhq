@@ -140,6 +140,12 @@ project_members:
 - project
 - member_task
 - member_namespace
+- member_role
+member_roles:
+- members
+- namespace
+- base_access_level
+- download_code
 merge_requests:
 - status_check_responses
 - subscriptions
@@ -591,6 +597,7 @@ project:
 - alert_management_alerts
 - repository_storage_moves
 - freeze_periods
+- pumble_integration
 - webex_teams_integration
 - build_report_results
 - vulnerability_statistic
@@ -621,6 +628,7 @@ project:
 - security_trainings
 - vulnerability_reads
 - build_artifacts_size_refresh
+- project_callouts
 award_emoji:
 - awardable
 - user
@@ -646,6 +654,11 @@ search_data:
 merge_request_assignees:
 - merge_request
 - assignee
+- updated_state_by
+merge_request_reviewers:
+- merge_request
+- reviewer
+- updated_state_by
 lfs_file_locks:
 - user
 project_badges:
@@ -805,3 +818,6 @@ bulk_import_export:
   - group
 service_desk_setting:
   - file_template_project
+approvals:
+  - user
+  - merge_request

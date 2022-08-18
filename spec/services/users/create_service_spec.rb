@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Users::CreateService do
   describe '#execute' do
+    let(:password) { User.random_password }
     let(:admin_user) { create(:admin) }
 
     context 'with an admin user' do
@@ -12,7 +13,7 @@ RSpec.describe Users::CreateService do
 
       context 'when required parameters are provided' do
         let(:params) do
-          { name: 'John Doe', username: 'jduser', email: email, password: 'mydummypass' }
+          { name: 'John Doe', username: 'jduser', email: email, password: password }
         end
 
         it 'returns a persisted user' do
@@ -82,13 +83,13 @@ RSpec.describe Users::CreateService do
 
       context 'when force_random_password parameter is true' do
         let(:params) do
-          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass', force_random_password: true }
+          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, force_random_password: true }
         end
 
         it 'generates random password' do
           user = service.execute
 
-          expect(user.password).not_to eq 'mydummypass'
+          expect(user.password).not_to eq password
           expect(user.password).to be_present
         end
       end
@@ -99,7 +100,7 @@ RSpec.describe Users::CreateService do
             name: 'John Doe',
             username: 'jduser',
             email: 'jd@example.com',
-            password: 'mydummypass',
+            password: password,
             password_automatically_set: true
           }
         end
@@ -121,7 +122,7 @@ RSpec.describe Users::CreateService do
 
       context 'when skip_confirmation parameter is true' do
         let(:params) do
-          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass', skip_confirmation: true }
+          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, skip_confirmation: true }
         end
 
         it 'confirms the user' do
@@ -131,7 +132,7 @@ RSpec.describe Users::CreateService do
 
       context 'when reset_password parameter is true' do
         let(:params) do
-          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass', reset_password: true }
+          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, reset_password: true }
         end
 
         it 'resets password even if a password parameter is given' do
@@ -152,7 +153,7 @@ RSpec.describe Users::CreateService do
 
     context 'with nil user' do
       let(:params) do
-        { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass', skip_confirmation: true }
+        { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, skip_confirmation: true }
       end
 
       let(:service) { described_class.new(nil, params) }

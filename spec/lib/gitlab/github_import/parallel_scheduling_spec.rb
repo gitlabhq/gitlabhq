@@ -243,7 +243,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
 
       expect(repr_class)
         .to receive(:from_api_response)
-        .with(object)
+        .with(object, {})
         .and_return(repr_instance)
 
       expect(importer)
@@ -281,7 +281,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
 
       allow(repr_class)
         .to receive(:from_api_response)
-        .with(object)
+        .with(object, {})
         .and_return({ title: 'Foo' })
     end
 

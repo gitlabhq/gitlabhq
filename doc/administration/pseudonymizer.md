@@ -8,8 +8,7 @@ redirect_to: 'index.md'
 
 # Pseudonymizer (removed) **(ULTIMATE)**
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219952) in
-> GitLab 14.7 and removed in 15.0.
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219952) in GitLab 14.7 and removed in 15.0.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219952) in GitLab 14.7.

@@ -9,10 +9,10 @@ module Types
         description 'Represents an entity for options in SAST CI configuration'
 
         field :label, GraphQL::Types::String, null: true,
-          description: 'Label of option entity.'
+                                              description: 'Label of option entity.'
 
         field :value, GraphQL::Types::String, null: true,
-          description: 'Value of option entity.'
+                                              description: 'Value of option entity.'
       end
     end
   end

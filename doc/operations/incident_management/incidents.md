@@ -13,7 +13,7 @@ tools for the triage, response, and remediation of incidents.
 Users with at least Guest [permissions](../../user/permissions.md) can access
 incidents [on public projects](../../user/permissions.md#project-members-permissions).
 
-## Incident Creation
+## Incident creation
 
 You can create an incident manually or automatically.
 
@@ -205,10 +205,10 @@ field populated.
 
 ### Timeline events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled on GitLab.com. Disabled on self-managed.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline`.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `incident_timeline`.
 On GitLab.com, this feature is available.
 
 Incident timelines are an important part of record keeping for incidents.
@@ -297,7 +297,7 @@ as a column in the Incidents List, and as a field on newly created Incidents. If
 the incident isn't closed before the SLA period ends, GitLab adds a `missed::SLA`
 label to the incident.
 
-## Incident Actions
+## Incident actions
 
 There are different actions available to help triage and respond to incidents.
 
@@ -375,6 +375,15 @@ GitLab enables you to [associate a Zoom meeting with an issue](../../user/projec
 for synchronous communication during incident management. After starting a Zoom
 call for an incident, you can associate the conference call with an issue. Your
 team members can join the Zoom call without requesting a link.
+
+### Linked resources
+
+In an incident, you can [links to various resources](linked_resources.md),
+for example:
+
+- The incident Slack channel
+- Zoom meeting
+- Resources for resolving the incidents
 
 ### Embed metrics in incidents
 

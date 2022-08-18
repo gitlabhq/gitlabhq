@@ -5,6 +5,7 @@ import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as UserApi from '~/api/user_api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
+import { VALID_TOKEN_BACKGROUND, INVALID_TOKEN_BACKGROUND } from '~/invite_members/constants';
 
 const label = 'testgroup';
 const placeholder = 'Search for a member';
@@ -46,6 +47,39 @@ describe('MembersTokenSelect', () => {
       };
 
       expect(findTokenSelector().props()).toEqual(expect.objectContaining(expectedProps));
+    });
+  });
+
+  describe('when there are invalidMembers', () => {
+    it('adds in the correct class values for the tokens', async () => {
+      const badToken = { ...user1, class: INVALID_TOKEN_BACKGROUND };
+      const goodToken = { ...user2, class: VALID_TOKEN_BACKGROUND };
+
+      wrapper = createComponent();
+
+      findTokenSelector().vm.$emit('input', [user1, user2]);
+
+      await waitForPromises();
+
+      expect(findTokenSelector().props('selectedTokens')).toEqual([user1, user2]);
+
+      await wrapper.setProps({ invalidMembers: { one_1: 'bad stuff' } });
+
+      expect(findTokenSelector().props('selectedTokens')).toEqual([badToken, goodToken]);
+    });
+
+    it('does not change class when invalid members are cleared', async () => {
+      // arrange - invalidMembers is non-empty and then tokens are added
+      wrapper = createComponent();
+      await wrapper.setProps({ invalidMembers: { one_1: 'bad stuff' } });
+      findTokenSelector().vm.$emit('input', [user1, user2]);
+      await waitForPromises();
+
+      // act - invalidMembers clears out
+      await wrapper.setProps({ invalidMembers: {} });
+
+      // assert - we didn't try to update the tokens
+      expect(findTokenSelector().props('selectedTokens')).toEqual([user1, user2]);
     });
   });
 

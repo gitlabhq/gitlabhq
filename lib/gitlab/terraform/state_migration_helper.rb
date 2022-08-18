@@ -22,7 +22,7 @@ module Gitlab
           versions.find_each(batch_size: batch_size) do |version| # rubocop:disable CodeReuse/ActiveRecord
             version.file.migrate!(store)
 
-            yield version if block_given?
+            yield version if block
           end
         end
       end

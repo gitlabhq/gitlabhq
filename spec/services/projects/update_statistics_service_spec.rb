@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::UpdateStatisticsService do
   using RSpec::Parameterized::TableSyntax
 
-  let(:service) { described_class.new(project, nil, statistics: statistics)}
+  let(:service) { described_class.new(project, nil, statistics: statistics) }
   let(:statistics) { %w(repository_size) }
 
   describe '#execute' do

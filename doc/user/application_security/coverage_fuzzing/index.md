@@ -367,12 +367,12 @@ vulnerability:
 
 ## Troubleshooting
 
-### Error "Unable to extract corpus folder from artifacts zip file"
+### Error `Unable to extract corpus folder from artifacts zip file`
 
 If you see this error message, and `COVFUZZ_USE_REGISTRY` is set to `true`, ensure that the uploaded
 corpus file extracts into a folder named `corpus`.
 
-### Error "400 Bad request - Duplicate package is not allowed"
+### Error `400 Bad request - Duplicate package is not allowed`
 
 If you see this error message when running the fuzzing job with `COVFUZZ_USE_REGISTRY` set to `true`,
 ensure that duplicates are allowed. For more details, see

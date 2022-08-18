@@ -47,7 +47,7 @@ module AuthorizedProjectUpdate
     def user_ids_to_remove
       strong_memoize(:user_ids_to_remove) do
         (current_authorizations - fresh_authorizations)
-          .map {|user_id, _| user_id }
+          .map { |user_id, _| user_id }
       end
     end
 

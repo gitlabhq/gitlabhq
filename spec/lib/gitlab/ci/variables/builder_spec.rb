@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Builder do
+  include Ci::TemplateHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
@@ -92,6 +93,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
           value: project.pages_url },
         { key: 'CI_API_V4_URL',
           value: API::Helpers::Version.new('v4').root_url },
+        { key: 'CI_TEMPLATE_REGISTRY_HOST',
+          value: template_registry_host },
         { key: 'CI_PIPELINE_IID',
           value: pipeline.iid.to_s },
         { key: 'CI_PIPELINE_SOURCE',

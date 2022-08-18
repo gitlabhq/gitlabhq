@@ -45,8 +45,8 @@ To create multi-project pipelines, you can:
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-When you create a multi-project pipeline in your `.gitlab-ci.yml` file,
-you create what is called a *trigger job*. For example:
+When you use the [`trigger`](../yaml/index.md#trigger) keyword to create a multi-project
+pipeline in your `.gitlab-ci.yml` file, you create what is called a *trigger job*. For example:
 
 ```yaml
 rspec:
@@ -76,7 +76,7 @@ downstream project (`my/deployment`) too. If the downstream project is not found
 or the user does not have [permission](../../user/permissions.md) to create a pipeline there,
 the `staging` job is marked as _failed_.
 
-#### Trigger job configuration keywords
+#### Trigger job configuration limitations
 
 Trigger jobs can use only a limited set of the GitLab CI/CD [configuration keywords](../yaml/index.md).
 The keywords available for use in trigger jobs are:
@@ -89,6 +89,8 @@ The keywords available for use in trigger jobs are:
 - [`when`](../yaml/index.md#when) (only with a value of `on_success`, `on_failure`, or `always`)
 - [`extends`](../yaml/index.md#extends)
 - [`needs`](../yaml/index.md#needs), but not [`needs:project`](../yaml/index.md#needsproject)
+
+Trigger jobs cannot use [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
 
 #### Specify a downstream pipeline branch
 
@@ -111,6 +113,8 @@ staging:
 Use:
 
 - The `project` keyword to specify the full path to a downstream project.
+  In [GitLab 15.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367660), variable expansion is
+  supported.
 - The `branch` keyword to specify the name of a branch in the project specified by `project`.
   In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/10126), variable expansion is
   supported.
@@ -180,9 +184,12 @@ downstream-job:
   trigger: my/project
 ```
 
-In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
-upstream pipeline is passed to the `downstream-job` job. It is available
-in the context of all downstream builds.
+In this scenario, the `UPSTREAM_BRANCH` variable with the value of the upstream pipeline's
+`$CI_COMMIT_REF_NAME` is passed to `downstream-job`. It is available in the
+context of all downstream builds.
+
+You cannot use this method to forward [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
+to a downstream pipeline, as they are not available in trigger jobs.
 
 Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
@@ -228,6 +235,96 @@ In the upstream pipeline:
          artifacts: true
    ```
 
+#### Pass artifacts to a downstream pipeline
+
+You can pass artifacts to a downstream pipeline by using [`needs:project`](../yaml/index.md#needsproject).
+
+1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
+1. Trigger the downstream pipeline with a trigger job:
+
+   ```yaml
+   build_artifacts:
+     stage: build
+     script:
+       - echo "This is a test artifact!" >> artifact.txt
+     artifacts:
+       paths:
+         - artifact.txt
+
+   deploy:
+     stage: deploy
+     trigger: my/downstream_project
+   ```
+
+1. In a job in the downstream pipeline, fetch the artifacts from the upstream pipeline
+   by using `needs:project`. Set `job` to the job in the upstream pipeline to fetch artifacts from,
+   `ref` to the branch, and `artifacts: true`.
+
+   ```yaml
+   test:
+     stage: test
+     script:
+       - cat artifact.txt
+     needs:
+       - project: my/upstream_project
+         job: build_artifacts
+         ref: main
+         artifacts: true
+   ```
+
+#### Pass artifacts to a downstream pipeline from a Merge Request pipeline
+
+When you use `needs:project` to [pass artifacts to a downstream pipeline](#pass-artifacts-to-a-downstream-pipeline),
+the `ref` value is usually a branch name, like `main` or `development`.
+
+For merge request pipelines, the `ref` value is in the form of `refs/merge-requests/<id>/head`,
+where `id` is the merge request ID. You can retrieve this ref with the [`CI_MERGE_REQUEST_REF_PATH`](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
+CI/CD variable. Do not use a branch name as the `ref` with merge request pipelines,
+because the downstream pipeline attempts to fetch artifacts from the latest branch pipeline.
+
+To fetch the artifacts from the upstream `merge request` pipeline instead of the `branch` pipeline,
+pass this variable to the downstream pipeline using variable inheritance:
+
+1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
+1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable by using
+   [variable inheritance](#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword):
+
+   ```yaml
+   build_artifacts:
+     stage: build
+     script:
+       - echo "This is a test artifact!" >> artifact.txt
+     artifacts:
+       paths:
+         - artifact.txt
+
+   upstream_job:
+     variables:
+       UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
+     trigger:
+       project: my/downstream_project
+       branch: my-branch
+   ```
+
+1. In a job in the downstream pipeline, fetch the artifacts from the upstream pipeline
+   by using `needs:project`. Set the `ref` to the `UPSTREAM_REF` variable, and `job`
+   to the job in the upstream pipeline to fetch artifacts from:
+
+   ```yaml
+   test:
+     stage: test
+     script:
+       - cat artifact.txt
+     needs:
+       - project: my/upstream_project
+         job: build_artifacts
+         ref: UPSTREAM_REF
+         artifacts: true
+   ```
+
+This method works for fetching artifacts from a regular merge request parent pipeline,
+but fetching artifacts from [merge results](merged_results_pipelines.md) pipelines is not supported.
+
 #### Use `rules` or `only`/`except` with multi-project pipelines
 
 You can use CI/CD variables or the [`rules`](../yaml/index.md#rulesif) keyword to
@@ -244,8 +341,8 @@ If you use [`only/except`](../yaml/index.md#only--except) to control job behavio
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in GitLab Premium 12.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-You can mirror the pipeline status from the triggered pipeline to the source
-trigger job by using `strategy: depend`. For example:
+You can mirror the pipeline status from the triggered pipeline to the source trigger job
+by using [`strategy: depend`](../yaml/index.md#triggerstrategy). For example:
 
 ```yaml
 trigger_job:
@@ -303,10 +400,15 @@ downstream projects. On self-managed instances, an administrator can change this
 
 ## Multi-project pipeline visualization **(PREMIUM)**
 
-When you configure GitLab CI/CD for your project, you can visualize the stages of your
-[jobs](index.md#configure-a-pipeline) on a [pipeline graph](index.md#visualize-pipelines).
+When your pipeline triggers a downstream pipeline, the downstream pipeline displays
+to the right of the [pipeline graph](index.md#visualize-pipelines).
 
 ![Multi-project pipeline graph](img/multi_project_pipeline_graph_v14_3.png)
+
+In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
+displays to the right of the mini graph.
+
+![Multi-project pipeline mini graph](img/pipeline_mini_graph_v15_0.png)
 
 ## Retry or cancel multi-project pipelines
 

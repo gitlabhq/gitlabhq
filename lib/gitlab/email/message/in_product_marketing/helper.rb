@@ -67,7 +67,7 @@ module Gitlab
           def list(array)
             case format
             when :html
-              tag.ul { array.map { |item| tag.li item} }
+              tag.ul { array.map { |item| tag.li item } }
             else
               '- ' + array.join("\n- ")
             end

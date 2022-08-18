@@ -12,8 +12,8 @@ An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
 You can only restore a backup to **exactly the same version and type (CE/EE)**
-of GitLab on which it was created. The best way to [migrate your projects
-from one server to another](#migrate-to-a-new-server) is through a backup and restore.
+of GitLab on which it was created. The best way to 
+[migrate your projects from one server to another](#migrate-to-a-new-server) is through a backup and restore.
 
 WARNING:
 GitLab doesn't back up items that aren't stored on the file system. If you're
@@ -184,14 +184,14 @@ ActiveRecord::StatementInvalid: PG::UndefinedTable
 ```
 
 Each time the GitLab backup runs, GitLab starts generating 500 errors and errors about missing
-tables will [be logged by PostgreSQL](../administration/logs.md#postgresql-logs):
+tables will [be logged by PostgreSQL](../administration/logs/index.md#postgresql-logs):
 
 ```plaintext
 ERROR: relation "tablename" does not exist at character 123
 ```
 
-This happens because the task uses `pg_dump`, which [sets a null search
-path and explicitly includes the schema in every SQL query](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
+This happens because the task uses `pg_dump`, which 
+[sets a null search path and explicitly includes the schema in every SQL query](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
 to address [CVE-2018-1058](https://www.postgresql.org/about/news/postgresql-103-968-9512-9417-and-9322-released-1834/).
 
 Since connections are reused with PgBouncer in transaction pooling mode,
@@ -266,7 +266,7 @@ To prepare the new server:
    [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
    from the old server to avoid man-in-the-middle attack warnings.
    See [Manually replicate the primary site's SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
-1. [Install and configure GitLab](https://about.gitlab.com/install) except
+1. [Install and configure GitLab](https://about.gitlab.com/install/) except
    [incoming email](../administration/incoming_email.md):
    1. Install GitLab.
    1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
@@ -775,7 +775,7 @@ Truncating filenames to resolve the error involves:
 
 #### Clean up remote uploaded files
 
-A [known issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/45425) caused object store uploads to remain after a parent resource was deleted. This issue was [resolved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18698).
+A [known issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/45425) caused object store uploads to remain after a parent resource was deleted. This issue was [resolved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18698).
 
 To fix these files, you must clean up all remote uploaded files that are in the storage but not tracked in the `uploads` database table.
 

@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
   describe '#to_hash' do
     context 'properly includes another local file in the same repository' do
       let(:location) { 'some/file/config.yml' }
-      let(:content) { 'include: { local: another-config.yml }'}
+      let(:content) { 'include: { local: another-config.yml }' }
 
       let(:another_location) { 'another-config.yml' }
       let(:another_content) { 'rspec: JOB' }

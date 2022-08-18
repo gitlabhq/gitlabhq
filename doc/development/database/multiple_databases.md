@@ -1,15 +1,14 @@
 ---
 stage: Data Stores
-group: Sharding
+group: Pods
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Multiple Databases
 
 To allow GitLab to scale further we
-[decomposed the GitLab application database into multiple
-databases](https://gitlab.com/groups/gitlab-org/-/epics/6168). The two databases
-are `main` and `ci`. GitLab supports being run with either one database or two databases.
+[decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168). 
+The two databases are `main` and `ci`. GitLab supports being run with either one database or two databases.
 On GitLab.com we are using two separate databases.
 
 ## GitLab Schema
@@ -246,7 +245,7 @@ where projects_with_ci_feature_usage.ci_feature = 'code_coverage'
 ```
 
 The above example uses as a text column for simplicity but we should probably
-use an [enum](../creating_enums.md) to save space.
+use an [enum](creating_enums.md) to save space.
 
 The downside of this new design is that this may need to be
 updated (removed if the `ci_daily_build_group_report_results` is deleted).

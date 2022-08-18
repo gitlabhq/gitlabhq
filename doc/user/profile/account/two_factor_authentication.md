@@ -59,15 +59,12 @@ To enable 2FA with a one-time password:
    1. Select **Enable Two-factor Authentication**.
 1. **On your device (usually your phone):**
    1. Install a compatible application. For example:
-      - [Aegis](https://getaegis.app/)
-      - [Raivo OTP](https://apps.apple.com/us/app/raivo-otp/id1459042137#platform=iphone)
-      - [Authy](https://authy.com/)
-      - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
-      - [LastPass Authenticator](https://lastpass.com/auth/)
-      - [Authenticator](https://mattrubin.me/authenticator/)
-      - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
-      - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
-      - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp)
+      - Cloud-based (recommended because you can restore access if you lose the hardware device):
+        - [Authy](https://authy.com/)
+        - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
+      - Other:
+        - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
+        - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
    1. In the application, add a new entry in one of two ways:
       - Scan the code displayed by GitLab with your device's camera to add the entry automatically.
       - Enter the details provided to add the entry manually.
@@ -358,8 +355,7 @@ After you use a recovery code, you cannot re-use it. You can still use the other
 
 ### Generate new recovery codes using SSH
 
-Users often forget to save their recovery codes when enabling 2FA. If you added an SSH key to your
-GitLab account, you can generate a new set of recovery codes with SSH:
+If you forget to save your recovery codes when enabling 2FA, and you added an SSH key to your GitLab account, you can generate a new set of recovery codes with SSH:
 
 1. In a terminal, run:
 
@@ -403,10 +399,9 @@ After signing in, immediately set up 2FA with a new device.
 
 ### Have two-factor authentication disabled on your account **(PREMIUM SAAS)**
 
-If other methods are unavailable, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) to request
+If other methods are unavailable, have a GitLab support contact submit a [support ticket](https://support.gitlab.com) to request
 a GitLab global administrator disable 2FA for your account:
 
-- Only the owner of the account can make this request.
 - This service is only available for accounts that have a GitLab.com subscription. For more information, see our
   [blog post](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
 - Disabling this setting temporarily leaves your account in a less secure state. You should sign in and re-enable two-factor

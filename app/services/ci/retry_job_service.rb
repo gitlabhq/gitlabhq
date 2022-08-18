@@ -4,10 +4,10 @@ module Ci
   class RetryJobService < ::BaseService
     include Gitlab::Utils::StrongMemoize
 
-    def execute(job)
+    def execute(job, variables: [])
       if job.retryable?
         job.ensure_scheduling_type!
-        new_job = retry_job(job)
+        new_job = retry_job(job, variables: variables)
 
         ServiceResponse.success(payload: { job: new_job })
       else
@@ -19,7 +19,7 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def clone!(job)
+    def clone!(job, variables: [])
       # Cloning a job requires a strict type check to ensure
       # the attributes being used for the clone are taken straight
       # from the model and not overridden by other abstractions.
@@ -27,7 +27,7 @@ module Ci
 
       check_access!(job)
 
-      new_job = job.clone(current_user: current_user)
+      new_job = job.clone(current_user: current_user, new_job_variables_attributes: variables)
 
       new_job.run_after_commit do
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
@@ -55,8 +55,8 @@ module Ci
 
     def check_assignable_runners!(job); end
 
-    def retry_job(job)
-      clone!(job).tap do |new_job|
+    def retry_job(job, variables: [])
+      clone!(job, variables: variables).tap do |new_job|
         check_assignable_runners!(new_job) if new_job.is_a?(Ci::Build)
 
         next if new_job.failed?

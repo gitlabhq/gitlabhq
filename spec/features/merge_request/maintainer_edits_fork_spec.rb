@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork', :js, :sidekiq_might_not_need_inline do
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
   include ProjectForksHelper
   let(:user) { create(:user, username: 'the-maintainer') }
   let(:target_project) { create(:project, :public, :repository) }
@@ -40,12 +41,13 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
   end
 
   it 'allows committing to the source branch' do
-    execute_script("monaco.editor.getModels()[0].setValue('Updated the readme')")
+    content = 'Updated the readme'
+    editor_set_value(content)
 
     click_button 'Commit changes'
     wait_for_requests
 
     expect(page).to have_content('Your changes have been successfully committed')
-    expect(page).to have_content('Updated the readme')
+    expect(page).to have_content(content)
   end
 end

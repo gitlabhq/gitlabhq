@@ -33,8 +33,8 @@
       .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
         %svg.s24
 
-    - if merge_project && create_mr_button?(from: @repository.root_ref, to: branch.name, source_project: @project, target_project: @project)
-      = link_to create_mr_path(from: @repository.root_ref, to: branch.name, source_project: @project, target_project: @project), class: 'gl-button btn btn-default' do
+    - if merge_project && create_mr_button?(from: branch.name, source_project: @project)
+      = render Pajamas::ButtonComponent.new(href: create_mr_path(from: branch.name, source_project: @project)) do
         = _('Merge request')
 
     - if branch.name != @repository.root_ref

@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Matchers } from '@pact-foundation/pact';
 import {
   URL,
@@ -225,8 +223,12 @@ const ProjectPipelines = {
     body,
   },
 
-  request: {
+  scenario: {
+    state: 'a few pipelines for a project exists',
     uponReceiving: 'a request for a list of project pipelines',
+  },
+
+  request: {
     withRequest: {
       method: 'GET',
       path: '/gitlab-org/gitlab-qa/-/pipelines.json',
@@ -239,5 +241,3 @@ const ProjectPipelines = {
 };
 
 export { ProjectPipelines };
-
-/* eslint-enable @gitlab/require-i18n-strings */

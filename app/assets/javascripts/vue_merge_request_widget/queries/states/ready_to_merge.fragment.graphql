@@ -1,11 +1,9 @@
 fragment ReadyToMerge on Project {
-  __typename
   id
   onlyAllowMergeIfPipelineSucceeds
   mergeRequestsFfOnlyEnabled
   squashReadOnly
   mergeRequest(iid: $iid) {
-    __typename
     id
     autoMergeEnabled
     shouldRemoveSourceBranch

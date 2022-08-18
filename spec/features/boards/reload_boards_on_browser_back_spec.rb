@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Ensure Boards do not show stale data on browser back', :js do
-  let(:project) {create(:project, :public)}
-  let(:board)   {create(:board, project: project)}
-  let(:user)    {create(:user)}
+  let(:project) { create(:project, :public) }
+  let(:board)   { create(:board, project: project) }
+  let(:user)    { create(:user) }
 
   context 'authorized user' do
     before do

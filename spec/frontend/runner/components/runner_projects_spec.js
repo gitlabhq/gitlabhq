@@ -95,6 +95,7 @@ describe('RunnerProjects', () => {
         name,
         fullName: nameWithNamespace,
         avatarUrl,
+        isOwner: true, // first project is always owner
       });
     });
 

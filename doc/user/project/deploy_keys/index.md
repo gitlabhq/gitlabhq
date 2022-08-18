@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
 to access a repository from an external host, like a build server or Continuous Integration (CI) server.
 
-Depending on your needs, you might want to use a [deploy token](../deploy_tokens/) to access a repository instead.
+Depending on your needs, you might want to use a [deploy token](../deploy_tokens/index.md) to access a repository instead.
 
 | Attribute        |  Deploy key | Deploy token |
 |------------------|-------------|--------------|
@@ -146,8 +146,8 @@ What happens to the deploy key when it is disabled depends on the following:
 
 ### Deploy key cannot push to a protected branch
 
-There are a few scenarios where a deploy key will fail to push to a [protected
-branch](../protected_branches.md).
+There are a few scenarios where a deploy key will fail to push to a
+[protected branch](../protected_branches.md).
 
 - The owner associated to a deploy key does not have access to the protected branch.
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.

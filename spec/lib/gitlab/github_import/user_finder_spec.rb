@@ -15,32 +15,64 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
   let(:finder) { described_class.new(project, client) }
 
   describe '#author_id_for' do
-    it 'returns the user ID for the author of an object' do
-      user = double(:user, id: 4, login: 'kittens')
-      note = double(:note, author: user)
+    context 'with default author_key' do
+      it 'returns the user ID for the author of an object' do
+        user = double(:user, id: 4, login: 'kittens')
+        note = double(:note, author: user)
 
-      expect(finder).to receive(:user_id_for).with(user).and_return(42)
+        expect(finder).to receive(:user_id_for).with(user).and_return(42)
 
-      expect(finder.author_id_for(note)).to eq([42, true])
+        expect(finder.author_id_for(note)).to eq([42, true])
+      end
+
+      it 'returns the ID of the project creator if no user ID could be found' do
+        user = double(:user, id: 4, login: 'kittens')
+        note = double(:note, author: user)
+
+        expect(finder).to receive(:user_id_for).with(user).and_return(nil)
+
+        expect(finder.author_id_for(note)).to eq([project.creator_id, false])
+      end
+
+      it 'returns the ID of the ghost user when the object has no user' do
+        note = double(:note, author: nil)
+
+        expect(finder.author_id_for(note)).to eq([User.ghost.id, true])
+      end
+
+      it 'returns the ID of the ghost user when the given object is nil' do
+        expect(finder.author_id_for(nil)).to eq([User.ghost.id, true])
+      end
     end
 
-    it 'returns the ID of the project creator if no user ID could be found' do
-      user = double(:user, id: 4, login: 'kittens')
-      note = double(:note, author: user)
+    context 'with a non-default author_key' do
+      let(:user) { double(:user, id: 4, login: 'kittens') }
 
-      expect(finder).to receive(:user_id_for).with(user).and_return(nil)
+      shared_examples 'user ID finder' do |author_key|
+        it 'returns the user ID for an object' do
+          expect(finder).to receive(:user_id_for).with(user).and_return(42)
 
-      expect(finder.author_id_for(note)).to eq([project.creator_id, false])
-    end
+          expect(finder.author_id_for(issue_event, author_key: author_key)).to eq([42, true])
+        end
+      end
 
-    it 'returns the ID of the ghost user when the object has no user' do
-      note = double(:note, author: nil)
+      context 'when the author_key parameter is :actor' do
+        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', actor: user) }
 
-      expect(finder.author_id_for(note)).to eq([User.ghost.id, true])
-    end
+        it_behaves_like 'user ID finder', :actor
+      end
 
-    it 'returns the ID of the ghost user when the given object is nil' do
-      expect(finder.author_id_for(nil)).to eq([User.ghost.id, true])
+      context 'when the author_key parameter is :assignee' do
+        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', assignee: user) }
+
+        it_behaves_like 'user ID finder', :assignee
+      end
+
+      context 'when the author_key parameter is :assigner' do
+        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', assigner: user) }
+
+        it_behaves_like 'user ID finder', :assigner
+      end
     end
   end
 

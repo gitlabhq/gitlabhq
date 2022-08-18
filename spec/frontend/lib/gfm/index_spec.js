@@ -96,26 +96,164 @@ describe('gfm', () => {
         );
       });
     });
-  });
 
-  describe('when skipping the rendering of code blocks', () => {
-    it('transforms code nodes into codeblock html tags', async () => {
-      const result = await markdownToAST(
-        `
+    describe('when skipping the rendering of code blocks', () => {
+      it('transforms code nodes into codeblock html tags', async () => {
+        const result = await markdownToAST(
+          `
 \`\`\`javascript
 console.log('Hola');
 \`\`\`\
           `,
-        ['code'],
-      );
+          ['code'],
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            tagName: 'codeblock',
+            properties: {
+              language: 'javascript',
+            },
+          }),
+        );
+      });
+    });
+
+    describe('when skipping the rendering of reference definitions', () => {
+      it('transforms code nodes into codeblock html tags', async () => {
+        const result = await markdownToAST(
+          `
+[gitlab][gitlab]
+
+[gitlab]: https://gitlab.com "GitLab"
+          `,
+          ['definition'],
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            type: 'element',
+            tagName: 'referencedefinition',
+            properties: {
+              identifier: 'gitlab',
+              title: 'GitLab',
+              url: 'https://gitlab.com',
+            },
+            children: [
+              {
+                type: 'text',
+                value: '[gitlab]: https://gitlab.com "GitLab"',
+              },
+            ],
+          }),
+        );
+      });
+    });
+
+    describe('when skipping the rendering of link and image references', () => {
+      it('transforms linkReference and imageReference nodes into html tags', async () => {
+        const result = await markdownToAST(
+          `
+[gitlab][gitlab] and ![GitLab Logo][gitlab-logo]
+
+[gitlab]: https://gitlab.com "GitLab"
+[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"
+          `,
+          ['linkReference', 'imageReference'],
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            tagName: 'p',
+            children: expect.arrayContaining([
+              expect.objectContaining({
+                type: 'element',
+                tagName: 'a',
+                properties: expect.objectContaining({
+                  href: 'https://gitlab.com',
+                  isReference: 'true',
+                  identifier: 'gitlab',
+                  title: 'GitLab',
+                }),
+              }),
+              expect.objectContaining({
+                type: 'element',
+                tagName: 'img',
+                properties: expect.objectContaining({
+                  src: 'https://gitlab.com/gitlab-logo.png',
+                  isReference: 'true',
+                  identifier: 'gitlab-logo',
+                  title: 'GitLab Logo',
+                  alt: 'GitLab Logo',
+                }),
+              }),
+            ]),
+          }),
+        );
+      });
+
+      it('normalizes the urls extracted from the reference definitions', async () => {
+        const result = await markdownToAST(
+          `
+[gitlab][gitlab] and ![GitLab Logo][gitlab]
+
+[gitlab]: /url\\bar*baz
+          `,
+          ['linkReference', 'imageReference'],
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            tagName: 'p',
+            children: expect.arrayContaining([
+              expect.objectContaining({
+                type: 'element',
+                tagName: 'a',
+                properties: expect.objectContaining({
+                  href: '/url%5Cbar*baz',
+                }),
+              }),
+              expect.objectContaining({
+                type: 'element',
+                tagName: 'img',
+                properties: expect.objectContaining({
+                  src: '/url%5Cbar*baz',
+                }),
+              }),
+            ]),
+          }),
+        );
+      });
+    });
+  });
+
+  describe('when skipping the rendering of frontmatter types', () => {
+    it.each`
+      type      | input
+      ${'yaml'} | ${'---\ntitle: page\n---'}
+      ${'toml'} | ${'+++\ntitle: page\n+++'}
+      ${'json'} | ${';;;\ntitle: page\n;;;'}
+    `('transforms $type nodes into frontmatter html tags', async ({ input, type }) => {
+      const result = await markdownToAST(input, [type]);
 
       expectInRoot(
         result,
         expect.objectContaining({
-          tagName: 'codeblock',
+          type: 'element',
+          tagName: 'frontmatter',
           properties: {
-            language: 'javascript',
+            language: type,
           },
+          children: [
+            {
+              type: 'text',
+              value: 'title: page',
+            },
+          ],
         }),
       );
     });

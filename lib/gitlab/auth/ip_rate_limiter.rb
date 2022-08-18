@@ -33,6 +33,10 @@ module Gitlab
         Rack::Attack::Allow2Ban.banned?(ip)
       end
 
+      def trusted_ip?
+        trusted_ips.any? { |netmask| netmask.include?(ip) }
+      end
+
       private
 
       def skip_rate_limit?
@@ -45,10 +49,6 @@ module Gitlab
 
       def config
         Gitlab.config.rack_attack.git_basic_auth
-      end
-
-      def trusted_ip?
-        trusted_ips.any? { |netmask| netmask.include?(ip) }
       end
 
       def trusted_ips

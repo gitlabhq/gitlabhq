@@ -1,16 +1,15 @@
-import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { GlButton } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import reportSection from '~/reports/components/report_section.vue';
+import ReportItem from '~/reports/components/report_item.vue';
+import ReportSection from '~/reports/components/report_section.vue';
 
-describe('Report section', () => {
-  let vm;
+describe('ReportSection component', () => {
   let wrapper;
-  const ReportSection = Vue.extend(reportSection);
-  const findCollapseButton = () => wrapper.findByTestId('report-section-expand-button');
+
+  const findButton = () => wrapper.findComponent(GlButton);
   const findPopover = () => wrapper.findComponent(HelpPopover);
+  const findReportSection = () => wrapper.find('.js-report-section-container');
 
   const resolvedIssues = [
     {
@@ -33,34 +32,24 @@ describe('Report section', () => {
     alwaysOpen: false,
   };
 
-  const createComponent = (props) => {
-    wrapper = extendedWrapper(
-      mount(reportSection, {
-        propsData: {
-          ...defaultProps,
-          ...props,
-        },
-      }),
-    );
-    return wrapper;
+  const createComponent = ({ props = {}, data = {}, slots = {} } = {}) => {
+    wrapper = mountExtended(ReportSection, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+      data() {
+        return data;
+      },
+      slots,
+    });
   };
 
   afterEach(() => {
-    if (vm) {
-      vm.$destroy();
-      vm = null;
-    }
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
   describe('computed', () => {
-    beforeEach(() => {
-      vm = mountComponent(ReportSection, defaultProps);
-    });
-
     describe('isCollapsible', () => {
       const testMatrix = [
         { hasIssues: false, alwaysOpen: false, isCollapsible: false },
@@ -73,12 +62,10 @@ describe('Report section', () => {
         const issues = hasIssues ? 'has issues' : 'has no issues';
         const open = alwaysOpen ? 'is always open' : 'is not always open';
 
-        it(`is ${isCollapsible}, if the report ${issues} and ${open}`, async () => {
-          vm.hasIssues = hasIssues;
-          vm.alwaysOpen = alwaysOpen;
+        it(`is ${isCollapsible}, if the report ${issues} and ${open}`, () => {
+          createComponent({ props: { hasIssues, alwaysOpen } });
 
-          await nextTick();
-          expect(vm.isCollapsible).toBe(isCollapsible);
+          expect(wrapper.vm.isCollapsible).toBe(isCollapsible);
         });
       });
     });
@@ -95,12 +82,10 @@ describe('Report section', () => {
         const issues = isCollapsed ? 'is collapsed' : 'is not collapsed';
         const open = alwaysOpen ? 'is always open' : 'is not always open';
 
-        it(`is ${isExpanded}, if the report ${issues} and ${open}`, async () => {
-          vm.isCollapsed = isCollapsed;
-          vm.alwaysOpen = alwaysOpen;
+        it(`is ${isExpanded}, if the report ${issues} and ${open}`, () => {
+          createComponent({ props: { alwaysOpen }, data: { isCollapsed } });
 
-          await nextTick();
-          expect(vm.isExpanded).toBe(isExpanded);
+          expect(wrapper.vm.isExpanded).toBe(isExpanded);
         });
       });
     });
@@ -108,110 +93,105 @@ describe('Report section', () => {
 
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
-      vm = mountComponent(ReportSection, {
-        component: '',
-        status: 'LOADING',
-        loadingText: 'Loading Code Quality report',
-        errorText: 'foo',
-        successText: 'Code quality improved on 1 point and degraded on 1 point',
-        hasIssues: false,
+      createComponent({
+        props: {
+          component: '',
+          status: 'LOADING',
+          loadingText: 'Loading Code Quality report',
+          errorText: 'foo',
+          successText: 'Code quality improved on 1 point and degraded on 1 point',
+          hasIssues: false,
+        },
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('Loading Code Quality report');
+      expect(wrapper.text()).toBe('Loading Code Quality report');
     });
   });
 
   describe('with success status', () => {
-    beforeEach(() => {
-      vm = mountComponent(ReportSection, {
-        ...defaultProps,
-        hasIssues: true,
-      });
-    });
-
     it('should render provided data', () => {
-      expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
+      createComponent({ props: { hasIssues: true } });
+
+      expect(wrapper.find('.js-code-text').text()).toBe(
         'Code quality improved on 1 point and degraded on 1 point',
       );
-
-      expect(vm.$el.querySelectorAll('.report-block-container li').length).toEqual(
-        resolvedIssues.length,
-      );
+      expect(wrapper.findAllComponents(ReportItem)).toHaveLength(resolvedIssues.length);
     });
 
     describe('toggleCollapsed', () => {
-      const hiddenCss = { display: 'none' };
-
       it('toggles issues', async () => {
-        vm.$el.querySelector('button').click();
+        createComponent({ props: { hasIssues: true } });
 
-        await nextTick();
-        expect(vm.$el.querySelector('.js-report-section-container')).not.toHaveCss(hiddenCss);
-        expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Collapse');
+        await findButton().trigger('click');
 
-        vm.$el.querySelector('button').click();
+        expect(findReportSection().isVisible()).toBe(true);
+        expect(findButton().text()).toBe('Collapse');
 
-        await nextTick();
-        expect(vm.$el.querySelector('.js-report-section-container')).toHaveCss(hiddenCss);
-        expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Expand');
+        await findButton().trigger('click');
+
+        expect(findReportSection().isVisible()).toBe(false);
+        expect(findButton().text()).toBe('Expand');
       });
 
-      it('is always expanded, if always-open is set to true', async () => {
-        vm.alwaysOpen = true;
-        await nextTick();
-        expect(vm.$el.querySelector('.js-report-section-container')).not.toHaveCss(hiddenCss);
-        expect(vm.$el.querySelector('button')).toBeNull();
+      it('is always expanded, if always-open is set to true', () => {
+        createComponent({ props: { hasIssues: true, alwaysOpen: true } });
+
+        expect(findReportSection().isVisible()).toBe(true);
+        expect(findButton().exists()).toBe(false);
       });
     });
   });
 
   describe('snowplow events', () => {
-    it('does emit an event on issue toggle if the shouldEmitToggleEvent prop does exist', async () => {
-      createComponent({ hasIssues: true, shouldEmitToggleEvent: true });
+    it('does emit an event on issue toggle if the shouldEmitToggleEvent prop does exist', () => {
+      createComponent({ props: { hasIssues: true, shouldEmitToggleEvent: true } });
 
-      expect(wrapper.emitted().toggleEvent).toBeUndefined();
+      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
 
-      findCollapseButton().trigger('click');
-      await nextTick();
-      expect(wrapper.emitted().toggleEvent).toHaveLength(1);
+      findButton().trigger('click');
+
+      expect(wrapper.emitted('toggleEvent')).toEqual([[]]);
     });
 
-    it('does not emit an event on issue toggle if the shouldEmitToggleEvent prop does not exist', async () => {
-      createComponent({ hasIssues: true });
+    it('does not emit an event on issue toggle if the shouldEmitToggleEvent prop does not exist', () => {
+      createComponent({ props: { hasIssues: true } });
 
-      expect(wrapper.emitted().toggleEvent).toBeUndefined();
+      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
 
-      findCollapseButton().trigger('click');
-      await nextTick();
-      expect(wrapper.emitted().toggleEvent).toBeUndefined();
+      findButton().trigger('click');
+
+      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
     });
 
-    it('does not emit an event if always-open is set to true', async () => {
-      createComponent({ alwaysOpen: true, hasIssues: true, shouldEmitToggleEvent: true });
+    it('does not emit an event if always-open is set to true', () => {
+      createComponent({
+        props: { alwaysOpen: true, hasIssues: true, shouldEmitToggleEvent: true },
+      });
 
-      await nextTick();
-      expect(wrapper.emitted().toggleEvent).toBeUndefined();
+      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
     });
   });
 
   describe('with failed request', () => {
     it('should render error indicator', () => {
-      vm = mountComponent(ReportSection, {
-        component: '',
-        status: 'ERROR',
-        loadingText: 'Loading Code Quality report',
-        errorText: 'Failed to load Code Quality report',
-        successText: 'Code quality improved on 1 point and degraded on 1 point',
-        hasIssues: false,
+      createComponent({
+        props: {
+          component: '',
+          status: 'ERROR',
+          loadingText: 'Loading Code Quality report',
+          errorText: 'Failed to load Code Quality report',
+          successText: 'Code quality improved on 1 point and degraded on 1 point',
+          hasIssues: false,
+        },
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('Failed to load Code Quality report');
+      expect(wrapper.text()).toBe('Failed to load Code Quality report');
     });
   });
 
   describe('with action buttons passed to the slot', () => {
     beforeEach(() => {
-      vm = mountComponentWithSlots(ReportSection, {
+      createComponent({
         props: {
           status: 'SUCCESS',
           successText: 'success',
@@ -224,17 +204,17 @@ describe('Report section', () => {
     });
 
     it('should render the passed button', () => {
-      expect(vm.$el.textContent.trim()).toContain('Action!');
+      expect(wrapper.text()).toContain('Action!');
     });
 
     it('should still render the expand/collapse button', () => {
-      expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
+      expect(findButton().text()).toBe('Expand');
     });
   });
 
   describe('Success and Error slots', () => {
     const createComponentWithSlots = (status) => {
-      vm = mountComponentWithSlots(ReportSection, {
+      createComponent({
         props: {
           status,
           hasIssues: true,
@@ -250,25 +230,25 @@ describe('Report section', () => {
     it('only renders success slot when status is "SUCCESS"', () => {
       createComponentWithSlots('SUCCESS');
 
-      expect(vm.$el.textContent.trim()).toContain('This is a success');
-      expect(vm.$el.textContent.trim()).not.toContain('This is an error');
-      expect(vm.$el.textContent.trim()).not.toContain('This is loading');
+      expect(wrapper.text()).toContain('This is a success');
+      expect(wrapper.text()).not.toContain('This is an error');
+      expect(wrapper.text()).not.toContain('This is loading');
     });
 
     it('only renders error slot when status is "ERROR"', () => {
       createComponentWithSlots('ERROR');
 
-      expect(vm.$el.textContent.trim()).toContain('This is an error');
-      expect(vm.$el.textContent.trim()).not.toContain('This is a success');
-      expect(vm.$el.textContent.trim()).not.toContain('This is loading');
+      expect(wrapper.text()).toContain('This is an error');
+      expect(wrapper.text()).not.toContain('This is a success');
+      expect(wrapper.text()).not.toContain('This is loading');
     });
 
     it('only renders loading slot when status is "LOADING"', () => {
       createComponentWithSlots('LOADING');
 
-      expect(vm.$el.textContent.trim()).toContain('This is loading');
-      expect(vm.$el.textContent.trim()).not.toContain('This is an error');
-      expect(vm.$el.textContent.trim()).not.toContain('This is a success');
+      expect(wrapper.text()).toContain('This is loading');
+      expect(wrapper.text()).not.toContain('This is an error');
+      expect(wrapper.text()).not.toContain('This is a success');
     });
   });
 
@@ -280,9 +260,7 @@ describe('Report section', () => {
       };
 
       beforeEach(() => {
-        createComponent({
-          popoverOptions: options,
-        });
+        createComponent({ props: { popoverOptions: options } });
       });
 
       it('popover is shown with options', () => {
@@ -292,7 +270,7 @@ describe('Report section', () => {
 
     describe('when popover options are not defined', () => {
       beforeEach(() => {
-        createComponent({ popoverOptions: {} });
+        createComponent({ props: { popoverOptions: {} } });
       });
 
       it('popover is not shown', () => {

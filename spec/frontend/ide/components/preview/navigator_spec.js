@@ -37,13 +37,13 @@ describe('IDE clientside preview navigator', () => {
   });
 
   it('renders loading icon by default', () => {
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('removes loading icon when done event is fired', async () => {
     listenHandler({ type: 'done' });
     await nextTick();
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
   });
 
   it('does not count visiting same url multiple times', async () => {

@@ -18,8 +18,6 @@ module Gitlab
   class Application < Rails::Application
     config.load_defaults 6.1
 
-    config.view_component.preview_route = "/-/view_component/previews"
-
     config.active_support.hash_digest_class = ::OpenSSL::Digest::SHA256
 
     # This section contains configuration from Rails upgrades to override the new defaults so that we
@@ -292,11 +290,13 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipelines.css"
     config.assets.precompile << "page_bundles/pipeline_editor.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
+    config.assets.precompile << "page_bundles/profile.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/project.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/roadmap.css"
+    config.assets.precompile << "page_bundles/runner_details.css"
     config.assets.precompile << "page_bundles/security_dashboard.css"
     config.assets.precompile << "page_bundles/security_discover.css"
     config.assets.precompile << "page_bundles/signup.css"
@@ -330,6 +330,7 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
+    config.assets.precompile << "illustrations/*.png"
 
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
@@ -532,6 +533,23 @@ module Gitlab
 
     # DO NOT PLACE ANY INITIALIZERS AFTER THIS.
     config.after_initialize do
+      config.active_record.yaml_column_permitted_classes = [
+        Symbol, Date, Time,
+        BigDecimal, # https://gitlab.com/gitlab-org/gitlab/issues/368846
+        Gitlab::Diff::Position,
+        # Used in:
+        # app/models/concerns/diff_positionable_note.rb
+        # app/models/legacy_diff_note.rb:  serialize :st_diff
+        ActiveSupport::HashWithIndifferentAccess,
+        # Used in ee/lib/ee/api/helpers.rb: send_git_archive
+        DeployToken,
+        ActiveModel::Attribute.const_get(:FromDatabase, false), # https://gitlab.com/gitlab-org/gitlab/-/issues/368072
+        # Used in app/services/web_hooks/log_execution_service.rb: log_execution
+        ActiveSupport::TimeWithZone,
+        ActiveSupport::TimeZone,
+        Gitlab::Color # https://gitlab.com/gitlab-org/gitlab/-/issues/368844
+      ]
+
       # on_master_start yields immediately in unclustered environments and runs
       # when the primary process is done initializing otherwise.
       Gitlab::Cluster::LifecycleEvents.on_master_start do

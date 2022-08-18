@@ -15,4 +15,3 @@ jest.mock('monaco-editor/esm/vs/language/typescript/tsMode');
 jest.mock('monaco-yaml/lib/esm/yamlMode');
 
 export * from 'monaco-editor/esm/vs/editor/editor.api';
-export default global.monaco;

@@ -128,7 +128,7 @@ describe('SignInOauthButton', () => {
             });
 
             it('does not emit `sign-in` event', () => {
-              expect(wrapper.emitted('sign-in')).toBeFalsy();
+              expect(wrapper.emitted('sign-in')).toBeUndefined();
             });
 
             it('sets `loading` prop of button to `false`', () => {
@@ -179,7 +179,7 @@ describe('SignInOauthButton', () => {
           });
 
           it('emits `sign-in` event with user data', () => {
-            expect(wrapper.emitted('sign-in')[0]).toBeTruthy();
+            expect(wrapper.emitted('sign-in')).toHaveLength(1);
           });
         });
 
@@ -200,7 +200,7 @@ describe('SignInOauthButton', () => {
           });
 
           it('does not emit `sign-in` event', () => {
-            expect(wrapper.emitted('sign-in')).toBeFalsy();
+            expect(wrapper.emitted('sign-in')).toBeUndefined();
           });
 
           it('sets `loading` prop of button to `false`', () => {

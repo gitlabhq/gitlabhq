@@ -35,7 +35,7 @@ describe('~/ide/components/resizable_panel', () => {
       store,
     });
   };
-  const findResizer = () => wrapper.find(PanelResizer);
+  const findResizer = () => wrapper.findComponent(PanelResizer);
   const findInlineStyle = () => wrapper.element.style.cssText;
   const createInlineStyle = (width) => `width: ${width}px;`;
 

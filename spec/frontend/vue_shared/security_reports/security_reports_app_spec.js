@@ -70,8 +70,8 @@ describe('Security reports app', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const findDownloadDropdown = () => wrapper.find(SecurityReportDownloadDropdown);
-  const findHelpIconComponent = () => wrapper.find(HelpIcon);
+  const findDownloadDropdown = () => wrapper.findComponent(SecurityReportDownloadDropdown);
+  const findHelpIconComponent = () => wrapper.findComponent(HelpIcon);
 
   afterEach(() => {
     wrapper.destroy();

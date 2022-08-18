@@ -237,10 +237,10 @@ export default {
     recentDeployments() {
       return this.deploymentData.reduce((acc, deployment) => {
         if (deployment.created_at >= this.earliestDatapoint) {
-          const { id, created_at, sha, ref, tag } = deployment;
+          const { id, created_at: createdAt, sha, ref, tag } = deployment;
           acc.push({
             id,
-            createdAt: created_at,
+            createdAt,
             sha,
             commitUrl: `${this.projectPath}/-/commit/${sha}`,
             tag,

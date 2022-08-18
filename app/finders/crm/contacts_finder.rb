@@ -16,6 +16,11 @@ module Crm
 
     attr_reader :params, :current_user
 
+    def self.counts_by_state(current_user, params = {})
+      params = params.merge(sort: nil)
+      new(current_user, params).execute.counts_by_state
+    end
+
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params
@@ -28,10 +33,24 @@ module Crm
       contacts = by_ids(contacts)
       contacts = by_state(contacts)
       contacts = by_search(contacts)
-      contacts.sort_by_name
+      sort_contacts(contacts)
     end
 
     private
+
+    def sort_contacts(contacts)
+      return contacts.sort_by_name unless @params.key?(:sort)
+      return contacts if @params[:sort].nil?
+
+      field = @params[:sort][:field]
+      direction = @params[:sort][:direction]
+
+      if field == 'organization'
+        contacts.sort_by_organization(direction)
+      else
+        contacts.sort_by_field(field, direction)
+      end
+    end
 
     def root_group
       strong_memoize(:root_group) do

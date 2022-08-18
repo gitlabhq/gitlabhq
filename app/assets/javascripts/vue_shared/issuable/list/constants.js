@@ -46,13 +46,6 @@ export const AvailableSortOptions = [
   },
 ];
 
-export const IssuableTypes = {
-  Issue: 'ISSUE',
-  Incident: 'INCIDENT',
-  TestCase: 'TEST_CASE',
-  Requirement: 'REQUIREMENT',
-};
-
 export const DEFAULT_PAGE_SIZE = 20;
 
 export const DEFAULT_SKELETON_COUNT = 5;

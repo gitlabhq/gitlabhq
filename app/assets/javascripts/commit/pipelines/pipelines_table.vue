@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import { PipelineKeyOptions } from '~/pipelines/constants';
@@ -19,6 +20,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlModal,
+    GlSprintf,
     PipelinesTableComponent,
     TablePagination,
   },
@@ -29,6 +31,10 @@ export default {
       required: true,
     },
     errorStateSvgPath: {
+      type: String,
+      required: true,
+    },
+    emptyStateSvgPath: {
       type: String,
       required: true,
     },
@@ -82,6 +88,9 @@ export default {
     },
     shouldRenderErrorState() {
       return this.hasError && !this.isLoading;
+    },
+    shouldRenderEmptyState() {
+      return this.state.pipelines.length === 0 && !this.shouldRenderErrorState;
     },
     /**
      * The "Run pipeline" button can only be rendered when:
@@ -185,6 +194,17 @@ export default {
       },
     },
   },
+  i18n: {
+    runPipelinePopoverTitle: s__('Pipeline|Run merge request pipeline'),
+    runPipelinePopoverDescription: s__(
+      'Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{linkStart}must be configured%{linkEnd} to run in merge request pipelines.',
+    ),
+    runPipelineText: s__('Pipeline|Run pipeline'),
+    emptyStateTitle: s__('Pipelines|There are currently no pipelines.'),
+  },
+  mrPipelinesDocsPath: helpPagePath('ci/pipelines/merge_request_pipelines.md', {
+    anchor: 'prerequisites',
+  }),
 };
 </script>
 <template>
@@ -203,7 +223,41 @@ export default {
         s__(`Pipelines|There was an error fetching the pipelines.
         Try again in a few moments or contact your support team.`)
       "
+      data-testid="pipeline-error-empty-state"
     />
+    <template v-else-if="shouldRenderEmptyState">
+      <gl-empty-state
+        :svg-path="emptyStateSvgPath"
+        :title="$options.i18n.emptyStateTitle"
+        data-testid="pipeline-empty-state"
+      >
+        <template #description>
+          <gl-sprintf :message="$options.i18n.runPipelinePopoverDescription">
+            <template #link="{ content }">
+              <gl-link
+                :href="$options.mrPipelinesDocsPath"
+                target="_blank"
+                data-testid="mr-pipelines-docs-link"
+                >{{ content }}</gl-link
+              >
+            </template>
+          </gl-sprintf>
+        </template>
+
+        <template #actions>
+          <div class="gl-vertical-align-middle">
+            <gl-button
+              variant="confirm"
+              :loading="state.isRunningMergeRequestPipeline"
+              data-testid="run_pipeline_button"
+              @click="tryRunPipeline"
+            >
+              {{ $options.i18n.runPipelineText }}
+            </gl-button>
+          </div>
+        </template>
+      </gl-empty-state>
+    </template>
 
     <div v-else-if="shouldRenderTable">
       <gl-button
@@ -215,7 +269,7 @@ export default {
         :loading="state.isRunningMergeRequestPipeline"
         @click="tryRunPipeline"
       >
-        {{ s__('Pipeline|Run pipeline') }}
+        {{ $options.i18n.runPipelineText }}
       </gl-button>
 
       <pipelines-table-component
@@ -231,7 +285,7 @@ export default {
               :loading="state.isRunningMergeRequestPipeline"
               @click="tryRunPipeline"
             >
-              {{ s__('Pipeline|Run pipeline') }}
+              {{ $options.i18n.runPipelineText }}
             </gl-button>
           </div>
         </template>

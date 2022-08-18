@@ -157,7 +157,7 @@ module Gitlab
       def self.execute(columns, mapping, &to_class)
         raise ArgumentError if mapping.blank?
 
-        entries_by_class = mapping.group_by { |k, v| block_given? ? to_class.call(k) : k.class }
+        entries_by_class = mapping.group_by { |k, v| to_class ? to_class.call(k) : k.class }
 
         entries_by_class.each do |model, entries|
           Setter.new(model, columns, entries).update!

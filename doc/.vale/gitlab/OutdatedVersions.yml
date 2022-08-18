@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.OutdatedVersions
+# Suggestion: gitlab.OutdatedVersions
 #
 # Checks for references to versions of GitLab that are no longer supported.
 #

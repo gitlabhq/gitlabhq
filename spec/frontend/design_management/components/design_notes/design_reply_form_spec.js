@@ -15,9 +15,9 @@ describe('Design reply form component', () => {
   let wrapper;
 
   const findTextarea = () => wrapper.find('textarea');
-  const findSubmitButton = () => wrapper.find({ ref: 'submitButton' });
-  const findCancelButton = () => wrapper.find({ ref: 'cancelButton' });
-  const findModal = () => wrapper.find({ ref: 'cancelCommentModal' });
+  const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
+  const findCancelButton = () => wrapper.findComponent({ ref: 'cancelButton' });
+  const findModal = () => wrapper.findComponent({ ref: 'cancelCommentModal' });
 
   function createComponent(props = {}, mountOptions = {}) {
     wrapper = mount(DesignReplyForm, {
@@ -40,6 +40,18 @@ describe('Design reply form component', () => {
     createComponent({}, { attachTo: document.body });
 
     expect(findTextarea().element).toEqual(document.activeElement);
+  });
+
+  it('renders "Attach a file or image" button in markdown toolbar', () => {
+    createComponent();
+
+    expect(wrapper.find('[data-testid="button-attach-file"]').exists()).toBe(true);
+  });
+
+  it('renders file upload progress container', () => {
+    createComponent();
+
+    expect(wrapper.find('.comment-toolbar .uploading-container').exists()).toBe(true);
   });
 
   it('renders button text as "Comment" when creating a comment', () => {

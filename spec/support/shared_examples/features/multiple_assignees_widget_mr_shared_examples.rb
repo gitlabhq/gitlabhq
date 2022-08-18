@@ -32,7 +32,7 @@ RSpec.shared_examples 'multiple assignees widget merge request' do |action, save
     end
 
     page.within '.dropdown-menu-user' do
-      click_link user.name
+      click_button user.name
     end
 
     page.within '.issuable-sidebar' do

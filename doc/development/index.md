@@ -7,9 +7,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 description: "Development Guidelines: learn how to contribute to GitLab."
 ---
 
-# Contributor and Development Docs
+# Contribute to the development of GitLab
 
-Learn the processes and technical information needed for contributing to GitLab.
+Learn how to contribute to the development of the GitLab product.
 
 This content is intended for members of the GitLab Team as well as community
 contributors. Content specific to the GitLab Team should instead be included in

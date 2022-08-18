@@ -150,7 +150,6 @@ describe('InstallAgentModal', () => {
       });
 
       it("doesn't render agent installation instructions", () => {
-        expect(findModal().text()).not.toContain(i18n.basicInstallTitle);
         expect(findModal().findComponent(GlFormInputGroup).exists()).toBe(false);
         expect(findModal().findComponent(GlAlert).exists()).toBe(false);
       });

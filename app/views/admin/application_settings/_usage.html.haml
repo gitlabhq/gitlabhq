@@ -3,7 +3,7 @@
 - link_end = '</a>'.html_safe
 
 = gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+  = form_errors(@application_setting, pajamas_alert: true)
 
   %fieldset
     .form-group
@@ -38,7 +38,7 @@
         %p.gl-mb-3= s_('AdminSettings|Registration Features include:')
         - email_from_gitlab_path = help_page_path('user/admin_area/email_from_gitlab')
         - repo_size_limit_path = help_page_path('user/admin_area/settings/account_and_limit_settings', anchor: 'repository-size-limit')
-        - restrict_ip_path = help_page_path('user/group/index', anchor: 'restrict-group-access-by-ip-address')
+        - restrict_ip_path = help_page_path('user/group/access_and_permissions', anchor: 'restrict-group-access-by-ip-address')
         - email_from_gitlab_link = link_start % { url: email_from_gitlab_path }
         - repo_size_limit_link = link_start % { url: repo_size_limit_path }
         - restrict_ip_link = link_start % { url: restrict_ip_path }

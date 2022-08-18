@@ -252,7 +252,7 @@
   - "vendor/assets/**/*"
   - "{,ee/,jh/}app/assets/**/*"
 
-.frontend-patterns: &frontend-patterns
+.frontend-patterns-for-as-if-foss: &frontend-patterns-for-as-if-foss
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
   - "babel.config.js"
@@ -261,7 +261,7 @@
   - "Dockerfile.assets"
   - "config/**/*.js"
   - "vendor/assets/**/*"
-  - "{,ee/,jh/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
+  - "{app/assets,app/helpers,app/presenters,app/views,locale,public,spec/frontend,symbol}/**/*"
 
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
@@ -369,7 +369,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -400,7 +399,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -525,17 +523,6 @@
       when: never
     - <<: *if-jh
       when: never
-
-.as-if-jh-default-exclusion-rules:
-  rules:
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-stable-branch-refs
-      when: never
-    - <<: *if-merge-request-labels-as-if-jh
-      allow_failure: true
 
 .rails:rules:minimal-default-rules:
   rules:
@@ -734,6 +721,7 @@
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
+    - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
     - changes: *workhorse-patterns
 
@@ -753,18 +741,6 @@
     - changes: *startup-css-patterns
     - changes: *workhorse-patterns
 
-.frontend:rules:compile-test-assets-as-if-jh:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
-    - <<: *if-merge-request-labels-run-all-rspec
-      allow_failure: true
-    - changes: *code-backstage-qa-patterns
-      allow_failure: true
-    - changes: *startup-css-patterns
-      allow_failure: true
-    - changes: *workhorse-patterns
-
 .frontend:rules:default-frontend-jobs:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
@@ -782,18 +758,11 @@
     - <<: *if-merge-request
       changes: *ci-patterns
 
-.frontend:rules:default-frontend-jobs-as-if-jh:
+.frontend:rules:frontend_fixture-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
-    - <<: *if-merge-request-labels-run-all-rspec
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *startup-css-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *ci-patterns
-      allow_failure: true
+    - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
+    - !reference [".frontend:rules:jest:minimal:as-if-foss", rules]
 
 .frontend:rules:jest:
   rules:
@@ -828,12 +797,37 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
 
+.frontend:rules:jest:minimal:as-if-foss:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+      when: never
+    - <<: *if-merge-request-labels-as-if-foss
+      when: never
+    - <<: *if-merge-request-labels-run-all-jest
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *startup-css-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request
+      changes: *core-frontend-patterns
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+
 .frontend:rules:eslint-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request
-      changes: *frontend-patterns
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:ee-mr-and-default-branch-only:
   rules:
@@ -1300,14 +1294,6 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
-.rails:rules:as-if-jh-rspec:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
-    - <<: *if-merge-request
-      changes: *ci-patterns
-      allow_failure: true
-
 .rails:rules:ee-and-foss-db-library-code:
   rules:
     - changes: *db-library-patterns
@@ -1481,12 +1467,23 @@
       changes: ["vendor/gems/ipynbdiff/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:omniauth-azure-oauth2:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth-azure-oauth2/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
+.vendor:rules:omniauth-cas3:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth-cas3/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .vendor:rules:omniauth_crowd:
   rules:
     - <<: *if-merge-request
       changes: ["vendor/gems/omniauth_crowd/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
-
 
 .vendor:rules:omniauth-gitlab:
   rules:
@@ -1633,7 +1630,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
+      changes: *frontend-build-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1812,19 +1809,6 @@
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-
-.setup:rules:add-jh-folder:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
-    - <<: *if-merge-request-labels-run-all-rspec
-      allow_failure: true
-    - changes: *code-backstage-qa-patterns
-      allow_failure: true
-    - changes: *startup-css-patterns
-      allow_failure: true
-    - changes: *workhorse-patterns
-      allow_failure: true
 
 #######################
 # Test metadata rules #

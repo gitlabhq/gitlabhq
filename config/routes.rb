@@ -25,10 +25,10 @@ InitializerConnections.with_disabled_database_connections do
 
     use_doorkeeper do
       controllers applications: 'oauth/applications',
-        authorized_applications: 'oauth/authorized_applications',
-        authorizations: 'oauth/authorizations',
-        token_info: 'oauth/token_info',
-        tokens: 'oauth/tokens'
+                  authorized_applications: 'oauth/authorized_applications',
+                  authorizations: 'oauth/authorizations',
+                  token_info: 'oauth/token_info',
+                  tokens: 'oauth/tokens'
     end
 
     # This prefixless path is required because Jira gets confused if we set it up with a path
@@ -87,6 +87,10 @@ InitializerConnections.with_disabled_database_connections do
     get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
     get 'search/count' => 'search#count', as: :search_count
     get 'search/opensearch' => 'search#opensearch', as: :search_opensearch
+
+    Gitlab.ee do
+      get 'search/aggregations' => 'search#aggregations', as: :search_aggregations
+    end
 
     # JSON Web Token
     get 'jwt/auth' => 'jwt#auth'

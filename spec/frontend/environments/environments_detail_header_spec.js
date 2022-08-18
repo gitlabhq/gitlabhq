@@ -1,5 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import EnvironmentsDetailHeader from '~/environments/components/environments_detail_header.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
@@ -42,6 +43,9 @@ describe('Environments detail header component', () => {
       stubs: {
         GlSprintf,
         TimeAgo,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
       propsData: {
         canAdminEnvironment: false,
@@ -184,6 +188,14 @@ describe('Environments detail header component', () => {
 
     it('displays the metrics button with correct path', () => {
       expect(findMetricsButton().attributes('href')).toBe(metricsPath);
+    });
+
+    it('uses a gl tooltip for the title', () => {
+      const button = findMetricsButton();
+      const tooltip = getBinding(button.element, 'gl-tooltip');
+
+      expect(tooltip).toBeDefined();
+      expect(button.attributes('title')).toBe('See metrics');
     });
   });
 

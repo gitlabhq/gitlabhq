@@ -226,8 +226,8 @@ RSpec.describe Projects::CompareController do
 
     context 'when page is valid' do
       let(:from_project_id) { nil }
-      let(:from_ref) { '08f22f25' }
-      let(:to_ref) { '66eceea0' }
+      let(:from_ref) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+      let(:to_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
       let(:page) { 1 }
 
       it 'shows the diff' do
@@ -236,6 +236,21 @@ RSpec.describe Projects::CompareController do
         expect(response).to be_successful
         expect(assigns(:diffs).diff_files.first).to be_present
         expect(assigns(:commits).length).to be >= 1
+      end
+
+      it 'only loads blobs in the current page' do
+        stub_const('Projects::CompareController::COMMIT_DIFFS_PER_PAGE', 1)
+
+        expect_next_instance_of(Repository) do |repository|
+          # This comparison contains 4 changed files but we expect only the blobs for the first one to be loaded
+          expect(repository).to receive(:blobs_at).with(
+            contain_exactly([from_ref, '.gitmodules'], [to_ref, '.gitmodules']), anything
+          ).and_call_original
+        end
+
+        show_request
+
+        expect(response).to be_successful
       end
     end
 

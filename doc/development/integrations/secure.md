@@ -151,7 +151,7 @@ Depending on the CI infrastructure,
 the CI may have to fetch the Docker image every time the job runs.
 For the scanning job to run fast and avoid wasting bandwidth, Docker images should be as small as
 possible. You should aim for 50MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
-which is the size of a CD-ROM.
+which is the size of a DVD-ROM.
 
 If the scanner requires a fully functional Linux environment,
 it is recommended to use a [Debian](https://www.debian.org/intro/about) "slim" distribution or [Alpine Linux](https://www.alpinelinux.org/).
@@ -253,6 +253,10 @@ then `artifacts:reports:dependency_scanning` must be set to `depscan.json`.
 Following the POSIX exit code standard, the scanner exits with 0 for success and any number from 1 to 255 for anything else.
 Success also includes the case when vulnerabilities are found.
 
+When a CI job fails, security report results are not ingested by GitLab, even if the job
+[allows failure](../../ci/yaml/#allow_failure). The report artifacts are still uploaded to GitLab and available
+for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#download-security-scan-outputs).
+
 When executing a scanning job using the [Docker-in-Docker privileged mode](../../user/application_security/sast/index.md#requirements),
 we reserve the following standard exit codes.
 
@@ -310,7 +314,7 @@ This documentation gives an overview of the report JSON format,
 as well as recommendations and examples to help integrators set its fields.
 The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#reports-json-format),
-[DAST](../../user/application_security/dast/#reports),
+[DAST](../../user/application_security/dast/index.md#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
 and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)
 
@@ -493,19 +497,20 @@ We recommend that you use the identifiers the GitLab scanners already define:
 |------------|------|---------------|
 | [CVE](https://cve.mitre.org/cve/) | `cve` | CVE-2019-10086 |
 | [CWE](https://cwe.mitre.org/data/index.html) | `cwe` | CWE-1026 |
+| [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 |
 | [OSVD](https://cve.mitre.org/data/refs/refmap/source-OSVDB.html) | `osvdb` | OSVDB-113928 |
+| [OWASP](https://owasp.org/Top10/) | `owasp` | A01:2021–Broken Access Control Design |
+| [RHSA](https://access.redhat.com/errata-search/#/) | `rhsa` | RHSA-2020:0111 |
 | [USN](https://ubuntu.com/security/notices) | `usn` | USN-4234-1 |
 | [WASC](http://projects.webappsec.org/Threat-Classification-Reference-Grid)  | `wasc` | WASC-19 |
-| [RHSA](https://access.redhat.com/errata/#/) | `rhsa` | RHSA-2020:0111 |
-| [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 |
 
 The generic identifiers listed above are defined in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common),
 which is shared by some of the analyzers that GitLab maintains. You can [contribute](https://gitlab.com/gitlab-org/security-products/analyzers/common/blob/master/issue/identifier.go)
 new generic identifiers to if needed. Analyzers may also produce vendor-specific or product-specific
 identifiers, which don't belong in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common).
 
-The first item of the `identifiers` array is called the [primary
-identifier](../../user/application_security/terminology/#primary-identifier).
+The first item of the `identifiers` array is called the 
+[primary identifier](../../user/application_security/terminology/index.md#primary-identifier).
 The primary identifier is particularly important, because it is used to
 [track vulnerabilities](#tracking-and-merging-vulnerabilities) as new commits are pushed to the repository.
 Identifiers are also used to [merge duplicate vulnerabilities](#tracking-and-merging-vulnerabilities)

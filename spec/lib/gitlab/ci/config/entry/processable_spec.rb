@@ -212,7 +212,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
     let(:unspecified) { double('unspecified', 'specified?' => false) }
     let(:default) { double('default', '[]' => unspecified) }
     let(:workflow) { double('workflow', 'has_rules?' => false) }
-    let(:variables) { }
+    let(:variables) {}
 
     let(:deps) do
       double('deps',

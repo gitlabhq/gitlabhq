@@ -23,5 +23,5 @@ ignored.
 ## Syntax Highlighting
 
 The `.gitattributes` file can be used to define which language to use when
-syntax highlighting files and diffs. See ["Syntax
-Highlighting"](highlighting.md) for more information.
+syntax highlighting files and diffs. See 
+["Syntax Highlighting"](highlighting.md) for more information.

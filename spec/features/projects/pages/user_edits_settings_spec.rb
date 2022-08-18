@@ -4,8 +4,8 @@ require 'spec_helper'
 RSpec.describe 'Pages edits pages settings', :js do
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:project) { create(:project, pages_https_only: false) }
-  let(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :pages_published, pages_https_only: false) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
@@ -80,13 +80,6 @@ RSpec.describe 'Pages edits pages settings', :js do
       end
     end
 
-    it 'does not see anything to destroy' do
-      visit project_pages_path(project)
-
-      expect(page).to have_content('Configure pages')
-      expect(page).not_to have_link('Remove pages')
-    end
-
     describe 'project settings page' do
       it 'renders "Pages" tab' do
         visit edit_project_path(project)
@@ -151,7 +144,7 @@ RSpec.describe 'Pages edits pages settings', :js do
     end
 
     context 'non-HTTPS domain exists' do
-      let(:project) { create(:project, pages_https_only: false) }
+      let(:project) { create(:project, :pages_published, pages_https_only: false) }
 
       before do
         create(:pages_domain, :without_key, :without_certificate, project: project)

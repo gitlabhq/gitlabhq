@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Expects usage of 'incident settings enabled' context.
+# Expects usage of 'incident management settings enabled' context.
 #
 # This shared_example requires the following variables:
 # - `alert`, alert for which related incidents should be closed

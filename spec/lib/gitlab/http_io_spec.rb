@@ -262,7 +262,7 @@ RSpec.describe Gitlab::HttpIO do
       end
 
       it 'reads a trace' do
-        expect { subject }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError)
+        expect { subject }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError, 'Unexpected response code: 500')
       end
     end
 

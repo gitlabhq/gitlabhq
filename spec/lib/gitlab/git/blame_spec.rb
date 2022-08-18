@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Git::Blame do
 
       it 'only returns the range' do
         expect(result.size).to eq(range.size)
-        expect(result.map {|r| r[:line] }).to eq(['', 'This guide details how contribute to GitLab.', ''])
+        expect(result.map { |r| r[:line] }).to eq(['', 'This guide details how contribute to GitLab.', ''])
       end
     end
 

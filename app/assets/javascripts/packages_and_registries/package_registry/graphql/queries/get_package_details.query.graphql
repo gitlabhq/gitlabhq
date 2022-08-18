@@ -20,6 +20,7 @@ query getPackageDetails($id: PackagesPackageID!) {
       id
       path
       name
+      fullPath
     }
     tags(first: 10) {
       nodes {
@@ -39,6 +40,9 @@ query getPackageDetails($id: PackagesPackageID!) {
       }
     }
     packageFiles(first: 100) {
+      pageInfo {
+        hasNextPage
+      }
       nodes {
         id
         fileMd5

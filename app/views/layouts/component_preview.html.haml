@@ -1,0 +1,5 @@
+%head
+  = stylesheet_link_tag "application"
+  = stylesheet_link_tag "application_utilities"
+%body{ style: "background-color: #{params.dig(:lookbook, :display, :bg_color) || 'white'}" }
+  .container.gl-mt-6= yield

@@ -210,6 +210,7 @@ RSpec/VerifiedDoubles:
     - ee/spec/views/layouts/header/_ee_subscribable_banner.html.haml_spec.rb
     - ee/spec/workers/ci/sync_reports_to_report_approval_rules_worker_spec.rb
     - ee/spec/workers/geo/container_repository_sync_worker_spec.rb
+    - ee/spec/workers/compliance_management/chain_of_custody_report_worker_spec.rb
     - ee/spec/workers/geo/design_repository_sync_worker_spec.rb
     - ee/spec/workers/geo/destroy_worker_spec.rb
     - ee/spec/workers/geo/event_worker_spec.rb

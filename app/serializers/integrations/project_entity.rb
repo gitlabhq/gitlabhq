@@ -4,6 +4,7 @@ module Integrations
   class ProjectEntity < Grape::Entity
     include RequestAwareEntity
 
+    expose :id
     expose :avatar_url
     expose :full_name
     expose :name

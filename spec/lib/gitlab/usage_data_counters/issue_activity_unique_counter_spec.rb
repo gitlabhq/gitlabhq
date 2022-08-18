@@ -6,7 +6,12 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   let_it_be(:user1) { build(:user, id: 1) }
   let_it_be(:user2) { build(:user, id: 2) }
   let_it_be(:user3) { build(:user, id: 3) }
+  let_it_be(:project) { build(:project) }
+  let_it_be(:category) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CATEGORY }
+  let_it_be(:event_action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_ACTION }
+  let_it_be(:event_label) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL }
 
+  let(:event_property) { action }
   let(:time) { Time.zone.now }
 
   context 'for Issue title edit actions' do
@@ -120,8 +125,8 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue cloned actions' do
-    it_behaves_like 'a daily tracked issuable event' do
-      let(:action) { described_class::ISSUE_CLONED }
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
+      let_it_be(:action) { described_class::ISSUE_CLONED }
 
       def track_action(params)
         described_class.track_issue_cloned_action(**params)
@@ -239,8 +244,8 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue comment added actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+  context 'for Issue comment added actions', :snowplow do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_COMMENT_ADDED }
 
       def track_action(params)
@@ -249,8 +254,8 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue comment edited actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+  context 'for Issue comment edited actions', :snowplow do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_COMMENT_EDITED }
 
       def track_action(params)
@@ -259,8 +264,8 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue comment removed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+  context 'for Issue comment removed actions', :snowplow do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_COMMENT_REMOVED }
 
       def track_action(params)

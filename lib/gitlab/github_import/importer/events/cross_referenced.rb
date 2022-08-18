@@ -4,15 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       module Events
-        class CrossReferenced
-          attr_reader :project, :user_id
-
-          def initialize(project, user_id)
-            @project = project
-            @user_id = user_id
-          end
-
-          # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
+        class CrossReferenced < BaseImporter
           def execute(issue_event)
             mentioned_in_record_class = mentioned_in_type(issue_event)
             mentioned_in_number = issue_event.source.dig(:issue, :number)
@@ -21,14 +13,15 @@ module Gitlab
             )
             return if mentioned_in_record.nil?
 
+            user_id = author_id(issue_event)
             note_body = cross_reference_note_content(mentioned_in_record.gfm_reference(project))
-            track_activity(mentioned_in_record_class)
-            create_note(issue_event, note_body)
+            track_activity(mentioned_in_record_class, user_id)
+            create_note(issue_event, note_body, user_id)
           end
 
           private
 
-          def track_activity(mentioned_in_class)
+          def track_activity(mentioned_in_class, user_id)
             return if mentioned_in_class != Issue
 
             Gitlab::UsageDataCounters::HLLRedisCounter.track_event(
@@ -37,11 +30,11 @@ module Gitlab
             )
           end
 
-          def create_note(issue_event, note_body)
+          def create_note(issue_event, note_body, user_id)
             Note.create!(
               system: true,
               noteable_type: Issue.name,
-              noteable_id: issue_event.issue_db_id,
+              noteable_id: issuable_db_id(issue_event),
               project: project,
               author_id: user_id,
               note: note_body,
@@ -73,7 +66,7 @@ module Gitlab
               iid: number, issuable_type: record_class.name
             )
 
-            Gitlab::GithubImport::IssuableFinder.new(project, mentioned_in_adapter).database_id
+            issuable_db_id(mentioned_in_adapter)
           end
 
           def cross_reference_note_content(gfm_reference)

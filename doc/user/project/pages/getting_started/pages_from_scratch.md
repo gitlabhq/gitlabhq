@@ -420,10 +420,10 @@ Now GitLab CI/CD not only builds the website, but also:
 
 For more information, see the following blog posts.
 
-- [Use GitLab CI/CD `environments` to deploy your
-  web app to staging and production](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
-- Learn [how to run jobs sequentially,
-  in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/).
+- Use GitLab CI/CD `environments` to 
+  [deploy your web app to staging and production](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
+- Learn how to run jobs
+  [sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/).
 - Learn [how to pull specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
   to deploy this website, <https://docs.gitlab.com>.
 - Learn [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).

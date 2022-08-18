@@ -33,7 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
       specific_importer = double(importer_class.name) # rubocop:disable RSpec/VerifiedDoubles
 
       expect(importer_class)
-        .to receive(:new).with(project, user.id)
+        .to receive(:new).with(project, client)
         .and_return(specific_importer)
       expect(specific_importer).to receive(:execute).with(issue_event)
 
@@ -43,12 +43,6 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
 
   describe '#execute' do
     before do
-      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        allow(finder).to receive(:author_id_for)
-          .with(issue_event, author_key: :actor)
-          .and_return(user.id, true)
-      end
-
       issue_event.attributes[:issue_db_id] = issue.id
     end
 
@@ -87,11 +81,39 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::Renamed
     end
 
+    context "when it's milestoned issue event" do
+      let(:event_name) { 'milestoned' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedMilestone
+    end
+
+    context "when it's demilestoned issue event" do
+      let(:event_name) { 'demilestoned' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedMilestone
+    end
+
     context "when it's cross-referenced issue event" do
       let(:event_name) { 'cross-referenced' }
 
       it_behaves_like 'triggers specific event importer',
                       Gitlab::GithubImport::Importer::Events::CrossReferenced
+    end
+
+    context "when it's assigned issue event" do
+      let(:event_name) { 'assigned' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedAssignee
+    end
+
+    context "when it's unassigned issue event" do
+      let(:event_name) { 'unassigned' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedAssignee
     end
 
     context "when it's unknown issue event" do

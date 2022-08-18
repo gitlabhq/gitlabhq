@@ -16,8 +16,8 @@ RSpec.describe 'User uploads file to note' do
   end
 
   context 'before uploading' do
-    it 'shows "Attach a file" button', :js do
-      expect(page).to have_button('Attach a file')
+    it 'shows "Attach a file or image" button', :js do
+      expect(page).to have_selector('[data-testid="button-attach-file"]')
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe 'User uploads file to note' do
         click_button 'Cancel'
       end
 
-      expect(page).to have_button('Attach a file')
+      expect(page).to have_selector('[data-testid="button-attach-file"]')
       expect(page).not_to have_button('Cancel')
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
     end
@@ -60,16 +60,15 @@ RSpec.describe 'User uploads file to note' do
       expect(page).to have_selector('.uploading-error-message', visible: true, text: error_text)
       expect(page).to have_button('Try again', visible: true)
       expect(page).to have_button('attach a new file', visible: true)
-      expect(page).not_to have_button('Attach a file')
     end
   end
 
   context 'uploading is complete' do
-    it 'shows "Attach a file" button on uploading complete', :js do
+    it 'shows "Attach a file or image" button on uploading complete', :js do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')])
       wait_for_requests
 
-      expect(page).to have_button('Attach a file')
+      expect(page).to have_selector('[data-testid="button-attach-file"]')
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
     end
 

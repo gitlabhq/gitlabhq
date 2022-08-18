@@ -37,8 +37,8 @@ module Types
     mount_mutation Mutations::Clusters::AgentTokens::Create
     mount_mutation Mutations::Clusters::AgentTokens::Revoke
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
-    mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
-    mount_mutation Mutations::CustomEmoji::Destroy, feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomEmoji::Create, _deprecated_feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomEmoji::Destroy, _deprecated_feature_flag: :custom_emoji
     mount_mutation Mutations::CustomerRelations::Contacts::Create
     mount_mutation Mutations::CustomerRelations::Contacts::Update
     mount_mutation Mutations::CustomerRelations::Organizations::Create
@@ -72,10 +72,8 @@ module Types
     mount_mutation Mutations::MergeRequests::SetSubscription
     mount_mutation Mutations::MergeRequests::SetDraft, calls_gitaly: true
     mount_mutation Mutations::MergeRequests::SetAssignees
+    mount_mutation Mutations::MergeRequests::SetReviewers
     mount_mutation Mutations::MergeRequests::ReviewerRereview
-    mount_mutation Mutations::MergeRequests::RequestAttention
-    mount_mutation Mutations::MergeRequests::RemoveAttentionRequest
-    mount_mutation Mutations::MergeRequests::ToggleAttentionRequested
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Delete
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
@@ -94,6 +92,7 @@ module Types
     mount_mutation Mutations::Terraform::State::Delete
     mount_mutation Mutations::Terraform::State::Lock
     mount_mutation Mutations::Terraform::State::Unlock
+    mount_mutation Mutations::Timelogs::Create
     mount_mutation Mutations::Timelogs::Delete
     mount_mutation Mutations::Todos::Create
     mount_mutation Mutations::Todos::MarkDone
@@ -129,6 +128,7 @@ module Types
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::Runner::Update
     mount_mutation Mutations::Ci::Runner::Delete
+    mount_mutation Mutations::Ci::Runner::BulkDelete, alpha: { milestone: '15.3' }
     mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Groups::Update
@@ -139,17 +139,18 @@ module Types
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo
-    mount_mutation Mutations::WorkItems::Create, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::CreateFromTask, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::Delete, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::DeleteTask, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::Update, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::UpdateWidgets, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::UpdateTask, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::Create, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::CreateFromTask, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Delete, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::DeleteTask, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::UpdateWidgets, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::UpdateTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
     mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::SavedReplies::Destroy
+    mount_mutation Mutations::Uploads::Delete
   end
 end
 

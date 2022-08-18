@@ -2,7 +2,7 @@ import Ajv from 'ajv';
 import AjvFormats from 'ajv-formats';
 import CiSchema from '~/editor/schema/ci.json';
 
-// JSON POSITIVE TESTS
+// JSON POSITIVE TESTS (LEGACY)
 import AllowFailureJson from './json_tests/positive_tests/allow_failure.json';
 import EnvironmentJson from './json_tests/positive_tests/environment.json';
 import GitlabCiDependenciesJson from './json_tests/positive_tests/gitlab-ci-dependencies.json';
@@ -14,7 +14,7 @@ import TerraformReportJson from './json_tests/positive_tests/terraform_report.js
 import VariablesMixStringAndUserInputJson from './json_tests/positive_tests/variables_mix_string_and_user_input.json';
 import VariablesJson from './json_tests/positive_tests/variables.json';
 
-// JSON NEGATIVE TESTS
+// JSON NEGATIVE TESTS (LEGACY)
 import DefaultNoAdditionalPropertiesJson from './json_tests/negative_tests/default_no_additional_properties.json';
 import InheritDefaultNoAdditionalPropertiesJson from './json_tests/negative_tests/inherit_default_no_additional_properties.json';
 import JobVariablesMustNotContainObjectsJson from './json_tests/negative_tests/job_variables_must_not_contain_objects.json';
@@ -24,14 +24,17 @@ import ReleaseAssetsLinksMissingJson from './json_tests/negative_tests/release_a
 import RetryUnknownWhenJson from './json_tests/negative_tests/retry_unknown_when.json';
 
 // YAML POSITIVE TEST
+import ArtifactsYaml from './yaml_tests/positive_tests/artifacts.yml';
 import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
 
 // YAML NEGATIVE TEST
+import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
 import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
+import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -59,6 +62,7 @@ describe('positive tests', () => {
       VariablesJson,
 
       // YAML
+      ArtifactsYaml,
       CacheYaml,
       FilterYaml,
       IncludeYaml,
@@ -82,8 +86,10 @@ describe('negative tests', () => {
       RetryUnknownWhenJson,
 
       // YAML
+      ArtifactsNegativeYaml,
       CacheNegativeYaml,
       IncludeNegativeYaml,
+      RulesNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).not.toValidateJsonSchema(schema);

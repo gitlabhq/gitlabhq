@@ -11,6 +11,7 @@ module Gitlab
         # Used for job's inclusion rules configuration.
         #
         UnknownClauseError = Class.new(StandardError)
+        ParseError = Class.new(StandardError)
 
         def self.fabricate(type, value)
           "#{self}::#{type.to_s.camelize}".safe_constantize&.new(value)

@@ -162,12 +162,29 @@ RSpec.describe API::IssueLinks do
     end
 
     context 'when unauthenticated' do
-      it 'returns 401' do
-        issue_link = create(:issue_link)
+      context 'when accessing an issue of a private project' do
+        it 'returns 401' do
+          issue_link = create(:issue_link)
 
-        perform_request(issue_link.id)
+          perform_request(issue_link.id)
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      # This isn't ideal, see https://gitlab.com/gitlab-org/gitlab/-/issues/364077
+      context 'when accessing an issue of a public project' do
+        let(:project) { create(:project, :public) }
+        let(:issue) { create(:issue, project: project) }
+        let(:public_issue) { create(:issue, project: project) }
+
+        it 'returns 401' do
+          issue_link = create(:issue_link, source: issue, target: public_issue)
+
+          perform_request(issue_link.id)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
       end
     end
 

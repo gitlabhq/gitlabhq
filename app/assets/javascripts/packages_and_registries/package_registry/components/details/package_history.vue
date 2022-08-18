@@ -5,12 +5,17 @@ import { first } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, n__ } from '~/locale';
+import Tracking from '~/tracking';
+import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE,
   FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE,
+  TRACKING_ACTION_CLICK_PIPELINE_LINK,
+  TRACKING_ACTION_CLICK_COMMIT_LINK,
+  TRACKING_LABEL_PACKAGE_HISTORY,
 } from '../../constants';
 import getPackagePipelinesQuery from '../../graphql/queries/get_package_pipelines.query.graphql';
 import PackageHistoryLoader from './package_history_loader.vue';
@@ -37,6 +42,9 @@ export default {
     PackageHistoryLoader,
     TimeAgoTooltip,
   },
+  mixins: [Tracking.mixin()],
+  TRACKING_ACTION_CLICK_PIPELINE_LINK,
+  TRACKING_ACTION_CLICK_COMMIT_LINK,
   props: {
     packageEntity: {
       type: Object,
@@ -97,6 +105,11 @@ export default {
         first: GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE,
       };
     },
+    tracking() {
+      return {
+        category: packageTypeToTrackCategory(this.packageType),
+      };
+    },
   },
   methods: {
     truncate(value) {
@@ -104,6 +117,12 @@ export default {
     },
     convertToBaseId(value) {
       return getIdFromGraphQLId(value);
+    },
+    trackPipelineClick() {
+      this.track(TRACKING_ACTION_CLICK_PIPELINE_LINK, { label: TRACKING_LABEL_PACKAGE_HISTORY });
+    },
+    trackCommitClick() {
+      this.track(TRACKING_ACTION_CLICK_COMMIT_LINK, { label: TRACKING_LABEL_PACKAGE_HISTORY });
     },
   },
 };
@@ -140,7 +159,9 @@ export default {
         <history-item icon="commit" data-testid="first-pipeline-commit">
           <gl-sprintf :message="$options.i18n.createdByCommitText">
             <template #link>
-              <gl-link :href="firstPipeline.commitPath">#{{ truncate(firstPipeline.sha) }}</gl-link>
+              <gl-link :href="firstPipeline.commitPath" @click="trackCommitClick"
+                >#{{ truncate(firstPipeline.sha) }}</gl-link
+              >
             </template>
             <template #branch>
               <strong>{{ firstPipeline.ref }}</strong>
@@ -150,7 +171,9 @@ export default {
         <history-item icon="pipeline" data-testid="first-pipeline-pipeline">
           <gl-sprintf :message="$options.i18n.createdByPipelineText">
             <template #link>
-              <gl-link :href="firstPipeline.path">#{{ convertToBaseId(firstPipeline.id) }}</gl-link>
+              <gl-link :href="firstPipeline.path" @click="trackPipelineClick"
+                >#{{ convertToBaseId(firstPipeline.id) }}</gl-link
+              >
             </template>
             <template #datetime>
               <time-ago-tooltip :time="firstPipeline.createdAt" />
@@ -189,13 +212,17 @@ export default {
       >
         <gl-sprintf :message="$options.i18n.combinedUpdateText">
           <template #link>
-            <gl-link :href="pipeline.commitPath">#{{ truncate(pipeline.sha) }}</gl-link>
+            <gl-link :href="pipeline.commitPath" @click="trackCommitClick"
+              >#{{ truncate(pipeline.sha) }}</gl-link
+            >
           </template>
           <template #branch>
             <strong>{{ pipeline.ref }}</strong>
           </template>
           <template #pipeline>
-            <gl-link :href="pipeline.path">#{{ convertToBaseId(pipeline.id) }}</gl-link>
+            <gl-link :href="pipeline.path" @click="trackPipelineClick"
+              >#{{ convertToBaseId(pipeline.id) }}</gl-link
+            >
           </template>
           <template #datetime>
             <time-ago-tooltip :time="pipeline.createdAt" />

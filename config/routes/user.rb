@@ -64,7 +64,9 @@ scope '-/users', module: :users do
   end
 
   resources :callouts, only: [:create]
+  resources :namespace_callouts, only: [:create]
   resources :group_callouts, only: [:create]
+  resources :project_callouts, only: [:create]
 end
 
 scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do

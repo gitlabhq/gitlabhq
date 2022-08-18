@@ -205,8 +205,8 @@ instance unique identifier.
 key_path: uuid
 description: GitLab instance unique identifier
 product_category: collection
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 value_type: string
 status: active
@@ -301,7 +301,7 @@ bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues users
 
 ## Metrics Dictionary
 
-[Metrics Dictionary is a separate application](https://gitlab.com/gitlab-org/growth/product-intelligence/metric-dictionary).
+[Metrics Dictionary is a separate application](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/metric-dictionary).
 
 All metrics available in Service Ping are in the [Metrics Dictionary](https://metrics.gitlab.com/).
 

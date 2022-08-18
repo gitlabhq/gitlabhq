@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { displayText, types } from '../constants';
+import { displayText, types, allEnvironments } from '../constants';
 
 const variableTypeHandler = (type) =>
   type === displayText.variableText ? types.variableType : types.fileType;
@@ -15,7 +15,7 @@ export const prepareDataForDisplay = (variables) => {
     }
     variableCopy.secret_value = variableCopy.value;
 
-    if (variableCopy.environment_scope === types.allEnvironmentsType) {
+    if (variableCopy.environment_scope === allEnvironments.type) {
       variableCopy.environment_scope = displayText.allEnvironmentsText;
     }
     variableCopy.protected_variable = variableCopy.protected;
@@ -31,7 +31,7 @@ export const prepareDataForApi = (variable, destroy = false) => {
   variableCopy.masked = variableCopy.masked.toString();
   variableCopy.variable_type = variableTypeHandler(variableCopy.variable_type);
   if (variableCopy.environment_scope === displayText.allEnvironmentsText) {
-    variableCopy.environment_scope = types.allEnvironmentsType;
+    variableCopy.environment_scope = allEnvironments.type;
   }
 
   if (destroy) {

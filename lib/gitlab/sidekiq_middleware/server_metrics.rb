@@ -35,7 +35,8 @@ module Gitlab
             sidekiq_redis_requests_total:            ::Gitlab::Metrics.counter(:sidekiq_redis_requests_total, 'Redis requests during a Sidekiq job execution'),
             sidekiq_elasticsearch_requests_total:    ::Gitlab::Metrics.counter(:sidekiq_elasticsearch_requests_total, 'Elasticsearch requests during a Sidekiq job execution'),
             sidekiq_running_jobs:                    ::Gitlab::Metrics.gauge(:sidekiq_running_jobs, 'Number of Sidekiq jobs running', {}, :all),
-            sidekiq_concurrency:                     ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all)
+            sidekiq_concurrency:                     ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all),
+            sidekiq_mem_total_bytes:                 ::Gitlab::Metrics.gauge(:sidekiq_mem_total_bytes, 'Number of bytes allocated for both objects consuming an object slot and objects that required a malloc', {}, :all)
           }
         end
 
@@ -123,6 +124,7 @@ module Gitlab
           @metrics[:sidekiq_redis_requests_duration_seconds].observe(labels, get_redis_time(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_total].increment(labels, get_elasticsearch_calls(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_duration_seconds].observe(labels, get_elasticsearch_time(instrumentation))
+          @metrics[:sidekiq_mem_total_bytes].set(labels, get_thread_memory_total_allocations(instrumentation))
 
           with_load_balancing_settings(job) do |settings|
             load_balancing_labels = {
@@ -158,6 +160,10 @@ module Gitlab
 
       def get_elasticsearch_time(payload)
         payload.fetch(:elasticsearch_duration_s, 0)
+      end
+
+      def get_thread_memory_total_allocations(payload)
+        payload.fetch(:mem_total_bytes, 0)
       end
 
       def get_elasticsearch_calls(payload)

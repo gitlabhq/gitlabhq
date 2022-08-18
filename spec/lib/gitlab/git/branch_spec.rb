@@ -2,8 +2,9 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Branch, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+RSpec.describe Gitlab::Git::Branch do
+  let(:project) { create(:project, :repository) }
+  let(:repository) { project.repository.raw }
 
   subject { repository.branches }
 
@@ -54,14 +55,14 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
   describe '#size' do
     subject { super().size }
 
-    it { is_expected.to eq(SeedRepo::Repo::BRANCHES.size) }
+    it { is_expected.to eq(TestEnv::BRANCH_SHA.size) }
   end
 
   describe 'first branch' do
     let(:branch) { repository.branches.first }
 
-    it { expect(branch.name).to eq(SeedRepo::Repo::BRANCHES.first) }
-    it { expect(branch.dereferenced_target.sha).to eq("0b4bc9a49b562e85de7cc9e834518ea6828729b9") }
+    it { expect(branch.name).to eq(TestEnv::BRANCH_SHA.keys.min) }
+    it { expect(branch.dereferenced_target.sha).to start_with(TestEnv::BRANCH_SHA[TestEnv::BRANCH_SHA.keys.min]) }
   end
 
   describe 'master branch' do
@@ -69,14 +70,10 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
       repository.branches.find { |branch| branch.name == 'master' }
     end
 
-    it { expect(branch.dereferenced_target.sha).to eq(SeedRepo::LastCommit::ID) }
+    it { expect(branch.dereferenced_target.sha).to start_with(TestEnv::BRANCH_SHA['master']) }
   end
 
   context 'with active, stale and future branches' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project')
-    end
-
     let(:user) { create(:user) }
     let(:stale_sha) { travel_to(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago - 5.days) { create_commit } }
     let(:active_sha) { travel_to(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago + 5.days) { create_commit } }
@@ -86,10 +83,6 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
       repository.create_branch('stale-1', stale_sha)
       repository.create_branch('active-1', active_sha)
       repository.create_branch('future-1', future_sha)
-    end
-
-    after do
-      ensure_seeds
     end
 
     describe 'examine if the branch is active or stale' do
@@ -116,8 +109,6 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
       end
     end
   end
-
-  it { expect(repository.branches.size).to eq(SeedRepo::Repo::BRANCHES.size) }
 
   def create_commit
     repository.multi_action(

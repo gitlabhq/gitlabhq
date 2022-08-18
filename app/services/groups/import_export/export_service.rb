@@ -49,10 +49,20 @@ module Groups
         # We cannot include the file_saver with the other savers because
         # it removes the tmp dir. This means that if we want to add new savers
         # in EE the data won't be available.
-        if savers.all?(&:save) && file_saver.save
+        if save_exporters && file_saver.save
           notify_success
         else
           notify_error!
+        end
+      end
+
+      def save_exporters
+        log_info('Group export started')
+
+        savers.all? do |exporter|
+          log_info("#{exporter.class.name} saver started")
+
+          exporter.save
         end
       end
 
@@ -99,12 +109,16 @@ module Groups
         raise Gitlab::ImportExport::Error, shared.errors.to_sentence
       end
 
-      def notify_success
+      def log_info(message)
         @logger.info(
-          message: 'Group Export succeeded',
+          message: message,
           group_id: group.id,
           group_name: group.name
         )
+      end
+
+      def notify_success
+        log_info('Group Export succeeded')
 
         notification_service.group_was_exported(group, current_user)
       end

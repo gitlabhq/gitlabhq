@@ -15,7 +15,6 @@ module QA
       end
 
       after do
-        praefect_manager.start_all_nodes
         praefect_manager.remove_repo_from_disk(repo1["relative_path"])
         praefect_manager.remove_repo_from_disk(repo2["relative_path"])
         praefect_manager.remove_repository_from_praefect_database(repo1["relative_path"])

@@ -34,6 +34,10 @@ class GroupsController < Groups::ApplicationController
 
   before_action :track_experiment_event, only: [:new]
 
+  before_action only: :issues do
+    push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
+  end
+
   helper_method :captcha_required?
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,

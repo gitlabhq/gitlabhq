@@ -105,7 +105,7 @@ module MergeRequests
           project: project,
           current_user: current_user,
           params: merge_request.attributes.merge(assignees: merge_request.assignees,
-                                         label_ids: merge_request.label_ids)
+                                                 label_ids: merge_request.label_ids)
         ).execute
       end
 

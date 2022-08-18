@@ -16,7 +16,8 @@ module Gitlab
       DesignsCounter,
       KubernetesAgentCounter,
       DiffsCounter,
-      ServiceUsageDataCounter
+      ServiceUsageDataCounter,
+      MergeRequestWidgetExtensionCounter
     ].freeze
 
     UsageDataCounterError = Class.new(StandardError)

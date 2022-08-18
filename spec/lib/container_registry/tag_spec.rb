@@ -205,6 +205,41 @@ RSpec.describe ContainerRegistry::Tag do
 
           it_behaves_like 'a processable'
         end
+
+        describe '#force_created_at_from_iso8601' do
+          subject { tag.force_created_at_from_iso8601(input) }
+
+          shared_examples 'setting and caching the created_at value' do
+            it 'sets and caches the created_at value' do
+              expect(tag).not_to receive(:config)
+
+              subject
+
+              expect(tag.created_at).to eq(expected_value)
+            end
+          end
+
+          context 'with a valid input' do
+            let(:input) { 2.days.ago.iso8601 }
+            let(:expected_value) { DateTime.iso8601(input) }
+
+            it_behaves_like 'setting and caching the created_at value'
+          end
+
+          context 'with a nil input' do
+            let(:input) { nil }
+            let(:expected_value) { nil }
+
+            it_behaves_like 'setting and caching the created_at value'
+          end
+
+          context 'with an invalid input' do
+            let(:input) { 'not a timestamp' }
+            let(:expected_value) { nil }
+
+            it_behaves_like 'setting and caching the created_at value'
+          end
+        end
       end
     end
   end

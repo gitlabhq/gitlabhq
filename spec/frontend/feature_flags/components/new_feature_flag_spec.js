@@ -40,7 +40,7 @@ describe('New feature flag form', () => {
   };
 
   const findWarningGlAlert = () =>
-    wrapper.findAll(GlAlert).filter((c) => c.props('variant') === 'warning');
+    wrapper.findAllComponents(GlAlert).filter((c) => c.props('variant') === 'warning');
 
   beforeEach(() => {
     factory();
@@ -65,11 +65,11 @@ describe('New feature flag form', () => {
   });
 
   it('should render feature flag form', () => {
-    expect(wrapper.find(Form).exists()).toEqual(true);
+    expect(wrapper.findComponent(Form).exists()).toEqual(true);
   });
 
   it('has an all users strategy by default', () => {
-    const strategies = wrapper.find(Form).props('strategies');
+    const strategies = wrapper.findComponent(Form).props('strategies');
 
     expect(strategies).toEqual([allUsersStrategy]);
   });

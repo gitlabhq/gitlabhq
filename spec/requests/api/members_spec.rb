@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe API::Members do
-  let(:maintainer) { create(:user, username: 'maintainer_user') }
-  let(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
-  let(:developer) { create(:user) }
-  let(:access_requester) { create(:user) }
-  let(:stranger) { create(:user) }
-  let(:user_with_minimal_access) { create(:user) }
+  let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
+  let_it_be(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:access_requester) { create(:user) }
+  let_it_be(:stranger) { create(:user) }
+  let_it_be(:user_with_minimal_access) { create(:user) }
 
-  let(:project) do
+  let_it_be(:project, refind: true) do
     create(:project, :public, creator_id: maintainer.id, group: create(:group, :public)) do |project|
       project.add_maintainer(maintainer)
       project.add_developer(developer, current_user: maintainer)
@@ -18,7 +18,7 @@ RSpec.describe API::Members do
     end
   end
 
-  let!(:group) do
+  let_it_be(:group, refind: true) do
     create(:group, :public) do |group|
       group.add_owner(maintainer)
       group.add_developer(developer, maintainer)
@@ -187,8 +187,8 @@ RSpec.describe API::Members do
     end
 
     context 'with a subgroup' do
-      let(:group) { create(:group, :private)}
-      let(:subgroup) { create(:group, :private, parent: group)}
+      let(:group) { create(:group, :private) }
+      let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, group: subgroup) }
 
       before do
@@ -229,6 +229,33 @@ RSpec.describe API::Members do
               expect(json_response['created_at'].to_time).to be_present
             end
           end
+        end
+      end
+
+      context 'with ancestral membership' do
+        shared_examples 'response with correct access levels' do
+          it do
+            get api("/#{source_type.pluralize}/#{source.id}/members/#{all ? 'all/' : ''}#{developer.id}", developer)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['access_level']).to eq(Member::MAINTAINER)
+          end
+        end
+
+        before do
+          source.add_maintainer(developer)
+        end
+
+        include_examples 'response with correct access levels'
+
+        context 'having email invite' do
+          before do
+            Member
+              .find_by(source: group, user: developer)
+              .update!(invite_email: 'email@email.com')
+          end
+
+          include_examples 'response with correct access levels'
         end
       end
     end

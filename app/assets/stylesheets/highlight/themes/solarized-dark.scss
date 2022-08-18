@@ -123,7 +123,15 @@ $solarized-dark-il: #2aa198;
 
   // Line numbers
   .file-line-num {
-    @include line-number-link($solarized-dark-line-color);
+    @include line-link($white, 'link');
+  }
+
+  .file-line-blame {
+    @include line-link($white, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg($solarized-dark-pre-bg);
   }
 
   .line-numbers,

@@ -1,6 +1,6 @@
 - if can?(current_user, :update_pages, @project)
-  .card
-    .card-header
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-text-center nothing-here-block' }) do |c|
+    - c.header do
       = s_('GitLabPages|Domains')
-    .nothing-here-block
+    - c.body do
       = s_("GitLabPages|Support for domains and certificates is disabled. Ask your system's administrator to enable it.")

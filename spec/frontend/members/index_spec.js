@@ -39,7 +39,7 @@ describe('initMembersApp', () => {
   it('renders `MembersTabs`', () => {
     setup();
 
-    expect(wrapper.find(MembersTabs).exists()).toBe(true);
+    expect(wrapper.findComponent(MembersTabs).exists()).toBe(true);
   });
 
   it('parses and sets `members` in Vuex store', () => {

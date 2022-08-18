@@ -6,6 +6,10 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
   let_it_be(:project) { create(:project) }
 
   let(:supported_dast_versions) { described_class::SUPPORTED_VERSIONS[:dast].join(', ') }
+  let(:deprecated_schema_version_message) {}
+  let(:missing_schema_version_message) do
+    "Report version not provided, dast report type supports versions: #{supported_dast_versions}"
+  end
 
   let(:scanner) do
     {
@@ -24,7 +28,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       expect(described_class::SUPPORTED_VERSIONS.keys).to eq(described_class::DEPRECATED_VERSIONS.keys)
     end
 
-    context 'when a schema JSON file exists for a particular report type version' do
+    context 'when all files under schema path are explicitly listed' do
       # We only care about the part that comes before report-format.json
       # https://rubular.com/r/N8Juz7r8hYDYgD
       filename_regex = /(?<report_type>[-\w]*)\-report-format.json/
@@ -38,7 +42,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           matches = filename_regex.match(file)
           report_type = matches[:report_type].tr("-", "_").to_sym
 
-          it "#{report_type} #{version} is in the constant" do
+          it "#{report_type} #{version}" do
             expect(described_class::SUPPORTED_VERSIONS[report_type]).to include(version)
           end
         end
@@ -64,11 +68,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
   describe '#valid?' do
     subject { validator.valid? }
 
-    context 'when given a supported schema version' do
+    context 'when given a supported MAJOR.MINOR schema version' do
       let(:report_type) { :dast }
-      let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
+      let(:report_version) do
+        latest_vendored_version = described_class::SUPPORTED_VERSIONS[report_type].last.split(".")
+        (latest_vendored_version[0...2] << "34").join(".")
+      end
 
-      context 'when the report is valid' do
+      context 'and the report is valid' do
         let(:report_data) do
           {
             'version' => report_version,
@@ -79,7 +86,47 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to be_truthy }
       end
 
-      context 'when the report is invalid' do
+      context 'and the report is invalid' do
+        let(:report_data) do
+          {
+            'version' => report_version
+          }
+        end
+
+        it { is_expected.to be_falsey }
+
+        it 'logs related information' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: "security report schema validation problem",
+            security_report_type: report_type,
+            security_report_version: report_version,
+            project_id: project.id,
+            security_report_failure: 'schema_validation_fails',
+            security_report_scanner_id: 'gemnasium',
+            security_report_scanner_version: '2.1.0'
+          )
+
+          subject
+        end
+      end
+    end
+
+    context 'when given a supported schema version' do
+      let(:report_type) { :dast }
+      let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
+
+      context 'and the report is valid' do
+        let(:report_data) do
+          {
+            'version' => report_version,
+            'vulnerabilities' => []
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'and the report is invalid' do
         let(:report_data) do
           {
             'version' => report_version
@@ -118,7 +165,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
       end
 
-      context 'when the report passes schema validation' do
+      context 'and the report passes schema validation' do
         let(:report_data) do
           {
             'version' => '10.0.0',
@@ -143,34 +190,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         end
       end
 
-      context 'when the report does not pass schema validation' do
-        context 'when enforce_security_report_validation is enabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: true)
-          end
-
-          let(:report_data) do
-            {
-              'version' => 'V2.7.0'
-            }
-          end
-
-          it { is_expected.to be_falsey }
+      context 'and the report does not pass schema validation' do
+        let(:report_data) do
+          {
+            'version' => 'V2.7.0'
+          }
         end
 
-        context 'when enforce_security_report_validation is disabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: false)
-          end
-
-          let(:report_data) do
-            {
-              'version' => 'V2.7.0'
-            }
-          end
-
-          it { is_expected.to be_truthy }
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -178,20 +205,40 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
 
-      context 'when enforce_security_report_validation is enabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: true)
+      context 'and the report is valid' do
+        let(:report_data) do
+          {
+            'version' => report_version,
+            'vulnerabilities' => []
+          }
         end
 
-        context 'when the report is valid' do
-          let(:report_data) do
-            {
-              'version' => report_version,
-              'vulnerabilities' => []
-            }
-          end
+        it { is_expected.to be_falsey }
 
-          it { is_expected.to be_falsey }
+        it 'logs related information' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: "security report schema validation problem",
+            security_report_type: report_type,
+            security_report_version: report_version,
+            project_id: project.id,
+            security_report_failure: 'using_unsupported_schema_version',
+            security_report_scanner_id: 'gemnasium',
+            security_report_scanner_version: '2.1.0'
+          )
+
+          subject
+        end
+      end
+
+      context 'and the report is invalid' do
+        let(:report_data) do
+          {
+            'version' => report_version
+          }
+        end
+
+        context 'and scanner information is empty' do
+          let(:scanner) { {} }
 
           it 'logs related information' do
             expect(Gitlab::AppLogger).to receive(:info).with(
@@ -199,79 +246,26 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
               security_report_type: report_type,
               security_report_version: report_version,
               project_id: project.id,
+              security_report_failure: 'schema_validation_fails',
+              security_report_scanner_id: nil,
+              security_report_scanner_version: nil
+            )
+
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              message: "security report schema validation problem",
+              security_report_type: report_type,
+              security_report_version: report_version,
+              project_id: project.id,
               security_report_failure: 'using_unsupported_schema_version',
-              security_report_scanner_id: 'gemnasium',
-              security_report_scanner_version: '2.1.0'
+              security_report_scanner_id: nil,
+              security_report_scanner_version: nil
             )
 
             subject
           end
         end
 
-        context 'when the report is invalid' do
-          let(:report_data) do
-            {
-              'version' => report_version
-            }
-          end
-
-          context 'when scanner information is empty' do
-            let(:scanner) { {} }
-
-            it 'logs related information' do
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                message: "security report schema validation problem",
-                security_report_type: report_type,
-                security_report_version: report_version,
-                project_id: project.id,
-                security_report_failure: 'schema_validation_fails',
-                security_report_scanner_id: nil,
-                security_report_scanner_version: nil
-              )
-
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                message: "security report schema validation problem",
-                security_report_type: report_type,
-                security_report_version: report_version,
-                project_id: project.id,
-                security_report_failure: 'using_unsupported_schema_version',
-                security_report_scanner_id: nil,
-                security_report_scanner_version: nil
-              )
-
-              subject
-            end
-          end
-
-          it { is_expected.to be_falsey }
-        end
-      end
-
-      context 'when enforce_security_report_validation is disabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: false)
-        end
-
-        context 'when the report is valid' do
-          let(:report_data) do
-            {
-              'version' => report_version,
-              'vulnerabilities' => []
-            }
-          end
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when the report is invalid' do
-          let(:report_data) do
-            {
-              'version' => report_version
-            }
-          end
-
-          it { is_expected.to be_truthy }
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -284,19 +278,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         }
       end
 
-      before do
-        stub_feature_flags(enforce_security_report_validation: true)
-      end
-
       it { is_expected.to be_falsey }
-
-      context 'when enforce_security_report_validation is disabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: false)
-        end
-
-        it { is_expected.to be_truthy }
-      end
     end
   end
 
@@ -307,7 +289,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
-      context 'when the report is valid' do
+      context 'and the report is valid' do
         let(:report_data) do
           {
             'version' => report_version,
@@ -318,34 +300,20 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to be_empty }
       end
 
-      context 'when the report is invalid' do
+      context 'and the report is invalid' do
         let(:report_data) do
           {
             'version' => report_version
           }
         end
 
-        context 'when enforce_security_report_validation is enabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: project)
-          end
-
-          let(:expected_errors) do
-            [
-              'root is missing required keys: vulnerabilities'
-            ]
-          end
-
-          it { is_expected.to match_array(expected_errors) }
+        let(:expected_errors) do
+          [
+            'root is missing required keys: vulnerabilities'
+          ]
         end
 
-        context 'when enforce_security_report_validation is disabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
+        it { is_expected.to match_array(expected_errors) }
       end
     end
 
@@ -363,7 +331,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
       end
 
-      context 'when the report passes schema validation' do
+      context 'and the report passes schema validation' do
         let(:report_data) do
           {
             'version' => '10.0.0',
@@ -374,119 +342,77 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to be_empty }
       end
 
-      context 'when the report does not pass schema validation' do
-        context 'when enforce_security_report_validation is enabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: true)
-          end
-
-          let(:report_data) do
-            {
-              'version' => 'V2.7.0'
-            }
-          end
-
-          let(:expected_errors) do
-            [
-              "property '/version' does not match pattern: ^[0-9]+\\.[0-9]+\\.[0-9]+$",
-              "root is missing required keys: vulnerabilities"
-            ]
-          end
-
-          it { is_expected.to match_array(expected_errors) }
+      context 'and the report does not pass schema validation' do
+        let(:report_data) do
+          {
+            'version' => 'V2.7.0'
+          }
         end
 
-        context 'when enforce_security_report_validation is disabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: false)
-          end
-
-          let(:report_data) do
-            {
-              'version' => 'V2.7.0'
-            }
-          end
-
-          it { is_expected.to be_empty }
+        let(:expected_errors) do
+          [
+            "property '/version' does not match pattern: ^[0-9]+\\.[0-9]+\\.[0-9]+$",
+            "root is missing required keys: vulnerabilities"
+          ]
         end
+
+        it { is_expected.to match_array(expected_errors) }
       end
     end
 
     context 'when given an unsupported schema version' do
       let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
-
-      context 'when enforce_security_report_validation is enabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: true)
-        end
-
-        context 'when the report is valid' do
-          let(:report_data) do
-            {
-              'version' => report_version,
-              'vulnerabilities' => []
-            }
-          end
-
-          let(:expected_errors) do
-            [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: #{supported_dast_versions}"
-            ]
-          end
-
-          it { is_expected.to match_array(expected_errors) }
-        end
-
-        context 'when the report is invalid' do
-          let(:report_data) do
-            {
-              'version' => report_version
-            }
-          end
-
-          let(:expected_errors) do
-            [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: #{supported_dast_versions}",
-              "root is missing required keys: vulnerabilities"
-            ]
-          end
-
-          it { is_expected.to match_array(expected_errors) }
-        end
+      let(:expected_unsupported_message) do
+        "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: "\
+        "#{supported_dast_versions}. GitLab will attempt to validate this report against the earliest supported "\
+        "versions of this report type, to show all the errors but will not ingest the report"
       end
 
-      context 'when enforce_security_report_validation is disabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: false)
+      context 'and the report is valid' do
+        let(:report_data) do
+          {
+            'version' => report_version,
+            'vulnerabilities' => []
+          }
         end
 
-        context 'when the report is valid' do
-          let(:report_data) do
-            {
-              'version' => report_version,
-              'vulnerabilities' => []
-            }
-          end
-
-          it { is_expected.to be_empty }
+        let(:expected_errors) do
+          [
+            expected_unsupported_message
+          ]
         end
 
-        context 'when the report is invalid' do
-          let(:report_data) do
-            {
-              'version' => report_version
-            }
-          end
+        it { is_expected.to match_array(expected_errors) }
+      end
 
-          it { is_expected.to be_empty }
+      context 'and the report is invalid' do
+        let(:report_data) do
+          {
+            'version' => report_version
+          }
         end
+
+        let(:expected_errors) do
+          [
+            expected_unsupported_message,
+            "root is missing required keys: vulnerabilities"
+          ]
+        end
+
+        it { is_expected.to match_array(expected_errors) }
       end
     end
 
     context 'when not given a schema version' do
       let(:report_type) { :dast }
       let(:report_version) { nil }
+      let(:expected_missing_version_message) do
+        "Report version not provided, #{report_type} report type supports versions: #{supported_dast_versions}. GitLab "\
+        "will attempt to validate this report against the earliest supported versions of this report type, to show all "\
+        "the errors but will not ingest the report"
+      end
+
       let(:report_data) do
         {
           'vulnerabilities' => []
@@ -496,19 +422,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:expected_errors) do
         [
           "root is missing required keys: version",
-          "Report version not provided, dast report type supports versions: #{supported_dast_versions}"
+          expected_missing_version_message
         ]
       end
 
       it { is_expected.to match_array(expected_errors) }
-
-      context 'when enforce_security_report_validation is disabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: false)
-        end
-
-        it { is_expected.to be_empty }
-      end
     end
   end
 
@@ -519,7 +437,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
-      context 'when the report is valid' do
+      context 'and the report is valid' do
         let(:report_data) do
           {
             'version' => report_version,
@@ -530,7 +448,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to be_empty }
       end
 
-      context 'when the report is invalid' do
+      context 'and the report is invalid' do
         let(:report_data) do
           {
             'version' => report_version
@@ -550,9 +468,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       end
 
       let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
+      let(:expected_deprecation_message) do
+        "Version #{report_version} for report type #{report_type} has been deprecated, supported versions for this "\
+        "report type are: #{supported_dast_versions}. GitLab will attempt to parse and ingest this report if valid."
+      end
+
       let(:expected_deprecation_warnings) do
         [
-          "Version V2.7.0 for report type dast has been deprecated, supported versions for this report type are: #{supported_dast_versions}"
+          expected_deprecation_message
         ]
       end
 
@@ -560,7 +483,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
       end
 
-      context 'when the report passes schema validation' do
+      context 'and the report passes schema validation' do
         let(:report_data) do
           {
             'version' => report_version,
@@ -571,7 +494,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to match_array(expected_deprecation_warnings) }
       end
 
-      context 'when the report does not pass schema validation' do
+      context 'and the report does not pass schema validation' do
         let(:report_data) do
           {
             'version' => 'V2.7.0'
@@ -600,11 +523,67 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
   describe '#warnings' do
     subject { validator.warnings }
 
+    context 'when given a supported MAJOR.MINOR schema version' do
+      let(:report_type) { :dast }
+      let(:report_version) do
+        latest_vendored_version = described_class::SUPPORTED_VERSIONS[report_type].last.split(".")
+        (latest_vendored_version[0...2] << "34").join(".")
+      end
+
+      let(:latest_patch_version) do
+        ::Security::ReportSchemaVersionMatcher.new(
+          report_declared_version: report_version,
+          supported_versions: described_class::SUPPORTED_VERSIONS[report_type]
+        ).call
+      end
+
+      let(:message) do
+        "This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match"\
+        " any vendored schema version. Validation will be attempted against version"\
+        " #{latest_patch_version}"
+      end
+
+      context 'and the report is valid' do
+        let(:report_data) do
+          {
+            'version' => report_version,
+            'vulnerabilities' => []
+          }
+        end
+
+        it { is_expected.to match_array([message]) }
+      end
+
+      context 'and the report is invalid' do
+        let(:report_data) do
+          {
+            'version' => report_version
+          }
+        end
+
+        it { is_expected.to match_array([message]) }
+
+        it 'logs related information' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: "security report schema validation problem",
+            security_report_type: report_type,
+            security_report_version: report_version,
+            project_id: project.id,
+            security_report_failure: 'schema_validation_fails',
+            security_report_scanner_id: 'gemnasium',
+            security_report_scanner_version: '2.1.0'
+          )
+
+          subject
+        end
+      end
+    end
+
     context 'when given a supported schema version' do
       let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
-      context 'when the report is valid' do
+      context 'and the report is valid' do
         let(:report_data) do
           {
             'version' => report_version,
@@ -615,34 +594,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to be_empty }
       end
 
-      context 'when the report is invalid' do
+      context 'and the report is invalid' do
         let(:report_data) do
           {
             'version' => report_version
           }
         end
 
-        context 'when enforce_security_report_validation is enabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: project)
-          end
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when enforce_security_report_validation is disabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: false)
-          end
-
-          let(:expected_warnings) do
-            [
-              'root is missing required keys: vulnerabilities'
-            ]
-          end
-
-          it { is_expected.to match_array(expected_warnings) }
-        end
+        it { is_expected.to be_empty }
       end
     end
 
@@ -660,7 +619,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
       end
 
-      context 'when the report passes schema validation' do
+      context 'and the report passes schema validation' do
         let(:report_data) do
           {
             'vulnerabilities' => []
@@ -670,35 +629,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         it { is_expected.to be_empty }
       end
 
-      context 'when the report does not pass schema validation' do
+      context 'and the report does not pass schema validation' do
         let(:report_data) do
           {
             'version' => 'V2.7.0'
           }
         end
 
-        context 'when enforce_security_report_validation is enabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: true)
-          end
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when enforce_security_report_validation is disabled' do
-          before do
-            stub_feature_flags(enforce_security_report_validation: false)
-          end
-
-          let(:expected_warnings) do
-            [
-              "property '/version' does not match pattern: ^[0-9]+\\.[0-9]+\\.[0-9]+$",
-              "root is missing required keys: vulnerabilities"
-            ]
-          end
-
-          it { is_expected.to match_array(expected_warnings) }
-        end
+        it { is_expected.to be_empty }
       end
     end
 
@@ -706,71 +644,25 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
 
-      context 'when enforce_security_report_validation is enabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: true)
+      context 'and the report is valid' do
+        let(:report_data) do
+          {
+            'version' => report_version,
+            'vulnerabilities' => []
+          }
         end
 
-        context 'when the report is valid' do
-          let(:report_data) do
-            {
-              'version' => report_version,
-              'vulnerabilities' => []
-            }
-          end
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when the report is invalid' do
-          let(:report_data) do
-            {
-              'version' => report_version
-            }
-          end
-
-          it { is_expected.to be_empty }
-        end
+        it { is_expected.to be_empty }
       end
 
-      context 'when enforce_security_report_validation is disabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: false)
+      context 'and the report is invalid' do
+        let(:report_data) do
+          {
+            'version' => report_version
+          }
         end
 
-        context 'when the report is valid' do
-          let(:report_data) do
-            {
-              'version' => report_version,
-              'vulnerabilities' => []
-            }
-          end
-
-          let(:expected_warnings) do
-            [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: #{supported_dast_versions}"
-            ]
-          end
-
-          it { is_expected.to match_array(expected_warnings) }
-        end
-
-        context 'when the report is invalid' do
-          let(:report_data) do
-            {
-              'version' => report_version
-            }
-          end
-
-          let(:expected_warnings) do
-            [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: #{supported_dast_versions}",
-              "root is missing required keys: vulnerabilities"
-            ]
-          end
-
-          it { is_expected.to match_array(expected_warnings) }
-        end
+        it { is_expected.to be_empty }
       end
     end
 
@@ -784,21 +676,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       end
 
       it { is_expected.to be_empty }
-
-      context 'when enforce_security_report_validation is disabled' do
-        before do
-          stub_feature_flags(enforce_security_report_validation: false)
-        end
-
-        let(:expected_warnings) do
-          [
-            "root is missing required keys: version",
-            "Report version not provided, dast report type supports versions: #{supported_dast_versions}"
-          ]
-        end
-
-        it { is_expected.to match_array(expected_warnings) }
-      end
     end
   end
 end

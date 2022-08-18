@@ -158,7 +158,7 @@ RSpec.describe API::Ci::Jobs do
 
     context 'with basic auth header' do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
-      let(:token) { personal_access_token.token}
+      let(:token) { personal_access_token.token }
 
       include_context 'with auth headers' do
         let(:header) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => token } }

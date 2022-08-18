@@ -6,7 +6,7 @@ module MergeRequests
         if merge_request.mergeable_ci_state?
           success
         else
-          failure
+          failure(reason: failure_reason)
         end
       end
 
@@ -16,6 +16,12 @@ module MergeRequests
 
       def cacheable?
         false
+      end
+
+      private
+
+      def failure_reason
+        :ci_must_pass
       end
     end
   end

@@ -26,8 +26,8 @@ RSpec.describe API::Helpers do
     }
   end
 
-  let(:header) { }
-  let(:request) { Grape::Request.new(env)}
+  let(:header) {}
+  let(:request) { Grape::Request.new(env) }
   let(:params) { request.params }
 
   before do
@@ -539,7 +539,7 @@ RSpec.describe API::Helpers do
       let(:token) { create(:oauth_access_token) }
 
       before do
-        env['HTTP_AUTHORIZATION'] = "Bearer #{token.token}"
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token.plaintext_token}"
       end
 
       it_behaves_like 'sudo'

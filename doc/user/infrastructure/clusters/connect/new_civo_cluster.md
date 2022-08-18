@@ -90,7 +90,7 @@ Refer to the [Civo Terraform provider](https://registry.terraform.io/providers/c
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
 1. On the left sidebar, go to **CI/CD > Pipelines**.
-1. Next to **Play** (**{play}**), select the dropdown icon (**{angle-down}**).
+1. Next to **Play** (**{play}**), select the dropdown icon (**{chevron-lg-down}**).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can see your new cluster:

@@ -39,5 +39,10 @@ export const user5 = {
   name: 'root',
   avatar_url: '',
 };
+export const user6 = {
+  id: 'user-defined-token3',
+  name: 'email5@example.com',
+  avatar_url: '',
+};
 
 export const GlEmoji = { template: '<img/>' };

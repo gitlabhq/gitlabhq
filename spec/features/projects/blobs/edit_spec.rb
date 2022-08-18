@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Editing file blob', :js do
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
   include TreeHelper
   include BlobSpecHelpers
 
@@ -42,7 +43,7 @@ RSpec.describe 'Editing file blob', :js do
 
     def fill_editor(content: 'class NextFeature\\nend\\n')
       wait_for_requests
-      execute_script("monaco.editor.getModels()[0].setValue('#{content}')")
+      editor_set_value(content)
     end
 
     context 'from MR diff' do
@@ -98,10 +99,8 @@ RSpec.describe 'Editing file blob', :js do
         click_link 'Preview changes'
         wait_for_requests
 
-        old_line_count = page.all('.line_holder.old').size
         new_line_count = page.all('.line_holder.new').size
 
-        expect(old_line_count).to be > 0
         expect(new_line_count).to be > 0
       end
     end

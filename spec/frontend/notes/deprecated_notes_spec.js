@@ -7,7 +7,6 @@ import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createSpyObj } from 'helpers/jest_helpers';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import { setTestTimeoutOnce } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 
@@ -48,7 +47,6 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     // random failures.
     // It seems that running tests in parallel increases failure rate.
     jest.setTimeout(4000);
-    setTestTimeoutOnce(4000);
   });
 
   afterEach(async () => {
@@ -510,7 +508,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
       notes.putEditFormInPlace($el);
 
-      expect(notes.glForm.enableGFM).toBeTruthy();
+      expect(notes.glForm.enableGFM).toBe('');
     });
   });
 
@@ -783,21 +781,21 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
       const hasQuickActions = notes.hasQuickActions(sampleComment);
 
-      expect(hasQuickActions).toBeTruthy();
+      expect(hasQuickActions).toBe(true);
     });
 
     it('should return false when comment does NOT begin with a quick action', () => {
       const sampleComment = 'Hey, /unassign Merging this';
       const hasQuickActions = notes.hasQuickActions(sampleComment);
 
-      expect(hasQuickActions).toBeFalsy();
+      expect(hasQuickActions).toBe(false);
     });
 
     it('should return false when comment does NOT have any quick actions', () => {
       const sampleComment = 'Looking good, Awesome!';
       const hasQuickActions = notes.hasQuickActions(sampleComment);
 
-      expect(hasQuickActions).toBeFalsy();
+      expect(hasQuickActions).toBe(false);
     });
   });
 
@@ -887,14 +885,14 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
       expect($tempNote.prop('nodeName')).toEqual('LI');
       expect($tempNote.attr('id')).toEqual(uniqueId);
-      expect($tempNote.hasClass('being-posted')).toBeTruthy();
-      expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
+      expect($tempNote.hasClass('being-posted')).toBe(true);
+      expect($tempNote.hasClass('fade-in-half')).toBe(true);
       $tempNote.find('.timeline-icon > a, .note-header-info > a').each((i, el) => {
         expect(el.getAttribute('href')).toEqual(`/${currentUsername}`);
       });
 
       expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
-      expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
+      expect($tempNote.find('.timeline-content').hasClass('discussion')).toBe(false);
       expect($tempNoteHeader.find('.d-none.d-sm-inline-block').text().trim()).toEqual(
         currentUserFullname,
       );
@@ -916,7 +914,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       });
 
       expect($tempNote.prop('nodeName')).toEqual('LI');
-      expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
+      expect($tempNote.find('.timeline-content').hasClass('discussion')).toBe(true);
     });
 
     it('should return a escaped user name', () => {
@@ -954,8 +952,8 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
       expect($tempNote.prop('nodeName')).toEqual('LI');
       expect($tempNote.attr('id')).toEqual(uniqueId);
-      expect($tempNote.hasClass('being-posted')).toBeTruthy();
-      expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
+      expect($tempNote.hasClass('being-posted')).toBe(true);
+      expect($tempNote.hasClass('fade-in-half')).toBe(true);
       expect($tempNote.find('.timeline-content i').text().trim()).toEqual(sampleCommandDescription);
     });
   });

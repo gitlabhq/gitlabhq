@@ -13,7 +13,7 @@ module API
 
         params do
           requires :dashboard_path, type: String, allow_blank: false, coerce_with: ->(val) { CGI.unescape(val) },
-                   desc: 'Url encoded path to a file defining the dashboard to which the star should be added'
+                                    desc: 'Url encoded path to a file defining the dashboard to which the star should be added'
         end
 
         post ':id/metrics/user_starred_dashboards' do
@@ -30,7 +30,7 @@ module API
 
         params do
           optional :dashboard_path, type: String, allow_blank: false, coerce_with: ->(val) { CGI.unescape(val) },
-                   desc: 'Url encoded path to a file defining the dashboard from which the star should be removed'
+                                    desc: 'Url encoded path to a file defining the dashboard from which the star should be removed'
         end
 
         delete ':id/metrics/user_starred_dashboards' do

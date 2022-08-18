@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
 
     allow(described_class).to receive(:migration_context).and_return(ctx)
 
-    names_this_branch = (applied_migrations_this_branch + pending_migrations).map { |m| "db/migrate/#{m.version}_#{m.name}.rb"}
+    names_this_branch = (applied_migrations_this_branch + pending_migrations).map { |m| "db/migrate/#{m.version}_#{m.name}.rb" }
     allow(described_class).to receive(:migration_file_names_this_branch).and_return(names_this_branch)
   end
 

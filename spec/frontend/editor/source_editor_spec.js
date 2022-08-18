@@ -267,7 +267,6 @@ describe('Base editor', () => {
     let editorEl2;
     let inst1;
     let inst2;
-    const readOnlyIndex = '78'; // readOnly option has the internal index of 78 in the editor's options
 
     beforeEach(() => {
       setHTMLFixture('<div id="editor1"></div><div id="editor2"></div>');
@@ -331,10 +330,10 @@ describe('Base editor', () => {
       });
 
       inst1 = editor.createInstance(inst1Args);
-      expect(inst1.getOption(readOnlyIndex)).toBe(true);
+      expect(inst1.getRawOptions().readOnly).toBe(true);
 
       inst2 = editor.createInstance(inst2Args);
-      expect(inst2.getOption(readOnlyIndex)).toBe(true);
+      expect(inst2.getRawOptions().readOnly).toBe(true);
     });
 
     it('allows overriding editor options on the instance level', () => {
@@ -346,7 +345,7 @@ describe('Base editor', () => {
         readOnly: false,
       });
 
-      expect(inst1.getOption(readOnlyIndex)).toBe(false);
+      expect(inst1.getRawOptions().readOnly).toBe(false);
     });
 
     it('disposes instances and relevant models independently from each other', () => {

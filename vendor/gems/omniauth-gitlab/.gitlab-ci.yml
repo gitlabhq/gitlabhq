@@ -13,13 +13,11 @@ workflow:
     - gem install bundler --no-document         # Bundler is not installed with the image
     - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
     - bundle config set with 'development'
+    - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
+    - bundle config                             # Show bundler configuration
     - bundle install -j $(nproc)
   script:
     - bundle exec rspec
-
-rspec-2.6:
-  image: "ruby:2.6"
-  extends: .rspec
 
 rspec-2.7:
   image: "ruby:2.7"

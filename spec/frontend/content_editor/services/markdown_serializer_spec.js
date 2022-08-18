@@ -24,6 +24,7 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
+import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
@@ -63,6 +64,7 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
+    ReferenceDefinition,
     Sourcemap,
     Strike,
     Table,
@@ -104,6 +106,7 @@ const {
     listItem,
     orderedList,
     paragraph,
+    referenceDefinition,
     strike,
     table,
     tableCell,
@@ -139,6 +142,7 @@ const {
     listItem: { nodeType: ListItem.name },
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
+    referenceDefinition: { nodeType: ReferenceDefinition.name },
     strike: { markType: Strike.name },
     table: { nodeType: Table.name },
     tableCell: { nodeType: TableCell.name },
@@ -241,6 +245,37 @@ describe('markdownSerializer', () => {
         ),
       ),
     ).toBe('[download file](file.zip "click here to download")');
+  });
+
+  it('correctly serializes link references', () => {
+    expect(
+      serialize(
+        paragraph(
+          link(
+            {
+              href: 'gitlab-url',
+              isReference: true,
+            },
+            'GitLab',
+          ),
+        ),
+      ),
+    ).toBe('[GitLab][gitlab-url]');
+  });
+
+  it('correctly serializes image references', () => {
+    expect(
+      serialize(
+        paragraph(
+          image({
+            canonicalSrc: 'gitlab-url',
+            src: 'image.svg',
+            alt: 'GitLab',
+            isReference: true,
+          }),
+        ),
+      ),
+    ).toBe('![GitLab][gitlab-url]');
   });
 
   it('correctly serializes strikethrough', () => {
@@ -1163,6 +1198,38 @@ Oranges are orange [^1]
     );
   });
 
+  it('correctly serializes reference definition', () => {
+    expect(
+      serialize(
+        referenceDefinition('[gitlab]: https://gitlab.com'),
+        referenceDefinition('[foobar]: foobar.com'),
+      ),
+    ).toBe(
+      `
+[gitlab]: https://gitlab.com
+[foobar]: foobar.com`.trimLeft(),
+    );
+  });
+
+  it('correctly adds a space between a reference definition and a block content', () => {
+    expect(
+      serialize(
+        paragraph('paragraph'),
+        referenceDefinition('[gitlab]: https://gitlab.com'),
+        referenceDefinition('[foobar]: foobar.com'),
+        heading({ level: 2 }, 'heading'),
+      ),
+    ).toBe(
+      `
+paragraph
+
+[gitlab]: https://gitlab.com
+[foobar]: foobar.com
+
+## heading`.trimLeft(),
+    );
+  });
+
   const defaultEditAction = (initialContent) => {
     tiptapEditor.chain().setContent(initialContent.toJSON()).insertContent(' modified').run();
   };
@@ -1177,42 +1244,49 @@ Oranges are orange [^1]
   };
 
   it.each`
-    mark          | markdown                                   | modifiedMarkdown                                                              | editAction
-    ${'bold'}     | ${'**bold**'}                              | ${'**bold modified**'}                                                        | ${defaultEditAction}
-    ${'bold'}     | ${'__bold__'}                              | ${'__bold modified__'}                                                        | ${defaultEditAction}
-    ${'bold'}     | ${'<strong>bold</strong>'}                 | ${'<strong>bold modified</strong>'}                                           | ${defaultEditAction}
-    ${'bold'}     | ${'<b>bold</b>'}                           | ${'<b>bold modified</b>'}                                                     | ${defaultEditAction}
-    ${'italic'}   | ${'_italic_'}                              | ${'_italic modified_'}                                                        | ${defaultEditAction}
-    ${'italic'}   | ${'*italic*'}                              | ${'*italic modified*'}                                                        | ${defaultEditAction}
-    ${'italic'}   | ${'<em>italic</em>'}                       | ${'<em>italic modified</em>'}                                                 | ${defaultEditAction}
-    ${'italic'}   | ${'<i>italic</i>'}                         | ${'<i>italic modified</i>'}                                                   | ${defaultEditAction}
-    ${'link'}     | ${'[gitlab](https://gitlab.com)'}          | ${'[gitlab modified](https://gitlab.com)'}                                    | ${defaultEditAction}
-    ${'link'}     | ${'<a href="https://gitlab.com">link</a>'} | ${'<a href="https://gitlab.com">link modified</a>'}                           | ${defaultEditAction}
-    ${'link'}     | ${'link www.gitlab.com'}                   | ${'modified link www.gitlab.com'}                                             | ${prependContentEditAction}
-    ${'link'}     | ${'link https://www.gitlab.com'}           | ${'modified link https://www.gitlab.com'}                                     | ${prependContentEditAction}
-    ${'link'}     | ${'link(https://www.gitlab.com)'}          | ${'modified link(https://www.gitlab.com)'}                                    | ${prependContentEditAction}
-    ${'link'}     | ${'link(engineering@gitlab.com)'}          | ${'modified link(engineering@gitlab.com)'}                                    | ${prependContentEditAction}
-    ${'link'}     | ${'link <https://www.gitlab.com>'}         | ${'modified link <https://www.gitlab.com>'}                                   | ${prependContentEditAction}
-    ${'link'}     | ${'link [https://www.gitlab.com>'}         | ${'modified link \\[https://www.gitlab.com>'}                                 | ${prependContentEditAction}
-    ${'link'}     | ${'link <https://www.gitlab.com'}          | ${'modified link <https://www.gitlab.com'}                                    | ${prependContentEditAction}
-    ${'link'}     | ${'link https://www.gitlab.com>'}          | ${'modified link https://www.gitlab.com>'}                                    | ${prependContentEditAction}
-    ${'link'}     | ${'link **https://www.gitlab.com]**'}      | ${'modified link [**https://www.gitlab.com\\]**](https://www.gitlab.com%5D)'} | ${prependContentEditAction}
-    ${'code'}     | ${'`code`'}                                | ${'`code modified`'}                                                          | ${defaultEditAction}
-    ${'code'}     | ${'<code>code</code>'}                     | ${'<code>code modified</code>'}                                               | ${defaultEditAction}
-    ${'strike'}   | ${'~~striked~~'}                           | ${'~~striked modified~~'}                                                     | ${defaultEditAction}
-    ${'strike'}   | ${'<del>striked</del>'}                    | ${'<del>striked modified</del>'}                                              | ${defaultEditAction}
-    ${'strike'}   | ${'<strike>striked</strike>'}              | ${'<strike>striked modified</strike>'}                                        | ${defaultEditAction}
-    ${'strike'}   | ${'<s>striked</s>'}                        | ${'<s>striked modified</s>'}                                                  | ${defaultEditAction}
-    ${'list'}     | ${'- list item'}                           | ${'- list item modified'}                                                     | ${defaultEditAction}
-    ${'list'}     | ${'* list item'}                           | ${'* list item modified'}                                                     | ${defaultEditAction}
-    ${'list'}     | ${'+ list item'}                           | ${'+ list item modified'}                                                     | ${defaultEditAction}
-    ${'list'}     | ${'- list item 1\n- list item 2'}          | ${'- list item 1\n- list item 2 modified'}                                    | ${defaultEditAction}
-    ${'list'}     | ${'2) list item'}                          | ${'2) list item modified'}                                                    | ${defaultEditAction}
-    ${'list'}     | ${'1. list item'}                          | ${'1. list item modified'}                                                    | ${defaultEditAction}
-    ${'taskList'} | ${'2) [ ] task list item'}                 | ${'2) [ ] task list item modified'}                                           | ${defaultEditAction}
-    ${'taskList'} | ${'2) [x] task list item'}                 | ${'2) [x] task list item modified'}                                           | ${defaultEditAction}
+    mark                   | markdown                                        | modifiedMarkdown                                         | editAction
+    ${'bold'}              | ${'**bold**'}                                   | ${'**bold modified**'}                                   | ${defaultEditAction}
+    ${'bold'}              | ${'__bold__'}                                   | ${'__bold modified__'}                                   | ${defaultEditAction}
+    ${'bold'}              | ${'<strong>bold</strong>'}                      | ${'<strong>bold modified</strong>'}                      | ${defaultEditAction}
+    ${'bold'}              | ${'<b>bold</b>'}                                | ${'<b>bold modified</b>'}                                | ${defaultEditAction}
+    ${'italic'}            | ${'_italic_'}                                   | ${'_italic modified_'}                                   | ${defaultEditAction}
+    ${'italic'}            | ${'*italic*'}                                   | ${'*italic modified*'}                                   | ${defaultEditAction}
+    ${'italic'}            | ${'<em>italic</em>'}                            | ${'<em>italic modified</em>'}                            | ${defaultEditAction}
+    ${'italic'}            | ${'<i>italic</i>'}                              | ${'<i>italic modified</i>'}                              | ${defaultEditAction}
+    ${'link'}              | ${'[gitlab](https://gitlab.com)'}               | ${'[gitlab modified](https://gitlab.com)'}               | ${defaultEditAction}
+    ${'link'}              | ${'<a href="https://gitlab.com">link</a>'}      | ${'<a href="https://gitlab.com">link modified</a>'}      | ${defaultEditAction}
+    ${'link'}              | ${'link www.gitlab.com'}                        | ${'modified link www.gitlab.com'}                        | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com'}                | ${'modified link https://www.gitlab.com'}                | ${prependContentEditAction}
+    ${'link'}              | ${'link(https://www.gitlab.com)'}               | ${'modified link(https://www.gitlab.com)'}               | ${prependContentEditAction}
+    ${'link'}              | ${'link(engineering@gitlab.com)'}               | ${'modified link(engineering@gitlab.com)'}               | ${prependContentEditAction}
+    ${'link'}              | ${'link <https://www.gitlab.com>'}              | ${'modified link <https://www.gitlab.com>'}              | ${prependContentEditAction}
+    ${'link'}              | ${'link [https://www.gitlab.com>'}              | ${'modified link \\[https://www.gitlab.com>'}            | ${prependContentEditAction}
+    ${'link'}              | ${'link <https://www.gitlab.com'}               | ${'modified link <https://www.gitlab.com'}               | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com>'}               | ${'modified link https://www.gitlab.com>'}               | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com/path'}           | ${'modified link https://www.gitlab.com/path'}           | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com?query=search'}   | ${'modified link https://www.gitlab.com?query=search'}   | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com/#fragment'}      | ${'modified link https://www.gitlab.com/#fragment'}      | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com/?query=search'}  | ${'modified link https://www.gitlab.com/?query=search'}  | ${prependContentEditAction}
+    ${'link'}              | ${'link https://www.gitlab.com#fragment'}       | ${'modified link https://www.gitlab.com#fragment'}       | ${prependContentEditAction}
+    ${'link'}              | ${'link **https://www.gitlab.com]**'}           | ${'modified link **https://www.gitlab.com\\]**'}         | ${prependContentEditAction}
+    ${'code'}              | ${'`code`'}                                     | ${'`code modified`'}                                     | ${defaultEditAction}
+    ${'code'}              | ${'<code>code</code>'}                          | ${'<code>code modified</code>'}                          | ${defaultEditAction}
+    ${'strike'}            | ${'~~striked~~'}                                | ${'~~striked modified~~'}                                | ${defaultEditAction}
+    ${'strike'}            | ${'<del>striked</del>'}                         | ${'<del>striked modified</del>'}                         | ${defaultEditAction}
+    ${'strike'}            | ${'<strike>striked</strike>'}                   | ${'<strike>striked modified</strike>'}                   | ${defaultEditAction}
+    ${'strike'}            | ${'<s>striked</s>'}                             | ${'<s>striked modified</s>'}                             | ${defaultEditAction}
+    ${'list'}              | ${'- list item'}                                | ${'- list item modified'}                                | ${defaultEditAction}
+    ${'list'}              | ${'* list item'}                                | ${'* list item modified'}                                | ${defaultEditAction}
+    ${'list'}              | ${'+ list item'}                                | ${'+ list item modified'}                                | ${defaultEditAction}
+    ${'list'}              | ${'- list item 1\n- list item 2'}               | ${'- list item 1\n- list item 2 modified'}               | ${defaultEditAction}
+    ${'list'}              | ${'2) list item'}                               | ${'2) list item modified'}                               | ${defaultEditAction}
+    ${'list'}              | ${'1. list item'}                               | ${'1. list item modified'}                               | ${defaultEditAction}
+    ${'taskList'}          | ${'2) [ ] task list item'}                      | ${'2) [ ] task list item modified'}                      | ${defaultEditAction}
+    ${'taskList'}          | ${'2) [x] task list item'}                      | ${'2) [x] task list item modified'}                      | ${defaultEditAction}
+    ${'image'}             | ${'![image](image.png)'}                        | ${'![image](image.png) modified'}                        | ${defaultEditAction}
+    ${'footnoteReference'} | ${'[^1] footnote\n\n[^1]: footnote definition'} | ${'modified [^1] footnote\n\n[^1]: footnote definition'} | ${prependContentEditAction}
   `(
-    'preserves original $mark syntax when sourceMarkdown is available for $content',
+    'preserves original $mark syntax when sourceMarkdown is available for $markdown',
     async ({ markdown, modifiedMarkdown, editAction }) => {
       const { document } = await remarkMarkdownDeserializer().deserialize({
         schema: tiptapEditor.schema,

@@ -8,7 +8,7 @@ module Gitlab
 
         attr_reader :full_path
 
-        def initialize(project:, current_user:, shared:, params: {}, logger: Gitlab::Import::Logger)
+        def initialize(project:, current_user:, shared:, params: {}, logger: Gitlab::Export::Logger)
           @params       = params
           @project      = project
           @current_user = current_user
@@ -49,7 +49,8 @@ module Gitlab
             exportable,
             reader.project_tree,
             json_writer,
-            exportable_path: "project"
+            exportable_path: "project",
+            logger: @logger
           )
 
           Retriable.retriable(on: Net::OpenTimeout, on_retry: on_retry) do

@@ -54,7 +54,7 @@ A higher value of `1200` or more would be beneficial if the server has free memo
 
 The worker killer checks memory every 20 seconds.
 
-To monitor the worker killer, use [the Puma log](../logs.md#puma_stdoutlog) `/var/log/gitlab/puma/puma_stdout.log`.
+To monitor the worker killer, use [the Puma log](../logs/index.md#puma_stdoutlog) `/var/log/gitlab/puma/puma_stdout.log`.
 For example:
 
 ```plaintext
@@ -246,7 +246,7 @@ automatically, due to differences between the two application servers.
 To switch from Unicorn to Puma:
 
 1. Determine suitable Puma [worker and thread settings](../../install/requirements.md#puma-settings).
-1. Convert any custom Unicorn settings to Puma.
+1. Convert any custom Unicorn settings to Puma in `/etc/gitlab/gitlab.rb`.
 
    The table below summarizes which Unicorn configuration keys correspond to those
    in Puma when using the Linux package, and which ones have no corresponding counterpart.

@@ -12,7 +12,7 @@ RSpec.describe Resolvers::Ci::RunnerJobsResolver do
   let!(:build_one) { create(:ci_build, :success, name: 'Build One', runner: runner, pipeline: pipeline) }
   let!(:build_two) { create(:ci_build, :success, name: 'Build Two', runner: runner, pipeline: pipeline) }
   let!(:build_three) { create(:ci_build, :failed, name: 'Build Three', runner: runner, pipeline: pipeline) }
-  let!(:irrelevant_build) { create(:ci_build, name: 'Irrelevant Build', pipeline: irrelevant_pipeline)}
+  let!(:irrelevant_build) { create(:ci_build, name: 'Irrelevant Build', pipeline: irrelevant_pipeline) }
 
   let(:args) { {} }
   let(:runner) { create(:ci_runner, :project, projects: [project]) }

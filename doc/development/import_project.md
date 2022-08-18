@@ -144,7 +144,7 @@ project files on disk.
 ##### Import is successful, but with a `Total number of not imported relations: XX` message, and issues are not created during the import
 
 If you receive a `Total number of not imported relations: XX` message, and issues
-aren't created during the import, check [exceptions_json.log](../administration/logs.md#exceptions_jsonlog).
+aren't created during the import, check [exceptions_json.log](../administration/logs/index.md#exceptions_jsonlog).
 You might see an error like `N is out of range for ActiveModel::Type::Integer with limit 4 bytes`,
 where `N` is the integer exceeding the 4-byte integer limit. If that's the case, you
 are likely hitting the issue with rebalancing of `relative_position` field of the issues.

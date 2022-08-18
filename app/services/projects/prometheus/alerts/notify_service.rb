@@ -56,7 +56,7 @@ module Projects
         attr_reader :project, :payload
 
         def valid_payload_size?
-          Gitlab::Utils::DeepSize.new(payload).valid?
+          Gitlab::Utils::DeepSize.new(payload.to_h).valid?
         end
 
         def max_alerts_exceeded?

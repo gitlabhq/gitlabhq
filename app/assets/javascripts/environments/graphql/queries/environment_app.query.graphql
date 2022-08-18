@@ -4,6 +4,5 @@ query getEnvironmentApp($page: Int, $scope: String) {
     stoppedCount
     environments
     reviewApp
-    stoppedCount
   }
 }

@@ -1,63 +1,11 @@
 ---
-stage: Data Stores
-group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: 'database/single_table_inheritance.md'
+remove_date: '2022-11-06'
 ---
 
-# Single Table Inheritance
+This document was moved to [another location](database/single_table_inheritance.md).
 
-**Summary:** don't use Single Table Inheritance (STI), use separate tables
-instead.
-
-Rails makes it possible to have multiple models stored in the same table and map
-these rows to the correct models using a `type` column. This can be used to for
-example store two different types of SSH keys in the same table.
-
-While tempting to use one should avoid this at all costs for the same reasons as
-outlined in the document ["Polymorphic Associations"](polymorphic_associations.md).
-
-## Solution
-
-The solution is very simple: just use a separate table for every type you'd
-otherwise store in the same table. For example, instead of having a `keys` table
-with `type` set to either `Key` or `DeployKey` you'd have two separate tables:
-`keys` and `deploy_keys`.
-
-## In migrations
-
-Whenever a model is used in a migration, single table inheritance should be disabled.
-Due to the way Rails loads associations (even in migrations), failing to disable STI
-could result in loading unexpected code or associations which may cause unintended
-side effects or failures during upgrades.
-
-```ruby
-class SomeMigration < Gitlab::Database::Migration[2.0]
-  class Services < MigrationRecord
-    self.table_name = 'services'
-    self.inheritance_column = :_type_disabled
-  end
-
-  def up
-  ...
-```
-
-If nothing needs to be added to the model other than disabling STI or `EachBatch`,
-use the helper `define_batchable_model` instead of defining the class.
-This ensures that the migration loads the columns for the migration in isolation,
-and the helper disables STI by default.
-
-```ruby
-class EnqueueSomeBackgroundMigration < Gitlab::Database::Migration[1.0]
-  disable_ddl_transaction!
-
-  def up
-    define_batchable_model('services').select(:id).in_batches do |relation|
-      jobs = relation.pluck(:id).map do |id|
-        ['ExtractServicesUrl', [id]]
-      end
-
-      BackgroundMigrationWorker.bulk_perform_async(jobs)
-    end
-  end
-  ...
-```
+<!-- This redirect file can be deleted after <2022-11-06>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -12,7 +12,7 @@
 
   .form-group
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
-    = f.text_field :expires_at, class: 'datepicker form-control', data: { qa_selector: 'deploy_token_expires_at_field' }, value: f.object.expires_at
+    = f.gitlab_ui_datepicker :expires_at, data: { qa_selector: 'deploy_token_expires_at_field' }, value: f.object.expires_at
     .text-secondary= s_('DeployTokens|Enter an expiration date for your token. Defaults to never expire.')
 
   .form-group

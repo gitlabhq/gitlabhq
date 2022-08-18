@@ -116,7 +116,7 @@ RSpec.describe Postgresql::ReplicationSlot do
 
     describe '#slots_retained_bytes' do
       it 'returns the number of retained bytes' do
-        slot = described_class.slots_retained_bytes.find {|x| x['slot_name'] == 'test_slot' }
+        slot = described_class.slots_retained_bytes.find { |x| x['slot_name'] == 'test_slot' }
 
         expect(slot).not_to be_nil
         expect(slot['retained_bytes']).to be_nil

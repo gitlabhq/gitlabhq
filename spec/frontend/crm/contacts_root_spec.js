@@ -1,14 +1,16 @@
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContactsRoot from '~/crm/contacts/components/contacts_root.vue';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
+import getGroupContactsCountByStateQuery from '~/crm/contacts/components/graphql/get_group_contacts_count_by_state.graphql';
 import routes from '~/crm/contacts/routes';
-import { getGroupContactsQueryResponse } from './mock_data';
+import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
+import { getGroupContactsQueryResponse, getGroupContactsCountQueryResponse } from './mock_data';
 
 describe('Customer relations contacts root app', () => {
   Vue.use(VueApollo);
@@ -21,24 +23,30 @@ describe('Customer relations contacts root app', () => {
   const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
   const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
   const findNewContactButton = () => wrapper.findByTestId('new-contact-button');
-  const findError = () => wrapper.findComponent(GlAlert);
+  const findTable = () => wrapper.findComponent(PaginatedTableWithSearchAndTabs);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupContactsQueryResponse);
+  const successCountQueryHandler = jest.fn().mockResolvedValue(getGroupContactsCountQueryResponse);
 
   const basePath = '/groups/flightjs/-/crm/contacts';
 
   const mountComponent = ({
     queryHandler = successQueryHandler,
-    mountFunction = shallowMountExtended,
+    countQueryHandler = successCountQueryHandler,
     canAdminCrmContact = true,
+    textQuery = null,
   } = {}) => {
-    fakeApollo = createMockApollo([[getGroupContactsQuery, queryHandler]]);
-    wrapper = mountFunction(ContactsRoot, {
+    fakeApollo = createMockApollo([
+      [getGroupContactsQuery, queryHandler],
+      [getGroupContactsCountByStateQuery, countQueryHandler],
+    ]);
+    wrapper = mountExtended(ContactsRoot, {
       router,
       provide: {
         groupFullPath: 'flightjs',
         groupId: 26,
         groupIssuesPath: '/issues',
         canAdminCrmContact,
+        textQuery,
       },
       apolloProvider: fakeApollo,
     });
@@ -58,9 +66,33 @@ describe('Customer relations contacts root app', () => {
     router = null;
   });
 
-  it('should render loading spinner', () => {
+  it('should render table with default props and loading state', () => {
     mountComponent();
 
+    expect(findTable().props()).toMatchObject({
+      items: [],
+      itemsCount: {},
+      pageInfo: {},
+      statusTabs: [
+        { title: 'Active', status: 'ACTIVE', filters: 'active' },
+        { title: 'Inactive', status: 'INACTIVE', filters: 'inactive' },
+        { title: 'All', status: 'ALL', filters: 'all' },
+      ],
+      showItems: true,
+      showErrorMsg: false,
+      trackViewsOptions: { category: 'Customer Relations', action: 'view_contacts_list' },
+      i18n: {
+        emptyText: 'No contacts found',
+        issuesButtonLabel: 'View issues',
+        editButtonLabel: 'Edit',
+        title: 'Customer relations contacts',
+        newContact: 'New contact',
+        errorText: 'Something went wrong. Please try again.',
+      },
+      serverErrorMessage: '',
+      filterSearchKey: 'contacts',
+      filterSearchTokens: [],
+    });
     expect(findLoadingIcon().exists()).toBe(true);
   });
 
@@ -83,7 +115,7 @@ describe('Customer relations contacts root app', () => {
       mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
       await waitForPromises();
 
-      expect(findError().exists()).toBe(true);
+      expect(wrapper.text()).toContain('Something went wrong. Please try again.');
     });
   });
 
@@ -92,11 +124,11 @@ describe('Customer relations contacts root app', () => {
       mountComponent();
       await waitForPromises();
 
-      expect(findError().exists()).toBe(false);
+      expect(wrapper.text()).not.toContain('Something went wrong. Please try again.');
     });
 
     it('renders correct results', async () => {
-      mountComponent({ mountFunction: mountExtended });
+      mountComponent();
       await waitForPromises();
 
       expect(findRowByName(/Marty/i)).toHaveLength(1);
@@ -105,7 +137,7 @@ describe('Customer relations contacts root app', () => {
 
       const issueLink = findIssuesLinks().at(0);
       expect(issueLink.exists()).toBe(true);
-      expect(issueLink.attributes('href')).toBe('/issues?crm_contact_id=16');
+      expect(issueLink.attributes('href')).toBe('/issues?crm_contact_id=12');
     });
   });
 });

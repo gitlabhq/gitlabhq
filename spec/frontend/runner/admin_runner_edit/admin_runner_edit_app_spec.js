@@ -87,10 +87,10 @@ describe('AdminRunnerEditApp', () => {
     await createComponentWithApollo();
 
     expect(findRunnerUpdateForm().props()).toMatchObject({
-      runner: mockRunner,
       loading: false,
       runnerPath: mockRunnerPath,
     });
+    expect(findRunnerUpdateForm().props('runner')).toEqual(mockRunner);
   });
 
   describe('When there is an error', () => {

@@ -21,7 +21,7 @@ if app.config.public_file_server.enabled
 
   # If webpack-dev-server is configured, proxy webpack's public directory
   # instead of looking for static assets
-  if Gitlab.config.webpack.dev_server.enabled && Rails.env.development?
+  if Gitlab.config.webpack.dev_server.enabled && Gitlab.dev_or_test_env?
     app.config.middleware.insert_before(
       Gitlab::Middleware::Static,
       Gitlab::Webpack::DevServerMiddleware,

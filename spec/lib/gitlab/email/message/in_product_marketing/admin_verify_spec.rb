@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::AdminVerify do
 
   let(:series) { 0 }
 
-  subject(:message) { described_class.new(group: group, user: user, series: series)}
+  subject(:message) { described_class.new(group: group, user: user, series: series) }
 
   describe 'public methods' do
     it 'returns value for series', :aggregate_failures do

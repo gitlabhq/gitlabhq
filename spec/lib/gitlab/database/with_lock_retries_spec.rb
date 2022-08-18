@@ -248,14 +248,14 @@ RSpec.describe Gitlab::Database::WithLockRetries do
       expect(connection).to receive(:execute).with("SET LOCAL lock_timeout TO '15ms'").and_call_original
       expect(connection).to receive(:execute).with("RELEASE SAVEPOINT active_record_1", "TRANSACTION").and_call_original
 
-      subject.run { }
+      subject.run {}
     end
 
     it 'calls `sleep` after the first iteration fails, using the configured sleep time' do
       expect(subject).to receive(:run_block_with_lock_timeout).and_raise(ActiveRecord::LockWaitTimeout).twice
       expect(subject).to receive(:sleep).with(0.025)
 
-      subject.run { }
+      subject.run {}
     end
   end
 
@@ -265,13 +265,13 @@ RSpec.describe Gitlab::Database::WithLockRetries do
     it 'prevents running inside already open transaction' do
       allow(connection).to receive(:transaction_open?).and_return(true)
 
-      expect { subject.run { } }.to raise_error(/should not run inside already open transaction/)
+      expect { subject.run {} }.to raise_error(/should not run inside already open transaction/)
     end
 
     it 'does not raise the error if not inside open transaction' do
       allow(connection).to receive(:transaction_open?).and_return(false)
 
-      expect { subject.run { } }.not_to raise_error
+      expect { subject.run {} }.not_to raise_error
     end
   end
 end

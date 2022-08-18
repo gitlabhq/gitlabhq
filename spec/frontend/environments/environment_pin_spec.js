@@ -41,7 +41,7 @@ describe('Pin Component', () => {
 
     it('should emit onPinClick when clicked', () => {
       const eventHubSpy = jest.spyOn(eventHub, '$emit');
-      const item = wrapper.find(GlDropdownItem);
+      const item = wrapper.findComponent(GlDropdownItem);
 
       item.vm.$emit('click');
 
@@ -74,7 +74,7 @@ describe('Pin Component', () => {
 
     it('should emit onPinClick when clicked', () => {
       jest.spyOn(mockApollo.defaultClient, 'mutate');
-      const item = wrapper.find(GlDropdownItem);
+      const item = wrapper.findComponent(GlDropdownItem);
 
       item.vm.$emit('click');
 

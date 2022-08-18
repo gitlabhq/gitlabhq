@@ -175,7 +175,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       expect(Gitlab::Redis::Sessions).to receive(:with).and_yield(redis)
 
       sessions = %w[session-a session-b]
-      mget_responses = sessions.map { |session| [Marshal.dump(session)]}
+      mget_responses = sessions.map { |session| [Marshal.dump(session)] }
       expect(redis).to receive(:mget).twice.times.and_return(*mget_responses)
 
       expect(ActiveSession.sessions_from_ids([1, 2])).to eql(sessions)

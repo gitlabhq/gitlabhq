@@ -7,7 +7,7 @@ RSpec.describe 'helm package details' do
 
   let_it_be(:package) { create(:helm_package, project: project) }
 
-  let(:package_files_metadata) {query_graphql_fragment('HelmFileMetadata')}
+  let(:package_files_metadata) { query_graphql_fragment('HelmFileMetadata') }
 
   let(:query) do
     graphql_query_for(:package, { id: package_global_id }, <<~FIELDS)

@@ -357,7 +357,7 @@ RSpec.describe 'Admin::Users' do
     end
 
     it 'creates new user' do
-      expect { click_button 'Create user' }.to change {User.count}.by(1)
+      expect { click_button 'Create user' }.to change { User.count }.by(1)
     end
 
     it 'applies defaults to user' do
@@ -400,7 +400,7 @@ RSpec.describe 'Admin::Users' do
       let_it_be(:user_username) { 'Bing bang' }
 
       it "doesn't create the user and shows an error message" do
-        expect { click_button 'Create user' }.to change {User.count}.by(0)
+        expect { click_button 'Create user' }.to change { User.count }.by(0)
 
         expect(page).to have_content('The form contains the following error')
         expect(page).to have_content('Username can contain only letters, digits')

@@ -53,7 +53,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
 
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
     let(:issue_event) do
-      struct = Struct.new(:id, :event, :created_at, :issue_db_id, keyword_init: true)
+      struct = Struct.new(:id, :event, :created_at, :issue, keyword_init: true)
       struct.new(id: rand(10), event: 'closed', created_at: '2022-04-26 18:30:53 UTC')
     end
 
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
       counter = 0
       subject.each_object_to_import do |object|
         expect(object).to eq issue_event
-        expect(issue_event.issue_db_id).to eq issue.id
+        expect(issue_event.issue['number']).to eq issue.iid
         counter += 1
       end
       expect(counter).to eq 1

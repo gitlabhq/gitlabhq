@@ -28,7 +28,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
         let(:page) { 3 }
 
         it 'responds with paginated results' do
-          expect(subject[:items].first['title']).to eq('bright')
+          expect(subject[:items].first['name']).to eq('bright')
           expect(subject[:next_page]).to eq(4)
         end
       end
@@ -37,7 +37,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
         let(:page) { 4 }
 
         it 'responds with paginated results and no next_page' do
-          expect(subject[:items].first['title']).to eq("It's gonna be a bright")
+          expect(subject[:items].first['name']).to eq("It's gonna be a bright")
           expect(subject[:next_page]).to eq(nil)
         end
       end
@@ -63,12 +63,12 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
 
       it 'returns platform specific items' do
         expect(subject[:items].count).to eq(1)
-        expect(subject[:items].first['title']).to eq("bright and sunshinin' day")
+        expect(subject[:items].first['name']).to eq("bright and sunshinin' day")
         expect(subject[:next_page]).to eq(2)
       end
 
-      it 'parses the body as markdown and returns html, and links are target="_blank"' do
-        expect(subject[:items].first['body']).to match('<p data-sourcepos="1:1-1:62" dir="auto">bright and sunshinin\' <a href="https://en.wikipedia.org/wiki/Day" rel="nofollow noreferrer noopener" target="_blank">day</a></p>')
+      it 'parses the description as markdown and returns html, and links are target="_blank"' do
+        expect(subject[:items].first['description']).to match('<p data-sourcepos="1:1-1:62" dir="auto">bright and sunshinin\' <a href="https://en.wikipedia.org/wiki/Day" rel="nofollow noreferrer noopener" target="_blank">day</a></p>')
       end
 
       it 'logs an error if theres an error parsing markdown for an item, and skips it' do
@@ -83,7 +83,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
 
         it 'responds with a different set of data' do
           expect(subject[:items].count).to eq(1)
-          expect(subject[:items].first['title']).to eq("I think I can make it now the pain is gone")
+          expect(subject[:items].first['name']).to eq("I think I can make it now the pain is gone")
         end
       end
 
@@ -171,7 +171,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
         items = described_class.load_items(page: 2)
 
         expect(items.count).to eq(1)
-        expect(items.first['title']).to eq("View epics on a board")
+        expect(items.first['name']).to eq("View epics on a board")
       end
     end
   end

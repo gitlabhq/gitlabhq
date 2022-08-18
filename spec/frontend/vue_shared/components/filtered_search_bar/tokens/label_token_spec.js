@@ -156,7 +156,7 @@ describe('LabelToken', () => {
     });
 
     it('renders base-token component', () => {
-      const baseTokenEl = wrapper.find(BaseToken);
+      const baseTokenEl = wrapper.findComponent(BaseToken);
 
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
@@ -166,7 +166,7 @@ describe('LabelToken', () => {
     });
 
     it('renders token item when value is selected', () => {
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // Label, =, "Foo Label"
       expect(tokenSegments.at(2).text()).toBe(`~${mockRegularLabel.title}`); // "Foo Label"
@@ -181,12 +181,12 @@ describe('LabelToken', () => {
         config: { ...mockLabelToken, defaultLabels },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(defaultLabels.length);
       defaultLabels.forEach((label, index) => {
@@ -200,13 +200,13 @@ describe('LabelToken', () => {
         config: { ...mockLabelToken, defaultLabels: [] },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
-      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
+      expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders `DEFAULT_NONE_ANY` as default suggestions', () => {
@@ -215,11 +215,11 @@ describe('LabelToken', () => {
         config: { ...mockLabelToken },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(DEFAULT_NONE_ANY.length);
       DEFAULT_NONE_ANY.forEach((label, index) => {

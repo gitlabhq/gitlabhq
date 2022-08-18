@@ -50,7 +50,7 @@ describe('Merge request artifact Download', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const findDownloadDropdown = () => wrapper.find(SecurityReportDownloadDropdown);
+  const findDownloadDropdown = () => wrapper.findComponent(SecurityReportDownloadDropdown);
 
   afterEach(() => {
     wrapper.destroy();

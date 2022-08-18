@@ -129,7 +129,7 @@ http://secondary.example.com/
 ```
 
 To find more details about failed items, check
-[the `gitlab-rails/geo.log` file](../../troubleshooting/log_parsing.md#find-most-common-geo-sync-errors)
+[the `gitlab-rails/geo.log` file](../../logs/log_parsing.md#find-most-common-geo-sync-errors)
 
 ### Check if PostgreSQL replication is working
 
@@ -191,7 +191,7 @@ If a replication slot is inactive,
 the `pg_wal` logs corresponding to the slot are reserved forever
 (or until the slot is active again). This causes continuous disk usage growth
 and the following messages appear repeatedly in the
-[PostgreSQL logs](../../logs.md#postgresql-logs):
+[PostgreSQL logs](../../logs/index.md#postgresql-logs):
 
 ```plaintext
 WARNING: oldest xmin is far in the past
@@ -331,8 +331,7 @@ Be sure to restart PostgreSQL for this to take effect. See the
 This occurs when PostgreSQL does not have a replication slot for the
 **secondary** node by that name.
 
-You may want to rerun the [replication
-process](../setup/database.md) on the **secondary** node .
+You may want to rerun the [replication process](../setup/database.md) on the **secondary** node .
 
 ### Message: "Command exceeded allowed execution time" when setting up replication?
 
@@ -376,7 +375,7 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a **secondary** node configured using that slot,
-  sign in to that **secondary** node and check the [PostgreSQL logs](../../logs.md#postgresql-logs)
+  sign in to that **secondary** node and check the [PostgreSQL logs](../../logs/index.md#postgresql-logs)
   to view why the replication is not running.
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
@@ -510,7 +509,7 @@ To solve this:
 
 1. Back up [the `.git` folder](../../repository_storage_types.md#translate-hashed-storage-paths).
 
-1. Optional. [Spot-check](../../troubleshooting/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
+1. Optional. [Spot-check](../../logs/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
    a few of those IDs whether they indeed correspond
    to a project with known Geo replication failures.
    Use `fatal: 'geo'` as the `grep` term and the following API call:
@@ -597,7 +596,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl stop geo-logcursor
    ```
 
-   You can watch the [Sidekiq logs](../../logs.md#sidekiq-logs) to know when Sidekiq jobs processing has finished:
+   You can watch the [Sidekiq logs](../../logs/index.md#sidekiq-logs) to know when Sidekiq jobs processing has finished:
 
    ```shell
    gitlab-ctl tail sidekiq
@@ -837,7 +836,7 @@ to transfer each affected repository from the primary to the secondary site.
 The following are possible error messages that might be encountered during failover or
 when promoting a secondary to a primary node with strategies to resolve them.
 
-### Message: ActiveRecord::RecordInvalid: Validation failed: Name has already been taken
+### Message: `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
 
 When [promoting a **secondary** site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site),
 you might encounter the following error message:
@@ -869,11 +868,10 @@ or `gitlab-ctl promote-to-primary-node`, either:
   ```
 
 - Upgrade to GitLab 12.6.3 or later if it is safe to do so. For example,
-  if the failover was just a test. A [caching-related
-  bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
-  fixed.
+  if the failover was just a test. A 
+  [caching-related bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was fixed.
 
-### Message: ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled
+### Message: `ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled`
 
 If you disabled a secondary node, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
 (GitLab 13.2) or by using the user interface (GitLab 13.1 and earlier), you must first
@@ -1127,12 +1125,6 @@ Geo secondary sites continue to replicate and verify data, and the secondary sit
 
 This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/292983).
 
-### GitLab Pages return 404 errors after promoting
-
-This is due to [Pages data not being managed by Geo](datatypes.md#limitations-on-replicationverification).
-Find advice to resolve those error messages in the
-[Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node).
-
 ### Primary site returns 500 error when accessing `/admin/geo/replication/projects`
 
 Navigating to **Admin > Geo > Replication** (or `/admin/geo/replication/projects`) on a primary Geo site, shows a 500 error, while that same link on the secondary works fine. The primary's `production.log` has a similar entry to the following:
@@ -1146,7 +1138,28 @@ Geo::TrackingBase::SecondaryNotConfigured: Geo secondary database is not configu
 
 On a Geo primary site this error can be ignored.
 
-This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
+This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/index.md#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
+
+### Secondary site returns 400 error "Request header or cookie too large"
+
+This error can happen when the internal URL of the primary site is incorrect.
+
+For example, when you use a unified URL and the primary site's internal URL is also equal to the external URL. This causes a loop when a secondary site proxies requests to the primary site's internal URL.
+
+To fix this issue, set the primary site's internal URL to a URL that is:
+
+- Unique to the primary site.
+- Accessible from all secondary sites.
+
+1. Enter the [Rails console](../../operations/rails_console.md) on the primary site.
+
+1. Run the following, replacing `https://unique.url.for.primary.site` with your specific internal URL.
+   For example, depending on your network configuration, you could use an IP address, like
+   `http://1.2.3.4`.
+
+   ```ruby
+   GeoNode.where(primary: true).first.update!(internal_url: "https://unique.url.for.primary.site")
+   ```
 
 ## Fixing client errors
 
@@ -1157,6 +1170,23 @@ As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issue
 requests redirected from the secondary to the primary node do not properly send the
 Authorization header. This may result in either an infinite `Authorization <-> Redirect`
 loop, or Authorization error messages.
+
+### Error: Net::ReadTimeout when pushing through SSH on a Geo secondary
+
+When you push large repositories through SSH on a Geo secondary site, you may encounter a timeout.
+This is because Rails proxies the push to the primary and has a 60 second default timeout,
+[as described in this Geo issue](https://gitlab.com/gitlab-org/gitlab/-/issues/7405).
+
+Current workarounds are:
+
+- Push through HTTP instead, where Workhorse proxies the request to the primary (or redirects to the primary if Geo proxying is not enabled).
+- Push directly to the primary.
+
+Example log (`gitlab-shell.log`):
+
+```plaintext
+Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nError: Net::ReadTimeout\",\"result\":null}" code=500 method=POST pid=5483 url="http://127.0.0.1:3000/api/v4/geo/proxy_git_push_ssh/push"
+```
 
 ## Recovering from a partial failover
 

@@ -100,7 +100,7 @@ describe('Design note component', () => {
       note,
     });
 
-    expect(wrapper.find(TimeAgoTooltip).exists()).toBe(true);
+    expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(true);
   });
 
   it('should not render edit icon when user does not have a permission', () => {

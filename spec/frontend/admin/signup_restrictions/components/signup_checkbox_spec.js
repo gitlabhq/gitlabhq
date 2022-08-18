@@ -24,7 +24,7 @@ describe('Signup Form', () => {
 
   const findByTestId = (id) => wrapper.find(`[data-testid="${id}"]`);
   const findHiddenInput = () => findByTestId('input');
-  const findCheckbox = () => wrapper.find(GlFormCheckbox);
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findCheckboxLabel = () => findByTestId('label');
   const findHelpText = () => findByTestId('helpText');
 

@@ -54,7 +54,7 @@ RSpec.describe 'Projects tree', :js do
     let(:filename) { File.join(path, 'test.txt') }
     let(:newrev) { project.repository.commit('master').sha }
     let(:short_newrev) { project.repository.commit('master').short_id }
-    let(:message) { 'Glob characters'}
+    let(:message) { 'Glob characters' }
 
     before do
       create_file_in_repo(project, 'master', 'master', filename, 'Test file', commit_message: message)

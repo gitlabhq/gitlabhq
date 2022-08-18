@@ -5,7 +5,7 @@ FactoryBot.define do
     email { generate(:email) }
     name { generate(:name) }
     username { generate(:username) }
-    password { "12345678" }
+    password { User.random_password }
     role { 'software_developer' }
     confirmed_at { Time.now }
     confirmation_token { nil }

@@ -32,9 +32,10 @@ export default {
       .map(({ name, logo, title }) => {
         return {
           name: title || name,
+          description: sprintf(this.$options.i18n.description, { name: title || name }),
+          isPng: logo.endsWith('png'),
           logo,
           link: mergeUrlParams({ template: name }, this.pipelineEditorPath),
-          description: sprintf(this.$options.i18n.description, { name: title || name }),
         };
       });
 
@@ -47,6 +48,9 @@ export default {
       this.track('template_clicked', {
         label: template,
       });
+    },
+    logoStyle(template) {
+      return template.isPng ? { objectFit: 'contain' } : '';
     },
   },
   i18n: {
@@ -66,11 +70,13 @@ export default {
       >
         <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
           <gl-avatar
-            :src="template.logo"
-            :size="48"
-            class="gl-mr-5 gl-bg-white dark-mode-override"
-            :shape="$options.AVATAR_SHAPE_OPTION_RECT"
             :alt="template.name"
+            class="gl-mr-5 gl-bg-white dark-mode-override"
+            :class="{ 'gl-p-2': template.isPng }"
+            :style="logoStyle(template)"
+            :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+            :size="48"
+            :src="template.logo"
             data-testid="template-logo"
           />
           <div class="gl-flex-direction-row">

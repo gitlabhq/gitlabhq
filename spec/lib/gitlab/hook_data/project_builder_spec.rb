@@ -52,6 +52,7 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
         let(:event) { :create }
 
         it { expect(event_name).to eq('project_create') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include `old_path_with_namespace` attribute'
       end
@@ -60,6 +61,7 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
         let(:event) { :destroy }
 
         it { expect(event_name).to eq('project_destroy') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include `old_path_with_namespace` attribute'
       end
@@ -68,6 +70,7 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
         let(:event) { :rename }
 
         it { expect(event_name).to eq('project_rename') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'includes `old_path_with_namespace` attribute'
       end
@@ -76,6 +79,7 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
         let(:event) { :transfer }
 
         it { expect(event_name).to eq('project_transfer') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'includes `old_path_with_namespace` attribute'
       end

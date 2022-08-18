@@ -29,7 +29,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader do
 
   context 'when the preloader is used', :request_store do
     context 'when user has indirect access to groups' do
-      let_it_be(:child_maintainer) { create(:group, :private, parent: group1).tap {|g| g.add_maintainer(user)} }
+      let_it_be(:child_maintainer) { create(:group, :private, parent: group1).tap { |g| g.add_maintainer(user) } }
       let_it_be(:child_indirect_access) { create(:group, :private, parent: group1) }
 
       let(:groups) { [group1, group2, group3, child_maintainer, child_indirect_access] }

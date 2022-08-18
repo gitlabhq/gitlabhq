@@ -11,7 +11,7 @@
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
   .files-changed-inner
     .inline-parallel-buttons.gl-display-none.gl-md-display-flex
-      - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
+      - if !diffs_expanded? && diff_files.any?(&:collapsed?)
         = link_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil)), class: 'gl-button btn btn-default'
       - if show_whitespace_toggle
         - if current_controller?(:commit)

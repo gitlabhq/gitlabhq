@@ -271,6 +271,18 @@ module Gitlab
         nil
       end
 
+      def full_path
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :full_path,
+          Gitaly::FullPathRequest.new(repository: @gitaly_repo),
+          timeout: GitalyClient.fast_timeout
+        )
+
+        response.path.presence
+      end
+
       def license_short_name
         request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
 

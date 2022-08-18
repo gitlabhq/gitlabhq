@@ -5,11 +5,26 @@ module Timelogs
     include BaseServiceUtility
     include Gitlab::Utils::StrongMemoize
 
-    attr_accessor :timelog, :current_user
+    attr_accessor :current_user
 
-    def initialize(timelog, user)
-      @timelog = timelog
+    def initialize(user)
       @current_user = user
+    end
+
+    def success(timelog)
+      ServiceResponse.success(payload: {
+        timelog: timelog
+      })
+    end
+
+    def error(message, http_status = nil)
+      ServiceResponse.error(message: message, http_status: http_status)
+    end
+
+    def error_in_save(timelog)
+      return error(_("Failed to save timelog")) if timelog.errors.empty?
+
+      error(timelog.errors.full_messages.to_sentence)
     end
   end
 end

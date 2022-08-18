@@ -35,6 +35,10 @@
     background-color: $white;
   }
 
+  &:not(.note-form).internal-note {
+    background-color: $orange-50;
+  }
+
   .timeline-entry-inner {
     position: relative;
   }

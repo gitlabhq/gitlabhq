@@ -3,9 +3,7 @@
 import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import { hide, fixTitle } from '~/tooltips';
-import createFlash from './flash';
-import axios from './lib/utils/axios_utils';
-import { sprintf, s__, __ } from './locale';
+import { __ } from './locale';
 
 const updateSidebarClasses = (layoutPage, rightSidebar) => {
   if (window.innerWidth >= 992) {
@@ -20,7 +18,6 @@ const updateSidebarClasses = (layoutPage, rightSidebar) => {
 };
 
 function Sidebar() {
-  this.toggleTodo = this.toggleTodo.bind(this);
   this.sidebar = $('aside');
 
   this.removeListeners();
@@ -54,7 +51,6 @@ Sidebar.prototype.addEventListeners = function () {
   this.sidebar.on('hiddenGlDropdown', this, this.onSidebarDropdownHidden);
 
   $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
-  $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
 
   if (window.gon?.features?.movedMrSidebar) {
     const layoutPage = document.querySelector('.layout-page');
@@ -103,32 +99,6 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   if (!triggered) {
     setCookie('collapsed_gutter', $('.right-sidebar').hasClass('right-sidebar-collapsed'));
   }
-};
-
-Sidebar.prototype.toggleTodo = function (e) {
-  const $this = $(e.currentTarget);
-  const ajaxType = $this.data('deletePath') ? 'delete' : 'post';
-  const url = String($this.data('deletePath') || $this.data('createPath'));
-
-  hide($this);
-
-  $('.js-issuable-todo').disable().addClass('is-loading');
-
-  axios[ajaxType](url, {
-    issuable_id: $this.data('issuableId'),
-    issuable_type: $this.data('issuableType'),
-  })
-    .then(({ data }) => {
-      this.todoUpdateDone(data);
-    })
-    .catch(() =>
-      createFlash({
-        message: sprintf(__('There was an error %{message} to-do item.'), {
-          message:
-            ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
-        }),
-      }),
-    );
 };
 
 Sidebar.prototype.sidebarCollapseClicked = function (e) {

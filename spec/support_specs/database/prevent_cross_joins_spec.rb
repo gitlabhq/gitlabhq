@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::PreventCrossJoins do
+RSpec.describe Database::PreventCrossJoins, :suppress_gitlab_schemas_validate_connection do
   context 'when running in a default scope' do
     context 'when only non-CI tables are used' do
       it 'does not raise exception' do

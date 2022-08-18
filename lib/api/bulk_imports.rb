@@ -44,14 +44,29 @@ module API
           requires :access_token, type: String, desc: 'Access token to the source GitLab instance'
         end
         requires :entities, type: Array, desc: 'List of entities to import' do
-          requires :source_type, type: String, desc: 'Source entity type (only `group_entity` is supported)',
+          requires :source_type,
+                   type: String,
+                   desc: 'Source entity type (only `group_entity` is supported)',
                    values: %w[group_entity]
           requires :source_full_path, type: String, desc: 'Source full path of the entity to import'
-          requires :destination_name, type: String, desc: 'Destination slug for the entity'
           requires :destination_namespace, type: String, desc: 'Destination namespace for the entity'
+          optional :destination_slug, type: String, desc: 'Destination slug for the entity'
+          optional :destination_name,
+                   type: String,
+                   desc: 'Deprecated: Use :destination_slug instead. Destination slug for the entity'
+
+          mutually_exclusive :destination_slug, :destination_name
+          at_least_one_of :destination_slug, :destination_name
         end
       end
       post do
+        params[:entities].each do |entity|
+          if entity[:destination_name]
+            entity[:destination_slug] ||= entity[:destination_name]
+            entity.delete(:destination_name)
+          end
+        end
+
         response = ::BulkImports::CreateService.new(
           current_user,
           params[:entities],
@@ -72,9 +87,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-        desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
+                        desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
         optional :status, type: String, values: BulkImport.all_human_statuses,
-          desc: 'Return GitLab Migrations with specified status'
+                          desc: 'Return GitLab Migrations with specified status'
       end
       get do
         present paginate(bulk_imports), with: Entities::BulkImport
@@ -86,9 +101,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
+                        desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
-          desc: "Return all GitLab Migrations' entities with specified status"
+                          desc: "Return all GitLab Migrations' entities with specified status"
       end
       get :entities do
         entities = ::BulkImports::EntitiesFinder.new(
@@ -115,7 +130,7 @@ module API
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
-          desc: 'Return import entities with specified status'
+                          desc: 'Return import entities with specified status'
         use :pagination
       end
       get ':import_id/entities' do

@@ -22,7 +22,7 @@ describe('Package code instruction', () => {
     });
   }
 
-  const findCopyButton = () => wrapper.find(ClipboardButton);
+  const findCopyButton = () => wrapper.findComponent(ClipboardButton);
   const findInputElement = () => wrapper.find('[data-testid="instruction-input"]');
   const findMultilineInstruction = () => wrapper.find('[data-testid="multiline-instruction"]');
 

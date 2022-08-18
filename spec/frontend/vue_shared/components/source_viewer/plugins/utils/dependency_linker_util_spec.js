@@ -14,10 +14,11 @@ describe('createLink', () => {
 
   it('escapes the user-controlled content', () => {
     const unescapedXSS = '<script>XSS</script>';
-    const escapedXSS = '&amp;lt;script&amp;gt;XSS&amp;lt;/script&amp;gt;';
+    const escapedPackageName = '&lt;script&gt;XSS&lt;/script&gt;';
+    const escapedHref = '&amp;lt;script&amp;gt;XSS&amp;lt;/script&amp;gt;';
     const href = `http://test.com/${unescapedXSS}`;
     const innerText = `testing${unescapedXSS}`;
-    const result = `<a href="http://test.com/${escapedXSS}" rel="nofollow noreferrer noopener">testing${escapedXSS}</a>`;
+    const result = `<a href="http://test.com/${escapedHref}" rel="nofollow noreferrer noopener">testing${escapedPackageName}</a>`;
 
     expect(createLink(href, innerText)).toBe(result);
   });

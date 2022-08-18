@@ -1,25 +1,5 @@
 ---
 # Compliance category
-- name: g_compliance_dashboard
-  redis_slot: compliance
-  category: compliance
-  aggregation: weekly
-- name: g_compliance_audit_events
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
-- name: i_compliance_audit_events
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
-- name: i_compliance_credential_inventory
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
-- name: a_compliance_audit_events_api
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
 - name: g_edit_by_web_ide
   category: ide_edit
   redis_slot: edit
@@ -41,14 +21,6 @@
   expiry: 29
   aggregation: daily
 - name: i_search_total
-  category: search
-  redis_slot: search
-  aggregation: weekly
-- name: i_search_advanced
-  category: search
-  redis_slot: search
-  aggregation: weekly
-- name: i_search_paid
   category: search
   redis_slot: search
   aggregation: weekly
@@ -139,6 +111,19 @@
   category: incident_management
   aggregation: weekly
 - name: incident_management_timeline_event_deleted
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+# Incident management linked resources
+- name: incident_management_issuable_resource_link_created
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+- name: incident_management_issuable_resource_link_deleted
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+- name: incident_management_issuable_resource_link_visited
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly

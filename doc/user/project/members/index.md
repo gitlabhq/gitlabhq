@@ -15,7 +15,7 @@ Project members can:
 1. Be [direct members](#add-users-to-a-project) of the project.
 1. [Inherit membership](#inherited-membership) of the project from the project's group.
 1. Be a member of a group that was [shared](share_project_with_groups.md) with the project.
-1. Be a member of a group that was [shared with the project's group](../../group/index.md#share-a-group-with-another-group).
+1. Be a member of a group that was [shared with the project's group](../../group/manage.md#share-a-group-with-another-group).
 
 ```mermaid
 flowchart RL
@@ -49,11 +49,22 @@ flowchart RL
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Add users to a project so they become members and have permission
-to perform actions. The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
+to perform actions.
+
+The maximum role (access level) you set depends on if you have the Owner or Maintainer role for the group. For example, the maximum
+role that can be set is:
+
+- Owner (`50`), if you have the Owner role for the project.
+- Maintainer (`40`), if you have the Maintainer role on the project.
+
+In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
+The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
 
 Prerequisite:
 
-- You must have the Maintainer or Owner role.
+- You must have the Maintainer or Owner role:
+  - To remove direct members with the Maintainer role and below, you must have the Maintainer role.
+  - To remove members with the Owner role, you must have the Owner role.
 
 To add a user to a project:
 
@@ -91,7 +102,7 @@ Each user's access is based on:
 Prerequisite:
 
 - You must have the Maintainer or Owner role.
-- Sharing the project with other groups must not be [prevented](../../group/index.md#prevent-a-project-from-being-shared-with-groups).
+- Sharing the project with other groups must not be [prevented](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
 
 To add groups to a project:
 
@@ -107,7 +118,7 @@ The members of the group are not displayed on the **Members** tab.
 The **Members** tab shows:
 
 - Members who are directly assigned to the project.
-- If the project was created in a group [namespace](../../group/index.md#namespaces), members of that group.
+- If the project was created in a group [namespace](../../namespace/index.md), members of that group.
 
 ## Import users from another project
 
@@ -173,7 +184,7 @@ To remove a member from a project:
    user has not forked the private repository or created webhooks. Existing forks continue to receive
    changes from the upstream project, and webhooks continue to receive updates. You may also want to configure your project
    to prevent projects in a group
-   [from being forked outside their group](../../group/index.md#prevent-project-forking-outside-group).
+   [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.
 
 ## Filter and sort members

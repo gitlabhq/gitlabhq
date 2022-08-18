@@ -200,7 +200,7 @@ Secret Detection can be customized by defining available CI/CD variables:
 
 | CI/CD variable                    | Default value | Description |
 |-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
+| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
 | `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
 | `SECRET_DETECTION_LOG_OPTIONS`  | ""         | [`git log`](https://git-scm.com/docs/git-log) options used to define commit ranges. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350660) in GitLab 15.1.|
@@ -224,9 +224,9 @@ You can customize the default secret detection rules provided with GitLab.
 Ruleset customization supports the following capabilities that can be used
 simultaneously:
 
-- [Disabling predefined rules](index.md#disable-predefined-analyzer-rules).
-- [Overriding predefined rules](index.md#override-predefined-analyzer-rules).
-- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration).
+- [Disabling predefined rules](#disable-predefined-analyzer-rules).
+- [Overriding predefined rules](#override-predefined-analyzer-rules).
+- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](#synthesize-a-custom-configuration).
 
 Customization allows replacing the default secret detection rules with rules that you define.
 
@@ -334,7 +334,7 @@ To create a custom configuration, you can use passthrough chains.
      ```
 
 Passthroughs can also be chained to build more complex configurations.
-For more details, see [SAST Customize ruleset section](../sast/index.md#customize-rulesets).
+For more details, see [SAST Customize ruleset section](../sast/customize_rulesets.md).
 
 ### Logging level
 

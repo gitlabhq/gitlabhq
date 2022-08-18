@@ -24,7 +24,7 @@ RSpec.describe Integrations::Harbor do
 
     it { is_expected.not_to allow_value('https://192.168.1.1').for(:url) }
     it { is_expected.not_to allow_value('https://127.0.0.1').for(:url) }
-    it { is_expected.to allow_value('https://demo.goharbor.io').for(:url)}
+    it { is_expected.to allow_value('https://demo.goharbor.io').for(:url) }
   end
 
   describe '#fields' do
@@ -63,6 +63,8 @@ RSpec.describe Integrations::Harbor do
     it 'returns vars when harbor_integration is activated' do
       ci_vars = [
         { key: 'HARBOR_URL', value: url },
+        { key: 'HARBOR_HOST', value: 'demo.goharbor.io' },
+        { key: 'HARBOR_OCI', value: 'oci://demo.goharbor.io' },
         { key: 'HARBOR_PROJECT', value: project_name },
         { key: 'HARBOR_USERNAME', value: username },
         { key: 'HARBOR_PASSWORD', value: password, public: false, masked: true }

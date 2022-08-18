@@ -20,7 +20,7 @@ describe('~/feature_flags/strategies/parameter_form_group.vue', () => {
       },
     });
 
-    formGroup = wrapper.find(GlFormGroup);
+    formGroup = wrapper.findComponent(GlFormGroup);
     slot = wrapper.find('[data-testid="slot"]');
   });
 

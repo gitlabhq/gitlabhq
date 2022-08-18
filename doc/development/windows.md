@@ -37,8 +37,7 @@ A list of software preinstalled on the Windows images is available at: [Preinsta
 
 ## GCP Windows image for development
 
-The [shared Windows GitLab
-runners](https://about.gitlab.com/releases/2020/01/22/gitlab-12-7-released/#windows-shared-runners-on-gitlabcom-beta)
+The [shared Windows GitLab runners](https://about.gitlab.com/releases/2020/01/22/gitlab-12-7-released/#windows-shared-runners-on-gitlabcom-beta)
 are built with [Packer](https://www.packer.io/).
 
 The Infrastructure as Code repository for building the Google Cloud images is available at:

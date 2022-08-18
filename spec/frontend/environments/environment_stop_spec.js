@@ -22,7 +22,7 @@ describe('Stop Component', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   describe('eventHub', () => {
     beforeEach(() => {

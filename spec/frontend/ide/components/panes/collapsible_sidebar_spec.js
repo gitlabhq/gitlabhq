@@ -27,7 +27,7 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
     });
   };
 
-  const findSidebarNav = () => wrapper.find(IdeSidebarNav);
+  const findSidebarNav = () => wrapper.findComponent(IdeSidebarNav);
 
   beforeEach(() => {
     store = createStore();

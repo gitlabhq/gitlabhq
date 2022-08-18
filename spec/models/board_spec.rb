@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Board do
-  let(:project) { create(:project) }
-  let(:other_project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:other_project) { create(:project) }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }

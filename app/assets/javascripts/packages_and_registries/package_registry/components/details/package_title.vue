@@ -23,6 +23,7 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  inject: ['isGroupPage'],
   i18n: {
     packageInfo: __('v%{version} published %{timeAgo}'),
   },
@@ -65,9 +66,6 @@ export default {
     this.checkBreakpoints();
   },
   methods: {
-    dynamicSlotName(index) {
-      return `metadata-tag${index}`;
-    },
     checkBreakpoints() {
       this.isDesktop = GlBreakpointInstance.isDesktop();
     },
@@ -83,21 +81,38 @@ export default {
     data-qa-selector="package_title"
   >
     <template #sub-header>
-      <span data-testid="sub-header">
+      <div data-testid="sub-header" class="gl-display-flex gl-gap-3">
         <gl-sprintf :message="$options.i18n.packageInfo">
           <template #version>
             {{ packageEntity.version }}
           </template>
 
           <template #timeAgo>
-            <time-ago-tooltip
-              v-if="packageEntity.createdAt"
-              class="gl-ml-2"
-              :time="packageEntity.createdAt"
-            />
+            <time-ago-tooltip v-if="packageEntity.createdAt" :time="packageEntity.createdAt" />
           </template>
         </gl-sprintf>
-      </span>
+
+        <package-tags
+          v-if="isDesktop && hasTagsToDisplay"
+          :tag-display-limit="2"
+          :tags="packageEntity.tags.nodes"
+          hide-label
+        />
+
+        <!-- we need to duplicate the package tags on mobile to ensure proper styling inside the flex wrap -->
+        <template v-else-if="hasTagsToDisplay">
+          <gl-badge
+            v-for="(tag, index) in packageEntity.tags.nodes"
+            :key="index"
+            class="gl-my-1"
+            data-testid="tag-badge"
+            variant="info"
+            size="sm"
+          >
+            {{ tag.name }}
+          </gl-badge>
+        </template>
+      </div>
     </template>
 
     <template v-if="packageTypeDisplay" #metadata-type>
@@ -108,7 +123,7 @@ export default {
       <metadata-item data-testid="package-size" icon="disk" :text="totalSize" />
     </template>
 
-    <template v-if="packagePipeline" #metadata-pipeline>
+    <template v-if="isGroupPage && packagePipeline" #metadata-pipeline>
       <metadata-item
         data-testid="pipeline-project"
         icon="review-list"
@@ -119,21 +134,6 @@ export default {
 
     <template v-if="packagePipeline && packagePipeline.ref" #metadata-ref>
       <metadata-item data-testid="package-ref" icon="branch" :text="packagePipeline.ref" />
-    </template>
-
-    <template v-if="isDesktop && hasTagsToDisplay" #metadata-tags>
-      <package-tags :tag-display-limit="2" :tags="packageEntity.tags.nodes" hide-label />
-    </template>
-
-    <!-- we need to duplicate the package tags on mobile to ensure proper styling inside the flex wrap -->
-    <template
-      v-for="(tag, index) in packageEntity.tags.nodes"
-      v-else-if="hasTagsToDisplay"
-      #[dynamicSlotName(index)]
-    >
-      <gl-badge :key="index" class="gl-my-1" data-testid="tag-badge" variant="info" size="sm">
-        {{ tag.name }}
-      </gl-badge>
     </template>
 
     <template #right-actions>

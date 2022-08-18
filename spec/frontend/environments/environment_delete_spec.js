@@ -21,7 +21,7 @@ describe('External URL Component', () => {
     });
   };
 
-  const findDropdownItem = () => wrapper.find(GlDropdownItem);
+  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
 
   describe('event hub', () => {
     beforeEach(() => {

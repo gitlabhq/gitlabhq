@@ -51,3 +51,5 @@ module Mutations
     end
   end
 end
+
+Mutations::WorkItems::Update.prepend_mod

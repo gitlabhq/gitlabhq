@@ -139,7 +139,7 @@ describe('Pipeline Wizard - Step Page', () => {
       await mockPrevClick();
       await nextTick();
 
-      expect(wrapper.emitted().back).toBeTruthy();
+      expect(wrapper.emitted().back).toEqual(expect.arrayContaining([]));
     });
 
     it('lets "next" event bubble upwards', async () => {
@@ -148,7 +148,7 @@ describe('Pipeline Wizard - Step Page', () => {
       await mockNextClick();
       await nextTick();
 
-      expect(wrapper.emitted().next).toBeTruthy();
+      expect(wrapper.emitted().next).toEqual(expect.arrayContaining([]));
     });
   });
 

@@ -34,6 +34,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
   - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)
   - Victor Wu - [GitLab](https://gitlab.com/_victorwu_), [Crowdin](https://crowdin.com/profile/victorwu)
+  - Hansel Wang - [GitLab](https://gitlab.com/airness), [Crowdin](https://crowdin.com/profile/airness)
 - Chinese Traditional, Hong Kong 繁體中文 (香港)
   - Victor Wu - [GitLab](https://gitlab.com/_victorwu_), [Crowdin](https://crowdin.com/profile/victorwu)
   - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [Crowdin](https://crowdin.com/profile/lifehome)
@@ -63,7 +64,6 @@ are very appreciative of the work done by translators and proofreaders!
 - German
   - Michael Hahnle - [GitLab](https://gitlab.com/mhah), [Crowdin](https://crowdin.com/profile/mhah)
   - Katrin Leinweber - [GitLab](https://gitlab.com/katrinleinweber), [Crowdin](https://crowdin.com/profile/katrinleinweber)
-  - Justman10000 - [GitLab](https://gitlab.com/Justman10000), [Crowdin](https://crowdin.com/profile/Justman10000)
   - Vladislav Wanner - [GitLab](https://gitlab.com/RumBugen), [Crowdin](https://crowdin.com/profile/RumBugen)
 - Greek
   - Proofreaders needed.

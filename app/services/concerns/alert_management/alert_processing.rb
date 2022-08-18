@@ -39,12 +39,6 @@ module AlertManagement
         SystemNoteService.change_alert_status(alert, User.alert_bot)
 
         close_issue(alert.issue_id) if auto_close_incident?
-      else
-        logger.warn(
-          message: 'Unable to update AlertManagement::Alert status to resolved',
-          project_id: project.id,
-          alert_id: alert.id
-        )
       end
     end
 
@@ -64,13 +58,18 @@ module AlertManagement
       if alert.save
         alert.execute_integrations
         SystemNoteService.create_new_alert(alert, alert_source)
+      elsif alert.errors[:fingerprint].any?
+        refind_and_increment_alert
       else
         logger.warn(
-          message: "Unable to create AlertManagement::Alert from #{alert_source}",
+          message: "Unable to create AlertManagement::Alert",
           project_id: project.id,
-          alert_errors: alert.errors.messages
+          alert_errors: alert.errors.messages,
+          alert_source: alert_source
         )
       end
+    rescue ActiveRecord::RecordNotUnique
+      refind_and_increment_alert
     end
 
     def process_incident_issues
@@ -105,6 +104,12 @@ module AlertManagement
 
     def build_new_alert
       AlertManagement::Alert.new(**incoming_payload.alert_params, ended_at: nil)
+    end
+
+    def refind_and_increment_alert
+      clear_memoization(:alert)
+
+      process_firing_alert
     end
 
     def resolving_alert?

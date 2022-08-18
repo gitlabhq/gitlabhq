@@ -44,7 +44,7 @@ RSpec.describe Ci::StuckBuilds::DropScheduledService do
   end
 
   context 'when there are no stale scheduled builds' do
-    let(:job) { }
+    let(:job) {}
 
     it 'does not drop the stale scheduled build yet' do
       expect { service.execute }.not_to raise_error

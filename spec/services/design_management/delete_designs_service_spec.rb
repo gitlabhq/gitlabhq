@@ -59,7 +59,11 @@ RSpec.describe DesignManagement::DeleteDesignsService do
       it_behaves_like "a service error"
 
       it 'does not create any events in the activity stream' do
-        expect { run_service rescue nil }.not_to change { Event.count }
+        expect do
+          run_service
+        rescue StandardError
+          nil
+        end.not_to change { Event.count }
       end
     end
 
@@ -78,7 +82,11 @@ RSpec.describe DesignManagement::DeleteDesignsService do
         it 'does not log any events' do
           counter = ::Gitlab::UsageDataCounters::DesignsCounter
 
-          expect { run_service rescue nil }
+          expect do
+            run_service
+          rescue StandardError
+            nil
+          end
             .not_to change { [counter.totals, Event.count] }
         end
 
@@ -86,10 +94,18 @@ RSpec.describe DesignManagement::DeleteDesignsService do
           redis_hll = ::Gitlab::UsageDataCounters::HLLRedisCounter
           event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED
 
-          expect { run_service rescue nil }
+          expect do
+            run_service
+          rescue StandardError
+            nil
+          end
             .not_to change { redis_hll.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }
 
-          run_service rescue nil
+          begin
+            run_service
+          rescue StandardError
+            nil
+          end
         end
       end
 

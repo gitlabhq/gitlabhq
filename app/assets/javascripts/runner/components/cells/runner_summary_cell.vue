@@ -59,7 +59,11 @@ export default {
     <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="description">
       {{ description }}
     </tooltip-on-truncate>
-    <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
+    <tooltip-on-truncate
+      v-if="ipAddress"
+      class="gl-display-block gl-text-truncate"
+      :title="ipAddress"
+    >
       <span class="gl-md-display-none gl-lg-display-inline">{{ __('IP Address') }}</span>
       <strong>{{ ipAddress }}</strong>
     </tooltip-on-truncate>

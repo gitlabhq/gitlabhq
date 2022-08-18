@@ -1,4 +1,5 @@
 export const containerExpirationPolicyData = () => ({
+  __typename: 'ContainerExpirationPolicy',
   cadence: 'EVERY_DAY',
   enabled: true,
   keepN: 'TEN_TAGS',
@@ -13,7 +14,6 @@ export const expirationPolicyPayload = (override) => ({
     project: {
       id: '1',
       containerExpirationPolicy: {
-        __typename: 'ContainerExpirationPolicy',
         ...containerExpirationPolicyData(),
         ...override,
       },
@@ -42,6 +42,7 @@ export const expirationPolicyMutationPayload = ({ override, errors = [] } = {}) 
 });
 
 export const packagesCleanupPolicyData = {
+  __typename: 'PackagesCleanupPolicy',
   keepNDuplicatedPackageFiles: 'ALL_PACKAGE_FILES',
   nextRunAt: '2020-11-19T07:37:03.941Z',
 };
@@ -51,7 +52,6 @@ export const packagesCleanupPolicyPayload = (override) => ({
     project: {
       id: '1',
       packagesCleanupPolicy: {
-        __typename: 'PackagesCleanupPolicy',
         ...packagesCleanupPolicyData,
         ...override,
       },

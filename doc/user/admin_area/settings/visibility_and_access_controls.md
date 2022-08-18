@@ -20,7 +20,7 @@ To access the visibility and access control options:
 ## Define which roles can create projects
 
 Instance-level protections for project creation define which roles can
-[add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group)
+[add projects to a group](../../group/manage.md#specify-who-can-add-projects-to-a-group)
 on the instance. To alter which roles have permission to create projects:
 
 1. Sign in to GitLab as a user with Administrator access level.
@@ -53,6 +53,7 @@ By default both administrators and anyone with the **Owner** role can delete a p
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2 for groups created after August 12, 2021.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
+> - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 
 Instance-level protection against accidental deletion of groups and projects.
 
@@ -102,9 +103,9 @@ In GitLab 15.1 and later, delayed group deletion can be enabled by setting **Del
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
-1. [Restore the project](../../project/settings/#restore-a-project).
+1. [Restore the project](../../project/settings/index.md#restore-a-project).
 1. Delete the project as described in the
-   [Administering Projects page](../../admin_area/#administering-projects).
+   [Administering Projects page](../../admin_area/index.md#administering-projects).
 
 ## Configure project visibility defaults
 

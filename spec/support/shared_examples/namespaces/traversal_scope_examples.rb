@@ -273,14 +273,6 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       include_examples '.self_and_descendants'
     end
-
-    context 'with linear_scopes_superset feature flag disabled' do
-      before do
-        stub_feature_flags(linear_scopes_superset: false)
-      end
-
-      include_examples '.self_and_descendants'
-    end
   end
 
   shared_examples '.self_and_descendant_ids' do
@@ -320,14 +312,6 @@ RSpec.shared_examples 'namespace traversal scopes' do
     context 'with traversal_ids_btree feature flag disabled' do
       before do
         stub_feature_flags(traversal_ids_btree: false)
-      end
-
-      include_examples '.self_and_descendant_ids'
-    end
-
-    context 'with linear_scopes_superset feature flag disabled' do
-      before do
-        stub_feature_flags(linear_scopes_superset: false)
       end
 
       include_examples '.self_and_descendant_ids'

@@ -45,19 +45,16 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
     end
   end
 
-  context 'when job_class is provided with a batching_scope' do
+  context 'when job class supports batch scope DSL' do
     let(:job_class) do
-      Class.new(described_class) do
-        def self.batching_scope(relation, job_arguments:)
-          min_id = job_arguments.first
-
-          relation.where.not(type: 'Project').where('id >= ?', min_id)
-        end
+      Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+        job_arguments :min_id
+        scope_to ->(r) { r.where.not(type: 'Project').where('id >= ?', min_id) }
       end
     end
 
-    it 'applies the batching scope' do
-      expect(job_class).to receive(:batching_scope).and_call_original
+    it 'applies the additional scope' do
+      expect(job_class).to receive(:generic_instance).and_call_original
 
       batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id, batch_size: 3, job_arguments: [1], job_class: job_class)
 

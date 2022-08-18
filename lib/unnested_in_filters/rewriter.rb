@@ -25,7 +25,7 @@ module UnnestedInFilters
       attr_reader :model, :attribute, :values
 
       delegate :connection, :columns, :attribute_types, to: :model, private: true
-      delegate :quote, :quote_table_name, :quote_column_name, to: :connection
+      delegate :quote, :quote_table_name, :quote_column_name, :visitor, to: :connection
 
       def table_name
         quote_table_name(attribute.pluralize)
@@ -36,8 +36,17 @@ module UnnestedInFilters
       end
 
       def serialized_values
-        array_type.serialize(values)
-                  .then { |array| quote(array) }
+        values.is_a?(Arel::Nodes::SelectStatement) ? "ARRAY(#{serialized_arel_value})" : serialized_array_values
+      end
+
+      def serialized_arel_value
+        visitor.compile(values, unprepared_statement_collector)
+      end
+
+      def serialized_array_values
+        values.map(&:value)
+              .then { array_type.serialize(_1) }
+              .then { |array| quote(array) }
       end
 
       def array_type
@@ -50,6 +59,13 @@ module UnnestedInFilters
 
       def column
         columns.find { _1.name == attribute }
+      end
+
+      def unprepared_statement_collector
+        Arel::Collectors::SubstituteBinds.new(
+          connection,
+          Arel::Collectors::SQLString.new
+        )
       end
     end
 
@@ -125,7 +141,7 @@ module UnnestedInFilters
 
     attr_reader :relation
 
-    delegate :model, :order_values, :limit_value, :where_values_hash, to: :relation, private: true
+    delegate :model, :order_values, :limit_value, :where_values_hash, :where_clause, to: :relation, private: true
 
     def log_rewrite
       ::Gitlab::AppLogger.info(message: 'Query is being rewritten by `UnnestedInFilters`', model: model.name)
@@ -150,7 +166,28 @@ module UnnestedInFilters
     end
 
     def in_filters
-      @in_filters ||= where_values_hash.select { _2.is_a?(Array) }
+      @in_filters ||= arel_in_nodes.each_with_object({}) { |node, memo| memo[node.left.name] = node.right }
+    end
+
+    def arel_in_nodes
+      where_clause_arel_nodes.select(&method(:in_predicate?))
+    end
+
+    # `ActiveRecord::WhereClause#ast` is returning a single node when there is only one
+    # predicate but returning an `Arel::Nodes::And` node if there are more than one predicates.
+    # This is why we are checking the returned object responds to `children` or not.
+    def where_clause_arel_nodes
+      return [where_clause_ast] unless where_clause_ast.respond_to?(:children)
+
+      where_clause_ast.children
+    end
+
+    def where_clause_ast
+      @where_clause_ast ||= where_clause.ast
+    end
+
+    def in_predicate?(arel_node)
+      arel_node.is_a?(Arel::Nodes::HomogeneousIn) || arel_node.is_a?(Arel::Nodes::In)
     end
 
     def has_index_coverage?

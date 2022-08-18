@@ -68,12 +68,18 @@ RSpec.describe Gitlab::ImportExport::Shared do
       expect(subject.errors).to eq(['Error importing into [FILTERED] Permission denied @ unlink_internal - [FILTERED]'])
     end
 
-    it 'updates the import JID' do
+    it 'tracks exception' do
       import_state = create(:import_state, project: project, jid: 'jid-test')
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
-        .with(error, hash_including(import_jid: import_state.jid))
+        .with(error, hash_including(
+                       importer: 'Import/Export',
+                       project_id: project.id,
+                       project_name: project.name,
+                       project_path: project.full_path,
+                       import_jid: import_state.jid
+                     ))
 
       subject.error(error)
     end

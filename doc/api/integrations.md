@@ -310,17 +310,15 @@ PUT /projects/:id/integrations/datadog
 
 Parameters:
 
-|     Parameter     |  Type  | Required | Description                                                                                                                                                                          |
-|:-----------------:|:------:|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api_key`         | string | true     | API key used for authentication with Datadog.                                                                                                                                        |
-| `api_url`         | string | false    | (Advanced) The full URL for your Datadog site                                                                                                                                        |
-| `datadog_env`     | string | false    | For self-managed deployments, set the env% tag for all the data sent to Datadog.                                                                                                     |
-| `datadog_service` | string | false    | Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments                                                                             |
-| `datadog_site`    | string | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`                                                                                                    |
-| `datadog_tags`    | string | false    | Custom tags in Datadog. Specify one tag per line in the format: `key:value\nkey2:value2` ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.) |
-
-<!-- | `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 14.7) | -->
-<!-- TODO: uncomment the archive_trace_events field once :datadog_integration_logs_collection is rolled out. Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/346339 -->
+| Parameter              | Type    | Required | Description                                                                                                                                                                            |
+|------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `api_key`              | string  | true     | API key used for authentication with Datadog.                                                                                                                                          |
+| `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site                                                                                                                                          |
+| `datadog_env`          | string  | false    | For self-managed deployments, set the env% tag for all the data sent to Datadog.                                                                                                       |
+| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments                                                                               |
+| `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`                                                                                                      |
+| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format: `key:value\nkey2:value2` ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.)   |
+| `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3) |
 
 ### Disable Datadog integration
 
@@ -381,6 +379,51 @@ Get Unify Circuit integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/unify-circuit
+```
+
+## Pumble
+
+Pumble chat tool.
+
+### Create/Edit Pumble integration
+
+Set Pumble integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/pumble
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Pumble webhook. For example, `https://api.pumble.com/workspaces/x/...`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default is `default`. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Pumble integration
+
+Disable the Pumble integration for a project. Integration settings are preserved.
+
+```plaintext
+DELETE /projects/:id/integrations/pumble
+```
+
+### Get Pumble integration settings
+
+Get Pumble integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/pumble
 ```
 
 ## Webex Teams
@@ -967,7 +1010,6 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Mattermost token |
-| `username` | string | no | The username to use to post the message |
 
 ### Disable Mattermost Slash Command integration
 

@@ -1,14 +1,15 @@
 - return unless current_user
-- namespace = local_assigns.fetch(:namespace)
-- banner_info = storage_enforcement_banner_info(namespace)
+- context = local_assigns.fetch(:context)
+- banner_info = storage_enforcement_banner_info(context)
 - return unless banner_info.present?
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   alert_options: { class: 'js-storage-enforcement-banner',
                    data: { feature_id: banner_info[:callouts_feature_name],
                            dismiss_endpoint: banner_info[:callouts_path],
-                           group_id: namespace.id,
+                           group_id: banner_info[:namespace_id],
                            defer_links: "true" }}) do |c|
   = c.body do
-    = banner_info[:text]
-    = banner_info[:learn_more_link]
+    %p= banner_info[:text_paragraph_1]
+    %p= banner_info[:text_paragraph_2]
+    %p= banner_info[:text_paragraph_3]

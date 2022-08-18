@@ -36,6 +36,9 @@ module Gitlab
 
           reset_backoff!
           extract_releases(response)
+        rescue Errno::ETIMEDOUT
+          @backoff_expire_time = next_backoff.from_now
+          break nil
         end
       end
 
@@ -74,7 +77,7 @@ module Gitlab
         releases = response.parsed_response
           .map { |release| parse_runner_release(release) }
           .select(&:valid?)
-          .sort!
+          .sort
 
         return if releases.empty? && response.parsed_response.present?
 

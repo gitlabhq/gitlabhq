@@ -250,7 +250,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
       end
 
       context 'that is not blocked' do
-        let(:redirect_link) { "http://example.com/"}
+        let(:redirect_link) { "http://example.com/" }
 
         before do
           stub_full_request(download_link).to_return(status: 301, headers: { 'Location' => redirect_link })

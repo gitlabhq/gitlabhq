@@ -10,6 +10,8 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService do
   let(:skip_check) { false }
 
   describe '#execute' do
+    let(:result) { check_ci_status.execute }
+
     before do
       expect(merge_request).to receive(:mergeable_ci_state?).and_return(mergeable)
     end
@@ -18,7 +20,7 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService do
       let(:mergeable) { true }
 
       it 'returns a check result with status success' do
-        expect(check_ci_status.execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
       end
     end
 
@@ -26,7 +28,8 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService do
       let(:mergeable) { false }
 
       it 'returns a check result with status failed' do
-        expect(check_ci_status.execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        expect(result.payload[:reason]).to eq :ci_must_pass
       end
     end
   end

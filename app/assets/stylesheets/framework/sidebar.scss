@@ -13,7 +13,7 @@
 }
 
 .page-initialised  .content-wrapper {
-  transition: padding $sidebar-transition-duration;
+  transition: padding $gl-transition-duration-medium;
 }
 
 .right-sidebar-collapsed {
@@ -109,7 +109,7 @@
   @include maintain-sidebar-dimensions;
   width: 0;
   padding: 0;
-  transition: width $sidebar-transition-duration;
+  transition: width $gl-transition-duration-medium;
 
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;

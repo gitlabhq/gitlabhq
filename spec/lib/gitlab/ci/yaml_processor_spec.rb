@@ -448,7 +448,7 @@ module Gitlab
 
           it 'parses the root:variables as #root_variables' do
             expect(subject.root_variables)
-              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed' })
           end
         end
 
@@ -490,7 +490,7 @@ module Gitlab
 
           it 'parses the root:variables as #root_variables' do
             expect(subject.root_variables)
-              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed' })
           end
         end
 
@@ -1098,8 +1098,8 @@ module Gitlab
 
             it 'returns job variables' do
               expect(job_variables).to contain_exactly(
-                { key: 'VAR1', value: 'value1', public: true },
-                { key: 'VAR2', value: 'value2', public: true }
+                { key: 'VAR1', value: 'value1' },
+                { key: 'VAR2', value: 'value2' }
               )
               expect(root_variables_inheritance).to eq(true)
             end
@@ -1203,21 +1203,21 @@ module Gitlab
             expect(config_processor.builds[0]).to include(
               name: 'test1',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'test1 var 1', public: true },
-                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'test1 var 1' },
+                              { key: 'VAR2', value: 'test2 var 2' }]
             )
 
             expect(config_processor.builds[1]).to include(
               name: 'test2',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true },
-                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'base var 1' },
+                              { key: 'VAR2', value: 'test2 var 2' }]
             )
 
             expect(config_processor.builds[2]).to include(
               name: 'test3',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'base var 1' }]
             )
 
             expect(config_processor.builds[3]).to include(
@@ -1425,7 +1425,7 @@ module Gitlab
           it 'returns the parallel config' do
             build_options = builds.map { |build| build[:options] }
             parallel_config = {
-              matrix: parallel[:matrix].map { |var| var.transform_values { |v| Array(v).flatten }},
+              matrix: parallel[:matrix].map { |var| var.transform_values { |v| Array(v).flatten } },
               total: build_options.size
             }
 
@@ -1766,6 +1766,7 @@ module Gitlab
               script: ["make changelog | tee release_changelog.txt"],
               release: {
                 tag_name: "$CI_COMMIT_TAG",
+                tag_message: "Annotated tag message",
                 name: "Release $CI_TAG_NAME",
                 description: "./release_changelog.txt",
                 ref: 'b3235930aa443112e639f941c69c578912189bdd',
@@ -1956,7 +1957,7 @@ module Gitlab
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         context 'no dependencies' do
-          let(:dependencies) { }
+          let(:dependencies) {}
 
           it { is_expected.to be_valid }
         end
@@ -2012,8 +2013,8 @@ module Gitlab
       end
 
       describe "Job Needs" do
-        let(:needs) { }
-        let(:dependencies) { }
+        let(:needs) {}
+        let(:dependencies) {}
 
         let(:config) do
           {
@@ -2893,7 +2894,7 @@ module Gitlab
         end
       end
 
-      describe 'Rules' do
+      describe 'Job rules' do
         context 'changes' do
           let(:config) do
             <<~YAML
@@ -2932,6 +2933,49 @@ module Gitlab
                   name: "rspec",
                   rules: [{ changes: { paths: ["README.md"] } }]
                 )
+              )
+            end
+          end
+        end
+      end
+
+      describe 'Workflow rules' do
+        context 'changes' do
+          let(:config) do
+            <<~YAML
+            workflow:
+              rules:
+                - changes: [README.md]
+
+            rspec:
+              script: exit 0
+            YAML
+          end
+
+          it 'returns pipeline with correct rules' do
+            expect(processor.builds.size).to eq(1)
+            expect(processor.workflow_rules).to eq(
+              [{ changes: { paths: ["README.md"] } }]
+            )
+          end
+
+          context 'with paths' do
+            let(:config) do
+              <<~YAML
+              workflow:
+                rules:
+                - changes:
+                    paths: [README.md]
+
+              rspec:
+                script: exit 0
+              YAML
+            end
+
+            it 'returns pipeline with correct rules' do
+              expect(processor.builds.size).to eq(1)
+              expect(processor.workflow_rules).to eq(
+                [{ changes: { paths: ["README.md"] } }]
               )
             end
           end

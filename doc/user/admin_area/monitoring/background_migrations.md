@@ -48,6 +48,50 @@ To disable it:
 Feature.disable(:execute_batched_migrations_on_schedule)
 ```
 
+### Pause batched background migrations in GitLab 14.x
+
+To pause an ongoing batched background migration, use the `disable` command above.
+This command causes the migration to complete the current batch, and then wait to start the next batch.
+
+Use the following database queries to see the state of the current batched background migration:
+
+1. Obtain the ID of the running migration:
+
+   ```sql
+   SELECT
+    id job_class_name,
+    table_name,
+    column_name,
+    job_arguments
+   FROM batched_background_migrations
+   WHERE status <> 3;
+   ```
+
+1. Run this query, replacing `XX` with the ID you obtained in the previous step,
+   to see the status of the migration:
+
+   ```sql
+   SELECT
+    started_at,
+    finished_at,
+    finished_at - started_at AS duration,
+    min_value,
+    max_value,
+    batch_size,
+    sub_batch_size
+   FROM batched_background_migration_jobs
+   WHERE batched_background_migration_id = XX
+   ORDER BY id DESC
+   limit 10;
+   ```
+
+1. Run the query multiple times within a few minutes to ensure no new row has been added.
+   If no new row has been added, the migration has been paused.
+
+1. After confirming the migration has paused, restart the migration (using the `enable`
+   command above) to proceed with the batch when ready. On larger instances,
+   background migrations can take as long as 48 hours to complete each batch.
+
 ## Automatic batch size optimization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.12.

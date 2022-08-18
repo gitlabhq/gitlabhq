@@ -1,7 +1,6 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlLink } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'MRWidgetRelatedLinks',
@@ -10,9 +9,7 @@ export default {
   },
   components: {
     GlLink,
-    GlSprintf,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     relatedLinks: {
       type: Object,
@@ -67,42 +64,21 @@ export default {
 </script>
 <template>
   <section>
-    <p
-      v-if="relatedLinks.closing"
-      :class="{ 'gl-display-inline gl-m-0': glFeatures.restructuredMrWidget }"
-    >
+    <p v-if="relatedLinks.closing" class="gl-display-inline gl-m-0">
       {{ closesText }}
       <span v-safe-html="relatedLinks.closing"></span>
     </p>
-    <p
-      v-if="relatedLinks.mentioned"
-      :class="{ 'gl-display-inline gl-m-0': glFeatures.restructuredMrWidget }"
-    >
-      <span v-if="relatedLinks.closing && glFeatures.restructuredMrWidget">&middot;</span>
+    <p v-if="relatedLinks.mentioned" class="gl-display-inline gl-m-0">
+      <span v-if="relatedLinks.closing">&middot;</span>
       {{ n__('mrWidget|Mentions issue', 'mrWidget|Mentions issues', relatedLinks.mentionedCount) }}
       <span v-safe-html="relatedLinks.mentioned"></span>
     </p>
-    <p
-      v-if="shouldShowAssignToMeLink"
-      :class="{ 'gl-display-inline gl-m-0': glFeatures.restructuredMrWidget }"
-    >
+    <p v-if="shouldShowAssignToMeLink" class="gl-display-inline gl-m-0">
       <span>
         <gl-link rel="nofollow" data-method="post" :href="relatedLinks.assignToMe">{{
           assignIssueText
         }}</gl-link>
       </span>
     </p>
-    <div
-      v-if="divergedCommitsCount > 0 && !glFeatures.restructuredMrWidget"
-      class="diverged-commits-count"
-    >
-      <gl-sprintf :message="s__('mrWidget|The source branch is %{link} the target branch')">
-        <template #link>
-          <gl-link :href="targetBranchPath">{{
-            n__('%d commit behind', '%d commits behind', divergedCommitsCount)
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </div>
   </section>
 </template>

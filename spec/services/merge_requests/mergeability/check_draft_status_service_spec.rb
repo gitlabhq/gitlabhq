@@ -8,6 +8,8 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService do
   let(:merge_request) { build(:merge_request) }
 
   describe '#execute' do
+    let(:result) { check_draft_status.execute }
+
     before do
       expect(merge_request).to receive(:draft?).and_return(draft)
     end
@@ -16,7 +18,8 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService do
       let(:draft) { true }
 
       it 'returns a check result with status failed' do
-        expect(check_draft_status.execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        expect(result.payload[:reason]).to eq(:draft_status)
       end
     end
 
@@ -24,7 +27,7 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService do
       let(:draft) { false }
 
       it 'returns a check result with status success' do
-        expect(check_draft_status.execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
       end
     end
   end

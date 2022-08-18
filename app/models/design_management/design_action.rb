@@ -21,7 +21,7 @@ module DesignManagement
     validates :action, presence: true, inclusion: { in: EVENT_FOR_GITALY_ACTION.keys }
     validates :content,
       absence: { if: :forbids_content?,
-                  message: 'this action forbids content' },
+                 message: 'this action forbids content' },
       presence: { if: :needs_content?,
                   message: 'this action needs content' }
 

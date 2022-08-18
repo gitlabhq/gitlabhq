@@ -5,7 +5,6 @@ query getIntegrations($projectPath: ID!) {
     id
     alertManagementIntegrations {
       nodes {
-        __typename
         ...IntegrationItem
       }
     }

@@ -29,7 +29,7 @@ You can share a project only with:
 - Groups for which you have an explicitly defined [membership](index.md).
 - Groups that contain a nested subgroup or project for which you have an explicitly defined role.
 
-Administrators can share projects with any group in the namespace.
+Administrators can share projects with any group in the instance.
 
 The primary mechanism to give a group of users, say 'Engineering', access to a project,
 say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project
@@ -52,7 +52,7 @@ After sharing 'Project Acme' with 'Engineering':
 When you share a project, be aware of the following restrictions and outcomes:
 
 - [Maximum access level](#maximum-access-level)
-- [Sharing a public project with a private group](#share-a-public-project-with-private-group)
+- [Sharing projects with groups of a higher restrictive visibility level](#sharing-projects-with-groups-of-a-higher-restrictive-visibility-level)
 - [Sharing project with group lock](#share-project-with-group-lock)
 
 ## Maximum access level
@@ -67,18 +67,24 @@ in. That means you can only share down the hierarchy. For example, `group/subgro
 - Can not be shared with `group`.
 - Can be shared with `group/subgroup02` or  `group/subgroup01/subgroup03`.
 
-## Share a public project with private group
+## Sharing projects with groups of a higher restrictive visibility level
 
-When you share a public project with a private group, be aware of the following outcomes:
+There are several outcomes you must be aware of when you share a project with a group that has a more restrictive [visibility level](../../public_access.md#project-and-group-visibility) than the project. For example, when you:
 
-- The name of the group is no longer private and is visible to all users in the project members page.
-- Owners of the project have access to members of the private group when they mention them in issues or merge requests.
-- Project members who are direct or indirect members of the private group can see private group members listed in addition to members of the project.
+- Share a public project with a private group.
+- Share a public project with an internal group.
+- Share an internal project with a private group.
+
+The following outcomes occur:
+
+- The group name is visible to all users that can view the project members page.
+- Owners of the project have access to members of the group when they mention them in issues or merge requests.
+- Project members who are direct or indirect members of the group can see group members listed in addition to members of the project.
 
 ## Share project with group lock
 
-It is possible to prevent projects in a group from [sharing
-a project with another group](../members/share_project_with_groups.md).
+It is possible to prevent projects in a group from 
+[sharing a project with another group](../members/share_project_with_groups.md).
 This allows for tighter control over project access.
 
-Learn more about [Share with group lock](../../group/index.md#prevent-a-project-from-being-shared-with-groups).
+Learn more about [Share with group lock](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).

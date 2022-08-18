@@ -43,9 +43,6 @@ export const getProjectValueStreamStages = (requestPath, valueStreamId) => {
 export const getProjectValueStreamStageData = ({ requestPath, stageId, params }) =>
   axios.get(joinPaths(requestPath, 'events', stageId), { params });
 
-export const getProjectValueStreamMetrics = (requestPath, params) =>
-  axios.get(requestPath, { params });
-
 /**
  * Dedicated project VSA paths
  */

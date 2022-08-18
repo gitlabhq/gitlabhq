@@ -44,12 +44,16 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:incident_timeline, project)
   end
 
+  before_action only: [:index, :show] do
+    push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
+  end
+
   before_action only: :show do
     push_frontend_feature_flag(:issue_assignees_widget, project)
     push_frontend_feature_flag(:realtime_labels, project)
-    push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
-    push_frontend_feature_flag(:work_items_mvc_2)
+    push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:work_items_hierarchy, project)
+    push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -239,12 +243,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def import_csv
-    if uploader = UploadService.new(project, params[:file]).execute
-      ImportIssuesCsvWorker.perform_async(current_user.id, project.id, uploader.upload.id) # rubocop:disable CodeReuse/Worker
+    result = Issues::PrepareImportCsvService.new(project, current_user, file: params[:file]).execute
 
-      flash[:notice] = _("Your issues are being imported. Once finished, you'll get a confirmation email.")
+    if result.success?
+      flash[:notice] = result.message
     else
-      flash[:alert] = _("File upload error.")
+      flash[:alert] = result.message
     end
 
     redirect_to project_issues_path(project)

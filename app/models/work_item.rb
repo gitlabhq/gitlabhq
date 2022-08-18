@@ -12,7 +12,7 @@ class WorkItem < Issue
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
-            foreign_key: :work_item_id, source: :work_item
+                                foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
@@ -34,9 +34,22 @@ class WorkItem < Issue
 
   private
 
+  override :parent_link_confidentiality
+  def parent_link_confidentiality
+    if confidential? && work_item_children.public_only.exists?
+      errors.add(:confidential, _('confidential parent can not be used if there are non-confidential children.'))
+    end
+
+    if !confidential? && work_item_parent&.confidential?
+      errors.add(:confidential, _('associated parent is confidential and can not have non-confidential children.'))
+    end
+  end
+
   def record_create_action
     super
 
     Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_created_action(author: author)
   end
 end
+
+WorkItem.prepend_mod

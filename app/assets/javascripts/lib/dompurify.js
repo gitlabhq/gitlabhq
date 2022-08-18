@@ -33,6 +33,22 @@ const removeUnsafeHref = (node, attr) => {
 };
 
 /**
+ * Appends 'noopener' & 'noreferrer' to rel
+ * attr values to prevent reverse tabnabbing.
+ *
+ * @param {String} rel
+ * @returns {String}
+ */
+const appendSecureRelValue = (rel) => {
+  const attributes = new Set(rel ? rel.toLowerCase().split(' ') : []);
+
+  attributes.add('noopener');
+  attributes.add('noreferrer');
+
+  return Array.from(attributes).join(' ');
+};
+
+/**
  * Sanitize icons' <use> tag attributes, to safely include
  * svgs such as in:
  *
@@ -57,4 +73,25 @@ addHook('afterSanitizeAttributes', (node) => {
   }
 });
 
+const TEMPORARY_ATTRIBUTE = 'data-temp-href-target';
+
+addHook('beforeSanitizeAttributes', (node) => {
+  if (node.tagName === 'A' && node.hasAttribute('target')) {
+    node.setAttribute(TEMPORARY_ATTRIBUTE, node.getAttribute('target'));
+  }
+});
+
+addHook('afterSanitizeAttributes', (node) => {
+  if (node.tagName === 'A' && node.hasAttribute(TEMPORARY_ATTRIBUTE)) {
+    node.setAttribute('target', node.getAttribute(TEMPORARY_ATTRIBUTE));
+    node.removeAttribute(TEMPORARY_ATTRIBUTE);
+    if (node.getAttribute('target') === '_blank') {
+      const rel = node.getAttribute('rel');
+      node.setAttribute('rel', appendSecureRelValue(rel));
+    }
+  }
+});
+
 export const sanitize = (val, config) => dompurifySanitize(val, { ...defaultConfig, ...config });
+
+export { isValidAttribute } from 'dompurify';

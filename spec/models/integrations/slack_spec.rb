@@ -6,7 +6,8 @@ RSpec.describe Integrations::Slack do
   it_behaves_like Integrations::SlackMattermostNotifier, "Slack"
 
   describe '#execute' do
-    let_it_be(:slack_integration) { create(:integrations_slack, branches_to_be_notified: 'all') }
+    let(:slack_integration) { create(:integrations_slack, branches_to_be_notified: 'all', project_id: project.id) }
+    let(:project) { create_default(:project, :repository, :wiki_repo) }
 
     before do
       stub_request(:post, slack_integration.webhook)
@@ -20,13 +21,23 @@ RSpec.describe Integrations::Slack do
 
     context 'hook data includes a user object' do
       let_it_be(:user) { create_default(:user) }
-      let_it_be(:project) { create_default(:project, :repository, :wiki_repo) }
 
       shared_examples 'increases the usage data counter' do |event_name|
+        subject(:execute) { slack_integration.execute(data) }
+
         it 'increases the usage data counter' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: user.id).and_call_original
 
-          slack_integration.execute(data)
+          execute
+        end
+
+        it_behaves_like 'Snowplow event tracking' do
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+          let(:category) { 'Integrations::Slack' }
+          let(:action) { 'perform_integrations_action' }
+          let(:namespace) { project.namespace }
+          let(:label) { 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly' }
+          let(:property) { event_name }
         end
       end
 

@@ -76,7 +76,7 @@ describe('Markdown field component', () => {
   const getMarkdownButton = () => subject.find('.js-md');
   const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');
   const getVideo = () => subject.find('video');
-  const getAttachButton = () => subject.find('.button-attach-file');
+  const getAttachButton = () => subject.findByTestId('button-attach-file');
   const clickAttachButton = () => getAttachButton().trigger('click');
   const findDropzone = () => subject.find('.div-dropzone');
   const findMarkdownHeader = () => subject.findComponent(MarkdownFieldHeader);
@@ -232,13 +232,10 @@ describe('Markdown field component', () => {
       });
     });
 
-    it('should render attach a file button', () => {
-      expect(getAttachButton().text()).toBe('Attach a file');
-    });
-
     it('should trigger dropzone when attach button is clicked', () => {
       expect(dropzoneSpy).not.toHaveBeenCalled();
 
+      getAttachButton().trigger('click');
       clickAttachButton();
 
       expect(dropzoneSpy).toHaveBeenCalled();

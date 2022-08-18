@@ -18,14 +18,13 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
 - Backend:
   - [Tooling](#tooling)
   - Database:
-    - [Query performance guidelines](../development/query_performance.md)
+    - [Query performance guidelines](database/query_performance.md)
     - [Pagination performance guidelines](../development/database/pagination_performance_guidelines.md)
     - [Keyset pagination performance](../development/database/keyset_pagination.md#performance)
   - [Troubleshooting import/export performance issues](../development/import_export.md#troubleshooting-performance-issues)
   - [Pipelines performance in the `gitlab` project](../development/pipelines.md#performance)
 - Frontend:
-  - [Performance guidelines](../development/fe_guide/performance.md)
-  - [Performance dashboards and monitoring guidelines](../development/new_fe_guide/development/performance.md)
+  - [Performance guidelines and monitoring](../development/fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
   - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
 - QA:
@@ -927,12 +926,11 @@ SOME_CONSTANT = 'bar'
 
 You might want millions of project rows in your local database, for example,
 in order to compare relative query performance, or to reproduce a bug. You could
-do this by hand with SQL commands or using [Mass Inserting Rails
-Models](mass_insert.md) functionality.
+do this by hand with SQL commands or using [Mass Inserting Rails Models](mass_insert.md) functionality.
 
 Assuming you are working with ActiveRecord models, you might also find these links helpful:
 
-- [Insert records in batches](insert_into_tables_in_batches.md)
+- [Insert records in batches](database/insert_into_tables_in_batches.md)
 - [BulkInsert gem](https://github.com/jamis/bulk_insert)
 - [ActiveRecord::PgGenerateSeries gem](https://github.com/ryu39/active_record-pg_generate_series)
 

@@ -232,7 +232,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
 
     context 'when parallel config does not matches a factory' do
       let(:variables_config) { {} }
-      let(:parallel_config) { }
+      let(:parallel_config) {}
 
       it 'does not alter the job config' do
         is_expected.to match(config)

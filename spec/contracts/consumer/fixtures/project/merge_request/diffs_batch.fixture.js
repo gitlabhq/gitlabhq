@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Matchers } from '@pact-foundation/pact';
 
 const body = {
@@ -73,8 +71,12 @@ const DiffsBatch = {
     body,
   },
 
-  request: {
+  scenario: {
+    state: 'a merge request with diffs exists',
     uponReceiving: 'a request for diff lines',
+  },
+
+  request: {
     withRequest: {
       method: 'GET',
       path: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json',
@@ -87,5 +89,3 @@ const DiffsBatch = {
 };
 
 export { DiffsBatch };
-
-/* eslint-enable @gitlab/require-i18n-strings */

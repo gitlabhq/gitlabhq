@@ -32,14 +32,17 @@ Amazon provides a managed Kubernetes service offering known as [Amazon Elastic K
 
 ## Available Infrastructure as Code for GitLab Cloud Native Hybrid
 
+The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md) is an effort made by GitLab to create a multi-cloud, multi-GitLab (Omnibus + Cloud Native Hybrid) toolkit to provision GitLab. GET is developed by GitLab developers and is open to community contributions. GET is where GitLab is investing its resources as the primary option for Infrastructure as Code, and is being actively used in production as a part of [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
+
+Read the [GitLab Environment Toolkit (GET) direction](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md#direction) to learn more about the project and where it is going.
+
 The [AWS Quick Start for GitLab Cloud Native Hybrid on EKS](https://aws-quickstart.github.io/quickstart-eks-gitlab/) is developed by AWS, GitLab, and the community that contributes to AWS Quick Starts, whether directly to the GitLab Quick Start or to the underlying Quick Start dependencies GitLab inherits (for example, EKS Quick Start).
+
+GET is recommended for most deployments. The AWS Quick Start can be used if the IaC language of choice is CloudFormation, integration with AWS services like Control Tower is desired, or preference for a UI-driven configuration experience or when any aspect in the below table is an overriding concern.
 
 NOTE:
 This automation is in **[Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta)**. GitLab is working with AWS on resolving [the outstanding issues](https://github.com/aws-quickstart/quickstart-eks-gitlab/issues?q=is%3Aissue+is%3Aopen+%5BHL%5D) before it is fully released. You can subscribe to this issue to be notified of progress and release announcements: [AWS Quick Start for GitLab Cloud Native Hybrid on EKS Status: Beta](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues/11).<br><br>
 The Beta version deploys Aurora PostgreSQL, but the release version will deploy Amazon RDS PostgreSQL due to [known issues](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues?label_name%5B%5D=AWS+Known+Issue) with Aurora. All performance testing results will also be redone after this change has been made.
-
-The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main) is an effort made by GitLab to create a multi-cloud, multi-GitLab (Omnibus + Cloud Native Hybrid) toolkit to provision GitLab. GET is developed by GitLab developers and is open to community contributions.
-It is helpful to review the [GitLab Environment Toolkit (GET) Issues](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/issues) to understand if any of them may affect your provisioning plans.
 
 |                                                              | [AWS Quick Start for GitLab Cloud Native Hybrid on EKS](https://aws-quickstart.github.io/quickstart-eks-gitlab/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -56,9 +59,11 @@ It is helpful to review the [GitLab Environment Toolkit (GET) Issues](https://gi
 | Results in a Ready-to-Use instance                           | Yes                                                          | Manual Actions or <br />Supplemental IaC Required            |
 | **<u>Configuration Features</u>**                            |                                                              |                                                              |
 | Can deploy Omnibus GitLab (non-Kubernetes)                   | No                                                           | Yes                                                          |
-| Results in a self-healing Gitaly Cluster configuration       | Yes                                                          | No                                                           |
+| Can deploy Single Instance Omnibus GitLab (non-Kubernetes) | No                                                           | Yes                                                          |
 | Complete Internal Encryption                                 | 85%, Targeting 100%                                          | Manual                                                       |
 | AWS GovCloud Support                                         | Yes                                                          | TBD                                                          |
+| No Code Form-Based Deployment User Experience Available    | Yes                                                          | No                                                          |
+| Full IaC User Experience Available                         | Yes                                                          | Yes                                                          |
 
 ### Two and Three Zone High Availability
 

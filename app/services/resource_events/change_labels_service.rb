@@ -24,6 +24,9 @@ module ResourceEvents
       end
 
       ApplicationRecord.legacy_bulk_insert(ResourceLabelEvent.table_name, labels) # rubocop:disable Gitlab/BulkInsert
+
+      create_timeline_events_from(added_labels: added_labels, removed_labels: removed_labels)
+
       resource.expire_note_etag_cache
 
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_label_changed_action(author: user) if resource.is_a?(Issue)
@@ -40,6 +43,17 @@ module ResourceEvents
       else
         raise ArgumentError, "Unknown resource type #{resource.class.name}"
       end
+    end
+
+    def create_timeline_events_from(added_labels: [], removed_labels: [])
+      return unless resource.incident?
+
+      IncidentManagement::TimelineEvents::CreateService.change_labels(
+        resource,
+        user,
+        added_labels: added_labels,
+        removed_labels: removed_labels
+      )
     end
   end
 end

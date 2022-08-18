@@ -51,11 +51,11 @@ describe('IssuableCreateRoot', () => {
     });
 
     it('renders issuable-form component', () => {
-      expect(wrapper.find(IssuableForm).exists()).toBe(true);
+      expect(wrapper.findComponent(IssuableForm).exists()).toBe(true);
     });
 
     it('renders contents for slot "actions" within issuable-form component', () => {
-      const buttonEl = wrapper.find(IssuableForm).find('button.js-issuable-save');
+      const buttonEl = wrapper.findComponent(IssuableForm).find('button.js-issuable-save');
 
       expect(buttonEl.exists()).toBe(true);
       expect(buttonEl.text()).toBe('Submit issuable');

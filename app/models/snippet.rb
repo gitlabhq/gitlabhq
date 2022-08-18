@@ -94,8 +94,8 @@ class Snippet < ApplicationRecord
   attr_spammable :content, spam_description: true
 
   attr_encrypted :secret_token,
-    key:       Settings.attr_encrypted_db_key_base_truncated,
-    mode:      :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_truncated,
+    mode: :per_attribute_iv,
     algorithm: 'aes-256-cbc'
 
   class << self

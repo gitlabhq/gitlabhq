@@ -33,10 +33,10 @@ To subscribe to GitLab SaaS:
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).
-1. Create a [group](../../user/group/index.md#create-a-group). Your license tier applies to the top-level group, its subgroups, and projects.
+1. Create a [group](../../user/group/manage.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
 1. Create additional users and
-   [add them to the group](../../user/group/index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
-   the features of your license tier, and they consume a seat in your subscription.
+   [add them to the group](../../user/group/manage.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
+   the features of your subscription tier, and they consume a seat in your subscription.
 1. On the left sidebar, select **Billing** and choose a tier.
 1. Fill out the form to complete your purchase.
 
@@ -73,7 +73,7 @@ subscription according to the maximum number of users assigned to the top-level 
 add and remove users during the subscription period, as long as the total users
 at any given time doesn't exceed the subscription count.
 
-A top-level group can be [changed](../../user/group/index.md#change-a-groups-path) like any other group.
+A top-level group can be [changed](../../user/group/manage.md#change-a-groups-path) like any other group.
 
 Every user is included in seat usage, with the following exceptions:
 
@@ -185,7 +185,7 @@ To remove a billable user from your subscription:
 1. In the row for the user you want to remove, on the right side, select the ellipsis and **Remove user**.
 1. Re-type the username and select **Remove user**.
 
-If you add a member to a group by using the [share a group with another group](../../user/group/index.md#share-a-group-with-another-group) feature, you can't remove the member by using this method. Instead, you can either:
+If you add a member to a group by using the [share a group with another group](../../user/group/manage.md#share-a-group-with-another-group) feature, you can't remove the member by using this method. Instead, you can either:
 
 - Remove the member from the shared group. You must be a group owner to do this.
 - From the group's membership page, remove access from the entire shared group.
@@ -297,10 +297,10 @@ for your personal or group namespace. CI/CD minutes are a **one-time purchase**,
 ## Add-on subscription for additional Storage and Transfer
 
 NOTE:
-Free namespaces are subject to a 5GB storage and 10GB transfer [soft limit](https://about.gitlab.com/pricing). Once all storage is available to view in the usage quota workflow, GitLab will automatically enforce the namespace storage limit and the project limit will be removed. This change will be announced separately. The storage and transfer add-on can be purchased to increase the limits.
+Free namespaces are subject to a 5GB storage and 10GB transfer [soft limit](https://about.gitlab.com/pricing/). Once all storage is available to view in the usage quota workflow, GitLab will automatically enforce the namespace storage limit and the project limit will be removed. This change will be announced separately. The storage and transfer add-on can be purchased to increase the limits.
 
-Projects have a free storage quota of 10 GB. To exceed this quota you must first [purchase one or
-more storage subscription units](#purchase-more-storage-and-transfer). Each unit provides 10 GB of additional
+Projects have a free storage quota of 10 GB. To exceed this quota you must first 
+[purchase one or more storage subscription units](#purchase-more-storage-and-transfer). Each unit provides 10 GB of additional
 storage per namespace. A storage subscription is renewed annually. For more details, see
 [Usage Quotas](../../user/usage_quotas.md).
 

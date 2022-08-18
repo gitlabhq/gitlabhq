@@ -34,8 +34,8 @@ These defaults are noted in the package [defaults document](defaults.md).
 
 ## Checking the versions of bundled software
 
-After the Omnibus GitLab package is installed, all versions of the bundled
-libraries are located in `/opt/gitlab/version-manifest.txt`.
+After the Omnibus GitLab package is installed, you can find the version of
+GitLab and all bundled libraries in `/opt/gitlab/version-manifest.txt`.
 
 If you don't have the package installed, you can always check the Omnibus GitLab
 [source repository](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master), specifically the

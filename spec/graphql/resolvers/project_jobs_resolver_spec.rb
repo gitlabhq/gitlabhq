@@ -14,7 +14,7 @@ RSpec.describe Resolvers::ProjectJobsResolver do
   let_it_be(:failed_build) { create(:ci_build, :failed, name: 'Build Three', pipeline: pipeline) }
   let_it_be(:pending_build) { create(:ci_build, :pending, name: 'Build Three', pipeline: pipeline) }
 
-  let(:irrelevant_build) { create(:ci_build, name: 'Irrelevant Build', pipeline: irrelevant_pipeline)}
+  let(:irrelevant_build) { create(:ci_build, name: 'Irrelevant Build', pipeline: irrelevant_pipeline) }
   let(:args) { {} }
   let(:current_user) { create(:user) }
 

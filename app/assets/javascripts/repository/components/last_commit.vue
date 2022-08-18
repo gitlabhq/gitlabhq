@@ -196,12 +196,9 @@ export default {
             </gl-link>
           </div>
           <gl-button-group class="gl-ml-4 js-commit-sha-group">
-            <gl-button
-              label
-              class="gl-font-monospace"
-              data-testid="last-commit-id-label"
-              v-text="showCommitId"
-            />
+            <gl-button label class="gl-font-monospace" data-testid="last-commit-id-label">{{
+              showCommitId
+            }}</gl-button>
             <clipboard-button
               :text="commit.sha"
               :title="__('Copy commit SHA')"

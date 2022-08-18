@@ -5,12 +5,16 @@ module Types
     class ContactStateEnum < BaseEnum
       graphql_name 'CustomerRelationsContactState'
 
+      value 'all',
+            description: "All available contacts.",
+            value: :all
+
       value 'active',
-            description: "Active contact.",
+            description: "Active contacts.",
             value: :active
 
       value 'inactive',
-            description: "Inactive contact.",
+            description: "Inactive contacts.",
             value: :inactive
     end
   end

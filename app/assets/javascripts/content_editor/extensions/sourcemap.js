@@ -6,6 +6,7 @@ import Code from './code';
 import CodeBlockHighlight from './code_block_highlight';
 import FootnoteReference from './footnote_reference';
 import FootnoteDefinition from './footnote_definition';
+import Frontmatter from './frontmatter';
 import Heading from './heading';
 import HardBreak from './hard_break';
 import HorizontalRule from './horizontal_rule';
@@ -16,6 +17,7 @@ import Link from './link';
 import ListItem from './list_item';
 import OrderedList from './ordered_list';
 import Paragraph from './paragraph';
+import ReferenceDefinition from './reference_definition';
 import Strike from './strike';
 import TaskList from './task_list';
 import TaskItem from './task_item';
@@ -36,6 +38,7 @@ export default Extension.create({
           CodeBlockHighlight.name,
           FootnoteReference.name,
           FootnoteDefinition.name,
+          Frontmatter.name,
           HardBreak.name,
           Heading.name,
           HorizontalRule.name,
@@ -45,6 +48,7 @@ export default Extension.create({
           ListItem.name,
           OrderedList.name,
           Paragraph.name,
+          ReferenceDefinition.name,
           Strike.name,
           TaskList.name,
           TaskItem.name,

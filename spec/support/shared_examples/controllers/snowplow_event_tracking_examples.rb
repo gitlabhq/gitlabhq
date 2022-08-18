@@ -2,22 +2,26 @@
 #
 # Requires a context containing:
 # - subject
-# - project
 # - feature_flag_name
 # - category
 # - action
 # - namespace
+# Optionaly, the context can contain:
+# - project
+# - property
 # - user
+# - label
+# - **extra
 
-shared_examples 'Snowplow event tracking' do
-  let(:label) { nil }
+shared_examples 'Snowplow event tracking' do |overrides: {}|
+  let(:extra) { {} }
 
   it 'is not emitted if FF is disabled' do
     stub_feature_flags(feature_flag_name => false)
 
     subject
 
-    expect_no_snowplow_event
+    expect_no_snowplow_event(category: category, action: action)
   end
 
   it 'is emitted' do
@@ -25,10 +29,11 @@ shared_examples 'Snowplow event tracking' do
       category: category,
       action: action,
       namespace: namespace,
-      user: user,
-      project: project,
-      label: label
-    }.compact
+      user: try(:user),
+      project: try(:project),
+      label: try(:label),
+      property: try(:property)
+    }.merge(overrides).compact.merge(extra)
 
     subject
 

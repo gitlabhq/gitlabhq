@@ -7,8 +7,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 
-import allRunnersCountQuery from '~/runner/graphql/list/all_runners_count.query.graphql';
-import groupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
+import allRunnersCountQuery from 'ee_else_ce/runner/graphql/list/all_runners_count.query.graphql';
+import groupRunnersCountQuery from 'ee_else_ce/runner/graphql/list/group_runners_count.query.graphql';
 
 import { runnersCountData, groupRunnersCountData } from '../../mock_data';
 

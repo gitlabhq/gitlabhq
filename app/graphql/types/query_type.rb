@@ -91,7 +91,7 @@ module Types
     field :work_item, Types::WorkItemType,
           null: true,
           resolver: Resolvers::WorkItemResolver,
-          deprecated: { milestone: '15.1', reason: :alpha },
+          alpha: { milestone: '15.1' },
           description: 'Find a work item. Returns `null` if `work_items` feature flag is disabled.'
 
     field :merge_request, Types::MergeRequestType,
@@ -124,7 +124,7 @@ module Types
           description: "Find runners visible to the current user."
 
     field :ci_variables,
-          Types::Ci::VariableType.connection_type,
+          Types::Ci::InstanceVariableType.connection_type,
           null: true,
           description: "List of the instance's CI/CD variables."
 
@@ -184,7 +184,7 @@ module Types
     end
 
     def ci_variables
-      return unless current_user.can_admin_all_resources?
+      return unless current_user&.can_admin_all_resources?
 
       ::Ci::InstanceVariable.all
     end

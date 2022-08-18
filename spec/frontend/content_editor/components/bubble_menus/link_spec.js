@@ -182,7 +182,7 @@ describe('content_editor/components/bubble_menus/link', () => {
 
       it('updates prosemirror doc with new link', async () => {
         expect(tiptapEditor.getHTML()).toBe(
-          '<p>Download <a target="_blank" rel="noopener noreferrer nofollow" href="https://google.com" title="Search Google" canonicalsrc="https://google.com">PDF File</a></p>',
+          '<p>Download <a target="_blank" rel="noopener noreferrer nofollow" href="https://google.com" title="Search Google">PDF File</a></p>',
         );
       });
 

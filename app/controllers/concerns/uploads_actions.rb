@@ -143,10 +143,8 @@ module UploadsActions
   end
 
   def bypass_auth_checks_on_uploads?
-    if ::Feature.enabled?(:enforce_auth_checks_on_uploads, target_project)
-      if target_project && !target_project.public? && target_project.enforce_auth_checks_on_uploads?
-        return false
-      end
+    if target_project && !target_project.public? && target_project.enforce_auth_checks_on_uploads?
+      return false
     end
 
     action_name == 'show' && embeddable?

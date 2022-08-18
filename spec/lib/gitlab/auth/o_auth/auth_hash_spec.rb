@@ -14,6 +14,7 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash do
     )
   end
 
+  let(:provider_config) { { 'args' => { 'gitlab_username_claim' => 'first_name' } } }
   let(:uid_raw) do
     +"CN=Onur K\xC3\xBC\xC3\xA7\xC3\xBCk,OU=Test,DC=example,DC=net"
   end
@@ -35,6 +36,7 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash do
   let(:email_utf8) { email_ascii.force_encoding(Encoding::UTF_8) }
   let(:nickname_utf8) { nickname_ascii.force_encoding(Encoding::UTF_8) }
   let(:name_utf8) { name_ascii.force_encoding(Encoding::UTF_8) }
+  let(:first_name_utf8) { first_name_ascii.force_encoding(Encoding::UTF_8) }
 
   let(:info_hash) do
     {
@@ -88,6 +90,34 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash do
 
     it 'concats first and lastname as the name' do
       expect(auth_hash.name).to eql name_utf8
+    end
+  end
+
+  context 'custom username field provided' do
+    before do
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).and_return(provider_config)
+    end
+
+    it 'uses the custom field for the username' do
+      expect(auth_hash.username).to eql first_name_utf8
+    end
+
+    it 'uses the default claim for the username when the custom claim is not found' do
+      provider_config['args']['gitlab_username_claim'] = 'nonexistent'
+
+      expect(auth_hash.username).to eql nickname_utf8
+    end
+
+    it 'uses the default claim for the username when the custom claim is empty' do
+      info_hash[:first_name] = ''
+
+      expect(auth_hash.username).to eql nickname_utf8
+    end
+
+    it 'uses the default claim for the username when the custom claim is nil' do
+      info_hash[:first_name] = nil
+
+      expect(auth_hash.username).to eql nickname_utf8
     end
   end
 

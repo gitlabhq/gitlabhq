@@ -53,6 +53,7 @@ class GitlabSchema < GraphQL::Schema
 
     def get_type(type_name, context = GraphQL::Query::NullContext)
       type_name = Gitlab::GlobalId::Deprecations.apply_to_graphql_name(type_name)
+      type_name = Gitlab::Graphql::TypeNameDeprecations.apply_to_graphql_name(type_name)
 
       super(type_name, context)
     end
@@ -163,6 +164,7 @@ class GitlabSchema < GraphQL::Schema
 
   def get_type(type_name)
     type_name = Gitlab::GlobalId::Deprecations.apply_to_graphql_name(type_name)
+    type_name = Gitlab::Graphql::TypeNameDeprecations.apply_to_graphql_name(type_name)
 
     super(type_name)
   end

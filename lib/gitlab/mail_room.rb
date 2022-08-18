@@ -33,11 +33,11 @@ module Gitlab
     # fetched from YML config file.
     MAILBOX_SPECIFIC_CONFIGS = {
       incoming_email: {
-        queue: 'email_receiver',
+        queue: 'default',
         worker: 'EmailReceiverWorker'
       },
       service_desk_email: {
-        queue: 'service_desk_email_receiver',
+        queue: 'default',
         worker: 'ServiceDeskEmailReceiverWorker'
       }
     }.freeze

@@ -17,6 +17,12 @@ import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPackagePipelines from '~/packages_and_registries/package_registry/graphql/queries/get_package_pipelines.query.graphql';
+import Tracking from '~/tracking';
+import {
+  TRACKING_ACTION_CLICK_PIPELINE_LINK,
+  TRACKING_ACTION_CLICK_COMMIT_LINK,
+  TRACKING_LABEL_PACKAGE_HISTORY,
+} from '~/packages_and_registries/package_registry/constants';
 
 Vue.use(VueApollo);
 
@@ -181,7 +187,6 @@ describe('Package History', () => {
       it('link', () => {
         const linkElement = findElementLink(element);
         const exist = Boolean(link);
-
         expect(linkElement.exists()).toBe(exist);
         if (exist) {
           expect(linkElement.attributes('href')).toBe(link);
@@ -189,4 +194,29 @@ describe('Package History', () => {
       });
     },
   );
+  describe('tracking', () => {
+    let eventSpy;
+    const category = 'UI::Packages';
+
+    beforeEach(() => {
+      mountComponent();
+      eventSpy = jest.spyOn(Tracking, 'event');
+    });
+
+    it('clicking pipeline link tracks the right action', () => {
+      wrapper.vm.trackPipelineClick();
+      expect(eventSpy).toHaveBeenCalledWith(category, TRACKING_ACTION_CLICK_PIPELINE_LINK, {
+        category,
+        label: TRACKING_LABEL_PACKAGE_HISTORY,
+      });
+    });
+
+    it('clicking commit link tracks the right action', () => {
+      wrapper.vm.trackCommitClick();
+      expect(eventSpy).toHaveBeenCalledWith(category, TRACKING_ACTION_CLICK_COMMIT_LINK, {
+        category,
+        label: TRACKING_LABEL_PACKAGE_HISTORY,
+      });
+    });
+  });
 });

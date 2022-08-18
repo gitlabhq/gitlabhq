@@ -1,15 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: '../../fe_guide/index.md'
+remove_date: '2022-11-15'
 ---
 
-# Modules
+This document was moved to [another location](../../fe_guide/index.md).
 
-- [DirtySubmit](dirty_submit.md)
-
-  Disable form submits until there are unsaved changes.
-
-- [Merge Request widget extensions](widget_extensions.md)
-
-  Easily add extensions into the merge request widget
+<!-- This redirect file can be deleted after <2022-11-15>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

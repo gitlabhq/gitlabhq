@@ -304,6 +304,13 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
       it { expect(subject).to be_falsey }
     end
+
+    context 'when the batch_size is 1' do
+      let(:job) { create(:batched_background_migration_job, :failed, batch_size: 1) }
+      let(:exception) { ActiveRecord::StatementTimeout.new }
+
+      it { expect(subject).to be_falsey }
+    end
   end
 
   describe '#time_efficiency' do
@@ -415,10 +422,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     end
 
     context 'when batch size is already 1' do
-      let!(:job) { create(:batched_background_migration_job, :failed, batch_size: 1) }
+      let!(:job) { create(:batched_background_migration_job, :failed, batch_size: 1, attempts: 3) }
 
-      it 'raises an exception' do
-        expect { job.split_and_retry! }.to raise_error 'Job cannot be split further'
+      it 'keeps the same batch size' do
+        job.split_and_retry!
+
+        expect(job.reload.batch_size).to eq 1
+      end
+
+      it 'resets the number of attempts' do
+        job.split_and_retry!
+
+        expect(job.attempts).to eq 0
       end
     end
 

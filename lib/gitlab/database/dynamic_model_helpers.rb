@@ -32,7 +32,7 @@ module Gitlab
 
       def each_batch_range(table_name, connection:, scope: ->(table) { table.all }, of: BATCH_SIZE)
         each_batch(table_name, connection: connection, scope: scope, of: of) do |batch|
-          yield batch.pluck('MIN(id), MAX(id)').first
+          yield batch.pick('MIN(id), MAX(id)')
         end
       end
     end

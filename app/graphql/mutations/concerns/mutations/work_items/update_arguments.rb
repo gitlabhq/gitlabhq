@@ -15,15 +15,21 @@ module Mutations
         argument :title, GraphQL::Types::String,
                  required: false,
                  description: copy_field_description(Types::WorkItemType, :title)
+        argument :confidential, GraphQL::Types::Boolean,
+                 required: false,
+                 description: 'Sets the work item confidentiality.'
         argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
                  required: false,
                  description: 'Input for description widget.'
-        argument :weight_widget, ::Types::WorkItems::Widgets::WeightInputType,
+        argument :assignees_widget, ::Types::WorkItems::Widgets::AssigneesInputType,
                  required: false,
-                 description: 'Input for weight widget.'
+                 description: 'Input for assignees widget.'
         argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyUpdateInputType,
                  required: false,
                  description: 'Input for hierarchy widget.'
+        argument :start_and_due_date_widget, ::Types::WorkItems::Widgets::StartAndDueDateUpdateInputType,
+                 required: false,
+                 description: 'Input for start and due date widget.'
       end
     end
   end

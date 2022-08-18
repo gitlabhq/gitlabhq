@@ -27,6 +27,9 @@ options:
   - incident_management_alert_status_changed
   - incident_management_alert_assigned
   - incident_management_alert_todo
+  - incident_management_timeline_event_created
+  - incident_management_timeline_event_edited
+  - incident_management_timeline_event_deleted
 distribution:
 - ce
 - ee

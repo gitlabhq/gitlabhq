@@ -13,7 +13,7 @@ module UserStatusTooltip
     end
 
     expose :show_status do |user|
-      status_loaded? && show_status_emoji?(user.status)
+      status_loaded? && !!user.status&.customized?
     end
 
     expose :availability, if: -> (*) { status_loaded? } do |user|

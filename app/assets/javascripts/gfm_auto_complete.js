@@ -7,11 +7,20 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
+import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
 import glRegexp from './lib/utils/regexp';
 
+const USERS_ALIAS = 'users';
+const ISSUES_ALIAS = 'issues';
+const MILESTONES_ALIAS = 'milestones';
+const MERGEREQUESTS_ALIAS = 'mergerequests';
+const LABELS_ALIAS = 'labels';
+const SNIPPETS_ALIAS = 'snippets';
+const CONTACTS_ALIAS = 'contacts';
+export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
 /**
  * Escapes user input before we pass it to at.js, which
  * renders it as HTML in the autocomplete dropdown.
@@ -27,6 +36,15 @@ import glRegexp from './lib/utils/regexp';
  */
 function escape(string) {
   return lodashEscape(string).replace(/\$/g, '&dollar;');
+}
+
+export function showAndHideHelper($input, alias = '') {
+  $input.on(`hidden${alias ? '-' : ''}${alias}.atwho`, () => {
+    $input.removeClass(AT_WHO_ACTIVE_CLASS);
+  });
+  $input.on(`shown${alias ? '-' : ''}${alias}.atwho`, () => {
+    $input.addClass(AT_WHO_ACTIVE_CLASS);
+  });
 }
 
 function createMemberSearchString(member) {
@@ -237,10 +255,18 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
+          const regexp = new RegExp(
+            `(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^ :][^:]*)?$`,
+            'gi',
+          );
           const match = regexp.exec(subtext);
 
-          return match && match.length ? match[1] : null;
+          if (match && match.length) {
+            // Since we have "?" on the group, it's possible it is undefined
+            return match[1] || '';
+          }
+
+          return null;
         },
         filter(query, items) {
           if (GfmAutoComplete.isLoading(items)) {
@@ -265,6 +291,7 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input);
   }
 
   setupMembers($input) {
@@ -276,8 +303,6 @@ class GfmAutoComplete {
       UNASSIGN_REVIEWER: '/unassign_reviewer',
       REASSIGN: '/reassign',
       CC: '/cc',
-      ATTENTION: '/attention',
-      REMOVE_ATTENTION: '/remove_attention',
     };
     let assignees = [];
     let reviewers = [];
@@ -286,7 +311,7 @@ class GfmAutoComplete {
     // Team Members
     $input.atwho({
       at: '@',
-      alias: 'users',
+      alias: USERS_ALIAS,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         const { avatarTag, username, title, icon, availability } = value;
@@ -328,8 +353,7 @@ class GfmAutoComplete {
           // Cache assignees & reviewers list for easier filtering later
           assignees =
             SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
-          reviewers =
-            SidebarMediator.singleton?.store?.reviewers?.map(createMemberSearchString) || [];
+          reviewers = state.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
@@ -356,23 +380,6 @@ class GfmAutoComplete {
           } else if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
             return data.filter((member) => reviewers.includes(member.search));
-          } else if (
-            command === MEMBER_COMMAND.ATTENTION ||
-            command === MEMBER_COMMAND.REMOVE_ATTENTION
-          ) {
-            const attentionUsers = [
-              ...(SidebarMediator.singleton?.store?.assignees || []),
-              ...(SidebarMediator.singleton?.store?.reviewers || []),
-            ];
-            const attentionRequested = command === MEMBER_COMMAND.REMOVE_ATTENTION;
-
-            return data.filter((member) =>
-              attentionUsers.find(
-                (u) =>
-                  createMemberSearchString(u).includes(member.search) &&
-                  u.attention_requested === attentionRequested,
-              ),
-            );
           }
 
           return data;
@@ -393,12 +400,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, USERS_ALIAS);
   }
 
   setupIssues($input) {
     $input.atwho({
       at: '#',
-      alias: 'issues',
+      alias: ISSUES_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -427,12 +435,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, ISSUES_ALIAS);
   }
 
   setupMilestones($input) {
     $input.atwho({
       at: '%',
-      alias: 'milestones',
+      alias: MILESTONES_ALIAS,
       searchKey: 'search',
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${title}',
@@ -483,12 +492,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, MILESTONES_ALIAS);
   }
 
   setupMergeRequests($input) {
     $input.atwho({
       at: '!',
-      alias: 'mergerequests',
+      alias: MERGEREQUESTS_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -517,6 +527,7 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, MERGEREQUESTS_ALIAS);
   }
 
   setupLabels($input) {
@@ -527,7 +538,7 @@ class GfmAutoComplete {
 
     $input.atwho({
       at: '~',
-      alias: 'labels',
+      alias: LABELS_ALIAS,
       searchKey: 'search',
       data: GfmAutoComplete.defaultLoadingData,
       displayTpl(value) {
@@ -617,12 +628,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, LABELS_ALIAS);
   }
 
   setupSnippets($input) {
     $input.atwho({
       at: '$',
-      alias: 'snippets',
+      alias: SNIPPETS_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -650,13 +662,14 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, SNIPPETS_ALIAS);
   }
 
   setupContacts($input) {
     $input.atwho({
       at: '[contact:',
       suffix: ']',
-      alias: 'contacts',
+      alias: CONTACTS_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -686,6 +699,7 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, CONTACTS_ALIAS);
   }
 
   getDefaultCallbacks() {

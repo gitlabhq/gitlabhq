@@ -78,19 +78,19 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
 
     if (!icon) {
       it('does not render icon', () => {
-        expect(wrapper.find(GlIcon).exists()).toBe(false);
+        expect(wrapper.findComponent(GlIcon).exists()).toBe(false);
       });
 
       it('renders loading icon', () => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     } else {
       it('renders icon', () => {
-        expect(wrapper.find(GlIcon).props('name')).toEqual(icon);
+        expect(wrapper.findComponent(GlIcon).props('name')).toEqual(icon);
       });
 
       it('does not render loading icon', () => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       });
     }
   });

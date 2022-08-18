@@ -23,9 +23,9 @@ describe('BoardBlockedIcon', () => {
   let wrapper;
   let mockApollo;
 
-  const findGlIcon = () => wrapper.find(GlIcon);
-  const findGlPopover = () => wrapper.find(GlPopover);
-  const findGlLink = () => wrapper.find(GlLink);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
+  const findGlPopover = () => wrapper.findComponent(GlPopover);
+  const findGlLink = () => wrapper.findComponent(GlLink);
   const findPopoverTitle = () => wrapper.findByTestId('popover-title');
   const findIssuableTitle = () => wrapper.findByTestId('issuable-title');
   const findHiddenBlockingCount = () => wrapper.findByTestId('hidden-blocking-count');
@@ -114,7 +114,7 @@ describe('BoardBlockedIcon', () => {
   it('should display a loading spinner while loading', () => {
     createWrapper({ loading: true });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('should not query for blocking issuables by default', async () => {

@@ -88,7 +88,7 @@ RSpec.describe API::MergeRequests do
 
         context 'with merge status recheck projection' do
           it 'checks mergeability asynchronously' do
-            expect_next_instance_of(check_service_class) do |service|
+            expect_next_instances_of(check_service_class, (1..2)) do |service|
               expect(service).not_to receive(:execute)
               expect(service).to receive(:async_execute).and_call_original
             end
@@ -595,6 +595,22 @@ RSpec.describe API::MergeRequests do
     end
   end
 
+  RSpec.shared_examples 'a non-cached MergeRequest api request' do |call_count|
+    it 'serializes merge request' do
+      expect(API::Entities::MergeRequestBasic).to receive(:represent).exactly(call_count).times.and_call_original
+
+      get api(endpoint_path)
+    end
+  end
+
+  RSpec.shared_examples 'a cached MergeRequest api request' do
+    it 'serializes merge request' do
+      expect(API::Entities::MergeRequestBasic).not_to receive(:represent)
+
+      get api(endpoint_path)
+    end
+  end
+
   describe 'route shadowing' do
     include GrapePathHelpers::NamedRouteMatcher
 
@@ -979,12 +995,42 @@ RSpec.describe API::MergeRequests do
     end
   end
 
-  describe "GET /projects/:id/merge_requests" do
+  describe "GET /projects/:id/merge_requests", :use_clean_rails_memory_store_caching do
     include_context 'with merge requests'
 
     let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
 
     it_behaves_like 'merge requests list'
+
+    context 'caching' do
+      let(:params) { {} }
+
+      before do
+        get api(endpoint_path)
+      end
+
+      context 'when it is cached' do
+        it_behaves_like 'a cached MergeRequest api request'
+      end
+
+      context 'when it is not cached' do
+        context 'when the status changes' do
+          before do
+            merge_request.mark_as_unchecked!
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
+        context 'when another user requests' do
+          before do
+            sign_in(user2)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 4
+        end
+      end
+    end
 
     it "returns 404 for non public projects" do
       project = create(:project, :private)
@@ -1462,6 +1508,45 @@ RSpec.describe API::MergeRequests do
     context 'when merge request author has only guest access' do
       it_behaves_like 'rejects user from accessing merge request info' do
         let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/participants" }
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/reviewers' do
+    it 'returns reviewers' do
+      reviewer = create(:user)
+      merge_request.merge_request_reviewers.create!(reviewer: reviewer)
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reviewers", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(merge_request.merge_request_reviewers.size)
+
+      expect(json_response.last['user']['id']).to eq(reviewer.id)
+      expect(json_response.last['user']['name']).to eq(reviewer.name)
+      expect(json_response.last['user']['username']).to eq(reviewer.username)
+      expect(json_response.last['state']).to eq('unreviewed')
+      expect(json_response.last['updated_state_by']).to be_nil
+      expect(json_response.last['created_at']).to be_present
+    end
+
+    it 'returns a 404 when iid does not exist' do
+      get api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/reviewers", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 404 when id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/reviewers", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/reviewers" }
       end
     end
   end
@@ -2482,39 +2567,37 @@ RSpec.describe API::MergeRequests do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     it "returns merge_request in case of success" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+      expect { put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user) }
+        .to change { merge_request.reload.merged? }
+        .from(false)
+        .to(true)
 
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    context 'when change_response_code_merge_status is enabled' do
-      it "returns 422 if branch can't be merged" do
-        allow_next_found_instance_of(MergeRequest) do |merge_request|
-          allow(merge_request).to receive(:can_be_merged?).and_return(false)
+    context 'when the merge request fails to merge' do
+      it 'returns 422' do
+        expect_next_instance_of(::MergeRequests::MergeService) do |service|
+          expect(service).to receive(:execute)
         end
 
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+        expect { put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user) }
+          .not_to change { merge_request.reload.merged? }
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['message']).to eq('Branch cannot be merged')
+        expect(json_response['message']).to eq("Branch cannot be merged")
       end
     end
 
-    context 'when change_response_code_merge_status is disabled' do
-      before do
-        stub_feature_flags(change_response_code_merge_status: false)
+    it "returns 422 if branch can't be merged" do
+      allow_next_found_instance_of(MergeRequest) do |merge_request|
+        allow(merge_request).to receive(:can_be_merged?).and_return(false)
       end
 
-      it "returns 406 if branch can't be merged" do
-        allow_next_found_instance_of(MergeRequest) do |merge_request|
-          allow(merge_request).to receive(:can_be_merged?).and_return(false)
-        end
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
-
-        expect(response).to have_gitlab_http_status(:not_acceptable)
-        expect(json_response['message']).to eq('Branch cannot be merged')
-      end
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Branch cannot be merged')
     end
 
     it "returns 405 if merge_request is not open" do

@@ -80,7 +80,9 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center ide-file-templates qa-file-templates-bar gl-relative gl-z-index-1"
+    class="gl-display-flex gl-align-items-center ide-file-templates gl-relative gl-z-index-1"
+    data-testid="file-templates-bar"
+    data-qa-selector="file_templates_container"
   >
     <strong class="gl-mr-3"> {{ $options.i18n.barLabel }} </strong>
     <gl-dropdown
@@ -97,7 +99,8 @@ export default {
     </gl-dropdown>
     <gl-dropdown
       v-if="showTemplatesDropdown"
-      class="gl-mr-6 qa-file-template-dropdown"
+      class="gl-mr-6"
+      data-qa-selector="file_template_dropdown"
       :text="$options.i18n.templateListDropdownLabel"
       @show="fetchTemplateTypes"
     >

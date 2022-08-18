@@ -150,6 +150,8 @@ the page is rendered to HTML. There can be only **one** level 1 heading per page
 
 - For each subsection, increment the heading level. In other words, increment the number of `#` characters
   in front of the heading.
+- Avoid headings greater than `H5` (`#####`). If you need more than five heading levels, move the topics to a new page instead.
+  Headings greater than `H5` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
 - Leave one blank line before and after the heading.
 
@@ -161,6 +163,13 @@ When you change heading text, the anchor link changes. To avoid broken links:
 Also, do not use links as part of heading text.
 
 See also [heading guidelines for specific topic types](../structure.md).
+
+### Backticks in Markdown
+
+Use backticks for:
+
+- [Code blocks](#code-blocks).
+- Error messages.
 
 ### Markdown Rules
 
@@ -722,10 +731,12 @@ We include guidance for links in these categories:
 
 - Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
-
 - Use meaningful anchor text.
   For example, instead of writing something like `Read more about merge requests [here](LINK)`,
   write `Read more about [merge requests](LINK)`.
+- Put the entire link on a single line. Some of our [linters](../testing.md) do not
+  validate links when split over multiple lines, and incorrect or broken links could
+  slip through.
 
 ### Links to internal documentation
 
@@ -787,45 +798,15 @@ section of GitLab.
 
 ### Links to external documentation
 
-When describing interactions with external software, it's often helpful to
-include links to external documentation. When possible, make sure that you're
-linking to an [**authoritative** source](#authoritative-sources). For example,
-if you're describing a feature in Microsoft's Active Directory, include a link
-to official Microsoft documentation.
+When possible, avoid links to external documentation. These links can easily become outdated, and are difficult to maintain.
 
-### Authoritative sources
+- [They lead to link rot](https://en.wikipedia.org/wiki/Link_rot).
+- [They create issues with maintenance](https://gitlab.com/gitlab-org/gitlab/-/issues/368300).
 
-When citing external information, use sources that are written by the people who
-created the item or product in question. These sources are the most likely to be
-accurate and remain up to date.
+Sometimes links are required. They might clarify troubleshooting steps or help prevent duplication of content.
+Sometimes they are more precise and will be maintained more actively.
 
-Examples of authoritative sources include:
-
-- Specifications, such as a [Request for Comments](https://www.ietf.org/standards/rfcs/)
-  document from the Internet Engineering Task Force.
-- Official documentation for a product. For example, if you're setting up an
-  interface with the Google OAuth 2 authorization server, include a link to
-  Google's documentation.
-- Official documentation for a project. For example, if you're citing NodeJS
-  functionality, refer directly to [NodeJS documentation](https://nodejs.org/en/docs/).
-- Books from an authoritative publisher.
-
-Examples of sources to avoid include:
-
-- Personal blog posts.
-- Wikipedia.
-- Non-trustworthy articles.
-- Discussions on forums such as Stack Overflow.
-- Documentation from a company that describes another company's product.
-
-While many of these sources to avoid can help you learn skills and or features,
-they can become obsolete quickly. Nobody is obliged to maintain any of these
-sites. Therefore, we should avoid using them as reference literature.
-
-NOTE:
-Non-authoritative sources are acceptable only if there is no equivalent
-authoritative source. Even then, focus on non-authoritative sources that are
-extensively cited or peer-reviewed.
+For each external link you add, weigh the customer benefit with the maintenance difficulties.
 
 ### Links requiring permissions
 
@@ -948,6 +929,16 @@ For example:
 
 ```markdown
 1. Optional. Enter a description for the job.
+```
+
+### Recommended steps
+
+If a step is recommended, start the step with the word `Recommended` followed by a period.
+
+For example:
+
+```markdown
+1. Recommended. Enter a description for the job.
 ```
 
 ### Documenting multiple fields at once
@@ -1106,6 +1097,36 @@ include a visual representation to help readers understand it, you can:
   an area of the screen.
 - Create a short video of the interaction and link to it.
 
+## Emojis
+
+Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
+[GitLab SVG icons](#gitlab-svg-icons) instead.
+
+Use of emoji in Markdown requires GitLab Flavored Markdown, which is not supported by Kramdown,
+the Markdown rendering engine used for GitLab documentation.
+
+## GitLab SVG icons
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
+
+You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
+directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
+
+In most cases, you should avoid using the icons in text.
+However, you can use an icon when hover text is the only
+available way to describe a UI element. For example, **Delete** or **Edit** buttons
+often have hover text only.
+
+When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
+
+- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
+- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
+
+Do not use words to describe the icon:
+
+- Avoid: `Select **Erase job log** (the trash icon).`
+- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
+
 ## Videos
 
 Adding GitLab YouTube video tutorials to the documentation is highly
@@ -1186,28 +1207,6 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
-
-## GitLab SVG icons
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
-
-You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
-directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
-
-In most cases, you should avoid using the icons in text.
-However, you can use an icon when hover text is the only
-available way to describe a UI element. For example, **Delete** or **Edit** buttons
-often have hover text only.
-
-When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
-
-- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
-- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
-
-Do not use words to describe the icon:
-
-- Avoid: `Select **Erase job log** (the trash icon).`
-- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
 
 ## Alert boxes
 

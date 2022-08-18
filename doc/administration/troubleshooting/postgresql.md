@@ -216,7 +216,7 @@ because the statement timeout was too short:
 pg_dump: error: Error message from server: server closed the connection unexpectedly
 ```
 
-You may also see errors in the [PostgreSQL logs](../logs.md#postgresql-logs):
+You may also see errors in the [PostgreSQL logs](../logs/index.md#postgresql-logs):
 
 ```plaintext
 canceling statement due to statement timeout

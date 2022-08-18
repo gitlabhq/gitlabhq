@@ -68,8 +68,7 @@ The v1 chart is backward compatible with the v0 chart, so no configuration chang
 ### Upgrade deployments to the v2 `auto-deploy-image`
 
 The v2 auto-deploy-image contains multiple dependency and architectural changes.
-If your Auto DevOps project has an active environment deployed with the v1 `auto-deploy-image`,
-please proceed with the following upgrade guide. Otherwise, you can skip this process.
+If your Auto DevOps project has an active environment deployed with the v1 `auto-deploy-image`, proceed with the following upgrade guide. Otherwise, you can skip this process.
 
 #### Kubernetes 1.16+
 
@@ -276,4 +275,4 @@ you might encounter the following error:
 - `Error: rendered manifests contain a resource that already exists. Unable to continue with install: Secret "production-postgresql" in namespace "<project-name>-production" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key "app.kubernetes.io/managed-by": must be set to "Helm"; annotation validation error: missing key "meta.helm.sh/release-name": must be set to "production-postgresql"; annotation validation error: missing key "meta.helm.sh/release-namespace": must be set to "<project-name>-production"`
 
 This is because the previous deployment was deployed with Helm2, which is not compatible with Helm3.
-To resolve the problem, please follow the [upgrade guide](#upgrade-deployments-to-the-v2-auto-deploy-image).
+To resolve the problem, follow the [upgrade guide](#upgrade-deployments-to-the-v2-auto-deploy-image).

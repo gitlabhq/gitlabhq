@@ -3,10 +3,11 @@ import {
   GlAlert,
   GlIcon,
   GlButton,
+  GlDropdown,
+  GlDropdownItem,
   GlForm,
   GlFormGroup,
   GlFormInput,
-  GlFormSelect,
   GlFormTextarea,
   GlLink,
   GlSprintf,
@@ -43,10 +44,10 @@ const i18n = {
 };
 
 export default {
-  typeOptions: [
-    { value: VARIABLE_TYPE, text: __('Variable') },
-    { value: FILE_TYPE, text: __('File') },
-  ],
+  typeOptions: {
+    [VARIABLE_TYPE]: __('Variable'),
+    [FILE_TYPE]: __('File'),
+  },
   i18n,
   formElementClasses: 'gl-mr-3 gl-mb-3 gl-flex-basis-quarter gl-flex-shrink-0 gl-flex-grow-0',
   // this height value is used inline on the textarea to match the input field height
@@ -56,10 +57,11 @@ export default {
     GlAlert,
     GlIcon,
     GlButton,
+    GlDropdown,
+    GlDropdownItem,
     GlForm,
     GlFormGroup,
     GlFormInput,
-    GlFormSelect,
     GlFormTextarea,
     GlLink,
     GlSprintf,
@@ -201,6 +203,11 @@ export default {
           variable_type: type,
         });
       }
+    },
+    setVariableType(key, type) {
+      const { variables } = this.form[this.refFullName];
+      const variable = variables.find((v) => v.key === key);
+      variable.variable_type = type;
     },
     setVariableParams(refValue, type, paramsObj) {
       Object.entries(paramsObj).forEach(([key, value]) => {
@@ -401,12 +408,19 @@ export default {
         <div
           class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row"
         >
-          <gl-form-select
-            v-model="variable.variable_type"
+          <gl-dropdown
+            :text="$options.typeOptions[variable.variable_type]"
             :class="$options.formElementClasses"
-            :options="$options.typeOptions"
             data-testid="pipeline-form-ci-variable-type"
-          />
+          >
+            <gl-dropdown-item
+              v-for="type in Object.keys($options.typeOptions)"
+              :key="type"
+              @click="setVariableType(variable.key, type)"
+            >
+              {{ $options.typeOptions[type] }}
+            </gl-dropdown-item>
+          </gl-dropdown>
           <gl-form-input
             v-model="variable.key"
             :placeholder="s__('CiVariables|Input variable key')"

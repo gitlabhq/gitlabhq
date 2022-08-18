@@ -31,8 +31,8 @@ RSpec.describe 'getting custom emoji within namespace' do
       post_graphql(custom_emoji_query(group), current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(graphql_data['group']['customEmoji']['nodes'].count). to eq(1)
-      expect(graphql_data['group']['customEmoji']['nodes'].first['name']). to eq(custom_emoji.name)
+      expect(graphql_data['group']['customEmoji']['nodes'].count).to eq(1)
+      expect(graphql_data['group']['customEmoji']['nodes'].first['name']).to eq(custom_emoji.name)
     end
 
     it 'returns nil when unauthorised' do

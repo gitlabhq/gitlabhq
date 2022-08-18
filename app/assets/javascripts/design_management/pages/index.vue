@@ -372,7 +372,7 @@ export default {
         </div>
         <div
           v-show="hasDesigns"
-          class="qa-selector-toolbar gl-display-flex gl-align-items-center gl-my-2"
+          class="gl-display-flex gl-align-items-center gl-my-2"
           data-testid="design-selector-toolbar"
         >
           <gl-button

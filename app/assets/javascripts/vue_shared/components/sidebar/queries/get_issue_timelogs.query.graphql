@@ -2,7 +2,6 @@
 
 query issueTimeTrackingReport($id: IssueID!) {
   issuable: issue(id: $id) {
-    __typename
     id
     title
     timelogs {

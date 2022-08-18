@@ -64,7 +64,7 @@ build:
     entrypoint: [""]
   script:
     - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 -w 0)\"}}}" > /kaniko/.docker/config.json
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
@@ -118,6 +118,13 @@ build:
   rules:
     - if: $CI_COMMIT_TAG
 ```
+
+## Build a multi-arch image
+
+You can build [multi-arch images](https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/)
+inside a container by using [`manifest-tool`](https://github.com/estesp/manifest-tool).
+
+For a detailed guide on how to build a multi-arch image, read [Building a multi-arch container image in unprivileged containers](https://ingenuity.siemens.com/2022/07/building-a-multi-arch-container-image-in-unprivileged-containers/).
 
 ## Using a registry with a custom certificate
 

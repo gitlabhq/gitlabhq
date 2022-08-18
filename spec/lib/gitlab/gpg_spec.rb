@@ -218,7 +218,7 @@ RSpec.describe Gitlab::Gpg do
         expect(Retriable).to receive(:sleep).at_least(:twice)
         expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(:twice).and_raise('Deletion failed')
 
-        expect { described_class.using_tmp_keychain { } }.to raise_error(described_class::CleanupError)
+        expect { described_class.using_tmp_keychain {} }.to raise_error(described_class::CleanupError)
       end
 
       it 'does not attempt multiple times when the deletion succeeds' do
@@ -226,7 +226,7 @@ RSpec.describe Gitlab::Gpg do
         expect(FileUtils).to receive(:remove_entry).with(tmp_dir).once.and_raise('Deletion failed')
         expect(FileUtils).to receive(:remove_entry).with(tmp_dir).and_call_original
 
-        expect { described_class.using_tmp_keychain { } }.not_to raise_error
+        expect { described_class.using_tmp_keychain {} }.not_to raise_error
 
         expect(File.exist?(tmp_dir)).to be false
       end

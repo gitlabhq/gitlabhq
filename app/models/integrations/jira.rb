@@ -18,6 +18,8 @@ module Integrations
     SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
     SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
 
+    SNOWPLOW_EVENT_CATEGORY = self.name
+
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
     validates :username, presence: true, if: :activated?
@@ -362,13 +364,17 @@ module Integrations
       )
 
       true
-    rescue StandardError => error
-      log_exception(error, message: 'Issue transition failed', client_url: client_url)
+    rescue StandardError => e
+      log_exception(e, message: 'Issue transition failed', client_url: client_url)
       false
     end
 
     def transition_issue_to_done(issue)
-      transitions = issue.transitions rescue []
+      transitions = begin
+        issue.transitions
+      rescue StandardError
+        []
+      end
 
       transition = transitions.find do |transition|
         status = transition&.to&.statusCategory
@@ -384,6 +390,22 @@ module Integrations
       key = "i_ecosystem_jira_service_#{action}"
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user.id)
+
+      return unless Feature.enabled?(:route_hll_to_snowplow_phase2)
+
+      optional_arguments = {
+        project: project,
+        namespace: group || project&.namespace
+      }.compact
+
+      Gitlab::Tracking.event(
+        SNOWPLOW_EVENT_CATEGORY,
+        Integration::SNOWPLOW_EVENT_ACTION,
+        label: Integration::SNOWPLOW_EVENT_LABEL,
+        property: key,
+        user: user,
+        **optional_arguments
+      )
     end
 
     def add_issue_solved_comment(issue, commit_id, commit_url)
@@ -505,7 +527,7 @@ module Integrations
           self.project,
           entity_type.to_sym
         ],
-        id:   entity_id,
+        id: entity_id,
         host: Settings.gitlab.base_url
       )
     end
@@ -538,9 +560,9 @@ module Integrations
     # Handle errors when doing Jira API calls
     def jira_request
       yield
-    rescue StandardError => error
-      @error = error
-      log_exception(error, message: 'Error sending message', client_url: client_url)
+    rescue StandardError => e
+      @error = e
+      log_exception(e, message: 'Error sending message', client_url: client_url)
       nil
     end
 

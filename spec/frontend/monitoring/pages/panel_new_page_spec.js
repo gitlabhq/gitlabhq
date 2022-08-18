@@ -41,8 +41,8 @@ describe('monitoring/pages/panel_new_page', () => {
     });
   };
 
-  const findBackButton = () => wrapper.find(GlButtonStub);
-  const findPanelBuilder = () => wrapper.find(DashboardPanelBuilder);
+  const findBackButton = () => wrapper.findComponent(GlButtonStub);
+  const findPanelBuilder = () => wrapper.findComponent(DashboardPanelBuilder);
 
   beforeEach(() => {
     store = createStore();

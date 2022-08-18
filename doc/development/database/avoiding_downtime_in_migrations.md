@@ -93,9 +93,8 @@ class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
 end
 ```
 
-You can consider [enabling lock retries](
-https://docs.gitlab.com/ee/development/migration_style_guide.html#usage-with-transactional-migrations
-) when you run a migration on big tables, because it might take some time to
+You can consider [enabling lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
+when you run a migration on big tables, because it might take some time to
 acquire a lock on this table.
 
 #### B. The removed column has an index or constraint that belongs to it
@@ -104,7 +103,7 @@ If the `down` method requires adding back any dropped indexes or constraints, th
 be done within a transactional migration, then the migration would look like this:
 
 ```ruby
-class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[1.0]
+class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -126,13 +125,11 @@ end
 In the `down` method, we check to see if the column already exists before adding it again.
 We do this because the migration is non-transactional and might have failed while it was running.
 
-The [`disable_ddl_transaction!`](
-https://docs.gitlab.com/ee/development/migration_style_guide.html#usage-with-non-transactional-migrations-disable_ddl_transaction
-) is used to disable the transaction that wraps the whole migration.
+The [`disable_ddl_transaction!`](../migration_style_guide.md#usage-with-non-transactional-migrations-disable_ddl_transaction)
+is used to disable the transaction that wraps the whole migration.
 
-You can refer to the page [Migration Style Guide](
-https://docs.gitlab.com/ee/development/migration_style_guide.html
-) for more information about database migrations.
+You can refer to the page [Migration Style Guide](../migration_style_guide.md)
+for more information about database migrations.
 
 ### Step 3: Removing the ignore rule (release M+2)
 
@@ -145,9 +142,13 @@ the `remove_after` date has passed.
 ## Renaming Columns
 
 Renaming columns the normal way requires downtime as an application may continue
-using the old column name during/after a database migration. To rename a column
-without requiring downtime we need two migrations: a regular migration, and a
-post-deployment migration. Both these migration can go in the same release.
+to use the old column names during or after a database migration. To rename a column
+without requiring downtime, we need two migrations: a regular migration and a
+post-deployment migration. Both these migrations can go in the same release.
+
+NOTE:
+It's not possible to rename columns with default values. For more details, see
+[this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52032#default-values).
 
 ### Step 1: Add The Regular Migration
 
@@ -157,7 +158,7 @@ renaming. For example
 
 ```ruby
 # A regular migration in db/migrate
-class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[1.0]
+class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -185,7 +186,7 @@ We can perform this cleanup using
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[1.0]
+class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -198,7 +199,7 @@ class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[1.0]
 end
 ```
 
-If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
+If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
 With [Canary](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
 ## Changing Column Constraints
@@ -232,7 +233,7 @@ as follows:
 
 ```ruby
 # A regular migration in db/migrate
-class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[1.0]
+class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -251,7 +252,7 @@ Next we need to clean up our changes using a post-deployment migration:
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[1.0]
+class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -295,8 +296,7 @@ when migrating a column in a large table (for example, `issues`). Background
 migrations spread the work / load over a longer time period, without slowing
 down deployments.
 
-For more information, see [the documentation on cleaning up background
-migrations](background_migrations.md#cleaning-up).
+For more information, see [the documentation on cleaning up background migrations](background_migrations.md#cleaning-up).
 
 ## Adding Indexes
 

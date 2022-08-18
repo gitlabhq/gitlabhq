@@ -20,10 +20,6 @@ class MergeRequestUserEntity < ::API::Entities::UserBasic
     find_reviewer_or_assignee(user, options)&.reviewed?
   end
 
-  expose :attention_requested, if: ->(_, options) { options[:merge_request].present? && options[:merge_request].allows_reviewers? && request.current_user&.mr_attention_requests_enabled? } do |user, options|
-    find_reviewer_or_assignee(user, options)&.attention_requested?
-  end
-
   expose :approved, if: satisfies(:present?) do |user, options|
     # This approach is preferred over MergeRequest#approved_by? since this
     # makes one query per merge request, whereas #approved_by? makes one per user

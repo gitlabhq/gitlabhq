@@ -26,6 +26,7 @@ module API
       expose :resolved_at, if: ->(note, options) { note.resolvable? }
 
       expose :confidential?, as: :confidential
+      expose :confidential?, as: :internal
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }

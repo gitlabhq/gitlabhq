@@ -148,8 +148,8 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" \
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab Shell authorized keys
-check. Which is called by OpenSSH for [fast SSH key
-lookup](../../administration/operations/fast_ssh_key_lookup.md).
+check. Which is called by OpenSSH for 
+[fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
@@ -494,10 +494,15 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
 Called from GitLab agent server (`kas`) to increase the usage
 metric counters.
 
-| Attribute | Type   | Required | Description |
-|:----------|:-------|:---------|:------------|
-| `gitops_sync_count` | integer| no | The number to increase the `gitops_sync_count` counter by |
-| `k8s_api_proxy_request_count` | integer| no | The number to increase the `k8s_api_proxy_request_count` counter by |
+| Attribute                                                                  | Type          | Required | Description                                                                                                      |
+|:---------------------------------------------------------------------------|:--------------|:---------|:-----------------------------------------------------------------------------------------------------------------|
+| `gitops_sync_count` (DEPRECATED)                                           | integer       | no | The number to increase the `gitops_sync` counter by                                                              |
+| `k8s_api_proxy_request_count` (DEPRECATED)                                 | integer       | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `counters`                                                                 | hash          | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `counters["k8s_api_proxy_request"]`                                        | integer       | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `counters["gitops_sync"]`                                                  | integer       | no | The number to increase the `gitops_sync` counter by                                                              |
+| `unique_counters`                                                          | hash          | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `unique_counters["agent_users_using_ci_tunnel"]`                              | integer array | no | The set of unique user ids that have interacted a CI Tunnel to track the `agent_users_using_ci_tunnel` metric event |
 
 ```plaintext
 POST /internal/kubernetes/usage_metrics
@@ -618,6 +623,40 @@ Example response:
       "description": "Policy description",
       "enabled": true,
       "yaml": "---\nname: Policy\ndescription: 'Policy description'\nenabled: true\nactions:\n- scan: container_scanning\nrules:\n- type: pipeline\n  branches:\n  - main\n",
+      "updated_at": "2022-06-02T05:36:26+00:00"
+    }
+  ]
+}
+```
+
+### Policy Configuration
+
+Called from GitLab agent server (`kas`) to retrieve `policies_configuration`
+configured for the project belonging to the agent token. GitLab `kas` uses
+this to configure the agent to scan images in the Kubernetes cluster based on the configuration.
+
+```plaintext
+GET /internal/kubernetes/modules/starboard_vulnerability/policies_configuration
+```
+
+Example Request:
+
+```shell
+curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
+     --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/modules/starboard_vulnerability/policies_configuration"
+```
+
+Example response:
+
+```json
+{
+  "configurations": [
+    {
+      "cadence": "30 2 * * *",
+      "namespaces": [
+        "namespace-a",
+        "namespace-b"
+      ],
       "updated_at": "2022-06-02T05:36:26+00:00"
     }
   ]

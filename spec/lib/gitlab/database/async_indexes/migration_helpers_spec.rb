@@ -142,4 +142,42 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers do
       end
     end
   end
+
+  describe '#prepare_async_index_removal' do
+    before do
+      connection.create_table(table_name)
+      connection.add_index(table_name, 'id', name: index_name)
+    end
+
+    it 'creates the record for the async index removal' do
+      expect do
+        migration.prepare_async_index_removal(table_name, 'id', name: index_name)
+      end.to change { index_model.where(name: index_name).count }.by(1)
+
+      record = index_model.find_by(name: index_name)
+
+      expect(record.table_name).to eq(table_name)
+      expect(record.definition).to match(/DROP INDEX CONCURRENTLY "#{index_name}"/)
+    end
+
+    context 'when the index does not exist' do
+      it 'does not create the record' do
+        connection.remove_index(table_name, 'id', name: index_name)
+
+        expect do
+          migration.prepare_async_index_removal(table_name, 'id', name: index_name)
+        end.not_to change { index_model.where(name: index_name).count }
+      end
+    end
+
+    context 'when the record already exists' do
+      it 'does attempt to create the record' do
+        create(:postgres_async_index, table_name: table_name, name: index_name)
+
+        expect do
+          migration.prepare_async_index_removal(table_name, 'id', name: index_name)
+        end.not_to change { index_model.where(name: index_name).count }
+      end
+    end
+  end
 end

@@ -217,8 +217,8 @@ If enabling the feature flag results in E2E test failures, you can browse the ar
 
 If an end-to-end test enables a feature flag, the end-to-end test suite can be used to test changes in a merge request
 by running the `package-and-qa` job in the merge request pipeline. If the feature flag and relevant changes have already been merged, you can confirm that the tests
-pass on the default branch. The end-to-end tests run on the default branch every two hours, and the results are posted to a [Test
-Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amain).
+pass on the default branch. The end-to-end tests run on the default branch every two hours, and the results are posted to a 
+[Test Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amain).
 
 If the relevant tests do not enable the feature flag themselves, you can check if the tests will need to be updated by opening
 a draft merge request that enables the flag by default via a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation).

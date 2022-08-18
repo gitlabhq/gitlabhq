@@ -1,0 +1,13 @@
+stages:
+  - review
+
+include:
+  - local: .gitlab/ci/global.gitlab-ci.yml
+  - local: .gitlab/ci/rules.gitlab-ci.yml
+
+no-op:
+  extends:
+    - .review:rules:start-review-app-pipeline
+  stage: review
+  script:
+    - echo "Skip Review App because the MR includes only quarantine changes"

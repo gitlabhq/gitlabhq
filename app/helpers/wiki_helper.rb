@@ -121,11 +121,11 @@ module WikiHelper
 
   def wiki_page_tracking_context(page)
     {
-      'wiki-format'               => page.format,
-      'wiki-title-size'           => page.title.bytesize,
-      'wiki-content-size'         => page.raw_content.bytesize,
+      'wiki-format' => page.format,
+      'wiki-title-size' => page.title.bytesize,
+      'wiki-content-size' => page.raw_content.bytesize,
       'wiki-directory-nest-level' => page.path.scan('/').count,
-      'wiki-container-type'       => page.wiki.container.class.name
+      'wiki-container-type' => page.wiki.container.class.name
     }
   end
 

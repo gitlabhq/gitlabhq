@@ -83,7 +83,7 @@ module Gitlab
       # @param [Boolean] raise_on_exhaustion whether to raise `AttemptsExhaustedError` when exhausting max attempts
       # @param [Proc] block of code that will be executed
       def run(raise_on_exhaustion: false, &block)
-        raise 'no block given' unless block_given?
+        raise 'no block given' unless block
 
         @block = block
 

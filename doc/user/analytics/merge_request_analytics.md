@@ -31,12 +31,12 @@ To view merge request analytics:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**.
 
-## View merge requests merged per month
+## View the number of merge requests in a date range
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232651) in GitLab 13.3.
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229266) in GitLab 13.4
 
-To view the number of merge requests merged per month:
+To view the number of merge requests merged during a specific date range:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**.

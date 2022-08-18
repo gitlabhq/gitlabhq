@@ -17,11 +17,11 @@ module QA
               element :save_changes_button
             end
 
-            def setup_service_with(jenkins_url:, project_name:)
+            def setup_service_with(jenkins_url:, project_name:, username:, password:)
               set_jenkins_url(jenkins_url)
               set_project_name(project_name)
-              set_username('admin')
-              set_password('password')
+              set_username(username)
+              set_password(password)
               click_save_changes_button
             end
 

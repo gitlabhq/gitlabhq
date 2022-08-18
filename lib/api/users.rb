@@ -68,9 +68,9 @@ module API
 
         params :sort_params do
           optional :order_by, type: String, values: %w[id name username created_at updated_at],
-            default: 'id', desc: 'Return users ordered by a field'
+                              default: 'id', desc: 'Return users ordered by a field'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
-            desc: 'Return users sorted in ascending and descending order'
+                          desc: 'Return users sorted in ascending and descending order'
         end
       end
 
@@ -940,7 +940,7 @@ module API
           params do
             requires :name, type: String, desc: 'The name of the personal access token'
             requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
-              desc: 'The array of scopes of the personal access token'
+                              desc: 'The array of scopes of the personal access token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
           end
           post feature_category: :authentication_and_authorization do

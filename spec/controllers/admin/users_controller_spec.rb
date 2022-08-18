@@ -140,7 +140,7 @@ RSpec.describe Admin::UsersController do
       it 'displays the rejection message' do
         subject
 
-        expect(response).to redirect_to(admin_users_path)
+        expect(response).to redirect_to(admin_user_path(user))
         expect(flash[:notice]).to eq("You've rejected #{user.name}")
       end
 
@@ -612,8 +612,8 @@ RSpec.describe Admin::UsersController do
       end
 
       context 'when the new password does not match the password confirmation' do
-        let(:password) { 'some_password' }
-        let(:password_confirmation) { 'not_same_as_password' }
+        let(:password) { User.random_password }
+        let(:password_confirmation) { User.random_password }
 
         it 'shows the edit page again' do
           update_password(user, password, password_confirmation)

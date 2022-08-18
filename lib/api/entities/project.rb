@@ -47,8 +47,9 @@ module API
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions
-      expose :container_expiration_policy, using: Entities::ContainerExpirationPolicy,
-        if: -> (project, _) { project.container_expiration_policy }
+      expose :container_expiration_policy,
+             using: Entities::ContainerExpirationPolicy,
+             if: -> (project, _) { project.container_expiration_policy }
 
       # Expose old field names with the new permissions methods to keep API compatible
       # TODO: remove in API v5, replaced by *_access_level
@@ -67,18 +68,18 @@ module API
         Ability.allowed?(options[:current_user], :create_merge_request_in, project)
       end
 
-      expose(:issues_access_level) { |project, options| project.project_feature.string_access_level(:issues) }
-      expose(:repository_access_level) { |project, options| project.project_feature.string_access_level(:repository) }
-      expose(:merge_requests_access_level) { |project, options| project.project_feature.string_access_level(:merge_requests) }
-      expose(:forking_access_level) { |project, options| project.project_feature.string_access_level(:forking) }
-      expose(:wiki_access_level) { |project, options| project.project_feature.string_access_level(:wiki) }
-      expose(:builds_access_level) { |project, options| project.project_feature.string_access_level(:builds) }
-      expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }
-      expose(:pages_access_level) { |project, options| project.project_feature.string_access_level(:pages) }
-      expose(:operations_access_level) { |project, options| project.project_feature.string_access_level(:operations) }
-      expose(:analytics_access_level) { |project, options| project.project_feature.string_access_level(:analytics) }
-      expose(:container_registry_access_level) { |project, options| project.project_feature.string_access_level(:container_registry) }
-      expose(:security_and_compliance_access_level) { |project, options| project.project_feature.string_access_level(:security_and_compliance) }
+      expose(:issues_access_level) { |project, options| project_feature_string_access_level(project, :issues) }
+      expose(:repository_access_level) { |project, options| project_feature_string_access_level(project, :repository) }
+      expose(:merge_requests_access_level) { |project, options| project_feature_string_access_level(project, :merge_requests) }
+      expose(:forking_access_level) { |project, options| project_feature_string_access_level(project, :forking) }
+      expose(:wiki_access_level) { |project, options| project_feature_string_access_level(project, :wiki) }
+      expose(:builds_access_level) { |project, options| project_feature_string_access_level(project, :builds) }
+      expose(:snippets_access_level) { |project, options| project_feature_string_access_level(project, :snippets) }
+      expose(:pages_access_level) { |project, options| project_feature_string_access_level(project, :pages) }
+      expose(:operations_access_level) { |project, options| project_feature_string_access_level(project, :operations) }
+      expose(:analytics_access_level) { |project, options| project_feature_string_access_level(project, :analytics) }
+      expose(:container_registry_access_level) { |project, options| project_feature_string_access_level(project, :container_registry) }
+      expose(:security_and_compliance_access_level) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
 
       expose :emails_disabled
       expose :shared_runners_enabled
@@ -105,13 +106,13 @@ module API
       expose :ci_job_token_scope_enabled
       expose :ci_separated_caches
       expose :ci_opt_in_jwt
+      expose :ci_allow_fork_pipelines_to_run_in_parent_project
       expose :public_builds, as: :public_jobs
       expose :build_git_strategy, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
         project.build_allow_git_fetch ? 'fetch' : 'clone'
       end
       expose :build_timeout
       expose :auto_cancel_pending_pipelines
-      expose :build_coverage_regex
       expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         user = options[:current_user]

@@ -38,10 +38,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
             batch_column: 'id',
             sub_batch_size: 1,
             pause_ms: pause_ms,
+            job_arguments: active_migration.job_arguments,
             connection: connection)
       .and_return(job_instance)
 
-    expect(job_instance).to receive(:perform).with('id', 'other_id')
+    expect(job_instance).to receive(:perform).with(no_args)
 
     perform
   end
@@ -49,7 +50,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   it 'updates the tracking record in the database' do
     test_metrics = { 'my_metrics' => 'some value' }
 
-    expect(job_instance).to receive(:perform).with('id', 'other_id')
+    expect(job_instance).to receive(:perform).with(no_args)
     expect(job_instance).to receive(:batch_metrics).and_return(test_metrics)
 
     freeze_time do
@@ -78,7 +79,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     it 'increments attempts and updates other fields' do
       updated_metrics = { 'updated_metrics' => 'some_value' }
 
-      expect(job_instance).to receive(:perform).with('id', 'other_id')
+      expect(job_instance).to receive(:perform).with(no_args)
       expect(job_instance).to receive(:batch_metrics).and_return(updated_metrics)
 
       freeze_time do
@@ -97,7 +98,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   context 'when the migration job does not raise an error' do
     it 'marks the tracking record as succeeded' do
-      expect(job_instance).to receive(:perform).with('id', 'other_id')
+      expect(job_instance).to receive(:perform).with(no_args)
 
       freeze_time do
         perform
@@ -110,7 +111,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     end
 
     it 'tracks metrics of the execution' do
-      expect(job_instance).to receive(:perform).with('id', 'other_id')
+      expect(job_instance).to receive(:perform).with(no_args)
       expect(metrics_tracker).to receive(:track).with(job_record)
 
       perform
@@ -120,7 +121,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   context 'when the migration job raises an error' do
     shared_examples 'an error is raised' do |error_class|
       it 'marks the tracking record as failed' do
-        expect(job_instance).to receive(:perform).with('id', 'other_id').and_raise(error_class)
+        expect(job_instance).to receive(:perform).with(no_args).and_raise(error_class)
 
         freeze_time do
           expect { perform }.to raise_error(error_class)
@@ -133,7 +134,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       end
 
       it 'tracks metrics of the execution' do
-        expect(job_instance).to receive(:perform).with('id', 'other_id').and_raise(error_class)
+        expect(job_instance).to receive(:perform).with(no_args).and_raise(error_class)
         expect(metrics_tracker).to receive(:track).with(job_record)
 
         expect { perform }.to raise_error(error_class)
@@ -147,6 +148,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   context 'when the batched background migration does not inherit from BatchedMigrationJob' do
     let(:job_class) { Class.new }
+    let(:job_instance) { job_class.new }
 
     it 'runs the job with the correct arguments' do
       expect(job_class).to receive(:new).with(no_args).and_return(job_instance)

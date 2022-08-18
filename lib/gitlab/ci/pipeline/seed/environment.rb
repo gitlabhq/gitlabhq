@@ -30,7 +30,7 @@ module Gitlab
           end
 
           def deployment_tier
-            job.environment_deployment_tier
+            job.environment_tier_from_options
           end
 
           def expanded_environment_name

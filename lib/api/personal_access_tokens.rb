@@ -57,9 +57,14 @@ module API
       get ':id' do
         token = PersonalAccessToken.find_by_id(params[:id])
 
-        unauthorized! unless token && Ability.allowed?(current_user, :read_user_personal_access_tokens, token.user)
+        allowed = Ability.allowed?(current_user, :read_user_personal_access_tokens, token&.user)
 
-        present token, with: Entities::PersonalAccessToken
+        if allowed
+          present token, with: Entities::PersonalAccessToken
+        else
+          # Only admins should be informed if the token doesn't exist
+          current_user.admin? ? not_found! : unauthorized!
+        end
       end
 
       delete 'self' do

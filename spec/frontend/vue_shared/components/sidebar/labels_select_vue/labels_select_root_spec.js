@@ -138,13 +138,13 @@ describe('LabelsSelectRoot', () => {
     it('renders `dropdown-value-collapsed` component when `allowLabelCreate` prop is `true`', async () => {
       createComponent();
       await nextTick();
-      expect(wrapper.find(DropdownValueCollapsed).exists()).toBe(true);
+      expect(wrapper.findComponent(DropdownValueCollapsed).exists()).toBe(true);
     });
 
     it('renders `dropdown-title` component', async () => {
       createComponent();
       await nextTick();
-      expect(wrapper.find(DropdownTitle).exists()).toBe(true);
+      expect(wrapper.findComponent(DropdownTitle).exists()).toBe(true);
     });
 
     it('renders `dropdown-value` component', async () => {
@@ -153,7 +153,7 @@ describe('LabelsSelectRoot', () => {
       });
       await nextTick();
 
-      const valueComp = wrapper.find(DropdownValue);
+      const valueComp = wrapper.findComponent(DropdownValue);
 
       expect(valueComp.exists()).toBe(true);
       expect(valueComp.text()).toBe('None');
@@ -163,14 +163,14 @@ describe('LabelsSelectRoot', () => {
       createComponent();
       wrapper.vm.$store.dispatch('toggleDropdownButton');
       await nextTick();
-      expect(wrapper.find(DropdownButton).exists()).toBe(true);
+      expect(wrapper.findComponent(DropdownButton).exists()).toBe(true);
     });
 
     it('renders `dropdown-contents` component when `showDropdownButton` & `showDropdownContents` prop is `true`', async () => {
       createComponent();
       wrapper.vm.$store.dispatch('toggleDropdownContents');
       await nextTick();
-      expect(wrapper.find(DropdownContents).exists()).toBe(true);
+      expect(wrapper.findComponent(DropdownContents).exists()).toBe(true);
     });
 
     describe('sets content direction based on viewport', () => {
@@ -187,7 +187,7 @@ describe('LabelsSelectRoot', () => {
             wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
 
             await nextTick();
-            expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(true);
+            expect(wrapper.findComponent(DropdownContents).props('renderOnTop')).toBe(true);
           });
 
           it('does not set direction when inside of viewport', async () => {
@@ -195,7 +195,7 @@ describe('LabelsSelectRoot', () => {
             wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
 
             await nextTick();
-            expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(false);
+            expect(wrapper.findComponent(DropdownContents).props('renderOnTop')).toBe(false);
           });
         },
       );

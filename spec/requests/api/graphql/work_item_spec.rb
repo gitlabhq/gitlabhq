@@ -8,7 +8,16 @@ RSpec.describe 'Query.work_item(id)' do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:work_item) { create(:work_item, project: project, description: '- List item', weight: 1) }
+  let_it_be(:work_item) do
+    create(
+      :work_item,
+      project: project,
+      description: '- List item',
+      start_date: Date.today,
+      due_date: 1.week.from_now
+    )
+  end
+
   let_it_be(:child_item1) { create(:work_item, :task, project: project) }
   let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project) }
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
@@ -16,7 +25,7 @@ RSpec.describe 'Query.work_item(id)' do
 
   let(:current_user) { developer }
   let(:work_item_data) { graphql_data['workItem'] }
-  let(:work_item_fields) { all_graphql_fields_for('WorkItem') }
+  let(:work_item_fields) { all_graphql_fields_for('WorkItem', max_depth: 2) }
   let(:global_id) { work_item.to_gid.to_s }
 
   let(:query) do
@@ -41,8 +50,10 @@ RSpec.describe 'Query.work_item(id)' do
         'lockVersion' => work_item.lock_version,
         'state' => "OPEN",
         'title' => work_item.title,
+        'confidential' => work_item.confidential,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
-        'userPermissions' => { 'readWorkItem' => true, 'updateWorkItem' => true, 'deleteWorkItem' => false }
+        'userPermissions' => { 'readWorkItem' => true, 'updateWorkItem' => true, 'deleteWorkItem' => false },
+        'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
     end
 
@@ -163,32 +174,6 @@ RSpec.describe 'Query.work_item(id)' do
         end
       end
 
-      describe 'weight widget' do
-        let(:work_item_fields) do
-          <<~GRAPHQL
-            id
-            widgets {
-              type
-              ... on WorkItemWidgetWeight {
-                weight
-              }
-            }
-          GRAPHQL
-        end
-
-        it 'returns widget information' do
-          expect(work_item_data).to include(
-            'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'WEIGHT',
-                'weight' => work_item.weight
-              )
-            )
-          )
-        end
-      end
-
       describe 'assignees widget' do
         let(:assignees) { create_list(:user, 2) }
         let(:work_item) { create(:work_item, project: project, assignees: assignees) }
@@ -225,6 +210,72 @@ RSpec.describe 'Query.work_item(id)' do
                     assignees.map { |a| { 'id' => a.to_gid.to_s, 'username' => a.username } }
                   )
                 }
+              )
+            )
+          )
+        end
+      end
+
+      describe 'labels widget' do
+        let(:labels) { create_list(:label, 2, project: project) }
+        let(:work_item) { create(:work_item, project: project, labels: labels) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetLabels {
+                labels {
+                  nodes {
+                    id
+                    title
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'LABELS',
+                'labels' => {
+                  'nodes' => match_array(
+                    labels.map { |a| { 'id' => a.to_gid.to_s, 'title' => a.title } }
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
+
+      describe 'start and due date widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetStartAndDueDate {
+                startDate
+                dueDate
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'START_AND_DUE_DATE',
+                'startDate' => work_item.start_date.to_s,
+                'dueDate' => work_item.due_date.to_s
               )
             )
           )

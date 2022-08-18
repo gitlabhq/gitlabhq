@@ -200,6 +200,9 @@ export default {
         },
         { 'gl-rounded-lg': this.isBridge },
         this.cssClassJobName,
+        {
+          [`job-${this.status.group}`]: this.isSingleItem,
+        },
       ];
     },
   },

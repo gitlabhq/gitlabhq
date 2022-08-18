@@ -111,7 +111,7 @@ class ProjectMember < Member
 
     # rubocop:disable CodeReuse/ServiceClass
     if blocking
-      AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.bulk_perform_and_wait([[project.id, user.id]])
+      blocking_project_authorizations_refresh
     else
       AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.perform_async(project.id, user.id)
     end
@@ -122,6 +122,11 @@ class ProjectMember < Member
     UserProjectAccessChangedService.new(user_id)
                                    .execute(blocking: false, priority: UserProjectAccessChangedService::LOW_PRIORITY)
     # rubocop:enable CodeReuse/ServiceClass
+  end
+
+  # This method is overridden in the test environment, see stubbed_member.rb
+  def blocking_project_authorizations_refresh
+    AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.bulk_perform_and_wait([[project.id, user.id]])
   end
 
   # TODO: https://gitlab.com/groups/gitlab-org/-/epics/7054

@@ -14,7 +14,6 @@ module WebHooks
       @hook = hook
       @log_data = log_data.transform_keys(&:to_sym)
       @response_category = response_category
-      @prev_state = hook.active_state(ignore_flag: true)
     end
 
     def execute
@@ -43,34 +42,10 @@ module WebHooks
           hook.failed!
         end
 
-        log_state_change
         hook.update_last_failure
       end
     rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
       raise if raise_lock_error?
-    end
-
-    def log_state_change
-      new_state = hook.active_state(ignore_flag: true)
-
-      return if @prev_state == new_state
-
-      Gitlab::AuthLogger.info(
-        message: 'WebHook change active_state',
-        # identification
-        hook_id: hook.id,
-        hook_type: hook.type,
-        project_id: hook.project_id,
-        group_id: hook.group_id,
-        # relevant data
-        prev_state: @prev_state,
-        new_state: new_state,
-        duration: log_data[:execution_duration],
-        response_status: log_data[:response_status],
-        recent_hook_failures: hook.recent_failures,
-        # context
-        **Gitlab::ApplicationContext.current
-      )
     end
 
     def lock_name

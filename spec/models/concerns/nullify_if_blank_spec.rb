@@ -31,7 +31,7 @@ RSpec.describe NullifyIfBlank do
     context 'attribute is nil' do
       let(:name) { nil }
 
-      it { is_expected.to be_nil}
+      it { is_expected.to be_nil }
     end
 
     context 'attribute is not blank' do

@@ -56,7 +56,7 @@ module Gitlab
               )
 
               lines.zip(line_positions_at_source_diff(lines, transformed_blocks))
-                   .map { |line, positions| mutate_line(line, positions, lines_in_source)}
+                   .map { |line, positions| mutate_line(line, positions, lines_in_source) }
             end
           end
 

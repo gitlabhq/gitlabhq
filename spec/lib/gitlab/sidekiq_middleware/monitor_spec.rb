@@ -41,7 +41,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::Monitor do
         ::Sidekiq::DeadSet.new.clear
 
         expect do
-          subject rescue Sidekiq::JobRetry::Skip
+          subject
+        rescue Sidekiq::JobRetry::Skip
+          nil
         end.to change { ::Sidekiq::DeadSet.new.size }.by(1)
       end
     end

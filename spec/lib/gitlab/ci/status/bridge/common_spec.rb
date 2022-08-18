@@ -29,15 +29,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Common do
       end
 
       it { expect(subject).to have_details }
-      it { expect(subject.details_path).to include "jobs/#{bridge.id}" }
-
-      context 'with ci_retry_downstream_pipeline ff disabled' do
-        before do
-          stub_feature_flags(ci_retry_downstream_pipeline: false)
-        end
-
-        it { expect(subject.details_path).to include "pipelines/#{downstream_pipeline.id}" }
-      end
+      it { expect(subject.details_path).to include "pipelines/#{downstream_pipeline.id}" }
     end
 
     context 'when user does not have access to read downstream pipeline' do

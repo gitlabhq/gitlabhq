@@ -84,3 +84,9 @@ hidden files.
 
 If there is no `.gitmodules` file, it's possible the submodule settings are in a
 [`git config`](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config) file.
+
+### `fatal: run_command returned non-zero status` error
+
+This error can happen in a job when working with submodules and the `GIT_STRATEGY` is set to `fetch`.
+
+Setting the `GIT_STRATEGY` to `clone` should resolve the issue.

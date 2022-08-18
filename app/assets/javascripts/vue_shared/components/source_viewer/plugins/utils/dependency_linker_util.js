@@ -7,9 +7,10 @@ export const createLink = (href, innerText) => {
   const link = document.createElement('a');
 
   setAttributes(link, { href: escape(href), rel });
-  link.innerText = escape(innerText);
+  link.textContent = innerText;
 
   return link.outerHTML;
 };
 
-export const generateHLJSOpenTag = (type) => `<span class="hljs-${escape(type)}">&quot;`;
+export const generateHLJSOpenTag = (type, delimiter = '&quot;') =>
+  `<span class="hljs-${escape(type)}">${delimiter}`;

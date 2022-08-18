@@ -9,7 +9,11 @@ module Gitlab
         return default_strategy.new unless strategy_klass
 
         attributes ||= {}
-        klass = strategy_klass.constantize rescue nil
+        klass = begin
+          strategy_klass.constantize
+        rescue StandardError
+          nil
+        end
 
         unless klass && klass < AfterExportStrategies::BaseAfterExportStrategy
           raise StrategyNotFoundError, "Strategy #{strategy_klass} not found"

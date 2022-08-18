@@ -67,8 +67,8 @@ module QA
         end
 
         view 'app/views/shared/_ref_switcher.html.haml' do
-          element :branches_select
           element :branches_dropdown
+          element :branches_dropdown_content
         end
 
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
@@ -176,9 +176,9 @@ module QA
         end
 
         def switch_to_branch(branch_name)
-          find_element(:branches_select).click
+          find_element(:branches_dropdown).click
 
-          within_element(:branches_dropdown) do
+          within_element(:branches_dropdown_content) do
             click_on branch_name
           end
         end

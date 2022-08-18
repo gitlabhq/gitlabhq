@@ -13,13 +13,13 @@ import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
+import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
 
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
-import RunnerCount from '~/runner/components/stat/runner_count.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
@@ -32,15 +32,14 @@ import {
   GROUP_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
-  PARAM_KEY_TAG,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
-import groupRunnersQuery from '~/runner/graphql/list/group_runners.query.graphql';
-import groupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
+import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
+import groupRunnersCountQuery from 'ee_else_ce/runner/graphql/list/group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import {
@@ -49,6 +48,7 @@ import {
   groupRunnersCountData,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
 } from '../mock_data';
@@ -82,7 +82,7 @@ describe('GroupRunnersApp', () => {
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerRow = (id) => extendedWrapper(wrapper.findByTestId(`runner-row-${id}`));
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
+  const findRunnerPaginationNext = () => findRunnerPagination().findByText(s__('Pagination|Next'));
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
@@ -111,7 +111,7 @@ describe('GroupRunnersApp', () => {
     return waitForPromises();
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockGroupRunnersHandler.mockResolvedValue(groupRunnersData);
     mockGroupRunnersCountHandler.mockResolvedValue(groupRunnersCountData);
   });
@@ -197,6 +197,7 @@ describe('GroupRunnersApp', () => {
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
+      upgradeStatusTokenConfig,
     ]);
   });
 
@@ -254,12 +255,7 @@ describe('GroupRunnersApp', () => {
     beforeEach(async () => {
       setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}`);
 
-      await createComponent({
-        stubs: {
-          RunnerStats,
-          RunnerCount,
-        },
-      });
+      await createComponent({ mountFn: mountExtended });
     });
 
     it('sets the filters in the search bar', () => {
@@ -267,7 +263,7 @@ describe('GroupRunnersApp', () => {
         runnerType: INSTANCE_TYPE,
         filters: [{ type: 'status', value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: 'CREATED_DESC',
-        pagination: { page: 1 },
+        pagination: {},
       });
     });
 
@@ -292,19 +288,11 @@ describe('GroupRunnersApp', () => {
 
   describe('when a filter is selected by the user', () => {
     beforeEach(async () => {
-      createComponent({
-        stubs: {
-          RunnerStats,
-          RunnerCount,
-        },
-      });
+      await createComponent({ mountFn: mountExtended });
 
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [
-          { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
-          { type: PARAM_KEY_TAG, value: { data: 'tag1', operator: '=' } },
-        ],
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
 
@@ -314,7 +302,7 @@ describe('GroupRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: expect.stringContaining('?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC'),
+        url: expect.stringContaining('?status[]=ONLINE&sort=CREATED_ASC'),
       });
     });
 
@@ -322,7 +310,6 @@ describe('GroupRunnersApp', () => {
       expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
-        tagList: ['tag1'],
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });
@@ -331,7 +318,6 @@ describe('GroupRunnersApp', () => {
     it('fetches count results for requested status', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
         groupFullPath: mockGroupFullPath,
-        tagList: ['tag1'],
         status: STATUS_ONLINE,
       });
     });
@@ -340,6 +326,7 @@ describe('GroupRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
+    expect(findRunnerPagination().attributes('disabled')).toBe('true');
   });
 
   describe('when no runners are found', () => {
@@ -348,11 +335,18 @@ describe('GroupRunnersApp', () => {
         data: {
           group: {
             id: '1',
-            runners: { nodes: [] },
+            runners: {
+              edges: [],
+              pageInfo: emptyPageInfo,
+            },
           },
         },
       });
       await createComponent();
+    });
+
+    it('shows no errors', () => {
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
     it('shows an empty state', async () => {
@@ -379,10 +373,16 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('Pagination', () => {
+    const { pageInfo } = groupRunnersDataPaginated.data.group.runners;
+
     beforeEach(async () => {
       mockGroupRunnersHandler.mockResolvedValue(groupRunnersDataPaginated);
 
       await createComponent({ mountFn: mountExtended });
+    });
+
+    it('passes the page info', () => {
+      expect(findRunnerPagination().props('pageInfo')).toEqual(pageInfo);
     });
 
     it('navigates to the next page', async () => {
@@ -392,7 +392,7 @@ describe('GroupRunnersApp', () => {
         groupFullPath: mockGroupFullPath,
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
-        after: groupRunnersDataPaginated.data.group.runners.pageInfo.endCursor,
+        after: pageInfo.endCursor,
       });
     });
   });

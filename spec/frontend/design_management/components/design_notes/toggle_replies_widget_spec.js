@@ -8,10 +8,10 @@ describe('Toggle replies widget component', () => {
   let wrapper;
 
   const findToggleWrapper = () => wrapper.find('[data-testid="toggle-comments-wrapper"]');
-  const findIcon = () => wrapper.find(GlIcon);
-  const findButton = () => wrapper.find(GlButton);
-  const findAuthorLink = () => wrapper.find(GlLink);
-  const findTimeAgo = () => wrapper.find(TimeAgoTooltip);
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findAuthorLink = () => wrapper.findComponent(GlLink);
+  const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
   function createComponent(props = {}) {
     wrapper = shallowMount(ToggleRepliesWidget, {

@@ -8,13 +8,13 @@ module BadgesHelper
     success: "badge-success",
     warning: "badge-warning",
     danger: "badge-danger"
-  }.tap { |hash| hash.default = hash.fetch(:muted) } .freeze
+  }.tap { |hash| hash.default = hash.fetch(:muted) }.freeze
 
   SIZE_CLASSES = {
     sm: "sm",
     md: "md",
     lg: "lg"
-  }.tap { |hash| hash.default = hash.fetch(:md) } .freeze
+  }.tap { |hash| hash.default = hash.fetch(:md) }.freeze
 
   GL_BADGE_CLASSES = %w[gl-badge badge badge-pill].freeze
 
@@ -53,7 +53,7 @@ module BadgesHelper
   #
   # See also https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-badge--default.
   def gl_badge_tag(*args, &block)
-    if block_given?
+    if block
       build_gl_badge_tag(capture(&block), *args)
     else
       build_gl_badge_tag(*args)

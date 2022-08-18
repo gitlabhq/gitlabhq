@@ -228,6 +228,46 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
         it { is_expected.to eq({ hosts: shortened_hosts, project_id: project.id }) }
       end
     end
+
+    context 'with present, non-string values for string fields' do
+      let_it_be(:stubs) do
+        {
+          description: { "description" => "description" },
+          monitoring_tool: ['datadog', 5],
+          service: 4356875,
+          title: true
+        }
+      end
+
+      before do
+        allow(parsed_payload).to receive_messages(stubs)
+      end
+
+      it 'casts values to strings' do
+        is_expected.to eq({
+          description: "{\"description\"=>\"description\"}",
+          monitoring_tool: "[\"datadog\", 5]",
+          service: '4356875',
+          project_id: project.id,
+          title: "true"
+        })
+      end
+    end
+
+    context 'with blank values for string fields' do
+      let_it_be(:stubs) do
+        {
+          description: nil,
+          monitoring_tool: '',
+          service: {},
+          title: []
+        }
+      end
+
+      it 'leaves the fields blank' do
+        is_expected.to eq({ project_id: project.id })
+      end
+    end
   end
 
   describe '#gitlab_fingerprint' do

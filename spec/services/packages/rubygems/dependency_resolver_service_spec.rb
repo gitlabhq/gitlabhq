@@ -47,9 +47,9 @@ RSpec.describe Packages::Rubygems::DependencyResolverService do
       end
 
       context 'package with dependencies' do
-        let(:dependency_link) { create(:packages_dependency_link, :rubygems, package: package)}
-        let(:dependency_link2) { create(:packages_dependency_link, :rubygems, package: package)}
-        let(:dependency_link3) { create(:packages_dependency_link, :rubygems, package: package)}
+        let(:dependency_link) { create(:packages_dependency_link, :rubygems, package: package) }
+        let(:dependency_link2) { create(:packages_dependency_link, :rubygems, package: package) }
+        let(:dependency_link3) { create(:packages_dependency_link, :rubygems, package: package) }
 
         it 'returns a set of dependencies' do
           expected_result = [{
@@ -68,11 +68,11 @@ RSpec.describe Packages::Rubygems::DependencyResolverService do
       end
 
       context 'package with multiple versions' do
-        let(:dependency_link) { create(:packages_dependency_link, :rubygems, package: package)}
-        let(:dependency_link2) { create(:packages_dependency_link, :rubygems, package: package)}
-        let(:dependency_link3) { create(:packages_dependency_link, :rubygems, package: package)}
+        let(:dependency_link) { create(:packages_dependency_link, :rubygems, package: package) }
+        let(:dependency_link2) { create(:packages_dependency_link, :rubygems, package: package) }
+        let(:dependency_link3) { create(:packages_dependency_link, :rubygems, package: package) }
         let(:package2) { create(:package, project: project, name: package.name, version: '9.9.9') }
-        let(:dependency_link4) { create(:packages_dependency_link, :rubygems, package: package2)}
+        let(:dependency_link4) { create(:packages_dependency_link, :rubygems, package: package2) }
 
         it 'returns a set of dependencies' do
           expected_result = [{

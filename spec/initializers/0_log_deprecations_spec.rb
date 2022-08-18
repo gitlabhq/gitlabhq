@@ -11,6 +11,15 @@ RSpec.describe '0_log_deprecations' do
     load Rails.root.join('config/initializers/0_log_deprecations.rb')
   end
 
+  def with_deprecation_behavior
+    behavior = ActiveSupport::Deprecation.behavior
+    ActiveSupport::Deprecation.behavior = deprecation_behavior
+    yield
+  ensure
+    ActiveSupport::Deprecation.behavior = behavior
+  end
+
+  let(:deprecation_behavior) { :stderr }
   let(:env_var) { '1' }
 
   before do
@@ -24,19 +33,39 @@ RSpec.describe '0_log_deprecations' do
   end
 
   around do |example|
-    # reset state changed by initializer
-    Warning.clear(&example)
+    with_deprecation_behavior do
+      # reset state changed by initializer
+      Warning.clear(&example)
+    end
   end
 
   describe 'Ruby deprecations' do
-    context 'when catching deprecations through Kernel#warn' do
-      it 'also logs them to deprecation logger' do
+    shared_examples 'deprecation logger' do
+      it 'logs them to deprecation logger once and to stderr' do
         expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(
           message: 'ABC gem is deprecated',
           source: 'ruby'
         )
 
-        expect { warn('ABC gem is deprecated') }.to output.to_stderr
+        expect { subject }.to output.to_stderr
+      end
+    end
+
+    context 'when catching deprecations through Kernel#warn' do
+      subject { warn('ABC gem is deprecated') }
+
+      include_examples 'deprecation logger'
+
+      context 'with non-notify deprecation behavior' do
+        let(:deprecation_behavior) { :silence }
+
+        include_examples 'deprecation logger'
+      end
+
+      context 'with notify deprecation behavior' do
+        let(:deprecation_behavior) { :notify }
+
+        include_examples 'deprecation logger'
       end
     end
 
@@ -60,13 +89,40 @@ RSpec.describe '0_log_deprecations' do
   end
 
   describe 'Rails deprecations' do
-    it 'logs them to deprecation logger' do
-      expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(
-        message: match(/^DEPRECATION WARNING: ABC will be removed/),
-        source: 'rails'
-      )
+    subject { ActiveSupport::Deprecation.warn('ABC will be removed') }
 
-      expect { ActiveSupport::Deprecation.warn('ABC will be removed') }.to output.to_stderr
+    shared_examples 'deprecation logger' do
+      it 'logs them to deprecation logger once' do
+        expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(
+          message: match(/^DEPRECATION WARNING: ABC will be removed/),
+          source: 'rails'
+        )
+
+        subject
+      end
+    end
+
+    context 'with non-notify deprecation behavior' do
+      let(:deprecation_behavior) { :silence }
+
+      include_examples 'deprecation logger'
+    end
+
+    context 'with notify deprecation behavior' do
+      let(:deprecation_behavior) { :notify }
+
+      include_examples 'deprecation logger'
+    end
+
+    context 'when deprecations were silenced' do
+      around do |example|
+        silenced = ActiveSupport::Deprecation.silenced
+        ActiveSupport::Deprecation.silenced = true
+        example.run
+        ActiveSupport::Deprecation.silenced = silenced
+      end
+
+      include_examples 'deprecation logger'
     end
 
     context 'when disabled via environment' do

@@ -101,7 +101,8 @@ module Gitlab
                   ref: pipeline.ref,
                   type: pipeline.source
                 },
-                builds: builds_validation_payload
+                builds: builds_validation_payload,
+                total_builds_count: current_user.pipelines.jobs_count_in_alive_pipelines
               }
             end
 

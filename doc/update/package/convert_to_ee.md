@@ -22,6 +22,8 @@ that may require Support intervention.
 
 The steps can be summed up to:
 
+1. Make a [GitLab backup](../../raketasks/backup_gitlab.md).
+
 1. Find the currently installed GitLab version:
 
    **For Debian/Ubuntu**
@@ -67,7 +69,7 @@ The steps can be summed up to:
    If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
    step to find the current GitLab version, then follow
    [Update using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
-   and then [add your license](../../user/admin_area/license.md). 
+   and then [add your license](../../user/admin_area/license.md).
 
 1. Install the `gitlab-ee` package. The install automatically
    uninstalls the `gitlab-ce` package on your GitLab server. `reconfigure`
@@ -113,6 +115,8 @@ The steps can be summed up to:
    ```shell
    sudo rm /etc/yum.repos.d/gitlab_gitlab-ce.repo
    ```
+
+1. Optional. [Set up the Elasticsearch integration](../../integration/advanced_search/elasticsearch.md) to enable [Advanced Search](../../user/search/advanced_search.md).
 
 That's it! You can now use GitLab Enterprise Edition! To update to a newer
 version, follow [Update using the official repositories](index.md#upgrade-using-the-official-repositories).

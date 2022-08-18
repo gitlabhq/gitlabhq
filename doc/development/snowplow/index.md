@@ -89,10 +89,10 @@ Each click event provides attributes that describe the event.
 
 | Attribute | Type    | Required | Description |
 | --------- | ------- | -------- | ----------- |
-| category  | text    | true     | The page or backend section of the application. Unless infeasible, use the Rails page attribute by default in the frontend, and namespace + class name on the backend. |
+| category  | text    | true     | The page or backend section of the application. Unless infeasible, use the Rails page attribute by default in the frontend, and namespace + class name on the backend, for example, `Notes::CreateService`. |
 | action    | text    | true     | The action the user takes, or aspect that's being instrumented. The first word must describe the action or aspect. For example, clicks must be `click`, activations must be `activate`, creations must be `create`. Use underscores to describe what was acted on. For example, activating a form field is `activate_form_input`, an interface action like clicking on a dropdown is `click_dropdown`, a behavior like creating a project record from the backend is `create_project`. |
-| label     | text    | false    | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. |
-| property  | text    | false    | Any additional property of the element, or object being acted on. |
+| label     | text    | false    | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. For Service Ping metrics adapted to Snowplow events, this should be the full metric [key path](../service_ping/metrics_dictionary.md#metric-key_path) taken from its definition file. |
+| property  | text    | false    | Any additional property of the element, or object being acted on. For Service Ping metrics adapted to Snowplow events, this should be additional information or context that can help analyze the event. For example, in the case of `usage_activity_by_stage_monthly.create.merge_requests_users`, there are four different possible merge request actions: "create", "merge", "comment", and "close". Each of these would be a possible property value. |
 | value     | decimal | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. |
 
 ### Examples
@@ -106,6 +106,7 @@ Each click event provides attributes that describe the event.
 | `[projects:blob:show]` | `congratulate_first_pipeline` | `click_button` | `[human_access]` | - |
 | `[projects:clusters:new]` | `chart_options` | `generate_link` | `[chart_link]` | - |
 | `[projects:clusters:new]` | `chart_options` | `click_add_label_button` | `[label_id]` | - |
+| `API::NpmPackages` | `counts.package_events_i_package_push_package_by_deploy_token` | `push_package` | `npm` | - |
 
 _* If you choose to omit the category you can use the default._<br>
 _** Use property for variable strings._

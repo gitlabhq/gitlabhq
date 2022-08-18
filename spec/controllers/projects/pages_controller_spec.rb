@@ -19,9 +19,9 @@ RSpec.describe Projects::PagesController do
     project.add_maintainer(user)
   end
 
-  describe 'GET show' do
+  describe 'GET new' do
     it 'returns 200 status' do
-      get :show, params: request_params
+      get :new, params: request_params
 
       expect(response).to have_gitlab_http_status(:ok)
     end
@@ -31,9 +31,51 @@ RSpec.describe Projects::PagesController do
       let(:project) { create(:project, namespace: group) }
 
       it 'returns a 200 status code' do
-        get :show, params: request_params
+        get :new, params: request_params
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'GET show' do
+    subject { get :show, params: request_params }
+
+    context 'when the project does not have onboarding complete' do
+      before do
+        project.pages_metadatum.update_attribute(:deployed, false)
+        project.pages_metadatum.update_attribute(:onboarding_complete, false)
+      end
+
+      it 'redirects to #new' do
+        expect(subject).to redirect_to(action: 'new')
+      end
+    end
+
+    context 'when the project does have onboarding complete' do
+      before do
+        project.pages_metadatum.update_attribute(:onboarding_complete, true)
+      end
+
+      it 'returns 200 status' do
+        expect(subject).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when the project is in a subgroup' do
+        let(:group) { create(:group, :nested) }
+        let(:project) { create(:project, namespace: group) }
+
+        it 'returns a 200 status code' do
+          expect(subject).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'when pages is disabled' do
+      let(:project) { create(:project, :pages_disabled) }
+
+      it 'renders the disabled view' do
+        expect(subject).to render_template :disabled
       end
     end
   end

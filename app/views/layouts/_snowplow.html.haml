@@ -12,6 +12,9 @@
     window.snowplowOptions = #{Gitlab::Tracking.options(@group).to_json}
 
     gl = window.gl || {};
-    gl.snowplowStandardContext = #{Gitlab::Tracking::StandardContext.new(namespace: namespace,
-     project: @project, user: current_user).to_context.to_json.to_json}
+    gl.snowplowStandardContext = #{Gitlab::Tracking::StandardContext.new(
+      namespace: namespace,
+      project: @project,
+      user: current_user
+    ).to_context.to_json.to_json}
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};

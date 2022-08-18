@@ -24,12 +24,12 @@ module MergeRequests
 
       private
 
-      def success(*args)
-        Gitlab::MergeRequests::Mergeability::CheckResult.success(*args)
+      def success(**args)
+        Gitlab::MergeRequests::Mergeability::CheckResult.success(payload: args)
       end
 
-      def failure(*args)
-        Gitlab::MergeRequests::Mergeability::CheckResult.failed(*args)
+      def failure(**args)
+        Gitlab::MergeRequests::Mergeability::CheckResult.failed(payload: args)
       end
     end
   end

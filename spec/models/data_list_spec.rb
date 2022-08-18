@@ -8,7 +8,7 @@ RSpec.describe DataList do
     let(:zentao_integration) { create(:zentao_integration) }
     let(:cases) do
       [
-        [jira_integration, 'Integrations::JiraTrackerData', 'service_id'],
+        [jira_integration, 'Integrations::JiraTrackerData', 'integration_id'],
         [zentao_integration, 'Integrations::ZentaoTrackerData', 'integration_id']
       ]
     end

@@ -149,7 +149,7 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
-                                prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -174,6 +174,16 @@ class Group < Namespace
   scope :for_authorized_project_members, -> (user_ids) do
     joins(projects: :project_authorizations)
       .where(project_authorizations: { user_id: user_ids })
+  end
+
+  scope :project_creation_allowed, -> do
+    permitted_levels = [
+      ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
+      ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+      nil
+    ]
+
+    where(project_creation_level: permitted_levels)
   end
 
   class << self
@@ -853,6 +863,14 @@ class Group < Namespace
 
   def work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
+  end
+
+  def work_items_mvc_2_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
+  end
+
+  def work_items_create_from_markdown_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_create_from_markdown)
   end
 
   # Check for enabled features, similar to `Project#feature_available?`

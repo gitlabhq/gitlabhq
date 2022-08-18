@@ -23,8 +23,8 @@ RSpec::Matchers.define :publish_event do |expected_event_class|
 
   def match_data?(actual, expected)
     values_match?(actual.keys, expected.keys) &&
-      actual.keys.each do |key|
-        values_match?(actual[key], expected[key])
+      actual.keys.all? do |key|
+        values_match?(expected[key], actual[key])
       end
   end
 

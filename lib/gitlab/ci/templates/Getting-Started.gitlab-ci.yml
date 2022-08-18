@@ -42,6 +42,7 @@ lint-test-job:   # This job also runs in the test stage.
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."

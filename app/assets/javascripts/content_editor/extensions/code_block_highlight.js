@@ -1,3 +1,4 @@
+import { lowlight } from 'lowlight/lib/core';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { textblockTypeInputRule } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
@@ -66,4 +67,4 @@ export default CodeBlockLowlight.extend({
   addNodeView() {
     return new VueNodeViewRenderer(CodeBlockWrapper);
   },
-});
+}).configure({ lowlight });

@@ -6,10 +6,10 @@ import GraphGroup from '~/monitoring/components/graph_group.vue';
 describe('Graph group component', () => {
   let wrapper;
 
-  const findGroup = () => wrapper.find({ ref: 'graph-group' });
-  const findContent = () => wrapper.find({ ref: 'graph-group-content' });
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findCaretIcon = () => wrapper.find(GlIcon);
+  const findGroup = () => wrapper.findComponent({ ref: 'graph-group' });
+  const findContent = () => wrapper.findComponent({ ref: 'graph-group-content' });
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findCaretIcon = () => wrapper.findComponent(GlIcon);
   const findToggleButton = () => wrapper.find('[data-testid="group-toggle-button"]');
 
   const createComponent = (propsData) => {

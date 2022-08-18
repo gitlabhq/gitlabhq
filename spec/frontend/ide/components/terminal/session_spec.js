@@ -38,7 +38,7 @@ describe('IDE TerminalSession', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
     state = {
@@ -60,7 +60,7 @@ describe('IDE TerminalSession', () => {
   it('shows terminal', () => {
     factory();
 
-    expect(wrapper.find(Terminal).props()).toEqual({
+    expect(wrapper.findComponent(Terminal).props()).toEqual({
       terminalPath: TEST_TERMINAL_PATH,
       status: RUNNING,
     });

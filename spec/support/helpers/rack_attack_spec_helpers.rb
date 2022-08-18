@@ -17,8 +17,12 @@ module RackAttackSpecHelpers
     { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => personal_access_token.token }
   end
 
+  def bearer_headers(token)
+    { 'AUTHORIZATION' => "Bearer #{token.token}" }
+  end
+
   def oauth_token_headers(oauth_access_token)
-    { 'AUTHORIZATION' => "Bearer #{oauth_access_token.token}" }
+    { 'AUTHORIZATION' => "Bearer #{oauth_access_token.plaintext_token}" }
   end
 
   def basic_auth_headers(user, personal_access_token)

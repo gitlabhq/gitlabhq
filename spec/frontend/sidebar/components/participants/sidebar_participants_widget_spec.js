@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { stripTypenames } from 'helpers/graphql_helpers';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Participants from '~/sidebar/components/participants/participants.vue';
@@ -67,11 +66,9 @@ describe('Sidebar Participants Widget', () => {
     });
 
     it('passes participants to child component', () => {
-      const participantsWithoutTypename = stripTypenames(
+      expect(findParticipants().props('participants')).toEqual(
         epicParticipantsResponse().data.workspace.issuable.participants.nodes,
       );
-
-      expect(findParticipants().props('participants')).toEqual(participantsWithoutTypename);
     });
   });
 

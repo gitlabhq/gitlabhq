@@ -44,7 +44,7 @@ describe('Column component', () => {
       },
     });
   };
-  const findChart = () => wrapper.find(GlColumnChart);
+  const findChart = () => wrapper.findComponent(GlColumnChart);
   const chartProps = (prop) => findChart().props(prop);
 
   beforeEach(() => {

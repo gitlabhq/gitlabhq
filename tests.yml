@@ -19,6 +19,10 @@ mapping:
   - source: ee/lib/(.+)\.rb
     test: ee/spec/lib/%s_spec.rb
 
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/368628
+  - source: lib/gitlab/usage_data_counters/(.+)\.rb
+    test: spec/lib/gitlab/usage_data_spec.rb
+
   # FOSS lib & tooling should map to respective spec
   - source: (tooling/)?lib/(.+)\.rb
     test: spec/%slib/%s_spec.rb

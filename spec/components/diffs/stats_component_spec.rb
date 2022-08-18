@@ -19,7 +19,7 @@ RSpec.describe Diffs::StatsComponent, type: :component do
   let_it_be(:diff_files) { [diff_file] }
 
   describe "rendered component" do
-    subject { rendered_component }
+    subject { page }
 
     let(:element) { page.find(".js-diff-stats-dropdown") }
 

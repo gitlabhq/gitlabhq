@@ -10,6 +10,7 @@ module Gitlab
           # Disable Rugged auto-detect(can_use_disk?) when Puma threads>1
           # https://gitlab.com/gitlab-org/gitlab/issues/119326
           return false if running_puma_with_multiple_threads?
+          return false if Feature.enabled?(:skip_rugged_auto_detect, type: :ops)
 
           Gitlab::GitalyClient.can_use_disk?(repo.storage)
         end

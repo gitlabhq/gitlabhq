@@ -200,8 +200,7 @@ class FinalizeCiBuildsBigintConversion < Gitlab::Database::Migration[1.0]
         column: column,
         target_column: :id_convert_to_bigint,
         name: temporary_name,
-        on_delete: on_delete,
-        reverse_lock_order: true)
+        on_delete: on_delete)
     end
   end
 
@@ -214,9 +213,6 @@ class FinalizeCiBuildsBigintConversion < Gitlab::Database::Migration[1.0]
       next unless foreign_key_exists?(from_table, TABLE_NAME, column: column, primary_key: :id, name: existing_name)
 
       with_lock_retries do
-        # Explicitly lock table in order of parent, child to attempt to avoid deadlocks
-        execute "LOCK TABLE #{TABLE_NAME}, #{from_table} IN ACCESS EXCLUSIVE MODE"
-
         temporary_name = "#{existing_name}_tmp"
 
         remove_foreign_key(from_table, TABLE_NAME, column: column, primary_key: :id, name: existing_name)

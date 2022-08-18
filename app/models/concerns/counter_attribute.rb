@@ -82,18 +82,23 @@ module CounterAttribute
     lock_key = counter_lock_key(attribute)
 
     with_exclusive_lease(lock_key) do
+      previous_db_value = read_attribute(attribute)
       increment_key = counter_key(attribute)
       flushed_key = counter_flushed_key(attribute)
       increment_value = steal_increments(increment_key, flushed_key)
+      new_db_value = nil
 
       next if increment_value == 0
 
       transaction do
         unsafe_update_counters(id, attribute => increment_value)
         redis_state { |redis| redis.del(flushed_key) }
+        new_db_value = reset.read_attribute(attribute)
       end
 
       execute_after_flush_callbacks
+
+      log_flush_counter(attribute, increment_value, previous_db_value, new_db_value)
     end
   end
 
@@ -115,15 +120,19 @@ module CounterAttribute
 
   def increment_counter(attribute, increment)
     if counter_attribute_enabled?(attribute)
-      redis_state do |redis|
+      new_value = redis_state do |redis|
         redis.incrby(counter_key(attribute), increment)
       end
+
+      log_increment_counter(attribute, increment, new_value)
     end
   end
 
   def clear_counter!(attribute)
     if counter_attribute_enabled?(attribute)
       redis_state { |redis| redis.del(counter_key(attribute)) }
+
+      log_clear_counter(attribute)
     end
   end
 
@@ -183,5 +192,41 @@ module CounterAttribute
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     # a worker is already updating the counters
+  end
+
+  def log_increment_counter(attribute, increment, new_value)
+    payload = Gitlab::ApplicationContext.current.merge(
+      message: 'Increment counter attribute',
+      attribute: attribute,
+      project_id: project_id,
+      increment: increment,
+      new_counter_value: new_value,
+      current_db_value: read_attribute(attribute)
+    )
+
+    Gitlab::AppLogger.info(payload)
+  end
+
+  def log_flush_counter(attribute, increment, previous_db_value, new_db_value)
+    payload = Gitlab::ApplicationContext.current.merge(
+      message: 'Flush counter attribute to database',
+      attribute: attribute,
+      project_id: project_id,
+      increment: increment,
+      previous_db_value: previous_db_value,
+      new_db_value: new_db_value
+    )
+
+    Gitlab::AppLogger.info(payload)
+  end
+
+  def log_clear_counter(attribute)
+    payload = Gitlab::ApplicationContext.current.merge(
+      message: 'Clear counter attribute',
+      attribute: attribute,
+      project_id: project_id
+    )
+
+    Gitlab::AppLogger.info(payload)
   end
 end

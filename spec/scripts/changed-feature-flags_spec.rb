@@ -81,8 +81,8 @@ RSpec.describe 'scripts/changed-feature-flags' do
     end
 
     describe '.extracted_flags' do
-      let(:file_name1) { "foo_ff_#{SecureRandom.hex(8)}"}
-      let(:file_name2) { "bar_ff_#{SecureRandom.hex(8)}"}
+      let(:file_name1) { "foo_ff_#{SecureRandom.hex(8)}" }
+      let(:file_name2) { "bar_ff_#{SecureRandom.hex(8)}" }
       let(:ff_dir) { FileUtils.mkdir_p(File.join(Dir.tmpdir, ff_sub_dir)) }
       let(:diffs_dir) { FileUtils.mkdir_p(File.join(Dir.tmpdir, 'diffs')).first }
 

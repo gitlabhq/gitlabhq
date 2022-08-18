@@ -59,11 +59,15 @@ module API
       end
 
       def search(additional_params = {})
-        results = search_service(additional_params).search_objects(preload_method)
+        @search_duration_s = Benchmark.realtime do
+          @results = search_service(additional_params).search_objects(preload_method)
+        end
+
+        set_global_search_log_information
 
         Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
 
-        paginate(results)
+        paginate(@results)
       end
 
       def snippets?
@@ -82,6 +86,23 @@ module API
         # In EE we have additional validation requirements for searches.
         # Defining this method here as a noop allows us to easily extend it in
         # EE, without having to modify this file directly.
+      end
+
+      def search_type
+        'basic'
+      end
+
+      def search_scope
+        params[:scope]
+      end
+
+      def set_global_search_log_information
+        Gitlab::Instrumentation::GlobalSearchApi.set_information(
+          type: search_type,
+          level: search_service.level,
+          scope: search_scope,
+          search_duration_s: @search_duration_s
+        )
       end
     end
 

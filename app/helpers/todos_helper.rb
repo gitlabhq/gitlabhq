@@ -23,7 +23,6 @@ module TodosHelper
     when Todo::APPROVAL_REQUIRED then "set #{todo_action_subject(todo)} as an approver for"
     when Todo::UNMERGEABLE then 'Could not merge'
     when Todo::MERGE_TRAIN_REMOVED then "Removed from Merge Train:"
-    when Todo::ATTENTION_REQUESTED then 'requested your attention on'
     end
   end
 
@@ -131,11 +130,11 @@ module TodosHelper
 
   def todos_filter_params
     {
-      state:      params[:state],
+      state: params[:state],
       project_id: params[:project_id],
-      author_id:  params[:author_id],
-      type:       params[:type],
-      action_id:  params[:action_id]
+      author_id: params[:author_id],
+      type: params[:type],
+      action_id: params[:action_id]
     }
   end
 
@@ -179,7 +178,7 @@ module TodosHelper
   end
 
   def todo_actions_dropdown_label(selected_action_id, default_action)
-    selected_action = todo_actions_options.find { |action| action[:id] == selected_action_id.to_i}
+    selected_action = todo_actions_options.find { |action| action[:id] == selected_action_id.to_i }
     selected_action ? selected_action[:text] : default_action
   end
 

@@ -32,7 +32,7 @@
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
                 = gl_badge_tag @commits_count, { size: :sm }
-          - if @number_of_pipelines.nonzero?
+          - if @project.builds_enabled?
             = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
@@ -44,7 +44,7 @@
           - if Feature.enabled?(:moved_mr_sidebar, @project)
             .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.js-expand-sidebar{ class: "gl-lg-display-none!" }
               = render Pajamas::ButtonComponent.new(size: 'small',
-                icon: 'angle-double-left',
+                icon: 'chevron-double-lg-left',
                 button_options: { class: 'js-sidebar-toggle' }) do
                 = _('Expand')
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
@@ -80,7 +80,7 @@
       = render "projects/merge_requests/tabs/pane", name: "commits", id: "commits", class: "commits" do
         -# This tab is always loaded via AJAX
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
-        - if @number_of_pipelines.nonzero?
+        - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       - params = request.query_parameters.merge(diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
@@ -99,11 +99,8 @@
 
 #js-review-bar
 
-- if Feature.enabled?(:mr_experience_survey, @project)
-  #js-mr-experience-survey
-
-- if current_user&.mr_attention_requests_enabled?
-  #js-need-attention-sidebar-onboarding
+- if Feature.enabled?(:mr_experience_survey, @project) && current_user
+  #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }
 
 = render 'projects/invite_members_modal', project: @project
 = render 'shared/web_ide_path'

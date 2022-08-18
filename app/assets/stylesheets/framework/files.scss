@@ -202,6 +202,10 @@
           float: none;
           border-left: 1px solid $gray-100;
 
+          .file-line-num {
+            @include gl-min-w-9;
+          }
+
           i {
             float: none;
             margin-right: 0;
@@ -478,6 +482,11 @@ span.idiff {
     background-color: transparent;
     border: transparent;
   }
+
+  .gl-dark & {
+    background: transparent;
+    filter: invert(1) hue-rotate(180deg);
+  }
 }
 
 .code-navigation-line:hover {
@@ -574,4 +583,12 @@ span.idiff {
   &::after {
     @include gl-text-center;
   }
+}
+
+// *:nth-of-type(1n+30) - makes sure we do not render elements 30+ right away when
+// viewing a file. Even though the HTML is injected in the DOM, as long as we do
+// not render those elements, the browser doesn't need to spend resources
+// calculating and repainting what's hidden.
+.file-holder [data-loading] .file-content *:nth-of-type(1n+30) {
+  @include gl-display-none;
 }

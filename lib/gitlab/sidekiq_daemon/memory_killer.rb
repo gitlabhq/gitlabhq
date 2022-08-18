@@ -44,7 +44,8 @@ module Gitlab
           sidekiq_current_rss:                  ::Gitlab::Metrics.gauge(:sidekiq_current_rss, 'Current RSS of Sidekiq Worker'),
           sidekiq_memory_killer_soft_limit_rss: ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_soft_limit_rss, 'Current soft_limit_rss of Sidekiq Worker'),
           sidekiq_memory_killer_hard_limit_rss: ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_hard_limit_rss, 'Current hard_limit_rss of Sidekiq Worker'),
-          sidekiq_memory_killer_phase:          ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_phase, 'Current phase of Sidekiq Worker')
+          sidekiq_memory_killer_phase:          ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_phase, 'Current phase of Sidekiq Worker'),
+          sidekiq_memory_killer_running_jobs:   ::Gitlab::Metrics.counter(:sidekiq_memory_killer_running_jobs_total, 'Current running jobs when limit was reached')
         }
       end
 
@@ -166,6 +167,8 @@ module Gitlab
                    @soft_limit_rss,
                    deadline_exceeded)
 
+        running_jobs = fetch_running_jobs
+
         Sidekiq.logger.warn(
           class: self.class.to_s,
           pid: pid,
@@ -175,9 +178,17 @@ module Gitlab
           hard_limit_rss: @hard_limit_rss,
           reason: reason,
           running_jobs: running_jobs)
+
+        increment_worker_counters(running_jobs, deadline_exceeded)
       end
 
-      def running_jobs
+      def increment_worker_counters(running_jobs, deadline_exceeded)
+        running_jobs.each do |job|
+          @metrics[:sidekiq_memory_killer_running_jobs].increment( { worker_class: job[:worker_class], deadline_exceeded: deadline_exceeded } )
+        end
+      end
+
+      def fetch_running_jobs
         jobs = []
         Gitlab::SidekiqDaemon::Monitor.instance.jobs_mutex.synchronize do
           jobs = Gitlab::SidekiqDaemon::Monitor.instance.jobs.map do |jid, job|

@@ -1,5 +1,5 @@
-import { GlPagination } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlKeysetPagination } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
 const mockStartCursor = 'START_CURSOR';
@@ -8,21 +8,11 @@ const mockEndCursor = 'END_CURSOR';
 describe('RunnerPagination', () => {
   let wrapper;
 
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
-  const createComponent = ({ page = 1, hasPreviousPage = false, hasNextPage = true } = {}) => {
-    wrapper = mount(RunnerPagination, {
-      propsData: {
-        value: {
-          page,
-        },
-        pageInfo: {
-          hasPreviousPage,
-          hasNextPage,
-          startCursor: mockStartCursor,
-          endCursor: mockEndCursor,
-        },
-      },
+  const createComponent = (propsData = {}) => {
+    wrapper = shallowMount(RunnerPagination, {
+      propsData,
     });
   };
 
@@ -30,114 +20,96 @@ describe('RunnerPagination', () => {
     wrapper.destroy();
   });
 
-  describe('When on the first page', () => {
-    beforeEach(() => {
-      createComponent({
-        page: 1,
-        hasPreviousPage: false,
-        hasNextPage: true,
-      });
-    });
-
-    it('Contains the current page information', () => {
-      expect(findPagination().props('value')).toBe(1);
-      expect(findPagination().props('prevPage')).toBe(null);
-      expect(findPagination().props('nextPage')).toBe(2);
-    });
-
-    it('Goes to the second page', () => {
-      findPagination().vm.$emit('input', 2);
-
-      expect(wrapper.emitted('input')[0]).toEqual([
-        {
-          after: mockEndCursor,
-          page: 2,
-        },
-      ]);
-    });
-  });
-
   describe('When in between pages', () => {
+    const mockPageInfo = {
+      startCursor: mockStartCursor,
+      endCursor: mockEndCursor,
+      hasPreviousPage: true,
+      hasNextPage: true,
+    };
+
     beforeEach(() => {
       createComponent({
-        page: 2,
-        hasPreviousPage: true,
-        hasNextPage: true,
+        pageInfo: mockPageInfo,
       });
     });
 
     it('Contains the current page information', () => {
-      expect(findPagination().props('value')).toBe(2);
-      expect(findPagination().props('prevPage')).toBe(1);
-      expect(findPagination().props('nextPage')).toBe(3);
+      expect(findPagination().props()).toMatchObject(mockPageInfo);
     });
 
-    it('Shows the next and previous pages', () => {
-      const links = findPagination().findAll('a');
+    it('Goes to the prev page', () => {
+      findPagination().vm.$emit('prev');
 
-      expect(links).toHaveLength(2);
-      expect(links.at(0).text()).toBe('Previous');
-      expect(links.at(1).text()).toBe('Next');
+      expect(wrapper.emitted('input')[0]).toEqual([
+        {
+          before: mockStartCursor,
+        },
+      ]);
     });
 
-    it('Goes to the last page', () => {
-      findPagination().vm.$emit('input', 3);
+    it('Goes to the next page', () => {
+      findPagination().vm.$emit('next');
 
       expect(wrapper.emitted('input')[0]).toEqual([
         {
           after: mockEndCursor,
-          page: 3,
-        },
-      ]);
-    });
-
-    it('Goes to the first page', () => {
-      findPagination().vm.$emit('input', 1);
-
-      expect(wrapper.emitted('input')[0]).toEqual([
-        {
-          page: 1,
         },
       ]);
     });
   });
 
-  describe('When in the last page', () => {
+  describe.each`
+    page       | hasPreviousPage | hasNextPage
+    ${'first'} | ${false}        | ${true}
+    ${'last'}  | ${true}         | ${false}
+  `('When on the $page page', ({ page, hasPreviousPage, hasNextPage }) => {
+    const mockPageInfo = {
+      startCursor: mockStartCursor,
+      endCursor: mockEndCursor,
+      hasPreviousPage,
+      hasNextPage,
+    };
+
     beforeEach(() => {
       createComponent({
-        page: 3,
-        hasPreviousPage: true,
-        hasNextPage: false,
+        pageInfo: mockPageInfo,
       });
     });
 
-    it('Contains the current page', () => {
-      expect(findPagination().props('value')).toBe(3);
-      expect(findPagination().props('prevPage')).toBe(2);
-      expect(findPagination().props('nextPage')).toBe(null);
+    it(`Contains the ${page} page information`, () => {
+      expect(findPagination().props()).toMatchObject(mockPageInfo);
     });
   });
 
-  describe('When only one page', () => {
+  describe('When no other pages', () => {
     beforeEach(() => {
       createComponent({
-        page: 1,
-        hasPreviousPage: false,
-        hasNextPage: false,
+        pageInfo: {
+          hasPreviousPage: false,
+          hasNextPage: false,
+        },
       });
     });
 
-    it('does not display pagination', () => {
-      expect(wrapper.html()).toBe('');
+    it('is not shown', () => {
+      expect(findPagination().exists()).toBe(false);
+    });
+  });
+
+  describe('When adding more attributes', () => {
+    beforeEach(() => {
+      createComponent({
+        pageInfo: {
+          hasPreviousPage: true,
+          hasNextPage: false,
+        },
+        disabled: true,
+      });
     });
 
-    it('Contains the current page', () => {
-      expect(findPagination().props('value')).toBe(1);
-    });
-
-    it('Shows no more page buttons', () => {
-      expect(findPagination().props('prevPage')).toBe(null);
-      expect(findPagination().props('nextPage')).toBe(null);
+    it('attributes are passed', () => {
+      expect(findPagination().props('disabled')).toBe(true);
     });
   });
 });

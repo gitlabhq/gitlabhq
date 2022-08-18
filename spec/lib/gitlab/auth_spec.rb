@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       end
 
       context 'when IP is already banned' do
-        subject { gl_auth.find_for_git_client('username', 'password', project: nil, ip: 'ip') }
+        subject { gl_auth.find_for_git_client('username-does-not-matter', 'password-does-not-matter', project: nil, ip: 'ip') }
 
         before do
           expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
@@ -219,16 +219,16 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     end
 
     it 'recognizes master passwords' do
-      user = create(:user, password: 'password')
+      user = create(:user)
 
-      expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+      expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')).to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
     end
 
     include_examples 'user login operation with unique ip limit' do
-      let(:user) { create(:user, password: 'password') }
+      let(:user) { create(:user) }
 
       def operation
-        expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+        expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')).to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
       end
     end
 
@@ -502,8 +502,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         user = create(
           :user,
           :blocked,
-          username: 'normal_user',
-          password: 'my-secret'
+          username: 'normal_user'
         )
 
         expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
@@ -512,7 +511,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       context 'when 2fa is enabled globally' do
         let_it_be(:user) do
-          create(:user, username: 'normal_user', password: 'my-secret', otp_grace_period_started_at: 1.day.ago)
+          create(:user, username: 'normal_user', otp_grace_period_started_at: 1.day.ago)
         end
 
         before do
@@ -536,7 +535,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       context 'when 2fa is enabled personally' do
         let(:user) do
-          create(:user, :two_factor, username: 'normal_user', password: 'my-secret', otp_grace_period_started_at: 1.day.ago)
+          create(:user, :two_factor, username: 'normal_user', otp_grace_period_started_at: 1.day.ago)
         end
 
         it 'fails' do
@@ -548,8 +547,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       it 'goes through lfs authentication' do
         user = create(
           :user,
-          username: 'normal_user',
-          password: 'my-secret'
+          username: 'normal_user'
         )
 
         expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
@@ -559,8 +557,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       it 'goes through oauth authentication when the username is oauth2' do
         user = create(
           :user,
-          username: 'oauth2',
-          password: 'my-secret'
+          username: 'oauth2'
         )
 
         expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
@@ -635,7 +632,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       context 'when deploy token and user have the same username' do
         let(:username) { 'normal_user' }
-        let(:user) { create(:user, username: username, password: 'my-secret') }
+        let(:user) { create(:user, username: username) }
         let(:deploy_token) { create(:deploy_token, username: username, read_registry: false, projects: [project]) }
 
         it 'succeeds for the token' do
@@ -648,7 +645,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         it 'succeeds for the user' do
           auth_success = { actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities }
 
-          expect(gl_auth.find_for_git_client(username, 'my-secret', project: project, ip: 'ip'))
+          expect(gl_auth.find_for_git_client(username, user.password, project: project, ip: 'ip'))
             .to have_attributes(auth_success)
         end
       end
@@ -834,72 +831,64 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
   end
 
   describe 'find_with_user_password' do
-    let!(:user) do
-      create(:user,
-             username: username,
-             password: password,
-             password_confirmation: password)
-    end
-
+    let!(:user) { create(:user, username: username) }
     let(:username) { 'John' } # username isn't lowercase, test this
-    let(:password) { 'my-secret' }
 
     it "finds user by valid login/password" do
-      expect(gl_auth.find_with_user_password(username, password)).to eql user
+      expect(gl_auth.find_with_user_password(username, user.password)).to eql user
     end
 
     it 'finds user by valid email/password with case-insensitive email' do
-      expect(gl_auth.find_with_user_password(user.email.upcase, password)).to eql user
+      expect(gl_auth.find_with_user_password(user.email.upcase, user.password)).to eql user
     end
 
     it 'finds user by valid username/password with case-insensitive username' do
-      expect(gl_auth.find_with_user_password(username.upcase, password)).to eql user
+      expect(gl_auth.find_with_user_password(username.upcase, user.password)).to eql user
     end
 
     it "does not find user with invalid password" do
-      password = 'wrong'
-      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, 'incorrect_password')).not_to eql user
     end
 
     it "does not find user with invalid login" do
-      user = 'wrong'
-      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+      username = 'wrong'
+      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
     end
 
     include_examples 'user login operation with unique ip limit' do
       def operation
-        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
+        expect(gl_auth.find_with_user_password(username, user.password)).to eq(user)
       end
     end
 
     it 'finds the user in deactivated state' do
       user.deactivate!
 
-      expect(gl_auth.find_with_user_password(username, password)).to eql user
+      expect(gl_auth.find_with_user_password(username, user.password)).to eql user
     end
 
     it "does not find user in blocked state" do
       user.block
 
-      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
     end
 
     it 'does not find user in locked state' do
       user.lock_access!
 
-      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
     end
 
     it "does not find user in ldap_blocked state" do
       user.ldap_block
 
-      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
     end
 
     it 'does not find user in blocked_pending_approval state' do
       user.block_pending_approval
 
-      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
     end
 
     context 'with increment_failed_attempts' do
@@ -917,7 +906,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         user.save!
 
         expect do
-          gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)
+          gl_auth.find_with_user_password(username, user.password, increment_failed_attempts: true)
           user.reload
         end.to change(user, :failed_attempts).from(2).to(0)
       end
@@ -946,7 +935,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           user.save!
 
           expect do
-            gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)
+            gl_auth.find_with_user_password(username, user.password, increment_failed_attempts: true)
             user.reload
           end.not_to change(user, :failed_attempts)
         end
@@ -961,7 +950,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       it "tries to autheticate with db before ldap" do
         expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
 
-        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
+        expect(gl_auth.find_with_user_password(username, user.password)).to eq(user)
       end
 
       it "does not find user by using ldap as fallback to for authentication" do
@@ -983,7 +972,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       end
 
       it "does not find user by valid login/password" do
-        expect(gl_auth.find_with_user_password(username, password)).to be_nil
+        expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
       end
 
       context "with ldap enabled" do
@@ -992,7 +981,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
 
         it "does not find non-ldap user by valid login/password" do
-          expect(gl_auth.find_with_user_password(username, password)).to be_nil
+          expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
         end
       end
     end

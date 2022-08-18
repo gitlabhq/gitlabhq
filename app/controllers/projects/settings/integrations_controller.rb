@@ -122,7 +122,7 @@ module Projects
       end
 
       def web_hook_logs
-        return unless integration.service_hook.present?
+        return unless integration.try(:service_hook).present?
 
         @web_hook_logs ||= integration.service_hook.web_hook_logs.recent.page(params[:page])
       end

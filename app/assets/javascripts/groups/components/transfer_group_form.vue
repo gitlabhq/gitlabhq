@@ -70,7 +70,6 @@ export default {
       <input type="hidden" name="new_parent_group_id" :value="selectedId" />
     </gl-form-group>
     <confirm-danger
-      button-class="qa-transfer-button"
       :disabled="disableSubmitButton"
       :phrase="confirmationPhrase"
       :button-text="confirmButtonText"

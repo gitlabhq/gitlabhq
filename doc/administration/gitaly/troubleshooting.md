@@ -13,7 +13,7 @@ Refer to the information below when troubleshooting Gitaly and Gitaly Cluster.
 The following sections provide possible solutions to Gitaly errors.
 
 See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings,
-and our advice on [parsing the `gitaly/current` file](../troubleshooting/log_parsing.md#parsing-gitalycurrent).
+and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#parsing-gitalycurrent).
 
 ### Check versions when using standalone Gitaly servers
 
@@ -23,6 +23,17 @@ as GitLab to ensure full compatibility:
 1. On the top bar, select **Menu > Admin** on your GitLab instance.
 1. On the left sidebar, select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
+
+### Find storage resource details
+
+You can run the following commands in a [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
+to determine the available and used space on a Gitaly storage:
+
+```ruby
+Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
+# For Gitaly Cluster
+Gitlab::GitalyClient::ServerService.new("<storage name>").disk_statistics
+```
 
 ### Use `gitaly-debug`
 
@@ -444,15 +455,15 @@ If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
 Here are common errors and potential causes:
 
 - 500 response code
-  - **ActionView::Template::Error (7:permission denied)**
+  - `ActionView::Template::Error (7:permission denied)`
     - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-  - **Unable to save project. Error: 7:permission denied**
+  - `Unable to save project. Error: 7:permission denied`
     - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
       value in `gitaly['auth_token']` on one or more Gitaly servers.
 - 503 response code
-  - **GRPC::Unavailable (14:failed to connect to all addresses)**
+  - `GRPC::Unavailable (14:failed to connect to all addresses)`
     - GitLab was unable to reach Praefect.
-  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
+  - `GRPC::Unavailable (14:all SubCons are in TransientFailure...)`
     - Praefect cannot reach one or more of its child Gitaly nodes. Try running
       the Praefect connection checker to diagnose.
 

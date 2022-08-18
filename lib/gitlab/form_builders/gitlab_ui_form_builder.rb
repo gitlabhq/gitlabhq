@@ -3,6 +3,20 @@
 module Gitlab
   module FormBuilders
     class GitlabUiFormBuilder < ActionView::Helpers::FormBuilder
+      def submit(value = nil, options = {})
+        if options[:pajamas_button]
+          @template.render Pajamas::ButtonComponent.new(
+            variant: :confirm,
+            type: :submit,
+            button_options: options.except(:pajamas_button)
+          ) do
+            value
+          end
+        else
+          super
+        end
+      end
+
       def gitlab_ui_checkbox_component(
         method,
         label = nil,
@@ -43,6 +57,10 @@ module Gitlab
           radio_options: format_options(radio_options),
           label_options: format_options(label_options)
         ).render_in(@template, &block)
+      end
+
+      def gitlab_ui_datepicker(method, options = {})
+        @template.text_field @object_name, method, options.merge(class: "datepicker form-control gl-form-input")
       end
 
       private

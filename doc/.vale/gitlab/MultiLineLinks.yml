@@ -1,0 +1,14 @@
+---
+# Error: gitlab.MultiLineLinks
+#
+# Checks that links are all on a single line.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Link "%s" must be on a single line, even if very long.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#basic-link-criteria
+level: error
+scope: raw
+raw:
+  - '\[[^\[\]]*?\n[^\[\]]*?\]\([^\)]*?\)|'
+  - '\[[^\[\]]*?\]\([^\)]*?\n[^\)]*\)'

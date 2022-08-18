@@ -105,7 +105,10 @@ describe('operation settings external dashboard component', () => {
 
         it('uses description text', () => {
           const description = formGroup.find('small');
-          expect(description.text()).not.toBeFalsy();
+          const expectedDescription =
+            "Choose whether to display dashboard metrics in UTC or the user's local timezone.";
+
+          expect(description.text()).toBe(expectedDescription);
         });
       });
 
@@ -138,7 +141,10 @@ describe('operation settings external dashboard component', () => {
 
         it('uses description text', () => {
           const description = formGroup.find('small');
-          expect(description.text()).not.toBeFalsy();
+          const expectedDescription =
+            'Add a button to the metrics dashboard linking directly to your existing external dashboard.';
+
+          expect(description.text()).toBe(expectedDescription);
         });
       });
 
@@ -151,7 +157,6 @@ describe('operation settings external dashboard component', () => {
         });
 
         it('defaults to externalDashboardUrl', () => {
-          expect(input.attributes().value).toBeTruthy();
           expect(input.attributes().value).toBe(externalDashboardUrl);
         });
 

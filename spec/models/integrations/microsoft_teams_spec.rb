@@ -24,6 +24,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       end
 
       it { is_expected.to validate_presence_of(:webhook) }
+
       it_behaves_like 'issue tracker integration URL attribute', :webhook
     end
 

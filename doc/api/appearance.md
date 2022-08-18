@@ -104,7 +104,7 @@ PUT /application/appearance
 
 | Attribute | Type   | Required | Description    |
 | --------- | ------ | -------- | -------------- |
-| `logo`    | string | Yes      | File to upload |
+| `logo`    | mixed | Yes      | File to upload |
 
 Example request:
 

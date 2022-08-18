@@ -10,7 +10,6 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import defaultState from '~/boards/stores/state';
-import waitForPromises from 'helpers/wait_for_promises';
 
 import { mockList, mockActiveGroupProjects } from './mock_data';
 
@@ -23,9 +22,9 @@ describe('ProjectSelect component', () => {
   const findLabel = () => wrapper.find("[data-testid='header-label']");
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findGlDropdownLoadingIcon = () =>
-    findGlDropdown().find('button:first-child').find(GlLoadingIcon);
-  const findGlSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
-  const findGlDropdownItems = () => wrapper.findAll(GlDropdownItem);
+    findGlDropdown().find('button:first-child').findComponent(GlLoadingIcon);
+  const findGlSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
+  const findGlDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
   const findInMenuLoadingIcon = () => wrapper.find("[data-testid='dropdown-text-loading-icon']");
   const findEmptySearchMessage = () => wrapper.find("[data-testid='empty-result-message']");
@@ -133,7 +132,7 @@ describe('ProjectSelect component', () => {
         const dropdownToggle = findGlDropdown().find('.dropdown-toggle');
 
         await dropdownToggle.trigger('click');
-        await waitForPromises();
+        jest.runOnlyPendingTimers();
         await nextTick();
 
         const searchInput = findGlDropdown().findComponent(GlFormInput).element;

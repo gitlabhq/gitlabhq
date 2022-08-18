@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
 import {
   filterToQueryObject,
@@ -13,7 +14,6 @@ import {
   PARAM_KEY_TAG,
   PARAM_KEY_SEARCH,
   PARAM_KEY_SORT,
-  PARAM_KEY_PAGE,
   PARAM_KEY_AFTER,
   PARAM_KEY_BEFORE,
   DEFAULT_SORT,
@@ -41,7 +41,7 @@ import { getPaginationVariables } from './utils';
  *   sort: 'CREATED_DESC',
  *
  *   // Pagination information
- *   pagination: { page: 1 },
+ *   pagination: { "after": "..." },
  * };
  * ```
  *
@@ -66,25 +66,16 @@ export const searchValidator = ({ runnerType, filters, sort }) => {
 };
 
 const getPaginationFromParams = (params) => {
-  const page = parseInt(params[PARAM_KEY_PAGE], 10);
-  const after = params[PARAM_KEY_AFTER];
-  const before = params[PARAM_KEY_BEFORE];
-
-  if (page && (before || after)) {
-    return {
-      page,
-      before,
-      after,
-    };
-  }
   return {
-    page: 1,
+    after: params[PARAM_KEY_AFTER],
+    before: params[PARAM_KEY_BEFORE],
   };
 };
 
 // Outdated URL parameters
 const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_PAUSED = 'PAUSED';
+const PARAM_KEY_PAGE = 'page';
 
 /**
  * Replaces params into a URL
@@ -95,6 +86,21 @@ const STATUS_PAUSED = 'PAUSED';
  */
 const updateUrlParams = (url, params = {}) => {
   return setUrlParams(params, url, false, true, true);
+};
+
+const outdatedStatusParams = (status) => {
+  if (status === STATUS_ACTIVE) {
+    return {
+      [PARAM_KEY_PAUSED]: ['false'],
+      [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
+    };
+  } else if (status === STATUS_PAUSED) {
+    return {
+      [PARAM_KEY_PAUSED]: ['true'],
+      [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
+    };
+  }
+  return {};
 };
 
 /**
@@ -108,25 +114,22 @@ const updateUrlParams = (url, params = {}) => {
 export const updateOutdatedUrl = (url = window.location.href) => {
   const urlObj = new URL(url);
   const query = urlObj.search;
-
   const params = queryToObject(query, { gatherArrays: true });
 
-  const status = params[PARAM_KEY_STATUS]?.[0] || null;
+  // Remove `page` completely, not needed for keyset pagination
+  const pageParams = PARAM_KEY_PAGE in params ? { [PARAM_KEY_PAGE]: null } : {};
 
-  switch (status) {
-    case STATUS_ACTIVE:
-      return updateUrlParams(url, {
-        [PARAM_KEY_PAUSED]: ['false'],
-        [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
-      });
-    case STATUS_PAUSED:
-      return updateUrlParams(url, {
-        [PARAM_KEY_PAUSED]: ['true'],
-        [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
-      });
-    default:
-      return null;
+  const status = params[PARAM_KEY_STATUS]?.[0];
+  const redirectParams = {
+    // Replace paused status (active, paused) with a paused flag
+    ...outdatedStatusParams(status),
+    ...pageParams,
+  };
+
+  if (!isEmpty(redirectParams)) {
+    return updateUrlParams(url, redirectParams);
   }
+  return null;
 };
 
 /**
@@ -182,13 +185,11 @@ export const fromSearchToUrl = (
   }
 
   const isDefaultSort = sort !== DEFAULT_SORT;
-  const isFirstPage = pagination?.page === 1;
   const otherParams = {
     // Sorting & Pagination
     [PARAM_KEY_SORT]: isDefaultSort ? sort : null,
-    [PARAM_KEY_PAGE]: isFirstPage ? null : pagination.page,
-    [PARAM_KEY_BEFORE]: isFirstPage ? null : pagination.before,
-    [PARAM_KEY_AFTER]: isFirstPage ? null : pagination.after,
+    [PARAM_KEY_BEFORE]: pagination?.before || null,
+    [PARAM_KEY_AFTER]: pagination?.after || null,
   };
 
   return setUrlParams({ ...filterParams, ...otherParams }, url, false, true, true);
@@ -247,6 +248,6 @@ export const fromSearchToVariables = ({
  */
 export const isSearchFiltered = ({ runnerType = null, filters = [], pagination = {} } = {}) => {
   return Boolean(
-    runnerType !== null || filters?.length !== 0 || (pagination && pagination?.page !== 1),
+    runnerType !== null || filters?.length !== 0 || pagination?.before || pagination?.after,
   );
 };

@@ -52,16 +52,23 @@ export default {
     additionalCreateParams() {
       return { groupId: this.groupGraphQLId };
     },
-  },
-  fields: [
-    { name: 'name', label: __('Name'), required: true },
-    {
-      name: 'defaultRate',
-      label: s__('Crm|Default rate'),
-      input: { type: 'number', step: '0.01' },
+    fields() {
+      const fields = [
+        { name: 'name', label: __('Name'), required: true },
+        {
+          name: 'defaultRate',
+          label: s__('Crm|Default rate'),
+          input: { type: 'number', step: '0.01' },
+        },
+        { name: 'description', label: __('Description') },
+      ];
+
+      if (this.isEditMode)
+        fields.push({ name: 'active', label: s__('Crm|Active'), required: true, bool: true });
+
+      return fields;
     },
-    { name: 'description', label: __('Description') },
-  ],
+  },
 };
 </script>
 
@@ -73,7 +80,7 @@ export default {
     :mutation="mutation"
     :additional-create-params="additionalCreateParams"
     :existing-id="organizationGraphQLId"
-    :fields="$options.fields"
+    :fields="fields"
     :title="title"
     :success-message="successMessage"
   />

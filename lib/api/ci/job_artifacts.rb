@@ -30,15 +30,16 @@ module API
           requires :job,      type: String, desc: 'The name for the job'
         end
         route_setting :authentication, job_token_allowed: true
-        get ':id/jobs/artifacts/:ref_name/download', urgency: :low,
-          requirements: { ref_name: /.+/ } do
-            authorize_download_artifacts!
+        get ':id/jobs/artifacts/:ref_name/download',
+            urgency: :low,
+            requirements: { ref_name: /.+/ } do
+          authorize_download_artifacts!
 
-            latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
-            authorize_read_job_artifacts!(latest_build)
+          latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
+          authorize_read_job_artifacts!(latest_build)
 
-            present_artifacts_file!(latest_build.artifacts_file)
-          end
+          present_artifacts_file!(latest_build.artifacts_file)
+        end
 
         desc 'Download a specific file from artifacts archive from a ref' do
           detail 'This feature was introduced in GitLab 11.5'
@@ -49,21 +50,22 @@ module API
           requires :artifact_path, type: String, desc: 'Artifact path'
         end
         route_setting :authentication, job_token_allowed: true
-        get ':id/jobs/artifacts/:ref_name/raw/*artifact_path', urgency: :low,
-          format: false,
-          requirements: { ref_name: /.+/ } do
-            authorize_download_artifacts!
+        get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
+            urgency: :low,
+            format: false,
+            requirements: { ref_name: /.+/ } do
+          authorize_download_artifacts!
 
-            build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
-            authorize_read_job_artifacts!(build)
+          build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
+          authorize_read_job_artifacts!(build)
 
-            path = Gitlab::Ci::Build::Artifacts::Path
-              .new(params[:artifact_path])
+          path = Gitlab::Ci::Build::Artifacts::Path
+            .new(params[:artifact_path])
 
-            bad_request! unless path.valid?
+          bad_request! unless path.valid?
 
-            send_artifacts_entry(build.artifacts_file, path)
-          end
+          send_artifacts_entry(build.artifacts_file, path)
+        end
 
         desc 'Download the artifacts archive from a job' do
           detail 'This feature was introduced in GitLab 8.5'

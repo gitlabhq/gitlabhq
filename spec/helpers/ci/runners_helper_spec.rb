@@ -109,7 +109,7 @@ RSpec.describe Ci::RunnersHelper do
 
     it 'returns group data for top level group' do
       result = {
-        update_path: "/api/v4/groups/#{parent.id}",
+        group_id: parent.id,
         shared_runners_setting: Namespace::SR_ENABLED,
         parent_shared_runners_setting: nil
       }.merge(runner_constants)
@@ -119,7 +119,7 @@ RSpec.describe Ci::RunnersHelper do
 
     it 'returns group data for child group' do
       result = {
-        update_path: "/api/v4/groups/#{group.id}",
+        group_id: group.id,
         shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
         parent_shared_runners_setting: Namespace::SR_ENABLED
       }.merge(runner_constants)

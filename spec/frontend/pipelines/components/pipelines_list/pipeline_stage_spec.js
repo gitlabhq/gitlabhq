@@ -1,4 +1,5 @@
 import { GlDropdown } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -61,11 +62,10 @@ describe('Pipelines stage component', () => {
   const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');
   const findLoadingState = () => wrapper.find('[data-testid="pipeline-stage-loading-state"]');
 
-  const openStageDropdown = () => {
-    findDropdownToggle().trigger('click');
-    return new Promise((resolve) => {
-      wrapper.vm.$root.$on('bv::dropdown::show', resolve);
-    });
+  const openStageDropdown = async () => {
+    await findDropdownToggle().trigger('click');
+    await waitForPromises();
+    await nextTick();
   };
 
   describe('loading state', () => {
@@ -77,7 +77,10 @@ describe('Pipelines stage component', () => {
       await openStageDropdown();
     });
 
-    it('displays loading state while jobs are being fetched', () => {
+    it('displays loading state while jobs are being fetched', async () => {
+      jest.runOnlyPendingTimers();
+      await nextTick();
+
       expect(findLoadingState().exists()).toBe(true);
       expect(findLoadingState().text()).toBe(PipelineStage.i18n.loadingText);
     });
@@ -98,27 +101,21 @@ describe('Pipelines stage component', () => {
       expect(glTooltipDirectiveMock.mock.calls[0][1].modifiers.ds0).toBe(true);
     });
 
-    it('should render a dropdown with the status icon', () => {
+    it('renders a dropdown with the status icon', () => {
       expect(findDropdown().exists()).toBe(true);
       expect(findDropdownToggle().exists()).toBe(true);
       expect(findCiIcon().exists()).toBe(true);
     });
 
-    it('should render a borderless ci-icon', () => {
+    it('renders a borderless ci-icon', () => {
       expect(findCiIcon().exists()).toBe(true);
       expect(findCiIcon().props('isBorderless')).toBe(true);
       expect(findCiIcon().classes('borderless')).toBe(true);
     });
 
-    it('should render a ci-icon with a custom border class', () => {
+    it('renders a ci-icon with a custom border class', () => {
       expect(findCiIcon().exists()).toBe(true);
       expect(findCiIcon().classes('gl-border')).toBe(true);
-    });
-  });
-
-  describe('when update dropdown is changed', () => {
-    beforeEach(() => {
-      createComponent();
     });
   });
 
@@ -128,16 +125,17 @@ describe('Pipelines stage component', () => {
       createComponent();
 
       await openStageDropdown();
+      await jest.runAllTimers();
       await axios.waitForAll();
     });
 
-    it('should render the received data and emit `clickedDropdown` event', async () => {
+    it('renders the received data and emit `clickedDropdown` event', async () => {
       expect(findDropdownMenu().text()).toContain(stageReply.latest_statuses[0].name);
       expect(findDropdownMenuTitle().text()).toContain(stageReply.name);
       expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
     });
 
-    it('should refresh when updateDropdown is set to true', async () => {
+    it('refreshes when updateDropdown is set to true', async () => {
       expect(mock.history.get).toHaveLength(1);
 
       wrapper.setProps({ updateDropdown: true });
@@ -148,15 +146,14 @@ describe('Pipelines stage component', () => {
   });
 
   describe('when user opens dropdown and stage request fails', () => {
-    beforeEach(async () => {
+    it('should close the dropdown', async () => {
       mock.onGet(dropdownPath).reply(500);
       createComponent();
 
       await openStageDropdown();
       await axios.waitForAll();
-    });
+      await waitForPromises();
 
-    it('should close the dropdown', () => {
       expect(findDropdown().classes('show')).toBe(false);
     });
   });
@@ -181,26 +178,29 @@ describe('Pipelines stage component', () => {
 
     it('should update the stage to request the new endpoint provided', async () => {
       await openStageDropdown();
-      await axios.waitForAll();
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
 
       expect(findDropdownMenu().text()).toContain('this is the updated content');
     });
   });
 
   describe('pipelineActionRequestComplete', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mock.onGet(dropdownPath).reply(200, stageReply);
       mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
 
       createComponent();
+      await waitForPromises();
+      await nextTick();
     });
 
     const clickCiAction = async () => {
       await openStageDropdown();
-      await axios.waitForAll();
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
 
-      findCiActionBtn().trigger('click');
-      await axios.waitForAll();
+      await findCiActionBtn().trigger('click');
     };
 
     it('closes dropdown when job item action is clicked', async () => {
@@ -211,29 +211,30 @@ describe('Pipelines stage component', () => {
       expect(hidden).toHaveBeenCalledTimes(0);
 
       await clickCiAction();
+      await waitForPromises();
 
       expect(hidden).toHaveBeenCalledTimes(1);
     });
 
     it('emits `pipelineActionRequestComplete` when job item action is clicked', async () => {
       await clickCiAction();
+      await waitForPromises();
 
       expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(1);
     });
   });
 
   describe('With merge trains enabled', () => {
-    beforeEach(async () => {
+    it('shows a warning on the dropdown', async () => {
       mock.onGet(dropdownPath).reply(200, stageReply);
       createComponent({
         isMergeTrain: true,
       });
 
       await openStageDropdown();
-      await axios.waitForAll();
-    });
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
 
-    it('shows a warning on the dropdown', () => {
       const warning = findMergeTrainWarning();
 
       expect(warning.text()).toBe('Merge train pipeline jobs can not be retried');

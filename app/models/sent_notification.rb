@@ -68,7 +68,11 @@ class SentNotification < ApplicationRecord
 
   def noteable
     if for_commit?
-      project.commit(commit_id) rescue nil
+      begin
+        project.commit(commit_id)
+      rescue StandardError
+        nil
+      end
     else
       super
     end
@@ -76,7 +80,11 @@ class SentNotification < ApplicationRecord
 
   def position=(new_position)
     if new_position.is_a?(String)
-      new_position = Gitlab::Json.parse(new_position) rescue nil
+      new_position = begin
+        Gitlab::Json.parse(new_position)
+      rescue StandardError
+        nil
+      end
     end
 
     if new_position.is_a?(Hash)

@@ -37,6 +37,9 @@ FactoryBot.define do
       operations_access_level { ProjectFeature::ENABLED }
       container_registry_access_level { ProjectFeature::ENABLED }
       security_and_compliance_access_level { ProjectFeature::PRIVATE }
+      environments_access_level { ProjectFeature::ENABLED }
+      feature_flags_access_level { ProjectFeature::ENABLED }
+      releases_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -401,6 +404,13 @@ FactoryBot.define do
       after :create do |project|
         project.container_expiration_policy.destroy!
       end
+    end
+  end
+
+  trait :pages_published do
+    after(:create) do |project|
+      project.mark_pages_onboarding_complete
+      project.mark_pages_as_deployed
     end
   end
 

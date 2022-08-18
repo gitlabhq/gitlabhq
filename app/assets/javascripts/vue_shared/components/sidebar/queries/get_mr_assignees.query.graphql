@@ -6,6 +6,13 @@ query getMrAssignees($fullPath: ID!, $iid: String!) {
     id
     issuable: mergeRequest(iid: $iid) {
       id
+      author {
+        ...User
+        ...UserAvailability
+        mergeRequestInteraction {
+          canMerge
+        }
+      }
       assignees {
         nodes {
           ...User

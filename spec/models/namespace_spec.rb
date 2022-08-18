@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Namespace do
   include ProjectForksHelper
-  include GitHelpers
   include ReloadHelpers
 
   let_it_be(:group_sti_name) { Group.sti_name }
@@ -23,6 +22,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :root_storage_statistics }
     it { is_expected.to have_one :aggregation_schedule }
     it { is_expected.to have_one :namespace_settings }
+    it { is_expected.to have_one :namespace_details }
     it { is_expected.to have_one(:namespace_statistics) }
     it { is_expected.to have_many :custom_emoji }
     it { is_expected.to have_one :package_setting_relation }
@@ -31,6 +31,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_many :pending_builds }
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
+    it { is_expected.to have_many :member_roles }
     it { is_expected.to have_one :cluster_enabled_grant }
     it { is_expected.to have_many(:work_items) }
 
@@ -373,14 +374,6 @@ RSpec.describe Namespace do
 
     context 'linear' do
       it_behaves_like 'namespace traversal scopes'
-
-      context 'without inner join ancestors query' do
-        before do
-          stub_feature_flags(use_traversal_ids_for_ancestor_scopes_with_inner_join: false)
-        end
-
-        it_behaves_like 'namespace traversal scopes'
-      end
     end
 
     shared_examples 'makes recursive queries' do
@@ -1075,9 +1068,9 @@ RSpec.describe Namespace do
       it 'updates project full path in .git/config' do
         parent.update!(path: 'mygroup_new')
 
-        expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
-        expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-        expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+        expect(project_in_parent_group.reload.repository.full_path).to eq "mygroup_new/#{project_in_parent_group.path}"
+        expect(hashed_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+        expect(legacy_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
       end
 
       it 'updates the project storage location' do
@@ -1090,14 +1083,6 @@ RSpec.describe Namespace do
         expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
         expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
         expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
-
-      def project_rugged(project)
-        # Routes are loaded when creating the projects, so we need to manually
-        # reload them for the below code to be aware of the above UPDATE.
-        project.route.reload
-
-        rugged_repo(project.repository)
       end
     end
   end
@@ -1556,7 +1541,7 @@ RSpec.describe Namespace do
 
   describe '#share_with_group_lock with subgroups' do
     context 'when creating a subgroup' do
-      let(:subgroup) { create(:group, parent: root_group )}
+      let(:subgroup) { create(:group, parent: root_group ) }
 
       context 'under a parent with "Share with group lock" enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
@@ -1577,7 +1562,7 @@ RSpec.describe Namespace do
 
     context 'when enabling the parent group "Share with group lock"' do
       let(:root_group) { create(:group) }
-      let!(:subgroup) { create(:group, parent: root_group )}
+      let!(:subgroup) { create(:group, parent: root_group ) }
 
       it 'the subgroup "Share with group lock" becomes enabled' do
         root_group.update!(share_with_group_lock: true)
@@ -1590,7 +1575,7 @@ RSpec.describe Namespace do
       let(:root_group) { create(:group, share_with_group_lock: true) }
 
       context 'and the subgroup "Share with group lock" is enabled' do
-        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true )}
+        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true ) }
 
         it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
@@ -1600,7 +1585,7 @@ RSpec.describe Namespace do
       end
 
       context 'but the subgroup "Share with group lock" is disabled' do
-        let(:subgroup) { create(:group, parent: root_group )}
+        let(:subgroup) { create(:group, parent: root_group ) }
 
         it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
@@ -1615,7 +1600,7 @@ RSpec.describe Namespace do
         let(:root_group) { create(:group, share_with_group_lock: true) }
 
         context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true )}
+          let(:subgroup) { create(:group, share_with_group_lock: true ) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -1626,7 +1611,7 @@ RSpec.describe Namespace do
         end
 
         context 'when the subgroup "Share with group lock" is disabled' do
-          let(:subgroup) { create(:group)}
+          let(:subgroup) { create(:group) }
 
           it 'the subgroup "Share with group lock" becomes enabled' do
             subgroup.parent = root_group
@@ -1641,7 +1626,7 @@ RSpec.describe Namespace do
         let(:root_group) { create(:group) }
 
         context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true )}
+          let(:subgroup) { create(:group, share_with_group_lock: true ) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -1652,7 +1637,7 @@ RSpec.describe Namespace do
         end
 
         context 'when the subgroup "Share with group lock" is disabled' do
-          let(:subgroup) { create(:group)}
+          let(:subgroup) { create(:group) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -2027,7 +2012,7 @@ RSpec.describe Namespace do
     end
 
     with_them do
-      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners)}
+      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners) }
 
       it 'returns the result' do
         expect(namespace.shared_runners_setting).to eq(shared_runners_setting)
@@ -2051,7 +2036,7 @@ RSpec.describe Namespace do
     end
 
     with_them do
-      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners)}
+      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners) }
 
       it 'returns the result' do
         expect(namespace.shared_runners_setting_higher_than?(other_setting)).to eq(result)
@@ -2282,9 +2267,8 @@ RSpec.describe Namespace do
       stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
     end
 
-    # Date TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
-    it 'returns nil' do
-      expect(namespace.storage_enforcement_date).to be(nil)
+    it 'returns correct date' do
+      expect(namespace.storage_enforcement_date).to eql(Date.new(2022, 10, 19))
     end
 
     context 'when :storage_banner_bypass_date_check is enabled' do

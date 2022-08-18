@@ -68,16 +68,33 @@ To configure GitLab CI/CD as a backend:
    }
    ```
 
-1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use
-   [this file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
-   to populate it.
-
+1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use the
+   [`Terraform.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
+   template to populate it.
 1. Push your project to GitLab. This action triggers a pipeline, which
    runs the `gitlab-terraform init`, `gitlab-terraform validate`, and
    `gitlab-terraform plan` commands.
-1. Trigger the manual `terraform apply` job from the previous pipeline to provision the defined infrastructure.
+1. Trigger the manual `deploy` job from the previous pipeline, which runs `gitlab-terraform apply` command, to provision the defined infrastructure.
 
 The output from the above `terraform` commands should be viewable in the job logs.
+
+The `gitlab-terraform` CLI is a wrapper around the `terraform` CLI. You can [view the source code of `gitlab-terraform`](https://gitlab.com/gitlab-org/terraform-images/-/blob/master/src/bin/gitlab-terraform.sh) if you're interested.
+
+If you prefer to call the `terraform` commands explicitly, you can override
+the template, and instead, use it as reference for what you can achieve.
+
+### Customizing your Terraform environment variables
+
+When you use the `Terraform.gitlab-ci.yml` template, you can use [Terraform HTTP configuration variables](https://www.terraform.io/language/settings/backends/http#configuration-variables) when you define your CI/CD jobs.
+
+To customize your `terraform init` and override the Terraform configuration,
+use environment variables instead of the `terraform init -backend-config=...` approach.
+When you use `-backend-config`, the configuration is:
+
+- Cached in the output of the `terraform plan` command.
+- Usually passed forward to the `terraform apply` command.
+
+This configuration can lead to problems like [being unable to lock Terraform state files in CI jobs](troubleshooting.md#unable-to-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-using-a-plan-created-in-a-previous-job).
 
 ## Access the state from your local machine
 
@@ -108,66 +125,6 @@ GitLab-managed Terraform state.
 You should use a local terminal to run the commands needed for migrating to GitLab-managed Terraform state.
 
 The following example demonstrates how to change the state name. The same workflow is needed to migrate to GitLab-managed Terraform state from a different state storage backend.
-
-## Use your GitLab backend as a remote data source
-
-You can use a GitLab-managed Terraform state backend as a
-[Terraform data source](https://www.terraform.io/language/state/remote-state-data).
-
-1. In your `main.tf` or other relevant file, declare these variables. Leave the values empty.
-
-   ```hcl
-   variable "example_remote_state_address" {
-     type = string
-     description = "Gitlab remote state file address"
-   }
-
-   variable "example_username" {
-     type = string
-     description = "Gitlab username to query remote state"
-   }
-
-   variable "example_access_token" {
-     type = string
-     description = "GitLab access token to query remote state"
-   }
-   ```
-
-1. To override the values from the previous step, create a file named `example.auto.tfvars`. This file should **not** be versioned in your project repository.
-
-   ```plaintext
-   example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"
-   example_username = "<GitLab username>"
-   example_access_token = "<GitLab Personal Access Token>"
-   ```
-
-1. In a `.tf` file, define the data source by using [Terraform input variables](https://www.terraform.io/language/values/variables):
-
-   ```hcl
-   data "terraform_remote_state" "example" {
-     backend = "http"
-
-     config = {
-       address = var.example_remote_state_address
-       username = var.example_username
-       password = var.example_access_token
-     }
-   }
-   ```
-
-   - **address**: The URL of the remote state backend you want to use as a data source.
-     For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.
-   - **username**: The username to authenticate with the data source. If you are using
-     a [Personal Access Token](../../profile/personal_access_tokens.md) for
-     authentication, this value is your GitLab username. If you are using GitLab CI/CD, this value is `'gitlab-ci-token'`.
-   - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
-     authentication, this value is the token value (the token must have the **API** scope).
-     If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
-
-Outputs from the data source can now be referenced in your Terraform resources
-using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
-
-To read the Terraform state in the target project, you need at least the Developer role.
 
 ### Set up the initial backend
 
@@ -263,6 +220,66 @@ commands will detect it and remind you to do so if necessary.
 
 If you type `yes`, it copies your state from the old location to the new
 location. You can then go back to running it in GitLab CI/CD.
+
+## Use your GitLab backend as a remote data source
+
+You can use a GitLab-managed Terraform state backend as a
+[Terraform data source](https://www.terraform.io/language/state/remote-state-data).
+
+1. In your `main.tf` or other relevant file, declare these variables. Leave the values empty.
+
+   ```hcl
+   variable "example_remote_state_address" {
+     type = string
+     description = "Gitlab remote state file address"
+   }
+
+   variable "example_username" {
+     type = string
+     description = "Gitlab username to query remote state"
+   }
+
+   variable "example_access_token" {
+     type = string
+     description = "GitLab access token to query remote state"
+   }
+   ```
+
+1. To override the values from the previous step, create a file named `example.auto.tfvars`. This file should **not** be versioned in your project repository.
+
+   ```plaintext
+   example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"
+   example_username = "<GitLab username>"
+   example_access_token = "<GitLab Personal Access Token>"
+   ```
+
+1. In a `.tf` file, define the data source by using [Terraform input variables](https://www.terraform.io/language/values/variables):
+
+   ```hcl
+   data "terraform_remote_state" "example" {
+     backend = "http"
+
+     config = {
+       address = var.example_remote_state_address
+       username = var.example_username
+       password = var.example_access_token
+     }
+   }
+   ```
+
+   - **address**: The URL of the remote state backend you want to use as a data source.
+     For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.
+   - **username**: The username to authenticate with the data source. If you are using
+     a [Personal Access Token](../../profile/personal_access_tokens.md) for
+     authentication, this value is your GitLab username. If you are using GitLab CI/CD, this value is `'gitlab-ci-token'`.
+   - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
+     authentication, this value is the token value (the token must have the **API** scope).
+     If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
+
+Outputs from the data source can now be referenced in your Terraform resources
+using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
+
+To read the Terraform state in the target project, you need at least the Developer role.
 
 ## Manage Terraform state files
 

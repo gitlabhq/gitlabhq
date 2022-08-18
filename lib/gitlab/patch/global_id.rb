@@ -9,7 +9,7 @@ module Gitlab
         super
 
         if deprecation = Gitlab::GlobalId::Deprecations.deprecation_for(model_name)
-          @new_model_name = deprecation.new_model_name
+          @new_model_name = deprecation.new_name
         end
       end
 

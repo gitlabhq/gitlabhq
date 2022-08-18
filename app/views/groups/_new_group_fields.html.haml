@@ -1,31 +1,34 @@
+- parent = @group.parent
+- submit_label = parent ? s_('GroupsNew|Create subgroup') : s_('GroupsNew|Create group')
 = form_errors(@group, pajamas_alert: true)
-= render 'shared/group_form', f: f, autofocus: true
+= render 'shared/groups/group_name_and_path_fields', f: f, autofocus: true, new_subgroup: !!parent
 
-.row
-  .form-group.gl-form-group.col-sm-12
-    %label.label-bold
-      = _('Visibility level')
-    %p
-      = _('Who will be able to see this group?')
-      = link_to _('View the documentation'), help_page_path("user/public_access"), target: '_blank', rel: 'noopener noreferrer'
-    = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
-
-- if Gitlab.config.mattermost.enabled
+- unless parent
   .row
-    = render 'create_chat_team', f: f
+    .form-group.gl-form-group.col-sm-12
+      %label.label-bold
+        = _('Visibility level')
+      %p
+        = _('Who will be able to see this group?')
+        = link_to _('View the documentation'), help_page_path("user/public_access"), target: '_blank', rel: 'noopener noreferrer'
+      = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
 
-- unless Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
-  = render 'personalize', f: f
+  - if Gitlab.config.mattermost.enabled
+    .row
+      = render 'create_chat_team', f: f
 
-.row.js-invite-members-section
-  .col-sm-4
-    = render_if_exists 'shared/groups/invite_members'
+  - unless Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
+    = render 'personalize', f: f
 
-- if captcha_required?
-  .row.recaptcha
+  .row.js-invite-members-section
     .col-sm-4
-      = recaptcha_tags nonce: content_security_policy_nonce
+      = render_if_exists 'shared/groups/invite_members'
+
+  - if captcha_required?
+    .row.recaptcha
+      .col-sm-4
+        = recaptcha_tags nonce: content_security_policy_nonce
 .row
   .col-sm-12
-    = f.submit _('Create group'), class: "btn gl-button btn-confirm"
+    = f.submit submit_label, class: "btn gl-button btn-confirm", data: { qa_selector: 'create_group_button' }
     = link_to _('Cancel'), dashboard_groups_path, class: 'btn gl-button btn-default btn-cancel'

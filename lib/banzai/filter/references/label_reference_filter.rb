@@ -12,13 +12,13 @@ module Banzai
           return Label.none unless parent.is_a?(Project) || parent.is_a?(Group)
 
           labels = find_labels(parent)
-          label_ids = ids.map {|y| y[:label_id]}.compact
+          label_ids = ids.map { |y| y[:label_id] }.compact
 
           unless label_ids.empty?
             id_relation = labels.where(id: label_ids)
           end
 
-          label_names = ids.map {|y| y[:label_name]}.compact
+          label_names = ids.map { |y| y[:label_name] }.compact
           unless label_names.empty?
             label_relation = labels.where(title: label_names)
           end

@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Project, factory_default: :keep do
   include ProjectForksHelper
-  include GitHelpers
   include ExternalAuthorizationServiceHelpers
   include ReloadHelpers
   include StubGitlabCalls
@@ -45,6 +44,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
     it { is_expected.to have_one(:unify_circuit_integration) }
+    it { is_expected.to have_one(:pumble_integration) }
     it { is_expected.to have_one(:webex_teams_integration) }
     it { is_expected.to have_one(:packagist_integration) }
     it { is_expected.to have_one(:pushover_integration) }
@@ -148,6 +148,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:build_trace_chunks).through(:builds).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:secure_files).class_name('Ci::SecureFile').dependent(:restrict_with_error) }
     it { is_expected.to have_one(:build_artifacts_size_refresh).class_name('Projects::BuildArtifactsSizeRefresh') }
+    it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout').with_foreign_key(:project_id) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -832,6 +833,9 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:last_pipeline).to(:commit).allow_nil }
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:environments_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:feature_flags_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:releases_access_level).to(:project_feature) }
 
     describe 'read project settings' do
       %i(
@@ -870,6 +874,12 @@ RSpec.describe Project, factory_default: :keep do
     describe '#ci_forward_deployment_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :forward_deployment_enabled? }
+      end
+    end
+
+    describe '#ci_allow_fork_pipelines_to_run_in_parent_project?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :allow_fork_pipelines_to_run_in_parent_project? }
       end
     end
 
@@ -5741,16 +5751,18 @@ RSpec.describe Project, factory_default: :keep do
   describe '#set_full_path' do
     let_it_be(:project) { create(:project, :repository) }
 
+    let(:repository) { project.repository.raw }
+
     it 'writes full path in .git/config when key is missing' do
       project.set_full_path
 
-      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
+      expect(repository.full_path).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.set_full_path(gl_full_path: 'old/path')
 
-      expect { project.set_full_path }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.set_full_path }.to change { repository.full_path }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
@@ -5880,7 +5892,7 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#has_active_hooks?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project) }
 
     it { expect(project.has_active_hooks?).to be_falsey }
 
@@ -7471,7 +7483,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it { is_expected.to eq expected_result}
+        it { is_expected.to eq expected_result }
       end
     end
 
@@ -7488,7 +7500,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it { is_expected.to eq expected_result}
+        it { is_expected.to eq expected_result }
       end
 
       context 'for a different package type' do
@@ -7511,7 +7523,7 @@ RSpec.describe Project, factory_default: :keep do
         end
 
         with_them do
-          it { is_expected.to eq expected_result}
+          it { is_expected.to eq expected_result }
         end
       end
     end
@@ -8240,58 +8252,52 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#work_items_feature_flag_enabled?' do
-    shared_examples 'project checking work_items feature flag' do
-      context 'when work_items FF is disabled globally' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-        it { is_expected.to be_falsey }
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_feature_flag_enabled? }
+      let(:feature_flag) { :work_items }
+      let(:subject_project) { group_project }
+    end
+
+    context 'when feature flag is enabled for the project' do
+      subject { subject_project.work_items_feature_flag_enabled? }
+
+      before do
+        stub_feature_flags(work_items: subject_project)
       end
 
-      context 'when work_items FF is enabled for the project' do
-        before do
-          stub_feature_flags(work_items: project)
-        end
+      context 'when project belongs to a group' do
+        let(:subject_project) { group_project }
 
         it { is_expected.to be_truthy }
       end
 
-      context 'when work_items FF is enabled globally' do
+      context 'when project does not belong to a group' do
+        let(:subject_project) { create(:project, namespace: create(:namespace)) }
+
         it { is_expected.to be_truthy }
       end
     end
+  end
 
-    subject { project.work_items_feature_flag_enabled? }
+  describe '#work_items_mvc_2_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-    context 'when a project does not belong to a group' do
-      let_it_be(:project) { create(:project, namespace: namespace) }
-
-      it_behaves_like 'project checking work_items feature flag'
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_mvc_2_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_mvc_2 }
+      let(:subject_project) { group_project }
     end
+  end
 
-    context 'when project belongs to a group' do
-      let_it_be(:root_group) { create(:group) }
-      let_it_be(:group) { create(:group, parent: root_group) }
-      let_it_be(:project) { create(:project, group: group) }
+  describe '#work_items_create_from_markdown_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-      it_behaves_like 'project checking work_items feature flag'
-
-      context 'when work_items FF is enabled for the root group' do
-        before do
-          stub_feature_flags(work_items: root_group)
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when work_items FF is enabled for the group' do
-        before do
-          stub_feature_flags(work_items: group)
-        end
-
-        it { is_expected.to be_truthy }
-      end
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_create_from_markdown_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_create_from_markdown }
+      let(:subject_project) { group_project }
     end
   end
 
@@ -8428,15 +8434,28 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#destroy_deployment_by_id' do
+    let(:project) { create(:project, :repository) }
+
+    let!(:deployment) { create(:deployment, :created, project: project) }
+    let!(:old_deployment) { create(:deployment, :created, project: project, finished_at: 1.year.ago) }
+
+    it 'will call fast_destroy_all on a specific deployment by id' do
+      expect(Deployment).to receive(:fast_destroy_all).and_call_original
+
+      expect do
+        project.destroy_deployment_by_id(project.deployments.first.id)
+      end.to change { project.deployments.count }.by(-1)
+
+      expect(project.deployments).to match_array([old_deployment])
+    end
+  end
+
   private
 
   def finish_job(export_job)
     export_job.start
     export_job.finish
-  end
-
-  def rugged_config
-    rugged_repo(project.repository).config
   end
 
   def create_pipeline(project, status = 'success')

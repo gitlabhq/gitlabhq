@@ -1,80 +1,71 @@
-import Vue from 'vue';
+import { mount } from '@vue/test-utils';
+import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
-import dropdownButtonComponent from '~/vue_shared/components/dropdown/dropdown_button.vue';
+describe('DropdownButton component', () => {
+  let wrapper;
 
-const defaultLabel = 'Select';
-const customLabel = 'Select project';
+  const defaultLabel = 'Select';
+  const customLabel = 'Select project';
 
-const createComponent = (props, slots = {}) => {
-  const Component = Vue.extend(dropdownButtonComponent);
-
-  return mountComponentWithSlots(Component, { props, slots });
-};
-
-describe('DropdownButtonComponent', () => {
-  let vm;
-
-  beforeEach(() => {
-    vm = createComponent();
-  });
+  const createComponent = (props, slots = {}) => {
+    wrapper = mount(DropdownButton, { propsData: props, slots });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('computed', () => {
     describe('dropdownToggleText', () => {
       it('returns default toggle text', () => {
-        expect(vm.toggleText).toBe(defaultLabel);
+        createComponent();
+
+        expect(wrapper.vm.toggleText).toBe(defaultLabel);
       });
 
       it('returns custom toggle text when provided via props', () => {
-        const vmEmptyLabels = createComponent({ toggleText: customLabel });
+        createComponent({ toggleText: customLabel });
 
-        expect(vmEmptyLabels.toggleText).toBe(customLabel);
-        vmEmptyLabels.$destroy();
+        expect(wrapper.vm.toggleText).toBe(customLabel);
       });
     });
   });
 
   describe('template', () => {
     it('renders component container element of type `button`', () => {
-      expect(vm.$el.nodeName).toBe('BUTTON');
+      createComponent();
+
+      expect(wrapper.element.nodeName).toBe('BUTTON');
     });
 
     it('renders component container element with required data attributes', () => {
-      expect(vm.$el.dataset.abilityName).toBe(vm.abilityName);
-      expect(vm.$el.dataset.fieldName).toBe(vm.fieldName);
-      expect(vm.$el.dataset.issueUpdate).toBe(vm.updatePath);
-      expect(vm.$el.dataset.labels).toBe(vm.labelsPath);
-      expect(vm.$el.dataset.namespacePath).toBe(vm.namespace);
-      expect(vm.$el.dataset.showAny).not.toBeDefined();
+      createComponent();
+
+      expect(wrapper.element.dataset.abilityName).toBe(wrapper.vm.abilityName);
+      expect(wrapper.element.dataset.fieldName).toBe(wrapper.vm.fieldName);
+      expect(wrapper.element.dataset.issueUpdate).toBe(wrapper.vm.updatePath);
+      expect(wrapper.element.dataset.labels).toBe(wrapper.vm.labelsPath);
+      expect(wrapper.element.dataset.namespacePath).toBe(wrapper.vm.namespace);
+      expect(wrapper.element.dataset.showAny).toBeUndefined();
     });
 
     it('renders dropdown toggle text element', () => {
-      const dropdownToggleTextEl = vm.$el.querySelector('.dropdown-toggle-text');
+      createComponent();
 
-      expect(dropdownToggleTextEl).not.toBeNull();
-      expect(dropdownToggleTextEl.innerText.trim()).toBe(defaultLabel);
+      expect(wrapper.find('.dropdown-toggle-text').text()).toBe(defaultLabel);
     });
 
     it('renders dropdown button icon', () => {
-      const dropdownIconEl = vm.$el.querySelector('[data-testid="chevron-down-icon"]');
+      createComponent();
 
-      expect(dropdownIconEl).not.toBeNull();
+      expect(wrapper.find('[data-testid="chevron-down-icon"]').exists()).toBe(true);
     });
 
     it('renders slot, if default slot exists', () => {
-      vm = createComponent(
-        {},
-        {
-          default: ['Lorem Ipsum Dolar'],
-        },
-      );
+      createComponent({}, { default: ['Lorem Ipsum Dolar'] });
 
-      expect(vm.$el.querySelector('.dropdown-toggle-text')).toBeNull();
-      expect(vm.$el).toHaveText('Lorem Ipsum Dolar');
+      expect(wrapper.find('.dropdown-toggle-text').exists()).toBe(false);
+      expect(wrapper.text()).toBe('Lorem Ipsum Dolar');
     });
   });
 });

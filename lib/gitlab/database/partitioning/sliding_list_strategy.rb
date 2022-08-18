@@ -77,7 +77,6 @@ module Gitlab
         end
 
         def validate_and_fix
-          return unless Feature.enabled?(:fix_sliding_list_partitioning)
           return if no_partitions_exist?
 
           old_default_value = current_default_value

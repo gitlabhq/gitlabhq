@@ -137,6 +137,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
     it { is_expected.to have_many(:namespace_callouts).class_name('Users::NamespaceCallout') }
+    it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
 
     describe '#user_detail' do
       it 'does not persist `user_detail` by default' do
@@ -1082,20 +1083,6 @@ RSpec.describe User do
       end
     end
 
-    describe '.by_id_and_login' do
-      let_it_be(:user) { create(:user) }
-
-      it 'finds a user regardless of case' do
-        expect(described_class.by_id_and_login(user.id, user.username.upcase))
-          .to contain_exactly(user)
-      end
-
-      it 'finds a user when login is an email address regardless of case' do
-        expect(described_class.by_id_and_login(user.id, user.email.upcase))
-          .to contain_exactly(user)
-      end
-    end
-
     describe '.for_todos' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
@@ -1792,9 +1779,10 @@ RSpec.describe User do
 
   describe '#generate_password' do
     it 'does not generate password by default' do
-      user = create(:user, password: 'abcdefghe')
+      password = User.random_password
+      user = create(:user, password: password)
 
-      expect(user.password).to eq('abcdefghe')
+      expect(user.password).to eq(password)
     end
   end
 
@@ -2831,162 +2819,144 @@ RSpec.describe User do
     end
   end
 
-  shared_examples '.search examples' do
-    describe '.search' do
-      let_it_be(:user) { create(:user, name: 'user', username: 'usern', email: 'email@example.com') }
-      let_it_be(:public_email) do
-        create(:email, :confirmed, user: user, email: 'publicemail@example.com').tap do |email|
-          user.update!(public_email: email.email)
-        end
+  describe '.search' do
+    let_it_be(:user) { create(:user, name: 'user', username: 'usern', email: 'email@example.com') }
+    let_it_be(:public_email) do
+      create(:email, :confirmed, user: user, email: 'publicemail@example.com').tap do |email|
+        user.update!(public_email: email.email)
+      end
+    end
+
+    let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
+    let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
+    let_it_be(:unconfirmed_user) { create(:user, :unconfirmed, name: 'not verified', username: 'notverified') }
+
+    let_it_be(:unconfirmed_secondary_email) { create(:email, user: user, email: 'alias@example.com') }
+    let_it_be(:confirmed_secondary_email) { create(:email, :confirmed, user: user, email: 'alias2@example.com') }
+
+    describe 'name user and email relative ordering' do
+      let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
+      let_it_be(:username_alexand) { create(:user, name: 'Joao Alexander', username: 'Alexand', email: 'joao@example.com') }
+
+      it 'prioritizes exact matches' do
+        expect(described_class.search('Alexand')).to eq([username_alexand, named_alexander])
       end
 
-      let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
-      let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
-      let_it_be(:unconfirmed_user) { create(:user, :unconfirmed, name: 'not verified', username: 'notverified') }
+      it 'falls back to ordering by name' do
+        expect(described_class.search('Alexander')).to eq([named_alexander, username_alexand])
+      end
+    end
 
-      let_it_be(:unconfirmed_secondary_email) { create(:email, user: user, email: 'alias@example.com') }
-      let_it_be(:confirmed_secondary_email) { create(:email, :confirmed, user: user, email: 'alias2@example.com') }
-
-      describe 'name user and email relative ordering' do
-        let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
-        let_it_be(:username_alexand) { create(:user, name: 'Joao Alexander', username: 'Alexand', email: 'joao@example.com') }
-
-        it 'prioritizes exact matches' do
-          expect(described_class.search('Alexand')).to eq([username_alexand, named_alexander])
-        end
-
-        it 'falls back to ordering by name' do
-          expect(described_class.search('Alexander')).to eq([named_alexander, username_alexand])
-        end
+    describe 'name matching' do
+      it 'returns users with a matching name with exact match first' do
+        expect(described_class.search(user.name)).to eq([user, user2])
       end
 
-      describe 'name matching' do
-        it 'returns users with a matching name with exact match first' do
-          expect(described_class.search(user.name)).to eq([user, user2])
-        end
+      it 'returns users with a partially matching name' do
+        expect(described_class.search(user.name[0..2])).to eq([user, user2])
+      end
 
+      it 'returns users with a matching name regardless of the casing' do
+        expect(described_class.search(user2.name.upcase)).to eq([user2])
+      end
+
+      it 'returns users with a exact matching name shorter than 3 chars' do
+        expect(described_class.search(user3.name)).to eq([user3])
+      end
+
+      it 'returns users with a exact matching name shorter than 3 chars regardless of the casing' do
+        expect(described_class.search(user3.name.upcase)).to eq([user3])
+      end
+
+      context 'when use_minimum_char_limit is false' do
         it 'returns users with a partially matching name' do
-          expect(described_class.search(user.name[0..2])).to eq([user, user2])
-        end
-
-        it 'returns users with a matching name regardless of the casing' do
-          expect(described_class.search(user2.name.upcase)).to eq([user2])
-        end
-
-        it 'returns users with a exact matching name shorter than 3 chars' do
-          expect(described_class.search(user3.name)).to eq([user3])
-        end
-
-        it 'returns users with a exact matching name shorter than 3 chars regardless of the casing' do
-          expect(described_class.search(user3.name.upcase)).to eq([user3])
-        end
-
-        context 'when use_minimum_char_limit is false' do
-          it 'returns users with a partially matching name' do
-            expect(described_class.search('u', use_minimum_char_limit: false)).to eq([user3, user, user2])
-          end
+          expect(described_class.search('u', use_minimum_char_limit: false)).to eq([user3, user, user2])
         end
       end
+    end
 
-      describe 'email matching' do
-        it 'returns users with a matching public email' do
-          expect(described_class.search(user.public_email)).to match_array([user])
-        end
-
-        it 'does not return users with a partially matching public email' do
-          expect(described_class.search(user.public_email[1...-1])).to be_empty
-        end
-
-        it 'returns users with a matching public email regardless of the casing' do
-          expect(described_class.search(user.public_email.upcase)).to match_array([user])
-        end
-
-        it 'does not return users with a matching private email' do
-          expect(described_class.search(user.email)).to be_empty
-
-          expect(described_class.search(unconfirmed_secondary_email.email)).to be_empty
-          expect(described_class.search(confirmed_secondary_email.email)).to be_empty
-        end
-
-        context 'with private emails search' do
-          it 'returns users with matching private primary email' do
-            expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
-          end
-
-          it 'returns users with matching private unconfirmed primary email' do
-            expect(described_class.search(unconfirmed_user.email, with_private_emails: true)).to match_array([unconfirmed_user])
-          end
-
-          it 'returns users with matching private confirmed secondary email' do
-            expect(described_class.search(confirmed_secondary_email.email, with_private_emails: true)).to match_array([user])
-          end
-
-          it 'does not return users with matching private unconfirmed secondary email' do
-            expect(described_class.search(unconfirmed_secondary_email.email, with_private_emails: true)).to be_empty
-          end
-        end
+    describe 'email matching' do
+      it 'returns users with a matching public email' do
+        expect(described_class.search(user.public_email)).to match_array([user])
       end
 
-      describe 'username matching' do
-        it 'returns users with a matching username' do
-          expect(described_class.search(user.username)).to eq([user, user2])
+      it 'does not return users with a partially matching public email' do
+        expect(described_class.search(user.public_email[1...-1])).to be_empty
+      end
+
+      it 'returns users with a matching public email regardless of the casing' do
+        expect(described_class.search(user.public_email.upcase)).to match_array([user])
+      end
+
+      it 'does not return users with a matching private email' do
+        expect(described_class.search(user.email)).to be_empty
+
+        expect(described_class.search(unconfirmed_secondary_email.email)).to be_empty
+        expect(described_class.search(confirmed_secondary_email.email)).to be_empty
+      end
+
+      context 'with private emails search' do
+        it 'returns users with matching private primary email' do
+          expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
         end
 
-        it 'returns users with a matching username starting with a @' do
-          expect(described_class.search("@#{user.username}")).to eq([user, user2])
+        it 'returns users with matching private unconfirmed primary email' do
+          expect(described_class.search(unconfirmed_user.email, with_private_emails: true)).to match_array([unconfirmed_user])
         end
 
+        it 'returns users with matching private confirmed secondary email' do
+          expect(described_class.search(confirmed_secondary_email.email, with_private_emails: true)).to match_array([user])
+        end
+
+        it 'does not return users with matching private unconfirmed secondary email' do
+          expect(described_class.search(unconfirmed_secondary_email.email, with_private_emails: true)).to be_empty
+        end
+      end
+    end
+
+    describe 'username matching' do
+      it 'returns users with a matching username' do
+        expect(described_class.search(user.username)).to eq([user, user2])
+      end
+
+      it 'returns users with a matching username starting with a @' do
+        expect(described_class.search("@#{user.username}")).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching username' do
+        expect(described_class.search(user.username[0..2])).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching username starting with @' do
+        expect(described_class.search("@#{user.username[0..2]}")).to eq([user, user2])
+      end
+
+      it 'returns users with a matching username regardless of the casing' do
+        expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
+
+      it 'returns users with a exact matching username shorter than 3 chars' do
+        expect(described_class.search(user3.username)).to eq([user3])
+      end
+
+      it 'returns users with a exact matching username shorter than 3 chars regardless of the casing' do
+        expect(described_class.search(user3.username.upcase)).to eq([user3])
+      end
+
+      context 'when use_minimum_char_limit is false' do
         it 'returns users with a partially matching username' do
-          expect(described_class.search(user.username[0..2])).to eq([user, user2])
-        end
-
-        it 'returns users with a partially matching username starting with @' do
-          expect(described_class.search("@#{user.username[0..2]}")).to eq([user, user2])
-        end
-
-        it 'returns users with a matching username regardless of the casing' do
-          expect(described_class.search(user2.username.upcase)).to eq([user2])
-        end
-
-        it 'returns users with a exact matching username shorter than 3 chars' do
-          expect(described_class.search(user3.username)).to eq([user3])
-        end
-
-        it 'returns users with a exact matching username shorter than 3 chars regardless of the casing' do
-          expect(described_class.search(user3.username.upcase)).to eq([user3])
-        end
-
-        context 'when use_minimum_char_limit is false' do
-          it 'returns users with a partially matching username' do
-            expect(described_class.search('se', use_minimum_char_limit: false)).to eq([user3, user, user2])
-          end
+          expect(described_class.search('se', use_minimum_char_limit: false)).to eq([user3, user, user2])
         end
       end
-
-      it 'returns no matches for an empty string' do
-        expect(described_class.search('')).to be_empty
-      end
-
-      it 'returns no matches for nil' do
-        expect(described_class.search(nil)).to be_empty
-      end
-    end
-  end
-
-  context 'when the use_keyset_aware_user_search_query FF is on' do
-    before do
-      stub_feature_flags(use_keyset_aware_user_search_query: true)
     end
 
-    it_behaves_like '.search examples'
-  end
-
-  context 'when the use_keyset_aware_user_search_query FF is off' do
-    before do
-      stub_feature_flags(use_keyset_aware_user_search_query: false)
+    it 'returns no matches for an empty string' do
+      expect(described_class.search('')).to be_empty
     end
 
-    it_behaves_like '.search examples'
+    it 'returns no matches for nil' do
+      expect(described_class.search(nil)).to be_empty
+    end
   end
 
   describe '.user_search_minimum_char_limit' do
@@ -3019,17 +2989,53 @@ RSpec.describe User do
     end
   end
 
-  describe '.by_login' do
-    let(:username) { 'John' }
-    let!(:user) { create(:user, username: username) }
+  shared_examples "find user by login" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:invalid_login) { "#{user.username}-NOT-EXISTS" }
 
-    it 'gets the correct user' do
-      expect(described_class.by_login(user.email.upcase)).to eq user
-      expect(described_class.by_login(user.email)).to eq user
-      expect(described_class.by_login(username.downcase)).to eq user
-      expect(described_class.by_login(username)).to eq user
-      expect(described_class.by_login(nil)).to be_nil
-      expect(described_class.by_login('')).to be_nil
+    context 'when login is nil or empty' do
+      it 'returns nil' do
+        expect(login_method(nil)).to be_nil
+        expect(login_method('')).to be_nil
+      end
+    end
+
+    context 'when login is invalid' do
+      it 'returns nil' do
+        expect(login_method(invalid_login)).to be_nil
+      end
+    end
+
+    context 'when login is username' do
+      it 'returns user' do
+        expect(login_method(user.username)).to eq(user)
+        expect(login_method(user.username.downcase)).to eq(user)
+        expect(login_method(user.username.upcase)).to eq(user)
+      end
+    end
+
+    context 'when login is email' do
+      it 'returns user' do
+        expect(login_method(user.email)).to eq(user)
+        expect(login_method(user.email.downcase)).to eq(user)
+        expect(login_method(user.email.upcase)).to eq(user)
+      end
+    end
+  end
+
+  describe '.by_login' do
+    it_behaves_like "find user by login" do
+      def login_method(login)
+        described_class.by_login(login).take
+      end
+    end
+  end
+
+  describe '.find_by_login' do
+    it_behaves_like "find user by login" do
+      def login_method(login)
+        described_class.find_by_login(login)
+      end
     end
   end
 
@@ -5120,25 +5126,10 @@ RSpec.describe User do
 
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
       user.invalidate_merge_request_cache_counts
-    end
-  end
-
-  describe '#invalidate_attention_requested_count' do
-    let(:user) { build_stubbed(:user) }
-
-    it 'invalidates cache for issue counter' do
-      cache_mock = double
-
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
-
-      allow(Rails).to receive(:cache).and_return(cache_mock)
-
-      user.invalidate_attention_requested_count
     end
   end
 
@@ -5225,43 +5216,6 @@ RSpec.describe User do
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
 
       expect(user.review_requested_open_merge_requests_count(force: true)).to eq 1
-    end
-  end
-
-  describe '#attention_requested_open_merge_requests_count' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:archived_project) { create(:project, :public, :archived) }
-
-    before do
-      mr1 = create(:merge_request, source_project: project, author: user, reviewers: [user])
-      mr2 = create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
-      mr3 = create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
-
-      mr1.find_reviewer(user).update!(state: :attention_requested)
-      mr2.find_reviewer(user).update!(state: :attention_requested)
-      mr3.find_reviewer(user).update!(state: :attention_requested)
-    end
-
-    it 'returns number of open merge requests from non-archived projects' do
-      expect(Rails.cache).not_to receive(:fetch)
-      expect(user.attention_requested_open_merge_requests_count(force: true)).to eq 1
-    end
-
-    context 'when uncached_mr_attention_requests_count is disabled' do
-      before do
-        stub_feature_flags(uncached_mr_attention_requests_count: false)
-      end
-
-      it 'fetches from cache' do
-        expect(Rails.cache).to receive(:fetch).with(
-          user.attention_request_cache_key,
-          force: false,
-          expires_in: described_class::COUNT_CACHE_VALIDITY_PERIOD
-        ).and_call_original
-
-        expect(user.attention_requested_open_merge_requests_count).to eq 1
-      end
     end
   end
 
@@ -6158,8 +6112,9 @@ RSpec.describe User do
     end
 
     context 'user with a bcrypt password hash' do
-      # Plaintext password 'eiFubohV6iro'
-      let(:encrypted_password) { '$2a$10$xLTxCKOa75IU4RQGqqOrTuZOgZdJEzfSzjG6ZSEi/C31TB/yLZYpi' }
+      # Manually set a 'known' encrypted password
+      let(:password) { User.random_password }
+      let(:encrypted_password) { Devise::Encryptor.digest(User, password) }
       let(:user) { create(:user, encrypted_password: encrypted_password) }
 
       shared_examples 'not re-encrypting with PBKDF2' do
@@ -6171,9 +6126,12 @@ RSpec.describe User do
       end
 
       context 'using the wrong password' do
+        # password 'WRONG PASSWORD' will not match the bcrypt hash
         let(:password) { 'WRONG PASSWORD' }
+        let(:encrypted_password) { Devise::Encryptor.digest(User, User.random_password) }
 
         it { is_expected.to be_falsey }
+
         it_behaves_like 'not re-encrypting with PBKDF2'
 
         context 'when pbkdf2_password_encryption is disabled' do
@@ -6182,13 +6140,12 @@ RSpec.describe User do
           end
 
           it { is_expected.to be_falsey }
+
           it_behaves_like 'not re-encrypting with PBKDF2'
         end
       end
 
       context 'using the correct password' do
-        let(:password) { 'eiFubohV6iro' }
-
         it { is_expected.to be_truthy }
 
         it 'validates the password and re-encrypts with PBKDF2' do
@@ -6207,6 +6164,7 @@ RSpec.describe User do
           end
 
           it { is_expected.to be_truthy }
+
           it_behaves_like 'not re-encrypting with PBKDF2'
         end
 
@@ -6216,14 +6174,18 @@ RSpec.describe User do
           end
 
           it { is_expected.to be_truthy }
+
           it_behaves_like 'not re-encrypting with PBKDF2'
         end
       end
     end
 
     context 'user with password hash that is neither PBKDF2 nor BCrypt' do
-      let(:user) { create(:user, encrypted_password: '$argon2i$v=19$m=512,t=4,p=2$eM+ZMyYkpDRGaI3xXmuNcQ$c5DeJg3eb5dskVt1mDdxfw') }
-      let(:password) { 'password' }
+      # Manually calculated User.random_password
+      let(:password) { "gg_w215TmVXGWSt7RJKXwYTVz886f6SDM3zvzztaJf2mX9ttUE8gRkNJSbWyWRLqxz4LFzxBekPe75ydDcGauE9wqg-acKMRT-WpSYjTm1Rdx-tnssE7CQByJcnxwWNH" }
+      # Created with https://argon2.online/ using 'aaaaaaaa' as the salt
+      let(:encrypted_password) { "$argon2i$v=19$m=512,t=4,p=2$YWFhYWFhYWE$PvJscKO5XRlevcgRReUg6w" }
+      let(:user) { create(:user, encrypted_password: encrypted_password) }
 
       it { is_expected.to be_falsey }
 
@@ -6240,7 +6202,7 @@ RSpec.describe User do
   # These entire test section can be removed once the :pbkdf2_password_encryption feature flag is removed.
   describe '#password=' do
     let(:user) { create(:user) }
-    let(:password) { 'Oot5iechahqu' }
+    let(:password) { User.random_password }
 
     def compare_bcrypt_password(user, password)
       Devise::Encryptor.compare(User, user.encrypted_password, password)
@@ -6422,7 +6384,7 @@ RSpec.describe User do
     end
 
     context 'when password_automatically_set is true' do
-      let(:user) { create(:omniauth_user, provider: 'ldap')}
+      let(:user) { create(:omniauth_user, provider: 'ldap') }
 
       it_behaves_like 'password expired not applicable'
     end
@@ -6701,6 +6663,40 @@ RSpec.describe User do
     end
   end
 
+  describe '#dismissed_callout_for_project?' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:feature_name) { Users::ProjectCallout.feature_names.each_key.first }
+
+    context 'when no callout dismissal record exists' do
+      it 'returns false when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to eq false
+      end
+    end
+
+    context 'when dismissed callout exists' do
+      before_all do
+        create(:project_callout,
+              user: user,
+              project_id: project.id,
+              feature_name: feature_name,
+              dismissed_at: 4.months.ago)
+      end
+
+      it 'returns true when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to eq true
+      end
+
+      it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+  end
+
   describe '#find_or_initialize_group_callout' do
     let_it_be(:user, refind: true) { create(:user) }
     let_it_be(:group) { create(:group) }
@@ -6736,6 +6732,50 @@ RSpec.describe User do
 
         it 'initializes a new callout' do
           expect(callout_with_source).to be_a_new(Users::GroupCallout)
+        end
+
+        it 'is not valid' do
+          expect(callout_with_source).not_to be_valid
+        end
+      end
+    end
+  end
+
+  describe '#find_or_initialize_project_callout' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:feature_name) { Users::ProjectCallout.feature_names.each_key.first }
+
+    subject(:callout_with_source) do
+      user.find_or_initialize_project_callout(feature_name, project.id)
+    end
+
+    context 'when callout exists' do
+      let!(:callout) do
+        create(:project_callout, user: user, feature_name: feature_name, project_id: project.id)
+      end
+
+      it 'returns existing callout' do
+        expect(callout_with_source).to eq(callout)
+      end
+    end
+
+    context 'when callout does not exist' do
+      context 'when feature name is valid' do
+        it 'initializes a new callout' do
+          expect(callout_with_source).to be_a_new(Users::ProjectCallout)
+        end
+
+        it 'is valid' do
+          expect(callout_with_source).to be_valid
+        end
+      end
+
+      context 'when feature name is not valid' do
+        let(:feature_name) { 'notvalid' }
+
+        it 'initializes a new callout' do
+          expect(callout_with_source).to be_a_new(Users::ProjectCallout)
         end
 
         it 'is not valid' do
@@ -7372,6 +7412,14 @@ RSpec.describe User do
 
       expect(user.mr_attention_requests_enabled?).to be(true)
       expect(another_user.mr_attention_requests_enabled?).to be(false)
+    end
+  end
+
+  describe 'user age' do
+    let(:user) { create(:user, created_at: Date.yesterday) }
+
+    it 'returns age in days' do
+      expect(user.account_age_in_days).to be(1)
     end
   end
 end

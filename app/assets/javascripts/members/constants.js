@@ -9,6 +9,8 @@ export const EE_APP_OPTIONS = {};
 // Overridden in EE
 export const EE_TABS = [];
 
+export const EE_ACTION_BUTTONS = {};
+
 export const FIELD_KEY_ACCOUNT = 'account';
 export const FIELD_KEY_SOURCE = 'source';
 export const FIELD_KEY_GRANTED = 'granted';

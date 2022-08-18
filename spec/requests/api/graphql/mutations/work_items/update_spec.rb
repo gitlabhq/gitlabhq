@@ -34,6 +34,10 @@ RSpec.describe 'Update a work item' do
   context 'when user has permissions to update a work item' do
     let(:current_user) { developer }
 
+    it_behaves_like 'has spam protection' do
+      let(:mutation_class) { ::Mutations::WorkItems::Update }
+    end
+
     context 'when the work item is open' do
       it 'closes and updates the work item' do
         expect do
@@ -71,36 +75,48 @@ RSpec.describe 'Update a work item' do
       end
     end
 
-    context 'when unsupported widget input is sent' do
-      let_it_be(:test_case) { create(:work_item_type, :default, :test_case, name: 'some_test_case_name') }
-      let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }
-
-      let(:input) do
-        {
-          'hierarchyWidget' => {}
+    context 'when updating confidentiality' do
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          confidential
         }
+        errors
+        FIELDS
       end
 
-      it_behaves_like 'a mutation that returns top-level errors',
-        errors: ["Following widget keys are not supported by some_test_case_name type: [:hierarchy_widget]"]
-    end
+      shared_examples 'toggling confidentiality' do
+        it 'successfully updates work item' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to change(work_item, :confidential).from(values[:old]).to(values[:new])
 
-    it_behaves_like 'has spam protection' do
-      let(:mutation_class) { ::Mutations::WorkItems::Update }
-    end
-
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['workItem']).to include(
+            'confidential' => values[:new]
+          )
+        end
       end
 
-      it 'does not update the work item and returns and error' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-          work_item.reload
-        end.to not_change(work_item, :title)
+      context 'when setting as confidential' do
+        let(:input) { { 'confidential' => true } }
 
-        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
+        it_behaves_like 'toggling confidentiality' do
+          let(:values) { { old: false, new: true } }
+        end
+      end
+
+      context 'when setting as non-confidential' do
+        let(:input) { { 'confidential' => false } }
+
+        before do
+          work_item.update!(confidential: true)
+        end
+
+        it_behaves_like 'toggling confidentiality' do
+          let(:values) { { old: true, new: false } }
+        end
       end
     end
 
@@ -128,26 +144,90 @@ RSpec.describe 'Update a work item' do
       end
     end
 
-    context 'with weight widget input' do
+    context 'with due and start date widget input' do
+      let(:start_date) { Date.today }
+      let(:due_date) { 1.week.from_now.to_date }
       let(:fields) do
         <<~FIELDS
-        workItem {
-          widgets {
-            type
-            ... on WorkItemWidgetWeight {
-              weight
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetStartAndDueDate {
+                startDate
+                dueDate
+              }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 
-      it_behaves_like 'update work item weight widget' do
-        let(:new_weight) { 2 }
+      let(:input) do
+        { 'startAndDueDateWidget' => { 'startDate' => start_date.to_s, 'dueDate' => due_date.to_s } }
+      end
 
-        let(:input) do
-          { 'weightWidget' => { 'weight' => new_weight } }
+      it 'updates start and due date' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          work_item.reload
+        end.to change(work_item, :start_date).from(nil).to(start_date).and(
+          change(work_item, :due_date).from(nil).to(due_date)
+        )
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['workItem']['widgets']).to include(
+          {
+            'startDate' => start_date.to_s,
+            'dueDate' => due_date.to_s,
+            'type' => 'START_AND_DUE_DATE'
+          }
+        )
+      end
+
+      context 'when provided input is invalid' do
+        let(:due_date) { 1.week.ago.to_date }
+
+        it 'returns validation errors without the work item' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response['workItem']).to be_nil
+          expect(mutation_response['errors']).to contain_exactly('Due date must be greater than or equal to start date')
+        end
+      end
+
+      context 'when dates were already set for the work item' do
+        before do
+          work_item.update!(start_date: start_date, due_date: due_date)
+        end
+
+        context 'when updating only start date' do
+          let(:input) do
+            { 'startAndDueDateWidget' => { 'startDate' => nil } }
+          end
+
+          it 'allows setting a single date to null' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change(work_item, :start_date).from(start_date).to(nil).and(
+              not_change(work_item, :due_date).from(due_date)
+            )
+          end
+        end
+
+        context 'when updating only due date' do
+          let(:input) do
+            { 'startAndDueDateWidget' => { 'dueDate' => nil } }
+          end
+
+          it 'allows setting a single date to null' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change(work_item, :due_date).from(due_date).to(nil).and(
+              not_change(work_item, :start_date).from(start_date)
+            )
+          end
         end
       end
     end
@@ -179,7 +259,7 @@ RSpec.describe 'Update a work item' do
       end
 
       context 'when updating parent' do
-        let_it_be(:work_item) { create(:work_item, :task, project: project) }
+        let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
         let_it_be(:valid_parent) { create(:work_item, project: project) }
         let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
@@ -344,6 +424,79 @@ RSpec.describe 'Update a work item' do
             )
           end
         end
+      end
+    end
+
+    context 'when updating assignees' do
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetAssignees {
+              assignees {
+                nodes {
+                  id
+                  username
+                }
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      let(:input) do
+        { 'assigneesWidget' => { 'assigneeIds' => [developer.to_global_id.to_s] } }
+      end
+
+      it 'updates the work item assignee' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          work_item.reload
+        end.to change(work_item, :assignee_ids).from([]).to([developer.id])
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['workItem']['widgets']).to include(
+          {
+            'type' => 'ASSIGNEES',
+            'assignees' => {
+              'nodes' => [
+                { 'id' => developer.to_global_id.to_s, 'username' => developer.username }
+              ]
+            }
+          }
+        )
+      end
+    end
+
+    context 'when unsupported widget input is sent' do
+      let_it_be(:test_case) { create(:work_item_type, :default, :test_case, name: 'some_test_case_name') }
+      let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }
+
+      let(:input) do
+        {
+          'hierarchyWidget' => {}
+        }
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: ["Following widget keys are not supported by some_test_case_name type: [:hierarchy_widget]"]
+    end
+
+    context 'when the work_items feature flag is disabled' do
+      before do
+        stub_feature_flags(work_items: false)
+      end
+
+      it 'does not update the work item and returns and error' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          work_item.reload
+        end.to not_change(work_item, :title)
+
+        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
       end
     end
   end

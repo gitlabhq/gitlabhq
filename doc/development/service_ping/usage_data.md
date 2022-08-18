@@ -59,7 +59,7 @@ Arguments:
 - `end`: custom end of the batch counting to avoid complex min calculations
 
 WARNING:
-Counting over non-unique columns can lead to performance issues. For more information, see the [iterating tables in batches](../iterating_tables_in_batches.md) guide.
+Counting over non-unique columns can lead to performance issues. For more information, see the [iterating tables in batches](../database/iterating_tables_in_batches.md) guide.
 
 Examples:
 

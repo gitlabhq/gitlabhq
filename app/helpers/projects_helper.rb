@@ -458,6 +458,16 @@ module ProjectsHelper
     end
   end
 
+  def project_coverage_chart_data_attributes(daily_coverage_options, ref)
+    {
+      graph_endpoint: "#{daily_coverage_options[:graph_api_path]}?#{daily_coverage_options[:base_params].to_query}",
+      graph_start_date: "#{daily_coverage_options[:base_params][:start_date].strftime('%b %d')}",
+      graph_end_date: "#{daily_coverage_options[:base_params][:end_date].strftime('%b %d')}",
+      graph_ref: "#{ref}",
+      graph_csv_path: "#{daily_coverage_options[:download_path]}?#{daily_coverage_options[:base_params].to_query}"
+    }
+  end
+
   private
 
   def configure_oauth_import_message(provider, help_url)
@@ -473,35 +483,35 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      cycle_analytics:    :read_cycle_analytics,
-      environments:       :read_environment,
+      cycle_analytics: :read_cycle_analytics,
+      environments: :read_environment,
       metrics_dashboards: :metrics_dashboard,
-      milestones:         :read_milestone,
-      snippets:           :read_snippet,
-      settings:           :admin_project,
-      builds:             :read_build,
-      clusters:           :read_cluster,
-      serverless:         :read_cluster,
-      terraform:          :read_terraform_state,
-      error_tracking:     :read_sentry_issue,
-      alert_management:   :read_alert_management_alert,
-      incidents:          :read_issue,
-      labels:             :read_label,
-      issues:             :read_issue,
-      project_members:    :read_project_member,
-      wiki:               :read_wiki,
-      feature_flags:      :read_feature_flag,
-      analytics:          :read_analytics
+      milestones: :read_milestone,
+      snippets: :read_snippet,
+      settings: :admin_project,
+      builds: :read_build,
+      clusters: :read_cluster,
+      serverless: :read_cluster,
+      terraform: :read_terraform_state,
+      error_tracking: :read_sentry_issue,
+      alert_management: :read_alert_management_alert,
+      incidents: :read_issue,
+      labels: :read_label,
+      issues: :read_issue,
+      project_members: :read_project_member,
+      wiki: :read_wiki,
+      feature_flags: :read_feature_flag,
+      analytics: :read_analytics
     }
   end
 
   def search_tab_ability_map
     @search_tab_ability_map ||= tab_ability_map.merge(
-      blobs:          :download_code,
-      commits:        :download_code,
+      blobs: :download_code,
+      commits: :download_code,
       merge_requests: :read_merge_request,
-      notes:          [:read_merge_request, :download_code, :read_issue, :read_snippet],
-      members:        :read_project_member
+      notes: [:read_merge_request, :download_code, :read_issue, :read_snippet],
+      members: :read_project_member
     )
   end
 
@@ -629,7 +639,10 @@ module ProjectsHelper
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
       enforceAuthChecksOnUploads: project.enforce_auth_checks_on_uploads?,
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
-      containerRegistryAccessLevel: feature.container_registry_access_level
+      containerRegistryAccessLevel: feature.container_registry_access_level,
+      environmentsAccessLevel: feature.environments_access_level,
+      featureFlagsAccessLevel: feature.feature_flags_access_level,
+      releasesAccessLevel: feature.releases_access_level
     }
   end
 

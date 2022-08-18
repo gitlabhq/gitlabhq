@@ -18,6 +18,8 @@ const PROVIDED_PROPS = {
 describe('User Avatar Image Component', () => {
   let wrapper;
 
+  const findAvatar = () => wrapper.findComponent(GlAvatar);
+
   afterEach(() => {
     wrapper.destroy();
   });
@@ -28,21 +30,14 @@ describe('User Avatar Image Component', () => {
         propsData: {
           ...PROVIDED_PROPS,
         },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: true,
-          },
-        },
       });
     });
 
     it('should render `GlAvatar` and provide correct properties to it', () => {
-      const avatar = wrapper.findComponent(GlAvatar);
-
-      expect(avatar.attributes('data-src')).toBe(
+      expect(findAvatar().attributes('data-src')).toBe(
         `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
       );
-      expect(avatar.props()).toMatchObject({
+      expect(findAvatar().props()).toMatchObject({
         src: `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
         alt: PROVIDED_PROPS.imgAlt,
         size: PROVIDED_PROPS.size,
@@ -63,22 +58,27 @@ describe('User Avatar Image Component', () => {
           ...PROVIDED_PROPS,
           lazy: true,
         },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: true,
-          },
-        },
       });
     });
 
     it('should add lazy attributes', () => {
-      const avatar = wrapper.findComponent(GlAvatar);
-
-      expect(avatar.classes()).toContain('lazy');
-      expect(avatar.attributes()).toMatchObject({
+      expect(findAvatar().classes()).toContain('lazy');
+      expect(findAvatar().attributes()).toMatchObject({
         src: placeholderImage,
         'data-src': `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
       });
+    });
+
+    it('should use maximum number when size is provided as an object', () => {
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+          size: { default: 16, md: 64, lg: 24 },
+          lazy: true,
+        },
+      });
+
+      expect(findAvatar().attributes('data-src')).toBe(`${PROVIDED_PROPS.imgSrc}?width=${64}`);
     });
   });
 
@@ -89,18 +89,11 @@ describe('User Avatar Image Component', () => {
           ...PROVIDED_PROPS,
           imgSrc: null,
         },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: true,
-          },
-        },
       });
     });
 
     it('should have default avatar image', () => {
-      const avatar = wrapper.findComponent(GlAvatar);
-
-      expect(avatar.props('src')).toBe(`${defaultAvatarUrl}?width=${PROVIDED_PROPS.size}`);
+      expect(findAvatar().props('src')).toBe(`${defaultAvatarUrl}?width=${PROVIDED_PROPS.size}`);
     });
   });
 

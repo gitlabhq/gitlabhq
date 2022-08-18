@@ -11,8 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
 
 To have some more information about workers in the logs, we add
-[metadata to the jobs in the form of an
-`ApplicationContext`](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
+[metadata to the jobs in the form of an `ApplicationContext`](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
 In most cases, when scheduling a job from a request, this context is already
 deducted from the request and added to the scheduled job.
 
@@ -128,7 +127,7 @@ blocks:
 
 ## Arguments logging
 
-As of GitLab 13.6, Sidekiq job arguments are logged by default, unless [`SIDEKIQ_LOG_ARGUMENTS`](../../administration/troubleshooting/sidekiq.md#log-arguments-to-sidekiq-jobs)
+As of GitLab 13.6, Sidekiq job arguments are logged by default, unless [`SIDEKIQ_LOG_ARGUMENTS`](../../administration/sidekiq/sidekiq_troubleshooting.md#log-arguments-to-sidekiq-jobs)
 is disabled.
 
 By default, the only arguments logged are numeric arguments, because

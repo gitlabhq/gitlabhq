@@ -135,14 +135,16 @@ describe('EmojiToken', () => {
     });
 
     it('renders gl-filtered-search-token component', () => {
-      expect(wrapper.find(GlFilteredSearchToken).exists()).toBe(true);
+      expect(wrapper.findComponent(GlFilteredSearchToken).exists()).toBe(true);
     });
 
     it('renders token item when value is selected', () => {
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // My Reaction, =, "thumbsup"
-      expect(tokenSegments.at(2).find(GlEmoji).attributes('data-name')).toEqual('thumbsup');
+      expect(tokenSegments.at(2).findComponent(GlEmoji).attributes('data-name')).toEqual(
+        'thumbsup',
+      );
     });
 
     it('renders provided defaultEmojis as suggestions', async () => {
@@ -151,12 +153,12 @@ describe('EmojiToken', () => {
         config: { ...mockReactionEmojiToken, defaultEmojis },
         stubs: { Portal: true, GlEmoji },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(defaultEmojis.length);
       defaultEmojis.forEach((emoji, index) => {
@@ -170,13 +172,13 @@ describe('EmojiToken', () => {
         config: { ...mockReactionEmojiToken, defaultEmojis: [] },
         stubs: { Portal: true, GlEmoji },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
-      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
+      expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders `DEFAULT_LABEL_NONE` and `DEFAULT_LABEL_ANY` as default suggestions', async () => {
@@ -185,12 +187,12 @@ describe('EmojiToken', () => {
         config: { ...mockReactionEmojiToken },
         stubs: { Portal: true, GlEmoji },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(2);
       expect(suggestions.at(0).text()).toBe(DEFAULT_LABEL_NONE.text);

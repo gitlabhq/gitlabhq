@@ -14,7 +14,7 @@ const getters = {
 describe('Issue placeholder note component', () => {
   let wrapper;
 
-  const findNote = () => wrapper.find({ ref: 'note' });
+  const findNote = () => wrapper.findComponent({ ref: 'note' });
 
   const createComponent = (isIndividual = false, propsData = {}) => {
     wrapper = shallowMount(IssuePlaceholderNote, {

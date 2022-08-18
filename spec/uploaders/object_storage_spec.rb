@@ -256,8 +256,22 @@ RSpec.describe ObjectStorage do
 
       describe '#use_open_file' do
         context 'when file is stored locally' do
-          it "returns the file" do
-            expect { |b| uploader.use_open_file(&b) }.to yield_with_args(an_instance_of(ObjectStorage::Concern::OpenFile))
+          it "returns the file unlinked" do
+            expect { |b| uploader.use_open_file(&b) }.to yield_with_args(
+              satisfying do |f|
+                expect(f).to be_an_instance_of(ObjectStorage::Concern::OpenFile)
+                expect(f.file_path).to be_nil
+              end
+            )
+          end
+
+          it "returns the file not unlinked" do
+            expect { |b| uploader.use_open_file(unlink_early: false, &b) }.to yield_with_args(
+              satisfying do |f|
+                expect(f).to be_an_instance_of(ObjectStorage::Concern::OpenFile)
+                expect(File.exist?(f.file_path)).to be_truthy
+              end
+            )
           end
         end
 

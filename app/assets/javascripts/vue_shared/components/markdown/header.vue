@@ -156,6 +156,14 @@ export default {
         })
         .catch(() => {});
     },
+    handleAttachFile(e) {
+      e.preventDefault();
+      const $gfmForm = $(this.$el).closest('.gfm-form');
+      const $gfmTextarea = $gfmForm.find('.js-gfm-input');
+
+      $gfmForm.find('.div-dropzone').click();
+      $gfmTextarea.focus();
+    },
   },
   shortcuts: {
     bold: keysFor(BOLD_TEXT),
@@ -195,6 +203,44 @@ export default {
           :class="{ 'gl-display-none!': previewMarkdown }"
           class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center"
         >
+          <template v-if="canSuggest">
+            <toolbar-button
+              ref="suggestButton"
+              :tag="mdSuggestion"
+              :prepend="true"
+              :button-title="__('Insert suggestion')"
+              :cursor-offset="4"
+              :tag-content="lineContent"
+              icon="doc-code"
+              data-qa-selector="suggestion_button"
+              class="js-suggestion-btn"
+              @click="handleSuggestDismissed"
+            />
+            <gl-popover
+              v-if="suggestPopoverVisible"
+              :target="$refs.suggestButton.$el"
+              :css-classes="['diff-suggest-popover']"
+              placement="bottom"
+              :show="suggestPopoverVisible"
+            >
+              <strong>{{ __('New! Suggest changes directly') }}</strong>
+              <p class="mb-2">
+                {{
+                  __(
+                    'Suggest code changes which can be immediately applied in one click. Try it out!',
+                  )
+                }}
+              </p>
+              <gl-button
+                variant="confirm"
+                category="primary"
+                size="small"
+                @click="handleSuggestDismissed"
+              >
+                {{ __('Got it') }}
+              </gl-button>
+            </gl-popover>
+          </template>
           <toolbar-button
             tag="**"
             :button-title="
@@ -237,44 +283,6 @@ export default {
             icon="quote"
             @click="handleQuote"
           />
-          <template v-if="canSuggest">
-            <toolbar-button
-              ref="suggestButton"
-              :tag="mdSuggestion"
-              :prepend="true"
-              :button-title="__('Insert suggestion')"
-              :cursor-offset="4"
-              :tag-content="lineContent"
-              icon="doc-code"
-              data-qa-selector="suggestion_button"
-              class="js-suggestion-btn"
-              @click="handleSuggestDismissed"
-            />
-            <gl-popover
-              v-if="suggestPopoverVisible"
-              :target="$refs.suggestButton.$el"
-              :css-classes="['diff-suggest-popover']"
-              placement="bottom"
-              :show="suggestPopoverVisible"
-            >
-              <strong>{{ __('New! Suggest changes directly') }}</strong>
-              <p class="mb-2">
-                {{
-                  __(
-                    'Suggest code changes which can be immediately applied in one click. Try it out!',
-                  )
-                }}
-              </p>
-              <gl-button
-                variant="confirm"
-                category="primary"
-                size="small"
-                @click="handleSuggestDismissed"
-              >
-                {{ __('Got it') }}
-              </gl-button>
-            </gl-popover>
-          </template>
           <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
           <toolbar-button
             tag="[{text}](url)"
@@ -306,7 +314,7 @@ export default {
             v-if="!restrictedToolBarItems.includes('task-list')"
             :prepend="true"
             tag="- [ ] "
-            :button-title="__('Add a task list')"
+            :button-title="__('Add a checklist')"
             icon="list-task"
           />
           <toolbar-button
@@ -323,6 +331,15 @@ export default {
             :prepend="true"
             :button-title="__('Add a table')"
             icon="table"
+          />
+          <gl-button
+            v-if="!restrictedToolBarItems.includes('attach-file')"
+            v-gl-tooltip
+            :title="__('Attach a file or image')"
+            data-testid="button-attach-file"
+            category="tertiary"
+            icon="paperclip"
+            @click="handleAttachFile"
           />
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('full-screen')"

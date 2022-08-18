@@ -3,8 +3,6 @@
 module Ci
   module Runners
     class ReconcileExistingRunnerVersionsService
-      include BaseServiceUtility
-
       VERSION_BATCH_SIZE = 100
 
       def execute
@@ -12,7 +10,7 @@ module Ci
         total_deleted = cleanup_runner_versions(insert_result[:versions_from_runners])
         total_updated = update_status_on_outdated_runner_versions(insert_result[:versions_from_runners])
 
-        success({
+        ServiceResponse.success(payload: {
           total_inserted: insert_result[:new_record_count],
           total_updated: total_updated,
           total_deleted: total_deleted
@@ -22,7 +20,7 @@ module Ci
       private
 
       def upgrade_check
-        Gitlab::Ci::RunnerUpgradeCheck.instance
+        @runner_upgrade_check ||= Gitlab::Ci::RunnerUpgradeCheck.new(::Gitlab::VERSION)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -74,13 +72,11 @@ module Ci
       end
 
       def runner_version_with_updated_status(runner_version)
-        version = runner_version['version']
-        suggestion = upgrade_check.check_runner_upgrade_status(version)
-        new_status = suggestion.each_key.first
+        _, new_status = upgrade_check.check_runner_upgrade_suggestion(runner_version.version)
 
-        if new_status != :error && new_status != runner_version['status'].to_sym
+        if new_status != :error && new_status != runner_version.status.to_sym
           {
-            version: version,
+            version: runner_version.version,
             status: Ci::RunnerVersion.statuses[new_status]
           }
         end

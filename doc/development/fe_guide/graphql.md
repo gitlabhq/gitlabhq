@@ -14,7 +14,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 **General resources**:
 
 - [📚 Official Introduction to GraphQL](https://graphql.org/learn/)
-- [📚 Official Introduction to Apollo](https://www.apollographql.com/docs/tutorial/introduction/)
+- [📚 Official Introduction to Apollo](https://www.apollographql.com/tutorials/fullstack-quickstart/introduction)
 
 **GraphQL at GitLab**:
 
@@ -109,7 +109,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `ID` presence for every GraphQL type that has an `ID`, so this shouldn't be the case. Most likely, the `SomeEntity` type doesn't have an `ID` property, and to fix this warning we need to define a custom merge function.
 
-We have some client-wide types with `merge: true` defined in the default client as [typePolicies](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Please consider adding `SomeEntity` there or defining a custom merge function for it.
+We have some client-wide types with `merge: true` defined in the default client as [typePolicies](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Consider adding `SomeEntity` there or defining a custom merge function for it.
 
 ## GraphQL Queries
 
@@ -212,7 +212,7 @@ with a **new and updated** object.
 
 To facilitate the process of updating the cache and returning the new object we
 use the library [Immer](https://immerjs.github.io/immer/).
-Please, follow these conventions:
+Follow these conventions:
 
 - The updated cache is named `data`.
 - The original cache data is named `sourceData`.
@@ -597,7 +597,7 @@ export default {
 Note that, even if the directive evaluates to `false`, the guarded entity is sent to the backend and
 matched against the GraphQL schema. So this approach requires that the feature-flagged entity
 exists in the schema, even if the feature flag is disabled. When the feature flag is turned off, it
-is recommended that the resolver returns `null` at the very least using the same feature flag as the frontend. See the [API GraphQL guide](../api_graphql_styleguide.md#frontend-and-backend-feature-flag-strategies).
+is recommended that the resolver returns `null` at the very least using the same feature flag as the frontend. See the [API GraphQL guide](../api_graphql_styleguide.md#feature-flags).
 
 ##### Different versions of a query
 
@@ -729,8 +729,9 @@ In this case, we can either:
 - Skip passing a cursor.
 - Pass `null` explicitly to `after`.
 
-After data is fetched, we can use the `update`-hook as an opportunity [to customize
-the data that is set in the Vue component property](https://apollo.vuejs.org/api/smart-query.html#options). This allows us to get a hold of the `pageInfo` object among other data.
+After data is fetched, we can use the `update`-hook as an opportunity 
+[to customize the data that is set in the Vue component property](https://apollo.vuejs.org/api/smart-query.html#options). 
+This allows us to get a hold of the `pageInfo` object among other data.
 
 In the `result`-hook, we can inspect the `pageInfo` object to see if we need to fetch
 the next page. Note that we also keep a `requestCount` to ensure that the application
@@ -894,6 +895,51 @@ export default new VueApollo({
 
 This is similar to the `DesignCollection` example above as new page results are appended to the
 previous ones.
+
+For some cases, it's hard to define the correct `keyArgs` for the field because all
+the fields are updated. In this case, we can set `keyArgs` to `false`. This instructs
+Apollo Client to not perform any automatic merge, and fully rely on the logic we
+put into the `merge` function.
+
+For example, we have a query like this:
+
+```javascript
+query searchGroupsWhereUserCanTransfer {
+  currentUser {
+    id
+    groups {
+      nodes {
+        id
+        fullName
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+```
+
+Here, the `groups` field doesn't have a good candidate for `keyArgs`: both
+`nodes` and `pageInfo` will be updated when we're fetching a second page.
+Setting `keyArgs` to `false` makes the update work as intended:
+
+```javascript
+typePolicies: {
+  UserCore: {
+    fields: {
+      groups: {
+        keyArgs: false,
+      },
+    },
+  },
+  GroupConnection: {
+    fields: {
+      nodes: concatPagination(),
+    },
+  },
+}
+```
 
 #### Using a recursive query in components
 
@@ -1444,7 +1490,7 @@ describe('Some component', () => {
 When mocking resolved values, ensure the structure of the response is the same
 as the actual API response. For example, root property should be `data`.
 
-When testing queries, please keep in mind they are promises, so they need to be _resolved_ to render a result. Without resolving, we can check the `loading` state of the query:
+When testing queries, keep in mind they are promises, so they need to be _resolved_ to render a result. Without resolving, we can check the `loading` state of the query:
 
 ```javascript
 it('renders a loading state', () => {
@@ -2001,11 +2047,15 @@ relative to `app/graphql/queries` folder: for example, if we need a
 
 ### Mocked client returns empty objects instead of mock response
 
-If your unit test is failing because response contains empty objects instead of mock data, you would need to add `__typename` field to the mocked response. This happens because mocked client (unlike the real one) does not populate the response with typenames and in some cases we need to do it manually so the client is able to recognize a GraphQL type.
+If your unit test is failing because the response contains empty objects instead of mock data, add
+`__typename` field to the mocked responses.
+
+Alternatively, [GraphQL query fixtures](../testing_guide/frontend_testing.md#graphql-query-fixtures)
+automatically adds the `__typename` for you upon generation.
 
 ### Warning about losing cache data
 
-Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. Please check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
+Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. Check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
 
   ```yaml
   - current_route_path = request.fullpath.match(/-\/tree\/[^\/]+\/(.+$)/).to_a[1]

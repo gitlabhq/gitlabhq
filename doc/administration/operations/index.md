@@ -18,10 +18,9 @@ Keep your GitLab instance up and running smoothly.
 - [Multiple Sidekiq processes](extra_sidekiq_processes.md): Configure multiple Sidekiq processes to ensure certain queues always have dedicated workers, no matter the number of jobs that must be processed. **(FREE SELF)**
 - [Sidekiq routing rules](extra_sidekiq_routing.md): Configure the routing rules to route a job from a worker to a desirable queue. **(FREE SELF)**
 - [Puma](puma.md): Understand Puma and puma-worker-killer.
-- Speed up SSH operations by [Authorizing SSH users via a fast,
-  indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or
-  by [doing away with user SSH keys stored on GitLab entirely in favor
-  of SSH certificates](ssh_certificates.md).
+- Speed up SSH operations by 
+  [Authorizing SSH users via a fast, indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or
+  by [doing away with user SSH keys stored on GitLab entirely in favor of SSH certificates](ssh_certificates.md).
 - [File System Performance Benchmarking](filesystem_benchmarking.md): File system
   performance can have a big impact on GitLab performance, especially for actions
   that read or write Git repositories. This information helps benchmark

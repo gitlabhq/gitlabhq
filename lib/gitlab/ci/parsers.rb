@@ -13,7 +13,8 @@ module Gitlab
           accessibility: ::Gitlab::Ci::Parsers::Accessibility::Pa11y,
           codequality: ::Gitlab::Ci::Parsers::Codequality::CodeClimate,
           sast: ::Gitlab::Ci::Parsers::Security::Sast,
-          secret_detection: ::Gitlab::Ci::Parsers::Security::SecretDetection
+          secret_detection: ::Gitlab::Ci::Parsers::Security::SecretDetection,
+          cyclonedx: ::Gitlab::Ci::Parsers::Sbom::Cyclonedx
         }
       end
 

@@ -1,9 +1,14 @@
 import { pick } from 'lodash';
+import normalize from 'mdurl/encode';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkRehype, { all } from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
+
+const skipFrontmatterHandler = (language) => (h, node) =>
+  h(node.position, 'frontmatter', { language }, [{ type: 'text', value: node.value }]);
 
 const skipRenderingHandlers = {
   footnoteReference: (h, node) =>
@@ -19,12 +24,57 @@ const skipRenderingHandlers = {
     h(node.position, 'codeBlock', { language: node.lang, meta: node.meta }, [
       { type: 'text', value: node.value },
     ]),
+  definition: (h, node) => {
+    const title = node.title ? ` "${node.title}"` : '';
+
+    return h(
+      node.position,
+      'referenceDefinition',
+      { identifier: node.identifier, url: node.url, title: node.title },
+      [{ type: 'text', value: `[${node.identifier}]: ${node.url}${title}` }],
+    );
+  },
+  linkReference: (h, node) => {
+    const definition = h.definition(node.identifier);
+
+    return h(
+      node.position,
+      'a',
+      {
+        href: normalize(definition.url ?? ''),
+        identifier: node.identifier,
+        isReference: 'true',
+        title: definition.title,
+      },
+      all(h, node),
+    );
+  },
+  imageReference: (h, node) => {
+    const definition = h.definition(node.identifier);
+
+    return h(
+      node.position,
+      'img',
+      {
+        src: normalize(definition.url ?? ''),
+        alt: node.alt,
+        identifier: node.identifier,
+        isReference: 'true',
+        title: definition.title,
+      },
+      all(h, node),
+    );
+  },
+  toml: skipFrontmatterHandler('toml'),
+  yaml: skipFrontmatterHandler('yaml'),
+  json: skipFrontmatterHandler('json'),
 };
 
 const createParser = ({ skipRendering = [] }) => {
   return unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkFrontmatter, ['yaml', 'toml', { type: 'json', marker: ';' }])
     .use(remarkRehype, {
       allowDangerousHtml: true,
       handlers: {

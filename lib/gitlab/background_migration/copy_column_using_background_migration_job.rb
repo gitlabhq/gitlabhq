@@ -14,7 +14,9 @@ module Gitlab
     # - The table that is migrated does _not_ need `id` as the primary key
     #   We use the provided primary_key column to perform the update.
     class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
-      def perform(copy_from, copy_to)
+      job_arguments :copy_from, :copy_to
+
+      def perform
         assignment_clauses = build_assignment_clauses(copy_from, copy_to)
 
         each_sub_batch(operation_name: :update_all) do |relation|

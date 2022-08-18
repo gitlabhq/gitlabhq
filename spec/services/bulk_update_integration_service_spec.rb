@@ -71,7 +71,7 @@ RSpec.describe BulkUpdateIntegrationService do
 
     context 'with integration with data fields' do
       let(:excluded_attributes) do
-        %w[id service_id created_at updated_at encrypted_properties encrypted_properties_iv]
+        %w[id integration_id created_at updated_at encrypted_properties encrypted_properties_iv]
       end
 
       it 'updates the data fields from the integration', :aggregate_failures do

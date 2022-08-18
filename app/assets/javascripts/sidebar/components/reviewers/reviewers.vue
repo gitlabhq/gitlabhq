@@ -36,8 +36,8 @@ export default {
       return !this.users.length;
     },
     sortedReviewers() {
-      const canMergeUsers = this.users.filter((user) => user.can_merge);
-      const canNotMergeUsers = this.users.filter((user) => !user.can_merge);
+      const canMergeUsers = this.users.filter((user) => user.mergeRequestInteraction?.canMerge);
+      const canNotMergeUsers = this.users.filter((user) => !user.mergeRequestInteraction?.canMerge);
 
       return [...canMergeUsers, ...canNotMergeUsers];
     },
@@ -48,9 +48,6 @@ export default {
     },
     requestReview(data) {
       this.$emit('request-review', data);
-    },
-    toggleAttentionRequested(data) {
-      this.$emit('toggle-attention-requested', data);
     },
   },
 };
@@ -73,7 +70,6 @@ export default {
         :root-path="rootPath"
         :issuable-type="issuableType"
         @request-review="requestReview"
-        @toggle-attention-requested="toggleAttentionRequested"
       />
     </div>
   </div>

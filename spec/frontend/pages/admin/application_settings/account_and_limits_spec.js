@@ -23,17 +23,17 @@ describe('AccountAndLimits', () => {
 
   describe('Changing of userInternalRegex when userDefaultExternal', () => {
     it('is unchecked', () => {
-      expect($userDefaultExternal.prop('checked')).toBeFalsy();
+      expect($userDefaultExternal.prop('checked')).toBe(false);
       expect($userInternalRegex.placeholder).toEqual(PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE);
-      expect($userInternalRegex.readOnly).toBeTruthy();
+      expect($userInternalRegex.readOnly).toBe(true);
     });
 
     it('is checked', () => {
       if (!$userDefaultExternal.prop('checked')) $userDefaultExternal.click();
 
-      expect($userDefaultExternal.prop('checked')).toBeTruthy();
+      expect($userDefaultExternal.prop('checked')).toBe(true);
       expect($userInternalRegex.placeholder).toEqual(PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE);
-      expect($userInternalRegex.readOnly).toBeFalsy();
+      expect($userInternalRegex.readOnly).toBe(false);
     });
   });
 });

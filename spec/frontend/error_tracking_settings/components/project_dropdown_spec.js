@@ -41,23 +41,23 @@ describe('error tracking settings project dropdown', () => {
 
   describe('empty project list', () => {
     it('renders the dropdown', () => {
-      expect(wrapper.find('#project-dropdown').exists()).toBeTruthy();
-      expect(wrapper.find(GlDropdown).exists()).toBeTruthy();
+      expect(wrapper.find('#project-dropdown').exists()).toBe(true);
+      expect(wrapper.find(GlDropdown).exists()).toBe(true);
     });
 
     it('shows helper text', () => {
-      expect(wrapper.find('.js-project-dropdown-label').exists()).toBeTruthy();
+      expect(wrapper.find('.js-project-dropdown-label').exists()).toBe(true);
       expect(wrapper.find('.js-project-dropdown-label').text()).toContain(
         'To enable project selection',
       );
     });
 
     it('does not show an error', () => {
-      expect(wrapper.find('.js-project-dropdown-error').exists()).toBeFalsy();
+      expect(wrapper.find('.js-project-dropdown-error').exists()).toBe(false);
     });
 
     it('does not contain any dropdown items', () => {
-      expect(wrapper.find(GlDropdownItem).exists()).toBeFalsy();
+      expect(wrapper.find(GlDropdownItem).exists()).toBe(false);
       expect(wrapper.find(GlDropdown).props('text')).toBe('No projects available');
     });
   });
@@ -70,12 +70,12 @@ describe('error tracking settings project dropdown', () => {
     });
 
     it('renders the dropdown', () => {
-      expect(wrapper.find('#project-dropdown').exists()).toBeTruthy();
-      expect(wrapper.find(GlDropdown).exists()).toBeTruthy();
+      expect(wrapper.find('#project-dropdown').exists()).toBe(true);
+      expect(wrapper.find(GlDropdown).exists()).toBe(true);
     });
 
     it('contains a number of dropdown items', () => {
-      expect(wrapper.find(GlDropdownItem).exists()).toBeTruthy();
+      expect(wrapper.find(GlDropdownItem).exists()).toBe(true);
       expect(wrapper.findAll(GlDropdownItem).length).toBe(2);
     });
   });
@@ -89,8 +89,8 @@ describe('error tracking settings project dropdown', () => {
     });
 
     it('does not show helper text', () => {
-      expect(wrapper.find('.js-project-dropdown-label').exists()).toBeFalsy();
-      expect(wrapper.find('.js-project-dropdown-error').exists()).toBeFalsy();
+      expect(wrapper.find('.js-project-dropdown-label').exists()).toBe(false);
+      expect(wrapper.find('.js-project-dropdown-error').exists()).toBe(false);
     });
   });
 
@@ -105,8 +105,8 @@ describe('error tracking settings project dropdown', () => {
     });
 
     it('displays a error', () => {
-      expect(wrapper.find('.js-project-dropdown-label').exists()).toBeFalsy();
-      expect(wrapper.find('.js-project-dropdown-error').exists()).toBeTruthy();
+      expect(wrapper.find('.js-project-dropdown-label').exists()).toBe(false);
+      expect(wrapper.find('.js-project-dropdown-error').exists()).toBe(true);
     });
   });
 });

@@ -19,7 +19,6 @@ class Todo < ApplicationRecord
   DIRECTLY_ADDRESSED  = 7
   MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
   REVIEW_REQUESTED    = 9
-  ATTENTION_REQUESTED = 10
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -30,8 +29,7 @@ class Todo < ApplicationRecord
     APPROVAL_REQUIRED => :approval_required,
     UNMERGEABLE => :unmergeable,
     DIRECTLY_ADDRESSED => :directly_addressed,
-    MERGE_TRAIN_REMOVED => :merge_train_removed,
-    ATTENTION_REQUESTED => :attention_requested
+    MERGE_TRAIN_REMOVED => :merge_train_removed
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED].freeze
@@ -195,10 +193,6 @@ class Todo < ApplicationRecord
     action == REVIEW_REQUESTED
   end
 
-  def attention_requested?
-    action == ATTENTION_REQUESTED
-  end
-
   def merge_train_removed?
     action == MERGE_TRAIN_REMOVED
   end
@@ -238,7 +232,11 @@ class Todo < ApplicationRecord
   # override to return commits, which are not active record
   def target
     if for_commit?
-      project.commit(commit_id) rescue nil
+      begin
+        project.commit(commit_id)
+      rescue StandardError
+        nil
+      end
     else
       super
     end

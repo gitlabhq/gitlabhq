@@ -74,7 +74,7 @@ describe('AlertDetails', () => {
       });
 
       it('displays a loading state when loading', () => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
 
@@ -130,7 +130,7 @@ describe('AlertDetails', () => {
           environmentData = { name: null, path: null };
           mountComponent();
 
-          expect(findTableFieldValueByKey('Environment').text()).toBeFalsy();
+          expect(findTableFieldValueByKey('Environment').text()).toBe('');
         });
       });
 

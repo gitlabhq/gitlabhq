@@ -268,7 +268,7 @@ describe('IDE store getters', () => {
         currentProject: undefined,
       };
 
-      expect(getters.isOnDefaultBranch({}, localGetters)).toBeFalsy();
+      expect(getters.isOnDefaultBranch({}, localGetters)).toBe(undefined);
     });
 
     it("returns true when project's default branch matches current branch", () => {
@@ -279,7 +279,7 @@ describe('IDE store getters', () => {
         branchName: 'main',
       };
 
-      expect(getters.isOnDefaultBranch({}, localGetters)).toBeTruthy();
+      expect(getters.isOnDefaultBranch({}, localGetters)).toBe(true);
     });
 
     it("returns false when project's default branch doesn't match current branch", () => {
@@ -290,7 +290,7 @@ describe('IDE store getters', () => {
         branchName: 'feature',
       };
 
-      expect(getters.isOnDefaultBranch({}, localGetters)).toBeFalsy();
+      expect(getters.isOnDefaultBranch({}, localGetters)).toBe(false);
     });
   });
 

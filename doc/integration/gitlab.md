@@ -77,7 +77,7 @@ GitLab.com generates an application ID and secret key for you to use.
        app_id: "YOUR_APP_ID",
        app_secret: "YOUR_APP_SECRET",
        args: { scope: "read_user" # optional: defaults to the scopes of the application
-             , client_options: { site: "https://gitlab.example.com/api/v4" } }
+             , client_options: { site: "https://gitlab.example.com" } }
      }
    ]
    ```
@@ -98,8 +98,12 @@ GitLab.com generates an application ID and secret key for you to use.
        label: 'Provider name', # optional label for login button, defaults to "GitLab.com"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
-       args: { "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
+       args: { "client_options": { "site": 'https://gitlab.example.com' } }
    ```
+
+   NOTE:
+   In GitLab 15.1 and earlier, the `site` parameter requires an `/api/v4` suffix.
+   We recommend you drop this suffix after you upgrade to GitLab 15.2 or later.
 
 1. Change `'YOUR_APP_ID'` to the Application ID from the GitLab.com application page.
 1. Change `'YOUR_APP_SECRET'` to the secret from the GitLab.com application page.

@@ -13,6 +13,16 @@ module QA
           end
           "$#{name}"
         end
+
+        def use_group_ci_variable(name:, value:, group:)
+          Resource::GroupCiVariable.fabricate_via_api! do |ci_variable|
+            ci_variable.group = group
+            ci_variable.key = name
+            ci_variable.value = value
+            ci_variable.protected = true
+          end
+          "$#{name}"
+        end
       end
     end
   end

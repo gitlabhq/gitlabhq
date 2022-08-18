@@ -18,7 +18,7 @@ module TimeZoneHelper
   #
   def timezone_data(format: :short)
     attrs = TIME_ZONE_FORMAT_ATTRS.fetch(format) do
-      valid_formats = TIME_ZONE_FORMAT_ATTRS.keys.map { |k| ":#{k}"}.join(", ")
+      valid_formats = TIME_ZONE_FORMAT_ATTRS.keys.map { |k| ":#{k}" }.join(", ")
       raise ArgumentError, "Invalid format :#{format}. Valid formats are #{valid_formats}."
     end
 

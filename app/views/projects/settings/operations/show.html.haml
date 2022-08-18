@@ -2,22 +2,18 @@
 - page_title _('Monitor Settings')
 - breadcrumb_title _('Monitor Settings')
 
-.gl-alert.gl-alert-danger.gl-mb-5
-  - removal_epic_link_url = 'https://gitlab.com/groups/gitlab-org/-/epics/7188'
-  - removal_epic_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="gl-link">'.html_safe % { url: removal_epic_link_url }
-  - opstrace_link_url = 'https://gitlab.com/groups/gitlab-org/-/epics/6976'
-  - opstrace_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="gl-link">'.html_safe % { url: opstrace_link_url }
-  - link_end = '</a>'.html_safe
-  .gl-alert-container
-    = sprite_icon('error', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .gl-alert-content
-      .gl-alert-title
-        = s_('Deprecations|Feature deprecation and removal')
-      .gl-alert-body
-        %p
-          = html_escape(s_('Deprecations|The metrics feature was deprecated in GitLab 14.7.'))
-          = html_escape(s_('Deprecations|The logs and tracing features were also deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0.')) % {removal_link_start: removal_epic_link_start, link_end: link_end }
-          = html_escape(s_('Deprecations|For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}.')) % {opstrace_link_start: opstrace_link_start, link_end: link_end }
+= render Pajamas::AlertComponent.new(variant: :danger,
+  dismissible: false,
+  title: s_('Deprecations|Feature deprecation and removal')) do |c|
+  = c.body do
+    - removal_epic_link_url = 'https://gitlab.com/groups/gitlab-org/-/epics/7188'
+    - removal_epic_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="gl-link">'.html_safe % { url: removal_epic_link_url }
+    - opstrace_link_url = 'https://gitlab.com/groups/gitlab-org/-/epics/6976'
+    - opstrace_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="gl-link">'.html_safe % { url: opstrace_link_url }
+    - link_end = '</a>'.html_safe
+    = html_escape(s_('Deprecations|The metrics feature was deprecated in GitLab 14.7.'))
+    = html_escape(s_('Deprecations|The logs and tracing features were also deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0.')) % {removal_link_start: removal_epic_link_start, link_end: link_end }
+    = html_escape(s_('Deprecations|For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}.')) % {opstrace_link_start: opstrace_link_start, link_end: link_end }
 
 = render 'projects/settings/operations/metrics_dashboard'
 = render 'projects/settings/operations/error_tracking'

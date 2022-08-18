@@ -33,7 +33,10 @@
             .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-mx-2 gl-mt-3 gl-vertical-align-top', no_flip: 'true' } }
           - if can_create_subgroups
             .gl-px-2.gl-sm-w-auto.gl-w-full
-              = link_to _("New subgroup"), new_group_path(parent_id: @group.id), class: "btn btn-default gl-button gl-mt-3 gl-sm-w-auto gl-w-full", data: { qa_selector: 'new_subgroup_button' }
+              = link_to _("New subgroup"),
+                new_group_path(parent_id: @group.id, anchor: 'create-group-pane'),
+                class: "btn btn-default gl-button gl-mt-3 gl-sm-w-auto gl-w-full",
+                data: { qa_selector: 'new_subgroup_button' }
           - if can_create_projects
             .gl-px-2.gl-sm-w-auto.gl-w-full
               = link_to _("New project"), new_project_path(namespace_id: @group.id), class: "btn btn-confirm gl-button gl-mt-3 gl-sm-w-auto gl-w-full", data: { qa_selector: 'new_project_button' }

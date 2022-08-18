@@ -98,7 +98,7 @@ RSpec.describe Lfs::PushService do
   end
 
   def batch_spec(*objects, upload: true, verify: false)
-    { 'transfer' => 'basic', 'objects' => objects.map {|o| object_spec(o, upload: upload) } }
+    { 'transfer' => 'basic', 'objects' => objects.map { |o| object_spec(o, upload: upload) } }
   end
 
   def object_spec(object, upload: true, verify: false)

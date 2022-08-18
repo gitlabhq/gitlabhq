@@ -121,6 +121,10 @@ module API
           merge_request.permits_force_push?
       end
 
+      def recheck_mergeability_of(merge_requests:)
+        merge_requests.each { |mr| mr.check_mergeability(async: true) }
+      end
+
       params :merge_requests_params do
         use :merge_requests_base_params
         use :optional_merge_requests_search_params
@@ -155,7 +159,7 @@ module API
       params do
         use :merge_requests_params
         optional :non_archived, type: Boolean, desc: 'Return merge requests from non archived projects',
-        default: true
+                                default: true
       end
       get ":id/merge_requests", feature_category: :code_review, urgency: :low do
         validate_anonymous_search_access! if declared_params[:search].present?
@@ -206,7 +210,9 @@ module API
         options = serializer_options_for(merge_requests).merge(project: user_project)
         options[:project] = user_project
 
-        present_cached merge_requests, expires_in: 2.days, **options
+        recheck_mergeability_of(merge_requests: merge_requests) unless options[:skip_merge_status_recheck]
+
+        present_cached merge_requests, expires_in: 8.hours, cache_context: -> (mr) { "#{current_user&.cache_key}:#{mr.merge_status}" }, **options
       end
 
       desc 'Create a merge request' do
@@ -281,6 +287,17 @@ module API
         participants = ::Kaminari.paginate_array(merge_request.visible_participants(current_user))
 
         present paginate(participants), with: Entities::UserBasic
+      end
+
+      desc 'Get the reviewers of a merge request' do
+        success Entities::MergeRequestReviewer
+      end
+      get ':id/merge_requests/:merge_request_iid/reviewers', feature_category: :code_review, urgency: :low do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+
+        reviewers = ::Kaminari.paginate_array(merge_request.merge_request_reviewers)
+
+        present paginate(reviewers), with: Entities::MergeRequestReviewer
       end
 
       desc 'Get the commits of a merge request' do
@@ -455,11 +472,7 @@ module API
 
         not_allowed! if !immediately_mergeable && !automatically_mergeable
 
-        if Feature.enabled?(:change_response_code_merge_status, user_project)
-          render_api_error!('Branch cannot be merged', 422) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
-        else
-          render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
-        end
+        render_api_error!('Branch cannot be merged', 422) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
 
         check_sha_param!(params, merge_request)
 
@@ -481,7 +494,11 @@ module API
             .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         end
 
-        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        if immediately_mergeable && !merge_request.merged?
+          render_api_error!("Branch cannot be merged", 422)
+        else
+          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        end
       end
 
       desc 'Returns the up to date merge-ref HEAD commit'

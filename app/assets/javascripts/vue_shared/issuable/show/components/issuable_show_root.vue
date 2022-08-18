@@ -87,6 +87,11 @@ export default {
       required: false,
       default: 0,
     },
+    showWorkItemTypeIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   methods: {
     handleKeydownTitle(e, issuableMeta) {
@@ -110,6 +115,8 @@ export default {
       :created-at="issuable.createdAt"
       :author="issuable.author"
       :task-completion-status="taskCompletionStatus"
+      :issuable-type="issuable.type"
+      :show-work-item-type-icon="showWorkItemTypeIcon"
     >
       <template #status-badge>
         <slot name="status-badge"></slot>

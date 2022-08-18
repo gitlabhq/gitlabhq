@@ -266,7 +266,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
     let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
 
     it 'sets the migration class name in the logs' do
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
 
       buffer.rewind
       expect(buffer.read).to include("\"class\":\"#{model.class}\"")
@@ -280,7 +280,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
         expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
         expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: raise_on_exhaustion)
 
-        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) { }
+        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) {}
       end
     end
 
@@ -289,7 +289,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
       expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
 
     it 'defaults to disallowing subtransactions' do
@@ -297,7 +297,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
       expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: false)).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
 
     context 'when in transaction' do
@@ -323,7 +323,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
         end
 
         it 'raises an error' do
-          expect { model.with_lock_retries(env: env, logger: in_memory_logger) { } }.to raise_error /can not be run inside an already open transaction/
+          expect { model.with_lock_retries(env: env, logger: in_memory_logger) {} }.to raise_error /can not be run inside an already open transaction/
         end
       end
     end

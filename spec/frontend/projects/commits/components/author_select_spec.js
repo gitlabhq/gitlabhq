@@ -71,7 +71,7 @@ describe('Author Select', () => {
       wrapper.setData({ hasSearchParam: true });
 
       await nextTick();
-      expect(findDropdownContainer().attributes('disabled')).toBeFalsy();
+      expect(findDropdownContainer().attributes('disabled')).toBeUndefined();
     });
 
     it('has correct tooltip message', async () => {
@@ -91,13 +91,13 @@ describe('Author Select', () => {
       wrapper.setData({ hasSearchParam: false });
 
       await nextTick();
-      expect(findDropdown().attributes('disabled')).toBeFalsy();
+      expect(findDropdown().attributes('disabled')).toBeUndefined();
     });
 
     it('hasSearchParam if user types a truthy string', () => {
       wrapper.vm.setSearchParam('false');
 
-      expect(wrapper.vm.hasSearchParam).toBeTruthy();
+      expect(wrapper.vm.hasSearchParam).toBe(true);
     });
   });
 
@@ -153,9 +153,9 @@ describe('Author Select', () => {
     });
 
     it('has the correct props', async () => {
-      const [{ avatar_url, username }] = authors;
+      const [{ avatar_url: avatarUrl, username }] = authors;
       const result = {
-        avatarUrl: avatar_url,
+        avatarUrl,
         secondaryText: username,
         isChecked: true,
       };

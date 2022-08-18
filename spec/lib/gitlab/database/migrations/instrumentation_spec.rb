@@ -122,7 +122,11 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
 
       it 'records observations for all migrations' do
         subject.observe(version: migration_version, name: migration_name, connection: connection) {}
-        subject.observe(version: migration_version_2, name: migration_name_2, connection: connection) { raise 'something went wrong' } rescue nil
+        begin
+          subject.observe(version: migration_version_2, name: migration_name_2, connection: connection) { raise 'something went wrong' }
+        rescue StandardError
+          nil
+        end
 
         expect { load_observation(result_dir, migration_name) }.not_to raise_error
         expect { load_observation(result_dir, migration_name_2) }.not_to raise_error

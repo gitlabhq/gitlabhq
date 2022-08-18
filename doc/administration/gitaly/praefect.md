@@ -97,8 +97,8 @@ If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus G
 
 ### Preparation
 
-Before beginning, you should already have a working GitLab instance. [Learn how
-to install GitLab](https://about.gitlab.com/install/).
+Before beginning, you should already have a working GitLab instance. 
+[Learn how to install GitLab](https://about.gitlab.com/install/).
 
 Provision a PostgreSQL server. We recommend using the PostgreSQL that is shipped
 with Omnibus GitLab and use it to configure the PostgreSQL database. You can use an
@@ -331,8 +331,8 @@ To configure the additional connection, you must either:
 #### Configure a new PgBouncer database with `pool_mode = session`
 
 We recommend using PgBouncer with `session` pool mode. You can use the
-[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
-manually](https://www.pgbouncer.org/config.html).
+[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and 
+[configure it manually](https://www.pgbouncer.org/config.html).
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
 one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
@@ -620,8 +620,8 @@ Updates to example must be made at:
    gitlab-ctl reconfigure
    ```
 
-1. To ensure that Praefect [has updated its Prometheus listen
-   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
+1. To ensure that Praefect 
+   [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
    [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
@@ -928,8 +928,8 @@ For more information on Gitaly server configuration, see our
    gitlab-ctl reconfigure
    ```
 
-1. To ensure that Gitaly [has updated its Prometheus listen
-   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
+1. To ensure that Gitaly 
+   [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
    [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
@@ -1103,10 +1103,8 @@ Particular attention should be shown to:
    ```
 
 1. Verify on each Gitaly node the Git Hooks can reach GitLab. On each Gitaly node run:
-
-   ```shell
-   /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
-   ```
+   - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
+   - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
 
 1. Verify that GitLab can reach Praefect:
 
@@ -1151,8 +1149,7 @@ running multiple Gitaly storages.
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect
-cluster. See [Grafana Dashboard
-Service](https://docs.gitlab.com/omnibus/settings/grafana.html)
+cluster. See [Grafana Dashboard Service](https://docs.gitlab.com/omnibus/settings/grafana.html)
 for detailed documentation.
 
 To get started quickly:
@@ -1320,8 +1317,7 @@ praefect['background_verification_verification_interval'] = '0'
 WARNING:
 Deletions are disabled by default due to a race condition with repository renames that can cause incorrect
 deletions. This is especially prominent in Geo instances as Geo performs more renames than instances without Geo.
-See [Handle repository creations, deletions and renames atomically](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4101)
-for progress on a fix. We do not recommend enabling the deletions until this is fixed.
+You should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled.
 
 By default, the worker does not delete invalid metadata records but simply logs them and outputs Prometheus
 metrics for them.

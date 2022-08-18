@@ -3,6 +3,12 @@
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"
   ],
+  "CiVariable": [
+    "CiGroupVariable",
+    "CiInstanceVariable",
+    "CiManualVariable",
+    "CiProjectVariable"
+  ],
   "CurrentUserTodos": [
     "BoardEpic",
     "Design",
@@ -134,6 +140,9 @@
     "WorkItemWidgetAssignees",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHierarchy",
+    "WorkItemWidgetLabels",
+    "WorkItemWidgetStartAndDueDate",
+    "WorkItemWidgetVerificationStatus",
     "WorkItemWidgetWeight"
   ]
 }

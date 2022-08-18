@@ -114,8 +114,8 @@ export const PathIdSeparator = {
 };
 
 export const issuablesBlockHeaderTextMap = {
-  [issuableTypesMap.ISSUE]: __('Linked issues'),
-  [issuableTypesMap.INCIDENT]: __('Related incidents or issues'),
+  [issuableTypesMap.ISSUE]: __('Linked items'),
+  [issuableTypesMap.INCIDENT]: __('Linked incidents or issues'),
   [issuableTypesMap.EPIC]: __('Linked epics'),
 };
 
@@ -136,7 +136,7 @@ export const issuablesFormCategoryHeaderTextMap = {
 };
 
 export const issuablesFormInputTextMap = {
-  [issuableTypesMap.ISSUE]: __('the following issue(s)'),
-  [issuableTypesMap.INCIDENT]: __('the following incident(s) or issue(s)'),
-  [issuableTypesMap.EPIC]: __('the following epic(s)'),
+  [issuableTypesMap.ISSUE]: __('the following issues'),
+  [issuableTypesMap.INCIDENT]: __('the following incidents or issues'),
+  [issuableTypesMap.EPIC]: __('the following epics'),
 };

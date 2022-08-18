@@ -2,6 +2,8 @@ import { s__ } from '~/locale';
 
 export const CLOSE_TO_LIMIT_COUNT = 2;
 export const SEARCH_DELAY = 200;
+export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
+export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
   name: 'invite_members_for_task',
@@ -77,6 +79,8 @@ export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team memb
 export const MEMBER_ERROR_LIST_TEXT = s__(
   'InviteMembersModal|Review the invite errors and try again:',
 );
+export const COLLAPSED_ERRORS = s__('InviteMembersModal|Show more (%{count})');
+export const EXPANDED_ERRORS = s__('InviteMembersModal|Show less');
 
 export const MEMBER_MODAL_LABELS = {
   modal: {
@@ -113,6 +117,8 @@ export const MEMBER_MODAL_LABELS = {
   },
   toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
+  collapsedErrors: COLLAPSED_ERRORS,
+  expandedErrors: EXPANDED_ERRORS,
 };
 
 export const GROUP_MODAL_LABELS = {
@@ -136,9 +142,6 @@ export const ON_SUBMIT_TRACK_LABEL = 'manage_members_clicked';
 export const WARNING_ALERT_TITLE = s__(
   'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
 );
-export const WARNING_ALERT_TITLE_PERSONAL_NAMESPACE = s__(
-  'InviteMembersModal|You only have space for %{count} more %{members} in your personal projects',
-);
 export const DANGER_ALERT_TITLE = s__(
   "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
 );
@@ -153,12 +156,12 @@ export const REACHED_LIMIT_MESSAGE = s__(
 
 export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.concat(
   s__(
-    'InviteMembersModal| To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier.',
+    'InviteMembersModal| To get more members and access to additional paid features, an owner of the group can start a trial or upgrade to a paid tier.',
   ),
 );
 
 export const CLOSE_TO_LIMIT_MESSAGE = s__(
-  'InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
+  'InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
 );
 export const CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE = s__(
   'InviteMembersModal|To make more space, you can remove members who no longer need access.',

@@ -13,5 +13,9 @@ module ProtectedBranches
     def after_execute(*)
       # overridden in EE::ProtectedBranches module
     end
+
+    def refresh_cache
+      CacheService.new(@project, @current_user, @params).refresh
+    end
   end
 end

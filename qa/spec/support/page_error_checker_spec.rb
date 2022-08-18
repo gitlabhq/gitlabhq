@@ -113,6 +113,7 @@ RSpec.describe QA::Support::PageErrorChecker do
 
         expect(QA::Support::PageErrorChecker.parse_five_c_page_request_id(page).to_str).to eq('req678')
       end
+
       it 'returns nil if not present' do
         allow(page).to receive(:html).and_return(error_500_no_code_str)
         allow(Nokogiri::HTML).to receive(:parse).with(error_500_no_code_str).and_return(NokogiriParse.parse(error_500_no_code_str))
@@ -217,6 +218,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(QA::Support::PageErrorChecker).to receive(:report!).with(page, 404)
       QA::Support::PageErrorChecker.check_page_for_error_code(page)
     end
+
     it 'calls report with 500 if 500 found' do
       allow(page).to receive(:html).and_return(error_500_str)
       allow(Nokogiri::HTML).to receive(:parse).with(error_500_str).and_return(NokogiriParse.parse(error_500_str))
@@ -224,6 +226,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(QA::Support::PageErrorChecker).to receive(:report!).with(page, 500)
       QA::Support::PageErrorChecker.check_page_for_error_code(page)
     end
+
     it 'calls report with 500 if GDK backtrace found' do
       allow(page).to receive(:html).and_return(backtrace_str)
       allow(Nokogiri::HTML).to receive(:parse).with(backtrace_str).and_return(NokogiriParse.parse(backtrace_str))
@@ -231,6 +234,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(QA::Support::PageErrorChecker).to receive(:report!).with(page, 500)
       QA::Support::PageErrorChecker.check_page_for_error_code(page)
     end
+
     it 'does not call report if 500 found in project name' do
       allow(page).to receive(:html).and_return(project_name_500_str)
       allow(Nokogiri::HTML).to receive(:parse).with(project_name_500_str).and_return(NokogiriParse.parse(project_name_500_str))
@@ -238,6 +242,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(QA::Support::PageErrorChecker).not_to receive(:report!)
       QA::Support::PageErrorChecker.check_page_for_error_code(page)
     end
+
     it 'does not call report if no 404, 500 or backtrace found' do
       allow(page).to receive(:html).and_return(no_error_str)
       allow(Nokogiri::HTML).to receive(:parse).with(no_error_str).and_return(NokogiriParse.parse(no_error_str))

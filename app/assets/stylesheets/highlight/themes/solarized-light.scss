@@ -109,7 +109,15 @@ $solarized-light-il: #2aa198;
   @include hljs-override('title.class_.inherited__', $solarized-light-no);
   // Line numbers
   .file-line-num {
-    @include line-number-link($solarized-light-line-color);
+    @include line-link($black, 'link');
+  }
+
+  .file-line-blame {
+    @include line-link($black, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg($solarized-light-pre-bg);
   }
 
   .line-numbers,

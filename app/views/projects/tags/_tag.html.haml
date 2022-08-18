@@ -18,10 +18,7 @@
         = s_("TagsPage|Can't find HEAD commit for this tag")
 
     - if release
-      .text-secondary
-        = sprite_icon("rocket", size: 12)
-        = _("Release")
-        = link_to release.name, project_release_path(@project, release), class: 'gl-text-blue-600!'
+      = render 'release_link', project: @project, release: release
 
     - if tag.message.present?
       %pre.wrap
@@ -40,5 +37,5 @@
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :admin_tag, @project)
-      = render 'edit_release_button', tag: tag, project: @project, release: release
+      = render 'edit_release_button', tag: tag, project: @project, release: release, option_css_classes: 'gl-mr-3!'
       = render 'projects/buttons/remove_tag', project: @project, tag: tag

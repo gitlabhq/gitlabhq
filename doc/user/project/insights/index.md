@@ -68,12 +68,14 @@ bugsCharts:
       description: "Open bugs created per month"
       type: bar
       query:
-        issuable_type: issue
-        issuable_state: opened
-        filter_labels:
-          - bug
-        group_by: month
-        period_limit: 24
+        data_source: issuables
+        params:
+          issuable_type: issue
+          issuable_state: opened
+          filter_labels:
+            - bug
+          group_by: month
+          period_limit: 24
 ```
 
 Each chart definition is made up of a hash composed of key-value pairs.
@@ -85,12 +87,14 @@ For example, here's single chart definition:
   description: "Open bugs created per month"
   type: bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
-    group_by: month
-    period_limit: 24
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+      group_by: month
+      period_limit: 24
 ```
 
 ## Configuration parameters
@@ -104,7 +108,7 @@ The following table lists available parameters for charts:
 | [`title`](#title)                                  | The title of the chart. This displays on the Insights page. |
 | [`description`](#description)                      | A description for the individual chart. This displays above the relevant chart. |
 | [`type`](#type)                                    | The type of chart: `bar`, `line` or `stacked-bar`. |
-| [`query`](#query)                                  | A hash that defines the conditions for issues / merge requests to be part of the chart. |
+| [`query`](#query)                                  | A hash that defines the data source and filtering conditions for the chart. |
 
 ## Parameter details
 
@@ -153,12 +157,37 @@ Supported values are:
 | `line` | ![Insights example stacked bar chart](img/insights_example_line_chart.png) |
 | `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png) |
 
+NOTE:
+The `dora` data source only supports the `bar` chart type.
+
 ### `query`
 
-`query` allows to define the conditions for issues / merge requests to be part
-of the chart.
+`query` allows to define the data source and various filtering conditions for the chart.
 
 Example:
+
+```yaml
+monthlyBugsCreated:
+  title: "Monthly bugs created"
+  description: "Open bugs created per month"
+  type: bar
+  query:
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+      collection_labels:
+        - S1
+        - S2
+        - S3
+        - S4
+      group_by: week
+      period_limit: 104
+```
+
+The legacy format without the `data_source` parameter is still supported:
 
 ```yaml
 monthlyBugsCreated:
@@ -179,7 +208,20 @@ monthlyBugsCreated:
     period_limit: 104
 ```
 
-#### `query.issuable_type`
+#### `query.data_source`
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
+
+The `data_source` parameter was introduced to allow visualizing data from different data sources.
+
+Supported values are:
+
+- `issuables`: Exposes merge request or issue data.
+- `dora`: Exposes DORA metrics data.
+
+#### `Issuable` query parameters
+
+##### `query.params.issuable_type`
 
 Defines the type of "issuable" you want to create a chart for.
 
@@ -188,7 +230,7 @@ Supported values are:
 - `issue`: The chart displays issues' data.
 - `merge_request`: The chart displays merge requests' data.
 
-#### `query.issuable_state`
+##### `query.params.issuable_state`
 
 Filter by the current state of the queried "issuable".
 
@@ -202,7 +244,7 @@ Supported values are:
 - `merged`: Merged merge requests.
 - `all`: Issues / merge requests in all states
 
-#### `query.filter_labels`
+##### `query.params.filter_labels`
 
 Filter by labels currently applied to the queried "issuable".
 
@@ -216,14 +258,16 @@ monthlyBugsCreated:
   title: "Monthly regressions created"
   type: bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
-      - regression
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+        - regression
 ```
 
-#### `query.collection_labels`
+##### `query.params.collection_labels`
 
 Group "issuable" by the configured labels.
 
@@ -237,18 +281,20 @@ weeklyBugsBySeverity:
   title: "Weekly bugs by severity"
   type: stacked-bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
-    collection_labels:
-      - S1
-      - S2
-      - S3
-      - S4
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+      collection_labels:
+        - S1
+        - S2
+        - S3
+        - S4
 ```
 
-#### `query.group_by`
+##### `query.group_by`
 
 Define the X-axis of your chart.
 
@@ -258,7 +304,7 @@ Supported values are:
 - `week`: Group data per week.
 - `month`: Group data per month.
 
-#### `query.period_limit`
+##### `query.period_limit`
 
 Define how far "issuables" are queried in the past (using the `query.period_field`).
 
@@ -295,6 +341,68 @@ NOTE:
 Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved,
 you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
+#### `DORA` query parameters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
+
+An example DORA chart definition:
+
+```yaml
+dora:
+  title: "DORA charts"
+  charts:
+    - title: "DORA deployment frequency"
+      type: bar # only bar chart is supported at the moment
+      query:
+        data_source: dora
+        params:
+          metric: deployment_frequency
+          group_by: day
+          period_limit: 10
+      projects:
+        only:
+          - 38
+    - title: "DORA lead time for changes"
+      description: "DORA lead time for changes"
+      type: bar
+      query:
+        data_source: dora
+        params:
+          metric: lead_time_for_changes
+          group_by: day
+          environment_tiers:
+            - staging
+          period_limit: 30
+```
+
+##### `query.metric`
+
+Defines which DORA metric to query. The available values are:
+
+- `deployment_frequency` (default)
+- `lead_time_for_changes`
+- `time_to_restore_service`
+- `change_failure_rate`
+
+The metrics are described on the [DORA API](../../../api/dora/metrics.md#the-value-field) page.
+
+##### `query.group_by`
+
+Define the X-axis of your chart.
+
+Supported values are:
+
+- `day` (default): Group data per day.
+- `month`: Group data per month.
+
+##### `query.period_limit`
+
+Define how far the metrics are queried in the past (default: 15). Maximum lookback period is 180 days or 6 months.
+
+##### `query.environment_tiers`
+
+An array of environments to include into the calculation (default: production). Available options: `production`, `staging`, `testing`, `development`, `other`.
+
 ### `projects`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in GitLab 12.4.
@@ -325,10 +433,12 @@ monthlyBugsCreated:
   description: "Open bugs created per month"
   type: bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
   projects:
     only:
       - 3                         # You can use the project ID
@@ -355,41 +465,47 @@ bugsCharts:
       type: bar
       <<: *projectsOnly
       query:
-        issuable_type: issue
-        issuable_state: opened
-        filter_labels:
-          - bug
-        group_by: month
-        period_limit: 24
+        data_source: issuables
+        params:
+          issuable_type: issue
+          issuable_state: opened
+          filter_labels:
+            - bug
+          group_by: month
+          period_limit: 24
 
     - title: "Weekly bugs by severity"
       type: stacked-bar
       <<: *projectsOnly
       query:
-        issuable_type: issue
-        issuable_state: opened
-        filter_labels:
-          - bug
-        collection_labels:
-          - S1
-          - S2
-          - S3
-          - S4
-        group_by: week
-        period_limit: 104
+        data_source: issuables
+        params:
+          issuable_type: issue
+          issuable_state: opened
+          filter_labels:
+            - bug
+          collection_labels:
+            - S1
+            - S2
+            - S3
+            - S4
+          group_by: week
+          period_limit: 104
 
     - title: "Monthly bugs by team"
       type: line
       <<: *projectsOnly
       query:
-        issuable_type: merge_request
-        issuable_state: opened
-        filter_labels:
-          - bug
-        collection_labels:
-          - Manage
-          - Plan
-          - Create
-        group_by: month
-        period_limit: 24
+        data_source: issuables
+        params:
+          issuable_type: merge_request
+          issuable_state: opened
+          filter_labels:
+            - bug
+          collection_labels:
+            - Manage
+            - Plan
+            - Create
+          group_by: month
+          period_limit: 24
 ```

@@ -308,19 +308,19 @@ describe('Fly out sidebar navigation', () => {
 
   describe('canShowSubItems', () => {
     it('returns true if on desktop size', () => {
-      expect(canShowSubItems()).toBeTruthy();
+      expect(canShowSubItems()).toBe(true);
     });
 
     it('returns false if on mobile size', () => {
       breakpointSize = 'xs';
 
-      expect(canShowSubItems()).toBeFalsy();
+      expect(canShowSubItems()).toBe(false);
     });
   });
 
   describe('canShowActiveSubItems', () => {
     it('returns true by default', () => {
-      expect(canShowActiveSubItems(el)).toBeTruthy();
+      expect(canShowActiveSubItems(el)).toBe(true);
     });
 
     it('returns false when active & expanded sidebar', () => {
@@ -329,7 +329,7 @@ describe('Fly out sidebar navigation', () => {
 
       setSidebar(sidebar);
 
-      expect(canShowActiveSubItems(el)).toBeFalsy();
+      expect(canShowActiveSubItems(el)).toBe(false);
     });
 
     it('returns true when active & collapsed sidebar', () => {
@@ -339,7 +339,7 @@ describe('Fly out sidebar navigation', () => {
 
       setSidebar(sidebar);
 
-      expect(canShowActiveSubItems(el)).toBeTruthy();
+      expect(canShowActiveSubItems(el)).toBe(true);
     });
   });
 

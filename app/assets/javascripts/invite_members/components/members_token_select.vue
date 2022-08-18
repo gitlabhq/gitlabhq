@@ -1,10 +1,16 @@
 <script>
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import { __ } from '~/locale';
 import { getUsers } from '~/rest_api';
 import { memberName } from '../utils/member_utils';
-import { SEARCH_DELAY, USERS_FILTER_ALL, USERS_FILTER_SAML_PROVIDER_ID } from '../constants';
+import {
+  SEARCH_DELAY,
+  USERS_FILTER_ALL,
+  USERS_FILTER_SAML_PROVIDER_ID,
+  VALID_TOKEN_BACKGROUND,
+  INVALID_TOKEN_BACKGROUND,
+} from '../constants';
 
 export default {
   components: {
@@ -75,6 +81,25 @@ export default {
       }
       return this.$options.defaultQueryOptions;
     },
+    hasInvalidMembers() {
+      return !isEmpty(this.invalidMembers);
+    },
+  },
+  watch: {
+    // We might not really want this to be *reactive* since we want the "class" state to be
+    // tied to the specific `selectedToken` such that if the token is removed and re-added, this
+    // state is reset.
+    // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90076#note_1027165312
+    hasInvalidMembers: {
+      handler(updatedInvalidMembers) {
+        // Only update tokens if we receive invalid members
+        if (!updatedInvalidMembers) {
+          return;
+        }
+
+        this.updateTokenClasses();
+      },
+    },
   },
   methods: {
     handleTextInput(query) {
@@ -82,6 +107,12 @@ export default {
       this.query = query;
       this.loading = true;
       this.retrieveUsers(query);
+    },
+    updateTokenClasses() {
+      this.selectedTokens = this.selectedTokens.map((token) => ({
+        ...token,
+        class: this.tokenClass(token),
+      }));
     },
     retrieveUsers: debounce(function debouncedRetrieveUsers() {
       return getUsers(this.query, this.queryOptions)
@@ -98,6 +129,14 @@ export default {
           this.loading = false;
         });
     }, SEARCH_DELAY),
+    tokenClass(token) {
+      if (this.hasError(token)) {
+        return INVALID_TOKEN_BACKGROUND;
+      }
+
+      // assume success for this token
+      return VALID_TOKEN_BACKGROUND;
+    },
     handleInput() {
       this.$emit('input', this.selectedTokens);
     },

@@ -15,7 +15,7 @@ module Gitlab
     #
     # The duration for which a process may be above a given fragmentation
     # threshold is computed as `max_strikes * sleep_time_seconds`.
-    class Watchdog < Daemon
+    class Watchdog
       DEFAULT_SLEEP_TIME_SECONDS = 60
       DEFAULT_HEAP_FRAG_THRESHOLD = 0.5
       DEFAULT_MAX_STRIKES = 5
@@ -91,7 +91,7 @@ module Gitlab
 
       attr_reader :strikes, :max_heap_fragmentation, :max_strikes, :sleep_time_seconds
 
-      def run_thread
+      def call
         @logger.info(log_labels.merge(message: 'started'))
 
         while @alive
@@ -101,6 +101,10 @@ module Gitlab
         end
 
         @logger.info(log_labels.merge(message: 'stopped'))
+      end
+
+      def stop
+        @alive = false
       end
 
       private
@@ -141,10 +145,6 @@ module Gitlab
         @handler
       end
 
-      def stop_working
-        @alive = false
-      end
-
       def log_labels
         {
           pid: $$,
@@ -167,15 +167,13 @@ module Gitlab
       end
 
       def init_prometheus_metrics(max_heap_fragmentation)
-        default_labels = { pid: worker_id }
-
         @heap_frag_limit = Gitlab::Metrics.gauge(
           :gitlab_memwd_heap_frag_limit,
-          'The configured limit for how fragmented the Ruby heap is allowed to be',
-          default_labels
+          'The configured limit for how fragmented the Ruby heap is allowed to be'
         )
         @heap_frag_limit.set({}, max_heap_fragmentation)
 
+        default_labels = { pid: worker_id }
         @heap_frag_violations = Gitlab::Metrics.counter(
           :gitlab_memwd_heap_frag_violations_total,
           'Total number of times heap fragmentation in a Ruby process exceeded its allowed maximum',

@@ -34,12 +34,12 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
 
       percentageFormGroup = wrapper
         .find('[data-testid="strategy-flexible-rollout-percentage"]')
-        .find(ParameterFormGroup);
-      percentageInput = percentageFormGroup.find(GlFormInput);
+        .findComponent(ParameterFormGroup);
+      percentageInput = percentageFormGroup.findComponent(GlFormInput);
       stickinessFormGroup = wrapper
         .find('[data-testid="strategy-flexible-rollout-stickiness"]')
-        .find(ParameterFormGroup);
-      stickinessSelect = stickinessFormGroup.find(GlFormSelect);
+        .findComponent(ParameterFormGroup);
+      stickinessSelect = stickinessFormGroup.findComponent(GlFormSelect);
     });
 
     it('displays the current percentage value', () => {
@@ -94,7 +94,7 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
     it('shows errors', () => {
       const formGroup = wrapper
         .find('[data-testid="strategy-flexible-rollout-percentage"]')
-        .find(ParameterFormGroup);
+        .findComponent(ParameterFormGroup);
 
       expect(formGroup.attributes('state')).toBeUndefined();
     });
@@ -108,7 +108,7 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
     it('shows errors', () => {
       const formGroup = wrapper
         .find('[data-testid="strategy-flexible-rollout-percentage"]')
-        .find(ParameterFormGroup);
+        .findComponent(ParameterFormGroup);
 
       expect(formGroup.attributes('state')).toBeUndefined();
     });

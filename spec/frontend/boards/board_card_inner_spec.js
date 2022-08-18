@@ -238,7 +238,7 @@ describe('Board card component', () => {
       });
 
       it('renders assignee', () => {
-        expect(wrapper.find('.board-card-assignee .avatar').exists()).toBe(true);
+        expect(wrapper.find('.board-card-assignee .gl-avatar').exists()).toBe(true);
       });
 
       it('sets title', () => {
@@ -336,7 +336,7 @@ describe('Board card component', () => {
     });
 
     it('renders all three assignees', () => {
-      expect(wrapper.findAll('.board-card-assignee .avatar').length).toEqual(3);
+      expect(wrapper.findAll('.board-card-assignee .gl-avatar').length).toEqual(3);
     });
 
     describe('more than three assignees', () => {
@@ -362,7 +362,7 @@ describe('Board card component', () => {
       });
 
       it('renders two assignees', () => {
-        expect(wrapper.findAll('.board-card-assignee .avatar').length).toEqual(2);
+        expect(wrapper.findAll('.board-card-assignee .gl-avatar').length).toEqual(2);
       });
 
       it('renders 99+ avatar counter', async () => {

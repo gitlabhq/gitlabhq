@@ -28,6 +28,8 @@ module Pajamas
       @value = value
     end
 
+    private
+
     attr_reader(
       :form,
       :method,
@@ -37,8 +39,6 @@ module Pajamas
       :input_options,
       :value
     )
-
-    private
 
     def label_content
       label? ? label : label_argument

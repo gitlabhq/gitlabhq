@@ -739,7 +739,7 @@ auth:
 
 Without these entries, the registry logins cannot authenticate with GitLab.
 GitLab also remains unaware of
-[nested image names](../../user/packages/container_registry/#image-naming-convention)
+[nested image names](../../user/packages/container_registry/index.md#image-naming-convention)
 under the project hierarchy, like
 `registry.example.com/group/project/image-name:tag` or
 `registry.example.com/group/project/my/image-name:tag`, and only recognizes
@@ -1202,8 +1202,8 @@ Before diving in to the following sections, here's some basic troubleshooting:
    been synchronized (for example, via NTP).
 
 1. If you are using an S3-backed Registry, double check that the IAM
-   permissions and the S3 credentials (including region) are correct. See [the
-   sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
+   permissions and the S3 credentials (including region) are correct. See 
+   [the sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
    for more details.
 
 1. Check the Registry logs (for example `/var/log/gitlab/registry/current`) and the GitLab production logs
@@ -1388,7 +1388,7 @@ project or branch name. Special characters can include:
 - Trailing hyphen/dash
 - Double hyphen/dash
 
-To get around this, you can [change the group path](../../user/group/index.md#change-a-groups-path),
+To get around this, you can [change the group path](../../user/group/manage.md#change-a-groups-path),
 [change the project path](../../user/project/settings/index.md#rename-a-repository) or change the
 branch name. Another option is to create a [push rule](../../user/project/repository/push_rules.md) to prevent
 this at the instance level.
@@ -1631,8 +1631,8 @@ wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
-One way would be to disable HTTPS by setting up an [insecure
-Registry](https://docs.docker.com/registry/insecure/). This could introduce a
+One way would be to disable HTTPS by setting up an 
+[insecure Registry](https://docs.docker.com/registry/insecure/). This could introduce a
 security hole and is only recommended for local testing. If you have a
 production system and can't or don't want to do this, there is another way:
 use mitmproxy, which stands for Man-in-the-Middle Proxy.

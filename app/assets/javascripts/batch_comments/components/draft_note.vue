@@ -116,11 +116,7 @@ export default {
         class="referenced-commands draft-note-commands"
       ></div>
 
-      <p
-        v-if="!glFeatures.mrReviewSubmitComment"
-        class="draft-note-actions d-flex"
-        data-qa-selector="draft_note_content"
-      >
+      <p v-if="!glFeatures.mrReviewSubmitComment" class="draft-note-actions d-flex">
         <publish-button
           :show-count="true"
           :should-publish="false"

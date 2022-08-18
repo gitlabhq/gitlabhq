@@ -34,6 +34,36 @@ const nonStandardEvents = {
     },
     counter: {},
   },
+  metrics: {
+    uniqueUser: {
+      expand: ['i_testing_metrics_report_widget_total'],
+    },
+    counter: {},
+  },
+  browserPerformance: {
+    uniqueUser: {
+      expand: ['i_testing_web_performance_widget_total'],
+    },
+    counter: {},
+  },
+  licenseCompliance: {
+    uniqueUser: {
+      expand: ['i_testing_license_compliance_widget_total'],
+    },
+    counter: {},
+  },
+  loadPerformance: {
+    uniqueUser: {
+      expand: ['i_testing_load_performance_widget_total'],
+    },
+    counter: {},
+  },
+  statusChecks: {
+    uniqueUser: {
+      expand: ['i_testing_status_checks_widget'],
+    },
+    counter: {},
+  },
 };
 
 function combineDeepArray(path, ...objects) {

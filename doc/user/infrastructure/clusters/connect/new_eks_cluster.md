@@ -122,12 +122,13 @@ To remove all resources:
     stages:
       - init
       - validate
+      - test
       - build
       - deploy
       - cleanup
 
     destroy:
-      extends: .destroy
+      extends: .terraform:destroy
       needs: []
     ```
 

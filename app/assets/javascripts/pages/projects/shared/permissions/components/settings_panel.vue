@@ -29,6 +29,10 @@ export default {
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
     mergeRequestsLabel: s__('ProjectSettings|Merge requests'),
     operationsLabel: s__('ProjectSettings|Operations'),
+    environmentsLabel: s__('ProjectSettings|Environments'),
+    environmentsHelpText: s__(
+      'ProjectSettings|Every project can make deployments to environments either via CI/CD or API calls. Non-project members have read-only access.',
+    ),
     packagesHelpText: s__(
       'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
     ),
@@ -209,6 +213,7 @@ export default {
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       operationsAccessLevel: featureAccessLevel.EVERYONE,
+      environmentsAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
       warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
@@ -282,6 +287,9 @@ export default {
       return this.operationsAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
 
+    environmentsEnabled() {
+      return this.environmentsAccessLevel > featureAccessLevel.NOT_ENABLED;
+    },
     repositoryEnabled() {
       return this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
@@ -318,12 +326,8 @@ export default {
     packageRegistryAccessLevelEnabled() {
       return this.glFeatures.packageRegistryAccessLevel;
     },
-    showAdditonalSettings() {
-      if (this.glFeatures.enforceAuthChecksOnUploads) {
-        return true;
-      }
-
-      return this.visibilityLevel !== this.visibilityOptions.PRIVATE;
+    splitOperationsEnabled() {
+      return this.glFeatures.splitOperationsVisibilityPermissions;
     },
   },
 
@@ -381,6 +385,10 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.operationsAccessLevel,
         );
+        this.environmentsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.environmentsAccessLevel,
+        );
         this.containerRegistryAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.containerRegistryAccessLevel,
@@ -422,6 +430,8 @@ export default {
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.operationsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.operationsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.environmentsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.containerRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
 
@@ -545,7 +555,7 @@ export default {
             </template>
           </gl-sprintf>
         </span>
-        <div v-if="showAdditonalSettings" class="gl-mt-4">
+        <div class="gl-mt-4">
           <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
             v-if="visibilityLevel !== visibilityOptions.PRIVATE"
@@ -560,9 +570,7 @@ export default {
             {{ s__('ProjectSettings|Users can request access') }}
           </label>
           <label
-            v-if="
-              visibilityLevel !== visibilityOptions.PUBLIC && glFeatures.enforceAuthChecksOnUploads
-            "
+            v-if="visibilityLevel !== visibilityOptions.PUBLIC"
             class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
           >
             <input
@@ -866,6 +874,20 @@ export default {
           />
         </project-setting-row>
       </div>
+      <template v-if="splitOperationsEnabled">
+        <project-setting-row
+          ref="environments-settings"
+          :label="$options.i18n.environmentsLabel"
+          :help-text="$options.i18n.environmentsHelpText"
+        >
+          <project-feature-setting
+            v-model="environmentsAccessLevel"
+            :label="$options.i18n.environmentsLabel"
+            :options="featureAccessLevelOptions"
+            name="project[project_feature_attributes][environments_access_level]"
+          />
+        </project-setting-row>
+      </template>
     </div>
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-disabled">

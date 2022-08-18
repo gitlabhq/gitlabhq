@@ -12,10 +12,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
     let_it_be(:task1) { create(:work_item, :task, project: project) }
     let_it_be(:task2) { create(:work_item, :task, project: project) }
     let_it_be(:guest_task) { create(:work_item, :task) }
-    let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id)}
+    let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id) }
     let_it_be(:another_project) { (create :project) }
     let_it_be(:other_project_task) { create(:work_item, :task, iid: 100, project: another_project) }
-    let_it_be(:existing_parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item)}
+    let_it_be(:existing_parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
     let(:issuable_type) { :task }
@@ -84,13 +84,26 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
         expect(subject[:created_references].map(&:work_item_id)).to match_array([task1.id, task2.id])
       end
 
+      it 'creates notes', :aggregate_failures do
+        subject
+
+        work_item_notes = work_item.notes.last(2)
+        expect(work_item_notes.first.note).to eq("added #{task1.to_reference} as child task")
+        expect(work_item_notes.last.note).to eq("added #{task2.to_reference} as child task")
+        expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+        expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+      end
+
       context 'when task is already assigned' do
         let(:params) { { issuable_references: [task, task2] } }
 
-        it 'creates links only for non related tasks' do
+        it 'creates links only for non related tasks', :aggregate_failures do
           expect { subject }.to change(parent_link_class, :count).by(1)
 
           expect(subject[:created_references].map(&:work_item_id)).to match_array([task2.id])
+          expect(work_item.notes.last.note).to eq("added #{task2.to_reference} as child task")
+          expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+          expect(task.notes).to be_empty
         end
       end
 
@@ -108,6 +121,15 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
             "#{other_project_task.to_reference} cannot be added: parent must be in the same project as child."
 
           is_expected.to eq(service_error(error, http_status: 422))
+        end
+
+        it 'creates notes for valid links' do
+          subject
+
+          expect(work_item.notes.last.note).to eq("added #{task1.to_reference} as child task")
+          expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+          expect(issue.notes).to be_empty
+          expect(other_project_task.notes).to be_empty
         end
       end
 

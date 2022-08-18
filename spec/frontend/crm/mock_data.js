@@ -13,6 +13,7 @@ export const getGroupContactsQueryResponse = {
             email: 'example@gitlab.com',
             phone: null,
             description: null,
+            active: true,
             organization: {
               __typename: 'CustomerRelationsOrganization',
               id: 'gid://gitlab/CustomerRelations::Organization/2',
@@ -27,6 +28,7 @@ export const getGroupContactsQueryResponse = {
             email: null,
             phone: null,
             description: null,
+            active: true,
             organization: null,
           },
           {
@@ -37,9 +39,32 @@ export const getGroupContactsQueryResponse = {
             email: 'jd@gitlab.com',
             phone: '+44 44 4444 4444',
             description: 'Vice President',
+            active: true,
             organization: null,
           },
         ],
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          endCursor: 'eyJsYXN0X25hbWUiOiJMZWRuZXIiLCJpZCI6IjE3OSJ9',
+          hasPreviousPage: false,
+          startCursor: 'eyJsYXN0X25hbWUiOiJCYXJ0b24iLCJpZCI6IjE5MyJ9',
+        },
+      },
+    },
+  },
+};
+
+export const getGroupContactsCountQueryResponse = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/26',
+      contactStateCounts: {
+        all: 241,
+        active: 239,
+        inactive: 2,
+        __typename: 'ContactStateCountsType',
       },
     },
   },
@@ -58,6 +83,7 @@ export const getGroupOrganizationsQueryResponse = {
             name: 'Test Inc',
             defaultRate: 100,
             description: null,
+            active: true,
           },
           {
             __typename: 'CustomerRelationsOrganization',
@@ -65,6 +91,7 @@ export const getGroupOrganizationsQueryResponse = {
             name: 'ABC Company',
             defaultRate: 110,
             description: 'VIP',
+            active: true,
           },
           {
             __typename: 'CustomerRelationsOrganization',
@@ -72,6 +99,7 @@ export const getGroupOrganizationsQueryResponse = {
             name: 'GitLab',
             defaultRate: 120,
             description: null,
+            active: true,
           },
         ],
       },
@@ -91,6 +119,7 @@ export const createContactMutationResponse = {
         phone: null,
         description: null,
         organization: null,
+        active: true,
       },
       errors: [],
     },
@@ -119,6 +148,7 @@ export const updateContactMutationResponse = {
         phone: null,
         description: null,
         organization: null,
+        active: true,
       },
       errors: [],
     },
@@ -143,6 +173,7 @@ export const createOrganizationMutationResponse = {
         name: 'A',
         defaultRate: null,
         description: null,
+        active: true,
       },
       errors: [],
     },
@@ -168,6 +199,7 @@ export const updateOrganizationMutationResponse = {
         name: 'A',
         defaultRate: null,
         description: null,
+        active: true,
       },
       errors: [],
     },

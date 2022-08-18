@@ -46,7 +46,7 @@ describe('RemoveMemberModal', () => {
     });
   };
 
-  const findForm = () => wrapper.find({ ref: 'form' });
+  const findForm = () => wrapper.findComponent({ ref: 'form' });
   const findGlModal = () => wrapper.findComponent(GlModal);
   const findUserDeletionObstaclesList = () => wrapper.findComponent(UserDeletionObstaclesList);
 

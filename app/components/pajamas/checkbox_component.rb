@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 # Renders a Pajamas compliant checkbox element
-# Must be used in an instance of `ActionView::Helpers::FormBuilder`
+# An instance of `ActionView::Helpers::FormBuilder` must be passed as the `form` argument.
+# The easiest way to use this component is by using the `gitlab_ui_checkbox_component` helper.
+# See https://docs.gitlab.com/ee/development/fe_guide/haml.html#gitlab_ui_checkbox_component
+# To use a checkbox without an instance of `ActionView::Helpers::FormBuilder` use `CheckboxTagComponent`.
 module Pajamas
   class CheckboxComponent < Pajamas::Component
     include Pajamas::Concerns::CheckboxRadioLabelWithHelpText
@@ -31,6 +34,8 @@ module Pajamas
       @value = checked_value if checkbox_options[:multiple]
     end
 
+    private
+
     attr_reader(
       :form,
       :method,
@@ -42,8 +47,6 @@ module Pajamas
       :unchecked_value,
       :value
     )
-
-    private
 
     def label_content
       label? ? label : label_argument

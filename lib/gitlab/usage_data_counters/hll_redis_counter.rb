@@ -32,7 +32,6 @@ module Gitlab
         issues_edit
         pipeline_authoring
         quickactions
-        search
         user_packages
       ].freeze
 
@@ -42,7 +41,9 @@ module Gitlab
         ide_edit
         importer
         incident_management_alerts
+        kubernetes_agent
         pipeline_authoring
+        search
         secure
         snippets
         source_code
@@ -114,6 +115,10 @@ module Gitlab
           @categories ||= known_events.map { |event| event[:category] }.uniq
         end
 
+        def categories_collected_from_metrics_definitions
+          CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS
+        end
+
         # @param category [String] the category name
         # @return [Array<String>] list of event names for given category
         def events_for_category(category)
@@ -163,11 +168,7 @@ module Gitlab
         private
 
         def categories_pending_migration
-          if ::Feature.enabled?(:use_redis_hll_instrumentation_classes)
-            (categories - CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
-          else
-            categories
-          end
+          (categories - categories_collected_from_metrics_definitions)
         end
 
         def track(values, event_name, context: '', time: Time.zone.now)

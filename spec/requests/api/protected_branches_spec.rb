@@ -3,12 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe API::ProtectedBranches do
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+
   let(:protected_name) { 'feature' }
   let(:branch_name) { protected_name }
+
   let!(:protected_branch) do
     create(:protected_branch, project: project, name: protected_name)
+  end
+
+  before_all do
+    project.add_maintainer(maintainer)
+    project.add_guest(guest)
   end
 
   describe "GET /projects/:id/protected_branches" do
@@ -29,9 +37,7 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when authenticated as a maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
+      let(:user) { maintainer }
 
       context 'when search param is not present' do
         it_behaves_like 'protected branches' do
@@ -49,9 +55,7 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when authenticated as a guest' do
-      before do
-        project.add_guest(user)
-      end
+      let(:user) { guest }
 
       it_behaves_like '403 response' do
         let(:request) { get api(route, user) }
@@ -84,9 +88,7 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when authenticated as a maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
+      let(:user) { maintainer }
 
       it_behaves_like 'protected branch'
 
@@ -104,9 +106,7 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when authenticated as a guest' do
-      before do
-        project.add_guest(user)
-      end
+      let(:user) { guest }
 
       it_behaves_like '403 response' do
         let(:request) { get api(route, user) }
@@ -124,9 +124,7 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when authenticated as a maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
+      let(:user) { maintainer }
 
       it 'protects a single branch' do
         post post_endpoint, params: { name: branch_name }
@@ -226,13 +224,10 @@ RSpec.describe API::ProtectedBranches do
         end
       end
 
-      context 'when a policy restricts rule deletion' do
-        before do
-          policy = instance_double(ProtectedBranchPolicy, allowed?: false)
-          expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
-        end
+      context 'when a policy restricts rule creation' do
+        it "prevents creations of the protected branch rule" do
+          disallow(:create_protected_branch, an_instance_of(ProtectedBranch))
 
-        it "prevents deletion of the protected branch rule" do
           post post_endpoint, params: { name: branch_name }
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -241,9 +236,7 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when authenticated as a guest' do
-      before do
-        project.add_guest(user)
-      end
+      let(:user) { guest }
 
       it "returns a 403 error if guest" do
         post post_endpoint, params: { name: branch_name }
@@ -254,11 +247,8 @@ RSpec.describe API::ProtectedBranches do
   end
 
   describe "DELETE /projects/:id/protected_branches/unprotect/:branch" do
+    let(:user) { maintainer }
     let(:delete_endpoint) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }
-
-    before do
-      project.add_maintainer(user)
-    end
 
     it "unprotects a single branch" do
       delete delete_endpoint
@@ -277,12 +267,9 @@ RSpec.describe API::ProtectedBranches do
     end
 
     context 'when a policy restricts rule deletion' do
-      before do
-        policy = instance_double(ProtectedBranchPolicy, allowed?: false)
-        expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
-      end
-
       it "prevents deletion of the protected branch rule" do
+        disallow(:destroy_protected_branch, protected_branch)
+
         delete delete_endpoint
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -298,5 +285,10 @@ RSpec.describe API::ProtectedBranches do
         expect(response).to have_gitlab_http_status(:no_content)
       end
     end
+  end
+
+  def disallow(ability, protected_branch)
+    allow(Ability).to receive(:allowed?).and_call_original
+    allow(Ability).to receive(:allowed?).with(user, ability, protected_branch).and_return(false)
   end
 end

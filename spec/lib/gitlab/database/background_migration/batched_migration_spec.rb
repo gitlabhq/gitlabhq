@@ -307,7 +307,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#batch_class' do
-    let(:batch_class) { Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy}
+    let(:batch_class) { Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy }
     let(:batched_migration) { build(:batched_background_migration) }
 
     it 'returns the class of the batch strategy for the migration' do
@@ -614,6 +614,49 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       migration.on_hold_until = 1.minute.from_now
 
       expect(subject).to be_truthy
+    end
+  end
+
+  describe '#progress' do
+    subject { migration.progress }
+
+    context 'when the migration is finished' do
+      let(:migration) do
+        create(:batched_background_migration, :finished, total_tuple_count: 1).tap do |record|
+          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
+        end
+      end
+
+      it 'returns 100' do
+        expect(subject).to be 100
+      end
+    end
+
+    context 'when the migration does not have jobs' do
+      let(:migration) { create(:batched_background_migration, :active) }
+
+      it 'returns zero' do
+        expect(subject).to be 0
+      end
+    end
+
+    context 'when the `total_tuple_count` is zero' do
+      let(:migration) { create(:batched_background_migration, :active, total_tuple_count: 0) }
+      let!(:batched_job) { create(:batched_background_migration_job, :succeeded, batched_migration: migration) }
+
+      it 'returns nil' do
+        expect(subject).to be nil
+      end
+    end
+
+    context 'when migration has completed jobs' do
+      let(:migration) { create(:batched_background_migration, :active, total_tuple_count: 100) }
+
+      let!(:batched_job) { create(:batched_background_migration_job, :succeeded, batched_migration: migration, batch_size: 8) }
+
+      it 'calculates the progress' do
+        expect(subject).to be 8
+      end
     end
   end
 

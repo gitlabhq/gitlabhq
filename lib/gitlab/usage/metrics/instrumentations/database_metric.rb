@@ -23,27 +23,31 @@ module Gitlab
             private_constant :IMPLEMENTED_OPERATIONS
 
             def start(&block)
-              return @metric_start&.call unless block_given?
+              return @metric_start&.call unless block
 
               @metric_start = block
             end
 
             def finish(&block)
-              return @metric_finish&.call unless block_given?
+              return @metric_finish&.call unless block
 
               @metric_finish = block
             end
 
             def relation(&block)
-              return @metric_relation&.call unless block_given?
+              return @metric_relation&.call unless block
 
               @metric_relation = block
             end
 
             def metric_options(&block)
-              return @metric_options&.call.to_h unless block_given?
+              return @metric_options&.call.to_h unless block
 
               @metric_options = block
+            end
+
+            def timestamp_column(symbol)
+              @metric_timestamp_column = symbol
             end
 
             def operation(symbol, column: nil, &block)
@@ -51,14 +55,16 @@ module Gitlab
 
               @metric_operation = symbol
               @column = column
-              @metric_operation_block = block if block_given?
+              @metric_operation_block = block if block
             end
 
             def cache_start_and_finish_as(cache_key)
               @cache_key = cache_key
             end
 
-            attr_reader :metric_operation, :metric_relation, :metric_start, :metric_finish, :metric_operation_block, :column, :cache_key
+            attr_reader :metric_operation, :metric_relation, :metric_start,
+                        :metric_finish, :metric_operation_block,
+                        :column, :cache_key, :metric_timestamp_column
           end
 
           def value
@@ -106,7 +112,7 @@ module Gitlab
           def time_constraints
             case time_frame
             when '28d'
-              monthly_time_range_db_params
+              monthly_time_range_db_params(column: self.class.metric_timestamp_column)
             when 'all'
               {}
             when 'none'

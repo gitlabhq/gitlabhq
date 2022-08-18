@@ -247,42 +247,6 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
-  describe '#request_attention' do
-    subject { service.request_attention(user) }
-
-    let(:user) { create(:user) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'attention_requested' }
-    end
-
-    context 'when attention requested' do
-      it_behaves_like 'a note with overridable created_at'
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "requested attention from @#{user.username}"
-      end
-    end
-  end
-
-  describe '#remove_attention_request' do
-    subject { service.remove_attention_request(user) }
-
-    let(:user) { create(:user) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'attention_request_removed' }
-    end
-
-    context 'when attention request is removed' do
-      it_behaves_like 'a note with overridable created_at'
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed attention request from @#{user.username}"
-      end
-    end
-  end
-
   describe '#change_title' do
     let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
 
@@ -559,8 +523,8 @@ RSpec.describe ::SystemNotes::IssuablesService do
       let(:action) { 'task' }
     end
 
-    it "posts the 'marked the task as complete' system note" do
-      expect(subject.note).to eq("marked the task **task** as completed")
+    it "posts the 'marked the checklist item as complete' system note" do
+      expect(subject.note).to eq("marked the checklist item **task** as completed")
     end
   end
 
@@ -625,8 +589,8 @@ RSpec.describe ::SystemNotes::IssuablesService do
   end
 
   describe '#noteable_cloned' do
-    let(:new_project) { create(:project) }
-    let(:new_noteable) { create(:issue, project: new_project) }
+    let_it_be(:new_project) { create(:project) }
+    let_it_be(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
       service.noteable_cloned(new_noteable, direction)
@@ -684,6 +648,22 @@ RSpec.describe ::SystemNotes::IssuablesService do
       end
     end
 
+    context 'custom created timestamp' do
+      let(:direction) { :from }
+
+      it 'allows setting of custom created_at value' do
+        timestamp = 1.day.ago
+
+        note = service.noteable_cloned(new_noteable, direction, created_at: timestamp)
+
+        expect(note.created_at).to be_like_time(timestamp)
+      end
+
+      it 'defaults to current time when created_at is not given', :freeze_time do
+        expect(subject.created_at).to be_like_time(Time.current)
+      end
+    end
+
     context 'metrics' do
       context 'cloned from' do
         let(:direction) { :from }
@@ -696,14 +676,19 @@ RSpec.describe ::SystemNotes::IssuablesService do
         end
       end
 
-      context 'cloned to' do
+      context 'cloned to', :snowplow do
         let(:direction) { :to }
 
         it 'tracks usage' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
-            .to receive(:track_issue_cloned_action).with(author: author)
+            .to receive(:track_issue_cloned_action).with(author: author, project: project )
 
           subject
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
+          let(:user) { author }
         end
       end
     end
@@ -885,5 +870,44 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
 
     it { expect(subject.note).to eq "changed issue type to incident" }
+  end
+
+  describe '#hierarchy_changed' do
+    let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
+    let_it_be_with_reload(:task) { create(:work_item, :task, project: project) }
+
+    let(:service) { described_class.new(noteable: work_item, project: project, author: author) }
+
+    subject { service.hierarchy_changed(task, hierarchy_change_action) }
+
+    context 'when task is added as a child' do
+      let(:hierarchy_change_action) { 'relate' }
+
+      it_behaves_like 'a system note' do
+        let(:expected_noteable) { task }
+        let(:action) { 'relate_to_parent' }
+      end
+
+      it 'sets the correct note text' do
+        expect { subject }.to change { Note.system.count }.by(2)
+        expect(work_item.notes.last.note).to eq("added ##{task.iid} as child task")
+        expect(task.notes.last.note).to eq("added ##{work_item.iid} as parent issue")
+      end
+    end
+
+    context 'when child task is removed' do
+      let(:hierarchy_change_action) { 'unrelate' }
+
+      it_behaves_like 'a system note' do
+        let(:expected_noteable) { task }
+        let(:action) { 'unrelate_from_parent' }
+      end
+
+      it 'sets the correct note text' do
+        expect { subject }.to change { Note.system.count }.by(2)
+        expect(work_item.notes.last.note).to eq("removed child task ##{task.iid}")
+        expect(task.notes.last.note).to eq("removed parent issue ##{work_item.iid}")
+      end
+    end
   end
 end

@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/helpers/stubbed_feature'
-require 'support/helpers/stub_feature_flags'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Service do
-  include StubFeatureFlags
-
   before do
     stub_feature_flags(ci_docker_image_pull_policy: true)
     entry.compose!

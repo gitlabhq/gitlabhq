@@ -14,7 +14,7 @@ import {
 } from '../../test_constants';
 
 const TIPTAP_IMAGE_HTML = `<p>
-  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon" data-canonical-src="https://gitlab.com/favicon.png">
+  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon">
 </p>`;
 
 const TIPTAP_AUDIO_HTML = `<p>

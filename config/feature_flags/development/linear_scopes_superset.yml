@@ -1,8 +1,0 @@
----
-name: linear_scopes_superset
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87643
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362687
-milestone: '15.1'
-type: development
-group: group::workspace
-default_enabled: false

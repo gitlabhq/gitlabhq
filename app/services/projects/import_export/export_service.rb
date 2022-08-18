@@ -54,15 +54,21 @@ module Projects
       end
 
       def save_all!
+        log_info('Project export started')
+
         if save_exporters && save_export_archive
-          notify_success
+          log_info('Project successfully exported')
         else
           notify_error!
         end
       end
 
       def save_exporters
-        exporters.all?(&:save)
+        exporters.all? do |exporter|
+          log_info("#{exporter.class.name} saver started")
+
+          exporter.save
+        end
       end
 
       def save_export_archive
@@ -78,11 +84,12 @@ module Projects
       end
 
       def project_tree_saver
-        @project_tree_saver ||= tree_saver_class.new(project: project,
-                                  current_user: current_user,
-                                  shared: shared,
-                                  params: params,
-                                  logger: logger)
+        @project_tree_saver ||= tree_saver_class.new(
+          project: project,
+          current_user: current_user,
+          shared: shared,
+          params: params,
+          logger: logger)
       end
 
       def tree_saver_class
@@ -127,11 +134,10 @@ module Projects
         raise Gitlab::ImportExport::Error, shared.errors.to_sentence
       end
 
-      def notify_success
+      def log_info(message)
         logger.info(
-          message: 'Project successfully exported',
-          project_name: project.name,
-          project_id: project.id
+          message: message,
+          **log_base_data
         )
       end
 
@@ -139,8 +145,7 @@ module Projects
         logger.error(
           message: 'Project export error',
           export_errors: shared.errors.join(', '),
-          project_name: project.name,
-          project_id: project.id
+          **log_base_data
         )
 
         user = current_user
@@ -149,6 +154,10 @@ module Projects
         project.run_after_commit_or_now do |project|
           NotificationService.new.project_not_exported(project, user, errors)
         end
+      end
+
+      def log_base_data
+        @log_base_data ||= Gitlab::ImportExport::LogUtil.exportable_to_log_payload(project)
       end
     end
   end

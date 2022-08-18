@@ -81,6 +81,10 @@ module Gitlab
         root.jobs_value
       end
 
+      def workflow_rules
+        root.workflow_entry.rules_value
+      end
+
       def normalized_jobs
         @normalized_jobs ||= Ci::Config::Normalizer.new(jobs).normalize_jobs
       end

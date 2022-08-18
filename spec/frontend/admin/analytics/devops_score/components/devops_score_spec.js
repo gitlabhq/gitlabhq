@@ -129,7 +129,7 @@ describe('DevopsScore', () => {
             });
 
             it('displays the correct badge', () => {
-              const badge = findUsageCol().find(GlBadge);
+              const badge = findUsageCol().findComponent(GlBadge);
 
               expect(badge.exists()).toBe(true);
               expect(badge.props('variant')).toBe('muted');

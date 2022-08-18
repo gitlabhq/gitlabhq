@@ -41,7 +41,6 @@ module.exports = {
       'three',
       'select2',
       'moment-mini',
-      'aws-sdk',
       'dompurify',
       'bootstrap/dist/js/bootstrap.js',
       'sortablejs/modular/sortable.esm.js',

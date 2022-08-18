@@ -384,7 +384,7 @@ POST /projects/:id/releases
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link. Link names must be unique within the release.                                                              |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link. Link URLs must be unique within the release.                                                                |
-| `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases/index.md#permanent-links-to-release-assets).
+| `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets).
 | `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`.
 | `released_at`      | datetime        | no                          | The date when the release is/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
@@ -740,4 +740,15 @@ Example response:
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/index.md#upcoming-releases).
 
-Additionally, if a [release is requested from the API](#list-releases), for each release with a `release_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) will be returned as part of the response.
+Additionally, if a [release is requested from the API](#list-releases), for each release with a `release_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) is returned as part of the response.
+
+## Historical releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+
+A release with a `released_at` attribute set to a past date is labeled
+as an **Historical release** [in the UI](../../user/project/releases/index.md#historical-releases).
+
+Additionally, if a [release is requested from the API](#list-releases), for each
+release with a `release_at` attribute set to a past date, an additional
+attribute `historical_release` (set to true) is returned as part of the response.

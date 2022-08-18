@@ -44,7 +44,7 @@ module StubMethodCalls
     end
 
     def self.stub_method(object, method, &block)
-      raise ArgumentError, "Block is required" unless block_given?
+      raise ArgumentError, "Block is required" unless block
 
       backup_method(object, method) unless backed_up_method?(object, method)
       object.define_singleton_method(method, &block)

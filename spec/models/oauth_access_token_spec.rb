@@ -10,27 +10,6 @@ RSpec.describe OauthAccessToken do
   let(:token) { create(:oauth_access_token, application_id: app_one.id) }
 
   describe 'scopes' do
-    describe '.distinct_resource_owner_counts' do
-      let(:tokens) { described_class.all }
-
-      before do
-        token
-        create_list(:oauth_access_token, 2, resource_owner: user, application_id: app_two.id)
-      end
-
-      it 'returns unique owners' do
-        expect(tokens.count).to eq(3)
-        expect(tokens.distinct_resource_owner_counts([app_one])).to eq({ app_one.id => 1 })
-        expect(tokens.distinct_resource_owner_counts([app_two])).to eq({ app_two.id => 1 })
-        expect(tokens.distinct_resource_owner_counts([app_three])).to eq({})
-        expect(tokens.distinct_resource_owner_counts([app_one, app_two]))
-          .to eq({
-                   app_one.id => 1,
-                   app_two.id => 1
-                 })
-      end
-    end
-
     describe '.latest_per_application' do
       let!(:app_two_token1) { create(:oauth_access_token, application: app_two) }
       let!(:app_two_token2) { create(:oauth_access_token, application: app_two) }
@@ -40,6 +19,53 @@ RSpec.describe OauthAccessToken do
       it 'returns only the latest token for each application' do
         expect(described_class.latest_per_application.map(&:id))
           .to match_array([app_two_token2.id, app_three_token2.id])
+      end
+    end
+  end
+
+  describe 'Doorkeeper secret storing' do
+    it 'stores the token in hashed format' do
+      expect(token.token).not_to eq(token.plaintext_token)
+    end
+
+    it 'does not allow falling back to plaintext token comparison' do
+      expect(described_class.by_token(token.token)).to be_nil
+    end
+
+    it 'finds a token by plaintext token' do
+      expect(described_class.by_token(token.plaintext_token)).to be_a(OauthAccessToken)
+    end
+
+    context 'when the token is stored in plaintext' do
+      let(:plaintext_token) { Devise.friendly_token(20) }
+
+      before do
+        token.update_column(:token, plaintext_token)
+      end
+
+      it 'falls back to plaintext token comparison' do
+        expect(described_class.by_token(plaintext_token)).to be_a(OauthAccessToken)
+      end
+    end
+
+    context 'when hash_oauth_secrets is disabled' do
+      let(:hashed_token) { create(:oauth_access_token, application_id: app_one.id) }
+
+      before do
+        hashed_token
+        stub_feature_flags(hash_oauth_tokens: false)
+      end
+
+      it 'stores the token in plaintext' do
+        expect(token.token).to eq(token.plaintext_token)
+      end
+
+      it 'finds a token by plaintext token' do
+        expect(described_class.by_token(token.plaintext_token)).to be_a(OauthAccessToken)
+      end
+
+      it 'does not find a token that was previously stored as hashed' do
+        expect(described_class.by_token(hashed_token.plaintext_token)).to be_nil
       end
     end
   end

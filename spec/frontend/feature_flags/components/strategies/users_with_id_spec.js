@@ -15,7 +15,7 @@ describe('~/feature_flags/components/users_with_id.vue', () => {
 
   beforeEach(() => {
     wrapper = factory();
-    textarea = wrapper.find(GlFormTextarea);
+    textarea = wrapper.findComponent(GlFormTextarea);
   });
 
   afterEach(() => {

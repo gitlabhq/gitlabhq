@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Instance-level analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in GitLab 12.2.
-
 Instance-level analytics make it possible to aggregate analytics across
 GitLab, so that users can view information across multiple projects and groups
 in one place.
@@ -18,8 +16,7 @@ in one place.
 
 ## Group-level analytics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195979) in GitLab 12.8.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 GitLab provides several analytics features at the group level. Some of these features require you to use a higher tier than GitLab Free.
 
@@ -50,7 +47,7 @@ You can use GitLab to review analytics at the project level. Some of these featu
 
 The following analytics features are available for users to create personalized views:
 
-- [Application Security](../application_security/security_dashboard/#security-center)
+- [Application Security](../application_security/security_dashboard/index.md#security-center)
 
 Be sure to review the documentation page for this feature for GitLab tier requirements.
 
@@ -124,14 +121,14 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 
 ### Supported DORA metrics in GitLab
 
-| Metric                    | Level                   | API                                 | UI chart                              | Comments                      |
-|---------------------------|-------------------------|-------------------------------------|---------------------------------------|-------------------------------|
-| `deployment_frequency`    | Project           | [GitLab 13.7 and later](../../api/dora/metrics.md)  | GitLab 14.8 and later                                 | The previous API endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10.                                                                                                                                               |
-| `deployment_frequency`    | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.12 and later                                |                                                |
-| `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later                                | Unit in seconds. Aggregation method is median. |
-| `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later                                 | Unit in seconds. Aggregation method is median. |
-| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later                                 | Unit in days. Aggregation method is median.    |
-| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later                                 | Percentage of deployments.                     |                 |
+| Metric                    | Level             | API                                                 | UI chart               | Comments |
+|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
+| `deployment_frequency`    | Project           | [GitLab 13.7 and later](../../api/dora/metrics.md)  | GitLab 14.8 and later  | The previous API endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
+| `deployment_frequency`    | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.12 and later |          |
+| `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later | Unit in seconds. Aggregation method is median. |
+| `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later  | Unit in seconds. Aggregation method is median. |
+| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later  | Unit in days. Aggregation method is median. |
+| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later  | Percentage of deployments. |
 
 ## Definitions
 

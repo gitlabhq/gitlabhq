@@ -112,7 +112,7 @@ To re-use templates [you've created](../project/description_templates.md#create-
 ![Group template settings](../group/img/group_file_template_settings.png)
 
 You might also be interested in templates for various
-[file types in groups](../group/index.md#group-file-templates).
+[file types in groups](../group/manage.md#group-file-templates).
 
 ### Set a default template for merge requests and issues
 

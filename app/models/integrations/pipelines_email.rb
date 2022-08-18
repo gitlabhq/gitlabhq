@@ -84,8 +84,8 @@ module Integrations
       result = execute(data, force: true)
 
       { success: true, result: result }
-    rescue StandardError => error
-      { success: false, result: error }
+    rescue StandardError => e
+      { success: false, result: e }
     end
 
     def should_pipeline_be_notified?(data)

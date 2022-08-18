@@ -1,16 +1,16 @@
-- title: GitLab Runner compliant with FIPS 140-2
-  body: |
+- name: GitLab Runner compliant with FIPS 140-2
+  description: |
     For some GitLab customers, U.S. government regulatory requirements require the use of FIPS (Federal Information Processing Standards) compliant software. The FIPS 140-2 and FIPS 140-3 publications define the security requirements for cryptographic modules used in computer and telecommunication systems, and within cyber systems that protect sensitive information. GitLab Runner is now FIPS 140-2 compliant for AMD64 compute architectures and Red Hat Enterprise Linux (RHEL) distributions. Refer to [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5104) to follow the discussions about making GitLab FIPS compliant.
   stage: Verify
   self-managed: true
   gitlab-com: false
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/runner/install/index.html#fips-compliant-gitlab-runner'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/runner/install/index.html#fips-compliant-gitlab-runner'
   image_url: https://about.gitlab.com/images/growth/verify.png
   published_at: 2022-01-22
   release: 14.7
-- title: Streaming audit events
-  body: |
+- name: Streaming audit events
+  description: |
     You can now stream audit events to a destination of your choosing! This is a great way to correlate GitLab audit events with other data streams you have, maintain a backup of audit events, or build out your own automation to take action when a specific audit event happens.
 
     You can specify an HTTPS endpoint with our new GraphQL API and events are sent to it as webhooks. These messages contain the same information as the Audit Events UI about what type of change happened, when it happened, who was involved, as well as some additional metadata.
@@ -19,13 +19,13 @@
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/administration/audit_event_streaming.html'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/administration/audit_event_streaming.html'
   image_url: https://about.gitlab.com/images/growth/manage.jpg
   published_at: 2022-01-22
   release: 14.7
-- title: Group access tokens
-  body: |
+- name: Group access tokens
+  description: |
      With group access tokens, you can use a single token to perform actions for groups, manage the projects within the group, and, in GitLab 14.2 and later, authenticate with Git over HTTPS.
 
      Previously, group access tokens were limited to self-managed instances only, and could only be generated using the Rails console. Now, you can create group access tokens using the UI and API. You can define token name, expiration date, and scope. You can also revoke an existing group access token.
@@ -34,8 +34,8 @@
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html'
   image_url: https://about.gitlab.com/images/14_7/group_access_token.png
   published_at: 2022-01-22
   release: 14.7

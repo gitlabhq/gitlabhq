@@ -1,6 +1,6 @@
 ---
 stage: Data Stores
-group: Memory
+group: Application Performance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -14,7 +14,7 @@ Prometheus scraper understands.
 
 NOTE:
 This page is about web application metrics.
-To export background job metrics, learn how to [configure the Sidekiq metrics server](../../sidekiq.md#configure-the-sidekiq-metrics-server).
+To export background job metrics, learn how to [configure the Sidekiq metrics server](../../sidekiq/index.md#configure-the-sidekiq-metrics-server).
 
 We provide two mechanisms by which web application metrics can be exported:
 

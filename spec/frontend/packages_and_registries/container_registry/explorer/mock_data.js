@@ -13,7 +13,7 @@ export const imagesListResponse = [
     expirationPolicyCleanupStatus: 'UNSCHEDULED',
     project: {
       id: 'gid://gitlab/Project/22',
-      path: 'gitlab-test',
+      path: 'GITLAB-TEST',
     },
   },
   {

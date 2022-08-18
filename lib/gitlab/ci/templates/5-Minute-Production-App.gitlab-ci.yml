@@ -39,7 +39,7 @@ cache:
 
 terraform_apply:
   stage: provision
-  image: registry.gitlab.com/gitlab-org/5-minute-production-app/deploy-template/stable
+  image: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/5-minute-production-app/deploy-template/stable"
   extends: .needs_aws_vars
   resource_group: terraform
   before_script:
@@ -53,7 +53,7 @@ terraform_apply:
 
 deploy:
   stage: deploy
-  image: registry.gitlab.com/gitlab-org/5-minute-production-app/deploy-template/stable
+  image: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/5-minute-production-app/deploy-template/stable"
   extends: .needs_aws_vars
   resource_group: deploy
   before_script:
@@ -74,7 +74,7 @@ terraform_destroy:
   variables:
     GIT_STRATEGY: none
   stage: destroy
-  image: registry.gitlab.com/gitlab-org/5-minute-production-app/deploy-template/stable
+  image: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/5-minute-production-app/deploy-template/stable"
   before_script:
     - cp /*.tf .
     - cp /deploy.sh .

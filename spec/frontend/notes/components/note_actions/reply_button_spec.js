@@ -15,7 +15,7 @@ describe('ReplyButton', () => {
   });
 
   it('emits startReplying on click', () => {
-    wrapper.find(GlButton).vm.$emit('click');
+    wrapper.findComponent(GlButton).vm.$emit('click');
 
     expect(wrapper.emitted('startReplying')).toEqual([[]]);
   });

@@ -1,21 +1,31 @@
 <script>
-import { GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
-import { n__, sprintf } from '~/locale';
-import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
-import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { GlButton, GlModalDirective, GlModal, GlSprintf } from '@gitlab/ui';
+import { createAlert } from '~/flash';
+import { __, s__, n__, sprintf } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
+import BulkRunnerDelete from '../graphql/list/bulk_runner_delete.mutation.graphql';
+import { RUNNER_TYPENAME } from '../constants';
 
 export default {
   components: {
     GlButton,
+    GlModal,
     GlSprintf,
   },
   directives: {
     GlModal: GlModalDirective,
   },
   inject: ['localMutations'],
+  props: {
+    runners: {
+      type: Array,
+      default: () => [],
+      required: false,
+    },
+  },
   data() {
     return {
+      isDeleting: false,
       checkedRunnerIds: [],
     };
   },
@@ -25,8 +35,13 @@ export default {
     },
   },
   computed: {
+    currentCheckedRunnerIds() {
+      return this.runners
+        .map(({ id }) => id)
+        .filter((id) => this.checkedRunnerIds.indexOf(id) >= 0);
+    },
     checkedCount() {
-      return this.checkedRunnerIds.length || 0;
+      return this.currentCheckedRunnerIds.length || 0;
     },
     bannerMessage() {
       return sprintf(
@@ -43,48 +58,103 @@ export default {
     modalTitle() {
       return n__('Runners|Delete %d runner', 'Runners|Delete %d runners', this.checkedCount);
     },
-    modalHtmlMessage() {
+    modalActionPrimary() {
+      return {
+        text: n__(
+          'Runners|Permanently delete %d runner',
+          'Runners|Permanently delete %d runners',
+          this.checkedCount,
+        ),
+        attributes: {
+          loading: this.isDeleting,
+          variant: 'danger',
+        },
+      };
+    },
+    modalActionCancel() {
+      return {
+        text: __('Cancel'),
+        attributes: {
+          loading: this.isDeleting,
+        },
+      };
+    },
+    modalMessage() {
       return sprintf(
         n__(
           'Runners|%{strongStart}%{count}%{strongEnd} runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?',
           'Runners|%{strongStart}%{count}%{strongEnd} runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?',
           this.checkedCount,
         ),
-        {
-          strongStart: '<strong>',
-          strongEnd: '</strong>',
-          count: this.checkedCount,
-        },
-        false,
-      );
-    },
-    primaryBtnText() {
-      return n__(
-        'Runners|Permanently delete %d runner',
-        'Runners|Permanently delete %d runners',
-        this.checkedCount,
+        { count: this.checkedCount },
       );
     },
   },
   methods: {
+    toastConfirmationMessage(deletedCount) {
+      return n__(
+        'Runners|%d selected runner deleted',
+        'Runners|%d selected runners deleted',
+        deletedCount,
+      );
+    },
     onClearChecked() {
       this.localMutations.clearChecked();
     },
-    onClickDelete: ignoreWhilePending(async function onClickDelete() {
-      const confirmed = await confirmAction(null, {
-        title: this.modalTitle,
-        modalHtmlMessage: this.modalHtmlMessage,
-        primaryBtnVariant: 'danger',
-        primaryBtnText: this.primaryBtnText,
-      });
+    async onConfirmDelete(e) {
+      this.isDeleting = true;
+      e.preventDefault(); // don't close modal until deletion is complete
 
-      if (confirmed) {
-        // TODO Call $apollo.mutate with list of runner
-        // ids in `this.checkedRunnerIds`.
-        // See https://gitlab.com/gitlab-org/gitlab/-/issues/339525/
+      try {
+        await this.$apollo.mutate({
+          mutation: BulkRunnerDelete,
+          variables: {
+            input: {
+              ids: this.currentCheckedRunnerIds,
+            },
+          },
+          update: (cache, { data }) => {
+            const { errors, deletedIds } = data.bulkRunnerDelete;
+
+            if (errors?.length) {
+              this.onError(new Error(errors.join(' ')));
+              this.$refs.modal.hide();
+              return;
+            }
+
+            this.$emit('deleted', {
+              message: this.toastConfirmationMessage(deletedIds.length),
+            });
+
+            // Clean up
+
+            // Remove deleted runners from the cache
+            deletedIds.forEach((id) => {
+              const cacheId = cache.identify({ __typename: RUNNER_TYPENAME, id });
+              cache.evict({ id: cacheId });
+            });
+            cache.gc();
+
+            this.$refs.modal.hide();
+          },
+        });
+      } catch (error) {
+        this.onError(error);
+      } finally {
+        this.isDeleting = false;
       }
-    }),
+    },
+    onError(error) {
+      createAlert({
+        message: s__(
+          'Runners|Something went wrong while deleting. Please refresh the page to try again.',
+        ),
+        captureError: true,
+        error,
+      });
+    },
   },
+  BULK_DELETE_MODAL_ID: 'bulk-delete-modal',
 };
 </script>
 
@@ -99,13 +169,28 @@ export default {
         </gl-sprintf>
       </div>
       <div class="gl-ml-auto">
-        <gl-button data-testid="clear-btn" variant="default" @click="onClearChecked">{{
+        <gl-button variant="default" @click="onClearChecked">{{
           s__('Runners|Clear selection')
         }}</gl-button>
-        <gl-button data-testid="delete-btn" variant="danger" @click="onClickDelete">{{
+        <gl-button v-gl-modal="$options.BULK_DELETE_MODAL_ID" variant="danger">{{
           s__('Runners|Delete selected')
         }}</gl-button>
       </div>
     </div>
+    <gl-modal
+      ref="modal"
+      size="sm"
+      :modal-id="$options.BULK_DELETE_MODAL_ID"
+      :title="modalTitle"
+      :action-primary="modalActionPrimary"
+      :action-cancel="modalActionCancel"
+      @primary="onConfirmDelete"
+    >
+      <gl-sprintf :message="modalMessage">
+        <template #strong="{ content }">
+          <strong>{{ content }}</strong>
+        </template>
+      </gl-sprintf>
+    </gl-modal>
   </div>
 </template>

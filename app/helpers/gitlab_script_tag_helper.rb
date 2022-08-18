@@ -7,7 +7,9 @@ module GitlabScriptTagHelper
   # The helper also makes sure the `nonce` attribute is included in every script when the content security
   # policy is enabled.
   def javascript_include_tag(*sources)
-    super(*sources, defer: true, nonce: true)
+    options = { defer: true }.merge(sources.extract_options!)
+    options[:nonce] = true
+    super(*sources, **options)
   end
 
   # The helper makes sure the `nonce` attribute is included in every script when the content security

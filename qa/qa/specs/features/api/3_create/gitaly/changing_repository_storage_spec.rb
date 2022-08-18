@@ -67,6 +67,28 @@ module QA
 
         it_behaves_like 'repository storage move'
       end
+
+      # Note: This test doesn't have the :orchestrated tag because it runs in the Test::Integration::Praefect
+      # scenario with other tests that aren't considered orchestrated.
+      # It also runs on staging using nfs-file07 as non-cluster storage and nfs-file22 as cluster/praefect storage
+      context 'when moving from Gitaly Cluster to Gitaly', :requires_praefect, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/369204' do
+        let(:source_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
+        let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
+        let(:project) do
+          Resource::Project.fabricate_via_api! do |project|
+            project.name = 'repo-storage-move'
+            project.initialize_with_readme = true
+            project.repository_storage = source_storage[:name]
+            project.api_client = Runtime::API::Client.as_admin
+          end
+        end
+
+        before do
+          praefect_manager.gitlab = 'gitlab-gitaly-cluster'
+        end
+
+        it_behaves_like 'repository storage move'
+      end
     end
   end
 end

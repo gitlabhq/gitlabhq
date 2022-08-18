@@ -84,10 +84,19 @@ describe('Pipeline Multi Actions Dropdown', () => {
       expect(wrapper.vm.artifacts).toEqual(artifacts);
     });
 
-    it('should render all the provided artifacts', () => {
-      createComponent({ mockData: { artifacts } });
+    it('should render all the provided artifacts when search query is empty', () => {
+      const searchQuery = '';
+      createComponent({ mockData: { searchQuery, artifacts } });
 
       expect(findAllArtifactItems()).toHaveLength(artifacts.length);
+      expect(findEmptyMessage().exists()).toBe(false);
+    });
+
+    it('should render filtered artifacts when search query is not empty', () => {
+      const searchQuery = 'job-2';
+      createComponent({ mockData: { searchQuery, artifacts } });
+
+      expect(findAllArtifactItems()).toHaveLength(1);
       expect(findEmptyMessage().exists()).toBe(false);
     });
 

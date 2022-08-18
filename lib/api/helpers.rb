@@ -6,11 +6,13 @@ module API
     include Helpers::Caching
     include Helpers::Pagination
     include Helpers::PaginationStrategies
+    include Gitlab::Ci::Artifacts::Logger
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
+    API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
 
@@ -20,7 +22,11 @@ module API
     end
 
     def check_unmodified_since!(last_modified)
-      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) rescue nil
+      if_unmodified_since = begin
+        Time.parse(headers['If-Unmodified-Since'])
+      rescue StandardError
+        nil
+      end
 
       if if_unmodified_since && last_modified && last_modified > if_unmodified_since
         render_api_error!('412 Precondition Failed', 412)
@@ -74,6 +80,8 @@ module API
 
       save_current_user_in_env(@current_user) if @current_user
 
+      save_current_token_in_env
+
       if @current_user
         ::ApplicationRecord
           .sticking
@@ -86,6 +94,13 @@ module API
 
     def save_current_user_in_env(user)
       env[API_USER_ENV] = { user_id: user.id, username: user.username }
+    end
+
+    def save_current_token_in_env
+      token = access_token
+      env[API_TOKEN_ENV] = { token_id: token.id, token_type: token.class } if token
+
+    rescue Gitlab::Auth::UnauthorizedError
     end
 
     def sudo?
@@ -574,12 +589,8 @@ module API
       end
     end
 
-    def log_artifact_file_size(file)
-      Gitlab::ApplicationContext.push(artifact: file.model)
-    end
-
     def present_artifacts_file!(file, **args)
-      log_artifact_file_size(file) if file
+      log_artifacts_filesize(file&.model)
 
       present_carrierwave_file!(file, **args)
     end

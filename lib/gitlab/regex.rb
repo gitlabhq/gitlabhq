@@ -70,7 +70,7 @@ module Gitlab
       end
 
       def npm_package_name_regex
-        @npm_package_name_regex ||= %r{\A(?:@(#{Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX})/)?[-+\.\_a-zA-Z0-9]+\z}
+        @npm_package_name_regex ||= %r{\A(?:@(#{Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX})/)?[-+\.\_a-zA-Z0-9]+\z}o
       end
 
       def nuget_package_name_regex
@@ -128,15 +128,15 @@ module Gitlab
       def debian_architecture_regex
         # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/arch.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n43
         # But we limit to lower case
-        @debian_architecture_regex ||= %r{\A#{::Packages::Debian::ARCHITECTURE_REGEX}\z}.freeze
+        @debian_architecture_regex ||= %r{\A#{::Packages::Debian::ARCHITECTURE_REGEX}\z}o.freeze
       end
 
       def debian_distribution_regex
-        @debian_distribution_regex ||= %r{\A#{::Packages::Debian::DISTRIBUTION_REGEX}\z}i.freeze
+        @debian_distribution_regex ||= %r{\A#{::Packages::Debian::DISTRIBUTION_REGEX}\z}io.freeze
       end
 
       def debian_component_regex
-        @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}.freeze
+        @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}o.freeze
       end
 
       def helm_channel_regex

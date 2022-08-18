@@ -83,7 +83,7 @@ describe('AdminUserActions component', () => {
         });
 
         it.each(CONFIRMATION_ACTIONS)('renders an action component item for "%s"', (action) => {
-          const component = wrapper.find(Actions[capitalizeFirstCharacter(action)]);
+          const component = wrapper.findComponent(Actions[capitalizeFirstCharacter(action)]);
 
           expect(component.props('username')).toBe(user.name);
           expect(component.props('path')).toBe(userPaths[action]);
@@ -119,7 +119,7 @@ describe('AdminUserActions component', () => {
         });
 
         it.each(DELETE_ACTIONS)('renders a delete action component item for "%s"', (action) => {
-          const component = wrapper.find(Actions[capitalizeFirstCharacter(action)]);
+          const component = wrapper.findComponent(Actions[capitalizeFirstCharacter(action)]);
 
           expect(component.props('username')).toBe(user.name);
           expect(component.props('paths')).toEqual(userPaths);

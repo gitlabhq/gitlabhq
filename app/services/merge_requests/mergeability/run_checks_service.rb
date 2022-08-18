@@ -10,36 +10,50 @@ module MergeRequests
       end
 
       def execute
-        merge_request.mergeability_checks.each_with_object([]) do |check_class, results|
+        @results = merge_request.mergeability_checks.each_with_object([]) do |check_class, result_hash|
           check = check_class.new(merge_request: merge_request, params: params)
 
           next if check.skip?
 
           check_result = run_check(check)
-          results << check_result
+          result_hash << check_result
 
-          break results if check_result.failed?
+          break result_hash if check_result.failed?
         end
+
+        self
+      end
+
+      def success?
+        raise 'Execute needs to be called before' if results.nil?
+
+        results.all?(&:success?)
+      end
+
+      def failure_reason
+        raise 'Execute needs to be called before' if results.nil?
+
+        results.find(&:failed?)&.payload&.fetch(:reason)
       end
 
       private
 
-      attr_reader :merge_request, :params
+      attr_reader :merge_request, :params, :results
 
       def run_check(check)
         return check.execute unless Feature.enabled?(:mergeability_caching, merge_request.project)
         return check.execute unless check.cacheable?
 
-        cached_result = results.read(merge_check: check)
+        cached_result = cached_results.read(merge_check: check)
         return cached_result if cached_result.respond_to?(:status)
 
         check.execute.tap do |result|
-          results.write(merge_check: check, result_hash: result.to_hash)
+          cached_results.write(merge_check: check, result_hash: result.to_hash)
         end
       end
 
-      def results
-        strong_memoize(:results) do
+      def cached_results
+        strong_memoize(:cached_results) do
           Gitlab::MergeRequests::Mergeability::ResultsStore.new(merge_request: merge_request)
         end
       end

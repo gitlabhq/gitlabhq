@@ -11,15 +11,19 @@ module Ci
       end
 
       def execute
-        return unless @user.present? && @user.can?(:update_runners_registration_token, scope)
+        unless @user.present? && @user.can?(:update_runners_registration_token, scope)
+          return ServiceResponse.error(message: 'user not allowed to update runners registration token')
+        end
 
         if scope.respond_to?(:runners_registration_token)
           scope.reset_runners_registration_token!
-          scope.runners_registration_token
+          runners_token = scope.runners_registration_token
         else
           scope.reset_runners_token!
-          scope.runners_token
+          runners_token = scope.runners_token
         end
+
+        ServiceResponse.success(payload: { new_registration_token: runners_token })
       end
 
       private

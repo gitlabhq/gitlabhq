@@ -1,19 +1,17 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions } from 'vuex';
-
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
-
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteEditedText from './note_edited_text.vue';
 import noteHeader from './note_header.vue';
 
 export default {
   name: 'DiffDiscussionHeader',
   components: {
-    userAvatarLink,
+    GlAvatar,
+    GlAvatarLink,
     noteEditedText,
     noteHeader,
   },
@@ -86,6 +84,9 @@ export default {
 
       return sprintf(text, { commitDisplay, linkStart, linkEnd }, false);
     },
+    adaptiveAvatarSize() {
+      return { default: 24, md: 32 };
+    },
   },
   methods: {
     ...mapActions(['toggleDiscussion']),
@@ -100,16 +101,11 @@ export default {
   <div class="discussion-header gl-display-flex gl-align-items-center gl-p-5">
     <div
       v-once
-      class="timeline-icon gl-align-self-start gl-flex-shrink-0 gl-flex-shrink gl-ml-3 gl-mr-4"
+      class="timeline-icon gl-align-self-start gl-flex-shrink-0 gl-flex-shrink gl-mx-3 gl-md-ml-2 gl-md-mr-5"
     >
-      <user-avatar-link
-        v-if="author"
-        :link-href="author.path"
-        :img-src="author.avatar_url"
-        :img-alt="author.name"
-        :img-size="24"
-        :img-css-classes="'gl-mr-0!' /* NOTE: this is needed only while we migrate user-avatar-image to GlAvatar (https://gitlab.com/groups/gitlab-org/-/epics/7731) */"
-      />
+      <gl-avatar-link v-if="author" :href="author.path">
+        <gl-avatar :src="author.avatar_url" :alt="author.name" :size="adaptiveAvatarSize" />
+      </gl-avatar-link>
     </div>
     <div class="timeline-content w-100">
       <note-header
@@ -127,14 +123,14 @@ export default {
         :edited-at="discussion.resolved_at"
         :edited-by="discussion.resolved_by"
         :action-text="resolvedText"
-        class-name="discussion-headline-light js-discussion-headline"
+        class-name="discussion-headline-light js-discussion-headline gl-pl-2"
       />
       <note-edited-text
         v-else-if="lastUpdatedAt"
         :edited-at="lastUpdatedAt"
         :edited-by="lastUpdatedBy"
         :action-text="__('Last updated')"
-        class-name="discussion-headline-light js-discussion-headline"
+        class-name="discussion-headline-light js-discussion-headline gl-pl-2"
       />
     </div>
   </div>

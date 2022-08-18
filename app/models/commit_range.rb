@@ -50,7 +50,7 @@ class CommitRange
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("compare", /(?<commit_range>#{PATTERN})/)
+    @link_reference_pattern ||= super("compare", /(?<commit_range>#{PATTERN})/o)
   end
 
   # Initialize a CommitRange
@@ -64,7 +64,7 @@ class CommitRange
 
     range_string = range_string.strip
 
-    unless range_string =~ /\A#{PATTERN}\z/
+    unless range_string =~ /\A#{PATTERN}\z/o
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 

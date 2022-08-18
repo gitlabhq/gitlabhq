@@ -47,7 +47,7 @@ describe('MemoryGraph', () => {
     it('should draw container with chart', () => {
       expect(wrapper.element).toMatchSnapshot();
       expect(wrapper.find('.memory-graph-container').exists()).toBe(true);
-      expect(wrapper.find(GlSparklineChart).exists()).toBe(true);
+      expect(wrapper.findComponent(GlSparklineChart).exists()).toBe(true);
     });
   });
 });

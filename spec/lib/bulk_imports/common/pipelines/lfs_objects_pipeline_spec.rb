@@ -11,8 +11,8 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline do
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker) }
   let(:lfs_dir_path) { tmpdir }
-  let(:lfs_json_file_path) { File.join(lfs_dir_path, 'lfs_objects.json')}
-  let(:lfs_file_path) { File.join(lfs_dir_path, oid)}
+  let(:lfs_json_file_path) { File.join(lfs_dir_path, 'lfs_objects.json') }
+  let(:lfs_file_path) { File.join(lfs_dir_path, oid) }
 
   subject(:pipeline) { described_class.new(context) }
 

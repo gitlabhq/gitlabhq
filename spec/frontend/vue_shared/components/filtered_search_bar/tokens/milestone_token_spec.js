@@ -155,11 +155,11 @@ describe('MilestoneToken', () => {
     });
 
     it('renders gl-filtered-search-token component', () => {
-      expect(wrapper.find(GlFilteredSearchToken).exists()).toBe(true);
+      expect(wrapper.findComponent(GlFilteredSearchToken).exists()).toBe(true);
     });
 
     it('renders token item when value is selected', () => {
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // Milestone, =, '%"4.0"'
       expect(tokenSegments.at(2).text()).toBe(`%${mockRegularMilestone.title}`); // "4.0 RC1"
@@ -171,12 +171,12 @@ describe('MilestoneToken', () => {
         config: { ...mockMilestoneToken, defaultMilestones },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(defaultMilestones.length);
       defaultMilestones.forEach((milestone, index) => {
@@ -190,13 +190,13 @@ describe('MilestoneToken', () => {
         config: { ...mockMilestoneToken, defaultMilestones: [] },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
-      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
+      expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders `DEFAULT_MILESTONES` as default suggestions', async () => {
@@ -205,12 +205,12 @@ describe('MilestoneToken', () => {
         config: { ...mockMilestoneToken },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(DEFAULT_MILESTONES.length);
       DEFAULT_MILESTONES.forEach((milestone, index) => {

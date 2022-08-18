@@ -7,14 +7,16 @@ module Mutations
         include FindsProject
 
         argument :project_path, GraphQL::Types::ID,
-                 required: true,
-                 description: 'Full path of the project.'
+          required: true,
+          description: 'Full path of the project.'
 
-        field :success_path, GraphQL::Types::String, null: true,
-              description: 'Redirect path to use when the response is successful.'
+        field :success_path, GraphQL::Types::String,
+          null: true,
+          description: 'Redirect path to use when the response is successful.'
 
-        field :branch, GraphQL::Types::String, null: true,
-              description: 'Branch that has the new/modified `.gitlab-ci.yml` file.'
+        field :branch, GraphQL::Types::String,
+          null: true,
+          description: 'Branch that has the new/modified `.gitlab-ci.yml` file.'
 
         authorize :push_code
 

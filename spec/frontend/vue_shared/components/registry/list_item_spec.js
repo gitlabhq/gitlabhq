@@ -13,7 +13,7 @@ describe('list item', () => {
   const findRightSecondarySlot = () => wrapper.find('[data-testid="right-secondary"]');
   const findRightActionSlot = () => wrapper.find('[data-testid="right-action"]');
   const findDetailsSlot = (name) => wrapper.find(`[data-testid="${name}"]`);
-  const findToggleDetailsButton = () => wrapper.find(GlButton);
+  const findToggleDetailsButton = () => wrapper.findComponent(GlButton);
 
   const mountComponent = (propsData, slots) => {
     wrapper = shallowMount(component, {

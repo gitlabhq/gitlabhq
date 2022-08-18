@@ -10,6 +10,8 @@ module API
     before do
       require_repository_enabled!
       authorize! :download_code, user_project
+
+      verify_pagination_params!
     end
 
     helpers do
@@ -86,7 +88,7 @@ module API
         requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.', allow_blank: false
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array, desc: 'Actions to perform in commit' do
-          requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze
+          requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze, allow_blank: false
           requires :file_path, type: String, desc: 'Full path to the file. Ex. `lib/class.rb`'
           given action: ->(action) { action == 'move' } do
             requires :previous_path, type: String, desc: 'Original full path to the file being moved. Ex. `lib/class1.rb`'
@@ -302,8 +304,8 @@ module API
         not_found!('Commit') unless commit
 
         refs = []
-        refs.concat(user_project.repository.branch_names_contains(commit.id).map {|name| { type: 'branch', name: name }}) unless params[:type] == 'tag'
-        refs.concat(user_project.repository.tag_names_contains(commit.id).map {|name| { type: 'tag', name: name }}) unless params[:type] == 'branch'
+        refs.concat(user_project.repository.branch_names_contains(commit.id).map { |name| { type: 'branch', name: name } }) unless params[:type] == 'tag'
+        refs.concat(user_project.repository.tag_names_contains(commit.id).map { |name| { type: 'tag', name: name } }) unless params[:type] == 'branch'
         refs = Kaminari.paginate_array(refs)
 
         present paginate(refs), with: Entities::BasicRef

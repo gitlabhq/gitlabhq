@@ -251,8 +251,10 @@ export default {
       }
     },
     cancelHandler(shouldConfirm = false) {
-      // Sends information about confirm message and if the textarea has changed
-      this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
+      // check if any dropdowns are active before sending the cancelation event
+      if (!this.$refs.textarea.classList.contains('at-who-active')) {
+        this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
+      }
     },
     onInput() {
       if (this.isSubmittingWithKeydown) {

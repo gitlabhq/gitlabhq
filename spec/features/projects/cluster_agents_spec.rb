@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'ClusterAgents', :js do
-  let_it_be(:token) { create(:cluster_agent_token, description: 'feature test token')}
+  let_it_be(:token) { create(:cluster_agent_token, description: 'feature test token') }
 
   let(:agent) { token.agent }
   let(:project) { agent.project }

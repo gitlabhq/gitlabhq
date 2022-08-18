@@ -195,7 +195,7 @@ describe('CrmContactToken', () => {
         value: { data: '1' },
       });
 
-      const baseTokenEl = wrapper.find(BaseToken);
+      const baseTokenEl = wrapper.findComponent(BaseToken);
 
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
@@ -210,7 +210,7 @@ describe('CrmContactToken', () => {
         value: { data: `${getIdFromGraphQLId(contact.id)}` },
       });
 
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // Contact, =, Contact name
       expect(tokenSegments.at(2).text()).toBe(`${contact.firstName} ${contact.lastName}`); // Contact name
@@ -222,12 +222,12 @@ describe('CrmContactToken', () => {
         config: { ...mockCrmContactToken, defaultContacts },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(defaultContacts.length);
       defaultContacts.forEach((contact, index) => {
@@ -241,13 +241,13 @@ describe('CrmContactToken', () => {
         config: { ...mockCrmContactToken, defaultContacts: [] },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
-      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
+      expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders `DEFAULT_NONE_ANY` as default suggestions', () => {
@@ -256,11 +256,11 @@ describe('CrmContactToken', () => {
         config: { ...mockCrmContactToken },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(DEFAULT_NONE_ANY.length);
       DEFAULT_NONE_ANY.forEach((contact, index) => {

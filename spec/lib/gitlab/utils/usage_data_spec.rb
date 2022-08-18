@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Utils::UsageData do
   end
 
   describe '#add_metric' do
-    let(:metric) { 'UuidMetric'}
+    let(:metric) { 'UuidMetric' }
 
     it 'computes the metric value for given metric' do
       expect(described_class.add_metric(metric)).to eq(Gitlab::CurrentSettings.uuid)

@@ -1,9 +1,6 @@
 ---
 # Cop supports --auto-correct.
 RSpec/ReturnFromStub:
-  # Offense count: 703
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'ee/spec/controllers/admin/geo/nodes_controller_spec.rb'
     - 'ee/spec/controllers/groups/billings_controller_spec.rb'
@@ -18,6 +15,7 @@ RSpec/ReturnFromStub:
     - 'ee/spec/features/projects/integrations/user_activates_jira_spec.rb'
     - 'ee/spec/features/projects/milestones/milestone_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
+    - 'ee/spec/features/projects/pipelines/legacy_pipeline_spec.rb'
     - 'ee/spec/features/projects/pipelines/pipeline_spec.rb'
     - 'ee/spec/features/projects/settings/ee/service_desk_setting_spec.rb'
     - 'ee/spec/features/promotion_spec.rb'
@@ -39,9 +37,9 @@ RSpec/ReturnFromStub:
     - 'ee/spec/lib/ee/feature_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/branch_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/database_spec.rb'
+    - 'ee/spec/lib/ee/gitlab/git_access_project_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/build_consumption_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'
-    - 'ee/spec/lib/gitlab/code_owners_spec.rb'
     - 'ee/spec/lib/gitlab/geo/health_check_spec.rb'
     - 'ee/spec/lib/gitlab/geo/logger_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
@@ -62,6 +60,7 @@ RSpec/ReturnFromStub:
     - 'ee/spec/presenters/ci/build_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
     - 'ee/spec/requests/admin/credentials_controller_spec.rb'
+    - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb'
     - 'ee/spec/services/auto_merge/merge_train_service_spec.rb'
     - 'ee/spec/services/deployments/auto_rollback_service_spec.rb'
@@ -88,6 +87,7 @@ RSpec/ReturnFromStub:
     - 'ee/spec/support/shared_examples/services/geo_event_store_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/merge_merge_requests_shared_examples.rb'
     - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
+    - 'ee/spec/views/admin/application_settings/_git_abuse_rate_limit.html.haml_spec.rb'
     - 'ee/spec/views/admin/groups/_form.html.haml_spec.rb'
     - 'ee/spec/views/layouts/application.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_update_button.html.haml_spec.rb'
@@ -191,13 +191,15 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/instrumentation/redis_base_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/importer_spec.rb'
     - 'spec/lib/gitlab/memory/instrumentation_spec.rb'
-    - 'spec/lib/gitlab/metrics/rails_slis_spec.rb'
+    - 'spec/lib/gitlab/memory/reports_daemon_spec.rb'
     - 'spec/lib/gitlab/metrics/system_spec.rb'
     - 'spec/lib/gitlab/middleware/read_only_spec.rb'
     - 'spec/lib/gitlab/pagination/gitaly_keyset_pager_spec.rb'
     - 'spec/lib/gitlab/prometheus_client_spec.rb'
     - 'spec/lib/gitlab/redis/cache_spec.rb'
+    - 'spec/lib/gitlab/redis/duplicate_jobs_spec.rb'
     - 'spec/lib/gitlab/redis/shared_state_spec.rb'
+    - 'spec/lib/gitlab/redis/sidekiq_status_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'
     - 'spec/lib/gitlab/sidekiq_daemon/memory_killer_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/structured_logger_spec.rb'

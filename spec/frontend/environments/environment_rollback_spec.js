@@ -44,7 +44,7 @@ describe('Rollback Component', () => {
         },
       },
     });
-    const button = wrapper.find(GlDropdownItem);
+    const button = wrapper.findComponent(GlDropdownItem);
 
     button.vm.$emit('click');
 
@@ -71,7 +71,7 @@ describe('Rollback Component', () => {
       },
       apolloProvider,
     });
-    const button = wrapper.find(GlDropdownItem);
+    const button = wrapper.findComponent(GlDropdownItem);
     button.vm.$emit('click');
 
     expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({

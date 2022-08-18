@@ -123,8 +123,8 @@ example, if the list is scoped to a label `Frontend`, the new issue also has thi
 
 ### By sending an email
 
-> Generated email address format changed in GitLab 11.7.
-> The older format is still supported, so existing aliases and contacts still work.
+> - Generated email address format changed in GitLab 11.7.
+> - The older format is still supported, so existing aliases and contacts still work.
 
 You can send an email to create an issue in a project on the project's
 **Issues List** page.
@@ -731,4 +731,4 @@ You can do the following **only by using quick actions**:
 - [Publish an issue](#publish-an-issue) (`/publish`).
 - Clone an issue to the same or another project (`/clone`).
 - Close an issue and mark as a duplicate of another issue (`/duplicate`).
-- Copy labels and milestone from another merge request in the project (`/copy_metadata`).
+- Copy labels and milestone from another merge request or issue in the project (`/copy_metadata`).

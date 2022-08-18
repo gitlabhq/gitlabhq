@@ -109,6 +109,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           expect(elasticsearch_seconds_metric).to receive(:observe).with(labels_with_job_status, elasticsearch_duration)
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
+          expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
 
           subject.call(worker, job, :test) { nil }
         end

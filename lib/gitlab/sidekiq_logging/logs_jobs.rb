@@ -12,7 +12,6 @@ module Gitlab
         # Error information from the previous try is in the payload for
         # displaying in the Sidekiq UI, but is very confusing in logs!
         job = job.except(
-          'error_backtrace', 'error_class', 'error_message',
           'exception.backtrace', 'exception.class', 'exception.message', 'exception.sql'
         )
 

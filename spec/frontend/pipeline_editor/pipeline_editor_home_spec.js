@@ -14,7 +14,7 @@ import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tab
 import {
   CREATE_TAB,
   FILE_TREE_DISPLAY_KEY,
-  LINT_TAB,
+  VALIDATE_TAB,
   MERGED_TAB,
   TABS_INDEX,
   VISUALIZE_TAB,
@@ -138,7 +138,7 @@ describe('Pipeline editor home wrapper', () => {
       tab              | shouldShow
       ${MERGED_TAB}    | ${false}
       ${VISUALIZE_TAB} | ${false}
-      ${LINT_TAB}      | ${false}
+      ${VALIDATE_TAB}  | ${false}
       ${CREATE_TAB}    | ${true}
     `(
       'when the active tab is $tab the commit form is shown: $shouldShow',
@@ -170,7 +170,7 @@ describe('Pipeline editor home wrapper', () => {
         tab              | shouldShow
         ${MERGED_TAB}    | ${false}
         ${VISUALIZE_TAB} | ${false}
-        ${LINT_TAB}      | ${false}
+        ${VALIDATE_TAB}  | ${false}
         ${CREATE_TAB}    | ${true}
       `(
         'when the tab query param is $tab the commit form is shown: $shouldShow',

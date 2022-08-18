@@ -88,7 +88,10 @@ export default {
         .then(
           ({
             data: {
-              issuableSetConfidential: { errors },
+              issuableSetConfidential: {
+                issuable: { confidential },
+                errors,
+              },
             },
           }) => {
             if (errors.length) {
@@ -96,7 +99,7 @@ export default {
                 message: errors[0],
               });
             } else {
-              this.$emit('closeForm');
+              this.$emit('closeForm', { confidential });
             }
           },
         )

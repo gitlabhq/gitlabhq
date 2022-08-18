@@ -123,7 +123,7 @@ describe('packages_list_row', () => {
       findDeleteDropdown().vm.$emit('click');
 
       await nextTick();
-      expect(wrapper.emitted('packageToDelete')).toBeTruthy();
+      expect(wrapper.emitted('packageToDelete')).toHaveLength(1);
       expect(wrapper.emitted('packageToDelete')[0]).toEqual([packageWithoutTags]);
     });
   });

@@ -14,8 +14,7 @@ This is the documentation for configuring a GitLab Pages when you have installed
 GitLab from source and not using the Omnibus packages.
 
 You are encouraged to read the [Omnibus documentation](index.md) as it provides
-some invaluable information to the configuration of GitLab Pages. Please proceed
-to read it before going forward with this guide.
+invaluable information about the configuration of GitLab Pages.
 
 We also highly recommend that you use the Omnibus GitLab packages. We
 optimize them specifically for GitLab, and we take care of upgrading GitLab

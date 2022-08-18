@@ -17,6 +17,7 @@ RSpec.describe Ci::RetryJobService do
                              name: 'test')
   end
 
+  let(:job_variables_attributes) { [{ key: 'MANUAL_VAR', value: 'manual test var' }] }
   let(:user) { developer }
 
   let(:service) { described_class.new(project, user) }
@@ -206,6 +207,14 @@ RSpec.describe Ci::RetryJobService do
       include_context 'retryable bridge'
 
       it_behaves_like 'clones the job'
+
+      context 'when given variables' do
+        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
+
+        it 'does not give variables to the new bridge' do
+          expect { new_job }.not_to raise_error
+        end
+      end
     end
 
     context 'when the job to be cloned is a build' do
@@ -250,6 +259,28 @@ RSpec.describe Ci::RetryJobService do
           expect { new_job }.not_to change { Environment.count }
         end
       end
+
+      context 'when given variables' do
+        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
+
+        context 'when the build is actionable' do
+          let_it_be_with_refind(:job) { create(:ci_build, :actionable, pipeline: pipeline) }
+
+          it 'gives variables to the new build' do
+            expect(new_job.job_variables.count).to be(1)
+            expect(new_job.job_variables.first.key).to eq('MANUAL_VAR')
+            expect(new_job.job_variables.first.value).to eq('manual test var')
+          end
+        end
+
+        context 'when the build is not actionable' do
+          let_it_be_with_refind(:job) { create(:ci_build, pipeline: pipeline) }
+
+          it 'does not give variables to the new build' do
+            expect(new_job.job_variables.count).to be_zero
+          end
+        end
+      end
     end
   end
 
@@ -260,6 +291,14 @@ RSpec.describe Ci::RetryJobService do
       include_context 'retryable bridge'
 
       it_behaves_like 'retries the job'
+
+      context 'when given variables' do
+        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
+
+        it 'does not give variables to the new bridge' do
+          expect { new_job }.not_to raise_error
+        end
+      end
     end
 
     context 'when the job to be retried is a build' do
@@ -286,6 +325,28 @@ RSpec.describe Ci::RetryJobService do
           create_list(:ci_build, 2, :skipped, stage_idx: job.stage_idx + 1, pipeline: pipeline, stage: 'deploy')
 
           expect { service.execute(job) }.not_to exceed_all_query_limit(control_count)
+        end
+      end
+
+      context 'when given variables' do
+        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
+
+        context 'when the build is actionable' do
+          let_it_be_with_refind(:job) { create(:ci_build, :actionable, pipeline: pipeline) }
+
+          it 'gives variables to the new build' do
+            expect(new_job.job_variables.count).to be(1)
+            expect(new_job.job_variables.first.key).to eq('MANUAL_VAR')
+            expect(new_job.job_variables.first.value).to eq('manual test var')
+          end
+        end
+
+        context 'when the build is not actionable' do
+          let_it_be_with_refind(:job) { create(:ci_build, pipeline: pipeline) }
+
+          it 'does not give variables to the new build' do
+            expect(new_job.job_variables.count).to be_zero
+          end
         end
       end
     end

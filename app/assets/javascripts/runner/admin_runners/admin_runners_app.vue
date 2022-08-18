@@ -12,10 +12,12 @@ import {
   isSearchFiltered,
 } from 'ee_else_ce/runner/runner_search_utils';
 import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
+import allRunnersCountQuery from 'ee_else_ce/runner/graphql/list/all_runners_count.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerBulkDelete from '../components/runner_bulk_delete.vue';
+import RunnerBulkDeleteCheckbox from '../components/runner_bulk_delete_checkbox.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerListEmptyState from '../components/runner_list_empty_state.vue';
 import RunnerName from '../components/runner_name.vue';
@@ -37,6 +39,7 @@ export default {
     RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerBulkDelete,
+    RunnerBulkDeleteCheckbox,
     RunnerList,
     RunnerListEmptyState,
     RunnerName,
@@ -138,10 +141,14 @@ export default {
     onToggledPaused() {
       // When a runner becomes Paused, the tab count can
       // become stale, refetch outdated counts.
-      this.$refs['runner-type-tabs'].refetch();
+      this.refetchCounts();
     },
     onDeleted({ message }) {
+      this.refetchCounts();
       this.$root.$toast?.show(message);
+    },
+    refetchCounts() {
+      this.$apollo.getClient().refetchQueries({ include: [allRunnersCountQuery] });
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -151,6 +158,9 @@ export default {
         runner,
         isChecked,
       });
+    },
+    onPaginationInput(value) {
+      this.search.pagination = value;
     },
   },
   filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
@@ -163,7 +173,6 @@ export default {
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >
       <runner-type-tabs
-        ref="runner-type-tabs"
         v-model="search"
         :count-scope="$options.INSTANCE_TYPE"
         :count-variables="countVariables"
@@ -196,13 +205,20 @@ export default {
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
-      <runner-bulk-delete v-if="isBulkDeleteEnabled" />
+      <runner-bulk-delete
+        v-if="isBulkDeleteEnabled"
+        :runners="runners.items"
+        @deleted="onDeleted"
+      />
       <runner-list
         :runners="runners.items"
         :loading="runnersLoading"
         :checkable="isBulkDeleteEnabled"
         @checked="onChecked"
       >
+        <template v-if="isBulkDeleteEnabled" #head-checkbox>
+          <runner-bulk-delete-checkbox :runners="runners.items" />
+        </template>
         <template #runner-name="{ runner }">
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />
@@ -217,11 +233,13 @@ export default {
           />
         </template>
       </runner-list>
-      <runner-pagination
-        v-model="search.pagination"
-        class="gl-mt-3"
-        :page-info="runners.pageInfo"
-      />
     </template>
+
+    <runner-pagination
+      class="gl-mt-3"
+      :disabled="runnersLoading"
+      :page-info="runners.pageInfo"
+      @input="onPaginationInput"
+    />
   </div>
 </template>

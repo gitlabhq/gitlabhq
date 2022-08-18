@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Trace::RemoteChecksum do
           end
 
           context 'when the response does not include :content_md5' do
-            let(:metadata) {{}}
+            let(:metadata) { {} }
 
             it 'raises an exception' do
               expect { subject }.to raise_error KeyError, /content_md5/
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Ci::Trace::RemoteChecksum do
           end
 
           context 'when the response include :content_md5' do
-            let(:metadata) {{ content_md5: base64checksum }}
+            let(:metadata) { { content_md5: base64checksum } }
 
             it { is_expected.to eq(checksum) }
           end

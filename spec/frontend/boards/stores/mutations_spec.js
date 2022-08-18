@@ -518,17 +518,6 @@ describe('Board Store Mutations', () => {
 
       expect(state.boardItemsByListId[payload.listId]).toEqual(listState);
     });
-
-    it("updates the list's items count", () => {
-      expect(state.boardLists['gid://gitlab/List/1'].issuesCount).toBe(1);
-
-      mutations.ADD_BOARD_ITEM_TO_LIST(state, {
-        itemId: mockIssue2.id,
-        listId: mockList.id,
-      });
-
-      expect(state.boardLists['gid://gitlab/List/1'].issuesCount).toBe(2);
-    });
   });
 
   describe('REMOVE_BOARD_ITEM_FROM_LIST', () => {
@@ -536,8 +525,7 @@ describe('Board Store Mutations', () => {
       setBoardsListsState();
     });
 
-    it("removes an item from a list and updates the list's items count", () => {
-      expect(state.boardLists['gid://gitlab/List/1'].issuesCount).toBe(1);
+    it('removes an item from a list', () => {
       expect(state.boardItemsByListId['gid://gitlab/List/1']).toContain(mockIssue.id);
 
       mutations.REMOVE_BOARD_ITEM_FROM_LIST(state, {
@@ -546,7 +534,6 @@ describe('Board Store Mutations', () => {
       });
 
       expect(state.boardItemsByListId['gid://gitlab/List/1']).not.toContain(mockIssue.id);
-      expect(state.boardLists['gid://gitlab/List/1'].issuesCount).toBe(0);
     });
   });
 

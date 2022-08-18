@@ -110,7 +110,7 @@ This setting applies only to each repository's default branch. To protect other 
 you must either:
 
 - Configure [branch protection in the repository](../../../project/protected_branches.md).
-- Configure [branch protection for groups](../../../group/index.md#change-the-default-branch-protection-of-a-group).
+- Configure [branch protection for groups](../../../group/manage.md#change-the-default-branch-protection-of-a-group).
 
 Administrators of self-managed instances can customize the initial default branch protection for projects hosted on that instance. Individual
 groups and subgroups can override this instance-wide setting for their projects.

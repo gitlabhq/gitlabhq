@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDropdown, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlSearchBoxByType, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BranchDropdown, {
   i18n,
@@ -36,14 +36,19 @@ describe('Branch dropdown', () => {
     await waitForPromises();
   };
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
-  const findAllBranches = () => wrapper.findAll(GlDropdownItem);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findAllBranches = () => wrapper.findAllComponents(GlDropdownItem);
   const findNoDataMsg = () => wrapper.findByTestId('no-data');
-  const findGlSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
+  const findGlSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findWildcardButton = () => wrapper.findByTestId('create-wildcard-button');
+  const findHelpText = () => wrapper.findComponent(GlSprintf);
   const setSearchTerm = (searchTerm) => findGlSearchBoxByType().vm.$emit('input', searchTerm);
 
   beforeEach(() => createComponent());
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
 
   it('renders a GlDropdown component with the correct props', () => {
     expect(findGlDropdown().props()).toMatchObject({ text: value });
@@ -84,6 +89,10 @@ describe('Branch dropdown', () => {
       expect(findWildcardButton().exists()).toBe(true);
       findWildcardButton().vm.$emit('click');
       expect(wrapper.emitted('createWildcard')).toEqual([[searchTerm]]);
+    });
+
+    it('renders help text', () => {
+      expect(findHelpText().attributes('message')).toBe(i18n.branchHelpText);
     });
   });
 

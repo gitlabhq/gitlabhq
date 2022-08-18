@@ -21,7 +21,7 @@ describe('Markdown field header component', () => {
   const findWriteTab = () => wrapper.findByTestId('write-tab');
   const findPreviewTab = () => wrapper.findByTestId('preview-tab');
   const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
-  const findToolbarButtons = () => wrapper.findAll(ToolbarButton);
+  const findToolbarButtons = () => wrapper.findAllComponents(ToolbarButton);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
       .filter((button) => button.props(prop) === value)
@@ -44,16 +44,16 @@ describe('Markdown field header component', () => {
   describe('markdown header buttons', () => {
     it('renders the buttons with the correct title', () => {
       const buttons = [
+        'Insert suggestion',
         'Add bold text (⌘B)',
         'Add italic text (⌘I)',
         'Add strikethrough text (⌘⇧X)',
         'Insert a quote',
-        'Insert suggestion',
         'Insert code',
         'Add a link (⌘K)',
         'Add a bullet list',
         'Add a numbered list',
-        'Add a task list',
+        'Add a checklist',
         'Add a collapsible section',
         'Add a table',
         'Go full screen',
@@ -63,6 +63,13 @@ describe('Markdown field header component', () => {
       elements.wrappers.forEach((buttonEl, index) => {
         expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
       });
+    });
+
+    it('renders "Attach a file or image" button using gl-button', () => {
+      const button = wrapper.findByTestId('button-attach-file');
+
+      expect(button.element.tagName).toBe('GL-BUTTON-STUB');
+      expect(button.attributes('title')).toBe('Attach a file or image');
     });
 
     describe('when the user is on a non-Mac', () => {
@@ -118,8 +125,8 @@ describe('Markdown field header component', () => {
       ),
     ]);
 
-    expect(wrapper.emitted('preview-markdown')).toBeFalsy();
-    expect(wrapper.emitted('write-markdown')).toBeFalsy();
+    expect(wrapper.emitted('preview-markdown')).toBeUndefined();
+    expect(wrapper.emitted('write-markdown')).toBeUndefined();
   });
 
   it('blurs preview link after click', () => {

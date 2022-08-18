@@ -7,7 +7,7 @@ module MergeRequests
         if merge_request.open?
           success
         else
-          failure
+          failure(reason: failure_reason)
         end
       end
 
@@ -17,6 +17,12 @@ module MergeRequests
 
       def cacheable?
         false
+      end
+
+      private
+
+      def failure_reason
+        :not_open
       end
     end
   end

@@ -268,7 +268,7 @@ RSpec.describe 'Runners' do
         it 'group runners are not available' do
           visit project_runners_path(project)
 
-          expect(page).not_to have_content 'Group owners can register group runners in the group\'s CI/CD settings.'
+          expect(page).not_to have_content 'To register them, go to the group\'s Runners page.'
           expect(page).to have_content 'Ask your group owner to set up a group runner'
         end
       end
@@ -287,7 +287,7 @@ RSpec.describe 'Runners' do
 
           expect(page).to have_content 'This group does not have any group runners yet.'
 
-          expect(page).to have_content 'Group owners can register group runners in the group\'s CI/CD settings.'
+          expect(page).to have_content 'To register them, go to the group\'s Runners page.'
           expect(page).not_to have_content 'Ask your group owner to set up a group runner'
         end
       end
@@ -313,7 +313,7 @@ RSpec.describe 'Runners' do
 
           expect(page).to have_content 'This group does not have any group runners yet.'
 
-          expect(page).not_to have_content 'Group owners can register group runners in the group\'s CI/CD settings.'
+          expect(page).not_to have_content 'To register them, go to the group\'s Runners page.'
           expect(page).to have_content 'Ask your group owner to set up a group runner.'
         end
       end

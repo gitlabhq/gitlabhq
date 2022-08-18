@@ -235,7 +235,7 @@ export default {
       :fields="fields"
       fixed
       stacked="md"
-      class="qa-clusters-table gl-mb-4!"
+      class="gl-mb-4!"
       data-testid="cluster_list_table"
     >
       <template #cell(name)="{ item }">

@@ -1,10 +1,17 @@
 <script>
-import { GlTable, GlButton, GlModalDirective, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { mapState, mapActions } from 'vuex';
+import {
+  GlButton,
+  GlIcon,
+  GlLoadingIcon,
+  GlModalDirective,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
+import { ADD_CI_VARIABLE_MODAL_ID, variableText } from '../constants';
+import { convertEnvironmentScope } from '../utils';
 import CiVariablePopover from './ci_variable_popover.vue';
 
 export default {
@@ -14,7 +21,7 @@ export default {
   iconSize: 16,
   fields: [
     {
-      key: 'variable_type',
+      key: 'variableType',
       label: s__('CiVariables|Type'),
       customStyle: { width: '70px' },
     },
@@ -41,7 +48,7 @@ export default {
       customStyle: { width: '100px' },
     },
     {
-      key: 'environment_scope',
+      key: 'environmentScope',
       label: s__('CiVariables|Environments'),
       customStyle: { width: '20%' },
     },
@@ -56,6 +63,7 @@ export default {
     CiVariablePopover,
     GlButton,
     GlIcon,
+    GlLoadingIcon,
     GlTable,
     TooltipOnTruncate,
   },
@@ -64,10 +72,25 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
+  props: {
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    variables: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      areValuesHidden: true,
+    };
+  },
   computed: {
-    ...mapState(['variables', 'valuesHidden', 'isLoading', 'isDeleting']),
     valuesButtonText() {
-      return this.valuesHidden ? __('Reveal values') : __('Hide values');
+      return this.areValuesHidden ? __('Reveal values') : __('Hide values');
     },
     isTableEmpty() {
       return !this.variables || this.variables.length === 0;
@@ -76,18 +99,28 @@ export default {
       return this.$options.fields;
     },
   },
-  mounted() {
-    this.fetchVariables();
-  },
   methods: {
-    ...mapActions(['fetchVariables', 'toggleValues', 'editVariable']),
+    convertEnvironmentScopeValue(env) {
+      return convertEnvironmentScope(env);
+    },
+    generateTypeText(item) {
+      return variableText[item.variableType];
+    },
+    toggleHiddenState() {
+      this.areValuesHidden = !this.areValuesHidden;
+    },
+    setSelectedVariable(variable = null) {
+      this.$emit('set-selected-variable', variable);
+    },
   },
 };
 </script>
 
 <template>
   <div class="ci-variable-table" data-testid="ci-variable-table">
+    <gl-loading-icon v-if="isLoading" />
     <gl-table
+      v-else
       :fields="fields"
       :items="variables"
       tbody-tr-class="js-ci-variable-row"
@@ -103,6 +136,11 @@ export default {
     >
       <template #table-colgroup="scope">
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
+      </template>
+      <template #cell(variableType)="{ item }">
+        <div class="gl-pt-2">
+          {{ generateTypeText(item) }}
+        </div>
       </template>
       <template #cell(key)="{ item }">
         <div class="gl-display-flex gl-align-items-center">
@@ -125,11 +163,12 @@ export default {
       </template>
       <template #cell(value)="{ item }">
         <div class="gl-display-flex gl-align-items-center">
-          <span v-if="valuesHidden">*********************</span>
+          <span v-if="areValuesHidden" data-testid="hiddenValue">*********************</span>
           <span
             v-else
             :id="`ci-variable-value-${item.id}`"
             class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+            data-testid="revealedValue"
             >{{ item.value }}</span
           >
           <gl-button
@@ -150,16 +189,16 @@ export default {
         <gl-icon v-if="item.masked" :size="$options.iconSize" :name="$options.trueIcon" />
         <gl-icon v-else :size="$options.iconSize" :name="$options.falseIcon" />
       </template>
-      <template #cell(environment_scope)="{ item }">
+      <template #cell(environmentScope)="{ item }">
         <div class="gl-display-flex">
           <span
             :id="`ci-variable-env-${item.id}`"
             class="gl-display-inline-block gl-max-w-full gl-text-truncate"
-            >{{ item.environment_scope }}</span
+            >{{ convertEnvironmentScopeValue(item.environmentScope) }}</span
           >
           <ci-variable-popover
             :target="`ci-variable-env-${item.id}`"
-            :value="item.environment_scope"
+            :value="convertEnvironmentScopeValue(item.environmentScope)"
             :tooltip-text="__('Copy environment')"
           />
         </div>
@@ -170,7 +209,7 @@ export default {
           icon="pencil"
           :aria-label="__('Edit')"
           data-qa-selector="edit_ci_variable_button"
-          @click="editVariable(item)"
+          @click="setSelectedVariable(item)"
         />
       </template>
       <template #empty>
@@ -186,12 +225,14 @@ export default {
         data-qa-selector="add_ci_variable_button"
         variant="confirm"
         category="primary"
+        :aria-label="__('Add')"
+        @click="setSelectedVariable()"
         >{{ __('Add variable') }}</gl-button
       >
       <gl-button
         v-if="!isTableEmpty"
         data-qa-selector="reveal_ci_variable_value_button"
-        @click="toggleValues(!valuesHidden)"
+        @click="toggleHiddenState"
         >{{ valuesButtonText }}</gl-button
       >
     </div>

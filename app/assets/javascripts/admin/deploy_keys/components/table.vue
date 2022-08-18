@@ -139,15 +139,15 @@ export default {
             title,
             fingerprint,
             fingerprint_sha256,
-            projects_with_write_access,
-            created_at,
+            projects_with_write_access: projects,
+            created_at: created,
           }) => ({
             id,
             title,
             fingerprint,
             fingerprint_sha256,
-            projects: projects_with_write_access,
-            created: created_at,
+            projects,
+            created,
           }),
         );
       } catch (error) {

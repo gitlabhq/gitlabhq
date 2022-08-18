@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Add a foreign key constraint to an existing column
 
-Foreign keys ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](../foreign_keys.md) when creating tables that reference records from other tables.
+Foreign keys ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](foreign_keys.md) when creating tables that reference records from other tables.
 
 Starting with Rails version 4, Rails includes migration helpers to add foreign key constraints
 to database tables. Before Rails 4, the only way for ensuring some level of consistency was the
@@ -95,7 +95,7 @@ The approach here depends on the data volume and the cleanup strategy. If we can
 records by doing a database query and the record count is not high, then the data migration can
 be executed in a Rails migration.
 
-In case the data volume is higher (>1000 records), it's better to create a background migration. If unsure, please contact the database team for advice.
+In case the data volume is higher (>1000 records), it's better to create a background migration. If unsure, contact the database team for advice.
 
 Example for cleaning up records in the `emails` table in a database migration:
 

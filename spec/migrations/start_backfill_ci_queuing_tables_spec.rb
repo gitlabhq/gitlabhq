@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe StartBackfillCiQueuingTables do
+RSpec.describe StartBackfillCiQueuingTables, :suppress_gitlab_schemas_validate_connection do
   let(:namespaces) { table(:namespaces) }
   let(:projects)   { table(:projects) }
   let(:builds)     { table(:ci_builds) }

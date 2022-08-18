@@ -17,6 +17,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:elasticsearch_seconds_metric) { double('elasticsearch seconds metric') }
   let(:elasticsearch_requests_total) { double('elasticsearch calls total metric') }
   let(:load_balancing_metric) { double('load balancing metric') }
+  let(:sidekiq_mem_total_bytes) { double('sidekiq mem total bytes') }
 
   before do
     allow(Gitlab::Metrics).to receive(:histogram).and_call_original
@@ -37,6 +38,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :all).and_return(running_jobs_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_concurrency, anything, {}, :all).and_return(concurrency_metric)
+    allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_mem_total_bytes, anything, {}, :all).and_return(sidekiq_mem_total_bytes)
 
     allow(concurrency_metric).to receive(:set)
   end
@@ -61,13 +63,16 @@ RSpec.shared_context 'server metrics call' do
 
   let(:elasticsearch_calls) { 8 }
   let(:elasticsearch_duration) { 0.54 }
+
+  let(:mem_total_bytes) { 1000000000 }
   let(:instrumentation) do
     {
       gitaly_duration_s: gitaly_duration,
       redis_calls: redis_calls,
       redis_duration_s: redis_duration,
       elasticsearch_calls: elasticsearch_calls,
-      elasticsearch_duration_s: elasticsearch_duration
+      elasticsearch_duration_s: elasticsearch_duration,
+      mem_total_bytes: mem_total_bytes
     }
   end
 
@@ -95,5 +100,6 @@ RSpec.shared_context 'server metrics call' do
     allow(completion_seconds_metric).to receive(:observe)
     allow(redis_seconds_metric).to receive(:observe)
     allow(elasticsearch_seconds_metric).to receive(:observe)
+    allow(sidekiq_mem_total_bytes).to receive(:set)
   end
 end

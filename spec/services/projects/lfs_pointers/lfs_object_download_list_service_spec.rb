@@ -3,8 +3,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
   let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
-  let(:default_endpoint) { "#{import_url}/info/lfs/objects/batch"}
-  let(:group) { create(:group, lfs_enabled: true)}
+  let(:default_endpoint) { "#{import_url}/info/lfs/objects/batch" }
+  let(:group) { create(:group, lfs_enabled: true) }
   let!(:project) { create(:project, namespace: group, import_url: import_url, lfs_enabled: true) }
   let!(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
   let!(:existing_lfs_objects) { LfsObject.pluck(:oid, :size).to_h }
@@ -75,7 +75,7 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
         end
 
         context 'when import url has credentials' do
-          let(:import_url) { 'http://user:password@www.gitlab.com/demo/repo.git'}
+          let(:import_url) { 'http://user:password@www.gitlab.com/demo/repo.git' }
 
           it 'adds the credentials to the new endpoint' do
             expect(Projects::LfsPointers::LfsDownloadLinkListService)

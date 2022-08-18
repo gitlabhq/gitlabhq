@@ -25,7 +25,7 @@ describe('ide/components/ide_status_list', () => {
   let store;
   let wrapper;
 
-  const findLink = () => wrapper.find(GlLink);
+  const findLink = () => wrapper.findComponent(GlLink);
   const createComponent = (options = {}) => {
     store = new Vuex.Store({
       getters: {
@@ -98,6 +98,6 @@ describe('ide/components/ide_status_list', () => {
   it('renders terminal sync status', () => {
     createComponent();
 
-    expect(wrapper.find(TerminalSyncStatusSafe).exists()).toBe(true);
+    expect(wrapper.findComponent(TerminalSyncStatusSafe).exists()).toBe(true);
   });
 });

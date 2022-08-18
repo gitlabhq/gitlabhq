@@ -5,7 +5,7 @@ module Gitlab
     module Build
       class Releaser
         BASE_COMMAND = 'release-cli create'
-        SINGLE_FLAGS = %i[name description tag_name ref released_at].freeze
+        SINGLE_FLAGS = %i[name description tag_name tag_message ref released_at].freeze
         ARRAY_FLAGS = %i[milestones].freeze
 
         attr_reader :config

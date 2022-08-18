@@ -872,4 +872,21 @@ RSpec.describe Gitlab::Ci::Config do
       end
     end
   end
+
+  describe '#workflow_rules' do
+    subject(:workflow_rules) { config.workflow_rules }
+
+    let(:yml) do
+      <<-EOS
+        workflow:
+          rules:
+            - if: $CI_COMMIT_REF_NAME == "master"
+
+        rspec:
+          script: exit 0
+      EOS
+    end
+
+    it { is_expected.to eq([{ if: '$CI_COMMIT_REF_NAME == "master"' }]) }
+  end
 end

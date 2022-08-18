@@ -8,7 +8,7 @@ module Integrations
 
     prop_accessor :token
 
-    has_many :chat_names, foreign_key: :service_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :chat_names, foreign_key: :integration_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     def valid_token?(token)
       self.respond_to?(:token) &&

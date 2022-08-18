@@ -42,7 +42,7 @@ module Gitlab
                   #{DASH_PATTERN}?
                   /grafana
                   /metrics_dashboard
-                }x
+                }xo
               )
             end
           end
@@ -64,7 +64,7 @@ module Gitlab
                   /(?<cluster_id>\d+)
                   /?
                   ( (/metrics) | ( /metrics_dashboard\.json ) )?
-                }x
+                }xo
               )
             end
           end
@@ -82,7 +82,7 @@ module Gitlab
                   /alerts
                   /(?<alert>\d+)
                   /metrics_dashboard(\.json)?
-                }x
+                }xo
               )
             end
           end
@@ -112,7 +112,7 @@ module Gitlab
               /environments
               /(?<environment>\d+)
               /(metrics_dashboard|metrics)
-            }x
+            }xo
           end
 
           def non_environment_metrics_regex
@@ -125,7 +125,7 @@ module Gitlab
                 environment=(?<environment>\d+)
                 .*
               )
-            }x
+            }xo
           end
 
           def regex_for_project_metrics(path_suffix_pattern)

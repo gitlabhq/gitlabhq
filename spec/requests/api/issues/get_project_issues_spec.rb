@@ -9,6 +9,8 @@ RSpec.describe API::Issues do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
+  let_it_be(:group) { create(:group, :public) }
+
   let(:user2)             { create(:user) }
   let(:non_member)        { create(:user) }
   let_it_be(:guest)       { create(:user) }
@@ -85,6 +87,8 @@ RSpec.describe API::Issues do
   end
 
   before_all do
+    group.add_reporter(user)
+    group.add_guest(guest)
     project.add_reporter(user)
     project.add_guest(guest)
     private_mrs_project.add_reporter(user)
@@ -104,6 +108,22 @@ RSpec.describe API::Issues do
       expect(json_response['statistics']['counts']['all']).to eq counts[:all]
       expect(json_response['statistics']['counts']['closed']).to eq counts[:closed]
       expect(json_response['statistics']['counts']['opened']).to eq counts[:opened]
+    end
+  end
+
+  shared_examples 'returns project issues without confidential issues for guests' do
+    specify do
+      get api(api_url, guest)
+
+      expect_paginated_array_response_contain_exactly(open_issue.id, closed_issue.id)
+    end
+  end
+
+  shared_examples 'returns all project issues for reporters' do
+    specify do
+      get api(api_url, user)
+
+      expect_paginated_array_response_contain_exactly(open_issue.id, confidential_issue.id, closed_issue.id)
     end
   end
 
@@ -180,6 +200,30 @@ RSpec.describe API::Issues do
 
           it_behaves_like 'project issues statistics'
         end
+      end
+    end
+
+    context 'when user is an inherited member from the group' do
+      let!(:open_issue) { create(:issue, project: group_project) }
+      let!(:confidential_issue) { create(:issue, :confidential, project: group_project) }
+      let!(:closed_issue) { create(:issue, state: :closed, project: group_project) }
+
+      let!(:api_url) { "/projects/#{group_project.id}/issues" }
+
+      context 'and group project is public and issues are private' do
+        let_it_be(:group_project) do
+          create(:project, :public, issues_access_level: ProjectFeature::PRIVATE, group: group)
+        end
+
+        it_behaves_like 'returns project issues without confidential issues for guests'
+        it_behaves_like 'returns all project issues for reporters'
+      end
+
+      context 'and group project is private' do
+        let_it_be(:group_project) { create(:project, :private, group: group) }
+
+        it_behaves_like 'returns project issues without confidential issues for guests'
+        it_behaves_like 'returns all project issues for reporters'
       end
     end
 

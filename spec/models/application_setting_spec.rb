@@ -116,6 +116,7 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_presence_of(:max_yaml_depth) }
     it { is_expected.to validate_numericality_of(:max_yaml_depth).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
+
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
@@ -1436,6 +1437,12 @@ RSpec.describe ApplicationSetting do
         expect { setting.update!(inactive_projects_delete_after_months: 6) }
           .to change { redis.hgetall('inactive_projects_deletion_warning_email_notified') }.to({})
       end
+    end
+  end
+
+  context 'personal accesss token prefix' do
+    it 'sets the correct default value' do
+      expect(setting.personal_access_token_prefix).to eql('glpat-')
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Expects usage of 'incident settings enabled' context.
+# Expects usage of 'incident management settings enabled' context.
 #
 # This shared_example includes the following option:
 # - with_issue: includes a test for when the defined `alert` has an associated issue
@@ -8,7 +8,7 @@
 # This shared_example requires the following variables:
 # - `alert`, required if :with_issue is true
 RSpec.shared_examples 'processes incident issues if enabled' do |with_issue: false|
-  include_examples 'processes incident issues', with_issue
+  include_examples 'processes incident issues', with_issue: with_issue
 
   context 'with incident setting disabled' do
     let(:create_issue) { false }

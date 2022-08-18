@@ -8,7 +8,7 @@ class LastGroupOwnerAssigner
   end
 
   def execute
-    @last_blocked_owner = no_owners_in_heirarchy? && group.single_blocked_owner?
+    @last_blocked_owner = no_owners_in_hierarchy? && group.single_blocked_owner?
     @group_single_owner = owners.size == 1
 
     members.each { |member| set_last_owner(member) }
@@ -18,7 +18,7 @@ class LastGroupOwnerAssigner
 
   attr_reader :group, :members, :last_blocked_owner, :group_single_owner
 
-  def no_owners_in_heirarchy?
+  def no_owners_in_hierarchy?
     owners.empty?
   end
 

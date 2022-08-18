@@ -15,7 +15,11 @@ export default {
       type: String,
       required: true,
     },
-    refsProjectPath: {
+    sourceProjectRefsPath: {
+      type: String,
+      required: true,
+    },
+    targetProjectRefsPath: {
       type: String,
       required: true,
     },
@@ -37,7 +41,11 @@ export default {
       type: String,
       required: true,
     },
-    defaultProject: {
+    sourceProject: {
+      type: Object,
+      required: true,
+    },
+    targetProject: {
       type: Object,
       required: true,
     },
@@ -50,14 +58,14 @@ export default {
     return {
       from: {
         projects: this.projects,
-        selectedProject: this.defaultProject,
+        selectedProject: this.targetProject,
         revision: this.paramsFrom,
-        refsProjectPath: this.refsProjectPath,
+        refsProjectPath: this.targetProjectRefsPath,
       },
       to: {
-        selectedProject: this.defaultProject,
+        selectedProject: this.sourceProject,
         revision: this.paramsTo,
-        refsProjectPath: this.refsProjectPath,
+        refsProjectPath: this.sourceProjectRefsPath,
       },
     };
   },

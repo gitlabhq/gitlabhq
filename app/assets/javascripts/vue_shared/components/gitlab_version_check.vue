@@ -2,6 +2,7 @@
 import { GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 const STATUS_TYPES = {
   SUCCESS: 'success',
@@ -45,7 +46,7 @@ export default {
   methods: {
     checkGitlabVersion() {
       axios
-        .get('/admin/version_check.json')
+        .get(joinPaths('/', gon.relative_url_root, '/admin/version_check.json'))
         .then((res) => {
           if (res.data) {
             this.status = res.data.severity;

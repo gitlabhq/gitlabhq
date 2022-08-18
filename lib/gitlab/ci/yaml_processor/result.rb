@@ -39,11 +39,11 @@ module Gitlab
         end
 
         def workflow_rules
-          @workflow_rules ||= hash_config.dig(:workflow, :rules)
+          @workflow_rules ||= @ci_config.workflow_rules
         end
 
         def root_variables
-          @root_variables ||= transform_to_yaml_variables(variables)
+          @root_variables ||= transform_to_array(variables)
         end
 
         def jobs
@@ -70,7 +70,7 @@ module Gitlab
             environment: job[:environment_name],
             coverage_regex: job[:coverage],
             # yaml_variables is calculated with using job_variables in Seed::Build
-            job_variables: transform_to_yaml_variables(job[:job_variables]),
+            job_variables: transform_to_array(job[:job_variables]),
             root_variables_inheritance: job[:root_variables_inheritance],
             needs_attributes: job.dig(:needs, :job),
             interruptible: job[:interruptible],
@@ -114,7 +114,7 @@ module Gitlab
 
           Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
             from: root_variables,
-            to: transform_to_yaml_variables(job[:job_variables]),
+            to: job[:job_variables],
             inheritance: job.fetch(:root_variables_inheritance, true)
           )
         end
@@ -133,16 +133,12 @@ module Gitlab
           @variables ||= @ci_config.variables
         end
 
-        def hash_config
-          @hash_config ||= @ci_config.to_hash
-        end
-
         def release(job)
           job[:release]
         end
 
-        def transform_to_yaml_variables(variables)
-          ::Gitlab::Ci::Variables::Helpers.transform_to_yaml_variables(variables)
+        def transform_to_array(variables)
+          ::Gitlab::Ci::Variables::Helpers.transform_to_array(variables)
         end
       end
     end

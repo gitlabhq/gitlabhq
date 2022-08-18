@@ -71,12 +71,10 @@ Gradle 1.x projects are not supported. The minimum supported version of Maven is
 |------------|----------------------------------------------------------------------------------------------|-------|
 | JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) (7 and earlier)                    |       |
 | Go         | [Godep](https://github.com/tools/godep) ([deprecated](../../../update/deprecations.md#godep-support-in-license-compliance)), [go mod](https://github.com/golang/go/wiki/Modules) |       |
-| Java       | [Gradle](https://gradle.org/) <sup>1</sup>, [Maven](https://maven.apache.org/)                            |       |
+| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)                            |       |
 | .NET       | [NuGet](https://www.nuget.org/)                                                              | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. |
 | Python     | [pip](https://pip.pypa.io/en/stable/)                                                        | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). |
 | Ruby       | [gem](https://rubygems.org/) |  |
-
-1. Gradle 7 and later is not supported as dependencies are not discovered when included with the `implementation` directive. Please see [GitLab#341222](https://gitlab.com/gitlab-org/gitlab/-/issues/341222) for more details.
 
 ### Experimental support
 
@@ -468,7 +466,7 @@ package manager. For a comprehensive list, consult [the Conan documentation](htt
 The default [Conan](https://conan.io/) configuration sets [`CONAN_LOGIN_USERNAME`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name)
 to `ci_user`, and binds [`CONAN_PASSWORD`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-password-conan-password-remote-name)
 to the [`CI_JOB_TOKEN`](../../../ci/variables/predefined_variables.md)
-for the running job. This allows Conan projects to fetch packages from a [GitLab Conan Repository](../../packages/conan_repository/#fetch-conan-package-information-from-the-package-registry)
+for the running job. This allows Conan projects to fetch packages from a [GitLab Conan Repository](../../packages/conan_repository/index.md#fetch-conan-package-information-from-the-package-registry)
 if a GitLab remote is specified in the `.conan/remotes.json` file.
 
 To override the default credentials specify a [`CONAN_LOGIN_USERNAME_{REMOTE_NAME}`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name)

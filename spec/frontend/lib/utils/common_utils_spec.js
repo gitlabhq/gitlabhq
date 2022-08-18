@@ -292,16 +292,11 @@ describe('common_utils', () => {
       const spy = jest.fn();
       const debouncedSpy = commonUtils.debounceByAnimationFrame(spy);
 
-      return new Promise((resolve) => {
-        window.requestAnimationFrame(() => {
-          debouncedSpy();
-          debouncedSpy();
-          window.requestAnimationFrame(() => {
-            expect(spy).toHaveBeenCalledTimes(1);
-            resolve();
-          });
-        });
-      });
+      debouncedSpy();
+      debouncedSpy();
+      jest.runOnlyPendingTimers();
+
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -633,7 +628,7 @@ describe('common_utils', () => {
       it('returns an empty object if `conversionFunction` parameter is not a function', () => {
         const result = commonUtils.convertObjectProps(null, mockObjects.convertObjectProps.obj);
 
-        expect(isEmptyObject(result)).toBeTruthy();
+        expect(isEmptyObject(result)).toBe(true);
       });
     });
 
@@ -650,9 +645,9 @@ describe('common_utils', () => {
           : commonUtils[functionName];
 
       it('returns an empty object if `obj` parameter is null, undefined or an empty object', () => {
-        expect(isEmptyObject(testFunction(null))).toBeTruthy();
-        expect(isEmptyObject(testFunction())).toBeTruthy();
-        expect(isEmptyObject(testFunction({}))).toBeTruthy();
+        expect(isEmptyObject(testFunction(null))).toBe(true);
+        expect(isEmptyObject(testFunction())).toBe(true);
+        expect(isEmptyObject(testFunction({}))).toBe(true);
       });
 
       it('converts object properties', () => {

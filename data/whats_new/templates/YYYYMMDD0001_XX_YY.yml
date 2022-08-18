@@ -9,8 +9,8 @@
 #
 # Please delete this line and above before submitting your merge request.
 
-- title:  # Match the release post entry
-  body: |  # Do not modify this line, instead modify the lines below.
+- name:  # Match the release post entry
+  description: |  # Do not modify this line, instead modify the lines below.
     <!-- START OF BODY COMMENT
 
     This area supports markdown.
@@ -25,8 +25,8 @@
   stage:  # String value of the stage that the feature was created in. e.g., Growth
   self-managed:  # Boolean value (true or false)
   gitlab-com:  # Boolean value (true or false)
-  packages:  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  url:  # This is the documentation URL, but can be a URL to a video if there is one
+  available_in:  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link:  # This is the documentation URL, but can be a URL to a video if there is one
   image_url:  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at:  # YYYY-MM-DD
   release:  # XX.Y

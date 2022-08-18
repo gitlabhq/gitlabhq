@@ -12,7 +12,7 @@ module API
           input = params['error_tracking_token']
 
           if headers.key?(GITLAB_ERROR_TRACKING_TOKEN_HEADER)
-            input ||= Base64.decode64(headers[GITLAB_ERROR_TRACKING_TOKEN_HEADER])
+            input ||= headers[GITLAB_ERROR_TRACKING_TOKEN_HEADER]
           end
 
           input&.chomp!

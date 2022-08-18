@@ -97,13 +97,16 @@ export default {
     <gl-loading-icon v-if="$apollo.queries.jobs.loading" size="lg" />
 
     <template v-else>
-      <gl-alert v-if="showLimitMessage" class="gl-mb-4" :dismissible="false">
-        <p>{{ $options.i18n.insightsLimit }}</p>
+      <gl-alert class="gl-mb-4" :dismissible="false">
+        <p v-if="showLimitMessage" data-testid="limit-alert-text">
+          {{ $options.i18n.insightsLimit }}
+        </p>
         <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/365902" class="gl-mt-5">
           {{ $options.i18n.feeback }}
         </gl-link>
       </gl-alert>
-      <div class="gl-display-flex gl-justify-content-space-between gl-mb-7">
+
+      <div class="gl-display-flex gl-justify-content-space-between gl-mt-2 gl-mb-7">
         <gl-card class="gl-w-half gl-mr-7 gl-text-center">
           <template #header>
             <span class="gl-font-weight-bold">{{ $options.i18n.queuedCardHeader }}</span>

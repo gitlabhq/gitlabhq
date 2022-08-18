@@ -1,7 +1,7 @@
 - add_to_breadcrumbs _("Compare Revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]}...#{params[:to]}"
 
-.sub-header-block.no-bottom-space
+.sub-header-block.gl-border-b-0.gl-mb-0
   .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
     #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
@@ -17,11 +17,11 @@
     paginate_diffs: true,
     paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
 - else
-  .card.gl-bg-gray-50.gl-border-none.gl-p-2
-    .center
+  = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-gray-50 gl-mb-5 gl-border-none gl-text-center" }) do |c|
+    - c.body do
       %h4
         = s_("CompareBranches|There isn't anything to compare.")
-      %p.slead
+      %p.gl-mb-4.gl-line-height-24
         - if params[:to] == params[:from]
           - source_branch = capture do
             %span.ref-name= params[:from]

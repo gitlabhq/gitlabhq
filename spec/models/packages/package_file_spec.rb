@@ -126,7 +126,7 @@ RSpec.describe Packages::PackageFile, type: :model do
   describe '.with_conan_package_reference' do
     let_it_be(:non_matching_package_file) { create(:package_file, :nuget) }
     let_it_be(:metadatum) { create(:conan_file_metadatum, :package_file) }
-    let_it_be(:reference) { metadatum.conan_package_reference}
+    let_it_be(:reference) { metadatum.conan_package_reference }
 
     it 'returns matching packages' do
       expect(described_class.with_conan_package_reference(reference))
@@ -150,8 +150,8 @@ RSpec.describe Packages::PackageFile, type: :model do
 
   context 'Debian scopes' do
     let_it_be(:debian_changes) { debian_package.package_files.last }
-    let_it_be(:debian_deb) { create(:debian_package_file, package: debian_package)}
-    let_it_be(:debian_udeb) { create(:debian_package_file, :udeb, package: debian_package)}
+    let_it_be(:debian_deb) { create(:debian_package_file, package: debian_package) }
+    let_it_be(:debian_udeb) { create(:debian_package_file, :udeb, package: debian_package) }
 
     let_it_be(:debian_contrib) do
       create(:debian_package_file, package: debian_package).tap do |pf|

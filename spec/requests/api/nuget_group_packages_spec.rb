@@ -73,7 +73,7 @@ RSpec.describe API::NugetGroupPackages do
       let(:include_prereleases) { true }
       let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases }.compact }
 
-      subject { get api(url), headers: {}}
+      subject { get api(url), headers: {} }
 
       shared_examples 'handling mixed visibilities' do
         where(:group_visibility, :subgroup_visibility, :expected_status) do

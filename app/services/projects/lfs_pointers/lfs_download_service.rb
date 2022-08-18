@@ -50,7 +50,7 @@ module Projects
 
       def find_or_create_lfs_object(tmp_file)
         lfs_obj = LfsObject.safe_find_or_create_by!(
-          oid:  lfs_oid,
+          oid: lfs_oid,
           size: lfs_size
         )
 

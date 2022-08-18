@@ -47,7 +47,19 @@ in a different color.
 Avoid mentioning `@all` in issues and merge requests, because it sends an email notification
 to all the members of that project's group. This might be interpreted as spam.
 Notifications and mentions can be disabled in
-[a group's settings](../group/index.md#disable-email-notifications).
+[a group's settings](../group/manage.md#disable-email-notifications).
+
+### Mention a group in an issue or merge request
+
+When you mention a group in a comment, every member of the group gets a to-do item
+added to their To-do list.
+
+1. Open the MR or issue.
+1. In a comment, type `@` followed by the user, group, or subgroup namespace.
+   For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
+1. Select **Comment**.
+
+A to-do item is created for all the group and subgroup members.
 
 ## Add a comment to a merge request diff
 
@@ -347,3 +359,19 @@ with a new push.
 
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
+
+## Display paginated merge request discussions
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature
+per project or for your entire instance, ask an administrator to
+[disable the feature flag](../../administration/feature_flags.md) named `paginated_mr_discussions`.
+On GitLab.com, this feature is available.
+
+A merge request can have many discussions. Loading them all in a single request
+can be slow. To improve the performance of loading discussions, they are split into multiple
+pages, loading sequentially.

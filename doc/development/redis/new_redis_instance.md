@@ -169,7 +169,7 @@ MultiStore uses two feature flags to control the actual migration:
 - `use_primary_and_secondary_stores_for_[store_name]`
 - `use_primary_store_as_default_for_[store_name]`
 
-For example, if our new Redis instance is called `Gitlab::Redis::Foo`, we can [create](../../../ee/development/feature_flags/#create-a-new-feature-flag) two feature flags by executing:
+For example, if our new Redis instance is called `Gitlab::Redis::Foo`, we can [create](../feature_flags/index.md#create-a-new-feature-flag) two feature flags by executing:
 
 ```shell
 bin/feature-flag use_primary_and_secondary_stores_for_foo
@@ -265,7 +265,7 @@ instances to cope without this functional partition.
 If we decide to keep the migration code:
 
 - We should document the migration steps.
-- If we used a feature flag, we should ensure it's an [ops type feature
-  flag](../feature_flags/index.md#ops-type), as these are long-lived flags.
+- If we used a feature flag, we should ensure it's an 
+  [ops type feature flag](../feature_flags/index.md#ops-type), as these are long-lived flags.
 
 Otherwise, we can remove the flags and conclude the project.

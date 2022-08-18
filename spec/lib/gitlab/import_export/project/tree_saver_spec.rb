@@ -68,6 +68,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
         it 'has merge request\'s milestones' do
           expect(subject.first['milestone']).not_to be_empty
         end
+
         it 'has merge request\'s source branch SHA' do
           expect(subject.first['source_branch_sha']).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
         end
@@ -100,8 +101,29 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
           expect(subject.first['notes'].first['author']).not_to be_empty
         end
 
+        it 'has merge request approvals' do
+          approval = subject.first['approvals'].first
+
+          expect(approval).not_to be_nil
+          expect(approval['user_id']).to eq(user.id)
+        end
+
         it 'has merge request resource label events' do
           expect(subject.first['resource_label_events']).not_to be_empty
+        end
+
+        it 'has merge request assignees' do
+          reviewer = subject.first['merge_request_assignees'].first
+
+          expect(reviewer).not_to be_nil
+          expect(reviewer['user_id']).to eq(user.id)
+        end
+
+        it 'has merge request reviewers' do
+          reviewer = subject.first['merge_request_reviewers'].first
+
+          expect(reviewer).not_to be_nil
+          expect(reviewer['user_id']).to eq(user.id)
         end
       end
 
@@ -404,7 +426,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
 
   context 'when streaming has to retry', :aggregate_failures do
     let(:shared) { double('shared', export_path: exportable_path) }
-    let(:logger) { Gitlab::Import::Logger.build }
+    let(:logger) { Gitlab::Export::Logger.build }
     let(:serializer) { double('serializer') }
     let(:error_class) { Net::OpenTimeout }
     let(:info_params) do
@@ -468,7 +490,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
     create(:label_link, label: group_label, target: issue)
     create(:label_priority, label: group_label, priority: 1)
     milestone = create(:milestone, project: project)
-    merge_request = create(:merge_request, source_project: project, milestone: milestone)
+    merge_request = create(:merge_request, source_project: project, milestone: milestone, assignees: [user], reviewers: [user])
+    create(:approval, merge_request: merge_request, user: user)
 
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update!(project: project)

@@ -48,7 +48,6 @@ GET /projects
 | Attribute                                  | Type     | Required               | Description |
 |--------------------------------------------|----------|------------------------|-------------|
 | `archived`                                 | boolean  | **{dotted-circle}** No | Limit by archived status. |
-| `build_coverage_regex`                     | string   | **{dotted-circle}** No | Test coverage parsing. (`deprecated`, it is [scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357401)) |
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
 | `imported`                                 | boolean  | **{dotted-circle}** No | Limit results to projects which were imported from external systems by current user. |
@@ -124,7 +123,7 @@ Example response:
       "parent_id": null,
       "avatar_url": null,
       "web_url": "https://gitlab.example.com/diaspora"
-    }    
+    }
   },
   {
     ...
@@ -223,12 +222,12 @@ When the user is authenticated and `simple` is not set this returns something li
     "open_issues_count": 0,
     "ci_default_git_depth": 20,
     "ci_forward_deployment_enabled": true,
+    "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
     "public_jobs": true,
     "build_timeout": 3600,
     "auto_cancel_pending_pipelines": "enabled",
-    "build_coverage_regex": null,
     "ci_config_path": "",
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -405,6 +404,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
     "ci_forward_deployment_enabled": true,
+    "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "public_jobs": true,
     "shared_with_groups": [],
@@ -513,6 +513,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
     "ci_forward_deployment_enabled": true,
+    "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "public_jobs": true,
     "shared_with_groups": [],
@@ -920,6 +921,7 @@ GET /projects/:id
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
   "shared_with_groups": [
@@ -1360,6 +1362,7 @@ Supported attributes:
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
+| `ci_allow_fork_pipelines_to_run_in_parent_project`          | boolean        | **{dotted-circle}** No | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                                       | boolean        | **{dotted-circle}** No | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_access_level`                           | string         | **{dotted-circle}** No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
@@ -1936,6 +1939,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
   "shared_with_groups": [],
@@ -2062,6 +2066,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
   "shared_with_groups": [],
@@ -2102,7 +2107,7 @@ This endpoint:
   is applied if enabled.
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
-  administrators can [configure](../user/group/index.md#enable-delayed-project-deletion)
+  administrators can [configure](../user/group/manage.md#enable-delayed-project-deletion)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
@@ -2110,7 +2115,7 @@ This endpoint:
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
 in GitLab 12.6 was changed to [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382)
-in GitLab 13.2, as discussed in [Enable delayed project deletion](../user/group/index.md#enable-delayed-project-deletion).
+in GitLab 13.2, as discussed in [Enable delayed project deletion](../user/group/manage.md#enable-delayed-project-deletion).
 
 ```plaintext
 DELETE /projects/:id
@@ -2699,7 +2704,6 @@ Example response:
   "public_jobs": true,
   "build_timeout": 3600,
   "auto_cancel_pending_pipelines": "enabled",
-  "build_coverage_regex": null, // deprecated, it is scheduled to be removed https://gitlab.com/gitlab-org/gitlab/-/issues/357401
   "ci_config_path": null,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

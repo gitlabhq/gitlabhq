@@ -343,6 +343,14 @@ export const issuableQueryResponse = {
         __typename: 'Issue',
         id: 'gid://gitlab/Issue/1',
         iid: '1',
+        author: {
+          id: '1',
+          avatarUrl: '/avatar',
+          name: 'root',
+          username: 'root',
+          webUrl: 'root',
+          status: null,
+        },
         assignees: {
           nodes: [
             {
@@ -450,7 +458,7 @@ export const subscriptionResponse = {
   },
 };
 
-const mockUser1 = {
+export const mockUser1 = {
   __typename: 'UserCore',
   id: 'gid://gitlab/User/1',
   avatarUrl:
@@ -459,6 +467,7 @@ const mockUser1 = {
   username: 'root',
   webUrl: '/root',
   status: null,
+  canMerge: false,
 };
 
 export const mockUser2 = {
@@ -469,6 +478,7 @@ export const mockUser2 = {
   username: 'rookie',
   webUrl: 'rookie',
   status: null,
+  canMerge: false,
 };
 
 export const searchResponse = {

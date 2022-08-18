@@ -16,6 +16,7 @@ RSpec.describe Resolvers::Crm::ContactsResolver do
       last_name: "DEF",
       email: "ghi@test.com",
       description: "LMNO",
+      organization: create(:organization, group: group),
       state: "inactive"
     )
   end
@@ -61,8 +62,26 @@ RSpec.describe Resolvers::Crm::ContactsResolver do
       end
 
       context 'when no filter is provided' do
-        it 'returns all the contacts in the correct order' do
+        it 'returns all the contacts in the default order' do
           expect(resolve_contacts(group)).to eq([contact_a, contact_b])
+        end
+      end
+
+      context 'when a sort is provided' do
+        it 'returns all the contacts in the correct order' do
+          expect(resolve_contacts(group, { sort: 'EMAIL_DESC' })).to eq([contact_b, contact_a])
+        end
+      end
+
+      context 'when a sort is provided needing offset_pagination' do
+        it 'returns all the contacts in the correct order' do
+          expect(resolve_contacts(group, { sort: 'ORGANIZATION_ASC' })).to eq([contact_a, contact_b])
+        end
+      end
+
+      context 'when filtering for all states' do
+        it 'returns all the contacts in the correct order' do
+          expect(resolve_contacts(group, { state: 'all' })).to eq([contact_a, contact_b])
         end
       end
 

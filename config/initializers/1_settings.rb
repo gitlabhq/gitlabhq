@@ -136,9 +136,9 @@ if github_settings
       OmniAuth::Strategies::GitHub.default_options[:client_options]
     else
       {
-        "site"          => File.join(github_settings["url"], "api/v3"),
+        "site" => File.join(github_settings["url"], "api/v3"),
         "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
-        "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
+        "token_url" => File.join(github_settings["url"], "login/oauth/access_token")
       }
     end
 end
@@ -631,7 +631,7 @@ Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({}
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '20 * * * *'
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '@daily'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
 
 Gitlab.ee do
@@ -779,6 +779,11 @@ Gitlab.ee do
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner'] ||= Settingslogic.new({})
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['cron'] ||= "0 0 * * *"
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['job_class'] = 'Licenses::ResetSubmitLicenseUsageDataBannerWorker'
+  Gitlab.com do
+    Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= Settingslogic.new({})
+    Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"
+    Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['job_class'] = 'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker'
+  end
 end
 
 #

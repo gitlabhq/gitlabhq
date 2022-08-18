@@ -69,7 +69,7 @@ describe('Blob Header Editing', () => {
     });
 
     it('initialises Source Editor', () => {
-      const el = wrapper.find({ ref: 'editor' }).element;
+      const el = wrapper.findComponent({ ref: 'editor' }).element;
       expect(utils.initSourceEditor).toHaveBeenCalledWith({
         el,
         blobPath: fileName,

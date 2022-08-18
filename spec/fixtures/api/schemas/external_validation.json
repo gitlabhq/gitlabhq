@@ -4,7 +4,8 @@
     "project",
     "user",
     "pipeline",
-    "builds"
+    "builds",
+    "total_builds_count"
   ],
   "properties" : {
     "project": {
@@ -80,6 +81,7 @@
           }
         }
       }
-    }
+    },
+    "total_builds_count": { "type": "integer" }
   }
 }

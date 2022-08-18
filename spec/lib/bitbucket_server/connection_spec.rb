@@ -64,7 +64,7 @@ RSpec.describe BitbucketServer::Connection do
     context 'branch API' do
       let(:branch_path) { '/projects/foo/repos/bar/branches' }
       let(:branch_url) { 'https://test:7990/rest/branch-utils/1.0/projects/foo/repos/bar/branches' }
-      let(:path) { }
+      let(:path) {}
 
       it 'returns JSON body' do
         WebMock.stub_request(:delete, branch_url).with(headers: headers).to_return(body: payload.to_json, status: 200, headers: headers)

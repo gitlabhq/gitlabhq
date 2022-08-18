@@ -11,6 +11,6 @@ module Types
 
     value 'TASK', value: 'task',
                   description: 'Task issue type. Available only when feature flag `work_items` is enabled.',
-                  deprecated: { milestone: '15.2', reason: :alpha }
+                  alpha: { milestone: '15.2' }
   end
 end

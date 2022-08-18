@@ -12,7 +12,7 @@ module BulkImports
     FailedError = Class.new(StandardError)
 
     CACHE_KEY_EXPIRATION = 2.hours
-    NDJSON_EXPORT_TIMEOUT = 30.minutes
+    NDJSON_EXPORT_TIMEOUT = 90.minutes
 
     def initialize(context)
       @context = context

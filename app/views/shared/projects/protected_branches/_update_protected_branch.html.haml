@@ -10,7 +10,7 @@
 %td.merge_access_levels-container
   = hidden_field_tag "allowed_to_merge_#{protected_branch.id}", merge_access_levels.first&.access_level
   = dropdown_tag( (merge_access_levels.first&.humanize || 'Select') ,
-                 options: { toggle_class: 'js-allowed-to-merge qa-allowed-to-merge', dropdown_class: 'dropdown-menu-selectable js-allowed-to-merge-container capitalize-header',
+                 options: { toggle_class: 'js-allowed-to-merge', dropdown_class: 'dropdown-menu-selectable js-allowed-to-merge-container capitalize-header',
                  data: { field_name: "allowed_to_merge_#{protected_branch.id}", preselected_items: access_levels_data(merge_access_levels) }})
   - if user_merge_access_levels.any?
     %p.small

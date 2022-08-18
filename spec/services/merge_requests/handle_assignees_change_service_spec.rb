@@ -87,14 +87,6 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService do
       expect(todo).to be_pending
     end
 
-    it 'removes attention requested state' do
-      expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-        .with(project: project, current_user: user, merge_request: merge_request, user: user)
-        .and_call_original
-
-      execute
-    end
-
     it 'tracks users assigned event' do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_users_assigned_to_mr).once.with(users: [assignee])

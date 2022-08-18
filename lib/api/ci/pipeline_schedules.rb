@@ -42,6 +42,16 @@ module API
           present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails, user: current_user
         end
 
+        desc 'Get all pipelines triggered from a pipeline schedule' do
+          success Entities::Ci::PipelineBasic
+        end
+        params do
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule ID'
+        end
+        get ':id/pipeline_schedules/:pipeline_schedule_id/pipelines' do
+          present paginate(pipeline_schedule.pipelines), with: Entities::Ci::PipelineBasic
+        end
+
         desc 'Create a new pipeline schedule' do
           success Entities::Ci::PipelineScheduleDetails
         end

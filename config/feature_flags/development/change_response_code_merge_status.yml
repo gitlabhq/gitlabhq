@@ -1,8 +1,0 @@
----
-name: change_response_code_merge_status
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82465/
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356930
-milestone: '15.1'
-type: development
-group: group::code review
-default_enabled: true

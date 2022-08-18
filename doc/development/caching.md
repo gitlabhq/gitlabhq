@@ -118,8 +118,8 @@ Is the cache being added "worthy"? This can be hard to measure, but you can cons
     - `tail -f log/development.log | grep "Rendered "`
 - After you're looking in the right place:
   - Remove or comment out sections of code until you find the cause.
-  - Use `binding.pry` to poke about in live requests. This requires a foreground
-    web process like [Thin](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pry.md).
+  - Use `binding.pry` to poke about in live requests. This requires a
+    [foreground web process](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pry.md).
 
 #### Verification
 
@@ -301,10 +301,10 @@ it's time to look at a custom solution:
 
 In short: the oldest stuff is replaced with new stuff:
 
-- A [useful article](https://redis.io/topics/lru-cache) about configuring Redis as an LRU cache.
+- A [useful article](https://redis.io/docs/manual/eviction/) about configuring Redis as an LRU cache.
 - Lots of options for different cache eviction strategies.
 - You probably want `allkeys-lru`, which is functionally similar to Memcached.
-- In Redis 4.0 and later, [allkeys-lfu is available](https://redis.io/topics/lru-cache#the-new-lfu-mode),
+- In Redis 4.0 and later, [allkeys-lfu is available](https://redis.io/docs/manual/eviction/#the-new-lfu-mode),
   which is similar but different.
 - We handle all explicit deletes using UNLINK instead of DEL now, which allows Redis to
   reclaim memory in its own time, rather than immediately.

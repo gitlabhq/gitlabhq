@@ -240,11 +240,11 @@ module Banzai
           object_parent_type = parent.is_a?(Group) ? :group : :project
 
           {
-            original:             escape_html_entities(text),
-            link:                 link_content,
-            link_reference:       link_reference,
+            original: escape_html_entities(text),
+            link: link_content,
+            link_reference: link_reference,
             object_parent_type => parent.id,
-            object_sym =>         object.id
+            object_sym => object.id
           }
         end
 

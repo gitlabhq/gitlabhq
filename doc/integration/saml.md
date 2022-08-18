@@ -709,7 +709,6 @@ args: {
   security: {
     authn_requests_signed: true,  # enable signature on AuthNRequest
     want_assertions_signed: true,  # enable the requirement of signed assertion
-    embed_sign: true,  # embedded signature or HTTP GET parameter signature
     metadata_signed: false,  # enable signature on Metadata
     signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
@@ -756,7 +755,7 @@ Group SAML on a self-managed instance is limited when compared to the recommende
 [instance-wide SAML](../user/group/saml_sso/index.md). The recommended solution allows you to take advantage of:
 
 - [LDAP compatibility](../administration/auth/ldap/index.md).
-- [LDAP Group Sync](../user/group/index.md#manage-group-memberships-via-ldap).
+- [LDAP Group Sync](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
 - [Required groups](#required-groups).
 - [Administrator groups](#administrator-groups).
 - [Auditor groups](#auditor-groups).
@@ -800,8 +799,6 @@ GitLab provides the following setup notes for guidance only.
 If you have any questions on configuring the SAML app, please contact your provider's support.
 
 ### Okta setup notes
-
-The following guidance is based on this Okta article, on adding a [SAML Application with an Okta Developer account](https://support.okta.com/help/s/article/Why-can-t-I-add-a-SAML-Application-with-an-Okta-Developer-account?language=en_US):
 
 1. In the Okta administrator section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
 1. When the app screen comes up you see another button to **Create an App** and
@@ -864,7 +861,7 @@ connect to the Google Workspace SAML app.
 
 ### SAML Response
 
-You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
+You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs/index.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
 
 ### GitLab+SAML Testing Environments
 
@@ -907,7 +904,7 @@ the SAML request, but in GitLab 11.7 and earlier this error never reaches GitLab
 the CSRF check.
 
 To bypass this you can add `skip_before_action :verify_authenticity_token` to the
-`omniauth_callbacks_controller.rb` file immediately after the `class` line and
+`omniauth_callbacks_controller.rb` file immediately before the `after_action :verify_known_sign_in` line and
 comment out the `protect_from_forgery` line using a `#`. Restart Puma for this
 change to take effect. This allows the error to hit GitLab, where it can then
 be seen in the usual logs, or as a flash message on the login screen.
@@ -941,8 +938,8 @@ Make sure this information is provided.
 
 Another issue that can result in this error is when the correct information is being sent by
 the IdP, but the attributes don't match the names in the OmniAuth `info` hash. In this case,
-you must set `attribute_statements` in the SAML configuration to [map the attribute names in
-your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
+you must set `attribute_statements` in the SAML configuration to 
+[map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
 
 ### Key validation error, Digest mismatch or Fingerprint mismatch
 

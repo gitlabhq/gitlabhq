@@ -88,6 +88,6 @@ export default {
     category="tertiary"
     class="js-md"
     data-container="body"
-    @click="() => $emit('click')"
+    @click="$emit('click', $event)"
   />
 </template>

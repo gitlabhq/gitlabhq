@@ -1702,12 +1702,11 @@
     "type": "doc",
     "content": [
       {
-        "type": "horizontalRule"
-      },
-      {
-        "type": "heading",
+        "type": "frontmatter",
         "attrs": {
-          "level": 2
+          "language": "yaml",
+          "class": "code highlight",
+          "isFrontmatter": true
         },
         "content": [
           {
@@ -1759,10 +1758,12 @@
     "type": "doc",
     "content": [
       {
-        "type": "horizontalRule"
-      },
-      {
-        "type": "horizontalRule"
+        "type": "frontmatter",
+        "attrs": {
+          "language": "yaml",
+          "class": "code highlight",
+          "isFrontmatter": true
+        }
       }
     ]
   }
@@ -3149,7 +3150,8 @@
                       "target": "_blank",
                       "class": null,
                       "title": null,
-                      "canonicalSrc": null
+                      "canonicalSrc": "bar",
+                      "isReference": false
                     }
                   }
                 ],
@@ -3234,7 +3236,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": false
                 }
               }
             ],
@@ -3752,7 +3755,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": false
                 }
               }
             ],
@@ -3884,6 +3888,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3896,7 +3914,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -3911,6 +3930,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "the title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"the title\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3923,7 +3956,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "the title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -3938,6 +3972,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo*bar\\]",
+          "url": "my_(url)",
+          "title": "title (with parens)"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo*bar\\]]: my_(url) \"title (with parens)\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3950,7 +3998,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title (with parens)",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo*bar\\]",
+                  "isReference": true
                 }
               }
             ],
@@ -3965,6 +4014,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo bar",
+          "url": "my url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo bar]: my url \"title\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3977,7 +4040,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo bar",
+                  "isReference": true
                 }
               }
             ],
@@ -3992,6 +4056,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "\ntitle\nline1\nline2\n"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"\ntitle\nline1\nline2\n\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4004,7 +4082,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "\ntitle\nline1\nline2\n",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4052,6 +4131,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4064,7 +4157,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4103,6 +4197,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: "
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4115,7 +4223,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4154,6 +4263,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url\\bar*baz",
+          "title": "foo\"bar\\baz"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url\\bar*baz \"foo\"bar\\baz\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4166,7 +4289,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "foo\"bar\\baz",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4193,11 +4317,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: url"
           }
         ]
       }
@@ -4220,11 +4359,40 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "first",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: first"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "second",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: second"
           }
         ]
       }
@@ -4234,6 +4402,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4247,7 +4429,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4262,6 +4445,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "αγω",
+          "url": "/φου",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[αγω]: /φου"
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4274,7 +4471,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "αγω",
+                  "isReference": true
                 }
               }
             ],
@@ -4289,7 +4487,18 @@
     "type": "doc",
     "content": [
       {
-        "type": "paragraph"
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
       }
     ]
   }
@@ -4297,6 +4506,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4327,6 +4550,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4438,11 +4675,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "Foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
           }
         ]
       },
@@ -4470,6 +4722,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
+      {
         "type": "heading",
         "attrs": {
           "level": 1
@@ -4494,7 +4760,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4508,6 +4775,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4525,7 +4806,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4540,6 +4822,48 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/foo-url",
+          "title": "foo"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /foo-url \"foo\""
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/bar-url",
+          "title": "bar"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /bar-url \"bar\""
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/baz-url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /baz-url"
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4552,7 +4876,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "foo",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4572,7 +4897,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "bar",
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
@@ -4592,7 +4918,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "baz",
+                  "isReference": true
                 }
               }
             ],
@@ -4619,7 +4946,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -4634,7 +4962,18 @@
         },
         "content": [
           {
-            "type": "paragraph"
+            "type": "referenceDefinition",
+            "attrs": {
+              "identifier": "foo",
+              "url": "/url",
+              "title": null
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "[foo]: /url"
+              }
+            ]
           }
         ]
       }
@@ -4645,7 +4984,18 @@
     "type": "doc",
     "content": [
       {
-        "type": "paragraph"
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
       }
     ]
   }
@@ -9572,6 +9922,20 @@
                     "text": "b"
                   }
                 ]
+              },
+              {
+                "type": "referenceDefinition",
+                "attrs": {
+                  "identifier": "ref",
+                  "url": "/url",
+                  "title": null
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "[ref]: /url"
+                  }
+                ]
               }
             ]
           },
@@ -10346,7 +10710,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com?find=%5C*",
+                  "isReference": false
                 }
               }
             ],
@@ -10382,7 +10747,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "ti*tle",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/bar*",
+                  "isReference": false
                 }
               }
             ],
@@ -10409,11 +10775,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "ti*tle",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/bar*",
+          "title": "ti*tle"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /bar* \"ti*tle\""
           }
         ]
       }
@@ -10554,7 +10935,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "föö",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/f%C3%B6%C3%B6",
+                  "isReference": false
                 }
               }
             ],
@@ -10581,11 +10963,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "föö",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/föö",
+          "title": "föö"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /föö \"föö\""
           }
         ]
       }
@@ -11101,7 +11498,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "`",
+                  "isReference": false
                 }
               }
             ],
@@ -11152,7 +11550,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar.%60baz",
+                  "isReference": false
                 }
               }
             ],
@@ -12308,7 +12707,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               },
               {
@@ -12778,7 +13178,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               },
               {
@@ -12847,7 +13248,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               },
               {
@@ -13206,7 +13608,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               },
               {
@@ -14112,7 +14515,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               }
             ],
@@ -14143,7 +14547,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               }
             ],
@@ -14171,7 +14576,8 @@
               "alt": null,
               "title": "*",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo",
+              "isReference": false
             }
           }
         ]
@@ -14293,7 +14699,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar/?q=**",
+                  "isReference": false
                 }
               }
             ],
@@ -14324,7 +14731,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar/?q=__",
+                  "isReference": false
                 }
               }
             ],
@@ -14399,7 +14807,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -14426,7 +14835,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -14453,7 +14863,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "",
+                  "isReference": false
                 }
               }
             ],
@@ -14480,7 +14891,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "",
+                  "isReference": false
                 }
               }
             ],
@@ -14522,7 +14934,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/my%20uri",
+                  "isReference": false
                 }
               }
             ],
@@ -14579,7 +14992,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "b)c",
+                  "isReference": false
                 }
               }
             ],
@@ -14645,7 +15059,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "(foo)",
+                  "isReference": false
                 }
               }
             ],
@@ -14672,7 +15087,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo(and(bar))",
+                  "isReference": false
                 }
               }
             ],
@@ -14699,7 +15115,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo(and(bar)",
+                  "isReference": false
                 }
               }
             ],
@@ -14726,7 +15143,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo(and(bar)",
+                  "isReference": false
                 }
               }
             ],
@@ -14753,7 +15171,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo):",
+                  "isReference": false
                 }
               }
             ],
@@ -14780,7 +15199,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "#fragment",
+                  "isReference": false
                 }
               }
             ],
@@ -14801,7 +15221,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com#fragment",
+                  "isReference": false
                 }
               }
             ],
@@ -14822,7 +15243,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com?foo=3#frag",
+                  "isReference": false
                 }
               }
             ],
@@ -14849,7 +15271,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo%5Cbar",
+                  "isReference": false
                 }
               }
             ],
@@ -14876,7 +15299,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo%20b%C3%A4",
+                  "isReference": false
                 }
               }
             ],
@@ -14903,7 +15327,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "%22title%22",
+                  "isReference": false
                 }
               }
             ],
@@ -14930,7 +15355,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               }
             ],
@@ -14957,7 +15383,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title \"\"",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               }
             ],
@@ -14984,7 +15411,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url%C2%A0%22title%22",
+                  "isReference": false
                 }
               }
             ],
@@ -15026,7 +15454,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title \"and\" title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url",
+                  "isReference": false
                 }
               }
             ],
@@ -15053,7 +15482,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15095,7 +15525,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15141,7 +15572,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15168,7 +15600,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15195,7 +15628,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15211,7 +15645,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               },
               {
@@ -15230,7 +15665,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               },
               {
@@ -15252,7 +15688,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               },
               {
@@ -15285,7 +15722,8 @@
               "alt": "moon",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "moon.jpg",
+              "isReference": false
             },
             "marks": [
               {
@@ -15295,7 +15733,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ]
@@ -15325,7 +15764,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15369,7 +15809,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               },
               {
@@ -15409,7 +15850,8 @@
               "alt": "[foo](uri2)",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "uri3",
+              "isReference": false
             }
           }
         ]
@@ -15437,7 +15879,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15464,7 +15907,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "baz*",
+                  "isReference": false
                 }
               }
             ],
@@ -15558,7 +16002,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com/?search=%5D(uri)",
+                  "isReference": false
                 }
               }
             ],
@@ -15585,11 +16030,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
           }
         ]
       }
@@ -15612,11 +16072,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
             "text": "link [foo [bar]]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15639,11 +16114,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
             "text": "link [bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15666,7 +16156,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
@@ -15682,7 +16173,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               },
               {
@@ -15701,7 +16193,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               },
               {
@@ -15723,7 +16216,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               },
               {
@@ -15737,6 +16231,20 @@
               }
             ],
             "text": "#"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15756,7 +16264,8 @@
               "alt": "moon",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "moon.jpg",
+              "isReference": false
             },
             "marks": [
               {
@@ -15766,10 +16275,25 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ]
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15796,7 +16320,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri",
+                  "isReference": false
                 }
               }
             ],
@@ -15816,11 +16341,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
             "text": "ref"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15856,7 +16396,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               },
               {
@@ -15879,11 +16420,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
             "text": "ref"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15910,11 +16466,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo*"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15937,11 +16508,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo *bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15957,6 +16543,20 @@
           {
             "type": "text",
             "text": "[foo "
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15983,6 +16583,20 @@
             "text": "][ref]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -16007,11 +16621,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com/?search=%5D%5Bref%5D",
+                  "isReference": false
                 }
               }
             ],
             "text": "http://example.com/?search=][ref]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -16034,11 +16663,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
           }
         ]
       }
@@ -16061,7 +16705,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "толпой",
+                  "isReference": true
                 }
               }
             ],
@@ -16072,6 +16717,20 @@
             "text": " is a Russian word."
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "толпой",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[толпой]: /url"
+          }
+        ]
       }
     ]
   }
@@ -16079,6 +16738,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo bar",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo bar]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16092,7 +16765,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo bar",
+                  "isReference": true
                 }
               }
             ],
@@ -16123,11 +16797,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
             "text": "bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
           }
         ]
       }
@@ -16154,11 +16843,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
             "text": "bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
           }
         ]
       }
@@ -16168,6 +16872,34 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url2"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16181,7 +16913,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -16201,6 +16934,20 @@
           {
             "type": "text",
             "text": "[bar][foo!]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo!",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo!]: /url"
           }
         ]
       }
@@ -16295,11 +17042,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "ref\\[",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref\\[",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref\\[]: /uri"
           }
         ]
       }
@@ -16309,6 +17071,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar\\\\",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar\\\\]: /uri"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16322,7 +17098,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar\\\\",
+                  "isReference": true
                 }
               }
             ],
@@ -16397,11 +17174,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16424,7 +17216,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "*foo* bar",
+                  "isReference": true
                 }
               },
               {
@@ -16443,11 +17236,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "*foo* bar",
+                  "isReference": true
                 }
               }
             ],
             "text": " bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -16470,11 +17278,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "Foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16497,7 +17320,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -16506,6 +17330,20 @@
           {
             "type": "text",
             "text": "\n[]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16528,11 +17366,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16555,7 +17408,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "*foo* bar",
+                  "isReference": true
                 }
               },
               {
@@ -16574,11 +17428,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "*foo* bar",
+                  "isReference": true
                 }
               }
             ],
             "text": " bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -16605,7 +17474,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "*foo* bar",
+                  "isReference": true
                 }
               },
               {
@@ -16624,7 +17494,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "*foo* bar",
+                  "isReference": true
                 }
               }
             ],
@@ -16633,6 +17504,20 @@
           {
             "type": "text",
             "text": "]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -16659,11 +17544,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
           }
         ]
       }
@@ -16686,11 +17586,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "Foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16713,7 +17628,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -16722,6 +17638,20 @@
           {
             "type": "text",
             "text": " bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
           }
         ]
       }
@@ -16739,6 +17669,20 @@
             "text": "[foo]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16746,6 +17690,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo*",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo*]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16763,7 +17721,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo*",
+                  "isReference": true
                 }
               }
             ],
@@ -16790,11 +17749,40 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url2"
           }
         ]
       }
@@ -16817,11 +17805,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
           }
         ]
       }
@@ -16844,11 +17847,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "",
+                  "isReference": false
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
           }
         ]
       }
@@ -16871,7 +17889,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
@@ -16880,6 +17899,20 @@
           {
             "type": "text",
             "text": "(not a link)"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
           }
         ]
       }
@@ -16906,11 +17939,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "baz",
+                  "isReference": true
                 }
               }
             ],
             "text": "bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /url"
           }
         ]
       }
@@ -16933,7 +17981,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar",
+                  "isReference": true
                 }
               }
             ],
@@ -16949,11 +17998,40 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "baz",
+                  "isReference": true
                 }
               }
             ],
             "text": "baz"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url2"
           }
         ]
       }
@@ -16980,11 +18058,40 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "baz",
+                  "isReference": true
                 }
               }
             ],
             "text": "bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url2"
           }
         ]
       }
@@ -17004,7 +18111,8 @@
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url",
+              "isReference": false
             }
           }
         ]
@@ -17025,8 +18133,23 @@
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo *bar*",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo *bar*",
+          "url": "train.jpg",
+          "title": "train & tracks"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo *bar*]: train.jpg \"train & tracks\""
           }
         ]
       }
@@ -17046,7 +18169,8 @@
               "alt": "foo bar",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url2",
+              "isReference": false
             }
           }
         ]
@@ -17067,7 +18191,8 @@
               "alt": "foo bar",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url2",
+              "isReference": false
             }
           }
         ]
@@ -17088,8 +18213,23 @@
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo *bar*",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo *bar*",
+          "url": "train.jpg",
+          "title": "train & tracks"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo *bar*]: train.jpg \"train & tracks\""
           }
         ]
       }
@@ -17109,8 +18249,23 @@
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foobar",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foobar",
+          "url": "train.jpg",
+          "title": "train & tracks"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foobar]: train.jpg \"train & tracks\""
           }
         ]
       }
@@ -17130,7 +18285,8 @@
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "train.jpg",
+              "isReference": false
             }
           }
         ]
@@ -17155,7 +18311,8 @@
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/path/to/train.jpg",
+              "isReference": false
             }
           }
         ]
@@ -17176,7 +18333,8 @@
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "url",
+              "isReference": false
             }
           }
         ]
@@ -17197,7 +18355,8 @@
               "alt": "",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url",
+              "isReference": false
             }
           }
         ]
@@ -17218,8 +18377,23 @@
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "bar",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url"
           }
         ]
       }
@@ -17239,8 +18413,23 @@
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "bar",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url"
           }
         ]
       }
@@ -17260,8 +18449,23 @@
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17281,8 +18485,23 @@
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "*foo* bar",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -17302,8 +18521,23 @@
               "alt": "Foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17323,12 +18557,27 @@
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo",
+              "isReference": true
             }
           },
           {
             "type": "text",
             "text": "\n[]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17348,8 +18597,23 @@
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17369,8 +18633,23 @@
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "*foo* bar",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -17414,8 +18693,23 @@
               "alt": "Foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo",
+              "isReference": true
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17431,6 +18725,20 @@
           {
             "type": "text",
             "text": "![foo]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17457,11 +18765,26 @@
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo",
+                  "isReference": true
                 }
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17484,7 +18807,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar.baz",
+                  "isReference": false
                 }
               }
             ],
@@ -17511,7 +18835,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar.baz/test?q=hello&id=22&boolean",
+                  "isReference": false
                 }
               }
             ],
@@ -17534,11 +18859,12 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "irc://foo.bar:2233/baz",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": null,
+                  "isReference": false
                 }
               }
             ],
@@ -17565,7 +18891,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "MAILTO:FOO@BAR.BAZ",
+                  "isReference": false
                 }
               }
             ],
@@ -17588,11 +18915,12 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "a+b+c:d",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": null,
+                  "isReference": false
                 }
               }
             ],
@@ -17615,11 +18943,12 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "made-up-scheme://foo,bar",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": null,
+                  "isReference": false
                 }
               }
             ],
@@ -17646,7 +18975,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://../",
+                  "isReference": false
                 }
               }
             ],
@@ -17669,11 +18999,12 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "localhost:5001/foo",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": null,
+                  "isReference": false
                 }
               }
             ],
@@ -17704,7 +19035,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar/baz",
+                  "isReference": false
                 }
               }
             ],
@@ -17735,7 +19067,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com/%5C%5B%5C",
+                  "isReference": false
                 }
               }
             ],
@@ -17762,7 +19095,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo@bar.example.com",
+                  "isReference": false
                 }
               }
             ],
@@ -17789,7 +19123,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo+special@Bar.baz-bar0.com",
+                  "isReference": false
                 }
               }
             ],
@@ -17820,7 +19155,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo+@bar.example.com",
+                  "isReference": false
                 }
               }
             ],
@@ -17870,7 +19206,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar",
+                  "isReference": false
                 }
               }
             ],
@@ -17931,7 +19268,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com",
+                  "isReference": false
                 }
               }
             ],
@@ -17958,7 +19296,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo@bar.example.com",
+                  "isReference": false
                 }
               }
             ],
@@ -17985,7 +19324,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org",
+                  "isReference": false
                 }
               }
             ],
@@ -18016,7 +19356,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org/help",
+                  "isReference": false
                 }
               }
             ],
@@ -18051,7 +19392,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org",
+                  "isReference": false
                 }
               }
             ],
@@ -18080,7 +19422,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org/a.b",
+                  "isReference": false
                 }
               }
             ],
@@ -18111,7 +19454,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
+                  "isReference": false
                 }
               }
             ],
@@ -18132,7 +19476,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
+                  "isReference": false
                 }
               }
             ],
@@ -18161,7 +19506,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
+                  "isReference": false
                 }
               }
             ],
@@ -18190,7 +19536,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
+                  "isReference": false
                 }
               }
             ],
@@ -18217,7 +19564,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=(business))+ok",
+                  "isReference": false
                 }
               }
             ],
@@ -18244,7 +19592,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=commonmark&hl=en",
+                  "isReference": false
                 }
               }
             ],
@@ -18265,7 +19614,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=commonmark",
+                  "isReference": false
                 }
               }
             ],
@@ -18296,7 +19646,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org/he",
+                  "isReference": false
                 }
               }
             ],
@@ -18327,7 +19678,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://commonmark.org",
+                  "isReference": false
                 }
               }
             ],
@@ -18352,7 +19704,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "https://encrypted.google.com/search?q=Markup+(business)",
+                  "isReference": false
                 }
               }
             ],
@@ -18392,7 +19745,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo@bar.baz",
+                  "isReference": false
                 }
               }
             ],
@@ -18423,7 +19777,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:hello+xyz@mail.example",
+                  "isReference": false
                 }
               }
             ],
@@ -18454,7 +19809,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:a.b-c_d@a.b",
+                  "isReference": false
                 }
               }
             ],
@@ -18475,7 +19831,8 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:a.b-c_d@a.b",
+                  "isReference": false
                 }
               }
             ],
@@ -19218,8 +20575,8 @@
           {
             "type": "footnoteReference",
             "attrs": {
-              "identifier": "1",
-              "label": "1"
+              "identifier": "fortytwo",
+              "label": "fortytwo"
             }
           }
         ]
@@ -19227,8 +20584,8 @@
       {
         "type": "footnoteDefinition",
         "attrs": {
-          "identifier": "1",
-          "label": "1"
+          "identifier": "fortytwo",
+          "label": "fortytwo"
         },
         "content": [
           {
@@ -19239,6 +20596,187 @@
                 "text": "footnote text"
               }
             ]
+          }
+        ]
+      }
+    ]
+  }
+07_02__gitlab_specific_markdown__task_list_items__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": false,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": false
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "incomplete"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+07_02__gitlab_specific_markdown__task_list_items__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": false,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "completed"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+07_02__gitlab_specific_markdown__task_list_items__003: |-
+  Inapplicable task list items not yet implemented for WYSYWIG
+07_02__gitlab_specific_markdown__task_list_items__004: |-
+  Inapplicable task list items not yet implemented for WYSYWIG
+07_03__gitlab_specific_markdown__front_matter__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "yaml",
+          "class": "code highlight",
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: YAML front matter"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "toml",
+          "class": "code highlight",
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: TOML front matter"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__003: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "json",
+          "class": "code highlight",
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"title\": \"JSON front matter\"\n}"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__004: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "text"
+          }
+        ]
+      },
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: YAML front matter"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__005: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: YAML front matter"
           }
         ]
       }

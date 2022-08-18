@@ -66,6 +66,7 @@ class AwarenessChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Name
     {
       id: user.id,
       name: user.name,
+      username: user.username,
       avatar_url: user.avatar_url(size: 36),
       last_activity: last_activity,
       last_activity_humanized: ActionController::Base.helpers.distance_of_time_in_words(

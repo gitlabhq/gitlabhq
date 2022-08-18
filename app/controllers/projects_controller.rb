@@ -37,17 +37,18 @@ class ProjectsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:lazy_load_commits, @project)
     push_frontend_feature_flag(:highlight_js, @project)
+    push_frontend_feature_flag(:file_line_blame, @project)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
-    push_frontend_feature_flag(:work_items_mvc_2)
+    push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:package_registry_access_level)
     push_frontend_feature_flag(:work_items_hierarchy, @project)
   end
 
   before_action only: :edit do
-    push_frontend_feature_flag(:enforce_auth_checks_on_uploads, @project)
+    push_frontend_feature_flag(:split_operations_visibility_permissions, @project)
   end
 
   layout :determine_layout
@@ -197,8 +198,8 @@ class ProjectsController < Projects::ApplicationController
     flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
     redirect_to dashboard_projects_path, status: :found
-  rescue Projects::DestroyService::DestroyError => ex
-    redirect_to edit_project_path(@project), status: :found, alert: ex.message
+  rescue Projects::DestroyService::DestroyError => e
+    redirect_to edit_project_path(@project), status: :found, alert: e.message
   end
 
   def new_issuable_address
@@ -231,10 +232,10 @@ class ProjectsController < Projects::ApplicationController
       project_path(@project),
       notice: _("Housekeeping successfully started")
     )
-  rescue ::Repositories::HousekeepingService::LeaseTaken => ex
+  rescue ::Repositories::HousekeepingService::LeaseTaken => e
     redirect_to(
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
-      alert: ex.to_s
+      alert: e.to_s
     )
   end
 
@@ -245,10 +246,10 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project, anchor: 'js-export-project'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
-  rescue Project::ExportLimitExceeded => ex
+  rescue Project::ExportLimitExceeded => e
     redirect_to(
       edit_project_path(@project, anchor: 'js-export-project'),
-      alert: ex.to_s
+      alert: e.to_s
     )
   end
 
@@ -420,10 +421,19 @@ class ProjectsController < Projects::ApplicationController
       pages_access_level
       metrics_dashboard_access_level
       analytics_access_level
-      operations_access_level
       security_and_compliance_access_level
       container_registry_access_level
-    ]
+    ] + operations_feature_attributes
+  end
+
+  def operations_feature_attributes
+    if Feature.enabled?(:split_operations_visibility_permissions, project)
+      %i[
+        environments_access_level feature_flags_access_level releases_access_level
+      ]
+    else
+      %i[operations_access_level]
+    end
   end
 
   def project_setting_attributes

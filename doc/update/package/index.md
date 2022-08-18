@@ -196,20 +196,6 @@ see how to [upgrade to a later version](../../administration/docs_self_host.md#u
 
 ## Troubleshooting
 
-### GitLab 13.7 and later unavailable on Amazon Linux 2
-
-Amazon Linux 2 is not an [officially supported operating system](../../administration/package_information/supported_os.md).
-However, in past the [official package installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)
-installed the `el/6` package repository if run on Amazon Linux. From GitLab 13.7, we no longer
-provide `el/6` packages so administrators must run the [installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)
-again to update the repository to `el/7`:
-
-```shell
-curl --silent "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
-```
-
-See the [epic on support for GitLab on Amazon Linux 2](https://gitlab.com/groups/gitlab-org/-/epics/2195) for the latest details on official Amazon Linux 2 support.
-
 ### Get the status of a GitLab installation
 
 ```shell

@@ -187,7 +187,7 @@ Checking GitLab ... Finished
 
 In some cases it is necessary to rebuild the `authorized_keys` file,
 for example, if after an upgrade you receive `Permission denied (publickey)` when pushing [via SSH](../../user/ssh.md)
-and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs.md#gitlab-shelllog).
+and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs/index.md#gitlab-shelllog).
 To rebuild `authorized_keys`, run:
 
 **Omnibus Installation**

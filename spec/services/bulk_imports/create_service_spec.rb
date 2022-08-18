@@ -10,19 +10,19 @@ RSpec.describe BulkImports::CreateService do
       {
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group1',
-        destination_name: 'destination group 1',
+        destination_slug: 'destination group 1',
         destination_namespace: 'full/path/to/destination1'
       },
       {
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group2',
-        destination_name: 'destination group 2',
+        destination_slug: 'destination group 2',
         destination_namespace: 'full/path/to/destination2'
       },
       {
         source_type: 'project_entity',
         source_full_path: 'full/path/to/project1',
-        destination_name: 'destination project 1',
+        destination_slug: 'destination project 1',
         destination_namespace: 'full/path/to/destination1'
       }
     ]

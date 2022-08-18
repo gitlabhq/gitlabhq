@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create', :reliable do
     describe 'Merge request custom templates' do
-      let(:template_name) { 'custom_merge_request_template'}
+      let(:template_name) { 'custom_merge_request_template' }
       let(:template_content) { 'This is a custom merge request template test' }
       let(:template_project) do
         Resource::Project.fabricate_via_api! do |project|

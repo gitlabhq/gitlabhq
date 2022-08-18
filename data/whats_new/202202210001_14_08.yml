@@ -1,5 +1,5 @@
-- title: "Support for ecdsa-sk and ed25519-sk SSH keys"
-  body: |
+- name: "Support for ecdsa-sk and ed25519-sk SSH keys"
+  description: |
     [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) added support for FIDO/U2F hardware authenticators with new
     ecdsa-sk and ed25519-sk key types.
 
@@ -7,24 +7,24 @@
   stage: manage
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ssh/#generate-an-ssh-key-pair-for-a-fidou2f-hardware-security-key'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ssh/#generate-an-ssh-key-pair-for-a-fidou2f-hardware-security-key'
   image_url: 'https://about.gitlab.com/images/14_8/ssh_key.png'
   published_at: 2022-02-22
   release: 14.8
-- title: "Auto-completion of keywords in the Pipeline Editor"
-  body: |
+- name: "Auto-completion of keywords in the Pipeline Editor"
+  description: |
     Writing a valid GitLab CI/CD pipeline can be difficult regardless of whether you're a novice or more advanced user. Syntax structure should be accurate and even a small typo or misconfiguration could cause your pipeline to be invalid, introducing more work to find the source of the problem. In this release, we've added auto-completion of CI/CD keywords to the pipeline editor, which will greatly increase your efficiency when writing and debugging pipelines. You'll be more confident that your pipeline will run the way you want it the very first time it runs.
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/pipeline_editor/index.html#validate-ci-configuration'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/pipeline_editor/index.html#validate-ci-configuration'
   image_url: 'https://about.gitlab.com/images/growth/verify.png'
   published_at: 2022-02-22
   release: 14.8
-- title: "Security approval policies"
-  body: |
+- name: "Security approval policies"
+  description: |
     GitLab now supports flexible security approvals as the replacement for the deprecated Vulnerability-Check feature. Security approvals are similar to Vulnerability-Check in that both can require approvals for MRs that contain security vulnerabilities. However, security approvals improve the previous experience in several ways:
 
     - Users can choose who is allowed to edit security approval rules. An independent security or compliance team can therefore manage rules in a way that prevents development project maintainers from modifying the rules.
@@ -36,24 +36,24 @@
   stage: protect
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/policies/scan-result-policies'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/scan-result-policies'
   image_url: 'https://about.gitlab.com/images/14_8/protect-security-approval-policies.png'
   published_at: 2022-02-22
   release: 14.8
-- title: "On-demand security scan index view"
-  body: |
+- name: "On-demand security scan index view"
+  description: |
     Find all your on-demand DAST and DAST API scans on a single page. We have introduced a new index page for on-demand scans that shows your in-progress scans, previously run scans, saved scans, and scheduled scans. From this index page, you can find specific scans easily or re-run scans that have already finished. In previous versions of GitLab, to see on-demand scans that were in-progress or had finished, you needed to search through the pipelines page to find the right pipeline. Saved on-demand scans were located in the Security & Compliance configuration section. To find scheduled scans, you needed to look at each saved scan individually to see their schedule. All of those activities are now rolled into one page to make it easier to run on-demand security testing outside of CI/CD builds, MRs, or pipelines.
   stage: secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/dast/#view-on-demand-dast-scans'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast/#view-on-demand-dast-scans'
   image_url: 'https://about.gitlab.com/images/14_8/dast-on-demand-index-page.png'
   published_at: 2022-02-22
   release: 14.8
-- title: "User impersonation audit events for groups"
-  body: |
+- name: "User impersonation audit events for groups"
+  description: |
     GitLab now provides audit events on the group audit events page for
     [user impersonation](https://docs.gitlab.com/ee/user/admin_area/#user-impersonation) starting and stopping. This was previously
     only available on a page unavailable to GitLab SaaS customers. We are excited to bring
@@ -71,21 +71,21 @@
   stage: manage
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/administration/audit_events.html#group-events'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/administration/audit_events.html#group-events'
   image_url: 'https://about.gitlab.com/images/14_8/impersonation_audit_event.png'
   published_at: 2022-02-22
   release: 14.8
-- title: "Additional display options for roadmaps"
-  body: |
+- name: "Additional display options for roadmaps"
+  description: |
     In this release, we have introduced additional progress tracking capabilities to roadmaps. You can now view the percentage of completed epics based on issue count instead of issue weight. This functionality is useful for organizations that are using Kanban or other methodologies that don't require their teams to set a weight on issues.
 
     You can now also customize the level of milestones to include in your roadmap, allowing you to tailor your view to meet the needs of your audience.
   stage: plan
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/group/roadmap/index.html#roadmap-settings'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/roadmap/index.html#roadmap-settings'
   image_url: 'https://about.gitlab.com/images/14_8/rp_roadmap_settings.png'
   published_at: 2022-02-22
   release: 14.8

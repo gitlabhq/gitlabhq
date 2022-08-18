@@ -14,7 +14,7 @@
 
       #{time_ago_with_tooltip(event.created_at)}
 
-    - if can?(current_user, :create_merge_request_in, event.project.default_merge_request_target)
+    - if create_mr_button_from_event?(event)
       = c.actions do
-        = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn gl-button btn-confirm qa-create-merge-request" do
-          #{ _('Create merge request') }
+        = render Pajamas::ButtonComponent.new(variant: :confirm, href: create_mr_path_from_push_event(event), button_options: { class: 'qa-create-merge-request' }) do
+          = _('Create merge request')

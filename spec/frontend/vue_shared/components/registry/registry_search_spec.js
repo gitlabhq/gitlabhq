@@ -6,9 +6,9 @@ import component from '~/vue_shared/components/registry/registry_search.vue';
 describe('Registry Search', () => {
   let wrapper;
 
-  const findPackageListSorting = () => wrapper.find(GlSorting);
-  const findSortingItems = () => wrapper.findAll(GlSortingItem);
-  const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
+  const findPackageListSorting = () => wrapper.findComponent(GlSorting);
+  const findSortingItems = () => wrapper.findAllComponents(GlSortingItem);
+  const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
 
   const defaultProps = {
     filters: [],

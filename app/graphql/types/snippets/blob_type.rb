@@ -44,25 +44,25 @@ module Types
             null: true
 
       field :simple_viewer, type: Types::Snippets::BlobViewerType,
-            description: 'Blob content simple viewer.',
-            null: false
+                            description: 'Blob content simple viewer.',
+                            null: false
 
       field :rich_viewer, type: Types::Snippets::BlobViewerType,
-            description: 'Blob content rich viewer.',
-            null: true
+                          description: 'Blob content rich viewer.',
+                          null: true
 
       field :mode, type: GraphQL::Types::String,
-            description: 'Blob mode.',
-            null: true
+                   description: 'Blob mode.',
+                   null: true
 
       field :external_storage, type: GraphQL::Types::String,
-            description: 'Blob external storage.',
-            null: true
+                               description: 'Blob external storage.',
+                               null: true
 
       field :rendered_as_text, type: GraphQL::Types::Boolean,
-            description: 'Shows whether the blob is rendered as text.',
-            method: :rendered_as_text?,
-            null: false
+                               description: 'Shows whether the blob is rendered as text.',
+                               method: :rendered_as_text?,
+                               null: false
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

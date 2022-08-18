@@ -21,7 +21,7 @@ describe('Sort Discussion component', () => {
     });
   };
 
-  const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   beforeEach(() => {
     store = createStore();

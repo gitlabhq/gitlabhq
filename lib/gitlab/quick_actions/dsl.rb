@@ -30,11 +30,11 @@ module Gitlab
         #     # Awesome code block
         #   end
         def desc(text = '', &block)
-          @description = block_given? ? block : text
+          @description = block || text
         end
 
         def warning(text = '', &block)
-          @warning = block_given? ? block : text
+          @warning = block || text
         end
 
         def icon(string = '')
@@ -51,7 +51,7 @@ module Gitlab
         #     # Awesome code block
         #   end
         def params(*params, &block)
-          @params = block_given? ? block : params
+          @params = block || params
         end
 
         # Allows to give an explanation of what the command will do when
@@ -67,7 +67,7 @@ module Gitlab
         #     # Awesome code block
         #   end
         def explanation(text = '', &block)
-          @explanation = block_given? ? block : text
+          @explanation = block || text
         end
 
         # Allows to provide a message about quick action execution result, success or failure.
@@ -96,7 +96,7 @@ module Gitlab
         #   end
         #
         def execution_message(text = '', &block)
-          @execution_message = block_given? ? block : text
+          @execution_message = block || text
         end
 
         # Allows to define type(s) that must be met in order for the command

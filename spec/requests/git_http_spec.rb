@@ -225,7 +225,7 @@ RSpec.describe 'Git HTTP requests' do
       end
 
       context 'when namespace exists' do
-        let(:path) { "#{user.namespace.path}/new-project.git"}
+        let(:path) { "#{user.namespace.path}/new-project.git" }
 
         context 'when authenticated' do
           it 'creates a new project under the existing namespace' do

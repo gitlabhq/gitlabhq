@@ -348,7 +348,7 @@ RSpec.describe "User browses files", :js do
     end
 
     it "shows raw file content in a new tab" do
-      new_tab = window_opened_by {click_link 'Open raw'}
+      new_tab = window_opened_by { click_link 'Open raw' }
 
       within_window new_tab do
         expect(page).to have_content("Test file")
@@ -366,7 +366,7 @@ RSpec.describe "User browses files", :js do
     end
 
     it "shows raw file content in a new tab" do
-      new_tab = window_opened_by {click_link 'Open raw'}
+      new_tab = window_opened_by { click_link 'Open raw' }
 
       within_window new_tab do
         expect(page).to have_content("*.rbc")

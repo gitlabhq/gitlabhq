@@ -125,8 +125,8 @@ Supported attributes:
 
 ## Get file archive
 
-> Support for [including Git LFS blobs](../topics/git/lfs/index.md#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> Support for downloading a subfolder was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28827) in GitLab 14.4.
+> - Support for [including Git LFS blobs](../topics/git/lfs/index.md#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
+> - Support for downloading a subfolder was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28827) in GitLab 14.4.
 
 Get an archive of the repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
@@ -319,7 +319,7 @@ Supported attributes:
 | `date`    | datetime | no | The date and time of the release, defaults to the current time. |
 | `branch`  | string   | no | The branch to commit the changelog changes to, defaults to the project's default branch. |
 | `trailer` | string   | no | The Git trailer to use for including commits, defaults to `Changelog`. |
-| `config_file` | string   | no | The path of changelog configuration file in the project's Git repository, defaults to `.gitlab/changelog_config.yml`. |
+| `config_file` | string   | no | Path to the changelog configuration file in the project's Git repository. Defaults to `.gitlab/changelog_config.yml`. |
 | `file`    | string   | no | The file to commit the changes to, defaults to `CHANGELOG.md`. |
 | `message` | string   | no | The commit message to produce when committing the changes, defaults to `Add changelog for version X` where X is the value of the `version` argument. |
 
@@ -342,9 +342,8 @@ tags using these formats:
 - `vX.Y.Z`
 - `X.Y.Z`
 
-Where `X.Y.Z` is a version that follows [semantic
-versioning](https://semver.org/). For example, consider a project with the
-following tags:
+Where `X.Y.Z` is a version that follows [semantic versioning](https://semver.org/). 
+For example, consider a project with the following tags:
 
 - v1.0.0-pre1
 - v1.0.0

@@ -75,13 +75,26 @@ module ContainerRegistry
 
     def created_at
       return @created_at if @created_at
-      return unless config
 
       strong_memoize(:memoized_created_at) do
+        next unless config
+
         DateTime.rfc3339(config['created'])
       rescue ArgumentError
         nil
       end
+    end
+
+    # this function will set and memoize a created_at
+    # to avoid a #config_blob call.
+    def force_created_at_from_iso8601(string_value)
+      date =
+        begin
+          DateTime.iso8601(string_value)
+        rescue ArgumentError
+          nil
+        end
+      instance_variable_set(ivar(:memoized_created_at), date)
     end
 
     def layers

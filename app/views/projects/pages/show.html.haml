@@ -1,30 +1,20 @@
 - page_title _('Pages')
 
-- if @project.pages_enabled?
-  %h1.page-title.gl-font-size-h-display.with-button
-    = s_('GitLabPages|Pages')
+- unless @project.pages_deployed?
+  = render 'waiting'
 
-    - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
-      = link_to new_project_pages_domain_path(@project), class: 'btn gl-button btn-confirm float-right', title: s_('GitLabPages|New Domain') do
-        = s_('GitLabPages|New Domain')
+- else
+  = render 'header'
 
-  %p.light
-    - docs_link_start = "<a href='#{help_page_path('user/project/pages/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
-    - link_end = '</a>'.html_safe
-    = s_('GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}Learn more.%{link_end}').html_safe % { docs_link_start: docs_link_start, link_end: link_end }
+  %section
 
   = render 'pages_settings'
 
   %hr.clearfix
-
-  = render 'ssl_limitations_warning' if @project.pages_subdomain.include?(".")
-  = render 'access'
-  = render 'use'
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-    = render 'list'
-  - else
-    = render 'no_domains'
-  = render 'destroy'
-- else
-  .bs-callout.bs-callout-warning
-    = html_escape_once(s_('GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project\'s %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} page.')).html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+    = render 'ssl_limitations_warning' if @project.pages_subdomain.include?(".")
+    = render 'access'
+    - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+      = render 'list'
+    - else
+      = render 'no_domains'
+    = render 'destroy'

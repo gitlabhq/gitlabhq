@@ -20,6 +20,7 @@ describe('Performance insights modal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLink = () => wrapper.findComponent(GlLink);
+  const findLimitText = () => wrapper.findByTestId('limit-alert-text');
   const findQueuedCardData = () => wrapper.findByTestId('insights-queued-card-data');
   const findQueuedCardLink = () => wrapper.findByTestId('insights-queued-card-link');
   const findExecutedCardData = () => wrapper.findByTestId('insights-executed-card-data');
@@ -62,8 +63,19 @@ describe('Performance insights modal', () => {
       expect(findModal().exists()).toBe(true);
     });
 
-    it('does not dispaly alert', () => {
-      expect(findAlert().exists()).toBe(false);
+    it('displays alert', () => {
+      expect(findAlert().exists()).toBe(true);
+    });
+
+    it('displays feedback issue link', () => {
+      expect(findLink().text()).toBe('Feedback issue');
+      expect(findLink().attributes('href')).toBe(
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/365902',
+      );
+    });
+
+    it('does not display limit text', () => {
+      expect(findLimitText().exists()).toBe(false);
     });
 
     describe('queued duration card', () => {
@@ -107,16 +119,13 @@ describe('Performance insights modal', () => {
     });
   });
 
-  describe('limit alert', () => {
-    it('displays limit alert when there is a next page', async () => {
+  describe('with next page', () => {
+    it('displays limit text when there is a next page', async () => {
       createComponent([[getPerformanceInsights, getPerformanceInsightsNextPageHandler]]);
 
       await waitForPromises();
 
-      expect(findAlert().exists()).toBe(true);
-      expect(findLink().attributes('href')).toBe(
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/365902',
-      );
+      expect(findLimitText().exists()).toBe(true);
     });
   });
 });

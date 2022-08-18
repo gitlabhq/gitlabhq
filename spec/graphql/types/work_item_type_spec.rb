@@ -11,16 +11,21 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
 
   it 'has specific fields' do
     fields = %i[
+      confidential
       description
       description_html
       id
       iid
       lock_version
+      project
       state title
       title_html
       userPermissions
       widgets
       work_item_type
+      created_at
+      updated_at
+      closed_at
     ]
 
     fields.each do |field_name|

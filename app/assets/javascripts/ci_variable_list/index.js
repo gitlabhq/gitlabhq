@@ -2,8 +2,10 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import CiVariableSettings from './components/ci_variable_settings.vue';
+import CiAdminVariables from './components/ci_admin_variables.vue';
+import CiGroupVariables from './components/ci_group_variables.vue';
 import LegacyCiVariableSettings from './components/legacy_ci_variable_settings.vue';
+import { resolvers } from './graphql/resolvers';
 import createStore from './store';
 
 const mountCiVariableListApp = (containerEl) => {
@@ -13,8 +15,12 @@ const mountCiVariableListApp = (containerEl) => {
     awsTipDeployLink,
     awsTipLearnLink,
     containsVariableReferenceLink,
+    endpoint,
     environmentScopeLink,
-    group,
+    groupId,
+    groupPath,
+    isGroup,
+    isProject,
     maskedEnvironmentVariablesLink,
     maskableRegex,
     projectFullPath,
@@ -23,13 +29,20 @@ const mountCiVariableListApp = (containerEl) => {
     protectedEnvironmentVariablesLink,
   } = containerEl.dataset;
 
-  const isGroup = parseBoolean(group);
+  const parsedIsProject = parseBoolean(isProject);
+  const parsedIsGroup = parseBoolean(isGroup);
   const isProtectedByDefault = parseBoolean(protectedByDefault);
+
+  let component = CiAdminVariables;
+
+  if (parsedIsGroup) {
+    component = CiGroupVariables;
+  }
 
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient: createDefaultClient(resolvers),
   });
 
   return new Vue({
@@ -41,8 +54,12 @@ const mountCiVariableListApp = (containerEl) => {
       awsTipDeployLink,
       awsTipLearnLink,
       containsVariableReferenceLink,
+      endpoint,
       environmentScopeLink,
-      isGroup,
+      groupId,
+      groupPath,
+      isGroup: parsedIsGroup,
+      isProject: parsedIsProject,
       isProtectedByDefault,
       maskedEnvironmentVariablesLink,
       maskableRegex,
@@ -51,7 +68,7 @@ const mountCiVariableListApp = (containerEl) => {
       protectedEnvironmentVariablesLink,
     },
     render(createElement) {
-      return createElement(CiVariableSettings);
+      return createElement(component);
     },
   });
 };

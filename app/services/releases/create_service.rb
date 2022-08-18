@@ -19,10 +19,6 @@ module Releases
       create_release(tag, evidence_pipeline)
     end
 
-    def find_or_build_release
-      release || build_release(existing_tag)
-    end
-
     private
 
     def ensure_tag

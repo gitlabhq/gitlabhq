@@ -42,7 +42,7 @@ describe('IDE review mode', () => {
     let inititializeSpy;
 
     beforeEach(async () => {
-      inititializeSpy = jest.spyOn(wrapper.find(IdeReview).vm, 'initialize');
+      inititializeSpy = jest.spyOn(wrapper.findComponent(IdeReview).vm, 'initialize');
       store.state.viewer = 'editor';
 
       await wrapper.vm.reactivate();
@@ -85,7 +85,7 @@ describe('IDE review mode', () => {
     });
 
     it('renders edit dropdown', () => {
-      expect(wrapper.find(EditorModeDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(EditorModeDropdown).exists()).toBe(true);
     });
 
     it('renders merge request link & IID', async () => {

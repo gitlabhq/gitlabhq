@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import createTestReportsStore from '../../stores/test_reports';
 import EmptyState from './empty_state.vue';
 import TestSuiteTable from './test_suite_table.vue';
@@ -16,6 +17,7 @@ export default {
     TestSummary,
     TestSummaryTable,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['blobPath', 'summaryEndpoint', 'suiteEndpoint'],
   computed: {
     ...mapState('testReports', ['isLoading', 'selectedSuiteIndex', 'testReports']),
@@ -29,14 +31,16 @@ export default {
     },
   },
   created() {
-    this.$store.registerModule(
-      'testReports',
-      createTestReportsStore({
-        blobPath: this.blobPath,
-        summaryEndpoint: this.summaryEndpoint,
-        suiteEndpoint: this.suiteEndpoint,
-      }),
-    );
+    if (!this.glFeatures.pipelineTabsVue) {
+      this.$store.registerModule(
+        'testReports',
+        createTestReportsStore({
+          blobPath: this.blobPath,
+          summaryEndpoint: this.summaryEndpoint,
+          suiteEndpoint: this.suiteEndpoint,
+        }),
+      );
+    }
 
     this.fetchSummary();
   },
@@ -74,7 +78,7 @@ export default {
   <div
     v-else-if="!isLoading && showTests"
     ref="container"
-    class="position-relative"
+    class="gl-relative"
     data-testid="tests-detail"
   >
     <transition
@@ -82,13 +86,13 @@ export default {
       @before-enter="beforeEnterTransition"
       @after-leave="afterLeaveTransition"
     >
-      <div v-if="showSuite" key="detail" class="w-100 slide-enter-to-element">
+      <div v-if="showSuite" key="detail" class="gl-w-full slide-enter-to-element">
         <test-summary :report="getSelectedSuite" show-back @on-back-click="summaryBackClick" />
 
         <test-suite-table />
       </div>
 
-      <div v-else key="summary" class="w-100 slide-enter-from-element">
+      <div v-else key="summary" class="gl-w-full slide-enter-from-element">
         <test-summary :report="testReports" />
 
         <test-summary-table @row-click="summaryTableRowClick" />

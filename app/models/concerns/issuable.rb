@@ -515,11 +515,23 @@ module Issuable
     changes
   end
 
+  def hook_reviewer_changes(old_associations)
+    changes = {}
+    old_reviewers = old_associations.fetch(:reviewers, reviewers)
+
+    if old_reviewers != reviewers
+      changes[:reviewers] = [old_reviewers.map(&:hook_attrs), reviewers.map(&:hook_attrs)]
+    end
+
+    changes
+  end
+
   def to_hook_data(user, old_associations: {})
     changes = previous_changes
 
     if old_associations.present?
       changes.merge!(hook_association_changes(old_associations))
+      changes.merge!(hook_reviewer_changes(old_associations)) if allows_reviewers?
     end
 
     Gitlab::DataBuilder::Issuable.new(self).build(user: user, changes: changes)
@@ -537,6 +549,10 @@ module Issuable
     labels.map(&:hook_attrs)
   end
 
+  def allows_scoped_labels?
+    false
+  end
+
   # Convert this Issuable class name to a format usable by Ability definitions
   #
   # Examples:
@@ -550,7 +566,7 @@ module Issuable
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
-      'Author'   => author.try(:name),
+      'Author' => author.try(:name),
       'Assignee' => assignee_list
     }
   end
