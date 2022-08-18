@@ -497,6 +497,11 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 -->
 ### Secure job failing with exit code 1
 
+WARNING:
+Debug logging can be a serious security risk. The output may contain the content of
+environment variables and other secrets available to the job. The output is uploaded
+to the GitLab server and visible in job logs.
+
 If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for
 more verbose output that is helpful for troubleshooting.
 
@@ -533,6 +538,11 @@ Select **new pipeline** to run a new pipeline.
 ![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
 ### Getting warning messages `… report.json: no matching files`
+
+WARNING:
+Debug logging can be a serious security risk. The output may contain the content of
+environment variables and other secrets available to the job. The output is uploaded
+to the GitLab server and visible in job logs.
 
 This message is often followed by the [error `No files to upload`](../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check

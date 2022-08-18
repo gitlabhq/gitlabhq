@@ -207,6 +207,14 @@
     background-color: var(--blue-50, $blue-50);
   }
 
+  .move-to-position {
+    visibility: hidden;
+  }
+
+  &:hover .move-to-position {
+    visibility: visible;
+  }
+
   &.multi-select {
     border-color: var(--blue-200, $blue-200);
     background-color: var(--blue-50, $blue-50);
@@ -234,11 +242,18 @@
   @include media-breakpoint-down(md) {
     padding: $gl-padding-8;
   }
+
+  @include media-breakpoint-down(sm) {
+    .move-to-position {
+      visibility: visible;
+    }
+  }
 }
 
 .board-card-title {
   @include overflow-break-word();
   font-size: 1em;
+  width: 95%;
 
   a {
     color: var(--gray-900, $gray-900);

@@ -146,3 +146,5 @@ export default {
   BoardType,
   ListType,
 };
+
+export const DEFAULT_BOARD_LIST_ITEMS_SIZE = 10;

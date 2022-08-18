@@ -39,5 +39,19 @@ RSpec.describe 'Creation of a new Custom Emoji' do
       expect(gql_response['customEmoji']['name']).to eq(attributes[:name])
       expect(gql_response['customEmoji']['url']).to eq(attributes[:url])
     end
+
+    context 'when the custom_emoji feature flag is disabled' do
+      before do
+        stub_feature_flags(custom_emoji: false)
+      end
+
+      it 'does nothing and returns and error' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to not_change(CustomEmoji, :count)
+
+        expect_graphql_errors_to_include('Custom emoji feature is disabled')
+      end
+    end
   end
 end

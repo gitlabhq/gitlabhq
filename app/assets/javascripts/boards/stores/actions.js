@@ -15,6 +15,7 @@ import {
   FilterFields,
   ListTypeTitles,
   DraggableItemTypes,
+  DEFAULT_BOARD_LIST_ITEMS_SIZE,
 } from 'ee_else_ce/boards/constants';
 import {
   formatIssueInput,
@@ -429,7 +430,7 @@ export default {
       filters: filterParams,
       isGroup: boardType === BoardType.group,
       isProject: boardType === BoardType.project,
-      first: 10,
+      first: DEFAULT_BOARD_LIST_ITEMS_SIZE,
       after: fetchNext ? state.pageInfoByListId[listId].endCursor : undefined,
     };
 

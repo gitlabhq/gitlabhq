@@ -419,6 +419,9 @@ as both have a different home directory:
 
 You can either copy over the `.ssh/` directory to use the same key, or generate a key in each environment.
 
+If you're running Windows 11 and using [OpenSSH for Windows](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview), ensure the `HOME`
+environment variable is set correctly. Otherwise, your private SSH key might not be found.
+
 Alternative tools include:
 
 - [Cygwin](https://www.cygwin.com)
@@ -468,6 +471,7 @@ This indicates that something is wrong with your SSH setup.
 - Try to manually register your private SSH key by using `ssh-agent`.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.
+- Ensure you followed all the instructions in [Use SSH on Microsoft Windows](#use-ssh-on-microsoft-windows).
 
 ### `Could not resolve hostname` error
 

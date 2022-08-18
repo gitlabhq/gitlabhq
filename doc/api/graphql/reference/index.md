@@ -1409,7 +1409,9 @@ Input type: `CreateComplianceFrameworkInput`
 
 ### `Mutation.createCustomEmoji`
 
-Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+WARNING:
+**Introduced** in 13.6.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `CreateCustomEmojiInput`
 
@@ -2271,7 +2273,9 @@ Input type: `DestroyContainerRepositoryTagsInput`
 
 ### `Mutation.destroyCustomEmoji`
 
-Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+WARNING:
+**Introduced** in 13.6.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `DestroyCustomEmojiInput`
 
@@ -12144,7 +12148,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
-| <a id="groupcustomemoji"></a>`customEmoji` | [`CustomEmojiConnection`](#customemojiconnection) | Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
+| <a id="groupcustomemoji"></a>`customEmoji` **{warning-solid}** | [`CustomEmojiConnection`](#customemojiconnection) | **Introduced** in 13.6. This feature is in Alpha. It can be changed or removed at any time. Custom emoji within this namespace. |
 | <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |

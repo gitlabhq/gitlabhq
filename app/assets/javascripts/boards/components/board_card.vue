@@ -98,6 +98,6 @@ export default {
     class="board-card gl-p-5 gl-rounded-base"
     @click="toggleIssue($event)"
   >
-    <board-card-inner :list="list" :item="item" :update-filters="true" />
+    <board-card-inner :list="list" :item="item" :update-filters="true" :index="index" />
   </li>
 </template>

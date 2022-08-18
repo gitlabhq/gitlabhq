@@ -1,5 +1,5 @@
 import { GlLabel } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
@@ -45,7 +45,10 @@ describe('Board card', () => {
     item = mockIssue,
   } = {}) => {
     wrapper = mountFn(BoardCard, {
-      stubs,
+      stubs: {
+        ...stubs,
+        BoardCardInner,
+      },
       store,
       propsData: {
         list: mockLabelList,
@@ -86,7 +89,7 @@ describe('Board card', () => {
   describe('when GlLabel is clicked in BoardCardInner', () => {
     it('doesnt call toggleBoardItem', () => {
       createStore({ initialState: { isShowingLabels: true } });
-      mountComponent({ mountFn: mount, stubs: {} });
+      mountComponent();
 
       wrapper.findComponent(GlLabel).trigger('mouseup');
 

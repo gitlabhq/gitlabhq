@@ -15,6 +15,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
 import BoardBlockedIcon from './board_blocked_icon.vue';
@@ -34,6 +35,7 @@ export default {
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     BoardBlockedIcon,
     GlSprintf,
+    BoardCardMoveToPosition,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -54,6 +56,10 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    index: {
+      type: Number,
+      required: true,
     },
   },
   data() {
@@ -202,7 +208,7 @@ export default {
 <template>
   <div>
     <div class="gl-display-flex" dir="auto">
-      <h4 class="board-card-title gl-mb-0 gl-mt-0">
+      <h4 class="board-card-title gl-mb-0 gl-mt-0 gl-mr-3">
         <board-blocked-icon
           v-if="item.blocked"
           :item="item"
@@ -235,6 +241,7 @@ export default {
           >{{ item.title }}</a
         >
       </h4>
+      <board-card-move-to-position :item="item" :list="list" :index="index" />
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">
