@@ -398,12 +398,6 @@ $tabs-holder-z-index: 250;
     display: block;
   }
 
-  .mr-widget-pipeline-graph {
-    .dropdown-menu {
-      z-index: $zindex-dropdown-menu;
-    }
-  }
-
   .normal {
     flex: 1;
     flex-basis: auto;

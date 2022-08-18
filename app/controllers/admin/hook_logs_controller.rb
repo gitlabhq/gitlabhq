@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::HookLogsController < Admin::ApplicationController
-  include ::Integrations::HooksExecution
+  include ::WebHooks::HookExecutionNotice
 
   before_action :hook, only: [:show, :retry]
   before_action :hook_log, only: [:show, :retry]

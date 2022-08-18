@@ -5,7 +5,7 @@ import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import StatusIcon from '../extensions/status_icon.vue';
-import { EXTENSION_ICON_NAMES } from '../../constants';
+import { EXTENSION_ICONS } from '../../constants';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 
@@ -66,7 +66,7 @@ export default {
       type: String,
       default: 'neutral',
       required: false,
-      validator: (value) => Object.keys(EXTENSION_ICON_NAMES).indexOf(value) > -1,
+      validator: (value) => Object.keys(EXTENSION_ICONS).indexOf(value) > -1,
     },
     isCollapsible: {
       type: Boolean,
@@ -83,6 +83,11 @@ export default {
       isLoading: false,
       error: null,
     };
+  },
+  computed: {
+    statusIcon() {
+      return this.error ? EXTENSION_ICONS.failed : this.statusIconName;
+    },
   },
   watch: {
     isLoading(newValue) {
@@ -147,18 +152,14 @@ export default {
 <template>
   <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <status-icon
-        :level="1"
-        :name="widgetName"
-        :is-loading="isLoading"
-        :icon-name="statusIconName"
-      />
+      <status-icon :level="1" :name="widgetName" :is-loading="isLoading" :icon-name="statusIcon" />
       <div
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
-          <slot name="summary">{{ isLoading ? loadingText : summary }}</slot>
+          <slot v-if="!error" name="summary">{{ isLoading ? loadingText : summary }}</slot>
+          <span v-else>{{ error }}</span>
         </div>
         <!-- actions will go here -->
         <div

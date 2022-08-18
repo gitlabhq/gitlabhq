@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::HookLogsController < Projects::ApplicationController
-  include ::Integrations::HooksExecution
+  include ::WebHooks::HookExecutionNotice
 
   before_action :authorize_admin_project!
 

@@ -1056,9 +1056,6 @@ msgstr[1] ""
 msgid "%{strong_start}%{human_size}%{strong_end} Project Storage"
 msgstr ""
 
-msgid "%{strong_start}%{project_name}%{strong_end} is a personal project, so you can’t upgrade to a paid plan or start a free trial to lift these limits. We recommend %{move_to_group_link}moving this project to a group%{end_link} to unlock these options. You can %{manage_members_link}manage the members of this project%{end_link}, but don’t forget that all unique members in your personal namespace %{strong_start}%{namespace_name}%{strong_end} count towards total seats in use."
-msgstr ""
-
 msgid "%{strong_start}%{release_count}%{strong_end} Release"
 msgid_plural "%{strong_start}%{release_count}%{strong_end} Releases"
 msgstr[0] ""
@@ -3121,6 +3118,9 @@ msgid "AdminUsers|Issues authored by this user are hidden from other users."
 msgstr ""
 
 msgid "AdminUsers|It's you!"
+msgstr ""
+
+msgid "AdminUsers|LDAP Blocked"
 msgstr ""
 
 msgid "AdminUsers|Learn more about %{link_start}banned users.%{link_end}"
@@ -21615,9 +21615,6 @@ msgstr ""
 msgid "InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
-msgid "InviteMembersModal|To make more space, you can remove members who no longer need access."
-msgstr ""
-
 msgid "InviteMembersModal|Username or email address"
 msgstr ""
 
@@ -21640,9 +21637,6 @@ msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{
 msgstr ""
 
 msgid "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}"
-msgstr ""
-
-msgid "InviteMembersModal|You've reached your %{count} %{members} limit for your personal projects"
 msgstr ""
 
 msgid "InviteMembers|Invite a group"
@@ -45504,9 +45498,6 @@ msgid "Your primary email is used for avatar detection. You can change it in you
 msgstr ""
 
 msgid "Your profile"
-msgstr ""
-
-msgid "Your project has limited quotas and features"
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"

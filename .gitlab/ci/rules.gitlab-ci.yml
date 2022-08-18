@@ -31,6 +31,9 @@
 .if-auto-deploy-branches: &if-auto-deploy-branches
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
+.if-tag: &if-tag
+  if: '$CI_COMMIT_TAG'
+
 .if-default-branch-or-tag: &if-default-branch-or-tag
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG'
 
@@ -636,6 +639,7 @@
       changes: *code-qa-patterns
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *code-qa-patterns
+    - <<: *if-tag
     - <<: *if-dot-com-gitlab-org-schedule
     - <<: *if-force-ci
 

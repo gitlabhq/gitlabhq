@@ -1,7 +1,7 @@
 <script>
-import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
+import PipelineStage from './pipeline_stage.vue';
 /**
- * Renders the pipeline mini graph.
+ * Renders the pipeline stages portion of the pipeline mini graph.
  */
 export default {
   components: {
@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="pipeline-mini-graph" class="gl-display-inline gl-vertical-align-middle">
+  <div data-testid="pipeline-stages" class="gl-display-inline gl-vertical-align-middle">
     <div
       v-for="stage in stages"
       :key="stage.name"

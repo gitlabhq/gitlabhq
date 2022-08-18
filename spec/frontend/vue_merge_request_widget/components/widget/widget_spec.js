@@ -48,7 +48,8 @@ describe('MR Widget', () => {
       const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
       createComponent({ propsData: { fetchCollapsedData } });
       await waitForPromises();
-      expect(wrapper.vm.error).toBe('Failed to load');
+      expect(wrapper.findByText('Failed to load').exists()).toBe(true);
+      expect(findStatusIcon().props()).toMatchObject({ iconName: 'failed', isLoading: false });
     });
 
     it('displays loading icon until request is made and then displays status icon when the request is complete', async () => {

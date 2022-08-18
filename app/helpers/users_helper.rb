@@ -197,6 +197,9 @@ module UsersHelper
     banned_badge = { text: s_('AdminUsers|Banned'), variant: 'danger' }
     return banned_badge if user.banned?
 
+    ldap_blocked_badge = { text: s_('AdminUsers|LDAP Blocked'), variant: 'danger' }
+    return ldap_blocked_badge if user.ldap_blocked?
+
     { text: s_('AdminUsers|Blocked'), variant: 'danger' }
   end
 

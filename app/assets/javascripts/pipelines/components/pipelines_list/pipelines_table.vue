@@ -1,8 +1,8 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import eventHub from '../../event_hub';
-import PipelineMiniGraph from './pipeline_mini_graph.vue';
 import PipelineOperations from './pipeline_operations.vue';
 import PipelineStopModal from './pipeline_stop_modal.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
@@ -17,8 +17,6 @@ const DEFAULT_TH_CLASSES =
 export default {
   components: {
     GlTableLite,
-    LinkedPipelinesMiniList: () =>
-      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
     PipelineMiniGraph,
     PipelineOperations,
     PipelinesStatusBadge,
@@ -169,29 +167,14 @@ export default {
       </template>
 
       <template #cell(stages)="{ item }">
-        <div class="stage-cell">
-          <!-- This empty div should be removed, see https://gitlab.com/gitlab-org/gitlab/-/issues/323488 -->
-          <div></div>
-          <linked-pipelines-mini-list
-            v-if="item.triggered_by"
-            :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
-              item.triggered_by,
-            ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-            data-testid="mini-graph-upstream"
-          />
-          <pipeline-mini-graph
-            v-if="item.details && item.details.stages && item.details.stages.length > 0"
-            :stages="item.details.stages"
-            :update-dropdown="updateGraphDropdown"
-            @pipelineActionRequestComplete="onPipelineActionRequestComplete"
-          />
-          <linked-pipelines-mini-list
-            v-if="item.triggered.length"
-            :triggered="item.triggered"
-            :pipeline-path="item.path"
-            data-testid="mini-graph-downstream"
-          />
-        </div>
+        <pipeline-mini-graph
+          :downstream-pipelines="item.triggered"
+          :pipeline-path="item.path"
+          :stages="item.details.stages"
+          :update-dropdown="updateGraphDropdown"
+          :upstream-pipeline="item.triggered_by"
+          @pipelineActionRequestComplete="onPipelineActionRequestComplete"
+        />
       </template>
 
       <template #cell(actions)="{ item }">

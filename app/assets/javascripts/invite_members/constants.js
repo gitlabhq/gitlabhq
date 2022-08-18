@@ -146,10 +146,6 @@ export const DANGER_ALERT_TITLE = s__(
   "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
 );
 
-export const DANGER_ALERT_TITLE_PERSONAL_NAMESPACE = s__(
-  "InviteMembersModal|You've reached your %{count} %{members} limit for your personal projects",
-);
-
 export const REACHED_LIMIT_MESSAGE = s__(
   'InviteMembersModal|You cannot add more members, but you can remove members who no longer need access.',
 );
@@ -162,7 +158,4 @@ export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.co
 
 export const CLOSE_TO_LIMIT_MESSAGE = s__(
   'InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
-);
-export const CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE = s__(
-  'InviteMembersModal|To make more space, you can remove members who no longer need access.',
 );

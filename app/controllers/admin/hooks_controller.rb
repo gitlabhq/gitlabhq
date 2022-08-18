@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::HooksController < Admin::ApplicationController
-  include ::Integrations::HooksExecution
+  include ::WebHooks::HookActions
 
   before_action :hook_logs, only: :edit
 

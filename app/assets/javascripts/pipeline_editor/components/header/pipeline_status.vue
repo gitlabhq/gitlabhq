@@ -174,7 +174,7 @@ export default {
       <div class="gl-display-flex gl-flex-wrap">
         <pipeline-editor-mini-graph :pipeline="pipeline" v-on="$listeners" />
         <gl-button
-          class="gl-mt-2 gl-md-mt-0"
+          class="gl-ml-3"
           category="secondary"
           variant="confirm"
           :href="status.detailsPath"

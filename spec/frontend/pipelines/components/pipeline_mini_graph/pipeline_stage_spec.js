@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
-import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
+import PipelineStage from '~/pipelines/components/pipeline_mini_graph/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stageReply } from '../../mock_data';

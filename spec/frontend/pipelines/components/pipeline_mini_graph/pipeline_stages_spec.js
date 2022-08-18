@@ -1,18 +1,18 @@
 import { shallowMount } from '@vue/test-utils';
 import { pipelines } from 'test_fixtures/pipelines/pipelines.json';
-import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
-import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
+import PipelineStage from '~/pipelines/components/pipeline_mini_graph/pipeline_stage.vue';
+import PipelineStages from '~/pipelines/components/pipeline_mini_graph/pipeline_stages.vue';
 
 const mockStages = pipelines[0].details.stages;
 
-describe('Pipeline Mini Graph', () => {
+describe('Pipeline Stages', () => {
   let wrapper;
 
   const findPipelineStages = () => wrapper.findAll(PipelineStage);
   const findPipelineStagesAt = (i) => findPipelineStages().at(i);
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(PipelineMiniGraph, {
+    wrapper = shallowMount(PipelineStages, {
       propsData: {
         stages: mockStages,
         ...props,
