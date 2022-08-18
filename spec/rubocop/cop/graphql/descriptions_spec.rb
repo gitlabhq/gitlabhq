@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/descriptions'
 
 RSpec.describe RuboCop::Cop::Graphql::Descriptions do

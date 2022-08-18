@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/drop_table'
 
 RSpec.describe RuboCop::Cop::Migration::DropTable do

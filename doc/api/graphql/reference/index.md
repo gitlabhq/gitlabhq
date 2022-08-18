@@ -2790,6 +2790,7 @@ Input type: `ExternalAuditEventDestinationCreateInput`
 | <a id="mutationexternalauditeventdestinationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationexternalauditeventdestinationcreatedestinationurl"></a>`destinationUrl` | [`String!`](#string) | Destination URL. |
 | <a id="mutationexternalauditeventdestinationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+| <a id="mutationexternalauditeventdestinationcreateverificationtoken"></a>`verificationToken` | [`String`](#string) | Verification token. |
 
 #### Fields
 
@@ -4578,6 +4579,26 @@ Input type: `ScanExecutionPolicyCommitInput`
 | <a id="mutationscanexecutionpolicycommitbranch"></a>`branch` | [`String`](#string) | Name of the branch to which the policy changes are committed. |
 | <a id="mutationscanexecutionpolicycommitclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationscanexecutionpolicycommiterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.securityFindingCreateIssue`
+
+Input type: `SecurityFindingCreateIssueInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingcreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingcreateissueproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the issue to. |
+| <a id="mutationsecurityfindingcreateissueuuid"></a>`uuid` | [`String!`](#string) | UUID of the security finding to be used to create an issue. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingcreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingcreateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecurityfindingcreateissueissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 
 ### `Mutation.securityPolicyProjectAssign`
 

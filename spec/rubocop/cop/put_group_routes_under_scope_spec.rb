@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/put_group_routes_under_scope'
 
 RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope do

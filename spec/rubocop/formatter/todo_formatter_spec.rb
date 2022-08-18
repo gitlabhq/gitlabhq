@@ -2,8 +2,10 @@
 # rubocop:disable RSpec/VerifiedDoubles
 
 require 'fast_spec_helper'
-require 'stringio'
+
 require 'fileutils'
+require 'stringio'
+require 'tmpdir'
 
 require_relative '../../../rubocop/formatter/todo_formatter'
 require_relative '../../../rubocop/todo_dir'

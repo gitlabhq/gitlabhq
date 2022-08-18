@@ -36,7 +36,7 @@ Here are some problems with current issues usage and why we are looking into wor
   differences in common interactions that the user needs to hold a complicated mental
   model of how they each behave.
 - Issues are not extensible enough to support all of the emerging jobs they need to facilitate.
-- Codebase maintainability and feature development becomes a bigger challenge as we grow the Issue type.
+- Codebase maintainability and feature development becomes a bigger challenge as we grow the Issue type
   beyond its core role of issue tracking into supporting the different work item types and handling
   logic and structure differences.
 - New functionality is typically implemented with first class objects that import behavior from issues via

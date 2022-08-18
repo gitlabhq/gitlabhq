@@ -110,7 +110,7 @@ gitGraph
 ```
 
 This method is equivalent to `git merge --ff <source-branch>` for regular merges, and to
-`git merge -squash <source-branch>` for squash merges.
+`git merge --squash <source-branch>` for squash merges.
 
 When the fast-forward merge
 ([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting

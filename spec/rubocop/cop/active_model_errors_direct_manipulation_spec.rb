@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/active_model_errors_direct_manipulation'
 
 RSpec.describe RuboCop::Cop::ActiveModelErrorsDirectManipulation do

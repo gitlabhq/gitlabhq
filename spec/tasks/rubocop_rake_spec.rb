@@ -3,6 +3,7 @@
 
 require 'fast_spec_helper'
 require 'rake'
+require 'tmpdir'
 require 'fileutils'
 
 require_relative '../support/silence_stdout'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/performance/ar_exists_and_present_blank'
 
 RSpec.describe RuboCop::Cop::Performance::ARExistsAndPresentBlank do

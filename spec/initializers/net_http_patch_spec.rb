@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'net/http'
 
 require_relative '../../config/initializers/net_http_patch'
 

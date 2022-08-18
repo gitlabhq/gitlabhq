@@ -30075,9 +30075,6 @@ msgstr ""
 msgid "Profiles|Key"
 msgstr ""
 
-msgid "Profiles|Key becomes invalid on this date."
-msgstr ""
-
 msgid "Profiles|Key becomes invalid on this date. Maximum lifetime for SSH keys is %{max_ssh_key_lifetime} days"
 msgstr ""
 
@@ -30106,6 +30103,9 @@ msgid "Profiles|No file chosen."
 msgstr ""
 
 msgid "Profiles|Notification email"
+msgstr ""
+
+msgid "Profiles|Optional but recommended. If set, key becomes invalid on the specified date."
 msgstr ""
 
 msgid "Profiles|Organization"

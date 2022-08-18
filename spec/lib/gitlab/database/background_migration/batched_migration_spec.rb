@@ -77,6 +77,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '.ordered_by_created_at_desc' do
+    let!(:migration_1) { create(:batched_background_migration, created_at: Time.zone.now - 2) }
+    let!(:migration_2) { create(:batched_background_migration, created_at: Time.zone.now - 1) }
+    let!(:migration_3) { create(:batched_background_migration, created_at: Time.zone.now - 3) }
+
+    it 'returns batched migrations ordered by created_at (DESC)' do
+      expect(described_class.ordered_by_created_at_desc).to eq([migration_2, migration_1, migration_3])
+    end
+  end
+
   describe '.active_migration' do
     let(:connection) { Gitlab::Database.database_base_models[:main].connection }
     let!(:migration1) { create(:batched_background_migration, :finished) }

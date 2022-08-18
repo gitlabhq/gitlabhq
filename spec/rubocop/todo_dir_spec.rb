@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'fileutils'
+
 require 'active_support/inflector/inflections'
+require 'fileutils'
+require 'tmpdir'
 
 require_relative '../../rubocop/todo_dir'
 

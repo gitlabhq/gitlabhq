@@ -48,7 +48,7 @@ describe('ContentEditor', () => {
   it('triggers initialized event and provides contentEditor instance as event data', () => {
     createWrapper();
 
-    expect(contentEditor).not.toBeFalsy();
+    expect(contentEditor).not.toBe(false);
   });
 
   it('renders EditorContent component and provides tiptapEditor instance', () => {

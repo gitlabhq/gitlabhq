@@ -113,7 +113,7 @@ describe('WorkItemDetailModal component', () => {
     createComponent();
     findModal().vm.$emit('hide');
 
-    expect(wrapper.emitted('close')).toBeTruthy();
+    expect(wrapper.emitted('close')).toHaveLength(1);
   });
 
   it('hides the modal when WorkItemDetail emits `close` event', () => {

@@ -72,7 +72,7 @@ describe('duplicate dashboard modal', () => {
 
     await waitForPromises();
     expect(okEvent.preventDefault).toHaveBeenCalled();
-    expect(wrapper.emitted().dashboardDuplicated).toBeTruthy();
+    expect(wrapper.emitted('dashboardDuplicated')).toHaveLength(1);
     expect(wrapper.emitted().dashboardDuplicated[0]).toEqual([dashboardGitResponse[0]]);
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();

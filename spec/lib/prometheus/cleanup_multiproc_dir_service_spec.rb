@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
 
 RSpec.describe Prometheus::CleanupMultiprocDirService do
   describe '#execute' do

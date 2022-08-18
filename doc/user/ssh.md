@@ -254,6 +254,8 @@ A public and private key are generated.
 
 ## Add an SSH key to your GitLab account
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.3, default expiration date suggested in UI.
+
 To use SSH with GitLab, copy your public key to your GitLab account:
 
 1. Copy the contents of your public key file. You can do this manually or use a script.
@@ -289,7 +291,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    `ssh-ed25519`, `sk-ecdsa-sha2-nistp256@openssh.com`, or `sk-ssh-ed25519@openssh.com`, and may end with a comment.
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
-1. Optional. In the **Expires at** box, select an expiration date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36243) in GitLab 12.9.)
+1. Optional. Update **Expiration date** to modify the default expiration date.
    In:
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
      you from using the key. Administrators can view expiration dates and use them for

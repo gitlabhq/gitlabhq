@@ -61,7 +61,7 @@ module SystemNotes
     def change_assignee(assignee)
       body = assignee.nil? ? 'removed assignee' : "assigned to #{assignee.to_reference}"
 
-      issue_activity_counter.track_issue_assignee_changed_action(author: author) if noteable.is_a?(Issue)
+      issue_activity_counter.track_issue_assignee_changed_action(author: author, project: project) if noteable.is_a?(Issue)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
     end
@@ -93,7 +93,7 @@ module SystemNotes
 
       body = text_parts.join(' and ')
 
-      issue_activity_counter.track_issue_assignee_changed_action(author: author) if noteable.is_a?(Issue)
+      issue_activity_counter.track_issue_assignee_changed_action(author: author, project: project) if noteable.is_a?(Issue)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
     end
@@ -172,7 +172,7 @@ module SystemNotes
 
       body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 
-      issue_activity_counter.track_issue_title_changed_action(author: author) if noteable.is_a?(Issue)
+      issue_activity_counter.track_issue_title_changed_action(author: author, project: project) if noteable.is_a?(Issue)
       work_item_activity_counter.track_work_item_title_changed_action(author: author) if noteable.is_a?(WorkItem)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
@@ -210,7 +210,7 @@ module SystemNotes
     def change_description
       body = 'changed the description'
 
-      issue_activity_counter.track_issue_description_changed_action(author: author) if noteable.is_a?(Issue)
+      issue_activity_counter.track_issue_description_changed_action(author: author, project: project) if noteable.is_a?(Issue)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
     end
@@ -280,7 +280,7 @@ module SystemNotes
       status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
       body = "marked the checklist item **#{new_task.source}** as #{status_label}"
 
-      issue_activity_counter.track_issue_description_changed_action(author: author) if noteable.is_a?(Issue)
+      issue_activity_counter.track_issue_description_changed_action(author: author, project: project) if noteable.is_a?(Issue)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'task'))
     end
@@ -346,12 +346,12 @@ module SystemNotes
         body = 'made the issue confidential'
         action = 'confidential'
 
-        issue_activity_counter.track_issue_made_confidential_action(author: author) if noteable.is_a?(Issue)
+        issue_activity_counter.track_issue_made_confidential_action(author: author, project: project) if noteable.is_a?(Issue)
       else
         body = 'made the issue visible to everyone'
         action = 'visible'
 
-        issue_activity_counter.track_issue_made_visible_action(author: author) if noteable.is_a?(Issue)
+        issue_activity_counter.track_issue_made_visible_action(author: author, project: project) if noteable.is_a?(Issue)
       end
 
       create_note(NoteSummary.new(noteable, project, author, body, action: action))

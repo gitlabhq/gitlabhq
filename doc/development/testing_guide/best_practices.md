@@ -422,7 +422,7 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 ### System / Feature tests
 
 NOTE:
-Before writing a new system test, 
+Before writing a new system test,
 [please consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
@@ -711,6 +711,7 @@ should either:
 - Add `require_dependency 're2'` to files in your library that need `re2` gem,
   to make this requirement explicit. This approach is preferred.
 - Add it to the spec itself.
+- Use `rubocop_spec_helper` for RuboCop related specs.
 
 It takes around one second to load tests that are using `fast_spec_helper`
 instead of 30+ seconds in case of a regular `spec_helper`.
@@ -909,7 +910,7 @@ By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
 If a test queues Sidekiq jobs and need them to be processed, the
 `:sidekiq_inline` trait can be used.
 
-The `:sidekiq_might_not_need_inline` trait was added when 
+The `:sidekiq_might_not_need_inline` trait was added when
 [Sidekiq inline mode was changed to fake mode](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15479)
 to all the tests that needed Sidekiq to actually process jobs. Tests with
 this trait should be either fixed to not rely on Sidekiq processing jobs, or their

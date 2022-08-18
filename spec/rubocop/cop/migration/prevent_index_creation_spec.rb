@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/prevent_index_creation'
 
 RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do

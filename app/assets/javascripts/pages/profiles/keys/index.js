@@ -1,5 +1,6 @@
 import initConfirmModal from '~/confirm_modal';
 import AddSshKeyValidation from '~/profile/add_ssh_key_validation';
+import { initExpiresAtField } from '~/access_tokens/index';
 
 initConfirmModal();
 
@@ -23,3 +24,5 @@ function initSshKeyValidation() {
 }
 
 initSshKeyValidation();
+
+initExpiresAtField();

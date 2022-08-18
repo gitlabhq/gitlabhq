@@ -5,10 +5,13 @@ module QA
     module Profile
       class SSHKeys < Page::Base
         view 'app/views/profiles/keys/_form.html.haml' do
-          element :key_expiry_date_field
           element :key_title_field
           element :key_public_key_field
           element :add_key_button
+        end
+
+        view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
+          element :expiry_date_field
         end
 
         view 'app/helpers/ssh_keys_helper.rb' do
@@ -25,19 +28,21 @@ module QA
           fill_element(:key_title_field, title)
           # Expire in 2 days just in case the key is created just before midnight
           fill_expiry_date(Date.today + 2)
+          # Close the datepicker
+          find_element(:expiry_date_field).find('input').send_keys(:enter)
 
           click_element(:add_key_button)
         end
 
         def fill_expiry_date(date)
-          date = date.strftime('%m/%d/%Y') if date.is_a?(Date)
+          date = date.strftime('%Y-%m-%d') if date.is_a?(Date)
           begin
-            Date.strptime(date, '%m/%d/%Y')
+            Date.strptime(date, '%Y-%m-%d')
           rescue ArgumentError
-            raise "Expiry date must be in mm/dd/yyyy format"
+            raise "Expiry date must be in YYYY-MM-DD format"
           end
 
-          fill_element(:key_expiry_date_field, date)
+          fill_element(:expiry_date_field, date)
         end
 
         def remove_key(title)

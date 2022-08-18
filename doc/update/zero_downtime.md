@@ -492,9 +492,11 @@ You can only upgrade one minor release at a time.
 The order of steps is important. While following these steps, make
 sure you follow them in the right order, on the correct node.
 
+### Update the Geo primary site
+
 Log in to your **primary** node, executing the following:
 
-1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab.
+1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
@@ -512,7 +514,7 @@ Log in to your **primary** node, executing the following:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Update the GitLab package
+1. Update the GitLab package:
 
    ```shell
    # Debian/Ubuntu
@@ -522,18 +524,13 @@ Log in to your **primary** node, executing the following:
    sudo yum install gitlab-ee
    ```
 
-1. To get the database migrations and latest code in place, run
+1. To get the database migrations and latest code in place, run:
 
    ```shell
    sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
    ```
 
-1. Hot reload `puma` and `sidekiq` services
-
-   ```shell
-   sudo gitlab-ctl hup puma
-   sudo gitlab-ctl restart sidekiq
-   ```
+### Update the Geo secondary site
 
 On each **secondary** node, executing the following:
 
@@ -555,7 +552,7 @@ On each **secondary** node, executing the following:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Update the GitLab package
+1. Update the GitLab package:
 
    ```shell
    # Debian/Ubuntu
@@ -565,25 +562,19 @@ On each **secondary** node, executing the following:
    sudo yum install gitlab-ee
    ```
 
-1. To get the database migrations and latest code in place, run
+1. To get the database migrations and latest code in place, run:
 
    ```shell
    sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
    ```
 
-1. Hot reload `puma`, `sidekiq` and restart `geo-logcursor` services
-
-   ```shell
-   sudo gitlab-ctl hup puma
-   sudo gitlab-ctl restart sidekiq
-   sudo gitlab-ctl restart geo-logcursor
-   ```
-
-1. Run post-deployment database migrations, specific to the Geo database
+1. Run post-deployment database migrations, specific to the Geo database:
 
    ```shell
    sudo gitlab-rake db:migrate:geo
    ```
+
+### Finalize the update
 
 After all **secondary** nodes are updated, finalize
 the update on the **primary** node:
@@ -592,6 +583,16 @@ the update on the **primary** node:
 
    ```shell
    sudo gitlab-rake db:migrate
+   ```
+
+- After the update is finalized on the primary node, hot reload `puma` and 
+restart `sidekiq` and `geo-logcursor` services on **all primary and secondary**
+nodes:
+
+   ```shell
+   sudo gitlab-ctl hup puma
+   sudo gitlab-ctl restart sidekiq
+   sudo gitlab-ctl restart geo-logcursor
    ```
 
 After updating all nodes (both **primary** and all **secondaries**), check their status:

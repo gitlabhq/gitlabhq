@@ -15,7 +15,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   let(:time) { Time.zone.now }
 
   context 'for Issue title edit actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_TITLE_CHANGED }
 
       def track_action(params)
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue description edit actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_DESCRIPTION_CHANGED }
 
       def track_action(params)
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue assignee edit actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_ASSIGNEE_CHANGED }
 
       def track_action(params)
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue make confidential actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_MADE_CONFIDENTIAL }
 
       def track_action(params)
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue make visible actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_MADE_VISIBLE }
 
       def track_action(params)
@@ -285,15 +285,15 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   it 'can return the count of actions per user deduplicated', :aggregate_failures do
-    described_class.track_issue_title_changed_action(author: user1)
-    described_class.track_issue_description_changed_action(author: user1)
-    described_class.track_issue_assignee_changed_action(author: user1)
+    described_class.track_issue_title_changed_action(author: user1, project: project)
+    described_class.track_issue_description_changed_action(author: user1, project: project)
+    described_class.track_issue_assignee_changed_action(author: user1, project: project)
 
     travel_to(2.days.ago) do
-      described_class.track_issue_title_changed_action(author: user2)
-      described_class.track_issue_title_changed_action(author: user3)
-      described_class.track_issue_description_changed_action(author: user3)
-      described_class.track_issue_assignee_changed_action(author: user3)
+      described_class.track_issue_title_changed_action(author: user2, project: project)
+      described_class.track_issue_title_changed_action(author: user3, project: project)
+      described_class.track_issue_description_changed_action(author: user3, project: project)
+      described_class.track_issue_assignee_changed_action(author: user3, project: project)
     end
 
     events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(described_class::ISSUE_CATEGORY)

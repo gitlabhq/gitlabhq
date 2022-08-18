@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
+require 'tsort'
 
 RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
   describe '#initialize with non-Collection value' do

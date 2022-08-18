@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
 
 load File.expand_path('../../scripts/changed-feature-flags', __dir__)
 

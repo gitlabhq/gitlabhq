@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
 
 RSpec.describe Gitlab::Memory::Jemalloc do
   let(:outdir) { Dir.mktmpdir }

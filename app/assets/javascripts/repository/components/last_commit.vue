@@ -148,6 +148,7 @@ export default {
             :class="{ open: showDescription }"
             :title="__('Toggle commit description')"
             :aria-label="__('Toggle commit description')"
+            :selected="showDescription"
             class="text-expander gl-vertical-align-bottom!"
             icon="ellipsis_h"
             @click="toggleShowDescription"

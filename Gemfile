@@ -11,7 +11,7 @@ gem 'responders', '~> 3.0'
 
 gem 'sprockets', '~> 3.7.0'
 
-gem 'view_component', '~> 2.61'
+gem 'view_component', '~> 2.69.0'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.4.0'
@@ -272,7 +272,9 @@ gem 'babosa', '~> 1.0.4'
 gem 'loofah', '~> 2.18.0'
 
 # Working with license
-gem 'licensee', '~> 9.14.1'
+# Detects the open source license the repository includes
+# This version needs to be in sync with gitlab-org/gitaly
+gem 'licensee', '~> 9.15'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.7'

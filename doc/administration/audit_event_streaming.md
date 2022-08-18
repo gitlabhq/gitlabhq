@@ -17,6 +17,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a flag](feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
 > - Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
 > - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
+> - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
 
 Users can set a streaming destination for a top-level group to receive all audit events about the group, its subgroups, and
 projects as structured JSON.
@@ -58,6 +59,25 @@ To enable streaming and add a destination, users with the Owner role for a group
 ```graphql
 mutation {
   externalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest", groupPath: "my-group" } ) {
+    errors
+    externalAuditEventDestination {
+      id
+      destinationUrl
+      verificationToken
+      group {
+        name
+      }
+    }
+  }
+}
+```
+
+Group owners can also optionally specify their own verification token (instead of the default GitLab-generated one) using the GraphQL `auditEventsStreamingHeadersCreate`
+mutation. Verification token length must be within 16 to 24 characters and trailing whitespace are not trimmed. GitLab recommends setting a cryptographically random and unique value. For example:
+
+```graphql
+mutation {
+  externalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest", groupPath: "my-group", verificationToken: "unique-random-verification-token-here" } ) {
     errors
     externalAuditEventDestination {
       id
@@ -248,9 +268,9 @@ The header is deleted if the returned `errors` object is empty.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345424) in GitLab 14.8.
 
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
-token is generated when the event destination is created and cannot be changed.
+token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.
 
-Each streamed event contains a random alphanumeric identifier for the `X-Gitlab-Event-Streaming-Token` HTTP header that can be verified against
+Each streamed event contains the verification token in the `X-Gitlab-Event-Streaming-Token` HTTP header that can be verified against
 the destination's value when [listing streaming destinations](#list-streaming-destinations).
 
 ### Use the GitLab UI

@@ -40,23 +40,28 @@ module Gitlab
           track_unique_action(ISSUE_CREATED, author)
         end
 
-        def track_issue_title_changed_action(author:)
+        def track_issue_title_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_TITLE_CHANGED, author, project)
           track_unique_action(ISSUE_TITLE_CHANGED, author)
         end
 
-        def track_issue_description_changed_action(author:)
+        def track_issue_description_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_DESCRIPTION_CHANGED, author, project)
           track_unique_action(ISSUE_DESCRIPTION_CHANGED, author)
         end
 
-        def track_issue_assignee_changed_action(author:)
+        def track_issue_assignee_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_ASSIGNEE_CHANGED, author, project)
           track_unique_action(ISSUE_ASSIGNEE_CHANGED, author)
         end
 
-        def track_issue_made_confidential_action(author:)
+        def track_issue_made_confidential_action(author:, project:)
+          track_snowplow_action(ISSUE_MADE_CONFIDENTIAL, author, project)
           track_unique_action(ISSUE_MADE_CONFIDENTIAL, author)
         end
 
-        def track_issue_made_visible_action(author:)
+        def track_issue_made_visible_action(author:, project:)
+          track_snowplow_action(ISSUE_MADE_VISIBLE, author, project)
           track_unique_action(ISSUE_MADE_VISIBLE, author)
         end
 
