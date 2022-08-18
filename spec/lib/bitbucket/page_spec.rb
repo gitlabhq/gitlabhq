@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Bitbucket::Page do
   let(:response) { { 'values' => [{ 'username' => 'Ben' }], 'pagelen' => 2, 'next' => '' } }

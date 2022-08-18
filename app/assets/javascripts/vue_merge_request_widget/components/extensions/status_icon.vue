@@ -60,6 +60,7 @@ export default {
       :name="$options.EXTENSION_ICON_NAMES[iconName]"
       :size="size"
       :aria-label="iconAriaLabel"
+      :data-qa-selector="`status_${iconName}_icon`"
       class="gl-display-block"
     />
   </div>

@@ -9,10 +9,13 @@ describe('MR Widget', () => {
   let wrapper;
 
   const findStatusIcon = () => wrapper.findComponent(StatusIcon);
+  const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
+  const findToggleButton = () => wrapper.findByTestId('toggle-button');
 
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
       propsData: {
+        isCollapsible: false,
         loadingText: 'Loading widget',
         widgetName: 'MyWidget',
         value: {
@@ -111,7 +114,7 @@ describe('MR Widget', () => {
       jest.spyOn(Sentry, 'captureException').mockImplementation();
       createComponent({
         propsData: {
-          fetchCollapsedData: async () => Promise.reject(error),
+          fetchCollapsedData: () => Promise.reject(error),
         },
       });
       await waitForPromises();
@@ -125,7 +128,7 @@ describe('MR Widget', () => {
       createComponent({
         propsData: {
           summary: 'Hello world',
-          fetchCollapsedData: async () => Promise.resolve(),
+          fetchCollapsedData: () => Promise.resolve(),
         },
       });
 
@@ -137,7 +140,7 @@ describe('MR Widget', () => {
     it('displays the summary slot when provided', () => {
       createComponent({
         propsData: {
-          fetchCollapsedData: async () => Promise.resolve(),
+          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           summary: '<b>More complex summary</b>',
@@ -148,20 +151,35 @@ describe('MR Widget', () => {
         'More complex summary',
       );
     });
+  });
 
-    it('displays the content slot when provided', () => {
+  describe('handle collapse toggle', () => {
+    it('does not display the content slot until toggle is clicked', async () => {
       createComponent({
         propsData: {
-          fetchCollapsedData: async () => Promise.resolve(),
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           content: '<b>More complex content</b>',
         },
       });
 
-      expect(wrapper.findByTestId('widget-extension-collapsed-section').text()).toBe(
-        'More complex content',
-      );
+      expect(findExpandedSection().exists()).toBe(false);
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+      expect(findExpandedSection().text()).toBe('More complex content');
+    });
+
+    it('does not display the toggle button if isCollapsible is false', () => {
+      createComponent({
+        propsData: {
+          isCollapsible: false,
+          fetchCollapsedData: () => Promise.resolve(),
+        },
+      });
+
+      expect(findToggleButton().exists()).toBe(false);
     });
   });
 });

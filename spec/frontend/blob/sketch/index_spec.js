@@ -2,18 +2,6 @@ import SketchLoader from '~/blob/sketch';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 
-jest.mock('jszip', () => {
-  return {
-    loadAsync: jest.fn().mockResolvedValue({
-      files: {
-        'previews/preview.png': {
-          async: jest.fn().mockResolvedValue('foo'),
-        },
-      },
-    }),
-  };
-});
-
 describe('Sketch viewer', () => {
   beforeEach(() => {
     loadHTMLFixture('static/sketch_viewer.html');
@@ -25,7 +13,7 @@ describe('Sketch viewer', () => {
 
   describe('with error message', () => {
     beforeEach(() => {
-      jest.spyOn(SketchLoader.prototype, 'getZipFile').mockImplementation(
+      jest.spyOn(SketchLoader.prototype, 'getZipContents').mockImplementation(
         () =>
           new Promise((resolve, reject) => {
             reject();
@@ -50,7 +38,13 @@ describe('Sketch viewer', () => {
 
   describe('success', () => {
     beforeEach(() => {
-      jest.spyOn(SketchLoader.prototype, 'getZipFile').mockResolvedValue();
+      jest.spyOn(SketchLoader.prototype, 'getZipContents').mockResolvedValue({
+        files: {
+          'previews/preview.png': {
+            async: jest.fn().mockResolvedValue('foo'),
+          },
+        },
+      });
       // eslint-disable-next-line no-new
       new SketchLoader(document.getElementById('js-sketch-viewer'));
 

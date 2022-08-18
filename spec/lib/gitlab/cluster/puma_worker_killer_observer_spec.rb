@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Cluster::PumaWorkerKillerObserver do
   let(:counter) { Gitlab::Metrics::NullMetric.instance }

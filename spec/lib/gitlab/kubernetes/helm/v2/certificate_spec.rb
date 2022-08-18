@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Kubernetes::Helm::V2::Certificate do
   describe '.generate_root' do

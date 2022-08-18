@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Asciidoc::Html5Converter do
   describe 'convert AsciiDoc to HTML5' do

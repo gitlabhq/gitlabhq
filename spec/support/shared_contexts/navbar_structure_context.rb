@@ -144,6 +144,15 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:settings_for_maintainer_nav_item) do
+    {
+      nav_item: _('Settings'),
+      nav_sub_items: [
+        _('Repository')
+      ]
+    }
+  end
+
   let(:administration_nav_item) do
     {
       nav_item: _('Administration'),
@@ -159,13 +168,6 @@ RSpec.shared_context 'group navbar structure' do
       nav_sub_items: [
         _('Audit events')
       ]
-    }
-  end
-
-  let(:push_rules_nav_item) do
-    {
-      nav_item: _('Push Rules'),
-      nav_sub_items: []
     }
   end
 
@@ -210,7 +212,6 @@ RSpec.shared_context 'group navbar structure' do
         nav_sub_items: []
       },
       (security_and_compliance_nav_item if Gitlab.ee?),
-      (push_rules_nav_item if Gitlab.ee?),
       {
         nav_item: _('Kubernetes'),
         nav_sub_items: []

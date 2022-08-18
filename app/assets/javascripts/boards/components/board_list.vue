@@ -265,7 +265,7 @@ export default {
 <template>
   <div
     v-show="!list.collapsed"
-    class="board-list-component gl-relative gl-h-full gl-display-flex gl-flex-direction-column"
+    class="board-list-component gl-relative gl-h-full gl-display-flex gl-flex-direction-column gl-min-h-0"
     data-qa-selector="board_list_cards_area"
   >
     <div
@@ -287,7 +287,7 @@ export default {
       :data-board-type="list.listType"
       :class="{ 'bg-danger-100': boardItemsSizeExceedsMax }"
       draggable=".board-card"
-      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-3 gl-pt-0"
+      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-3 gl-pt-0 gl-overflow-y-auto gl-overflow-x-hidden"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"
@@ -303,7 +303,11 @@ export default {
         :disabled="disabled"
       />
       <gl-intersection-observer @appear="onReachingListBottom">
-        <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">
+        <li
+          v-if="showCount"
+          class="board-list-count gl-text-center gl-text-secondary gl-py-4"
+          data-issue-id="-1"
+        >
           <gl-loading-icon
             v-if="loadingMore"
             size="sm"

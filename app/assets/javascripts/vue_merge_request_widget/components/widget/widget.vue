@@ -1,7 +1,8 @@
 <script>
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import StatusIcon from '../extensions/status_icon.vue';
 import { EXTENSION_ICON_NAMES } from '../../constants';
@@ -11,6 +12,10 @@ const FETCH_TYPE_COLLAPSED = 'collapsed';
 export default {
   components: {
     StatusIcon,
+    GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     /**
@@ -63,6 +68,10 @@ export default {
       required: false,
       validator: (value) => Object.keys(EXTENSION_ICON_NAMES).indexOf(value) > -1,
     },
+    isCollapsible: {
+      type: Boolean,
+      required: true,
+    },
     widgetName: {
       type: String,
       required: true,
@@ -70,6 +79,7 @@ export default {
   },
   data() {
     return {
+      isCollapsed: true,
       isLoading: false,
       error: null,
     };
@@ -91,6 +101,12 @@ export default {
     this.isLoading = false;
   },
   methods: {
+    collapseButtonLabel() {
+      return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
+    },
+    toggleCollapsed() {
+      this.isCollapsed = !this.isCollapsed;
+    },
     fetch(handler, dataType) {
       const requests = this.multiPolling ? handler() : [handler];
 
@@ -145,10 +161,26 @@ export default {
           <slot name="summary">{{ isLoading ? loadingText : summary }}</slot>
         </div>
         <!-- actions will go here -->
-        <!-- toggle button will go here -->
+        <div
+          v-if="isCollapsible"
+          class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
+        >
+          <gl-button
+            v-gl-tooltip
+            :title="collapseButtonLabel"
+            :aria-expanded="`${!isCollapsed}`"
+            :aria-label="collapseButtonLabel"
+            :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
+            category="tertiary"
+            data-testid="toggle-button"
+            size="small"
+            @click="toggleCollapsed"
+          />
+        </div>
       </div>
     </div>
     <div
+      v-if="!isCollapsed"
       class="mr-widget-grouped-section gl-relative"
       data-testid="widget-extension-collapsed-section"
     >

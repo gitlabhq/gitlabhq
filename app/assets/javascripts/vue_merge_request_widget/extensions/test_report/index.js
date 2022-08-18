@@ -32,7 +32,7 @@ export default {
         });
       });
 
-      return fileNames.join(' ');
+      return fileNames.join(' ').trim();
     },
     summary(data) {
       if (data.parsingInProgress) {

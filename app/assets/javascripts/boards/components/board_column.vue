@@ -76,7 +76,7 @@ export default {
   <div
     :class="{
       'is-draggable': isListDraggable,
-      'is-collapsed': list.collapsed,
+      'is-collapsed gl-w-10': list.collapsed,
       'board-type-assignee': list.listType === 'assignee',
     }"
     :data-list-id="list.id"
@@ -84,7 +84,7 @@ export default {
     data-qa-selector="board_list"
   >
     <div
-      class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
+      class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
       :class="{ 'board-column-highlighted': highlighted }"
     >
       <board-list-header :list="list" :disabled="disabled" />

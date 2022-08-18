@@ -14,6 +14,7 @@ RSpec.describe 'Group navbar' do
 
   before do
     insert_package_nav(_('Kubernetes'))
+    insert_after_nav_item(_('Analytics'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
 
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })

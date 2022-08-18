@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Bitbucket::Paginator do
   let(:last_page) { double(:page, next?: false, items: ['item_2']) }

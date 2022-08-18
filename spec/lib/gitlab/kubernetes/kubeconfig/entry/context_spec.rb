@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Kubernetes::Kubeconfig::Entry::Context do
   describe '#to_h' do

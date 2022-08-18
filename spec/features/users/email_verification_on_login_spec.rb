@@ -150,7 +150,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting 
           code = expect_instructions_email_and_extract_code
 
           # Wait for the code to expire before verifying
-          travel VerifiesWithEmail::TOKEN_VALID_FOR_MINUTES.minutes + 1.second
+          travel Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes + 1.second
           verify_code(code)
 
           # Expect an error message
@@ -268,7 +268,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting 
           verify_code(code)
           expect(page).to have_content('The code is incorrect. Enter it again, or resend a new code.')
 
-          travel VerifiesWithEmail::TOKEN_VALID_FOR_MINUTES.minutes + 1.second
+          travel Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes + 1.second
 
           verify_code(new_code)
           expect(page).to have_content('The code has expired. Resend a new code and try again.')
@@ -335,7 +335,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting 
     mail = find_email_for(user)
     expect(mail.to).to match_array([user.email])
     expect(mail.subject).to eq('Verify your identity')
-    code = mail.body.parts.first.to_s[/\d{#{VerifiesWithEmail::TOKEN_LENGTH}}/o]
+    code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
     reset_delivered_emails!
     code
   end

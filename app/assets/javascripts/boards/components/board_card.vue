@@ -81,10 +81,10 @@ export default {
     data-qa-selector="board_card"
     :class="[
       {
-        'multi-select': multiSelectVisible,
+        'multi-select gl-bg-blue-50 gl-border-blue-200': multiSelectVisible,
         'gl-cursor-grab': isDraggable,
         'is-disabled': isDisabled,
-        'is-active': isActive,
+        'is-active gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
       },
       colorClass,
@@ -95,7 +95,7 @@ export default {
     :data-item-path="item.referencePath"
     :style="cardStyle"
     data-testid="board_card"
-    class="board-card gl-p-5 gl-rounded-base"
+    class="board-card gl-p-5 gl-rounded-base gl-line-height-normal gl-relative gl-mb-3"
     @click="toggleIssue($event)"
   >
     <board-card-inner :list="list" :item="item" :update-filters="true" :index="index" />

@@ -42,7 +42,9 @@ After the Harbor integration is activated:
 - The global variables `$HARBOR_USERNAME`, `$HARBOR_HOST`, `$HARBOR_OCI`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
 - The project-level integration settings override the group-level integration settings.
 
-## Secure your requests to the Harbor APIs
+## Security considerations
+
+### Secure your requests to the Harbor APIs
 
 For each API request through the Harbor integration, the credentials for your connection to the Harbor API use
 the `username:password` combination. The following are suggestions for safe use:
@@ -50,6 +52,12 @@ the `username:password` combination. The following are suggestions for safe use:
 - Use TLS on the Harbor APIs you connect to.
 - Follow the principle of least privilege (for access on Harbor) with your credentials.
 - Have a rotation policy on your credentials.
+
+### CI/CD variable security
+
+Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including
+`$HARBOR_PASSWORD`, and send them to a third-party server. For more details, see
+[CI/CD variable security](../../../ci/variables/index.md#cicd-variable-security).
 
 ## Examples of Harbor variables in CI/CD
 

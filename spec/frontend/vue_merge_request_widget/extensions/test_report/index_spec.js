@@ -15,6 +15,7 @@ import { failedReport } from 'jest/reports/mock_data/mock_data';
 import mixedResultsTestReports from 'jest/reports/mock_data/new_and_fixed_failures_report.json';
 import newErrorsTestReports from 'jest/reports/mock_data/new_errors_report.json';
 import newFailedTestReports from 'jest/reports/mock_data/new_failures_report.json';
+import newFailedTestWithNullFilesReport from 'jest/reports/mock_data/new_failures_with_null_files_report.json';
 import successTestReports from 'jest/reports/mock_data/no_failures_report.json';
 import resolvedFailures from 'jest/reports/mock_data/resolved_failures.json';
 import recentFailures from 'jest/reports/mock_data/recent_failures_report.json';
@@ -155,6 +156,15 @@ describe('Test report extension', () => {
       expect(findCopyFailedSpecsBtn().attributes('data-clipboard-text')).toBe(
         'spec/file_1.rb spec/file_2.rb',
       );
+    });
+
+    it('hides copy failed tests button when endpoint returns null files', async () => {
+      mockApi(httpStatusCodes.OK, newFailedTestWithNullFilesReport);
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findCopyFailedSpecsBtn().exists()).toBe(false);
     });
 
     it('copy failed tests button updates tooltip text when clicked', async () => {

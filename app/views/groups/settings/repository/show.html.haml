@@ -2,7 +2,11 @@
 - page_title _('Repository')
 - @content_class = "limit-container-width" unless fluid_layout
 
-- deploy_token_description = s_('DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group.')
+- if can?(current_user, :admin_group, @group)
+  - deploy_token_description = s_('DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group.')
 
-= render "shared/deploy_tokens/index", group_or_project: @group, description: deploy_token_description
-= render "default_branch", group: @group
+  = render "shared/deploy_tokens/index", group_or_project: @group, description: deploy_token_description
+  = render "default_branch", group: @group
+
+- if can?(current_user, :change_push_rules, @group)
+  = render "push_rules"

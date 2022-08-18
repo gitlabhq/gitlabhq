@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::WordDiff::Segments::DiffHunk do
   subject(:diff_hunk) { described_class.new(line) }

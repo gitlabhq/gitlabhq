@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::Conflict::File do
   let(:conflict) { { ancestor: { path: 'ancestor' }, theirs: { path: 'foo', mode: 33188 }, ours: { path: 'foo', mode: 33188 } } }

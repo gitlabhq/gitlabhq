@@ -27,6 +27,29 @@ included_attributes:
     - :name
   namespace_settings:
     - :prevent_sharing_groups_outside_hierarchy
+  iterations_cadence: &iterations_cadence_definition
+    - :group_id
+    - :created_at
+    - :updated_at
+    - :start_date
+    - :last_run_date
+    - :duration_in_weeks
+    - :iterations_in_advance
+    - :active
+    - :automatic
+    - :roll_over
+    - :title
+    - :description
+  iterations_cadences: *iterations_cadence_definition
+  iteration: &iteration_definition
+    - :iid
+    - :created_at
+    - :updated_at
+    - :start_date
+    - :due_date
+    - :group_id
+    - :description
+  iterations: *iteration_definition
 
 excluded_attributes:
   group:
@@ -44,6 +67,19 @@ excluded_attributes:
     - :max_pages_size
   epics:
     - :state_id
+  iterations_cadence: &iterations_cadence_definition
+    - :id
+  iterations_cadences: *iterations_cadence_definition
+  iteration: &iteration_excluded_definition
+    - :id
+    - :title
+    - :title_html
+    - :project_id
+    - :description_html
+    - :cached_markdown_version
+    - :iterations_cadence_id
+    - :sequence
+  iterations: *iteration_excluded_definition
 
 methods:
   labels:
@@ -92,3 +128,5 @@ ee:
           - milestone:
             - events:
               - :push_event_payload
+      - iterations_cadences:
+        - :iterations

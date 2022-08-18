@@ -95,7 +95,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue label changed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_LABEL_CHANGED }
 
       def track_action(params)
@@ -104,8 +104,18 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue label milestone actions' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
+      let(:action) { described_class::ISSUE_MILESTONE_CHANGED }
+
+      def track_action(params)
+        described_class.track_issue_milestone_changed_action(**params)
+      end
+    end
+  end
+
   context 'for Issue cross-referenced actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_CROSS_REFERENCED }
 
       def track_action(params)
@@ -215,7 +225,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue due date changed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_DUE_DATE_CHANGED }
 
       def track_action(params)
@@ -225,7 +235,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue time estimate changed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_TIME_ESTIMATE_CHANGED }
 
       def track_action(params)
@@ -235,7 +245,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue time spent changed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_TIME_SPENT_CHANGED }
 
       def track_action(params)

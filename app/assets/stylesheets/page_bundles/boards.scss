@@ -5,34 +5,6 @@
   pointer-events: none;
 }
 
-.dropdown-projects {
-  .dropdown-content {
-    max-height: 200px;
-  }
-}
-
-.issue-board-dropdown-content {
-  margin: 0;
-  padding: $gl-padding-4 $gl-padding $gl-padding;
-  border-bottom: 0;
-  color: var(--gray-500, $gray-500);
-}
-
-[data-page$='epic_boards:index'],
-[data-page$='epic_boards:show'],
-.issue-boards-page {
-  .content-wrapper {
-    padding-bottom: 0;
-  }
-}
-
-[data-page$='epic_boards:index'],
-[data-page$='epic_boards:show'] {
-  .filtered-search-wrapper {
-    display: none !important;
-  }
-}
-
 .boards-app {
   @include media-breakpoint-up(sm) {
     transition: width $gl-transition-duration-medium;
@@ -87,33 +59,7 @@
     width: 400px;
   }
 
-  .board-title-caret {
-    border-radius: $border-radius-default;
-    line-height: $gl-spacing-scale-5;
-
-    &.btn svg {
-      top: 0;
-    }
-
-    &:hover {
-      background-color: var(--gray-50, $gray-50);
-      transition: background-color 0.1s linear;
-    }
-  }
-
-  &:not(.is-collapsed) {
-    .board-title-caret {
-      margin-right: $gl-padding-4;
-    }
-  }
-
   &.is-collapsed {
-    width: 50px;
-
-    .board-title-caret {
-      margin-top: 1px;
-    }
-
     .board-title-text > span,
     .issue-count-badge > span {
       height: 16px;
@@ -124,15 +70,9 @@
       // rotated element has square dimensions so it won't overlap with its siblings.
       margin: calc(50% - 8px) 0;
 
-      transform: rotate(90deg);
       transform-origin: center;
     }
   }
-}
-
-.board-inner {
-  font-size: $issue-boards-font-size;
-  background: var(--gray-50, $gray-50);
 }
 
 // to highlight columns we have animated pulse of box-shadow
@@ -169,42 +109,12 @@
   }
 }
 
-.board-title {
-  height: 3rem;
-
-  .max-issue-size::before {
-    content: '/';
-  }
-}
-
-.board-list-component {
-  min-height: 0; // firefox fix
-}
-
-.board-list {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.board-list-loading {
-  margin-top: 10px;
-  font-size: (26px / $issue-boards-font-size) * 1em;
-}
-
 .board-card {
   background: var(--gray-10, $white);
   box-shadow: 0 1px 2px rgba(var(--black, $black), 0.1);
-  line-height: $gl-padding;
-  list-style: none;
-  position: relative;
 
-  &:not(:last-child) {
-    margin-bottom: $gl-padding-8;
-  }
-
-  &.is-active,
-  &.is-active .board-card-assignee:hover a {
-    background-color: var(--blue-50, $blue-50);
+  &:last-child {
+    @include gl-mb-0;
   }
 
   .move-to-position {
@@ -215,34 +125,6 @@
     visibility: visible;
   }
 
-  &.multi-select {
-    border-color: var(--blue-200, $blue-200);
-    background-color: var(--blue-50, $blue-50);
-  }
-
-  &.sortable-chosen {
-    box-shadow: 0 2px 4px 0 rgba($black, 0.16);
-  }
-
-  .gl-label {
-    margin-top: 4px;
-    margin-right: 4px;
-  }
-
-  .confidential-icon,
-  .hidden-icon {
-    color: var(--orange-500, $orange-500);
-    cursor: help;
-  }
-
-  .issue-blocked-icon {
-    color: var(--red-500, $red-500);
-  }
-
-  @include media-breakpoint-down(md) {
-    padding: $gl-padding-8;
-  }
-
   @include media-breakpoint-down(sm) {
     .move-to-position {
       visibility: visible;
@@ -251,36 +133,21 @@
 }
 
 .board-card-title {
-  @include overflow-break-word();
-  font-size: 1em;
   width: 95%;
 
   a {
-    color: var(--gray-900, $gray-900);
-  }
-
-  @include media-breakpoint-down(md) {
-    font-size: $label-font-size;
+    @include media-breakpoint-down(md) {
+      font-size: $gl-font-size-sm;
+    }
   }
 }
 
 .board-card-assignee {
-  margin-top: -$gl-padding-4;
-  margin-bottom: -$gl-padding-4;
-
   .avatar-counter {
-    vertical-align: middle;
-    line-height: $gl-padding-24;
     min-width: $gl-padding-24;
     height: $gl-padding-24;
     border-radius: $gl-padding-24;
-    background-color: var(--gray-400, $gray-400);
     font-size: $gl-font-size-xs;
-    cursor: help;
-    font-weight: $gl-font-weight-bold;
-    margin-left: -$gl-padding-4;
-    border: 0;
-    padding: 0 $gl-padding-4;
 
     @include media-breakpoint-down(md) {
       min-width: auto;
@@ -290,12 +157,8 @@
     }
   }
 
-  img {
-    vertical-align: top;
-  }
-
   .user-avatar-link:not(:only-child) {
-    margin-left: -$gl-padding-4;
+    margin-left: -$gl-padding;
 
     &:nth-of-type(1) {
       z-index: 2;
@@ -314,14 +177,12 @@
   }
 
   @include media-breakpoint-down(md) {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
 }
 
 .board-card-number {
   font-size: $gl-font-size-xs;
-  color: var(--gray-500, $gray-500);
 
   @include media-breakpoint-up(md) {
     font-size: $label-font-size;
@@ -329,74 +190,15 @@
 }
 
 .board-list-count {
-  padding: 10px 0;
-  color: var(--gray-500, $gray-500);
   font-size: 13px;
 }
 
-.board-new-issue-form {
-  z-index: 4;
-  margin: 5px;
-}
-
-.right-sidebar.boards-sidebar {
-  .gutter-toggle {
-    bottom: 15px;
-    width: 22px;
-    padding-left: $gl-padding-32;
-
-    svg {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      margin-top: (-11px / 2);
-      height: $gl-font-size-12;
-      width: $gl-font-size-12;
-    }
-  }
-
-  .issuable-header-text {
-    @include overflow-break-word();
-    padding-right: 35px;
-  }
-}
-
-.right-sidebar.right-sidebar-expanded {
-  &.boards-sidebar-slide-enter-active,
-  &.boards-sidebar-slide-leave-active {
-    transition: width $gl-transition-duration-medium, padding $gl-transition-duration-medium;
-  }
-
-  &.boards-sidebar-slide-enter,
-  &.boards-sidebar-slide-leave-active {
-    width: 0;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
 .board-card-info {
-  color: var(--gray-500, $gray-500);
-  white-space: nowrap;
-  margin-right: $gl-padding-8;
-
-  &:not(.board-card-weight) {
-    cursor: help;
-  }
-
-  &.board-card-weight {
-    color: var(--gray-500, $gray-500);
-    cursor: pointer;
-
-    &:hover {
-      color: initial;
-      text-decoration: underline;
-    }
+  &.board-card-weight:hover {
+    color: initial;
   }
 
   .board-card-info-icon {
-    color: var(--gray-500, $gray-500);
-    margin-right: $gl-padding-4;
     vertical-align: text-top;
   }
 
@@ -407,15 +209,6 @@
 
 .board-item-path.js-show-tooltip {
   cursor: help;
-}
-
-.board-labels-toggle-wrapper,
-.board-swimlanes-toggle-wrapper {
-  /**
-   * Make the wrapper the same height as a button so it aligns properly when the
-   * filtered-search-box input element increases in size on Linux smaller breakpoints
-   */
-  height: $input-height;
 }
 
 .issue-boards-content:not(.breadcrumbs) {
@@ -437,7 +230,6 @@
 
   .boards-list {
     height: calc(100vh - #{$issue-boards-filter-height});
-    overflow-x: scroll;
   }
 
   .boards-sidebar {
@@ -448,24 +240,12 @@
 
 .boards-sidebar {
   .sidebar-collapsed-icon {
-    display: none;
-  }
-
-  .gl-drawer-header {
-    align-items: flex-start;
-  }
-
-  .labels-select-wrapper.is-embedded .labels-select-wrapper.is-embedded {
-    width: auto;
+    @include gl-display-none;
   }
 
   .show.dropdown .dropdown-menu {
     @include gl-w-full;
   }
-}
-
-.board-header-collapsed-info-icon:hover {
-  color: var(--gray-900, $gray-900);
 }
 
 .board-card-skeleton {

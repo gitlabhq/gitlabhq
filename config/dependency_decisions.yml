@@ -145,12 +145,6 @@
     :versions: []
     :when: 2017-04-05 10:38:46.275721000 Z
 - - :approve
-  - jszip-utils
-  - :who: Phil Hughes
-    :why: https://github.com/Stuk/jszip-utils/blob/master/LICENSE.markdown
-    :versions: []
-    :when: 2017-04-05 10:39:32.676232000 Z
-- - :approve
   - pako
   - :who: Phil Hughes
     :why: https://github.com/nodeca/pako/blob/master/LICENSE

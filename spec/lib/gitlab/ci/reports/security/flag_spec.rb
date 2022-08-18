@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::Security::Flag do
   subject(:security_flag) { described_class.new(type: 'flagged-as-likely-false-positive', origin: 'post analyzer X', description: 'static string to sink') }

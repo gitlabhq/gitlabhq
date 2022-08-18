@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 From October 19, 2022, namespaces in GitLab.com on the Free tier
 will be limited to five (5) members per [namespace](namespace/index.md).
-This limit applies to top-level groups and personal namespaces.
-
-In a personal namespace, the limit applies across all projects in your personal
-namespace.
+This limit applies to top-level private groups.
 
 On the transition date, if your namespace has six or more unique members:
 
@@ -44,12 +41,6 @@ Prerequisite:
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. To view all members, select the **Seats** tab.
 1. To remove a member, select **Remove user**.
-
-NOTE:
-The **Usage Quotas** page is not available for personal namespaces. You can
-view and [remove members](project/members/index.md#remove-a-member-from-a-project)
-in each project instead. The five user limit includes all
-unique members across all projects in your personal namespace.
 
 If you need more time to manage your members, or to try GitLab features
 with a team of more than five members, you can [start a trial](https://about.gitlab.com/free-trial/).

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::GitmodulesParser do
   it 'parses a .gitmodules file correctly' do

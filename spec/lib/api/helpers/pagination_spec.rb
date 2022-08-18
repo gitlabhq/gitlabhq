@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe API::Helpers::Pagination do
   subject { Class.new.include(described_class).new }

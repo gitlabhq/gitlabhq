@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::ExposeAttribute do
   it 'defines a getter method that returns an attribute value' do

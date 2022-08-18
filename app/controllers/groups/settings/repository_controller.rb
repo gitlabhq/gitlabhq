@@ -5,8 +5,9 @@ module Groups
     class RepositoryController < Groups::ApplicationController
       layout 'group_settings'
       skip_cross_project_access_check :show
-      before_action :authorize_create_deploy_token!
-      before_action :define_deploy_token_variables
+      before_action :authorize_create_deploy_token!, only: :create_deploy_token
+      before_action :authorize_access!, only: :show
+      before_action :define_deploy_token_variables, if: -> { can?(current_user, :create_deploy_token, @group) }
       before_action do
         push_frontend_feature_flag(:ajax_new_deploy_token, @group)
       end
@@ -43,6 +44,10 @@ module Groups
 
       private
 
+      def authorize_access!
+        authorize_admin_group!
+      end
+
       def define_deploy_token_variables
         @deploy_tokens = @group.deploy_tokens.active
 
@@ -55,3 +60,5 @@ module Groups
     end
   end
 end
+
+Groups::Settings::RepositoryController.prepend_mod

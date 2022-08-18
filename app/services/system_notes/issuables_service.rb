@@ -495,7 +495,9 @@ module SystemNotes
     end
 
     def track_cross_reference_action
-      issue_activity_counter.track_issue_cross_referenced_action(author: author) if noteable.is_a?(Issue)
+      return unless noteable.is_a?(Issue)
+
+      issue_activity_counter.track_issue_cross_referenced_action(author: author, project: project || noteable.project)
     end
 
     def hierarchy_note_params(action, parent, child)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::MergeRequests::Mergeability::ResultsStore do
   subject(:results_store) { described_class.new(merge_request: merge_request, interface: interface) }

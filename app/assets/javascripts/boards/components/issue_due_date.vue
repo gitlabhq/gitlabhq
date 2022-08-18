@@ -85,7 +85,11 @@ export default {
 
 <template>
   <span>
-    <span ref="issueDueDate" :class="cssClass" class="board-card-info card-number">
+    <span
+      ref="issueDueDate"
+      :class="cssClass"
+      class="board-card-info gl-mr-3 gl-text-secondary gl-cursor-help"
+    >
       <gl-icon
         :class="{ 'text-danger': isPastDue }"
         class="board-card-info-icon gl-mr-2"

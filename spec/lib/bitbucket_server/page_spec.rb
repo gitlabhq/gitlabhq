@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe BitbucketServer::Page do
   let(:response) { { 'values' => [{ 'description' => 'Test' }], 'isLastPage' => false, 'nextPageStart' => 2 } }

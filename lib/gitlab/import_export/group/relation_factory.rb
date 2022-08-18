@@ -8,7 +8,8 @@ module Gitlab
           labels:     :group_labels,
           priorities: :label_priorities,
           label:      :group_label,
-          parent:     :epic
+          parent:     :epic,
+          iterations_cadences: 'Iterations::Cadence'
         }.freeze
 
         EXISTING_OBJECT_RELATIONS = %i[

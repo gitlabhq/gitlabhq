@@ -109,6 +109,7 @@ export default {
             :modal-id="modalId"
             :level="3"
             data-testid="child-content"
+            data-qa-selector="child_content"
             @clickedAction="onClickedAction"
           />
         </li>

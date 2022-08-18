@@ -31980,9 +31980,6 @@ msgstr ""
 msgid "Push project from command line"
 msgstr ""
 
-msgid "Push rules"
-msgstr ""
-
 msgid "Push the target branch up to GitLab."
 msgstr ""
 

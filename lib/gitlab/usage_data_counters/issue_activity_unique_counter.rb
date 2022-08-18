@@ -68,15 +68,18 @@ module Gitlab
           track_unique_action(ISSUE_REOPENED, author)
         end
 
-        def track_issue_label_changed_action(author:)
+        def track_issue_label_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_LABEL_CHANGED, author, project)
           track_unique_action(ISSUE_LABEL_CHANGED, author)
         end
 
-        def track_issue_milestone_changed_action(author:)
+        def track_issue_milestone_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_MILESTONE_CHANGED, author, project)
           track_unique_action(ISSUE_MILESTONE_CHANGED, author)
         end
 
-        def track_issue_cross_referenced_action(author:)
+        def track_issue_cross_referenced_action(author:, project:)
+          track_snowplow_action(ISSUE_CROSS_REFERENCED, author, project)
           track_unique_action(ISSUE_CROSS_REFERENCED, author)
         end
 
@@ -116,15 +119,18 @@ module Gitlab
           track_unique_action(ISSUE_DESIGNS_REMOVED, author)
         end
 
-        def track_issue_due_date_changed_action(author:)
+        def track_issue_due_date_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_DUE_DATE_CHANGED, author, project)
           track_unique_action(ISSUE_DUE_DATE_CHANGED, author)
         end
 
-        def track_issue_time_estimate_changed_action(author:)
+        def track_issue_time_estimate_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_TIME_ESTIMATE_CHANGED, author, project)
           track_unique_action(ISSUE_TIME_ESTIMATE_CHANGED, author)
         end
 
-        def track_issue_time_spent_changed_action(author:)
+        def track_issue_time_spent_changed_action(author:, project:)
+          track_snowplow_action(ISSUE_TIME_SPENT_CHANGED, author, project)
           track_unique_action(ISSUE_TIME_SPENT_CHANGED, author)
         end
 

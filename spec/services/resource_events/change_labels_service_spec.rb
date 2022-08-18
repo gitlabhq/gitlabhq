@@ -98,11 +98,19 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
       let(:added)   { [labels[0]] }
       let(:removed) { [labels[1]] }
 
+      subject(:counter_class) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter }
+
       context 'when resource is an issue' do
         it 'tracks changed labels' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_label_changed_action)
+          expect(counter_class).to receive(:track_issue_label_changed_action)
 
           change_labels
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL_CHANGED }
+          let(:user) { author }
+          subject(:service_action) { change_labels }
         end
       end
 
@@ -110,8 +118,13 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
         let(:resource) { create(:merge_request, source_project: project) }
 
         it 'does not track changed labels' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
-            .not_to receive(:track_issue_label_changed_action)
+          expect(counter_class).not_to receive(:track_issue_label_changed_action)
+
+          change_labels
+        end
+
+        it 'does not emit snowplow event', :snowplow do
+          expect_no_snowplow_event
 
           change_labels
         end

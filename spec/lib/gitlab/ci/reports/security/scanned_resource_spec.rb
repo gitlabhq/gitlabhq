@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::Security::ScannedResource do
   let(:url) { 'http://example.com:3001/1?foo=bar' }

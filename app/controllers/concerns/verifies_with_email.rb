@@ -7,9 +7,6 @@ module VerifiesWithEmail
   extend ActiveSupport::Concern
   include ActionView::Helpers::DateHelper
 
-  TOKEN_LENGTH = 6
-  TOKEN_VALID_FOR_MINUTES = 60
-
   included do
     prepend_before_action :verify_with_email, only: :create, unless: -> { two_factor_enabled? }
   end
@@ -76,7 +73,8 @@ module VerifiesWithEmail
   def send_verification_instructions(user)
     return if send_rate_limited?(user)
 
-    raw_token, encrypted_token = generate_token
+    service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token)
+    raw_token, encrypted_token = service.execute
     user.unlock_token = encrypted_token
     user.lock_access!({ send_instructions: false })
     send_verification_instructions_email(user, raw_token)
@@ -88,27 +86,20 @@ module VerifiesWithEmail
     Notify.verification_instructions_email(
       user.id,
       token: token,
-      expires_in: TOKEN_VALID_FOR_MINUTES).deliver_later
+      expires_in: Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES).deliver_later
 
     log_verification(user, :instructions_sent)
   end
 
   def verify_token(user, token)
-    return handle_verification_failure(user, :rate_limited) if verification_rate_limited?(user)
-    return handle_verification_failure(user, :invalid) unless valid_token?(user, token)
-    return handle_verification_failure(user, :expired) if expired_token?(user)
+    service = Users::EmailVerification::ValidateTokenService.new(attr: :unlock_token, user: user, token: token)
+    result = service.execute
 
-    handle_verification_success(user)
-  end
-
-  def generate_token
-    raw_token = SecureRandom.random_number(10**TOKEN_LENGTH).to_s.rjust(TOKEN_LENGTH, '0')
-    encrypted_token = digest_token(raw_token)
-    [raw_token, encrypted_token]
-  end
-
-  def digest_token(token)
-    Devise.token_generator.digest(User, :unlock_token, token)
+    if result[:status] == :success
+      handle_verification_success(user)
+    else
+      handle_verification_failure(user, result[:reason], result[:message])
+    end
   end
 
   def render_sign_in_rate_limited
@@ -122,42 +113,15 @@ module VerifiesWithEmail
     distance_of_time_in_words(interval_in_seconds)
   end
 
-  def verification_rate_limited?(user)
-    Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: user.unlock_token)
-  end
-
   def send_rate_limited?(user)
     Gitlab::ApplicationRateLimiter.throttled?(:email_verification_code_send, scope: user)
   end
 
-  def expired_token?(user)
-    user.locked_at < (Time.current - TOKEN_VALID_FOR_MINUTES.minutes)
-  end
-
-  def valid_token?(user, token)
-    user.unlock_token == digest_token(token)
-  end
-
-  def handle_verification_failure(user, reason)
-    message = case reason
-              when :rate_limited
-                s_("IdentityVerification|You've reached the maximum amount of tries. "\
-                   'Wait %{interval} or resend a new code and try again.') % { interval: email_verification_interval }
-              when :expired
-                s_('IdentityVerification|The code has expired. Resend a new code and try again.')
-              when :invalid
-                s_('IdentityVerification|The code is incorrect. Enter it again, or resend a new code.')
-              end
-
+  def handle_verification_failure(user, reason, message)
     user.errors.add(:base, message)
     log_verification(user, :failed_attempt, reason)
 
     prompt_for_email_verification(user)
-  end
-
-  def email_verification_interval
-    interval_in_seconds = Gitlab::ApplicationRateLimiter.rate_limits[:email_verification][:interval]
-    distance_of_time_in_words(interval_in_seconds)
   end
 
   def handle_verification_success(user)

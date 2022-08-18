@@ -3601,15 +3601,15 @@ RSpec.describe User do
       user = create :user
       project = create(:project, :public)
 
-      expect(user.starred?(project)).to be_falsey
+      # starring
+      expect { user.toggle_star(project) }
+        .to change { user.starred?(project) }.from(false).to(true)
+        .and not_change { project.reload.updated_at }
 
-      user.toggle_star(project)
-
-      expect(user.starred?(project)).to be_truthy
-
-      user.toggle_star(project)
-
-      expect(user.starred?(project)).to be_falsey
+      # unstarring
+      expect { user.toggle_star(project) }
+        .to change { user.starred?(project) }.from(true).to(false)
+        .and not_change { project.reload.updated_at }
     end
   end
 

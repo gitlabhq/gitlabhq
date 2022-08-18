@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative './simple_check_shared'
 
 RSpec.describe Gitlab::HealthChecks::MasterCheck do

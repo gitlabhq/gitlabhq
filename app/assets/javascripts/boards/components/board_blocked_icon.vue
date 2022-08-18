@@ -154,7 +154,7 @@ export default {
       :id="glIconId"
       ref="icon"
       name="issue-block"
-      class="issue-blocked-icon gl-mr-2 gl-cursor-pointer"
+      class="issue-blocked-icon gl-mr-2 gl-cursor-pointer gl-text-red-500"
       data-testid="issue-blocked-icon"
       @mouseenter="handleMouseEnter"
     />

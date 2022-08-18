@@ -252,7 +252,7 @@ export default {
   <header
     :class="{
       'gl-h-full': list.collapsed,
-      'board-inner gl-rounded-top-left-base gl-rounded-top-right-base': isSwimlanesHeader,
+      'board-inner gl-rounded-top-left-base gl-rounded-top-right-base gl-bg-gray-50': isSwimlanesHeader,
     }"
     :style="headerStyle"
     class="board-header gl-relative"
@@ -267,14 +267,15 @@ export default {
         'gl-py-2': list.collapsed && isSwimlanesHeader,
         'gl-flex-direction-column': list.collapsed,
       }"
-      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3"
+      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3 gl-h-9"
     >
       <gl-button
         v-gl-tooltip.hover
         :aria-label="chevronTooltip"
         :title="chevronTooltip"
         :icon="chevronIcon"
-        class="board-title-caret no-drag gl-cursor-pointer"
+        class="board-title-caret no-drag gl-cursor-pointer gl-hover-bg-gray-50"
+        :class="{ 'gl-mt-1': list.collapsed, 'gl-mr-2': !list.collapsed }"
         category="tertiary"
         size="small"
         data-testid="board-title-caret"
@@ -307,6 +308,7 @@ export default {
           'gl-display-none': list.collapsed && isSwimlanesHeader,
           'gl-flex-grow-0 gl-my-3 gl-mx-0': list.collapsed,
           'gl-flex-grow-1': !list.collapsed,
+          'gl-rotate-90': list.collapsed,
         }"
       >
         <!-- EE start -->
@@ -324,7 +326,7 @@ export default {
         <span
           v-if="listType === 'assignee'"
           v-show="!list.collapsed"
-          class="gl-ml-2 gl-font-weight-normal gl-text-gray-500"
+          class="gl-ml-2 gl-font-weight-normal gl-text-secondary"
         >
           @{{ listAssignee }}
         </span>
@@ -345,7 +347,7 @@ export default {
         v-if="isSwimlanesHeader && list.collapsed"
         ref="collapsedInfo"
         aria-hidden="true"
-        class="board-header-collapsed-info-icon gl-cursor-pointer gl-text-gray-500"
+        class="board-header-collapsed-info-icon gl-cursor-pointer gl-text-secondary gl-hover-text-gray-900"
       >
         <gl-icon name="information" />
       </span>
@@ -369,14 +371,14 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-gray-500"
+        class="issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-secondary"
         data-testid="issue-count-badge"
         :class="{
           'gl-display-none!': list.collapsed && isSwimlanesHeader,
           'gl-p-0': list.collapsed,
         }"
       >
-        <span class="gl-display-inline-flex">
+        <span class="gl-display-inline-flex" :class="{ 'gl-rotate-90': list.collapsed }">
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
           <span ref="itemCount" class="gl-display-inline-flex gl-align-items-center">
             <gl-icon class="gl-mr-2" :name="countIcon" :size="16" />

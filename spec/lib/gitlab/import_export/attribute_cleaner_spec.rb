@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::ImportExport::AttributeCleaner do
   let(:relation_class) { double('relation_class').as_null_object }

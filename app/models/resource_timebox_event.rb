@@ -34,7 +34,8 @@ class ResourceTimeboxEvent < ResourceEvent
 
     case self
     when ResourceMilestoneEvent
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_milestone_changed_action(author: user)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_milestone_changed_action(author: user,
+                                                                                                 project: issue.project)
     else
       # no-op
     end

@@ -48,12 +48,6 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
           expect(note.note).to eq("changed due date to #{due_date.to_s(:long)}")
         end
 
-        it 'tracks the issue event in usage ping' do
-          expect(activity_counter_class).to receive(activity_counter_method).with(author: author)
-
-          subject
-        end
-
         context 'and start date removed' do
           let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [start_date, nil] } }
 
@@ -66,8 +60,14 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
       context 'when start_date is added' do
         let(:changed_dates) { { 'start_date' => [nil, start_date] } }
 
-        it 'does not track the issue event in usage ping' do
+        it 'does not track the issue event' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
+
+          subject
+        end
+
+        it 'does not emit snowplow event', :snowplow do
+          expect_no_snowplow_event
 
           subject
         end
@@ -111,10 +111,17 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
         subject
       end
 
-      it 'tracks the issue event in usage ping' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_due_date_changed_action).with(author: author)
+      it 'tracks the issue event' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_due_date_changed_action)
+                                                                           .with(author: author, project: project)
 
         subject
+      end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DUE_DATE_CHANGED }
+        let(:user) { author }
+        subject(:service_action) { note }
       end
 
       context 'when only start_date is added' do
@@ -135,8 +142,14 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
 
       it_behaves_like 'issuable getting date change notes'
 
-      it 'does not track the issue event in usage ping' do
+      it 'does not track the issue event' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
+
+        subject
+      end
+
+      it 'does not emit snowplow event', :snowplow do
+        expect_no_snowplow_event
 
         subject
       end
@@ -155,9 +168,20 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
     context 'when noteable is a merge request' do
       let(:noteable) { create(:merge_request, source_project: project) }
 
-      it 'does not track the issue event in usage ping' do
+      it 'does not track the issue event' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
+
+        subject
+      end
+
+      it 'does not track the work item event in usage ping' do
         expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_date_changed_action)
+
+        subject
+      end
+
+      it 'does not emit snowplow event', :snowplow do
+        expect_no_snowplow_event
 
         subject
       end
@@ -201,17 +225,31 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
       end
 
       it 'tracks the issue event in usage ping' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_time_estimate_changed_action).with(author: author)
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_time_estimate_changed_action)
+                                                                           .with(author: author, project: project)
 
         subject
+      end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_ESTIMATE_CHANGED }
+        let(:user) { author }
+        let(:service_action) { subject }
       end
     end
 
     context 'when noteable is a merge request' do
       let_it_be(:noteable) { create(:merge_request, source_project: project) }
 
-      it 'does not track the issue event in usage ping' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action).with(author: author)
+      it 'does not track the issue event' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action)
+                                                                               .with(author: author, project: project)
+
+        subject
+      end
+
+      it 'does not emit snowplow event', :snowplow do
+        expect_no_snowplow_event
 
         subject
       end
@@ -316,22 +354,39 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
           end
         end
 
-        it 'tracks the issue event in usage ping' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_time_spent_changed_action).with(author: author)
+        it 'tracks the issue event' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_time_spent_changed_action)
+                                                                             .with(author: author, project: project)
 
           spend_time!(277200)
 
           subject
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_SPENT_CHANGED }
+          let(:user) { author }
+          let(:service_action) do
+            spend_time!(277200)
+            subject
+          end
         end
       end
 
       context 'when noteable is a merge request' do
         let_it_be(:noteable) { create(:merge_request, source_project: project) }
 
-        it 'does not track the issue event in usage ping' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action).with(author: author)
+        it 'does not track the issue event' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action)
+                                                                                 .with(author: author, project: project)
 
           spend_time!(277200)
+
+          subject
+        end
+
+        it 'does not emit snowplow event', :snowplow do
+          expect_no_snowplow_event
 
           subject
         end

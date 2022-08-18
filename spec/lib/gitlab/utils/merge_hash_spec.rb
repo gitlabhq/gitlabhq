@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 RSpec.describe Gitlab::Utils::MergeHash do
   describe '.crush' do
     it 'can flatten a hash to each element' do

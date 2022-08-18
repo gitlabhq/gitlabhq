@@ -208,7 +208,7 @@ export default {
 <template>
   <div>
     <div class="gl-display-flex" dir="auto">
-      <h4 class="board-card-title gl-mb-0 gl-mt-0 gl-mr-3">
+      <h4 class="board-card-title gl-mb-0 gl-mt-0 gl-mr-3 gl-font-base gl-overflow-break-word">
         <board-blocked-icon
           v-if="item.blocked"
           :item="item"
@@ -221,7 +221,7 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon gl-mr-2"
+          class="confidential-icon gl-mr-2 gl-text-orange-500 gl-cursor-help"
           :aria-label="__('Confidential')"
         />
         <gl-icon
@@ -229,14 +229,14 @@ export default {
           v-gl-tooltip
           name="spam"
           :title="__('This issue is hidden because its author has been banned')"
-          class="gl-mr-2 hidden-icon"
+          class="gl-mr-2 hidden-icon gl-text-orange-500 gl-cursor-help"
           data-testid="hidden-icon"
         />
         <a
           :href="item.path || item.webUrl || ''"
           :title="item.title"
           :class="{ 'gl-text-gray-400!': item.isLoading }"
-          class="js-no-trigger"
+          class="js-no-trigger gl-text-body gl-hover-text-gray-900"
           @mousemove.stop
           >{{ item.title }}</a
         >
@@ -247,7 +247,7 @@ export default {
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
-          class="js-no-trigger"
+          class="js-no-trigger gl-mt-2 gl-mr-2"
           :background-color="label.color"
           :title="label.title"
           :description="label.description"
@@ -267,7 +267,7 @@ export default {
         <gl-loading-icon v-if="item.isLoading" size="lg" class="gl-mt-5" />
         <span
           v-if="item.referencePath"
-          class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"
+          class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3 gl-text-secondary"
           :class="{ 'gl-font-base': isEpicBoard }"
         >
           <tooltip-on-truncate
@@ -328,7 +328,10 @@ export default {
               </p>
             </gl-tooltip>
 
-            <span ref="countBadge" class="board-card-info gl-mr-0 gl-pr-0 gl-pl-3">
+            <span
+              ref="countBadge"
+              class="board-card-info gl-mr-0 gl-pr-0 gl-pl-3 gl-text-secondary gl-cursor-help"
+            >
               <span v-if="allowSubEpics" class="gl-mr-3">
                 <gl-icon name="epic" />
                 {{ totalEpicsCount }}
@@ -346,7 +349,7 @@ export default {
             <span
               v-if="shouldRenderEpicProgress"
               ref="progressBadge"
-              class="board-card-info gl-pl-0"
+              class="board-card-info gl-pl-0 gl-text-secondary gl-cursor-help"
             >
               <span class="gl-mr-3" data-testid="epic-progress">
                 <gl-icon name="progress" />
@@ -369,7 +372,7 @@ export default {
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-display-flex gl-gap-3">
+      <div class="board-card-assignee gl-display-flex gl-gap-3 gl-mb-n2">
         <user-avatar-link
           v-for="assignee in cappedAssignees"
           :key="assignee.id"
@@ -377,7 +380,7 @@ export default {
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="avatarUrl(assignee)"
           :img-size="avatarSize"
-          class="js-no-trigger"
+          class="js-no-trigger user-avatar-link"
           tooltip-placement="bottom"
           :enforce-gl-avatar="true"
         >
@@ -391,7 +394,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter"
+          class="avatar-counter gl-bg-gray-400 gl-cursor-help gl-font-weight-bold gl-ml-n4 gl-border-0 gl-line-height-24"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >
