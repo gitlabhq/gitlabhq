@@ -164,7 +164,8 @@ The replication state is internal to each instance of GitLab and should
 not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of
-failure. Alternatively, [you can use PostgreSQL replication and failover](../postgresql/replication_and_failover.md).
+failure. To avoid this, you can configure your own clustered PostgreSQL. Support for PostgreSQL replication and failover using Omnibus GitLab is being tracked in
+[a relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/7814).
 
 The following options are available:
 

@@ -123,8 +123,8 @@ RSpec.describe WorkItem do
           child.confidential = false
 
           expect(child).not_to be_valid
-          expect(child.errors[:confidential])
-            .to include('associated parent is confidential and can not have non-confidential children.')
+          expect(child.errors[:base])
+            .to include(_('A non-confidential work item cannot have a confidential parent.'))
         end
 
         it 'allows to make parent non-confidential' do
@@ -143,8 +143,9 @@ RSpec.describe WorkItem do
           parent.confidential = true
 
           expect(parent).not_to be_valid
-          expect(parent.errors[:confidential])
-            .to include('confidential parent can not be used if there are non-confidential children.')
+          expect(parent.errors[:base]).to include(
+            _('A confidential work item cannot have a parent that already has non-confidential children.')
+          )
         end
 
         it 'allows to make child confidential' do
@@ -161,8 +162,8 @@ RSpec.describe WorkItem do
           child.work_item_parent = create(:work_item, confidential: true, project: project)
 
           expect(child).not_to be_valid
-          expect(child.errors[:confidential])
-            .to include('associated parent is confidential and can not have non-confidential children.')
+          expect(child.errors[:base])
+            .to include('A non-confidential work item cannot have a confidential parent.')
         end
       end
     end

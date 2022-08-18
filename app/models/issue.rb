@@ -689,11 +689,11 @@ class Issue < ApplicationRecord
     return unless persisted?
 
     if confidential? && WorkItems::ParentLink.has_public_children?(id)
-      errors.add(:confidential, _('confidential parent can not be used if there are non-confidential children.'))
+      errors.add(:base, _('A confidential issue cannot have a parent that already has non-confidential children.'))
     end
 
     if !confidential? && WorkItems::ParentLink.has_confidential_parent?(id)
-      errors.add(:confidential, _('associated parent is confidential and can not have non-confidential children.'))
+      errors.add(:base, _('A non-confidential issue cannot have a confidential parent.'))
     end
   end
 

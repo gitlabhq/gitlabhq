@@ -1599,6 +1599,12 @@ msgstr ""
 msgid "A complete DevOps platform"
 msgstr ""
 
+msgid "A confidential issue cannot have a parent that already has non-confidential children."
+msgstr ""
+
+msgid "A confidential work item cannot have a parent that already has non-confidential children."
+msgstr ""
+
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
@@ -1660,6 +1666,12 @@ msgid "A new personal access token, named %{token_name}, has been created."
 msgstr ""
 
 msgid "A non-confidential epic cannot be assigned to a confidential parent epic"
+msgstr ""
+
+msgid "A non-confidential issue cannot have a confidential parent."
+msgstr ""
+
+msgid "A non-confidential work item cannot have a confidential parent."
 msgstr ""
 
 msgid "A page with that title already exists"
@@ -45695,9 +45707,6 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
-msgid "associated parent is confidential and can not have non-confidential children."
-msgstr ""
-
 msgid "at"
 msgstr ""
 
@@ -46205,9 +46214,6 @@ msgid "committed"
 msgstr ""
 
 msgid "compliance violation has already been recorded"
-msgstr ""
-
-msgid "confidential parent can not be used if there are non-confidential children."
 msgstr ""
 
 msgid "contacts can only be added to root groups"

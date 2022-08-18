@@ -120,6 +120,18 @@ To switch to Semgrep-based scanning early, you can:
 1. Merge the MR and wait for the default-branch pipeline to run.
 1. Use the Vulnerability Report to dismiss the findings that are no longer detected by the language-specific analyzers.
 
+#### Preview Semgrep-based scanning
+
+You can see how Semgrep-based scanning will work in your projects before the GitLab-managed Stable CI/CD template for SAST is updated.
+We recommend that you test this change in a merge request but continue using the Stable template in your default branch pipeline configuration.
+
+To preview the new configuration:
+
+- In GitLab 15.3, open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yaml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yaml`.
+  The `latest` template contains all changes that we [plan to release](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in the Stable template in GitLab 15.4.
+  To learn more about Stable and Latest templates, see documentation on [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
+- In GitLab 15.3 or earlier versions, follow the [steps to activate Semgrep-based scanning early](#activate-semgrep-based-scanning), but don't merge the MR you create.
+
 ## Customize analyzers
 
 Use [CI/CD variables](index.md#available-cicd-variables)

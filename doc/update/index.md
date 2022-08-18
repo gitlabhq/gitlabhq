@@ -472,6 +472,17 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   configuration change in Rails that can result in inconsistent ETag key
   generation.
 - Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../administration/sidekiq/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
+- Gitaly now executes its binaries in a [runtime location](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4670). By default on Omnibus GitLab,
+  this path is `/var/opt/gitlab/gitaly/run/`. If this location is mounted with `noexec`, merge requests generate the following error:
+
+  ```plaintext
+  fork/exec /var/opt/gitlab/gitaly/run/gitaly-<nnnn>/gitaly-git2go-v15: permission denied
+  ```
+
+  To resolve this, remove the `noexec` option from the filesystem mount. An alternative is to change the Gitaly runtime directory:
+
+  1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
+  1. Run `sudo gitlab-ctl reconfigure`.
 
 ### 15.1.0
 

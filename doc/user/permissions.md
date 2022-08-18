@@ -470,7 +470,8 @@ project and should only have access to that project.
 
 External users:
 
-- Can only create projects (including forks), subgroups, and snippets within the top-level group to which they belong.
+- Cannot create project, groups, and snippets within their personal namespaces.
+- Can only create projects (including forks), subgroups, and snippets within top-level groups to which they are explicitly granted access.
 - Can only access public projects and projects to which they are explicitly granted access,
   thus hiding all other internal or private ones from them (like being
   logged out).

@@ -150,8 +150,8 @@ RSpec.describe Issue do
           issue.confidential = false
 
           expect(issue).not_to be_valid
-          expect(issue.errors[:confidential])
-            .to include('associated parent is confidential and can not have non-confidential children.')
+          expect(issue.errors[:base])
+            .to include(_('A non-confidential issue cannot have a confidential parent.'))
         end
 
         it 'allows to make parent not-confidential' do
@@ -172,8 +172,8 @@ RSpec.describe Issue do
           issue.confidential = true
 
           expect(issue).not_to be_valid
-          expect(issue.errors[:confidential])
-            .to include('confidential parent can not be used if there are non-confidential children.')
+          expect(issue.errors[:base])
+            .to include(_('A confidential issue cannot have a parent that already has non-confidential children.'))
         end
 
         it 'allows to make child confidential' do
