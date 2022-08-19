@@ -155,6 +155,9 @@ You can view all GitLab administrator set feature flags:
 ```ruby
 Feature.all
 => [#<Flipper::Feature:198220 name="my_awesome_feature", state=:on, enabled_gate_names=[:boolean], adapter=:memoizable>]
+
+# Nice output
+Feature.all.map {|f| [f.name, f.state]}
 ```
 
 ### Unset feature flag

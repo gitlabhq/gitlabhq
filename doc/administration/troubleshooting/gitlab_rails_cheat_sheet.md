@@ -166,18 +166,6 @@ Benchmark.bm do |x|
 end
 ```
 
-## Feature flags
-
-### Show all feature flags that are enabled
-
-```ruby
-# Regular output
-Feature.all
-
-# Nice output
-Feature.all.map {|f| [f.name, f.state]}
-```
-
 ## Projects
 
 ### Clear a project's cache

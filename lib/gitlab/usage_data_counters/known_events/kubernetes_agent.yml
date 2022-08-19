@@ -2,4 +2,3 @@
   category: kubernetes_agent
   redis_slot: agent
   aggregation: weekly
-  feature_flag: track_agent_users_using_ci_tunnel

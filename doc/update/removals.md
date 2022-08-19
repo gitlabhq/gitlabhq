@@ -37,6 +37,19 @@ For removal reviewers (Technical Writers only):
 
 Long term service and support (LTSS) for [Debian 9 Stretch ended in July 2022](https://wiki.debian.org/LTS). Therefore, we will no longer support the Debian 9 distribution for the GitLab package. Users can upgrade to Debian 10 or Debian 11.
 
+### Vulnerability Report sort by State
+
+The ability to sort the Vulnerability Report by the `State` column was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
+of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
+by this value remains performant. Due to very low usage of the `State` column for sorting, the feature flag is instead removed in 15.3 to simplify the codebase and prevent any unwanted performance degradation.
+
+### Vulnerability Report sort by Tool
+
+The ability to sort the Vulnerability Report by the `Tool` column (scan type) was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
+of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
+by this value remains performant. Due to very low usage of the `Tool` column for sorting, the feature flag is instead removed in
+GitLab 15.3 to simplify the codebase and prevent any unwanted performance degradation.
+
 ## Removed in 15.2
 
 ### Support for older browsers

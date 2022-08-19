@@ -640,9 +640,14 @@ To copy the issue's email address:
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.5.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.9. Feature flags `real_time_issue_sidebar` and `broadcast_issue_updates` removed.
 
-Assignees in the sidebar are updated in real time.
-When you're viewing an issue and somebody changes its assignee,
+Some sections of the right sidebar are updated in real time.
++When you're viewing an issue and somebody changes one of the values,
 you can see the change without having to refresh the page.
+
+The following sections are updated in real time:
+
+- [Assignee](#assignee)
+- Labels, [if enabled](../labels.md#real-time-changes-to-labels)
 
 ## Assignee
 
