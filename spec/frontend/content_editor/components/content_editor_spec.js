@@ -4,7 +4,10 @@ import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
-import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/formatting.vue';
+import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/formatting_bubble_menu.vue';
+import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block_bubble_menu.vue';
+import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
+import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import { emitEditorEvent } from '../test_utils';
@@ -115,10 +118,16 @@ describe('ContentEditor', () => {
     expect(wrapper.findComponent(LoadingIndicator).exists()).toBe(true);
   });
 
-  it('renders formatting bubble menu', () => {
+  it.each`
+    name            | component
+    ${'formatting'} | ${FormattingBubbleMenu}
+    ${'link'}       | ${LinkBubbleMenu}
+    ${'media'}      | ${MediaBubbleMenu}
+    ${'codeBlock'}  | ${CodeBlockBubbleMenu}
+  `('renders formatting bubble menu', ({ component }) => {
     createWrapper();
 
-    expect(wrapper.findComponent(FormattingBubbleMenu).exists()).toBe(true);
+    expect(wrapper.findComponent(component).exists()).toBe(true);
   });
 
   it.each`

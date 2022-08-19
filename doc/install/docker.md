@@ -462,7 +462,9 @@ In most cases, upgrading GitLab is as easy as downloading the newest Docker
 
 To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using-docker-engine):
 
-1. Take a [backup](#back-up-gitlab).
+1. Take a [backup](#back-up-gitlab). As a minimum, back up [the database](#create-a-database-backup) and
+   the GitLab secrets file.
+
 1. Stop the running container:
 
    ```shell
@@ -506,7 +508,9 @@ when upgrading between major versions.
 
 To upgrade GitLab that was [installed using Docker Compose](#install-gitlab-using-docker-compose):
 
-1. Take a [backup](#back-up-gitlab).
+1. Take a [backup](#back-up-gitlab). As a minimum, back up [the database](#create-a-database-backup) and
+   the GitLab secrets file.
+
 1. Download the newest release and upgrade your GitLab instance:
 
    ```shell
@@ -527,8 +531,11 @@ We recommend you convert from the same version of CE to EE (for example, CE 14.1
 This is not explicitly necessary, and any standard upgrade (for example, CE 14.0 to EE 14.1) should work.
 The following steps assume that you are upgrading the same version.
 
-1. Take a [backup](#back-up-gitlab).
+1. Take a [backup](#back-up-gitlab). As a minimum, back up [the database](#create-a-database-backup) and
+   the GitLab secrets file.
+
 1. Stop the current CE container, and remove or rename it.
+
 1. To create a new container with GitLab EE,
    replace `ce` with `ee` in your `docker run` command or `docker-compose.yml` file.
    However, reuse the CE container name, port and file mappings, and version.
@@ -537,6 +544,22 @@ The following steps assume that you are upgrading the same version.
 
 This is an optional step. If you [installed the documentation site](#install-the-product-documentation),
 see how to [upgrade to another version](../administration/docs_self_host.md#upgrade-using-docker).
+
+### Downgrade GitLab
+
+To downgrade GitLab after an upgrade:
+
+1. Follow the upgrade procedure, but [specify the tag for the original version of GitLab](#use-tagged-versions-of-gitlab)
+   instead of `latest`.
+
+1. Restore the [database backup you made](#create-a-database-backup) as part of the upgrade.
+
+   - Restoring is required to back out database data and schema changes (migrations) made as part of the upgrade.
+   - GitLab backups must be restored to the exact same version and edition.
+   - [Follow the restore steps for Docker images](../raketasks/restore_gitlab.md#restore-for-docker-image-and-gitlab-helm-chart-installations), including
+     stopping Puma and Sidekiq. Only the database must be restored, so add
+     `SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state`
+     to the `gitlab-backup restore` command line arguments.
 
 ## Back up GitLab
 
@@ -553,6 +576,23 @@ If configuration is provided entirely via the `GITLAB_OMNIBUS_CONFIG` environmen
 (per the ["Pre-configure Docker Container"](#pre-configure-docker-container) steps),
 meaning no configuration is set directly in the `gitlab.rb` file, then there is no need
 to back up the `gitlab.rb` file.
+
+WARNING:
+[Backing up the GitLab secrets file](../raketasks/backup_gitlab.md#storing-configuration-files) is required
+to avoid [complicated steps](../raketasks/backup_restore.md#when-the-secrets-file-is-lost) when recovering
+GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.json` inside the container, or
+`$GITLAB_HOME/config/gitlab-secrets.json` [on the container host](#set-up-the-volumes-location).
+
+### Create a database backup
+
+A database backup is required to roll back GitLab upgrade if you encounter issues.
+
+```shell
+docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state
+```
+
+The backup is written to `/var/opt/gitlab/backups` which should be on a
+[volume mounted by Docker](#set-up-the-volumes-location).
 
 ## Installing GitLab Community Edition
 

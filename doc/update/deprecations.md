@@ -51,7 +51,7 @@ sole discretion of GitLab Inc.
 
 ### Security report schemas version 14.x.x
 
-End of Support: GitLab <span class="removal-milestone">15.8</span> (2023-01-22)
+End of Support: GitLab <span class="removal-milestone">15.8</span> (2023-01-22)<br />
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
@@ -135,7 +135,7 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 
 ### Redis 5 deprecated
 
-End of Support: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)
+End of Support: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)<br />
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:

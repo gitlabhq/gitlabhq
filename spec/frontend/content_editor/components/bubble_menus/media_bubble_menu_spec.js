@@ -1,7 +1,7 @@
 import { GlLink, GlForm } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media.vue';
+import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import Image from '~/content_editor/extensions/image';
 import Audio from '~/content_editor/extensions/audio';
@@ -33,7 +33,7 @@ describe.each`
   ${'audio'} | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML} | ${'test-file.mp3'} | ${TIPTAP_AUDIO_HTML}
   ${'video'} | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML} | ${'test-file.mp4'} | ${TIPTAP_VIDEO_HTML}
 `(
-  'content_editor/components/bubble_menus/media ($mediaType)',
+  'content_editor/components/bubble_menus/media_bubble_menu ($mediaType)',
   ({ mediaType, mediaHTML, filePath, mediaOutputHTML }) => {
     let wrapper;
     let tiptapEditor;

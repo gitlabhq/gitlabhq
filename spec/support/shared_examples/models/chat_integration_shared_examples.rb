@@ -32,8 +32,9 @@ RSpec.shared_examples "chat integration" do |integration_name|
   end
 
   describe "#execute" do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+
     let(:webhook_url) { "https://example.gitlab.com/" }
 
     before do
@@ -112,12 +113,12 @@ RSpec.shared_examples "chat integration" do |integration_name|
       end
 
       context "with protected branch" do
-        before do
-          create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
-        end
-
         let(:sample_data) do
           Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "a-protected-branch")
+        end
+
+        before_all do
+          create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
         end
 
         context "when only default branch are to be notified" do
@@ -214,7 +215,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       let(:sample_data) { Gitlab::DataBuilder::Note.build(note, user) }
 
       context "with commit comment" do
-        let(:note) do
+        let_it_be(:note) do
           create(:note_on_commit,
                  author: user,
                  project: project,
@@ -226,7 +227,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       end
 
       context "with merge request comment" do
-        let(:note) do
+        let_it_be(:note) do
           create(:note_on_merge_request, project: project, note: "merge request note")
         end
 
@@ -234,7 +235,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       end
 
       context "with issue comment" do
-        let(:note) do
+        let_it_be(:note) do
           create(:note_on_issue, project: project, note: "issue note")
         end
 
@@ -242,7 +243,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       end
 
       context "with snippet comment" do
-        let(:note) do
+        let_it_be(:note) do
           create(:note_on_project_snippet, project: project, note: "snippet note")
         end
 
@@ -251,22 +252,24 @@ RSpec.shared_examples "chat integration" do |integration_name|
     end
 
     context "with pipeline events" do
-      let(:pipeline) do
-        create(:ci_pipeline,
-               project: project, status: status,
-               sha: project.commit.sha, ref: project.default_branch)
-      end
-
       let(:sample_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       context "with failed pipeline" do
-        let(:status) { "failed" }
+        let_it_be(:pipeline) do
+          create(:ci_pipeline,
+                 project: project, status: "failed",
+                 sha: project.commit.sha, ref: project.default_branch)
+        end
 
         it_behaves_like "triggered #{integration_name} integration"
       end
 
       context "with succeeded pipeline" do
-        let(:status) { "success" }
+        let_it_be(:pipeline) do
+          create(:ci_pipeline,
+                 project: project, status: "success",
+                 sha: project.commit.sha, ref: project.default_branch)
+        end
 
         context "with default notify_only_broken_pipelines" do
           it "does not call #{integration_name} API" do
@@ -308,7 +311,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       end
 
       context "with protected branch" do
-        before do
+        before_all do
           create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
         end
 
@@ -357,7 +360,8 @@ RSpec.shared_examples "chat integration" do |integration_name|
     end
 
     context 'deployment events' do
-      let(:deployment) { create(:deployment) }
+      let_it_be(:deployment) { create(:deployment) }
+
       let(:sample_data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.now) }
 
       it_behaves_like "untriggered #{integration_name} integration"

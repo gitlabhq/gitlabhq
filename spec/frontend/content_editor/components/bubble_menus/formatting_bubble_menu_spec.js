@@ -1,7 +1,7 @@
 import { BubbleMenu } from '@tiptap/vue-2';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/formatting.vue';
+import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/formatting_bubble_menu.vue';
 
 import {
   BUBBLE_MENU_TRACKING_ACTION,
@@ -9,7 +9,7 @@ import {
 } from '~/content_editor/constants';
 import { createTestEditor } from '../../test_utils';
 
-describe('content_editor/components/bubble_menus/formatting', () => {
+describe('content_editor/components/bubble_menus/formatting_bubble_menu', () => {
   let wrapper;
   let trackingSpy;
   let tiptapEditor;

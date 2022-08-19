@@ -9,7 +9,7 @@ import {
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
-import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block.vue';
+import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block_bubble_menu.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Diagram from '~/content_editor/extensions/diagram';
@@ -18,7 +18,7 @@ import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
-describe('content_editor/components/bubble_menus/code_block', () => {
+describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => {
   let wrapper;
   let tiptapEditor;
   let contentEditor;

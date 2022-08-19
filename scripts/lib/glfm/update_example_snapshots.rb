@@ -137,9 +137,13 @@ module Glfm
         return
       end
 
-      markdown_yml_tempfile_path = write_markdown_yml_tempfile
-      static_html_hash = generate_static_html(markdown_yml_tempfile_path)
-      wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json(markdown_yml_tempfile_path)
+      # NOTE: We pass the INPUT_MARKDOWN_YML_PATH via
+      # environment variable to the static/wysiwyg HTML generation scripts. This is because it
+      # is implemented as a subprocess which invokes rspec/jest scripts, and rspec/jest do not make
+      # it straightforward to pass arguments via the command line.
+      ENV['INPUT_MARKDOWN_YML_PATH'] = copy_tempfiles_for_subprocesses
+      static_html_hash = generate_static_html
+      wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json
 
       write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
 
@@ -181,45 +185,53 @@ module Glfm
       end
     end
 
-    def write_markdown_yml_tempfile
-      # NOTE: We must copy the markdown YAML file to a separate temporary file for the
-      # `render_static_html.rb` script to read it, because the script is run in a
-      # separate process, and during unit testing we are unable to substitute the mock
-      # StringIO when reading the input file in the subprocess.
-      Dir::Tmpname.create(MARKDOWN_TEMPFILE_BASENAME) do |path|
-        io = File.open(ES_MARKDOWN_YML_PATH)
-        io.seek(0) # rewind the file. This is necessary when testing with a mock StringIO
-        contents = io.read
-        write_file(path, contents)
-      end
+    def copy_tempfiles_for_subprocesses
+      # NOTE: We must copy the input YAML files used by the `render_static_html.rb`
+      # and `render_wysiwyg_html_and_json.js` scripts to a separate temporary file in order for
+      # the scripts to read them, because the scripts are run in
+      # separate subprocesses, and during unit testing we are unable to substitute the mock
+      # StringIO when reading the input files in the subprocess.
+      [
+        [ES_MARKDOWN_YML_PATH, MARKDOWN_TEMPFILE_BASENAME]
+      ].map do |original_file_path, tempfile_basename|
+        Dir::Tmpname.create(tempfile_basename) do |path|
+          io = File.open(original_file_path)
+          io.seek(0) # rewind the file. This is necessary when testing with a mock StringIO
+          contents = io.read
+          write_file(path, contents)
+        end
+      end.first
     end
 
-    def generate_static_html(markdown_yml_tempfile_path)
+    def generate_static_html
       output("Generating static HTML from markdown examples...")
 
-      # NOTE 1: We shell out to perform the conversion of markdown to static HTML via the internal Rails app
-      # helper method. This allows us to avoid using the Rails API or environment in this script,
-      # which makes developing and running the unit tests for this script much faster,
+      # NOTE 1: We shell out to perform the conversion of markdown to static HTML by invoking a
+      # separate subprocess. This allows us to avoid using the Rails API or environment in this
+      # script, which makes developing and running the unit tests for this script much faster,
       # because they can use 'fast_spec_helper' which does not require the entire Rails environment.
 
-      # NOTE 2: We pass the input file path as a command line argument, and receive the output
-      # tempfile path as a return value. This is simplest in the case where we are invoking Ruby.
-      cmd = %(rails runner #{__dir__}/render_static_html.rb #{markdown_yml_tempfile_path})
-      cmd_output = run_external_cmd(cmd)
-      # NOTE: Running under a debugger can add extra output, only take the last line
-      static_html_tempfile_path = cmd_output.split("\n").last
+      # NOTE 2: We run this as an RSpec process, for the same reasons we run via Jest process below:
+      # because that's the easiest way to ensure a reliable, fully-configured environment in which
+      # to execute the markdown-generation logic. Also, in the static/backend case, Rspec
+      # provides the easiest and most reliable way to generate example data via Factorybot
+      # creation of stable model records. This ensures consistent snapshot values across
+      # machines/environments.
+
+      # Dir::Tmpname.create requires a block, but we are using the non-block form to get the path
+      # via the return value, so we pass an empty block to avoid an error.
+      static_html_tempfile_path = Dir::Tmpname.create(STATIC_HTML_TEMPFILE_BASENAME) {}
+      ENV['OUTPUT_STATIC_HTML_TEMPFILE_PATH'] = static_html_tempfile_path
+
+      cmd = %(bin/rspec #{__dir__}/render_static_html.rb)
+      run_external_cmd(cmd)
 
       output("Reading generated static HTML from tempfile #{static_html_tempfile_path}...")
       YAML.load_file(static_html_tempfile_path)
     end
 
-    def generate_wysiwyg_html_and_json(markdown_yml_tempfile_path)
+    def generate_wysiwyg_html_and_json
       output("Generating WYSIWYG HTML and prosemirror JSON from markdown examples...")
-
-      # NOTE: Unlike when we invoke a Ruby script, here we pass the input and output file paths
-      # via environment variables. This is because it's not straightforward/clean to pass command line
-      # arguments when we are invoking `yarn jest ...`
-      ENV['INPUT_MARKDOWN_YML_PATH'] = markdown_yml_tempfile_path
 
       # Dir::Tmpname.create requires a block, but we are using the non-block form to get the path
       # via the return value, so we pass an empty block to avoid an error.

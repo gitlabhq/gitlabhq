@@ -1,80 +1,85 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require_relative 'constants'
 require_relative 'shared'
 
 # Purpose:
 # - Reads a set of markdown examples from a hash which has been serialized to disk
-# - Converts each example to static HTML using the `markdown` helper
+# - Sets up the appropriate fixture data for the markdown examples
+# - Converts each example to static HTML using the appropriate API markdown endpoint
 # - Writes the HTML for each example to a hash which is serialized to disk
 #
-# It should be invoked via `rails runner` from the Rails root directory.
-# It is intended to be invoked from the `update_example_snapshots.rb` script class.
-module Glfm
-  class RenderStaticHtml
-    include Constants
-    include Shared
+# Requirements:
+# The input and output files are specified via these environment variables:
+# - INPUT_MARKDOWN_YML_PATH
+# - OUTPUT_STATIC_HTML_TEMPFILE_PATH
+#
+# Although it is implemented as an RSpec test, it is not a unit test. We use
+# RSpec because that is the simplest environment in which we can use the
+# Factorybot factory methods to create persisted model objects with stable
+# and consistent data values, to ensure consistent example snapshot HTML
+# across various machines and environments. RSpec also makes it easy to invoke
+# the API # and obtain the response.
+#
+# It is intended to be invoked as a helper subprocess from the `update_example_snapshots.rb`
+# script class. It's not intended to be run or used directly. This usage is also reinforced
+# by not naming the file with a `_spec.rb` ending.
+RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable RSpec/TopLevelDescribePath
+  include Glfm::Constants
+  include Glfm::Shared
 
-    def process
-      markdown_yml_path = ARGV[0]
-      markdown_hash = YAML.load_file(markdown_yml_path)
+  let(:user) { create(:user, :admin, username: 'glfm_user') }
 
-      context = build_context
+  before do
+    stub_licensed_features(group_wikis: true)
 
-      # NOTE: We COULD parallelize this loop like the Javascript WYSIWYG example generation does,
-      # but it wouldn't save much time. Most of the time is spent loading the Rails environment
-      # via `rails runner`. In initial testing, this loop only took ~7 seconds while the entire
-      # script took ~20 seconds. Unfortunately, there's no easy way to execute
-      # `Banzai.render_and_post_process` without using `rails runner`
-      static_html_hash = markdown_hash.transform_values do |markdown|
-        Banzai.render_and_post_process(markdown, context)
-      end
+    group = create(:group, name: 'glfm_group')
+    group.add_owner(user)
 
-      static_html_tempfile_path = Dir::Tmpname.create(STATIC_HTML_TEMPFILE_BASENAME) do |path|
-        tmpfile = File.open(path, 'w')
-        YAML.dump(static_html_hash, tmpfile)
-        tmpfile.close
-      end
+    project = create(:project, :repository, creator: user, group: group, name: 'glfm_project')
 
-      # Write the path to the output file to stdout
-      print static_html_tempfile_path
+    # NOTE: We hardcode the IDs on all fixtures to prevent variability in the
+    #       rendered HTML/Prosemirror JSON, and to minimize the need for normalization:
+    #       https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
+    create(:project_snippet, id: 88888, project: project) # project snippet
+    create(:snippet, id: 99999) # personal snippet
+
+    sign_in(user)
+  end
+
+  it 'can create a project dependency graph using factories' do
+    markdown_hash = YAML.load_file(ENV.fetch('INPUT_MARKDOWN_YML_PATH'))
+
+    # NOTE: We cannot parallelize this loop like the Javascript WYSIWYG example generation does,
+    # because the rspec `post` API cannot be parallized (it is not thread-safe, it can't find
+    # the controller).
+    static_html_hash = markdown_hash.transform_values do |markdown|
+      api_url = api "/markdown"
+
+      post api_url, params: { text: markdown, gfm: true }
+
+      returned_html_value =
+        begin
+          parsed_response = Gitlab::Json.parse(response.body)
+          # The response may contain the HTML in either the `body` or `html` keys
+          parsed_response['body'] || parsed_response['html']
+        rescue JSON::ParserError
+          # if we got a parsing error, just return the raw response body for debugging purposes.
+          response.body
+        end
+
+      returned_html_value
     end
 
-    private
+    write_output_file(static_html_hash)
+  end
 
-    def build_context
-      user_username = 'glfm_user_username'
-      user = User.find_by_username(user_username) ||
-        User.create!(
-          email: "glfm_user_email@example.com",
-          name: "glfm_user_name",
-          password: "glfm_user_password",
-          username: user_username
-        )
+  private
 
-      # Ensure that we never try to hit Gitaly, even if we
-      # reload the project
-      Project.define_method(:skip_disk_validation) do
-        true
-      end
-
-      project_name = 'glfm_project_name'
-      project = Project.find_by_name(project_name) ||
-        Project.create!(
-          creator: user,
-          description: "glfm_project_description",
-          name: project_name,
-          namespace: user.namespace,
-          path: 'glfm_project_path'
-        )
-
-      {
-        only_path: false,
-        current_user: user,
-        project: project
-      }
-    end
+  def write_output_file(static_html_hash)
+    tmpfile = File.open(ENV.fetch('OUTPUT_STATIC_HTML_TEMPFILE_PATH'), 'w')
+    YAML.dump(static_html_hash, tmpfile)
+    tmpfile.close
   end
 end
-
-Glfm::RenderStaticHtml.new.process

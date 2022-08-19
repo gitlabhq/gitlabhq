@@ -1,14 +1,14 @@
 import { GlLink, GlForm } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link.vue';
+import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import Link from '~/content_editor/extensions/link';
 import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
-describe('content_editor/components/bubble_menus/link', () => {
+describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   let wrapper;
   let tiptapEditor;
   let contentEditor;

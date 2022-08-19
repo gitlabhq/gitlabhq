@@ -157,6 +157,8 @@ the restore target directories are empty.
 For both these installation types, the backup tarball has to be available in
 the backup location (default location is `/var/opt/gitlab/backups`).
 
+If you use Docker Swarm, [first disable the health check](#restore-gitlab-from-backup-using-docker-swarm).
+
 For Docker installations, the restore task can be run from host:
 
 ```shell
@@ -187,6 +189,20 @@ issue.
 
 The GitLab Helm chart uses a different process, documented in
 [restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
+
+### Restore GitLab from backup using Docker Swarm
+
+Docker Swarm might restart the container during the restore process because Puma is shut down,
+and so the container health check fails. To work around this problem, disable the health check
+mechanism in Docker compose file:
+
+```yaml
+healthcheck:
+  disable: true
+```
+
+Read more in issue #6846,
+[GitLab restore can fail owing to `gitlab-healthcheck`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6846).
 
 ## Restore for installation from source
 
