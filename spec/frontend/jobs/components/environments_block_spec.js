@@ -46,7 +46,7 @@ describe('Environments block', () => {
     });
   };
 
-  const findText = () => wrapper.find(EnvironmentsBlock).text();
+  const findText = () => wrapper.findComponent(EnvironmentsBlock).text();
   const findJobDeploymentLink = () => wrapper.find('[data-testid="job-deployment-link"]');
   const findEnvironmentLink = () => wrapper.find('[data-testid="job-environment-link"]');
   const findClusterLink = () => wrapper.find('[data-testid="job-cluster-link"]');

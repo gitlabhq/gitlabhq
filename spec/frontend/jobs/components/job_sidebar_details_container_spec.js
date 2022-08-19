@@ -11,7 +11,7 @@ describe('Job Sidebar Details Container', () => {
 
   const findJobTimeout = () => wrapper.findByTestId('job-timeout');
   const findJobTags = () => wrapper.findByTestId('job-tags');
-  const findAllDetailsRow = () => wrapper.findAll(DetailRow);
+  const findAllDetailsRow = () => wrapper.findAllComponents(DetailRow);
 
   const createWrapper = ({ props = {} } = {}) => {
     store = createStore();

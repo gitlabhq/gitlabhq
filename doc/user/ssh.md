@@ -254,7 +254,7 @@ A public and private key are generated.
 
 ## Add an SSH key to your GitLab account
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.3, default expiration date suggested in UI.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4, default expiration date suggested in UI.
 
 To use SSH with GitLab, copy your public key to your GitLab account:
 

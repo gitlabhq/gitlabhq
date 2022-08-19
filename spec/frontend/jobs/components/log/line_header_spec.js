@@ -39,7 +39,7 @@ describe('Job Log Header Line', () => {
     });
 
     it('renders the line number component', () => {
-      expect(wrapper.find(LineNumber).exists()).toBe(true);
+      expect(wrapper.findComponent(LineNumber).exists()).toBe(true);
     });
 
     it('renders a span the provided text', () => {
@@ -90,7 +90,7 @@ describe('Job Log Header Line', () => {
     });
 
     it('renders the duration badge', () => {
-      expect(wrapper.find(DurationBadge).exists()).toBe(true);
+      expect(wrapper.findComponent(DurationBadge).exists()).toBe(true);
     });
   });
 });

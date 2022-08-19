@@ -57,18 +57,18 @@ describe('Job App', () => {
     await nextTick();
   };
 
-  const findLoadingComponent = () => wrapper.find(GlLoadingIcon);
-  const findSidebar = () => wrapper.find(Sidebar);
+  const findLoadingComponent = () => wrapper.findComponent(GlLoadingIcon);
+  const findSidebar = () => wrapper.findComponent(Sidebar);
   const findJobContent = () => wrapper.find('[data-testid="job-content"');
-  const findStuckBlockComponent = () => wrapper.find(StuckBlock);
+  const findStuckBlockComponent = () => wrapper.findComponent(StuckBlock);
   const findStuckBlockWithTags = () => wrapper.find('[data-testid="job-stuck-with-tags"');
   const findStuckBlockNoActiveRunners = () =>
     wrapper.find('[data-testid="job-stuck-no-active-runners"');
-  const findFailedJobComponent = () => wrapper.find(UnmetPrerequisitesBlock);
-  const findEnvironmentsBlockComponent = () => wrapper.find(EnvironmentsBlock);
-  const findErasedBlock = () => wrapper.find(ErasedBlock);
+  const findFailedJobComponent = () => wrapper.findComponent(UnmetPrerequisitesBlock);
+  const findEnvironmentsBlockComponent = () => wrapper.findComponent(EnvironmentsBlock);
+  const findErasedBlock = () => wrapper.findComponent(ErasedBlock);
   const findArchivedJob = () => wrapper.find('[data-testid="archived-job"]');
-  const findEmptyState = () => wrapper.find(EmptyState);
+  const findEmptyState = () => wrapper.findComponent(EmptyState);
   const findJobNewIssueLink = () => wrapper.find('[data-testid="job-new-issue"]');
   const findJobEmptyStateTitle = () => wrapper.find('[data-testid="job-empty-state-title"]');
   const findJobLogScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');

@@ -26,8 +26,8 @@ describe('Stuck Block Job component', () => {
     wrapper.find('[data-testid="job-stuck-no-active-runners"]');
   const findStuckNoRunners = () => wrapper.find('[data-testid="job-stuck-no-runners"]');
   const findStuckWithTags = () => wrapper.find('[data-testid="job-stuck-with-tags"]');
-  const findRunnerPathLink = () => wrapper.find(GlLink);
-  const findAllBadges = () => wrapper.findAll(GlBadge);
+  const findRunnerPathLink = () => wrapper.findComponent(GlLink);
+  const findAllBadges = () => wrapper.findAllComponents(GlBadge);
 
   describe('with no runners for project', () => {
     beforeEach(() => {

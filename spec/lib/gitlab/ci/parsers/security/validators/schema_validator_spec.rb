@@ -21,6 +21,51 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
   let(:validator) { described_class.new(report_type, report_data, report_version, project: project, scanner: scanner) }
 
+  shared_examples 'report is valid' do
+    context 'and the report is valid' do
+      let(:report_data) do
+        {
+          'version' => report_version,
+          'vulnerabilities' => []
+        }
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  shared_examples 'logs related information' do
+    it 'logs related information' do
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        message: "security report schema validation problem",
+        security_report_type: report_type,
+        security_report_version: report_version,
+        project_id: project.id,
+        security_report_failure: security_report_failure,
+        security_report_scanner_id: 'gemnasium',
+        security_report_scanner_version: '2.1.0'
+      )
+
+      subject
+    end
+  end
+
+  shared_examples 'report is invalid' do
+    context 'and the report is invalid' do
+      let(:report_data) do
+        {
+          'version' => report_version
+        }
+      end
+
+      let(:security_report_failure) { 'schema_validation_fails' }
+
+      it { is_expected.to be_falsey }
+
+      it_behaves_like 'logs related information'
+    end
+  end
+
   describe 'SUPPORTED_VERSIONS' do
     schema_path = Rails.root.join("lib", "gitlab", "ci", "parsers", "security", "validators", "schemas")
 
@@ -75,80 +120,16 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         (latest_vendored_version[0...2] << "34").join(".")
       end
 
-      context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'and the report is invalid' do
-        let(:report_data) do
-          {
-            'version' => report_version
-          }
-        end
-
-        it { is_expected.to be_falsey }
-
-        it 'logs related information' do
-          expect(Gitlab::AppLogger).to receive(:info).with(
-            message: "security report schema validation problem",
-            security_report_type: report_type,
-            security_report_version: report_version,
-            project_id: project.id,
-            security_report_failure: 'schema_validation_fails',
-            security_report_scanner_id: 'gemnasium',
-            security_report_scanner_version: '2.1.0'
-          )
-
-          subject
-        end
-      end
+      it_behaves_like 'report is valid'
+      it_behaves_like 'report is invalid'
     end
 
     context 'when given a supported schema version' do
       let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
-      context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'and the report is invalid' do
-        let(:report_data) do
-          {
-            'version' => report_version
-          }
-        end
-
-        it { is_expected.to be_falsey }
-
-        it 'logs related information' do
-          expect(Gitlab::AppLogger).to receive(:info).with(
-            message: "security report schema validation problem",
-            security_report_type: report_type,
-            security_report_version: report_version,
-            project_id: project.id,
-            security_report_failure: 'schema_validation_fails',
-            security_report_scanner_id: 'gemnasium',
-            security_report_scanner_version: '2.1.0'
-          )
-
-          subject
-        end
-      end
+      it_behaves_like 'report is valid'
+      it_behaves_like 'report is invalid'
     end
 
     context 'when given a deprecated schema version' do
@@ -173,21 +154,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           }
         end
 
+        let(:security_report_failure) { 'using_deprecated_schema_version' }
+
         it { is_expected.to be_truthy }
 
-        it 'logs related information' do
-          expect(Gitlab::AppLogger).to receive(:info).with(
-            message: "security report schema validation problem",
-            security_report_type: report_type,
-            security_report_version: report_version,
-            project_id: project.id,
-            security_report_failure: 'using_deprecated_schema_version',
-            security_report_scanner_id: 'gemnasium',
-            security_report_scanner_version: '2.1.0'
-          )
-
-          subject
-        end
+        it_behaves_like 'logs related information'
       end
 
       context 'and the report does not pass schema validation' do
@@ -213,21 +184,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           }
         end
 
+        let(:security_report_failure) { 'using_unsupported_schema_version' }
+
         it { is_expected.to be_falsey }
 
-        it 'logs related information' do
-          expect(Gitlab::AppLogger).to receive(:info).with(
-            message: "security report schema validation problem",
-            security_report_type: report_type,
-            security_report_version: report_version,
-            project_id: project.id,
-            security_report_failure: 'using_unsupported_schema_version',
-            security_report_scanner_id: 'gemnasium',
-            security_report_scanner_version: '2.1.0'
-          )
-
-          subject
-        end
+        it_behaves_like 'logs related information'
       end
 
       context 'and the report is invalid' do
@@ -282,6 +243,23 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
     end
   end
 
+  shared_examples 'report is valid with no error' do
+    context 'and the report is valid' do
+      let(:report_data) do
+        {
+          'version' => report_version,
+          'vulnerabilities' => []
+        }
+      end
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  shared_examples 'report with expected errors' do
+    it { is_expected.to match_array(expected_errors) }
+  end
+
   describe '#errors' do
     subject { validator.errors }
 
@@ -289,16 +267,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
-      context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
-        it { is_expected.to be_empty }
-      end
+      it_behaves_like 'report is valid with no error'
 
       context 'and the report is invalid' do
         let(:report_data) do
@@ -313,7 +282,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           ]
         end
 
-        it { is_expected.to match_array(expected_errors) }
+        it_behaves_like 'report with expected errors'
       end
     end
 
@@ -331,16 +300,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
       end
 
-      context 'and the report passes schema validation' do
-        let(:report_data) do
-          {
-            'version' => '10.0.0',
-            'vulnerabilities' => []
-          }
-        end
-
-        it { is_expected.to be_empty }
-      end
+      it_behaves_like 'report is valid with no error'
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
@@ -356,7 +316,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           ]
         end
 
-        it { is_expected.to match_array(expected_errors) }
+        it_behaves_like 'report with expected errors'
       end
     end
 
@@ -383,7 +343,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           ]
         end
 
-        it { is_expected.to match_array(expected_errors) }
+        it_behaves_like 'report with expected errors'
       end
 
       context 'and the report is invalid' do
@@ -400,7 +360,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           ]
         end
 
-        it { is_expected.to match_array(expected_errors) }
+        it_behaves_like 'report with expected errors'
       end
     end
 
@@ -426,8 +386,25 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         ]
       end
 
-      it { is_expected.to match_array(expected_errors) }
+      it_behaves_like 'report with expected errors'
     end
+  end
+
+  shared_examples 'report is valid with no warning' do
+    context 'and the report is valid' do
+      let(:report_data) do
+        {
+          'version' => report_version,
+          'vulnerabilities' => []
+        }
+      end
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  shared_examples 'report with expected warnings' do
+    it { is_expected.to match_array(expected_deprecation_warnings) }
   end
 
   describe '#deprecation_warnings' do
@@ -491,7 +468,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           }
         end
 
-        it { is_expected.to match_array(expected_deprecation_warnings) }
+        it_behaves_like 'report with expected warnings'
       end
 
       context 'and the report does not pass schema validation' do
@@ -501,7 +478,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           }
         end
 
-        it { is_expected.to match_array(expected_deprecation_warnings) }
+        it_behaves_like 'report with expected warnings'
       end
     end
 
@@ -516,7 +493,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         }
       end
 
-      it { is_expected.to match_array(expected_deprecation_warnings) }
+      it_behaves_like 'report with expected warnings'
     end
   end
 
@@ -561,21 +538,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           }
         end
 
+        let(:security_report_failure) { 'schema_validation_fails' }
+
         it { is_expected.to match_array([message]) }
 
-        it 'logs related information' do
-          expect(Gitlab::AppLogger).to receive(:info).with(
-            message: "security report schema validation problem",
-            security_report_type: report_type,
-            security_report_version: report_version,
-            project_id: project.id,
-            security_report_failure: 'schema_validation_fails',
-            security_report_scanner_id: 'gemnasium',
-            security_report_scanner_version: '2.1.0'
-          )
-
-          subject
-        end
+        it_behaves_like 'logs related information'
       end
     end
 
@@ -583,16 +550,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
-      context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
-        it { is_expected.to be_empty }
-      end
+      it_behaves_like 'report is valid with no warning'
 
       context 'and the report is invalid' do
         let(:report_data) do
@@ -644,16 +602,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
 
-      context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
-        it { is_expected.to be_empty }
-      end
+      it_behaves_like 'report is valid with no warning'
 
       context 'and the report is invalid' do
         let(:report_data) do

@@ -15,11 +15,11 @@ describe('Sidebar details block', () => {
   let wrapper;
 
   const forwardDeploymentFailure = 'forward_deployment_failure';
-  const findModal = () => wrapper.find(JobRetryForwardDeploymentModal);
+  const findModal = () => wrapper.findComponent(JobRetryForwardDeploymentModal);
   const findArtifactsBlock = () => wrapper.findComponent(ArtifactsBlock);
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
-  const findRetryButton = () => wrapper.find(JobRetryButton);
+  const findRetryButton = () => wrapper.findComponent(JobRetryButton);
   const findTerminalLink = () => wrapper.findByTestId('terminal-link');
   const findEraseLink = () => wrapper.findByTestId('job-log-erase-link');
 
@@ -176,7 +176,7 @@ describe('Sidebar details block', () => {
 
     describe('with stages', () => {
       it('renders value provided as selectedStage as selected', () => {
-        expect(wrapper.find(StagesDropdown).props('selectedStage')).toBe('aStage');
+        expect(wrapper.findComponent(StagesDropdown).props('selectedStage')).toBe('aStage');
       });
     });
 
@@ -184,7 +184,7 @@ describe('Sidebar details block', () => {
       beforeEach(() => store.dispatch('receiveJobSuccess', job));
 
       it('does not render jobs container', () => {
-        expect(wrapper.find(JobsContainer).exists()).toBe(false);
+        expect(wrapper.findComponent(JobsContainer).exists()).toBe(false);
       });
     });
 
@@ -195,7 +195,7 @@ describe('Sidebar details block', () => {
       });
 
       it('renders list of jobs', () => {
-        expect(wrapper.find(JobsContainer).exists()).toBe(true);
+        expect(wrapper.findComponent(JobsContainer).exists()).toBe(true);
       });
     });
   });

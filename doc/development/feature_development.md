@@ -174,6 +174,7 @@ See [database guidelines](database/index.md).
 ## Domain-specific guides
 
 - [CI/CD development documentation](cicd/index.md)
+- [Sec Section development documentation](sec/index.md)
 
 ## Technical Reference by Group
 

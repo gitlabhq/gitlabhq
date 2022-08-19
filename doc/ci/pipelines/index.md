@@ -403,8 +403,9 @@ pipeline graph. The remaining jobs still run as normal. To see the jobs:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
 
-You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
-dependencies.
+To arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
+dependencies, select **Job dependencies** in the **Group jobs by** section. This option
+is available for pipelines with 3 or more jobs with `needs` job dependencies.
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
 

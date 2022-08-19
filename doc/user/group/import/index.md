@@ -170,3 +170,17 @@ import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import)
 
 import.status #=> 3 means that the import timed out.
 ```
+
+### Error: `404 Group Not Found`
+
+If you attempt to import a group that has a path comprised of only numbers (for example, `5000`), GitLab attempts to find the group by ID instead of the
+path. This causes a `404 Group Not Found` error. To solve this, the source group path must be changed to include a non-numerical character using either:
+
+- The GitLab UI:
+
+  1. On the top bar, select **Menu > Groups** and find your group.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Advanced**.
+  1. Under **Change group URL**, change the group URL to include non-numeric characters.
+
+- The [Groups API](../../../api/groups.md#update-group).

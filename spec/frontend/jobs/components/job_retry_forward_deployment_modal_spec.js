@@ -10,8 +10,8 @@ describe('Job Retry Forward Deployment Modal', () => {
   let wrapper;
 
   const retryOutdatedJobDocsUrl = 'url-to-docs';
-  const findLink = () => wrapper.find(GlLink);
-  const findModal = () => wrapper.find(GlModal);
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findModal = () => wrapper.findComponent(GlModal);
 
   const createWrapper = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     store = createStore();

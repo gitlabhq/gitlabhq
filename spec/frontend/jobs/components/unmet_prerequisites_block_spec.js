@@ -23,7 +23,7 @@ describe('Unmet Prerequisites Block Job component', () => {
   });
 
   it('renders an alert with the correct message', () => {
-    const container = wrapper.find(GlAlert);
+    const container = wrapper.findComponent(GlAlert);
     const alertMessage =
       'This job failed because the necessary resources were not successfully created.';
 
@@ -32,7 +32,7 @@ describe('Unmet Prerequisites Block Job component', () => {
   });
 
   it('renders link to help page', () => {
-    const helpLink = wrapper.find(GlLink);
+    const helpLink = wrapper.findComponent(GlLink);
 
     expect(helpLink).not.toBeNull();
     expect(helpLink.text()).toContain('More information');

@@ -10,7 +10,7 @@ describe('Erased block', () => {
   const timeago = getTimeago();
   const formattedDate = timeago.format(erasedAt);
 
-  const findLink = () => wrapper.find(GlLink);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = (props) => {
     wrapper = mount(ErasedBlock, {
