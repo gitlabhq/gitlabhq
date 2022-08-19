@@ -99,15 +99,6 @@ export const issuableIconMap = {
   [issuableTypesMap.EPIC]: 'epic',
 };
 
-/**
- * These are used to map issuableType to the correct QA class.
- * Since these are never used for any display purposes, don't wrap
- * them inside i18n functions.
- */
-export const issuableQaClassMap = {
-  [issuableTypesMap.EPIC]: 'qa-add-epics-button',
-};
-
 export const PathIdSeparator = {
   Epic: '&',
   Issue: '#',

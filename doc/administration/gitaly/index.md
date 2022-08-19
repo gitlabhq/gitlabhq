@@ -660,7 +660,14 @@ The code removed from GitLab during the Gitaly migration project affected these 
 performance workaround for these NFS-based deployments, we re-introduced some of the old Rugged
 code. This re-introduced code is informally referred to as the "Rugged patches".
 
-### How it works
+### Automatic detection
+
+> Automatic detection for Rugged [disabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95445) in GitLab 15.3.
+
+FLAG:
+On self-managed GitLab, by default automatic detection of whether Rugged should be used (per storage) is not available.
+To make it available, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named
+`skip_rugged_auto_detect`.
 
 The Ruby methods that perform direct Git access are behind
 [feature flags](../../development/gitaly.md#legacy-rugged-code), disabled by default. It wasn't
@@ -685,12 +692,13 @@ To see if GitLab can access the repository file system directly, we use the foll
 - GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
   assume we have direct access.
 
-Versions of GitLab 15.3 and later disable direct Git access by default.
+Direct Git access is:
 
-For versions of GitLab prior to 15.3, direct Git access is enabled by
-default in Omnibus GitLab because it fills in the correct repository
-paths in the GitLab configuration file `config/gitlab.yml`. This
-satisfies the UUID check.
+- [Disabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95445) by default in GitLab 15.3 and later for
+  compatibility with [Praefect-generated replica paths](#praefect-generated-replica-paths-gitlab-150-and-later). It
+  can be enabled if Rugged [feature flags](../../development/gitaly.md#legacy-rugged-code) are enabled.
+- Enabled by default in GitLab 15.2 and earlier because it fills in the correct repository paths in the GitLab
+  configuration file `config/gitlab.yml`. This satisfies the UUID check.
 
 ### Transition to Gitaly Cluster
 

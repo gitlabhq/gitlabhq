@@ -78,7 +78,6 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         .findByLabelText(sprintf(__('Your new %{accessTokenType}'), { accessTokenType }))
         .attributes();
       expect(inputAttributes).toMatchObject({
-        class: expect.stringContaining('qa-created-access-token'),
         'data-qa-selector': 'created_access_token_field',
       });
     });

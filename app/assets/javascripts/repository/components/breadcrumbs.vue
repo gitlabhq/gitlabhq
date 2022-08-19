@@ -191,7 +191,7 @@ export default {
               href: `${this.newBlobPath}/${
                 this.currentPath ? encodeURIComponent(this.currentPath) : ''
               }`,
-              class: 'qa-new-file-option',
+              'data-qa-selector': 'new_file_menu_item',
             },
             text: __('New file'),
           },
@@ -300,7 +300,11 @@ export default {
         </router-link>
       </li>
       <li v-if="renderAddToTreeDropdown" class="breadcrumb-item">
-        <gl-dropdown toggle-class="add-to-tree qa-add-to-tree gl-ml-2">
+        <gl-dropdown
+          toggle-class="add-to-tree gl-ml-2"
+          data-testid="add-to-tree"
+          data-qa-selector="add_to_tree_dropdown"
+        >
           <template #button-content>
             <span class="sr-only">{{ __('Add to tree') }}</span>
             <gl-icon name="plus" :size="16" class="float-left" />

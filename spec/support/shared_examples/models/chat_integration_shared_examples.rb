@@ -36,6 +36,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
     let_it_be_with_reload(:project) { create(:project, :repository) }
 
     let(:webhook_url) { "https://example.gitlab.com/" }
+    let(:webhook_url_regex) { /\A#{webhook_url}.*/ }
 
     before do
       allow(subject).to receive_messages(
@@ -45,7 +46,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
         webhook: webhook_url
       )
 
-      WebMock.stub_request(:post, webhook_url)
+      WebMock.stub_request(:post, webhook_url_regex)
     end
 
     shared_examples "triggered #{integration_name} integration" do |branches_to_be_notified: nil|
@@ -57,7 +58,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
         result = subject.execute(sample_data)
 
         expect(result).to be(true)
-        expect(WebMock).to have_requested(:post, webhook_url).once.with { |req|
+        expect(WebMock).to have_requested(:post, webhook_url_regex).once.with { |req|
           json_body = Gitlab::Json.parse(req.body).with_indifferent_access
           expect(json_body).to include(payload)
         }
@@ -73,7 +74,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
         result = subject.execute(sample_data)
 
         expect(result).to be_falsy
-        expect(WebMock).not_to have_requested(:post, webhook_url)
+        expect(WebMock).not_to have_requested(:post, webhook_url_regex)
       end
     end
 

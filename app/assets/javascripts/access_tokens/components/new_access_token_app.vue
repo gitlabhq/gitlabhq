@@ -42,7 +42,6 @@ export default {
     formInputGroupProps() {
       return {
         id: this.$options.tokenInputId,
-        class: 'qa-created-access-token',
         'data-qa-selector': 'created_access_token_field',
         name: this.$options.tokenInputId,
       };

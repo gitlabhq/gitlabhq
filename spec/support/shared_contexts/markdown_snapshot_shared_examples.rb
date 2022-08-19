@@ -10,6 +10,14 @@ RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_speci
   let_it_be(:user) { create(:user) }
   let_it_be(:api_url) { api('/markdown', user) }
 
+  before do
+    # Set 'GITLAB_TEST_FOOTNOTE_ID' in order to override random number generation in
+    # Banzai::Filter::FootnoteFilter#random_number, and thus avoid the need to
+    # perform normalization on the value. See:
+    # https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
+    stub_env('GITLAB_TEST_FOOTNOTE_ID', 42)
+  end
+
   markdown_examples, html_examples = %w[markdown.yml html.yml].map do |file_name|
     yaml = File.read("#{glfm_specification_dir}/example_snapshots/#{file_name}")
     YAML.safe_load(yaml, symbolize_names: true, aliases: true)

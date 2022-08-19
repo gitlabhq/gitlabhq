@@ -156,10 +156,8 @@ For deployments where NFS is used to store Git repositories, GitLab uses
 [direct Git access](../gitaly/index.md#direct-access-to-git-in-gitlab) to improve performance by using
 [Rugged](https://github.com/libgit2/rugged).
 
-Rugged usage is automatically enabled if direct Git access
-[is available](../gitaly/index.md#how-it-works)
-and Puma is running single threaded, unless it is disabled by a
-[feature flag](../../development/gitaly.md#legacy-rugged-code).
+Rugged usage is automatically enabled if direct Git access [is available](../gitaly/index.md#automatic-detection) and
+Puma is running single threaded, unless it is disabled by a [feature flag](../../development/gitaly.md#legacy-rugged-code).
 
 MRI Ruby uses a Global VM Lock (GVL). GVL allows MRI Ruby to be multi-threaded, but running at
 most on a single core.

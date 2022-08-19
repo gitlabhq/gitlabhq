@@ -58,8 +58,8 @@ module QA
         end
 
         view 'app/assets/javascripts/repository/components/breadcrumbs.vue' do
-          element :add_to_tree
-          element :new_file_option
+          element :add_to_tree_dropdown
+          element :new_file_menu_item
         end
 
         view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
@@ -90,8 +90,8 @@ module QA
         end
 
         def create_new_file!
-          click_element :add_to_tree
-          click_element :new_file_option
+          click_element :add_to_tree_dropdown
+          click_element :new_file_menu_item
         end
 
         def fork_project

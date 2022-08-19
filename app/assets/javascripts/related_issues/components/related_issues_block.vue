@@ -3,7 +3,6 @@ import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   issuableIconMap,
-  issuableQaClassMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
   issuablesBlockHeaderTextMap,
@@ -142,9 +141,6 @@ export default {
     issuableTypeIcon() {
       return issuableIconMap[this.issuableType];
     },
-    qaClass() {
-      return issuableQaClassMap[this.issuableType];
-    },
     toggleIcon() {
       return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
     },
@@ -205,7 +201,6 @@ export default {
           data-qa-selector="related_issues_plus_button"
           data-testid="related-issues-plus-button"
           :aria-label="addIssuableButtonText"
-          :class="qaClass"
           class="gl-ml-3"
           @click="addButtonClick"
         >

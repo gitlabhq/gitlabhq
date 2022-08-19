@@ -197,7 +197,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" size="lg" class="qa-loading-animation gl-mt-6" />
+    <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">
       <div class="build-page" data-testid="job-content">

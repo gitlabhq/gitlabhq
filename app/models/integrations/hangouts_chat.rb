@@ -47,8 +47,31 @@ module Integrations
     private
 
     def notify(message, opts)
+      url = webhook.dup
+
+      key = parse_thread_key(message)
+      url = Gitlab::Utils.add_url_parameters(url, { threadKey: key }) if key
+
       simple_text = parse_simple_text_message(message)
-      ::HangoutsChat::Sender.new(webhook).simple(simple_text)
+      ::HangoutsChat::Sender.new(url).simple(simple_text)
+    end
+
+    # Returns an appropriate key for threading messages in google chat
+    def parse_thread_key(message)
+      case message
+      when Integrations::ChatMessage::NoteMessage
+        message.target
+      when Integrations::ChatMessage::IssueMessage
+        "issue #{Issue.reference_prefix}#{message.issue_iid}"
+      when Integrations::ChatMessage::MergeMessage
+        "merge request #{MergeRequest.reference_prefix}#{message.merge_request_iid}"
+      when Integrations::ChatMessage::PushMessage
+        "push #{message.project_name}_#{message.ref}"
+      when Integrations::ChatMessage::PipelineMessage
+        "pipeline #{message.pipeline_id}"
+      when Integrations::ChatMessage::WikiPageMessage
+        "wiki_page #{message.wiki_page_url}"
+      end
     end
 
     def parse_simple_text_message(message)

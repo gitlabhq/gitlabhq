@@ -127,6 +127,10 @@ RSpec.describe HealthController do
           end
 
           it 'responds with readiness checks data' do
+            expect_next_instance_of(Gitlab::GitalyClient::ServerService) do |service|
+              expect(service).to receive(:readiness_check).and_return({ success: true })
+            end
+
             subject
 
             expect(json_response['db_check']).to contain_exactly({ 'status' => 'ok' })

@@ -40,6 +40,8 @@ Use impersonation tokens to automate authentication as a specific user.
 
 ## Create a personal access token
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
+
 You can create as many personal access tokens as you like.
 
 1. In the top-right corner, select your avatar.
