@@ -283,6 +283,14 @@ RSpec.describe Issue do
 
         create(:issue)
       end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:issue) { create(:issue) }
+        let(:project) { issue.project }
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:user) { issue.author }
+        subject(:service_action) { issue }
+      end
     end
 
     context 'issue namespace' do

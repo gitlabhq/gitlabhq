@@ -36,7 +36,8 @@ module Gitlab
       ISSUE_COMMENT_REMOVED = 'g_project_management_issue_comment_removed'
 
       class << self
-        def track_issue_created_action(author:)
+        def track_issue_created_action(author:, project:)
+          track_snowplow_action(ISSUE_CREATED, author, project)
           track_unique_action(ISSUE_CREATED, author)
         end
 
@@ -65,11 +66,13 @@ module Gitlab
           track_unique_action(ISSUE_MADE_VISIBLE, author)
         end
 
-        def track_issue_closed_action(author:)
+        def track_issue_closed_action(author:, project:)
+          track_snowplow_action(ISSUE_CLOSED, author, project)
           track_unique_action(ISSUE_CLOSED, author)
         end
 
-        def track_issue_reopened_action(author:)
+        def track_issue_reopened_action(author:, project:)
+          track_snowplow_action(ISSUE_REOPENED, author, project)
           track_unique_action(ISSUE_REOPENED, author)
         end
 
@@ -88,7 +91,8 @@ module Gitlab
           track_unique_action(ISSUE_CROSS_REFERENCED, author)
         end
 
-        def track_issue_moved_action(author:)
+        def track_issue_moved_action(author:, project:)
+          track_snowplow_action(ISSUE_MOVED, author, project)
           track_unique_action(ISSUE_MOVED, author)
         end
 
@@ -112,15 +116,18 @@ module Gitlab
           track_unique_action(ISSUE_UNLOCKED, author)
         end
 
-        def track_issue_designs_added_action(author:)
+        def track_issue_designs_added_action(author:, project:)
+          track_snowplow_action(ISSUE_DESIGNS_ADDED, author, project)
           track_unique_action(ISSUE_DESIGNS_ADDED, author)
         end
 
-        def track_issue_designs_modified_action(author:)
+        def track_issue_designs_modified_action(author:, project:)
+          track_snowplow_action(ISSUE_DESIGNS_MODIFIED, author, project)
           track_unique_action(ISSUE_DESIGNS_MODIFIED, author)
         end
 
-        def track_issue_designs_removed_action(author:)
+        def track_issue_designs_removed_action(author:, project:)
+          track_snowplow_action(ISSUE_DESIGNS_REMOVED, author, project)
           track_unique_action(ISSUE_DESIGNS_REMOVED, author)
         end
 

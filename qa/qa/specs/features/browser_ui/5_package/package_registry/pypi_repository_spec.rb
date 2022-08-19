@@ -98,10 +98,6 @@ module QA
           QA::Runtime::Logger.debug('Visiting the secondary Geo site')
 
           QA::Flow::Login.while_signed_in(address: :geo_secondary) do
-            EE::Page::Main::Banner.perform do |banner|
-              expect(banner).to have_secondary_read_only_banner
-            end
-
             Page::Main::Menu.perform(&:go_to_projects)
 
             Page::Dashboard::Projects.perform do |dashboard|

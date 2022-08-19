@@ -2,7 +2,7 @@
 import { GlTokenSelector, GlAvatarLabeled } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
-import searchProjectTopics from '../queries/project_topics_search.query.graphql';
+import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';
 
 export default {
   components: {

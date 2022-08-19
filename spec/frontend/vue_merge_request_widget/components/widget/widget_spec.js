@@ -155,6 +155,21 @@ describe('MR Widget', () => {
   });
 
   describe('handle collapse toggle', () => {
+    it('displays the toggle button correctly', () => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve(),
+        },
+        slots: {
+          content: '<b>More complex content</b>',
+        },
+      });
+
+      expect(findToggleButton().attributes('title')).toBe('Show details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Show details');
+    });
+
     it('does not display the content slot until toggle is clicked', async () => {
       createComponent({
         propsData: {

@@ -1318,7 +1318,6 @@ class MergeRequest < ApplicationRecord
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
   def cache_merge_request_closes_issues!(current_user = self.author)
-    return unless project.issues_enabled?
     return if closed? || merged?
 
     transaction do

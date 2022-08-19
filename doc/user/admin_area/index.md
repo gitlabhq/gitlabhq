@@ -288,6 +288,8 @@ To edit a topic, select **Edit** in that topic's row.
 
 To remove a topic, select **Remove** in that topic's row.
 
+To remove a topic and move all assigned projects to another topic, select **Merge topics**.
+
 To search for topics by name, enter your criteria in the search box. The topic search is case
 insensitive and applies partial matching.
 

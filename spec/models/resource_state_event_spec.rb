@@ -42,16 +42,44 @@ RSpec.describe ResourceStateEvent, type: :model do
 
   context 'callbacks' do
     describe '#issue_usage_metrics' do
-      it 'tracks closed issues' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_closed_action)
+      describe 'when an issue is closed' do
+        subject(:close_issue) do
+          create(described_class.name.underscore.to_sym, issue: issue,
+                                                         state: described_class.states[:closed])
+        end
 
-        create(described_class.name.underscore.to_sym, issue: issue, state: described_class.states[:closed])
+        it 'tracks closed issues' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_closed_action)
+
+          close_issue
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLOSED }
+          let(:project) { issue.project }
+          let(:user) { issue.author }
+          subject(:service_action) { close_issue }
+        end
       end
 
-      it 'tracks reopened issues' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_reopened_action)
+      describe 'when an issue is reopened' do
+        subject(:reopen_issue) do
+          create(described_class.name.underscore.to_sym, issue: issue,
+                                                         state: described_class.states[:reopened])
+        end
 
-        create(described_class.name.underscore.to_sym, issue: issue, state: described_class.states[:reopened])
+        it 'tracks reopened issues' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_reopened_action)
+
+          reopen_issue
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_REOPENED }
+          let(:project) { issue.project }
+          let(:user) { issue.author }
+          subject(:service_action) { reopen_issue }
+        end
       end
 
       it 'does not track merge requests' do

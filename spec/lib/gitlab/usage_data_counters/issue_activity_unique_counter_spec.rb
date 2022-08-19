@@ -65,7 +65,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue created actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_CREATED }
 
       def track_action(params)
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue closed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_CLOSED }
 
       def track_action(params)
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue reopened actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_REOPENED }
 
       def track_action(params)
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue moved actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_MOVED }
 
       def track_action(params)
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue designs added actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_DESIGNS_ADDED }
 
       def track_action(params)
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue designs modified actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_DESIGNS_MODIFIED }
 
       def track_action(params)
@@ -215,7 +215,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue designs removed actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_DESIGNS_REMOVED }
 
       def track_action(params)

@@ -884,6 +884,16 @@ RSpec.describe MergeRequest, factory_default: :keep do
         expect { subject.cache_merge_request_closes_issues!(subject.author) }
           .not_to change(subject.merge_requests_closing_issues, :count)
       end
+
+      it 'caches issues from another project with issues enabled' do
+        project = create(:project, :public, issues_enabled: true)
+        issue = create(:issue, project: project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference(full: true)}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }
+          .to change(subject.merge_requests_closing_issues, :count).by(1)
+      end
     end
   end
 

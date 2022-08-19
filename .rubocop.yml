@@ -569,9 +569,6 @@ RSpec/ImplicitSubject:
 RSpec/DescribedClass:
   Enabled: false
 
-RSpec/EmptyLineAfterExampleGroup:
-  Enabled: false
-
 RSpec/ReceiveNever:
   Enabled: false
 

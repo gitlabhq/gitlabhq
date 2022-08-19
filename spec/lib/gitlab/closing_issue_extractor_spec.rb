@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ClosingIssueExtractor do
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:project2) { create(:project) }
+  let_it_be_with_reload(:project2) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:issue2) { create(:issue, project: project2) }
 
@@ -335,6 +335,17 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
       end
     end
 
+    context 'when target project has autoclose issues disabled' do
+      before do
+        project2.update!(autoclose_referenced_issues: false)
+      end
+
+      it 'omits the issue reference' do
+        message = "Closes #{cross_reference}"
+        expect(subject.closed_by_message(message)).to be_empty
+      end
+    end
+
     context "with an invalid URL" do
       it do
         message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)}"
@@ -443,13 +454,18 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     end
 
     context "with autoclose referenced issues disabled" do
-      before do
+      before_all do
         project.update!(autoclose_referenced_issues: false)
       end
 
-      it do
+      it 'excludes same project references' do
         message = "Awesome commit (Closes #{reference})"
         expect(subject.closed_by_message(message)).to eq([])
+      end
+
+      it 'includes issues from other projects with autoclose enabled' do
+        message = "Closes #{cross_reference}"
+        expect(subject.closed_by_message(message)).to eq([issue2])
       end
     end
   end

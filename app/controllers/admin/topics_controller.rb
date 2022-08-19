@@ -56,9 +56,8 @@ class Admin::TopicsController < Admin::ApplicationController
     end
 
     message = _('Topic %{source_topic} was successfully merged into topic %{target_topic}.')
-    redirect_to admin_topics_path,
-                status: :found,
-                notice: message % { source_topic: source_topic.name, target_topic: target_topic.name }
+    flash[:toast] = message % { source_topic: source_topic.name, target_topic: target_topic.name }
+    redirect_to admin_topics_path, status: :found
   end
 
   private

@@ -303,7 +303,7 @@ module SystemNotes
       cross_reference = noteable_ref.to_reference(project)
       body = "moved #{direction} #{cross_reference}"
 
-      issue_activity_counter.track_issue_moved_action(author: author) if noteable.is_a?(Issue)
+      issue_activity_counter.track_issue_moved_action(author: author, project: project) if noteable.is_a?(Issue)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
     end

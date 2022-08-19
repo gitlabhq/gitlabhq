@@ -85,6 +85,9 @@ export default {
     };
   },
   computed: {
+    collapseButtonLabel() {
+      return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
+    },
     statusIcon() {
       return this.error ? EXTENSION_ICONS.failed : this.statusIconName;
     },
@@ -106,9 +109,6 @@ export default {
     this.isLoading = false;
   },
   methods: {
-    collapseButtonLabel() {
-      return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
-    },
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
     },

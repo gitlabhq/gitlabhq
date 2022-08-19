@@ -716,7 +716,7 @@ class Issue < ApplicationRecord
   end
 
   def record_create_action
-    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author)
+    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author, project: project)
   end
 
   # Returns `true` if this Issue is visible to everybody.

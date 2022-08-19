@@ -458,7 +458,8 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
 
 You can disable the automatic issue closing feature on a per-project basis
 in the [project's settings](../settings/index.md).
@@ -472,20 +473,15 @@ To disable automatic issue closing:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Default branch**.
-1. Select **Auto-close referenced issues on default branch**.
+1. Clear the **Auto-close referenced issues on default branch** checkbox.
 1. Select **Save changes**.
 
 Referenced issues are still displayed, but are not closed automatically.
 
-The automatic issue closing is disabled by default in a project if the project has the issue tracker
-disabled. If you want to enable automatic issue closing, make sure to
-[enable GitLab Issues](../settings/index.md#configure-project-visibility-features-and-permissions).
-
 Changing this setting applies only to new merge requests or commits. Already
 closed issues remain as they are.
-If issue tracking is enabled, disabling automatic issue closing only applies to merge requests
-attempting to automatically close issues in the same project.
-Merge requests in other projects can still close another project's issues.
+Disabling automatic issue closing only applies to issues in the project where the setting was disabled.
+Merge requests and commits in this project can still close another project's issues.
 
 #### Customize the issue closing pattern **(FREE SELF)**
 

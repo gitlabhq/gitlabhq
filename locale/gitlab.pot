@@ -24876,6 +24876,30 @@ msgstr ""
 msgid "MergeRequest|Search (e.g. *.vue) (%{modifier_key}P)"
 msgstr ""
 
+msgid "MergeTopics|%{sourceTopic} will be removed"
+msgstr ""
+
+msgid "MergeTopics|All assigned projects will be moved to %{targetTopic}"
+msgstr ""
+
+msgid "MergeTopics|Merge topics"
+msgstr ""
+
+msgid "MergeTopics|Merging topics will cause the following:"
+msgstr ""
+
+msgid "MergeTopics|Move all assigned projects from the source topic to the target topic and remove the source topic."
+msgstr ""
+
+msgid "MergeTopics|Source topic"
+msgstr ""
+
+msgid "MergeTopics|Target topic"
+msgstr ""
+
+msgid "MergeTopics|This action cannot be undone."
+msgstr ""
+
 msgid "Merged"
 msgstr ""
 
@@ -41073,6 +41097,15 @@ msgid "Topic title"
 msgstr ""
 
 msgid "Topic was successfully updated."
+msgstr ""
+
+msgid "TopicSelect|No matching results"
+msgstr ""
+
+msgid "TopicSelect|Search topics"
+msgstr ""
+
+msgid "TopicSelect|Select a topic"
 msgstr ""
 
 msgid "Topics"

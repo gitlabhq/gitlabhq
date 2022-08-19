@@ -17,7 +17,6 @@ module Gitlab
 
     def closed_by_message(message)
       return [] if message.nil?
-      return [] unless @project.autoclose_referenced_issues
 
       closing_statements = []
       message.scan(ISSUE_CLOSING_REGEX) do
@@ -27,8 +26,9 @@ module Gitlab
       @extractor.analyze(closing_statements.join(" "))
 
       @extractor.issues.reject do |issue|
-        # Don't extract issues from the project this project was forked from
-        @extractor.project.forked_from?(issue.project)
+        @extractor.project.forked_from?(issue.project) ||
+          !issue.project.autoclose_referenced_issues ||
+          !issue.project.issues_enabled?
       end
     end
   end

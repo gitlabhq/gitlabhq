@@ -59,6 +59,14 @@ RSpec.describe WorkItem do
 
         create(:work_item)
       end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:work_item) { create(:work_item) }
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:project) { work_item.project }
+        let(:user) { work_item.author }
+        subject(:service_action) { work_item }
+      end
     end
 
     context 'work item namespace' do
