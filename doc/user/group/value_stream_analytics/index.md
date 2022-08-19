@@ -125,7 +125,7 @@ In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on
 
 ### How value stream analytics aggregates data
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5 [with a flag](../../../administration/feature_flags.md) named `use_vsa_aggregated_tables`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
 > - Data refresh badge [added](https://gitlab.com/gitlab-org/gitlab/-/issues/341739) in GitLab 14.9
 > - Filter by stop date toggle [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84356) in GitLab 14.9

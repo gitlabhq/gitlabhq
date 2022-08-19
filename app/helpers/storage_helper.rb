@@ -61,6 +61,7 @@ module StorageHelper
     return false if root_ancestor.paid?
     return false unless future_enforcement_date?(root_ancestor)
     return false if user_dismissed_storage_enforcement_banner?(root_ancestor)
+    return false if (root_ancestor.root_storage_statistics&.storage_size || 0) < ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE
 
     ::Feature.enabled?(:namespace_storage_limit_show_preenforcement_banner, root_ancestor)
   end

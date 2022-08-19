@@ -66,7 +66,13 @@ module ProductAnalyticsTracking
       i_analytics_dev_ops_score: :route_hll_to_snowplow_phase2,
       p_analytics_merge_request: :route_hll_to_snowplow_phase2,
       i_analytics_instance_statistics: :route_hll_to_snowplow_phase2,
-      g_analytics_contribution: :route_hll_to_snowplow_phase2
+      g_analytics_contribution: :route_hll_to_snowplow_phase2,
+      p_analytics_pipelines: :route_hll_to_snowplow_phase2,
+      p_analytics_code_reviews: :route_hll_to_snowplow_phase2,
+      p_analytics_valuestream: :route_hll_to_snowplow_phase2,
+      p_analytics_insights: :route_hll_to_snowplow_phase2,
+      p_analytics_issues: :route_hll_to_snowplow_phase2,
+      p_analytics_repo: :route_hll_to_snowplow_phase2
     }
 
     Feature.enabled?(events_to_ff[event.to_sym], tracking_namespace_source)

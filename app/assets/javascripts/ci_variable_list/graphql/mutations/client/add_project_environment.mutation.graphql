@@ -1,0 +1,3 @@
+mutation addProjectEnvironment($environment: CiEnvironment, $fullPath: ID!) {
+  addProjectEnvironment(environment: $environment, fullPath: $fullPath) @client
+}

@@ -53,14 +53,17 @@ RSpec.describe StorageHelper do
 
   describe "storage_enforcement_banner" do
     let_it_be_with_refind(:current_user) { create(:user) }
-    let_it_be(:free_group) { create(:group) }
-    let_it_be(:paid_group) { create(:group) }
+    let_it_be(:free_group) { create(:group, :with_root_storage_statistics) }
+    let_it_be(:paid_group) { create(:group, :with_root_storage_statistics) }
 
     before do
       allow(helper).to receive(:can?).with(current_user, :maintainer_access, free_group).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :maintainer_access, paid_group).and_return(true)
       allow(helper).to receive(:current_user) { current_user }
       allow(paid_group).to receive(:paid?).and_return(true)
+
+      free_group.root_storage_statistics.update!(storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE)
+      paid_group.root_storage_statistics.update!(storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE)
 
       stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
     end
@@ -110,13 +113,13 @@ RSpec.describe StorageHelper do
             })
           end
 
-          context 'when namespace has used storage' do
+          context 'when namespace is under MIN_STORAGE_ENFORCEMENT_USAGE limit' do
             before do
-              create(:namespace_root_storage_statistics, namespace: free_group, storage_size: 102400)
+              free_group.root_storage_statistics.update!(storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE - 1)
             end
 
-            it 'returns a hash with the correct storage size text' do
-              expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_2]).to eql("The namespace is currently using <strong>100 KB</strong> of namespace storage. Group owners can view namespace storage usage and purchase more from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more.</a>")
+            it 'returns nil' do
+              expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
             end
           end
 
@@ -141,7 +144,6 @@ RSpec.describe StorageHelper do
         end
 
         it 'returns the enforcement info' do
-          puts helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]
           expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]).to include("Effective #{Date.current}, namespace storage limits will apply")
         end
       end

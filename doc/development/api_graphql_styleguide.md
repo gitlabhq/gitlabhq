@@ -484,7 +484,7 @@ You can also
 [change or remove Alpha items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
 the schema item by removing its Alpha property to make it public.
 
-### Descriptions for feature flagged items
+### Descriptions for feature-flagged items
 
 When using a feature flag to toggle the value or behavior of a schema item, the
 `description` of the item must:
@@ -494,7 +494,11 @@ When using a feature flag to toggle the value or behavior of a schema item, the
 - State what the field returns, or behavior is, when the feature flag is disabled (or
   enabled, if more appropriate).
 
-Example of a feature-flagged field:
+### Examples of using feature flags
+
+#### Feature-flagged field
+
+A field value is toggled based on the feature flag state. A common use is to return `null` if the feature flag is disabled:
 
 ```ruby
 field :foo, GraphQL::Types::String, null: true,
@@ -507,7 +511,10 @@ def foo
 end
 ```
 
-Example of a feature-flagged argument:
+#### Feature-flagged argument
+
+An argument can be ignored, or have its value changed, based on the feature flag state.
+A common use is to ignore the argument when a feature flag is disabled:
 
 ```ruby
 argument :foo, type: GraphQL::Types::String, required: false,
@@ -517,6 +524,24 @@ argument :foo, type: GraphQL::Types::String, required: false,
 
 def resolve(args)
   args.delete(:foo) unless Feature.enabled?(:my_feature_flag, object)
+  # ...
+end
+```
+
+#### Feature-flagged mutation
+
+A mutation that cannot be performed due to a feature flag state is handled as a
+[non-recoverable mutation error](#failure-irrelevant-to-the-user). The error is returned at the top level:
+
+```ruby
+description 'Mutates an object. Does not mutate the object if ' \
+            '`my_feature_flag` feature flag is disabled.'
+
+def resolve(id: )
+  object = authorized_find!(id: id)
+
+  raise Gitlab::Graphql::Errors::ResourceNotAvailable, '`my_feature_flag` feature flag is disabled.' \
+    if Feature.disabled?(:my_feature_flag, object)
   # ...
 end
 ```
@@ -1611,7 +1636,7 @@ correctly rendered to the clients.
 
 ### Errors in mutations
 
-We encourage following the practice of 
+We encourage following the practice of
 [errors as data](https://graphql-ruby.org/mutations/mutation_errors) for mutations, which
 distinguishes errors by who they are relevant to, defined by who can deal with
 them.

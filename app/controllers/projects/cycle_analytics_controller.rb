@@ -5,13 +5,17 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::TextHelper
   include CycleAnalyticsParams
   include GracefulTimeoutHandling
-  include RedisTracking
+  include ProductAnalyticsTracking
   extend ::Gitlab::Utils::Override
 
   before_action :authorize_read_cycle_analytics!
   before_action :load_value_stream, only: :show
 
-  track_redis_hll_event :show, name: 'p_analytics_valuestream'
+  track_custom_event :show,
+    name: 'p_analytics_valuestream',
+    action: 'perform_analytics_usage_action',
+    label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
+    destinations: %i[redis_hll snowplow]
 
   feature_category :planning_analytics
   urgency :low
@@ -53,5 +57,13 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
       stats: @cycle_analytics.stats,
       permissions: @cycle_analytics.permissions(user: current_user)
     }
+  end
+
+  def tracking_namespace_source
+    project.namespace
+  end
+
+  def tracking_project_source
+    project
   end
 end

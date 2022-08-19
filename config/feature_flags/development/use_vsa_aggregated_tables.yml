@@ -1,8 +1,0 @@
----
-name: use_vsa_aggregated_tables
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72978
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343429
-milestone: '14.5'
-type: development
-group: group::optimize
-default_enabled: true

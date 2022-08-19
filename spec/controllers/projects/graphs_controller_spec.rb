@@ -89,6 +89,21 @@ RSpec.describe Projects::GraphsController do
         let(:request_params) { { namespace_id: project.namespace.path, project_id: project.path, id: 'master' } }
         let(:target_id) { 'p_analytics_repo' }
       end
+
+      it_behaves_like 'Snowplow event tracking' do
+        subject do
+          sign_in(user)
+          get :charts, params: request_params, format: :html
+        end
+
+        let(:request_params) { { namespace_id: project.namespace.path, project_id: project.path, id: 'master' } }
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { described_class.name }
+        let(:action) { 'perform_analytics_usage_action' }
+        let(:namespace) { project.namespace }
+        let(:label) { 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly' }
+        let(:property) { 'p_analytics_repo' }
+      end
     end
 
     context 'when languages were previously detected' do

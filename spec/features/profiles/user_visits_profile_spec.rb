@@ -89,6 +89,14 @@ RSpec.describe 'User visits their profile' do
   end
 
   describe 'storage_enforcement_banner', :js do
+    let_it_be(:root_storage_statistics) do
+      create(
+        :namespace_root_storage_statistics,
+        namespace: user.namespace,
+        storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE
+      )
+    end
+
     before do
       stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
     end

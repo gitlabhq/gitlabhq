@@ -888,12 +888,6 @@ msgstr ""
 msgid "%{over_limit_message} To get more seats, %{link_start}upgrade to a paid tier%{link_end}."
 msgstr ""
 
-msgid "%{over_limit_message} To view and manage members, check the members page for each personal project. We recommend you %{link_start}move your projects to a group%{link_end} so you can easily manage users and features."
-msgstr ""
-
-msgid "%{over_limit_message} To view and manage members, check the members page for each project in your namespace. We recommend you %{link_start}move your projects to a group%{link_end} so you can easily manage users and features."
-msgstr ""
-
 msgid "%{percentageUsed}%% used"
 msgstr ""
 
@@ -16836,11 +16830,6 @@ msgstr ""
 
 msgid "From October 19, 2022, free private groups will be limited to %d member"
 msgid_plural "From October 19, 2022, free private groups will be limited to %d members"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "From October 19, 2022, you can have a maximum of %d unique member across all of your personal projects"
-msgid_plural "From October 19, 2022, you can have a maximum of %d unique members across all of your personal projects"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -43041,9 +43030,6 @@ msgstr ""
 msgid "View all issues"
 msgstr ""
 
-msgid "View all personal projects"
-msgstr ""
-
 msgid "View blame"
 msgstr ""
 
@@ -44758,11 +44744,6 @@ msgstr ""
 msgid "You can group test cases using labels. To learn about the future direction of this feature, visit %{linkStart}Quality Management direction page%{linkEnd}."
 msgstr ""
 
-msgid "You can have a maximum of %{free_user_limit} unique member across all of your personal projects."
-msgid_plural "You can have a maximum of %{free_user_limit} unique members across all of your personal projects."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "You can invite a new member to %{project_name} or invite another group."
 msgstr ""
 
@@ -44867,11 +44848,6 @@ msgstr ""
 
 msgid "You could not create a new trigger."
 msgstr ""
-
-msgid "You currently have more than %{free_user_limit} member across all your personal projects. From October 19, 2022, the %{free_user_limit} most recently active member will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access."
-msgid_plural "You currently have more than %{free_user_limit} members across all your personal projects. From October 19, 2022, the %{free_user_limit} most recently active members will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "You do not have any subscriptions yet"
 msgstr ""
@@ -45209,9 +45185,6 @@ msgid "You're viewing members of %{strong_start}%{group_name}%{strong_end}."
 msgstr ""
 
 msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
-msgstr ""
-
-msgid "You've reached your %{free_limit} member limit across all of your personal projects"
 msgstr ""
 
 msgid "You've rejected %{user}"

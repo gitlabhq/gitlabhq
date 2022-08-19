@@ -441,11 +441,12 @@ RSpec.describe 'Project' do
   end
 
   describe 'storage_enforcement_banner', :js do
-    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group, :with_root_storage_statistics) }
     let_it_be_with_refind(:user) { create(:user) }
     let_it_be(:project) { create(:project, group: group) }
 
     before do
+      group.root_storage_statistics.update!(storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE)
       group.add_maintainer(user)
       sign_in(user)
     end
@@ -475,9 +476,15 @@ RSpec.describe 'Project' do
       end
 
       context 'when in a user namespace project page' do
-        let_it_be(:project) { create(:project, namespace: user.namespace) }
+        let_it_be_with_refind(:project) { create(:project, namespace: user.namespace) }
 
         before do
+          create(
+            :namespace_root_storage_statistics,
+            namespace: user.namespace,
+            storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE
+          )
+
           allow_next_found_instance_of(Namespaces::UserNamespace) do |user_namespace|
             allow(user_namespace).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
           end

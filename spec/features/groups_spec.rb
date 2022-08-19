@@ -519,10 +519,11 @@ RSpec.describe 'Group' do
   end
 
   describe 'storage_enforcement_banner', :js do
-    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group, :with_root_storage_statistics) }
     let_it_be_with_refind(:user) { create(:user) }
 
     before do
+      group.root_storage_statistics.update!(storage_size: ::Namespace::MIN_STORAGE_ENFORCEMENT_USAGE)
       group.add_owner(user)
       sign_in(user)
     end

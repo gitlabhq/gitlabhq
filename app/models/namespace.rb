@@ -43,6 +43,8 @@ class Namespace < ApplicationRecord
   # The first date in https://docs.gitlab.com/ee/user/usage_quotas.html#namespace-storage-limit-enforcement-schedule
   # Determines when we start enforcing namespace storage
   MIN_STORAGE_ENFORCEMENT_DATE = Date.new(2022, 10, 19)
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/367531
+  MIN_STORAGE_ENFORCEMENT_USAGE = 5.gigabytes
 
   cache_markdown_field :description, pipeline: :description
 

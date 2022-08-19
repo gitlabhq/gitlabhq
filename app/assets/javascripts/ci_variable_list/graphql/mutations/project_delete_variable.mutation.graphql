@@ -1,0 +1,30 @@
+#import "~/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+
+mutation deleteProjectVariable(
+  $variable: CiVariable!
+  $endpoint: String!
+  $fullPath: ID!
+  $projectId: ID!
+) {
+  deleteProjectVariable(
+    variable: $variable
+    endpoint: $endpoint
+    fullPath: $fullPath
+    projectId: $projectId
+  ) @client {
+    project {
+      id
+      ciVariables {
+        nodes {
+          ...BaseCiVariable
+          ... on CiProjectVariable {
+            environmentScope
+            masked
+            protected
+          }
+        }
+      }
+    }
+    errors
+  }
+}

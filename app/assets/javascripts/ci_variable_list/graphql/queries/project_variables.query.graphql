@@ -1,0 +1,15 @@
+#import "~/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+
+query getProjectVariables($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    ciVariables {
+      nodes {
+        ...BaseCiVariable
+        environmentScope
+        masked
+        protected
+      }
+    }
+  }
+}
