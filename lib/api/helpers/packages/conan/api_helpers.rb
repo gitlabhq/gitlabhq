@@ -23,7 +23,7 @@ module API
           end
 
           def present_download_urls(entity)
-            authorize!(:read_package, project)
+            authorize_read_package!(project)
 
             presenter = ::Packages::Conan::PackagePresenter.new(
               package,
@@ -161,7 +161,7 @@ module API
           end
 
           def download_package_file(file_type)
-            authorize!(:read_package, project)
+            authorize_read_package!(project)
 
             package_file = ::Packages::Conan::PackageFileFinder
               .new(

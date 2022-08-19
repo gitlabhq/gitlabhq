@@ -118,6 +118,7 @@ export default {
       selectedAccessLevel: undefined,
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
+      emptyInvitesError: false,
     };
   },
   computed: {
@@ -133,8 +134,8 @@ export default {
     labelIntroText() {
       return this.$options.labels[this.inviteTo][this.mode].introText;
     },
-    inviteDisabled() {
-      return this.newUsersToInvite.length === 0;
+    isEmptyInvites() {
+      return Boolean(this.newUsersToInvite.length);
     },
     hasInvalidMembers() {
       return !isEmpty(this.invalidMembers);
@@ -219,6 +220,18 @@ export default {
       });
     },
   },
+  watch: {
+    isEmptyInvites: {
+      handler(updatedValue) {
+        // nothing to do if the invites are **still** empty and the emptyInvites were never set from submit
+        if (!updatedValue && !this.emptyInvitesError) {
+          return;
+        }
+
+        this.clearEmptyInviteError();
+      },
+    },
+  },
   mounted() {
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
@@ -260,9 +273,18 @@ export default {
       const tracking = new ExperimentTracking(experimentName);
       tracking.event(eventName);
     },
+    showEmptyInvitesError() {
+      this.invalidFeedbackMessage = this.$options.labels.emptyInvitesErrorText;
+      this.emptyInvitesError = true;
+    },
     sendInvite({ accessLevel, expiresAt }) {
       this.isLoading = true;
       this.clearValidation();
+
+      if (!this.isEmptyInvites) {
+        this.showEmptyInvitesError();
+        return;
+      }
 
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
 
@@ -338,6 +360,10 @@ export default {
       this.invalidFeedbackMessage = '';
       this.invalidMembers = {};
     },
+    clearEmptyInviteError() {
+      this.invalidFeedbackMessage = '';
+      this.emptyInvitesError = false;
+    },
     removeToken(token) {
       delete this.invalidMembers[memberName(token)];
       this.invalidMembers = { ...this.invalidMembers };
@@ -360,7 +386,6 @@ export default {
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
     :form-group-description="formGroupDescription"
-    :submit-disabled="inviteDisabled"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     :new-users-to-invite="newUsersToInvite"

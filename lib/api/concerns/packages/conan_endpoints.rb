@@ -135,7 +135,7 @@ module API
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
             get 'packages/:conan_package_reference', urgency: :low do
-              authorize!(:read_package, project)
+              authorize_read_package!(project)
 
               presenter = ::Packages::Conan::PackagePresenter.new(
                 package,
@@ -154,7 +154,7 @@ module API
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
             get urgency: :low do
-              authorize!(:read_package, project)
+              authorize_read_package!(project)
 
               presenter = ::Packages::Conan::PackagePresenter.new(package, current_user, project)
 
@@ -237,7 +237,7 @@ module API
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
             post 'packages/:conan_package_reference/upload_urls', urgency: :low do
-              authorize!(:read_package, project)
+              authorize_read_package!(project)
 
               status 200
               present package_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
@@ -250,7 +250,7 @@ module API
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
             post 'upload_urls', urgency: :low do
-              authorize!(:read_package, project)
+              authorize_read_package!(project)
 
               status 200
               present recipe_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.first_owner }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }

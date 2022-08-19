@@ -3,19 +3,19 @@
 RSpec.shared_examples "redis_shared_examples" do
   include StubENV
 
-  let(:test_redis_url) { "redis://redishost:#{redis_port}"}
+  let(:test_redis_url) { "redis://redishost:#{redis_port}" }
   let(:config_file_name) { instance_specific_config_file }
   let(:config_old_format_socket) { "spec/fixtures/config/redis_old_format_socket.yml" }
   let(:config_new_format_socket) { "spec/fixtures/config/redis_new_format_socket.yml" }
-  let(:old_socket_path) {"/path/to/old/redis.sock" }
-  let(:new_socket_path) {"/path/to/redis.sock" }
+  let(:old_socket_path) { "/path/to/old/redis.sock" }
+  let(:new_socket_path) { "/path/to/redis.sock" }
   let(:config_old_format_host) { "spec/fixtures/config/redis_old_format_host.yml" }
   let(:config_new_format_host) { "spec/fixtures/config/redis_new_format_host.yml" }
   let(:redis_port) { 6379 }
   let(:redis_database) { 99 }
   let(:sentinel_port) { 26379 }
-  let(:config_with_environment_variable_inside) { "spec/fixtures/config/redis_config_with_env.yml"}
-  let(:config_env_variable_url) {"TEST_GITLAB_REDIS_URL"}
+  let(:config_with_environment_variable_inside) { "spec/fixtures/config/redis_config_with_env.yml" }
+  let(:config_env_variable_url) { "TEST_GITLAB_REDIS_URL" }
   let(:rails_root) { Dir.mktmpdir('redis_shared_examples') }
 
   before do

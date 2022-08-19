@@ -77,7 +77,8 @@ module Sidebars
         end
 
         def packages_registry_disabled?
-          !::Gitlab.config.packages.enabled || !can?(context.current_user, :read_package, context.project)
+          !::Gitlab.config.packages.enabled ||
+            !can?(context.current_user, :read_package, context.project&.packages_policy_subject)
         end
       end
     end

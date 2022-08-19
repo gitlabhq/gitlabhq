@@ -6,10 +6,10 @@ FactoryBot.define do
     stage { 'test' }
     stage_idx { 0 }
     status { 'success' }
-    description { 'commit status'}
+    description { 'commit status' }
     pipeline factory: :ci_pipeline
-    started_at { 'Tue, 26 Jan 2016 08:21:42 +0100'}
-    finished_at { 'Tue, 26 Jan 2016 08:23:42 +0100'}
+    started_at { 'Tue, 26 Jan 2016 08:21:42 +0100' }
+    finished_at { 'Tue, 26 Jan 2016 08:23:42 +0100' }
 
     trait :success do
       status { 'success' }

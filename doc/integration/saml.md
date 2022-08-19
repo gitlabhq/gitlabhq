@@ -143,7 +143,9 @@ as described in the section on [Security](#security). Otherwise, your users are 
 1. Change the value of `issuer` to a unique name, which identifies the application
    to the IdP.
 
-1. For the changes to take effect, you must [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab if you installed via Omnibus or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) if you installed from source.
+1. For the changes to take effect:
+   - If you installed via Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - If you installed from source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 1. Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
    in `issuer`.

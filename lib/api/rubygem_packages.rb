@@ -65,7 +65,7 @@ module API
           requires :file_name, type: String, desc: 'Package file name'
         end
         get "gems/:file_name", requirements: FILE_NAME_REQUIREMENTS do
-          authorize!(:read_package, user_project)
+          authorize_read_package!(user_project)
 
           package_files = ::Packages::PackageFile
                             .for_rubygem_with_file_name(user_project, params[:file_name])

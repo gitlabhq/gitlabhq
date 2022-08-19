@@ -3465,6 +3465,23 @@ RSpec.describe Group do
     end
   end
 
+  describe '#packages_policy_subject' do
+    it 'returns wrapper' do
+      expect(group.packages_policy_subject).to be_a(Packages::Policies::Group)
+      expect(group.packages_policy_subject.group).to eq(group)
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(read_package_policy_rule: false)
+      end
+
+      it 'returns group' do
+        expect(group.packages_policy_subject).to eq(group)
+      end
+    end
+  end
+
   describe '#gitlab_deploy_token' do
     subject(:gitlab_deploy_token) { group.gitlab_deploy_token }
 

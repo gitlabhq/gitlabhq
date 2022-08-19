@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
   let(:user) { project.first_owner }
 

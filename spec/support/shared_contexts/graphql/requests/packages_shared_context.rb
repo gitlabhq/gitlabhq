@@ -16,8 +16,8 @@ RSpec.shared_context 'package details setup' do
   let(:metadata_response) { graphql_data_at(:package, :metadata) }
   let(:first_file) { package.package_files.find { |f| a_graphql_entity_for(f).matches?(first_file_response) } }
   let(:package_files_response) { graphql_data_at(:package, :package_files, :nodes) }
-  let(:first_file_response) { graphql_data_at(:package, :package_files, :nodes, 0)}
-  let(:first_file_response_metadata) { graphql_data_at(:package, :package_files, :nodes, 0, :file_metadata)}
+  let(:first_file_response) { graphql_data_at(:package, :package_files, :nodes, 0) }
+  let(:first_file_response_metadata) { graphql_data_at(:package, :package_files, :nodes, 0, :file_metadata) }
 
   let(:query) do
     graphql_query_for(:package, { id: package_global_id }, <<~FIELDS)

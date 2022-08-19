@@ -156,7 +156,7 @@ Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 **Requirements:**
 
 - [Wildcard DNS setup](#dns-configuration)
-- Wildcard TLS certificate
+- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
 
 ---
 
@@ -368,7 +368,7 @@ world. Custom domains and TLS are supported.
 
    If you don't have IPv6, you can omit the IPv6 address.
 
-1. If you haven't named your certificate and key `example.io.crt` and `example.io.key` respectively,
+1. If you haven't named your certificate `example.io.crt` and your key `example.io.key`,
 then you need to also add the full paths as shown below:
 
    ```ruby

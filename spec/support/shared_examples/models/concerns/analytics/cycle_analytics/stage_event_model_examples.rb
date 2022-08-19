@@ -89,7 +89,7 @@ RSpec.shared_examples 'StageEventModel' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:user) }
     let_it_be(:milestone) { create(:milestone) }
-    let_it_be(:issuable_with_assignee) { create(issuable_factory, assignees: [user])}
+    let_it_be(:issuable_with_assignee) { create(issuable_factory, assignees: [user]) }
 
     let_it_be(:record) { create(stage_event_factory, start_event_timestamp: 3.years.ago.to_date, end_event_timestamp: 2.years.ago.to_date) }
     let_it_be(:record_with_author) { create(stage_event_factory, author_id: user.id) }

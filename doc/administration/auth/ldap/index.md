@@ -344,7 +344,7 @@ The `user_filter` DN can contain special characters. For example:
   OU=GitLab\2C Inc,DC=gitlab,DC=com
   ```
 
-- Escape open and close brackets with `\28` and `\29`, respectively. For example:
+- Escape open brackets with `\28` and close brackets with `\29`. For example:
 
   ```plaintext
   OU=Gitlab \28Inc\29,DC=gitlab,DC=com

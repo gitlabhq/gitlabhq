@@ -13,7 +13,7 @@ FactoryBot.define do
     exclusion { false }
     expression { false }
     partial { false }
-    definition { "CREATE INDEX #{identifier} ON #{tablename} (bar)"}
+    definition { "CREATE INDEX #{identifier} ON #{tablename} (bar)" }
     ondisk_size_bytes { 100.megabytes }
   end
 end

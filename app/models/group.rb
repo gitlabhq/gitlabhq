@@ -890,6 +890,14 @@ class Group < Namespace
     end
   end
 
+  def packages_policy_subject
+    if Feature.enabled?(:read_package_policy_rule, self)
+      ::Packages::Policies::Group.new(self)
+    else
+      self
+    end
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag)

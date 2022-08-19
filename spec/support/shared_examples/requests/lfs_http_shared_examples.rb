@@ -49,7 +49,7 @@ RSpec.shared_examples 'LFS http 404 response' do
 end
 
 RSpec.shared_examples 'LFS http expected response code and message' do
-  let(:response_code) { }
+  let(:response_code) {}
   let(:response_headers) { {} }
   let(:content_type) { LfsRequest::CONTENT_TYPE }
   let(:message) {}

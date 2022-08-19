@@ -12,6 +12,6 @@ FactoryBot.define do
     target_sha { 'a09386439ca39abe575675ffd4b89ae824fec22f' }
     status { :open }
 
-    trait(:closed) { status { 'closed'} }
+    trait(:closed) { status { 'closed' } }
   end
 end

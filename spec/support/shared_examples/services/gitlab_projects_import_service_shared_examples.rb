@@ -33,7 +33,7 @@ RSpec.shared_examples 'gitlab projects import validations' do
 
   context 'when there is a project with the same path' do
     let(:existing_project) { create(:project, namespace: namespace) }
-    let(:path) { existing_project.path}
+    let(:path) { existing_project.path }
 
     it 'does not create the project' do
       project = subject.execute

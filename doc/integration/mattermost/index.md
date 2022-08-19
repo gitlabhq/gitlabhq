@@ -79,7 +79,7 @@ mattermost_nginx['ssl_certificate'] = "/etc/gitlab/ssl/mattermost-nginx.crt"
 mattermost_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/mattermost-nginx.key"
 ```
 
-where `mattermost-nginx.crt` and `mattermost-nginx.key` are SSL cert and key, respectively.
+where `mattermost-nginx.crt` is the SSL certificate and `mattermost-nginx.key` is the SSL key.
 
 Once the configuration is set, run `sudo gitlab-ctl reconfigure` to apply the changes.
 

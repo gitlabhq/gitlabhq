@@ -23,7 +23,7 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
   end
 
   context 'and fails to save' do
-    let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] }, '[]': [] )}
+    let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] }, '[]': [] ) }
 
     before do
       allow(service).to receive(:alert).and_call_original

@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe API::Helpers::PackagesHelpers do
   let_it_be(:helper) { Class.new.include(described_class).new }
   let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:package) { create(:package) }
 
   describe 'authorize_packages_access!' do
     subject { helper.authorize_packages_access!(project) }
@@ -17,7 +19,45 @@ RSpec.describe API::Helpers::PackagesHelpers do
     end
   end
 
-  %i[read_package create_package destroy_package].each do |action|
+  describe 'authorize_read_package!' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:subject, :expected_class) do
+      ref(:project) | ::Packages::Policies::Project
+      ref(:group)   | ::Packages::Policies::Group
+      ref(:package) | ::Packages::Package
+    end
+
+    with_them do
+      it 'calls authorize! with correct subject' do
+        expect(helper).to receive(:authorize!).with(:read_package, have_attributes(id: subject.id, class: expected_class))
+
+        expect(helper.send('authorize_read_package!', subject)).to eq nil
+      end
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(read_package_policy_rule: false)
+      end
+
+      where(:subject, :expected_class) do
+        ref(:project) | ::Project
+        ref(:group)   | ::Group
+        ref(:package) | ::Packages::Package
+      end
+
+      with_them do
+        it 'calls authorize! with correct subject' do
+          expect(helper).to receive(:authorize!).with(:read_package, have_attributes(id: subject.id, class: expected_class))
+
+          expect(helper.send('authorize_read_package!', subject)).to eq nil
+        end
+      end
+    end
+  end
+
+  %i[create_package destroy_package].each do |action|
     describe "authorize_#{action}!" do
       subject { helper.send("authorize_#{action}!", project) }
 

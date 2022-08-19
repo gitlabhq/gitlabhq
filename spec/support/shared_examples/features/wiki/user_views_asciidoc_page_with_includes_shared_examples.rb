@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'User views AsciiDoc page with includes' do
   let_it_be(:wiki_content_selector) { '[data-qa-selector=wiki_page_content]' } # rubocop:disable QA/SelectorUsage
-  let!(:included_wiki_page) { create_wiki_page('included_page', content: 'Content from the included page')}
+  let!(:included_wiki_page) { create_wiki_page('included_page', content: 'Content from the included page') }
   let!(:wiki_page) { create_wiki_page('home', content: "Content from the main page.\ninclude::included_page.asciidoc[]") }
 
   def create_wiki_page(title, content:)

@@ -14,7 +14,7 @@ module API
       end
 
       def authorize_read_package!(subject = user_project)
-        authorize!(:read_package, subject)
+        authorize!(:read_package, subject.try(:packages_policy_subject) || subject)
       end
 
       def authorize_create_package!(subject = user_project)

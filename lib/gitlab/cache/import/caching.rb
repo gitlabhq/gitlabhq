@@ -153,11 +153,11 @@ module Gitlab
         # timeout - The time after which the cache key should expire.
         def self.write_multiple(mapping, key_prefix: nil, timeout: TIMEOUT)
           Redis::Cache.with do |redis|
-            redis.pipelined do |pipeline|
+            redis.pipelined do |multi|
               mapping.each do |raw_key, value|
                 key = cache_key_for("#{key_prefix}#{raw_key}")
 
-                pipeline.set(key, value, ex: timeout)
+                multi.set(key, value, ex: timeout)
               end
             end
           end

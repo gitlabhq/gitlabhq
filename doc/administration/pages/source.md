@@ -364,9 +364,8 @@ world. Custom domains and TLS are supported.
    ```
 
 1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
-   order to enable the pages daemon. In `gitlab_pages_options` the
-   `-pages-domain`, `-listen-http` and `-listen-https` must match the `host`,
-   `external_http` and `external_https` settings that you set above respectively.
+   order to enable the pages daemon. In `gitlab_pages_options`, you must match the
+   `-pages-domain` with `host`, `-listen-http` with `external_http`, and `-listen-https` with `external_https` settings.
    The `-root-cert` and `-root-key` settings are the wildcard TLS certificates
    of the `example.io` domain:
 

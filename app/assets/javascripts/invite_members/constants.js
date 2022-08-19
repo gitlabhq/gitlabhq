@@ -81,6 +81,9 @@ export const MEMBER_ERROR_LIST_TEXT = s__(
 );
 export const COLLAPSED_ERRORS = s__('InviteMembersModal|Show more (%{count})');
 export const EXPANDED_ERRORS = s__('InviteMembersModal|Show less');
+export const EMPTY_INVITES_ERROR_TEXT = s__(
+  'InviteMembersModal|Please select members or type email addresses to invite',
+);
 
 export const MEMBER_MODAL_LABELS = {
   modal: {
@@ -119,6 +122,7 @@ export const MEMBER_MODAL_LABELS = {
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
   collapsedErrors: COLLAPSED_ERRORS,
   expandedErrors: EXPANDED_ERRORS,
+  emptyInvitesErrorText: EMPTY_INVITES_ERROR_TEXT,
 };
 
 export const GROUP_MODAL_LABELS = {

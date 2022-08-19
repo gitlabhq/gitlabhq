@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# Project-level Variables API **(FREE)**
+# Project-level CI/CD variables API **(FREE)**
 
 ## List project variables
 
@@ -44,9 +44,10 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## Show variable details
+## Get a single variable
 
-Get the details of a project's specific variable.
+Get the details of a single variable. If there are multiple variables with the same key,
+use `filter` to select the correct `environment_scope`.
 
 ```plaintext
 GET /projects/:id/variables/:key
@@ -73,9 +74,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## Create variable
+## Create a variable
 
-Create a new variable.
+Create a new variable. If a variable with the same `key` already exists, the new variable
+must have a different `environment_scope`. Otherwise, GitLab returns a message similar to:
+`VARIABLE_NAME has already been taken`.
 
 ```plaintext
 POST /projects/:id/variables
@@ -107,9 +110,10 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Update variable
+## Update a variable
 
-Update a project's variable.
+Update a project's variable. If there are multiple variables with the same key,
+use `filter` to select the correct `environment_scope`.
 
 ```plaintext
 PUT /projects/:id/variables/:key
@@ -142,9 +146,10 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Remove variable
+## Delete a variable
 
-Remove a project's variable.
+Delete a project's variable. If there are multiple variables with the same key,
+use `filter` to select the correct `environment_scope`.
 
 ```plaintext
 DELETE /projects/:id/variables/:key
@@ -165,10 +170,34 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34490) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/227052) in GitLab 13.4.
 
-This parameter is used for filtering by attributes, such as `environment_scope`.
+When multiple variables have the same `key`, [GET](#get-a-single-variable), [PUT](#update-a-variable),
+or [DELETE](#delete-a-variable) requests might return:
 
-Example usage:
-
-```shell
-curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1?filter[environment_scope]=production"
+```plaintext
+There are multiple variables with provided parameters. Please use 'filter[environment_scope]'.
 ```
+
+Use `filter[environment_scope]` to select the variable with the matching `environment_scope` attribute.
+
+For example:
+
+- GET:
+
+  ```shell
+  curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" \
+       "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
+  ```
+
+- PUT:
+
+  ```shell
+  curl --request PUT --globoff --header "PRIVATE-TOKEN: <your_access_token>" \
+       "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1?value=scoped-variable-updated-value&environment_scope=production&filter[environment_scope]=production"
+  ```
+
+- DELETE:
+
+  ```shell
+  curl --request DELETE --globoff --header "PRIVATE-TOKEN: <your_access_token>" \
+       "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
+  ```

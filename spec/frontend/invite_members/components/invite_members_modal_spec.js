@@ -19,6 +19,7 @@ import {
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   LEARN_GITLAB,
   EXPANDED_ERRORS,
+  EMPTY_INVITES_ERROR_TEXT,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
@@ -255,6 +256,8 @@ describe('InviteMembersModal', () => {
 
       it('tracks the submit for invite_members_for_task', async () => {
         await setupComponentWithTasks();
+        await triggerMembersTokenSelect([user1]);
+
         clickInviteButton();
 
         expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name, {
@@ -263,6 +266,16 @@ describe('InviteMembersModal', () => {
         });
         expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
           INVITE_MEMBERS_FOR_TASK.submit,
+        );
+      });
+
+      it('does not track the submit for invite_members_for_task when invites have not been entered', async () => {
+        await setupComponentWithTasks();
+        clickInviteButton();
+
+        expect(ExperimentTracking).not.toHaveBeenCalledWith(
+          INVITE_MEMBERS_FOR_TASK.name,
+          expect.any,
         );
       });
     });
@@ -379,6 +392,25 @@ describe('InviteMembersModal', () => {
     const expectedEmailRestrictedError =
       "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.";
     const expectedSyntaxError = 'email contains an invalid email address';
+
+    describe('when no invites have been entered in the form and then some are entered', () => {
+      beforeEach(async () => {
+        createInviteMembersToGroupWrapper();
+      });
+
+      it('displays an error', async () => {
+        clickInviteButton();
+
+        await waitForPromises();
+
+        expect(membersFormGroupInvalidFeedback()).toBe(EMPTY_INVITES_ERROR_TEXT);
+        expect(findMembersSelect().props('exceptionState')).toBe(false);
+
+        await triggerMembersTokenSelect([user1]);
+
+        expect(membersFormGroupInvalidFeedback()).toBe('');
+      });
+    });
 
     describe('when inviting an existing user to group by user ID', () => {
       const postData = {

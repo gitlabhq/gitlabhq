@@ -3050,6 +3050,14 @@ class Project < ApplicationRecord
     licensed_feature_available?(:security_training)
   end
 
+  def packages_policy_subject
+    if Feature.enabled?(:read_package_policy_rule, group)
+      ::Packages::Policies::Project.new(self)
+    else
+      self
+    end
+  end
+
   def destroy_deployment_by_id(deployment_id)
     deployments.where(id: deployment_id).fast_destroy_all
   end

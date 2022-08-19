@@ -6,7 +6,7 @@ RSpec.describe 'Groups (JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user) }
-  let(:group) { create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre')}
+  let(:group) { create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre') }
 
   before do
     group.add_owner(user)

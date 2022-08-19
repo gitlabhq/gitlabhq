@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     trait :with_runbook_url do
-      runbook_url { 'https://runbooks.gitlab.com/metric_gt_1'}
+      runbook_url { 'https://runbooks.gitlab.com/metric_gt_1' }
     end
   end
 end

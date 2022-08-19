@@ -14,7 +14,7 @@ module DeployTokensHelper
 
   def packages_registry_enabled?(group_or_project)
     Gitlab.config.packages.enabled &&
-      can?(current_user, :read_package, group_or_project)
+      can?(current_user, :read_package, group_or_project&.packages_policy_subject)
   end
 
   def deploy_token_revoke_button_data(token:, group_or_project:)

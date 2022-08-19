@@ -64,5 +64,5 @@ RSpec.shared_context 'conan file upload endpoints' do
 
   let(:jwt) { build_jwt(personal_access_token) }
   let(:headers_with_token) { build_token_auth_header(jwt.encoded).merge(workhorse_headers) }
-  let(:recipe_path) { "foo/bar/#{project.full_path.tr('/', '+')}/baz"}
+  let(:recipe_path) { "foo/bar/#{project.full_path.tr('/', '+')}/baz" }
 end
