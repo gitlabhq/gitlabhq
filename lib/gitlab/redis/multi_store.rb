@@ -267,7 +267,7 @@ module Gitlab
 
       def same_redis_store?
         strong_memoize(:same_redis_store) do
-          # <Redis client v4.4.0 for redis:///path_to/redis/redis.socket/5>"
+          # <Redis client v4.7.1 for unix:///path_to/redis/redis.socket/5>"
           primary_store.inspect == secondary_store.inspect
         end
       end

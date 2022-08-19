@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
@@ -36,6 +36,40 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu do
         let(:user) { nil }
 
         specify { is_expected.to be_nil }
+      end
+
+      describe 'when the feature is disabled' do
+        before do
+          project.update_attribute("#{item_id}_access_level", 'disabled')
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      describe 'when split_operations_visibility_permissions FF is disabled' do
+        before do
+          stub_feature_flags(split_operations_visibility_permissions: false)
+        end
+
+        it { is_expected.not_to be_nil }
+
+        context 'and the feature is disabled' do
+          before do
+            project.update_attribute("#{item_id}_access_level", 'disabled')
+          end
+
+          it { is_expected.not_to be_nil }
+        end
+
+        context 'and operations is disabled' do
+          before do
+            project.update_attribute(:operations_access_level, 'disabled')
+          end
+
+          it do
+            is_expected.to be_nil if [:environments, :feature_flags].include?(item_id)
+          end
+        end
       end
     end
 

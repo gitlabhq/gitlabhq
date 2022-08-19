@@ -5,9 +5,9 @@ module Gitlab
     class IncrementPerAction < BaseStrategy
       def increment(cache_key, expiry)
         with_redis do |redis|
-          redis.pipelined do
-            redis.incr(cache_key)
-            redis.expire(cache_key, expiry)
+          redis.pipelined do |pipeline|
+            pipeline.incr(cache_key)
+            pipeline.expire(cache_key, expiry)
           end.first
         end
       end

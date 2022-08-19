@@ -282,7 +282,7 @@ export default {
           const descriptions = {};
 
           Object.entries(data).forEach(([key, { value, description }]) => {
-            if (description !== null) {
+            if (description) {
               params[key] = value;
               descriptions[key] = description;
             }

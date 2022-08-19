@@ -1363,7 +1363,10 @@ It renders on the GitLab documentation site as:
 
 ## Tabs
 
-Use tabs to show different options.
+On the docs site, you can format text so it's displayed as tabs.
+
+NOTE:
+For now, tabs are for testing only. Do not use them on the production docs site.
 
 To create a set of tabs, follow this example:
 
@@ -1389,7 +1392,7 @@ The headings determine the tab titles. Each tab is populated with the content be
 
 Use brief words for the titles, ensure they are parallel, and start each with a capital letter. For example:
 
-- `Omnibus`, `Chart`, `Source`
+- `Omnibus package`, `Helm chart`, `Source`
 - `15.1 and earlier`, `15.2 and later`
 
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for details.

@@ -1,10 +1,13 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { WORK_ITEMS_TYPE_MAP } from '../constants';
 
 export default {
   components: {
     GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     workItemType: {
@@ -22,6 +25,11 @@ export default {
       required: false,
       default: '',
     },
+    showTooltipOnHover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     iconName() {
@@ -32,13 +40,21 @@ export default {
     workItemTypeName() {
       return WORK_ITEMS_TYPE_MAP[this.workItemType]?.name;
     },
+    workItemTooltipTitle() {
+      return this.showTooltipOnHover ? this.workItemTypeName : '';
+    },
   },
 };
 </script>
 
 <template>
   <span>
-    <gl-icon :name="iconName" class="gl-mr-2" />
+    <gl-icon
+      v-gl-tooltip.hover="showTooltipOnHover"
+      :name="iconName"
+      :title="workItemTooltipTitle"
+      class="gl-mr-2"
+    />
     <span v-if="workItemTypeName" :class="{ 'gl-sr-only': !showText }">{{ workItemTypeName }}</span>
   </span>
 </template>

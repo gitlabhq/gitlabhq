@@ -135,9 +135,9 @@ module Gitlab
       #
       def write_to_redis_hash(hash)
         Gitlab::Redis::Cache.with do |redis|
-          redis.pipelined do
+          redis.pipelined do |pipeline|
             hash.each do |diff_file_id, highlighted_diff_lines_hash|
-              redis.hset(
+              pipeline.hset(
                 key,
                 diff_file_id,
                 gzip_compress(highlighted_diff_lines_hash.to_json)
@@ -147,7 +147,7 @@ module Gitlab
             end
 
             # HSETs have to have their expiration date manually updated
-            redis.expire(key, expiration)
+            pipeline.expire(key, expiration)
           end
 
           record_memory_usage(fetch_memory_usage(redis, key))
@@ -202,9 +202,9 @@ module Gitlab
         expiration_period = expiration
 
         Gitlab::Redis::Cache.with do |redis|
-          redis.pipelined do
-            results = redis.hmget(cache_key, file_paths)
-            redis.expire(key, expiration_period) if highlight_diffs_renewable_expiration_enabled
+          redis.pipelined do |pipeline|
+            results = pipeline.hmget(cache_key, file_paths)
+            pipeline.expire(key, expiration_period) if highlight_diffs_renewable_expiration_enabled
           end
         end
 

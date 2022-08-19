@@ -264,13 +264,20 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
           context 'when the command is executed within pipelined block' do
             subject do
-              multi_store.pipelined do
-                multi_store.send(name, *args)
+              multi_store.pipelined do |pipeline|
+                pipeline.send(name, *args)
               end
             end
 
-            it 'is executed only 1 time on primary instance' do
-              expect(primary_store).to receive(name).with(*args).once
+            it 'is executed only 1 time on primary and secondary instance' do
+              expect(primary_store).to receive(:pipelined).and_call_original
+              expect(secondary_store).to receive(:pipelined).and_call_original
+
+              2.times do
+                expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+                  expect(pipeline).to receive(name).with(*args).once.and_call_original
+                end
+              end
 
               subject
             end
@@ -438,14 +445,21 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
           context 'when the command is executed within pipelined block' do
             subject do
-              multi_store.pipelined do
-                multi_store.send(name, *args)
+              multi_store.pipelined do |pipeline|
+                pipeline.send(name, *args)
               end
             end
 
             it 'is executed only 1 time on each instance', :aggregate_errors do
-              expect(primary_store).to receive(name).with(*expected_args).once
-              expect(secondary_store).to receive(name).with(*expected_args).once
+              expect(primary_store).to receive(:pipelined).and_call_original
+              expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+                expect(pipeline).to receive(name).with(*expected_args).once.and_call_original
+              end
+
+              expect(secondary_store).to receive(:pipelined).and_call_original
+              expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+                expect(pipeline).to receive(name).with(*expected_args).once.and_call_original
+              end
 
               subject
             end
@@ -781,14 +795,20 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
     context 'when the command is executed within pipelined block' do
       subject do
-        multi_store.pipelined do
-          multi_store.incr(key)
+        multi_store.pipelined do |pipeline|
+          pipeline.incr(key)
         end
       end
 
       it 'is executed only 1 time on each instance', :aggregate_errors do
-        expect(primary_store).to receive(:incr).with(key).once
-        expect(secondary_store).to receive(:incr).with(key).once
+        expect(primary_store).to receive(:pipelined).once.and_call_original
+        expect(secondary_store).to receive(:pipelined).once.and_call_original
+
+        2.times do
+          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+            expect(pipeline).to receive(:incr).with(key).once
+          end
+        end
 
         subject
       end

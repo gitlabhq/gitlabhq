@@ -132,19 +132,11 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
           .once
           .and_call_original
 
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis).to receive(:expire).with(cache.key, expiration_period).at_least(:once)
-        end
-
         2.times { cache.write_if_empty }
       end
 
       it 'reads from cache once' do
         expect(cache).to receive(:read_cache).once.and_call_original
-
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis).to receive(:expire).with(cache.key, expiration_period).at_least(:once)
-        end
 
         cache.write_if_empty
       end

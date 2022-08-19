@@ -1,5 +1,8 @@
 .form-actions.gl-display-flex
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { id: 'commit-changes', class: 'js-commit-button', data: { qa_selector: 'commit_button' } }) do
+  - submit_button_options = { type: :submit, variant: :confirm, button_options: { id: 'commit-changes', class: 'js-commit-button', data: { qa_selector: 'commit_button' } } }
+  = render Pajamas::ButtonComponent.new(**submit_button_options) do
+    = _('Commit changes')
+  = render Pajamas::ButtonComponent.new(loading: true, disabled: true, **submit_button_options.merge({ button_options: { class: 'js-commit-button-loading gl-display-none' } })) do
     = _('Commit changes')
 
   = render Pajamas::ButtonComponent.new(href: cancel_path, button_options: { class: 'gl-ml-3', id: 'cancel-changes', aria: { label: _('Discard changes') }, data: { confirm: leave_edit_message, confirm_btn_variant: "danger" } }) do

@@ -32349,6 +32349,9 @@ msgstr ""
 msgid "Register with two-factor app"
 msgstr ""
 
+msgid "Register with:"
+msgstr ""
+
 msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
 msgstr ""
 
@@ -36561,6 +36564,12 @@ msgid "Sign-out page URL"
 msgstr ""
 
 msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}"
+msgstr ""
+
+msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}"
 msgstr ""
 
 msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Policy%{link_end}"

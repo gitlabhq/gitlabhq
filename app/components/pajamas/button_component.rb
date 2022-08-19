@@ -112,7 +112,7 @@ module Pajamas
     def base_attributes
       attributes = {}
 
-      attributes['disabled'] = '' if @disabled || @loading
+      attributes['disabled'] = 'disabled' if @disabled || @loading
       attributes['aria-disabled'] = true if @disabled || @loading
       attributes['type'] = @type unless @href
 

@@ -205,7 +205,34 @@ To actually initialize this component, make sure to call the `initToggle` helper
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/toggle_component.rb).
 
-### Best practices
+## Layouts
+
+Layout components can be used to create common layout patterns used in GitLab.
+
+### Available components
+
+#### Horizontal section
+
+Many of the settings pages use a layout where the title and description are on the left and the settings fields are on the right. The `Layouts::HorizontalSectionComponent` can be used to create this layout.
+
+**Example:**
+
+```haml
+= render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-mb-6' }) do |c|
+  = c.title { _('Naming, visibility') }
+  = c.description do
+    = _('Update your group name, description, avatar, and visibility.')
+    = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+  = c.body do
+    .form-group.gl-form-group
+      = f.label :name, _('New group name')
+      = f.text_field :name
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/horizontal_section_component.rb).
+
+## Best practices
 
 - If you are about to create a new view in Haml, use the available components
   over creating plain Haml tags with CSS classes.

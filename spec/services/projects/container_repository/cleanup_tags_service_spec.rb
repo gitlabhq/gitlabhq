@@ -395,11 +395,8 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
       end
 
       it 'caches the created_at values' do
-        ::Gitlab::Redis::Cache.with do |redis|
-          expect_mget(redis, tags_and_created_ats.keys)
-
-          expect_set(redis, cacheable_tags)
-        end
+        expect_mget(tags_and_created_ats.keys)
+        expect_set(cacheable_tags)
 
         expect(subject).to include(cached_tags_count: 0)
       end
@@ -412,12 +409,10 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
         end
 
         it 'uses them' do
-          ::Gitlab::Redis::Cache.with do |redis|
-            expect_mget(redis, tags_and_created_ats.keys)
+          expect_mget(tags_and_created_ats.keys)
 
-            # because C is already in cache, it should not be cached again
-            expect_set(redis, cacheable_tags.except('C'))
-          end
+          # because C is already in cache, it should not be cached again
+          expect_set(cacheable_tags.except('C'))
 
           # We will ping the container registry for all tags *except* for C because it's cached
           expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configA" }).and_call_original
@@ -429,15 +424,27 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
         end
       end
 
-      def expect_mget(redis, keys)
-        expect(redis).to receive(:mget).with(keys.map(&method(:cache_key))).and_call_original
+      def expect_mget(keys)
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:mget).with(keys.map(&method(:cache_key))).and_call_original
+        end
       end
 
-      def expect_set(redis, tags)
-        tags.each do |tag_name, created_at|
+      def expect_set(tags)
+        selected_tags = tags.map do |tag_name, created_at|
           ex = 1.day.seconds - (Time.zone.now - created_at).seconds
-          if ex > 0
-            expect(redis).to receive(:set).with(cache_key(tag_name), rfc3339(created_at), ex: ex.to_i)
+          [tag_name, created_at, ex.to_i] if ex.positive?
+        end.compact
+
+        return if selected_tags.count.zero?
+
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:pipelined).and_call_original
+
+          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+            selected_tags.each do |tag_name, created_at, ex|
+              expect(pipeline).to receive(:set).with(cache_key(tag_name), rfc3339(created_at), ex: ex)
+            end
           end
         end
       end
@@ -507,7 +514,11 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
   def expect_caching
     ::Gitlab::Redis::Cache.with do |redis|
       expect(redis).to receive(:mget).and_call_original
-      expect(redis).to receive(:set).and_call_original
+      expect(redis).to receive(:pipelined).and_call_original
+
+      expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+        expect(pipeline).to receive(:set).and_call_original
+      end
     end
   end
 end

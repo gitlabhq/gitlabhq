@@ -20,8 +20,8 @@ module Gitlab
 
       def store(new_access, new_reason, new_refreshed_at)
         ::Gitlab::Redis::Cache.with do |redis|
-          redis.pipelined do
-            redis.mapped_hmset(
+          redis.pipelined do |pipeline|
+            pipeline.mapped_hmset(
               cache_key,
               {
                 access: new_access.to_s,
@@ -30,7 +30,7 @@ module Gitlab
               }
             )
 
-            redis.expire(cache_key, VALIDITY_TIME)
+            pipeline.expire(cache_key, VALIDITY_TIME)
           end
         end
       end

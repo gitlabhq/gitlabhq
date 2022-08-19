@@ -1,0 +1,10 @@
+%div{ formatted_options }
+  .row
+    .col-lg-4
+      %h4.gl-mt-0
+        = title
+      - if description?
+        %p
+          = description
+    .col-lg-8
+      = body

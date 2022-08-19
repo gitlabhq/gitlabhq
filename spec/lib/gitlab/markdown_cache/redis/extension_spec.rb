@@ -62,7 +62,13 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
 
     it 'does not preload the markdown twice' do
       expect(Gitlab::MarkdownCache::Redis::Store).to receive(:bulk_read).and_call_original
-      expect(Gitlab::Redis::Cache).to receive(:with).twice.and_call_original
+      Gitlab::Redis::Cache.with do |redis|
+        expect(redis).to receive(:pipelined).and_call_original
+
+        expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+          expect(pipeline).to receive(:mapped_hmget).once.and_call_original
+        end
+      end
 
       klass.preload_markdown_cache!([thing])
 

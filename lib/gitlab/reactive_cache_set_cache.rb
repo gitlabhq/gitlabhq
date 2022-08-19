@@ -15,8 +15,8 @@ module Gitlab
         keys = read(key).map { |value| "#{cache_namespace}:#{value}" }
         keys << cache_key(key)
 
-        redis.pipelined do
-          keys.each_slice(1000) { |subset| redis.unlink(*subset) }
+        redis.pipelined do |pipeline|
+          keys.each_slice(1000) { |subset| pipeline.unlink(*subset) }
         end
       end
     end

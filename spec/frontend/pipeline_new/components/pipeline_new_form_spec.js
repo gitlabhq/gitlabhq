@@ -329,6 +329,12 @@ describe('Pipeline New Form', () => {
             value: mockYmlValue,
             description: null,
           },
+          yml_var2: {
+            value: 'yml_var2_val',
+          },
+          yml_var3: {
+            description: '',
+          },
         });
 
         await waitForPromises();

@@ -63,6 +63,7 @@ export default () => {
     const isMarkdown = editBlobForm.data('is-markdown');
     const previewMarkdownPath = editBlobForm.data('previewMarkdownPath');
     const commitButton = $('.js-commit-button');
+    const commitButtonLoading = $('.js-commit-button-loading');
     const cancelLink = $('#cancel-changes');
 
     import('./edit_blob')
@@ -88,6 +89,8 @@ export default () => {
     });
 
     commitButton.on('click', () => {
+      commitButton.addClass('gl-display-none');
+      commitButtonLoading.removeClass('gl-display-none');
       window.onbeforeunload = null;
     });
 

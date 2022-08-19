@@ -95,7 +95,7 @@ RSpec.describe 'Pipeline Schedules', :js do
         it 'displays the required information description' do
           page.within('.pipeline-schedule-table-row') do
             expect(page).to have_content('pipeline schedule')
-            expect(find(".next-run-cell time")['title'])
+            expect(find("[data-testid='next-run-cell'] time")['title'])
               .to include(pipeline_schedule.real_next_run.strftime('%b %-d, %Y'))
             expect(page).to have_link('master')
             expect(page).to have_link("##{pipeline.id}")
@@ -259,7 +259,7 @@ RSpec.describe 'Pipeline Schedules', :js do
         click_button 'Save pipeline schedule'
 
         page.within('.pipeline-schedule-table-row:nth-child(1)') do
-          expect(page).to have_css(".next-run-cell time")
+          expect(page).to have_css("[data-testid='next-run-cell'] time")
         end
       end
     end
