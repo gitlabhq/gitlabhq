@@ -50,14 +50,15 @@ export default {
     <slot :runner="runner" name="runner-name">
       <runner-name :runner="runner" />
     </slot>
-
-    <runner-type-badge :type="runnerType" size="sm" />
     <gl-icon
       v-if="locked"
       v-gl-tooltip
+      class="gl-mx-2"
       :title="$options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION"
       name="lock"
     />
+    <runner-type-badge class="gl-mx-2" :type="runnerType" size="sm" />
+
     <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="description">
       {{ description }}
     </tooltip-on-truncate>
