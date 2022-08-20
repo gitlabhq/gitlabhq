@@ -8,6 +8,8 @@ RSpec.describe 'IDE merge request', :js do
   let(:user) { project.first_owner }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     sign_in(user)
 
     visit(merge_request_path(merge_request))

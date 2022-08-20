@@ -57,13 +57,4 @@ describe('Pages Yaml Editor wrapper', () => {
       });
     });
   });
-
-  describe('events', () => {
-    const wrapper = mount(YamlEditor, defaultOptions);
-
-    it('emits touch if content is changed in editor', async () => {
-      await wrapper.vm.editor.setValue('foo: boo');
-      expect(wrapper.emitted('touch')).toEqual([expect.any(Array)]);
-    });
-  });
 });

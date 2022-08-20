@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       editor: null,
-      isUpdating: false,
+      isFocused: false,
       yamlEditorExtension: null,
     };
   },
@@ -60,19 +60,23 @@ export default {
     this.editor.onDidChangeModelContent(
       debounce(() => this.handleChange(), CONTENT_UPDATE_DEBOUNCE),
     );
+    this.editor.onDidFocusEditorText(() => {
+      this.isFocused = true;
+    });
+    this.editor.onDidBlurEditorText(() => {
+      this.isFocused = false;
+    });
     this.updateEditorContent();
     this.emitValue();
   },
   methods: {
     async updateEditorContent() {
-      this.isUpdating = true;
       this.editor.setDoc(this.doc);
-      this.isUpdating = false;
       this.requestHighlight(this.highlight);
     },
     handleChange() {
       this.emitValue();
-      if (!this.isUpdating) {
+      if (this.isFocused) {
         this.handleTouch();
       }
     },

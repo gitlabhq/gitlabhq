@@ -9,6 +9,8 @@ RSpec.describe 'IDE user commits changes', :js do
   let(:user) { project.first_owner }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     sign_in(user)
 
     ide_visit(project)

@@ -59,6 +59,7 @@ describe('PipelineWizard', () => {
         defaultBranch,
         projectPath,
         filename: parseDocument(template).get('filename'),
+        templateId: parseDocument(template).get('id'),
       }),
     );
   });

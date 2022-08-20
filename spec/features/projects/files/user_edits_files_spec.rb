@@ -14,6 +14,8 @@ RSpec.describe 'Projects > Files > User edits files', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     sign_in(user)
   end
 

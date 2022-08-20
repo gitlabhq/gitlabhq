@@ -5,6 +5,7 @@ import { uniqueId } from 'lodash';
 import { merge } from '~/lib/utils/yaml';
 import { __ } from '~/locale';
 import { isValidStepSeq } from '~/pipeline_wizard/validators';
+import Tracking from '~/tracking';
 import YamlEditor from './editor.vue';
 import WizardStep from './step.vue';
 import CommitStep from './commit.vue';
@@ -16,6 +17,8 @@ export const i18n = {
     YAML-file for you to add to your repository`),
 };
 
+const trackingMixin = Tracking.mixin();
+
 export default {
   name: 'PipelineWizardWrapper',
   i18n,
@@ -25,6 +28,7 @@ export default {
     WizardStep,
     CommitStep,
   },
+  mixins: [trackingMixin],
   props: {
     steps: {
       type: Object,
@@ -42,6 +46,11 @@ export default {
     filename: {
       type: String,
       required: true,
+    },
+    templateId: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -77,6 +86,11 @@ export default {
         template: this.steps.get(i).get('template', true),
       }));
     },
+    tracking() {
+      return {
+        category: `pipeline_wizard:${this.templateId}`,
+      };
+    },
   },
   watch: {
     isLastStep(value) {
@@ -84,9 +98,6 @@ export default {
     },
   },
   methods: {
-    getStep(index) {
-      return this.steps.get(index);
-    },
     resetHighlight() {
       this.highlightPath = null;
     },
@@ -105,6 +116,43 @@ export default {
         merge(doc, tpl.get('template').clone());
       });
       return doc;
+    },
+    onBack() {
+      this.currentStepIndex -= 1;
+      this.track('click_button', {
+        property: 'back',
+        label: 'pipeline_wizard_navigation',
+        extras: {
+          fromStep: this.currentStepIndex + 1,
+          toStep: this.currentStepIndex,
+        },
+      });
+    },
+    onNext() {
+      this.currentStepIndex += 1;
+      this.track('click_button', {
+        property: 'next',
+        label: 'pipeline_wizard_navigation',
+        extras: {
+          fromStep: this.currentStepIndex - 1,
+          toStep: this.currentStepIndex,
+        },
+      });
+    },
+    onDone() {
+      this.$emit('done');
+      this.track('click_button', {
+        label: 'pipeline_wizard_commit',
+        property: 'commit',
+      });
+    },
+    onEditorTouched() {
+      this.track('edit', {
+        label: 'pipeline_wizard_editor_interaction',
+        extras: {
+          currentStep: this.currentStepIndex,
+        },
+      });
     },
   },
 };
@@ -127,8 +175,8 @@ export default {
           :file-content="pipelineBlob"
           :filename="filename"
           :project-path="projectPath"
-          @back="currentStepIndex--"
-          @done="$emit('done')"
+          @back="onBack"
+          @done="onDone"
         />
         <wizard-step
           v-for="(step, i) in stepList"
@@ -141,8 +189,8 @@ export default {
           :highlight.sync="highlightPath"
           :inputs="step.inputs"
           :template="step.template"
-          @back="currentStepIndex--"
-          @next="currentStepIndex++"
+          @back="onBack"
+          @next="onNext"
           @update:compiled="onUpdate"
         />
       </section>
@@ -162,6 +210,7 @@ export default {
             :highlight="highlightPath"
             class="gl-w-full"
             @update:yaml="onEditorUpdate"
+            @touch.once="onEditorTouched"
           />
           <div
             v-if="showPlaceholder"

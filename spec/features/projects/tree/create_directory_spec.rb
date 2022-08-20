@@ -7,6 +7,8 @@ RSpec.describe 'Multi-file editor new directory', :js do
   let(:project) { create(:project, :repository) }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     project.add_maintainer(user)
     sign_in(user)
 

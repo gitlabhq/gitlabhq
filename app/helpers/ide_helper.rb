@@ -24,7 +24,8 @@ module IdeHelper
       'web-terminal-svg-path' => image_path('illustrations/web-ide_promotion.svg'),
       'web-terminal-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'interactive-web-terminals-for-the-web-ide'),
       'web-terminal-config-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'web-ide-configuration-file'),
-      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'runner-configuration')
+      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'runner-configuration'),
+      'csp-nonce' => content_security_policy_nonce
     }
   end
 

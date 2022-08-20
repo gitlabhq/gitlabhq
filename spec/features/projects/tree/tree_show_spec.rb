@@ -117,6 +117,10 @@ RSpec.describe 'Projects tree', :js do
   end
 
   context 'web IDE' do
+    before do
+      stub_feature_flags(vscode_web_ide: false)
+    end
+
     it 'opens folder in IDE' do
       visit project_tree_path(project, File.join('master', 'bar'))
 

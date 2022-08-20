@@ -8,6 +8,7 @@ import { parseBoolean } from '../lib/utils/common_utils';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import ide from './components/ide.vue';
 import { createRouter } from './ide_router';
+import { initGitlabWebIDE } from './init_gitlab_web_ide';
 import { DEFAULT_THEME } from './lib/themes';
 import { createStore } from './stores';
 
@@ -34,7 +35,7 @@ Vue.use(PerformancePlugin, {
  * @param {extendStoreCallback} options.extendStore -
  *   Function that receives the default store and returns an extended one.
  */
-export const initIde = (el, options = {}) => {
+export const initLegacyWebIDE = (el, options = {}) => {
   if (!el) return null;
 
   const { rootComponent = ide, extendStore = identity } = options;
@@ -93,8 +94,15 @@ export const initIde = (el, options = {}) => {
  */
 export function startIde(options) {
   const ideElement = document.getElementById('ide');
-  if (ideElement) {
+
+  if (!ideElement) {
+    return;
+  }
+
+  if (gon.features?.vscodeWebIde) {
+    initGitlabWebIDE(ideElement);
+  } else {
     resetServiceWorkersPublicPath();
-    initIde(ideElement, options);
+    initLegacyWebIDE(ideElement, options);
   }
 }

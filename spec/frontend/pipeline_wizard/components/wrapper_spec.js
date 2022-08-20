@@ -2,6 +2,7 @@ import { Document, parseDocument } from 'yaml';
 import { GlProgressBar } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import PipelineWizardWrapper, { i18n } from '~/pipeline_wizard/components/wrapper.vue';
 import WizardStep from '~/pipeline_wizard/components/step.vue';
 import CommitStep from '~/pipeline_wizard/components/commit.vue';
@@ -19,9 +20,11 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   const steps = parseDocument(stepsYaml).toJS();
 
   const getAsYamlNode = (value) => new Document(value).contents;
+  const templateId = 'my-namespace/my-template';
   const createComponent = (props = {}, mountFn = shallowMountExtended) => {
     wrapper = mountFn(PipelineWizardWrapper, {
       propsData: {
+        templateId,
         projectPath: '/user/repo',
         defaultBranch: 'main',
         filename: '.gitlab-ci.yml',
@@ -308,6 +311,128 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         await nextTick();
 
         expect(getEditorContent()).toBe(compiledScenario3);
+      });
+    });
+  });
+
+  describe('when commit step done', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('emits done', () => {
+      expect(wrapper.emitted('done')).toBeUndefined();
+
+      wrapper.findComponent(CommitStep).vm.$emit('done');
+
+      expect(wrapper.emitted('done')).toHaveLength(1);
+    });
+  });
+
+  describe('tracking', () => {
+    let trackingSpy;
+    const trackingCategory = `pipeline_wizard:${templateId}`;
+
+    const setUpTrackingSpy = () => {
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    };
+
+    it('tracks next button click event', () => {
+      createComponent();
+      setUpTrackingSpy();
+      findFirstVisibleStep().vm.$emit('next');
+
+      expect(trackingSpy).toHaveBeenCalledWith(trackingCategory, 'click_button', {
+        category: trackingCategory,
+        property: 'next',
+        label: 'pipeline_wizard_navigation',
+        extras: {
+          fromStep: 0,
+          toStep: 1,
+        },
+      });
+    });
+
+    it('tracks back button click event', () => {
+      createComponent();
+
+      // Navigate to step 1 without the spy set up
+      findFirstVisibleStep().vm.$emit('next');
+
+      // Now enable the tracking spy
+      setUpTrackingSpy();
+
+      findFirstVisibleStep().vm.$emit('back');
+
+      expect(trackingSpy).toHaveBeenCalledWith(trackingCategory, 'click_button', {
+        category: trackingCategory,
+        property: 'back',
+        label: 'pipeline_wizard_navigation',
+        extras: {
+          fromStep: 1,
+          toStep: 0,
+        },
+      });
+    });
+
+    it('tracks back button click event on the commit step', () => {
+      createComponent();
+
+      // Navigate to step 2 without the spy set up
+      findFirstVisibleStep().vm.$emit('next');
+      findFirstVisibleStep().vm.$emit('next');
+
+      // Now enable the tracking spy
+      setUpTrackingSpy();
+
+      wrapper.findComponent(CommitStep).vm.$emit('back');
+
+      expect(trackingSpy).toHaveBeenCalledWith(trackingCategory, 'click_button', {
+        category: trackingCategory,
+        property: 'back',
+        label: 'pipeline_wizard_navigation',
+        extras: {
+          fromStep: 2,
+          toStep: 1,
+        },
+      });
+    });
+
+    it('tracks done event on the commit step', () => {
+      createComponent();
+
+      // Navigate to step 2 without the spy set up
+      findFirstVisibleStep().vm.$emit('next');
+      findFirstVisibleStep().vm.$emit('next');
+
+      // Now enable the tracking spy
+      setUpTrackingSpy();
+
+      wrapper.findComponent(CommitStep).vm.$emit('done');
+
+      expect(trackingSpy).toHaveBeenCalledWith(trackingCategory, 'click_button', {
+        category: trackingCategory,
+        label: 'pipeline_wizard_commit',
+        property: 'commit',
+      });
+    });
+
+    it('tracks when editor emits touch events', () => {
+      createComponent();
+      setUpTrackingSpy();
+
+      wrapper.findComponent(YamlEditor).vm.$emit('touch');
+
+      expect(trackingSpy).toHaveBeenCalledWith(trackingCategory, 'edit', {
+        category: trackingCategory,
+        label: 'pipeline_wizard_editor_interaction',
+        extras: {
+          currentStep: 0,
+        },
       });
     });
   });
