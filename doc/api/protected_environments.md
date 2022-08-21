@@ -121,7 +121,7 @@ curl --header 'Content-Type: application/json' --request POST \
 | `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | yes | Array of access levels allowed to deploy, with each described by a hash. |
-| `required_approval_count` | integer        | no       | The number of approvals required to deploy to this environment. This is part of Deployment Approvals, which isn't yet available for use. For details, see [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343864). |
+| `required_approval_count` | integer        | no       | The number of approvals required to deploy to this environment. |
 | `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. See [Multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) for more information. |
 
 Elements in the `deploy_access_levels` and `approval_rules` array should be one of `user_id`, `group_id` or
