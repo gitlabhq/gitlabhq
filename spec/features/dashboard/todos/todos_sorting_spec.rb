@@ -28,7 +28,7 @@ RSpec.describe 'Dashboard > User sorts todos' do
       create(:todo, user: user, project: project, target: issue_3, created_at: 3.hours.ago, updated_at: 2.minutes.ago)
       create(:todo, user: user, project: project, target: issue_1, created_at: 2.hours.ago, updated_at: 2.hours.ago)
       create(:todo, user: user, project: project, target: merge_request_1, created_at: 1.hour.ago,
-             updated_at: 1.hour.ago)
+                    updated_at: 1.hour.ago)
 
       merge_request_1.labels << label_1
       issue_3.labels         << label_1

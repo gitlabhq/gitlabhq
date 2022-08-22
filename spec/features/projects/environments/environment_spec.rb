@@ -264,9 +264,7 @@ RSpec.describe 'Environment' do
               let(:build) { create(:ci_build, :success, pipeline: pipeline, environment: environment.name) }
 
               let(:action) do
-                create(:ci_build, :manual, pipeline: pipeline,
-                       name: 'close_app',
-                       environment: environment.name)
+                create(:ci_build, :manual, pipeline: pipeline, name: 'close_app', environment: environment.name)
               end
 
               let(:deployment) do
@@ -278,8 +276,7 @@ RSpec.describe 'Environment' do
 
               context 'when user has ability to stop environment' do
                 let(:permissions) do
-                  create(:protected_branch, :developers_can_merge,
-                         name: action.ref, project: project)
+                  create(:protected_branch, :developers_can_merge, name: action.ref, project: project)
                 end
 
                 it 'allows to stop environment', :js do

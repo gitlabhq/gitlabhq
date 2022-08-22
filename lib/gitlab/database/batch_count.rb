@@ -35,6 +35,10 @@ module Gitlab
         BatchCounter.new(relation, column: column).count(batch_size: batch_size, start: start, finish: finish)
       end
 
+      def batch_count_with_timeout(relation, column = nil, batch_size: nil, start: nil, finish: nil, timeout: nil, partial_results: nil)
+        BatchCounter.new(relation, column: column).count_with_timeout(batch_size: batch_size, start: start, finish: finish, timeout: timeout, partial_results: partial_results)
+      end
+
       def batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
         BatchCounter.new(relation, column: column).count(mode: :distinct, batch_size: batch_size, start: start, finish: finish)
       end

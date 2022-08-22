@@ -649,10 +649,10 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    haml (5.1.2)
+    haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.36.0)
+    haml_lint (0.40.1)
       haml (>= 4.0, < 5.3)
       parallel (~> 1.10)
       rainbow
@@ -1606,7 +1606,7 @@ DEPENDENCIES
   grpc (~> 1.42.0)
   gssapi
   guard-rspec
-  haml_lint (~> 0.36.0)
+  haml_lint (~> 0.40.0)
   hamlit (~> 2.15.0)
   hangouts-chat (~> 0.0.5)
   hashie

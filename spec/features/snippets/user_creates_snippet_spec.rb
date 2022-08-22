@@ -80,7 +80,7 @@ RSpec.describe 'User creates snippet', :js do
   context 'when snippets default visibility level is restricted' do
     before do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE],
-                                default_snippet_visibility: Gitlab::VisibilityLevel::PRIVATE)
+                               default_snippet_visibility: Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'creates a snippet using the lowest available visibility level as default' do

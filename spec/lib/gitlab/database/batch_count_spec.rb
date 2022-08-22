@@ -86,48 +86,48 @@ RSpec.describe Gitlab::Database::BatchCount do
           query: batch_count_query,
           message: 'Query has been canceled with message: query timed out'
         )
-        expect(subject.call(model, column, batch_size: batch_size, start: 0)).to eq(-1)
+        expect(subject.call(model, column, batch_size: batch_size, start: 0)).to eq(fallback)
       end
     end
   end
 
   describe '#batch_count' do
     it 'counts table' do
-      expect(described_class.batch_count(model)).to eq(5)
+      expect(described_class.batch_count(model)).to eq(model.count)
     end
 
     it 'counts with :id field' do
-      expect(described_class.batch_count(model, :id)).to eq(5)
+      expect(described_class.batch_count(model, :id)).to eq(model.count)
     end
 
     it 'counts with "id" field' do
-      expect(described_class.batch_count(model, 'id')).to eq(5)
+      expect(described_class.batch_count(model, 'id')).to eq(model.count)
     end
 
     it 'counts with table.id field' do
-      expect(described_class.batch_count(model, "#{model.table_name}.id")).to eq(5)
+      expect(described_class.batch_count(model, "#{model.table_name}.id")).to eq(model.count)
     end
 
     it 'counts with Arel column' do
-      expect(described_class.batch_count(model, model.arel_table[:id])).to eq(5)
+      expect(described_class.batch_count(model, model.arel_table[:id])).to eq(model.count)
     end
 
     it 'counts table with batch_size 50K' do
-      expect(described_class.batch_count(model, batch_size: 50_000)).to eq(5)
+      expect(described_class.batch_count(model, batch_size: 50_000)).to eq(model.count)
     end
 
     it 'will not count table with a batch size less than allowed' do
       expect(described_class.batch_count(model, batch_size: small_batch_size)).to eq(fallback)
     end
 
-    it 'counts with a small edge case batch_sizes than result' do
+    it 'produces the same result with different batch sizes' do
       stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
 
-      [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_count(model, batch_size: i)).to eq(5) }
+      [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_count(model, batch_size: i)).to eq(model.count) }
     end
 
     it 'counts with a start and finish' do
-      expect(described_class.batch_count(model, start: model.minimum(:id), finish: model.maximum(:id))).to eq(5)
+      expect(described_class.batch_count(model, start: model.minimum(:id), finish: model.maximum(:id))).to eq(model.count)
     end
 
     it 'stops counting when finish value is reached' do
@@ -217,6 +217,113 @@ RSpec.describe Gitlab::Database::BatchCount do
     end
   end
 
+  describe '#batch_count_with_timeout' do
+    it 'counts table' do
+      expect(described_class.batch_count_with_timeout(model)).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'counts with :id field' do
+      expect(described_class.batch_count_with_timeout(model, :id)).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'counts with "id" field' do
+      expect(described_class.batch_count_with_timeout(model, 'id')).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'counts with table.id field' do
+      expect(described_class.batch_count_with_timeout(model, "#{model.table_name}.id")).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'counts with Arel column' do
+      expect(described_class.batch_count_with_timeout(model, model.arel_table[:id])).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'counts table with batch_size 50K' do
+      expect(described_class.batch_count_with_timeout(model, batch_size: 50_000)).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'will not count table with a batch size less than allowed' do
+      expect(described_class.batch_count_with_timeout(model, batch_size: small_batch_size)).to eq({ status: :bad_config })
+    end
+
+    it 'produces the same result with different batch sizes' do
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_count_with_timeout(model, batch_size: i)).to eq({ status: :completed, count: model.count }) }
+    end
+
+    it 'counts with a start and finish' do
+      expect(described_class.batch_count_with_timeout(model, start: model.minimum(:id), finish: model.maximum(:id))).to eq({ status: :completed, count: model.count })
+    end
+
+    it 'stops counting when finish value is reached' do
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      expect(described_class.batch_count_with_timeout(model,
+        start: model.minimum(:id),
+        finish: model.maximum(:id) - 1, # Do not count the last record
+        batch_size: model.count - 2 # Ensure there are multiple batches
+      )).to eq({ status: :completed, count: model.count - 1 })
+    end
+
+    it 'returns a partial count when timeout elapses' do
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      expect(::Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1, 10, 300)
+
+      expect(
+        described_class.batch_count_with_timeout(model, batch_size: 1, timeout: 250.seconds)
+      ).to eq({ status: :timeout, partial_results: 1, continue_from: model.minimum(:id) + 1 })
+    end
+
+    it 'starts counting from a given partial result' do
+      expect(described_class.batch_count_with_timeout(model, partial_results: 3)).to eq({ status: :completed, count: 3 + model.count })
+    end
+
+    it_behaves_like 'when a transaction is open' do
+      subject { described_class.batch_count_with_timeout(model) }
+    end
+
+    it_behaves_like 'when batch fetch query is canceled' do
+      let(:mode) { :itself }
+      let(:operation) { :count }
+      let(:operation_args) { nil }
+      let(:column) { nil }
+      let(:fallback) { { status: :cancelled } }
+
+      subject { described_class.method(:batch_count_with_timeout) }
+    end
+
+    context 'disallowed_configurations' do
+      include_examples 'disallowed configurations', :batch_count do
+        let(:args) { [Issue] }
+        let(:default_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE }
+      end
+
+      it 'raises an error if distinct count is requested' do
+        expect { described_class.batch_count_with_timeout(model.distinct(column)) }.to raise_error 'Use distinct count for optimized distinct counting'
+      end
+    end
+
+    context 'when a relation is grouped' do
+      let!(:one_more_issue) { create(:issue, author: user, project: model.first.project) }
+
+      before do
+        stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 1)
+      end
+
+      context 'count by default column' do
+        let(:count) do
+          described_class.batch_count_with_timeout(model.group(column), batch_size: 2)
+        end
+
+        it 'counts grouped records' do
+          expect(count).to eq({ status: :completed, count: { user.id => 4, another_user.id => 2 } })
+        end
+      end
+    end
+  end
+
   describe '#batch_distinct_count' do
     it 'counts with column field' do
       expect(described_class.batch_distinct_count(model, column)).to eq(2)
@@ -242,7 +349,7 @@ RSpec.describe Gitlab::Database::BatchCount do
       expect(described_class.batch_distinct_count(model, column, batch_size: small_batch_size)).to eq(fallback)
     end
 
-    it 'counts with a small edge case batch_sizes than result' do
+    it 'produces the same result with different batch sizes' do
       stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
 
       [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_distinct_count(model, column, batch_size: i)).to eq(2) }

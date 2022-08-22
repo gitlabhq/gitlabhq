@@ -33,6 +33,14 @@ module Gitlab
       end
 
       def count(batch_size: nil, mode: :itself, start: nil, finish: nil)
+        result = count_with_timeout(batch_size: batch_size, mode: mode, start: start, finish: finish, timeout: nil)
+
+        return FALLBACK if result[:status] != :completed
+
+        result[:count]
+      end
+
+      def count_with_timeout(batch_size: nil, mode: :itself, start: nil, finish: nil, timeout: nil, partial_results: nil)
         raise 'BatchCount can not be run inside a transaction' if transaction_open?
 
         check_mode!(mode)
@@ -44,12 +52,20 @@ module Gitlab
         finish = actual_finish(finish)
 
         raise "Batch counting expects positive values only for #{@column}" if start < 0 || finish < 0
-        return FALLBACK if unwanted_configuration?(finish, batch_size, start)
+        return { status: :bad_config } if unwanted_configuration?(finish, batch_size, start)
 
-        results = nil
+        results = partial_results
         batch_start = start
 
+        start_time = ::Gitlab::Metrics::System.monotonic_time.seconds
+
         while batch_start < finish
+
+          # Timeout elapsed, return partial result so the caller can continue later
+          if timeout && ::Gitlab::Metrics::System.monotonic_time.seconds - start_time > timeout
+            return { status: :timeout, partial_results: results, continue_from: batch_start }
+          end
+
           begin
             batch_end = [batch_start + batch_size, finish].min
             batch_relation = build_relation_batch(batch_start, batch_end, mode)
@@ -62,14 +78,14 @@ module Gitlab
               batch_size /= 2
             else
               log_canceled_batch_fetch(batch_start, mode, batch_relation.to_sql, error)
-              return FALLBACK
+              return { status: :cancelled }
             end
           end
 
           sleep(SLEEP_TIME_IN_SECONDS)
         end
 
-        results
+        { status: :completed, count: results }
       end
 
       def transaction_open?

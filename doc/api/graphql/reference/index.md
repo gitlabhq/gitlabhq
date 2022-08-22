@@ -18836,6 +18836,7 @@ Represents a vulnerability scanner.
 | <a id="vulnerabilityscannerid"></a>`id` | [`ID`](#id) | ID of the scanner. |
 | <a id="vulnerabilityscannername"></a>`name` | [`String`](#string) | Name of the vulnerability scanner. |
 | <a id="vulnerabilityscannerreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the vulnerability report. |
+| <a id="vulnerabilityscannerreporttypehumanized"></a>`reportTypeHumanized` | [`String`](#string) | Humanized type of the vulnerability report. |
 | <a id="vulnerabilityscannervendor"></a>`vendor` | [`String`](#string) | Vendor of the vulnerability scanner. |
 
 ### `VulnerabilitySeveritiesCount`

@@ -349,9 +349,9 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting 
     expect(Gitlab::AppLogger).to have_received(:info)
       .exactly(times).times
       .with(message || hash_including(message: 'Email Verification',
-                           event: event,
-                           username: user.username,
-                           ip: '127.0.0.1',
-                           reason: reason))
+                                      event: event,
+                                      username: user.username,
+                                      ip: '127.0.0.1',
+                                      reason: reason))
   end
 end

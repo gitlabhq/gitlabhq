@@ -384,7 +384,7 @@ group :development, :test do
 
   gem 'gitlab-styles', '~> 7.1.0', require: false
 
-  gem 'haml_lint', '~> 0.36.0', require: false
+  gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false

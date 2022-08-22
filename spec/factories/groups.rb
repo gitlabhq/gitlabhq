@@ -106,9 +106,9 @@ FactoryBot.define do
         end
 
         create_graph(
-          parent:   group,
+          parent: group,
           children: evaluator.children,
-          depth:    evaluator.depth
+          depth: evaluator.depth
         )
       end
     end

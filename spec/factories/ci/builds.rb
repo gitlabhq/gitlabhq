@@ -129,8 +129,8 @@ FactoryBot.define do
         {
           script: %w(ls),
           environment: { name: 'staging',
-            action: 'stop',
-            url: 'http://staging.example.com/$CI_JOB_NAME' }
+                         action: 'stop',
+                         url: 'http://staging.example.com/$CI_JOB_NAME' }
         }
       end
     end
@@ -141,9 +141,9 @@ FactoryBot.define do
         {
           script: %w(ls),
           environment: { name: 'test_portal',
-            action: 'start',
-            url: 'http://staging.example.com/$CI_JOB_NAME',
-            deployment_tier: 'testing' }
+                         action: 'start',
+                         url: 'http://staging.example.com/$CI_JOB_NAME',
+                         deployment_tier: 'testing' }
         }
       end
     end
@@ -155,7 +155,7 @@ FactoryBot.define do
         {
           script: %w(ls),
           environment: { name: 'production',
-            url: 'http://prd.example.com/$CI_JOB_NAME' }
+                         url: 'http://prd.example.com/$CI_JOB_NAME' }
         }
       end
     end
@@ -167,8 +167,8 @@ FactoryBot.define do
         {
           script: %w(ls),
           environment: { name: 'review/$CI_COMMIT_REF_NAME',
-            url: 'http://staging.example.com/$CI_JOB_NAME',
-            on_stop: 'stop_review_app' }
+                         url: 'http://staging.example.com/$CI_JOB_NAME',
+                         on_stop: 'stop_review_app' }
         }
       end
     end
@@ -181,8 +181,8 @@ FactoryBot.define do
         {
           script: %w(ls),
           environment: { name: 'review/$CI_COMMIT_REF_NAME',
-            url: 'http://staging.example.com/$CI_JOB_NAME',
-            action: 'stop' }
+                         url: 'http://staging.example.com/$CI_JOB_NAME',
+                         action: 'stop' }
         }
       end
     end

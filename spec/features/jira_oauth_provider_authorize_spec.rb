@@ -10,10 +10,10 @@ RSpec.describe 'JIRA OAuth Provider' do
       sign_in(user)
 
       visit oauth_jira_dvcs_authorize_path(client_id: application.uid,
-                                      redirect_uri: oauth_jira_dvcs_callback_url,
-                                      response_type: 'code',
-                                      state: 'my_state',
-                                      scope: 'read_user')
+                                           redirect_uri: oauth_jira_dvcs_callback_url,
+                                           response_type: 'code',
+                                           state: 'my_state',
+                                           scope: 'read_user')
     end
 
     it_behaves_like 'Secure OAuth Authorizations'

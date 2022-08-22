@@ -30,8 +30,7 @@ RSpec.describe 'User sees feature flag list', :js do
           create(:operations_scope, strategy: strat, environment_scope: 'production')
         end
       end
-      create(:operations_feature_flag, :new_version_flag, project: project,
-             name: 'my_flag', active: false)
+      create(:operations_feature_flag, :new_version_flag, project: project, name: 'my_flag', active: false)
     end
 
     it 'shows the user the first flag' do

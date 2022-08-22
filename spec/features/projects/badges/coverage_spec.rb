@@ -191,7 +191,7 @@ RSpec.describe 'test coverage badge' do
 
   def show_test_coverage_badge(job: nil, min_good: nil, min_acceptable: nil, min_medium: nil)
     visit coverage_project_badges_path(project, ref: :master, job: job, min_good: min_good,
-                                       min_acceptable: min_acceptable, min_medium: min_medium, format: :svg)
+                                                min_acceptable: min_acceptable, min_medium: min_medium, format: :svg)
   end
 
   def expect_coverage_badge(coverage)

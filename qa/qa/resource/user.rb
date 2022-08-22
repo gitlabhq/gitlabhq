@@ -232,3 +232,5 @@ module QA
     end
   end
 end
+
+QA::Resource::User.prepend_mod_with('Resource::User', namespace: QA)

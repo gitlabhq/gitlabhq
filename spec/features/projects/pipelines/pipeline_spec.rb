@@ -895,12 +895,12 @@ RSpec.describe 'Pipeline', :js do
 
     let!(:test_job) do
       create(:ci_build, :pending, stage: 'test', name: 'test',
-        stage_idx: 1, pipeline: pipeline, project: project)
+                                  stage_idx: 1, pipeline: pipeline, project: project)
     end
 
     let!(:deploy_job) do
       create(:ci_build, :created, stage: 'deploy', name: 'deploy',
-        stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+                                  stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
     end
 
     describe 'GET /:project/-/pipelines/:id' do
@@ -998,8 +998,14 @@ RSpec.describe 'Pipeline', :js do
 
         context 'when deploy job is a bridge to trigger a downstream pipeline' do
           let!(:deploy_job) do
-            create(:ci_bridge, :created, stage: 'deploy', name: 'deploy',
-              stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+            create(:ci_bridge, :created,
+              stage: 'deploy',
+              name: 'deploy',
+              stage_idx: 2,
+              pipeline: pipeline,
+              project: project,
+              resource_group: resource_group
+            )
           end
 
           it 'shows deploy job as waiting for resource' do

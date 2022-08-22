@@ -862,7 +862,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       context 'when the user already enabled 2FA' do
         before do
           user.update!(otp_required_for_login: true,
-                       otp_secret:  User.generate_otp_secret(32))
+                       otp_secret: User.generate_otp_secret(32))
         end
 
         it 'asks the user to accept the terms' do

@@ -546,8 +546,8 @@ RSpec.describe 'Pipelines', :js do
         context 'for a failed pipeline' do
           let!(:build) do
             create(:ci_build, :failed, pipeline: pipeline,
-                                      stage: 'build',
-                                      name: 'build')
+                                       stage: 'build',
+                                       name: 'build')
           end
 
           it 'displays the failure reason' do
