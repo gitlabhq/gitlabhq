@@ -179,6 +179,12 @@ module Types
           description: 'A single environment of the project.',
           resolver: Resolvers::EnvironmentsResolver.single
 
+    field :deployment,
+          Types::DeploymentDetailsType,
+          null: true,
+          description: 'Details of the deployment of the project.',
+          resolver: Resolvers::DeploymentResolver.single
+
     field :issue,
           Types::IssueType,
           null: true,

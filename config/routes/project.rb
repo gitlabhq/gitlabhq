@@ -312,7 +312,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get '/deployments/cloud_run', to: 'deployments#cloud_run'
           get '/deployments/cloud_storage', to: 'deployments#cloud_storage'
 
-          get '/databases', to: 'databases#index'
+          resources :databases, only: [:index, :create, :new], path_names: { new: 'new/:product' }
         end
 
         resources :environments, except: [:destroy] do

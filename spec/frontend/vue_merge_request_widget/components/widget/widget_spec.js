@@ -197,5 +197,43 @@ describe('MR Widget', () => {
 
       expect(findToggleButton().exists()).toBe(false);
     });
+
+    it('fetches expanded data when clicked for the first time', async () => {
+      const mockDataCollapsed = {
+        headers: {},
+        status: 200,
+        data: { vulnerabilities: [{ vuln: 1 }] },
+      };
+
+      const mockDataExpanded = {
+        headers: {},
+        status: 200,
+        data: { vulnerabilities: [{ vuln: 2 }] },
+      };
+
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve(mockDataCollapsed),
+          fetchExpandedData: () => Promise.resolve(mockDataExpanded),
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      // First fetches the collapsed data
+      expect(wrapper.emitted('input')[0][0]).toEqual({
+        collapsed: mockDataCollapsed.data,
+        expanded: null,
+      });
+
+      // Then fetches the expanded data
+      expect(wrapper.emitted('input')[1][0]).toEqual({
+        collapsed: null,
+        expanded: mockDataExpanded.data,
+      });
+    });
   });
 });

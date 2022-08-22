@@ -415,5 +415,5 @@ displays to the right of the mini graph.
 If you have permission to trigger pipelines in the downstream project, you can
 retry or cancel multi-project pipelines:
 
-- [In the main graph view](index.md#downstream-pipelines).
+- [In the main graph view](downstream_pipelines.md#view-a-downstream-pipeline).
 - From the downstream pipeline's details page.

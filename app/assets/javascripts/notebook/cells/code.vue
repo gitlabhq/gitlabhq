@@ -13,11 +13,6 @@ export default {
       type: Object,
       required: true,
     },
-    codeCssClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     rawInputCode() {
@@ -39,18 +34,12 @@ export default {
 
 <template>
   <div class="cell">
-    <code-output
-      :raw-code="rawInputCode"
-      :count="cell.execution_count"
-      :code-css-class="codeCssClass"
-      type="input"
-    />
+    <code-output :raw-code="rawInputCode" :count="cell.execution_count" type="input" />
     <output-cell
       v-if="hasOutput"
       :count="cell.execution_count"
       :outputs="outputs"
       :metadata="cell.metadata"
-      :code-css-class="codeCssClass"
     />
   </div>
 </template>

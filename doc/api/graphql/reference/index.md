@@ -6984,6 +6984,29 @@ The edge type for [`DependencyProxyManifest`](#dependencyproxymanifest).
 | <a id="dependencyproxymanifestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dependencyproxymanifestedgenode"></a>`node` | [`DependencyProxyManifest`](#dependencyproxymanifest) | The item at the end of the edge. |
 
+#### `DeploymentConnection`
+
+The connection type for [`Deployment`](#deployment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentconnectionedges"></a>`edges` | [`[DeploymentEdge]`](#deploymentedge) | A list of edges. |
+| <a id="deploymentconnectionnodes"></a>`nodes` | [`[Deployment]`](#deployment) | A list of nodes. |
+| <a id="deploymentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DeploymentEdge`
+
+The edge type for [`Deployment`](#deployment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="deploymentedgenode"></a>`node` | [`Deployment`](#deployment) | The item at the end of the edge. |
+
 #### `DesignAtVersionConnection`
 
 The connection type for [`DesignAtVersion`](#designatversion).
@@ -10975,6 +10998,42 @@ Group-level Dependency Proxy settings.
 | ---- | ---- | ----------- |
 | <a id="dependencyproxysettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the dependency proxy is enabled for the group. |
 
+### `Deployment`
+
+The deployment of an environment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentcreatedat"></a>`createdAt` | [`Time`](#time) | When the deployment record was created. |
+| <a id="deploymentfinishedat"></a>`finishedAt` | [`Time`](#time) | When the deployment finished. |
+| <a id="deploymentid"></a>`id` | [`ID`](#id) | Global ID of the deployment. |
+| <a id="deploymentiid"></a>`iid` | [`ID`](#id) | Project-level internal ID of the deployment. |
+| <a id="deploymentref"></a>`ref` | [`String`](#string) | Git-Ref that the deployment ran on. |
+| <a id="deploymentsha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
+| <a id="deploymentstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |
+| <a id="deploymenttag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
+| <a id="deploymentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
+
+### `DeploymentDetails`
+
+The details of the deployment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentdetailscreatedat"></a>`createdAt` | [`Time`](#time) | When the deployment record was created. |
+| <a id="deploymentdetailsfinishedat"></a>`finishedAt` | [`Time`](#time) | When the deployment finished. |
+| <a id="deploymentdetailsid"></a>`id` | [`ID`](#id) | Global ID of the deployment. |
+| <a id="deploymentdetailsiid"></a>`iid` | [`ID`](#id) | Project-level internal ID of the deployment. |
+| <a id="deploymentdetailsref"></a>`ref` | [`String`](#string) | Git-Ref that the deployment ran on. |
+| <a id="deploymentdetailssha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
+| <a id="deploymentdetailsstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |
+| <a id="deploymentdetailstag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
+| <a id="deploymentdetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
+
 ### `Design`
 
 A single design.
@@ -11405,6 +11464,23 @@ Describes where code is deployed for a project.
 | <a id="environmentstate"></a>`state` | [`String!`](#string) | State of the environment, for example: available/stopped. |
 
 #### Fields with arguments
+
+##### `Environment.deployments`
+
+Deployments of the environment.
+
+Returns [`DeploymentConnection`](#deploymentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="environmentdeploymentsorderby"></a>`orderBy` | [`DeploymentsOrderByInput`](#deploymentsorderbyinput) | Order by a specified field. |
+| <a id="environmentdeploymentsstatuses"></a>`statuses` | [`[DeploymentStatus!]`](#deploymentstatus) | Statuses of the deployments. |
 
 ##### `Environment.metricsDashboard`
 
@@ -15838,6 +15914,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectdastsitevalidationsnormalizedtargeturls"></a>`normalizedTargetUrls` | [`[String!]`](#string) | Normalized URL of the target to be scanned. |
 | <a id="projectdastsitevalidationsstatus"></a>`status` | [`DastSiteValidationStatusEnum`](#dastsitevalidationstatusenum) | Status of the site validation. |
 
+##### `Project.deployment`
+
+Details of the deployment of the project.
+
+Returns [`DeploymentDetails`](#deploymentdetails).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdeploymentiid"></a>`iid` | [`ID!`](#id) | Project-level internal ID of the Deployment. |
+
 ##### `Project.environment`
 
 A single environment of the project.
@@ -19605,6 +19693,20 @@ Weight of the data visualization palette.
 | <a id="dependencyproxymanifeststatuspending_destruction"></a>`PENDING_DESTRUCTION` | Dependency proxy manifest has a status of pending_destruction. |
 | <a id="dependencyproxymanifeststatusprocessing"></a>`PROCESSING` | Dependency proxy manifest has a status of processing. |
 
+### `DeploymentStatus`
+
+All deployment statuses.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="deploymentstatusblocked"></a>`BLOCKED` | A deployment that is blocked. |
+| <a id="deploymentstatuscanceled"></a>`CANCELED` | A deployment that is canceled. |
+| <a id="deploymentstatuscreated"></a>`CREATED` | A deployment that is created. |
+| <a id="deploymentstatusfailed"></a>`FAILED` | A deployment that is failed. |
+| <a id="deploymentstatusrunning"></a>`RUNNING` | A deployment that is running. |
+| <a id="deploymentstatusskipped"></a>`SKIPPED` | A deployment that is skipped. |
+| <a id="deploymentstatussuccess"></a>`SUCCESS` | A deployment that is success. |
+
 ### `DeploymentTier`
 
 All environment deployment tiers.
@@ -20620,6 +20722,15 @@ Common sort values.
 | <a id="sortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
 | <a id="sortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
 | <a id="sortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+
+### `SortDirectionEnum`
+
+Values for sort direction.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="sortdirectionenumasc"></a>`ASC` | Ascending order. |
+| <a id="sortdirectionenumdesc"></a>`DESC` | Descending order. |
 
 ### `TestCaseStatus`
 
@@ -22374,6 +22485,17 @@ Input type for DastSiteProfile authentication.
 | <a id="dastsiteprofileauthinputurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
 | <a id="dastsiteprofileauthinputusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target. |
 | <a id="dastsiteprofileauthinputusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |
+
+### `DeploymentsOrderByInput`
+
+Values for ordering deployments by a specific field.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentsorderbyinputcreatedat"></a>`createdAt` | [`SortDirectionEnum`](#sortdirectionenum) | Order by Created time. |
+| <a id="deploymentsorderbyinputfinishedat"></a>`finishedAt` | [`SortDirectionEnum`](#sortdirectionenum) | Order by Finished time. |
 
 ### `DiffImagePositionInput`
 

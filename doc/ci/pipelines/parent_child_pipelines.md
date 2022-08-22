@@ -224,5 +224,5 @@ multi-project pipelines:
 
 You can retry or cancel child pipelines:
 
-- [In the main graph view](index.md#downstream-pipelines).
+- [In the main graph view](downstream_pipelines.md#view-a-downstream-pipeline).
 - In the child pipeline's details page.

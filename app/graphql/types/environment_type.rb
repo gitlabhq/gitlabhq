@@ -29,5 +29,14 @@ module Types
           Types::AlertManagement::AlertType,
           null: true,
           description: 'Most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.'
+
+    # Setting high complexity for preventing users from querying deployments for multiple environments,
+    # which could result in N+1 issue.
+    field :deployments,
+          Types::DeploymentType.connection_type,
+          null: true,
+          description: 'Deployments of the environment.',
+          resolver: Resolvers::DeploymentsResolver,
+          complexity: 150
   end
 end

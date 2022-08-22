@@ -11,7 +11,7 @@ describe('Notebook component', () => {
 
   function buildComponent(notebook) {
     return mount(Component, {
-      propsData: { notebook, codeCssClass: 'js-code-class' },
+      propsData: { notebook },
       provide: { relativeRawPath: '' },
     }).vm;
   }
@@ -46,10 +46,6 @@ describe('Notebook component', () => {
     it('renders code cell', () => {
       expect(vm.$el.querySelector('pre')).not.toBeNull();
     });
-
-    it('add code class to code blocks', () => {
-      expect(vm.$el.querySelector('.js-code-class')).not.toBeNull();
-    });
   });
 
   describe('with worksheets', () => {
@@ -71,10 +67,6 @@ describe('Notebook component', () => {
 
     it('renders code cell', () => {
       expect(vm.$el.querySelector('pre')).not.toBeNull();
-    });
-
-    it('add code class to code blocks', () => {
-      expect(vm.$el.querySelector('.js-code-class')).not.toBeNull();
     });
   });
 });

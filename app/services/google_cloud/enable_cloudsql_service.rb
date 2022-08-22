@@ -12,6 +12,8 @@ module GoogleCloud
       end
 
       success({ gcp_project_ids: unique_gcp_project_ids })
+    rescue Google::Apis::Error => err
+      error(err.message)
     end
 
     private

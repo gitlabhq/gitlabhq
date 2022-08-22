@@ -4,7 +4,8 @@ export default {
   props: {
     code: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     maxHeight: {
       type: String,
@@ -32,5 +33,5 @@ export default {
     class="code-block rounded code"
     :class="$options.userColorScheme"
     :style="styleObject"
-  ><code class="d-block">{{ code }}</code></pre>
+  ><slot><code class="d-block">{{ code }}</code></slot></pre>
 </template>

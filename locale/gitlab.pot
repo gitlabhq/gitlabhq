@@ -8392,6 +8392,12 @@ msgstr ""
 msgid "Cloud Run"
 msgstr ""
 
+msgid "Cloud SQL instances are fully managed, relational MySQL databases. Google handles replication, patch management, and database management to ensure availability and performance."
+msgstr ""
+
+msgid "Cloud SQL instances are fully managed, relational SQL Server databases. Google handles replication, patch management, and database management to ensure availability and performance."
+msgstr ""
+
 msgid "Cloud Storage"
 msgstr ""
 
@@ -8419,10 +8425,22 @@ msgstr ""
 msgid "CloudSeed|Cloud SQL for SQL Server"
 msgstr ""
 
+msgid "CloudSeed|Cloud SQL instance creation request successful. Expected resolution time is ~5 minutes."
+msgstr ""
+
+msgid "CloudSeed|Cloud SQL instances are fully managed, relational PostgreSQL databases. Google handles replication, patch management, and database management to ensure availability and performance."
+msgstr ""
+
 msgid "CloudSeed|CloudSQL Instance"
 msgstr ""
 
 msgid "CloudSeed|Configuration"
+msgstr ""
+
+msgid "CloudSeed|Create MySQL Instance"
+msgstr ""
+
+msgid "CloudSeed|Create Postgres Instance"
 msgstr ""
 
 msgid "CloudSeed|Create cluster"
@@ -8477,6 +8495,9 @@ msgid "CloudSeed|Fully managed relational database service for SQL Server"
 msgstr ""
 
 msgid "CloudSeed|Generated database instance is linked to the selected branch or tag"
+msgstr ""
+
+msgid "CloudSeed|Google Cloud Error - %{message}"
 msgstr ""
 
 msgid "CloudSeed|Google Cloud Project"
@@ -40352,6 +40373,9 @@ msgid "This project is licensed under the %{strong_start}%{license_name}%{strong
 msgstr ""
 
 msgid "This project is not subscribed to any project pipelines."
+msgstr ""
+
+msgid "This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name. %{linkStart}How do I create a custom email address?%{linkEnd}"
 msgstr ""
 
 msgid "This project manages its dependencies using %{strong_start}%{manager_name}%{strong_end}"

@@ -2,9 +2,6 @@
 
 require 'spec_helper'
 
-# Mock Types
-MockGoogleOAuth2Credentials = Struct.new(:app_id, :app_secret)
-
 RSpec.describe Projects::GoogleCloud::ConfigurationController do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:url) { project_google_cloud_configuration_path(project) }
@@ -56,7 +53,7 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController do
 
     context 'but gitlab instance is not configured for google oauth2' do
       it 'returns forbidden' do
-        unconfigured_google_oauth2 = MockGoogleOAuth2Credentials.new('', '')
+        unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret).new('', '')
         allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
                                                   .with('google_oauth2')
                                                   .and_return(unconfigured_google_oauth2)

@@ -89,7 +89,7 @@ the paths for the apps that you would like to use in your cluster.
 By default, each `helmfile.yaml` in these sub-paths has the attribute `installed: true`. This means that every time
 the pipeline runs, Helmfile tries to either install or update your apps according to the current state of your
 cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile tries try to uninstall this app
-from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
+from your cluster. [Read more](https://helmfile.readthedocs.io/en/latest/) about how Helmfile works.
 
 ### Built-in applications
 

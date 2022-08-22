@@ -74,6 +74,27 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '.for_iid' do
+    subject { described_class.for_iid(project, iid) }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment) { create(:deployment, project: project) }
+
+    let(:iid) { deployment.iid }
+
+    it 'finds the deployment' do
+      is_expected.to contain_exactly(deployment)
+    end
+
+    context 'when iid does not match' do
+      let(:iid) { non_existing_record_id }
+
+      it 'does not find the deployment' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.for_environment_name' do
     subject { described_class.for_environment_name(project, environment_name) }
 

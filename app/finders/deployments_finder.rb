@@ -9,8 +9,8 @@
 #     updated_before: DateTime
 #     finished_after: DateTime
 #     finished_before: DateTime
-#     environment: String
-#     status: String (see Deployment.statuses)
+#     environment: String (name) or Integer (ID)
+#     status: String or Array<String> (see Deployment.statuses)
 #     order_by: String (see ALLOWED_SORT_VALUES constant)
 #     sort: String (asc | desc)
 class DeploymentsFinder
@@ -33,6 +33,7 @@ class DeploymentsFinder
 
   def initialize(params = {})
     @params = params
+    @params[:status] = Array(@params[:status]).map(&:to_s) if @params[:status]
 
     validate!
   end
@@ -68,16 +69,25 @@ class DeploymentsFinder
       raise error if raise_for_inefficient_updated_at_query?
     end
 
-    if (filter_by_finished_at? && !order_by_finished_at?) || (!filter_by_finished_at? && order_by_finished_at?)
-      raise InefficientQueryError, '`finished_at` filter and `finished_at` sorting must be paired'
+    if filter_by_finished_at? && !order_by_finished_at?
+      raise InefficientQueryError, '`finished_at` filter requires `finished_at` sort.'
+    end
+
+    if order_by_finished_at? && !(filter_by_finished_at? || filter_by_finished_statuses?)
+      raise InefficientQueryError,
+        '`finished_at` sort requires `finished_at` filter or a filter with at least one of the finished statuses.'
     end
 
     if filter_by_finished_at? && !filter_by_successful_deployment?
       raise InefficientQueryError, '`finished_at` filter must be combined with `success` status filter.'
     end
 
-    if params[:environment].present? && !params[:project].present?
-      raise InefficientQueryError, '`environment` filter must be combined with `project` scope.'
+    if filter_by_environment_name? && !params[:project].present?
+      raise InefficientQueryError, '`environment` name filter must be combined with `project` scope.'
+    end
+
+    if filter_by_finished_statuses? && filter_by_upcoming_statuses?
+      raise InefficientQueryError, 'finished statuses and upcoming statuses must be separately queried.'
     end
   end
 
@@ -86,6 +96,8 @@ class DeploymentsFinder
       params[:project].deployments
     elsif params[:group].present?
       ::Deployment.for_projects(params[:group].all_projects)
+    elsif filter_by_environment_id?
+      ::Deployment.for_environment(params[:environment])
     else
       ::Deployment.none
     end
@@ -112,7 +124,7 @@ class DeploymentsFinder
   end
 
   def by_environment(items)
-    if params[:project].present? && params[:environment].present?
+    if params[:project].present? && filter_by_environment_name?
       items.for_environment_name(params[:project], params[:environment])
     else
       items
@@ -122,7 +134,7 @@ class DeploymentsFinder
   def by_status(items)
     return items unless params[:status].present?
 
-    unless Deployment.statuses.key?(params[:status])
+    unless Deployment.statuses.keys.intersection(params[:status]) == params[:status]
       raise ArgumentError, "The deployment status #{params[:status]} is invalid"
     end
 
@@ -165,7 +177,23 @@ class DeploymentsFinder
   end
 
   def filter_by_successful_deployment?
-    params[:status].to_s == 'success'
+    params[:status].present? && params[:status].count == 1 && params[:status].first.to_s == 'success'
+  end
+
+  def filter_by_finished_statuses?
+    params[:status].present? && Deployment::FINISHED_STATUSES.map(&:to_s).intersection(params[:status]).any?
+  end
+
+  def filter_by_upcoming_statuses?
+    params[:status].present? && Deployment::UPCOMING_STATUSES.map(&:to_s).intersection(params[:status]).any?
+  end
+
+  def filter_by_environment_name?
+    params[:environment].present? && params[:environment].is_a?(String)
+  end
+
+  def filter_by_environment_id?
+    params[:environment].present? && params[:environment].is_a?(Integer)
   end
 
   def order_by_updated_at?

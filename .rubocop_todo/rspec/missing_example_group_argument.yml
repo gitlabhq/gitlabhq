@@ -1,0 +1,16 @@
+---
+RSpec/MissingExampleGroupArgument:
+  Exclude:
+    - 'ee/spec/controllers/groups/audit_events_controller_spec.rb'
+    - 'ee/spec/services/ee/notification_service_spec.rb'
+    - 'ee/spec/support/shared_examples/controllers/concerns/description_diff_actions_shared_examples.rb'
+    - 'spec/controllers/projects/issues_controller_spec.rb'
+    - 'spec/controllers/projects/merge_requests_controller_spec.rb'
+    - 'spec/factories/projects/ci_feature_usages.rb'
+    - 'spec/lib/gitlab/background_migration/backfill_jira_tracker_deployment_type2_spec.rb'
+    - 'spec/lib/gitlab/git_access_spec.rb'
+    - 'spec/policies/award_emoji_policy_spec.rb'
+    - 'spec/requests/api/graphql/mutations/notes/create/diff_note_spec.rb'
+    - 'spec/requests/api/graphql/mutations/notes/create/image_diff_note_spec.rb'
+    - 'spec/services/notification_service_spec.rb'
+    - 'spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb'

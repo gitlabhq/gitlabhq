@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { sprintf, __ } from '~/locale';
@@ -8,11 +8,13 @@ import StatusIcon from '../extensions/status_icon.vue';
 import { EXTENSION_ICONS } from '../../constants';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
+const FETCH_TYPE_EXPANDED = 'expanded';
 
 export default {
   components: {
     StatusIcon,
     GlButton,
+    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -20,7 +22,7 @@ export default {
   props: {
     /**
      * @param {value.collapsed} Object
-     * @param {value.extended} Object
+     * @param {value.expanded} Object
      */
     value: {
       type: Object,
@@ -40,7 +42,7 @@ export default {
       type: Function,
       required: true,
     },
-    fetchExtendedData: {
+    fetchExpandedData: {
       type: Function,
       required: false,
       default: undefined,
@@ -79,8 +81,10 @@ export default {
   },
   data() {
     return {
+      isExpandedForTheFirstTime: true,
       isCollapsed: true,
       isLoading: false,
+      isLoadingExpandedContent: false,
       error: null,
     };
   },
@@ -111,6 +115,22 @@ export default {
   methods: {
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
+
+      if (this.isExpandedForTheFirstTime && typeof this.fetchExpandedData === 'function') {
+        this.isExpandedForTheFirstTime = false;
+        this.fetchExpandedContent();
+      }
+    },
+    async fetchExpandedContent() {
+      this.isLoadingExpandedContent = true;
+
+      try {
+        await this.fetch(this.fetchExpandedData, FETCH_TYPE_EXPANDED);
+      } catch {
+        this.error = this.errorText;
+      }
+
+      this.isLoadingExpandedContent = false;
     },
     fetch(handler, dataType) {
       const requests = this.multiPolling ? handler() : [handler];
@@ -161,7 +181,6 @@ export default {
           <slot v-if="!error" name="summary">{{ isLoading ? loadingText : summary }}</slot>
           <span v-else>{{ error }}</span>
         </div>
-        <!-- actions will go here -->
         <div
           v-if="isCollapsible"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
@@ -185,7 +204,10 @@ export default {
       class="mr-widget-grouped-section gl-relative"
       data-testid="widget-extension-collapsed-section"
     >
-      <slot name="content">{{ content }}</slot>
+      <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
+        <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
+      </div>
+      <slot v-else name="content">{{ content }}</slot>
     </div>
   </section>
 </template>

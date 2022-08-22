@@ -816,7 +816,7 @@ You can't delete archived jobs with the API, but you can
 
 ## Run a job
 
-Triggers a manual action to start a job.
+For a job in manual status, trigger an action to start the job.
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/play

@@ -11,11 +11,6 @@ export default {
       type: Object,
       required: true,
     },
-    codeCssClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     cells() {
@@ -52,7 +47,6 @@ export default {
       v-for="(cell, index) in cells"
       :key="index"
       :cell="cell"
-      :code-css-class="codeCssClass"
     />
   </div>
 </template>

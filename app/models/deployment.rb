@@ -36,6 +36,7 @@ class Deployment < ApplicationRecord
   delegate :name, to: :environment, prefix: true
   delegate :kubernetes_namespace, to: :deployment_cluster, allow_nil: true
 
+  scope :for_iid, -> (project, iid) { where(project: project, iid: iid) }
   scope :for_environment, -> (environment) { where(environment_id: environment) }
   scope :for_environment_name, -> (project, name) do
     where('deployments.environment_id = (?)',
@@ -61,6 +62,7 @@ class Deployment < ApplicationRecord
 
   VISIBLE_STATUSES = %i[running success failed canceled blocked].freeze
   FINISHED_STATUSES = %i[success failed canceled].freeze
+  UPCOMING_STATUSES = %i[created blocked running].freeze
 
   state_machine :status, initial: :created do
     event :run do
