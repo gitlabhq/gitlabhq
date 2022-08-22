@@ -22,8 +22,8 @@ module Gitlab
         def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:, job_class: nil)
           model_class = define_batchable_model(table_name, connection: connection)
 
-          quoted_column_name = model_class.connection.quote_column_name(column_name)
-          relation = model_class.where("#{quoted_column_name} >= ?", batch_min_value)
+          arel_column = model_class.arel_table[column_name]
+          relation = model_class.where(arel_column.gteq(batch_min_value))
 
           if job_class
             relation = filter_batch(relation,
@@ -36,7 +36,7 @@ module Gitlab
           next_batch_bounds = nil
 
           relation.each_batch(of: batch_size, column: column_name) do |batch| # rubocop:disable Lint/UnreachableLoop
-            next_batch_bounds = batch.pick(Arel.sql("MIN(#{quoted_column_name}), MAX(#{quoted_column_name})"))
+            next_batch_bounds = batch.pick(arel_column.minimum, arel_column.maximum)
 
             break
           end

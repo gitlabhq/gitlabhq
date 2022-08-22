@@ -58,10 +58,5 @@ FactoryBot.define do
     after(:build) do |build, evaluator|
       build.project = build.pipeline.project
     end
-
-    factory :generic_commit_status, class: 'GenericCommitStatus' do
-      name { 'generic' }
-      description { 'external commit status' }
-    end
   end
 end
