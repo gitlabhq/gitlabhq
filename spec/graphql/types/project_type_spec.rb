@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Project'] do
   include GraphqlHelpers
-  include Ci::TemplateHelpers
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 

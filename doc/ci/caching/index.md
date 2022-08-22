@@ -301,8 +301,7 @@ test:
 
 If your project uses [pip](https://pip.pypa.io/en/stable/) to install
 Python dependencies, the following example defines `cache` globally so that
-all jobs inherit it. Python libraries are installed in a virtual environment under `venv/`.
-pip's cache is defined under `.cache/pip/` and both are cached per-branch:
+all jobs inherit it. pip's cache is defined under `.cache/pip/` and is cached per-branch:
 
 ```yaml
 #
@@ -317,13 +316,9 @@ variables:
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
-#
-# If you want to also cache the installed packages, you have to install
-# them in a virtualenv and cache it as well.
 cache:
   paths:
     - .cache/pip
-    - venv/
 
 before_script:
   - python -V               # Print out python version for debugging

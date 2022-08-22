@@ -16,7 +16,9 @@ RSpec.describe 'Comment sort direction' do
     it 'saves sort order' do
       # open dropdown, and select 'Newest first'
       page.within('.issuable-details') do
+        find('#discussion-preferences-dropdown').click
         click_button('Oldest first')
+        find('#discussion-preferences-dropdown').click
         click_button('Newest first')
       end
 

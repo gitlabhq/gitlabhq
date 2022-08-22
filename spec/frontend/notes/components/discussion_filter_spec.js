@@ -8,7 +8,14 @@ import createEventHub from '~/helpers/event_hub_factory';
 
 import axios from '~/lib/utils/axios_utils';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
-import { DISCUSSION_FILTERS_DEFAULT_VALUE, DISCUSSION_FILTER_TYPES } from '~/notes/constants';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import Tracking from '~/tracking';
+import {
+  DISCUSSION_FILTERS_DEFAULT_VALUE,
+  DISCUSSION_FILTER_TYPES,
+  ASC,
+  DESC,
+} from '~/notes/constants';
 import notesModule from '~/notes/stores/modules';
 
 import { discussionFiltersMock, discussionMock } from '../mock_data';
@@ -27,6 +34,8 @@ describe('DiscussionFilter component', () => {
 
   const findFilter = (filterType) =>
     wrapper.find(`.dropdown-item[data-filter-type="${filterType}"]`);
+
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const mountComponent = () => {
     const discussions = [
@@ -68,11 +77,71 @@ describe('DiscussionFilter component', () => {
     mock.onGet(DISCUSSION_PATH).reply(200, '');
     window.mrTabs = undefined;
     wrapper = mountComponent();
+    jest.spyOn(Tracking, 'event');
   });
 
   afterEach(() => {
     wrapper.vm.$destroy();
     mock.restore();
+  });
+
+  describe('default', () => {
+    beforeEach(() => {
+      jest.spyOn(store, 'dispatch').mockImplementation();
+    });
+
+    it('has local storage sync with the correct props', () => {
+      expect(findLocalStorageSync().props('asString')).toBe(true);
+    });
+
+    it('calls setDiscussionSortDirection when update is emitted', () => {
+      findLocalStorageSync().vm.$emit('input', ASC);
+
+      expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', { direction: ASC });
+    });
+  });
+
+  describe('when asc', () => {
+    beforeEach(() => {
+      jest.spyOn(store, 'dispatch').mockImplementation();
+    });
+
+    describe('when the dropdown is clicked', () => {
+      it('calls the right actions', () => {
+        wrapper.find('.js-newest-first').vm.$emit('click');
+
+        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
+          direction: DESC,
+        });
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
+          property: DESC,
+        });
+      });
+    });
+  });
+
+  describe('when desc', () => {
+    beforeEach(() => {
+      store.state.discussionSortOrder = DESC;
+      jest.spyOn(store, 'dispatch').mockImplementation();
+    });
+
+    describe('when the dropdown item is clicked', () => {
+      it('calls the right actions', () => {
+        wrapper.find('.js-oldest-first').vm.$emit('click');
+
+        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
+          direction: ASC,
+        });
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
+          property: ASC,
+        });
+      });
+
+      it('sets is-checked to true on the active button in the dropdown', () => {
+        expect(wrapper.find('.js-newest-first').props('isChecked')).toBe(true);
+      });
+    });
   });
 
   it('renders the all filters', () => {
@@ -82,7 +151,7 @@ describe('DiscussionFilter component', () => {
   });
 
   it('renders the default selected item', () => {
-    expect(wrapper.find('#discussion-filter-dropdown .dropdown-item').text().trim()).toBe(
+    expect(wrapper.find('.discussion-filter-container .dropdown-item').text().trim()).toBe(
       discussionFiltersMock[0].title,
     );
   });
@@ -125,14 +194,6 @@ describe('DiscussionFilter component', () => {
     findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
 
     expect(wrapper.vm.$store.state.commentsDisabled).toBe(false);
-  });
-
-  it('renders a dropdown divider for the default filter', () => {
-    const defaultFilter = wrapper.findAll(
-      `.discussion-filter-container .dropdown-item-wrapper > *`,
-    );
-
-    expect(defaultFilter.at(1).classes('gl-new-dropdown-divider')).toBe(true);
   });
 
   describe('Merge request tabs', () => {

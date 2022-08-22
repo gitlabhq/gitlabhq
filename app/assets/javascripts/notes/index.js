@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
-import initSortDiscussions from './sort_discussions';
 import { store } from './stores';
 import initTimelineToggle from './timeline';
 
@@ -61,6 +60,5 @@ export default () => {
   });
 
   initDiscussionFilters(store);
-  initSortDiscussions(store);
   initTimelineToggle(store);
 };
