@@ -65,6 +65,8 @@ module Gitlab
         # value - The value to set.
         # timeout - The time after which the cache key should expire.
         def self.write(raw_key, value, timeout: TIMEOUT)
+          validate_redis_value!(value)
+
           key = cache_key_for(raw_key)
 
           Redis::Cache.with do |redis|
@@ -99,6 +101,8 @@ module Gitlab
         # timeout - The time after which the cache key should expire.
         # @return - the incremented value
         def self.increment_by(raw_key, value, timeout: TIMEOUT)
+          validate_redis_value!(value)
+
           key = cache_key_for(raw_key)
 
           Redis::Cache.with do |redis|
@@ -113,6 +117,8 @@ module Gitlab
         # value - The value to add to the set.
         # timeout - The new timeout of the key.
         def self.set_add(raw_key, value, timeout: TIMEOUT)
+          validate_redis_value!(value)
+
           key = cache_key_for(raw_key)
 
           Redis::Cache.with do |redis|
@@ -128,6 +134,8 @@ module Gitlab
         # raw_key - The key of the set to check.
         # value - The value to check for.
         def self.set_includes?(raw_key, value)
+          validate_redis_value!(value)
+
           key = cache_key_for(raw_key)
 
           Redis::Cache.with do |redis|
@@ -156,6 +164,8 @@ module Gitlab
             redis.pipelined do |multi|
               mapping.each do |raw_key, value|
                 key = cache_key_for("#{key_prefix}#{raw_key}")
+
+                validate_redis_value!(value)
 
                 multi.set(key, value, ex: timeout)
               end
@@ -186,6 +196,8 @@ module Gitlab
         #
         # Returns true when the key was overwritten, false otherwise.
         def self.write_if_greater(raw_key, value, timeout: TIMEOUT)
+          validate_redis_value!(value)
+
           key = cache_key_for(raw_key)
           val = Redis::Cache.with do |redis|
             redis
@@ -202,6 +214,8 @@ module Gitlab
         # value - The field value to add to the hash.
         # timeout - The new timeout of the key.
         def self.hash_add(raw_key, field, value, timeout: TIMEOUT)
+          validate_redis_value!(value)
+
           key = cache_key_for(raw_key)
 
           Redis::Cache.with do |redis|
@@ -225,6 +239,13 @@ module Gitlab
 
         def self.cache_key_for(raw_key)
           "#{Redis::Cache::CACHE_NAMESPACE}:#{raw_key}"
+        end
+
+        def self.validate_redis_value!(value)
+          value_as_string = value.to_s
+          return if value_as_string.is_a?(String)
+
+          raise "Value '#{value_as_string}' of type '#{value_as_string.class}' for '#{value.inspect}' is not a String"
         end
       end
     end
