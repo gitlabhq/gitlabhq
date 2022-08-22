@@ -3,6 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
+  shared_examples 'validated redis value' do
+    let(:value) { double('value', to_s: Object.new) }
+
+    it 'raise error if value.to_s does not return a String' do
+      value_as_string = value.to_s
+      message = /Value '#{value_as_string}' of type '#{value_as_string.class}' for '#{value.inspect}' is not a String/
+
+      expect { subject }.to raise_error(message)
+    end
+  end
+
   describe '.read' do
     it 'reads a value from the cache' do
       described_class.write('foo', 'bar')
@@ -56,6 +67,16 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
       expect(described_class.write('foo', 10)).to eq(10)
       expect(described_class.read('foo')).to eq('10')
     end
+
+    it_behaves_like 'validated redis value' do
+      subject { described_class.write('foo', value) }
+    end
+  end
+
+  describe '.increment_by' do
+    it_behaves_like 'validated redis value' do
+      subject { described_class.increment_by('foo', value) }
+    end
   end
 
   describe '.increment' do
@@ -78,6 +99,10 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
 
       expect(values).to eq(['10'])
     end
+
+    it_behaves_like 'validated redis value' do
+      subject { described_class.set_add('foo', value) }
+    end
   end
 
   describe '.set_includes?' do
@@ -95,6 +120,10 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
       described_class.set_add('foo', 10)
 
       expect(described_class.set_includes?('foo', 10)).to eq(true)
+    end
+
+    it_behaves_like 'validated redis value' do
+      subject { described_class.set_includes?('foo', value) }
     end
   end
 
@@ -119,6 +148,10 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
       values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
 
       expect(values).to eq({ '1' => '1', '2' => '2' })
+    end
+
+    it_behaves_like 'validated redis value' do
+      subject { described_class.hash_add('foo', 1, value) }
     end
   end
 
@@ -160,6 +193,12 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
         expect(found).to eq(value.to_s)
       end
     end
+
+    it_behaves_like 'validated redis value' do
+      let(:mapping) { { 'foo' => value, 'bar' => value } }
+
+      subject { described_class.write_multiple(mapping) }
+    end
   end
 
   describe '.expire' do
@@ -173,6 +212,12 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
       found_ttl = Gitlab::Redis::Cache.with { |r| r.ttl(key) }
 
       expect(found_ttl).to be <= timeout
+    end
+  end
+
+  describe '.write_if_greater' do
+    it_behaves_like 'validated redis value' do
+      subject { described_class.write_if_greater('foo', value) }
     end
   end
 end

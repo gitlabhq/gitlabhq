@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.1.5 (2022-08-22)
+
+### Security (2 changes)
+
+- [Validate if values to be saved in Redis can be converted to string](gitlab-org/security/gitlab@0bc82f875f78b6a2703b294b1a5a8d941000f9f2) ([merge request](gitlab-org/security/gitlab!2725))
+- [Fix CSS selector used in specs](gitlab-org/security/gitlab@a900e65b192a8415baa6bcd4050566543107ab1f) ([merge request](gitlab-org/security/gitlab!2728))
+
 ## 15.1.4 (2022-07-28)
 
 ### Security (18 changes)
