@@ -156,6 +156,9 @@ production:
 The updated documentation is available in production after the `pages` and `pages:deploy` jobs
 complete in the new pipeline.
 
+If you do not have the Maintainer role to perform this task, ask for help in the
+`#docs` Slack channel.
+
 ## Docker files
 
 The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/) contains all needed

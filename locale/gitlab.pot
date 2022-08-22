@@ -29392,7 +29392,7 @@ msgstr ""
 msgid "Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
 msgstr ""
 
-msgid "Please click the link in the confirmation email before continuing. It was sent to "
+msgid "Please click the link in the confirmation email before continuing. It was sent to %{html_tag_strong_start}%{email}%{html_tag_strong_end}."
 msgstr ""
 
 msgid "Please complete your profile with email address"
