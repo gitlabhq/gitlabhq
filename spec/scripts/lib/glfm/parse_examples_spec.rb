@@ -74,7 +74,7 @@ RSpec.describe Glfm::ParseExamples, '#parse_examples' do
 
       ## 2.1.0 H2
 
-      ```````````````````````````````` example gitlab extension_2.1.0-1
+      ```````````````````````````````` example gitlab
       example 6 md
       .
       html
@@ -220,7 +220,7 @@ RSpec.describe Glfm::ParseExamples, '#parse_examples' do
             disabled: false,
             end_line: 69,
             example: 6,
-            extensions: %w[gitlab extension_2.1.0-1],
+            extensions: %w[gitlab],
             headers: [
               '2.0.0 New H1',
               '2.1.0 H2'

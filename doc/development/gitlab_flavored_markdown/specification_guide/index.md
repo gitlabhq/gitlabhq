@@ -653,6 +653,10 @@ is the manually updated canonical Markdown+HTML examples for GLFM extensions.
 
 - It contains examples in the [standard backtick-delimited `spec.txt` format](#various-markdown-specifications),
   each of which contain a Markdown example and the corresponding canonical HTML.
+- For all GitLab examples, the "extension" annotation after the backticks should consist of only
+  `example gitlab`. It does not currently include any additional extension annotations describing
+  the specific Markdown, unlike the GitHub Flavored Markdown examples, which do include
+  these additional annotations (such as `example strikethrough`).
 - The `update-specification.rb` script inserts it as new sections before the appendix
   of generated `spec.txt`.
 - It should consist of `H1` header sections, with all examples nested either 2 or 3 levels deep
@@ -672,7 +676,7 @@ The actual file should not have these prefixed `|` characters.
 |
 |## Strong but with two asterisks
 |
-|```````````````````````````````` example
+|```````````````````````````````` example gitlab
 |**bold**
 |.
 |<p><strong>bold</strong></p>
@@ -682,7 +686,7 @@ The actual file should not have these prefixed `|` characters.
 |
 |## Strong but with HTML
 |
-|```````````````````````````````` example
+|```````````````````````````````` example gitlab
 |<strong>
 |bold
 |</strong>

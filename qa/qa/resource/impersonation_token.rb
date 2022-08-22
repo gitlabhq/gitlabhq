@@ -22,7 +22,7 @@ module QA
       end
 
       def api_post_path
-        api_get_path
+        "/users/#{user.id}/impersonation_tokens"
       end
 
       def name

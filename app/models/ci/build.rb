@@ -194,7 +194,7 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      run_after_commit { build.feature_flagged_execute_hooks }
+      run_after_commit { build.execute_hooks }
     end
 
     class << self
@@ -285,7 +285,7 @@ module Ci
 
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
-          build.feature_flagged_execute_hooks
+          build.execute_hooks
         end
       end
 
@@ -313,7 +313,7 @@ module Ci
         build.run_after_commit do
           build.ensure_persistent_ref
 
-          build.feature_flagged_execute_hooks
+          build.execute_hooks
         end
       end
 
@@ -778,14 +778,6 @@ module Ci
 
     def stuck?
       pending? && !any_runners_online?
-    end
-
-    def feature_flagged_execute_hooks
-      if Feature.enabled?(:execute_build_hooks_inline, project)
-        execute_hooks
-      else
-        BuildHooksWorker.perform_async(self)
-      end
     end
 
     def execute_hooks

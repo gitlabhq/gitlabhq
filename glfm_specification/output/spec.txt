@@ -9615,7 +9615,7 @@ examples may be split into multiple top-level headings in the future.
 See
 [the footnotes section of the user-facing documentation for GitLab Flavored Markdown](https://docs.gitlab.com/ee/user/markdown.html#footnotes).
 
-```````````````````````````````` example gitlab footnote
+```````````````````````````````` example gitlab
 footnote reference tag [^fortytwo]
 
 [^fortytwo]: footnote text
@@ -9657,7 +9657,7 @@ The following are some basic examples; more examples may be added in the future.
 
 Incomplete task:
 
-```````````````````````````````` example gitlab tasklist
+```````````````````````````````` example gitlab
 - [ ] incomplete
 .
 <ul>
@@ -9671,7 +9671,7 @@ incomplete
 
 Completed task:
 
-```````````````````````````````` example gitlab tasklist
+```````````````````````````````` example gitlab
 - [x] completed
 .
 <ul>
@@ -9685,7 +9685,7 @@ completed
 
 Inapplicable task:
 
-```````````````````````````````` example gitlab tasklist
+```````````````````````````````` example gitlab
 - [~] inapplicable
 .
 <ul>
@@ -9702,7 +9702,7 @@ inapplicable
 Inapplicable task in a "loose" list. Note that the `<del>` tag is not applied to the
 loose text; it has strikethrough applied with CSS.
 
-```````````````````````````````` example gitlab tasklist
+```````````````````````````````` example gitlab
 - [~] inapplicable
 
   text in loose list
@@ -9733,7 +9733,7 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 
 YAML front matter:
 
-```````````````````````````````` example gitlab frontmatter
+```````````````````````````````` example gitlab
 ---
 title: YAML front matter
 ---
@@ -9747,7 +9747,7 @@ title: YAML front matter
 
 TOML front matter:
 
-```````````````````````````````` example gitlab frontmatter
+```````````````````````````````` example gitlab
 +++
 title: TOML front matter
 +++
@@ -9761,7 +9761,7 @@ title: TOML front matter
 
 JSON front matter:
 
-```````````````````````````````` example gitlab frontmatter
+```````````````````````````````` example gitlab
 ;;;
 {
   "title": "JSON front matter"
@@ -9779,7 +9779,7 @@ JSON front matter:
 
 Front matter blocks should be inserted at the top of the document:
 
-```````````````````````````````` example gitlab frontmatter
+```````````````````````````````` example gitlab
 text
 
 ---
@@ -9793,7 +9793,7 @@ title: YAML front matter
 
 Front matter block delimiters shouldn’t be preceded by space characters:
 
-```````````````````````````````` example gitlab frontmatter
+```````````````````````````````` example gitlab
  ---
 title: YAML front matter
 ---

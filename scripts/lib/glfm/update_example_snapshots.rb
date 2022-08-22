@@ -191,9 +191,7 @@ module Glfm
       # the scripts to read them, because the scripts are run in
       # separate subprocesses, and during unit testing we are unable to substitute the mock
       # StringIO when reading the input files in the subprocess.
-      [
-        [ES_MARKDOWN_YML_PATH, MARKDOWN_TEMPFILE_BASENAME]
-      ].map do |original_file_path, tempfile_basename|
+      { ES_MARKDOWN_YML_PATH => MARKDOWN_TEMPFILE_BASENAME }.map do |original_file_path, tempfile_basename|
         Dir::Tmpname.create(tempfile_basename) do |path|
           io = File.open(original_file_path)
           io.seek(0) # rewind the file. This is necessary when testing with a mock StringIO

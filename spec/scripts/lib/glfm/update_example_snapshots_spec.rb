@@ -128,7 +128,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
       ## Strong but with two asterisks
 
-      ```````````````````````````````` example gitlab strong
+      ```````````````````````````````` example gitlab
       **bold**
       .
       <p><strong>bold</strong></p>
@@ -155,7 +155,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       `source_specification` will be `gitlab`.
 
 
-      ```````````````````````````````` example gitlab strong
+      ```````````````````````````````` example gitlab
       <strong>
       bold
       </strong>
@@ -169,7 +169,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
       ## Strong but skipped
 
-      ```````````````````````````````` example gitlab strong
+      ```````````````````````````````` example gitlab
       **this example will be skipped**
       .
       <p><strong>this example will be skipped</strong></p>
@@ -177,7 +177,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
       ## Strong but manually modified and skipped
 
-      ```````````````````````````````` example gitlab strong
+      ```````````````````````````````` example gitlab
       **This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved**
       .
       <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>
@@ -215,11 +215,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       ---
       00_00_00__obsolete_entry_to_be_deleted__001:
         canonical: |
-          This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted.
+          This entry is no longer exists in the spec.txt, so it will be deleted.
         static: |-
-          This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted.
+          This entry is no longer exists in the spec.txt, so it will be deleted.
         wysiwyg: |-
-          This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted.
+          This entry is no longer exists in the spec.txt, so it will be deleted.
       02_01_00__inlines__strong__001:
         canonical: |
           This entry is existing, but not skipped, so it will be overwritten.
@@ -241,7 +241,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # language=YAML
     <<~ES_PROSEMIRROR_JSON_YML_IO_EXISTING_CONTENTS
       ---
-      00_00_00__obsolete_entry_to_be_deleted__001:
+      00_00_00__obsolete_entry_to_be_deleted__001: |-
         {
           "obsolete": "This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted."
         }
@@ -249,7 +249,6 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
         {
           "existing": "This entry is existing, but not skipped, so it will be overwritten."
         }
-      # 02_01__inlines__strong__002: is omitted from the existing file and skipped, to test that scenario.
       02_03_00__inlines__strikethrough_extension__001: |-
         {
           "type": "doc",
@@ -312,40 +311,42 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     allow(subject).to receive(:output)
   end
 
-  describe 'when skip_update_example_snapshots is truthy' do
-    let(:es_examples_index_yml_contents) { reread_io(es_examples_index_yml_io) }
-    let(:es_markdown_yml_contents) { reread_io(es_markdown_yml_io) }
-    let(:expected_unskipped_example) do
-      /05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001/
-    end
-
-    it 'still writes the example to examples_index.yml' do
-      subject.process(skip_static_and_wysiwyg: true)
-
-      expect(es_examples_index_yml_contents).to match(expected_unskipped_example)
-    end
-
-    it 'still writes the example to markdown.yml' do
-      subject.process(skip_static_and_wysiwyg: true)
-
-      expect(es_markdown_yml_contents).to match(expected_unskipped_example)
-    end
-
-    describe 'when any other skip_update_example_* is also truthy' do
-      let(:glfm_example_status_yml_contents) do
-        # language=YAML
-        <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
-          ---
-          02_01_00__inlines__strong__001:
-            skip_update_example_snapshots: 'if the skip_update_example_snapshots key is truthy...'
-            skip_update_example_snapshot_html_static: '...then no other skip_update_example_* keys can be truthy'
-        GLFM_EXAMPLE_STATUS_YML_CONTENTS
+  describe 'glfm_example_status.yml' do
+    describe 'when skip_update_example_snapshots entry is truthy' do
+      let(:es_examples_index_yml_contents) { reread_io(es_examples_index_yml_io) }
+      let(:es_markdown_yml_contents) { reread_io(es_markdown_yml_io) }
+      let(:expected_unskipped_example) do
+        /05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001/
       end
 
-      it 'raises an error' do
-        expected_msg = "Error: '02_01_00__inlines__strong__001' must not have any 'skip_update_example_snapshot_*' " \
+      it 'still writes the example to examples_index.yml' do
+        subject.process(skip_static_and_wysiwyg: true)
+
+        expect(es_examples_index_yml_contents).to match(expected_unskipped_example)
+      end
+
+      it 'still writes the example to markdown.yml' do
+        subject.process(skip_static_and_wysiwyg: true)
+
+        expect(es_markdown_yml_contents).to match(expected_unskipped_example)
+      end
+
+      describe 'when any other skip_update_example_snapshot_* is also truthy' do
+        let(:glfm_example_status_yml_contents) do
+          # language=YAML
+          <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
+            ---
+            02_01_00__inlines__strong__001:
+              skip_update_example_snapshots: 'if the skip_update_example_snapshots key is truthy...'
+              skip_update_example_snapshot_html_static: '...then no other skip_update_example_* keys can be truthy'
+          GLFM_EXAMPLE_STATUS_YML_CONTENTS
+        end
+
+        it 'raises an error' do
+          expected_msg = "Error: '02_01_00__inlines__strong__001' must not have any 'skip_update_example_snapshot_*' " \
           "values specified if 'skip_update_example_snapshots' is truthy"
-        expect { subject.process }.to raise_error(/#{Regexp.escape(expected_msg)}/)
+          expect { subject.process }.to raise_error(/#{Regexp.escape(expected_msg)}/)
+        end
       end
     end
   end
@@ -435,6 +436,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
         ---
         02_01_00__inlines__strong__002:
+          # NOTE: 02_01_00__inlines__strong__002: is omitted from the existing prosemirror_json.yml file, and is also
+          # skipped here, to show that an example does not need to exist in order to be skipped.
+          # TODO: This should be changed to raise an error instead, to enforce that there cannot be orphaned
+          #       entries in glfm_example_status.yml. This task is captured in
+          #       https://gitlab.com/gitlab-org/gitlab/-/issues/361241#other-cleanup-tasks
           skip_update_example_snapshot_prosemirror_json: "skipping because JSON isn't cool enough"
         03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
           skip_update_example_snapshot_html_static: "skipping because there's too much static"

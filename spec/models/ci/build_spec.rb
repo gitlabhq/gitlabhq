@@ -67,31 +67,6 @@ RSpec.describe Ci::Build do
 
         create(:ci_build)
       end
-
-      context 'when the execute_build_hooks_inline flag is disabled' do
-        before do
-          stub_feature_flags(execute_build_hooks_inline: false)
-        end
-
-        it 'uses the old job hooks worker' do
-          expect(::BuildHooksWorker).to receive(:perform_async).with(Ci::Build)
-
-          create(:ci_build)
-        end
-      end
-
-      context 'when the execute_build_hooks_inline flag is enabled for a project' do
-        before do
-          stub_feature_flags(execute_build_hooks_inline: project)
-        end
-
-        it 'executes hooks inline' do
-          expect(::BuildHooksWorker).not_to receive(:perform_async)
-          expect_next(described_class).to receive(:execute_hooks)
-
-          create(:ci_build, project: project)
-        end
-      end
     end
   end
 
@@ -3919,18 +3894,6 @@ RSpec.describe Ci::Build do
       expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
-    end
-
-    context 'when the execute_build_hooks_inline flag is disabled' do
-      before do
-        stub_feature_flags(execute_build_hooks_inline: false)
-      end
-
-      it 'queues BuildHooksWorker' do
-        expect(BuildHooksWorker).to receive(:perform_async).with(build)
-
-        build.enqueue
-      end
     end
 
     it 'executes hooks' do

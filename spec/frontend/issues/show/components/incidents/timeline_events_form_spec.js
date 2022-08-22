@@ -13,6 +13,8 @@ jest.mock('~/flash');
 
 const fakeDate = '2020-07-08T00:00:00.000Z';
 
+const mockInputDate = new Date('2021-08-12');
+
 describe('Timeline events form', () => {
   // July 8 2020
   useFakeDate(fakeDate);
@@ -36,11 +38,10 @@ describe('Timeline events form', () => {
   const findSubmitAndAddButton = () => wrapper.findByText('Save and add another event');
   const findCancelButton = () => wrapper.findByText('Cancel');
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
-  const findDatePickerInput = () => wrapper.findByTestId('input-datepicker');
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
   const setDatetime = () => {
-    findDatePicker().vm.$emit('input', new Date('2021-08-12'));
+    findDatePicker().vm.$emit('input', mockInputDate);
     findHourInput().vm.$emit('input', 5);
     findMinuteInput().vm.$emit('input', 45);
   };
@@ -87,14 +88,14 @@ describe('Timeline events form', () => {
       setDatetime();
       await nextTick();
 
-      expect(findDatePickerInput().element.value).toBe('2021-08-12');
+      expect(findDatePicker().props('value')).toBe(mockInputDate);
       expect(findHourInput().element.value).toBe('5');
       expect(findMinuteInput().element.value).toBe('45');
 
       wrapper.vm.clear();
       await nextTick();
 
-      expect(findDatePickerInput().element.value).toBe('2020-07-08');
+      expect(findDatePicker().props('value')).toStrictEqual(new Date(fakeDate));
       expect(findHourInput().element.value).toBe('0');
       expect(findMinuteInput().element.value).toBe('0');
     });

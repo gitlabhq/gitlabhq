@@ -7,6 +7,8 @@ module Members
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, action_member_permission(permission, member), member)
       raise Gitlab::Access::AccessDeniedError if prevent_upgrade_to_owner?(member) || prevent_downgrade_from_owner?(member)
 
+      return success(member: member) if update_results_in_no_change?(member)
+
       old_access_level = member.human_access
       old_expiry = member.expires_at
 
@@ -25,6 +27,13 @@ module Members
     end
 
     private
+
+    def update_results_in_no_change?(member)
+      return false if params[:expires_at]&.to_date != member.expires_at
+      return false if params[:access_level] != member.access_level
+
+      true
+    end
 
     def downgrading_to_guest?
       params[:access_level] == Gitlab::Access::GUEST

@@ -1,6 +1,7 @@
 <script>
 import { produce } from 'immer';
 import { sortBy } from 'lodash';
+import { GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -16,6 +17,7 @@ export default {
   i18n: timelineFormI18n,
   components: {
     TimelineEventsForm,
+    GlIcon,
   },
   inject: ['fullPath', 'issuableId'],
   props: {
@@ -107,11 +109,22 @@ export default {
 </script>
 
 <template>
-  <timeline-events-form
-    ref="eventForm"
-    :is-event-processed="createTimelineEventActive"
-    :has-timeline-events="hasTimelineEvents"
-    @save-event="createIncidentTimelineEvent"
-    @cancel="$emit('hide-new-timeline-events-form')"
-  />
+  <div
+    class="gl-relative gl-display-flex gl-align-items-center"
+    :class="{ 'timeline-entry-vertical-line': hasTimelineEvents }"
+  >
+    <div
+      v-if="hasTimelineEvents"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-mr-3 gl-w-8 gl-h-8 gl-z-index-1"
+    >
+      <gl-icon name="comment" class="note-icon" />
+    </div>
+    <timeline-events-form
+      ref="eventForm"
+      :is-event-processed="createTimelineEventActive"
+      :has-timeline-events="hasTimelineEvents"
+      @save-event="createIncidentTimelineEvent"
+      @cancel="$emit('hide-new-timeline-events-form')"
+    />
+  </div>
 </template>
