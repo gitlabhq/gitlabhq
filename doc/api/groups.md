@@ -1369,7 +1369,7 @@ POST /groups/:id/ldap_group_links
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
-| `group_access` | integer   | yes      | Minimum [access level](members.md#valid-access-levels) for members of the LDAP group |
+| `group_access` | integer   | yes      | [Access level](members.md#valid-access-levels) for members of the LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
 NOTE:
@@ -1438,13 +1438,12 @@ Supported attributes:
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 
-If successful, returns [`200`](index.md#status-codes) and the following
-response attributes:
+If successful, returns [`200`](index.md#status-codes) and the following response attributes:
 
-| Attribute          | Type   | Description                                                                          |
-|:-------------------|:-------|:-------------------------------------------------------------------------------------|
-| `[].name`          | string | Name of the SAML group                                                               |
-| `[].access_level`  | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute          | Type    | Description                                                                  |
+|:-------------------|:--------|:-----------------------------------------------------------------------------|
+| `[].name`          | string  | Name of the SAML group                                                       |
+| `[].access_level`  | integer | [Access level](members.md#valid-access-levels) for members of the SAML group |
 
 Example request:
 
@@ -1482,13 +1481,12 @@ Supported attributes:
 | `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
 
-If successful, returns [`200`](index.md#status-codes) and the following
-response attributes:
+If successful, returns [`200`](index.md#status-codes) and the following response attributes:
 
-| Attribute      | Type   | Description                                                                          |
-|:---------------|:-------|:-------------------------------------------------------------------------------------|
-| `name`         | string | Name of the SAML group                                                               |
-| `access_level` | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute      | Type    | Description                                                                  |
+|:---------------|:--------|:-----------------------------------------------------------------------------|
+| `name`         | string  | Name of the SAML group                                                       |
+| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the SAML group |
 
 Example request:
 
@@ -1515,19 +1513,18 @@ POST /groups/:id/saml_group_links
 
 Supported attributes:
 
-| Attribute          | Type           | Required | Description                                                                          |
-|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------------------|
-| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)             |
-| `saml_group_name`  | string         | yes      | Name of a SAML group                                                                 |
-| `access_level`     | integer         | yes      | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute          | Type           | Required | Description                                                                  |
+|:-------------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`               | integer or string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)     |
+| `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
+| `access_level`     | integer        | yes      | [Access level](members.md#valid-access-levels) for members of the SAML group |
 
-If successful, returns [`201`](index.md#status-codes) and the following
-response attributes:
+If successful, returns [`201`](index.md#status-codes) and the following response attributes:
 
-| Attribute      | Type   | Description                                                                          |
-|:---------------|:-------|:-------------------------------------------------------------------------------------|
-| `name`         | string | Name of the SAML group                                                               |
-| `access_level` | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute      | Type    | Description                                                                  |
+|:---------------|:--------|:-----------------------------------------------------------------------------|
+| `name`         | string  | Name of the SAML group                                                       |
+| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the SAML group |
 
 Example request:
 
@@ -1557,7 +1554,7 @@ Supported attributes:
 | Attribute          | Type           | Required | Description                                                              |
 |:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
 | `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
+| `saml_group_name`  | string         | yes      | Name of a SAML group                                                     |
 
 If successful, returns [`204`](index.md#status-codes) status code without any response body.
 

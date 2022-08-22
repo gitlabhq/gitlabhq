@@ -16,6 +16,7 @@ import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
 import BoardBlockedIcon from './board_blocked_icon.vue';
@@ -36,6 +37,7 @@ export default {
     BoardBlockedIcon,
     GlSprintf,
     BoardCardMoveToPosition,
+    WorkItemTypeIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -60,6 +62,11 @@ export default {
     index: {
       type: Number,
       required: true,
+    },
+    showWorkItemTypeIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -265,6 +272,11 @@ export default {
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
         <gl-loading-icon v-if="item.isLoading" size="lg" class="gl-mt-5" />
+        <work-item-type-icon
+          v-if="showWorkItemTypeIcon"
+          :work-item-type="item.type"
+          show-tooltip-on-hover
+        />
         <span
           v-if="item.referencePath"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3 gl-text-secondary"

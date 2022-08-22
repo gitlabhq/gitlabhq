@@ -8,6 +8,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
@@ -49,6 +50,7 @@ describe('Board card component', () => {
   const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
   const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
+  const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   const performSearchMock = jest.fn();
 
@@ -143,6 +145,16 @@ describe('Board card component', () => {
 
   it('renders the move to position icon', () => {
     expect(findMoveToPositionComponent().exists()).toBe(true);
+  });
+
+  it('does not render the work type icon by default', () => {
+    expect(findWorkItemIcon().exists()).toBe(false);
+  });
+
+  it('renders the work type icon when props is passed', () => {
+    createWrapper({ item: issue, list, showWorkItemTypeIcon: true });
+    expect(findWorkItemIcon().exists()).toBe(true);
+    expect(findWorkItemIcon().props('workItemType')).toBe(issue.type);
   });
 
   it('renders issue ID with #', () => {

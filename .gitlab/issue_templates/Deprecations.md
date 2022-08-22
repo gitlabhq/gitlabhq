@@ -46,7 +46,7 @@ Which tier is this feature available in?
 Please add links to the relevant merge requests.
 
 - As soon as possible, but no later than the third milestone preceding the major release (for example, given the following release schedule: `14.8, 14.9, 14.10, 15.0` – `14.8` is the third milestone preceding the major release):
-    - [ ] A [deprecation entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry) has been created so the deprecation will appear in release posts and on the [general deprecation page](https://docs.gitlab.com/ee/update/deprecations).
+    - [ ] A [deprecation announcement entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-announcement) has been created so the deprecation will appear in release posts and on the [general deprecation page](https://docs.gitlab.com/ee/update/deprecations).
     - [ ] Documentation has been updated to mark the feature as [deprecated](https://docs.gitlab.com/ee/development/documentation/versions.html#deprecations-and-removals).
 - [ ] On or before the major milestone: A [removal entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#removals) has been created so the removal will appear on the [removals by milestones](https://docs.gitlab.com/ee/update/removals) page and be announced in the release post.
 - On the major milestone:

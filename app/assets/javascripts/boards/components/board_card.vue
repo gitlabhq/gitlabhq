@@ -30,6 +30,11 @@ export default {
       default: 0,
       required: false,
     },
+    showWorkItemTypeIcon: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   computed: {
     ...mapState(['selectedBoardItems', 'activeId']),
@@ -98,6 +103,12 @@ export default {
     class="board-card gl-p-5 gl-rounded-base gl-line-height-normal gl-relative gl-mb-3"
     @click="toggleIssue($event)"
   >
-    <board-card-inner :list="list" :item="item" :update-filters="true" :index="index" />
+    <board-card-inner
+      :list="list"
+      :item="item"
+      :update-filters="true"
+      :index="index"
+      :show-work-item-type-icon="showWorkItemTypeIcon"
+    />
   </li>
 </template>

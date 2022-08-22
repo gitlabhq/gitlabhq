@@ -262,6 +262,7 @@ export const rawIssue = {
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
+  type: 'ISSUE',
 };
 
 export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
@@ -287,6 +288,7 @@ export const mockIssue = {
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
+  type: 'ISSUE',
 };
 
 export const mockActiveIssue = {

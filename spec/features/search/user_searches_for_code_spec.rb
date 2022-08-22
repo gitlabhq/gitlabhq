@@ -69,8 +69,12 @@ RSpec.describe 'User searches for code' do
 
         expect(page).to have_selector('.results', text: expected_result)
 
-        find('.js-project-refs-dropdown').click
-        find('.dropdown-page-one .dropdown-content').click_link('v1.0.0')
+        find('.ref-selector').click
+        wait_for_requests
+
+        page.within('.ref-selector') do
+          find('li', text: 'v1.0.0').click
+        end
 
         expect(page).to have_selector('.results', text: expected_result)
 
@@ -96,36 +100,41 @@ RSpec.describe 'User searches for code' do
         end
 
         it 'shows ref switcher in code result summary' do
-          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+          expect(find('.ref-selector')).to have_text(ref_name)
         end
 
         it 'persists branch name across search' do
           find('.gl-search-box-by-click-search-button').click
-          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+          expect(find('.ref-selector')).to have_text(ref_name)
         end
 
         #  this example is use to test the desgine that the refs is not
         #  only repersent the branch as well as the tags.
         it 'ref swither list all the branchs and tags' do
-          find('.js-project-refs-dropdown').click
-          expect(find('.dropdown-page-one .dropdown-content')).to have_link('sha-starting-with-large-number')
-          expect(find('.dropdown-page-one .dropdown-content')).to have_link('v1.0.0')
+          find('.ref-selector').click
+          wait_for_requests
+
+          page.within('.ref-selector') do
+            expect(page).to have_selector('li', text: 'add-ipython-files')
+            expect(page).to have_selector('li', text: 'v1.0.0')
+          end
         end
 
         it 'search result changes when refs switched' do
+          ref = 'master'
           expect(find('.results')).not_to have_content('path = gitlab-grack')
 
-          find('.js-project-refs-dropdown').click
-          find('.dropdown-page-one .dropdown-content').click_link('master')
+          find('.ref-selector').click
+          wait_for_requests
+
+          page.within('.ref-selector') do
+            fill_in _('Search by Git revision'), with: ref
+            wait_for_requests
+
+            find('li', text: ref).click
+          end
 
           expect(page).to have_selector('.results', text: 'path = gitlab-grack')
-        end
-
-        it 'persist refs over browser tabs' do
-          ref = 'feature'
-          find('.js-project-refs-dropdown').click
-          link = find_link(ref)[:href]
-          expect(link.include?("repository_ref=" + ref)).to be(true)
         end
       end
     end
@@ -146,36 +155,41 @@ RSpec.describe 'User searches for code' do
         end
 
         it 'shows ref switcher in code result summary' do
-          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+          expect(find('.ref-selector')).to have_text(ref_name)
         end
 
         it 'persists branch name across search' do
           find('.gl-search-box-by-click-search-button').click
-          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+          expect(find('.ref-selector')).to have_text(ref_name)
         end
 
         #  this example is use to test the desgine that the refs is not
         #  only repersent the branch as well as the tags.
         it 'ref swither list all the branchs and tags' do
-          find('.js-project-refs-dropdown').click
-          expect(find('.dropdown-page-one .dropdown-content')).to have_link('sha-starting-with-large-number')
-          expect(find('.dropdown-page-one .dropdown-content')).to have_link('v1.0.0')
+          find('.ref-selector').click
+          wait_for_requests
+
+          page.within('.ref-selector') do
+            expect(page).to have_selector('li', text: 'add-ipython-files')
+            expect(page).to have_selector('li', text: 'v1.0.0')
+          end
         end
 
         it 'search result changes when refs switched' do
+          ref = 'master'
           expect(find('.results')).not_to have_content('path = gitlab-grack')
 
-          find('.js-project-refs-dropdown').click
-          find('.dropdown-page-one .dropdown-content').click_link('master')
+          find('.ref-selector').click
+          wait_for_requests
+
+          page.within('.ref-selector') do
+            fill_in _('Search by Git revision'), with: ref
+            wait_for_requests
+
+            find('li', text: ref).click
+          end
 
           expect(page).to have_selector('.results', text: 'path = gitlab-grack')
-        end
-
-        it 'persist refs over browser tabs' do
-          ref = 'feature'
-          find('.js-project-refs-dropdown').click
-          link = find_link(ref)[:href]
-          expect(link.include?("repository_ref=" + ref)).to be(true)
         end
       end
     end
@@ -187,12 +201,12 @@ RSpec.describe 'User searches for code' do
       submit_search('test')
       select_search_scope('Code')
 
-      expect(page).to have_selector('.js-project-refs-dropdown')
+      expect(page).to have_selector('.ref-selector')
 
       select_search_scope('Issues')
 
       expect(find(:css, '.results')).to have_link(issue.title)
-      expect(page).not_to have_selector('.js-project-refs-dropdown')
+      expect(page).not_to have_selector('.ref-selector')
     end
   end
 

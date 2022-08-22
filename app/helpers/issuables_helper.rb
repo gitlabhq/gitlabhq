@@ -156,7 +156,7 @@ module IssuablesHelper
     output = []
 
     if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.work_item_type.base_type)
-      output << content_tag(:span, sprite_icon("#{issuable.work_item_type.icon_name}", css_class: 'gl-icon gl-vertical-align-middle'), class: 'gl-mr-2', aria: { hidden: 'true' })
+      output << content_tag(:span, sprite_icon("#{issuable.work_item_type.icon_name}", css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
       output << s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: issuable.issue_type.capitalize, created_at: time_ago_with_tooltip(issuable.created_at) }
     else
       output << s_('IssuableStatus|Created %{created_at} by').html_safe % { created_at: time_ago_with_tooltip(issuable.created_at) }

@@ -641,7 +641,7 @@ To copy the issue's email address:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.9. Feature flags `real_time_issue_sidebar` and `broadcast_issue_updates` removed.
 
 Some sections of the right sidebar are updated in real time.
-+When you're viewing an issue and somebody changes one of the values,
+When you're viewing an issue and somebody changes one of the values,
 you can see the change without having to refresh the page.
 
 The following sections are updated in real time:

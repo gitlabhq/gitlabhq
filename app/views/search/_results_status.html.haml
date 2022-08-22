@@ -13,7 +13,7 @@
           - if search_service.scope == 'blobs'
             = _("in")
             .mx-md-1
-              = render partial: "shared/ref_switcher", locals: { ref: repository_ref(search_service.project), form_path: request.fullpath, field_name: 'repository_ref' }
+              #js-blob-ref-switcher{ data: { "project-id" => search_service.project.id, "ref" => repository_ref(search_service.project), "field-name": "repository_ref" } }
             = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
           - else
             = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }

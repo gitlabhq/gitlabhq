@@ -9,8 +9,8 @@ type: index, howto
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 
-GitLab CI/CD can be used with [GitHub](github_integration.md), [Bitbucket Cloud](bitbucket_integration.md), or any other
-Git server.
+GitLab CI/CD can be used with [GitHub](github_integration.md), [Bitbucket Cloud](bitbucket_integration.md),
+or any other Git server, though there are some [limitations](#limitations).
 
 Instead of moving your entire project to GitLab, you can connect your
 external repository to get the benefits of GitLab CI/CD.
@@ -86,7 +86,11 @@ The variable names are prefixed with `CI_EXTERNAL_PULL_REQUEST_`.
 
 ### Limitations
 
-This feature currently does not support Pull Requests from fork repositories. Any Pull Requests from fork repositories are ignored. [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/5667).
+This feature does not support:
+
+- The [manual connection method](github_integration.md#connect-manually) required for GitHub Enterprise.
+  If the integration is connected manually, external pull requests [do not trigger pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/323336#note_884820753).
+- Pull requests from fork repositories. [Pull Requests from fork repositories are ignored](https://gitlab.com/gitlab-org/gitlab/-/issues/5667).
 
 Given that GitLab creates 2 pipelines, if changes are pushed to a remote branch that
 references an open Pull Request, both contribute to the status of the Pull Request

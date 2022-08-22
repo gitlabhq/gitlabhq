@@ -301,6 +301,7 @@ export default {
         :item="item"
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :disabled="disabled"
+        :show-work-item-type-icon="!isEpicBoard"
       />
       <gl-intersection-observer @appear="onReachingListBottom">
         <li
