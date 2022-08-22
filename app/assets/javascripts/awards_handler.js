@@ -165,6 +165,7 @@ export class AwardsHandler {
     `;
 
     const targetEl = this.targetContainerEl ? this.targetContainerEl : document.body;
+    // eslint-disable-next-line no-unsanitized/method
     targetEl.insertAdjacentHTML('beforeend', emojiMenuMarkup);
 
     this.addRemainingEmojiMenuCategories();
@@ -198,6 +199,7 @@ export class AwardsHandler {
                 emojisInCategory,
               );
               requestAnimationFrame(() => {
+                // eslint-disable-next-line no-unsanitized/method
                 emojiContentElement.insertAdjacentHTML('beforeend', categoryMarkup);
                 resolve();
               });

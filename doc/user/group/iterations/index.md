@@ -12,11 +12,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Moved to GitLab Premium in 13.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 14.6. [Feature flag `group_iterations`](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) removed.
 
-WARNING:
-After [Iteration Cadences](#iteration-cadences) becomes generally available,
-manual iteration scheduling will be [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 15.6.
-To enhance the role of iterations as time boundaries, we will also deprecate the title field.
-
 Iterations are a way to track issues over a period of time. This allows teams
 to track velocity and volatility metrics. Iterations can be used with [milestones](../../project/milestones/index.md)
 for tracking over different time periods.
@@ -187,7 +182,7 @@ To group issues by label:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.3: A new automation start date can be selected for cadence. Upcoming iterations will be scheduled to start on the same day of the week as the changed start date.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.4: A new automation start date can be selected for cadence. Upcoming iterations will be scheduled to start on the same day of the week as the changed start date. Iteration cadences can be manually managed by turning off the automatic scheduling feature.
 
 Iteration cadences automate iteration scheduling. You can use them to
 automate creating iterations every 1, 2, 3, or 4 weeks. You can also
@@ -206,8 +201,9 @@ To create an iteration cadence:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **New iteration cadence**.
-1. Complete the fields.
-   - Enter the title and description of the iteration cadence.
+1. Enter the title and description of the iteration cadence.
+1. To manually manage the iteration cadence, clear the **Enable automatic scheduling** checkbox and skip the next step.
+1. Complete the required fields to use automatic scheduling. 
    - Select the automation start date of the iteration cadence. Iterations will be scheduled to
      begin on the same day of the week as the day of the week of the start date.
    - From the **Duration** dropdown list, select how many weeks each iteration should last.
@@ -228,7 +224,7 @@ To edit an iteration cadence:
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **Edit iteration cadence**.
 
-When you edit the **Automation start date** field,
+When you are using automatic scheduling and edit the **Automation start date** field,
 you must set a new start date that doesn't overlap with the existing
 current or past iterations.
 
@@ -236,52 +232,23 @@ Editing **Upcoming iterations** is a non-destructive action.
 If ten upcoming iterations already exist, changing the number under **Upcoming iterations** to `2`
 doesn't delete the eight existing upcoming iterations.
 
-### Delete an iteration cadence
-
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-
-Prerequisites:
-
-- You must have at least the Reporter role for a group.
-
-Deleting an iteration cadence also deletes all iterations within that cadence.
-
-To delete an iteration cadence:
+#### Turn on automatic scheduling for manual iterations cadence
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
-1. Select the three-dot menu (**{ellipsis_v}**) > **Delete cadence** for the cadence you want to delete.
-1. Select **Delete cadence** in the confirmation modal.
-
-### Manual iteration cadences
-
-When you **enable** the iteration cadences feature, all previously
-created iterations are added to a default iteration cadence.
-You can continue to add, edit, and remove iterations in
-this default cadence.
-
-#### Convert a manual cadence to use automatic scheduling
-
-WARNING:
-The upgrade is irreversible. After it's done, a new manual iteration cadence cannot be created.
-
-Prerequisites:
-
-- You must have created [iterations](#iterations) without cadences before enabling iteration cadences for your group.
-To upgrade the iteration cadence to use the automation features:
-
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Issues > Iterations**.
-1. Select the three-dot menu (**{ellipsis_v}**) > **Edit cadence** for the cadence you want to upgrade.
+1. Select the three-dot menu (**{ellipsis_v}**) > **Edit cadence** for the cadence for which you want to enable automatic scheduling.
+1. Check the **Enable automatic scheduling** checkbox.
 1. Complete the required fields **Duration**, **Upcoming iterations**, and **Automation start date**.
 For **Automation start date**, you can select any date that doesn't overlap with the existing open iterations.
 If you have upcoming iterations, the automatic scheduling adjusts them appropriately to fit
 your chosen duration. 
 1. Select **Save changes**.
 
-#### Converted cadences example
+When you want to manage your iterations cadence manually again, edit your cadence and uncheck the **Enable automatic scheduling** checkbox.
 
-For example, suppose it's Friday, April 15, and you have three iterations in a manual cadence:
+#### Example of turning on automatic scheduling for manual iterations cadence
+
+Suppose it's Friday, April 15, and you have three iteration in a manual iterations cadence:
 
 - Monday, April 4 - Friday, April 8 (closed)
 - Tuesday, April 12 - Friday, April 15 (ongoing)
@@ -305,3 +272,20 @@ is changed to "April 18 - Sunday, April 24".
 
 An additional upcoming iteration "April 25 - Sunday, May 1" is scheduled
 to satisfy the requirement that there are at least two upcoming iterations scheduled.
+
+### Delete an iteration cadence
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for a group.
+
+Deleting an iteration cadence also deletes all iterations within that cadence.
+
+To delete an iteration cadence:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Issues > Iterations**.
+1. Select the three-dot menu (**{ellipsis_v}**) > **Delete cadence** for the cadence you want to delete.
+1. Select **Delete cadence**.

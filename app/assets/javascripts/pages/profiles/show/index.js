@@ -29,6 +29,7 @@ const selectEmojiCallback = (emoji, emojiTag) => {
   statusEmojiField.value = emoji;
   toggleNoEmojiPlaceholder(false);
   removeStatusEmoji();
+  // eslint-disable-next-line no-unsanitized/property
   toggleEmojiMenuButton.innerHTML += emojiTag;
 };
 
@@ -74,6 +75,7 @@ Emoji.initEmojiMap()
 
       if (hasStatusMessage) {
         toggleNoEmojiPlaceholder(false);
+        // eslint-disable-next-line no-unsanitized/property
         toggleEmojiMenuButton.innerHTML += defaultEmojiTag;
       } else if (statusEmoji.dataset.name === defaultStatusEmoji) {
         toggleNoEmojiPlaceholder(true);

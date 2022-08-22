@@ -311,9 +311,6 @@ kbd kbd {
   color: #fff;
   background-color: #ab6100;
 }
-.bg-transparent {
-  background-color: transparent !important;
-}
 .rounded-circle {
   border-radius: 50% !important;
 }
@@ -794,19 +791,16 @@ kbd {
 .navbar-gitlab .header-content .title img {
   height: 24px;
 }
-.navbar-gitlab .header-content .title a {
+.navbar-gitlab .header-content .title a:not(.canary-badge) {
   display: flex;
   align-items: center;
   padding: 2px 8px;
   margin: 4px 2px 4px -8px;
   border-radius: 4px;
 }
-.navbar-gitlab .header-content .title a:active {
+.navbar-gitlab .header-content .title a:not(.canary-badge):active {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 0 3px #63a6e9;
   outline: none;
-}
-.navbar-gitlab .header-content .title .canary-badge {
-  margin-left: -8px;
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;

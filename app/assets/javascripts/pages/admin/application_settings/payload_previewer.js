@@ -63,6 +63,8 @@ export default class PayloadPreviewer {
 
   insertPayload(data) {
     this.isInserted = true;
+
+    // eslint-disable-next-line no-unsanitized/property
     this.getContainer().innerHTML = data;
     this.showPayload();
   }

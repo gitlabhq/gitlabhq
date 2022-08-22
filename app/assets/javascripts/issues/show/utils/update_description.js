@@ -13,6 +13,7 @@ const updateDescription = (descriptionHtml = '', details) => {
   }
 
   const placeholder = document.createElement('div');
+  // eslint-disable-next-line no-unsanitized/property
   placeholder.innerHTML = descriptionHtml;
 
   const newDetails = placeholder.getElementsByTagName('details');

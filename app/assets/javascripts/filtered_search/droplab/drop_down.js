@@ -107,7 +107,7 @@ class DropDown {
     }
 
     const renderableList = this.list.querySelector('ul[data-dynamic]') || this.list;
-
+    // eslint-disable-next-line no-unsanitized/property
     renderableList.innerHTML = children.join('');
 
     const listEvent = new CustomEvent('render.dl', {
@@ -121,7 +121,7 @@ class DropDown {
   renderChildren(data) {
     const html = utils.template(this.templateString, data);
     const template = document.createElement('div');
-
+    // eslint-disable-next-line no-unsanitized/property
     template.innerHTML = html;
     DropDown.setImagesSrc(template);
     template.firstChild.style.display = data.droplab_hidden ? 'none' : 'block';

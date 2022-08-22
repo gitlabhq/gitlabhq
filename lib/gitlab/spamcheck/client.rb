@@ -33,33 +33,50 @@ module Gitlab
         @endpoint_url = @endpoint_url.sub(URL_SCHEME_REGEX, '')
       end
 
-      def issue_spam?(spam_issue:, user:, context: {})
-        issue = build_issue_protobuf(issue: spam_issue, user: user, context: context)
+      def spam?(spammable:, user:, context: {}, extra_features: {})
+        metadata = { 'authorization' => Gitlab::CurrentSettings.spam_check_api_key }
+        protobuf_args = { spammable: spammable, user: user, context: context, extra_features: extra_features }
 
-        response = grpc_client.check_for_spam_issue(issue,
-                                              metadata: { 'authorization' =>
-                                                           Gitlab::CurrentSettings.spam_check_api_key })
+        pb, grpc_method = build_protobuf(**protobuf_args)
+        response = grpc_method.call(pb, metadata: metadata)
+
         verdict = convert_verdict_to_gitlab_constant(response.verdict)
         [verdict, response.extra_attributes.to_h, response.error]
       end
 
       private
 
+      def get_spammable_mappings(spammable)
+        case spammable
+        when Issue
+          [::Spamcheck::Issue, grpc_client.method(:check_for_spam_issue)]
+        when Snippet
+          [::Spamcheck::Snippet, grpc_client.method(:check_for_spam_snippet)]
+        else
+          raise ArgumentError, "Not a spammable type: #{spammable.class.name}"
+        end
+      end
+
       def convert_verdict_to_gitlab_constant(verdict)
         VERDICT_MAPPING.fetch(::Spamcheck::SpamVerdict::Verdict.resolve(verdict), verdict)
       end
 
-      def build_issue_protobuf(issue:, user:, context:)
-        issue_pb = ::Spamcheck::Issue.new
-        issue_pb.title = issue.spam_title || ''
-        issue_pb.description = issue.spam_description || ''
-        issue_pb.created_at = convert_to_pb_timestamp(issue.created_at) if issue.created_at
-        issue_pb.updated_at = convert_to_pb_timestamp(issue.updated_at) if issue.updated_at
-        issue_pb.user_in_project = user.authorized_project?(issue.project)
-        issue_pb.project = build_project_protobuf(issue)
-        issue_pb.action = ACTION_MAPPING.fetch(context.fetch(:action)) if context.has_key?(:action)
-        issue_pb.user = build_user_protobuf(user)
-        issue_pb
+      def build_protobuf(spammable:, user:, context:, extra_features:)
+        protobuf_class, grpc_method = get_spammable_mappings(spammable)
+        pb = protobuf_class.new(**extra_features)
+        pb.title = spammable.spam_title || ''
+        pb.description = spammable.spam_description || ''
+        pb.created_at = convert_to_pb_timestamp(spammable.created_at) if spammable.created_at
+        pb.updated_at = convert_to_pb_timestamp(spammable.updated_at) if spammable.updated_at
+        pb.action = ACTION_MAPPING.fetch(context.fetch(:action)) if context.has_key?(:action)
+        pb.user = build_user_protobuf(user)
+
+        unless spammable.project.nil?
+          pb.user_in_project = user.authorized_project?(spammable.project)
+          pb.project = build_project_protobuf(spammable)
+        end
+
+        [pb, grpc_method]
       end
 
       def build_user_protobuf(user)

@@ -5,11 +5,12 @@ module Spam
     include AkismetMethods
     include SpamConstants
 
-    def initialize(user:, target:, options:, context: {})
+    def initialize(user:, target:, options:, context: {}, extra_features: {})
       @target = target
       @user = user
       @options = options
       @context = context
+      @extra_features = extra_features
     end
 
     def execute
@@ -61,7 +62,7 @@ module Spam
 
     private
 
-    attr_reader :user, :target, :options, :context
+    attr_reader :user, :target, :options, :context, :extra_features
 
     def akismet_verdict
       if akismet.spam?
@@ -75,7 +76,8 @@ module Spam
       return unless Gitlab::CurrentSettings.spam_check_endpoint_enabled
 
       begin
-        result, attribs, _error = spamcheck_client.issue_spam?(spam_issue: target, user: user, context: context)
+        result, attribs, _error = spamcheck_client.spam?(spammable: target, user: user, context: context,
+                                                         extra_features: extra_features)
         # @TODO log if error is not nil https://gitlab.com/gitlab-org/gitlab/-/issues/329545
 
         return [nil, attribs] unless result

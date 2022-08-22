@@ -428,6 +428,7 @@ export default {
         .then((res) => {
           if (res.data) {
             const el = document.createElement('div');
+            // eslint-disable-next-line no-unsanitized/property
             el.innerHTML = res.data;
             document.body.appendChild(el);
             document.dispatchEvent(new CustomEvent('merged:UpdateActions'));

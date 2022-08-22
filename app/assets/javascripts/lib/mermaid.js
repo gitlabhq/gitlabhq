@@ -9,6 +9,7 @@ const setIframeRenderedSize = (h, w) => {
 const drawDiagram = (source) => {
   const element = document.getElementById('app');
   const insertSvg = (svgCode) => {
+    // eslint-disable-next-line no-unsanitized/property
     element.innerHTML = svgCode;
 
     const height = parseInt(element.firstElementChild.getAttribute('height'), 10);

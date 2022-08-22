@@ -236,11 +236,13 @@ const createFlash = function createFlash({
 
   if (!flashContainer) return null;
 
+  // eslint-disable-next-line no-unsanitized/property
   flashContainer.innerHTML = createFlashEl(message, type);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
 
   if (actionConfig) {
+    // eslint-disable-next-line no-unsanitized/method
     flashEl.insertAdjacentHTML('beforeend', createAction(actionConfig));
 
     if (actionConfig.clickHandler) {

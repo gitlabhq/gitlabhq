@@ -163,6 +163,7 @@ export default {
       // resets the container HTML (replaces it with the updated noteHTML)
       // calls `renderSuggestions` once the updated noteHTML is added to the DOM
 
+      // eslint-disable-next-line no-unsanitized/property
       this.$refs.container.innerHTML = this.noteHtml;
       this.isRendered = false;
       this.renderSuggestions();

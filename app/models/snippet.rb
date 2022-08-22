@@ -91,7 +91,7 @@ class Snippet < ApplicationRecord
   participant :notes_with_associations
 
   attr_spammable :title, spam_title: true
-  attr_spammable :content, spam_description: true
+  attr_spammable :description, spam_description: true
 
   attr_encrypted :secret_token,
     key: Settings.attr_encrypted_db_key_base_truncated,
@@ -276,13 +276,7 @@ class Snippet < ApplicationRecord
 
   def check_for_spam?(user:)
     visibility_level_changed?(to: Snippet::PUBLIC) ||
-      (public? && (title_changed? || content_changed?))
-  end
-
-  # snippets are the biggest sources of spam
-  override :allow_possible_spam?
-  def allow_possible_spam?
-    false
+      (public? && (title_changed? || description_changed?))
   end
 
   def spammable_entity_type

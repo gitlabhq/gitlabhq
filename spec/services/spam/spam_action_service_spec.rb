@@ -6,6 +6,8 @@ RSpec.describe Spam::SpamActionService do
   include_context 'includes Spam constants'
 
   let(:issue) { create(:issue, project: project, author: author) }
+  let(:personal_snippet) { create(:personal_snippet, :public, author: author) }
+  let(:project_snippet) { create(:project_snippet, :public, author: author) }
   let(:fake_ip) { '1.2.3.4' }
   let(:fake_user_agent) { 'fake-user-agent' }
   let(:fake_referer) { 'fake-http-referer' }
@@ -27,6 +29,7 @@ RSpec.describe Spam::SpamActionService do
 
   before do
     issue.spam = false
+    personal_snippet.spam = false
   end
 
   describe 'constructor argument validation' do
@@ -50,24 +53,24 @@ RSpec.describe Spam::SpamActionService do
     end
   end
 
-  shared_examples 'creates a spam log' do
+  shared_examples 'creates a spam log' do |target_type|
     it do
       expect { subject }
-        .to log_spam(title: issue.title, description: issue.description, noteable_type: 'Issue')
+        .to log_spam(title: target.title, description: target.description, noteable_type: target_type)
 
       # TODO: These checks should be incorporated into the `log_spam` RSpec matcher above
       new_spam_log = SpamLog.last
       expect(new_spam_log.user_id).to eq(user.id)
-      expect(new_spam_log.title).to eq(issue.title)
-      expect(new_spam_log.description).to eq(issue.description)
+      expect(new_spam_log.title).to eq(target.title)
+      expect(new_spam_log.description).to eq(target.spam_description)
       expect(new_spam_log.source_ip).to eq(fake_ip)
       expect(new_spam_log.user_agent).to eq(fake_user_agent)
-      expect(new_spam_log.noteable_type).to eq('Issue')
+      expect(new_spam_log.noteable_type).to eq(target_type)
       expect(new_spam_log.via_api).to eq(true)
     end
   end
 
-  describe '#execute' do
+  shared_examples 'execute spam action service' do |target_type|
     let(:fake_captcha_verification_service) { double(:captcha_verification_service) }
     let(:fake_verdict_service) { double(:spam_verdict_service) }
     let(:allowlisted) { false }
@@ -82,20 +85,22 @@ RSpec.describe Spam::SpamActionService do
 
     let(:verdict_service_args) do
       {
-        target: issue,
+        target: target,
         user: user,
         options: verdict_service_opts,
         context: {
           action: :create,
-          target_type: 'Issue'
-        }
+          target_type: target_type
+        },
+        extra_features: extra_features
       }
     end
 
     let_it_be(:existing_spam_log) { create(:spam_log, user: user, recaptcha_verified: false) }
 
     subject do
-      described_service = described_class.new(spammable: issue, spam_params: spam_params, user: user, action: :create)
+      described_service = described_class.new(spammable: target, spam_params: spam_params, extra_features:
+                                              extra_features, user: user, action: :create)
       allow(described_service).to receive(:allowlisted?).and_return(allowlisted)
       described_service.execute
     end
@@ -136,7 +141,7 @@ RSpec.describe Spam::SpamActionService do
 
       context 'when spammable attributes have not changed' do
         before do
-          issue.closed_at = Time.zone.now
+          allow(target).to receive(:has_changes_to_save?).and_return(true)
         end
 
         it 'does not create a spam log' do
@@ -146,11 +151,11 @@ RSpec.describe Spam::SpamActionService do
 
       context 'when spammable attributes have changed' do
         let(:expected_service_check_response_message) do
-          /Check Issue spammable model for any errors or CAPTCHA requirement/
+          /Check #{target_type} spammable model for any errors or CAPTCHA requirement/
         end
 
         before do
-          issue.description = 'Lovely Spam! Wonderful Spam!'
+          target.description = 'Lovely Spam! Wonderful Spam!'
         end
 
         context 'when allowlisted' do
@@ -170,13 +175,13 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(DISALLOW)
           end
 
-          it_behaves_like 'creates a spam log'
+          it_behaves_like 'creates a spam log', target_type
 
           it 'marks as spam' do
             response = subject
 
             expect(response.message).to match(expected_service_check_response_message)
-            expect(issue).to be_spam
+            expect(target).to be_spam
           end
         end
 
@@ -185,13 +190,13 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(BLOCK_USER)
           end
 
-          it_behaves_like 'creates a spam log'
+          it_behaves_like 'creates a spam log', target_type
 
           it 'marks as spam' do
             response = subject
 
             expect(response.message).to match(expected_service_check_response_message)
-            expect(issue).to be_spam
+            expect(target).to be_spam
           end
         end
 
@@ -200,20 +205,20 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
           end
 
-          it_behaves_like 'creates a spam log'
+          it_behaves_like 'creates a spam log', target_type
 
           it 'does not mark as spam' do
             response = subject
 
             expect(response.message).to match(expected_service_check_response_message)
-            expect(issue).not_to be_spam
+            expect(target).not_to be_spam
           end
 
           it 'marks as needing reCAPTCHA' do
             response = subject
 
             expect(response.message).to match(expected_service_check_response_message)
-            expect(issue).to be_needs_recaptcha
+            expect(target).to be_needs_recaptcha
           end
         end
 
@@ -222,20 +227,20 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM)
           end
 
-          it_behaves_like 'creates a spam log'
+          it_behaves_like 'creates a spam log', target_type
 
           it 'does not mark as spam' do
             response = subject
 
             expect(response.message).to match(expected_service_check_response_message)
-            expect(issue).not_to be_spam
+            expect(target).not_to be_spam
           end
 
           it 'does not mark as needing CAPTCHA' do
             response = subject
 
             expect(response.message).to match(expected_service_check_response_message)
-            expect(issue).not_to be_needs_recaptcha
+            expect(target).not_to be_needs_recaptcha
           end
         end
 
@@ -249,7 +254,7 @@ RSpec.describe Spam::SpamActionService do
           end
 
           it 'clears spam flags' do
-            expect(issue).to receive(:clear_spam_flags!)
+            expect(target).to receive(:clear_spam_flags!)
 
             subject
           end
@@ -265,7 +270,7 @@ RSpec.describe Spam::SpamActionService do
           end
 
           it 'clears spam flags' do
-            expect(issue).to receive(:clear_spam_flags!)
+            expect(target).to receive(:clear_spam_flags!)
 
             subject
           end
@@ -283,6 +288,29 @@ RSpec.describe Spam::SpamActionService do
           end
         end
       end
+    end
+  end
+
+  describe '#execute' do
+    describe 'issue' do
+      let(:target) { issue }
+      let(:extra_features) { {} }
+
+      it_behaves_like 'execute spam action service', 'Issue'
+    end
+
+    describe 'project snippet' do
+      let(:target) { project_snippet }
+      let(:extra_features) { { files: [{ path: 'project.rb' }] } }
+
+      it_behaves_like 'execute spam action service', 'ProjectSnippet'
+    end
+
+    describe 'personal snippet' do
+      let(:target) { personal_snippet }
+      let(:extra_features) { { files: [{ path: 'personal.rb' }] } }
+
+      it_behaves_like 'execute spam action service', 'PersonalSnippet'
     end
   end
 end

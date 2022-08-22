@@ -49,6 +49,9 @@ export default {
           error,
         });
       },
+      context: {
+        isSingleRequest: true,
+      },
     },
   },
   computed: {

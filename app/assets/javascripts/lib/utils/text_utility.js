@@ -119,6 +119,7 @@ const getAverageCharWidth = memoize(function getAverageCharWidth(options = {}) {
   div.style.left = -1000;
   div.style.top = -1000;
 
+  // eslint-disable-next-line no-unsanitized/property
   div.innerHTML = chars;
 
   document.body.appendChild(div);

@@ -13,15 +13,56 @@ When you have a lot of issues, it can be hard to get an overview.
 With weighted issues, you can get a better idea of how much time,
 value, or complexity a given issue has or costs.
 
-You can set the weight of an issue during its creation, by changing the
-value in the dropdown menu. You can set it to a non-negative integer
-value from 0, 1, 2, and so on.
-You can remove weight from an issue as well.
-A user with a Reporter role (or above) can set the weight.
+## View the issue weight
 
-This value appears on the right sidebar of an individual issue, as well as
-in the issues page next to a weight icon (**{weight}**).
+You can view the issue weight on:
 
-As an added bonus, you can see the total sum of all issues on the milestone page.
+- The right sidebar of each issue.
+- The issues page, next to a weight icon (**{weight}**).
+- [Issue boards](../issue_board.md), next to a weight icon (**{weight}**).
+- The [milestone](../milestones/index.md) page, as a total sum of issue weights.
 
-![issue page](img/issue_weight_v13_11.png)
+## Set the issue weight
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can set the issue weight when you create or edit an issue.
+
+You must use whole numbers (like 0, 1, 2). Negative numbers or fractions are not accepted.
+
+When you change the weight of an issue, the new value overwrites the previous value.
+
+### When you create an issue
+
+To set the issue weight when you [create an issue](managing_issues.md#create-an-issue), enter a
+number under **Weight**.
+
+### From an existing issue
+
+To set the issue weight from an existing issue:
+
+1. Go to the issue.
+1. On the right sidebar, in the **Weight** section, select **Edit**.
+1. Enter the new weight.
+1. Select any area outside the dropdown list.
+
+### From an issue board
+
+To set the issue weight when you [edit an issue from an issue board](../issue_board.md#edit-an-issue):
+
+1. Go to your issue board.
+1. Select an issue card (not its title).
+1. On the right sidebar, in the **Weight** section, select **Edit**.
+1. Enter the new weight.
+1. Select any area outside the dropdown list.
+
+## Remove issue weight
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To remove the issue weight, follow the same steps as when you [set the issue weight](#set-the-issue-weight),
+and select **remove weight**.

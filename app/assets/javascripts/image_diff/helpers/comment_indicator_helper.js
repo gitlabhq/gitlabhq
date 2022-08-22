@@ -8,6 +8,7 @@ export function addCommentIndicator(containerEl, { x, y }) {
   buttonEl.style.left = `${x}px`;
   buttonEl.style.top = `${y}px`;
 
+  // eslint-disable-next-line no-unsanitized/property
   buttonEl.innerHTML = spriteIcon('image-comment-dark');
 
   containerEl.appendChild(buttonEl);

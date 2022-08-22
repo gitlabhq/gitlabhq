@@ -26,6 +26,7 @@ function setVisibilityOptions({ name, visibility, showPath, editPath }) {
       if (reason) {
         const optionTitle = option.querySelector('.js-visibility-level-radio span');
         const optionName = optionTitle ? optionTitle.innerText.toLowerCase() : '';
+        // eslint-disable-next-line no-unsanitized/property
         reason.innerHTML = sprintf(
           __(
             'This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group.',

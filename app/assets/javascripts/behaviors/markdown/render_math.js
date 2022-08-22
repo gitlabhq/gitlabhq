@@ -91,6 +91,7 @@ class SafeMathRenderer {
           `;
 
       if (!wrapperElement.classList.contains('lazy-alert-shown')) {
+        // eslint-disable-next-line no-unsanitized/property
         wrapperElement.innerHTML = html;
         wrapperElement.append(codeElement);
         wrapperElement.classList.add('lazy-alert-shown');
@@ -111,6 +112,7 @@ class SafeMathRenderer {
       }
 
       try {
+        // eslint-disable-next-line no-unsanitized/property
         displayContainer.innerHTML = this.katex.renderToString(text, {
           displayMode: el.dataset.mathStyle === 'display',
           throwOnError: true,

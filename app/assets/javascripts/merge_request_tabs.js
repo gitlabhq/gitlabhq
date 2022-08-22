@@ -434,6 +434,7 @@ export default class MergeRequestTabs {
       .get(`${source}.json`)
       .then(({ data }) => {
         const commitsDiv = document.querySelector('div#commits');
+        // eslint-disable-next-line no-unsanitized/property
         commitsDiv.innerHTML = data.html;
         localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;

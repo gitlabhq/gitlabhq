@@ -67,7 +67,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
     return unless current_jira_installation.instance_url?
 
     request.content_security_policy.directives['connect-src'] ||= []
-    request.content_security_policy.directives['connect-src'] << Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/oauth_application_ids')
+    request.content_security_policy.directives['connect-src'] << Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/oauth_application_id')
   end
 
   def create_service

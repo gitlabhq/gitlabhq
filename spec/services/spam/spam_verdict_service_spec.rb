@@ -17,9 +17,10 @@ RSpec.describe Spam::SpamVerdictService do
   let(:check_for_spam) { true }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, author: user) }
+  let_it_be(:snippet) { create(:personal_snippet, :public, author: user) }
 
   let(:service) do
-    described_class.new(user: user, target: issue, options: {})
+    described_class.new(user: user, target: target, options: {})
   end
 
   let(:attribs) do
@@ -31,7 +32,7 @@ RSpec.describe Spam::SpamVerdictService do
     stub_feature_flags(allow_possible_spam: false)
   end
 
-  describe '#execute' do
+  shared_examples 'execute spam verdict service' do
     subject { service.execute }
 
     before do
@@ -172,7 +173,8 @@ RSpec.describe Spam::SpamVerdictService do
     end
   end
 
-  describe '#akismet_verdict' do
+  shared_examples 'akismet verdict' do
+    let(:target) { issue }
     subject { service.send(:akismet_verdict) }
 
     context 'if Akismet is enabled' do
@@ -227,7 +229,7 @@ RSpec.describe Spam::SpamVerdictService do
     end
   end
 
-  describe '#spamcheck_verdict' do
+  shared_examples 'spamcheck verdict' do
     subject { service.send(:spamcheck_verdict) }
 
     context 'if a Spam Check endpoint enabled and set to a URL' do
@@ -254,7 +256,7 @@ RSpec.describe Spam::SpamVerdictService do
 
         before do
           allow(service).to receive(:spamcheck_client).and_return(spam_client)
-          allow(spam_client).to receive(:issue_spam?).and_return([verdict, attribs, error])
+          allow(spam_client).to receive(:spam?).and_return([verdict, attribs, error])
         end
 
         context 'if the result is a NOOP verdict' do
@@ -365,7 +367,7 @@ RSpec.describe Spam::SpamVerdictService do
           let(:attribs) { nil }
 
           before do
-            allow(spam_client).to receive(:issue_spam?).and_raise(GRPC::Aborted)
+            allow(spam_client).to receive(:spam?).and_raise(GRPC::Aborted)
           end
 
           it 'returns nil' do
@@ -387,7 +389,7 @@ RSpec.describe Spam::SpamVerdictService do
         let(:attribs) { nil }
 
         before do
-          allow(spam_client).to receive(:issue_spam?).and_raise(GRPC::DeadlineExceeded)
+          allow(spam_client).to receive(:spam?).and_raise(GRPC::DeadlineExceeded)
         end
 
         it 'returns nil' do
@@ -414,6 +416,48 @@ RSpec.describe Spam::SpamVerdictService do
       it 'returns nil' do
         expect(subject).to be_nil
       end
+    end
+  end
+
+  describe '#execute' do
+    describe 'issue' do
+      let(:target) { issue }
+
+      it_behaves_like 'execute spam verdict service'
+    end
+
+    describe 'snippet' do
+      let(:target) { snippet }
+
+      it_behaves_like 'execute spam verdict service'
+    end
+  end
+
+  describe '#akismet_verdict' do
+    describe 'issue' do
+      let(:target) { issue }
+
+      it_behaves_like 'akismet verdict'
+    end
+
+    describe 'snippet' do
+      let(:target) { snippet }
+
+      it_behaves_like 'akismet verdict'
+    end
+  end
+
+  describe '#spamcheck_verdict' do
+    describe 'issue' do
+      let(:target) { issue }
+
+      it_behaves_like 'spamcheck verdict'
+    end
+
+    describe 'snippet' do
+      let(:target) { snippet }
+
+      it_behaves_like 'spamcheck verdict'
     end
   end
 end

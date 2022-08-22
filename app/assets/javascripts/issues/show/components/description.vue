@@ -226,6 +226,7 @@ export default {
     },
     createDragIconElement() {
       const container = document.createElement('div');
+      // eslint-disable-next-line no-unsanitized/property
       container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-visibility-hidden" role="img" aria-hidden="true">
         <use href="${gon.sprite_icons}#drag-vertical"></use>
       </svg>`;
@@ -358,6 +359,7 @@ export default {
         );
         button.id = `js-task-button-${index}`;
         this.taskButtons.push(button.id);
+        // eslint-disable-next-line no-unsanitized/property
         button.innerHTML = `
           <svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14">
             <use href="${gon.sprite_icons}#doc-new"></use>

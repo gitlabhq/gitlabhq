@@ -217,6 +217,7 @@
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.2",
     "eslint-plugin-no-jquery": "2.7.0",
+    "eslint-plugin-no-unsanitized": "^4.0.1",
     "gettext-extractor": "^3.5.3",
     "gettext-extractor-vue": "^5.0.0",
     "glob": "^7.1.6",

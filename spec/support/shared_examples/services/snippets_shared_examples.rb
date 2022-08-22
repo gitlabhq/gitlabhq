@@ -14,7 +14,8 @@ RSpec.shared_examples 'checking spam' do
         spammable: kind_of(Snippet),
         spam_params: spam_params,
         user: an_instance_of(User),
-        action: action
+        action: action,
+        extra_features: { files: an_instance_of(Array) }
       }
     ) do |instance|
       expect(instance).to receive(:execute)

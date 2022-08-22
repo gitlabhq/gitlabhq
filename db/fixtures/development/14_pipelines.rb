@@ -60,7 +60,7 @@ class Gitlab::Seeder::Pipelines
       ::Ci::ProcessPipelineService.new(pipeline).execute
     end
 
-    ::Gitlab::Seeder::Ci::DailyBuildGroupReportResult.new(@project).seed if @project.last_pipeline
+    ::Gitlab::Seeders::Ci::DailyBuildGroupReportResult.new(@project).seed if @project.last_pipeline
   end
 
   private

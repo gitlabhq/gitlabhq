@@ -23,6 +23,7 @@ const wrapTextWithSpan = (el, text) => {
 
 const wrapNodes = (text) => {
   const wrapper = createSpan();
+  // eslint-disable-next-line no-unsanitized/property
   wrapper.innerHTML = wrapSpacesWithSpans(text);
   wrapper.childNodes.forEach((el) => wrapTextWithSpan(el, text));
   return wrapper.childNodes;

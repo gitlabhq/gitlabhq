@@ -18,7 +18,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
 
     subject(:content_security_policy) { response.headers['Content-Security-Policy'] }
 
-    it { is_expected.to include('http://self-managed-gitlab.com/-/jira_connect/oauth_application_ids') }
+    it { is_expected.to include('http://self-managed-gitlab.com/-/jira_connect/oauth_application_id') }
 
     context 'with no self-managed instance configured' do
       let_it_be(:installation) { create(:jira_connect_installation, instance_url: '') }

@@ -45,6 +45,7 @@ const loadViewer = (viewerParam) => {
   viewer.dataset.loading = 'true';
 
   return axios.get(url).then(({ data }) => {
+    // eslint-disable-next-line no-unsanitized/property
     viewer.innerHTML = data.html;
 
     window.requestIdleCallback(() => {

@@ -20,6 +20,7 @@ const reloadMessage = LIVE_RELOAD
   ? 'You have live_reload enabled, the page will reload automatically when complete.'
   : 'You have live_reload disabled, the page will reload automatically in a few seconds.';
 
+// eslint-disable-next-line no-unsanitized/property
 div.innerHTML = `
 <!-- https://github.com/webpack/media/blob/master/logo/icon-square-big.svg -->
 <svg height="50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">

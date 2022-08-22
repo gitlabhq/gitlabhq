@@ -200,9 +200,11 @@ export default class Todos {
     });
 
     document.dispatchEvent(event);
+    // eslint-disable-next-line no-unsanitized/property
     document.querySelector('.js-todos-pending .js-todos-badge').innerHTML = addDelimiter(
       data.count,
     );
+    // eslint-disable-next-line no-unsanitized/property
     document.querySelector('.js-todos-done .js-todos-badge').innerHTML = addDelimiter(
       data.done_count,
     );

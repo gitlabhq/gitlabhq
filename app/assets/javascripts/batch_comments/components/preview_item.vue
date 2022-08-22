@@ -67,6 +67,7 @@ export default {
     },
     content() {
       const el = document.createElement('div');
+      // eslint-disable-next-line no-unsanitized/property
       el.innerHTML = this.draft.note_html;
 
       return el.textContent;

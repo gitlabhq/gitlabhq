@@ -361,38 +361,6 @@ In GitLab 15.0, for Dependency Scanning, the default version of Java that the sc
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
-
-### Manual iteration management
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-Manual iteration management is deprecated and only automatic iteration cadences will be supported in the future.
-
-Creating and deleting iterations will be fully removed in 16.0. Updating all iteration fields except for
-`description` will also be removed.
-
-On the GraphQL API the following mutations will be removed:
-
-  1. `iterationCreate`
-  1. `iterationDelete`
-
-The update `updateIteration` mutation will only allow updating the iteration's `description`. The following
-arguments will be removed:
-
-  1. `title`
-  1. `dueDate`
-  1. `startDate`
-
-For more information about iteration cadences, you can refer to
-[the documentation of the feature](https://docs.gitlab.com/ee/user/group/iterations/#iteration-cadences).
-
-</div>
-
 <div class="deprecation removal-150 breaking-change">
 
 ### Outdated indices of Advanced Search migrations

@@ -1314,7 +1314,7 @@ GEM
     sorted_set (1.0.3)
       rbtree
       set (~> 1.0)
-    spamcheck (0.1.0)
+    spamcheck (1.0.0)
       grpc (~> 1.0)
     spring (2.1.1)
     spring-commands-rspec (1.0.4)
@@ -1746,7 +1746,7 @@ DEPENDENCIES
   slack-messenger (~> 2.3.4)
   snowplow-tracker (~> 0.6.1)
   solargraph (~> 0.45.0)
-  spamcheck (~> 0.1.0)
+  spamcheck (~> 1.0.0)
   spring (~> 2.1.0)
   spring-commands-rspec (~> 1.0.4)
   sprite-factory (~> 1.7)

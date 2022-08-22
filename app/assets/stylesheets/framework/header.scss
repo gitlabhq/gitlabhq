@@ -48,7 +48,7 @@
         opacity: 0;
       }
 
-      a {
+      a:not(.canary-badge) {
         display: flex;
         align-items: center;
         padding: 2px 8px;
@@ -59,10 +59,6 @@
         &:focus {
           @include gl-focus($focus-ring: $focus-ring-dark);
         }
-      }
-
-      .canary-badge {
-        margin-left: -8px;
       }
 
       .project-item-select {
