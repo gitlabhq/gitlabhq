@@ -465,10 +465,10 @@ RSpec.describe API::Issues do
 
       context 'with archived projects' do
         let_it_be(:archived_issue) do
-          create(
-            :issue, author: user, assignees: [user],
-            project: create(:project, :public, :archived, creator_id: user.id, namespace: group)
-          )
+          create(:issue,
+            author: user,
+            assignees: [user],
+            project: create(:project, :public, :archived, creator_id: user.id, namespace: group))
         end
 
         it 'returns only non archived projects issues' do

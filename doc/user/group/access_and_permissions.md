@@ -12,13 +12,16 @@ Configure your groups to control group permissions and access.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
+> - [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
 
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
 To configure push rules for a group:
 
-1. Go to the groups's **Push Rules** page.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Repository** page.
+1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
 1. Select **Save Push Rules**.
 
@@ -132,8 +135,8 @@ To prevent sharing outside of the group's hierarchy:
 
 ## Prevent a project from being shared with groups
 
-Prevent projects in a group from 
-[sharing a project with another group](../project/members/share_project_with_groups.md) 
+Prevent projects in a group from
+[sharing a project with another group](../project/members/share_project_with_groups.md)
 to enable tighter control over project access.
 
 To prevent a project from being shared with other groups:

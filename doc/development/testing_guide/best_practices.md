@@ -83,6 +83,31 @@ You can silence deprecation warnings by setting the environment variable
 SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 ```
 
+### Test order
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.3.
+
+All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
+to surface flaky tests that are dependent on test order.
+
+When randomized:
+
+- We append the `(order random)` to example group description.
+- The used seed is shown in the spec output below the test suite summary. For example, `Randomized with seed 27443`.
+
+For a list of spec files which are still run in defined order, see [`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml).
+
+To make spec files run in random order, check their order dependency with:
+
+```shell
+scripts/rspec_check_order_dependence spec/models/project_spec.rb
+```
+
+If the specs pass the check the script removes them from
+[`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml) automatically.
+
+If the specs fail the check they must be fixed before than can run in random order.
+
 ### Test speed
 
 GitLab has a massive test suite that, without [parallelization](../pipelines.md#test-suite-parallelization), can take hours

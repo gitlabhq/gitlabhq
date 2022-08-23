@@ -32,8 +32,7 @@ RSpec.describe API::Ci::Jobs do
   end
 
   let!(:job) do
-    create(:ci_build, :success, :tags, pipeline: pipeline,
-                                artifacts_expire_at: 1.day.since)
+    create(:ci_build, :success, :tags, pipeline: pipeline, artifacts_expire_at: 1.day.since)
   end
 
   before do

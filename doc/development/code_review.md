@@ -125,7 +125,7 @@ As an experiment, we want to introduce a `local` reviewer status for database re
 focusing on work from a team/stage, but not outside of it. This helps to focus and build great domain
 knowledge. We are not introducing changes to the reviewer roulette till we evaluate the impact and feedback from this
 experiment. We ask to respect reviewers who decline reviews based on their focus on `local` reviews. For tracking purposes,
-please use in your personal YAML file entry: `- reviewer database local` instead of `- reviewer database`. 
+please use in your personal YAML file entry: `- reviewer database local` instead of `- reviewer database`.
 
 ### Approval guidelines
 
@@ -330,7 +330,7 @@ Maintainers are the DRI of assuring that the acceptance criteria of a merge requ
 In general, [quality is everyone’s responsibility](https://about.gitlab.com/handbook/engineering/quality/),
 but maintainers of an MR are held responsible for **ensuring** that an MR meets those general quality standards.
 
-If a maintainer feels that an MR is substantial enough, or requires a [domain expert](#domain-experts), 
+If a maintainer feels that an MR is substantial enough, or requires a [domain expert](#domain-experts),
 maintainers have the discretion to request a review from another reviewer, or maintainer. Here are some
 examples of maintainers proactively doing this during review:
 
@@ -419,7 +419,7 @@ first time.
   codebase. Thorough descriptions help all reviewers understand your request
   and test effectively.
 - If you know your change depends on another being merged first, note it in the
-  description and set a [merge request dependency](../user/project/merge_requests/merge_request_dependencies.md).
+  description and set a [merge request dependency](../user/project/merge_requests/dependencies.md).
 - Be grateful for the reviewer's suggestions. ("Good call. I'll make that change.")
 - Don't take it personally. The review is of the code, not of you.
 - Explain why the code exists. ("It's like that because of these reasons. Would
@@ -490,7 +490,7 @@ experience, refactors the existing code). Then:
     optionally resolve within the merge request or follow-up at a later stage.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
 - Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the authors
-if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md).
+if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
 - Let the author know if changes are required following your review.

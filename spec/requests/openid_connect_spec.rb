@@ -23,24 +23,24 @@ RSpec.describe 'OpenID Connect requests' do
 
   let(:id_token_claims) do
     {
-      'sub'        => user.id.to_s,
+      'sub' => user.id.to_s,
       'sub_legacy' => hashed_subject
     }
   end
 
   let(:user_info_claims) do
     {
-      'name'           => 'Alice',
-      'nickname'       => 'alice',
-      'email'          => 'public@example.com',
+      'name' => 'Alice',
+      'nickname' => 'alice',
+      'email' => 'public@example.com',
       'email_verified' => true,
-      'website'        => 'https://example.com',
-      'profile'        => 'http://localhost/alice',
-      'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
-      'groups'         => kind_of(Array),
-      'https://gitlab.org/claims/groups/owner'      => kind_of(Array),
+      'website' => 'https://example.com',
+      'profile' => 'http://localhost/alice',
+      'picture' => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
+      'groups' => kind_of(Array),
+      'https://gitlab.org/claims/groups/owner' => kind_of(Array),
       'https://gitlab.org/claims/groups/maintainer' => kind_of(Array),
-      'https://gitlab.org/claims/groups/developer'  => kind_of(Array)
+      'https://gitlab.org/claims/groups/developer' => kind_of(Array)
     }
   end
 

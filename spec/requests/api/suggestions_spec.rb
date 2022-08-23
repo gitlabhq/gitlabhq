@@ -34,15 +34,14 @@ RSpec.describe API::Suggestions do
   end
 
   let(:diff_note2) do
-    create(:diff_note_on_merge_request, noteable: merge_request,
-           position: position2,
-           project: project)
+    create(:diff_note_on_merge_request, noteable: merge_request, position: position2, project: project)
   end
 
   let(:suggestion) do
-    create(:suggestion, note: diff_note,
-           from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
-           to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
+    create(:suggestion,
+      note: diff_note,
+      from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
+      to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
   end
 
   let(:unappliable_suggestion) do
@@ -119,8 +118,8 @@ RSpec.describe API::Suggestions do
   describe "PUT /suggestions/batch_apply" do
     let(:suggestion2) do
       create(:suggestion, note: diff_note2,
-             from_content: "      \"PWD\" => path\n",
-             to_content: "      *** FOO ***\n")
+                          from_content: "      \"PWD\" => path\n",
+                          to_content: "      *** FOO ***\n")
     end
 
     let(:url) { "/suggestions/batch_apply" }

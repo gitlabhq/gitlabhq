@@ -141,8 +141,13 @@ RSpec.describe 'Group.runners' do
 
   describe 'edges' do
     let_it_be(:runner) do
-      create(:ci_runner, :group, active: false, version: 'def', revision: '456',
-             description: 'Project runner', groups: [group], ip_address: '127.0.0.1')
+      create(:ci_runner, :group,
+        active: false,
+        version: 'def',
+        revision: '456',
+        description: 'Project runner',
+        groups: [group],
+        ip_address: '127.0.0.1')
     end
 
     let(:query) do

@@ -22,9 +22,14 @@ RSpec.describe 'Updating an existing release' do
   let_it_be(:milestones) { [milestone_12_3, milestone_12_4] }
 
   let_it_be(:release) do
-    create(:release, project: project, tag: tag_name, name: name,
-           description: description, released_at: Time.parse(released_at).utc,
-           created_at: Time.parse(created_at).utc, milestones: milestones)
+    create(:release,
+      project: project,
+      tag: tag_name,
+      name: name,
+      description: description,
+      released_at: Time.parse(released_at).utc,
+      created_at: Time.parse(created_at).utc,
+      milestones: milestones)
   end
 
   let(:mutation_name) { :release_update }

@@ -1249,9 +1249,10 @@ RSpec.describe API::Projects do
       stub_application_setting(import_sources: nil)
 
       endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      stub_full_request(endpoint_url, method: :get).to_return({ status: 200,
-        body: '001e# service=git-upload-pack',
-        headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+      stub_full_request(endpoint_url, method: :get).to_return(
+        { status: 200,
+          body: '001e# service=git-upload-pack',
+          headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
 
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
       expect { post api('/projects', user), params: project_params }

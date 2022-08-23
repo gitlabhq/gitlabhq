@@ -540,9 +540,9 @@ RSpec.describe API::Groups do
     # Returns a Hash of visibility_level => Project pairs
     def add_projects_to_group(group, share_with: nil)
       projects = {
-        public:   create(:project, :public,   namespace: group),
+        public: create(:project, :public, namespace: group),
         internal: create(:project, :internal, namespace: group),
-        private:  create(:project, :private,  namespace: group)
+        private: create(:project, :private,  namespace: group)
       }
 
       if share_with

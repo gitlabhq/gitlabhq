@@ -188,7 +188,7 @@ RSpec.describe API::Internal::Base do
     it 'returns an error message when expires_at contains an invalid date' do
       post api('/internal/personal_access_token'),
            params: {
-             key_id:  key.id,
+             key_id: key.id,
              name: 'newtoken',
              scopes: ['api'],
              expires_at: 'invalid-date'
@@ -202,7 +202,7 @@ RSpec.describe API::Internal::Base do
     it 'returns an error message when it receives an invalid scope' do
       post api('/internal/personal_access_token'),
            params: {
-             key_id:  key.id,
+             key_id: key.id,
              name: 'newtoken',
              scopes: %w(read_api badscope read_repository)
            },
@@ -217,7 +217,7 @@ RSpec.describe API::Internal::Base do
 
       post api('/internal/personal_access_token'),
            params: {
-             key_id:  key.id,
+             key_id: key.id,
              name: 'newtoken',
              scopes: %w(read_api read_repository)
            },
@@ -234,7 +234,7 @@ RSpec.describe API::Internal::Base do
 
       post api('/internal/personal_access_token'),
            params: {
-             key_id:  key.id,
+             key_id: key.id,
              name: 'newtoken',
              scopes: %w(read_api read_repository),
              expires_at: '9001-11-17'

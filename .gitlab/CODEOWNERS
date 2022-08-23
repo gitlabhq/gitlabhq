@@ -359,10 +359,10 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/jobs.md @marcel.amirault
 /doc/api/keys.md @aqualls
 /doc/api/labels.md @msedlakjakubowski
-/doc/api/license.md @kpaizee
+/doc/api/license.md @fneill
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
-/doc/api/managed_licenses.md @kpaizee
+/doc/api/managed_licenses.md @fneill
 /doc/api/markdown.md @aqualls
 /doc/api/members.md @eread
 /doc/api/merge_request_approvals.md @aqualls

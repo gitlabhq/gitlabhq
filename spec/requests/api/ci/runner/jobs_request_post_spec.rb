@@ -546,9 +546,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
             let!(:job2) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) do
-              create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'deploy',
-                                stage: 'deploy', stage_idx: 1,
-                                options: { script: ['bash'], dependencies: [job2.name] })
+              create(:ci_build, :pending, :queued,
+                pipeline: pipeline,
+                name: 'deploy',
+                stage: 'deploy',
+                stage_idx: 1,
+                options: { script: ['bash'], dependencies: [job2.name] })
             end
 
             before do
@@ -570,9 +573,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
             let!(:job2) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:empty_dependencies_job) do
-              create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'empty_dependencies_job',
-                                stage: 'deploy', stage_idx: 1,
-                                options: { script: ['bash'], dependencies: [] })
+              create(:ci_build, :pending, :queued,
+                pipeline: pipeline,
+                name: 'empty_dependencies_job',
+                stage: 'deploy',
+                stage_idx: 1,
+                options: { script: ['bash'], dependencies: [] })
             end
 
             before do
@@ -889,9 +895,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         describe 'a job with excluded artifacts' do
           context 'when excluded paths are defined' do
             let(:job) do
-              create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'test',
-                                stage: 'deploy', stage_idx: 1,
-                                options: { artifacts: { paths: ['abc'], exclude: ['cde'] } })
+              create(:ci_build, :pending, :queued,
+                pipeline: pipeline,
+                name: 'test',
+                stage: 'deploy',
+                stage_idx: 1,
+                options: { artifacts: { paths: ['abc'], exclude: ['cde'] } })
             end
 
             context 'when a runner supports this feature' do

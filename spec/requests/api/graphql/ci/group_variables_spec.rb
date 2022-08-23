@@ -35,8 +35,14 @@ RSpec.describe 'Query.group(fullPath).ciVariables' do
     end
 
     it "returns the group's CI variables" do
-      variable = create(:ci_group_variable, group: group, key: 'TEST_VAR', value: 'test',
-                        masked: false, protected: true, raw: true, environment_scope: 'staging')
+      variable = create(:ci_group_variable,
+        group: group,
+        key: 'TEST_VAR',
+        value: 'test',
+        masked: false,
+        protected: true,
+        raw: true,
+        environment_scope: 'staging')
 
       post_graphql(query, current_user: user)
 

@@ -9,21 +9,49 @@ RSpec.describe 'Query.runner(id)' do
   let_it_be(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
-    create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
-           active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom,
-           maintenance_note: '**Test maintenance note**')
+    create(:ci_runner, :instance,
+      description: 'Runner 1',
+      contacted_at: 2.hours.ago,
+      active: true,
+      version: 'adfe156',
+      revision: 'a',
+      locked: true,
+      ip_address: '127.0.0.1',
+      maximum_timeout: 600,
+      access_level: 0,
+      tag_list: %w[tag1 tag2],
+      run_untagged: true,
+      executor_type: :custom,
+      maintenance_note: '**Test maintenance note**')
   end
 
   let_it_be(:inactive_instance_runner) do
-    create(:ci_runner, :instance, description: 'Runner 2', contacted_at: 1.day.ago, active: false,
-           version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+    create(:ci_runner, :instance,
+      description: 'Runner 2',
+      contacted_at: 1.day.ago,
+      active: false,
+      version: 'adfe157',
+      revision: 'b',
+      ip_address: '10.10.10.10',
+      access_level: 1,
+      run_untagged: true)
   end
 
   let_it_be(:active_group_runner) do
-    create(:ci_runner, :group, groups: [group], description: 'Group runner 1', contacted_at: 2.hours.ago,
-           active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :shell)
+    create(:ci_runner, :group,
+      groups: [group],
+      description: 'Group runner 1',
+      contacted_at: 2.hours.ago,
+      active: true,
+      version: 'adfe156',
+      revision: 'a',
+      locked: true,
+      ip_address: '127.0.0.1',
+      maximum_timeout: 600,
+      access_level: 0,
+      tag_list: %w[tag1 tag2],
+      run_untagged: true,
+      executor_type: :shell)
   end
 
   let_it_be(:active_project_runner) { create(:ci_runner, :project) }
@@ -159,8 +187,16 @@ RSpec.describe 'Query.runner(id)' do
 
       with_them do
         let(:project_runner) do
-          create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
-                 version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+          create(:ci_runner, :project,
+            description: 'Runner 3',
+            contacted_at: 1.day.ago,
+            active: false,
+            locked: is_locked,
+            version: 'adfe157',
+            revision: 'b',
+            ip_address: '10.10.10.10',
+            access_level: 1,
+            run_untagged: true)
         end
 
         let(:query) do

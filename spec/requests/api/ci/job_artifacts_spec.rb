@@ -24,8 +24,7 @@ RSpec.describe API::Ci::JobArtifacts do
   let(:guest) { create(:project_member, :guest, project: project).user }
 
   let!(:job) do
-    create(:ci_build, :success, :tags, pipeline: pipeline,
-                                artifacts_expire_at: 1.day.since)
+    create(:ci_build, :success, :tags, pipeline: pipeline, artifacts_expire_at: 1.day.since)
   end
 
   before do
@@ -535,8 +534,7 @@ RSpec.describe API::Ci::JobArtifacts do
       context 'with regular branch' do
         before do
           pipeline.reload
-          pipeline.update!(ref: 'master',
-                          sha: project.commit('master').sha)
+          pipeline.update!(ref: 'master', sha: project.commit('master').sha)
 
           get_for_ref('master')
         end
@@ -579,8 +577,7 @@ RSpec.describe API::Ci::JobArtifacts do
         stub_artifacts_object_storage
         job.success
 
-        project.update!(visibility_level: visibility_level,
-                       public_builds: public_builds)
+        project.update!(visibility_level: visibility_level, public_builds: public_builds)
 
         get_artifact_file(artifact)
       end
@@ -676,8 +673,7 @@ RSpec.describe API::Ci::JobArtifacts do
       context 'with branch name containing slash' do
         before do
           pipeline.reload
-          pipeline.update!(ref: 'improve/awesome',
-                          sha: project.commit('improve/awesome').sha)
+          pipeline.update!(ref: 'improve/awesome', sha: project.commit('improve/awesome').sha)
         end
 
         it 'returns a specific artifact file for a valid path', :sidekiq_might_not_need_inline do

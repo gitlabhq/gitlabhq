@@ -30,7 +30,7 @@ RSpec.describe Projects::EnvironmentsController do
     deployer = create(:user)
     pipeline = create(:ci_pipeline, project: environment.project)
     build = create(:ci_build, environment: environment.name, pipeline: pipeline, user: deployer)
-    create(:deployment, :success, environment: environment, deployable: build, user: deployer,
-           project: project, sha: commit.sha)
+    create(:deployment, :success,
+      environment: environment, deployable: build, user: deployer, project: project, sha: commit.sha)
   end
 end

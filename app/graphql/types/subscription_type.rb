@@ -18,5 +18,10 @@ module Types
 
     field :issuable_dates_updated, subscription: Subscriptions::IssuableUpdated, null: true,
                                    description: 'Triggered when the due date or start date of an issuable is updated.'
+
+    field :merge_request_reviewers_updated,
+          subscription: Subscriptions::IssuableUpdated,
+          null: true,
+          description: 'Triggered when the reviewers of a merge request are updated.'
   end
 end
