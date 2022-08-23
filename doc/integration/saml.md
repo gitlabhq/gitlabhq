@@ -802,8 +802,8 @@ If you have any questions on configuring the SAML app, please contact your provi
 
 ### Okta setup notes
 
-1. In the Okta administrator section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
-1. When the app screen comes up you see another button to **Create an App** and
+1. In the Okta administrator section choose **Applications**.
+1. When the app screen comes up you see another button to **Create App Integration** and
    choose SAML 2.0 on the next screen.
 1. Optionally, you can add a logo
    (you can choose it from <https://about.gitlab.com/press/>). You must
@@ -940,7 +940,7 @@ Make sure this information is provided.
 
 Another issue that can result in this error is when the correct information is being sent by
 the IdP, but the attributes don't match the names in the OmniAuth `info` hash. In this case,
-you must set `attribute_statements` in the SAML configuration to 
+you must set `attribute_statements` in the SAML configuration to
 [map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
 
 ### Key validation error, Digest mismatch or Fingerprint mismatch

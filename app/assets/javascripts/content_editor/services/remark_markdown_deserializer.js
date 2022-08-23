@@ -1,6 +1,9 @@
 import { render } from '~/lib/gfm';
 import { isValidAttribute } from '~/lib/dompurify';
+import { SAFE_AUDIO_EXT, SAFE_VIDEO_EXT } from '../constants';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
+
+const ALL_AUDIO_VIDEO_EXT = [...SAFE_AUDIO_EXT, ...SAFE_VIDEO_EXT];
 
 const wrappableTags = ['img', 'br', 'code', 'i', 'em', 'b', 'strong', 'a', 'strike', 's', 'del'];
 
@@ -16,6 +19,26 @@ const getTableCellAttrs = (hastNode) => ({
   colspan: parseInt(hastNode.properties.colSpan, 10) || 1,
   rowspan: parseInt(hastNode.properties.rowSpan, 10) || 1,
 });
+
+const getMediaAttrs = (hastNode) => ({
+  src: hastNode.properties.src,
+  canonicalSrc: hastNode.properties.identifier ?? hastNode.properties.src,
+  isReference: hastNode.properties.isReference === 'true',
+  title: hastNode.properties.title,
+  alt: hastNode.properties.alt,
+});
+
+const isMediaTag = (hastNode) => hastNode.tagName === 'img' && Boolean(hastNode.properties);
+
+const extractMediaFileExtension = (url) => {
+  try {
+    const parsedUrl = new URL(url, window.location.origin);
+
+    return /\.(\w+)$/.exec(parsedUrl.pathname)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+};
 
 const factorySpecs = {
   blockquote: { type: 'block', selector: 'blockquote' },
@@ -121,16 +144,26 @@ const factorySpecs = {
     selector: 'pre',
     wrapInParagraph: true,
   },
+  audio: {
+    type: 'inline',
+    selector: (hastNode) =>
+      isMediaTag(hastNode) &&
+      SAFE_AUDIO_EXT.includes(extractMediaFileExtension(hastNode.properties.src)),
+    getAttrs: getMediaAttrs,
+  },
   image: {
     type: 'inline',
-    selector: 'img',
-    getAttrs: (hastNode) => ({
-      src: hastNode.properties.src,
-      canonicalSrc: hastNode.properties.identifier ?? hastNode.properties.src,
-      isReference: hastNode.properties.isReference === 'true',
-      title: hastNode.properties.title,
-      alt: hastNode.properties.alt,
-    }),
+    selector: (hastNode) =>
+      isMediaTag(hastNode) &&
+      !ALL_AUDIO_VIDEO_EXT.includes(extractMediaFileExtension(hastNode.properties.src)),
+    getAttrs: getMediaAttrs,
+  },
+  video: {
+    type: 'inline',
+    selector: (hastNode) =>
+      isMediaTag(hastNode) &&
+      SAFE_VIDEO_EXT.includes(extractMediaFileExtension(hastNode.properties.src)),
+    getAttrs: getMediaAttrs,
   },
   hardBreak: {
     type: 'inline',

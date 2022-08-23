@@ -1,3 +1,4 @@
+import Audio from '~/content_editor/extensions/audio';
 import Blockquote from '~/content_editor/extensions/blockquote';
 import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
@@ -33,6 +34,7 @@ import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
+import Video from '~/content_editor/extensions/video';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import { createTestEditor, createDocBuilder } from '../test_utils';
@@ -41,6 +43,7 @@ jest.mock('~/emoji');
 
 const tiptapEditor = createTestEditor({
   extensions: [
+    Audio,
     Blockquote,
     Bold,
     BulletList,
@@ -73,6 +76,7 @@ const tiptapEditor = createTestEditor({
     TableRow,
     TaskItem,
     TaskList,
+    Video,
     ...HTMLMarks,
     ...HTMLNodes,
   ],
@@ -80,6 +84,7 @@ const tiptapEditor = createTestEditor({
 
 const {
   builders: {
+    audio,
     doc,
     blockquote,
     bold,
@@ -114,6 +119,7 @@ const {
     tableRow,
     taskItem,
     taskList,
+    video,
   },
 } = createDocBuilder({
   tiptapEditor,
@@ -1227,6 +1233,21 @@ paragraph
 [foobar]: foobar.com
 
 ## heading`.trimLeft(),
+    );
+  });
+
+  it('serializes audio and video elements', () => {
+    expect(
+      serialize(
+        paragraph(
+          audio({ alt: 'audio', canonicalSrc: 'audio.mp3' }),
+          ' and ',
+          video({ alt: 'video', canonicalSrc: 'video.mov' }),
+        ),
+      ),
+    ).toBe(
+      `
+![audio](audio.mp3) and ![video](video.mov)`.trimLeft(),
     );
   });
 

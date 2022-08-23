@@ -2042,3 +2042,15 @@
 07_03_00__gitlab_specific_markdown__front_matter__005:
   spec_txt_example_position: 683
   source_specification: gitlab
+07_04_00__gitlab_specific_markdown__audio__001:
+  spec_txt_example_position: 684
+  source_specification: gitlab
+07_04_00__gitlab_specific_markdown__audio__002:
+  spec_txt_example_position: 685
+  source_specification: gitlab
+07_05_00__gitlab_specific_markdown__video__001:
+  spec_txt_example_position: 686
+  source_specification: gitlab
+07_05_00__gitlab_specific_markdown__video__002:
+  spec_txt_example_position: 687
+  source_specification: gitlab

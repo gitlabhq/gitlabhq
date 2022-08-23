@@ -1,3 +1,4 @@
+import Audio from '~/content_editor/extensions/audio';
 import Bold from '~/content_editor/extensions/bold';
 import Blockquote from '~/content_editor/extensions/blockquote';
 import BulletList from '~/content_editor/extensions/bullet_list';
@@ -25,13 +26,16 @@ import TableRow from '~/content_editor/extensions/table_row';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TaskList from '~/content_editor/extensions/task_list';
 import TaskItem from '~/content_editor/extensions/task_item';
+import Video from '~/content_editor/extensions/video';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
+import { SAFE_VIDEO_EXT, SAFE_AUDIO_EXT } from '~/content_editor/constants';
 
 import { createTestEditor, createDocBuilder } from './test_utils';
 
 const tiptapEditor = createTestEditor({
   extensions: [
+    Audio,
     Blockquote,
     Bold,
     BulletList,
@@ -57,6 +61,7 @@ const tiptapEditor = createTestEditor({
     TableCell,
     TaskList,
     TaskItem,
+    Video,
     ...HTMLNodes,
   ],
 });
@@ -65,6 +70,7 @@ const {
   builders: {
     doc,
     paragraph,
+    audio,
     bold,
     blockquote,
     bulletList,
@@ -91,10 +97,12 @@ const {
     tableCell,
     taskItem,
     taskList,
+    video,
   },
 } = createDocBuilder({
   tiptapEditor,
   names: {
+    audio: { nodeType: Audio.name },
     blockquote: { nodeType: Blockquote.name },
     bold: { markType: Bold.name },
     bulletList: { nodeType: BulletList.name },
@@ -120,6 +128,7 @@ const {
     tableRow: { nodeType: TableRow.name },
     taskItem: { nodeType: TaskItem.name },
     taskList: { nodeType: TaskList.name },
+    video: { nodeType: Video.name },
     ...HTMLNodes.reduce(
       (builders, htmlNode) => ({
         ...builders,
@@ -1233,6 +1242,44 @@ title: 'layout'
         ),
       ),
     },
+    ...SAFE_AUDIO_EXT.map((extension) => {
+      const src = `http://test.host/video.${extension}`;
+      const markdown = `![audio](${src})`;
+
+      return {
+        markdown,
+        expectedDoc: doc(
+          paragraph(
+            source(markdown),
+            audio({
+              ...source(markdown),
+              canonicalSrc: src,
+              src,
+              alt: 'audio',
+            }),
+          ),
+        ),
+      };
+    }),
+    ...SAFE_VIDEO_EXT.map((extension) => {
+      const src = `http://test.host/video.${extension}`;
+      const markdown = `![video](${src})`;
+
+      return {
+        markdown,
+        expectedDoc: doc(
+          paragraph(
+            source(markdown),
+            video({
+              ...source(markdown),
+              canonicalSrc: src,
+              src,
+              alt: 'video',
+            }),
+          ),
+        ),
+      };
+    }),
   ];
 
   const runOnly = examples.find((example) => example.only === true);

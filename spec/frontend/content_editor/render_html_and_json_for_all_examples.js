@@ -1,6 +1,7 @@
 import { DOMSerializer } from 'prosemirror-model';
 // TODO: DRY up duplication with spec/frontend/content_editor/services/markdown_serializer_spec.js
 //  See https://gitlab.com/groups/gitlab-org/-/epics/7719#plan
+import Audio from '~/content_editor/extensions/audio';
 import Blockquote from '~/content_editor/extensions/blockquote';
 import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
@@ -35,11 +36,13 @@ import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
+import Video from '~/content_editor/extensions/video';
 import createMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import { createTestEditor } from 'jest/content_editor/test_utils';
 
 const tiptapEditor = createTestEditor({
   extensions: [
+    Audio,
     Blockquote,
     Bold,
     BulletList,
@@ -74,6 +77,7 @@ const tiptapEditor = createTestEditor({
     TableRow,
     TaskItem,
     TaskList,
+    Video,
   ],
 });
 

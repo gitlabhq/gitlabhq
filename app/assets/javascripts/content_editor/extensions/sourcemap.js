@@ -1,4 +1,5 @@
 import { Extension } from '@tiptap/core';
+import Audio from './audio';
 import Blockquote from './blockquote';
 import Bold from './bold';
 import BulletList from './bullet_list';
@@ -25,12 +26,14 @@ import Table from './table';
 import TableCell from './table_cell';
 import TableHeader from './table_header';
 import TableRow from './table_row';
+import Video from './video';
 
 export default Extension.create({
   addGlobalAttributes() {
     return [
       {
         types: [
+          Audio.name,
           Bold.name,
           Blockquote.name,
           BulletList.name,
@@ -56,6 +59,7 @@ export default Extension.create({
           TableCell.name,
           TableHeader.name,
           TableRow.name,
+          Video.name,
           ...HTMLNodes.map((htmlNode) => htmlNode.name),
         ],
         attributes: {

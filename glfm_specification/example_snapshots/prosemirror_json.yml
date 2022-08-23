@@ -20782,3 +20782,111 @@
       }
     ]
   }
+07_04_00__gitlab_specific_markdown__audio__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "audio",
+            "attrs": {
+              "uploading": false,
+              "src": "audio.oga",
+              "canonicalSrc": "audio.oga",
+              "alt": "audio"
+            }
+          }
+        ]
+      }
+    ]
+  }
+07_04_00__gitlab_specific_markdown__audio__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "audio",
+          "url": "audio.oga",
+          "title": "audio title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[audio]: audio.oga \"audio title\""
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "audio",
+            "attrs": {
+              "uploading": false,
+              "src": "audio.oga",
+              "canonicalSrc": "audio",
+              "alt": "audio"
+            }
+          }
+        ]
+      }
+    ]
+  }
+07_05_00__gitlab_specific_markdown__video__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "video",
+            "attrs": {
+              "uploading": false,
+              "src": "video.m4v",
+              "canonicalSrc": "video.m4v",
+              "alt": "video"
+            }
+          }
+        ]
+      }
+    ]
+  }
+07_05_00__gitlab_specific_markdown__video__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "video",
+          "url": "video.mov",
+          "title": "video title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[video]: video.mov \"video title\""
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "video",
+            "attrs": {
+              "uploading": false,
+              "src": "video.mov",
+              "canonicalSrc": "video",
+              "alt": "video"
+            }
+          }
+        ]
+      }
+    ]
+  }

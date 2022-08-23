@@ -27688,6 +27688,9 @@ msgstr ""
 msgid "PQL|Thank you for reaching out! Our sales team will get back to you soon."
 msgstr ""
 
+msgid "Package & registry settings"
+msgstr ""
+
 msgid "Package Registry"
 msgstr ""
 
@@ -36594,6 +36597,9 @@ msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted 
 msgstr ""
 
 msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Policy%{link_end}"
+msgstr ""
+
+msgid "SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}."
 msgstr ""
 
 msgid "SignUp|First name is too long (maximum is %{max_length} characters)."

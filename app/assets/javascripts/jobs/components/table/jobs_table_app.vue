@@ -2,7 +2,9 @@
 import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
+import { validateQueryString } from '../filtered_search/utils';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import JobsTable from './jobs_table.vue';
 import JobsTableEmptyState from './jobs_table_empty_state.vue';
@@ -37,6 +39,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
+          ...this.validatedQueryString,
         };
       },
       update(data) {
@@ -95,6 +98,11 @@ export default {
     jobsCount() {
       return this.jobs.count;
     },
+    validatedQueryString() {
+      const queryStringObject = queryToObject(window.location.search);
+
+      return validateQueryString(queryStringObject);
+    },
   },
   watch: {
     // this watcher ensures that the count on the all tab
@@ -133,6 +141,10 @@ export default {
         }
 
         if (filter.type === 'status') {
+          updateHistory({
+            url: setUrlParams({ statuses: filter.value.data }, window.location.href, true),
+          });
+
           this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
         }
       });
@@ -175,6 +187,7 @@ export default {
     <jobs-filtered-search
       v-if="showFilteredSearch"
       :class="$options.filterSearchBoxStyles"
+      :query-string="validatedQueryString"
       @filterJobsBySearch="filterJobsBySearch"
     />
 

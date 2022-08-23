@@ -108,7 +108,10 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
-    [Audio.name]: renderPlayable,
+    [Audio.name]: preserveUnchanged({
+      render: renderPlayable,
+      inline: true,
+    }),
     [Blockquote.name]: preserveUnchanged((state, node) => {
       if (node.attrs.multiline) {
         state.write('>>>');
@@ -220,7 +223,10 @@ const defaultSerializerConfig = {
       else renderBulletList(state, node);
     }),
     [Text.name]: defaultMarkdownSerializer.nodes.text,
-    [Video.name]: renderPlayable,
+    [Video.name]: preserveUnchanged({
+      render: renderPlayable,
+      inline: true,
+    }),
     [WordBreak.name]: (state) => state.write('<wbr>'),
     ...HTMLNodes.reduce((serializers, htmlNode) => {
       return {

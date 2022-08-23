@@ -58,3 +58,9 @@ export const EXTENSION_PRIORITY_LOWER = 75;
  */
 export const EXTENSION_PRIORITY_DEFAULT = 100;
 export const EXTENSION_PRIORITY_HIGHEST = 200;
+
+/**
+ * See lib/gitlab/file_type_detection.rb
+ */
+export const SAFE_VIDEO_EXT = ['mp4', 'm4v', 'mov', 'webm', 'ogv'];
+export const SAFE_AUDIO_EXT = ['mp3', 'oga', 'ogg', 'spx', 'wav'];

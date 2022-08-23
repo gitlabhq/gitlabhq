@@ -889,6 +889,38 @@ RSpec.describe API::Ci::Runners do
         end
       end
 
+      it 'avoids N+1 DB queries' do
+        get api("/runners/#{shared_runner.id}/jobs", admin)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/runners/#{shared_runner.id}/jobs", admin)
+        end
+
+        create(:ci_build, :failed, runner: shared_runner, project: create(:project))
+
+        expect do
+          get api("/runners/#{shared_runner.id}/jobs", admin)
+        end.not_to exceed_query_limit(control.count)
+      end
+
+      it 'batches loading of commits' do
+        shared_runner = create(:ci_runner, :instance, description: 'Shared runner')
+
+        project_with_repo = create(:project, :repository)
+
+        pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b')
+        create(:ci_build, :running, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
+
+        pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
+        create(:ci_build, :failed, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
+
+        expect_next_instance_of(Repository) do |repo|
+          expect(repo).to receive(:commits_by).once.and_call_original
+        end
+
+        get api("/runners/#{shared_runner.id}/jobs", admin)
+      end
+
       context "when runner doesn't exist" do
         it 'returns 404' do
           get api('/runners/0/jobs', admin)

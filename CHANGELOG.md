@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.3.1 (2022-08-22)
+
+### Security (1 change)
+
+- [Validate if values to be saved in Redis can be converted to string](gitlab-org/security/gitlab@e8a4aeff901363923a5ddff3f7c6b654abf2b125) ([merge request](gitlab-org/security/gitlab!2723))
+
 ## 15.3.0 (2022-08-19)
 
 ### Added (147 changes)
@@ -606,6 +612,13 @@ entry.
 - [Drop unused index on ci_builds](gitlab-org/gitlab@31b5d0992dc73b88a37430f50b20f9d5308dee3c) ([merge request](gitlab-org/gitlab!92747))
 - [Remove FF import_release_authors_from_github](gitlab-org/gitlab@c4d6871e4438a1626d688856903778623138f671) ([merge request](gitlab-org/gitlab!92686))
 - [Remove unused feature](gitlab-org/gitlab@0ef95d341e4a15150d6ccb3d104ebbe064aa062a) ([merge request](gitlab-org/gitlab!92753))
+
+## 15.2.3 (2022-08-22)
+
+### Security (2 changes)
+
+- [Validate if values to be saved in Redis can be converted to string](gitlab-org/security/gitlab@427c7818b229fd45b10cb5de9ea6cc7c451dd4da) ([merge request](gitlab-org/security/gitlab!2724))
+- [Fix CSS selector used in specs](gitlab-org/security/gitlab@47bb40d097e2b05ecdbeebf6bdbe6eb9b6db1c7b) ([merge request](gitlab-org/security/gitlab!2727))
 
 ## 15.2.2 (2022-08-01)
 
@@ -1322,6 +1335,13 @@ entry.
 - [Support push options when creating merge request pipelines](gitlab-org/gitlab@e91c574425367c52f68f31c2194c6f46079f7b1b) ([merge request](gitlab-org/gitlab!87323)) **GitLab Enterprise Edition**
 - [Update GitLab Runner Helm Chart to 0.42.0](gitlab-org/gitlab@cc89200f498fe216864914c79b5b0d1d578edab3) ([merge request](gitlab-org/gitlab!90605))
 - [Address database documentation Vale warningss](gitlab-org/gitlab@e5f9a089766bace046d3bbd760a2979865a4bbc0) by @cgives ([merge request](gitlab-org/gitlab!90093))
+
+## 15.1.5 (2022-08-22)
+
+### Security (2 changes)
+
+- [Validate if values to be saved in Redis can be converted to string](gitlab-org/security/gitlab@0bc82f875f78b6a2703b294b1a5a8d941000f9f2) ([merge request](gitlab-org/security/gitlab!2725))
+- [Fix CSS selector used in specs](gitlab-org/security/gitlab@a900e65b192a8415baa6bcd4050566543107ab1f) ([merge request](gitlab-org/security/gitlab!2728))
 
 ## 15.1.4 (2022-07-28)
 

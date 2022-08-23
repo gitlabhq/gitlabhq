@@ -46,7 +46,7 @@ RSpec.describe 'Group Packages & Registries settings' do
     it 'has a page title set' do
       visit_settings_page
 
-      expect(page).to have_title _('Packages & Registries')
+      expect(page).to have_title _('Package & registry settings')
     end
 
     it 'sidebar menu is open' do

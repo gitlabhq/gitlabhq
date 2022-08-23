@@ -129,6 +129,14 @@ module API
           authenticate_list_runners_jobs!(runner)
 
           jobs = ::Ci::RunnerJobsFinder.new(runner, current_user, params).execute
+          jobs = jobs.preload( # rubocop: disable CodeReuse/ActiveRecord
+            [
+              :user,
+              { pipeline: { project: [:route, { namespace: :route }] } },
+              { project: [:route, { namespace: :route }] }
+            ]
+          )
+          jobs.each(&:commit) # batch loads all commits
 
           present paginate(jobs), with: Entities::Ci::JobBasicWithProject
         end

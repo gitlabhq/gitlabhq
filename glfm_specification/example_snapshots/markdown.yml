@@ -2227,3 +2227,15 @@
    ---
   title: YAML front matter
   ---
+07_04_00__gitlab_specific_markdown__audio__001: |
+  ![audio](audio.oga "audio title")
+07_04_00__gitlab_specific_markdown__audio__002: |
+  [audio]: audio.oga "audio title"
+
+  ![audio][audio]
+07_05_00__gitlab_specific_markdown__video__001: |
+  ![video](video.m4v "video title")
+07_05_00__gitlab_specific_markdown__video__002: |
+  [video]: video.mov "video title"
+
+  ![video][video]

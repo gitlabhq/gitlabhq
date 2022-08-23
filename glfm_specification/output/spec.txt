@@ -9802,6 +9802,57 @@ title: YAML front matter
 <h2>title: YAML front matter</h2>
 ````````````````````````````````
 
+## Audio
+
+See
+[audio](https://docs.gitlab.com/ee/user/markdown.html#audio) in the GitLab Flavored Markdown documentation.
+
+GLFM renders image elements as an audio player as long as the resource’s file extension is
+one of the following supported audio extensions `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`.
+Audio ignore the alternative text part of an image declaration.
+
+```````````````````````````````` example gitlab audio
+![audio](audio.oga "audio title")
+.
+<p><audio src="audio.oga" title="audio title"></audio></p>
+````````````````````````````````
+
+Reference definitions work audio as well:
+
+```````````````````````````````` example gitlab audio
+[audio]: audio.oga "audio title"
+
+![audio][audio]
+.
+<p><audio src="audio.oga" title="audio title"></audio></p>
+````````````````````````````````
+
+## Video
+
+See
+[videos](https://docs.gitlab.com/ee/user/markdown.html#videos) in the GitLab Flavored Markdown documentation.
+
+GLFM renders image elements as a video player as long as the resource’s file extension is
+one of the following supported video extensions  `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`.
+Videos ignore the alternative text part of an image declaration.
+
+
+```````````````````````````````` example gitlab video
+![video](video.m4v "video title")
+.
+<p><video src="video.m4v" title="video title"></video></p>
+````````````````````````````````
+
+Reference definitions work video as well:
+
+```````````````````````````````` example gitlab video
+[video]: video.mov "video title"
+
+![video][video]
+.
+<p><video src="video.mov" title="video title"></video></p>
+````````````````````````````````
+
 <!-- END TESTS -->
 
 # Appendix: A parsing strategy

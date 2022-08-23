@@ -297,9 +297,8 @@ RSpec.describe 'Signup' do
         enforce_terms
       end
 
-      it 'renders text that the user confirms terms by clicking register' do
+      it 'renders text that the user confirms terms by signing in' do
         visit new_user_registration_path
-
         expect(page).to have_content(/By clicking Register, I agree that I have read and accepted the Terms of Use and Privacy Policy/)
 
         fill_in_signup_form
@@ -391,7 +390,7 @@ RSpec.describe 'Signup' do
       enforce_terms
     end
 
-    it 'renders text that the user confirms terms by clicking register' do
+    it 'renders text that the user confirms terms by signing in' do
       visit new_user_registration_path
 
       expect(page).to have_content(/By clicking Register, I agree that I have read and accepted the Terms of Use and Privacy Policy/)
