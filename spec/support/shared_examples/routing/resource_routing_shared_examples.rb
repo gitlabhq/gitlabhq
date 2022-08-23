@@ -43,12 +43,12 @@ RSpec.shared_examples 'resource routing' do
 
   let(:default_actions) do
     {
-      index:   [:get, ''],
-      show:    [:get, '/:id'],
-      new:     [:get, '/new'],
-      create:  [:post, ''],
-      edit:    [:get, '/:id/edit'],
-      update:  [:put, '/:id'],
+      index: [:get, ''],
+      show: [:get, '/:id'],
+      new: [:get, '/new'],
+      create: [:post, ''],
+      edit: [:get, '/:id/edit'],
+      update: [:put, '/:id'],
       destroy: [:delete, '/:id']
     }
   end

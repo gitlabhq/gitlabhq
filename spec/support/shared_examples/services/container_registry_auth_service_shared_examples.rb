@@ -199,8 +199,8 @@ RSpec.shared_examples 'a container registry auth service' do
   describe '.import_access_token' do
     let(:access) do
       [{ 'type' => 'registry',
-        'name' => 'import',
-        'actions' => ['*'] }]
+         'name' => 'import',
+         'actions' => ['*'] }]
     end
 
     let(:token) { described_class.import_access_token }

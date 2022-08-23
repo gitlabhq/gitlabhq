@@ -3,8 +3,8 @@
 module StubObjectStorage
   def stub_dependency_proxy_object_storage(**params)
     stub_object_storage_uploader(config: ::Gitlab.config.dependency_proxy.object_store,
-                                  uploader: ::DependencyProxy::FileUploader,
-                                  **params)
+                                 uploader: ::DependencyProxy::FileUploader,
+                                 **params)
   end
 
   def stub_object_storage_uploader(

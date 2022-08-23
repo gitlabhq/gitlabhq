@@ -193,11 +193,11 @@ module UsageDataHelpers
     allow(Settings).to receive(:[]).with('artifacts')
       .and_return(
         { 'enabled' => true,
-         'object_store' =>
+          'object_store' =>
          { 'enabled' => true,
-          'remote_directory' => 'artifacts',
-          'direct_upload' => true,
-          'connection' =>
+           'remote_directory' => 'artifacts',
+           'direct_upload' => true,
+           'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
            'background_upload' => false,
            'proxy_download' => false } }
@@ -208,11 +208,11 @@ module UsageDataHelpers
     allow(Settings).to receive(:[]).with('lfs')
       .and_return(
         { 'enabled' => true,
-         'object_store' =>
+          'object_store' =>
          { 'enabled' => false,
-          'remote_directory' => 'lfs-objects',
-          'direct_upload' => true,
-          'connection' =>
+           'remote_directory' => 'lfs-objects',
+           'direct_upload' => true,
+           'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
            'background_upload' => false,
            'proxy_download' => false } }
@@ -221,21 +221,21 @@ module UsageDataHelpers
       .and_return(
         { 'object_store' =>
           { 'enabled' => false,
-          'remote_directory' => 'uploads',
-          'direct_upload' => true,
-          'connection' =>
+            'remote_directory' => 'uploads',
+            'direct_upload' => true,
+            'connection' =>
           { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => false,
-           'proxy_download' => false } }
+            'background_upload' => false,
+            'proxy_download' => false } }
       )
     allow(Settings).to receive(:[]).with('packages')
       .and_return(
         { 'enabled' => true,
-         'object_store' =>
+          'object_store' =>
          { 'enabled' => false,
-          'remote_directory' => 'packages',
-          'direct_upload' => false,
-          'connection' =>
+           'remote_directory' => 'packages',
+           'direct_upload' => false,
+           'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
            'background_upload' => true,
            'proxy_download' => false } }

@@ -100,6 +100,12 @@ page, with these behaviors:
   - 3️⃣ - `:three:`
   - 4️⃣ - `:four:`
   - 5️⃣ - `:five:`
+
+  Review requests for merge requests that do not target the default branch of any
+  project under the [security group](https://gitlab.com/gitlab-org/security/) are
+  not counted. These MRs are usually backports, and maintainers or reviewers usually
+  do not need much time reviewing them.
+
 - Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
   is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
   - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.

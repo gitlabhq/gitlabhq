@@ -29,8 +29,8 @@ module SeedHelper
   def create_bare_seeds
     system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{GITLAB_GIT_TEST_REPO_URL}),
            chdir: SEED_STORAGE_PATH,
-           out:   '/dev/null',
-           err:   '/dev/null')
+           out: '/dev/null',
+           err: '/dev/null')
   end
 
   def create_normal_seeds

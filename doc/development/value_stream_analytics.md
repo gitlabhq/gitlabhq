@@ -6,33 +6,86 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value stream analytics development guide
 
-Value stream analytics calculates the time between two arbitrary events recorded on domain objects and provides aggregated statistics about the duration.
+For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
 
-For information on how to configure value stream analytics in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
+## How does Value Stream Analytics work?
 
-## Stage
+Value Stream Analytics calculates the duration between two timestamp columns or timestamp
+expressions and runs various aggregations on the data.
 
-During development, events occur that move issues and merge requests through different stages of progress until they are considered finished. These stages can be expressed with the `Stage` model.
+For example:
 
-Example stage:
+- Duration between the Merge Request creation time and Merge Request merge time.
+- Duration between the Issue creation time and Issue close time.
 
-- Name: Development
-- Start event: Issue created
-- End event: Issue first mentioned in commit
-- Parent: `Group: gitlab-org`
+This duration is exposed in various ways:
+
+- Aggregation: median, average
+- Listing: list the duration for individual Merge Request and Issue records
+
+Apart from the durations, we expose the record count within a stage.
+
+## Feature availability
+
+- Group level (licensed): Requires Ultimate or Premium subscription. This version is the most
+feature-full.
+- Project level (licensed): We are continually adding features to project level VSA to bring it in line with group level VSA.
+- Project level (FOSS): Keep it as is.
+
+|Feature|Group level (licensed)|Project level (licensed)|Project level (FOSS)|
+|-|-|-|-|
+|Create custom value streams|Yes|No, only one value stream (default) is present with the default stages|no, only one value stream (default) is present with the default stages|
+|Create custom stages|Yes|No|No|
+|Filtering (author, label, milestone, etc.)|Yes|Yes|Yes|
+|Stage time chart|Yes|No|No|
+|Total time chart|Yes|No|No|
+|Task by type chart|Yes|No|No|
+|DORA Metrics|Yes|Yes|No|
+|Cycle time and lead time summary (Key metrics)|Yes|Yes|No|
+|New issues, commits and deploys (Key metrics)|Yes, excluding commits|Yes|Yes|
+|Uses aggregated backend|Yes|No|No|
+|Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
+|Authorization|At least reporter|At least reporter|Can be public.|
+
+## VSA core domain objects
+
+### Stages
+
+A stage represents an event pair (start and end events) with additional metadata, such as the name
+of the stage. Stages are configurable by the user within the pairing rules defined in the backend.
+
+**Example stage: Code Review**
+
+- Start event identifier: Merge request creation time.
+- Start event column: uses the `merge_requests.created_at` timestamp column.
+- End event identifier: Merge request merge time.
+- End event column: uses the `merge_request_metrics.merged_at` timestamp column.
+- Stage event hash ID: a calculated hash for the pair of start and end event identifiers.
+  - If two stages have the same configuration of start and end events, then their stage event hash.
+  IDs are identical.
+  - The stage event hash ID is later used to store the aggregated data in partitioned database tables.
+
+Historically, value stream analytics defined [7 stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/cycle_analytics/default_stages.rb)
+which are always available to the end-users regardless of the subscription.
+
+### Value streams
+
+Value streams are container objects for the stages. There can be multiple value streams per group
+focusing on different aspects of the Dev Ops lifecycle.
 
 ### Events
 
 Events are the smallest building blocks of the value stream analytics feature. A stage consists of two events:
 
-- Start
-- End
+- Start event
+- End event
 
 These events play a key role in the duration calculation.
 
 Formula: `duration = end_event_time - start_event_time`
 
-To make the duration calculation flexible, each `Event` is implemented as a separate class. They're responsible for defining a timestamp expression that is used in the calculation query.
+To make the duration calculation flexible, each `Event` is implemented as a separate class.
+They're responsible for defining a timestamp expression that is used in the calculation query.
 
 #### Implementing an `Event` class
 
@@ -81,7 +134,7 @@ def apply_query_customization(query)
 end
 ```
 
-### Validating start and end events
+#### Validating start and end events
 
 Some start/end event pairs are not "compatible" with each other. For example:
 
@@ -171,23 +224,7 @@ graph LR;
   MergeRequestLabelRemoved --> MergeRequestLabelRemoved;
 ```
 
-### Parent
-
-Teams and organizations might define their own way of building software, thus stages can be completely different. For each stage, a parent object needs to be defined.
-
-Currently supported parents:
-
-- `Project`
-- `Group`
-
-#### How parent relationship it work
-
-1. User navigates to the value stream analytics page.
-1. User selects a group.
-1. Backend loads the defined stages for the selected group.
-1. Additions and modifications to the stages are persisted within the selected group only.
-
-### Default stages
+## Default stages
 
 The [original implementation](https://gitlab.com/gitlab-org/gitlab/-/issues/847) of value stream analytics defined 7 stages. These stages are always available for each parent, however altering these stages is not possible.
 
@@ -209,31 +246,15 @@ The reason for this was that we'd like to add the abilities to hide and order st
 
 For a new calculation or a query, implement it as a new method call in the `DataCollector` class.
 
-## Database query
+To support the aggregated value stream analytics backend, these classes were reimplemented within [`Aggregated`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/analytics/cycle_analytics/aggregated) namespace.
 
-Structure of the database query:
+### Database query backend
 
-```sql
-SELECT (customized by: Median or RecordsFetcher or DataForDurationChart)
-FROM OBJECT_TYPE (Issue or MergeRequest)
-INNER JOIN (several JOIN statements, depending on the events)
-WHERE
-  (Filter by the PARENT model, example: filter Issues from Project A)
-  (Date range filter based on the OBJECT_TYPE.created_at)
-  (Check if the START_EVENT is earlier than END_EVENT, preventing negative duration)
-```
+VSA supports two backends: [aggregated](value_stream_analytics/value_stream_analytics_aggregated_backend.md) and "live". The live query backend can be
+considered legacy, which will be phased out at some point.
 
-Structure of the `SELECT` statement for `Median`:
-
-```sql
-SELECT (calculate median from START_EVENT_TIME-END_EVENT_TIME)
-```
-
-Structure of the `SELECT` statement for `DataForDurationChart`:
-
-```sql
-SELECT (START_EVENT_TIME-END_EVENT_TIME) as duration, END_EVENT.timestamp
-```
+- "live": uses the standard `IssuableFinders`.
+- aggregated: queries data from pre-aggregated database tables.
 
 ## High-level overview
 
@@ -252,3 +273,31 @@ Writing a test case for a stage using a new `Event` can be challenging since dat
 
 - Different parents: `Group` or `Project`
 - Different calculations: `Median`, `RecordsFetcher` or `DataForDurationChart`
+
+The VSA frontend is tested extensively on two different levels (integration, unit):
+
+- End-to-end integration tests using a real backend via Capybara and RSpec.
+- Jest frontend tests with pre-generated data fixtures.
+
+## Development setup and testing
+
+Running Value Stream Analytics can be done via the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit). By default, you'll be able to view the project-level (FOSS) version of the feature.
+
+If your GDK is up and running, you can run the seed script to generate some data:
+
+```shell
+SEED_CYCLE_ANALYTICS=true SEED_VSA=true FILTER=cycle_analytics rake db:seed_fu
+```
+
+The data generator script creates a new group and a new project with issue and merge request
+data (see the output of the script). To view the group-level version of the feature, you
+need to request a license for your GDK instance.
+
+After this step, you can access the group level value stream analytics page where you can create
+value streams and stages. The data aggregation might be delayed so you might not see the
+data right after the stage creation. To speed up this process, you can run the following command
+in your rails console (`rails c`):
+
+```ruby
+Analytics::CycleAnalytics::ReaggregationWorker.new.perform
+```

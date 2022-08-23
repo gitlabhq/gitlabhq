@@ -743,6 +743,22 @@ module API
         end
       end
 
+      desc 'Get the namespaces to where the project can be transferred'
+      params do
+        optional :search, type: String, desc: 'Return list of namespaces matching the search criteria'
+        use :pagination
+      end
+      get ":id/transfer_locations", feature_category: :projects do
+        authorize! :change_namespace, user_project
+        args = declared_params(include_missing: false)
+        args[:permission_scope] = :transfer_projects
+
+        groups = ::Groups::UserGroupsFinder.new(current_user, current_user, args).execute
+        groups = groups.with_route
+
+        present_groups(groups)
+      end
+
       desc 'Show the storage information' do
         success Entities::ProjectRepositoryStorage
       end

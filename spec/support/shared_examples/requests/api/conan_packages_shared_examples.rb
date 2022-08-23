@@ -355,7 +355,7 @@ RSpec.shared_examples 'recipe download_urls' do
 
   it 'returns the download_urls for the recipe files' do
     expected_response = {
-      'conanfile.py'      => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
+      'conanfile.py' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
       'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
     }
 
@@ -372,7 +372,7 @@ RSpec.shared_examples 'package download_urls' do
 
   it 'returns the download_urls for the package files' do
     expected_response = {
-      'conaninfo.txt'     => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt",
+      'conaninfo.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt",
       'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conanmanifest.txt",
       'conan_package.tgz' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conan_package.tgz"
     }
@@ -412,7 +412,7 @@ RSpec.shared_examples 'recipe snapshot endpoint' do
       conan_manifest_file = package.package_files.find_by(file_name: 'conanmanifest.txt')
 
       expected_response = {
-        'conanfile.py'      => conan_file_file.file_md5,
+        'conanfile.py' => conan_file_file.file_md5,
         'conanmanifest.txt' => conan_manifest_file.file_md5
       }
 
@@ -435,7 +435,7 @@ RSpec.shared_examples 'package snapshot endpoint' do
   context 'with existing package' do
     it 'returns a hash of md5 values for the files' do
       expected_response = {
-        'conaninfo.txt'     => "12345abcde",
+        'conaninfo.txt' => "12345abcde",
         'conanmanifest.txt' => "12345abcde",
         'conan_package.tgz' => "12345abcde"
       }
@@ -486,7 +486,7 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
     subject
 
     expected_response = {
-      'conanfile.py':      "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
+      'conanfile.py': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
       'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
     }
 
@@ -505,7 +505,7 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
 
       expected_response = {
         'conan_sources.tgz': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_sources.tgz",
-        'conan_export.tgz':  "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_export.tgz",
+        'conan_export.tgz': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_export.tgz",
         'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
       }
 
@@ -547,7 +547,7 @@ RSpec.shared_examples 'package upload_urls endpoint' do
 
   it 'returns a set of upload urls for the files requested' do
     expected_response = {
-      'conaninfo.txt':     "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt",
+      'conaninfo.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt",
       'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conanmanifest.txt",
       'conan_package.tgz': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conan_package.tgz"
     }

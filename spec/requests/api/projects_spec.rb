@@ -4646,6 +4646,112 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe 'GET /projects/:id/transfer_locations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:source_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: source_group) }
+
+    let(:params) { {} }
+
+    subject(:request) do
+      get api("/projects/#{project.id}/transfer_locations", user), params: params
+    end
+
+    context 'when the user has rights to transfer the project' do
+      let_it_be(:guest_group) { create(:group) }
+      let_it_be(:maintainer_group) { create(:group, name: 'maintainer group', path: 'maintainer-group') }
+      let_it_be(:owner_group) { create(:group, name: 'owner group', path: 'owner-group') }
+
+      before do
+        source_group.add_owner(user)
+        guest_group.add_guest(user)
+        maintainer_group.add_maintainer(user)
+        owner_group.add_owner(user)
+      end
+
+      it 'returns 200' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+      end
+
+      it 'includes groups where the user has permissions to transfer a project to' do
+        request
+
+        expect(project_ids_from_response).to include(maintainer_group.id, owner_group.id)
+      end
+
+      it 'does not include groups where the user doesn not have permissions to transfer a project' do
+        request
+
+        expect(project_ids_from_response).not_to include(guest_group.id)
+      end
+
+      context 'with search' do
+        let(:params) { { search: 'maintainer' } }
+
+        it 'includes groups where the user has permissions to transfer a project to' do
+          request
+
+          expect(project_ids_from_response).to contain_exactly(maintainer_group.id)
+        end
+      end
+
+      context 'group shares' do
+        let_it_be(:shared_to_owner_group) { create(:group) }
+        let_it_be(:shared_to_guest_group) { create(:group) }
+
+        before do
+          create(:group_group_link, :owner,
+                 shared_with_group: owner_group,
+                 shared_group: shared_to_owner_group
+          )
+
+          create(:group_group_link, :guest,
+                 shared_with_group: guest_group,
+                 shared_group: shared_to_guest_group
+          )
+        end
+
+        it 'only includes groups arising from group shares where the user has permission to transfer a project to' do
+          request
+
+          expect(project_ids_from_response).to include(shared_to_owner_group.id)
+          expect(project_ids_from_response).not_to include(shared_to_guest_group.id)
+        end
+
+        context 'when the feature flag `include_groups_from_group_shares_in_project_transfer_locations` is disabled' do
+          before do
+            stub_feature_flags(include_groups_from_group_shares_in_project_transfer_locations: false)
+          end
+
+          it 'does not include any groups arising from group shares' do
+            request
+
+            expect(project_ids_from_response).not_to include(shared_to_owner_group.id, shared_to_guest_group.id)
+          end
+        end
+      end
+
+      def project_ids_from_response
+        json_response.map { |project| project['id'] }
+      end
+    end
+
+    context 'when the user does not have permissions to transfer the project' do
+      before do
+        source_group.add_developer(user)
+      end
+
+      it 'returns 403' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/storage' do
     context 'when unauthenticated' do
       it 'does not return project storage data' do

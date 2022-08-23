@@ -40,7 +40,7 @@ RSpec.shared_examples 'querying members with a group' do
 
   subject do
     resolve(described_class, obj: resource, args: base_args.merge(args),
-            ctx: { current_user: user_4 }, arg_style: :internal)
+                             ctx: { current_user: user_4 }, arg_style: :internal)
   end
 
   describe '#resolve' do
@@ -75,7 +75,7 @@ RSpec.shared_examples 'querying members with a group' do
 
       subject do
         resolve(described_class, obj: resource, args: base_args.merge(args),
-                ctx: { current_user: other_user }, arg_style: :internal)
+                                 ctx: { current_user: other_user }, arg_style: :internal)
       end
 
       it 'generates an error' do
