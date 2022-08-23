@@ -3,9 +3,8 @@
 module Projects
   module Prometheus
     module Alerts
-      class NotifyService
+      class NotifyService < ::BaseProjectService
         include Gitlab::Utils::StrongMemoize
-        include ::IncidentManagement::Settings
         include ::AlertManagement::Responses
 
         # This set of keys identifies a payload as a valid Prometheus
@@ -26,14 +25,13 @@ module Projects
         # https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6086
         PROCESS_MAX_ALERTS = 100
 
-        def initialize(project, payload)
-          @project = project
-          @payload = payload
+        def initialize(project, params)
+          super(project: project, params: params.to_h)
         end
 
         def execute(token, integration = nil)
           return bad_request unless valid_payload_size?
-          return unprocessable_entity unless self.class.processable?(payload)
+          return unprocessable_entity unless self.class.processable?(params)
           return unauthorized unless valid_alert_manager_token?(token, integration)
 
           truncate_alerts! if max_alerts_exceeded?
@@ -53,10 +51,8 @@ module Projects
 
         private
 
-        attr_reader :project, :payload
-
         def valid_payload_size?
-          Gitlab::Utils::DeepSize.new(payload.to_h).valid?
+          Gitlab::Utils::DeepSize.new(params).valid?
         end
 
         def max_alerts_exceeded?
@@ -75,11 +71,11 @@ module Projects
             }
           )
 
-          payload['alerts'] = alerts.first(PROCESS_MAX_ALERTS)
+          params['alerts'] = alerts.first(PROCESS_MAX_ALERTS)
         end
 
         def alerts
-          payload['alerts']
+          params['alerts']
         end
 
         def valid_alert_manager_token?(token, integration)
@@ -152,7 +148,7 @@ module Projects
         def process_prometheus_alerts
           alerts.map do |alert|
             AlertManagement::ProcessPrometheusAlertService
-              .new(project, alert.to_h)
+              .new(project, alert)
               .execute
           end
         end

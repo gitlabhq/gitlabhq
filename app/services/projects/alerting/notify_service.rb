@@ -2,14 +2,13 @@
 
 module Projects
   module Alerting
-    class NotifyService
+    class NotifyService < ::BaseProjectService
       extend ::Gitlab::Utils::Override
       include ::AlertManagement::AlertProcessing
       include ::AlertManagement::Responses
 
-      def initialize(project, payload)
-        @project = project
-        @payload = payload
+      def initialize(project, params)
+        super(project: project, params: params.to_h)
       end
 
       def execute(token, integration = nil)
@@ -29,10 +28,11 @@ module Projects
 
       private
 
-      attr_reader :project, :payload, :integration
+      attr_reader :integration
+      alias_method :payload, :params
 
       def valid_payload_size?
-        Gitlab::Utils::DeepSize.new(payload.to_h).valid?
+        Gitlab::Utils::DeepSize.new(params).valid?
       end
 
       override :alert_source

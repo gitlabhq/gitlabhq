@@ -10,7 +10,9 @@ module FromSetOperator
 
     raise "Trying to redefine method '#{method(method_name)}'" if methods.include?(method_name)
 
-    define_method(method_name) do |members, remove_duplicates: true, remove_order: true, alias_as: table_name|
+    define_method(method_name) do |*members, remove_duplicates: true, remove_order: true, alias_as: table_name|
+      members = flatten_ar_array(members)
+
       operator_sql =
         if members.any?
           operator.new(members, remove_duplicates: remove_duplicates, remove_order: remove_order).to_sql
@@ -19,6 +21,27 @@ module FromSetOperator
         end
 
       from(Arel.sql("(#{operator_sql}) #{alias_as}"))
+    end
+
+    # Array#flatten with ActiveRecord::Relation items will load the ActiveRecord::Relation.
+    # Therefore we need to roll our own flatten method.
+    unless method_defined?(:flatten_ar_array) # rubocop:disable Style/GuardClause
+      define_method :flatten_ar_array do |ary|
+        arrays = ary.dup
+        result = []
+
+        until arrays.empty?
+          item = arrays.shift
+          if item.is_a?(Array)
+            arrays.concat(item.dup)
+          else
+            result.push(item)
+          end
+        end
+
+        result
+      end
+      private :flatten_ar_array
     end
   end
 end

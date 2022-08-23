@@ -1502,24 +1502,6 @@ RSpec.describe API::Internal::Base do
     end
   end
 
-  describe 'POST /internal/two_factor_otp_check' do
-    let(:key_id) { key.id }
-    let(:otp) { '123456' }
-
-    subject do
-      post api('/internal/two_factor_otp_check'),
-           params: { key_id: key_id, otp_attempt: otp },
-           headers: gitlab_shell_internal_api_request_header
-    end
-
-    it 'is not available' do
-      subject
-
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq 'Feature is not available'
-    end
-  end
-
   describe 'POST /internal/two_factor_manual_otp_check' do
     let(:key_id) { key.id }
     let(:otp) { '123456' }
