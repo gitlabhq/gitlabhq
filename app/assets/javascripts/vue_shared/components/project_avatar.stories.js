@@ -13,8 +13,7 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  projectAvatarUrl:
-    'https://gitlab.com/uploads/-/system/project/avatar/278964/logo-extra-whitespace.png?width=64',
+  projectAvatarUrl: 'https://gitlab.com/uploads/-/system/project/avatar/278964/project_avatar.png',
   projectName: 'GitLab',
 };
 

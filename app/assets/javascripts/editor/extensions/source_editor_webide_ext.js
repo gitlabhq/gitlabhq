@@ -60,7 +60,7 @@ const renderSideBySide = (domElement) => {
 
 const updateDiffInstanceRendering = (instance) => {
   instance.updateOptions({
-    renderSideBySide: renderSideBySide(instance.getContainerDomNode()),
+    renderSideBySide: renderSideBySide(instance.getDomNode()),
   });
 };
 

@@ -5,6 +5,7 @@ import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import StatusIcon from '../extensions/status_icon.vue';
+import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
@@ -12,6 +13,7 @@ const FETCH_TYPE_EXPANDED = 'expanded';
 
 export default {
   components: {
+    ActionButtons,
     StatusIcon,
     GlButton,
     GlLoadingIcon,
@@ -73,6 +75,11 @@ export default {
     isCollapsible: {
       type: Boolean,
       required: true,
+    },
+    actionButtons: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     widgetName: {
       type: String,
@@ -181,6 +188,11 @@ export default {
           <slot v-if="!error" name="summary">{{ isLoading ? loadingText : summary }}</slot>
           <span v-else>{{ error }}</span>
         </div>
+        <action-buttons
+          v-if="actionButtons.length > 0"
+          :widget="widgetName"
+          :tertiary-buttons="actionButtons"
+        />
         <div
           v-if="isCollapsible"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"

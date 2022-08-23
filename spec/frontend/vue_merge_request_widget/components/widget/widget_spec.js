@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/browser';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 
 describe('MR Widget', () => {
@@ -10,6 +11,7 @@ describe('MR Widget', () => {
 
   const findStatusIcon = () => wrapper.findComponent(StatusIcon);
   const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
+  const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findToggleButton = () => wrapper.findByTestId('toggle-button');
 
   const createComponent = ({ propsData, slots } = {}) => {
@@ -151,6 +153,29 @@ describe('MR Widget', () => {
       expect(wrapper.findByTestId('widget-extension-top-level-summary').text()).toBe(
         'More complex summary',
       );
+    });
+
+    it('does not display action buttons if actionButtons is not provided', () => {
+      createComponent({
+        propsData: {
+          fetchCollapsedData: () => Promise.resolve(),
+        },
+      });
+
+      expect(findActionButtons().exists()).toBe(false);
+    });
+
+    it('does display action buttons if actionButtons is provided', () => {
+      const actionButtons = [{ text: 'click-me', href: '#' }];
+
+      createComponent({
+        propsData: {
+          fetchCollapsedData: () => Promise.resolve(),
+          actionButtons,
+        },
+      });
+
+      expect(findActionButtons().props('tertiaryButtons')).toEqual(actionButtons);
     });
   });
 

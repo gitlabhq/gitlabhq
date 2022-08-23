@@ -42,7 +42,7 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       }
     end
 
-    def go(extra_params = {})
+    def go(headers: {}, **extra_params)
       params = {
         namespace_id: project.namespace.to_param,
         project_id: project,
@@ -56,8 +56,26 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       get diffs_batch_namespace_project_json_merge_request_path(params.merge(extra_params)), headers: headers
     end
 
+    context 'without caching' do
+      subject { go(headers: headers, page: 0, per_page: 5) }
+
+      let(:headers) { {} }
+      let(:collection) { Gitlab::Diff::FileCollection::Compare }
+      let(:expected_options) { collection_arguments }
+
+      before do
+        stub_feature_flags(remove_caching_diff_batches: true)
+      end
+
+      it_behaves_like 'serializes diffs with expected arguments'
+    end
+
     context 'with caching', :use_clean_rails_memory_store_caching do
       subject { go(page: 0, per_page: 5) }
+
+      before do
+        stub_feature_flags(remove_caching_diff_batches: false)
+      end
 
       context 'when the request has not been cached' do
         it_behaves_like 'serializes diffs with expected arguments' do
@@ -77,6 +95,34 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
           end
 
           subject
+        end
+
+        context 'when using ETags' do
+          context 'when etag_merge_request_diff_batches is true' do
+            it 'does not serialize diffs' do
+              expect(PaginatedDiffSerializer).not_to receive(:new)
+
+              go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
+
+              expect(response).to have_gitlab_http_status(:not_modified)
+            end
+          end
+
+          context 'when etag_merge_request_diff_batches is false' do
+            before do
+              stub_feature_flags(etag_merge_request_diff_batches: false)
+            end
+
+            it 'does not serialize diffs' do
+              expect_next_instance_of(PaginatedDiffSerializer) do |instance|
+                expect(instance).not_to receive(:represent)
+              end
+
+              go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
+
+              expect(response).to have_gitlab_http_status(:success)
+            end
+          end
         end
 
         context 'with the different user' do

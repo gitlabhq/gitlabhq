@@ -26,7 +26,7 @@ export const getBlobLanguage = (blobPath) => {
   const ext = `.${blobPath.split('.').pop()}`;
   const language = monacoLanguages
     .getLanguages()
-    .find((lang) => lang.extensions?.indexOf(ext) >= 0);
+    .find((lang) => lang.extensions.indexOf(ext) !== -1);
   return language ? language.id : defaultLanguage;
 };
 

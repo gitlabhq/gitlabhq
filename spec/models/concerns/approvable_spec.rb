@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApprovableBase do
+RSpec.describe Approvable do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 

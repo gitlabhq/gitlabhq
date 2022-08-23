@@ -16,6 +16,14 @@ describe('Multi-file editor library', () => {
   let holder;
   let store;
 
+  const setNodeOffsetWidth = (val) => {
+    Object.defineProperty(instance.instance.getDomNode(), 'offsetWidth', {
+      get() {
+        return val;
+      },
+    });
+  };
+
   beforeEach(() => {
     store = createStore();
     el = document.createElement('div');
@@ -264,13 +272,6 @@ describe('Multi-file editor library', () => {
   });
 
   describe('updateDiffView', () => {
-    const setDiffNodeOffsetWidth = (val) => {
-      Object.defineProperty(instance.instance.getContainerDomNode(), 'offsetWidth', {
-        get() {
-          return val;
-        },
-      });
-    };
     describe('edit mode', () => {
       it('does not update options', () => {
         instance.createInstance(holder);
@@ -291,7 +292,7 @@ describe('Multi-file editor library', () => {
       });
 
       it('sets renderSideBySide to false if el is less than 700 pixels', () => {
-        setDiffNodeOffsetWidth(600);
+        setNodeOffsetWidth(600);
 
         expect(instance.instance.updateOptions).not.toHaveBeenCalledWith({
           renderSideBySide: false,
@@ -299,7 +300,7 @@ describe('Multi-file editor library', () => {
       });
 
       it('sets renderSideBySide to false if el is more than 700 pixels', () => {
-        setDiffNodeOffsetWidth(800);
+        setNodeOffsetWidth(800);
 
         expect(instance.instance.updateOptions).not.toHaveBeenCalledWith({
           renderSideBySide: true,

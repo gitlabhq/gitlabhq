@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ApprovableBase
+module Approvable
   extend ActiveSupport::Concern
   include FromUnion
 
@@ -59,3 +59,5 @@ module ApprovableBase
     user && approved_by?(user) && user.can?(:approve_merge_request, self)
   end
 end
+
+Approvable.prepend_mod

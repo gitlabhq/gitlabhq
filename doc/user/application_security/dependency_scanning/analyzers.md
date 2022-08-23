@@ -32,14 +32,6 @@ The Dependency Scanning analyzers' current major version number is 2.
 Dependency Scanning is pre-configured with a set of **default images** that are
 maintained by GitLab, but users can also integrate their own **custom images**.
 
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-The [`bundler-audit`](https://gitlab.com/gitlab-org/gitlab/-/issues/289832) and [`retire.js`](https://gitlab.com/gitlab-org/gitlab/-/issues/350510) analyzers were deprecated
-in GitLab 14.8 and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86704) in 15.0.
-Use Gemnasium instead.
-
-<!--- end_remove -->
-
 ## Official default analyzers
 
 Any custom change to the official analyzers can be achieved by using a

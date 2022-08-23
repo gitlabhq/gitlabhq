@@ -90,7 +90,7 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
     - ee/spec/lib/system_check/geo/geo_database_configured_check_spec.rb
     - ee/spec/models/app_sec/fuzzing/api/ci_configuration_spec.rb
-    - ee/spec/models/approvable_spec.rb
+    - ee/spec/models/ee/approvable_spec.rb
     - ee/spec/models/concerns/geo/verification_state_spec.rb
     - ee/spec/models/ee/ci/job_artifact_spec.rb
     - ee/spec/models/ee/user_spec.rb

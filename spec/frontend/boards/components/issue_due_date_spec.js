@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import dateFormat from 'dateformat';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import dateFormat from '~/lib/dateformat';
 
 const createComponent = (dueDate = new Date(), closed = false) =>
   shallowMount(IssueDueDate, {

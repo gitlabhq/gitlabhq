@@ -88,8 +88,7 @@ This rule enforces the defined actions and schedules a scan on the provided date
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
-| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. <!--- start_remove The following content will be removed on remove_date: '2022-08-22' --> |
-| `clusters` (removed) | `object` | | This field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0. The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. <!--- end_remove --> |
+| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
@@ -97,23 +96,6 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
 It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
-
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-### `cluster` schema (removed)
-
-This schema was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0.
-
-Use this schema to define `clusters` objects in the [`schedule` rule type](#schedule-rule-type).
-
-| Field        | Type                | Possible values          | Description |
-|--------------|---------------------|--------------------------|-------------|
-| `containers` | `array` of `string` | | The container name that is scanned (only the first value is currently supported). |
-| `resources`  | `array` of `string` | | The resource name that is scanned (only the first value is currently supported). |
-| `namespaces` | `array` of `string` | | The namespace that is scanned (only the first value is currently supported). |
-| `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind that should be scanned (only the first value is currently supported). |
-
-<!--- end_remove -->
 
 ## `scan` action type
 

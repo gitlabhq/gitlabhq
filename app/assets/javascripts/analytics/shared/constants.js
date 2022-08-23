@@ -1,4 +1,4 @@
-import { masks } from 'dateformat';
+import { masks } from '~/lib/dateformat';
 import { s__ } from '~/locale';
 
 export const DATE_RANGE_LIMIT = 180;

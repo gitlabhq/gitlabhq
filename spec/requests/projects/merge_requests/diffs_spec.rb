@@ -53,10 +53,28 @@ RSpec.describe 'Merge Requests Diffs' do
       get diffs_batch_namespace_project_json_merge_request_path(params.merge(extra_params)), headers: headers
     end
 
+    context 'without caching' do
+      subject { go(headers: headers, page: 0, per_page: 5) }
+
+      let(:headers) { {} }
+      let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+      let(:expected_options) { collection_arguments(total_pages: 20) }
+
+      before do
+        stub_feature_flags(remove_caching_diff_batches: true)
+      end
+
+      it_behaves_like 'serializes diffs with expected arguments'
+    end
+
     context 'with caching', :use_clean_rails_memory_store_caching do
       subject { go(headers: headers, page: 0, per_page: 5) }
 
       let(:headers) { {} }
+
+      before do
+        stub_feature_flags(remove_caching_diff_batches: false)
+      end
 
       context 'when the request has not been cached' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }

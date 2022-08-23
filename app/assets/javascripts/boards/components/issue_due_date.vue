@@ -1,6 +1,6 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
-import dateFormat from 'dateformat';
+import dateFormat from '~/lib/dateformat';
 import {
   getDayDifference,
   getTimeago,

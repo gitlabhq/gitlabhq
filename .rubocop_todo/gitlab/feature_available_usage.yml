@@ -41,7 +41,7 @@ Gitlab/FeatureAvailableUsage:
   - ee/app/helpers/ee/search_helper.rb
   - ee/app/helpers/ee/tree_helper.rb
   - ee/app/models/approval_state.rb
-  - ee/app/models/concerns/approvable.rb
+  - ee/app/models/concerns/ee/approvable.rb
   - ee/app/models/concerns/ee/project_security_scanners_information.rb
   - ee/app/models/concerns/ee/protected_ref_access.rb
   - ee/app/models/concerns/insights_feature.rb

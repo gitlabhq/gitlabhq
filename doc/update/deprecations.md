@@ -1770,11 +1770,11 @@ GitLab self-managed customers can still use the feature [with a feature flag](ht
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### Self-managed certificate-based integration with Kubernetes
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1784,7 +1784,7 @@ The certificate-based integration with Kubernetes [will be deprecated and remove
 
 As a self-managed customer, we are introducing the [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
 
-In GitLab 16.0 we will remove both the feature and its related code. Until the final removal in 16.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
+In GitLab 17.0 we will remove both the feature and its related code. Until the final removal in 17.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
 [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)

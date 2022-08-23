@@ -1,4 +1,4 @@
-import dateformat from 'dateformat';
+import dateformat from '~/lib/dateformat';
 import { __ } from '~/locale';
 
 /**

@@ -4194,20 +4194,6 @@ In this example, the script:
 
 The following keywords are deprecated.
 
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-### Globally-defined `types` (removed)
-
-The `types` keyword was deprecated in GitLab 9.0, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
-Use [`stages`](#stages) instead.
-
-### Job-defined `type` (removed)
-
-The `type` keyword was deprecated in GitLab 9.0, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
-Use [`stage`](#stage) instead.
-
-<!--- end_remove -->
-
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 
 Defining `image`, `services`, `cache`, `before_script`, and

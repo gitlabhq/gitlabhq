@@ -80,20 +80,6 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-## `artifacts:reports:cobertura` (removed)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0.
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7 and
-[removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0. Use `artifacts:reports:coverage_report`
-instead.
-
-<!--- end_remove -->
-
 ## `artifacts:reports:coverage_report`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.

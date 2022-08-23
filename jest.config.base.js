@@ -144,8 +144,6 @@ module.exports = (path, options = {}) => {
     'three',
     'monaco-editor',
     'monaco-yaml',
-    'monaco-marker-data-provider',
-    'monaco-worker-manager',
     'fast-mersenne-twister',
     'prosemirror-markdown',
     'marked',

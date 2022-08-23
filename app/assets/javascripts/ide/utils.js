@@ -1,6 +1,5 @@
 import { flatten, isString } from 'lodash';
 import { languages } from 'monaco-editor';
-import { setDiagnosticsOptions as yamlDiagnosticsOptions } from 'monaco-yaml';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { SIDE_LEFT, SIDE_RIGHT } from './constants';
 
@@ -83,16 +82,17 @@ export function registerLanguages(def, ...defs) {
 }
 
 export function registerSchema(schema, options = {}) {
-  const defaultOptions = {
-    validate: true,
-    enableSchemaRequest: true,
-    hover: true,
-    completion: true,
-    schemas: [schema],
-    ...options,
-  };
-  languages.json.jsonDefaults.setDiagnosticsOptions(defaultOptions);
-  yamlDiagnosticsOptions(defaultOptions);
+  const defaults = [languages.json.jsonDefaults, languages.yaml.yamlDefaults];
+  defaults.forEach((d) =>
+    d.setDiagnosticsOptions({
+      validate: true,
+      enableSchemaRequest: true,
+      hover: true,
+      completion: true,
+      schemas: [schema],
+      ...options,
+    }),
+  );
 }
 
 export const otherSide = (side) => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);

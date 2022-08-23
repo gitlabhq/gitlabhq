@@ -20,7 +20,7 @@ class MergeRequest < ApplicationRecord
   include IgnorableColumns
   include MilestoneEventable
   include StateEventable
-  include ApprovableBase
+  include Approvable
   include IdInOrdered
   include Todoable
 

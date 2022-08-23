@@ -1,5 +1,5 @@
-import dateFormat from 'dateformat';
 import Vue from 'vue';
+import dateFormat from '~/lib/dateformat';
 
 Vue.filter('due-date', (value) => {
   const date = new Date(value);

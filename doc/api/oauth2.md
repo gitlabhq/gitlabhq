@@ -335,43 +335,6 @@ access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-### Implicit grant flow (removed)
-
-Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
-It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) in GitLab 14.0 and is
-[removed](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
-
-We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)
-instead.
-
-Unlike the authorization code flow, the client receives an `access token`
-immediately as a result of the authorization request. The flow does not use the
-client secret or the authorization code, as the application
-code and storage is accessible on client browsers and mobile devices.
-
-To request the access token, you should redirect the user to the
-`/oauth/authorize` endpoint using `token` response type:
-
-```plaintext
-https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
-```
-
-This prompts the user to approve the applications access to their account
-based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
-the `REDIRECT_URI` you provided. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
-   is a space-separated list of scopes you want to have access to (for example, `scope=read_user+profile`
-would request `read_user` and `profile` scopes). The redirect
-includes a fragment with `access_token` as well as token details in GET
-parameters, for example:
-
-```plaintext
-https://example.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_STATE_HASH&token_type=bearer&expires_in=3600
-```
-
-<!--- end_remove -->
-
 ## Access GitLab API with `access token`
 
 The `access token` allows you to make requests to the API on behalf of a user.

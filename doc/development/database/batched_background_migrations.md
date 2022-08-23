@@ -233,7 +233,7 @@ class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
 end
 ```
 
-### Additional filters
+## Additional filters
 
 By default, when creating background jobs to perform the migration, batched background migrations
 iterate over the full specified table. This iteration is done using the

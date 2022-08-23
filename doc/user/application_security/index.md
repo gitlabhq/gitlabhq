@@ -397,15 +397,6 @@ Validation depends on the schema version declared in the security report artifac
 
 You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
 
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-### Enable security report validation (removed)
-
-   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9
-   and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85400) in GitLab 15.0.
-
-   <!--- end_remove -->
-
 ## Interact with findings and vulnerabilities
 
 You can interact with the results of the security scanning tools in several locations:

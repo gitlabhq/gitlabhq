@@ -7,6 +7,7 @@ import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
 import { IssuableType } from '~/issues/constants';
+import { isMetaKey } from '~/lib/utils/common_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -331,6 +332,9 @@ export default {
           this.addHoverListeners(taskLink, workItemId);
           taskLink.classList.add('gl-link');
           taskLink.addEventListener('click', (e) => {
+            if (isMetaKey(e)) {
+              return;
+            }
             e.preventDefault();
             this.openWorkItemDetailModal(taskLink);
             this.workItemId = workItemId;

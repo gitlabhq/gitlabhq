@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import dateFormat from 'dateformat';
+import dateFormat from '~/lib/dateformat';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';

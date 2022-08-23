@@ -225,18 +225,6 @@ Once a lifetime for SSH keys is set, GitLab:
 NOTE:
 When a user's SSH key becomes invalid they can delete and re-add the same key again.
 
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-## Allow expired SSH keys to be used (removed) **(ULTIMATE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 15.0.
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8.
-This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 15.0.
-<!--- end_remove -->
-
 ## Limit the lifetime of access tokens **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
