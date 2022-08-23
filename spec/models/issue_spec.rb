@@ -1782,20 +1782,4 @@ RSpec.describe Issue do
       end
     end
   end
-
-  describe '#full_search' do
-    context 'when searching non-english terms' do
-      [
-        'abc 中文語',
-        '中文語cn',
-        '中文語'
-      ].each do |term|
-        it 'adds extra where clause to match partial index' do
-          expect(described_class.full_search(term).to_sql).to include(
-            "AND (issues.title NOT SIMILAR TO '[\\u0000-\\u218F]*' OR issues.description NOT SIMILAR TO '[\\u0000-\\u218F]*')"
-          )
-        end
-      end
-    end
-  end
 end

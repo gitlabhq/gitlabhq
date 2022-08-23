@@ -48,82 +48,86 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '.test_reports' do
-    subject { described_class.test_reports }
+  describe '.of_report_type' do
+    subject { described_class.of_report_type(report_type) }
 
-    context 'when there is a test report' do
-      let!(:artifact) { create(:ci_job_artifact, :junit) }
+    describe 'test_reports' do
+      let(:report_type) { :test }
 
-      it { is_expected.to eq([artifact]) }
-    end
+      context 'when there is a test report' do
+        let!(:artifact) { create(:ci_job_artifact, :junit) }
 
-    context 'when there are no test reports' do
-      let!(:artifact) { create(:ci_job_artifact, :archive) }
+        it { is_expected.to eq([artifact]) }
+      end
 
-      it { is_expected.to be_empty }
-    end
-  end
+      context 'when there are no test reports' do
+        let!(:artifact) { create(:ci_job_artifact, :archive) }
 
-  describe '.accessibility_reports' do
-    subject { described_class.accessibility_reports }
-
-    context 'when there is an accessibility report' do
-      let(:artifact) { create(:ci_job_artifact, :accessibility) }
-
-      it { is_expected.to eq([artifact]) }
-    end
-
-    context 'when there are no accessibility report' do
-      let(:artifact) { create(:ci_job_artifact, :archive) }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.coverage_reports' do
-    subject { described_class.coverage_reports }
-
-    context 'when there is a coverage report' do
-      let!(:artifact) { create(:ci_job_artifact, :cobertura) }
-
-      it { is_expected.to eq([artifact]) }
-    end
-
-    context 'when there are no coverage reports' do
-      let!(:artifact) { create(:ci_job_artifact, :archive) }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.codequality_reports' do
-    subject { described_class.codequality_reports }
-
-    context 'when there is a codequality report' do
-      let!(:artifact) { create(:ci_job_artifact, :codequality) }
-
-      it { is_expected.to eq([artifact]) }
-    end
-
-    context 'when there are no codequality reports' do
-      let!(:artifact) { create(:ci_job_artifact, :archive) }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.terraform_reports' do
-    context 'when there is a terraform report' do
-      it 'return the job artifact' do
-        artifact = create(:ci_job_artifact, :terraform)
-
-        expect(described_class.terraform_reports).to eq([artifact])
+        it { is_expected.to be_empty }
       end
     end
 
-    context 'when there are no terraform reports' do
-      it 'return the an empty array' do
-        expect(described_class.terraform_reports).to eq([])
+    describe 'accessibility_reports' do
+      let(:report_type) { :accessibility }
+
+      context 'when there is an accessibility report' do
+        let(:artifact) { create(:ci_job_artifact, :accessibility) }
+
+        it { is_expected.to eq([artifact]) }
+      end
+
+      context 'when there are no accessibility report' do
+        let(:artifact) { create(:ci_job_artifact, :archive) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe 'coverage_reports' do
+      let(:report_type) { :coverage }
+
+      context 'when there is a coverage report' do
+        let!(:artifact) { create(:ci_job_artifact, :cobertura) }
+
+        it { is_expected.to eq([artifact]) }
+      end
+
+      context 'when there are no coverage reports' do
+        let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe 'codequality_reports' do
+      let(:report_type) { :codequality }
+
+      context 'when there is a codequality report' do
+        let!(:artifact) { create(:ci_job_artifact, :codequality) }
+
+        it { is_expected.to eq([artifact]) }
+      end
+
+      context 'when there are no codequality reports' do
+        let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe 'terraform_reports' do
+      let(:report_type) { :terraform }
+
+      context 'when there is a terraform report' do
+        let!(:artifact) { create(:ci_job_artifact, :terraform) }
+
+        it { is_expected.to eq([artifact]) }
+      end
+
+      context 'when there are no terraform reports' do
+        let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+        it { is_expected.to be_empty }
       end
     end
   end
@@ -135,7 +139,7 @@ RSpec.describe Ci::JobArtifact do
 
     context 'when given an unrecognized report type' do
       it 'raises error' do
-        expect { described_class.file_types_for_report(:blah) }.to raise_error(KeyError, /blah/)
+        expect { described_class.file_types_for_report(:blah) }.to raise_error(ArgumentError, "Unrecognized report type: blah")
       end
     end
   end
@@ -146,8 +150,8 @@ RSpec.describe Ci::JobArtifact do
     subject { Ci::JobArtifact.associated_file_types_for(file_type) }
 
     where(:file_type, :result) do
-      'codequality'         | %w(codequality)
-      'quality'             | nil
+      'codequality' | %w(codequality)
+      'quality' | nil
     end
 
     with_them do

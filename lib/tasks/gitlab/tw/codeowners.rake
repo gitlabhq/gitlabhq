@@ -28,7 +28,7 @@ namespace :tw do
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Configure', '@sselhorn'),
+      CodeOwnerRule.new('Configure', '@phillipwells'),
       CodeOwnerRule.new('Container Security', '@claytoncornell'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Conversion', '@kpaizee'),

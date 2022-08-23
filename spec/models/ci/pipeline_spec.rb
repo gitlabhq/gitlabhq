@@ -686,7 +686,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
   describe '.with_reports' do
     context 'when pipeline has a test report' do
-      subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:test)) }
 
       let!(:pipeline_with_report) { create(:ci_pipeline, :with_test_reports) }
 
@@ -696,7 +696,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline has a coverage report' do
-      subject { described_class.with_reports(Ci::JobArtifact.coverage_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:coverage)) }
 
       let!(:pipeline_with_report) { create(:ci_pipeline, :with_coverage_reports) }
 
@@ -706,7 +706,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline has an accessibility report' do
-      subject { described_class.with_reports(Ci::JobArtifact.accessibility_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:accessibility)) }
 
       let(:pipeline_with_report) { create(:ci_pipeline, :with_accessibility_reports) }
 
@@ -716,7 +716,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline has a codequality report' do
-      subject { described_class.with_reports(Ci::JobArtifact.codequality_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:codequality)) }
 
       let(:pipeline_with_report) { create(:ci_pipeline, :with_codequality_reports) }
 
@@ -729,14 +729,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it 'selects the pipeline' do
         pipeline_with_report = create(:ci_pipeline, :with_terraform_reports)
 
-        expect(described_class.with_reports(Ci::JobArtifact.terraform_reports)).to eq(
+        expect(described_class.with_reports(Ci::JobArtifact.of_report_type(:terraform))).to eq(
           [pipeline_with_report]
         )
       end
     end
 
     context 'when pipeline does not have metrics reports' do
-      subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:test)) }
 
       let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
 
@@ -4158,7 +4158,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       test_build = create(:ci_build, :test_reports, pipeline: pipeline)
       create(:ci_build, :coverage_reports, pipeline: pipeline)
 
-      expect(pipeline.latest_report_builds(Ci::JobArtifact.test_reports)).to contain_exactly(test_build)
+      expect(pipeline.latest_report_builds(Ci::JobArtifact.of_report_type(:test))).to contain_exactly(test_build)
     end
 
     it 'only returns not retried builds' do
@@ -4186,7 +4186,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       create(:ci_build, :test_reports, pipeline: pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants(Ci::JobArtifact.codequality_reports)).to contain_exactly(grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_descendants(Ci::JobArtifact.of_report_type(:codequality))).to contain_exactly(grandchild_build)
     end
 
     it 'only returns builds that are not retried' do
@@ -4198,7 +4198,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#has_reports?' do
-    subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
+    subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 
     context 'when pipeline has builds with test reports' do
       before do

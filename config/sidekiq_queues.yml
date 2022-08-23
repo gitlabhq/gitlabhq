@@ -333,6 +333,8 @@
   - 1
 - - object_storage
   - 1
+- - onboarding_create_learn_gitlab
+  - 1
 - - package_cleanup
   - 1
 - - package_repositories

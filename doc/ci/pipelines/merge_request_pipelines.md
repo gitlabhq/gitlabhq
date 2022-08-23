@@ -218,3 +218,28 @@ is not considered successful if:
 When using the [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
 feature and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.
+
+### `An error occurred while trying to run a new pipeline for this merge request.`
+
+This error can happen when you select **Run pipeline** in a merge request, but the
+project does not have merge request pipelines enabled anymore.
+
+Some possible reasons for this error message:
+
+- The project does not have merge request pipelines enabled, has no pipelines listed
+  in the **Pipelines** tab, and you select **Run pipelines**.
+- The project used to have merge request pipelines enabled, but the configuration
+  was removed. For example:
+
+  1. The project has merge request pipelines enabled in the `.gitlab-ci.yml` configuration
+     file when the merge request is created.
+  1. The **Run pipeline** options is available in the merge request's **Pipelines** tab,
+     and selecting **Run pipeline** at this point likely does not cause any errors.
+  1. The project's `.gitlab-ci.yml` file is changed to remove the merge request pipelines configuration.
+  1. The branch is rebased to bring the updated configuration into the merge request.
+  1. Now the pipeline configuration no longer supports merge request pipelines,
+     but you select **Run pipeline** to run a merge request pipeline.
+
+If **Run pipeline** is available, but the project does not have merge request pipelines
+enabled, do not use this option. You can push a commit or rebase the branch to trigger
+new branch pipelines.

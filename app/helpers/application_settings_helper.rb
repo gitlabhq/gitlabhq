@@ -434,7 +434,8 @@ module ApplicationSettingsHelper
       :runner_token_expiration_interval,
       :group_runner_token_expiration_interval,
       :project_runner_token_expiration_interval,
-      :pipeline_limit_per_project_user_sha
+      :pipeline_limit_per_project_user_sha,
+      :invitation_flow_enforcement
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end

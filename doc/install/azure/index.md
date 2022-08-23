@@ -294,7 +294,7 @@ up-to-date GitLab instance.
 ## Next steps and further configuration
 
 Now that you have a functional GitLab instance, follow the
-[next steps](../index.md#next-steps) to learn what more you can do with your
+[next steps](../next_steps.md) to learn what more you can do with your
 new installation.
 
 ## Troubleshooting

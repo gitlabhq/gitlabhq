@@ -1,0 +1,8 @@
+- return unless ::Feature.enabled?(:invitation_flow_enforcement_setting)
+
+- form = local_assigns.fetch(:form)
+
+%fieldset.form-group.gl-form-group
+  %legend.col-form-label.col-form-label
+    = s_("AdminSettings|Enforce invitation flow for groups and projects")
+  = form.gitlab_ui_checkbox_component :invitation_flow_enforcement, s_("AdminSettings|Users and groups must accept the invitation before they're added to a group or project.")

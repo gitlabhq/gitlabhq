@@ -90,6 +90,24 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
         end
       end
     end
+
+    context 'for an OpenID Connect provider' do
+      before do
+        provider = ActiveSupport::InheritableOptions.new(
+          name: 'openid_connect',
+          args: ActiveSupport::InheritableOptions.new(name: 'custom_oidc')
+        )
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+      end
+
+      context 'when the provider exists' do
+        subject { described_class.config_for('custom_oidc') }
+
+        it 'returns the config' do
+          expect(subject).to be_a(ActiveSupport::InheritableOptions)
+        end
+      end
+    end
   end
 
   describe '.label_for' do

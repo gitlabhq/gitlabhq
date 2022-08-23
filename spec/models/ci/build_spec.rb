@@ -1345,13 +1345,12 @@ RSpec.describe Ci::Build do
 
     subject { build.send(event) }
 
-    where(:ff_enabled, :state, :report_count, :trait) do
-      true  | :success! | 1 | :sast
-      true  | :cancel!  | 1 | :sast
-      true  | :drop!    | 2 | :multiple_report_artifacts
-      true  | :success! | 0 | :allowed_to_fail
-      true  | :skip!    | 0 | :pending
-      false | :success! | 0 | :sast
+    where(:state, :report_count, :trait) do
+      :success! | 1 | :sast
+      :cancel!  | 1 | :sast
+      :drop!    | 2 | :multiple_report_artifacts
+      :success! | 0 | :allowed_to_fail
+      :skip!    | 0 | :pending
     end
 
     with_them do
@@ -1361,7 +1360,6 @@ RSpec.describe Ci::Build do
       context "when transitioning to #{params[:state]}" do
         before do
           allow(Gitlab).to receive(:com?).and_return(true)
-          stub_feature_flags(report_artifact_build_completed_metrics_on_build_completion: ff_enabled)
         end
 
         it 'increments build_completed_report_type metric' do

@@ -2721,6 +2721,9 @@ msgstr ""
 msgid "AdminSettings|Enabled"
 msgstr ""
 
+msgid "AdminSettings|Enforce invitation flow for groups and projects"
+msgstr ""
+
 msgid "AdminSettings|Feed token"
 msgstr ""
 
@@ -2887,6 +2890,9 @@ msgid "AdminSettings|Total number of jobs in currently active pipelines"
 msgstr ""
 
 msgid "AdminSettings|Use AWS hosted Elasticsearch with IAM credentials"
+msgstr ""
+
+msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr ""
 
 msgid "AdminSettings|When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."

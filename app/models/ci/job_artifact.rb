@@ -159,12 +159,6 @@ module Ci
       where(file_type: types)
     end
 
-    REPORT_FILE_TYPES.each do |report_type, file_types|
-      scope "#{report_type}_reports", -> do
-        with_file_types(file_types)
-      end
-    end
-
     scope :all_reports, -> do
       with_file_types(REPORT_TYPES.keys.map(&:to_s))
     end
@@ -245,8 +239,14 @@ module Ci
       end
     end
 
+    def self.of_report_type(report_type)
+      file_types = file_types_for_report(report_type)
+
+      with_file_types(file_types)
+    end
+
     def self.file_types_for_report(report_type)
-      REPORT_FILE_TYPES.fetch(report_type)
+      REPORT_FILE_TYPES.fetch(report_type) { raise ArgumentError, "Unrecognized report type: #{report_type}" }
     end
 
     def self.associated_file_types_for(file_type)

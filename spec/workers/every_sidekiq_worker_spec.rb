@@ -356,6 +356,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'ObjectPool::ScheduleJoinWorker' => 3,
         'ObjectStorage::BackgroundMoveWorker' => 5,
         'ObjectStorage::MigrateUploadsWorker' => 3,
+        'Onboarding::CreateLearnGitlabWorker' => 3,
         'Packages::CleanupPackageFileWorker' => 0,
         'Packages::Cleanup::ExecutePolicyWorker' => 0,
         'Packages::Composer::CacheUpdateWorker' => false,

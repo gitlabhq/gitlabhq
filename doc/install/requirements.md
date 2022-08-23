@@ -4,38 +4,9 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab installation minimum requirements **(FREE SELF)**
+# Installation system requirements **(FREE SELF)**
 
-This page includes information about both the supported operating systems and
-the minimum requirements needed to install and use GitLab.
-
-## Operating Systems
-
-### Supported Linux distributions
-
-See the [list of supported operating systems](../administration/package_information/supported_os.md#supported-operating-systems).
-
-For the installation options, see [the main installation page](index.md).
-
-### Unsupported Linux distributions and Unix-like operating systems
-
-- Arch Linux
-- Fedora
-- FreeBSD
-- Gentoo
-- macOS
-
-Installation of GitLab on these operating systems is possible, but not supported.
-See the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
-
-See [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) for Omnibus installs page
-for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
-
-### Microsoft Windows
-
-GitLab is developed for Linux-based operating systems.
-It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22337).
-Consider using a virtual machine to run GitLab.
+This page includes information about the minimum requirements you need to install and use GitLab.
 
 ## Software requirements
 

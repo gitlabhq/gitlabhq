@@ -703,7 +703,7 @@ module Ci
     end
 
     def has_test_reports?
-      job_artifacts.test_reports.exists?
+      job_artifacts.of_report_type(:test).exists?
     end
 
     def has_old_trace?
@@ -1290,7 +1290,7 @@ module Ci
     end
 
     def observe_report_types
-      return unless ::Gitlab.com? && Feature.enabled?(:report_artifact_build_completed_metrics_on_build_completion)
+      return unless ::Gitlab.com?
 
       report_types = options&.dig(:artifacts, :reports)&.keys || []
 

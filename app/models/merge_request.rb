@@ -1588,7 +1588,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.test_reports)
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
   def predefined_variables
@@ -1618,7 +1618,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_accessibility_reports?
-    actual_head_pipeline.present? && actual_head_pipeline.has_reports?(Ci::JobArtifact.accessibility_reports)
+    actual_head_pipeline.present? && actual_head_pipeline.has_reports?(Ci::JobArtifact.of_report_type(:accessibility))
   end
 
   def has_coverage_reports?
@@ -1626,7 +1626,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.terraform_reports)
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports
@@ -1666,7 +1666,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
   def compare_codequality_reports
@@ -1716,11 +1716,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.sast_reports)
+    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.of_report_type(:sast))
   end
 
   def has_secret_detection_reports?
-    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.secret_detection_reports)
+    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
   end
 
   def compare_sast_reports(current_user)
