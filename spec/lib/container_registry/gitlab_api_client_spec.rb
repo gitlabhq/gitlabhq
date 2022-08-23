@@ -421,7 +421,9 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
       before do
         expect(Auth::ContainerRegistryAuthenticationService).to receive(:pull_nested_repositories_access_token).with(path.downcase).and_return(token)
-        stub_repository_details(path, sizing: :self_with_descendants, status_code: 200, respond_with: response)
+        expect_next_instance_of(described_class) do |client|
+          expect(client).to receive(:repository_details).with(path.downcase, sizing: :self_with_descendants).and_return(response.with_indifferent_access).once
+        end
       end
 
       it { is_expected.to eq(555) }

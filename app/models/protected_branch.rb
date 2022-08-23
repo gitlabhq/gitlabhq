@@ -25,9 +25,11 @@ class ProtectedBranch < ApplicationRecord
   end
 
   # Check if branch name is marked as protected in the system
-  def self.protected?(project, ref_name, dry_run: true)
+  def self.protected?(project, ref_name)
     return true if project.empty_repo? && project.default_branch_protected?
     return false if ref_name.blank?
+
+    dry_run = Feature.disabled?(:rely_on_protected_branches_cache, project)
 
     new_cache_result = new_cache(project, ref_name, dry_run: dry_run)
 

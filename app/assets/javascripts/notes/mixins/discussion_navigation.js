@@ -1,5 +1,5 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { scrollToElementWithContext, scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElementWithContext, scrollToElement, contentTop } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 
@@ -94,8 +94,6 @@ function jumpToDiscussion(self, discussion) {
 
     if (activeTab === 'diffs' && isDiffDiscussion) {
       diffsJump(self, id, firstNoteId);
-    } else if (activeTab === 'show') {
-      discussionJump(self, id);
     } else {
       switchToDiscussionsTabAndJumpTo(self, id);
     }
@@ -105,11 +103,10 @@ function jumpToDiscussion(self, discussion) {
 /**
  * @param {object} self Component instance with mixin applied
  * @param {function} fn Which function used to get the target discussion's id
- * @param {string} [discussionId=this.currentDiscussionId] Current discussion id, will be null if discussions have not been traversed yet
  */
-function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId) {
+function handleDiscussionJump(self, fn) {
   const isDiffView = window.mrTabs.currentAction === 'diffs';
-  const targetId = fn(discussionId, isDiffView);
+  const targetId = fn(self.currentDiscussionId, isDiffView);
   const discussion = self.getDiscussion(targetId);
   const discussionFilePath = discussion?.diff_file?.file_path;
 
@@ -127,6 +124,70 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   });
 }
 
+function getAllDiscussionElements() {
+  return Array.from(
+    document.querySelectorAll('[data-discussion-id]:not([data-discussion-resolved])'),
+  );
+}
+
+function hasReachedPageEnd() {
+  return document.body.scrollHeight <= Math.ceil(window.scrollY + window.innerHeight);
+}
+
+function findNextClosestVisibleDiscussion(discussionElements) {
+  const offsetHeight = contentTop();
+  let isActive;
+  const index = discussionElements.findIndex((element) => {
+    const { y } = element.getBoundingClientRect();
+    const visibleHorizontalOffset = Math.ceil(y) - offsetHeight;
+    // handle rect rounding errors
+    isActive = visibleHorizontalOffset < 2;
+    return visibleHorizontalOffset >= 0;
+  });
+  return [discussionElements[index], index, isActive];
+}
+
+function getNextDiscussion() {
+  const discussionElements = getAllDiscussionElements();
+  const firstDiscussion = discussionElements[0];
+  if (hasReachedPageEnd()) {
+    return firstDiscussion;
+  }
+  const [nextClosestDiscussion, index, isActive] = findNextClosestVisibleDiscussion(
+    discussionElements,
+  );
+  if (nextClosestDiscussion && !isActive) {
+    return nextClosestDiscussion;
+  }
+  const nextDiscussion = discussionElements[index + 1];
+  if (!nextClosestDiscussion || !nextDiscussion) {
+    return firstDiscussion;
+  }
+  return nextDiscussion;
+}
+
+function getPreviousDiscussion() {
+  const discussionElements = getAllDiscussionElements();
+  const lastDiscussion = discussionElements[discussionElements.length - 1];
+  const [, index] = findNextClosestVisibleDiscussion(discussionElements);
+  const previousDiscussion = discussionElements[index - 1];
+  if (previousDiscussion) {
+    return previousDiscussion;
+  }
+  return lastDiscussion;
+}
+
+function handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions) {
+  if (window.mrTabs.currentAction !== 'show') {
+    handleDiscussionJump(ctx, fn);
+  } else {
+    const discussion = getDiscussion();
+    const id = discussion.dataset.discussionId;
+    ctx.expandDiscussion({ discussionId: id });
+    scrollToElement(discussion, scrollOptions);
+  }
+}
+
 export default {
   computed: {
     ...mapGetters([
@@ -142,12 +203,22 @@ export default {
     ...mapActions(['expandDiscussion', 'setCurrentDiscussionId']),
     ...mapActions('diffs', ['scrollToFile']),
 
-    jumpToNextDiscussion() {
-      handleDiscussionJump(this, this.nextUnresolvedDiscussionId);
+    jumpToNextDiscussion(scrollOptions) {
+      handleJumpForBothPages(
+        getNextDiscussion,
+        this,
+        this.nextUnresolvedDiscussionId,
+        scrollOptions,
+      );
     },
 
-    jumpToPreviousDiscussion() {
-      handleDiscussionJump(this, this.previousUnresolvedDiscussionId);
+    jumpToPreviousDiscussion(scrollOptions) {
+      handleJumpForBothPages(
+        getPreviousDiscussion,
+        this,
+        this.previousUnresolvedDiscussionId,
+        scrollOptions,
+      );
     },
 
     jumpToFirstUnresolvedDiscussion() {
@@ -156,14 +227,6 @@ export default {
           this.jumpToNextDiscussion();
         })
         .catch(() => {});
-    },
-
-    /**
-     * Go to the next discussion from the given discussionId
-     * @param {String} discussionId The id we are jumping from
-     */
-    jumpToNextRelativeDiscussion(discussionId) {
-      handleDiscussionJump(this, this.nextUnresolvedDiscussionId, discussionId);
     },
   },
 };

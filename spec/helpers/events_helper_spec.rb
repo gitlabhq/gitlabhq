@@ -5,6 +5,25 @@ require 'spec_helper'
 RSpec.describe EventsHelper do
   include Gitlab::Routing
 
+  describe '#event_target_path' do
+    subject { helper.event_target_path(event.present) }
+
+    context 'when target is a work item' do
+      let(:work_item) { create(:work_item) }
+      let(:event) { create(:event, target: work_item, target_type: 'WorkItem') }
+
+      it { is_expected.to eq(Gitlab::UrlBuilder.build(work_item, only_path: true)) }
+    end
+
+    context 'when target is not a work item' do
+      let(:project) { create(:project) }
+      let(:issue) { create(:issue, project: project) }
+      let(:event) { create(:event, target: issue, project: project) }
+
+      it { is_expected.to eq([project, issue]) }
+    end
+  end
+
   describe '#event_commit_title' do
     let(:message) { 'foo & bar ' + 'A' * 70 + '\n' + 'B' * 80 }
 

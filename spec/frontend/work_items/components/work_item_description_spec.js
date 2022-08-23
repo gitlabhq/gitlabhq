@@ -57,9 +57,7 @@ describe('WorkItemDescription', () => {
       ]),
       propsData: {
         workItemId: id,
-      },
-      provide: {
-        fullPath: '/group/project',
+        fullPath: 'test-project-path',
       },
       stubs: {
         MarkdownField,

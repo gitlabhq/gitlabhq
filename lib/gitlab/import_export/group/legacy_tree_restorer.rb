@@ -68,23 +68,23 @@ module Gitlab
 
         def restorer
           @relation_tree_restorer ||= RelationTreeRestorer.new(
-            user:                  @user,
-            shared:                @shared,
-            relation_reader:       relation_reader,
-            members_mapper:        members_mapper,
-            object_builder:        object_builder,
-            relation_factory:      relation_factory,
-            reader:                reader,
-            importable:            @group,
+            user: @user,
+            shared: @shared,
+            relation_reader: relation_reader,
+            members_mapper: members_mapper,
+            object_builder: object_builder,
+            relation_factory: relation_factory,
+            reader: reader,
+            importable: @group,
             importable_attributes: @group_attributes,
-            importable_path:       nil
+            importable_path: nil
           )
         end
 
         def create_group(group_hash:, parent_group:)
           group_params = {
-            name:      group_hash['name'],
-            path:      group_hash['path'],
+            name: group_hash['name'],
+            path: group_hash['path'],
             parent_id: parent_group&.id,
             visibility_level: sub_group_visibility_level(group_hash, parent_group)
           }

@@ -31,7 +31,6 @@ export default {
     LabelItem,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -39,6 +38,10 @@ export default {
     },
     canUpdate: {
       type: Boolean,
+      required: true,
+    },
+    fullPath: {
+      type: String,
       required: true,
     },
   },

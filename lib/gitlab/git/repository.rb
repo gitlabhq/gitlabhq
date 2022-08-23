@@ -403,7 +403,7 @@ module Gitlab
 
         wrapped_gitaly_errors do
           gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT,
-                                        with_paths: with_paths, dynamic_timeout: dynamic_timeout)
+                                                   with_paths: with_paths, dynamic_timeout: dynamic_timeout)
         end
       end
 

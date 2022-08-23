@@ -45,13 +45,11 @@ describe('WorkItemLabels component', () => {
     });
 
     wrapper = mountExtended(WorkItemLabels, {
-      provide: {
-        fullPath: 'test-project-path',
-      },
       propsData: {
         labels,
         workItemId,
         canUpdate,
+        fullPath: 'test-project-path',
       },
       attachTo: document.body,
       apolloProvider,

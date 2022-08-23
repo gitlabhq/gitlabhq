@@ -24,15 +24,15 @@ module Gitlab
                   panel_group[:panels].each do |panel|
                     panel[:metrics].each do |metric|
                       prometheus_metrics << {
-                        project:        project,
-                        title:          panel[:title],
-                        y_label:        panel[:y_label],
-                        query:          metric[:query_range] || metric[:query],
-                        unit:           metric[:unit],
-                        legend:         metric[:label],
-                        identifier:     metric[:id],
-                        group:          Enums::PrometheusMetric.groups[:custom],
-                        common:         false,
+                        project: project,
+                        title: panel[:title],
+                        y_label: panel[:y_label],
+                        query: metric[:query_range] || metric[:query],
+                        unit: metric[:unit],
+                        legend: metric[:label],
+                        identifier: metric[:id],
+                        group: Enums::PrometheusMetric.groups[:custom],
+                        common: false,
                         dashboard_path: dashboard_path
                       }.compact
                     end

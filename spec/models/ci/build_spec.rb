@@ -5583,7 +5583,7 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#runner_features' do
+  describe '#runtime_runner_features' do
     subject do
       build.save!
       build.cancel_gracefully?

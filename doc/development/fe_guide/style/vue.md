@@ -121,7 +121,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
 
 1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension
 ([#34371](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34371)).
-1. **Reference Naming**: Use PascalCase for their instances:
+1. **Reference Naming**: Use PascalCase for their default imports:
 
    ```javascript
    // bad

@@ -269,6 +269,7 @@ export default {
     <div class="timeline-content">
       <div
         :data-discussion-id="discussion.id"
+        :data-discussion-resolved="discussion.resolved"
         class="discussion js-discussion-container"
         data-qa-selector="discussion_content"
       >

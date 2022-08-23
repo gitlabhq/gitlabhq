@@ -410,9 +410,9 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_commit_files, req_enum, timeout: GitalyClient.long_timeout,
-                                     remote_storage: start_repository&.storage)
+        response = GitalyClient.call(
+          @repository.storage, :operation_service, :user_commit_files, req_enum,
+          timeout: GitalyClient.long_timeout, remote_storage: start_repository&.storage)
 
         if (pre_receive_error = response.pre_receive_error.presence)
           raise Gitlab::Git::PreReceiveError, pre_receive_error

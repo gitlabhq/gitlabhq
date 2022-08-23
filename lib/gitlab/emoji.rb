@@ -17,13 +17,13 @@ module Gitlab
 
     def emoji_image_tag(name, src)
       image_options = {
-        class:  'emoji',
-        src:    src,
-        title:  ":#{name}:",
-        alt:    ":#{name}:",
+        class: 'emoji',
+        src: src,
+        title: ":#{name}:",
+        alt: ":#{name}:",
         height: 20,
-        width:  20,
-        align:  'absmiddle'
+        width: 20,
+        align: 'absmiddle'
       }
 
       ActionController::Base.helpers.tag(:img, image_options)

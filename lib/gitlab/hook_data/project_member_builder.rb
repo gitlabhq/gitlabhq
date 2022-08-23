@@ -37,16 +37,16 @@ module Gitlab
         project = project_member.project || Project.unscoped.find(project_member.source_id)
 
         {
-          project_name:                 project.name,
-          project_path:                 project.path,
-          project_path_with_namespace:  project.full_path,
-          project_id:                   project.id,
-          user_username:                project_member.user.username,
-          user_name:                    project_member.user.name,
-          user_email:                   project_member.user.email,
-          user_id:                      project_member.user.id,
-          access_level:                 project_member.human_access,
-          project_visibility:           project.visibility
+          project_name: project.name,
+          project_path: project.path,
+          project_path_with_namespace: project.full_path,
+          project_id: project.id,
+          user_username: project_member.user.username,
+          user_name: project_member.user.name,
+          user_email: project_member.user.email,
+          user_id: project_member.user.id,
+          access_level: project_member.human_access,
+          project_visibility: project.visibility
         }
       end
 

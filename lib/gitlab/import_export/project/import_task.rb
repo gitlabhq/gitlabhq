@@ -80,8 +80,8 @@ module Gitlab
         def import_params
           {
             namespace_id: namespace.id,
-            path:         project_path,
-            file:         File.open(file_path)
+            path: project_path,
+            file: File.open(file_path)
           }
         end
 

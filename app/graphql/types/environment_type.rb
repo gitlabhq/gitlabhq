@@ -21,6 +21,9 @@ module Types
     field :path, GraphQL::Types::String, null: false,
                                          description: 'Path to the environment.'
 
+    field :external_url, GraphQL::Types::String, null: true,
+                                                 description: 'External URL of the environment.'
+
     field :metrics_dashboard, Types::Metrics::DashboardType, null: true,
                                                              description: 'Metrics dashboard schema for the environment.',
                                                              resolver: Resolvers::Metrics::DashboardResolver

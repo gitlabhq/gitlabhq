@@ -1,4 +1,4 @@
-query workItemQuery($id: WorkItemID!) {
+query workItemLinksQuery($id: WorkItemID!) {
   workItem(id: $id) {
     id
     workItemType {

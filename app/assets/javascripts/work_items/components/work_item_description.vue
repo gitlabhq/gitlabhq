@@ -21,9 +21,12 @@ export default {
     MarkdownField,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
   props: {
     workItemId: {
+      type: String,
+      required: true,
+    },
+    fullPath: {
       type: String,
       required: true,
     },

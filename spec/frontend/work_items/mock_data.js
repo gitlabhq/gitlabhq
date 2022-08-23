@@ -28,6 +28,11 @@ export const workItemQueryResponse = {
       confidential: false,
       createdAt: '2022-08-03T12:41:54Z',
       closedAt: null,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -93,6 +98,11 @@ export const updateWorkItemMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -157,6 +167,11 @@ export const workItemResponseFactory = ({
       confidential,
       createdAt: '2022-08-03T12:41:54Z',
       closedAt: null,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -251,6 +266,11 @@ export const createWorkItemMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -282,6 +302,11 @@ export const createWorkItemFromTaskMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -310,6 +335,11 @@ export const createWorkItemFromTaskMutationResponse = {
         closedAt: null,
         description: '',
         confidential: false,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -388,6 +418,11 @@ export const workItemHierarchyEmptyResponse = {
       title: 'New title',
       createdAt: '2022-08-03T12:41:54Z',
       closedAt: null,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
@@ -425,6 +460,11 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+      },
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
       },
       confidential: false,
       widgets: [
@@ -475,6 +515,11 @@ export const workItemHierarchyResponse = {
         updateWorkItem: true,
       },
       confidential: false,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       widgets: [
         {
           type: 'DESCRIPTION',
@@ -570,6 +615,11 @@ export const changeWorkItemParentMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         widgets: [
           {
             __typename: 'WorkItemWidgetHierarchy',

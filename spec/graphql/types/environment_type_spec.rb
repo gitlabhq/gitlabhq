@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      name id state metrics_dashboard latest_opened_most_severe_alert path deployments
+      name id state metrics_dashboard latest_opened_most_severe_alert path external_url deployments
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
@@ -17,7 +17,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
   context 'when there is an environment' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:environment) { create(:environment, project: project) }
+    let_it_be(:environment) { create(:environment, project: project, external_url: 'https://gitlab.com') }
     let_it_be(:user) { create(:user) }
 
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
@@ -29,6 +29,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
             environment(name: "#{environment.name}") {
               name
               path
+              externalUrl
               state
             }
           }
@@ -48,6 +49,10 @@ RSpec.describe GitlabSchema.types['Environment'] do
       expect(subject['data']['project']['environment']['path']).to eq(
         Gitlab::Routing.url_helpers.project_environment_path(project, environment)
       )
+    end
+
+    it 'returns the external url of the environment' do
+      expect(subject['data']['project']['environment']['externalUrl']).to eq(environment.external_url)
     end
 
     context 'when query alert data for the environment' do

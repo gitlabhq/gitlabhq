@@ -116,7 +116,7 @@ module Gitlab
               end
 
               if last
-                paginated_nodes = LastItems.take_items(sliced_nodes, limit_value + 1)
+                paginated_nodes = sliced_nodes.last(limit_value + 1)
 
                 # there is an extra node, so there is a previous page
                 @has_previous_page = paginated_nodes.count > limit_value

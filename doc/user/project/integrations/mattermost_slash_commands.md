@@ -6,42 +6,43 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Mattermost slash commands **(FREE)**
 
-If your team uses [Mattermost](https://mattermost.com/) as a chat service, you can
-integrate GitLab commands into Mattermost chat. This integration enables users to
-run common operations, such as creating a GitLab issue, from the Mattermost chat
-environment.
+You can use slash commands to run common GitLab operations, like creating an issue,
+from a [Mattermost](https://mattermost.com/) chat environment.
 
 GitLab can also send events (such as `issue created`) to Mattermost as part of the
-separately configured [Mattermost Notifications Service](mattermost.md).
+separately configured [Mattermost notifications](mattermost.md).
 
-## Prerequisites
+## Configuration options
 
-Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/) is required.
-GitLab provides different methods of configuring Mattermost slash commands, depending
-on your configuration:
+GitLab provides different ways to configure Mattermost slash commands. For any of these options,
+you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/).
 
 - **Omnibus GitLab installations**: Mattermost is bundled with
-  [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab, read the
-  [Omnibus GitLab Mattermost documentation](../../../integration/mattermost/index.md).
+  [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab,
+  read the [Omnibus GitLab Mattermost documentation](../../../integration/mattermost/index.md).
 - **If Mattermost is installed on the same server as GitLab**, use the
-  [automated configuration](#automated-configuration).
-- **For all other installations**, use the [manual configuration](#manual-configuration).
+  [automated configuration](#configure-automatically).
+- **For all other installations**, use the [manual configuration](#configure-manually).
 
-## Automated configuration
+## Configure automatically
 
-If Mattermost is installed on the same server as GitLab, the configuration process can be
-done for you by GitLab.
+If Mattermost is installed on the same server as GitLab,
+you can automatically configure Mattermost slash commands:
 
-Go to the Mattermost Slash Command service on your project and select **Add to Mattermost**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. In **Add an integration**, select **Mattermost slash commands**.
+1. In **Enable integration**, ensure the **Active** checkbox is selected.
+1. Select **Add to Mattermost** and **Save changes**.
 
-## Manual configuration
+## Configure manually
 
 To manually configure slash commands in Mattermost, you must:
 
 1. [Enable custom slash commands](#enable-custom-slash-commands) in Mattermost.
 1. [Get configuration values](#get-configuration-values-from-gitlab) from GitLab.
 1. [Create a new slash command](#create-a-slash-command) in Mattermost.
-1. [Provide the Mattermost token](#provide-the-mattermost-token-to-gitlab)  to GitLab.
+1. [Provide the Mattermost token](#provide-the-mattermost-token-to-gitlab) to GitLab.
 
 ### Enable custom slash commands
 

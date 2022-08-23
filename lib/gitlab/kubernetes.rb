@@ -71,11 +71,11 @@ module Gitlab
 
       containers.map do |container|
         {
-          selectors:    { pod: pod_name, container: container["name"] },
-          url:          container_exec_url(api_url, namespace, pod_name, container["name"]),
+          selectors: { pod: pod_name, container: container["name"] },
+          url: container_exec_url(api_url, namespace, pod_name, container["name"]),
           subprotocols: ['channel.k8s.io'],
-          headers:      ::Gitlab::Kubernetes.build_header_hash,
-          created_at:   created_at
+          headers: ::Gitlab::Kubernetes.build_header_hash,
+          created_at: created_at
         }
       end
     end

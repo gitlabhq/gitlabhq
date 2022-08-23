@@ -110,16 +110,13 @@ describe('Discussion navigation mixin', () => {
     });
 
     describe.each`
-      fn                                | args      | currentId | expected
-      ${'jumpToNextDiscussion'}         | ${[]}     | ${null}   | ${'a'}
-      ${'jumpToNextDiscussion'}         | ${[]}     | ${'a'}    | ${'c'}
-      ${'jumpToNextDiscussion'}         | ${[]}     | ${'e'}    | ${'a'}
-      ${'jumpToPreviousDiscussion'}     | ${[]}     | ${null}   | ${'e'}
-      ${'jumpToPreviousDiscussion'}     | ${[]}     | ${'e'}    | ${'c'}
-      ${'jumpToPreviousDiscussion'}     | ${[]}     | ${'c'}    | ${'a'}
-      ${'jumpToNextRelativeDiscussion'} | ${[null]} | ${null}   | ${'a'}
-      ${'jumpToNextRelativeDiscussion'} | ${['a']}  | ${null}   | ${'c'}
-      ${'jumpToNextRelativeDiscussion'} | ${['e']}  | ${'c'}    | ${'a'}
+      fn                            | args  | currentId | expected
+      ${'jumpToNextDiscussion'}     | ${[]} | ${null}   | ${'a'}
+      ${'jumpToNextDiscussion'}     | ${[]} | ${'a'}    | ${'c'}
+      ${'jumpToNextDiscussion'}     | ${[]} | ${'e'}    | ${'a'}
+      ${'jumpToPreviousDiscussion'} | ${[]} | ${null}   | ${'e'}
+      ${'jumpToPreviousDiscussion'} | ${[]} | ${'e'}    | ${'c'}
+      ${'jumpToPreviousDiscussion'} | ${[]} | ${'c'}    | ${'a'}
     `('$fn (args = $args, currentId = $currentId)', ({ fn, args, currentId, expected }) => {
       beforeEach(() => {
         store.state.notes.currentDiscussionId = currentId;
@@ -133,19 +130,12 @@ describe('Discussion navigation mixin', () => {
           await nextTick();
         });
 
-        it('sets current discussion', () => {
-          expect(store.state.notes.currentDiscussionId).toEqual(expected);
-        });
-
         it('expands discussion', () => {
           expect(expandDiscussion).toHaveBeenCalled();
         });
 
         it('scrolls to element', () => {
-          expect(utils.scrollToElement).toHaveBeenCalledWith(
-            findDiscussion('div.discussion', expected),
-            { behavior: 'auto' },
-          );
+          expect(utils.scrollToElement).toHaveBeenCalled();
         });
       });
 
@@ -244,7 +234,6 @@ describe('Discussion navigation mixin', () => {
       it.each`
         tabValue
         ${'diffs'}
-        ${'show'}
         ${'other'}
       `(
         'calls scrollToFile with setHash as $hashValue when the tab is $tabValue',

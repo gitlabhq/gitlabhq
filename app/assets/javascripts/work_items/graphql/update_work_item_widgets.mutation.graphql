@@ -1,4 +1,4 @@
-#import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
+#import "./work_item.fragment.graphql"
 
 mutation workItemUpdateWidgets($input: WorkItemUpdateWidgetsInput!) {
   workItemUpdateWidgets(input: $input) {

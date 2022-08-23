@@ -121,6 +121,9 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    fullPath() {
+      return this.workItem?.project.fullPath;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -326,12 +329,14 @@ export default {
           :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
           :work-item-type="workItemType"
           :can-invite-members="workItemAssignees.canInviteMembers"
+          :full-path="fullPath"
           @error="error = $event"
         />
         <work-item-labels
           v-if="workItemLabels"
           :work-item-id="workItem.id"
           :can-update="canUpdate"
+          :full-path="fullPath"
           @error="error = $event"
         />
       </template>
@@ -347,6 +352,7 @@ export default {
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
+        :full-path="fullPath"
         class="gl-pt-5"
         @error="error = $event"
       />

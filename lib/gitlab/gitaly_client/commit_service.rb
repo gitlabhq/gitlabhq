@@ -226,7 +226,7 @@ module Gitlab
           msg.paths.map do |path|
             Gitlab::Git::ChangedPath.new(
               status: path.status,
-              path:  EncodingHelper.encode!(path.path)
+              path: EncodingHelper.encode!(path.path)
             )
           end
         end
@@ -390,12 +390,12 @@ module Gitlab
 
       def find_commits(options)
         request = Gitaly::FindCommitsRequest.new(
-          repository:   @gitaly_repo,
-          limit:        options[:limit],
-          offset:       options[:offset],
-          follow:       options[:follow],
-          skip_merges:  options[:skip_merges],
-          all:          !!options[:all],
+          repository: @gitaly_repo,
+          limit: options[:limit],
+          offset: options[:offset],
+          follow: options[:follow],
+          skip_merges: options[:skip_merges],
+          all: !!options[:all],
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.

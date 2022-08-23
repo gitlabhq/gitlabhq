@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
+import { throttle } from 'lodash';
 import { __ } from '~/locale';
 import discussionNavigation from '../mixins/discussion_navigation';
 
@@ -18,6 +19,12 @@ export default {
       type: Boolean,
       required: true,
     },
+  },
+  data() {
+    return {
+      jumpNext: throttle(this.jumpToNextDiscussion, 500),
+      jumpPrevious: throttle(this.jumpToPreviousDiscussion, 500),
+    };
   },
   computed: {
     ...mapGetters([
@@ -54,6 +61,7 @@ export default {
 <template>
   <div
     v-if="resolvableDiscussionsCount > 0"
+    id="discussionCounter"
     ref="discussionCounter"
     class="gl-display-flex discussions-counter"
   >
@@ -74,7 +82,7 @@ export default {
         {{ n__('%d unresolved thread', '%d unresolved threads', unresolvedDiscussionsCount) }}
         <gl-button-group class="gl-ml-3">
           <gl-button
-            v-gl-tooltip.hover
+            v-gl-tooltip:discussionCounter.hover.bottom
             :title="__('Go to previous unresolved thread')"
             :aria-label="__('Go to previous unresolved thread')"
             class="discussion-previous-btn gl-rounded-base! gl-px-2!"
@@ -83,10 +91,10 @@ export default {
             data-track-property="click_previous_unresolved_thread_top"
             icon="chevron-lg-up"
             category="tertiary"
-            @click="jumpToPreviousDiscussion"
+            @click="jumpPrevious"
           />
           <gl-button
-            v-gl-tooltip.hover
+            v-gl-tooltip:discussionCounter.hover.bottom
             :title="__('Go to next unresolved thread')"
             :aria-label="__('Go to next unresolved thread')"
             class="discussion-next-btn gl-rounded-base! gl-px-2!"
@@ -95,7 +103,7 @@ export default {
             data-track-property="click_next_unresolved_thread_top"
             icon="chevron-lg-down"
             category="tertiary"
-            @click="jumpToNextDiscussion"
+            @click="jumpNext"
           />
         </gl-button-group>
       </template>

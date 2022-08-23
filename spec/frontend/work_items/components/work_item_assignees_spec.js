@@ -82,9 +82,6 @@ describe('WorkItemAssignees component', () => {
     });
 
     wrapper = mountExtended(WorkItemAssignees, {
-      provide: {
-        fullPath: 'test-project-path',
-      },
       propsData: {
         assignees,
         workItemId,
@@ -92,6 +89,7 @@ describe('WorkItemAssignees component', () => {
         workItemType: TASK_TYPE_NAME,
         canUpdate,
         canInviteMembers,
+        fullPath: 'test-project-path',
       },
       attachTo: document.body,
       apolloProvider,

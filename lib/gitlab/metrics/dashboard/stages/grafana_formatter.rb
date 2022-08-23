@@ -40,8 +40,8 @@ module Gitlab
 
           def formatted_panel
             {
-              title:   panel[:title],
-              type:    CHART_TYPE,
+              title: panel[:title],
+              type: CHART_TYPE,
               y_label: '', # Grafana panels do not include a Y-Axis label
               metrics: panel[:targets].map.with_index do |target, idx|
                 formatted_metric(target, idx)
@@ -51,9 +51,9 @@ module Gitlab
 
           def formatted_metric(metric, idx)
             {
-              id:                       "#{metric[:legendFormat]}_#{idx}",
-              query_range:              format_query(metric),
-              label:                    replace_variables(metric[:legendFormat]),
+              id: "#{metric[:legendFormat]}_#{idx}",
+              query_range: format_query(metric),
+              label: replace_variables(metric[:legendFormat]),
               prometheus_endpoint_path: prometheus_endpoint_for_metric(metric)
             }.compact
           end

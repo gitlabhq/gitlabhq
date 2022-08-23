@@ -8,6 +8,8 @@ module Ci
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   class CompareReportsBaseService < ::BaseService
     def execute(base_pipeline, head_pipeline)
+      return parsing_payload(base_pipeline, head_pipeline) if base_pipeline&.running?
+
       base_report = get_report(base_pipeline)
       head_report = get_report(head_pipeline)
       comparer = build_comparer(base_report, head_report)
@@ -32,6 +34,13 @@ module Ci
     end
 
     protected
+
+    def parsing_payload(base_pipeline, head_pipeline)
+      {
+        status: :parsing,
+        key: key(base_pipeline, head_pipeline)
+      }
+    end
 
     def build_comparer(base_report, head_report)
       comparer_class.new(base_report, head_report)
