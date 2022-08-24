@@ -265,7 +265,7 @@ Configure your load balancer to pass connections on port 443 as `TCP` rather
 than `HTTP(S)` protocol. This will pass the connection to the application node's
 NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
 
-See the [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
 for details on managing SSL certificates and configuring NGINX.
 
 ### Load balancer terminates SSL without backend SSL
@@ -276,7 +276,7 @@ terminating SSL.
 
 Since communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
-[NGINX proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 ### Load balancer terminates SSL with backend SSL
@@ -288,8 +288,8 @@ end users will see.
 Traffic will also be secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
-added to GitLab to configure SSL certificates. See
-[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+added to GitLab to configure SSL certificates. See the
+[HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
 for details on managing SSL certificates and configuring NGINX.
 
 ### Readiness checks
@@ -2007,7 +2007,7 @@ On each node perform the following:
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
 certificates aren't present, NGINX will fail to start. For more information, see
-the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
 ### GitLab Rails post-configuration
 

@@ -1,4 +1,3 @@
-import { BubbleMenu } from '@tiptap/vue-2';
 import {
   GlDropdown,
   GlDropdownForm,
@@ -11,6 +10,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block_bubble_menu.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Diagram from '~/content_editor/extensions/diagram';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
@@ -40,6 +40,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
       },
       stubs: {
         GlDropdownItem: stubComponent(GlDropdownItem),
+        BubbleMenu: stubComponent(BubbleMenu),
       },
     });
   };
@@ -73,7 +74,6 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
-    expect(bubbleMenu.props('editor')).toBe(tiptapEditor);
     expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
   });
 

@@ -110,7 +110,7 @@ describe('Merge request widget rebase component', () => {
           expect(findRebaseMessageText()).toContain('Something went wrong!');
         });
 
-        describe('Rebase buttons with', () => {
+        describe('Rebase buttons', () => {
           beforeEach(() => {
             createWrapper(
               {
@@ -128,6 +128,79 @@ describe('Merge request widget rebase component', () => {
           });
 
           it('renders both buttons', () => {
+            expect(findRebaseWithoutCiButton().exists()).toBe(true);
+            expect(findStandardRebaseButton().exists()).toBe(true);
+          });
+
+          it('starts the rebase when clicking', async () => {
+            findStandardRebaseButton().vm.$emit('click');
+
+            await nextTick();
+
+            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: false });
+          });
+
+          it('starts the CI-skipping rebase when clicking on "Rebase without CI"', async () => {
+            findRebaseWithoutCiButton().vm.$emit('click');
+
+            await nextTick();
+
+            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: true });
+          });
+        });
+
+        describe('Rebase when pipelines must succeed is enabled', () => {
+          beforeEach(() => {
+            createWrapper(
+              {
+                mr: {
+                  rebaseInProgress: false,
+                  canPushToSourceBranch: true,
+                  onlyAllowMergeIfPipelineSucceeds: true,
+                },
+                service: {
+                  rebase: rebaseMock,
+                  poll: pollMock,
+                },
+              },
+              mergeRequestWidgetGraphql,
+            );
+          });
+
+          it('renders only the rebase button', () => {
+            expect(findRebaseWithoutCiButton().exists()).toBe(false);
+            expect(findStandardRebaseButton().exists()).toBe(true);
+          });
+
+          it('starts the rebase when clicking', async () => {
+            findStandardRebaseButton().vm.$emit('click');
+
+            await nextTick();
+
+            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: false });
+          });
+        });
+
+        describe('Rebase when pipelines must succeed and skipped pipelines are considered successful are enabled', () => {
+          beforeEach(() => {
+            createWrapper(
+              {
+                mr: {
+                  rebaseInProgress: false,
+                  canPushToSourceBranch: true,
+                  onlyAllowMergeIfPipelineSucceeds: true,
+                  allowMergeOnSkippedPipeline: true,
+                },
+                service: {
+                  rebase: rebaseMock,
+                  poll: pollMock,
+                },
+              },
+              mergeRequestWidgetGraphql,
+            );
+          });
+
+          it('renders both rebase buttons', () => {
             expect(findRebaseWithoutCiButton().exists()).toBe(true);
             expect(findStandardRebaseButton().exists()).toBe(true);
           });

@@ -99,3 +99,21 @@ To delete a task:
 1. In the issue description, in the **Tasks** section, select the task you want to edit.
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.
+
+## Set task weight **PREMIUM**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can set weight on each task to show how much work it needs.
+This value is visible only when you view a task.
+
+To set issue weight of a task:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Weight**, enter a whole, positive number.
+1. Select the close icon (**{close}**).

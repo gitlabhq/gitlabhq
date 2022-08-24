@@ -1,6 +1,5 @@
 <script>
 import { GlButtonGroup } from '@gitlab/ui';
-import { BubbleMenu } from '@tiptap/vue-2';
 import { BUBBLE_MENU_TRACKING_ACTION } from '../../constants';
 import trackUIControl from '../../services/track_ui_control';
 import Paragraph from '../../extensions/paragraph';
@@ -9,6 +8,7 @@ import Audio from '../../extensions/audio';
 import Video from '../../extensions/video';
 import Image from '../../extensions/image';
 import ToolbarButton from '../toolbar_button.vue';
+import BubbleMenu from './bubble_menu.vue';
 
 export default {
   components: {
@@ -34,14 +34,17 @@ export default {
       );
     },
   },
+  toggleLinkCommandParams: {
+    href: '',
+  },
 };
 </script>
 <template>
   <bubble-menu
     data-testid="formatting-bubble-menu"
     class="gl-shadow gl-rounded-base gl-bg-white"
-    :editor="tiptapEditor"
     :should-show="shouldShow"
+    :plugin-key="'formatting'"
   >
     <gl-button-group>
       <toolbar-button
@@ -109,9 +112,7 @@ export default {
         content-type="link"
         icon-name="link"
         editor-command="toggleLink"
-        :editor-command-params="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-          href: '',
-        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        :editor-command-params="$options.toggleLinkCommandParams"
         category="tertiary"
         size="medium"
         :label="__('Insert link')"

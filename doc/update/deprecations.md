@@ -1749,11 +1749,11 @@ When checking if a runner is `paused`, API users are advised to check the boolea
 
 </div>
 
-<div class="deprecation removal-156 breaking-change">
+<div class="deprecation removal-159 breaking-change">
 
 ### SaaS certificate-based integration with Kubernetes
 
-Planned removal: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)
+Planned removal: GitLab <span class="removal-milestone">15.9</span> (2023-02-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

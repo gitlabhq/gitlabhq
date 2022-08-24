@@ -1,7 +1,12 @@
 import Tracking from '~/tracking';
 
-function addBlobLinksTracking(containerSelector, eventsToTrack) {
-  const containerEl = document.querySelector(containerSelector);
+const eventsToTrack = [
+  { selector: '.file-line-blame', property: 'blame' },
+  { selector: '.file-line-num', property: 'link' },
+];
+
+function addBlobLinksTracking() {
+  const containerEl = document.querySelector('.file-holder');
 
   if (!containerEl) {
     return;

@@ -23,12 +23,10 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
   end
 
   context 'and fails to save' do
-    let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] }, '[]': [] ) }
-
     before do
-      allow(service).to receive(:alert).and_call_original
-      allow(service).to receive_message_chain(:alert, :save).and_return(false)
-      allow(service).to receive_message_chain(:alert, :errors).and_return(errors)
+      allow(AlertManagement::Alert).to receive(:new).and_wrap_original do |m, **args|
+        m.call(**args, hosts: ['a' * 256]) # hosts should be 255
+      end
     end
 
     it_behaves_like 'alerts service responds with an error', :bad_request

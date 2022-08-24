@@ -51,7 +51,8 @@ RSpec.describe "Help Dropdown", :js do
           visit root_path
         end
 
-        it 'renders correct version badge variant' do
+        it 'renders correct version badge variant',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/369850' do
           page.within '.header-help' do
             find('.header-help-dropdown-toggle').click
 

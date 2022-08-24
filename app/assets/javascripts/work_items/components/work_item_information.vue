@@ -5,16 +5,14 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   i18n: {
-    learnTasksButtonText: s__('WorkItem|Learn about tasks'),
-    workItemsText: s__('WorkItem|work items'),
+    learnTasksLinkText: s__('WorkItem|Learn about tasks.'),
     tasksInformationTitle: s__('WorkItem|Introducing tasks'),
     tasksInformationBody: s__(
-      'WorkItem|A task provides the ability to break down your work into smaller pieces tied to an issue. Tasks are the first items using our new %{workItemsLink} objects. Additional work item types will be coming soon.',
+      'WorkItem|Use tasks to break down your work in an issue into smaller pieces. %{learnMoreLink}',
     ),
   },
   helpPageLinks: {
     tasksDocLinkPath: helpPagePath('user/tasks'),
-    workItemsLinkPath: helpPagePath(`development/work_items`),
   },
   components: {
     GlAlert,
@@ -38,16 +36,14 @@ export default {
       v-if="showInfoBanner"
       variant="tip"
       :title="$options.i18n.tasksInformationTitle"
-      :primary-button-link="$options.helpPageLinks.tasksDocLinkPath"
-      :primary-button-text="$options.i18n.learnTasksButtonText"
       data-testid="work-item-information"
       class="gl-mt-3"
       @dismiss="$emit('work-item-banner-dismissed')"
     >
       <gl-sprintf :message="$options.i18n.tasksInformationBody">
-        <template #workItemsLink>
-          <gl-link :href="$options.helpPageLinks.workItemsLinkPath">{{
-            $options.i18n.workItemsText
+        <template #learnMoreLink>
+          <gl-link :href="$options.helpPageLinks.tasksDocLinkPath">{{
+            $options.i18n.learnTasksLinkText
           }}</gl-link>
         </template>
         ></gl-sprintf

@@ -168,6 +168,7 @@ export default class MergeRequestStore {
       this.mergeError = data.merge_error;
       this.mergeStatus = data.merge_status;
       this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
+      this.allowMergeOnSkippedPipeline = data.allow_merge_on_skipped_pipeline || false;
       this.projectArchived = data.project_archived;
       this.isSHAMismatch = this.sha !== data.diff_head_sha;
       this.shouldBeRebased = Boolean(data.should_be_rebased);
@@ -195,6 +196,7 @@ export default class MergeRequestStore {
 
     this.projectArchived = project.archived;
     this.onlyAllowMergeIfPipelineSucceeds = project.onlyAllowMergeIfPipelineSucceeds;
+    this.allowMergeOnSkippedPipeline = project.allowMergeOnSkippedPipeline;
 
     this.autoMergeEnabled = mergeRequest.autoMergeEnabled;
     this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';

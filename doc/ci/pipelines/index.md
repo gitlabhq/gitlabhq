@@ -289,6 +289,34 @@ preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
 
+## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
+
+You can trigger a pipeline in your project whenever a pipeline finishes for a new
+tag in a different project.
+
+Prerequisites:
+
+- The upstream project must be [public](../../user/public_access.md).
+- The user must have the Developer role
+  in the upstream project.
+
+To trigger the pipeline when the upstream project is rebuilt:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Pipeline subscriptions**.
+1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
+   For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
+1. Select **Subscribe**.
+
+Any pipelines that complete successfully for new tags in the subscribed project
+now trigger a pipeline on the current project's default branch. The maximum
+number of upstream pipeline subscriptions is 2 by default, for both the upstream and
+downstream projects. On self-managed instances, an administrator can change this
+[limit](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
+
 ### How pipeline duration is calculated
 
 Total running time for a given pipeline excludes retries and pending

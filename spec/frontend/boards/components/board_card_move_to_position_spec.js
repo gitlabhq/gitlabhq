@@ -4,8 +4,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
-import { createStore } from '~/boards/stores';
-import { mockList, mockIssue2 } from 'jest/boards/mock_data';
+import { mockList, mockIssue2, mockIssue, mockIssue3, mockIssue4 } from 'jest/boards/mock_data';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 Vue.use(Vuex);
@@ -21,7 +20,26 @@ describe('Board Card Move to position', () => {
   let store;
   let dispatch;
 
-  store = new Vuex.Store();
+  const createStoreOptions = () => {
+    const state = {
+      pageInfoByListId: {
+        'gid://gitlab/List/1': {},
+        'gid://gitlab/List/2': { hasNextPage: true },
+      },
+    };
+    const getters = {
+      getBoardItemsByList: () => () => [mockIssue, mockIssue2, mockIssue3, mockIssue4],
+    };
+    const actions = {
+      moveItem: jest.fn(),
+    };
+
+    return {
+      state,
+      getters,
+      actions,
+    };
+  };
 
   const createComponent = (propsData) => {
     wrapper = shallowMountExtended(BoardCardMoveToPosition, {
@@ -40,7 +58,7 @@ describe('Board Card Move to position', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
+    store = new Vuex.Store(createStoreOptions());
     createComponent();
   });
 
@@ -62,13 +80,26 @@ describe('Board Card Move to position', () => {
 
       it('is opened on the click of vertical ellipsis and has 2 dropdown items when number of list items < 10', () => {
         findMoveToPositionDropdown().vm.$emit('click');
-
         expect(findDropdownItems()).toHaveLength(dropdownOptions.length);
+      });
+
+      it('is opened on the click of vertical ellipsis and has 1 dropdown items when number of list items > 10', () => {
+        wrapper.destroy();
+
+        createComponent({
+          list: {
+            ...mockList,
+            id: 'gid://gitlab/List/2',
+          },
+        });
+        findMoveToPositionDropdown().vm.$emit('click');
+        expect(findDropdownItems()).toHaveLength(1);
       });
     });
 
     describe('Dropdown options', () => {
       beforeEach(() => {
+        createComponent({ index: 1 });
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         dispatch = jest.spyOn(store, 'dispatch').mockImplementation(() => {});
       });
@@ -78,12 +109,12 @@ describe('Board Card Move to position', () => {
       });
 
       it.each`
-        dropdownIndex | dropdownLabel                                   | startActionCalledTimes | trackLabel
-        ${0}          | ${BoardCardMoveToPosition.i18n.moveToStartText} | ${0}                   | ${'move_to_start'}
-        ${1}          | ${BoardCardMoveToPosition.i18n.moveToEndText}   | ${1}                   | ${'move_to_end'}
+        dropdownIndex | dropdownLabel                                   | trackLabel         | moveAfterId     | moveBeforeId
+        ${0}          | ${BoardCardMoveToPosition.i18n.moveToStartText} | ${'move_to_start'} | ${mockIssue.id} | ${undefined}
+        ${1}          | ${BoardCardMoveToPosition.i18n.moveToEndText}   | ${'move_to_end'}   | ${undefined}    | ${mockIssue4.id}
       `(
         'on click of dropdown index $dropdownIndex with label $dropdownLabel should call moveItem action with tracking label $trackLabel',
-        async ({ dropdownIndex, startActionCalledTimes, dropdownLabel, trackLabel }) => {
+        async ({ dropdownIndex, dropdownLabel, trackLabel, moveAfterId, moveBeforeId }) => {
           await findEllipsesButton().vm.$emit('click');
 
           expect(findDropdownItemAtIndex(dropdownIndex).text()).toBe(dropdownLabel);
@@ -98,18 +129,15 @@ describe('Board Card Move to position', () => {
             label: trackLabel,
             property: 'type_card',
           });
-          expect(dispatch).toHaveBeenCalledTimes(startActionCalledTimes);
-          if (startActionCalledTimes) {
-            expect(dispatch).toHaveBeenCalledWith('moveItem', {
-              fromListId: mockList.id,
-              itemId: mockIssue2.id,
-              itemIid: mockIssue2.iid,
-              itemPath: mockIssue2.referencePath,
-              moveBeforeId: undefined,
-              moveAfterId: undefined,
-              toListId: mockList.id,
-            });
-          }
+          expect(dispatch).toHaveBeenCalledWith('moveItem', {
+            fromListId: mockList.id,
+            itemId: mockIssue2.id,
+            itemIid: mockIssue2.iid,
+            itemPath: mockIssue2.referencePath,
+            moveBeforeId,
+            moveAfterId,
+            toListId: mockList.id,
+          });
         },
       );
     });

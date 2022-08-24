@@ -73,6 +73,10 @@ RSpec.shared_examples 'graphql query for searching issuables' do
           resolve_issuables(search: 'created')
         end
       end
+
+      it 'does not return error if search term is not present' do
+        expect(resolve_issuables).not_to be_instance_of(Gitlab::Graphql::Errors::ArgumentError)
+      end
     end
 
     context 'with disable_anonymous_search as `false`' do

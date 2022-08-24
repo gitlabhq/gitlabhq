@@ -13,7 +13,7 @@ main SSL documentation:
 
 - [Omnibus SSL Configuration](https://docs.gitlab.com/omnibus/settings/ssl.html).
 - [Self-signed certificates or custom Certification Authorities for GitLab Runner](https://docs.gitlab.com/runner/configuration/tls-self-signed.html).
-- [Manually configuring HTTPS](https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https).
+- [Configure HTTPS manually](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-https-manually).
 
 ## Using an internal CA certificate with GitLab
 

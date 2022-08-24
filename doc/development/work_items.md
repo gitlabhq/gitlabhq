@@ -204,3 +204,33 @@ provide a smooth migration path of epics to WIT with minimal disruption to user 
 
 We will move towards work items, work item types, and custom widgets (CW) in an iterative process.
 For a rough outline of the work ahead of us, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
+
+## Redis HLL Counter Schema
+
+We need a more scalable Redis counter schema for work items that is inclusive of Plan xMAU, Project Management xMAU, Certify xMAU, and
+Product Planning xMAU. We cannot aggregate and dedupe events across features within a group or at the stage level with
+our current Redis slot schema.
+
+All three Plan product groups will be using the same base object (`work item`). Each product group still needs to
+track MAU.
+
+### Proposed aggregate counter schema
+
+```mermaid
+graph TD
+    Event[Specific Interaction Counter] --> AC[Aggregate Counters]
+    AC --> Plan[Plan xMAU]
+    AC --> PM[Project Management xMAU]
+    AC --> PP[Product Planning xMAU]
+    AC --> Cer[Certify xMAU]
+    AC --> WI[Work Items Users]
+```
+
+### Implementation
+
+The new aggregate schema is already implemented and we are already tracking work item unique actions
+in [GitLab.com](https://gitlab.com).
+
+For implementation details, this [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93231) can be used
+as a reference. The MR covers the definition of new unique actions, event tracking in the code and also
+adding the new unique actions to the required aggregate counters.

@@ -347,4 +347,26 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
 
     it { is_expected.to be(true) }
   end
+
+  describe '#source' do
+    subject { parsed_payload.source }
+
+    it { is_expected.to be_nil }
+
+    context 'with alerting integration provided' do
+      before do
+        parsed_payload.integration = instance_double('::AlertManagement::HttpIntegration', name: 'INTEGRATION')
+      end
+
+      it { is_expected.to eq('INTEGRATION') }
+    end
+
+    context 'with monitoring tool defined in the raw payload' do
+      before do
+        allow(parsed_payload).to receive(:monitoring_tool).and_return('TOOL')
+      end
+
+      it { is_expected.to eq('TOOL') }
+    end
+  end
 end

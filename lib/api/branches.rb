@@ -146,7 +146,8 @@ module API
 
         branch = find_branch!(params[:branch])
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
-        protected_branch&.destroy
+
+        ::ProtectedBranches::DestroyService.new(user_project, current_user).execute(protected_branch) if protected_branch
 
         present branch, with: Entities::Branch, current_user: current_user, project: user_project
       end

@@ -1,8 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import { DEFAULT_BOARD_LIST_ITEMS_SIZE } from 'ee_else_ce/boards/constants';
 
 import Tracking from '~/tracking';
 
@@ -34,6 +33,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(['pageInfoByListId']),
     ...mapGetters(['getBoardItemsByList']),
     tracking() {
       return {
@@ -44,6 +44,9 @@ export default {
     },
     listItems() {
       return this.getBoardItemsByList(this.list.id);
+    },
+    listHasNextPage() {
+      return this.pageInfoByListId[this.list.id]?.hasNextPage;
     },
     firstItemInListId() {
       return this.listItems[0]?.id;
@@ -58,7 +61,7 @@ export default {
       return `${this.item.id}-${this.item.iid}-${this.index}`;
     },
     showMoveToEndOfList() {
-      return this.lengthOfListItemsInBoard <= DEFAULT_BOARD_LIST_ITEMS_SIZE;
+      return !this.listHasNextPage;
     },
     isFirstItemInList() {
       return this.index === 0;

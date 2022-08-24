@@ -95,23 +95,14 @@ td.line-numbers {
 
 .blob-viewer {
   .line-numbers {
+    min-width: 6rem;
     // for server-side-rendering
     .line-links {
       @include gl-display-flex;
-
-
-      &:first-child {
-        margin-top: 10px;
-      }
-
-      &:last-child {
-        margin-bottom: 10px;
-      }
     }
 
     // for client
     &.line-links {
-      min-width: 6rem;
       border-bottom-left-radius: 0;
 
       + pre {
@@ -120,15 +111,15 @@ td.line-numbers {
     }
   }
 
-  .line-links {
-    &:hover a::before,
-    &:focus-within a::before {
-      @include gl-visibility-visible;
-    }
+  .line-numbers:not(.line-links) a:hover::before,
+  .line-numbers:not(.line-links) a:focus-within::before,
+  .line-links:hover a::before,
+  .line-links:focus-within a::before {
+    @include gl-visibility-visible;
   }
 
+
   .file-line-num {
-    min-width: 4.5rem;
     @include gl-justify-content-end;
     @include gl-flex-grow-1;
     @include gl-pr-3;

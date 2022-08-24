@@ -344,6 +344,7 @@ export default {
         >
           <gl-link
             v-gl-tooltip="tooltipText"
+            class="gl-reset-color gl-hover-text-blue-800"
             :href="attributeUrl"
             :data-qa-selector="`${formatIssuableAttribute.snake}_link`"
           >

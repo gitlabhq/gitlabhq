@@ -58,8 +58,9 @@ There are a couple of ways to achieve that:
   ::Gitlab::CurrentSettings.elasticsearch_limit_indexing? # Whether or not Elasticsearch is limited only to certain projects/namespaces
   ```
 
-- Confirm searches use Elasticsearch by accessing the [rails console]
-  (../../administration/operations/rails_console.md) and running the following commands:
+- Confirm searches use Elasticsearch by accessing the
+  [rails console](../../administration/operations/rails_console.md) and running the following
+  commands:
 
   ```rails
   u = User.find_by_email('email_of_user_doing_search')

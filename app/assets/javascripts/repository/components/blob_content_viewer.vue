@@ -13,6 +13,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
+import addBlameLink from '~/blob/blob_blame_link';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import userInfoQuery from '../queries/user_info.query.graphql';
@@ -242,6 +243,7 @@ export default {
 
             if (type === SIMPLE_BLOB_VIEWER) {
               new LineHighlighter(); // eslint-disable-line no-new
+              addBlameLink('.file-holder', 'js-line-links');
             }
           });
 

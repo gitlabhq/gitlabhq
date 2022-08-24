@@ -8,9 +8,9 @@ import {
   GlButtonGroup,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { BubbleMenu } from '@tiptap/vue-2';
 import Link from '../../extensions/link';
 import EditorStateObserver from '../editor_state_observer.vue';
+import BubbleMenu from './bubble_menu.vue';
 
 export default {
   components: {
@@ -109,18 +109,18 @@ export default {
       this.tiptapEditor.chain().focus().extendMarkRange(Link.name).unsetLink().run();
     },
   },
+  tippyOptions: {
+    placement: 'bottom',
+  },
 };
 </script>
 <template>
   <bubble-menu
     data-testid="link-bubble-menu"
     class="gl-shadow gl-rounded-base gl-bg-white"
-    :editor="tiptapEditor"
     plugin-key="bubbleMenuLink"
-    :should-show="() => shouldShow()"
-    :tippy-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-      placement: 'bottom',
-    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :should-show="shouldShow"
+    :tippy-options="$options.tippyOptions"
   >
     <editor-state-observer @transaction="updateLinkToState">
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">

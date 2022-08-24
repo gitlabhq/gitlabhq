@@ -15,7 +15,7 @@ describe('Blob links Tracking', () => {
 
   beforeEach(() => {
     setHTMLFixture(`
-    <div id="blob-content-holder">
+    <div class="file-holder">
       <div class="line-links diff-line-num">
         <a href="#L5" class="file-line-blame"></a>
         <a id="L5" href="#L5" data-line-number="5" class="file-line-num">5</a>
@@ -23,7 +23,7 @@ describe('Blob links Tracking', () => {
       <pre id="LC5">Line 5 content</pre>
     </div>
     `);
-    addBlobLinksTracking('#blob-content-holder', eventsToTrack);
+    addBlobLinksTracking();
     jest.spyOn(Tracking, 'event');
   });
 

@@ -50,8 +50,8 @@ RSpec.describe Gitlab::BackgroundMigration::RenameTaskSystemNoteToChecklistItem 
 
   let(:migration) do
     described_class.new(
-      start_id: note1.id,
-      end_id: note4.id,
+      start_id: metadata1.id,
+      end_id: metadata4.id,
       batch_table: :system_note_metadata,
       batch_column: :id,
       sub_batch_size: 2,

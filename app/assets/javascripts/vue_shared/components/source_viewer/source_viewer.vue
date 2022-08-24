@@ -3,6 +3,7 @@ import { GlSafeHtmlDirective, GlLoadingIcon } from '@gitlab/ui';
 import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
+import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import Tracking from '~/tracking';
 import {
   EVENT_ACTION,
@@ -66,6 +67,7 @@ export default {
     },
   },
   async created() {
+    addBlobLinksTracking();
     this.trackEvent(EVENT_LABEL_VIEWER);
 
     if (this.unsupportedLanguage) {

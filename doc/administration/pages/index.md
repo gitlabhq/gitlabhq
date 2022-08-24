@@ -523,7 +523,7 @@ For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https:/
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) in GitLab 14.8.
 
-If GitLab has been [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-2-way-ssl-client-authentication), you need to add the client certificates to Pages:
+If GitLab has been [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/ssl.html#enable-2-way-ssl-client-authentication), you need to add the client certificates to Pages:
 
 1. Configure in `/etc/gitlab/gitlab.rb`:
 

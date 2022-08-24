@@ -1,7 +1,8 @@
-import { BubbleMenu } from '@tiptap/vue-2';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/formatting_bubble_menu.vue';
+import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 import {
   BUBBLE_MENU_TRACKING_ACTION,
@@ -25,6 +26,9 @@ describe('content_editor/components/bubble_menus/formatting_bubble_menu', () => 
       provide: {
         tiptapEditor,
       },
+      stubs: {
+        BubbleMenu: stubComponent(BubbleMenu),
+      },
     });
   };
 
@@ -41,7 +45,6 @@ describe('content_editor/components/bubble_menus/formatting_bubble_menu', () => 
     buildWrapper();
     const bubbleMenu = wrapper.findComponent(BubbleMenu);
 
-    expect(bubbleMenu.props().editor).toBe(tiptapEditor);
     expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
   });
 

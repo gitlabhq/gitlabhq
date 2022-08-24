@@ -301,7 +301,7 @@ point to a valid URL.
 To receive e-mails from GitLab you have to configure the
 [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp.html) because the GitLab Docker image doesn't
 have an SMTP server installed. You may also be interested in
-[enabling HTTPS](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+[enabling HTTPS](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
 After you make all the changes you want, you will need to restart the container
 in order to reconfigure GitLab:

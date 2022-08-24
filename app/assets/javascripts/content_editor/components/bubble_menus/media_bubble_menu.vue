@@ -9,13 +9,13 @@ import {
   GlButtonGroup,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { BubbleMenu } from '@tiptap/vue-2';
 import { __ } from '~/locale';
 import Audio from '../../extensions/audio';
 import Image from '../../extensions/image';
 import Video from '../../extensions/video';
 import EditorStateObserver from '../editor_state_observer.vue';
 import { acceptedMimes } from '../../services/upload_helpers';
+import BubbleMenu from './bubble_menu.vue';
 
 const MEDIA_TYPES = [Audio.name, Image.name, Video.name];
 
@@ -189,9 +189,8 @@ export default {
   <bubble-menu
     data-testid="media-bubble-menu"
     class="gl-shadow gl-rounded-base gl-bg-white"
-    :editor="tiptapEditor"
     plugin-key="bubbleMenuMedia"
-    :should-show="() => shouldShow()"
+    :should-show="shouldShow"
   >
     <editor-state-observer @transaction="updateMediaInfoToState">
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">

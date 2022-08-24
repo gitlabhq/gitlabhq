@@ -149,6 +149,10 @@ module Gitlab
           severity_mapping.fetch(severity_raw.to_s.downcase, UNMAPPED_SEVERITY)
         end
 
+        def source
+          monitoring_tool || integration&.name
+        end
+
         private
 
         def plain_gitlab_fingerprint

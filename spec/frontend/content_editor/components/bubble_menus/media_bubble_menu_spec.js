@@ -1,7 +1,8 @@
 import { GlLink, GlForm } from '@gitlab/ui';
-import { BubbleMenu } from '@tiptap/vue-2';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
+import { stubComponent } from 'helpers/stub_component';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import Image from '~/content_editor/extensions/image';
 import Audio from '~/content_editor/extensions/audio';
@@ -54,6 +55,9 @@ describe.each`
           contentEditor,
           eventHub,
         },
+        stubs: {
+          BubbleMenu: stubComponent(BubbleMenu),
+        },
       });
     };
 
@@ -94,7 +98,6 @@ describe.each`
     });
 
     it('renders bubble menu component', async () => {
-      expect(bubbleMenu.props('editor')).toBe(tiptapEditor);
       expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
     });
 

@@ -113,7 +113,7 @@ module AlertManagement
     end
 
     def resolving_alert?
-      incoming_payload.ends_at.present?
+      incoming_payload.resolved?
     end
 
     def notifying_alert?
@@ -121,7 +121,7 @@ module AlertManagement
     end
 
     def alert_source
-      incoming_payload.monitoring_tool
+      incoming_payload.source
     end
 
     def logger

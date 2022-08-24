@@ -35,11 +35,6 @@ module Projects
         Gitlab::Utils::DeepSize.new(params).valid?
       end
 
-      override :alert_source
-      def alert_source
-        super || integration&.name || 'Generic Alert Endpoint'
-      end
-
       def active_integration?
         integration&.active?
       end

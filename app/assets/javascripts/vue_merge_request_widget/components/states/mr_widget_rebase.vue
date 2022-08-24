@@ -91,6 +91,12 @@ export default {
     fastForwardMergeText() {
       return __('Merge blocked: the source branch must be rebased onto the target branch.');
     },
+    showRebaseWithoutPipeline() {
+      return (
+        !this.mr.onlyAllowMergeIfPipelineSucceeds ||
+        (this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.allowMergeOnSkippedPipeline)
+      );
+    },
   },
   methods: {
     rebase({ skipCi = false } = {}) {
@@ -192,6 +198,7 @@ export default {
     </template>
     <template v-if="!isLoading" #actions>
       <gl-button
+        v-if="showRebaseWithoutPipeline"
         :loading="isMakingRequest"
         variant="confirm"
         size="small"

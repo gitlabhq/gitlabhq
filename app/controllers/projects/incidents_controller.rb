@@ -28,7 +28,7 @@ class Projects::IncidentsController < Projects::ApplicationController
         .inc_relations_for_view
         .iid_in(params[:id])
         .without_order
-        .first
+        .take # rubocop:disable CodeReuse/ActiveRecord
     end
   end
 

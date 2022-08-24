@@ -10,13 +10,13 @@ import {
   GlSearchBoxByType,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { BubbleMenu } from '@tiptap/vue-2';
 import { getParentByTagName } from '~/lib/utils/dom_utils';
 import codeBlockLanguageLoader from '../../services/code_block_language_loader';
 import CodeBlockHighlight from '../../extensions/code_block_highlight';
 import Diagram from '../../extensions/diagram';
 import Frontmatter from '../../extensions/frontmatter';
 import EditorStateObserver from '../editor_state_observer.vue';
+import BubbleMenu from './bubble_menu.vue';
 
 const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
 
@@ -129,6 +129,10 @@ export default {
     deleteCodeBlock() {
       this.tiptapEditor.chain().focus().deleteNode(this.codeBlockType).run();
     },
+
+    tippyOptions() {
+      return { getReferenceClientRect: this.getReferenceClientRect.bind(this) };
+    },
   },
 };
 </script>
@@ -136,12 +140,9 @@ export default {
   <bubble-menu
     data-testid="code-block-bubble-menu"
     class="gl-shadow gl-rounded-base gl-bg-white"
-    :editor="tiptapEditor"
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
-    :tippy-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-      getReferenceClientRect,
-    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :tippy-options="tippyOptions()"
   >
     <editor-state-observer @transaction="updateCodeBlockInfoToState">
       <gl-button-group>

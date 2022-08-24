@@ -30,7 +30,7 @@ Prerequisites:
 
 You can set the issue weight when you create or edit an issue.
 
-You must use whole numbers (like 0, 1, 2). Negative numbers or fractions are not accepted.
+You must enter whole, positive numbers.
 
 When you change the weight of an issue, the new value overwrites the previous value.
 

@@ -149,7 +149,7 @@ of `HTTP(S)`. This will pass the connection unaltered to the application node's
 NGINX service, which has the SSL certificate and listens to port 443.
 
 For details about managing SSL certificates and configuring NGINX, see the
-[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+[HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
 
 ### Load balancer terminates SSL without backend SSL
 
@@ -159,7 +159,7 @@ terminating SSL.
 
 Due to communication between the load balancer and GitLab not being secure,
 you'll need to complete some additional configuration. For details, see the
-[NGINX proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl).
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination).
 
 ### Load balancer terminates SSL with backend SSL
 
@@ -171,7 +171,7 @@ Traffic will be secure between the load balancers and NGINX in this scenario,
 and there's no need to add a configuration for proxied SSL. However, you'll
 need to add a configuration to GitLab to configure SSL certificates. For
 details about managing SSL certificates and configuring NGINX, see the
-[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+[HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
 ### Readiness checks
 
@@ -752,7 +752,7 @@ On each node perform the following:
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
 certificates aren't present, NGINX will fail to start. For more information, see
-the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
 ### GitLab Rails post-configuration
 

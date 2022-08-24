@@ -57,8 +57,6 @@ switch between ascending or descending order, select **Sort order**.
 
 ## Create a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab 12.9. Releases can be created directly in the GitLab UI.
-
 You can create a release:
 
 - [Using a job in your CI/CD pipeline](#creating-a-release-by-using-a-cicd-job).
@@ -68,12 +66,12 @@ You can create a release:
 
 We recommend creating a release as one of the last steps in your CI/CD pipeline.
 
+### Create a release in the Releases page
+
 Prerequisites:
 
 - You must have at least the Developer role for a project. For more information, read
 [Release permissions](#release-permissions).
-
-### Create a release in the Releases page
 
 To create a release in the Releases page:
 
@@ -124,8 +122,11 @@ You can create a release directly as part of the GitLab CI/CD pipeline by using 
 The release is created only if the job processes without error. If the API returns an error during
 release creation, the release job fails.
 
-For examples of how you can create a release of your application in the CI/CD pipeline,
-see [Release CI/CD examples](release_cicd_examples.md).
+Methods for creating a release using a CI/CD job include:
+
+- [Create a release when a Git tag is created](release_cicd_examples.md#create-a-release-when-a-git-tag-is-created).
+- [Create a release when a commit is merged to the default branch](release_cicd_examples.md#create-a-release-when-a-commit-is-merged-to-the-default-branch).
+- [Create release metadata in a custom script](release_cicd_examples.md#create-release-metadata-in-a-custom-script).
 
 ### Use a custom SSL CA certificate authority
 

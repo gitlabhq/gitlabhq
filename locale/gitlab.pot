@@ -44414,9 +44414,6 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
-msgid "WorkItem|A task provides the ability to break down your work into smaller pieces tied to an issue. Tasks are the first items using our new %{workItemsLink} objects. Additional work item types will be coming soon."
-msgstr ""
-
 msgid "WorkItem|Add"
 msgstr ""
 
@@ -44476,7 +44473,7 @@ msgstr ""
 msgid "WorkItem|Issue"
 msgstr ""
 
-msgid "WorkItem|Learn about tasks"
+msgid "WorkItem|Learn about tasks."
 msgstr ""
 
 msgid "WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts."
@@ -44554,13 +44551,13 @@ msgstr ""
 msgid "WorkItem|Undo"
 msgstr ""
 
+msgid "WorkItem|Use tasks to break down your work in an issue into smaller pieces. %{learnMoreLink}"
+msgstr ""
+
 msgid "WorkItem|Work Items"
 msgstr ""
 
 msgid "WorkItem|Work item deleted"
-msgstr ""
-
-msgid "WorkItem|work items"
 msgstr ""
 
 msgid "Would you like to create a new branch?"

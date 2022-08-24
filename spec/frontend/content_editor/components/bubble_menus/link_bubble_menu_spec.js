@@ -1,8 +1,9 @@
 import { GlLink, GlForm } from '@gitlab/ui';
-import { BubbleMenu } from '@tiptap/vue-2';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
+import { stubComponent } from 'helpers/stub_component';
 import Link from '~/content_editor/extensions/link';
 import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
@@ -27,6 +28,9 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
         tiptapEditor,
         contentEditor,
         eventHub,
+      },
+      stubs: {
+        BubbleMenu: stubComponent(BubbleMenu),
       },
     });
   };
@@ -60,7 +64,6 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   });
 
   it('renders bubble menu component', async () => {
-    expect(bubbleMenu.props('editor')).toBe(tiptapEditor);
     expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
   });
 
@@ -155,19 +158,6 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       expect(from).toBe(10);
       expect(to).toBe(18);
-    });
-
-    it('shows the copy/edit/remove link buttons again if selection changes to another non-link and then back again to a link', async () => {
-      expectLinkButtonsToExist(false);
-
-      tiptapEditor.commands.setTextSelection(3);
-      await emitEditorEvent({ event: 'transaction', tiptapEditor });
-
-      tiptapEditor.commands.setTextSelection(14);
-      await emitEditorEvent({ event: 'transaction', tiptapEditor });
-
-      expectLinkButtonsToExist(true);
-      expect(wrapper.findComponent(GlForm).exists()).toBe(false);
     });
 
     describe('after making changes in the form and clicking apply', () => {

@@ -586,13 +586,36 @@ RSpec.describe API::Branches do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}/unprotect" }
 
     shared_examples_for 'repository unprotected branch' do
-      it 'unprotects a single branch' do
-        put api(route, current_user)
+      context 'when branch is protected' do
+        let!(:protected_branch) { create(:protected_branch, project: project, name: protected_branch_name) }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/branch')
-        expect(json_response['name']).to eq(CGI.unescape(branch_name))
-        expect(json_response['protected']).to eq(false)
+        it 'unprotects a single branch' do
+          expect_next_instance_of(::ProtectedBranches::DestroyService, project, current_user) do |instance|
+            expect(instance).to receive(:execute).with(protected_branch).and_call_original
+          end
+
+          put api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/branch')
+          expect(json_response['name']).to eq(CGI.unescape(branch_name))
+          expect(json_response['protected']).to eq(false)
+
+          expect { protected_branch.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context 'when branch is not protected' do
+        it 'returns a single branch response' do
+          expect(::ProtectedBranches::DestroyService).not_to receive(:new)
+
+          put api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/branch')
+          expect(json_response['name']).to eq(CGI.unescape(branch_name))
+          expect(json_response['protected']).to eq(false)
+        end
       end
 
       context 'when branch does not exist' do
@@ -637,40 +660,40 @@ RSpec.describe API::Branches do
 
     context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
+      let(:protected_branch_name) { branch_name }
 
-      context "when a protected branch doesn't already exist" do
+      it_behaves_like 'repository unprotected branch'
+
+      context 'when branch contains a dot' do
+        let(:branch_name) { branch_with_dot }
+
+        it_behaves_like 'repository unprotected branch'
+      end
+
+      context 'when branch contains a slash' do
+        let(:branch_name) { branch_with_slash }
+
+        it_behaves_like '404 response' do
+          let(:request) { put api(route, current_user) }
+        end
+      end
+
+      context 'when branch contains an escaped slash' do
+        let(:branch_name) { CGI.escape(branch_with_slash) }
+        let(:protected_branch_name) { branch_with_slash }
+
+        it_behaves_like 'repository unprotected branch'
+      end
+
+      context 'requesting with the escaped project full path' do
+        let(:project_id) { CGI.escape(project.full_path) }
+
         it_behaves_like 'repository unprotected branch'
 
         context 'when branch contains a dot' do
           let(:branch_name) { branch_with_dot }
 
           it_behaves_like 'repository unprotected branch'
-        end
-
-        context 'when branch contains a slash' do
-          let(:branch_name) { branch_with_slash }
-
-          it_behaves_like '404 response' do
-            let(:request) { put api(route, current_user) }
-          end
-        end
-
-        context 'when branch contains an escaped slash' do
-          let(:branch_name) { CGI.escape(branch_with_slash) }
-
-          it_behaves_like 'repository unprotected branch'
-        end
-
-        context 'requesting with the escaped project full path' do
-          let(:project_id) { CGI.escape(project.full_path) }
-
-          it_behaves_like 'repository unprotected branch'
-
-          context 'when branch contains a dot' do
-            let(:branch_name) { branch_with_dot }
-
-            it_behaves_like 'repository unprotected branch'
-          end
         end
       end
     end

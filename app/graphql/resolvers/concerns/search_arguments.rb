@@ -17,14 +17,15 @@ module SearchArguments
 
   def ready?(**args)
     validate_search_in_params!(args)
-    validate_anonymous_search_access!
+    validate_anonymous_search_access!(args)
 
     super
   end
 
   private
 
-  def validate_anonymous_search_access!
+  def validate_anonymous_search_access!(args)
+    return unless args[:search].present?
     return if current_user.present? || Feature.disabled?(:disable_anonymous_search, type: :ops)
 
     raise ::Gitlab::Graphql::Errors::ArgumentError,

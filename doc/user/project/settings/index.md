@@ -420,7 +420,7 @@ to move any project to any namespace.
 When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free, the following paid feature data is deleted:
 
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked
-- [Pipeline subscriptions](../../../ci/pipelines/multi_project_pipelines.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
+- [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
 and [test cases](../../../ci/test_cases/index.md) are deleted.
 
 ## Delete a project
