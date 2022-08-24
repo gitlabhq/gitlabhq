@@ -261,7 +261,7 @@ Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.3) for a
 detailed flow description.
 
 NOTE:
-The Resource Owner Password Credentials is disabled for users with 
+The Resource Owner Password Credentials is disabled for users with
 [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on.
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.

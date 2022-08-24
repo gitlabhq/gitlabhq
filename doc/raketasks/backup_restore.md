@@ -12,7 +12,7 @@ An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
 You can only restore a backup to **exactly the same version and type (CE/EE)**
-of GitLab on which it was created. The best way to 
+of GitLab on which it was created. The best way to
 [migrate your projects from one server to another](#migrate-to-a-new-server) is through a backup and restore.
 
 WARNING:
@@ -190,7 +190,7 @@ tables will [be logged by PostgreSQL](../administration/logs/index.md#postgresql
 ERROR: relation "tablename" does not exist at character 123
 ```
 
-This happens because the task uses `pg_dump`, which 
+This happens because the task uses `pg_dump`, which
 [sets a null search path and explicitly includes the schema in every SQL query](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
 to address [CVE-2018-1058](https://www.postgresql.org/about/news/postgresql-103-968-9512-9417-and-9322-released-1834/).
 

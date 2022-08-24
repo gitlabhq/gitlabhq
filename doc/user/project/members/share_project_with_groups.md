@@ -83,7 +83,7 @@ The following outcomes occur:
 
 ## Share project with group lock
 
-It is possible to prevent projects in a group from 
+It is possible to prevent projects in a group from
 [sharing a project with another group](../members/share_project_with_groups.md).
 This allows for tighter control over project access.
 

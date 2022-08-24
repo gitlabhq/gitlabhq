@@ -10,7 +10,7 @@ GitLab Workhorse is a smart reverse proxy for GitLab. It handles
 "large" HTTP requests such as file downloads, file uploads, Git
 push/pull and Git archive downloads.
 
-Workhorse itself is not a feature, but there are 
+Workhorse itself is not a feature, but there are
 [several features in GitLab](gitlab_features.md) that would not work efficiently without Workhorse.
 
 The canonical source for Workhorse is

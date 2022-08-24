@@ -97,7 +97,7 @@ If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus G
 
 ### Preparation
 
-Before beginning, you should already have a working GitLab instance. 
+Before beginning, you should already have a working GitLab instance.
 [Learn how to install GitLab](https://about.gitlab.com/install/).
 
 Provision a PostgreSQL server. We recommend using the PostgreSQL that is shipped
@@ -332,7 +332,7 @@ To configure the additional connection, you must either:
 #### Configure a new PgBouncer database with `pool_mode = session`
 
 We recommend using PgBouncer with `session` pool mode. You can use the
-[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and 
+[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and
 [configure it manually](https://www.pgbouncer.org/config.html).
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
@@ -621,7 +621,7 @@ Updates to example must be made at:
    gitlab-ctl reconfigure
    ```
 
-1. To ensure that Praefect 
+1. To ensure that Praefect
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
    [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
 
@@ -929,7 +929,7 @@ For more information on Gitaly server configuration, see our
    gitlab-ctl reconfigure
    ```
 
-1. To ensure that Gitaly 
+1. To ensure that Gitaly
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
    [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
 

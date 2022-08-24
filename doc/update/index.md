@@ -41,7 +41,7 @@ There are also instructions when you want to
 
 ### Installation from source
 
-- [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) - 
+- [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) -
   The guidelines for upgrading Community Edition and Enterprise Edition from source.
 - [Patch versions](patch_versions.md) guide includes the steps needed for a
   patch version, such as 13.2.0 to 13.2.1, and apply to both Community and Enterprise
@@ -328,7 +328,7 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ### What do you do if your Advanced Search migrations are stuck?
 
 In GitLab 15.0, an Advanced Search migration named `DeleteOrphanedCommit` can be permanently stuck
-in a pending state across upgrades. This issue 
+in a pending state across upgrades. This issue
 [is corrected in GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89539).
 
 If you are a self-managed customer who uses GitLab 15.0 with Advanced Search, you will experience performance degradation.
@@ -1051,7 +1051,7 @@ In 13.1.0, you must upgrade to either:
 Failure to do so results in internal errors in the Gitaly service in some RPCs due
 to the use of the new `--end-of-options` Git flag.
 
-Additionally, in GitLab 13.1.0, the version of 
+Additionally, in GitLab 13.1.0, the version of
 [Rails was upgraded from 6.0.3 to 6.0.3.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33454).
 The Rails upgrade included a change to CSRF token generation which is
 not backwards-compatible - GitLab servers with the new Rails version

@@ -13,7 +13,7 @@ pipeline that can be used to trigger a pipeline in the Omnibus GitLab repository
 that will create:
 
 - A deb package for Ubuntu 16.04, available as a build artifact, and
-- A Docker image, which is pushed to the 
+- A Docker image, which is pushed to the
   [Omnibus GitLab container registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry)
   (images titled `gitlab-ce` and `gitlab-ee` respectively and image tag is the
   commit which triggered the pipeline).

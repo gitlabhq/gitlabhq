@@ -45,8 +45,8 @@ for clarity, they define different metric names:
 As shown in this example, they can share a base name (`foo` in this example). We
 recommend this when they refer to the same operation.
 
-Before the first scrape, it is important to have 
-[initialized the SLI with all possible label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics). 
+Before the first scrape, it is important to have
+[initialized the SLI with all possible label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics).
 This avoid confusing results when using these counters in calculations.
 
 To initialize an SLI, use the `.initialize_sli` class method, for

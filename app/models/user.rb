@@ -2072,6 +2072,7 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  # Deprecated: do not use. See: https://gitlab.com/gitlab-org/gitlab/-/issues/371017
   def dismissed_callout_for_namespace?(feature_name:, namespace:, ignore_dismissal_earlier_than: nil)
     source_feature_name = "#{feature_name}_#{namespace.id}"
     callout = namespace_callouts_by_feature_name[source_feature_name]

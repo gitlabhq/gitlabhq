@@ -345,7 +345,7 @@ not without its own challenges:
   root file system, you can use the job's working directory as a mount point for
   child containers. For example, if you have files you want to share with a
   child container, you might create a subdirectory under `/builds/$CI_PROJECT_PATH`
-  and use it as your mount point. For a more detailed explanation, view 
+  and use it as your mount point. For a more detailed explanation, view
   [issue #41227](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41227).
 
   ```yaml
@@ -406,7 +406,7 @@ sudo gitlab-runner register -n \
 ##### Enable registry mirror for `docker:dind` service
 
 When the Docker daemon starts inside of the service container, it uses
-the default configuration. You may want to configure a 
+the default configuration. You may want to configure a
 [registry mirror](https://docs.docker.com/registry/recipes/mirror/) for
 performance improvements and to ensure you don't reach Docker Hub rate limits.
 

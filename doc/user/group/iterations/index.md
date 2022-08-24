@@ -203,7 +203,7 @@ To create an iteration cadence:
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
 1. To manually manage the iteration cadence, clear the **Enable automatic scheduling** checkbox and skip the next step.
-1. Complete the required fields to use automatic scheduling. 
+1. Complete the required fields to use automatic scheduling.
    - Select the automation start date of the iteration cadence. Iterations will be scheduled to
      begin on the same day of the week as the day of the week of the start date.
    - From the **Duration** dropdown list, select how many weeks each iteration should last.
@@ -241,7 +241,7 @@ doesn't delete the eight existing upcoming iterations.
 1. Complete the required fields **Duration**, **Upcoming iterations**, and **Automation start date**.
 For **Automation start date**, you can select any date that doesn't overlap with the existing open iterations.
 If you have upcoming iterations, the automatic scheduling adjusts them appropriately to fit
-your chosen duration. 
+your chosen duration.
 1. Select **Save changes**.
 
 When you want to manage your iterations cadence manually again, edit your cadence and uncheck the **Enable automatic scheduling** checkbox.
@@ -267,7 +267,7 @@ after the conversion you have the following iterations:
 - Monday, April 18 - Sunday, April 24 (upcoming)
 - Monday, April 25 - Sunday, May 1 (upcoming)
 
-Your existing upcoming iteration "Tuesday, April 12 - Friday, April 15" 
+Your existing upcoming iteration "Tuesday, April 12 - Friday, April 15"
 is changed to "April 18 - Sunday, April 24".
 
 An additional upcoming iteration "April 25 - Sunday, May 1" is scheduled

@@ -76,13 +76,13 @@ process, which writes the contents to the standard output.
 1. The archive data is sent back to the client.
 
 In step 7, the `gitaly-lfs-smudge` filter must talk to Workhorse, not to
-Rails, or an invalid LFS blob is saved. To support this, GitLab 13.5 
+Rails, or an invalid LFS blob is saved. To support this, GitLab 13.5
 [changed the default Omnibus configuration to have Gitaly talk to the Workhorse](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4592)
 instead of Rails.
 
 One side effect of this change: the correlation ID of the original
 request is not preserved for the internal API requests made by Gitaly
 (or `gitaly-lfs-smudge`), such as the one made in step 8. The
-correlation IDs for those API requests are random values until 
+correlation IDs for those API requests are random values until
 [this Workhorse issue](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/309) is
 resolved.

@@ -204,7 +204,7 @@ options:
 ```
 
 ## Redis HyperLogLog metrics
- 
+
 You can use Redis HyperLogLog metrics to track events not kept in the database and incremented for unique values such as unique users,
 for example, a count of how many different users used the search bar.
 

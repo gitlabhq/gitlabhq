@@ -25,7 +25,7 @@ notifications:
 
 1. To enable the integration for your group or project:
    1. In your group or project, on the left sidebar, select **Settings > Integrations**.
-1. To enable the integration for your instance: 
+1. To enable the integration for your instance:
    1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Settings > Integrations**.
 1. Select the **Pumble** integration.
@@ -36,4 +36,4 @@ notifications:
 1. Optional. To test the integration, select **Test settings**.
 1. Select **Save changes**.
 
-The Pumble channel begins to receive all applicable GitLab events. 
+The Pumble channel begins to receive all applicable GitLab events.

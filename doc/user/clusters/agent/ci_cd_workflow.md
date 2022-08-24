@@ -127,7 +127,7 @@ Run `kubectl config get-contexts`.
 
 ### Environments with both certificate-based and agent-based connections
 
-When you deploy to an environment that has both a 
+When you deploy to an environment that has both a
 [certificate-based cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent connection:
 
 - The certificate-based cluster's context is called `gitlab-deploy`. This context

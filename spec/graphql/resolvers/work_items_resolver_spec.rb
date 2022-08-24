@@ -52,49 +52,15 @@ RSpec.describe Resolvers::WorkItemsResolver do
       end
 
       context 'when searching items' do
-        it 'returns correct items' do
-          expect(resolve_items(search: 'foo')).to contain_exactly(item2)
-        end
+        it_behaves_like 'graphql query for searching issuables' do
+          let_it_be(:parent) { project }
+          let_it_be(:issuable1) { create(:work_item, project: project, title: 'first created') }
+          let_it_be(:issuable2) { create(:work_item, project: project, title: 'second created', description: 'text 1') }
+          let_it_be(:issuable3) { create(:work_item, project: project, title: 'third', description: 'text 2') }
+          let_it_be(:issuable4) { create(:work_item, project: project) }
 
-        it 'uses project search optimization' do
-          expected_arguments = a_hash_including(
-            search: 'foo',
-            attempt_project_search_optimizations: true
-          )
-          expect(::WorkItems::WorkItemsFinder).to receive(:new).with(anything, expected_arguments).and_call_original
-
-          resolve_items(search: 'foo')
-        end
-
-        context 'with anonymous user' do
-          let_it_be(:public_project) { create(:project, :public) }
-          let_it_be(:public_item) { create(:work_item, project: public_project, title: 'Test item') }
-
-          context 'with disable_anonymous_search enabled' do
-            before do
-              stub_feature_flags(disable_anonymous_search: true)
-            end
-
-            it 'generates an error' do
-              error_message = "User must be authenticated to include the `search` argument."
-
-              expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, error_message) do
-                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
-              end
-            end
-          end
-
-          context 'with disable_anonymous_search disabled' do
-            before do
-              stub_feature_flags(disable_anonymous_search: false)
-            end
-
-            it 'returns correct items' do
-              expect(
-                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
-              ).to contain_exactly(public_item)
-            end
-          end
+          let_it_be(:finder_class) { ::WorkItems::WorkItemsFinder }
+          let_it_be(:optimization_param) { :attempt_project_search_optimizations }
         end
       end
 

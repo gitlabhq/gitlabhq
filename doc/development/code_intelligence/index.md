@@ -35,7 +35,7 @@ sequenceDiagram
     Workhorse-->>-Runner: request results
 ```
 
-1. The CI/CD job generates a document in an LSIF format (usually `dump.lsif`) using 
+1. The CI/CD job generates a document in an LSIF format (usually `dump.lsif`) using
    [an indexer](https://lsif.dev) for the language of a project. The format
    [describes](https://github.com/sourcegraph/sourcegraph/blob/main/doc/code_intelligence/explanations/writing_an_indexer.md)
    interactions between a method or function and its definitions or references. The

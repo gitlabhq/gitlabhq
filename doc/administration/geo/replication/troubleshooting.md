@@ -868,7 +868,7 @@ or `gitlab-ctl promote-to-primary-node`, either:
   ```
 
 - Upgrade to GitLab 12.6.3 or later if it is safe to do so. For example,
-  if the failover was just a test. A 
+  if the failover was just a test. A
   [caching-related bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was fixed.
 
 ### Message: `ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled`

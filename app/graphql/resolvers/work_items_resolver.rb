@@ -26,24 +26,11 @@ module Resolvers
              required: false
 
     def resolve_with_lookahead(**args)
-      # The project could have been loaded in batch by `BatchLoader`.
-      # At this point we need the `id` of the project to query for issues, so
-      # make sure it's loaded and not `nil` before continuing.
-      parent = object.respond_to?(:sync) ? object.sync : object
-      return WorkItem.none if parent.nil? || !parent.work_items_feature_flag_enabled?
+      return WorkItem.none if resource_parent.nil? || !resource_parent.work_items_feature_flag_enabled?
 
-      args[:iids] ||= [args.delete(:iid)].compact if args[:iid]
-      args[:attempt_project_search_optimizations] = true if args[:search].present?
+      finder = ::WorkItems::WorkItemsFinder.new(current_user, prepare_finder_params(args))
 
-      finder = ::WorkItems::WorkItemsFinder.new(current_user, args)
-
-      Gitlab::Graphql::Loaders::IssuableLoader.new(parent, finder).batching_find_all { |q| apply_lookahead(q) }
-    end
-
-    def ready?(**args)
-      validate_anonymous_search_access! if args[:search].present?
-
-      super
+      Gitlab::Graphql::Loaders::IssuableLoader.new(resource_parent, finder).batching_find_all { |q| apply_lookahead(q) }
     end
 
     private
@@ -55,6 +42,22 @@ module Resolvers
         },
         :author
       ]
+    end
+
+    def prepare_finder_params(args)
+      params = super(args)
+      params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
+
+      params
+    end
+
+    def resource_parent
+      # The project could have been loaded in batch by `BatchLoader`.
+      # At this point we need the `id` of the project to query for work items, so
+      # make sure it's loaded and not `nil` before continuing.
+      strong_memoize(:resource_parent) do
+        object.respond_to?(:sync) ? object.sync : object
+      end
     end
   end
 end

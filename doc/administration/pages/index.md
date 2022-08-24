@@ -933,7 +933,7 @@ The following settings are:
 | `connection` | Various connection options described below. | |
 
 NOTE:
-If you want to stop using and disconnect the NFS server, you need to 
+If you want to stop using and disconnect the NFS server, you need to
 [explicitly disable local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
 
 #### S3-compatible connection settings

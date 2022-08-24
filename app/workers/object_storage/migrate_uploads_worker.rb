@@ -11,7 +11,7 @@ module ObjectStorage
     include ObjectStorageQueue
 
     feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
-    loggable_arguments 0, 1, 2, 3
+    loggable_arguments 0
 
     SanityCheckError = Class.new(StandardError)
 
@@ -67,41 +67,19 @@ module ObjectStorage
     include Report
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def self.enqueue!(uploads, model_class, mounted_as, to_store)
-      sanity_check!(uploads, model_class, mounted_as)
-
-      perform_async(uploads.ids, model_class.to_s, mounted_as, to_store)
+    def self.enqueue!(uploads, to_store)
+      perform_async(uploads.ids, to_store)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # We need to be sure all the uploads are for the same uploader and model type
-    # and that the mount point exists if provided.
-    #
-    def self.sanity_check!(uploads, model_class, mounted_as)
-      upload = uploads.first
-      uploader_class = upload.uploader.constantize
-      uploader_types = uploads.map(&:uploader).uniq
-      model_types = uploads.map(&:model_type).uniq
-      model_has_mount = mounted_as.nil? || model_class.uploaders[mounted_as] == uploader_class
-
-      raise(SanityCheckError, _("Multiple uploaders found: %{uploader_types}") % { uploader_types: uploader_types }) unless uploader_types.count == 1
-      raise(SanityCheckError, _("Multiple model types found: %{model_types}") % { model_types: model_types }) unless model_types.count == 1
-      raise(SanityCheckError, _("Mount point %{mounted_as} not found in %{model_class}.") % { mounted_as: mounted_as, model_class: model_class }) unless model_has_mount
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def perform(*args)
-      args_check!(args)
+      ids, to_store = retrieve_applicable_args!(args)
 
-      (ids, model_type, mounted_as, to_store) = args
-
-      @model_class = model_type.constantize
-      @mounted_as = mounted_as&.to_sym
       @to_store = to_store
 
       uploads = Upload.preload(:model).where(id: ids)
 
-      sanity_check!(uploads)
       results = migrate(uploads)
 
       report!(results)
@@ -111,31 +89,22 @@ module ObjectStorage
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def sanity_check!(uploads)
-      self.class.sanity_check!(uploads, @model_class, @mounted_as)
-    end
+    private
 
-    def args_check!(args)
-      return if args.count == 4
+    def retrieve_applicable_args!(args)
+      return args if args.count == 2
+      return args.values_at(0, 3) if args.count == 4
 
-      case args.count
-      when 3 then raise SanityCheckError, _("Job is missing the `model_type` argument.")
-      else
-        raise SanityCheckError, _("Job has wrong arguments format.")
-      end
-    end
-
-    def build_uploaders(uploads)
-      uploads.map { |upload| upload.retrieve_uploader(@mounted_as) }
+      raise SanityCheckError, _("Job has wrong arguments format.")
     end
 
     def migrate(uploads)
-      build_uploaders(uploads).map(&method(:process_uploader))
+      uploads.map(&method(:process_upload))
     end
 
-    def process_uploader(uploader)
-      MigrationResult.new(uploader.upload).tap do |result|
-        uploader.migrate!(@to_store)
+    def process_upload(upload)
+      MigrationResult.new(upload).tap do |result|
+        upload.retrieve_uploader.migrate!(@to_store)
       rescue StandardError => e
         result.error = e
       end

@@ -73,13 +73,13 @@ In this example, we have the following hypothetical values:
 
 - `driver`: the driver such a Jaeger.
 - `param_name`, `param_value`: these are driver specific configuration values. Configuration
-  parameters for Jaeger are documented [further on in this document](#2-configure-the-gitlab_tracing-environment-variable) 
+  parameters for Jaeger are documented [further on in this document](#2-configure-the-gitlab_tracing-environment-variable)
   they should be URL encoded.
   Multiple values should be separated by `&` characters like a URL.
 
 ## Using Jaeger in the GitLab Development Kit
 
-The first tracing implementation that GitLab supports is Jaeger, and the 
+The first tracing implementation that GitLab supports is Jaeger, and the
 [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/) supports distributed tracing with
 Jaeger out-of-the-box.
 
@@ -116,7 +116,7 @@ Jaeger has many configuration options, but is very easy to start in an "all-in-o
 memory for trace storage (and is therefore non-persistent). The main advantage of "all-in-one" mode
 being ease of use.
 
-For more detailed configuration options, refer to the 
+For more detailed configuration options, refer to the
 [Jaeger documentation](https://www.jaegertracing.io/docs/1.9/getting-started/).
 
 #### Using Docker
@@ -201,7 +201,7 @@ If `GITLAB_TRACING` is not configured correctly, this issue is logged:
 ```
 
 By default, GitLab ships with the Jaeger tracer, but other tracers can be included at compile time.
-Details of how this can be done are included in the 
+Details of how this can be done are included in the
 [LabKit tracing documentation](https://pkg.go.dev/gitlab.com/gitlab-org/labkit/tracing).
 
 If no log messages about tracing are emitted, the `GITLAB_TRACING` environment variable is likely

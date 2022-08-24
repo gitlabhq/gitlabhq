@@ -60,7 +60,7 @@ downstream services.
 
 To mitigate this, ensure that the code establishing the new WebSocket connection
 is feature flagged and defaulted to `off`. A careful, percentage-based roll-out
-of the feature flag ensures that effects can be observed on the 
+of the feature flag ensures that effects can be observed on the
 [WebSocket dashboard](https://dashboards.gitlab.net/d/websockets-main/websockets-overview?orgId=1)
 
 1. Create a

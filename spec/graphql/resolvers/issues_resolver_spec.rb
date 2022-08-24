@@ -311,49 +311,15 @@ RSpec.describe Resolvers::IssuesResolver do
       end
 
       context 'when searching issues' do
-        it 'returns correct issues' do
-          expect(resolve_issues(search: 'foo')).to contain_exactly(issue2)
-        end
+        it_behaves_like 'graphql query for searching issuables' do
+          let_it_be(:parent) { project }
+          let_it_be(:issuable1) { create(:issue, project: project, title: 'first created') }
+          let_it_be(:issuable2) { create(:issue, project: project, title: 'second created', description: 'text 1') }
+          let_it_be(:issuable3) { create(:issue, project: project, title: 'third', description: 'text 2') }
+          let_it_be(:issuable4) { create(:issue, project: project) }
 
-        it 'uses project search optimization' do
-          expected_arguments = a_hash_including(
-            search: 'foo',
-            attempt_project_search_optimizations: true
-          )
-          expect(IssuesFinder).to receive(:new).with(anything, expected_arguments).and_call_original
-
-          resolve_issues(search: 'foo')
-        end
-
-        context 'with anonymous user' do
-          let_it_be(:public_project) { create(:project, :public) }
-          let_it_be(:public_issue) { create(:issue, project: public_project, title: 'Test issue') }
-
-          context 'with disable_anonymous_search enabled' do
-            before do
-              stub_feature_flags(disable_anonymous_search: true)
-            end
-
-            it 'generates an error' do
-              error_message = "User must be authenticated to include the `search` argument."
-
-              expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, error_message) do
-                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
-              end
-            end
-          end
-
-          context 'with disable_anonymous_search disabled' do
-            before do
-              stub_feature_flags(disable_anonymous_search: false)
-            end
-
-            it 'returns correct issues' do
-              expect(
-                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
-              ).to contain_exactly(public_issue)
-            end
-          end
+          let_it_be(:finder_class) { IssuesFinder }
+          let_it_be(:optimization_param) { :attempt_project_search_optimizations }
         end
       end
 

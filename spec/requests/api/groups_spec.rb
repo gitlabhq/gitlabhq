@@ -2029,6 +2029,81 @@ RSpec.describe API::Groups do
     end
   end
 
+  describe 'GET /groups/:id/transfer_locations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:source_group) { create(:group, :private) }
+
+    let(:params) { {} }
+
+    subject(:request) do
+      get api("/groups/#{source_group.id}/transfer_locations", user), params: params
+    end
+
+    context 'when the user has rights to transfer the group' do
+      let_it_be(:guest_group) { create(:group) }
+      let_it_be(:maintainer_group) { create(:group, name: 'maintainer group', path: 'maintainer-group') }
+      let_it_be(:owner_group_1) { create(:group, name: 'owner group', path: 'owner-group') }
+      let_it_be(:owner_group_2) { create(:group, name: 'gitlab group', path: 'gitlab-group') }
+
+      before do
+        source_group.add_owner(user)
+        guest_group.add_guest(user)
+        maintainer_group.add_maintainer(user)
+        owner_group_1.add_owner(user)
+        owner_group_2.add_owner(user)
+      end
+
+      it 'returns 200' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+      end
+
+      it 'only includes groups where the user has permissions to transfer a group to' do
+        request
+
+        expect(group_ids_from_response).to contain_exactly(owner_group_1.id, owner_group_2.id)
+      end
+
+      context 'with search' do
+        let(:params) { { search: 'gitlab' } }
+
+        it 'includes groups where the user has permissions to transfer a group to, matching the search term' do
+          request
+
+          expect(group_ids_from_response).to contain_exactly(owner_group_2.id)
+        end
+      end
+
+      def group_ids_from_response
+        json_response.map { |group| group['id'] }
+      end
+    end
+
+    context 'when the user does not have permissions to transfer the group' do
+      before do
+        source_group.add_developer(user)
+      end
+
+      it 'returns 403' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'for an anonymous user' do
+      let_it_be(:user) { nil }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST /groups/:id/transfer' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:new_parent_group) { create(:group, :private) }

@@ -22549,9 +22549,6 @@ msgstr ""
 msgid "Job has wrong arguments format."
 msgstr ""
 
-msgid "Job is missing the `model_type` argument."
-msgstr ""
-
 msgid "Job is stuck. Check runners."
 msgstr ""
 
@@ -25663,9 +25660,6 @@ msgstr ""
 msgid "Most stars"
 msgstr ""
 
-msgid "Mount point %{mounted_as} not found in %{model_class}."
-msgstr ""
-
 msgid "Move"
 msgstr ""
 
@@ -25754,12 +25748,6 @@ msgid "Multiple IP address ranges are supported. Does not affect access to the g
 msgstr ""
 
 msgid "Multiple Prometheus integrations are not supported"
-msgstr ""
-
-msgid "Multiple model types found: %{model_types}"
-msgstr ""
-
-msgid "Multiple uploaders found: %{uploader_types}"
 msgstr ""
 
 msgid "Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1."

@@ -76,34 +76,18 @@ module IssueResolverArguments
   end
 
   def resolve_with_lookahead(**args)
-    # The project could have been loaded in batch by `BatchLoader`.
-    # At this point we need the `id` of the project to query for issues, so
-    # make sure it's loaded and not `nil` before continuing.
-    parent = object.respond_to?(:sync) ? object.sync : object
-    return Issue.none if parent.nil?
+    return Issue.none if resource_parent.nil?
 
-    # Will need to be made group & namespace aware with
-    # https://gitlab.com/gitlab-org/gitlab-foss/issues/54520
-    args[:not] = args[:not].to_h if args[:not].present?
-    args[:iids] ||= [args.delete(:iid)].compact if args[:iid]
-    args[:attempt_project_search_optimizations] = true if args[:search].present?
+    finder = IssuesFinder.new(current_user, prepare_finder_params(args))
 
-    prepare_assignee_username_params(args)
-    prepare_release_tag_params(args)
-
-    finder = IssuesFinder.new(current_user, args)
-
-    continue_issue_resolve(parent, finder, **args)
+    continue_issue_resolve(resource_parent, finder, **args)
   end
 
   def ready?(**args)
-    args[:not] = args[:not].to_h if args[:not].present?
-
     params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
     params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
     params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)
     params_not_mutually_exclusive(args, mutually_exclusive_release_tag_args)
-    validate_anonymous_search_access! if args[:search].present?
 
     super
   end
@@ -128,6 +112,18 @@ module IssueResolverArguments
 
   private
 
+  def prepare_finder_params(args)
+    params = super(args)
+    params[:not] = params[:not].to_h if params[:not].present?
+    params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
+    params[:attempt_project_search_optimizations] = true if params[:search].present?
+
+    prepare_assignee_username_params(params)
+    prepare_release_tag_params(params)
+
+    params
+  end
+
   def prepare_release_tag_params(args)
     release_tag_wildcard = args.delete(:release_tag_wildcard_id)
     return if release_tag_wildcard.blank?
@@ -135,13 +131,21 @@ module IssueResolverArguments
     args[:release_tag] ||= release_tag_wildcard
   end
 
+  def prepare_assignee_username_params(args)
+    args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?
+    args[:not][:assignee_username] = args[:not].delete(:assignee_usernames) if args.dig(:not, :assignee_usernames).present?
+  end
+
   def mutually_exclusive_release_tag_args
     [:release_tag, :release_tag_wildcard_id]
   end
 
-  def prepare_assignee_username_params(args)
-    args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?
-    args[:not][:assignee_username] = args[:not].delete(:assignee_usernames) if args.dig(:not, :assignee_usernames).present?
+  def mutually_exclusive_milestone_args
+    [:milestone_title, :milestone_wildcard_id]
+  end
+
+  def mutually_exclusive_assignee_username_args
+    [:assignee_usernames, :assignee_username]
   end
 
   def params_not_mutually_exclusive(args, mutually_exclusive_args)
@@ -151,11 +155,12 @@ module IssueResolverArguments
     end
   end
 
-  def mutually_exclusive_milestone_args
-    [:milestone_title, :milestone_wildcard_id]
-  end
-
-  def mutually_exclusive_assignee_username_args
-    [:assignee_usernames, :assignee_username]
+  def resource_parent
+    # The project could have been loaded in batch by `BatchLoader`.
+    # At this point we need the `id` of the project to query for issues, so
+    # make sure it's loaded and not `nil` before continuing.
+    strong_memoize(:resource_parent) do
+      object.respond_to?(:sync) ? object.sync : object
+    end
   end
 end

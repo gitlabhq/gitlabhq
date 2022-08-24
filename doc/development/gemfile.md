@@ -73,7 +73,7 @@ to a gem, go through these steps:
      apply if someone who currently works at GitLab wants to maintain
      the gem beyond their time working at GitLab.
 
-When publishing a gem to RubyGems.org, also note the section on 
+When publishing a gem to RubyGems.org, also note the section on
 [gem owners](https://about.gitlab.com/handbook/developer-onboarding/#ruby-gems)
 in the handbook.
 
@@ -132,7 +132,7 @@ that also relied on `thor` but had its version pinned to a vulnerable
 one. These changes are easy to miss in the `Gemfile.lock`. Pinning the
 version would result in a conflict that would need to be solved.
 
-To avoid upgrading indirect dependencies, we can use 
+To avoid upgrading indirect dependencies, we can use
 [`bundle update --conservative`](https://bundler.io/man/bundle-update.1.html#OPTIONS).
 
 When submitting a merge request including a dependency update,

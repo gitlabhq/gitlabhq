@@ -112,8 +112,8 @@ gitlab:
 
 Since GitLab 15.1, Geo secondary proxying is enabled by default for separate URLs also.
 
-There are minor known issues linked in the 
-["Geo secondary proxying with separate URLs" epic](https://gitlab.com/groups/gitlab-org/-/epics/6865). 
+There are minor known issues linked in the
+["Geo secondary proxying with separate URLs" epic](https://gitlab.com/groups/gitlab-org/-/epics/6865).
 You can also add feedback in the epic about any use-cases that
 are not possible anymore with proxying enabled.
 

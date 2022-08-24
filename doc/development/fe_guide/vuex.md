@@ -364,7 +364,7 @@ export default initialState => ({
 
 We made the conscious decision to avoid this pattern to improve the ability to
 discover and search our frontend codebase. The same applies
-when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in 
+when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in
 [this discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
 
 > Consider a `someStateKey` is being used in the store state. You _may_ not be

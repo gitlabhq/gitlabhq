@@ -41,7 +41,7 @@ To bring the former **primary** site up to date:
 
    NOTE:
    If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
-   for this site during disaster recovery procedure you may need to 
+   for this site during disaster recovery procedure you may need to
    [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
    during this procedure.
 

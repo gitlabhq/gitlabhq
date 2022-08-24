@@ -342,7 +342,7 @@ tags using these formats:
 - `vX.Y.Z`
 - `X.Y.Z`
 
-Where `X.Y.Z` is a version that follows [semantic versioning](https://semver.org/). 
+Where `X.Y.Z` is a version that follows [semantic versioning](https://semver.org/).
 For example, consider a project with the following tags:
 
 - v1.0.0-pre1

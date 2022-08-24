@@ -148,7 +148,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" \
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab Shell authorized keys
-check. Which is called by OpenSSH for 
+check. Which is called by OpenSSH for
 [fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |

@@ -30,8 +30,8 @@ And update the `applications/cert-manager/helmfile.yaml` with a valid email addr
 ```
 
 NOTE:
-If your Kubernetes version is earlier than 1.20 and you are 
-[migrating from GitLab Managed Apps to a cluster management project](../../../../clusters/migrating_from_gma_to_project_template.md), 
+If your Kubernetes version is earlier than 1.20 and you are
+[migrating from GitLab Managed Apps to a cluster management project](../../../../clusters/migrating_from_gma_to_project_template.md),
 then you can instead use `- path: applications/cert-manager-legacy/helmfile.yaml` to
 take over an existing release of cert-manager v0.10.
 

@@ -9,7 +9,8 @@ module Users
     belongs_to :project
 
     enum feature_name: {
-      awaiting_members_banner: 1 # EE-only
+      awaiting_members_banner: 1, # EE-only
+      web_hook_disabled: 2
     }
 
     validates :project, presence: true

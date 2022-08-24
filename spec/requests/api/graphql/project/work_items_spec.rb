@@ -27,14 +27,6 @@ RSpec.describe 'getting an work item list for a project' do
     QUERY
   end
 
-  let(:query) do
-    graphql_query_for(
-      'project',
-      { 'fullPath' => project.full_path },
-      query_graphql_field('workItems', item_filter_params, fields)
-    )
-  end
-
   it_behaves_like 'a working graphql query' do
     before do
       post_graphql(query, current_user: current_user)
@@ -83,6 +75,14 @@ RSpec.describe 'getting an work item list for a project' do
     end
   end
 
+  context 'when filtering by search' do
+    it_behaves_like 'query with a search term' do
+      let(:issuable_data) { items_data }
+      let(:user) { current_user }
+      let_it_be(:issuable) { create(:work_item, project: project, description: 'bar') }
+    end
+  end
+
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :work_items] }
 
@@ -117,5 +117,13 @@ RSpec.describe 'getting an work item list for a project' do
 
   def item_ids
     graphql_dig_at(items_data, :node, :id)
+  end
+
+  def query(params = item_filter_params)
+    graphql_query_for(
+      'project',
+      { 'fullPath' => project.full_path },
+      query_graphql_field('workItems', params, fields)
+    )
   end
 end

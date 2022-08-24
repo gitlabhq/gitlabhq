@@ -71,18 +71,18 @@ module Users
 
       last_failure = DateTime.parse(last_failure) if last_failure
 
-      user_dismissed?(WEB_HOOK_DISABLED, last_failure, namespace: project.namespace)
+      user_dismissed?(WEB_HOOK_DISABLED, last_failure, project: project)
     end
 
     private
 
-    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, namespace: nil)
+    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, project: nil)
       return false unless current_user
 
       query = { feature_name: feature_name, ignore_dismissal_earlier_than: ignore_dismissal_earlier_than }
 
-      if namespace
-        current_user.dismissed_callout_for_namespace?(namespace: namespace, **query)
+      if project
+        current_user.dismissed_callout_for_project?(project: project, **query)
       else
         current_user.dismissed_callout?(**query)
       end

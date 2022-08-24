@@ -26,7 +26,7 @@ GitLab has been tested by vendors and customers on a number of object storage pr
 
 ### Known compatibility issues
 
-- Dell EMC ECS: Prior to GitLab 13.3, there is a 
+- Dell EMC ECS: Prior to GitLab 13.3, there is a
   [known bug in GitLab Workhorse that prevents HTTP Range Requests from working with CI job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/223806).
   Be sure to upgrade to GitLab 13.3.0 or above if you use S3 storage with this hardware.
 
@@ -578,7 +578,7 @@ real bucket into multiple virtual buckets. If your object storage
 bucket is called `my-gitlab-objects` you can configure uploads to go
 into `my-gitlab-objects/uploads`, artifacts into
 `my-gitlab-objects/artifacts`, etc. The application will act as if
-these are separate buckets. Note that use of bucket prefixes 
+these are separate buckets. Note that use of bucket prefixes
 [may not work correctly with Helm backups](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3376).
 
 Helm-based installs require separate buckets to
@@ -693,7 +693,7 @@ configuration.
 When configured either with an instance profile or with the consolidated
 object configuration, GitLab Workhorse properly uploads files to S3
 buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
-Customer master keys (CMKs) and SSE-C encryption are 
+Customer master keys (CMKs) and SSE-C encryption are
 [not supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
 
 ##### Server-side encryption headers
@@ -701,7 +701,7 @@ Customer master keys (CMKs) and SSE-C encryption are
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
 
 Setting a default encryption on an S3 bucket is the easiest way to
-enable encryption, but you may want to 
+enable encryption, but you may want to
 [set a bucket policy to ensure only encrypted objects are uploaded](https://aws.amazon.com/premiumsupport/knowledge-center/s3-bucket-store-kms-encrypted-objects/).
 To do this, you must configure GitLab to send the proper encryption headers
 in the `storage_options` configuration section:

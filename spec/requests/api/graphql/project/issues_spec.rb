@@ -27,14 +27,6 @@ RSpec.describe 'getting an issue list for a project' do
     QUERY
   end
 
-  let(:query) do
-    graphql_query_for(
-      'project',
-      { 'fullPath' => project.full_path },
-      query_graphql_field('issues', issue_filter_params, fields)
-    )
-  end
-
   it_behaves_like 'a working graphql query' do
     before do
       post_graphql(query, current_user: current_user)
@@ -86,6 +78,14 @@ RSpec.describe 'getting an issue list for a project' do
 
         expect(issues_ids).to eq(gids)
       end
+    end
+  end
+
+  context 'when filtering by search' do
+    it_behaves_like 'query with a search term' do
+      let(:issuable_data) { issues_data }
+      let(:user) { current_user }
+      let_it_be(:issuable) { create(:issue, project: project, description: 'bar') }
     end
   end
 
@@ -678,5 +678,13 @@ RSpec.describe 'getting an issue list for a project' do
 
   def issues_ids
     graphql_dig_at(issues_data, :node, :id)
+  end
+
+  def query(params = issue_filter_params)
+    graphql_query_for(
+      'project',
+      { 'fullPath' => project.full_path },
+      query_graphql_field('issues', params, fields)
+    )
   end
 end

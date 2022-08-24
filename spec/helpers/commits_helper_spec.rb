@@ -329,7 +329,7 @@ RSpec.describe CommitsHelper do
     it { is_expected.to include(commit.author) }
     it { is_expected.to include(ref) }
 
-    it do
+    specify do
       is_expected.to include(
         {
           merge_request: merge_request.cache_key,

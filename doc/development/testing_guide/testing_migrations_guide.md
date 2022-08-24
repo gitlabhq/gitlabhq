@@ -317,7 +317,7 @@ To test these you usually have to:
 - Verify that the expected jobs were scheduled, with the correct set
   of records, the correct batch size, interval, etc.
 
-The behavior of the background migration itself needs to be verified in a 
+The behavior of the background migration itself needs to be verified in a
 [separate test for the background migration class](#example-background-migration-test).
 
 This spec tests the

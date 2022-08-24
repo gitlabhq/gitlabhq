@@ -12,7 +12,7 @@ You can set up a Container Registry on your **secondary** Geo site that mirrors 
 ## Supported container registries
 
 Geo supports the following types of container registries:
- 
+
 - [Docker](https://docs.docker.com/registry/)
 - [OCI](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
 
@@ -26,7 +26,7 @@ The following container image formats are support by Geo:
 
 In addition, Geo also supports [BuildKit cache images](https://github.com/moby/buildkit).
 
-## Supported storage 
+## Supported storage
 
 ### Docker
 
@@ -34,7 +34,7 @@ For more information on supported registry storage drivers see
 [Docker registry storage drivers](https://docs.docker.com/registry/storage-drivers/)
 
 Read the [Load balancing considerations](https://docs.docker.com/registry/deploying/#load-balancing-considerations)
-when deploying the Registry, and how to set up the storage driver for the GitLab integrated 
+when deploying the Registry, and how to set up the storage driver for the GitLab integrated
 [Container Registry](../../packages/container_registry.md#use-object-storage).
 
 ### Registries that support OCI artifacts

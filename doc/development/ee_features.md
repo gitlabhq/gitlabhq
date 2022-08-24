@@ -281,7 +281,7 @@ There are a few gotchas with it:
   overriding the method, because we can't know when the overridden method
   (that is, calling `super` in the overriding method) would want to stop early.
   In this case, we shouldn't just override it, but update the original method
-  to make it call the other method we want to extend, like a 
+  to make it call the other method we want to extend, like a
   [template method pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
   For example, given this base:
 

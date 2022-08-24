@@ -51,7 +51,7 @@ Note the following:
   cluster's pod address IP range is set to `/16` instead of the regular `/14`. `/16` is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
-  set up an [initial service account](cluster_access.md). In 
+  set up an [initial service account](cluster_access.md). In
   [GitLab versions 11.10 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58208), the cluster creation process
   explicitly requests GKE to create clusters with basic authentication enabled and a client
   certificate.

@@ -252,7 +252,7 @@ A scan on an index that required retrieving some data from the table.
 
 Bitmap scans fall between sequential scans and index scans. These are typically
 used when we would read too much data from an index scan, but too little to
-perform a sequential scan. A bitmap scan uses what is known as a 
+perform a sequential scan. A bitmap scan uses what is known as a
 [bitmap index](https://en.wikipedia.org/wiki/Bitmap_index) to perform its work.
 
 The [source code of PostgreSQL](https://gitlab.com/postgres/postgres/blob/REL_11_STABLE/src/include/nodes/plannodes.h#L441)

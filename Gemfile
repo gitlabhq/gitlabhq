@@ -187,7 +187,7 @@ gem 'rack', '~> 2.2.4'
 gem 'rack-timeout', '~> 0.6.0', require: 'rack/timeout/base'
 
 group :puma do
-  gem 'puma', '~> 5.6.4', require: false
+  gem 'puma', '~> 5.6.5', require: false
   gem 'puma_worker_killer', '~> 0.3.1', require: false
   gem 'sd_notify', '~> 0.1.0', require: false
 end

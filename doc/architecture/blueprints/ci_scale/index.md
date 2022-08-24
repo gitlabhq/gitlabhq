@@ -115,13 +115,13 @@ of the CI/CD Apdex score, and sometimes even causes a significant performance
 degradation in the production environment.
 
 There are multiple other strategies that can improve performance and
-reliability. We can use [Redis queuing](https://gitlab.com/gitlab-org/gitlab/-/issues/322972), or 
+reliability. We can use [Redis queuing](https://gitlab.com/gitlab-org/gitlab/-/issues/322972), or
 [a separate table that will accelerate SQL queries used to build queues](https://gitlab.com/gitlab-org/gitlab/-/issues/322766)
 and we want to explore them.
 
-**Status**: As of October 2021 the new architecture 
+**Status**: As of October 2021 the new architecture
 [has been implemented on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908).
-The following epic tracks making it generally available: 
+The following epic tracks making it generally available:
 [Make the new pending builds architecture generally available](https://gitlab.com/groups/gitlab-org/-/epics/6954).
 
 ### Moving big amounts of data is challenging

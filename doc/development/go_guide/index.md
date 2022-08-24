@@ -145,7 +145,7 @@ Go GitLab linter plugins are maintained in the [`gitlab-org/language-tools/go/li
 ## Dependencies
 
 Dependencies should be kept to the minimum. The introduction of a new
-dependency should be argued in the merge request, as per our [Approval Guidelines](../code_review.md#approval-guidelines). 
+dependency should be argued in the merge request, as per our [Approval Guidelines](../code_review.md#approval-guidelines).
 Both [License Scanning](../../user/compliance/license_compliance/index.md)
 and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
 should be activated on all projects to ensure new dependencies
@@ -153,7 +153,7 @@ security status and license compatibility.
 
 ### Modules
 
-In Go 1.11 and later, a standard dependency system is available behind the name 
+In Go 1.11 and later, a standard dependency system is available behind the name
 [Go Modules](https://github.com/golang/go/wiki/Modules). It provides a way to
 define and lock dependencies for reproducible builds. It should be used
 whenever possible.
@@ -166,7 +166,7 @@ projects, and makes merge requests easier to review.
 In some cases, such as building a Go project for it to act as a dependency of a
 CI run for another project, removing the `vendor/` directory means the code must
 be downloaded repeatedly, which can lead to intermittent problems due to rate
-limiting or network failures. In these circumstances, you should 
+limiting or network failures. In these circumstances, you should
 [cache the downloaded code between](../../ci/caching/index.md#cache-go-dependencies).
 
 There was a

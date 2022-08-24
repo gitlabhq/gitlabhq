@@ -14,7 +14,7 @@ embed Grafana panels using either:
 
 ## Use Grafana-rendered images
 
-You can embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html) panels as 
+You can embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html) panels as
 [a direct link](https://grafana.com/docs/grafana/v7.5/sharing/share-panel/#use-direct-link).
 Your Grafana instance must:
 

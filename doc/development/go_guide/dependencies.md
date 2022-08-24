@@ -44,8 +44,8 @@ end with a timestamp and the first 12 characters of the commit identifier:
 
 If a VCS tag matches one of these patterns, it is ignored.
 
-For a complete understanding of Go modules and versioning, see 
-[this series of blog posts](https://go.dev/blog/using-go-modules) 
+For a complete understanding of Go modules and versioning, see
+[this series of blog posts](https://go.dev/blog/using-go-modules)
 on the official Go website.
 
 ## 'Module' vs 'Package'

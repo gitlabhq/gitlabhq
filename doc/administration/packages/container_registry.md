@@ -1202,7 +1202,7 @@ Before diving in to the following sections, here's some basic troubleshooting:
    been synchronized (for example, via NTP).
 
 1. If you are using an S3-backed Registry, double check that the IAM
-   permissions and the S3 credentials (including region) are correct. See 
+   permissions and the S3 credentials (including region) are correct. See
    [the sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
    for more details.
 
@@ -1631,7 +1631,7 @@ wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
-One way would be to disable HTTPS by setting up an 
+One way would be to disable HTTPS by setting up an
 [insecure Registry](https://docs.docker.com/registry/insecure/). This could introduce a
 security hole and is only recommended for local testing. If you have a
 production system and can't or don't want to do this, there is another way:

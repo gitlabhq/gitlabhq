@@ -1228,7 +1228,7 @@ If using a model in the migrations, you should first
 [clear the column cache](https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-reset_column_information)
 using `reset_column_information`.
 
-If using a model that leverages single table inheritance (STI), there are 
+If using a model that leverages single table inheritance (STI), there are
 [special considerations](database/single_table_inheritance.md#in-migrations).
 
 This avoids problems where a column that you are using was altered and cached

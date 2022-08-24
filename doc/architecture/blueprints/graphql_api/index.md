@@ -44,11 +44,11 @@ It is an opportunity to learn from our experience in evolving the REST API, for
 the scale, and to apply this knowledge onto the GraphQL development efforts. We
 can do that by building query-to-feature correlation mechanisms, adding
 scalable state synchronization support and aligning GraphQL with other
-architectural initiatives being executed in parallel, like 
+architectural initiatives being executed in parallel, like
 [the support for direct uploads](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
 
 GraphQL should be secure by default. We can avoid common security mistakes by
-building mechanisms that will help us to enforce 
+building mechanisms that will help us to enforce
 [OWASP GraphQL recommendations](https://cheatsheetseries.owasp.org/cheatsheets/GraphQL_Cheat_Sheet.html)
 that are relevant to us.
 

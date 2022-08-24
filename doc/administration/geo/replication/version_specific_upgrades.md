@@ -183,8 +183,8 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab 
   each upgraded reference. Delay any upgrade attempts until this is in the
   [13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002).
   More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
-- A new secret is generated in `/etc/gitlab/gitlab-secrets.json`. 
-  In an HA GitLab or GitLab Geo environment, secrets need to be the same on all nodes. 
+- A new secret is generated in `/etc/gitlab/gitlab-secrets.json`.
+  In an HA GitLab or GitLab Geo environment, secrets need to be the same on all nodes.
   Ensure this new secret is also accounted for if you are manually syncing the file across
   nodes, or manually specifying secrets in `/etc/gitlab/gitlab.rb`.
 
@@ -247,7 +247,7 @@ the recommended procedure, see the
 ## Upgrading to GitLab 12.9
 
 WARNING:
-GitLab 12.9.0 through GitLab 12.9.3 are affected by 
+GitLab 12.9.0 through GitLab 12.9.3 are affected by
 [a bug that stops repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
 The issue is fixed in GitLab 12.9.4. Upgrade to GitLab 12.9.4 or later.
 
@@ -401,6 +401,6 @@ For the recommended procedure, see the
 ## Upgrading to GitLab 12.0
 
 WARNING:
-This version is affected by a 
+This version is affected by a
 [bug that results in new LFS objects not being replicated to Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 The issue is fixed in GitLab 12.1. Be sure to upgrade to GitLab 12.1 or later.

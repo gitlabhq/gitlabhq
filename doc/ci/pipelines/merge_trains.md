@@ -59,7 +59,7 @@ changes that are included in the target branch, and the `C` changes that are fro
 the merge request already in the train.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch this video for a demonstration on 
+Watch this video for a demonstration on
 [how parallel execution of merge trains can prevent commits from breaking the default branch](https://www.youtube.com/watch?v=D4qCqXgZkHQ).
 
 ## Prerequisites

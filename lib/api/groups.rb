@@ -96,9 +96,9 @@ module API
         present options[:with].prepare_relation(projects, options), options
       end
 
-      def present_groups(params, groups)
+      def present_groups(params, groups, serializer: Entities::Group)
         options = {
-          with: Entities::Group,
+          with: serializer,
           current_user: current_user,
           statistics: params[:statistics] && current_user&.admin?
         }
@@ -390,6 +390,21 @@ module API
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
+      end
+
+      desc 'Get the groups to where the current group can be transferred to'
+      params do
+        optional :search, type: String, desc: 'Return list of namespaces matching the search criteria'
+        use :pagination
+      end
+      get ':id/transfer_locations', feature_category: :subgroups do
+        authorize! :admin_group, user_group
+        args = declared_params(include_missing: false)
+
+        groups = ::Groups::AcceptingGroupTransfersFinder.new(current_user, user_group, args).execute
+        groups = groups.with_route
+
+        present_groups params, groups, serializer: Entities::PublicGroupDetails
       end
 
       desc 'Transfer a group to a new parent group or promote a subgroup to a root group'

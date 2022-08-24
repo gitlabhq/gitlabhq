@@ -119,7 +119,7 @@ rm go1.17.10.linux-amd64.tar.gz
 To check you are running the minimum required Git version, see
 [Git versions](../install/installation.md#software-requirements).
 
-From GitLab 13.6, we recommend you use the 
+From GitLab 13.6, we recommend you use the
 [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 

@@ -210,7 +210,7 @@ This shows you which user has this email address. One of two steps must be taken
   remove this email as a secondary email and make it a primary one so GitLab
   associates this profile to the LDAP identity.
 
-The user can do either of these steps 
+The user can do either of these steps
 [in their profile](../../../user/profile/index.md#access-your-user-profile) or an administrator can do it.
 
 #### Projects limit errors
@@ -430,7 +430,7 @@ Next, [learn how to read the output](#example-console-output-after-a-group-sync)
 
 ##### Example console output after a group sync
 
-Like the output from the user sync, the output from the 
+Like the output from the user sync, the output from the
 [manual group sync](#sync-all-groups) is also very verbose. However, it contains lots
 of helpful information.
 
