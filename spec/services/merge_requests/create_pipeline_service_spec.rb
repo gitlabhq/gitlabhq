@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CreatePipelineService do
+RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache do
   include ProjectForksHelper
 
   let_it_be(:project, reload: true) { create(:project, :repository) }

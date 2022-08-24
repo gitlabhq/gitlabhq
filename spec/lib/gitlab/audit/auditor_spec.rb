@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Audit::Auditor do
   let(:name) { 'audit_operation' }
-  let(:author) { create(:user) }
+  let(:author) { create(:user, :with_sign_ins) }
   let(:group) { create(:group) }
   let(:provider) { 'standard' }
   let(:context) do
@@ -37,6 +37,13 @@ RSpec.describe Gitlab::Audit::Auditor do
         ).and_call_original
 
         audit!
+
+        authentication_event = AuthenticationEvent.last
+
+        expect(authentication_event.user).to eq(author)
+        expect(authentication_event.user_name).to eq(author.name)
+        expect(authentication_event.ip_address).to eq(author.current_sign_in_ip)
+        expect(authentication_event.provider).to eq(provider)
       end
 
       it 'logs audit events to database', :aggregate_failures do

@@ -117,7 +117,7 @@ module Gitlab
           # Only capture real users for successful authentication events.
           user: author_if_user,
           user_name: @author.name,
-          ip_address: @ip_address,
+          ip_address: Gitlab::RequestContext.instance.client_ip || @author.current_sign_in_ip,
           result: AuthenticationEvent.results[:success],
           provider: @authentication_provider
         }

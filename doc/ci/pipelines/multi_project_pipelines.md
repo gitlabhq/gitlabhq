@@ -10,7 +10,7 @@ type: reference
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 You can set up [GitLab CI/CD](../index.md) across multiple projects, so that a pipeline
-in one project can trigger a pipeline in another project. You can visualize the entire pipeline
+in one project can trigger a [downstream](downstream_pipelines.md) pipeline in another project. You can visualize the entire pipeline
 in one place, including all cross-project interdependencies.
 
 For example, you might deploy your web application from three different projects in GitLab.
@@ -69,7 +69,7 @@ GitLab then creates a downstream pipeline in the
 `staging` job succeeds. The full path to the project is `my/deployment`.
 
 You can view the status for the pipeline, or you can display
-[the downstream pipeline's status instead](#mirror-status-of-a-triggered-pipeline-in-the-trigger-job).
+[the downstream pipeline's status instead](downstream_pipelines.md#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job).
 
 The user that creates the upstream pipeline must be able to create pipelines in the
 downstream project (`my/deployment`) too. If the downstream project is not found,
@@ -124,117 +124,6 @@ of the user that ran the trigger job in the upstream project. If the user does n
 have permission to run CI/CD pipelines against the protected branch, the pipeline fails. See
 [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches).
 
-#### Pass CI/CD variables to a downstream pipeline by using the `variables` keyword
-
-Sometimes you might want to pass CI/CD variables to a downstream pipeline.
-You can do that by using the `variables` keyword, just like you would for any other job.
-
-```yaml
-rspec:
-  stage: test
-  script: bundle exec rspec
-
-staging:
-  variables:
-    ENVIRONMENT: staging
-  stage: deploy
-  trigger: my/deployment
-```
-
-The `ENVIRONMENT` variable is passed to every job defined in a downstream
-pipeline. It is available as a variable when GitLab Runner picks a job.
-
-In the following configuration, the `MY_VARIABLE` variable is passed to the downstream pipeline
-that is created when the `trigger-downstream` job is queued. This is because `trigger-downstream`
-job inherits variables declared in global variables blocks, and then we pass these variables to a downstream pipeline.
-
-```yaml
-variables:
-  MY_VARIABLE: my-value
-
-trigger-downstream:
-  variables:
-    ENVIRONMENT: something
-  trigger: my/project
-```
-
-You can stop global variables from reaching the downstream pipeline by using the [`inherit:variables` keyword](../yaml/index.md#inheritvariables).
-In this example, the `MY_GLOBAL_VAR` variable is not available in the triggered pipeline:
-
-```yaml
-variables:
-  MY_GLOBAL_VAR: value
-
-trigger-downstream:
-  inherit:
-    variables: false
-  variables:
-    MY_LOCAL_VAR: value
-  trigger: my/project
-```
-
-You might want to pass some information about the upstream pipeline using, for
-example, predefined variables. In order to do that, you can use interpolation
-to pass any variable. For example:
-
-```yaml
-downstream-job:
-  variables:
-    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
-  trigger: my/project
-```
-
-In this scenario, the `UPSTREAM_BRANCH` variable with the value of the upstream pipeline's
-`$CI_COMMIT_REF_NAME` is passed to `downstream-job`. It is available in the
-context of all downstream builds.
-
-You cannot use this method to forward [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
-to a downstream pipeline, as they are not available in trigger jobs.
-
-Upstream pipelines take precedence over downstream ones. If there are two
-variables with the same name defined in both upstream and downstream projects,
-the ones defined in the upstream project take precedence.
-
-#### Pass CI/CD variables to a downstream pipeline by using variable inheritance **(PREMIUM)**
-
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job) and [`needs:project`](../yaml/index.md#needsproject).
-
-In the upstream pipeline:
-
-1. Save the variables in a `.env` file.
-1. Save the `.env` file as a `dotenv` report.
-1. Trigger the downstream pipeline.
-
-   ```yaml
-   build_vars:
-     stage: build
-     script:
-       - echo "BUILD_VERSION=hello" >> build.env
-     artifacts:
-       reports:
-         dotenv: build.env
-
-   deploy:
-     stage: deploy
-     trigger: my/downstream_project
-   ```
-
-1. Set the `test` job in the downstream pipeline to inherit the variables from the `build_vars`
-   job in the upstream project with `needs`. The `test` job inherits the variables in the
-   `dotenv` report and it can access `BUILD_VERSION` in the script:
-
-   ```yaml
-   test:
-     stage: test
-     script:
-       - echo $BUILD_VERSION
-     needs:
-       - project: my/upstream_project
-         job: build_vars
-         ref: master
-         artifacts: true
-   ```
-
 #### Pass artifacts to a downstream pipeline
 
 You can pass artifacts to a downstream pipeline by using [`needs:project`](../yaml/index.md#needsproject).
@@ -287,7 +176,7 @@ pass this variable to the downstream pipeline using variable inheritance:
 
 1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
 1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable by using
-   [variable inheritance](#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword):
+   [variable inheritance](downstream_pipelines.md#pass-yaml-defined-cicd-variables):
 
    ```yaml
    build_artifacts:
@@ -336,21 +225,6 @@ is `pipeline` for all its jobs.
 If you use [`only/except`](../yaml/index.md#only--except) to control job behavior, use the
 [`pipelines`](../yaml/index.md#onlyrefs--exceptrefs) keyword.
 
-#### Mirror status of a triggered pipeline in the trigger job
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in GitLab Premium 12.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
-
-You can mirror the pipeline status from the triggered pipeline to the source trigger job
-by using [`strategy: depend`](../yaml/index.md#triggerstrategy). For example:
-
-```yaml
-trigger_job:
-  trigger:
-    project: my/project
-    strategy: depend
-```
-
 ### Create multi-project pipelines by using the API
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) to GitLab Free in 12.4.
@@ -370,7 +244,7 @@ When using:
 - [`only/except`](../yaml/index.md#only--except) to control job behavior, use the
   `pipelines` keyword.
 
-## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
+### Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
@@ -409,11 +283,3 @@ In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipelin
 displays to the right of the mini graph.
 
 ![Multi-project pipeline mini graph](img/pipeline_mini_graph_v15_0.png)
-
-## Retry or cancel multi-project pipelines
-
-If you have permission to trigger pipelines in the downstream project, you can
-retry or cancel multi-project pipelines:
-
-- [In the main graph view](downstream_pipelines.md#view-a-downstream-pipeline).
-- From the downstream pipeline's details page.

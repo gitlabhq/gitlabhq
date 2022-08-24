@@ -3884,7 +3884,7 @@ test:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in GitLab Premium 11.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-Use `trigger` to start a downstream pipeline that is either:
+Use `trigger` to start a [downstream pipeline](../pipelines/downstream_pipelines.md) that is either:
 
 - [A multi-project pipeline](../pipelines/multi_project_pipelines.md).
 - [A child pipeline](../pipelines/parent_child_pipelines.md).

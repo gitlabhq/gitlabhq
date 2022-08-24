@@ -33,15 +33,16 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
   end
 
   describe "#present_cached" do
-    subject do
-      instance.present_cached(presentable, **kwargs)
-    end
-
+    let(:method) { :present_cached }
     let(:kwargs) do
       {
         with: presenter,
         project: project
       }
+    end
+
+    subject do
+      instance.public_send(method, presentable, **kwargs)
     end
 
     context 'single object' do

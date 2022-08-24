@@ -107,7 +107,7 @@ describe('Design management toolbar component', () => {
 
     await nextTick();
     wrapper.findComponent(DeleteButton).vm.$emit('delete-selected-designs');
-    expect(wrapper.emitted().delete).toBeTruthy();
+    expect(wrapper.emitted().delete).toHaveLength(1);
   });
 
   it('renders download button with correct link', () => {

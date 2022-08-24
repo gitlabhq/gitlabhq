@@ -647,7 +647,7 @@ deploy_five:
     artifacts: false
 ```
 
-[Multi-project pipelines](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance)
+[Multi-project pipelines](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job)
 can also inherit variables from their upstream pipelines.
 
 ## CI/CD variable precedence
@@ -695,8 +695,8 @@ You can override the value of a variable when you:
 1. Run a job manually in the UI.
 1. Use [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
 1. Trigger a pipeline by using [the API](../triggers/index.md#pass-cicd-variables-in-the-api-call).
-1. Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword)
-   or [by using variable inheritance](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
+1. Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline)
+   or [by using variable inheritance](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 
 The pipeline variables declared in these events take [priority over other variables](#cicd-variable-precedence).
 

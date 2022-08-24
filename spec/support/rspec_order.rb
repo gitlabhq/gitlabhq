@@ -43,9 +43,6 @@ RSpec.configure do |config|
   config.on_example_group_definition do |example_group|
     order = Support::RspecOrder.order_for(example_group)
 
-    if order
-      example_group.metadata[:order] = order.to_sym
-      example_group.metadata[:description] += " (order #{order})"
-    end
+    example_group.metadata[:order] = order.to_sym if order
   end
 end

@@ -98,7 +98,7 @@ approach.
 ## Security scanning with Auto DevOps
 
 To enable all GitLab Security scanning tools, with default settings, enable
-[Auto DevOps](../../topics/autodevops/):
+[Auto DevOps](../../topics/autodevops/index.md):
 
 - [Auto SAST](../../topics/autodevops/stages.md#auto-sast)
 - [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
@@ -405,7 +405,7 @@ You can interact with the results of the security scanning tools in several loca
 - [Project Security Dashboard](security_dashboard/index.md)
 - [Security pipeline tab](security_dashboard/index.md)
 - [Group Security Dashboard](security_dashboard/index.md)
-- [Security Center](security_dashboard/#security-center)
+- [Security Center](security_dashboard/index.md#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)
 - [Vulnerability Pages](vulnerabilities/index.md)
 - [Dependency List](dependency_list/index.md)
@@ -446,7 +446,7 @@ Security and compliance teams must ensure that security scans:
 
 GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
 
-- [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
+- [Compliance framework pipelines](../project/settings/index.md#compliance-pipeline-configuration)
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,

@@ -26,7 +26,7 @@ YAML is dynamically generated.
 ![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
 
 Similarly to [multi-project pipelines](multi_project_pipelines.md), a pipeline can trigger a
-set of concurrently running child pipelines, but within the same project:
+set of concurrently running [downstream](downstream_pipelines.md) child pipelines, but in the same project:
 
 - Child pipelines still execute each of their jobs according to a stage sequence, but
   would be free to continue forward through their stages without waiting for unrelated
@@ -89,8 +89,9 @@ microservice_a:
 
 The maximum number of entries that are accepted for `trigger:include` is three.
 
-Similar to [multi-project pipelines](multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
-we can set the parent pipeline to depend on the status of the child pipeline upon completion:
+Similar to [multi-project pipelines](multi_project_pipelines.md), we can set the
+parent pipeline to [depend on the status](downstream_pipelines.md#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job)
+of the child pipeline upon completion:
 
 ```yaml
 microservice_a:
@@ -214,15 +215,7 @@ For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
 
 ## Pass CI/CD variables to a child pipeline
 
-You can pass CI/CD variables to a downstream pipeline using the same methods as
-multi-project pipelines:
+You can pass variables to a downstream pipeline:
 
-- [By using the `variable` keyword](multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword).
-- [By using variable inheritance](multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
-
-## Retry or cancel child pipelines
-
-You can retry or cancel child pipelines:
-
-- [In the main graph view](downstream_pipelines.md#view-a-downstream-pipeline).
-- In the child pipeline's details page.
+- [By using the `variables` keyword](downstream_pipelines.md#pass-yaml-defined-cicd-variables).
+- [By using dotenv variable inheritance](downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).

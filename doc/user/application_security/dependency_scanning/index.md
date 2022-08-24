@@ -50,12 +50,12 @@ possible, we encourage you to use all of our security scanning tools:
   declared software dependencies (and those installed as a sub-dependency).
   Dependency Scanning can not detect software dependencies that are pre-bundled
   into the container's base image. To identify pre-bundled dependencies, enable
-  [Container Scanning](../container_scanning/) language scanning using the
-  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
-- [Container Scanning](../container_scanning/) analyzes your containers and tells
+  [Container Scanning](../container_scanning/index.md) language scanning using the
+  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).
+- [Container Scanning](../container_scanning/index.md) analyzes your containers and tells
   you about known risks in the operating system's (OS) packages. You can configure it
   to also report on software and language dependencies, if you enable it and use
-  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
+  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).
   Turning this variable on can result in some duplicate findings, as we do not yet
   de-duplicate results between Container Scanning and Dependency Scanning. For more details,
   efforts to de-duplicate these findings can be tracked in
@@ -627,7 +627,7 @@ The following variables are used for configuring specific analyzers (used for a 
 The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they will work. This is a large list, many of which we may be unaware of, and as such is not documented.
 
 For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
-set it as a [custom CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+set it as a [custom CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 file like this:
 
 ```yaml

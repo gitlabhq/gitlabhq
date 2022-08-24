@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 Static Application Security Testing (SAST) uses analyzers
-to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/#scanner), a third-party code analysis tool.
+to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/index.md#scanner), a third-party code analysis tool.
 
 The analyzers are published as Docker images that SAST uses to launch dedicated containers for each
 analysis.
@@ -20,7 +20,7 @@ For each scanner, an analyzer:
 
 - Exposes its detection logic.
 - Handles its execution.
-- Converts its output to a [standard format](../terminology/#secure-report-format).
+- Converts its output to a [standard format](../terminology/index.md#secure-report-format).
 
 ## SAST analyzers
 
@@ -77,7 +77,7 @@ You can choose to disable the other analyzers early and use Semgrep-based scanni
 - You'll enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
 - However, vulnerabilities previously reported by language-specific analyzers will be reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
   - whether you've excluded the Semgrep-based analyzer from running in the past.
-  - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/).
+  - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/index.md).
 
 ### Vulnerability translation
 
@@ -103,7 +103,7 @@ You can choose to use Semgrep-based scanning instead of language-specific analyz
 
 We recommend taking this approach if any of these cases applies:
 
-- You haven't used SAST before on a project, so you don't already have SAST vulnerabilities in your [Vulnerability Report](../vulnerability_report/).
+- You haven't used SAST before on a project, so you don't already have SAST vulnerabilities in your [Vulnerability Report](../vulnerability_report/index.md).
 - You're having trouble configuring one of the analyzers whose coverage overlaps with Semgrep-based coverage. For example, you might have trouble setting up the SpotBugs-based analyzer to compile your code.
 - You've already seen and dismissed vulnerabilities created by ESLint, Gosec, or Flawfinder scanning, and you've kept the re-created vulnerabilities created by Semgrep.
 

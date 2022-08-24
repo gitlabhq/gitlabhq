@@ -19,7 +19,7 @@ repository for secrets. All identified secrets are reported in the:
 
 - Merge request widget
 - Pipelines' **Security** tab
-- [Security Dashboard](../security_dashboard/)
+- [Security Dashboard](../security_dashboard/index.md)
 
 ![Secret Detection in merge request widget](img/secret_detection_v13_2.png)
 

@@ -14,10 +14,10 @@ with a long, random job name. In the unlikely event of a job name collision, the
 any pre-existing job in the pipeline. If a policy is created at the group-level, it will apply to every child
 project or sub-group. A group-level policy cannot be edited from a child project or sub-group.
 
-This feature has some overlap with [compliance framework pipelines](../../project/settings/#compliance-pipeline-configuration),
+This feature has some overlap with [compliance framework pipelines](../../project/settings/index.md#compliance-pipeline-configuration),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
-[Enforce scan execution](../#enforce-scan-execution).
+[Enforce scan execution](../index.md#enforce-scan-execution).
 
 NOTE:
 Policy jobs are created in the `test` stage of the pipeline. If you modify the default pipeline

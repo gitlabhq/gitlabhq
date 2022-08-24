@@ -85,15 +85,12 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 
 ### Test order
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
 
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
 
-When randomized:
-
-- We append the `(order random)` to example group description.
-- The used seed is shown in the spec output below the test suite summary. For example, `Randomized with seed 27443`.
+When randomized the used seed is shown in the spec output below the test suite summary. For example, `Randomized with seed 27443`.
 
 For a list of spec files which are still run in defined order, see [`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml).
 

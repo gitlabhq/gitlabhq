@@ -46,7 +46,7 @@ are reintroduced and detected by subsequent scans have a _new_ vulnerability rec
 existing vulnerability is no longer detected in a project's `default` branch, you should change its
 status to **Resolved**. This ensures that if it is accidentally reintroduced in a future merge, it
 is reported again as a new record. You can use the Vulnerability Report's
-[Activity filter](../vulnerability_report/#activity-filter) to select all vulnerabilities that are
+[Activity filter](../vulnerability_report/index.md#activity-filter) to select all vulnerabilities that are
 no longer detected, and change their status.
 
 ## Change status of a vulnerability

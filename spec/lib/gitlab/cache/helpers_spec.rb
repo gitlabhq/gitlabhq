@@ -18,15 +18,16 @@ RSpec.describe Gitlab::Cache::Helpers, :use_clean_rails_redis_caching do
   end
 
   describe "#render_cached" do
-    subject do
-      instance.render_cached(presentable, **kwargs)
-    end
-
+    let(:method) { :render_cached }
     let(:kwargs) do
       {
         with: presenter,
         project: project
       }
+    end
+
+    subject do
+      instance.public_send(method, presentable, **kwargs)
     end
 
     context 'single object' do

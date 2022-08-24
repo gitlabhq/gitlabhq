@@ -174,7 +174,7 @@ describe('Pipeline Wizard - Commit Page', () => {
       });
 
       it('will not emit a done event', () => {
-        expect(wrapper.emitted().done?.length).toBeFalsy();
+        expect(wrapper.emitted().done?.length).toBeUndefined();
       });
 
       afterEach(() => {

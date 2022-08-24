@@ -201,6 +201,27 @@ find this number, though we might not need to do this.
 The single and uniform `partition_id` value for pipeline data gives us more
 choices later on than primary-keys-based partitioning.
 
+## Altering partitioned tables
+
+It will still be possible to run `ALTER TABLE` statements against partitioned tables,
+similarly to how the tables behaved before partitioning. When PostgreSQL runs
+an `ALTER TABLE` statement against a parent partitioned table, it acquires the same
+lock on all child partitions and updates each to keep them in sync. This differs from
+running `ALTER TABLE` on a non-partitioned table in a few key ways:
+
+- PostgreSQL acquires `ACCESS EXCLUSIVE` locks against a larger number of tables, but
+  not a larger amount of data, than it would were the table not partitioned.
+  Each partition will be locked similarly to the parent table, and all will be updated
+  in a single transaction.
+- Lock duration will be increased based on the number of partitions involved.
+  All `ALTER TABLE` statements executed on the GitLab database (other than `VALIDATE CONSTRAINT`)
+  take small constant amounts of time per table modified. PostgreSQL will need
+  to modify each partition in sequence, increasing the runtime of the lock. This
+  time will still remain very small until there are many partitions involved.
+- If thousands of partitions are involved in an `ALTER TABLE`, we will need to verify that
+  the value of `max_locks_per_transaction` is high enough to support all of the locks that
+  need to be taken during the operation.
+
 ## Splitting large partitions into smaller ones
 
 We want to start with the initial `pipeline_id` number `100` (or higher, like
