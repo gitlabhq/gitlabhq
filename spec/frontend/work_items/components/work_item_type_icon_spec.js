@@ -50,6 +50,10 @@ describe('Work Item type component', () => {
         expect(wrapper.text()).toBe(text);
       });
 
+      it('renders the icon in gray color', () => {
+        expect(findIcon().classes()).toContain('gl-text-gray-500');
+      });
+
       it('shows tooltip on hover when props passed', () => {
         const tooltip = getBinding(findIcon().element, 'gl-tooltip');
 

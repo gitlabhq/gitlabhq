@@ -20,13 +20,13 @@ GitLab Dedicated enables you to offload the operational overhead of managing the
 
 - Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#general-setup) in order for GitLab to communicate with your IdP. This is provided during onboarding. SAML [request signing](../../integration/saml.md#request-signing-optional) is supported.
 - Networking:
-  - Public connectivity
+  - Public connectivity with support for IP Allowlists. During onboarding, you can optionally specify a list of IP addresses that can access your Dedicated instance. Subsequently, when an IP not on the allowlist tries to access your instance the connection will be refused.
   - Optional. Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/).
-    You can specify an AWS IAM Principal and preferred Availability Zones during onboarding to enable this functionality.
-- Upgrade strategy:
+    You can specify an AWS IAM Principal and preferred Availability Zones during onboarding to enable this functionality. Both Ingress and Egress Private Links are supported. When connecting to an internal service running in your VPC over https via PrivateLink, Dedicated supports the ability to use a private SSL certificate, which can be provided during onboarding.
+- Upgrades:
   - Monthly upgrades tracking one release behind the latest (n-1), with the latest security release.
   - Out of band security patches provided for high severity releases.
-- Backup strategy: regular backups taken and tested.
+- Backups: regular backups taken and tested.
 - Choice of cloud region: upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
 - Security: Data encrypted at rest and in transit using latest encryption standards.
 - Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/self-managed/feature-comparison/) with the exception of the unsupported features [listed below](#features-not-available-at-launch).

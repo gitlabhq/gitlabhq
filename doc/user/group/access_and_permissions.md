@@ -46,8 +46,6 @@ applies to:
 
 You should consider some security implications before configuring IP address restrictions.
 
-- Restricting HTTP traffic on GitLab.com with IP address restrictions causes SSH requests (including Git operations over
-  SSH) to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
 - Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
   - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
@@ -60,6 +58,8 @@ You should consider some security implications before configuring IP address res
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
   push, merge, issue, or comment events.
+- IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
+  IP access restrictions applied to self-managed instances block SSH completely.
 
 ### Restrict group access by IP address
 

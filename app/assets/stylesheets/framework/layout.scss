@@ -7,9 +7,6 @@ html {
 }
 
 body {
-  // Improves readability for dyslexic users; supported only in Chrome/Safari so far
-  text-decoration-skip: ink;
-
   &.navless {
     background-color: $white !important;
   }
