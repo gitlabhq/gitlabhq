@@ -3464,7 +3464,8 @@ RSpec.describe API::MergeRequests do
 
     context 'when merge request branch does not allow force push' do
       before do
-        create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
+        create_params = { name: merge_request.source_branch, allow_force_push: false, merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }] }
+        ProtectedBranches::CreateService.new(project, project.first_owner, create_params).execute
       end
 
       it 'returns 403' do

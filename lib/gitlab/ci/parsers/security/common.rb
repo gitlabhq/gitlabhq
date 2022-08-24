@@ -7,16 +7,16 @@ module Gitlab
         class Common
           SecurityReportParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
 
-          def self.parse!(json_data, report, vulnerability_finding_signatures_enabled = false, validate: false)
-            new(json_data, report, vulnerability_finding_signatures_enabled, validate: validate).parse!
+          def self.parse!(json_data, report, signatures_enabled: false, validate: false)
+            new(json_data, report, signatures_enabled: signatures_enabled, validate: validate).parse!
           end
 
-          def initialize(json_data, report, vulnerability_finding_signatures_enabled = false, validate: false)
+          def initialize(json_data, report, signatures_enabled: false, validate: false)
             @json_data = json_data
             @report = report
             @project = report.project
             @validate = validate
-            @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
+            @signatures_enabled = signatures_enabled
           end
 
           def parse!
@@ -119,7 +119,7 @@ module Gitlab
             evidence = create_evidence(data['evidence'])
             signatures = create_signatures(tracking_data(data))
 
-            if @vulnerability_finding_signatures_enabled && !signatures.empty?
+            if @signatures_enabled && !signatures.empty?
               # NOT the signature_sha - the compare key is hashed
               # to create the project_fingerprint
               highest_priority_signature = signatures.max_by(&:priority)
@@ -149,7 +149,7 @@ module Gitlab
                 details: data['details'] || {},
                 signatures: signatures,
                 project_id: @project.id,
-                vulnerability_finding_signatures_enabled: @vulnerability_finding_signatures_enabled))
+                vulnerability_finding_signatures_enabled: @signatures_enabled))
           end
 
           def create_signatures(tracking)

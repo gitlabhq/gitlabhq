@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
       }
     end
 
-    where(vulnerability_finding_signatures_enabled: [true, false])
+    where(signatures_enabled: [true, false])
     with_them do
       let_it_be(:pipeline) { create(:ci_pipeline) }
 
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         let(:validator_class) { Gitlab::Ci::Parsers::Security::Validators::SchemaValidator }
         let(:data) { {}.merge(scanner_data) }
         let(:json_data) { data.to_json }
-        let(:parser) { described_class.new(json_data, report, vulnerability_finding_signatures_enabled, validate: validate) }
+        let(:parser) { described_class.new(json_data, report, signatures_enabled: signatures_enabled, validate: validate) }
 
         subject(:parse_report) { parser.parse! }
 
@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
 
       context 'report parsing' do
         before do
-          artifact.each_blob { |blob| described_class.parse!(blob, report, vulnerability_finding_signatures_enabled) }
+          artifact.each_blob { |blob| described_class.parse!(blob, report, signatures_enabled: signatures_enabled) }
         end
 
         describe 'parsing finding.name' do
@@ -465,7 +465,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               finding = report.findings.first
               highest_signature = finding.signatures.max_by(&:priority)
 
-              identifiers = if vulnerability_finding_signatures_enabled
+              identifiers = if signatures_enabled
                               "#{finding.report_type}-#{finding.primary_identifier.fingerprint}-#{highest_signature.signature_hex}-#{report.project_id}"
                             else
                               "#{finding.report_type}-#{finding.primary_identifier.fingerprint}-#{finding.location.fingerprint}-#{report.project_id}"

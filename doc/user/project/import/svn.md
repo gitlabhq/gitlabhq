@@ -5,30 +5,21 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from SVN to GitLab **(FREE)**
+# Migrate from Subversion to GitLab **(FREE)**
 
-Subversion (SVN) is a central version control system (VCS) while
-Git is a distributed version control system. There are some major differences
-between the two, for more information consult your favorite search engine.
+GitLab uses Git as its version control system. If you're using Subversion (SVN) as your version control system,
+you can migrate to using a Git repository in GitLab in two ways:
 
-There are two approaches to SVN to Git migration:
+- Using SubGit to set up a temporary mirror of the SVN repository for GitLab. You can use the SVN repository and the Git
+  repository at the same time, and check everything functions properly before removing access to the SVN repository and
+  shutting down the mirror.
+- Using `svn2git` to migrate immediately from SVN to Git. You stop using SVN, migrate the SVN repository, then
+  start using the Git repository in GitLab.
 
-- [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
-  - Makes the GitLab repository to mirror the SVN project.
-  - Git and SVN repositories are kept in sync; you can use either one.
-  - Smoothens the migration process and allows you to manage migration risks.
+## Migrate using SubGit
 
-- [Cut over migration](#cut-over-migration-with-svn2git) which:
-  - Translates and imports the existing data and history from SVN to Git.
-  - Is a fire and forget approach, good for smaller teams.
-
-## Smooth migration with a Git/SVN mirror using SubGit
-
-[SubGit](https://subgit.com) is a tool for a smooth, stress-free SVN to Git
-migration. It creates a writable Git mirror of a local or remote Subversion
-repository and that way you can use both Subversion and Git as long as you like.
-It requires access to your GitLab server as it talks with the Git repositories
-directly in a file system level.
+[SubGit](https://subgit.com) creates a writable Git mirror of a local or remote SVN repository. SubGit requires access
+to your GitLab server because it accesses the Git repositories directly at the file-system level.
 
 ### SubGit prerequisites
 
@@ -110,7 +101,7 @@ source, academic and startup projects.
 For any questions related to SVN to GitLab migration with SubGit, you can
 contact the SubGit team directly at [support@subgit.com](mailto:support@subgit.com).
 
-## Cut over migration with svn2git
+## Migrate using `svn2git`
 
 NOTE:
 Any issues with svn2git should be directed to the [relevant project and maintainer](https://github.com/nirvdrum/svn2git).
@@ -183,8 +174,3 @@ git remote add origin git@gitlab.com:<group>/<project>.git
 git push --all origin
 git push --tags origin
 ```
-
-## Contribute to this guide
-
-We welcome all contributions that would expand this guide with instructions on
-how to migrate from SVN and other version control systems.

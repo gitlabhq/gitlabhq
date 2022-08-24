@@ -115,14 +115,18 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](../user/admin_area/monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when utilizing Puma, as there is a brief period during a restart where Puma doesn't accept requests.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### The health check is returning a `408` HTTP code via the load balancer
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If you are using [AWS's Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)
+in GitLab 15.0 or later, you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
+See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx)
+for more information.
+
+The default ciphers for a GitLab version can be
+viewed in the [`files/gitlab-cookbooks/gitlab/attributes/default.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb)
+file and selecting the Git tag that correlates with your target GitLab version
+(for example `15.0.5+ee.0`). If required by your load balancer, you can then define
+[custom SSL ciphers](https://docs.gitlab.com/omnibus/settings/nginx.html#using-custom-ssl-ciphers)
+for NGINX.

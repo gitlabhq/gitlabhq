@@ -148,10 +148,12 @@ Before starting, you should take note of the following requirements / guidance f
 
 This reference architecture was built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform. On different hardware you may find that adjustments, either lower
-or higher, are required for your CPU or node counts. For more information, see
-our [Sysbench](https://github.com/akopytov/sysbench)-based
-[CPU benchmarks](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+CPU platform as a baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
+
+Newer, similarly sized CPUs are supported and may have improved performance as a result. For Omnibus environments, ARM-based equivalents are also supported.
+
+NOTE:
+Any "burstable" instance types are not recommended due to inconsistent performance.
 
 ### Supported infrastructure
 
