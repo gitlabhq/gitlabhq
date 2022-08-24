@@ -44417,7 +44417,7 @@ msgstr ""
 msgid "WorkItem|A task provides the ability to break down your work into smaller pieces tied to an issue. Tasks are the first items using our new %{workItemsLink} objects. Additional work item types will be coming soon."
 msgstr ""
 
-msgid "WorkItem|Add a task"
+msgid "WorkItem|Add"
 msgstr ""
 
 msgid "WorkItem|Add a title"
@@ -44446,16 +44446,13 @@ msgstr[1] ""
 msgid "WorkItem|Cancel"
 msgstr ""
 
-msgid "WorkItem|Child items"
-msgstr ""
-
 msgid "WorkItem|Child removed"
 msgstr ""
 
 msgid "WorkItem|Closed"
 msgstr ""
 
-msgid "WorkItem|Collapse child items"
+msgid "WorkItem|Collapse tasks"
 msgstr ""
 
 msgid "WorkItem|Create task"
@@ -44467,7 +44464,7 @@ msgstr ""
 msgid "WorkItem|Delete task"
 msgstr ""
 
-msgid "WorkItem|Expand child items"
+msgid "WorkItem|Expand tasks"
 msgstr ""
 
 msgid "WorkItem|Incident"
@@ -44482,7 +44479,7 @@ msgstr ""
 msgid "WorkItem|Learn about tasks"
 msgstr ""
 
-msgid "WorkItem|No child items are currently assigned. Use child items to prioritize tasks that your team should complete in order to accomplish your goals!"
+msgid "WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts."
 msgstr ""
 
 msgid "WorkItem|None"
@@ -44515,7 +44512,7 @@ msgstr ""
 msgid "WorkItem|Something went wrong when deleting the work item. Please try again."
 msgstr ""
 
-msgid "WorkItem|Something went wrong when fetching the items list. Please refresh this page."
+msgid "WorkItem|Something went wrong when fetching tasks. Please refresh this page."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching the work item. Please try again."
@@ -44537,6 +44534,9 @@ msgid "WorkItem|Task"
 msgstr ""
 
 msgid "WorkItem|Task deleted"
+msgstr ""
+
+msgid "WorkItem|Tasks"
 msgstr ""
 
 msgid "WorkItem|Test case"

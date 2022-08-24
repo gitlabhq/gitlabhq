@@ -40,7 +40,7 @@ to work items and adding custom work item types, visit
 
 ## View tasks
 
-View tasks in issues, in the **Child items** section.
+View tasks in issues, in the **Tasks** section.
 
 You can also [filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = task`.
@@ -53,7 +53,7 @@ Prerequisites:
 
 To create a task:
 
-1. In an issue description, in the **Child items** section, select **Add a task**.
+1. In an issue description, in the **Tasks** section, select **Add**.
 1. Enter the task title.
 1. Select **Create task**.
 
@@ -65,7 +65,7 @@ Prerequisites:
 
 To edit a task:
 
-1. In the issue description, in the **Child items** section, select the task you want to edit.
+1. In the issue description, in the **Tasks** section, select the task you want to edit.
    The task window opens.
 1. Optional. To edit the title, select it and make your changes.
 1. Optional. To edit the description, select the edit icon (**{pencil}**), make your changes, and
@@ -83,7 +83,7 @@ It's not possible to connect them again.
 
 To remove a task from an issue:
 
-1. In the issue description, in the **Child items** section, next to the task you want to remove, select the options menu (**{ellipsis_v}**).
+1. In the issue description, in the **Tasks** section, next to the task you want to remove, select the options menu (**{ellipsis_v}**).
 1. Select **Remove task**.
 
 ## Delete a task
@@ -96,6 +96,6 @@ Prerequisites:
 
 To delete a task:
 
-1. In the issue description, in the **Child items** section, select the task you want to edit.
+1. In the issue description, in the **Tasks** section, select the task you want to edit.
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.

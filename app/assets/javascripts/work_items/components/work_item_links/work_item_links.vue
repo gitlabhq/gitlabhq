@@ -108,9 +108,7 @@ export default {
       return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
     },
     toggleLabel() {
-      return this.isOpen
-        ? s__('WorkItem|Collapse child items')
-        : s__('WorkItem|Expand child items');
+      return this.isOpen ? s__('WorkItem|Collapse tasks') : s__('WorkItem|Expand tasks');
     },
     issuableGid() {
       return this.issuableId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issuableId) : null;
@@ -246,14 +244,12 @@ export default {
     },
   },
   i18n: {
-    title: s__('WorkItem|Child items'),
-    fetchError: s__(
-      'WorkItem|Something went wrong when fetching the items list. Please refresh this page.',
-    ),
+    title: s__('WorkItem|Tasks'),
+    fetchError: s__('WorkItem|Something went wrong when fetching tasks. Please refresh this page.'),
     emptyStateMessage: s__(
-      'WorkItem|No child items are currently assigned. Use child items to prioritize tasks that your team should complete in order to accomplish your goals!',
+      'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
     ),
-    addChildButtonLabel: s__('WorkItem|Add a task'),
+    addChildButtonLabel: s__('WorkItem|Add'),
   },
   WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
   WORK_ITEM_STATUS_TEXT,

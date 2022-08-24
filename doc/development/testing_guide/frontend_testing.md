@@ -872,7 +872,7 @@ This will create a new fixture located at
 `tmp/tests/frontend/fixtures-ee/graphql/releases/graphql/queries/all_releases.query.graphql.json`.
 
 You can import the JSON fixture in a Jest test using the `test_fixtures` alias
-[as described below](#use-fixtures).
+[as described previously](#use-fixtures).
 
 ## Data-driven tests
 

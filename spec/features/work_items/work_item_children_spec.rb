@@ -24,7 +24,7 @@ RSpec.describe 'Work item children', :js do
 
     it 'are not displayed when issue does not have work item children', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
-        expect(find('[data-testid="links-empty"]')).to have_content(_('No child items are currently assigned.'))
+        expect(find('[data-testid="links-empty"]')).to have_content(_('No tasks are currently assigned.'))
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
         expect(page).not_to have_selector('[data-testid="links-child"]')
       end
@@ -34,11 +34,11 @@ RSpec.describe 'Work item children', :js do
       page.within('[data-testid="work-item-links"]') do
         expect(page).to have_selector('[data-testid="links-body"]')
 
-        click_button 'Collapse child items'
+        click_button 'Collapse tasks'
 
         expect(page).not_to have_selector('[data-testid="links-body"]')
 
-        click_button 'Expand child items'
+        click_button 'Expand tasks'
 
         expect(page).to have_selector('[data-testid="links-body"]')
       end
@@ -48,7 +48,7 @@ RSpec.describe 'Work item children', :js do
       page.within('[data-testid="work-item-links"]') do
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
 
-        click_button 'Add a task'
+        click_button 'Add'
 
         expect(page).to have_selector('[data-testid="add-links-form"]')
 
@@ -60,7 +60,7 @@ RSpec.describe 'Work item children', :js do
 
     it 'addss a child task', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
-        click_button 'Add a task'
+        click_button 'Add'
 
         expect(page).to have_button('Create task', disabled: true)
         fill_in 'Add a title', with: 'Task 1'
@@ -77,7 +77,7 @@ RSpec.describe 'Work item children', :js do
 
     it 'removes a child task and undoing', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
-        click_button 'Add a task'
+        click_button 'Add'
         fill_in 'Add a title', with: 'Task 1'
         click_button 'Create task'
         wait_for_all_requests
