@@ -12534,6 +12534,9 @@ msgstr ""
 msgid "Delete source branch"
 msgstr ""
 
+msgid "Delete source branch when merge request is accepted."
+msgstr ""
+
 msgid "Delete subscription"
 msgstr ""
 
@@ -37350,6 +37353,9 @@ msgid "Squash commit message"
 msgstr ""
 
 msgid "Squash commits"
+msgstr ""
+
+msgid "Squash commits when merge request is accepted."
 msgstr ""
 
 msgid "Stack trace"

@@ -29,7 +29,7 @@ Prerequisites:
 
 To link one issue to another:
 
-1. In the **Linked issues** section of an issue,
+1. In the **Linked items** section of an issue,
    select the add linked issue button (**{plus}**).
 1. Select the relationship between the two issues. Either:
    - **relates to**
@@ -61,7 +61,7 @@ You can also add a linked issue from a commit message or the description in anot
 
 ## Remove a linked issue
 
-In the **Linked issues** section of an issue, select the remove button (**{close}**) on the
+In the **Linked items** section of an issue, select the remove button (**{close}**) on the
 right-side of each issue token to remove.
 
 Due to the bi-directional relationship, the relationship no longer appears in either issue.

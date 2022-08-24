@@ -927,6 +927,8 @@
 
 .qa:rules:package-and-qa:
   rules:
+    - <<: *if-fork-merge-request
+      when: never
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-labels-pipeline-revert

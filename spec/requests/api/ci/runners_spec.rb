@@ -914,11 +914,17 @@ RSpec.describe API::Ci::Runners do
         pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
         create(:ci_build, :failed, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
 
+        pipeline = create(:ci_pipeline, project: project_with_repo, sha: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
+        create(:ci_build, :failed, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
+
         expect_next_instance_of(Repository) do |repo|
-          expect(repo).to receive(:commits_by).once.and_call_original
+          expect(repo).to receive(:commits_by).with(oids: %w[
+            1a0b36b3cdad1d2ee32457c102a8c0b7056fa863
+            c1c67abbaf91f624347bb3ae96eabe3a1b742478
+          ]).once.and_call_original
         end
 
-        get api("/runners/#{shared_runner.id}/jobs", admin)
+        get api("/runners/#{shared_runner.id}/jobs", admin), params: { per_page: 2, order_by: 'id', sort: 'desc' }
       end
 
       context "when runner doesn't exist" do

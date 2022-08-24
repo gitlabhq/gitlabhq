@@ -136,9 +136,10 @@ module API
               { project: [:route, { namespace: :route }] }
             ]
           )
-          jobs.each(&:commit) # batch loads all commits
+          jobs = paginate(jobs)
+          jobs.each(&:commit) # batch loads all commits in the page
 
-          present paginate(jobs), with: Entities::Ci::JobBasicWithProject
+          present jobs, with: Entities::Ci::JobBasicWithProject
         end
 
         desc 'Reset runner authentication token' do

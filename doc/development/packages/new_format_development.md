@@ -91,7 +91,7 @@ extended when possible to keep the common package logic grouped as much as possi
 
 ### Configuration
 
-GitLab has a `packages` section in its configuration file (`gitlab.rb`).
+GitLab has a `packages` section in its configuration file (`gitlab.rb` or `gitlab.yml`).
 It applies to all package systems supported by GitLab. Usually you don't need
 to add anything there.
 
