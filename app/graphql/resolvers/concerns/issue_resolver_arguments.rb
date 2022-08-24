@@ -84,6 +84,8 @@ module IssueResolverArguments
   end
 
   def ready?(**args)
+    args[:not] = args[:not].to_h if args[:not].present?
+
     params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
     params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
     params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)
@@ -114,7 +116,6 @@ module IssueResolverArguments
 
   def prepare_finder_params(args)
     params = super(args)
-    params[:not] = params[:not].to_h if params[:not].present?
     params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
     params[:attempt_project_search_optimizations] = true if params[:search].present?
 

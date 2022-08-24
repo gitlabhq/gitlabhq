@@ -236,16 +236,17 @@ describe('MR Widget', () => {
         data: { vulnerabilities: [{ vuln: 2 }] },
       };
 
+      const fetchExpandedData = jest.fn().mockResolvedValue(mockDataExpanded);
+
       createComponent({
         propsData: {
           isCollapsible: true,
           fetchCollapsedData: () => Promise.resolve(mockDataCollapsed),
-          fetchExpandedData: () => Promise.resolve(mockDataExpanded),
+          fetchExpandedData,
         },
       });
 
       findToggleButton().vm.$emit('click');
-
       await waitForPromises();
 
       // First fetches the collapsed data
@@ -259,6 +260,62 @@ describe('MR Widget', () => {
         collapsed: null,
         expanded: mockDataExpanded.data,
       });
+
+      // Triggering a click does not call the expanded data again
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(fetchExpandedData).toHaveBeenCalledTimes(1);
+    });
+
+    it('allows refetching when fetch expanded data returns an error', async () => {
+      const fetchExpandedData = jest.fn().mockRejectedValue({ error: true });
+
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve([]),
+          fetchExpandedData,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      // First fetches the collapsed data
+      expect(wrapper.emitted('input')[0][0]).toEqual({
+        collapsed: undefined,
+        expanded: null,
+      });
+
+      expect(fetchExpandedData).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted('input')).toHaveLength(1); // Should not an emit an input call because request failed
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(fetchExpandedData).toHaveBeenCalledTimes(2);
+    });
+
+    it('resets the error message when another request is fetched', async () => {
+      const fetchExpandedData = jest.fn().mockRejectedValue({ error: true });
+
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve([]),
+          fetchExpandedData,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.findByText('Failed to load').exists()).toBe(true);
+      fetchExpandedData.mockImplementation(() => new Promise(() => {}));
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.findByText('Failed to load').exists()).toBe(false);
     });
   });
 });

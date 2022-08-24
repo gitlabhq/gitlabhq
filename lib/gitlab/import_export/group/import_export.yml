@@ -32,14 +32,11 @@ included_attributes:
     - :created_at
     - :updated_at
     - :start_date
-    - :last_run_date
-    - :duration_in_weeks
-    - :iterations_in_advance
     - :active
-    - :automatic
     - :roll_over
     - :title
     - :description
+    - :sequence
   iterations_cadences: *iterations_cadence_definition
   iteration: &iteration_definition
     - :iid
@@ -69,6 +66,10 @@ excluded_attributes:
     - :state_id
   iterations_cadence: &iterations_cadence_definition
     - :id
+    - :last_run_date
+    - :duration_in_weeks
+    - :iterations_in_advance
+    - :automatic
   iterations_cadences: *iterations_cadence_definition
   iteration: &iteration_excluded_definition
     - :id

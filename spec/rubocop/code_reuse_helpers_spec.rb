@@ -172,31 +172,6 @@ RSpec.describe RuboCop::CodeReuseHelpers do
     end
   end
 
-  describe '#in_graphql_types?' do
-    %w[
-      app/graphql/types
-      ee/app/graphql/ee/types
-      ee/app/graphql/types
-    ].each do |path|
-      it "returns true for a node in #{path}" do
-        node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
-
-        expect(cop.in_graphql_types?(node)).to eq(true)
-      end
-    end
-
-    %w[
-      app/graphql/resolvers
-      app/foo
-    ].each do |path|
-      it "returns false for a node in #{path}" do
-        node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
-
-        expect(cop.in_graphql_types?(node)).to eq(false)
-      end
-    end
-  end
-
   describe '#in_api?' do
     it 'returns true for a node in the API directory' do
       node = build_and_parse_source('10', rails_root_join('lib', 'api', 'foo.rb'))

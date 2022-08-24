@@ -4,11 +4,13 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
-    subject { described_class.new.parse!(junit, test_suite, job: job) }
+    subject { described_class.new.parse!(junit, test_report, job: job) }
 
-    let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
+    let(:job) { double(test_suite_name: 'rspec', max_test_cases_per_report: max_test_cases) }
+
+    let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
+    let(:test_suite) { test_report.get_suite(job.test_suite_name) }
     let(:test_cases) { flattened_test_cases(test_suite) }
-    let(:job) { double(max_test_cases_per_report: max_test_cases) }
     let(:max_test_cases) { 0 }
 
     context 'when data is JUnit style XML' do

@@ -51,7 +51,8 @@ module Projects
 
       def test_suite
         suite = builds.sum do |build|
-          build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
+          test_report = build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
+          test_report.get_suite(build.test_suite_name)
         end
 
         Gitlab::Ci::Reports::TestFailureHistory.new(suite.failed.values, project).load!

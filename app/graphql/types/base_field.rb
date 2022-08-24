@@ -17,8 +17,6 @@ module Types
       @requires_argument = !!kwargs.delete(:requires_argument)
       @authorize = Array.wrap(kwargs.delete(:authorize))
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
-      @feature_flag = kwargs[:_deprecated_feature_flag]
-      kwargs = check_feature_flag(kwargs)
       @deprecation = gitlab_deprecation(kwargs)
       after_connection_extensions = kwargs.delete(:late_extensions) || []
 
@@ -91,15 +89,7 @@ module Types
       @constant_complexity
     end
 
-    def visible?(context)
-      return false if feature_flag.present? && !Feature.enabled?(feature_flag)
-
-      super
-    end
-
     private
-
-    attr_reader :feature_flag
 
     def field_authorized?(object, ctx)
       object = object.node if object.is_a?(GraphQL::Pagination::Connection::Edge)
@@ -121,27 +111,6 @@ module Types
 
     def authorization
       @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(@authorize)
-    end
-
-    def feature_documentation_message(key, description)
-      message_parts = ["#{description} Available only when feature flag `#{key}` is enabled."]
-
-      message_parts << if Feature::Definition.has_definition?(key) && Feature::Definition.default_enabled?(key)
-                         "This flag is enabled by default."
-                       else
-                         "This flag is disabled by default, because the feature is experimental and is subject to change without notice."
-                       end
-
-      message_parts.join(' ')
-    end
-
-    def check_feature_flag(args)
-      ff = args.delete(:_deprecated_feature_flag)
-      return args unless ff.present?
-
-      args[:description] = feature_documentation_message(ff, args[:description])
-
-      args
     end
 
     def field_complexity(resolver_class, current)

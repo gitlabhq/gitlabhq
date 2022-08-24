@@ -26,9 +26,6 @@ module RuboCop
           data_consistency
           deduplicate
         ].freeze
-        GRAPHQL_METHODS = %i[
-          field
-        ].freeze
         SELF_METHODS = %i[
           push_frontend_feature_flag
           push_force_frontend_feature_flag
@@ -36,7 +33,7 @@ module RuboCop
           limit_feature_flag_for_override=
         ].freeze + EXPERIMENT_METHODS + RUGGED_METHODS + WORKER_METHODS
 
-        RESTRICT_ON_SEND = FEATURE_METHODS + EXPERIMENTATION_METHODS + GRAPHQL_METHODS + SELF_METHODS
+        RESTRICT_ON_SEND = FEATURE_METHODS + EXPERIMENTATION_METHODS + SELF_METHODS
 
         USAGE_DATA_COUNTERS_EVENTS_YAML_GLOBS = [
           File.expand_path("../../../config/metrics/aggregates/*.yml", __dir__),
@@ -138,15 +135,6 @@ module RuboCop
             node.children[3].each_pair.find do |pair|
               pair.key.value == :feature_flag
             end&.value
-          elsif graphql_method?(node)
-            return unless node.children.size > 3
-
-            opts_index = node.children[3].hash_type? ? 3 : 4
-            return unless node.children[opts_index]
-
-            node.children[opts_index].each_pair.find do |pair|
-              pair.key.value == :_deprecated_feature_flag
-            end&.value
           else
             arg_index = rugged_method?(node) ? 3 : 2
 
@@ -209,16 +197,12 @@ module RuboCop
           WORKER_METHODS.include?(method_name(node))
         end
 
-        def graphql_method?(node)
-          GRAPHQL_METHODS.include?(method_name(node)) && in_graphql_types?(node)
-        end
-
         def self_method?(node)
           SELF_METHODS.include?(method_name(node)) && class_caller(node).empty?
         end
 
         def trackable_flag?(node)
-          feature_method?(node) || experimentation_method?(node) || graphql_method?(node) || self_method?(node)
+          feature_method?(node) || experimentation_method?(node) || self_method?(node)
         end
 
         # Marking all event's feature flags as used as Gitlab::UsageDataCounters::HLLRedisCounter.track_event{,context}

@@ -8,6 +8,9 @@ before_script:
 
 variables:
   DB_NAME: postgres
+  ENVIRONMENT_VAR:
+    value: 'env var value'
+    description: 'env var description'
 
 stages:
   - test

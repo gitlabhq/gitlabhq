@@ -26,7 +26,10 @@ module Gitlab
         private
 
         def setup_models
-          setup_note if @relation_name == :notes
+          case @relation_name
+          when :notes then setup_note
+          when :'Iterations::Cadence' then setup_iterations_cadence
+          end
 
           update_group_references
         end
@@ -44,6 +47,10 @@ module Gitlab
 
         def use_attributes_permitter?
           false
+        end
+
+        def setup_iterations_cadence
+          @relation_hash['automatic'] = false
         end
       end
     end

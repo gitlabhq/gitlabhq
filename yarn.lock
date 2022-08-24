@@ -11286,20 +11286,10 @@ textextensions@2:
   resolved "https://registry.yarnpkg.com/textextensions/-/textextensions-2.2.0.tgz#38ac676151285b658654581987a0ce1a4490d286"
   integrity sha512-j5EMxnryTvKxwH2Cq+Pb43tsf6sdEgw6Pdwxk83mPaq0ToeFJt6WE4J3s5BqY7vmjlLgkgXvhtXUxo80FyBhCA==
 
-three-orbit-controls@^82.1.0:
-  version "82.1.0"
-  resolved "https://registry.yarnpkg.com/three-orbit-controls/-/three-orbit-controls-82.1.0.tgz#11a7f33d0a20ecec98f098b37780f6537374fab4"
-  integrity sha1-EafzPQog7OyY8Jizd4D2U3N0+rQ=
-
-three-stl-loader@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/three-stl-loader/-/three-stl-loader-1.0.4.tgz#6b3319a31e3b910aab1883d19b00c81a663c3e03"
-  integrity sha1-azMZox47kQqrGIPRmwDIGmY8PgM=
-
-three@^0.84.0:
-  version "0.84.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.84.0.tgz#95be85a55a0fa002aa625ed559130957dcffd918"
-  integrity sha1-lb6FpVoPoAKqYl7VWRMJV9z/2Rg=
+three@^0.143.0:
+  version "0.143.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.143.0.tgz#1455bca132cc2b20beb7f41d313e10c29e5ed9df"
+  integrity sha512-oKcAGYHhJ46TGEuHjodo2n6TY2R6lbvrkp+feKZxqsUL/WkH7GKKaeu6RHeyb2Xjfk2dPLRKLsOP0KM2VgT8Zg==
 
 throat@^6.0.1:
   version "6.0.1"

@@ -4366,9 +4366,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#collect_test_reports!' do
-    subject { build.collect_test_reports!(test_reports) }
-
-    let(:test_reports) { Gitlab::Ci::Reports::TestReport.new }
+    subject(:test_reports) { build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new) }
 
     it { expect(test_reports.get_suite(build.name).total_count).to eq(0) }
 
@@ -4413,56 +4411,6 @@ RSpec.describe Ci::Build do
           expect(test_reports.get_suite(build.name).success_count).to eq(0)
           expect(test_reports.get_suite(build.name).failed_count).to eq(0)
           expect(test_reports.get_suite(build.name).suite_error).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
-        end
-      end
-    end
-
-    context 'when build is part of parallel build' do
-      let(:build_1) { create(:ci_build, name: 'build 1/2') }
-      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
-
-      before do
-        build_1.collect_test_reports!(test_report)
-      end
-
-      it 'uses the group name for test suite name' do
-        expect(test_report.test_suites.keys).to contain_exactly('build')
-      end
-
-      context 'when there are more than one parallel builds' do
-        let(:build_2) { create(:ci_build, name: 'build 2/2') }
-
-        before do
-          build_2.collect_test_reports!(test_report)
-        end
-
-        it 'merges the test suite from parallel builds' do
-          expect(test_report.test_suites.keys).to contain_exactly('build')
-        end
-      end
-    end
-
-    context 'when build is part of matrix build' do
-      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
-      let(:matrix_build_1) { create(:ci_build, :matrix) }
-
-      before do
-        matrix_build_1.collect_test_reports!(test_report)
-      end
-
-      it 'uses the job name for the test suite' do
-        expect(test_report.test_suites.keys).to contain_exactly(matrix_build_1.name)
-      end
-
-      context 'when there are more than one matrix builds' do
-        let(:matrix_build_2) { create(:ci_build, :matrix) }
-
-        before do
-          matrix_build_2.collect_test_reports!(test_report)
-        end
-
-        it 'keeps separate test suites' do
-          expect(test_report.test_suites.keys).to match_array([matrix_build_1.name, matrix_build_2.name])
         end
       end
     end
@@ -5659,6 +5607,30 @@ RSpec.describe Ci::Build do
         expect(new_build.job_variables.count).to be(1)
         expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY')
         expect(new_build.job_variables.map(&:value)).to contain_exactly('old value')
+      end
+    end
+  end
+
+  describe '#test_suite_name' do
+    let(:build) { create(:ci_build, name: 'test') }
+
+    it 'uses the group name for test suite name' do
+      expect(build.test_suite_name).to eq('test')
+    end
+
+    context 'when build is part of parallel build' do
+      let(:build) { create(:ci_build, name: 'build 1/2') }
+
+      it 'uses the group name for test suite name' do
+        expect(build.test_suite_name).to eq('build')
+      end
+    end
+
+    context 'when build is part of matrix build' do
+      let!(:matrix_build) { create(:ci_build, :matrix) }
+
+      it 'uses the job name for the test suite' do
+        expect(matrix_build.test_suite_name).to eq(matrix_build.name)
       end
     end
   end

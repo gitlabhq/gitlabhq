@@ -546,12 +546,6 @@ def resolve(id: )
 end
 ```
 
-### `feature_flag` property (deprecated)
-
-NOTE:
-This property is deprecated and should no longer be used. The property
-has been temporarily renamed to `_deprecated_feature_flag` and support for it will be removed in [#369202](https://gitlab.com/gitlab-org/gitlab/-/issues/369202).
-
 ## Deprecating schema items
 
 The GitLab GraphQL API is versionless, which means we maintain backwards

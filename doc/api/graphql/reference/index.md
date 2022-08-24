@@ -10098,6 +10098,18 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="ciconfigstagegroups"></a>`groups` | [`CiConfigGroupConnection`](#ciconfiggroupconnection) | Groups of jobs for the stage. (see [Connections](#connections)) |
 | <a id="ciconfigstagename"></a>`name` | [`String`](#string) | Name of the stage. |
 
+### `CiConfigVariable`
+
+CI/CD config variables.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciconfigvariabledescription"></a>`description` | [`String`](#string) | Description for the CI/CD config variable. |
+| <a id="ciconfigvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="ciconfigvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+
 ### `CiGroup`
 
 #### Fields
@@ -15800,6 +15812,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectboardsid"></a>`id` | [`BoardID`](#boardid) | Find a board by its ID. |
+
+##### `Project.ciConfigVariables`
+
+CI/CD config variable.
+
+WARNING:
+**Introduced** in 15.3.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`[CiConfigVariable!]`](#ciconfigvariable).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectciconfigvariablessha"></a>`sha` | [`String!`](#string) | Sha. |
 
 ##### `Project.ciTemplate`
 

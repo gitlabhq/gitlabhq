@@ -8,7 +8,9 @@ module Gitlab
           JunitParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
           ATTACHMENT_TAG_REGEX = /\[\[ATTACHMENT\|(?<path>.+?)\]\]/.freeze
 
-          def parse!(xml_data, test_suite, job:)
+          def parse!(xml_data, test_report, job:)
+            test_suite = test_report.get_suite(job.test_suite_name)
+
             root = Hash.from_xml(xml_data)
             total_parsed = 0
             max_test_cases = job.max_test_cases_per_report

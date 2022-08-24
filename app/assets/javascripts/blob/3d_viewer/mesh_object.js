@@ -22,7 +22,7 @@ export default class MeshObject extends Mesh {
     if (this.geometry.boundingSphere.radius > 4) {
       const scale = 4 / this.geometry.boundingSphere.radius;
 
-      this.geometry.applyMatrix(new Matrix4().makeScale(scale, scale, scale));
+      this.geometry.applyMatrix4(new Matrix4().makeScale(scale, scale, scale));
       this.geometry.computeBoundingSphere();
 
       this.position.x = -this.geometry.boundingSphere.center.x;

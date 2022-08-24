@@ -18,6 +18,17 @@ module Types
           null: false,
           description: 'Path of the CI configuration file.'
 
+    field :ci_config_variables, [Types::Ci::ConfigVariableType],
+          null: true,
+          calls_gitaly: true,
+          authorize: :create_pipeline,
+          alpha: { milestone: '15.3' },
+          description: 'CI/CD config variable.' do
+            argument :sha, GraphQL::Types::String,
+              required: true,
+              description: 'Sha.'
+          end
+
     field :full_path, GraphQL::Types::ID,
           null: false,
           description: 'Full path of the project.'
@@ -547,6 +558,16 @@ module Types
 
     def container_repositories_count
       project.container_repositories.size
+    end
+
+    def ci_config_variables(sha)
+      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
+
+      return if result.nil?
+
+      result.map do |var_key, var_config|
+        { key: var_key, **var_config }
+      end
     end
 
     def sast_ci_configuration

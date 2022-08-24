@@ -4370,6 +4370,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         create(:ci_job_artifact, :junit_with_ant, job: build_java)
       end
 
+      it 'has a test suite for each job' do
+        expect(subject.test_suites.keys).to contain_exactly('rspec', 'java')
+      end
+
       it 'returns test reports with collected data' do
         expect(subject.total_count).to be(7)
         expect(subject.success_count).to be(5)
@@ -4385,6 +4389,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           expect(subject.success_count).to be(0)
           expect(subject.failed_count).to be(0)
         end
+      end
+    end
+
+    context 'when the pipeline has parallel builds with test reports' do
+      let!(:parallel_build_1) { create(:ci_build, name: 'build 1/2', pipeline: pipeline) }
+      let!(:parallel_build_2) { create(:ci_build, name: 'build 2/2', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: parallel_build_1)
+        create(:ci_job_artifact, :junit, job: parallel_build_2)
+      end
+
+      it 'merges the test suite from parallel builds' do
+        expect(subject.test_suites.keys).to contain_exactly('build')
+      end
+    end
+
+    context 'the pipeline has matrix builds with test reports' do
+      let!(:matrix_build_1) { create(:ci_build, :matrix, pipeline: pipeline) }
+      let!(:matrix_build_2) { create(:ci_build, :matrix, pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: matrix_build_1)
+        create(:ci_job_artifact, :junit, job: matrix_build_2)
+      end
+
+      it 'keeps separate test suites for each matrix build' do
+        expect(subject.test_suites.keys).to contain_exactly(matrix_build_1.name, matrix_build_2.name)
       end
     end
 

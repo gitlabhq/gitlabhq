@@ -569,6 +569,8 @@ RSpec/ImplicitSubject:
 RSpec/ReceiveNever:
   Enabled: false
 
+# Already covered by `RSpec::Configuration#on_potential_false_positives = :raise`.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86429
 RSpec/UnspecifiedException:
   Enabled: false
 

@@ -996,15 +996,11 @@ module Ci
     end
 
     def collect_test_reports!(test_reports)
-      test_reports.get_suite(test_suite_name).tap do |test_suite|
-        each_report(Ci::JobArtifact.file_types_for_report(:test)) do |file_type, blob|
-          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
-            blob,
-            test_suite,
-            job: self
-          )
-        end
+      each_report(Ci::JobArtifact.file_types_for_report(:test)) do |file_type, blob|
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_reports, job: self)
       end
+
+      test_reports
     end
 
     def collect_accessibility_reports!(accessibility_report)
@@ -1181,6 +1177,14 @@ module Ci
       job_artifacts.map(&:file_type)
     end
 
+    def test_suite_name
+      if matrix_build?
+        name
+      else
+        group_name
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1190,14 +1194,6 @@ module Ci
     end
 
     private
-
-    def test_suite_name
-      if matrix_build?
-        name
-      else
-        group_name
-      end
-    end
 
     def matrix_build?
       options.dig(:parallel, :matrix).present?
