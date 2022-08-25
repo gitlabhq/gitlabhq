@@ -411,6 +411,63 @@ If all the above are true and the users are still not getting access,
 [look through the output](#example-console-output-after-a-group-sync) to see what happens when
 GitLab syncs the `admin_group`.
 
+#### Sync now button stuck in the UI
+
+The **Sync now** button on the **Group > Members** page of a group can become stuck. The button becomes stuck after it is pressed and the page is reloaded. The button then
+cannot be selected again.
+
+The **Sync now** button can become stuck for many reasons and requires debugging for specific cases. The following are two possible causes and possible solutions to the problem.
+
+##### Invalid memberships
+
+The **Sync now** button becomes stuck if some of the group's members or requesting members are invalid. You can track progress on improving the visibility of this problem in
+a [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348226). You can use a [Rails console](#rails-console) to confirm if this problem is causing the **Sync now**
+button to be stuck:
+
+```ruby
+# Find the group in question
+group = Group.find_by(name: 'my_gitlab_group')
+
+# Look for errors on the Group itself
+group.valid?
+group.errors.map(&:full_messages)
+
+# Look for errors among the group's members and requesters
+group.requesters.map(&:valid?)
+group.requesters.map(&:errors).map(&:full_messages)
+group.members.map(&:valid?)
+group.members.map(&:errors).map(&:full_messages)
+```
+
+A displayed error can identify the problem and point to a solution. For example, the Support Team has seen the following error:
+
+```ruby
+irb(main):018:0> group.members.map(&:errors).map(&:full_messages)
+=> [["The member's email address is not allowed for this group. Go to the group’s &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
+```
+
+This error showed that an Administrator chose to [restrict group membership by email domain](../../../user/group/access_and_permissions.md#restrict-group-access-by-domain),
+but there was a typo in the domain. After the domain setting was fixed, the **Sync now** button functioned again.
+
+##### Missing LDAP configuration on Sidekiq nodes
+
+The **Sync now** button becomes stuck when GitLab is scaled over multiple nodes and the LDAP configuration is missing from
+[the `/etc/gitlab/gitlab.rb` on the nodes running Sidekiq](../../sidekiq/index.md#configure-ldap-and-user-or-group-synchronization).
+In this case, the Sidekiq jobs seem to disappear.
+
+LDAP is required on the Sidekiq nodes because LDAP has multiple jobs that are
+run asynchronously that require a local LDAP configuration:
+
+- [User sync](ldap_synchronization.md#user-sync).
+- [Group sync](ldap_synchronization.md#group-sync).
+
+You can test whether missing LDAP configuration is the problem by running [the Rake task to check LDAP](#ldap-check)
+on each node that is running Sidekiq. If LDAP is set up correctly on this node, it connects to the LDAP server and returns users.
+
+To solve this issue, [configure LDAP](../../sidekiq/index.md#configure-ldap-and-user-or-group-synchronization) on the Sidekiq nodes.
+When configured, run [the Rake task to check LDAP](#ldap-check) to confirm
+that the GitLab node can connect to LDAP.
+
 #### Sync all groups
 
 NOTE:

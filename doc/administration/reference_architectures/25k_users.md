@@ -2292,6 +2292,10 @@ to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
 section assumes this.
 
+NOTE:
+**Gitaly Cluster is not supported to be run in Kubernetes**.
+Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
+
 ### Cluster topology
 
 The following tables and diagram detail the hybrid environment using the same formats

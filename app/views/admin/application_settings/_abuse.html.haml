@@ -1,4 +1,4 @@
-= form_for @application_setting, url: reporting_admin_application_settings_path(anchor: 'js-abuse-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: reporting_admin_application_settings_path(anchor: 'js-abuse-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -6,4 +6,4 @@
       = f.label :abuse_notification_email, _('Abuse reports notification email'), class: 'label-bold'
       = f.text_field :abuse_notification_email, class: 'form-control gl-form-input'
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

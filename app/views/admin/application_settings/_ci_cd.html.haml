@@ -54,7 +54,7 @@
       .form-group
         = f.gitlab_ui_checkbox_component :suggest_pipeline_enabled, s_('AdminSettings|Enable pipeline suggestion banner'), help_text: s_('AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file.')
 
-    = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+    = f.submit _('Save changes'), pajamas_button: true
 
 .settings-content
   %h4
@@ -71,7 +71,7 @@
     .tab-content.gl-tab-content
       - @plans.each_with_index do |plan, index|
         .tab-pane{ :id => "plan#{index}", class: index == 0 ? 'active': '' }
-          = form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-ci-cd-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
+          = gitlab_ui_form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-ci-cd-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
             = form_errors(plan)
             %fieldset
               = f.hidden_field(:plan_id, value: plan.id)
@@ -99,4 +99,4 @@
               .form-group
                 = f.label :ci_registered_project_runners, s_('AdminSettings|Maximum number of runners registered per project')
                 = f.number_field :ci_registered_project_runners, class: 'form-control gl-form-input'
-              = f.submit s_('AdminSettings|Save %{name} limits').html_safe % { name: plan.name.capitalize }, class: 'btn gl-button btn-confirm'
+              = f.submit s_('AdminSettings|Save %{name} limits').html_safe % { name: plan.name.capitalize }, pajamas_button: true
