@@ -43,8 +43,6 @@ module MergeRequests
     end
 
     def handle_assignees_change(merge_request, old_assignees)
-      bulk_update_assignees_state(merge_request, merge_request.assignees - old_assignees)
-
       MergeRequests::HandleAssigneesChangeService
         .new(project: project, current_user: current_user)
         .async_execute(merge_request, old_assignees)
@@ -60,7 +58,6 @@ module MergeRequests
       new_reviewers = merge_request.reviewers - old_reviewers
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
-      bulk_update_reviewers_state(merge_request, new_reviewers)
     end
 
     def cleanup_environments(merge_request)
@@ -246,46 +243,6 @@ module MergeRequests
       return unless milestone
 
       Milestones::MergeRequestsCountService.new(milestone).delete_cache
-    end
-
-    def bulk_update_assignees_state(merge_request, new_assignees)
-      return unless current_user.mr_attention_requests_enabled?
-      return if new_assignees.empty?
-
-      assignees_map = merge_request.merge_request_assignees_with(new_assignees).to_h do |assignee|
-        state = if assignee.user_id == current_user&.id
-                  :unreviewed
-                else
-                  merge_request.find_reviewer(assignee.assignee)&.state || :attention_requested
-                end
-
-        [
-          assignee,
-          { state: MergeRequestAssignee.states[state], updated_state_by_user_id: current_user.id }
-        ]
-      end
-
-      ::Gitlab::Database::BulkUpdate.execute(%i[state updated_state_by_user_id], assignees_map)
-    end
-
-    def bulk_update_reviewers_state(merge_request, new_reviewers)
-      return unless current_user.mr_attention_requests_enabled?
-      return if new_reviewers.empty?
-
-      reviewers_map = merge_request.merge_request_reviewers_with(new_reviewers).to_h do |reviewer|
-        state = if reviewer.user_id == current_user&.id
-                  :unreviewed
-                else
-                  merge_request.find_assignee(reviewer.reviewer)&.state || :attention_requested
-                end
-
-        [
-          reviewer,
-          { state: MergeRequestReviewer.states[state], updated_state_by_user_id: current_user.id }
-        ]
-      end
-
-      ::Gitlab::Database::BulkUpdate.execute(%i[state updated_state_by_user_id], reviewers_map)
     end
   end
 end

@@ -14,7 +14,7 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
-import markdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -25,8 +25,8 @@ import { COMMENT_FORM } from '../i18n';
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
 import CommentTypeDropdown from './comment_type_dropdown.vue';
-import discussionLockedWidget from './discussion_locked_widget.vue';
-import noteSignedOutWidget from './note_signed_out_widget.vue';
+import DiscussionLockedWidget from './discussion_locked_widget.vue';
+import NoteSignedOutWidget from './note_signed_out_widget.vue';
 
 const { UNPROCESSABLE_ENTITY } = httpStatusCodes;
 
@@ -34,9 +34,9 @@ export default {
   name: 'CommentForm',
   i18n: COMMENT_FORM,
   components: {
-    noteSignedOutWidget,
-    discussionLockedWidget,
-    markdownField,
+    NoteSignedOutWidget,
+    DiscussionLockedWidget,
+    MarkdownField,
     GlAlert,
     GlButton,
     TimelineEntryItem,

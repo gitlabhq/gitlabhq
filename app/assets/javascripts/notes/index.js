@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import notesApp from './components/notes_app.vue';
+import NotesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
 import { store } from './stores';
 import initTimelineToggle from './timeline';
@@ -15,7 +15,7 @@ export default () => {
     el,
     name: 'NotesRoot',
     components: {
-      notesApp,
+      NotesApp,
     },
     store,
     data() {

@@ -16,11 +16,11 @@ import {
 import addProjectVariable from '../graphql/mutations/project_add_variable.mutation.graphql';
 import deleteProjectVariable from '../graphql/mutations/project_delete_variable.mutation.graphql';
 import updateProjectVariable from '../graphql/mutations/project_update_variable.mutation.graphql';
-import ciVariableSettings from './ci_variable_settings.vue';
+import CiVariableSettings from './ci_variable_settings.vue';
 
 export default {
   components: {
-    ciVariableSettings,
+    CiVariableSettings,
   },
   inject: ['endpoint', 'projectFullPath', 'projectId'],
   data() {

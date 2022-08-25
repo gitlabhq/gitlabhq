@@ -851,14 +851,6 @@ Parameters:
       "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
       "web_url": "http://localhost/user1"
     },
-    "updated_state_by": {
-      "id": 1,
-      "name": "John Doe1",
-      "username": "user1",
-      "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
-      "web_url": "http://localhost/user1"
-    },
     "state": "unreviewed",
     "created_at": "2022-07-27T17:03:27.684Z"
   },
@@ -870,14 +862,6 @@ Parameters:
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/10fc7f102be8de7657fb4d80898bbfe3?s=80&d=identicon",
       "web_url": "http://localhost/user2"
-    },
-    "updated_state_by": {
-      "id": 1,
-      "name": "John Doe1",
-      "username": "user1",
-      "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
-      "web_url": "http://localhost/user1"
     },
     "state": "reviewed",
     "created_at": "2022-07-27T17:03:27.684Z"

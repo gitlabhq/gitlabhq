@@ -6,20 +6,12 @@ module MergeRequestReviewerState
   included do
     enum state: {
       unreviewed: 0,
-      reviewed: 1,
-      attention_requested: 2
+      reviewed: 1
+      # 2 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
     }
 
     validates :state,
       presence: true,
       inclusion: { in: self.states.keys }
-
-    belongs_to :updated_state_by, class_name: 'User', foreign_key: :updated_state_by_user_id
-
-    def attention_requested_by
-      return unless attention_requested?
-
-      updated_state_by
-    end
   end
 end

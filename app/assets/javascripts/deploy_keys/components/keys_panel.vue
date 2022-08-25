@@ -1,9 +1,9 @@
 <script>
-import deployKey from './key.vue';
+import DeployKey from './key.vue';
 
 export default {
   components: {
-    deployKey,
+    DeployKey,
   },
   props: {
     keys: {

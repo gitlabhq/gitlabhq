@@ -74,19 +74,19 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		},
 		{
 			desc:               "SVG type",
-			contentType:        "image/svg+xml",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/image.svg"),
 		},
 		{
 			desc:               "Partial SVG type",
-			contentType:        "image/svg+xml",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 330 82\"><title>SVG logo combined with the W3C logo, set horizontally</title><desc>The logo combines three entities displayed horizontall</desc><metadata>",
 		},
 		{
 			desc:               "Application type",
-			contentType:        "application/pdf",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/file.pdf"),
 		},
@@ -110,7 +110,7 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		},
 		{
 			desc:               "Audio type",
-			contentType:        "audio/mpeg",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/audio.mp3"),
 		},
@@ -152,15 +152,21 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		},
 		{
 			desc:               "Sketch file",
-			contentType:        "application/zip",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/file.sketch"),
 		},
 		{
 			desc:               "PDF file with non-ASCII characters in filename",
-			contentType:        "application/pdf",
+			contentType:        "application/octet-stream",
 			contentDisposition: `attachment; filename="file-ä.pdf"; filename*=UTF-8''file-%c3.pdf`,
 			body:               testhelper.LoadFile(t, "testdata/file-ä.pdf"),
+		},
+		{
+			desc:               "Microsoft Word file",
+			contentType:        "application/octet-stream",
+			contentDisposition: `attachment`,
+			body:               testhelper.LoadFile(t, "testdata/file.docx"),
 		},
 	}
 

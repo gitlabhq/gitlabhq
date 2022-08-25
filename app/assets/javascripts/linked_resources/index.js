@@ -22,7 +22,7 @@ export default function initLinkedResources() {
       name: 'LinkedResourcesRoot',
       apolloProvider,
       components: {
-        resourceLinksBlock: ResourceLinksBlock,
+        ResourceLinksBlock,
       },
       render: (createElement) =>
         createElement('resource-links-block', {

@@ -3,7 +3,7 @@ import Prompt from '../prompt.vue';
 
 export default {
   components: {
-    prompt: Prompt,
+    Prompt,
   },
   props: {
     count: {

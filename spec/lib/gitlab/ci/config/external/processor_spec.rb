@@ -94,6 +94,36 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       end
     end
 
+    context 'when the remote file has `include` with rules:exists' do
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
+      let(:values) { { include: remote_file, image: 'image:1.0' } }
+      let(:external_file_content) do
+        <<-HEREDOC
+        include:
+          - local: another-file.yml
+            rules:
+              - exists: [Dockerfile]
+
+        rspec:
+          script:
+            - bundle exec rspec
+        HEREDOC
+      end
+
+      before do
+        stub_full_request(remote_file).to_return(body: external_file_content)
+      end
+
+      it 'evaluates the rule as false' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :rspec])
+      end
+
+      it "removes the 'include' keyword" do
+        expect(processor.perform[:include]).to be_nil
+      end
+    end
+
     context 'with a valid local external file is defined' do
       let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'image:1.0' } }
       let(:local_file_content) do

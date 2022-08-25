@@ -24,7 +24,7 @@ export default function initWorkItemLinks() {
     name: 'WorkItemLinksRoot',
     apolloProvider,
     components: {
-      workItemLinks: WorkItemLinks,
+      WorkItemLinks,
     },
     provide: {
       projectPath,

@@ -3,14 +3,14 @@ import { GlButton } from '@gitlab/ui';
 import { stripHtml } from '~/lib/utils/text_utility';
 import { sprintf, s__, n__ } from '~/locale';
 import eventHub from '../../event_hub';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetFailedToMerge',
 
   components: {
     GlButton,
-    statusIcon,
+    StatusIcon,
   },
 
   props: {

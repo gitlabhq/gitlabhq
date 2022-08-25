@@ -17,23 +17,13 @@ class MergeRequestUserEntity < ::API::Entities::UserBasic
   end
 
   expose :reviewed, if: satisfies(:present?, :allows_reviewers?) do |user, options|
-    find_reviewer_or_assignee(user, options)&.reviewed?
+    options[:merge_request].find_reviewer(user)&.reviewed?
   end
 
   expose :approved, if: satisfies(:present?) do |user, options|
     # This approach is preferred over MergeRequest#approved_by? since this
     # makes one query per merge request, whereas #approved_by? makes one per user
     options[:merge_request].approvals.any? { |app| app.user_id == user.id }
-  end
-
-  private
-
-  def find_reviewer_or_assignee(user, options)
-    if options[:type] == :reviewers
-      options[:merge_request].find_reviewer(user)
-    else
-      options[:merge_request].find_assignee(user)
-    end
   end
 end
 

@@ -1,10 +1,10 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
-import editFormButtons from './edit_form_buttons.vue';
+import EditFormButtons from './edit_form_buttons.vue';
 
 export default {
   components: {
-    editFormButtons,
+    EditFormButtons,
     GlSprintf,
   },
   props: {

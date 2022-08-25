@@ -1,9 +1,9 @@
 <script>
-import tooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
 export default {
   components: {
-    tooltipOnTruncate,
+    TooltipOnTruncate,
   },
   props: {
     jobName: {

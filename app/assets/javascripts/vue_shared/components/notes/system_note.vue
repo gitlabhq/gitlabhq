@@ -29,7 +29,7 @@ import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_
 import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import noteHeader from '~/notes/components/note_header.vue';
+import NoteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import TimelineEntryItem from './timeline_entry_item.vue';
@@ -43,7 +43,7 @@ export default {
   name: 'SystemNote',
   components: {
     GlIcon,
-    noteHeader,
+    NoteHeader,
     TimelineEntryItem,
     GlButton,
     GlSkeletonLoader,

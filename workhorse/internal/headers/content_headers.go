@@ -43,6 +43,10 @@ const (
 func SafeContentHeaders(data []byte, contentDisposition string) (string, string) {
 	contentType := safeContentType(data)
 	contentDisposition = safeContentDisposition(contentType, contentDisposition)
+
+	if attachmentRegex.MatchString(contentDisposition) {
+		contentType = "application/octet-stream"
+	}
 	return contentType, contentDisposition
 }
 

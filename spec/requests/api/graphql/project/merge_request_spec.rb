@@ -365,7 +365,7 @@ RSpec.describe 'getting merge request information nested in a project' do
         expect(interaction_data).to contain_exactly a_hash_including(
           'canMerge' => false,
           'canUpdate' => can_update,
-          'reviewState' => attention_requested,
+          'reviewState' => unreviewed,
           'reviewed' => false,
           'approved' => false
         )
@@ -398,8 +398,8 @@ RSpec.describe 'getting merge request information nested in a project' do
     describe 'scalability' do
       let_it_be(:other_users) { create_list(:user, 3) }
 
-      let(:attention_requested) do
-        { 'reviewState' => 'ATTENTION_REQUESTED' }
+      let(:unreviewed) do
+        { 'reviewState' => 'UNREVIEWED' }
       end
 
       let(:reviewed) do
@@ -425,15 +425,15 @@ RSpec.describe 'getting merge request information nested in a project' do
 
           other_users.each do |user|
             assign_user(user)
-            merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user, state: :attention_requested)
+            merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user)
           end
 
           expect { post_graphql(query) }.not_to exceed_query_limit(baseline)
 
           expect(interaction_data).to contain_exactly(
-            include(attention_requested),
-            include(attention_requested),
-            include(attention_requested),
+            include(unreviewed),
+            include(unreviewed),
+            include(unreviewed),
             include(reviewed)
           )
         end
@@ -462,17 +462,17 @@ RSpec.describe 'getting merge request information nested in a project' do
 
   it_behaves_like 'when requesting information about MR interactions' do
     let(:field) { :reviewers }
-    let(:attention_requested) { 'ATTENTION_REQUESTED' }
+    let(:unreviewed) { 'UNREVIEWED' }
     let(:can_update) { false }
 
     def assign_user(user)
-      merge_request.merge_request_reviewers.create!(reviewer: user, state: :attention_requested)
+      merge_request.merge_request_reviewers.create!(reviewer: user)
     end
   end
 
   it_behaves_like 'when requesting information about MR interactions' do
     let(:field) { :assignees }
-    let(:attention_requested) { nil }
+    let(:unreviewed) { nil }
     let(:can_update) { true } # assignees can update MRs
 
     def assign_user(user)

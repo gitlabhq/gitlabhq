@@ -108,7 +108,6 @@ export default {
     return {
       newEnvironments: [],
       isTipDismissed: getCookie(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
-      typeOptions: variableOptions,
       validationErrorEventProperty: '',
       variable: { ...defaultVariableState, ...this.selectedVariable },
     };
@@ -259,6 +258,7 @@ export default {
     },
   },
   defaultScope: allEnvironments.text,
+  variableOptions,
 };
 </script>
 
@@ -298,16 +298,20 @@ export default {
         />
       </gl-form-group>
 
-      <div class="d-flex">
-        <gl-form-group :label="__('Type')" label-for="ci-variable-type" class="w-50 gl-mr-5">
+      <div class="gl-display-flex">
+        <gl-form-group :label="__('Type')" label-for="ci-variable-type" class="gl-w-half gl-mr-5">
           <gl-form-select
             id="ci-variable-type"
             v-model="variable.variableType"
-            :options="typeOptions"
+            :options="$options.variableOptions"
           />
         </gl-form-group>
 
-        <gl-form-group label-for="ci-variable-env" class="w-50" data-testid="environment-scope">
+        <gl-form-group
+          label-for="ci-variable-env"
+          class="gl-w-half"
+          data-testid="environment-scope"
+        >
           <template #label>
             {{ __('Environment scope') }}
             <gl-link

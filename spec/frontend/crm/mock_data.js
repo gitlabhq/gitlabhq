@@ -102,6 +102,13 @@ export const getGroupOrganizationsQueryResponse = {
             active: true,
           },
         ],
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          endCursor: 'eyJsYXN0X25hbWUiOiJMZWRuZXIiLCJpZCI6IjE3OSJ9',
+          hasPreviousPage: false,
+          startCursor: 'eyJsYXN0X25hbWUiOiJCYXJ0b24iLCJpZCI6IjE5MyJ9',
+        },
       },
     },
   },
@@ -151,6 +158,21 @@ export const updateContactMutationResponse = {
         active: true,
       },
       errors: [],
+    },
+  },
+};
+
+export const getGroupOrganizationsCountQueryResponse = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/26',
+      organizationStateCounts: {
+        all: 24,
+        active: 21,
+        inactive: 3,
+        __typename: 'OrganizationStateCountsType',
+      },
     },
   },
 };

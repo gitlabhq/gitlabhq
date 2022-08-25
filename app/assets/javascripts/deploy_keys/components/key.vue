@@ -4,11 +4,11 @@ import { head, tail } from 'lodash';
 import { s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
-import actionBtn from './action_btn.vue';
+import ActionBtn from './action_btn.vue';
 
 export default {
   components: {
-    actionBtn,
+    ActionBtn,
     GlButton,
     GlIcon,
     GlLink,

@@ -1,10 +1,10 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import ciIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
-    ciIcon,
+    CiIcon,
     GlLoadingIcon,
   },
   props: {

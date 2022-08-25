@@ -11,6 +11,7 @@ import {
   EVENT_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
   instanceString,
+  variableOptions,
 } from '~/ci_variable_list/constants';
 import { mockVariablesWithScopes } from '../mocks';
 import ModalStub from '../stubs';
@@ -72,6 +73,7 @@ describe('Ci variable modal', () => {
   const findValueField = () => wrapper.find('#ci-variable-value');
   const findEnvScopeLink = () => wrapper.findByTestId('environment-scope-link');
   const findEnvScopeInput = () => wrapper.findByTestId('environment-scope').find(GlFormInput);
+  const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
 
   afterEach(() => {
     wrapper.destroy();
@@ -280,6 +282,21 @@ describe('Ci variable modal', () => {
 
         expect(findCiEnvironmentsDropdown().exists()).toBe(false);
         expect(findEnvScopeInput().attributes('readonly')).toBe('readonly');
+      });
+    });
+  });
+
+  describe('variable type dropdown', () => {
+    describe('default behaviour', () => {
+      beforeEach(() => {
+        createComponent({ mountFn: mountExtended });
+      });
+
+      it('adds each option as a dropdown item', () => {
+        expect(findVariableTypeDropdown().findAll('option')).toHaveLength(variableOptions.length);
+        variableOptions.forEach((v) => {
+          expect(findVariableTypeDropdown().text()).toContain(v.text);
+        });
       });
     });
   });

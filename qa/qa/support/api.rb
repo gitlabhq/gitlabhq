@@ -21,7 +21,7 @@ module QA
           }
 
           RestClient::Request.execute(default_args.merge(args))
-        rescue RestClient::ExceptionWithResponse => e
+        rescue StandardError => e
           return_response_or_raise(e)
         end
       end
@@ -37,7 +37,7 @@ module QA
           RestClient::Request.execute(
             default_args.merge(args)
           )
-        rescue RestClient::ExceptionWithResponse => e
+        rescue StandardError => e
           return_response_or_raise(e)
         end
       end
@@ -49,7 +49,7 @@ module QA
             url: url,
             payload: payload,
             verify_ssl: false)
-        rescue RestClient::ExceptionWithResponse => e
+        rescue StandardError => e
           return_response_or_raise(e)
         end
       end
@@ -64,7 +64,7 @@ module QA
           }
 
           RestClient::Request.execute(default_args.merge(args))
-        rescue RestClient::ExceptionWithResponse => e
+        rescue StandardError => e
           return_response_or_raise(e)
         end
       end
@@ -75,7 +75,7 @@ module QA
             method: :delete,
             url: url,
             verify_ssl: false)
-        rescue RestClient::ExceptionWithResponse => e
+        rescue StandardError => e
           return_response_or_raise(e)
         end
       end
@@ -86,9 +86,13 @@ module QA
             method: :head,
             url: url,
             verify_ssl: false)
-        rescue RestClient::ExceptionWithResponse => e
+        rescue StandardError => e
           return_response_or_raise(e)
         end
+      end
+
+      def masked_url(url)
+        url.sub(/private_token=[^&]*/, "private_token=[****]")
       end
 
       def with_retry_on_too_many_requests
@@ -115,7 +119,7 @@ module QA
       end
 
       def return_response_or_raise(error)
-        raise error unless error.respond_to?(:response) && error.response
+        raise error, masked_url(error.to_s) unless error.respond_to?(:response) && error.response
 
         error.response
       end
@@ -129,7 +133,7 @@ module QA
 
       def with_paginated_response_body(url, attempts: 0)
         not_ok_error = lambda do |resp|
-          raise "Failed to GET #{QA::Runtime::API::Request.masked_url(url)} - (#{resp.code}): `#{resp}`."
+          raise "Failed to GET #{masked_url(url)} - (#{resp.code}): `#{resp}`."
         end
 
         loop do

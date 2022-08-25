@@ -394,7 +394,7 @@ Information in FAQs belongs with other similar information, under an easily sear
 
 ## field
 
-Use **box** instead of **field** or **text box**.
+Use **text box** instead of **field** or **box**.
 
 Use:
 

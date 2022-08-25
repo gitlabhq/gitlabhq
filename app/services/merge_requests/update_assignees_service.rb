@@ -20,8 +20,6 @@ module MergeRequests
       attrs = update_attrs.merge(assignee_ids: new_ids)
       merge_request.update!(**attrs)
 
-      bulk_update_assignees_state(merge_request, merge_request.assignees - old_assignees)
-
       # Defer the more expensive operations (handle_assignee_changes) to the background
       MergeRequests::HandleAssigneesChangeService
         .new(project: project, current_user: current_user)

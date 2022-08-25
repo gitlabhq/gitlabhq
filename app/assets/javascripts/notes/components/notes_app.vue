@@ -6,34 +6,34 @@ import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import draftNote from '~/batch_comments/components/draft_note.vue';
+import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { getLocationHash, doesHashExistInUrl } from '~/lib/utils/url_utility';
-import placeholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
-import placeholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
-import skeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_note.vue';
-import systemNote from '~/vue_shared/components/notes/system_note.vue';
+import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
+import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
+import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_note.vue';
+import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
-import commentForm from './comment_form.vue';
-import discussionFilterNote from './discussion_filter_note.vue';
-import noteableDiscussion from './noteable_discussion.vue';
-import noteableNote from './noteable_note.vue';
+import CommentForm from './comment_form.vue';
+import DiscussionFilterNote from './discussion_filter_note.vue';
+import NoteableDiscussion from './noteable_discussion.vue';
+import NoteableNote from './noteable_note.vue';
 import SidebarSubscription from './sidebar_subscription.vue';
 
 export default {
   name: 'NotesApp',
   components: {
-    noteableNote,
-    noteableDiscussion,
-    systemNote,
-    commentForm,
-    placeholderNote,
-    placeholderSystemNote,
-    skeletonLoadingContainer,
-    discussionFilterNote,
+    NoteableNote,
+    NoteableDiscussion,
+    SystemNote,
+    CommentForm,
+    PlaceholderNote,
+    PlaceholderSystemNote,
+    SkeletonLoadingContainer,
+    DiscussionFilterNote,
     OrderedLayout,
     SidebarSubscription,
-    draftNote,
+    DraftNote,
     TimelineEntryItem,
   },
   mixins: [glFeatureFlagsMixin()],

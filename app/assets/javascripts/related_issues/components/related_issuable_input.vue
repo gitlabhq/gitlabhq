@@ -7,14 +7,14 @@ import {
   inputPlaceholderTextMap,
   issuableTypesMap,
 } from '../constants';
-import issueToken from './issue_token.vue';
+import IssueToken from './issue_token.vue';
 
 const SPACE_FACTOR = 1;
 
 export default {
   name: 'RelatedIssuableInput',
   components: {
-    issueToken,
+    IssueToken,
   },
   props: {
     inputId: {

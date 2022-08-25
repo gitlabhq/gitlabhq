@@ -1,11 +1,11 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import notebookLab from '~/notebook/index.vue';
+import NotebookLab from '~/notebook/index.vue';
 
 export default {
   components: {
-    notebookLab,
+    NotebookLab,
     GlLoadingIcon,
   },
   props: {

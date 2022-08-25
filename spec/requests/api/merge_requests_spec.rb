@@ -1566,7 +1566,6 @@ RSpec.describe API::MergeRequests do
       expect(json_response.last['user']['name']).to eq(reviewer.name)
       expect(json_response.last['user']['username']).to eq(reviewer.username)
       expect(json_response.last['state']).to eq('unreviewed')
-      expect(json_response.last['updated_state_by']).to be_nil
       expect(json_response.last['created_at']).to be_present
     end
 

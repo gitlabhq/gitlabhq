@@ -17,11 +17,11 @@ import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';
 import Store from '../stores';
-import descriptionComponent from './description.vue';
-import editedComponent from './edited.vue';
-import formComponent from './form.vue';
+import DescriptionComponent from './description.vue';
+import EditedComponent from './edited.vue';
+import FormComponent from './form.vue';
 import PinnedLinks from './pinned_links.vue';
-import titleComponent from './title.vue';
+import TitleComponent from './title.vue';
 
 export default {
   WorkspaceType,
@@ -29,9 +29,9 @@ export default {
     GlIcon,
     GlBadge,
     GlIntersectionObserver,
-    titleComponent,
-    editedComponent,
-    formComponent,
+    TitleComponent,
+    EditedComponent,
+    FormComponent,
     PinnedLinks,
     ConfidentialityBadge,
   },
@@ -181,7 +181,7 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return descriptionComponent;
+        return DescriptionComponent;
       },
     },
     showTitleBorder: {

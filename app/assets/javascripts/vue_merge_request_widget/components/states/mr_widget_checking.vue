@@ -1,10 +1,10 @@
 <script>
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetChecking',
   components: {
-    statusIcon,
+    StatusIcon,
   },
 };
 </script>

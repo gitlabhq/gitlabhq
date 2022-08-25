@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
-import deleteAccountModal from './components/delete_account_modal.vue';
+import DeleteAccountModal from './components/delete_account_modal.vue';
 import UpdateUsername from './components/update_username.vue';
 
 export default () => {
@@ -27,7 +27,7 @@ export default () => {
   new Vue({
     el: deleteAccountModalEl,
     components: {
-      deleteAccountModal,
+      DeleteAccountModal,
     },
     mounted() {
       deleteAccountButton.disabled = false;

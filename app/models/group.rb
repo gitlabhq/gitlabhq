@@ -153,7 +153,7 @@ class Group < Namespace
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
-  after_save :update_two_factor_requirement
+  after_commit :update_two_factor_requirement
   after_update :path_changed_hook, if: :saved_change_to_path?
   after_create -> { create_or_load_association(:group_feature) }
 
@@ -898,6 +898,10 @@ class Group < Namespace
     end
   end
 
+  def update_two_factor_requirement_for_members
+    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
@@ -920,7 +924,7 @@ class Group < Namespace
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
-    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
+    Groups::UpdateTwoFactorRequirementForMembersWorker.perform_async(self.id)
   end
 
   def path_changed_hook

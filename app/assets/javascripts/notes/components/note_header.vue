@@ -8,13 +8,13 @@ import {
 } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
-import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
-    timeAgoTooltip,
+    TimeAgoTooltip,
     GitlabTeamMemberBadge: () =>
       import('ee_component/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue'),
     GlIcon,

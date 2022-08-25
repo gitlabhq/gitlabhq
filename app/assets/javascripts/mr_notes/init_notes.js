@@ -4,7 +4,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
 import discussionNavigator from '../notes/components/discussion_navigator.vue';
-import notesApp from '../notes/components/notes_app.vue';
+import NotesApp from '../notes/components/notes_app.vue';
 import initWidget from '../vue_merge_request_widget';
 
 export default () => {
@@ -13,7 +13,7 @@ export default () => {
     el: '#js-vue-mr-discussions',
     name: 'MergeRequestDiscussions',
     components: {
-      notesApp,
+      NotesApp,
     },
     store,
     data() {

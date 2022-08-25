@@ -4,7 +4,7 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import markdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -15,7 +15,7 @@ export default {
   i18n: COMMENT_FORM,
   name: 'NoteForm',
   components: {
-    markdownField,
+    MarkdownField,
     CommentFieldLayout,
     GlButton,
     GlSprintf,

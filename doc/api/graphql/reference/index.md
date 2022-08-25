@@ -20190,7 +20190,6 @@ State of a review of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergerequestreviewstateattention_requested"></a>`ATTENTION_REQUESTED` | The merge request is attention_requested. |
 | <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | The merge request is reviewed. |
 | <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | The merge request is unreviewed. |
 
@@ -20864,8 +20863,6 @@ Name of the feature that the callout is for.
 | Value | Description |
 | ----- | ----------- |
 | <a id="usercalloutfeaturenameenumactive_user_count_threshold"></a>`ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
-| <a id="usercalloutfeaturenameenumattention_requests_side_nav"></a>`ATTENTION_REQUESTS_SIDE_NAV` | Callout feature name for attention_requests_side_nav. |
-| <a id="usercalloutfeaturenameenumattention_requests_top_nav"></a>`ATTENTION_REQUESTS_TOP_NAV` | Callout feature name for attention_requests_top_nav. |
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |

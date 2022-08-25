@@ -4,9 +4,9 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
 import Translate from '../vue_shared/translate';
 
-import groupsApp from './components/app.vue';
-import groupFolderComponent from './components/group_folder.vue';
-import groupItemComponent from './components/group_item.vue';
+import GroupsApp from './components/app.vue';
+import GroupFolderComponent from './components/group_folder.vue';
+import GroupItemComponent from './components/group_item.vue';
 import { GROUPS_LIST_HOLDER_CLASS, CONTENT_LIST_CLASS } from './constants';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsService from './service/groups_service';
@@ -33,8 +33,8 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
     dataEl = containerEl.querySelector(CONTENT_LIST_CLASS);
   }
 
-  Vue.component('GroupFolder', groupFolderComponent);
-  Vue.component('GroupItem', groupItemComponent);
+  Vue.component('GroupFolder', GroupFolderComponent);
+  Vue.component('GroupItem', GroupItemComponent);
 
   Vue.use(GlToast);
 
@@ -42,7 +42,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
   new Vue({
     el,
     components: {
-      groupsApp,
+      GroupsApp,
     },
     provide() {
       const {

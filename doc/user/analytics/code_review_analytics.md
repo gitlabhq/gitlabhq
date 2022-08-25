@@ -6,53 +6,32 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Code Review Analytics **(PREMIUM)**
+# Code review analytics **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38062) in GitLab 12.7.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
-Use Code Review Analytics to view the longest-running reviews among open merge
-requests, and:
+Use code review analytics to view review metrics per merge request and
+make improvements to your code review process:
 
-- Take action on individual merge requests.
-- Reduce overall cycle time.
+- A high number of comments or commits may indicate:
+  - The code is too complex.
+  - Authors who require more training.
+- A long review time may indicate:
+  - Types of work that move slower than other types.
+  - Opportunities to accelerate your development cycle.
+- Fewer comments and approvers may indicate staffing requirements.
 
-Code Review Analytics is available to users with at least the Reporter role, and displays a table of open merge requests that have at least one non-author comment. The review time is measured from the time the first non-author comment was submitted.
+Code review analytics displays a table of open merge requests that have at least one non-author comment.
+The review time is measured from when the first non-author comment was submitted.
 
-NOTE:
-Initially, no data appears. Data is populated as users comment on open merge requests.
+## View code review analytics
 
-![Code Review Analytics](img/code_review_analytics_v13_11.png "List of code reviews; oldest review first.")
+Prerequisite:
 
-The table is sorted by:
+- You must have at least the Reporter role.
 
-- **Review time**: Helping you to quickly find the longest-running reviews which may need intervention
-  or to be broken down into smaller parts.
-- Other columns: Display the author, approvers, comment count, and line change (-/+) counts.
-
-## View Code Review Analytics
-
-To view Code Review Analytics:
+To view code review analytics:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Code Review**.
 1. Filter merge requests by milestone and label.
-
-## Use cases
-
-This feature is designed for [development team leaders](https://about.gitlab.com/handbook/product/personas/#delaney-development-team-lead)
-and others who want to understand broad code review dynamics, and identify patterns to explain them.
-
-You can use Code Review Analytics to:
-
-- Expose your team's unique challenges with code review.
-- Identify improvements that might substantially accelerate your development cycle.
-- Your team agrees that code review is moving too slow.
-- The [Value Stream Analytics feature](value_stream_analytics.md) shows that reviews are your team's most time-consuming step.
-- Analyze the patterns and trends of different types of work that are moving slow.
-
-For example:
-
-- Lots of comments or commits? Maybe the code is too complex.
-- A particular author is involved? Maybe more training is required.
-- Few comments and approvers? Maybe your team is understaffed.

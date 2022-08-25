@@ -10,25 +10,25 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { s__, __, sprintf } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import diffDiscussionHeader from './diff_discussion_header.vue';
-import diffWithNote from './diff_with_note.vue';
+import DiffDiscussionHeader from './diff_discussion_header.vue';
+import DiffWithNote from './diff_with_note.vue';
 import DiscussionActions from './discussion_actions.vue';
 import DiscussionNotes from './discussion_notes.vue';
-import noteForm from './note_form.vue';
-import noteSignedOutWidget from './note_signed_out_widget.vue';
+import NoteForm from './note_form.vue';
+import NoteSignedOutWidget from './note_signed_out_widget.vue';
 
 export default {
   name: 'NoteableDiscussion',
   components: {
     GlIcon,
-    userAvatarLink,
-    diffDiscussionHeader,
-    noteSignedOutWidget,
-    noteForm,
+    UserAvatarLink,
+    DiffDiscussionHeader,
+    NoteSignedOutWidget,
+    NoteForm,
     DraftNote,
     TimelineEntryItem,
     DiscussionNotes,
@@ -120,7 +120,7 @@ export default {
       return !this.shouldRenderDiffs;
     },
     wrapperComponent() {
-      return this.shouldRenderDiffs ? diffWithNote : 'div';
+      return this.shouldRenderDiffs ? DiffWithNote : 'div';
     },
     wrapperComponentProps() {
       if (this.shouldRenderDiffs) {

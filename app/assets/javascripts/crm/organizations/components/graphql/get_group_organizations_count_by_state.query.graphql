@@ -1,0 +1,11 @@
+query organizationsCountByState($groupFullPath: ID!, $searchTerm: String) {
+  group(fullPath: $groupFullPath) {
+    __typename
+    id
+    organizationStateCounts(search: $searchTerm) {
+      all
+      active
+      inactive
+    }
+  }
+}

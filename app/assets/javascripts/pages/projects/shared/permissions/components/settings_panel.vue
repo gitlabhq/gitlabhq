@@ -14,8 +14,8 @@ import {
   featureAccessLevelDescriptions,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
-import projectFeatureSetting from './project_feature_setting.vue';
-import projectSettingRow from './project_setting_row.vue';
+import ProjectFeatureSetting from './project_feature_setting.vue';
+import ProjectSettingRow from './project_setting_row.vue';
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
 
@@ -56,8 +56,8 @@ export default {
   },
 
   components: {
-    projectFeatureSetting,
-    projectSettingRow,
+    ProjectFeatureSetting,
+    ProjectSettingRow,
     GlButton,
     GlIcon,
     GlSprintf,
@@ -65,7 +65,7 @@ export default {
     GlFormCheckbox,
     GlToggle,
     ConfirmDanger,
-    otherProjectSettings: () =>
+    OtherProjectSettings: () =>
       import(
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),

@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import ciHeader from '~/vue_shared/components/header_ci_component.vue';
+import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import {
   LOAD_FAILURE,
   POST_FAILURE,
@@ -33,7 +33,7 @@ export default {
   pipelineRetry: 'pipelineRetry',
   finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
   components: {
-    ciHeader,
+    CiHeader,
     GlAlert,
     GlButton,
     GlLoadingIcon,

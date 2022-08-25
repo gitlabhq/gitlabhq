@@ -22,16 +22,16 @@ import {
   commentLineOptions,
   formatLineRange,
 } from './multiline_comment_utils';
-import noteActions from './note_actions.vue';
+import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
-import noteHeader from './note_header.vue';
+import NoteHeader from './note_header.vue';
 
 export default {
   name: 'NoteableNote',
   components: {
     GlSprintf,
-    noteHeader,
-    noteActions,
+    NoteHeader,
+    NoteActions,
     NoteBody,
     TimelineEntryItem,
     GlAvatarLink,

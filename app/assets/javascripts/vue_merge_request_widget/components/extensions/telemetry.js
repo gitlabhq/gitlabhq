@@ -24,7 +24,7 @@ const nonStandardEvents = {
   },
   issues: {
     uniqueUser: {
-      expand: ['i_testing_load_performance_widget_total'],
+      expand: ['i_testing_issues_widget_total'],
     },
     counter: {},
   },

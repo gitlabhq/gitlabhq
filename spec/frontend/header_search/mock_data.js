@@ -223,6 +223,20 @@ export const MOCK_AUTOCOMPLETE_OPTIONS = [
 
 export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
   {
+    category: 'Groups',
+    data: [
+      {
+        category: 'Groups',
+        html_id: 'autocomplete-Groups-1',
+
+        id: 1,
+        label: 'Gitlab Org / MockGroup1',
+        value: 'MockGroup1',
+        url: 'group/1',
+      },
+    ],
+  },
+  {
     category: 'Projects',
     data: [
       {
@@ -246,20 +260,6 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
     ],
   },
   {
-    category: 'Groups',
-    data: [
-      {
-        category: 'Groups',
-        html_id: 'autocomplete-Groups-1',
-
-        id: 1,
-        label: 'Gitlab Org / MockGroup1',
-        value: 'MockGroup1',
-        url: 'group/1',
-      },
-    ],
-  },
-  {
     category: 'Help',
     data: [
       {
@@ -275,6 +275,14 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
 
 export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
   {
+    category: 'Groups',
+    html_id: 'autocomplete-Groups-1',
+    id: 1,
+    label: 'Gitlab Org / MockGroup1',
+    value: 'MockGroup1',
+    url: 'group/1',
+  },
+  {
     category: 'Projects',
     html_id: 'autocomplete-Projects-0',
     id: 1,
@@ -289,14 +297,6 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     label: 'Gitlab Org / MockProject2',
     value: 'MockProject2',
     url: 'project/2',
-  },
-  {
-    category: 'Groups',
-    html_id: 'autocomplete-Groups-1',
-    id: 1,
-    label: 'Gitlab Org / MockGroup1',
-    value: 'MockGroup1',
-    url: 'group/1',
   },
   {
     category: 'Help',

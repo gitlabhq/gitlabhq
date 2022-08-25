@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import Translate from '~/vue_shared/translate';
-import environmentsFolderApp from './environments_folder_view.vue';
+import EnvironmentsFolderApp from './environments_folder_view.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -17,7 +17,7 @@ export default () => {
   return new Vue({
     el,
     components: {
-      environmentsFolderApp,
+      EnvironmentsFolderApp,
     },
     apolloProvider,
     provide: {

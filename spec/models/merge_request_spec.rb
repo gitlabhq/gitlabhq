@@ -144,22 +144,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
-    describe '.attention' do
-      let_it_be(:merge_request5) { create(:merge_request, :unique_branches, assignees: [user2]) }
-      let_it_be(:merge_request6) { create(:merge_request, :unique_branches, assignees: [user2]) }
-
-      before do
-        assignee = merge_request6.find_assignee(user2)
-        assignee.update!(state: :reviewed)
-        merge_request2.find_reviewer(user2).update!(state: :attention_requested)
-        merge_request5.find_assignee(user2).update!(state: :attention_requested)
-      end
-
-      it 'returns MRs that have any attention requests' do
-        expect(described_class.attention(user2)).to eq([merge_request2, merge_request5])
-      end
-    end
-
     describe '.drafts' do
       it 'returns MRs where draft == true' do
         expect(described_class.drafts).to eq([merge_request4])

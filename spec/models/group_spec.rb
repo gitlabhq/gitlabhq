@@ -1857,56 +1857,31 @@ RSpec.describe Group do
     end
   end
 
-  describe '#update_two_factor_requirement' do
-    let(:user) { create(:user) }
+  describe '#update_two_factor_requirement_for_members' do
+    let_it_be_with_reload(:user) { create(:user) }
 
     context 'group membership' do
-      before do
+      it 'enables two_factor_requirement for group members' do
         group.add_member(user, GroupMember::OWNER)
-      end
-
-      it 'is called when require_two_factor_authentication is changed' do
-        expect_any_instance_of(User).to receive(:update_two_factor_requirement)
-
         group.update!(require_two_factor_authentication: true)
-      end
 
-      it 'is called when two_factor_grace_period is changed' do
-        expect_any_instance_of(User).to receive(:update_two_factor_requirement)
-
-        group.update!(two_factor_grace_period: 23)
-      end
-
-      it 'is not called when other attributes are changed' do
-        expect_any_instance_of(User).not_to receive(:update_two_factor_requirement)
-
-        group.update!(description: 'foobar')
-      end
-
-      it 'calls #update_two_factor_requirement on each group member' do
-        other_user = create(:user)
-        group.add_member(other_user, GroupMember::OWNER)
-
-        calls = 0
-        allow_any_instance_of(User).to receive(:update_two_factor_requirement) do
-          calls += 1
-        end
-
-        group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
-
-        expect(calls).to eq 2
-      end
-    end
-
-    context 'sub groups and projects' do
-      it 'enables two_factor_requirement for group member' do
-        group.add_member(user, GroupMember::OWNER)
-
-        group.update!(require_two_factor_authentication: true)
+        group.update_two_factor_requirement_for_members
 
         expect(user.reload.require_two_factor_authentication_from_group).to be_truthy
       end
 
+      it 'disables two_factor_requirement for group members' do
+        user.update!(require_two_factor_authentication_from_group: true)
+        group.add_member(user, GroupMember::OWNER)
+        group.update!(require_two_factor_authentication: false)
+
+        group.update_two_factor_requirement_for_members
+
+        expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
+      end
+    end
+
+    context 'sub groups and projects' do
       context 'expanded group members' do
         let(:indirect_user) { create(:user) }
 
@@ -1915,8 +1890,9 @@ RSpec.describe Group do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: true)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1926,8 +1902,9 @@ RSpec.describe Group do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group, require_two_factor_authentication: true)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: false)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1936,8 +1913,9 @@ RSpec.describe Group do
               ancestor_group = create(:group)
               ancestor_group.add_member(indirect_user, GroupMember::OWNER)
               group.update!(parent: ancestor_group)
-
               group.update!(require_two_factor_authentication: true)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1949,8 +1927,9 @@ RSpec.describe Group do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: true)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1960,8 +1939,9 @@ RSpec.describe Group do
             it 'disables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: false)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
             end
@@ -1970,8 +1950,9 @@ RSpec.describe Group do
               ancestor_group = create(:group, require_two_factor_authentication: false)
               indirect_user.update!(require_two_factor_authentication_from_group: true)
               ancestor_group.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: false)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
             end
@@ -1983,8 +1964,9 @@ RSpec.describe Group do
         it 'does not enable two_factor_requirement for child project member' do
           project = create(:project, group: group)
           project.add_maintainer(user)
-
           group.update!(require_two_factor_authentication: true)
+
+          group.update_two_factor_requirement_for_members
 
           expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
         end
@@ -1993,12 +1975,33 @@ RSpec.describe Group do
           subgroup = create(:group, :nested, parent: group)
           project = create(:project, group: subgroup)
           project.add_maintainer(user)
-
           group.update!(require_two_factor_authentication: true)
+
+          group.update_two_factor_requirement_for_members
 
           expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
         end
       end
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    it 'enqueues a job when require_two_factor_authentication is changed' do
+      expect(Groups::UpdateTwoFactorRequirementForMembersWorker).to receive(:perform_async).with(group.id)
+
+      group.update!(require_two_factor_authentication: true)
+    end
+
+    it 'enqueues a job when two_factor_grace_period is changed' do
+      expect(Groups::UpdateTwoFactorRequirementForMembersWorker).to receive(:perform_async).with(group.id)
+
+      group.update!(two_factor_grace_period: 23)
+    end
+
+    it 'does not enqueue a job when other attributes are changed' do
+      expect(Groups::UpdateTwoFactorRequirementForMembersWorker).not_to receive(:perform_async).with(group.id)
+
+      group.update!(description: 'foobar')
     end
   end
 

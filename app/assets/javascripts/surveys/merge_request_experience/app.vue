@@ -89,6 +89,19 @@ export default {
       if (e.key !== 'Escape') return;
       this.$emit('close');
       this.$refs.dismisser?.dismiss();
+      this.trackDismissal();
+    },
+    close() {
+      this.trackDismissal();
+      this.$emit('close');
+    },
+    trackDismissal() {
+      this.track('survey:mr_experience', {
+        label: 'dismiss',
+        extra: {
+          accountAge: this.accountAge,
+        },
+      });
     },
   },
 };
@@ -119,7 +132,7 @@ export default {
               icon="close"
               @click="
                 dismiss();
-                $emit('close');
+                close();
               "
             />
             <div

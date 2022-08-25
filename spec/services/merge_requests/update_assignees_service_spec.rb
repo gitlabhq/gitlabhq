@@ -113,49 +113,6 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
         expect { service.execute(merge_request) }
           .to issue_fewer_queries_than { update_service.execute(other_mr) }
       end
-
-      context 'setting state of assignees' do
-        before do
-          stub_feature_flags(mr_attention_requests: false)
-        end
-
-        it 'does not set state as attention_requested if feature flag is disabled' do
-          update_merge_request
-
-          expect(merge_request.merge_request_assignees[0].state).not_to eq('attention_requested')
-        end
-
-        context 'feature flag is enabled for current_user' do
-          before do
-            stub_feature_flags(mr_attention_requests: user)
-          end
-
-          it 'sets state as attention_requested' do
-            update_merge_request
-
-            expect(merge_request.merge_request_assignees[0].state).to eq('attention_requested')
-            expect(merge_request.merge_request_assignees[0].updated_state_by).to eq(user)
-          end
-
-          it 'uses reviewers state if it is same user as new assignee' do
-            merge_request.reviewers << user2
-
-            update_merge_request
-
-            expect(merge_request.merge_request_assignees[0].state).to eq('unreviewed')
-          end
-
-          context 'when assignee_ids matches existing assignee' do
-            let(:opts) { { assignee_ids: [user3.id] } }
-
-            it 'keeps original assignees state' do
-              update_merge_request
-
-              expect(merge_request.find_assignee(user3).state).to eq('unreviewed')
-            end
-          end
-        end
-      end
     end
   end
 end

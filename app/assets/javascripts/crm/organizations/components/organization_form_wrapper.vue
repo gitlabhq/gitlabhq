@@ -36,7 +36,7 @@ export default {
     getQuery() {
       return {
         query: getGroupOrganizationsQuery,
-        variables: { groupFullPath: this.groupFullPath },
+        variables: { groupFullPath: this.groupFullPath, ids: [this.organizationGraphQLId] },
       };
     },
     title() {

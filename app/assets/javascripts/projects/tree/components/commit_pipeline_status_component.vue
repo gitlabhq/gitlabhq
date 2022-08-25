@@ -4,7 +4,7 @@ import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
-import ciIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitPipelineService from '../services/commit_pipeline_service';
 
 export default {
@@ -12,7 +12,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    ciIcon,
+    CiIcon,
     GlLoadingIcon,
   },
   props: {

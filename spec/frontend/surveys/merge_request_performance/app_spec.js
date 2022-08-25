@@ -33,12 +33,12 @@ describe('MergeRequestExperienceSurveyApp', () => {
         GlSprintf,
       },
     });
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
 
   describe('when user callout is visible', () => {
     beforeEach(() => {
       createWrapper();
-      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     it('shows survey', async () => {
@@ -47,14 +47,27 @@ describe('MergeRequestExperienceSurveyApp', () => {
       expect(wrapper.emitted().close).toBe(undefined);
     });
 
-    it('triggers user callout on close', async () => {
-      findCloseButton().vm.$emit('click');
-      expect(dismiss).toHaveBeenCalledTimes(1);
-    });
+    describe('when close button clicked', () => {
+      beforeEach(() => {
+        findCloseButton().vm.$emit('click');
+      });
 
-    it('emits close event on close button click', async () => {
-      findCloseButton().vm.$emit('click');
-      expect(wrapper.emitted()).toMatchObject({ close: [[]] });
+      it('triggers user callout on close', async () => {
+        expect(dismiss).toHaveBeenCalledTimes(1);
+      });
+
+      it('emits close event on close button click', async () => {
+        expect(wrapper.emitted()).toMatchObject({ close: [[]] });
+      });
+
+      it('tracks dismissal', async () => {
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
+          label: 'dismiss',
+          extra: {
+            accountAge: 0,
+          },
+        });
+      });
     });
 
     it('applies correct feature name for user callout', () => {
@@ -147,6 +160,15 @@ describe('MergeRequestExperienceSurveyApp', () => {
     it('emits close event', async () => {
       expect(wrapper.emitted()).toMatchObject({ close: [[]] });
       expect(dismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('tracks dismissal', async () => {
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
+        label: 'dismiss',
+        extra: {
+          accountAge: 0,
+        },
+      });
     });
   });
 });

@@ -17959,6 +17959,12 @@ msgstr ""
 msgid "GlobalSearch|Groups"
 msgstr ""
 
+msgid "GlobalSearch|Help"
+msgstr ""
+
+msgid "GlobalSearch|In this project"
+msgstr ""
+
 msgid "GlobalSearch|Issues I've created"
 msgstr ""
 
@@ -17977,6 +17983,15 @@ msgstr ""
 msgid "GlobalSearch|Projects"
 msgstr ""
 
+msgid "GlobalSearch|Recent epics"
+msgstr ""
+
+msgid "GlobalSearch|Recent issues"
+msgstr ""
+
+msgid "GlobalSearch|Recent merge requests"
+msgstr ""
+
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
 msgstr ""
 
@@ -17987,6 +18002,9 @@ msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr ""
 
 msgid "GlobalSearch|Search results are loading"
+msgstr ""
+
+msgid "GlobalSearch|Settings"
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."

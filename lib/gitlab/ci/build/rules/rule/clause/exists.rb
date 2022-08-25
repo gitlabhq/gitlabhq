@@ -24,7 +24,7 @@ module Gitlab
         private
 
         def worktree_paths(context)
-          return unless context.project
+          return [] unless context.project
 
           if @top_level_only
             context.top_level_worktree_paths

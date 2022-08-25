@@ -2415,6 +2415,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: groups_update_two_factor_requirement_for_members
+  :worker_name: Groups::UpdateTwoFactorRequirementForMembersWorker
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_issues_csv
   :worker_name: ImportIssuesCsvWorker
   :feature_category: :team_planning

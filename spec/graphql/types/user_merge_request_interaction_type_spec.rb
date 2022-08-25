@@ -76,10 +76,7 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'] do
     context 'when the user has been asked to review the MR' do
       before do
         merge_request.reviewers << user
-        merge_request.find_reviewer(user).update!(state: :attention_requested)
       end
-
-      it { is_expected.to eq(Types::MergeRequestReviewStateEnum.values['ATTENTION_REQUESTED'].value) }
 
       it 'implies not reviewed' do
         expect(resolve(:reviewed)).to be false

@@ -602,9 +602,6 @@ Style/MultilineWhenThen:
 Style/NumericPredicate:
   EnforcedStyle: comparison
 
-Style/FloatDivision:
-  Enabled: false
-
 Cop/BanCatchThrow:
   Enabled: true
 

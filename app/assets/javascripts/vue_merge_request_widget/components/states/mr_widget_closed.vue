@@ -1,12 +1,12 @@
 <script>
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetClosed',
   components: {
     MrWidgetAuthorTime,
-    statusIcon,
+    StatusIcon,
   },
   props: {
     /* TODO: This is providing all store and service down when it

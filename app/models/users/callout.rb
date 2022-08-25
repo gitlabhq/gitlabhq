@@ -47,8 +47,7 @@ module Users
       storage_enforcement_banner_second_enforcement_threshold: 44,
       storage_enforcement_banner_third_enforcement_threshold: 45,
       storage_enforcement_banner_fourth_enforcement_threshold: 46,
-      attention_requests_top_nav: 47,
-      attention_requests_side_nav: 48,
+      # 47 and 48 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
       # 49 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91533
       # because the banner was no longer relevant.
       # Records will be migrated with https://gitlab.com/gitlab-org/gitlab/-/issues/367293

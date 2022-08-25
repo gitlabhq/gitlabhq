@@ -4,16 +4,16 @@ import { escape } from 'lodash';
 import { mapActions } from 'vuex';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
-import noteEditedText from './note_edited_text.vue';
-import noteHeader from './note_header.vue';
+import NoteEditedText from './note_edited_text.vue';
+import NoteHeader from './note_header.vue';
 
 export default {
   name: 'DiffDiscussionHeader',
   components: {
     GlAvatar,
     GlAvatarLink,
-    noteEditedText,
-    noteHeader,
+    NoteEditedText,
+    NoteHeader,
   },
   directives: {
     SafeHtml,

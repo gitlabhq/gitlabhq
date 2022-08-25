@@ -5,3 +5,7 @@ export const trackViewsOptions = {
   category: 'Customer Relations' /* eslint-disable-line @gitlab/require-i18n-strings */,
   action: 'view_contacts_list',
 };
+export const organizationTrackViewsOptions = {
+  category: 'Customer Relations' /* eslint-disable-line @gitlab/require-i18n-strings */,
+  action: 'view_organizations_list',
+};

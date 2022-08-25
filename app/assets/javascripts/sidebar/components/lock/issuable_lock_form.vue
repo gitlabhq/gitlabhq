@@ -6,7 +6,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import createFlash from '~/flash';
 import eventHub from '~/sidebar/event_hub';
 import toast from '~/vue_shared/plugins/global_toast';
-import editForm from './edit_form.vue';
+import EditForm from './edit_form.vue';
 
 export default {
   issue: 'issue',
@@ -23,7 +23,7 @@ export default {
     displayText: __('Unlocked'),
   },
   components: {
-    editForm,
+    EditForm,
     GlIcon,
   },
   directives: {

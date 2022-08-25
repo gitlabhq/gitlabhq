@@ -4,14 +4,14 @@ import { isEmpty } from 'lodash';
 import Mousetrap from 'mousetrap';
 import { s__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { keysFor, MR_COPY_SOURCE_BRANCH_NAME } from '~/behaviors/shortcuts/keybindings';
 
 export default {
   components: {
     CiIcon,
-    clipboardButton,
+    ClipboardButton,
     GlDropdown,
     GlDropdownItem,
     GlLink,

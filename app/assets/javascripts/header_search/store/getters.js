@@ -14,6 +14,7 @@ import {
   PROJECTS_CATEGORY,
   GROUPS_CATEGORY,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
+  DROPDOWN_ORDER,
 } from '../constants';
 
 export const searchQuery = (state) => {
@@ -32,19 +33,6 @@ export const searchQuery = (state) => {
   );
 
   return `${state.searchPath}?${objectToQuery(query)}`;
-};
-
-export const autocompleteQuery = (state) => {
-  const query = omitBy(
-    {
-      term: state.search,
-      project_id: state.searchContext?.project?.id,
-      project_ref: state.searchContext?.ref,
-    },
-    isNil,
-  );
-
-  return `${state.autocompletePath}?${objectToQuery(query)}`;
 };
 
 export const scopedIssuesPath = (state) => {
@@ -197,7 +185,9 @@ export const autocompleteGroupedSearchOptions = (state) => {
     }
   });
 
-  return results;
+  return results.sort(
+    (a, b) => DROPDOWN_ORDER.indexOf(a.category) - DROPDOWN_ORDER.indexOf(b.category),
+  );
 };
 
 export const searchOptions = (state, getters) => {

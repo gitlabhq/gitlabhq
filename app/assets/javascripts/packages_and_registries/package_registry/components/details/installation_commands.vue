@@ -14,16 +14,17 @@ import NpmInstallation from './npm_installation.vue';
 import NugetInstallation from './nuget_installation.vue';
 import PypiInstallation from './pypi_installation.vue';
 
+const components = {
+  [PACKAGE_TYPE_CONAN]: ConanInstallation,
+  [PACKAGE_TYPE_MAVEN]: MavenInstallation,
+  [PACKAGE_TYPE_NPM]: NpmInstallation,
+  [PACKAGE_TYPE_NUGET]: NugetInstallation,
+  [PACKAGE_TYPE_PYPI]: PypiInstallation,
+  [PACKAGE_TYPE_COMPOSER]: ComposerInstallation,
+};
+
 export default {
   name: 'InstallationCommands',
-  components: {
-    [PACKAGE_TYPE_CONAN]: ConanInstallation,
-    [PACKAGE_TYPE_MAVEN]: MavenInstallation,
-    [PACKAGE_TYPE_NPM]: NpmInstallation,
-    [PACKAGE_TYPE_NUGET]: NugetInstallation,
-    [PACKAGE_TYPE_PYPI]: PypiInstallation,
-    [PACKAGE_TYPE_COMPOSER]: ComposerInstallation,
-  },
   props: {
     packageEntity: {
       type: Object,
@@ -32,7 +33,7 @@ export default {
   },
   computed: {
     installationComponent() {
-      return this.$options.components[this.packageEntity.packageType];
+      return components[this.packageEntity.packageType];
     },
   },
 };

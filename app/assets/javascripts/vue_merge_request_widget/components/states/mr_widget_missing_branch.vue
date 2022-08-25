@@ -9,7 +9,7 @@ import {
   MR_WIDGET_MISSING_BRANCH_RESTORE,
   MR_WIDGET_MISSING_BRANCH_MANUALCLI,
 } from '../../i18n';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetMissingBranch',
@@ -19,7 +19,7 @@ export default {
   components: {
     GlIcon,
     GlSprintf,
-    statusIcon,
+    StatusIcon,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {

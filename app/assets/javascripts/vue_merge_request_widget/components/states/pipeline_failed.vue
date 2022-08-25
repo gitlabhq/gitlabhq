@@ -2,14 +2,14 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'PipelineFailed',
   components: {
     GlLink,
     GlSprintf,
-    statusIcon,
+    StatusIcon,
   },
   computed: {
     troubleshootingDocsPath() {

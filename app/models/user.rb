@@ -2152,10 +2152,6 @@ class User < ApplicationRecord
     end
   end
 
-  def mr_attention_requests_enabled?
-    Feature.enabled?(:mr_attention_requests, self)
-  end
-
   def account_age_in_days
     (Date.current - created_at.to_date).to_i
   end

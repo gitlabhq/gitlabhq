@@ -4,12 +4,12 @@ import { mapActions } from 'vuex';
 import { modalTypes } from '../../constants';
 import ItemButton from './button.vue';
 import NewModal from './modal.vue';
-import upload from './upload.vue';
+import Upload from './upload.vue';
 
 export default {
   components: {
     GlIcon,
-    upload,
+    Upload,
     ItemButton,
     NewModal,
   },

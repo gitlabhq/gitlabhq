@@ -10,7 +10,7 @@ export const displayText = {
 };
 
 export const variableTypes = {
-  variableType: 'ENV_VAR',
+  envType: 'ENV_VAR',
   fileType: 'FILE',
 };
 
@@ -29,13 +29,13 @@ export const allEnvironments = {
 export const variableText = {
   [types.variableType]: __('Variable'),
   [types.fileType]: __('File'),
-  [variableTypes.variableType]: __('Variable'),
+  [variableTypes.envType]: __('Variable'),
   [variableTypes.fileType]: __('File'),
 };
 
 export const variableOptions = [
-  { value: types.variableType, text: variableText[types.variableType] },
-  { value: types.fileType, text: variableText[types.fileType] },
+  { value: variableTypes.envType, text: variableText[variableTypes.envType] },
+  { value: variableTypes.fileType, text: variableText[variableTypes.fileType] },
 ];
 
 export const defaultVariableState = {
@@ -44,7 +44,7 @@ export const defaultVariableState = {
   masked: false,
   protected: false,
   value: '',
-  variableType: types.variableType,
+  variableType: variableTypes.envType,
 };
 
 // eslint-disable-next-line @gitlab/require-i18n-strings

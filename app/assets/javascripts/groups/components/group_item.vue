@@ -21,10 +21,10 @@ import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE, ITEM_TYPE } from '../const
 
 import eventHub from '../event_hub';
 
-import itemActions from './item_actions.vue';
-import itemCaret from './item_caret.vue';
-import itemStats from './item_stats.vue';
-import itemTypeIcon from './item_type_icon.vue';
+import ItemActions from './item_actions.vue';
+import ItemCaret from './item_caret.vue';
+import ItemStats from './item_stats.vue';
+import ItemTypeIcon from './item_type_icon.vue';
 
 export default {
   directives: {
@@ -41,10 +41,10 @@ export default {
     GlPopover,
     GlLink,
     UserAccessRoleBadge,
-    itemCaret,
-    itemTypeIcon,
-    itemActions,
-    itemStats,
+    ItemCaret,
+    ItemTypeIcon,
+    ItemActions,
+    ItemStats,
   },
   inject: ['currentGroupVisibility'],
   props: {

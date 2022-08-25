@@ -16,8 +16,8 @@ export const mockVariables = (kind) => {
       key: 'my-var',
       masked: false,
       protected: true,
-      value: 'env_val',
-      variableType: variableTypes.variableType,
+      value: 'variable_value',
+      variableType: variableTypes.envType,
     },
     {
       __typename: `Ci${kind}Variable`,
@@ -25,7 +25,7 @@ export const mockVariables = (kind) => {
       key: 'secret',
       masked: true,
       protected: false,
-      value: 'the_secret_value',
+      value: 'another_value',
       variableType: variableTypes.fileType,
     },
   ];

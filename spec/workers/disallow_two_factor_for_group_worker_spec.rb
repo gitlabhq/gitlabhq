@@ -12,7 +12,7 @@ RSpec.describe DisallowTwoFactorForGroupWorker do
     expect(group.reload.require_two_factor_authentication).to eq(false)
   end
 
-  it "updates group members" do
+  it "updates group members", :sidekiq_inline do
     group.add_member(user, GroupMember::DEVELOPER)
 
     described_class.new.perform(group.id)

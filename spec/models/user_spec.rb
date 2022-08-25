@@ -7396,25 +7396,6 @@ RSpec.describe User do
     let(:factory_name) { :user }
   end
 
-  describe 'mr_attention_requests_enabled?' do
-    let(:user) { create(:user) }
-
-    before do
-      stub_feature_flags(mr_attention_requests: false)
-    end
-
-    it { expect(user.mr_attention_requests_enabled?).to be(false) }
-
-    it 'feature flag is enabled for user' do
-      stub_feature_flags(mr_attention_requests: user)
-
-      another_user = create(:user)
-
-      expect(user.mr_attention_requests_enabled?).to be(true)
-      expect(another_user.mr_attention_requests_enabled?).to be(false)
-    end
-  end
-
   describe 'user age' do
     let(:user) { create(:user, created_at: Date.yesterday) }
 
