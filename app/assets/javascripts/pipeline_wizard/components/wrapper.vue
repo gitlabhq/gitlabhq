@@ -122,7 +122,7 @@ export default {
       this.track('click_button', {
         property: 'back',
         label: 'pipeline_wizard_navigation',
-        extras: {
+        extra: {
           fromStep: this.currentStepIndex + 1,
           toStep: this.currentStepIndex,
         },
@@ -133,7 +133,7 @@ export default {
       this.track('click_button', {
         property: 'next',
         label: 'pipeline_wizard_navigation',
-        extras: {
+        extra: {
           fromStep: this.currentStepIndex - 1,
           toStep: this.currentStepIndex,
         },
@@ -149,7 +149,7 @@ export default {
     onEditorTouched() {
       this.track('edit', {
         label: 'pipeline_wizard_editor_interaction',
-        extras: {
+        extra: {
           currentStep: this.currentStepIndex,
         },
       });

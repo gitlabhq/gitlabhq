@@ -12,11 +12,6 @@ type: howto
 > - [Disabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`.
 > - [Enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
 
-FLAG:
-On self-managed GitLab, this feature is only available by default for Geo sites using a unified URL. See below to
-[set up a unified URL for Geo sites](#set-up-a-unified-url-for-geo-sites).
-The feature is not ready for production use with separate URLs.
-
 Use Geo proxying to:
 
 - Have secondary sites serve read-write traffic by proxying to the primary site.

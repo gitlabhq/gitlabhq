@@ -30859,6 +30859,9 @@ msgstr ""
 msgid "ProjectSettings|Fast-forward merges only."
 msgstr ""
 
+msgid "ProjectSettings|Feature flags"
+msgstr ""
+
 msgid "ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project."
 msgstr ""
 
@@ -30998,6 +31001,9 @@ msgid "ProjectSettings|Requirements"
 msgstr ""
 
 msgid "ProjectSettings|Requirements management system."
+msgstr ""
+
+msgid "ProjectSettings|Roll out new features without redeploying with feature flags."
 msgstr ""
 
 msgid "ProjectSettings|Search for topic"

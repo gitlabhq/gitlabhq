@@ -350,7 +350,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         category: trackingCategory,
         property: 'next',
         label: 'pipeline_wizard_navigation',
-        extras: {
+        extra: {
           fromStep: 0,
           toStep: 1,
         },
@@ -372,7 +372,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         category: trackingCategory,
         property: 'back',
         label: 'pipeline_wizard_navigation',
-        extras: {
+        extra: {
           fromStep: 1,
           toStep: 0,
         },
@@ -395,7 +395,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         category: trackingCategory,
         property: 'back',
         label: 'pipeline_wizard_navigation',
-        extras: {
+        extra: {
           fromStep: 2,
           toStep: 1,
         },
@@ -430,7 +430,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       expect(trackingSpy).toHaveBeenCalledWith(trackingCategory, 'edit', {
         category: trackingCategory,
         label: 'pipeline_wizard_editor_interaction',
-        extras: {
+        extra: {
           currentStep: 0,
         },
       });

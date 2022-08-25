@@ -727,10 +727,6 @@ included_attributes:
     - :build_git_strategy
     - :build_enabled
     - :security_and_compliance_enabled
-  resource_iteration_events:
-    - :user_id
-    - :action
-    - :created_at
   resource_milestone_events:
     - :user_id
     - :action
@@ -1155,3 +1151,7 @@ ee:
     project:
     - :requirements_enabled
     - :requirements_access_level
+    resource_iteration_events:
+      - :user_id
+      - :action
+      - :created_at

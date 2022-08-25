@@ -128,6 +128,7 @@ describe('Settings Panel', () => {
     findOperationsSettings().findComponent(ProjectFeatureSetting);
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
   const findEnvironmentsSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
+  const findFeatureFlagsSettings = () => wrapper.findComponent({ ref: 'feature-flags-settings' });
 
   afterEach(() => {
     wrapper.destroy();
@@ -803,6 +804,24 @@ describe('Settings Panel', () => {
         wrapper = mountComponent({});
 
         expect(findEnvironmentsSettings().exists()).toBe(false);
+      });
+    });
+  });
+  describe('Feature Flags', () => {
+    describe('with feature flag', () => {
+      it('should show the feature flags toggle', () => {
+        wrapper = mountComponent({
+          glFeatures: { splitOperationsVisibilityPermissions: true },
+        });
+
+        expect(findFeatureFlagsSettings().exists()).toBe(true);
+      });
+    });
+    describe('without feature flag', () => {
+      it('should not show the feature flags toggle', () => {
+        wrapper = mountComponent({});
+
+        expect(findFeatureFlagsSettings().exists()).toBe(false);
       });
     });
   });

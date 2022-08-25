@@ -33,6 +33,10 @@ export default {
     environmentsHelpText: s__(
       'ProjectSettings|Every project can make deployments to environments either via CI/CD or API calls. Non-project members have read-only access.',
     ),
+    featureFlagsLabel: s__('ProjectSettings|Feature flags'),
+    featureFlagsHelpText: s__(
+      'ProjectSettings|Roll out new features without redeploying with feature flags.',
+    ),
     packagesHelpText: s__(
       'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
     ),
@@ -131,6 +135,16 @@ export default {
       required: false,
       default: '',
     },
+    environmentsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    featureFlagsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     lfsHelpPath: {
       type: String,
       required: false,
@@ -214,6 +228,7 @@ export default {
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       operationsAccessLevel: featureAccessLevel.EVERYONE,
       environmentsAccessLevel: featureAccessLevel.EVERYONE,
+      featureFlagsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
       warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
@@ -290,6 +305,7 @@ export default {
     environmentsEnabled() {
       return this.environmentsAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
+
     repositoryEnabled() {
       return this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
@@ -388,6 +404,10 @@ export default {
         this.environmentsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.environmentsAccessLevel,
+        );
+        this.featureFlagsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.featureFlagsAccessLevel,
         );
         this.containerRegistryAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -879,12 +899,26 @@ export default {
           ref="environments-settings"
           :label="$options.i18n.environmentsLabel"
           :help-text="$options.i18n.environmentsHelpText"
+          :help-path="environmentsHelpPath"
         >
           <project-feature-setting
             v-model="environmentsAccessLevel"
             :label="$options.i18n.environmentsLabel"
             :options="featureAccessLevelOptions"
             name="project[project_feature_attributes][environments_access_level]"
+          />
+        </project-setting-row>
+        <project-setting-row
+          ref="feature-flags-settings"
+          :label="$options.i18n.featureFlagsLabel"
+          :help-text="$options.i18n.featureFlagsHelpText"
+          :help-path="featureFlagsHelpPath"
+        >
+          <project-feature-setting
+            v-model="featureFlagsAccessLevel"
+            :label="$options.i18n.featureFlagsLabel"
+            :options="featureAccessLevelOptions"
+            name="project[project_feature_attributes][feature_flags_access_level]"
           />
         </project-setting-row>
       </template>

@@ -183,13 +183,12 @@ export default {
       :loading="loading"
       @fetchJobsByStatus="fetchJobsByStatus"
     />
-
-    <jobs-filtered-search
-      v-if="showFilteredSearch"
-      :class="$options.filterSearchBoxStyles"
-      :query-string="validatedQueryString"
-      @filterJobsBySearch="filterJobsBySearch"
-    />
+    <div v-if="showFilteredSearch" :class="$options.filterSearchBoxStyles">
+      <jobs-filtered-search
+        :query-string="validatedQueryString"
+        @filterJobsBySearch="filterJobsBySearch"
+      />
+    </div>
 
     <div v-if="showSkeletonLoader" class="gl-mt-5">
       <gl-skeleton-loader :width="1248" :height="73">

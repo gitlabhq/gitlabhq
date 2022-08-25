@@ -10,13 +10,13 @@ description: "Documentation on large repositories."
 GitLab, like any Git based system, is subject to similar performance restraints when it comes to large
 repositories that size into the gigabytes.
 
-On this page we detail several best practices to improve performance with these large repositories on GitLab.
+In the following sections, we detail several best practices for improving performance with these large repositories on GitLab.
 
 ## Large File System (LFS)
 
-It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, graphics, etc.) are stored as Large File Storage (LFS) objects. In such setup, the Objects are stored elsewhere, such as in Object Storage, and this can reduce the repository size significantly, thus improving performance.
+It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, or graphics) are stored as Large File Storage (LFS) objects. In such setup, the Objects are stored elsewhere, such as in Object Storage, and this can reduce the repository size significantly, thus improving performance.
 
-To analyze if the repository has these sorts of objects, it's recommended to run [`git-sizer`](https://github.com/github/git-sizer) to get a detailed analysis. This tool shows in detail what makes up the repository as well as highlights any areas of concern.
+To analyze if the repository has these sorts of objects, it's recommended to run [`git-sizer`](https://github.com/github/git-sizer) to get a detailed analysis. This tool shows in detail what makes up the repository as well as highlights any areas of concern. If any large objects are found, it's then recommended removing them with tools such as the [BFG Repo Cleaner](https://rtyley.github.io/bfg-repo-cleaner/).
 
 Refer to the [Git LFS documentation for more information](../../../topics/git/lfs/index.md).
 
