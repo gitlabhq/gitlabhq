@@ -30,8 +30,27 @@ module Support
 
       @todo.include?(path)
     end
+
+    # Adds '# order <ORDER>` below the example group description if the order
+    # has been set to help debugging in case of failure.
+    #
+    # Previously, we've modified metadata[:description] directly but that led
+    # to bugs. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96137
+    module DocumentationFormatterPatch
+      # See https://github.com/rspec/rspec-core/blob/v3.11.0/lib/rspec/core/formatters/documentation_formatter.rb#L24-L29
+      def example_group_started(notification)
+        super
+
+        order = notification.group.metadata[:order]
+        return unless order
+
+        output.puts "#{current_indentation}# order #{order}"
+      end
+    end
   end
 end
+
+RSpec::Core::Formatters::DocumentationFormatter.prepend Support::RspecOrder::DocumentationFormatterPatch
 
 RSpec.configure do |config|
   # Useful to find order-dependent specs.

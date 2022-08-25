@@ -4,6 +4,7 @@ import Blockquote from '~/content_editor/extensions/blockquote';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Diagram from '~/content_editor/extensions/diagram';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
@@ -29,7 +30,7 @@ import TaskItem from '~/content_editor/extensions/task_item';
 import Video from '~/content_editor/extensions/video';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
-import { SAFE_VIDEO_EXT, SAFE_AUDIO_EXT } from '~/content_editor/constants';
+import { SAFE_VIDEO_EXT, SAFE_AUDIO_EXT, DIAGRAM_LANGUAGES } from '~/content_editor/constants';
 
 import { createTestEditor, createDocBuilder } from './test_utils';
 
@@ -41,6 +42,7 @@ const tiptapEditor = createTestEditor({
     BulletList,
     Code,
     CodeBlockHighlight,
+    Diagram,
     FootnoteDefinition,
     FootnoteReference,
     Frontmatter,
@@ -77,6 +79,7 @@ const {
     code,
     codeBlock,
     div,
+    diagram,
     footnoteDefinition,
     footnoteReference,
     frontmatter,
@@ -108,6 +111,7 @@ const {
     bulletList: { nodeType: BulletList.name },
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
+    diagram: { nodeType: Diagram.name },
     footnoteDefinition: { nodeType: FootnoteDefinition.name },
     footnoteReference: { nodeType: FootnoteReference.name },
     frontmatter: { nodeType: Frontmatter.name },
@@ -1278,6 +1282,16 @@ title: 'layout'
             }),
           ),
         ),
+      };
+    }),
+    ...DIAGRAM_LANGUAGES.map((language) => {
+      const markdown = `\`\`\`${language}
+content
+\`\`\``;
+
+      return {
+        markdown,
+        expectedDoc: doc(diagram({ ...source(markdown), language }, 'content')),
       };
     }),
   ];

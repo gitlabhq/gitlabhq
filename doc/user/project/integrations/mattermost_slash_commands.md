@@ -33,22 +33,19 @@ you can automatically configure Mattermost slash commands:
 1. On the left sidebar, select **Settings > Integrations**.
 1. In **Add an integration**, select **Mattermost slash commands**.
 1. In **Enable integration**, ensure the **Active** checkbox is selected.
-1. Select **Add to Mattermost** and **Save changes**.
+1. Select **Add to Mattermost**, and select **Save changes**.
 
 ## Configure manually
 
 To manually configure slash commands in Mattermost, you must:
 
-1. [Enable custom slash commands](#enable-custom-slash-commands) in Mattermost.
-1. [Get configuration values](#get-configuration-values-from-gitlab) from GitLab.
-1. [Create a new slash command](#create-a-slash-command) in Mattermost.
-1. [Provide the Mattermost token](#provide-the-mattermost-token-to-gitlab) to GitLab.
+1. [Enable custom slash commands in Mattermost](#enable-custom-slash-commands-in-mattermost).
+   (This step is required only for installations from source.)
+1. [Get configuration values from GitLab](#get-configuration-values-from-gitlab).
+1. [Create a slash command in Mattermost](#create-a-slash-command-in-mattermost).
+1. [Provide the Mattermost token to GitLab](#provide-the-mattermost-token-to-gitlab).
 
-### Enable custom slash commands
-
-NOTE:
-Omnibus GitLab installations are preconfigured. This step is required only for
-installations from source.
+### Enable custom slash commands in Mattermost
 
 To enable custom slash commands from the Mattermost administrator console:
 
@@ -59,65 +56,51 @@ To enable custom slash commands from the Mattermost administrator console:
    - **Enable Custom Slash Commands**
    - **Enable integrations to override usernames**
    - **Enable integrations to override profile picture icons**
-1. Select **Save**, but do not close this browser tab, because you need it in
+1. Select **Save**, but do not close this browser tab. You need it in
    a later step.
 
 ### Get configuration values from GitLab
 
-After you enable custom slash commands in Mattermost, you need configuration
-information from GitLab. To get this information:
+To get configuration values from GitLab:
 
-1. In a different browser tab than your current Mattermost session, sign in to
+1. In a different browser tab, sign in to
    GitLab as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
-1. In the left menu, select **Settings > Integrations**, then select
-   **Mattermost slash commands**.
-1. GitLab displays potential values for Mattermost settings. Copy the **Request URL**
-   as you need it for the next step. All other values are suggestions.
-1. Do not close this browser tab, because you need it in future steps.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Mattermost slash commands**. GitLab displays potential values for Mattermost settings.
+1. Copy the **Request URL** value. All other values are suggestions.
+1. Do not close this browser tab. You need it in a later step.
 
-Next, create a slash command in Mattermost with the values from GitLab.
+### Create a slash command in Mattermost
 
-### Create a slash command
+To create a slash command in Mattermost:
 
-To create a slash command, you need the values you obtained from GitLab in
-the previous step:
-
-1. In the Mattermost tab you left open when you
-   [enabled custom slash commands](#enable-custom-slash-commands), go to your
-   team page.
+1. [In the Mattermost browser tab](#enable-custom-slash-commands-in-mattermost),
+   go to your team page.
 1. Select the **{ellipsis_v}** **Settings** icon, and select **Integrations**.
-1. In the left menu, select **Slash commands**.
-1. Select **Add Slash Command**:
-
-   ![Mattermost add command](img/mattermost_add_slash_command.png)
+1. On the left sidebar, select **Slash commands**.
+1. Select **Add Slash Command**.
 1. Provide a **Display Name** and **Description** for your new command.
-1. Provide a **Command Trigger Word** according to your application's configuration:
+1. Provide a **Command Trigger Word** based on your application's configuration:
 
-   - **If you intend to only connect one project to your Mattermost team**: Use
+   - **If you intend to only connect one project to your Mattermost team**, use
      `/gitlab` for your trigger word.
-   - **If you intend to connect multiple projects**: Use a trigger word that relates
+   - **If you intend to connect multiple projects**, use a trigger word that relates
      to your project, such as `/project-name` or `/gitlab-project-name`.
-1. For **Request URL**, provide the value you copied from GitLab when you
-   [viewed configuration values](#get-configuration-values-from-gitlab).
-1. For all other values, you may use the suggestions from GitLab or use your
+1. For **Request URL**, [paste the value you copied from GitLab](#get-configuration-values-from-gitlab).
+1. For all other values, you may use the suggestions from GitLab or your
    preferred values.
-1. Copy the **Token** value, as you need it in a later step, and select **Done**.
+1. Copy the **Token** value, and select **Done**.
 
 ### Provide the Mattermost token to GitLab
 
-When you create a new slash command in Mattermost, it generates a token you must
+Creating a slash command in Mattermost generates a token you must
 provide to GitLab:
 
-1. In the GitLab browser tab from
-   [getting configuration values from GitLab](#get-configuration-values-from-gitlab),
-   select the **Active** checkbox to enable this configuration.
-1. In the **Token** field, paste the token you obtained from Mattermost.
-   ensure that the **Active** toggle is enabled.
-
-   ![Mattermost copy token to GitLab](img/mattermost_gitlab_token.png)
-
-1. Select **Save changes** for the changes to take effect.
+1. [In the GitLab browser tab](#get-configuration-values-from-gitlab),
+   select the **Active** checkbox.
+1. In the **Token** text box, [paste the token you copied from Mattermost](#create-a-slash-command-in-mattermost).
+1. Select **Save changes**.
 
 Your slash command can now communicate with your GitLab project.
 

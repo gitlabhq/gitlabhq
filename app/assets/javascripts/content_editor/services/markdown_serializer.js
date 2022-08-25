@@ -126,7 +126,7 @@ const defaultSerializerConfig = {
     }),
     [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
-    [Diagram.name]: renderCodeBlock,
+    [Diagram.name]: preserveUnchanged(renderCodeBlock),
     [DescriptionList.name]: renderHTMLNode('dl', true),
     [DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();

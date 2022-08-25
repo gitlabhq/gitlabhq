@@ -90,7 +90,10 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
 
-When randomized the used seed is shown in the spec output below the test suite summary. For example, `Randomized with seed 27443`.
+When randomized:
+
+- The string `# order random` is added below the example group description.
+- The used seed is shown in the spec output below the test suite summary. For example, `Randomized with seed 27443`.
 
 For a list of spec files which are still run in defined order, see [`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml).
 

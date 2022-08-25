@@ -5,6 +5,7 @@ import Bold from './bold';
 import BulletList from './bullet_list';
 import Code from './code';
 import CodeBlockHighlight from './code_block_highlight';
+import Diagram from './diagram';
 import FootnoteReference from './footnote_reference';
 import FootnoteDefinition from './footnote_definition';
 import Frontmatter from './frontmatter';
@@ -39,6 +40,7 @@ export default Extension.create({
           BulletList.name,
           Code.name,
           CodeBlockHighlight.name,
+          Diagram.name,
           FootnoteReference.name,
           FootnoteDefinition.name,
           Frontmatter.name,

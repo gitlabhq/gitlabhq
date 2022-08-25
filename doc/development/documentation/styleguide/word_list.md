@@ -19,6 +19,10 @@ For guidance not on this page, we defer to these style guides:
 <!-- vale off -->
 <!-- markdownlint-disable -->
 
+## `&`
+
+Do not use Latin abbreviations. Use **and** instead, unless you are documenting a UI element that uses an `&`.
+
 ## `@mention`
 
 Try to avoid **`@mention`**. Say **mention** instead, and consider linking to the

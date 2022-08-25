@@ -64,3 +64,5 @@ export const EXTENSION_PRIORITY_HIGHEST = 200;
  */
 export const SAFE_VIDEO_EXT = ['mp4', 'm4v', 'mov', 'webm', 'ogv'];
 export const SAFE_AUDIO_EXT = ['mp3', 'oga', 'ogg', 'spx', 'wav'];
+
+export const DIAGRAM_LANGUAGES = ['plantuml', 'mermaid'];

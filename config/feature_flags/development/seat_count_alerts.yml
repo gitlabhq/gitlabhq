@@ -1,8 +1,0 @@
----
-name: seat_count_alerts
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89204
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362041
-milestone: '15.1'
-type: development
-group: group::purchase
-default_enabled: false

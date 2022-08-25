@@ -1,6 +1,6 @@
 import { render } from '~/lib/gfm';
 import { isValidAttribute } from '~/lib/dompurify';
-import { SAFE_AUDIO_EXT, SAFE_VIDEO_EXT } from '../constants';
+import { SAFE_AUDIO_EXT, SAFE_VIDEO_EXT, DIAGRAM_LANGUAGES } from '../constants';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
 const ALL_AUDIO_VIDEO_EXT = [...SAFE_AUDIO_EXT, ...SAFE_VIDEO_EXT];
@@ -40,6 +40,12 @@ const extractMediaFileExtension = (url) => {
   }
 };
 
+const isCodeBlock = (hastNode) => hastNode.tagName === 'codeblock';
+
+const isDiagramCodeBlock = (hastNode) => DIAGRAM_LANGUAGES.includes(hastNode.properties?.language);
+
+const getCodeBlockAttrs = (hastNode) => ({ language: hastNode.properties.language });
+
 const factorySpecs = {
   blockquote: { type: 'block', selector: 'blockquote' },
   paragraph: { type: 'block', selector: 'p' },
@@ -68,8 +74,13 @@ const factorySpecs = {
   },
   codeBlock: {
     type: 'block',
-    selector: 'codeblock',
-    getAttrs: (hastNode) => ({ ...hastNode.properties }),
+    selector: (hastNode) => isCodeBlock(hastNode) && !isDiagramCodeBlock(hastNode),
+    getAttrs: getCodeBlockAttrs,
+  },
+  diagram: {
+    type: 'block',
+    selector: (hastNode) => isCodeBlock(hastNode) && isDiagramCodeBlock(hastNode),
+    getAttrs: getCodeBlockAttrs,
   },
   horizontalRule: {
     type: 'block',

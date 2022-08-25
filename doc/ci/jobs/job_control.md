@@ -957,6 +957,33 @@ For example:
 Pattern matching is case-sensitive by default. Use the `i` flag modifier to make a
 pattern case-insensitive. For example: `/pattern/i`.
 
+#### Store the regex pattern in a variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35438) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `ci_fix_rules_if_comparison_with_regexp_variable`, disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/359740) and feature flag `ci_fix_rules_if_comparison_with_regexp_variable` removed in GitLab 15.1.
+
+Variables on the right side of `=~` and `!~` expressions are evaluated as regular expressions.
+The regular expression must be enclosed in forward slashes (`/`). For example:
+
+```yaml
+variables:
+  pattern: '/^ab.*/'
+
+regex-job1:
+  variables:
+    teststring: 'abcde'
+  script: echo "This job will run, because 'abcde' matches the /^ab.*/ pattern."
+  rules:
+    - if: '$teststring =~ $pattern'
+
+regex-job2:
+  variables:
+    teststring: 'fghij'
+  script: echo "This job will not run, because 'fghi' does not match the /^ab.*/ pattern."
+  rules:
+    - if: '$teststring =~ $pattern'
+```
+
 ### Join variable expressions together with `&&` or `||`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
