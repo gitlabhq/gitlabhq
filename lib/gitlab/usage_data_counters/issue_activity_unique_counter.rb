@@ -96,23 +96,28 @@ module Gitlab
           track_unique_action(ISSUE_MOVED, author)
         end
 
-        def track_issue_related_action(author:)
+        def track_issue_related_action(author:, project:)
+          track_snowplow_action(ISSUE_RELATED, author, project)
           track_unique_action(ISSUE_RELATED, author)
         end
 
-        def track_issue_unrelated_action(author:)
+        def track_issue_unrelated_action(author:, project:)
+          track_snowplow_action(ISSUE_UNRELATED, author, project)
           track_unique_action(ISSUE_UNRELATED, author)
         end
 
-        def track_issue_marked_as_duplicate_action(author:)
+        def track_issue_marked_as_duplicate_action(author:, project:)
+          track_snowplow_action(ISSUE_MARKED_AS_DUPLICATE, author, project)
           track_unique_action(ISSUE_MARKED_AS_DUPLICATE, author)
         end
 
-        def track_issue_locked_action(author:)
+        def track_issue_locked_action(author:, project:)
+          track_snowplow_action(ISSUE_LOCKED, author, project)
           track_unique_action(ISSUE_LOCKED, author)
         end
 
-        def track_issue_unlocked_action(author:)
+        def track_issue_unlocked_action(author:, project:)
+          track_snowplow_action(ISSUE_UNLOCKED, author, project)
           track_unique_action(ISSUE_UNLOCKED, author)
         end
 

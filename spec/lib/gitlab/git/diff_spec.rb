@@ -2,8 +2,10 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Diff, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+RSpec.describe Gitlab::Git::Diff do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository }
+
   let(:gitaly_diff) do
     Gitlab::GitalyClient::Diff.new(
       from_path: '.gitmodules',
@@ -190,16 +192,6 @@ EOT
             expect(binary_diff(project).diff).not_to be_empty
           end
         end
-
-        context 'when convert_diff_to_utf8_with_replacement_symbol feature flag is disabled' do
-          before do
-            stub_feature_flags(convert_diff_to_utf8_with_replacement_symbol: false)
-          end
-
-          it 'will not try to convert invalid characters' do
-            expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)
-          end
-        end
       end
 
       context 'when replace_invalid_utf8_chars is false' do
@@ -218,7 +210,7 @@ EOT
     let(:diffs) { described_class.between(repository, 'feature', 'master', options) }
 
     it 'has the correct size' do
-      expect(diffs.size).to eq(24)
+      expect(diffs.size).to eq(21)
     end
 
     context 'diff' do

@@ -1648,7 +1648,7 @@ DEPENDENCIES
   multi_json (~> 1.14.1)
   net-ldap (~> 0.16.3)
   net-ntp
-  nokogiri (~> 1.13.0)
+  nokogiri (~> 1.13.8)
   oauth2 (~> 2.0)
   octokit (~> 4.15)
   ohai (~> 16.10)

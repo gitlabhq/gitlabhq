@@ -145,7 +145,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue relate actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_RELATED }
 
       def track_action(params)
@@ -155,7 +155,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue unrelate actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_UNRELATED }
 
       def track_action(params)
@@ -165,7 +165,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue marked as duplicate actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_MARKED_AS_DUPLICATE }
 
       def track_action(params)
@@ -175,7 +175,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue locked actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_LOCKED }
 
       def track_action(params)
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue unlocked actions' do
-    it_behaves_like 'a daily tracked issuable event' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_UNLOCKED }
 
       def track_action(params)

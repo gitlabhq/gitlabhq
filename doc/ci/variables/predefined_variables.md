@@ -117,6 +117,9 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_SERVER_PORT`                         | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |
 | `CI_SERVER_PROTOCOL`                     | 12.8   | all    | The protocol of the GitLab instance URL, without host or port. For example `https`. |
 | `CI_SERVER_REVISION`                     | all    | all    | GitLab revision that schedules jobs. |
+| `CI_SERVER_TLS_CA_FILE`                  | all    | all    | File containing the TLS CA certificate to verify the GitLab server when `tls-ca-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
+| `CI_SERVER_TLS_CERT_FILE`                | all    | all    | File containing the TLS certificate to verify the GitLab server when `tls-cert-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
+| `CI_SERVER_TLS_KEY_FILE`                 | all    | all    | File containing the TLS key to verify the GitLab server when `tls-key-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
 | `CI_SERVER_URL`                          | 12.7   | all    | The base URL of the GitLab instance, including protocol and port. For example `https://gitlab.example.com:8080`. |
 | `CI_SERVER_VERSION_MAJOR`                | 11.4   | all    | The major version of the GitLab instance. For example, if the GitLab version is `13.6.1`, the `CI_SERVER_VERSION_MAJOR` is `13`. |
 | `CI_SERVER_VERSION_MINOR`                | 11.4   | all    | The minor version of the GitLab instance. For example, if the GitLab version is `13.6.1`, the `CI_SERVER_VERSION_MINOR` is `6`. |

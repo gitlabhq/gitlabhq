@@ -1,4 +1,3 @@
-import { GlCollapse } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { stubTransition } from 'helpers/stub_transition';
@@ -183,29 +182,12 @@ describe('~/environments/components/deployment.vue', () => {
     });
   });
 
-  describe('collapse', () => {
-    let collapse;
-    let button;
-
+  describe('details', () => {
     beforeEach(() => {
       wrapper = createWrapper();
-      collapse = wrapper.findComponent(GlCollapse);
-      button = wrapper.findComponent({ ref: 'details-toggle' });
     });
 
-    it('is collapsed by default', () => {
-      expect(collapse.attributes('visible')).toBeUndefined();
-      expect(button.props('icon')).toBe('expand-down');
-      expect(button.text()).toBe(__('Show details'));
-    });
-
-    it('opens on click', async () => {
-      await button.trigger('click');
-
-      expect(button.text()).toBe(__('Hide details'));
-      expect(button.props('icon')).toBe('expand-up');
-      expect(collapse.attributes('visible')).toBe('visible');
-
+    it('shows information about the deployment', () => {
       const username = wrapper.findByRole('link', { name: `@${deployment.user.username}` });
 
       expect(username.attributes('href')).toBe(deployment.user.path);
@@ -224,9 +206,8 @@ describe('~/environments/components/deployment.vue', () => {
   });
 
   describe('with tagged deployment', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createWrapper({ propsData: { deployment: { ...deployment, tag: true } } });
-      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
     });
 
     it('shows tag instead of branch', () => {
@@ -236,9 +217,8 @@ describe('~/environments/components/deployment.vue', () => {
   });
 
   describe('with API deployment', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createWrapper({ propsData: { deployment: { ...deployment, deployable: null } } });
-      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
     });
 
     it('shows API instead of a job name', () => {
@@ -247,13 +227,12 @@ describe('~/environments/components/deployment.vue', () => {
     });
   });
   describe('without a job path', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createWrapper({
         propsData: {
           deployment: { ...deployment, deployable: { name: deployment.deployable.name } },
         },
       });
-      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
     });
 
     it('shows a span instead of a link', () => {

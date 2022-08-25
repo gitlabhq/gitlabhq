@@ -1,14 +1,5 @@
 <script>
-import {
-  GlBadge,
-  GlButton,
-  GlCollapse,
-  GlIcon,
-  GlLink,
-  GlTooltipDirective as GlTooltip,
-  GlTruncate,
-} from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBadge, GlIcon, GlLink, GlTooltipDirective as GlTooltip, GlTruncate } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -21,8 +12,6 @@ export default {
     Commit,
     DeploymentStatusBadge,
     GlBadge,
-    GlButton,
-    GlCollapse,
     GlIcon,
     GlLink,
     GlTruncate,
@@ -42,9 +31,6 @@ export default {
       required: false,
     },
   },
-  data() {
-    return { visible: false };
-  },
   computed: {
     status() {
       return this.deployment?.status;
@@ -57,17 +43,6 @@ export default {
     },
     createdAt() {
       return this.deployment?.createdAt;
-    },
-    isMobile() {
-      return !GlBreakpointInstance.isDesktop();
-    },
-    detailsButton() {
-      return this.visible
-        ? { text: this.$options.i18n.hideDetails, icon: 'expand-up' }
-        : { text: this.$options.i18n.showDetails, icon: 'expand-down' };
-    },
-    detailsButtonClasses() {
-      return this.isMobile ? 'gl-sr-only' : '';
     },
     commit() {
       return this.deployment?.commit;
@@ -106,18 +81,11 @@ export default {
       return this.deployment.pendingApprovalCount > 0;
     },
   },
-  methods: {
-    toggleCollapse() {
-      this.visible = !this.visible;
-    },
-  },
   i18n: {
     latestBadge: s__('Deployment|Latest Deployed'),
     deploymentId: s__('Deployment|Deployment ID'),
     copyButton: __('Copy commit SHA'),
     commitSha: __('Commit SHA'),
-    showDetails: __('Show details'),
-    hideDetails: __('Hide details'),
     triggerer: s__('Deployment|Triggerer'),
     needsApproval: s__('Deployment|Needs Approval'),
     job: __('Job'),
@@ -195,54 +163,43 @@ export default {
           </time-ago-tooltip>
         </div>
       </div>
-      <gl-button
-        ref="details-toggle"
-        category="tertiary"
-        :icon="detailsButton.icon"
-        :button-text-classes="detailsButtonClasses"
-        @click="toggleCollapse"
-      >
-        {{ detailsButton.text }}
-      </gl-button>
     </div>
     <commit v-if="commit" :commit="commit" class="gl-mt-3" />
     <div class="gl-mt-3"><slot name="approval"></slot></div>
-    <gl-collapse :visible="visible">
-      <div
-        class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"
-      >
-        <div v-if="user" class="gl-display-flex gl-flex-direction-column gl-md-max-w-15p">
-          <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
-          <gl-link :href="userPath" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="username" with-tooltip />
-          </gl-link>
-        </div>
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
-        >
-          <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
-            {{ $options.i18n.job }}
-          </span>
-          <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="jobName" with-tooltip position="middle" />
-          </gl-link>
-          <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="jobName" with-tooltip position="middle" />
-          </span>
-          <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
-            {{ $options.i18n.api }}
-          </gl-badge>
-        </div>
-        <div
-          v-if="ref"
-          class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
-        >
-          <span class="gl-text-gray-500">{{ refLabel }}</span>
-          <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="refName" with-tooltip />
-          </gl-link>
-        </div>
+    <div
+      class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"
+    >
+      <div v-if="user" class="gl-display-flex gl-flex-direction-column gl-md-max-w-15p">
+        <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
+        <gl-link :href="userPath" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="username" with-tooltip />
+        </gl-link>
       </div>
-    </gl-collapse>
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+      >
+        <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
+          {{ $options.i18n.job }}
+        </span>
+        <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="jobName" with-tooltip position="middle" />
+        </gl-link>
+        <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="jobName" with-tooltip position="middle" />
+        </span>
+        <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
+          {{ $options.i18n.api }}
+        </gl-badge>
+      </div>
+      <div
+        v-if="ref"
+        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+      >
+        <span class="gl-text-gray-500">{{ refLabel }}</span>
+        <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="refName" with-tooltip />
+        </gl-link>
+      </div>
+    </div>
   </div>
 </template>
