@@ -1,4 +1,5 @@
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
@@ -29,6 +30,30 @@ export const i18n = {
   confidentialTooltip: s__(
     'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
   ),
+};
+
+export const I18N_WORK_ITEM_ERROR_CREATING = s__(
+  'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
+);
+export const I18N_WORK_ITEM_ERROR_UPDATING = s__(
+  'WorkItem|Something went wrong while updating the %{workItemType}. Please try again.',
+);
+export const I18N_WORK_ITEM_ERROR_DELETING = s__(
+  'WorkItem|Something went wrong when deleting the %{workItemType}. Please try again.',
+);
+export const I18N_WORK_ITEM_DELETE = s__('WorkItem|Delete %{workItemType}');
+export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
+  'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
+);
+export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
+
+export const sprintfWorkItem = (msg, workItemTypeArg) => {
+  const workItemType = workItemTypeArg || s__('WorkItem|Work item');
+  return capitalizeFirstCharacter(
+    sprintf(msg, {
+      workItemType: workItemType.toLocaleLowerCase(),
+    }),
+  );
 };
 
 export const WIDGET_ICONS = {

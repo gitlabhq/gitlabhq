@@ -279,11 +279,12 @@ export default {
         <work-item-actions
           v-if="canUpdate || canDelete"
           :work-item-id="workItem.id"
+          :work-item-type="workItemType"
           :can-delete="canDelete"
           :can-update="canUpdate"
           :is-confidential="workItem.confidential"
           :is-parent-confidential="parentWorkItemConfidentiality"
-          @deleteWorkItem="$emit('deleteWorkItem')"
+          @deleteWorkItem="$emit('deleteWorkItem', workItemType)"
           @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="error = $event"
         />

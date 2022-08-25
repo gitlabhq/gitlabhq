@@ -90,9 +90,8 @@ export default {
 </script>
 
 <template>
-  <span>
+  <span ref="userAvatar">
     <gl-avatar
-      ref="userAvatar"
       :class="{
         lazy: lazy,
         [cssClasses]: true,
@@ -108,7 +107,7 @@ export default {
         tooltipText ||
         $slots.default /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
       "
-      :target="() => $refs.userAvatar.$el"
+      :target="() => $refs.userAvatar"
       :placement="tooltipPlacement"
       boundary="window"
     >

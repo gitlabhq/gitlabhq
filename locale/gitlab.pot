@@ -44420,6 +44420,9 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
+msgid "WorkItem|%{workItemType} deleted"
+msgstr ""
+
 msgid "WorkItem|Add"
 msgstr ""
 
@@ -44438,7 +44441,7 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
-msgid "WorkItem|Are you sure you want to delete the task? This action cannot be reversed."
+msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
 msgstr ""
 
 msgid "WorkItem|Assignee"
@@ -44464,7 +44467,7 @@ msgstr ""
 msgid "WorkItem|Create work item"
 msgstr ""
 
-msgid "WorkItem|Delete task"
+msgid "WorkItem|Delete %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Expand tasks"
@@ -44503,16 +44506,13 @@ msgstr ""
 msgid "WorkItem|Select type"
 msgstr ""
 
-msgid "WorkItem|Something went wrong when creating a task. Please try again"
+msgid "WorkItem|Something went wrong when creating %{workItemType}. Please try again."
 msgstr ""
 
-msgid "WorkItem|Something went wrong when creating a work item. Please try again"
+msgid "WorkItem|Something went wrong when deleting the %{workItemType}. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when deleting the task. Please try again."
-msgstr ""
-
-msgid "WorkItem|Something went wrong when deleting the work item. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching tasks. Please refresh this page."
@@ -44528,6 +44528,9 @@ msgid "WorkItem|Something went wrong when trying to add a child. Please try agai
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."
@@ -44551,9 +44554,6 @@ msgstr ""
 msgid "WorkItem|Turn on confidentiality"
 msgstr ""
 
-msgid "WorkItem|Type"
-msgstr ""
-
 msgid "WorkItem|Undo"
 msgstr ""
 
@@ -44563,7 +44563,7 @@ msgstr ""
 msgid "WorkItem|Work Items"
 msgstr ""
 
-msgid "WorkItem|Work item deleted"
+msgid "WorkItem|Work item"
 msgstr ""
 
 msgid "Would you like to create a new branch?"

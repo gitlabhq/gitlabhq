@@ -1,6 +1,9 @@
-import { GlModal } from '@gitlab/ui';
+import { GlDropdownDivider, GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
+
+const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
+const TEST_ID_DELETE_ACTION = 'delete-action';
 
 describe('WorkItemActions component', () => {
   let wrapper;
@@ -8,8 +11,20 @@ describe('WorkItemActions component', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
-    wrapper.findByTestId('confidentiality-toggle-action');
-  const findDeleteButton = () => wrapper.findByTestId('delete-action');
+    wrapper.findByTestId(TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION);
+  const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
+  const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
+  const findDropdownItemsActual = () =>
+    findDropdownItems().wrappers.map((x) => {
+      if (x.is(GlDropdownDivider)) {
+        return { divider: true };
+      }
+
+      return {
+        testId: x.attributes('data-testid'),
+        text: x.text(),
+      };
+    });
 
   const createComponent = ({
     canUpdate = true,
@@ -19,7 +34,14 @@ describe('WorkItemActions component', () => {
   } = {}) => {
     glModalDirective = jest.fn();
     wrapper = shallowMountExtended(WorkItemActions, {
-      propsData: { workItemId: '123', canUpdate, canDelete, isConfidential, isParentConfidential },
+      propsData: {
+        workItemId: '123',
+        canUpdate,
+        canDelete,
+        isConfidential,
+        isParentConfidential,
+        workItemType: 'Task',
+      },
       directives: {
         glModal: {
           bind(_, { value }) {
@@ -44,8 +66,19 @@ describe('WorkItemActions component', () => {
   it('renders dropdown actions', () => {
     createComponent();
 
-    expect(findConfidentialityToggleButton().exists()).toBe(true);
-    expect(findDeleteButton().exists()).toBe(true);
+    expect(findDropdownItemsActual()).toEqual([
+      {
+        testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
+        text: 'Turn on confidentiality',
+      },
+      {
+        divider: true,
+      },
+      {
+        testId: TEST_ID_DELETE_ACTION,
+        text: 'Delete task',
+      },
+    ]);
   });
 
   describe('toggle confidentiality action', () => {
@@ -103,7 +136,8 @@ describe('WorkItemActions component', () => {
         canDelete: false,
       });
 
-      expect(wrapper.findByTestId('delete-action').exists()).toBe(false);
+      expect(findDeleteButton().exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
   });
 });

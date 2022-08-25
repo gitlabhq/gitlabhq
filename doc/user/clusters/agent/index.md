@@ -29,14 +29,40 @@ For more details about the agent's purpose and architecture, see the [architectu
 
 ## Workflows
 
-You can choose from two primary workflows.
+You can choose from two primary workflows. The GitOps workflow is recommended.
 
-In a [**GitOps** workflow](gitops.md), you keep your Kubernetes manifests in GitLab. You install a GitLab agent in your cluster, and
-any time you update your manifests, the agent updates the cluster. This workflow is fully driven with Git and is considered pull-based,
+### GitOps workflow
+
+In a [**GitOps** workflow](gitops.md):
+
+- You keep your Kubernetes manifests in GitLab.
+- You install a GitLab agent in your cluster.
+- Any time you update your manifests, the agent updates the cluster.
+- The cluster automatically cleans up unexpected changes. It uses
+  [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/)
+  to fix any configuration inconsistencies that third parties introduce.
+
+This workflow is fully driven with Git and is considered **pull-based**,
 because the cluster is pulling updates from your GitLab repository.
 
-In a [**CI/CD** workflow](ci_cd_workflow.md), you use GitLab CI/CD to query and update your cluster by using the Kubernetes API.
-This workflow is considered push-based, because GitLab is pushing requests from GitLab CI/CD to your cluster.
+GitLab recommends this workflow. We are actively investing in this workflow
+so we can provide a first-class experience.
+
+### GitLab CI/CD workflow
+
+In a [**CI/CD** workflow](ci_cd_workflow.md):
+
+- You configure GitLab CI/CD to use the Kubernetes API to query and update your cluster.
+
+This workflow is considered **push-based**, because GitLab is pushing requests
+from GitLab CI/CD to your cluster.
+
+Use this workflow:
+
+- When you have a heavily pipeline-oriented processes.
+- When you need to migrate to the agent but the GitOps workflow cannot support the use case you need.
+
+This workflow has a weaker security model and is not recommended for production deployments.
 
 ## Supported cluster versions
 

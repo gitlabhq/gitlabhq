@@ -21,6 +21,8 @@ import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_ite
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import {
+  sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_CREATING,
   TRACKING_CATEGORY_SHOW,
   TASK_TYPE_NAME,
   WIDGET_TYPE_DESCRIPTION,
@@ -466,7 +468,7 @@ export default {
         this.openWorkItemDetailModal(el);
       } catch (error) {
         createFlash({
-          message: s__('WorkItem|Something went wrong when creating a work item. Please try again'),
+          message: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemTypes.TASK),
           error,
           captureError: true,
         });

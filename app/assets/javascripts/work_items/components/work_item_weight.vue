@@ -3,7 +3,11 @@ import { GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import {
+  sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_UPDATING,
+  TRACKING_CATEGORY_SHOW,
+} from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 
 /* eslint-disable @gitlab/require-i18n-strings */
@@ -125,7 +129,8 @@ export default {
           }
         })
         .catch((error) => {
-          this.$emit('error', i18n.updateError);
+          const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
+          this.$emit('error', msg);
           Sentry.captureException(error);
         });
     },

@@ -6,7 +6,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ItemTitle from '~/work_items/components/item_title.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
-import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { updateWorkItemMutationResponse, workItemQueryResponse } from '../mock_data';
@@ -116,7 +116,9 @@ describe('WorkItemTitle component', () => {
       findItemTitle().vm.$emit('title-changed', 'new title');
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+      expect(wrapper.emitted('error')).toEqual([
+        ['Something went wrong while updating the task. Please try again.'],
+      ]);
     });
 
     it('tracks editing the title', async () => {

@@ -7,7 +7,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { __ } from '~/locale';
 import WorkItemWeight from '~/work_items/components/work_item_weight.vue';
-import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
 
@@ -181,7 +181,9 @@ describe('WorkItemWeight component', () => {
         findInput().trigger('blur');
         await waitForPromises();
 
-        expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+        expect(wrapper.emitted('error')).toEqual([
+          ['Something went wrong while updating the task. Please try again.'],
+        ]);
       });
 
       it('emits an error when there is a network error', async () => {
@@ -194,7 +196,9 @@ describe('WorkItemWeight component', () => {
         findInput().trigger('blur');
         await waitForPromises();
 
-        expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+        expect(wrapper.emitted('error')).toEqual([
+          ['Something went wrong while updating the task. Please try again.'],
+        ]);
       });
 
       it('tracks updating the weight', () => {

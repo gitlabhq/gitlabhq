@@ -2,7 +2,8 @@
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
 import {
-  i18n,
+  sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_UPDATING,
   STATE_OPEN,
   STATE_CLOSED,
   STATE_EVENT_CLOSE,
@@ -93,7 +94,9 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        this.$emit('error', i18n.updateError);
+        const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
+
+        this.$emit('error', msg);
         Sentry.captureException(error);
       }
 

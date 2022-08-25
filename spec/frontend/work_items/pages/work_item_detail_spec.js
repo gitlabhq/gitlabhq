@@ -379,11 +379,12 @@ describe('WorkItemDetail component', () => {
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {
     createComponent();
     await waitForPromises();
+    const updateError = 'Failed to update';
 
-    findWorkItemTitle().vm.$emit('error', i18n.updateError);
+    findWorkItemTitle().vm.$emit('error', updateError);
     await waitForPromises();
 
-    expect(findAlert().text()).toBe(i18n.updateError);
+    expect(findAlert().text()).toBe(updateError);
   });
 
   it('calls the subscription', () => {
@@ -456,11 +457,12 @@ describe('WorkItemDetail component', () => {
     it('shows an error message when it emits an `error` event', async () => {
       createComponent({ workItemsMvc2Enabled: true });
       await waitForPromises();
+      const updateError = 'Failed to update';
 
-      findWorkItemWeight().vm.$emit('error', i18n.updateError);
+      findWorkItemWeight().vm.$emit('error', updateError);
       await waitForPromises();
 
-      expect(findAlert().text()).toBe(i18n.updateError);
+      expect(findAlert().text()).toBe(updateError);
     });
   });
 

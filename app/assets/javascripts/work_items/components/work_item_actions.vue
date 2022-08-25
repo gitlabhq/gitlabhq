@@ -8,10 +8,14 @@ import {
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import {
+  sprintfWorkItem,
+  I18N_WORK_ITEM_DELETE,
+  I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
+} from '../constants';
 
 export default {
   i18n: {
-    deleteTask: s__('WorkItem|Delete task'),
     enableTaskConfidentiality: s__('WorkItem|Turn on confidentiality'),
     disableTaskConfidentiality: s__('WorkItem|Turn off confidentiality'),
   },
@@ -27,6 +31,11 @@ export default {
   mixins: [Tracking.mixin({ label: 'actions_menu' })],
   props: {
     workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    workItemType: {
       type: String,
       required: false,
       default: null,
@@ -53,6 +62,14 @@ export default {
     },
   },
   emits: ['deleteWorkItem', 'toggleWorkItemConfidentiality'],
+  computed: {
+    i18n() {
+      return {
+        deleteWorkItem: sprintfWorkItem(I18N_WORK_ITEM_DELETE, this.workItemType),
+        areYouSureDelete: sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType),
+      };
+    },
+  },
   methods: {
     handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
@@ -75,6 +92,7 @@ export default {
   <div>
     <gl-dropdown
       icon="ellipsis_v"
+      data-testid="work-item-actions-dropdown"
       text-sr-only
       :text="__('More actions')"
       category="tertiary"
@@ -97,20 +115,18 @@ export default {
         v-if="canDelete"
         v-gl-modal="'work-item-confirm-delete'"
         data-testid="delete-action"
-        >{{ $options.i18n.deleteTask }}</gl-dropdown-item
+        >{{ i18n.deleteWorkItem }}</gl-dropdown-item
       >
     </gl-dropdown>
     <gl-modal
       modal-id="work-item-confirm-delete"
-      :title="$options.i18n.deleteWorkItem"
-      :ok-title="$options.i18n.deleteWorkItem"
+      :title="i18n.deleteWorkItem"
+      :ok-title="i18n.deleteWorkItem"
       ok-variant="danger"
       @ok="handleDeleteWorkItem"
       @hide="handleCancelDeleteWorkItem"
     >
-      {{
-        s__('WorkItem|Are you sure you want to delete the task? This action cannot be reversed.')
-      }}
+      {{ i18n.areYouSureDelete }}
     </gl-modal>
   </div>
 </template>

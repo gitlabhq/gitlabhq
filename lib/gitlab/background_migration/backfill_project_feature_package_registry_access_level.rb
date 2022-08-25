@@ -22,7 +22,7 @@ module Gitlab
           ProjectFeature.connection.execute(
             <<~SQL
             UPDATE project_features pf
-            SET package_registry_access_level = (CASE p.packages_enabled 
+            SET package_registry_access_level = (CASE p.packages_enabled
                                                   WHEN true THEN (CASE p.visibility_level
                                                                   WHEN #{PROJECT_PUBLIC} THEN #{FEATURE_PUBLIC}
                                                                   WHEN #{PROJECT_INTERNAL} THEN #{FEATURE_ENABLED}
