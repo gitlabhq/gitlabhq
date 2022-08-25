@@ -254,7 +254,6 @@ Style/PercentLiteralDelimiters:
     - 'ee/app/mailers/previews/license_mailer_preview.rb'
     - 'ee/app/models/app_sec/fuzzing/api/scan_profile.rb'
     - 'ee/app/models/app_sec/fuzzing/coverage/corpus.rb'
-    - 'ee/app/models/concerns/ee/approvable.rb'
     - 'ee/app/models/concerns/ee/issue_available_features.rb'
     - 'ee/app/models/ee/audit_event.rb'
     - 'ee/app/models/ee/description_version.rb'

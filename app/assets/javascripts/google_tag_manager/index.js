@@ -290,3 +290,11 @@ export const trackCombinedGroupProjectForm = () => {
     pushEvent('combinedGroupProjectFormSubmit');
   });
 };
+
+export const trackCompanyForm = (aboutYourCompanyType) => {
+  if (!isSupported()) {
+    return;
+  }
+
+  pushEvent('aboutYourCompanyFormSubmit', { aboutYourCompanyType });
+};

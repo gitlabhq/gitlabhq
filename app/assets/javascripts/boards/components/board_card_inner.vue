@@ -38,6 +38,8 @@ export default {
     GlSprintf,
     BoardCardMoveToPosition,
     WorkItemTypeIcon,
+    IssueHealthStatus: () =>
+      import('ee_component/related_items_tree/components/issue_health_status.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -381,6 +383,7 @@ export default {
               :weight="item.weight"
               @click="filterByWeight(item.weight)"
             />
+            <issue-health-status v-if="item.healthStatus" :health-status="item.healthStatus" />
           </span>
         </span>
       </div>

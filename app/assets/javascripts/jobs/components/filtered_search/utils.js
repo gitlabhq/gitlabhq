@@ -10,10 +10,14 @@ export const validateQueryString = (queryStringObj) => {
   const filters = Object.keys(queryStringObj);
 
   if (filters.includes('statuses')) {
-    const found = jobStatusValues.find((status) => status === queryStringObj.statuses);
+    const queryStringStatus = {
+      statuses: queryStringObj.statuses.toUpperCase(),
+    };
+
+    const found = jobStatusValues.find((status) => status === queryStringStatus.statuses);
 
     if (found) {
-      return queryStringObj;
+      return queryStringStatus;
     }
 
     return null;

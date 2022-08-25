@@ -15,6 +15,7 @@ import {
   trackTransaction,
   trackAddToCartUsageTab,
   getNamespaceId,
+  trackCompanyForm,
 } from '~/google_tag_manager';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
@@ -438,6 +439,34 @@ describe('~/google_tag_manager/index', () => {
 
           expect(spy).not.toHaveBeenCalled();
         });
+      });
+    });
+
+    describe('when trackCompanyForm is invoked', () => {
+      it('with an ultimate trial', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCompanyForm('ultimate_trial');
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+          event: 'aboutYourCompanyFormSubmit',
+          aboutYourCompanyType: 'ultimate_trial',
+        });
+        expect(logError).not.toHaveBeenCalled();
+      });
+
+      it('with a free account', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCompanyForm('free_account');
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+          event: 'aboutYourCompanyFormSubmit',
+          aboutYourCompanyType: 'free_account',
+        });
+        expect(logError).not.toHaveBeenCalled();
       });
     });
   });

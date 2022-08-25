@@ -6,7 +6,6 @@ module Gitlab
       module Sbom
         class Cyclonedx
           SUPPORTED_SPEC_VERSIONS = %w[1.4].freeze
-          COMPONENT_ATTRIBUTES = %w[type name version].freeze
 
           def parse!(blob, sbom_report)
             @report = sbom_report
@@ -62,10 +61,17 @@ module Gitlab
           end
 
           def parse_components
-            data['components']&.each do |component|
-              next unless supported_component_type?(component['type'])
+            data['components']&.each do |component_data|
+              type = component_data['type']
+              next unless supported_component_type?(type)
 
-              report.add_component(component.slice(*COMPONENT_ATTRIBUTES))
+              component = ::Gitlab::Ci::Reports::Sbom::Component.new(
+                type: type,
+                name: component_data['name'],
+                version: component_data['version']
+              )
+
+              report.add_component(component)
             end
           end
 

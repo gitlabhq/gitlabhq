@@ -23,7 +23,7 @@ review-cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
-review-app-pipeline-generate:
+.review-app-pipeline-generate:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
   stage: prepare
   extends:
@@ -52,7 +52,8 @@ review-app-pipeline-generate:
         exit $exit_code
       fi
 
-start-review-app-pipeline:
+# Temporarily disable review-apps due to https://gitlab.com/gitlab-org/gitlab/-/issues/371809
+.start-review-app-pipeline:
   extends:
     - .review:rules:start-review-app-pipeline
   resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment

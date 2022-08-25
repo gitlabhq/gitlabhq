@@ -5,6 +5,7 @@ describe('Filtered search utils', () => {
     it.each`
       queryStringObject          | expected
       ${{ statuses: 'SUCCESS' }} | ${{ statuses: 'SUCCESS' }}
+      ${{ statuses: 'failed' }}  | ${{ statuses: 'FAILED' }}
       ${{ wrong: 'SUCCESS' }}    | ${null}
       ${{ statuses: 'wrong' }}   | ${null}
       ${{ wrong: 'wrong' }}      | ${null}

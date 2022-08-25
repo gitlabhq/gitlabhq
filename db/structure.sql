@@ -12286,7 +12286,8 @@ CREATE TABLE broadcast_messages (
     broadcast_type smallint DEFAULT 1 NOT NULL,
     dismissable boolean,
     target_access_levels integer[] DEFAULT '{}'::integer[] NOT NULL,
-    theme smallint DEFAULT 0 NOT NULL
+    theme smallint DEFAULT 0 NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE broadcast_messages_id_seq
@@ -27776,6 +27777,8 @@ CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON broadcast_messages USING btree (ends_at, broadcast_type, id);
 
+CREATE INDEX index_broadcast_messages_on_namespace_id ON broadcast_messages USING btree (namespace_id);
+
 CREATE INDEX index_btree_namespaces_traversal_ids ON namespaces USING btree (traversal_ids);
 
 CREATE INDEX index_bulk_import_configurations_on_bulk_import_id ON bulk_import_configurations USING btree (bulk_import_id);
@@ -32455,6 +32458,9 @@ ALTER TABLE ONLY vulnerabilities
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY broadcast_messages
+    ADD CONSTRAINT fk_7bf2ec43da FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_7c5bb22a22 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

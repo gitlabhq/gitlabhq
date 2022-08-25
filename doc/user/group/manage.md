@@ -212,7 +212,7 @@ To change this setting for a specific group:
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select the desired option in the **Allowed to create projects** dropdown list.
+1. Select the desired option in the **Roles allowed to create projects** dropdown list.
 1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
@@ -342,7 +342,7 @@ To transfer a group:
 > - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
-[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) is enabled for either groups only or groups and projects.
+[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
 When enabled on groups, projects in the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored.
 The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#retention-period).
 
@@ -379,7 +379,7 @@ To disable email notifications:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Select **Disable email notifications**.
+1. Select **Email notifications are disabled**.
 1. Select **Save changes**.
 
 ## Disable group mentions
@@ -398,7 +398,7 @@ To disable group mentions:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Select **Disable group mentions**.
+1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
 ## Export members as CSV **(PREMIUM)**

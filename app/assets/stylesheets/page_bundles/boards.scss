@@ -182,10 +182,8 @@
 }
 
 .board-card-number {
-  font-size: $gl-font-size-xs;
-
-  @include media-breakpoint-up(md) {
-    font-size: $label-font-size;
+  @include media-breakpoint-down(md) {
+    font-size: $gl-font-size-sm;
   }
 }
 

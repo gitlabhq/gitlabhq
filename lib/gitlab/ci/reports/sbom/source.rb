@@ -7,10 +7,10 @@ module Gitlab
         class Source
           attr_reader :source_type, :data, :fingerprint
 
-          def initialize(source = {})
-            @source_type = source['type']
-            @data = source['data']
-            @fingerprint = source['fingerprint']
+          def initialize(type:, data:, fingerprint:)
+            @source_type = type
+            @data = data
+            @fingerprint = fingerprint
           end
         end
       end
