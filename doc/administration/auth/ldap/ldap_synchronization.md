@@ -38,9 +38,11 @@ fail. This means the user cannot sign in or push or pull code.
 
 The process also updates the following user information:
 
-- Email address
-- SSH public keys (if `sync_ssh_keys` is set)
-- Kerberos identity (if Kerberos is enabled)
+- Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
+  [**Prevent users from changing their profile name**](../../../user/admin_area/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled.
+- Email address.
+- SSH public keys if `sync_ssh_keys` is set.
+- Kerberos identity if Kerberos is enabled.
 
 ### Adjust LDAP user sync schedule
 

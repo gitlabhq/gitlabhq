@@ -84,7 +84,11 @@ export const publishReview = ({ commit, dispatch, getters }, noteData = {}) => {
     .publish(getters.getNotesData.draftsPublishPath, noteData)
     .then(() => dispatch('updateDiscussionsAfterPublish'))
     .then(() => commit(types.RECEIVE_PUBLISH_REVIEW_SUCCESS))
-    .catch(() => commit(types.RECEIVE_PUBLISH_REVIEW_ERROR));
+    .catch((e) => {
+      commit(types.RECEIVE_PUBLISH_REVIEW_ERROR);
+
+      throw e.response;
+    });
 };
 
 export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGetters }) => {

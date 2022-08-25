@@ -104,7 +104,7 @@ module Gitlab
         return unless branch
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
-        Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
+        Gitlab::Git::Branch.new(@repository, branch.name.dup, branch.target_commit.id, target_commit)
       end
 
       def find_tag(tag_name)
@@ -273,7 +273,7 @@ module Gitlab
           message.branches.map do |gitaly_branch|
             Gitlab::Git::Branch.new(
               @repository,
-              encode!(gitaly_branch.name.dup),
+              gitaly_branch.name.dup,
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
             )

@@ -164,7 +164,7 @@ $system-note-svg-size: 16px;
     }
 
     .note-body {
-      padding: $gl-padding-4;
+      padding: $gl-padding-4 $gl-padding-4 $gl-padding-4 $gl-padding-8;
       overflow-x: auto;
       overflow-y: hidden;
 
@@ -305,7 +305,7 @@ $system-note-svg-size: 16px;
       height: $system-note-icon-size;
       border: 1px solid $gray-10;
       border-radius: $system-note-icon-size;
-      margin: -6px 20px 0 0;
+      margin: -6px 0 0;
 
       svg {
         width: $system-note-svg-size;
@@ -551,6 +551,7 @@ $system-note-svg-size: 16px;
 .note-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
 
   > .note-header-info,
@@ -581,7 +582,7 @@ $system-note-svg-size: 16px;
 
 .note-header-info {
   min-width: 0;
-  padding-left: $gl-padding-4;
+  padding-left: $gl-padding-8;
 
   &.discussion {
     padding-bottom: 0;

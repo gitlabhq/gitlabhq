@@ -62,8 +62,18 @@ The following items are exported:
 - Project and wiki repositories
 - Project uploads
 - Project configuration, excluding integrations
-- Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, time
-  tracking, and other project entities
+- Issues
+  - Issue comments
+  - Issue resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+- Merge requests
+  - Merge request diffs
+  - Merge request comments
+  - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+- Labels
+- Milestones
+- Snippets
+- Time tracking and other project entities
 - Design Management files and data
 - LFS objects
 - Issue boards

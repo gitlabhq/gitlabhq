@@ -440,7 +440,7 @@ export default {
       </gl-avatar-link>
     </div>
 
-    <div v-else class="gl-float-left gl-pl-3 gl-mr-3 gl-md-pl-2 gl-md-pr-2">
+    <div v-else class="gl-float-left gl-pl-3 gl-md-pl-2">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"

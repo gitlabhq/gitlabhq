@@ -771,6 +771,7 @@ $tabs-holder-z-index: 250;
   &.show .dropdown-menu {
     width: calc(100vw - 20px);
     max-width: 650px;
+    max-height: calc(100vh - 50px);
 
     .gl-new-dropdown-inner {
       max-height: none !important;
@@ -812,8 +813,7 @@ $tabs-holder-z-index: 250;
   }
 
   .md-preview-holder {
-    max-height: 180px;
-    height: 180px;
+    max-height: 172px;
   }
 }
 

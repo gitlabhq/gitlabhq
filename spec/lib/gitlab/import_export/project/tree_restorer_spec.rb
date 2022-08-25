@@ -192,8 +192,24 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(Issue.find_by(title: 'Voluptatem').resource_label_events).not_to be_empty
         end
 
+        it 'restores issue resource milestone events' do
+          expect(Issue.find_by(title: 'Voluptatem').resource_milestone_events).not_to be_empty
+        end
+
+        it 'restores issue resource state events' do
+          expect(Issue.find_by(title: 'Voluptatem').resource_state_events).not_to be_empty
+        end
+
         it 'restores merge requests resource label events' do
           expect(MergeRequest.find_by(title: 'MR1').resource_label_events).not_to be_empty
+        end
+
+        it 'restores merge request resource milestone events' do
+          expect(MergeRequest.find_by(title: 'MR1').resource_milestone_events).not_to be_empty
+        end
+
+        it 'restores merge request resource state events' do
+          expect(MergeRequest.find_by(title: 'MR1').resource_state_events).not_to be_empty
         end
 
         it 'restores suggestion' do

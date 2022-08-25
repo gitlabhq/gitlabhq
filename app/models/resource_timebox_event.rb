@@ -5,8 +5,9 @@ class ResourceTimeboxEvent < ResourceEvent
 
   include IssueResourceEvent
   include MergeRequestResourceEvent
+  include Importable
 
-  validate :exactly_one_issuable
+  validate :exactly_one_issuable, unless: :importing?
 
   enum action: {
     add: 1,

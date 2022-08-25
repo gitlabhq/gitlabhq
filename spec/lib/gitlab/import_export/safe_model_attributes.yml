@@ -917,3 +917,15 @@ Approval:
   - user_id
   - created_at
   - updated_at
+ResourceMilestoneEvent:
+  - user_id
+  - action
+  - state
+  - created_at
+ResourceStateEvent:
+  - user_id
+  - created_at
+  - state
+  - source_commit
+  - close_after_error_tracking_resolve
+  - close_auto_resolve_prometheus_alert

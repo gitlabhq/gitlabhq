@@ -8,7 +8,7 @@ Vue.use(Vuex);
 let wrapper;
 let publishReview;
 
-function factory() {
+function factory({ canApprove = true } = {}) {
   publishReview = jest.fn();
 
   const store = new Vuex.Store({
@@ -17,7 +17,11 @@ function factory() {
         markdownDocsPath: '/markdown/docs',
         quickActionsDocsPath: '/quickactions/docs',
       }),
-      getNoteableData: () => ({ id: 1, preview_note_path: '/preview' }),
+      getNoteableData: () => ({
+        id: 1,
+        preview_note_path: '/preview',
+        current_user: { can_approve: canApprove },
+      }),
       noteableType: () => 'merge_request',
     },
     modules: {
@@ -54,6 +58,8 @@ describe('Batch comments submit dropdown', () => {
       noteable_type: 'merge_request',
       noteable_id: 1,
       note: 'Hello world',
+      approve: false,
+      approval_password: '',
     });
   });
 
@@ -65,5 +71,15 @@ describe('Batch comments submit dropdown', () => {
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
     expect(findSubmitButton().props('loading')).toBe(true);
+  });
+
+  it.each`
+    canApprove | exists   | existsText
+    ${true}    | ${true}  | ${'shows'}
+    ${false}   | ${false} | ${'hides'}
+  `('it $existsText approve checkbox if can_approve is $canApprove', ({ canApprove, exists }) => {
+    factory({ canApprove });
+
+    expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
   });
 });

@@ -29,6 +29,9 @@ tree:
       - resource_label_events:
         - label:
           - :priorities
+      - resource_milestone_events:
+        - :milestone
+      - :resource_state_events
       - designs:
         - notes:
           - :author
@@ -82,6 +85,9 @@ tree:
       - resource_label_events:
         - label:
           - :priorities
+      - resource_milestone_events:
+        - :milestone
+      - :resource_state_events
     - :external_pull_requests
     - ci_pipelines:
       - notes:
@@ -721,6 +727,22 @@ included_attributes:
     - :build_git_strategy
     - :build_enabled
     - :security_and_compliance_enabled
+  resource_iteration_events:
+    - :user_id
+    - :action
+    - :created_at
+  resource_milestone_events:
+    - :user_id
+    - :action
+    - :created_at
+    - :state
+  resource_state_events:
+    - :user_id
+    - :state
+    - :created_at
+    - :source_commit
+    - :close_after_error_tracking_resolve
+    - :close_auto_resolve_prometheus_alert
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -989,6 +1011,17 @@ excluded_attributes:
   milestone_releases:
     - :milestone_id
     - :release_id
+  resource_milestone_events:
+    - :id
+    - :issue_id
+    - :merge_request_id
+    - :milestone_id
+  resource_state_events:
+    - :id
+    - :issue_id
+    - :merge_request_id
+    - :epic_id
+    - :source_merge_request_id
 methods:
   notes:
     - :type

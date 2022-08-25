@@ -46,6 +46,10 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.visible_attributes).to include(:deactivate_dormant_users)
     end
 
+    it 'contains :deactivate_dormant_users_period' do
+      expect(helper.visible_attributes).to include(:deactivate_dormant_users_period)
+    end
+
     it 'contains rate limit parameters' do
       expect(helper.visible_attributes).to include(*%i(
         issues_create_limit notes_create_limit project_export_limit
@@ -62,6 +66,10 @@ RSpec.describe ApplicationSettingsHelper do
 
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)
+      end
+
+      it 'does not contain :deactivate_dormant_users_period' do
+        expect(helper.visible_attributes).not_to include(:deactivate_dormant_users_period)
       end
     end
   end

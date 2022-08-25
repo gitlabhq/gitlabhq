@@ -3,8 +3,9 @@
 class ResourceStateEvent < ResourceEvent
   include IssueResourceEvent
   include MergeRequestResourceEvent
+  include Importable
 
-  validate :exactly_one_issuable
+  validate :exactly_one_issuable, unless: :importing?
 
   belongs_to :source_merge_request, class_name: 'MergeRequest', foreign_key: :source_merge_request_id
 

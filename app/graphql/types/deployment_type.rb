@@ -50,5 +50,20 @@ module Types
     field :status,
       Types::DeploymentStatusEnum,
       description: 'Status of the deployment.'
+
+    field :commit,
+      Types::CommitType,
+      description: 'Commit details of the deployment.',
+      calls_gitaly: true
+
+    field :job,
+      Types::Ci::JobType,
+      description: 'Pipeline job of the deployment.',
+      method: :build
+
+    field :triggerer,
+      Types::UserType,
+      description: 'User who executed the deployment.',
+      method: :deployed_by
   end
 end

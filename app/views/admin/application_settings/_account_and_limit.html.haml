@@ -52,7 +52,13 @@
         = f.label :deactivate_dormant_users, _('Dormant users'), class: 'label-bold'
         - dormant_users_help_link = help_page_path('user/admin_area/moderate_users', anchor: 'automatically-deactivate-dormant-users')
         - dormant_users_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: dormant_users_help_link }
-        = f.gitlab_ui_checkbox_component :deactivate_dormant_users, _('Deactivate dormant users after 90 days of inactivity'), help_text: _('Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}').html_safe % { link_start: dormant_users_help_link_start, link_end: '</a>'.html_safe }
+        = f.gitlab_ui_checkbox_component :deactivate_dormant_users, _('Deactivate dormant users after a period of inactivity'), help_text: _('Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}').html_safe % { link_start: dormant_users_help_link_start, link_end: '</a>'.html_safe }
+        .form-group
+          = f.label :deactivate_dormant_users_period, _('Period of inactivity (days)'), class: 'label-light'
+          = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: '1'
+          .form-text.text-muted
+            = _('Period of inactivity before deactivation')
+
     .form-group
       = f.label :personal_access_token_prefix, _('Personal Access Token prefix'), class: 'label-light'
       = f.text_field :personal_access_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'

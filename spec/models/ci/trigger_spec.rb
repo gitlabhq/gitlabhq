@@ -20,6 +20,7 @@ RSpec.describe Ci::Trigger do
       trigger = create(:ci_trigger_without_token, project: project)
 
       expect(trigger.token).not_to be_nil
+      expect(trigger.token).to start_with(Ci::Trigger::TRIGGER_TOKEN_PREFIX)
     end
 
     it 'does not set a random token if one provided' do
@@ -30,12 +31,22 @@ RSpec.describe Ci::Trigger do
   end
 
   describe '#short_token' do
-    let(:trigger) { create(:ci_trigger, token: '12345678') }
+    let(:trigger) { create(:ci_trigger) }
 
     subject { trigger.short_token }
 
-    it 'returns shortened token' do
-      is_expected.to eq('1234')
+    it 'returns shortened token without prefix' do
+      is_expected.not_to start_with(Ci::Trigger::TRIGGER_TOKEN_PREFIX)
+    end
+
+    context 'token does not have a prefix' do
+      before do
+        trigger.token = '12345678'
+      end
+
+      it 'returns shortened token' do
+        is_expected.to eq('1234')
+      end
     end
   end
 

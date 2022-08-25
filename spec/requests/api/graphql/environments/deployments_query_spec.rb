@@ -295,6 +295,147 @@ RSpec.describe 'Environments Deployments query' do
       end
     end
 
+    shared_examples_for 'avoids N+1 database queries' do
+      it 'does not increase the query count' do
+        create_deployments
+
+        baseline = ActiveRecord::QueryRecorder.new do
+          run_with_clean_state(query, context: { current_user: user })
+        end
+
+        create_deployments
+
+        multi = ActiveRecord::QueryRecorder.new do
+          run_with_clean_state(query, context: { current_user: user })
+        end
+
+        expect(multi).not_to exceed_query_limit(baseline)
+      end
+
+      def create_deployments
+        create_list(:deployment, 3, environment: environment, project: project).each do |deployment|
+          deployment.user = create(:user).tap { |u| project.add_developer(u) }
+          deployment.deployable =
+            create(:ci_build, project: project, environment: environment.name, deployment: deployment,
+                              user: deployment.user)
+
+          deployment.save!
+        end
+      end
+    end
+
+    context 'when requesting commits of deployments' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              environment(name: "#{environment.name}") {
+                deployments {
+                  nodes {
+                    iid
+                    commit {
+                      author {
+                        avatarUrl
+                        name
+                        webPath
+                      }
+                      fullTitle
+                      webPath
+                      sha
+                    }
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it_behaves_like 'avoids N+1 database queries'
+
+      it 'returns commits of deployments' do
+        deployments = subject.dig('data', 'project', 'environment', 'deployments', 'nodes')
+
+        deployments.each do |deployment|
+          deployment_in_record = project.deployments.find_by_iid(deployment['iid'])
+
+          expect(deployment_in_record.sha).to eq(deployment['commit']['sha'])
+        end
+      end
+    end
+
+    context 'when requesting triggerers of deployments' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              environment(name: "#{environment.name}") {
+                deployments {
+                  nodes {
+                    iid
+                    triggerer {
+                      id
+                      avatarUrl
+                      name
+                      webPath
+                    }
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it_behaves_like 'avoids N+1 database queries'
+
+      it 'returns triggerers of deployments' do
+        deployments = subject.dig('data', 'project', 'environment', 'deployments', 'nodes')
+
+        deployments.each do |deployment|
+          deployment_in_record = project.deployments.find_by_iid(deployment['iid'])
+
+          expect(deployment_in_record.deployed_by.name).to eq(deployment['triggerer']['name'])
+        end
+      end
+    end
+
+    context 'when requesting jobs of deployments' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              environment(name: "#{environment.name}") {
+                deployments {
+                  nodes {
+                    iid
+                    job {
+                      id
+                      status
+                      name
+                      webPath
+                    }
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it_behaves_like 'avoids N+1 database queries'
+
+      it 'returns jobs of deployments' do
+        deployments = subject.dig('data', 'project', 'environment', 'deployments', 'nodes')
+
+        deployments.each do |deployment|
+          deployment_in_record = project.deployments.find_by_iid(deployment['iid'])
+
+          expect(deployment_in_record.build.to_global_id.to_s).to eq(deployment['job']['id'])
+        end
+      end
+    end
+
     describe 'sorting and pagination' do
       let(:data_path) { [:project, :environment, :deployments] }
       let(:current_user) { user }

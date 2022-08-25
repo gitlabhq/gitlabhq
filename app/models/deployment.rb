@@ -222,6 +222,10 @@ class Deployment < ApplicationRecord
     Ci::Build.where(id: deployable_ids)
   end
 
+  def build
+    deployable if deployable.is_a?(::Ci::Build)
+  end
+
   class << self
     ##
     # FastDestroyAll concerns

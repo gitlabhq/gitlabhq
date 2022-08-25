@@ -102,7 +102,7 @@ RSpec.describe 'Admin updates settings' do
       end
 
       it 'change Account and Limit Settings' do
-        page.within('.as-account-limit') do
+        page.within(find('[data-testid="account-limit"]')) do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
         end
@@ -112,7 +112,7 @@ RSpec.describe 'Admin updates settings' do
       end
 
       it 'change Maximum export size' do
-        page.within('.as-account-limit') do
+        page.within(find('[data-testid="account-limit"]')) do
           fill_in 'Maximum export size (MB)', with: 25
           click_button 'Save changes'
         end
@@ -122,7 +122,7 @@ RSpec.describe 'Admin updates settings' do
       end
 
       it 'change Maximum import size' do
-        page.within('.as-account-limit') do
+        page.within(find('[data-testid="account-limit"]')) do
           fill_in 'Maximum import size (MB)', with: 15
           click_button 'Save changes'
         end
@@ -150,16 +150,20 @@ RSpec.describe 'Admin updates settings' do
           it 'does not expose the setting' do
             expect(page).to have_no_selector('#application_setting_deactivate_dormant_users')
           end
+
+          it 'does not expose the setting' do
+            expect(page).to have_no_selector('#application_setting_deactivate_dormant_users_period')
+          end
         end
 
         context 'when not Gitlab.com' do
           let(:dot_com?) { false }
 
-          it 'change Dormant users' do
-            expect(page).to have_unchecked_field('Deactivate dormant users after 90 days of inactivity')
+          it 'changes Dormant users' do
+            expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
-            page.within('.as-account-limit') do
+            page.within(find('[data-testid="account-limit"]')) do
               check 'application_setting_deactivate_dormant_users'
               click_button 'Save changes'
             end
@@ -169,7 +173,22 @@ RSpec.describe 'Admin updates settings' do
             page.refresh
 
             expect(current_settings.deactivate_dormant_users).to be_truthy
-            expect(page).to have_checked_field('Deactivate dormant users after 90 days of inactivity')
+            expect(page).to have_checked_field('Deactivate dormant users after a period of inactivity')
+          end
+
+          it 'change Dormant users period' do
+            expect(page).to have_field _('Period of inactivity (days)')
+
+            page.within(find('[data-testid="account-limit"]')) do
+              fill_in _('application_setting_deactivate_dormant_users_period'), with: '35'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_content "Application settings saved successfully"
+
+            page.refresh
+
+            expect(page).to have_field _('Period of inactivity (days)'), with: '35'
           end
         end
       end

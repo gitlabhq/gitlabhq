@@ -3238,7 +3238,7 @@ RSpec.describe API::Users do
           let(:user) { create(:user, **activity) }
 
           context 'with no recent activity' do
-            let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.next.days.ago } }
+            let(:activity) { { last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.next.days.ago } }
 
             it 'deactivates an active user' do
               deactivate
@@ -3249,13 +3249,13 @@ RSpec.describe API::Users do
           end
 
           context 'with recent activity' do
-            let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.pred.days.ago } }
+            let(:activity) { { last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.pred.days.ago } }
 
             it 'does not deactivate an active user' do
               deactivate
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
               expect(user.reload.state).to eq('active')
             end
           end

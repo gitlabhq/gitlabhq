@@ -6,7 +6,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
   using RSpec::Parameterized::TableSyntax
 
   describe '#perform' do
-    let_it_be(:dormant) { create(:user, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date) }
+    let_it_be(:dormant) { create(:user, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date) }
     let_it_be(:inactive) { create(:user, last_activity_on: nil, created_at: User::MINIMUM_DAYS_CREATED.days.ago.to_date) }
     let_it_be(:inactive_recently_created) { create(:user, last_activity_on: nil, created_at: (User::MINIMUM_DAYS_CREATED - 1).days.ago.to_date) }
 
@@ -14,7 +14,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
     it 'does not run for GitLab.com' do
       expect(Gitlab).to receive(:com?).and_return(true)
-      expect(Gitlab::CurrentSettings).not_to receive(:current_application_settings)
+      # Now makes a call to current settings to determine period of dormancy
 
       worker.perform
 
@@ -48,7 +48,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
       end
       with_them do
         it 'deactivates certain user types' do
-          user = create(:user, user_type: user_type, state: :active, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date)
+          user = create(:user, user_type: user_type, state: :active, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
 
           worker.perform
 
@@ -57,8 +57,8 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
       end
 
       it 'does not deactivate non-active users' do
-        human_user = create(:user, user_type: :human, state: :blocked, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date)
-        service_user = create(:user, user_type: :service_user, state: :blocked, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date)
+        human_user = create(:user, user_type: :human, state: :blocked, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
+        service_user = create(:user, user_type: :service_user, state: :blocked, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
 
         worker.perform
 

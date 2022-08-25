@@ -27,12 +27,11 @@ module Approvable
 
     scope :not_approved_by_users_with_usernames, -> (usernames) do
       users = User.where(username: usernames).select(:id)
-      self_table = self.arel_table
       app_table = Approval.arel_table
 
       where(
         Approval.where(approvals: { user_id: users })
-        .where(app_table[:merge_request_id].eq(self_table[:id]))
+        .where(app_table[:merge_request_id].eq(arel_table[:id]))
         .select('true')
         .arel.exists.not
       )

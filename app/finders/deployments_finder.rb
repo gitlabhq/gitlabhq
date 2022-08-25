@@ -211,6 +211,7 @@ class DeploymentsFinder
       environment: [],
       deployable: {
         job_artifacts: [],
+        user: [],
         pipeline: {
           project: {
             route: [],

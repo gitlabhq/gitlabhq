@@ -49,8 +49,16 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   def publish
     result = DraftNotes::PublishService.new(merge_request, current_user).execute(draft_note(allow_nil: true))
 
-    if Feature.enabled?(:mr_review_submit_comment, @project) && create_note_params[:note]
-      Notes::CreateService.new(@project, current_user, create_note_params).execute
+    if Feature.enabled?(:mr_review_submit_comment, @project)
+      ::Notes::CreateService.new(@project, current_user, create_note_params).execute if create_note_params[:note]
+
+      if Gitlab::Utils.to_boolean(approve_params[:approve])
+        success = ::MergeRequests::ApprovalService.new(project: @project, current_user: current_user, params: approve_params).execute(merge_request)
+
+        unless success
+          return render json: { message: _('An error occurred while approving, please try again.') }, status: :internal_server_error
+        end
+      end
     end
 
     if result[:status] == :success
@@ -115,6 +123,10 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     end
   end
 
+  def approve_params
+    params.permit(:approve)
+  end
+
   def prepare_notes_for_rendering(notes)
     return [] unless notes
 
@@ -148,3 +160,5 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     access_denied! unless can?(current_user, :create_note, merge_request)
   end
 end
+
+Projects::MergeRequests::DraftsController.prepend_mod

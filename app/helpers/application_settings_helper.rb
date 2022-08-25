@@ -437,7 +437,10 @@ module ApplicationSettingsHelper
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement
     ].tap do |settings|
-      settings << :deactivate_dormant_users unless Gitlab.com?
+      next if Gitlab.com?
+
+      settings << :deactivate_dormant_users
+      settings << :deactivate_dormant_users_period
     end
   end
 

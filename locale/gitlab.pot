@@ -4035,6 +4035,9 @@ msgstr ""
 msgid "An error occurred while adding formatted title for epic"
 msgstr ""
 
+msgid "An error occurred while approving, please try again."
+msgstr ""
+
 msgid "An error occurred while authorizing your role"
 msgstr ""
 
@@ -4871,6 +4874,9 @@ msgid "Approve"
 msgstr ""
 
 msgid "Approve a merge request"
+msgstr ""
+
+msgid "Approve merge request"
 msgstr ""
 
 msgid "Approve the current merge request."
@@ -12297,7 +12303,7 @@ msgstr ""
 msgid "Days to merge"
 msgstr ""
 
-msgid "Deactivate dormant users after 90 days of inactivity"
+msgid "Deactivate dormant users after a period of inactivity"
 msgstr ""
 
 msgid "Dear Administrator,"
@@ -16407,9 +16413,6 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
-msgstr ""
-
-msgid "Feedback issue"
 msgstr ""
 
 msgid "Fetch and check out this merge request's feature branch:"
@@ -28402,9 +28405,6 @@ msgstr ""
 msgid "Perform common operations on GitLab project"
 msgstr ""
 
-msgid "Performance insights"
-msgstr ""
-
 msgid "Performance optimization"
 msgstr ""
 
@@ -28478,6 +28478,12 @@ msgid "PerformanceBar|wall"
 msgstr ""
 
 msgid "Period in seconds"
+msgstr ""
+
+msgid "Period of inactivity (days)"
+msgstr ""
+
+msgid "Period of inactivity before deactivation"
 msgstr ""
 
 msgid "Permalink"
@@ -29191,16 +29197,7 @@ msgstr ""
 msgid "Pipeline|Failed"
 msgstr ""
 
-msgid "Pipeline|Five slowest jobs"
-msgstr ""
-
 msgid "Pipeline|In progress"
-msgstr ""
-
-msgid "Pipeline|Last executed job"
-msgstr ""
-
-msgid "Pipeline|Longest queued job"
 msgstr ""
 
 msgid "Pipeline|Manual"
@@ -29215,16 +29212,10 @@ msgstr ""
 msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
-msgid "Pipeline|Only able to show first 100 results"
-msgstr ""
-
 msgid "Pipeline|Passed"
 msgstr ""
 
 msgid "Pipeline|Pending"
-msgstr ""
-
-msgid "Pipeline|Performance insights"
 msgstr ""
 
 msgid "Pipeline|Pipeline"
@@ -29284,12 +29275,6 @@ msgstr ""
 msgid "Pipeline|Test coverage"
 msgstr ""
 
-msgid "Pipeline|The last executed job is the last job to start in the pipeline."
-msgstr ""
-
-msgid "Pipeline|The longest queued job is the job that spent the longest time in the pending state, waiting to be picked up by a Runner"
-msgstr ""
-
 msgid "Pipeline|This change will decrease the overall test coverage if merged."
 msgstr ""
 
@@ -29318,9 +29303,6 @@ msgid "Pipeline|Variables"
 msgstr ""
 
 msgid "Pipeline|View commit"
-msgstr ""
-
-msgid "Pipeline|View dependency"
 msgstr ""
 
 msgid "Pipeline|View pipeline"
@@ -40856,6 +40838,9 @@ msgstr ""
 msgid "To add the entry manually, provide the following details to the application on your phone."
 msgstr ""
 
+msgid "To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
+msgstr ""
+
 msgid "To complete registration, we need additional details from you."
 msgstr ""
 
@@ -45570,6 +45555,9 @@ msgid "Your new access token has been created."
 msgstr ""
 
 msgid "Your new comment"
+msgstr ""
+
+msgid "Your password"
 msgstr ""
 
 msgid "Your password reset token has expired."

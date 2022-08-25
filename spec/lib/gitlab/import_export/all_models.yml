@@ -819,3 +819,14 @@ service_desk_setting:
 approvals:
   - user
   - merge_request
+resource_milestone_events:
+  - user
+  - issue
+  - merge_request
+  - milestone
+resource_state_events:
+  - user
+  - issue
+  - merge_request
+  - source_merge_request
+  - epic

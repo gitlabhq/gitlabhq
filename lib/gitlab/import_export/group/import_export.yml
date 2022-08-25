@@ -120,6 +120,7 @@ ee:
           - events:
             - :push_event_payload
           - :system_note_metadata
+        - :resource_state_events
       - boards:
         - :board_assignee
         - :milestone

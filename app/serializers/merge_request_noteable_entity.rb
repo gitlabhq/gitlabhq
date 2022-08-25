@@ -40,6 +40,10 @@ class MergeRequestNoteableEntity < IssuableEntity
     expose :can_update do |merge_request|
       can?(current_user, :update_merge_request, merge_request)
     end
+
+    expose :can_approve do |merge_request|
+      merge_request.can_be_approved_by?(current_user)
+    end
   end
 
   expose :locked_discussion_docs_path, if: -> (merge_request) { merge_request.discussion_locked? } do |merge_request|
@@ -65,3 +69,5 @@ class MergeRequestNoteableEntity < IssuableEntity
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 end
+
+MergeRequestNoteableEntity.prepend_mod_with('MergeRequestNoteableEntity')

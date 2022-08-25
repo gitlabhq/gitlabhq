@@ -897,6 +897,22 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '#build' do
+    let!(:deployment) { create(:deployment) }
+
+    subject { deployment.build }
+
+    it 'retrieves build for the deployment' do
+      is_expected.to eq(deployment.deployable)
+    end
+
+    it 'returns nil when the associated build is not found' do
+      deployment.update!(deployable_id: nil, deployable_type: nil)
+
+      is_expected.to be_nil
+    end
+  end
+
   describe '#previous_deployment' do
     using RSpec::Parameterized::TableSyntax
 

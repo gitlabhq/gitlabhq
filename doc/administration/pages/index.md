@@ -191,6 +191,12 @@ to use the HTTPS protocol.
 WARNING:
 Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
 
+WARNING:
+GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
+Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
+then run `gitlab-ctl reconfigure`. For more information, read
+[GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
+
 ### Wildcard domains with TLS-terminating Load Balancer
 
 **Requirements:**

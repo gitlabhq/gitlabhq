@@ -183,7 +183,6 @@ export default {
         :data-user-id="author.id"
         :data-username="author.username"
       >
-        <slot name="note-header-info"></slot>
         <user-name-with-status
           :name="authorName"
           :availability="userAvailability(author)"
@@ -207,6 +206,7 @@ export default {
           @mouseleave="handleUsernameMouseLeave"
           ><span class="note-headline-light">@{{ author.username }}</span>
         </a>
+        <slot name="note-header-info"></slot>
         <gitlab-team-member-badge v-if="author && author.is_gitlab_employee" />
       </span>
     </template>

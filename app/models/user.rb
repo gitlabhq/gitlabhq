@@ -92,7 +92,6 @@ class User < ApplicationRecord
   include ForcedEmailConfirmation
   include RequireEmailVerification
 
-  MINIMUM_INACTIVE_DAYS = 90
   MINIMUM_DAYS_CREATED = 7
 
   # Override Devise::Models::Trackable#update_tracked_fields!
@@ -488,7 +487,7 @@ class User < ApplicationRecord
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
-  scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
+  scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
@@ -2322,7 +2321,7 @@ class User < ApplicationRecord
   end
 
   def no_recent_activity?
-    last_active_at.to_i <= MINIMUM_INACTIVE_DAYS.days.ago.to_i
+    last_active_at.to_i <= Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_i
   end
 
   def update_highest_role?

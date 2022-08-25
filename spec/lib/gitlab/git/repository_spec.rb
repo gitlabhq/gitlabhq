@@ -673,6 +673,61 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#search_files_by_name' do
+    let(:ref) { 'master' }
+
+    subject(:result) { mutable_repository.search_files_by_name(query, ref) }
+
+    context 'when sending a valid name' do
+      let(:query) { 'files/ruby/popen.rb' }
+
+      it 'returns matched files' do
+        expect(result).to contain_exactly('files/ruby/popen.rb')
+      end
+    end
+
+    context 'when sending a name with space' do
+      let(:query) { 'file with space.md' }
+
+      before do
+        mutable_repository.multi_action(
+          user,
+          actions: [{ action: :create, file_path: "file with space.md", content: "Test content" }],
+          branch_name: ref, message: "Test"
+        )
+      end
+
+      it 'returns matched files' do
+        expect(result).to contain_exactly('file with space.md')
+      end
+    end
+
+    context 'when sending a name with special ASCII characters' do
+      let(:file_name) { 'Hello !@#$%^&*()' }
+      let(:query) { file_name }
+
+      before do
+        mutable_repository.multi_action(
+          user,
+          actions: [{ action: :create, file_path: file_name, content: "Test content" }],
+          branch_name: ref, message: "Test"
+        )
+      end
+
+      it 'returns matched files' do
+        expect(result).to contain_exactly(file_name)
+      end
+    end
+
+    context 'when sending a non-existing name' do
+      let(:query) { 'please do not exist.md' }
+
+      it 'raises error' do
+        expect(result).to eql([])
+      end
+    end
+  end
+
   describe '#find_remote_root_ref' do
     it 'gets the remote root ref from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)

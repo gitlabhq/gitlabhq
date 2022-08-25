@@ -1,7 +1,16 @@
 <script>
 import $ from 'jquery';
-import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlLink } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlButton,
+  GlIcon,
+  GlForm,
+  GlFormGroup,
+  GlLink,
+  GlFormCheckbox,
+} from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
+import { createAlert } from '~/flash';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Autosave from '~/autosave';
@@ -15,29 +24,46 @@ export default {
     GlForm,
     GlFormGroup,
     GlLink,
+    GlFormCheckbox,
     MarkdownField,
+    ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
   },
   data() {
     return {
       isSubmitting: false,
-      note: '',
+      noteData: {
+        noteable_type: '',
+        noteable_id: '',
+        note: '',
+        approve: false,
+        approval_password: '',
+      },
     };
   },
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
+  },
+  watch: {
+    'noteData.approve': function noteDataApproveWatch() {
+      setTimeout(() => {
+        this.repositionDropdown();
+      });
+    },
   },
   mounted() {
     this.autosave = new Autosave(
       $(this.$refs.textarea),
       `submit_review_dropdown/${this.getNoteableData.id}`,
     );
+    this.noteData.noteable_type = this.noteableType;
+    this.noteData.noteable_id = this.getNoteableData.id;
 
     // We override the Bootstrap Vue click outside behaviour
     // to allow for clicking in the autocomplete dropdowns
     // without this override the submit dropdown will close
     // whenever a item in the autocomplete dropdown is clicked
-    const originalClickOutHandler = this.$refs.dropdown.$refs.dropdown.clickOutHandler;
-    this.$refs.dropdown.$refs.dropdown.clickOutHandler = (e) => {
+    const originalClickOutHandler = this.$refs.submitDropdown.$refs.dropdown.clickOutHandler;
+    this.$refs.submitDropdown.$refs.dropdown.clickOutHandler = (e) => {
       if (!e.target.closest('.atwho-container')) {
         originalClickOutHandler(e);
       }
@@ -45,26 +71,29 @@ export default {
   },
   methods: {
     ...mapActions('batchComments', ['publishReview']),
+    repositionDropdown() {
+      this.$refs.submitDropdown?.$refs.dropdown?.updatePopper();
+    },
     async submitReview() {
-      const noteData = {
-        noteable_type: this.noteableType,
-        noteable_id: this.getNoteableData.id,
-        note: this.note,
-      };
-
       this.isSubmitting = true;
 
-      await this.publishReview(noteData);
+      try {
+        await this.publishReview(this.noteData);
 
-      this.autosave.reset();
+        this.autosave.reset();
 
-      if (window.mrTabs && this.note) {
-        window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
-        window.mrTabs.tabShown('show');
+        if (window.mrTabs && this.note) {
+          window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
+          window.mrTabs.tabShown('show');
 
-        setTimeout(() =>
-          scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`)),
-        );
+          setTimeout(() =>
+            scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`)),
+          );
+        }
+      } catch (e) {
+        if (e.data?.message) {
+          createAlert({ message: e.data.message, captureError: true });
+        }
       }
 
       this.isSubmitting = false;
@@ -79,8 +108,9 @@ export default {
 
 <template>
   <gl-dropdown
-    ref="dropdown"
+    ref="submitDropdown"
     right
+    dropup
     class="submit-review-dropdown"
     data-qa-selector="submit_review_dropdown"
     variant="info"
@@ -110,7 +140,7 @@ export default {
             <markdown-field
               :is-submitting="isSubmitting"
               :add-spacing-classes="false"
-              :textarea-value="note"
+              :textarea-value="noteData.note"
               :markdown-preview-path="getNoteableData.preview_note_path"
               :markdown-docs-path="getNotesData.markdownDocsPath"
               :quick-actions-docs-path="getNotesData.quickActionsDocsPath"
@@ -122,7 +152,7 @@ export default {
                 <textarea
                   id="review-note-body"
                   ref="textarea"
-                  v-model="note"
+                  v-model="noteData.note"
                   dir="auto"
                   :disabled="isSubmitting"
                   name="review[note]"
@@ -139,6 +169,18 @@ export default {
           </div>
         </div>
       </gl-form-group>
+      <template v-if="getNoteableData.current_user.can_approve">
+        <gl-form-checkbox v-model="noteData.approve" data-testid="approve_merge_request">
+          {{ __('Approve merge request') }}
+        </gl-form-checkbox>
+        <approval-password
+          v-if="getNoteableData.require_password_to_approve"
+          v-show="noteData.approve"
+          v-model="noteData.approval_password"
+          class="gl-mt-3"
+          data-testid="approve_password"
+        />
+      </template>
       <div class="gl-display-flex gl-justify-content-start gl-mt-5">
         <gl-button
           :loading="isSubmitting"

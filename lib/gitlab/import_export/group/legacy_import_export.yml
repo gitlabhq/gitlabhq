@@ -114,6 +114,7 @@ ee:
           - :award_emoji
           - events:
             - :push_event_payload
+        - :resource_state_events
       - boards:
         - :board_assignee
         - :milestone

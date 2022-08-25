@@ -3810,8 +3810,8 @@ RSpec.describe User do
   describe '#can_be_deactivated?' do
     let(:activity) { {} }
     let(:user) { create(:user, name: 'John Smith', **activity) }
-    let(:day_within_minium_inactive_days_threshold) { User::MINIMUM_INACTIVE_DAYS.pred.days.ago }
-    let(:day_outside_minium_inactive_days_threshold) { User::MINIMUM_INACTIVE_DAYS.next.days.ago }
+    let(:day_within_minium_inactive_days_threshold) { Gitlab::CurrentSettings.deactivate_dormant_users_period.pred.days.ago }
+    let(:day_outside_minium_inactive_days_threshold) { Gitlab::CurrentSettings.deactivate_dormant_users_period.next.days.ago }
 
     shared_examples 'not eligible for deactivation' do
       it 'returns false' do
@@ -7193,8 +7193,8 @@ RSpec.describe User do
   describe '.dormant' do
     it 'returns dormant users' do
       freeze_time do
-        not_that_long_ago = (described_class::MINIMUM_INACTIVE_DAYS - 1).days.ago.to_date
-        too_long_ago = described_class::MINIMUM_INACTIVE_DAYS.days.ago.to_date
+        not_that_long_ago = (Gitlab::CurrentSettings.deactivate_dormant_users_period - 1).days.ago.to_date
+        too_long_ago = Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date
 
         create(:user, :deactivated, last_activity_on: too_long_ago)
 
@@ -7214,8 +7214,8 @@ RSpec.describe User do
   describe '.with_no_activity' do
     it 'returns users with no activity' do
       freeze_time do
-        active_not_that_long_ago = (described_class::MINIMUM_INACTIVE_DAYS - 1).days.ago.to_date
-        active_too_long_ago = described_class::MINIMUM_INACTIVE_DAYS.days.ago.to_date
+        active_not_that_long_ago = (Gitlab::CurrentSettings.deactivate_dormant_users_period - 1).days.ago.to_date
+        active_too_long_ago = Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date
         created_recently = (described_class::MINIMUM_DAYS_CREATED - 1).days.ago.to_date
         created_not_recently = described_class::MINIMUM_DAYS_CREATED.days.ago.to_date
 

@@ -270,19 +270,19 @@ RSpec.describe Admin::UsersController do
       let(:user) { create(:user, **activity) }
 
       context 'with no recent activity' do
-        let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.next.days.ago } }
+        let(:activity) { { last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.next.days.ago } }
 
         it_behaves_like 'a request that deactivates the user'
       end
 
       context 'with recent activity' do
-        let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.pred.days.ago } }
+        let(:activity) { { last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.pred.days.ago } }
 
         it 'does not deactivate the user' do
           put :deactivate, params: { id: user.username }
           user.reload
           expect(user.deactivated?).to be_falsey
-          expect(flash[:notice]).to eq("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+          expect(flash[:notice]).to eq("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
         end
       end
     end

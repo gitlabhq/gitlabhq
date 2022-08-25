@@ -55,6 +55,7 @@ The following items are exported:
 - Badges
 - Subgroups (including all the aforementioned data)
 - Epics
+  - Epic resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
 - Events
 - [Wikis](../../project/wiki/group.md)
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)

@@ -733,7 +733,7 @@ module API
         unless user.can_be_deactivated?
           forbidden!('A blocked user cannot be deactivated by the API') if user.blocked?
           forbidden!('An internal user cannot be deactivated by the API') if user.internal?
-          forbidden!("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+          forbidden!("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
         end
 
         if user.deactivate

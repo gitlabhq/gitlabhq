@@ -1011,16 +1011,20 @@ module Gitlab
       end
 
       def search_files_by_name(query, ref)
-        safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
+        safe_query = query.sub(%r{^/*}, "")
         ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        gitaly_repository_client.search_files_by_name(ref, safe_query)
+        gitaly_repository_client.search_files_by_name(ref, safe_query).map do |file|
+          Gitlab::EncodingHelper.encode_utf8(file)
+        end
       end
 
       def search_files_by_regexp(filter, ref = 'HEAD')
-        gitaly_repository_client.search_files_by_regexp(ref, filter)
+        gitaly_repository_client.search_files_by_regexp(ref, filter).map do |file|
+          Gitlab::EncodingHelper.encode_utf8(file)
+        end
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
