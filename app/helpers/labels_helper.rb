@@ -247,7 +247,7 @@ module LabelsHelper
         class="#{css_class}"
         data-container="body"
         data-html="true"
-        #{"style=\"background-color: #{bg_color}\"" if bg_color}
+        #{"style=\"background-color: #{h bg_color}\"" if bg_color}
       >#{ERB::Util.html_escape_once(name)}#{suffix}</span>
     HTML
   end
