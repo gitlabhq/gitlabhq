@@ -11,9 +11,9 @@ module Banzai
         def self.filters
           @filters ||= FilterArray[
             *super,
+            Filter::SanitizationFilter,
             *Banzai::Pipeline::GfmPipeline.reference_filters,
             Filter::EmojiFilter,
-            Filter::SanitizationFilter,
             Filter::ExternalLinkFilter,
             Filter::ImageLinkFilter
           ]

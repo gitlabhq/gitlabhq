@@ -52,16 +52,16 @@ describe('Output component', () => {
       const htmlType = json.cells[4];
       createComponent(htmlType.outputs[0]);
 
-      expect(vm.$el.querySelector('p')).not.toBeNull();
-      expect(vm.$el.querySelectorAll('p')).toHaveLength(1);
-      expect(vm.$el.textContent.trim()).toContain('test');
+      const iframe = vm.$el.querySelector('iframe');
+      expect(iframe).not.toBeNull();
+      expect(iframe.srcdoc).toBe('<p>test</p>');
     });
 
     it('renders multiple raw HTML outputs', () => {
       const htmlType = json.cells[4];
       createComponent([htmlType.outputs[0], htmlType.outputs[0]]);
 
-      expect(vm.$el.querySelectorAll('p')).toHaveLength(2);
+      expect(vm.$el.querySelectorAll('iframe')).toHaveLength(2);
     });
   });
 
@@ -90,7 +90,10 @@ describe('Output component', () => {
     });
 
     it('renders as an svg', () => {
-      expect(vm.$el.querySelector('svg')).not.toBeNull();
+      const iframe = vm.$el.querySelector('iframe');
+
+      expect(iframe).not.toBeNull();
+      expect(iframe.srcdoc).toBe('<svg></svg>');
     });
   });
 
