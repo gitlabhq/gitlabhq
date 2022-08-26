@@ -72,4 +72,18 @@ RSpec.describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
       it { is_expected.to be(true) }
     end
   end
+
+  describe 'count' do
+    subject { cache.count(cache_prefix) }
+
+    it { is_expected.to be(0) }
+
+    context 'item added' do
+      before do
+        cache.write(cache_prefix, 'test_item')
+      end
+
+      it { is_expected.to be(1) }
+    end
+  end
 end
