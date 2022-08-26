@@ -54,7 +54,7 @@ gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.4.0', path: 'vendor/gems/omniauth_crowd' # See vendor/gems/omniauth_crowd/README.md
 gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'gitlab-omniauth-openid-connect', '~> 0.9.0', require: 'omniauth_openid_connect'
-gem 'omniauth-salesforce', '~> 1.0.5'
+gem 'omniauth-salesforce', '~> 1.0.5', path: 'vendor/gems/omniauth-salesforce' # See gem README.md
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0'
 gem 'rack-oauth2', '~> 1.21.2'
 gem 'jwt', '~> 2.1.0'

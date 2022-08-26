@@ -23,7 +23,7 @@ module TestEnv
     'merged-target' => '21751bf',
     'markdown' => '0ed8c6c',
     'lfs' => '55bc176',
-    'master' => 'b83d6e3',
+    'master' => 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
     'merge-test' => '5937ac0',
     "'test'" => 'e56497b',
     'orphaned-branch' => '45127a9',

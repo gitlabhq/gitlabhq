@@ -40,12 +40,4 @@ RSpec.describe API::Entities::Ci::JobRequest::Service do
       expect(subject[:ports]).to be_nil
     end
   end
-
-  context 'when the FF ci_docker_image_pull_policy is disabled' do
-    before do
-      stub_feature_flags(ci_docker_image_pull_policy: false)
-    end
-
-    it { is_expected.not_to have_key(:pull_policy) }
-  end
 end

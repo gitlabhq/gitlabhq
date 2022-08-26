@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module DeployTokensHelper
-  def expand_deploy_tokens_section?(deploy_token)
-    deploy_token.persisted? ||
-      deploy_token.errors.present? ||
+  def expand_deploy_tokens_section?(new_deploy_token, created_deploy_token)
+    created_deploy_token ||
+      new_deploy_token.errors.present? ||
       Rails.env.test?
   end
 

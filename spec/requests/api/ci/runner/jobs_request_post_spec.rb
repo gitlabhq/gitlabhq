@@ -833,22 +833,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               'image' => { 'name' => 'ruby', 'pull_policy' => ['if-not-present'], 'entrypoint' => nil, 'ports' => [] }
             )
           end
-
-          context 'when the FF ci_docker_image_pull_policy is disabled' do
-            before do
-              stub_feature_flags(ci_docker_image_pull_policy: false)
-            end
-
-            it 'returns the image without pull policy' do
-              request_job
-
-              expect(response).to have_gitlab_http_status(:created)
-              expect(json_response).to include(
-                'id' => job.id,
-                'image' => { 'name' => 'ruby', 'entrypoint' => nil, 'ports' => [] }
-              )
-            end
-          end
         end
 
         context 'when service has pull_policy' do
@@ -872,23 +856,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               'services' => [{ 'alias' => nil, 'command' => nil, 'entrypoint' => nil, 'name' => 'postgres:11.9',
                                'ports' => [], 'pull_policy' => ['if-not-present'], 'variables' => [] }]
             )
-          end
-
-          context 'when the FF ci_docker_image_pull_policy is disabled' do
-            before do
-              stub_feature_flags(ci_docker_image_pull_policy: false)
-            end
-
-            it 'returns the service without pull policy' do
-              request_job
-
-              expect(response).to have_gitlab_http_status(:created)
-              expect(json_response).to include(
-                'id' => job.id,
-                'services' => [{ 'alias' => nil, 'command' => nil, 'entrypoint' => nil, 'name' => 'postgres:11.9',
-                                 'ports' => [], 'variables' => [] }]
-              )
-            end
           end
         end
 

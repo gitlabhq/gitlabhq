@@ -46,6 +46,14 @@ vendor omniauth-gitlab:
     include: vendor/gems/omniauth-gitlab/.gitlab-ci.yml
     strategy: depend
 
+vendor omniauth-salesforce:
+  extends:
+    - .vendor:rules:omniauth-salesforce
+  needs: []
+  trigger:
+    include: vendor/gems/omniauth-salesforce/.gitlab-ci.yml
+    strategy: depend
+
 vendor devise-pbkdf2-encryptable:
   extends:
     - .vendor:rules:devise-pbkdf2-encryptable

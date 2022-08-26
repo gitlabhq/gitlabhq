@@ -288,7 +288,7 @@ func configureRoutes(u *upstream) {
 		u.route("PUT", apiProjectPattern+`/packages/debian/`, requestBodyUploader),
 
 		// RPM Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/rpm/`, requestBodyUploader),
+		u.route("POST", apiProjectPattern+`/packages/rpm/`, requestBodyUploader),
 
 		// Gem Artifact Repository
 		u.route("POST", apiProjectPattern+`/packages/rubygems/`, requestBodyUploader),

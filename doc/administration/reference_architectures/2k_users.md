@@ -1014,11 +1014,11 @@ use Google Cloud's Kubernetes Engine (GKE) or AWS Elastic Kubernetes Service (EK
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                       | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
-|-----------------------------------------------|-------|------------------------|-----------------|--------------|---------------------------------|
-| Webservice                                    | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | 23.7 vCPU, 16.9 GB memory       |
-| Sidekiq                                       | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | 3.9 vCPU, 11.8 GB memory        |
-| Supporting services such as NGINX, Prometheus | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
+| Service             | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
+|---------------------|-------|------------------------|-----------------|--------------|---------------------------------|
+| Webservice          | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | 23.7 vCPU, 16.9 GB memory       |
+| Sidekiq             | 2     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | 7.8 vCPU, 25.9 GB memory        |
+| Supporting services | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
@@ -1054,9 +1054,10 @@ card "Kubernetes via Helm Charts" as kubernetes {
 
   together {
     collections "**Webservice** x3" as gitlab #32CD32
-    card "**Sidekiq**" as sidekiq #ff8dd1
-    collections "**Supporting Services** x2" as support
+    collections "**Sidekiq** x2" as sidekiq #ff8dd1
   }
+
+  collections "**Supporting Services** x2" as support
 }
 
 card "**Gitaly**" as gitaly #FF8C00
@@ -1087,28 +1088,41 @@ documents how to apply the calculated configuration to the Helm Chart.
 
 #### Webservice
 
-Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
-Each Webservice pod consumes roughly 4 vCPUs and 5 GB of memory using
+Webservice pods typically need about 1 CPU and 1.25 GB of memory _per worker_.
+Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because two worker processes
 are created by default and each pod has other small processes running.
 
 For 2,000 users we recommend a total Puma worker count of around 12.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 3
 Webservice pods with 4 workers per pod and 1 pod per node. Expand available resources using
-the ratio of 1 vCPU to 1.25 GB of memory _per each worker process_ for each additional
+the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
 Webservice pod.
 
 For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
 
 #### Sidekiq
 
-Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
+Sidekiq pods should generally have 0.9 CPU and 2 GB of memory.
 
 [The provided starting point](#cluster-topology) allows the deployment of up to
-4 Sidekiq pods. Expand available resources using the 1 vCPU to 2 GB memory
+4 Sidekiq pods. Expand available resources using the 0.9 CPU to 2 GB memory
 ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
+
+### Supporting
+
+The Supporting Node Pool is designed to house all supporting deployments that don't need to be
+on the Webservice and Sidekiq pools.
+
+This includes various deployments related to the Cloud Provider's implementation and supporting
+GitLab deployments such as NGINX or [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
+
+If you wish to make any additional deployments, such as for Monitoring, it's recommended
+to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
+specifically to accommodate several additional deployments. However, if your deployments don't fit into the
+pool as given, you can increase the node pool accordingly.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

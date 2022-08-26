@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # TODO: remove feature flag upon rollout completion
-  # FF rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/363186
-  RSpec.describe 'Verify', :runner, feature_flag: {
-    name: 'ci_docker_image_pull_policy',
-    scope: :global
-  } do
+  RSpec.describe 'Verify', :runner do
     describe 'Pipeline with image:pull_policy' do
       let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:job_name) { "test-job-#{pull_policies.join('-')}" }
@@ -27,10 +22,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:ci_docker_image_pull_policy)
-        # Give the feature some time to switch
-        sleep(30)
-
         update_runner_policy(allowed_policies)
         add_ci_file
         Flow::Login.sign_in
@@ -39,8 +30,6 @@ module QA
       end
 
       after do
-        Runtime::Feature.disable(:ci_docker_image_pull_policy)
-
         runner.remove_via_api!
       end
 

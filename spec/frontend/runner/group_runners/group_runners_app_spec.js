@@ -391,4 +391,36 @@ describe('GroupRunnersApp', () => {
       });
     });
   });
+
+  describe('when user has permission to register group runner', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          registrationToken: mockRegistrationToken,
+          groupFullPath: mockGroupFullPath,
+          groupRunnersLimitedCount: mockGroupRunnersCount,
+        },
+      });
+    });
+
+    it('shows the register group runner button', () => {
+      expect(findRegistrationDropdown().exists()).toBe(true);
+    });
+  });
+
+  describe('when user has no permission to register group runner', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          registrationToken: null,
+          groupFullPath: mockGroupFullPath,
+          groupRunnersLimitedCount: mockGroupRunnersCount,
+        },
+      });
+    });
+
+    it('does not show the register group runner button', () => {
+      expect(findRegistrationDropdown().exists()).toBe(false);
+    });
+  });
 });

@@ -997,18 +997,6 @@ module Gitlab
               scheduling_type: :stage
             })
           end
-
-          context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-            before do
-              stub_feature_flags(ci_docker_image_pull_policy: false)
-            end
-
-            it { is_expected.not_to be_valid }
-
-            it "returns no job" do
-              expect(processor.jobs).to eq({})
-            end
-          end
         end
 
         context 'when a service has pull_policy' do
@@ -1041,18 +1029,6 @@ module Gitlab
               root_variables_inheritance: true,
               scheduling_type: :stage
             })
-          end
-
-          context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-            before do
-              stub_feature_flags(ci_docker_image_pull_policy: false)
-            end
-
-            it { is_expected.not_to be_valid }
-
-            it "returns no job" do
-              expect(processor.jobs).to eq({})
-            end
           end
         end
       end

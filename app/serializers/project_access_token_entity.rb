@@ -15,13 +15,13 @@ class ProjectAccessTokenEntity < API::Entities::PersonalAccessToken
       project_id: project.path)
   end
 
-  expose :access_level do |token, options|
+  expose :role do |token, options|
     project = options.fetch(:project)
 
     next unless project
     next unless token.user
 
-    project.member(token.user)&.access_level
+    project.member(token.user)&.human_access
   end
 end
 # rubocop: enable Gitlab/NamespacedClass

@@ -28,7 +28,7 @@ RSpec.describe ProjectAccessTokenEntity do
           scopes: token.scopes,
           user_id: token.user_id,
           revoke_path: expected_revoke_path,
-          access_level: ::Gitlab::Access::DEVELOPER
+          role: 'Developer'
         ))
 
       expect(json).not_to include(:token)
@@ -52,7 +52,7 @@ RSpec.describe ProjectAccessTokenEntity do
           scopes: token.scopes,
           user_id: token.user_id,
           revoke_path: expected_revoke_path,
-          access_level: nil
+          role: nil
         ))
 
       expect(json).not_to include(:token)

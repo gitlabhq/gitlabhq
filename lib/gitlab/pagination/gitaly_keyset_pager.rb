@@ -38,7 +38,7 @@ module Gitlab
         if finder.is_a?(BranchesFinder)
           Feature.enabled?(:branch_list_keyset_pagination, project)
         elsif finder.is_a?(TagsFinder)
-          Feature.enabled?(:tag_list_keyset_pagination, project)
+          true
         elsif finder.is_a?(::Repositories::TreeFinder)
           Feature.enabled?(:repository_tree_gitaly_pagination, project)
         else
@@ -52,7 +52,7 @@ module Gitlab
         if finder.is_a?(BranchesFinder)
           Feature.enabled?(:branch_list_keyset_pagination, project)
         elsif finder.is_a?(TagsFinder)
-          Feature.enabled?(:tag_list_keyset_pagination, project)
+          true
         elsif finder.is_a?(::Repositories::TreeFinder)
           Feature.enabled?(:repository_tree_gitaly_pagination, project)
         else

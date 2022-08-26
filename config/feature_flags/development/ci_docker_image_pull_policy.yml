@@ -1,8 +1,0 @@
----
-name: ci_docker_image_pull_policy
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85588
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363186
-milestone: '15.1'
-type: development
-group: group::pipeline authoring
-default_enabled: true

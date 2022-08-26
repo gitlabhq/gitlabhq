@@ -14,13 +14,13 @@ class GroupAccessTokenEntity < API::Entities::PersonalAccessToken
       group_id: group.path)
   end
 
-  expose :access_level do |token, options|
+  expose :role do |token, options|
     group = options.fetch(:group)
 
     next unless group
     next unless token.user
 
-    group.member(token.user)&.access_level
+    group.member(token.user)&.human_access
   end
 end
 # rubocop: enable Gitlab/NamespacedClass

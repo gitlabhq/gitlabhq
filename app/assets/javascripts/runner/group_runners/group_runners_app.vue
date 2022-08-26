@@ -50,7 +50,8 @@ export default {
   props: {
     registrationToken: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     groupFullPath: {
       type: String,
@@ -191,6 +192,7 @@ export default {
       />
 
       <registration-dropdown
+        v-if="registrationToken"
         class="gl-ml-auto"
         :registration-token="registrationToken"
         :type="$options.GROUP_TYPE"
