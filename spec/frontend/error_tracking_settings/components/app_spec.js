@@ -76,23 +76,23 @@ describe('error tracking settings app', () => {
 
   describe('section', () => {
     it('renders the form and dropdown', () => {
-      expect(wrapper.find(ErrorTrackingForm).exists()).toBeTruthy();
-      expect(wrapper.find(ProjectDropdown).exists()).toBeTruthy();
+      expect(wrapper.find(ErrorTrackingForm).exists()).toBe(true);
+      expect(wrapper.find(ProjectDropdown).exists()).toBe(true);
     });
 
     it('renders the Save Changes button', () => {
-      expect(wrapper.find('.js-error-tracking-button').exists()).toBeTruthy();
+      expect(wrapper.find('.js-error-tracking-button').exists()).toBe(true);
     });
 
     it('enables the button by default', () => {
-      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeFalsy();
+      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeUndefined();
     });
 
     it('disables the button when saving', async () => {
       store.state.settingsLoading = true;
 
       await nextTick();
-      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeTruthy();
+      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBe('true');
     });
   });
 

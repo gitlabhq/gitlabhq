@@ -949,7 +949,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` are not available.
+On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
 To make them available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
 named `limit_unique_project_downloads_per_namespace_user`.
 
@@ -988,6 +988,7 @@ PUT /groups/:id
 | `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
 | `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
 | `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
+| `auto_ban_user_on_excessive_projects_download` **(ULTIMATE)** | boolean | no | When enabled, users will get automatically banned from the group when they download more than the maximum number of unique projects in the time period specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds` respectively. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4 |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).

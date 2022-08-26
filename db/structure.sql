@@ -17824,6 +17824,7 @@ CREATE TABLE namespace_settings (
     project_import_level smallint DEFAULT 50 NOT NULL,
     include_for_free_user_cap_preview boolean DEFAULT false NOT NULL,
     unique_project_download_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
+    auto_ban_user_on_excessive_projects_download boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
 );

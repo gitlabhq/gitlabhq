@@ -99,7 +99,7 @@
 
 #js-review-bar
 
-- if Feature.enabled?(:mr_experience_survey, @project) && current_user
+- if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }
 
 = render 'projects/invite_members_modal', project: @project

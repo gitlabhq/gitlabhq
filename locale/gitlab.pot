@@ -2649,13 +2649,13 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
-msgid "AdminSettings|Automatically ban users who download more than a specified number of repositories in a given time."
-msgstr ""
-
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
 msgid "AdminSettings|Configure Let's Encrypt"
+msgstr ""
+
+msgid "AdminSettings|Configure limits on the number of repositories users can download in a given time."
 msgstr ""
 
 msgid "AdminSettings|Configure when inactive projects should be automatically deleted. %{linkStart}What are inactive projects?%{linkEnd}"
@@ -17581,6 +17581,9 @@ msgstr ""
 msgid "Git version"
 msgstr ""
 
+msgid "GitAbuse|Automatically ban users from this %{scope} when they exceed the specified limits"
+msgstr ""
+
 msgid "GitAbuse|Excluded users"
 msgstr ""
 
@@ -18742,9 +18745,6 @@ msgstr ""
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
 msgstr ""
 
-msgid "GroupSettings|Automatically ban users who download more than a specified number of repositories in a given time."
-msgstr ""
-
 msgid "GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually."
 msgstr ""
 
@@ -18770,6 +18770,9 @@ msgid "GroupSettings|Compliance frameworks"
 msgstr ""
 
 msgid "GroupSettings|Configure compliance frameworks to make them available to projects in this group. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "GroupSettings|Configure limits on the number of repositories users can download in a given time."
 msgstr ""
 
 msgid "GroupSettings|Custom project templates"

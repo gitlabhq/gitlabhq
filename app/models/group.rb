@@ -677,14 +677,6 @@ class Group < Namespace
     }
   end
 
-  def ci_variables_for(ref, project, environment: nil)
-    cache_key = "ci_variables_for:group:#{self&.id}:project:#{project&.id}:ref:#{ref}:environment:#{environment}"
-
-    ::Gitlab::SafeRequestStore.fetch(cache_key) do
-      uncached_ci_variables_for(ref, project, environment: environment)
-    end
-  end
-
   def member(user)
     if group_members.loaded?
       group_members.find { |gm| gm.user_id == user.id }
@@ -1047,26 +1039,6 @@ class Group < Namespace
 
   def enable_shared_runners!
     update!(shared_runners_enabled: true)
-  end
-
-  def uncached_ci_variables_for(ref, project, environment: nil)
-    list_of_ids = if root_ancestor.use_traversal_ids?
-                    [self] + ancestors(hierarchy_order: :asc)
-                  else
-                    [self] + ancestors
-                  end
-
-    variables = Ci::GroupVariable.where(group: list_of_ids)
-    variables = variables.unprotected unless project.protected_for?(ref)
-
-    variables = if environment
-                  variables.on_environment(environment)
-                else
-                  variables.where(environment_scope: '*')
-                end
-
-    variables = variables.group_by(&:group_id)
-    list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
   end
 end
 

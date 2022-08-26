@@ -53,7 +53,7 @@ module Ci
       requirements: 'requirements.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json',
-      cyclonedx: 'gl-sbom.cdx.zip'
+      cyclonedx: 'gl-sbom.cdx.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -71,6 +71,7 @@ module Ci
       cobertura: :gzip,
       cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       lsif: :zip,
+      cyclonedx: :gzip,
 
       # Security reports and license scanning reports are raw artifacts
       # because they used to be fetched by the frontend, but this is not the case anymore.
@@ -93,8 +94,7 @@ module Ci
       terraform: :raw,
       requirements: :raw,
       coverage_fuzzing: :raw,
-      api_fuzzing: :raw,
-      cyclonedx: :zip
+      api_fuzzing: :raw
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[

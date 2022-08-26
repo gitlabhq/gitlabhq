@@ -2369,28 +2369,6 @@ class Project < ApplicationRecord
       .first
   end
 
-  def ci_variables_for(ref:, environment: nil)
-    cache_key = "ci_variables_for:project:#{self&.id}:ref:#{ref}:environment:#{environment}"
-
-    ::Gitlab::SafeRequestStore.fetch(cache_key) do
-      uncached_ci_variables_for(ref: ref, environment: environment)
-    end
-  end
-
-  def uncached_ci_variables_for(ref:, environment: nil)
-    result = if protected_for?(ref)
-               variables
-             else
-               variables.unprotected
-             end
-
-    if environment
-      result.on_environment(environment)
-    else
-      result.where(environment_scope: '*')
-    end
-  end
-
   def protected_for?(ref)
     raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 

@@ -70,12 +70,14 @@ describe('TriggersList', () => {
 
   it('displays actions in a rows', () => {
     const [data] = triggers;
+    const confirmWarning =
+      'By revoking a trigger you will break any processes making use of it. Are you sure?';
 
     expect(findEditBtn(0).attributes('href')).toBe(data.editProjectTriggerPath);
 
     expect(findRevokeBtn(0).attributes('href')).toBe(data.projectTriggerPath);
     expect(findRevokeBtn(0).attributes('data-method')).toBe('delete');
-    expect(findRevokeBtn(0).attributes('data-confirm')).toBeTruthy();
+    expect(findRevokeBtn(0).attributes('data-confirm')).toBe(confirmWarning);
   });
 
   describe('when there are no triggers set', () => {
