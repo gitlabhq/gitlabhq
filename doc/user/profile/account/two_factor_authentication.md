@@ -427,6 +427,39 @@ a GitLab global administrator disable 2FA for your account:
 
 ## Troubleshooting
 
+### Error: "HTTP Basic: Access denied. The provided password or token ..."
+
+When making a request, you can receive the following error:
+
+```plaintext
+HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal
+access token instead of a password.
+```
+
+This error occurs in the following scenarios:
+
+- You have 2FA enabled and have attempted to authenticate with a username and
+  password. For 2FA-enabled users, a [personal access token](../personal_access_tokens.md) (PAT)
+  must be used instead of a password. To authenticate:
+  - Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
+  - [GitLab Container Registry](../../packages/container_registry/index.md#authenticate-with-the-container-registry) requests, a PAT
+    with `read_registry` or `write_registry` scope is required.
+  - [Dependency Proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy) requests, a PAT with
+    `read_registry` and `write_registry` scopes is required.
+- You do not have 2FA enabled and have sent an incorrect username or password
+  with your request.
+- You do not have 2FA enabled but an administrator has enabled the
+  [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting.
+- You do not have 2FA enabled, but an administrator has disabled the
+  [password authentication enabled for Git over HTTP(S)](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled)
+  setting. If LDAP is:
+  - Configured, an [LDAP password](../../../administration/auth/ldap/index.md)
+    or a [personal access token](../personal_access_tokens.md)
+    must be used to authenticate Git requests over HTTP(S).
+  - Not configured, you must use a [personal access token](../personal_access_tokens.md).
+
+### Error: "invalid pin code"
+
 If you receive an `invalid pin code` error, this can indicate that there is a time sync issue between the authentication
 application and the GitLab instance itself. To avoid the time sync issue, enable time synchronization in the device that
 generates the codes. For example:

@@ -39,7 +39,7 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
-          present commit_detail, with: Entities::CommitDetail
+          present commit_detail, with: Entities::CommitDetail, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status] || 400)
         end

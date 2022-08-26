@@ -84,6 +84,16 @@ module API
 
         body content
       end
+
+      def ensure_group!
+        find_group(params[:id]) || not_found!
+        find_authorized_group!
+      end
+
+      def ensure_project!
+        find_project(params[:id]) || not_found!
+        authorized_user_project
+      end
     end
 
     params do
@@ -91,7 +101,7 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
-        unauthorized_user_group!
+        ensure_group!
       end
 
       namespace ':id/-/packages/pypi' do
@@ -101,7 +111,8 @@ module API
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
         get 'files/:sha256/*file_identifier' do
-          group = unauthorized_user_group!
+          group = find_authorized_group!
+          authorize_read_package!(group)
 
           filename = "#{params[:file_identifier]}.#{params[:format]}"
           package = Packages::Pypi::PackageFinder.new(current_user, group, { filename: filename, sha256: params[:sha256] }).execute
@@ -146,7 +157,7 @@ module API
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
-        unauthorized_user_project!
+        ensure_project!
       end
 
       namespace ':id/packages/pypi' do
@@ -160,7 +171,8 @@ module API
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
         get 'files/:sha256/*file_identifier' do
-          project = unauthorized_user_project!
+          project = authorized_user_project
+          authorize_read_package!(project)
 
           filename = "#{params[:file_identifier]}.#{params[:format]}"
           package = Packages::Pypi::PackageFinder.new(current_user, project, { filename: filename, sha256: params[:sha256] }).execute

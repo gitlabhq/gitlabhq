@@ -36,31 +36,40 @@ class JwtController < ApplicationController
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
       if @authentication_result.failed?
-        render_unauthorized
+        log_authentication_failed(login, @authentication_result)
+        render_access_denied
       end
     end
   rescue Gitlab::Auth::MissingPersonalAccessTokenError
-    render_missing_personal_access_token
+    render_access_denied
   end
 
-  def render_missing_personal_access_token
-    render json: {
-      errors: [
-        { code: 'UNAUTHORIZED',
-          message: _('HTTP Basic: Access denied\n' \
-                   'You must use a personal access token with \'api\' scope for Git over HTTP.\n' \
-                   'You can generate one at %{profile_personal_access_tokens_url}') % { profile_personal_access_tokens_url: profile_personal_access_tokens_url } }
-      ]
-    }, status: :unauthorized
+  def log_authentication_failed(login, result)
+    log_info = {
+      message: 'JWT authentication failed',
+      http_user: login,
+      remote_ip: request.ip,
+      auth_service: params[:service],
+      'auth_result.type': result.type,
+      'auth_result.actor_type': result.actor&.class
+    }.merge(::Gitlab::ApplicationContext.current)
+
+    Gitlab::AuthLogger.warn(log_info)
   end
 
-  def render_unauthorized
-    render json: {
-      errors: [
-        { code: 'UNAUTHORIZED',
-          message: 'HTTP Basic: Access denied' }
-      ]
-    }, status: :unauthorized
+  def render_access_denied
+    help_page = help_page_url(
+      'user/profile/account/two_factor_authentication',
+      anchor: 'troubleshooting'
+    )
+
+    render(
+      json: { errors: [{
+        code: 'UNAUTHORIZED',
+        message: format(_("HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See %{help_page_url}"), help_page_url: help_page)
+      }] },
+      status: :unauthorized
+    )
   end
 
   def auth_params

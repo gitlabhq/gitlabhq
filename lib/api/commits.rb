@@ -144,7 +144,7 @@ module API
             Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user, project: user_project)
           end
 
-          present commit_detail, with: Entities::CommitDetail, stats: params[:stats]
+          present commit_detail, with: Entities::CommitDetail, include_stats: params[:stats], current_user: current_user
         else
           render_api_error!(result[:message], 400)
         end
@@ -163,7 +163,7 @@ module API
 
         not_found! 'Commit' unless commit
 
-        present commit, with: Entities::CommitDetail, stats: params[:stats], current_user: current_user
+        present commit, with: Entities::CommitDetail, include_stats: params[:stats], current_user: current_user
       end
 
       desc 'Get the diff for a specific commit of a project' do

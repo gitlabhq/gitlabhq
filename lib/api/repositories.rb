@@ -189,7 +189,7 @@ module API
           compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
 
           if compare
-            present compare, with: Entities::Compare
+            present compare, with: Entities::Compare, current_user: current_user
           else
             not_found!("Ref")
           end

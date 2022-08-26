@@ -11,7 +11,7 @@ jest.mock('codesandbox-api', () => ({
 
 describe('IDE clientside preview navigator', () => {
   let wrapper;
-  let manager;
+  let client;
   let listenHandler;
 
   const findBackButton = () => wrapper.findAll('button').at(0);
@@ -20,9 +20,9 @@ describe('IDE clientside preview navigator', () => {
 
   beforeEach(() => {
     listen.mockClear();
-    manager = { bundlerURL: TEST_HOST, iframe: { src: '' } };
+    client = { bundlerURL: TEST_HOST, iframe: { src: '' } };
 
-    wrapper = shallowMount(ClientsideNavigator, { propsData: { manager } });
+    wrapper = shallowMount(ClientsideNavigator, { propsData: { client } });
     [[listenHandler]] = listen.mock.calls;
   });
 
@@ -31,7 +31,7 @@ describe('IDE clientside preview navigator', () => {
   });
 
   it('renders readonly URL bar', async () => {
-    listenHandler({ type: 'urlchange', url: manager.bundlerURL });
+    listenHandler({ type: 'urlchange', url: client.bundlerURL });
     await nextTick();
     expect(wrapper.find('input[readonly]').element.value).toBe('/');
   });
@@ -89,13 +89,13 @@ describe('IDE clientside preview navigator', () => {
       expect(findBackButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('updates manager iframe src', async () => {
+    it('updates client iframe src', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url2` });
       await nextTick();
       findBackButton().trigger('click');
 
-      expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
+      expect(client.iframe.src).toBe(`${TEST_HOST}/url1`);
     });
   });
 
@@ -133,13 +133,13 @@ describe('IDE clientside preview navigator', () => {
       expect(findForwardButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('updates manager iframe src', async () => {
+    it('updates client iframe src', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url2` });
       await nextTick();
       findBackButton().trigger('click');
 
-      expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
+      expect(client.iframe.src).toBe(`${TEST_HOST}/url1`);
     });
   });
 
@@ -152,10 +152,10 @@ describe('IDE clientside preview navigator', () => {
     });
 
     it('calls refresh with current path', () => {
-      manager.iframe.src = 'something-other';
+      client.iframe.src = 'something-other';
       findRefreshButton().trigger('click');
 
-      expect(manager.iframe.src).toBe(url);
+      expect(client.iframe.src).toBe(url);
     });
   });
 });
