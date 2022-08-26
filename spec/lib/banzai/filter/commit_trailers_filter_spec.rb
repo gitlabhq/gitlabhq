@@ -18,10 +18,20 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter do
   context 'detects' do
     let(:email) { FFaker::Internet.email }
 
-    it 'trailers in the form of *-by and replace users with links' do
-      doc = filter(commit_message_html)
+    context 'trailers in the form of *-by' do
+      where(:commit_trailer) do
+        ["#{FFaker::Lorem.word}-by:", "#{FFaker::Lorem.word}-BY:", "#{FFaker::Lorem.word}-By:"]
+      end
 
-      expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
+      with_them do
+        let(:trailer) { commit_trailer }
+
+        it 'replaces users with links' do
+          doc = filter(commit_message_html)
+
+          expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
+        end
+      end
     end
 
     it 'trailers prefixed with whitespaces' do
@@ -121,7 +131,14 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter do
 
   context "ignores" do
     it 'commit messages without trailers' do
-      exp = message = commit_html(FFaker::Lorem.sentence)
+      exp = message = commit_html(Array.new(5) { FFaker::Lorem.sentence }.join("\n"))
+      doc = filter(message)
+
+      expect(doc.to_html).to match Regexp.escape(exp)
+    end
+
+    it 'trailers without emails' do
+      exp = message = commit_html(Array.new(5) { 'Merged-By:' }.join("\n"))
       doc = filter(message)
 
       expect(doc.to_html).to match Regexp.escape(exp)
