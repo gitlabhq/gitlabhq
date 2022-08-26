@@ -9,12 +9,13 @@ RSpec.describe Gitlab::Git::Tree do
   let(:repository) { project.repository.raw }
 
   shared_examples :repo do
-    subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, pagination_params) }
+    subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, pagination_params) }
 
     let(:sha) { SeedRepo::Commit::ID }
     let(:path) { nil }
     let(:recursive) { false }
     let(:pagination_params) { nil }
+    let(:skip_flat_paths) { false }
 
     let(:entries) { tree.first }
     let(:cursor) { tree.second }
@@ -107,6 +108,12 @@ RSpec.describe Gitlab::Git::Tree do
         end
 
         it { expect(subdir_file.flat_path).to eq('files/flat/path/correct') }
+
+        context 'when skip_flat_paths is true' do
+          let(:skip_flat_paths) { true }
+
+          it { expect(subdir_file.flat_path).to be_blank }
+        end
       end
     end
 
@@ -162,7 +169,7 @@ RSpec.describe Gitlab::Git::Tree do
         allow(instance).to receive(:lookup).with(SeedRepo::Commit::ID)
       end
 
-      described_class.where(repository, SeedRepo::Commit::ID, 'files', false)
+      described_class.where(repository, SeedRepo::Commit::ID, 'files', false, false)
     end
 
     it_behaves_like :repo do
@@ -180,7 +187,7 @@ RSpec.describe Gitlab::Git::Tree do
           let(:entries_count) { entries.count }
 
           it 'returns all entries without a cursor' do
-            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: entries_count, page_token: nil })
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: entries_count, page_token: nil })
 
             expect(cursor).to be_nil
             expect(result.entries.count).to eq(entries_count)
@@ -209,7 +216,7 @@ RSpec.describe Gitlab::Git::Tree do
           let(:entries_count) { entries.count }
 
           it 'returns all entries' do
-            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: -1, page_token: nil })
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: -1, page_token: nil })
 
             expect(result.count).to eq(entries_count)
             expect(cursor).to be_nil
@@ -220,7 +227,7 @@ RSpec.describe Gitlab::Git::Tree do
             let(:token) { entries.second.id }
 
             it 'returns all entries after token' do
-              result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: -1, page_token: token })
+              result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: -1, page_token: token })
 
               expect(result.count).to eq(entries.count - 2)
               expect(cursor).to be_nil
@@ -252,7 +259,7 @@ RSpec.describe Gitlab::Git::Tree do
           expected_entries = entries
 
           loop do
-            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: 5, page_token: token })
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: 5, page_token: token })
 
             collected_entries += result.entries
             token = cursor&.next_cursor

@@ -677,24 +677,24 @@ class Repository
     @head_commit ||= commit(self.root_ref)
   end
 
-  def head_tree
+  def head_tree(skip_flat_paths: true)
     if head_commit
-      @head_tree ||= Tree.new(self, head_commit.sha, nil)
+      @head_tree ||= Tree.new(self, head_commit.sha, nil, skip_flat_paths: skip_flat_paths)
     end
   end
 
-  def tree(sha = :head, path = nil, recursive: false, pagination_params: nil)
+  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil)
     if sha == :head
       return unless head_commit
 
       if path.nil?
-        return head_tree
+        return head_tree(skip_flat_paths: skip_flat_paths)
       else
         sha = head_commit.sha
       end
     end
 
-    Tree.new(self, sha, path, recursive: recursive, pagination_params: pagination_params)
+    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params)
   end
 
   def blob_at_branch(branch_name, path)
