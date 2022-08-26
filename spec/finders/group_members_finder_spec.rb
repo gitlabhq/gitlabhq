@@ -21,10 +21,10 @@ RSpec.describe GroupMembersFinder, '#execute' do
 
   let(:groups) do
     {
-      group:                group,
-      sub_group:            sub_group,
-      sub_sub_group:        sub_sub_group,
-      public_shared_group:  public_shared_group,
+      group: group,
+      sub_group: sub_group,
+      sub_sub_group: sub_sub_group,
+      public_shared_group: public_shared_group,
       private_shared_group: private_shared_group
     }
   end
@@ -32,25 +32,25 @@ RSpec.describe GroupMembersFinder, '#execute' do
   context 'relations' do
     let!(:members) do
       {
-        user1_sub_sub_group:        create(:group_member, :maintainer, group: sub_sub_group,        user: user1),
-        user1_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user1),
-        user1_group:                create(:group_member, :reporter,   group: group,                user: user1),
-        user1_public_shared_group:  create(:group_member, :maintainer, group: public_shared_group,  user: user1),
+        user1_sub_sub_group: create(:group_member, :maintainer, group: sub_sub_group, user: user1),
+        user1_sub_group: create(:group_member, :developer, group: sub_group, user: user1),
+        user1_group: create(:group_member, :reporter, group: group, user: user1),
+        user1_public_shared_group: create(:group_member, :maintainer, group: public_shared_group, user: user1),
         user1_private_shared_group: create(:group_member, :maintainer, group: private_shared_group, user: user1),
-        user2_sub_sub_group:        create(:group_member, :reporter,   group: sub_sub_group,        user: user2),
-        user2_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user2),
-        user2_group:                create(:group_member, :maintainer, group: group,                user: user2),
-        user2_public_shared_group:  create(:group_member, :developer,  group: public_shared_group,  user: user2),
-        user2_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user2),
-        user3_sub_sub_group:        create(:group_member, :developer,  group: sub_sub_group,        user: user3, expires_at: 1.day.from_now),
-        user3_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user3, expires_at: 2.days.from_now),
-        user3_group:                create(:group_member, :reporter,   group: group,                user: user3),
-        user3_public_shared_group:  create(:group_member, :reporter,   group: public_shared_group,  user: user3),
-        user3_private_shared_group: create(:group_member, :reporter,   group: private_shared_group, user: user3),
-        user4_sub_sub_group:        create(:group_member, :reporter,   group: sub_sub_group,        user: user4),
-        user4_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user4, expires_at: 1.day.from_now),
-        user4_group:                create(:group_member, :developer,  group: group,                user: user4, expires_at: 2.days.from_now),
-        user4_public_shared_group:  create(:group_member, :developer,  group: public_shared_group,  user: user4),
+        user2_sub_sub_group: create(:group_member, :reporter, group: sub_sub_group, user: user2),
+        user2_sub_group: create(:group_member, :developer, group: sub_group, user: user2),
+        user2_group: create(:group_member, :maintainer, group: group, user: user2),
+        user2_public_shared_group: create(:group_member, :developer, group: public_shared_group, user: user2),
+        user2_private_shared_group: create(:group_member, :developer, group: private_shared_group, user: user2),
+        user3_sub_sub_group: create(:group_member, :developer, group: sub_sub_group, user: user3, expires_at: 1.day.from_now),
+        user3_sub_group: create(:group_member, :developer, group: sub_group, user: user3, expires_at: 2.days.from_now),
+        user3_group: create(:group_member, :reporter, group: group, user: user3),
+        user3_public_shared_group: create(:group_member, :reporter, group: public_shared_group, user: user3),
+        user3_private_shared_group: create(:group_member, :reporter, group: private_shared_group, user: user3),
+        user4_sub_sub_group: create(:group_member, :reporter, group: sub_sub_group, user: user4),
+        user4_sub_group: create(:group_member, :developer, group: sub_group, user: user4, expires_at: 1.day.from_now),
+        user4_group: create(:group_member, :developer, group: group, user: user4, expires_at: 2.days.from_now),
+        user4_public_shared_group: create(:group_member, :developer, group: public_shared_group, user: user4),
         user4_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user4),
         user5_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user5)
       }

@@ -42,18 +42,18 @@ RSpec.describe Gitlab::WordDiff::Parser do
             { index: 1, old_pos: 2, new_pos: 2, text: 'Unchanged line', type: nil, marker_ranges: [] },
             { index: 2, old_pos: 3, new_pos: 3, text: '', type: nil, marker_ranges: [] },
             { index: 3, old_pos: 4, new_pos: 4, text: 'Old changeNew addition unchanged content', type: nil,
-                             marker_ranges: [
-                               Gitlab::MarkerRange.new(0, 9, mode: :deletion),
-                               Gitlab::MarkerRange.new(10, 21, mode: :addition)
-                             ] },
+              marker_ranges: [
+                Gitlab::MarkerRange.new(0, 9, mode: :deletion),
+                Gitlab::MarkerRange.new(10, 21, mode: :addition)
+              ] },
 
             { index: 4, old_pos: 50, new_pos: 50, text: '@@ -50,14 +50,13 @@', type: 'match', marker_ranges: [] },
             { index: 5, old_pos: 50, new_pos: 50, text: 'First change same same same_removed_added_end of the line', type: nil,
-                             marker_ranges: [
-                               Gitlab::MarkerRange.new(0, 11, mode: :addition),
-                               Gitlab::MarkerRange.new(28, 35, mode: :deletion),
-                               Gitlab::MarkerRange.new(36, 41, mode: :addition)
-                             ] },
+              marker_ranges: [
+                Gitlab::MarkerRange.new(0, 11, mode: :addition),
+                Gitlab::MarkerRange.new(28, 35, mode: :deletion),
+                Gitlab::MarkerRange.new(36, 41, mode: :addition)
+              ] },
 
             { index: 6, old_pos: 51, new_pos: 51, text: '', type: nil, marker_ranges: [] }
           ]

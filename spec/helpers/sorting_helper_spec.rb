@@ -74,11 +74,11 @@ RSpec.describe SortingHelper do
 
   def project_common_options
     {
-      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_latest_activity => sort_title_latest_activity,
       sort_value_recently_created => sort_title_created_date,
-      sort_value_name             => sort_title_name,
-      sort_value_name_desc        => sort_title_name_desc,
-      sort_value_stars_desc       => sort_title_stars
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
+      sort_value_stars_desc => sort_title_stars
     }
   end
 
@@ -90,11 +90,11 @@ RSpec.describe SortingHelper do
     describe '#projects_sort_options_hash' do
       it 'returns a hash of available sorting options' do
         admin_options = project_common_options.merge({
-          sort_value_oldest_activity  => sort_title_oldest_activity,
-          sort_value_oldest_created   => sort_title_oldest_created,
+          sort_value_oldest_activity => sort_title_oldest_activity,
+          sort_value_oldest_created => sort_title_oldest_created,
           sort_value_recently_created => sort_title_recently_created,
-          sort_value_stars_desc       => sort_title_most_stars,
-          sort_value_largest_repo     => sort_title_largest_repo
+          sort_value_stars_desc => sort_title_most_stars,
+          sort_value_largest_repo => sort_title_largest_repo
         })
 
         expect(projects_sort_options_hash).to eq(admin_options)
@@ -180,10 +180,10 @@ RSpec.describe SortingHelper do
     describe '#projects_sort_option_titles' do
       it 'returns a hash of titles for the sorting options' do
         options = project_common_options.merge({
-          sort_value_oldest_activity  => sort_title_latest_activity,
-          sort_value_oldest_created   => sort_title_created_date,
-          sort_value_name_desc        => sort_title_name,
-          sort_value_stars_asc        => sort_title_stars
+          sort_value_oldest_activity => sort_title_latest_activity,
+          sort_value_oldest_created => sort_title_created_date,
+          sort_value_name_desc => sort_title_name,
+          sort_value_stars_asc => sort_title_stars
         })
 
         expect(projects_sort_option_titles).to eq(options)
@@ -198,10 +198,10 @@ RSpec.describe SortingHelper do
       describe '#projects_sort_options_hash' do
         it 'returns a hash of available sorting options' do
           options = project_common_options.merge({
-            sort_value_oldest_activity  => sort_title_oldest_activity,
-            sort_value_oldest_created   => sort_title_oldest_created,
+            sort_value_oldest_activity => sort_title_oldest_activity,
+            sort_value_oldest_created => sort_title_oldest_created,
             sort_value_recently_created => sort_title_recently_created,
-            sort_value_stars_desc       => sort_title_most_stars
+            sort_value_stars_desc => sort_title_most_stars
           })
 
           expect(projects_sort_options_hash).to eq(options)
@@ -219,9 +219,9 @@ RSpec.describe SortingHelper do
       it 'returns a hash of available sorting options' do
         expect(forks_sort_options_hash).to include({
           sort_value_recently_created => sort_title_created_date,
-          sort_value_oldest_created   => sort_title_created_date,
-          sort_value_latest_activity  => sort_title_latest_activity,
-          sort_value_oldest_activity  => sort_title_latest_activity
+          sort_value_oldest_created => sort_title_created_date,
+          sort_value_latest_activity => sort_title_latest_activity,
+          sort_value_oldest_activity => sort_title_latest_activity
         })
       end
     end

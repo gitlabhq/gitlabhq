@@ -106,7 +106,7 @@ RSpec.describe Ci::BuildsHelper do
       expect(subject).to eq([{
         id: failed_build.id,
         failure: failed_build.present.callout_failure_message,
-        failure_summary:  helper.build_summary(failed_build)
+        failure_summary: helper.build_summary(failed_build)
       }].to_json)
     end
   end

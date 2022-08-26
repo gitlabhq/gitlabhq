@@ -45,8 +45,8 @@ RSpec.describe 'Marginalia spec' do
 
     let(:component_map) do
       {
-        "application"    => "test",
-        "endpoint_id"    => "MarginaliaTestController#first_user",
+        "application" => "test",
+        "endpoint_id" => "MarginaliaTestController#first_user",
         "correlation_id" => correlation_id,
         "db_config_name" => "main"
       }
@@ -62,8 +62,8 @@ RSpec.describe 'Marginalia spec' do
       let(:recorded) { ActiveRecord::QueryRecorder.new { make_request(correlation_id, :first_ci_pipeline) } }
       let(:component_map) do
         {
-          "application"    => "test",
-          "endpoint_id"    => "MarginaliaTestController#first_ci_pipeline",
+          "application" => "test",
+          "endpoint_id" => "MarginaliaTestController#first_ci_pipeline",
           "correlation_id" => correlation_id,
           "db_config_name" => 'ci'
         }
@@ -104,10 +104,10 @@ RSpec.describe 'Marginalia spec' do
 
     let(:component_map) do
       {
-        "application"    => "sidekiq",
-        "endpoint_id"    => "MarginaliaTestJob",
+        "application" => "sidekiq",
+        "endpoint_id" => "MarginaliaTestJob",
         "correlation_id" => sidekiq_job['correlation_id'],
-        "jid"            => sidekiq_job['jid'],
+        "jid" => sidekiq_job['jid'],
         "db_config_name" => "main"
       }
     end
@@ -129,9 +129,9 @@ RSpec.describe 'Marginalia spec' do
 
       let(:component_map) do
         {
-          "application"    => "sidekiq",
-          "endpoint_id"    => "ActionMailer::MailDeliveryJob",
-          "jid"            => delivery_job.job_id,
+          "application" => "sidekiq",
+          "endpoint_id" => "ActionMailer::MailDeliveryJob",
+          "jid" => delivery_job.job_id,
           "db_config_name" => "main"
         }
       end

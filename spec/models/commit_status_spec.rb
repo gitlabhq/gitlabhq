@@ -836,17 +836,11 @@ RSpec.describe CommitStatus do
 
     context 'when commit status does not have stage but it exists' do
       let!(:stage) do
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 name: 'test')
+        create(:ci_stage, project: project, pipeline: pipeline, name: 'test')
       end
 
       let(:commit_status) do
-        create(:commit_status, project: project,
-                               pipeline: pipeline,
-                               name: 'rspec',
-                               stage: 'test',
-                               status: :success)
+        create(:commit_status, project: project, pipeline: pipeline, name: 'rspec', stage: 'test', status: :success)
       end
 
       it 'uses existing stage', :sidekiq_might_not_need_inline do

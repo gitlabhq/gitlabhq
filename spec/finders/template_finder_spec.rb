@@ -7,10 +7,10 @@ RSpec.describe TemplateFinder do
 
   let_it_be(:template_files) do
     {
-      "Dockerfile/project_dockerfiles_template.dockerfile"                 => "project_dockerfiles_template content",
-      "gitignore/project_gitignores_template.gitignore"                    => "project_gitignores_template content",
-      "gitlab-ci/project_gitlab_ci_ymls_template.yml"                      => "project_gitlab_ci_ymls_template content",
-      ".gitlab/issue_templates/project_issues_template.md"                 => "project_issues_template content",
+      "Dockerfile/project_dockerfiles_template.dockerfile" => "project_dockerfiles_template content",
+      "gitignore/project_gitignores_template.gitignore" => "project_gitignores_template content",
+      "gitlab-ci/project_gitlab_ci_ymls_template.yml" => "project_gitlab_ci_ymls_template content",
+      ".gitlab/issue_templates/project_issues_template.md" => "project_issues_template content",
       ".gitlab/merge_request_templates/project_merge_requests_template.md" => "project_merge_requests_template content"
     }
   end

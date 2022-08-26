@@ -27,15 +27,15 @@ RSpec.describe StorageHelper do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:               namespace,
-                               repository_size:         10.kilobytes,
-                               wiki_size:               10.bytes,
-                               lfs_objects_size:        20.gigabytes,
-                               build_artifacts_size:    30.megabytes,
+                               namespace: namespace,
+                               repository_size: 10.kilobytes,
+                               wiki_size: 10.bytes,
+                               lfs_objects_size: 20.gigabytes,
+                               build_artifacts_size: 30.megabytes,
                                pipeline_artifacts_size: 11.megabytes,
-                               snippets_size:           40.megabytes,
-                               packages_size:           12.megabytes,
-                               uploads_size:            15.megabytes))
+                               snippets_size: 40.megabytes,
+                               packages_size: 12.megabytes,
+                               uploads_size: 15.megabytes))
     end
 
     let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / Pipeline Artifacts: 11 MB / LFS: 20 GB / Snippets: 40 MB / Packages: 12 MB / Uploads: 15 MB' }

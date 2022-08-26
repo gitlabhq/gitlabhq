@@ -33,11 +33,11 @@ RSpec.describe MigrateRemainingU2fRegistrations, :migration do
     device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5), { key_handle: SecureRandom.random_bytes(255) })
     public_key ||= Base64.strict_encode64(device.origin_public_key_raw)
     u2f_registrations.create!({ id: id,
-                               certificate: Base64.strict_encode64(device.cert_raw),
-                               key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-                               public_key: public_key,
-                               counter: 5,
-                               name: name,
-                               user_id: user.id })
+                                certificate: Base64.strict_encode64(device.cert_raw),
+                                key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+                                public_key: public_key,
+                                counter: 5,
+                                name: name,
+                                user_id: user.id })
   end
 end

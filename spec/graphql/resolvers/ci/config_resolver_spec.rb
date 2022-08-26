@@ -17,7 +17,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
     subject(:response) do
       resolve(described_class,
               args: { project_path: project.full_path, content: content, sha: sha },
-              ctx:  { current_user: user })
+              ctx: { current_user: user })
     end
 
     shared_examples 'a valid config file' do

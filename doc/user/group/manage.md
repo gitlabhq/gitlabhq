@@ -184,9 +184,10 @@ To remove a member from a group:
 
 1. Go to the group.
 1. From the left menu, select **Group information > Members**.
-1. Next to the member you want to remove, select **Delete**.
-1. Optional. On the **Remove member** confirmation box, select the
-  **Also unassign this user from linked issues and merge requests** checkbox.
+1. Next to the member you want to remove, select **Remove member**.
+1. Optional. On the **Remove member** confirmation box:
+   - To remove direct user membership from subgroups and projects, select the **Also remove direct user membership from subgroups and projects** checkbox.
+   - To unassign the user from linked issues and merge requests, select the **Also unassign this user from linked issues and merge requests** checkbox.
 1. Select **Remove member**.
 
 ## Add projects to a group

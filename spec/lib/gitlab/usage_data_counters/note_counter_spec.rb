@@ -41,7 +41,7 @@ RSpec.describe Gitlab::UsageDataCounters::NoteCounter, :clean_gitlab_redis_share
     let(:expected_totals) do
       { snippet_comment: 3,
         merge_request_comment: 4,
-        commit_comment:  5 }
+        commit_comment: 5 }
     end
 
     before do

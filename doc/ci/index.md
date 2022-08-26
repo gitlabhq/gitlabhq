@@ -146,6 +146,13 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary.
 
+#### 15.0 and later
+
+Going forward, all breaking changes are documented on the following pages:
+
+- [Deprecations](../update/deprecations.md)
+- [Removals](../update/removals.md)
+
 #### 14.0
 
 - No breaking changes.

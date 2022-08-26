@@ -19,13 +19,13 @@ RSpec.describe Resolvers::WorkItemsResolver do
 
   let_it_be(:item2) do
     create(:work_item, project: project, state: :closed, title: 'foo',
-           created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at:
+                       created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at:
            1.hour.ago)
   end
 
   let_it_be(:item3) do
     create(:work_item, project: other_project, state: :closed, title: 'foo',
-           created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at:
+                       created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at:
            1.hour.ago)
   end
 

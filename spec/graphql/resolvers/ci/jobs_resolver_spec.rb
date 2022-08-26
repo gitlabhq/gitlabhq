@@ -38,7 +38,7 @@ RSpec.describe Resolvers::Ci::JobsResolver do
           ::Types::Security::ReportTypeEnum.values['DAST'].value
         ]
         jobs = resolve(described_class, obj: pipeline, args: { security_report_types: report_types },
-                       arg_style: :internal)
+                                        arg_style: :internal)
 
         expect(jobs).to contain_exactly(
           have_attributes(name: 'DAST job'),

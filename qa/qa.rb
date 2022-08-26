@@ -51,7 +51,6 @@ module QA
     "repo_by_url" => "RepoByURL",
     "oauth" => "OAuth",
     "saml_sso_sign_in" => "SamlSSOSignIn",
-    "saml_sso_sign_up" => "SamlSSOSignUp",
     "group_saml" => "GroupSAML",
     "instance_saml" => "InstanceSAML",
     "saml_sso" => "SamlSSO",

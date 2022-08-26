@@ -1375,32 +1375,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
       before do
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 position: 4,
-                                 name: 'deploy')
-
-        create(:ci_build, project: project,
-                          pipeline: pipeline,
-                          stage: 'test',
-                          stage_idx: 3,
-                          name: 'test')
-
-        create(:ci_build, project: project,
-                          pipeline: pipeline,
-                          stage: 'build',
-                          stage_idx: 2,
-                          name: 'build')
-
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 position: 1,
-                                 name: 'sanity')
-
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 position: 5,
-                                 name: 'cleanup')
+        create(:ci_stage, project: project, pipeline: pipeline, position: 4, name: 'deploy')
+        create(:ci_build, project: project, pipeline: pipeline, stage: 'test', stage_idx: 3, name: 'test')
+        create(:ci_build, project: project, pipeline: pipeline, stage: 'build', stage_idx: 2, name: 'build')
+        create(:ci_stage, project: project, pipeline: pipeline, position: 1, name: 'sanity')
+        create(:ci_stage, project: project, pipeline: pipeline, position: 5, name: 'cleanup')
       end
 
       subject { pipeline.stages }
@@ -1649,9 +1628,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       context 'when auto merge is enabled' do
         let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
         let_it_be_with_reload(:pipeline) do
-          create(:ci_pipeline, :running, project: merge_request.source_project,
-                                        ref: merge_request.source_branch,
-                                        sha: merge_request.diff_head_sha)
+          create(:ci_pipeline, :running,
+            project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)
         end
 
         before_all do

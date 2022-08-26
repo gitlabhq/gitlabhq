@@ -8,7 +8,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver do
   describe '#resolve' do
     subject do
       resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
-              arg_style: :internal)
+                               arg_style: :internal)
     end
 
     include_context 'runners resolver setup'

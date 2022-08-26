@@ -187,7 +187,7 @@ RSpec.describe Gitlab::UsageData::Topology do
           [
             {
               'metric' => { 'instance' => 'localhost:9100' },
-              'value' =>  [1000, '512']
+              'value' => [1000, '512']
             }
           ]
         end
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::UsageData::Topology do
           [
             {
               'metric' => { 'instance' => 'localhost:9100' },
-              'value' =>  [1000, '0.35']
+              'value' => [1000, '0.35']
             }
           ]
         end
@@ -224,23 +224,23 @@ RSpec.describe Gitlab::UsageData::Topology do
           [
             {
               'metric' => { 'instance' => 'localhost:8080', 'job' => 'gitlab-rails' },
-              'value' =>  [1000, '10']
+              'value' => [1000, '10']
             },
             {
               'metric' => { 'instance' => '127.0.0.1:8090', 'job' => 'gitlab-sidekiq' },
-              'value' =>  [1000, '11']
+              'value' => [1000, '11']
             },
             {
               'metric' => { 'instance' => '0.0.0.0:9090', 'job' => 'prometheus' },
-              'value' =>  [1000, '12']
+              'value' => [1000, '12']
             },
             {
               'metric' => { 'instance' => '[::1]:1234', 'job' => 'redis' },
-              'value' =>  [1000, '13']
+              'value' => [1000, '13']
             },
             {
               'metric' => { 'instance' => '[::]:1234', 'job' => 'postgres' },
-              'value' =>  [1000, '14']
+              'value' => [1000, '14']
             }
           ]
         end
@@ -640,7 +640,7 @@ RSpec.describe Gitlab::UsageData::Topology do
       .and_return(result || [
         {
           'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
-          'value' =>  [1000, '300']
+          'value' => [1000, '300']
         },
         {
           'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },

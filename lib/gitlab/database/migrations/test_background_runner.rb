@@ -15,6 +15,7 @@ module Gitlab
 
         def jobs_by_migration_name
           traditional_background_migrations.group_by { |j| class_name_for_job(j) }
+                                           .transform_values(&:shuffle)
         end
 
         private

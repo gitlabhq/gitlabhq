@@ -23,6 +23,14 @@ module QA
             end
           end
 
+          def go_to_infrastructure_registry
+            hover_registry do
+              within_submenu do
+                click_link('Infrastructure Registry')
+              end
+            end
+          end
+
           private
 
           def hover_registry

@@ -132,11 +132,11 @@ RSpec.describe WikiHelper do
 
     it 'returns the tracking context' do
       expect(subject).to eq(
-        'wiki-format'               => :markdown,
-        'wiki-title-size'           => 9,
-        'wiki-content-size'         => 4,
+        'wiki-format' => :markdown,
+        'wiki-title-size' => 9,
+        'wiki-content-size' => 4,
         'wiki-directory-nest-level' => 2,
-        'wiki-container-type'       => 'Project'
+        'wiki-container-type' => 'Project'
       )
     end
 

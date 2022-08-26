@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     connection.execute(<<~SQL)
       CREATE TABLE #{table_name} (
         id bigint primary key not null,
-        data bigint
+        data bigint default 0
       );
 
       insert into #{table_name} (id) select i from generate_series(1, 1000) g(i);
@@ -40,10 +40,12 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
                                          :id, :data,
                                          batch_size: 100,
                                          job_interval: 5.minutes) # job_interval is skipped when testing
-      described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 1.minute)
-      unmigrated_row_count = define_batchable_model(table_name).where('id != data').count
 
-      expect(unmigrated_row_count).to eq(0)
+      # Expect that running sampling for this migration processes some of the rows. Sampling doesn't run
+      # over every row in the table, so this does not completely migrate the table.
+      expect { described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 1.minute) }
+        .to change { define_batchable_model(table_name).where('id IS DISTINCT FROM data').count }
+              .by_at_most(-1)
     end
   end
 
@@ -62,7 +64,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
       described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 3.minutes)
 
-      expect(calls.count).to eq(10) # 1000 rows / batch size 100 = 10
+      expect(calls).not_to be_empty
     end
 
     context 'with multiple jobs to run' do
@@ -89,6 +91,21 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         expect_migration_runs(new_migration => 3, other_new_migration => 2, old_migration => 0) do
           described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 5.seconds)
         end
+      end
+    end
+  end
+
+  context 'choosing uniform batches to run' do
+    subject { described_class.new(result_dir: result_dir, connection: connection) }
+
+    describe '#uniform_fractions' do
+      it 'generates evenly distributed sequences of fractions' do
+        received = subject.uniform_fractions.take(9)
+        expected = [0, 1, 1.0 / 2, 1.0 / 4, 3.0 / 4, 1.0 / 8, 3.0 / 8, 5.0 / 8, 7.0 / 8]
+
+        # All the fraction numerators are small integers, and all denominators are powers of 2, so these
+        # fit perfectly into floating point numbers with zero loss of precision
+        expect(received).to eq(expected)
       end
     end
   end

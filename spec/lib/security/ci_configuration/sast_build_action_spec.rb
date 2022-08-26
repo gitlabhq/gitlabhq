@@ -33,12 +33,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
     params.merge( { analyzers:
                     [
                       {
-                        name:  "bandit",
-                        enabled:  false
+                        name: "bandit",
+                        enabled: false
                       },
                       {
-                        name:  "brakeman",
-                        enabled:  true,
+                        name: "brakeman",
+                        enabled: true,
                         variables: [
                           { field: "SAST_BRAKEMAN_LEVEL",
                             default_value: "1",
@@ -46,8 +46,8 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
                         ]
                       },
                       {
-                        name:  "flawfinder",
-                        enabled:  true,
+                        name: "flawfinder",
+                        enabled: true,
                         variables: [
                           { field: "SAST_FLAWFINDER_LEVEL",
                             default_value: "1",
@@ -62,12 +62,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
     params.merge( { analyzers:
                     [
                       {
-                        name:  "flawfinder",
-                        enabled:  true
+                        name: "flawfinder",
+                        enabled: true
                       },
                       {
-                        name:  "brakeman",
-                        enabled:  true
+                        name: "brakeman",
+                        enabled: true
                       }
                     ] }
                 )
@@ -219,49 +219,49 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
 
     def existing_gitlab_ci_and_template_array_without_sast
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
-       "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
-       "include" => [{ "template" => "existing.yml" }] }
+        "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
+        "include" => [{ "template" => "existing.yml" }] }
     end
 
     def existing_gitlab_ci_and_single_template_with_sast_and_default_stage
       { "stages" => %w(test),
-       "variables" => { "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
-       "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "test" },
-       "include" => { "template" => "Security/SAST.gitlab-ci.yml" } }
+        "variables" => { "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "test" },
+        "include" => { "template" => "Security/SAST.gitlab-ci.yml" } }
     end
 
     def existing_gitlab_ci_and_single_template_without_sast
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
-       "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
-       "include" => { "template" => "existing.yml" } }
+        "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
+        "include" => { "template" => "existing.yml" } }
     end
 
     def existing_gitlab_ci_with_no_variables
       { "stages" => %w(test security),
-       "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
-       "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
+        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
+        "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
     end
 
     def existing_gitlab_ci_with_no_sast_section
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
-       "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
+        "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+        "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
     end
 
     def existing_gitlab_ci_with_no_sast_variables
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
-       "sast" => { "stage" => "security" },
-       "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
+        "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+        "sast" => { "stage" => "security" },
+        "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
     end
 
     def existing_gitlab_ci
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "bad_prefix" },
-       "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
-       "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
+        "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "bad_prefix" },
+        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
+        "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
     end
   end
 

@@ -14,7 +14,7 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver do
   describe '#resolve' do
     let(:resolver) do
       resolve(described_class, ctx: { current_user: user }, obj: repository, args: args,
-              arg_style: :internal)
+                               arg_style: :internal)
     end
 
     before do

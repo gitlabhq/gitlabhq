@@ -100,9 +100,9 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       subject
 
       expect_snowplow_event(
-        category:  'merge_requests',
+        category: 'merge_requests',
         action: 'i_code_review_user_approve_mr',
-        namespace:  target_project.namespace,
+        namespace: target_project.namespace,
         user: user,
         project: target_project
       )
