@@ -170,6 +170,17 @@ RSpec.shared_examples 'PyPI package download' do |user_type, status, add_member 
   end
 end
 
+RSpec.shared_examples 'rejected package download' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it_behaves_like 'returning response status', status
+  end
+end
+
 RSpec.shared_examples 'process PyPI api request' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
@@ -330,25 +341,25 @@ RSpec.shared_examples 'pypi file download endpoint' do
   using RSpec::Parameterized::TableSyntax
 
   context 'with valid project' do
-    where(:visibility_level, :user_role, :member, :user_token) do
-      :public  | :developer  | true  | true
-      :public  | :guest      | true  | true
-      :public  | :developer  | true  | false
-      :public  | :guest      | true  | false
-      :public  | :developer  | false | true
-      :public  | :guest      | false | true
-      :public  | :developer  | false | false
-      :public  | :guest      | false | false
-      :public  | :anonymous  | false | true
-      :private | :developer  | true  | true
-      :private | :guest      | true  | true
-      :private | :developer  | true  | false
-      :private | :guest      | true  | false
-      :private | :developer  | false | true
-      :private | :guest      | false | true
-      :private | :developer  | false | false
-      :private | :guest      | false | false
-      :private | :anonymous  | false | true
+    where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+      :public  | :developer  | true  | true  | 'PyPI package download'     | :success
+      :public  | :guest      | true  | true  | 'PyPI package download'     | :success
+      :public  | :developer  | true  | false | 'PyPI package download'     | :success
+      :public  | :guest      | true  | false | 'PyPI package download'     | :success
+      :public  | :developer  | false | true  | 'PyPI package download'     | :success
+      :public  | :guest      | false | true  | 'PyPI package download'     | :success
+      :public  | :developer  | false | false | 'PyPI package download'     | :success
+      :public  | :guest      | false | false | 'PyPI package download'     | :success
+      :public  | :anonymous  | false | true  | 'PyPI package download'     | :success
+      :private | :developer  | true  | true  | 'PyPI package download'     | :success
+      :private | :guest      | true  | true  | 'rejected package download' | :forbidden
+      :private | :developer  | true  | false | 'rejected package download' | :unauthorized
+      :private | :guest      | true  | false | 'rejected package download' | :unauthorized
+      :private | :developer  | false | true  | 'rejected package download' | :not_found
+      :private | :guest      | false | true  | 'rejected package download' | :not_found
+      :private | :developer  | false | false | 'rejected package download' | :unauthorized
+      :private | :guest      | false | false | 'rejected package download' | :unauthorized
+      :private | :anonymous  | false | true  | 'rejected package download' | :unauthorized
     end
 
     with_them do
@@ -360,7 +371,7 @@ RSpec.shared_examples 'pypi file download endpoint' do
         group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
       end
 
-      it_behaves_like 'PyPI package download', params[:user_role], :success, params[:member]
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
     end
   end
 

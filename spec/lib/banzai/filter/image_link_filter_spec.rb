@@ -92,5 +92,50 @@ RSpec.describe Banzai::Filter::ImageLinkFilter do
 
       expect(doc.at_css('a')['class']).to match(%r{with-attachment-icon})
     end
+
+    context 'when link attributes contain malicious code' do
+      let(:malicious_code) do
+        # rubocop:disable Layout/LineLength
+        %q(<a class='fixed-top fixed-bottom' data-create-path=/malicious-url><style> .tab-content>.tab-pane{display: block !important}</style>)
+        # rubocop:enable Layout/LineLength
+      end
+
+      context 'when image alt contains malicious code' do
+        it 'ignores image alt and uses image path as the link text', :aggregate_failures do
+          doc = filter(image(path, alt: malicious_code), context)
+
+          expect(doc.to_html).to match(%r{^<a[^>]*>#{path}</a>$})
+          expect(doc.at_css('a')['href']).to eq(path)
+        end
+      end
+
+      context 'when image src contains malicious code' do
+        it 'ignores image src and does not use it as the link text' do
+          doc = filter(image(malicious_code), context)
+
+          expect(doc.to_html).to match(%r{^<a[^>]*></a>$})
+        end
+
+        it 'keeps image src unchanged, malicious code does not execute as part of url' do
+          doc = filter(image(malicious_code), context)
+
+          expect(doc.at_css('a')['href']).to eq(malicious_code)
+        end
+      end
+
+      context 'when image data-src contains malicious code' do
+        it 'ignores data-src and uses image path as the link text', :aggregate_failures do
+          doc = filter(image(path, data_src: malicious_code), context)
+
+          expect(doc.to_html).to match(%r{^<a[^>]*>#{path}</a>$})
+        end
+
+        it 'uses image data-src, malicious code does not execute as part of url' do
+          doc = filter(image(path, data_src: malicious_code), context)
+
+          expect(doc.at_css('a')['href']).to eq(malicious_code)
+        end
+      end
+    end
   end
 end
