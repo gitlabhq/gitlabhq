@@ -253,7 +253,7 @@ export default {
           <gl-dropdown-item
             v-for="architecture in architectures"
             :key="architecture.name"
-            :is-check-item="true"
+            is-check-item
             :is-checked="selectedArchitecture === architecture.name"
             data-testid="architecture-dropdown-item"
             @click="selectArchitecture(architecture.name)"

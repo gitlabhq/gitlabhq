@@ -109,7 +109,7 @@ export default {
             v-for="template in templates"
             :key="template.key"
             data-qa-selector="incident_templates_item"
-            :is-check-item="true"
+            is-check-item
             :is-checked="isTemplateSelected(template.key)"
             @click="selectIssueTemplate(template.key)"
           >

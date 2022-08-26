@@ -177,7 +177,7 @@ export default {
           v-for="{ text, key, cls } in $options.SORT_OPTIONS"
           :key="text"
           :class="cls"
-          :is-check-item="true"
+          is-check-item
           :is-checked="isSortDropdownItemActive(key)"
           @click="fetchSortedDiscussions(key)"
         >
@@ -192,7 +192,7 @@ export default {
         <gl-dropdown-item
           v-for="filter in filters"
           :key="filter.value"
-          :is-check-item="true"
+          is-check-item
           :is-checked="filter.value === currentValue"
           :class="{ 'is-active': filter.value === currentValue }"
           :data-filter-type="filterType(filter.value)"

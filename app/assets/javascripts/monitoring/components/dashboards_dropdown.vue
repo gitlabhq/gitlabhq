@@ -86,7 +86,7 @@ export default {
         <gl-dropdown-item
           v-for="dashboard in starredDashboards"
           :key="dashboard.path"
-          :is-check-item="true"
+          is-check-item
           :is-checked="dashboard.path === selectedDashboardPath"
           @click="selectDashboard(dashboard)"
         >
@@ -105,7 +105,7 @@ export default {
         <gl-dropdown-item
           v-for="dashboard in nonStarredDashboards"
           :key="dashboard.path"
-          :is-check-item="true"
+          is-check-item
           :is-checked="dashboard.path === selectedDashboardPath"
           @click="selectDashboard(dashboard)"
         >

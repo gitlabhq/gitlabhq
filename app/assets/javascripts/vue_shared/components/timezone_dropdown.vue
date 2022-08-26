@@ -72,7 +72,7 @@ export default {
       v-for="timezone in filteredResults"
       :key="timezone.formattedTimezone"
       :is-checked="isSelected(timezone)"
-      :is-check-item="true"
+      is-check-item
       @click="selectTimezone(timezone)"
     >
       {{ timezone.formattedTimezone }}

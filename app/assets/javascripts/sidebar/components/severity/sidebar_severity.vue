@@ -179,7 +179,7 @@ export default {
           v-for="option in severitiesList"
           :key="option.value"
           data-testid="severityDropdownItem"
-          :is-check-item="true"
+          is-check-item
           :is-checked="option.value === severity"
           @click="updateSeverity(option.value)"
         >

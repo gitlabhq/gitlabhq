@@ -68,7 +68,7 @@ export default {
     <template v-for="(item, itemIndex) in actionItems">
       <gl-dropdown-item
         :key="item.eventName"
-        :is-check-item="true"
+        is-check-item
         :is-checked="selectedItem === item"
         @click="changeSelectedItem(item)"
       >

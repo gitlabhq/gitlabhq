@@ -202,7 +202,7 @@ export default {
             <gl-dropdown-item
               v-for="environment in filteredEnvironments"
               :key="environment.id"
-              :is-check-item="true"
+              is-check-item
               :is-checked="environment.name === currentEnvironmentName"
               :href="getEnvironmentPath(environment.id)"
             >

@@ -453,6 +453,8 @@ module API
         filter_attributes_using_license!(attrs)
         verify_update_project_attrs!(user_project, attrs)
 
+        user_project.remove_avatar! if attrs.key?(:avatar) && attrs[:avatar].nil?
+
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
         if result[:status] == :success

@@ -49,7 +49,7 @@ export default {
         v-for="option in parsedOptions"
         :key="option.value"
         :is-checked="option.selected"
-        :is-check-item="true"
+        is-check-item
         @click="setSelected(option.value)"
       >
         {{ option.label }}

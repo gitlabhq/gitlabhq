@@ -58,7 +58,7 @@ module API
         optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Deprecated: Use :topics instead'
         optional :topics, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of topics for a project'
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
-        optional :avatar, type: File, desc: 'Avatar image for project' # rubocop:disable Scalability/FileUploads
+        optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for project'
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
         optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
         optional :suggestion_commit_message, type: String, desc: 'The commit message used to apply merge request suggestions'

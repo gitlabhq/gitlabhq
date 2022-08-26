@@ -48,6 +48,7 @@ end
 
 RSpec.describe API::Projects do
   include ProjectForksHelper
+  include WorkhorseHelpers
   include StubRequests
 
   let_it_be(:user) { create(:user) }
@@ -1349,7 +1350,12 @@ RSpec.describe API::Projects do
     it 'uploads avatar for project a project' do
       project = attributes_for(:project, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
 
-      post api('/projects', user), params: project
+      workhorse_form_with_file(
+        api('/projects', user),
+        method: :post,
+        file_key: :avatar,
+        params: project
+      )
 
       project_id = json_response['id']
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
@@ -1925,8 +1931,6 @@ RSpec.describe API::Projects do
   end
 
   describe "POST /projects/:id/uploads/authorize" do
-    include WorkhorseHelpers
-
     let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
 
     context 'with authorized user' do
@@ -3584,18 +3588,77 @@ RSpec.describe API::Projects do
         end
       end
 
-      it 'updates avatar' do
-        project_param = {
-          avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
-                                      'image/gif')
-        }
+      context 'with changes to the avatar' do
+        let_it_be(:avatar_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+        let_it_be(:alternate_avatar_file) { fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png') }
+        let_it_be(:project_with_avatar, reload: true) do
+          create(:project,
+                 :private,
+                 :repository,
+                 name: 'project-with-avatar',
+                 creator_id: user.id,
+                 namespace: user.namespace,
+                 avatar: avatar_file)
+        end
 
-        put api("/projects/#{project3.id}", user), params: project_param
+        it 'uploads avatar to project without an avatar' do
+          workhorse_form_with_file(
+            api("/projects/#{project3.id}", user),
+            method: :put,
+            file_key: :avatar,
+            params: { avatar: avatar_file }
+          )
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
-                                                  '-/system/project/avatar/'\
-                                                  "#{project3.id}/banana_sample.gif")
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                      '-/system/project/avatar/'\
+                                                      "#{project3.id}/banana_sample.gif")
+          end
+        end
+
+        it 'uploads and changes avatar to project with an avatar' do
+          workhorse_form_with_file(
+            api("/projects/#{project_with_avatar.id}", user),
+            method: :put,
+            file_key: :avatar,
+            params: { avatar: alternate_avatar_file }
+          )
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                      '-/system/project/avatar/'\
+                                                      "#{project_with_avatar.id}/rails_sample.png")
+          end
+        end
+
+        it 'uploads and changes avatar to project among other changes' do
+          workhorse_form_with_file(
+            api("/projects/#{project_with_avatar.id}", user),
+            method: :put,
+            file_key: :avatar,
+            params: { description: 'changed description', avatar: avatar_file }
+          )
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['description']).to eq('changed description')
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                      '-/system/project/avatar/'\
+                                                      "#{project_with_avatar.id}/banana_sample.gif")
+          end
+        end
+
+        it 'removes avatar from project with an avatar' do
+          put api("/projects/#{project_with_avatar.id}", user), params: { avatar: '' }
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['avatar_url']).to be_nil
+            expect(project_with_avatar.reload.avatar_url).to be_nil
+          end
+        end
       end
 
       it 'updates auto_devops_deploy_strategy' do

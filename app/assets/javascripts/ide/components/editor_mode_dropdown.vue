@@ -50,7 +50,7 @@ export default {
     <gl-dropdown-item
       v-for="mode in modeDropdownItems"
       :key="mode.viewerType"
-      :is-check-item="true"
+      is-check-item
       :is-checked="viewer === mode.viewerType"
       @click="changeMode(mode.viewerType)"
     >

@@ -369,7 +369,7 @@ export default {
         <gl-search-box-by-type ref="search" v-model="searchTerm" />
         <gl-dropdown-item
           :data-testid="`no-${formatIssuableAttribute.kebab}-item`"
-          :is-check-item="true"
+          is-check-item
           :is-checked="isAttributeChecked($options.noAttributeId)"
           @click="updateAttribute($options.noAttributeId)"
         >
@@ -396,7 +396,7 @@ export default {
             <gl-dropdown-item
               v-for="attrItem in attributesList"
               :key="attrItem.id"
-              :is-check-item="true"
+              is-check-item
               :is-checked="isAttributeChecked(attrItem.id)"
               :data-testid="`${formatIssuableAttribute.kebab}-items`"
               @click="updateAttribute(attrItem.id)"

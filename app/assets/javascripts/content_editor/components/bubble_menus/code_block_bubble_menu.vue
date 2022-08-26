@@ -182,7 +182,7 @@ export default {
           </template>
 
           <template v-if="!showCustomLanguageInput" #highlighted-items>
-            <gl-dropdown-item :key="selectedLanguage.syntax" is-check-item :is-checked="true">
+            <gl-dropdown-item :key="selectedLanguage.syntax" is-check-item is-checked>
               {{ selectedLanguage.label }}
             </gl-dropdown-item>
           </template>

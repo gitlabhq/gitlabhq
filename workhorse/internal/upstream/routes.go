@@ -51,7 +51,7 @@ const (
 	gitProjectPattern    = `^/.+\.git/`
 	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
-	apiProjectPattern    = apiPattern + `v4/projects/[^/]+/` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
+	apiProjectPattern    = apiPattern + `v4/projects/[^/]+` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
 	apiTopicPattern      = apiPattern + `v4/topics`
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`
@@ -269,40 +269,40 @@ func configureRoutes(u *upstream) {
 		// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56731.
 
 		// Maven Artifact Repository
-		u.route("PUT", apiProjectPattern+`packages/maven/`, requestBodyUploader),
+		u.route("PUT", apiProjectPattern+`/packages/maven/`, requestBodyUploader),
 
 		// Conan Artifact Repository
 		u.route("PUT", apiPattern+`v4/packages/conan/`, requestBodyUploader),
-		u.route("PUT", apiProjectPattern+`packages/conan/`, requestBodyUploader),
+		u.route("PUT", apiProjectPattern+`/packages/conan/`, requestBodyUploader),
 
 		// Generic Packages Repository
-		u.route("PUT", apiProjectPattern+`packages/generic/`, requestBodyUploader),
+		u.route("PUT", apiProjectPattern+`/packages/generic/`, requestBodyUploader),
 
 		// NuGet Artifact Repository
-		u.route("PUT", apiProjectPattern+`packages/nuget/`, mimeMultipartUploader),
+		u.route("PUT", apiProjectPattern+`/packages/nuget/`, mimeMultipartUploader),
 
 		// PyPI Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/pypi`, mimeMultipartUploader),
+		u.route("POST", apiProjectPattern+`/packages/pypi`, mimeMultipartUploader),
 
 		// Debian Artifact Repository
-		u.route("PUT", apiProjectPattern+`packages/debian/`, requestBodyUploader),
+		u.route("PUT", apiProjectPattern+`/packages/debian/`, requestBodyUploader),
 
 		// RPM Artifact Repository
 		u.route("POST", apiProjectPattern+`packages/rpm/`, requestBodyUploader),
 
 		// Gem Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/rubygems/`, requestBodyUploader),
+		u.route("POST", apiProjectPattern+`/packages/rubygems/`, requestBodyUploader),
 
 		// Terraform Module Package Repository
-		u.route("PUT", apiProjectPattern+`packages/terraform/modules/`, requestBodyUploader),
+		u.route("PUT", apiProjectPattern+`/packages/terraform/modules/`, requestBodyUploader),
 
 		// Helm Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/helm/api/[^/]+/charts\z`, mimeMultipartUploader),
+		u.route("POST", apiProjectPattern+`/packages/helm/api/[^/]+/charts\z`, mimeMultipartUploader),
 
 		// We are porting API to disk acceleration
 		// we need to declare each routes until we have fixed all the routes on the rails codebase.
 		// Overall status can be seen at https://gitlab.com/groups/gitlab-org/-/epics/1802#current-status
-		u.route("POST", apiProjectPattern+`wikis/attachments\z`, tempfileMultipartProxy),
+		u.route("POST", apiProjectPattern+`/wikis/attachments\z`, tempfileMultipartProxy),
 		u.route("POST", apiPattern+`graphql\z`, tempfileMultipartProxy),
 		u.route("POST", apiTopicPattern, tempfileMultipartProxy),
 		u.route("PUT", apiTopicPattern, tempfileMultipartProxy),
@@ -315,16 +315,20 @@ func configureRoutes(u *upstream) {
 		u.route("POST", importPattern+`gitlab_group`, mimeMultipartUploader),
 
 		// Issuable Metric image upload
-		u.route("POST", apiProjectPattern+`issues/[0-9]+/metric_images\z`, mimeMultipartUploader),
+		u.route("POST", apiProjectPattern+`/issues/[0-9]+/metric_images\z`, mimeMultipartUploader),
 
 		// Alert Metric image upload
-		u.route("POST", apiProjectPattern+`alert_management_alerts/[0-9]+/metric_images\z`, mimeMultipartUploader),
+		u.route("POST", apiProjectPattern+`/alert_management_alerts/[0-9]+/metric_images\z`, mimeMultipartUploader),
 
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, mimeMultipartUploader),
 
 		// Uploads via API
-		u.route("POST", apiProjectPattern+`uploads\z`, mimeMultipartUploader),
+		u.route("POST", apiProjectPattern+`/uploads\z`, mimeMultipartUploader),
+
+		// Project Avatar
+		u.route("POST", apiPattern+`v4/projects\z`, tempfileMultipartProxy),
+		u.route("PUT", apiProjectPattern+`\z`, tempfileMultipartProxy),
 
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),

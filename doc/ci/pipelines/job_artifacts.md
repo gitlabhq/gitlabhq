@@ -451,3 +451,12 @@ test-job:
     reports:
       dotenv: build.env
 ```
+
+### Job artifacts are not expired
+
+If some job artifacts are not expiring as expected, check if the
+[**Keep artifacts from most recent successful jobs**](#keep-artifacts-from-most-recent-successful-jobs)
+setting is enabled.
+
+When this setting is enabled, job artifacts from the latest successful pipeline
+of each ref do not expire and are not deleted.

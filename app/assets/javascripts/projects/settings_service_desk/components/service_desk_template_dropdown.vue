@@ -100,7 +100,7 @@ export default {
         <gl-dropdown-item
           v-for="template in item"
           :key="template.key"
-          :is-check-item="true"
+          is-check-item
           :is-checked="
             template.project_id === selectedFileTemplateProjectId &&
             template.name === selectedTemplate

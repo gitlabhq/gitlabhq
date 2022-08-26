@@ -42,8 +42,8 @@ export default {
         v-for="color in colors"
         :key="color.color"
         :is-checked="isColorSelected(color)"
-        :is-check-centered="true"
-        :is-check-item="true"
+        is-check-centered
+        is-check-item
         @click.native.capture.stop="handleColorClick(color)"
       >
         <color-item :color="color.color" :title="color.title" />

@@ -369,7 +369,7 @@ export default {
         <gl-dropdown-item
           v-for="sortBy in sortOptions"
           :key="sortBy.id"
-          :is-check-item="true"
+          is-check-item
           :is-checked="sortBy.id === selectedSortOption.id"
           @click="handleSortOptionClick(sortBy)"
           >{{ sortBy.title }}</gl-dropdown-item

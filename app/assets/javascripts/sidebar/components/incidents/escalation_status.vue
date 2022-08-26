@@ -62,7 +62,7 @@ export default {
       v-for="status in $options.STATUS_LIST"
       :key="status"
       data-testid="status-dropdown-item"
-      :is-check-item="true"
+      is-check-item
       :is-checked="status === value"
       @click="$emit('input', status)"
     >

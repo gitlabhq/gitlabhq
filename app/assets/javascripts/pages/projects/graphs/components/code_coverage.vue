@@ -180,7 +180,7 @@ export default {
           v-for="({ group_name }, index) in dailyCoverageData"
           :key="index"
           :value="group_name"
-          :is-check-item="true"
+          is-check-item
           :is-checked="index === selectedCoverageIndex"
           @click="setSelectedCoverage(index)"
         >
