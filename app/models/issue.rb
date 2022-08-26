@@ -458,7 +458,13 @@ class Issue < ApplicationRecord
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 
     start_counting_from = 2
-    Uniquify.new(start_counting_from).string(-> (counter) { "#{to_branch_name}-#{counter}" }) do |suggested_branch_name|
+
+    branch_name_generator = -> (counter) do
+      suffix = counter > 5 ? SecureRandom.hex(8) : counter
+      "#{to_branch_name}-#{suffix}"
+    end
+
+    Uniquify.new(start_counting_from).string(branch_name_generator) do |suggested_branch_name|
       project.repository.branch_exists?(suggested_branch_name)
     end
   end
