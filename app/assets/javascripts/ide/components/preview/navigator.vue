@@ -8,7 +8,7 @@ export default {
     GlLoadingIcon,
   },
   props: {
-    manager: {
+    client: {
       type: Object,
       required: true,
     },
@@ -51,7 +51,7 @@ export default {
     onUrlChange(e) {
       const lastPath = this.path;
 
-      this.path = e.url.replace(this.manager.bundlerURL, '') || '/';
+      this.path = e.url.replace(this.client.bundlerURL, '') || '/';
 
       if (lastPath !== this.path) {
         this.currentBrowsingIndex =
@@ -79,7 +79,7 @@ export default {
     },
     visitPath(path) {
       // eslint-disable-next-line vue/no-mutating-props
-      this.manager.iframe.src = `${this.manager.bundlerURL}${path}`;
+      this.client.iframe.src = `${this.client.bundlerURL}${path}`;
     },
   },
 };

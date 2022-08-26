@@ -14,28 +14,12 @@ module API
         include Constants
         include Gitlab::Utils::StrongMemoize
 
-        def unauthorized_user_project
-          @unauthorized_user_project ||= find_project(params[:id])
-        end
-
-        def unauthorized_user_project!
-          unauthorized_user_project || not_found!
-        end
-
-        def unauthorized_user_group
-          @unauthorized_user_group ||= find_group(params[:id])
-        end
-
-        def unauthorized_user_group!
-          unauthorized_user_group || not_found!
-        end
-
         def authorized_user_project
           @authorized_user_project ||= authorized_project_find!
         end
 
         def authorized_project_find!
-          project = unauthorized_user_project
+          project = find_project(params[:id])
 
           unless project && can?(current_user, :read_project, project)
             return unauthorized_or! { not_found! }

@@ -47,12 +47,11 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
 
   context 'with ci status' do
     let(:ref) { 'master' }
-    let(:user) { create(:user) }
+
+    let_it_be(:user) { create(:user) }
 
     before do
       allow(view).to receive(:current_user).and_return(user)
-
-      project.add_developer(user)
 
       create(
         :ci_empty_pipeline,
@@ -80,18 +79,32 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
     end
 
     context 'when pipelines are enabled' do
-      before do
-        allow(project).to receive(:builds_enabled?).and_return(true)
+      context 'when user has access' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'displays a ci status icon' do
+          render partial: template, formats: :html, locals: {
+            project: project,
+            ref: ref,
+            commit: commit
+          }
+
+          expect(rendered).to have_css('.ci-status-link')
+        end
       end
 
-      it 'does display a ci status icon when pipelines are enabled' do
-        render partial: template, formats: :html, locals: {
-          project: project,
-          ref: ref,
-          commit: commit
-        }
+      context 'when user does not have access' do
+        it 'does not display a ci status icon' do
+          render partial: template, formats: :html, locals: {
+            project: project,
+            ref: ref,
+            commit: commit
+          }
 
-        expect(rendered).to have_css('.ci-status-link')
+          expect(rendered).not_to have_css('.ci-status-link')
+        end
       end
     end
   end
