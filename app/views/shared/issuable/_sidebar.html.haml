@@ -20,13 +20,7 @@
         .js-issuable-todo{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
-      - if signed_in && moved_sidebar_enabled
-        .block.to-do
-          .title.hide-collapsed.gl-font-weight-bold.gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mt-2{ class: 'gl-mb-0!' }
-            = _('To-Do')
-            .js-issuable-todo{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
-
-      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container' } }
+      .block.assignee.qa-assignee-block{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]
@@ -88,7 +82,8 @@
       .js-sidebar-participants-entry-point
 
       .block.with-sub-blocks
-        #js-reference-entry-point
+        - if !moved_sidebar_enabled
+          #js-reference-entry-point
         - if issuable_type == 'merge_request' && !moved_sidebar_enabled
           .sub-block.js-sidebar-source-branch
             .sidebar-collapsed-icon.js-dont-change-state

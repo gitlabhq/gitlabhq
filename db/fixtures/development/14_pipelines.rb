@@ -129,7 +129,7 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_artifacts(build)
-    return unless build.stage == "build"
+    return unless build.stage_name == "build"
 
     artifacts_cache_file(artifacts_archive_path) do |file|
       build.job_artifacts.build(project: build.project, file_type: :archive, file_format: :zip, file: file)
@@ -141,7 +141,7 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_test_reports(build)
-    return unless build.stage == "test" && build.name == "rspec:osx"
+    return unless build.stage_name == "test" && build.name == "rspec:osx"
 
     if build.ref == build.project.default_branch
       artifacts_cache_file(test_reports_pass_path) do |file|

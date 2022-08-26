@@ -26,7 +26,7 @@ module Gitlab
 
             raise SecurityReportParserError, "Invalid report format" unless report_data.is_a?(Hash)
 
-            create_scanner
+            create_scanner(top_level_scanner_data)
             create_scan
             create_analyzer
 
@@ -77,7 +77,7 @@ module Gitlab
               report_data,
               report.version,
               project: @project,
-              scanner: top_level_scanner
+              scanner: top_level_scanner_data
             )
           end
 
@@ -89,8 +89,8 @@ module Gitlab
             @report_version ||= report_data['version']
           end
 
-          def top_level_scanner
-            @top_level_scanner ||= report_data.dig('scan', 'scanner')
+          def top_level_scanner_data
+            @top_level_scanner_data ||= report_data.dig('scan', 'scanner')
           end
 
           def scan_data
@@ -138,7 +138,7 @@ module Gitlab
                 evidence: evidence,
                 severity: parse_severity_level(data['severity']),
                 confidence: parse_confidence_level(data['confidence']),
-                scanner: create_scanner(data['scanner']),
+                scanner: create_scanner(top_level_scanner_data || data['scanner']),
                 scan: report&.scan,
                 identifiers: identifiers,
                 flags: flags,
@@ -208,7 +208,7 @@ module Gitlab
             report.analyzer = ::Gitlab::Ci::Reports::Security::Analyzer.new(**params)
           end
 
-          def create_scanner(scanner_data = top_level_scanner)
+          def create_scanner(scanner_data)
             return unless scanner_data.is_a?(Hash)
 
             report.add_scanner(

@@ -384,6 +384,15 @@ FactoryBot.define do
       end
     end
 
+    trait :common_security_report_without_top_level_scanner do
+      common_security_report
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report-without-top-level-scanner.json'), 'application/json')
+      end
+    end
+
     trait :common_security_report_with_blank_names do
       file_format { :raw }
       file_type { :dependency_scanning }

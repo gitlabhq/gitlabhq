@@ -4,6 +4,6 @@ classes:
 - Analytics::CycleAnalytics::ProjectStage
 feature_categories:
 - value_stream_management
-description: TODO
+description: Persists project level value stream analytics stages.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15061
 milestone: '12.2'

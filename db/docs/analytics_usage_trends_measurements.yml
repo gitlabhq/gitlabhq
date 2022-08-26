@@ -4,6 +4,6 @@ classes:
 - Analytics::UsageTrends::Measurement
 feature_categories:
 - devops_reports
-description: TODO
+description: Contains periodically snapshotted database record counts.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62797
 milestone: '14.0'

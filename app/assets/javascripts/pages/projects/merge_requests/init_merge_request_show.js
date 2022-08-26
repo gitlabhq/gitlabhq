@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { s__ } from '~/locale';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { initPipelineCountListener } from '~/commit/pipelines/utils';
 import { initIssuableSidebar } from '~/issuable';
@@ -10,6 +11,7 @@ import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
 import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
 import { initMrExperienceSurvey } from '~/surveys/merge_request_experience';
+import toast from '~/vue_shared/plugins/global_toast';
 import getStateQuery from './queries/get_state.query.graphql';
 
 export default function initMergeRequestShow() {
@@ -64,5 +66,11 @@ export default function initMergeRequestShow() {
         },
       });
     },
+  });
+
+  const copyReferenceButton = document.querySelector('.js-copy-reference');
+
+  copyReferenceButton?.addEventListener('click', () => {
+    toast(s__('MergeRequests|Reference copied'));
   });
 }

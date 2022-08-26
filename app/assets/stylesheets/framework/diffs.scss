@@ -34,19 +34,28 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       // The `+11` is to ensure the file header border shows when scrolled -
       // the bottom of the compare-versions header and the top of the file header
-      $mr-file-header-top: calc(#{$header-height} + #{$mr-tabs-height});
+      --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
+      --top: var(--initial-top);
 
       position: -webkit-sticky;
       position: sticky;
-      top: $mr-file-header-top;
+      top: var(--top);
       z-index: 120;
 
+      &.is-sidebar-moved {
+        --initial-top: calc(#{$header-height} + #{$mr-tabs-height + 28px});
+      }
+
       .with-system-header & {
-        top: calc(#{$mr-file-header-top} + #{$system-header-height});
+        --top: calc(var(--initial-top) + #{$system-header-height});
       }
 
       .with-system-header.with-performance-bar & {
-        top: calc(#{$mr-file-header-top} + #{$system-header-height} + #{$performance-bar-height});
+        --top: calc(var(--initial-top) + #{$system-header-height} + #{$performance-bar-height});
+      }
+
+      .with-performance-bar & {
+        top: calc(var(--initial-top) + #{$performance-bar-height});
       }
 
       &::before {
@@ -58,10 +67,6 @@
         height: calc(100% + 1px);
         background: $body-bg;
         pointer-events: none;
-      }
-
-      .with-performance-bar & {
-        top: calc(#{$mr-file-header-top} + #{$performance-bar-height});
       }
 
       &.is-commit {

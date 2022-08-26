@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
   let(:feature_flag) { :my_feature_flag }
@@ -48,20 +48,32 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
   end
 
   context 'when feature flag is checked outside the "with_actor" block' do
-    it 'raises an error on dev/test environment' do
-      expect { described_class.enabled?(feature_flag) }.to raise_error(described_class::NoActorError)
-    end
-
-    context 'when on production' do
-      before do
-        allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false)
+    context 'when yaml_processor_feature_flag_corectness is used', :yaml_processor_feature_flag_corectness do
+      it 'raises an error on dev/test environment' do
+        expect { described_class.enabled?(feature_flag) }.to raise_error(described_class::NoActorError)
       end
 
+      context 'when on production' do
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false)
+        end
+
+        it 'checks the feature flag without actor' do
+          expect(Feature).to receive(:enabled?).with(feature_flag, nil)
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_and_raise_for_dev_exception)
+            .and_call_original
+
+          described_class.enabled?(feature_flag)
+        end
+      end
+    end
+
+    context 'when yaml_processor_feature_flag_corectness is not used' do
       it 'checks the feature flag without actor' do
         expect(Feature).to receive(:enabled?).with(feature_flag, nil)
         expect(Gitlab::ErrorTracking)
-          .to receive(:track_and_raise_for_dev_exception)
-          .and_call_original
+          .to receive(:track_exception)
 
         described_class.enabled?(feature_flag)
       end

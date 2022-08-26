@@ -16,11 +16,13 @@
 - add_page_startup_api_call @endpoint_metadata_url
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
+  - if moved_mr_sidebar_enabled?
+    #js-merge-sticky-header{ data: { data: sticky_header_data.to_json } }
   = render "projects/merge_requests/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
-    .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
+    .merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'} #{'gl-static' if moved_mr_sidebar_enabled?}" }
       .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if Feature.enabled?(:moved_mr_sidebar, @project) && !fluid_layout}" }
         %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0{ class: "#{'gl-w-full gl-lg-w-auto!' if Feature.enabled?(:moved_mr_sidebar, @project)}" }
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
@@ -41,15 +43,15 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }
-          - if Feature.enabled?(:moved_mr_sidebar, @project)
-            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.js-expand-sidebar{ class: "gl-lg-display-none!" }
-              = render Pajamas::ButtonComponent.new(size: 'small',
-                icon: 'chevron-double-lg-left',
-                button_options: { class: 'js-sidebar-toggle' }) do
-                = _('Expand')
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
-
+          - if moved_mr_sidebar_enabled?
+            - if !!@issuable_sidebar.dig(:current_user, :id)
+              .js-issuable-todo{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
+            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar{ class: "gl-lg-display-none!" }
+              = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
+                button_options: { class: 'js-sidebar-toggle' }) do
+                = _('Expand')
     .tab-content#diff-notes-app
       #js-diff-file-finder
         #js-code-navigation

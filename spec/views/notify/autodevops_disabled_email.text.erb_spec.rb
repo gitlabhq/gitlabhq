@@ -30,7 +30,7 @@ RSpec.describe 'notify/autodevops_disabled_email.text.erb' do
 
       expect(rendered).to have_content("Auto DevOps pipeline was disabled for #{project.name}")
       expect(rendered).to match(/Pipeline ##{pipeline.id} .* triggered by #{pipeline.user.name}/)
-      expect(rendered).to have_content("Stage: #{build.stage}")
+      expect(rendered).to have_content("Stage: #{build.stage_name}")
       expect(rendered).to have_content("Name: #{build.name}")
       expect(rendered).not_to have_content("Trace:")
     end

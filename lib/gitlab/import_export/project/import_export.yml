@@ -557,6 +557,7 @@ included_attributes:
     - :failure_reason
     - :scheduled_at
     - :scheduling_type
+    - :ci_stage
   ci_pipelines:
     - :ref
     - :sha

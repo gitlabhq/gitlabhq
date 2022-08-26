@@ -145,7 +145,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           let(:expected_job_info) do
             { 'id' => job.id,
               'name' => job.name,
-              'stage' => job.stage,
+              'stage' => job.stage_name,
               'project_id' => job.project.id,
               'project_name' => job.project.name }
           end

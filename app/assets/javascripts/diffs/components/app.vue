@@ -641,6 +641,7 @@ export default {
         <div
           v-if="renderFileTree"
           :style="{ width: `${treeWidth}px` }"
+          :class="{ 'is-sidebar-moved': glFeatures.movedMrSidebar }"
           class="diff-tree-list js-diff-tree-list gl-px-5"
         >
           <panel-resizer

@@ -1002,4 +1002,31 @@ RSpec.describe CommitStatus do
       let!(:model) { create(:ci_build, runner: parent) }
     end
   end
+
+  describe '.stage_name' do
+    subject(:stage_name) { commit_status.stage_name }
+
+    it 'returns the stage name' do
+      expect(stage_name).to eq('test')
+    end
+
+    context 'when ci stage is not present' do
+      before do
+        commit_status.ci_stage = nil
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when ci_read_stage_records is disabled' do
+      before do
+        stub_feature_flags(ci_read_stage_records: false)
+      end
+
+      it 'does not read from Ci::Stage', :aggregate_failures do
+        expect(commit_status).not_to receive(:ci_stage)
+        expect(stage_name).to eq('test')
+      end
+    end
+  end
 end

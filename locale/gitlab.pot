@@ -994,6 +994,9 @@ msgstr ""
 msgid "%{sourceBranch} into %{targetBranch}"
 msgstr ""
 
+msgid "%{source} %{copyButton} into %{target}"
+msgstr ""
+
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
@@ -24840,6 +24843,9 @@ msgstr ""
 msgid "MergeRequests|Create issue to resolve thread"
 msgstr ""
 
+msgid "MergeRequests|Reference copied"
+msgstr ""
+
 msgid "MergeRequests|Saving the comment failed"
 msgstr ""
 
@@ -41015,9 +41021,6 @@ msgstr ""
 msgid "To widen your search, change or remove filters above."
 msgstr ""
 
-msgid "To-Do"
-msgstr ""
-
 msgid "To-Do List"
 msgstr ""
 
@@ -41513,13 +41516,7 @@ msgstr ""
 msgid "Turn off"
 msgstr ""
 
-msgid "Turn off notifications"
-msgstr ""
-
 msgid "Turn on"
-msgstr ""
-
-msgid "Turn on notifications"
 msgstr ""
 
 msgid "Twitter"

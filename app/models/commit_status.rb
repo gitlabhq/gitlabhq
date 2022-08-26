@@ -15,6 +15,7 @@ class CommitStatus < Ci::ApplicationRecord
   belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+  belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
@@ -313,6 +314,14 @@ class CommitStatus < Ci::ApplicationRecord
     job_path = Gitlab::Routing.url_helpers.project_build_path(project, id, format: :json)
 
     Gitlab::EtagCaching::Store.new.touch(job_path)
+  end
+
+  def stage_name
+    if Feature.enabled?(:ci_read_stage_records, project)
+      ci_stage&.name
+    else
+      stage
+    end
   end
 
   private

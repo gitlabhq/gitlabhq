@@ -12,6 +12,6 @@ had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
 
 <% failed.each do |build| -%>
   <%= render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build %>
-  Stage: <%= build.stage %>
+  Stage: <%= build.stage_name %>
   Name: <%= build.name %>
 <% end -%>

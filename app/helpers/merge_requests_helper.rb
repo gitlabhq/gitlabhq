@@ -256,6 +256,25 @@ module MergeRequestsHelper
   def moved_mr_sidebar_enabled?
     Feature.enabled?(:moved_mr_sidebar, @project) && defined?(@merge_request)
   end
+
+  def sticky_header_data
+    data = {
+      iid: @merge_request.iid,
+      projectPath: @project.full_path,
+      title: markdown_field(@merge_request, :title),
+      tabs: [
+        ['show', _('Overview'), project_merge_request_path(@project, @merge_request), @merge_request.related_notes.user.count],
+        ['commits', _('Commits'), commits_project_merge_request_path(@project, @merge_request), @commits_count],
+        ['diffs', _('Changes'), diffs_project_merge_request_path(@project, @merge_request), @diffs_count]
+      ]
+    }
+
+    if @project.builds_enabled?
+      data[:tabs].insert(2, ['pipelines', _('Pipelines'), pipelines_project_merge_request_path(@project, @merge_request), @number_of_pipelines])
+    end
+
+    data
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

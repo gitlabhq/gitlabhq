@@ -156,7 +156,7 @@ describe('Sidebar Subscriptions Widget', () => {
       });
       await waitForPromises();
 
-      await wrapper.find('.dropdown-item').trigger('click');
+      await wrapper.find('[data-testid="notifications-toggle"]').vm.$emit('change');
 
       await waitForPromises();
 

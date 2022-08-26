@@ -45,21 +45,21 @@ RSpec.describe 'User manages subscription', :js do
 
       click_button 'Toggle dropdown'
 
-      expect(page).to have_content('Turn on notifications')
-      click_button 'Turn on notifications'
+      expect(page).to have_selector('.gl-toggle:not(.is-checked)')
+      find('[data-testid="notifications-toggle"] .gl-toggle').click
 
       wait_for_requests
 
       click_button 'Toggle dropdown'
 
-      expect(page).to have_content('Turn off notifications')
-      click_button 'Turn off notifications'
+      expect(page).to have_selector('.gl-toggle.is-checked')
+      find('[data-testid="notifications-toggle"] .gl-toggle').click
 
       wait_for_requests
 
       click_button 'Toggle dropdown'
 
-      expect(page).to have_content('Turn on notifications')
+      expect(page).to have_selector('.gl-toggle:not(.is-checked)')
     end
   end
 end

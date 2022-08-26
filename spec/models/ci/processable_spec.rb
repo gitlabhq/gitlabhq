@@ -86,7 +86,7 @@ RSpec.describe Ci::Processable do
            resource resource_group_id processed security_scans author
            pipeline_id report_results pending_state pages_deployments
            queuing_entry runtime_metadata trace_metadata
-           dast_site_profile dast_scanner_profile].freeze
+           dast_site_profile dast_scanner_profile stage_id].freeze
       end
 
       before_all do

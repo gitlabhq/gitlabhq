@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
   include ProjectForksHelper
 
   let_it_be_with_refind(:project) { create(:project, :repository) }

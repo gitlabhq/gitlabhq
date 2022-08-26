@@ -175,14 +175,10 @@ setup-test-env:
   artifacts:
     expire_in: 7d
     paths:
-      - config/secrets.yml
       - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
-      - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install
       - ${TMP_TEST_FOLDER}/gitaly/config.toml
       - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/internal/
-      - ${TMP_TEST_FOLDER}/gitaly/run/
-      - ${TMP_TEST_FOLDER}/gitaly/run2/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml

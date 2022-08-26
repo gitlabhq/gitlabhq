@@ -400,6 +400,12 @@ RSpec.configure do |config|
     example.run unless GitalySetup.praefect_with_db?
   end
 
+  config.around(:example, :yaml_processor_feature_flag_corectness) do |example|
+    ::Gitlab::Ci::YamlProcessor::FeatureFlags.ensure_correct_usage do
+      example.run
+    end
+  end
+
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")

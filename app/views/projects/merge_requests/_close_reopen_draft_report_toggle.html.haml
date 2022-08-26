@@ -11,6 +11,10 @@
     .gl-new-dropdown-inner
       .gl-new-dropdown-contents
         %ul
+          - if !@merge_request.merged? && current_user && moved_mr_sidebar_enabled?
+            %li.gl-new-dropdown-item.js-sidebar-subscriptions-entry-point
+            %li.gl-new-dropdown-divider
+              %hr.dropdown-divider
           - if can?(current_user, :update_merge_request, @merge_request)
             %li.gl-new-dropdown-item{ class: "gl-md-display-none!" }
               = link_to edit_project_merge_request_path(@project, @merge_request), class: 'dropdown-item' do
@@ -32,17 +36,19 @@
                 .gl-new-dropdown-item-text-wrapper
                   = _('Reopen')
                   = display_issuable_type
+          - if moved_mr_sidebar_enabled?
+            %li.gl-new-dropdown-item#js-lock-entry-point
+            %li.gl-new-dropdown-item
+              %button.dropdown-item.js-copy-reference{ type: "button", data: { 'clipboard-text': @merge_request.to_reference(full: true) } }
+                .gl-new-dropdown-item-text-wrapper
+                  = _('Copy reference')
 
           - unless current_controller?('conflicts')
-            - if current_user && moved_mr_sidebar_enabled?
-              - if !@merge_request.merged?
+            - unless issuable_author_is_current_user(@merge_request)
+              - if moved_mr_sidebar_enabled?
                 %li.gl-new-dropdown-divider
                   %hr.dropdown-divider
-              %li.gl-new-dropdown-item.js-sidebar-subscriptions-entry-point
-            - unless issuable_author_is_current_user(@merge_request)
               %li.gl-new-dropdown-item
                 = link_to new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'dropdown-item' do
                   .gl-new-dropdown-item-text-wrapper
                     = _('Report abuse')
-            - if moved_mr_sidebar_enabled?
-              %li.gl-new-dropdown-item#js-lock-entry-point

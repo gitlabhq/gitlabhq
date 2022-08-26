@@ -52,7 +52,8 @@ module Gitlab
               runner: :tags,
               job_artifacts_archive: [],
               user: [],
-              metadata: []
+              metadata: [],
+              ci_stage: []
             }
           }
         )
@@ -110,7 +111,7 @@ module Gitlab
       def build_hook_attrs(build)
         {
           id: build.id,
-          stage: build.stage,
+          stage: build.stage_name,
           name: build.name,
           status: build.status,
           created_at: build.created_at,

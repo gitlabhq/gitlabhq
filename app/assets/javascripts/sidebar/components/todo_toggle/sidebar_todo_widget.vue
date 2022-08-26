@@ -6,6 +6,7 @@ import { __, sprintf } from '~/locale';
 import { todoQueries, TodoMutationTypes, todoMutations } from '~/sidebar/constants';
 import { todoLabel } from '~/vue_shared/components/sidebar/todo_toggle//utils';
 import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();
@@ -19,7 +20,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [trackingMixin],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   inject: {
     isClassicSidebar: {
       default: false,
@@ -81,6 +82,9 @@ export default {
     },
   },
   computed: {
+    isMergeRequest() {
+      return this.glFeatures.movedMrSidebar && this.issuableType === 'merge_request';
+    },
     todoIdQuery() {
       return todoQueries[this.issuableType].query;
     },
@@ -183,12 +187,12 @@ export default {
       :issuable-id="issuableId"
       :is-todo="hasTodo"
       :loading="isLoading"
-      size="small"
+      :size="isMergeRequest ? 'medium' : 'small'"
       class="hide-collapsed"
       @click.stop.prevent="toggleTodo"
     />
     <gl-button
-      v-if="isClassicSidebar"
+      v-if="isClassicSidebar && !isMergeRequest"
       v-gl-tooltip.left.viewport
       :title="tootltipTitle"
       category="tertiary"

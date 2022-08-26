@@ -406,7 +406,7 @@
     },
     "scanner": {
       "id": "gemnasium",
-      "name": "Gemnasium",
+      "name": "Gemnasium top-level",
       "url": "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven",
       "vendor": {
         "name": "GitLab"

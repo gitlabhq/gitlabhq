@@ -4,6 +4,6 @@ classes:
 - Analytics::CycleAnalytics::StageEventHash
 feature_categories:
 - value_stream_management
-description: TODO
+description: Stores hashes of Value Stream Analytics stage configurations.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67259
 milestone: '14.2'

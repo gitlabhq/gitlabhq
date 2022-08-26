@@ -12,12 +12,18 @@ module Ci
     belongs_to :project
     belongs_to :pipeline
 
-    has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
-    has_many :latest_statuses, -> { ordered.latest }, class_name: 'CommitStatus', foreign_key: :stage_id
-    has_many :retried_statuses, -> { ordered.retried }, class_name: 'CommitStatus', foreign_key: :stage_id
-    has_many :processables, class_name: 'Ci::Processable', foreign_key: :stage_id
-    has_many :builds, foreign_key: :stage_id
-    has_many :bridges, foreign_key: :stage_id
+    has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id, inverse_of: :ci_stage
+    has_many :latest_statuses, -> { ordered.latest },
+      class_name: 'CommitStatus',
+      foreign_key: :stage_id,
+      inverse_of: :ci_stage
+    has_many :retried_statuses, -> { ordered.retried },
+      class_name: 'CommitStatus',
+      foreign_key: :stage_id,
+      inverse_of: :ci_stage
+    has_many :processables, class_name: 'Ci::Processable', foreign_key: :stage_id, inverse_of: :ci_stage
+    has_many :builds, foreign_key: :stage_id, inverse_of: :ci_stage
+    has_many :bridges, foreign_key: :stage_id, inverse_of: :ci_stage
 
     scope :ordered, -> { order(position: :asc) }
     scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }

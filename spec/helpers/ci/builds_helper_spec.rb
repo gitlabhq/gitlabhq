@@ -80,7 +80,7 @@ RSpec.describe Ci::BuildsHelper do
       expect(subject).to eq({
         page_path: project_job_path(project, ci_build),
         build_status: ci_build.status,
-        build_stage: ci_build.stage,
+        build_stage: ci_build.stage_name,
         log_state: ''
       })
     end

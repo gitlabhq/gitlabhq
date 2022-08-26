@@ -315,6 +315,7 @@ statuses:
 - user
 - auto_canceled_by
 - needs
+- ci_stage
 variables:
 - project
 triggers:

@@ -181,18 +181,18 @@ export default {
 </script>
 
 <template>
-  <li v-if="isMergeRequest" class="gl-new-dropdown-item">
-    <button type="button" class="dropdown-item" @click="toggleSubscribed">
-      <span class="gl-new-dropdown-item-text-wrapper">
-        <template v-if="subscribed">
-          {{ __('Turn off notifications') }}
-        </template>
-        <template v-else>
-          {{ __('Turn on notifications') }}
-        </template>
-      </span>
-    </button>
-  </li>
+  <div v-if="isMergeRequest" class="gl-new-dropdown-item">
+    <div class="gl-px-5 gl-pb-2 gl-pt-1">
+      <gl-toggle
+        :value="subscribed"
+        :label="__('Notifications')"
+        class="merge-request-notification-toggle"
+        label-position="left"
+        data-testid="notifications-toggle"
+        @change="toggleSubscribed"
+      />
+    </div>
+  </div>
   <sidebar-editable-item
     v-else
     ref="editable"

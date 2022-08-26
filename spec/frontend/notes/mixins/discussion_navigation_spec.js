@@ -162,7 +162,7 @@ describe('Discussion navigation mixin', () => {
 
           expect(utils.scrollToElementWithContext).toHaveBeenCalledWith(
             findDiscussion('ul.notes', expected),
-            { behavior: 'auto' },
+            { behavior: 'auto', offset: 0 },
           );
         });
       });
@@ -203,7 +203,7 @@ describe('Discussion navigation mixin', () => {
           it('scrolls to discussion', () => {
             expect(utils.scrollToElement).toHaveBeenCalledWith(
               findDiscussion('div.discussion', expected),
-              { behavior: 'auto' },
+              { behavior: 'auto', offset: 0 },
             );
           });
         });

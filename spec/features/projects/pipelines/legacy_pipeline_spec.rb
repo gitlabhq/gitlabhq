@@ -1223,7 +1223,7 @@ RSpec.describe 'Pipeline', :js do
         subject
 
         expect(page).to have_content(failed_build.name)
-        expect(page).to have_content(failed_build.stage)
+        expect(page).to have_content(failed_build.stage_name)
       end
 
       it 'shows build failure logs' do
@@ -1269,7 +1269,7 @@ RSpec.describe 'Pipeline', :js do
         subject
 
         expect(page).to have_content(failed_build.name)
-        expect(page).to have_content(failed_build.stage)
+        expect(page).to have_content(failed_build.stage_name)
       end
 
       it 'does not show log' do

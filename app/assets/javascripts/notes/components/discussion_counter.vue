@@ -1,8 +1,16 @@
 <script>
-import { GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlButton,
+  GlButtonGroup,
+  GlDropdown,
+  GlDropdownItem,
+  GlIcon,
+} from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import { throttle } from 'lodash';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
@@ -12,12 +20,20 @@ export default {
   components: {
     GlButton,
     GlButtonGroup,
+    GlDropdown,
+    GlDropdownItem,
+    GlIcon,
   },
-  mixins: [discussionNavigation],
+  mixins: [glFeatureFlagsMixin(), discussionNavigation],
   props: {
     blocksMerge: {
       type: Boolean,
       required: true,
+    },
+    hideOptions: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -68,10 +84,10 @@ export default {
     <div
       class="gl-display-flex gl-align-items-center gl-pl-4 gl-rounded-base gl-mr-3"
       :class="{
-        'gl-bg-orange-50': blocksMerge && !allResolved,
-        'gl-bg-gray-50': !blocksMerge || allResolved,
-        'gl-pr-4': allResolved,
-        'gl-pr-2': !allResolved,
+        'gl-bg-orange-50': blocksMerge && !allResolved && !glFeatures.movedMrSidebar,
+        'gl-bg-gray-50': !blocksMerge || allResolved || glFeatures.movedMrSidebar,
+        'gl-pr-4': allResolved && !glFeatures.movedMrSidebar,
+        'gl-pr-2': !allResolved && !glFeatures.movedMrSidebar,
       }"
       data-testid="discussions-counter-text"
     >
@@ -80,7 +96,7 @@ export default {
       </template>
       <template v-else>
         {{ n__('%d unresolved thread', '%d unresolved threads', unresolvedDiscussionsCount) }}
-        <gl-button-group class="gl-ml-3">
+        <gl-button-group :class="{ 'gl-mr-2': hideOptions }" class="gl-ml-3">
           <gl-button
             v-gl-tooltip:discussionCounter.hover.bottom
             :title="__('Go to previous unresolved thread')"
@@ -105,10 +121,31 @@ export default {
             category="tertiary"
             @click="jumpNext"
           />
+          <gl-dropdown
+            v-if="glFeatures.movedMrSidebar && !hideOptions"
+            size="small"
+            category="tertiary"
+            right
+            toggle-class="btn-icon"
+            class="gl-pt-0! gl-px-2"
+          >
+            <template #button-content>
+              <gl-icon name="ellipsis_v" class="mr-0" />
+            </template>
+            <gl-dropdown-item @click="handleExpandDiscussions">
+              {{ toggleThreadsLabel }}
+            </gl-dropdown-item>
+            <gl-dropdown-item
+              v-if="resolveAllDiscussionsIssuePath && !allResolved"
+              :href="resolveAllDiscussionsIssuePath"
+            >
+              {{ __('Create issue to resolve all threads') }}
+            </gl-dropdown-item>
+          </gl-dropdown>
         </gl-button-group>
       </template>
     </div>
-    <gl-button-group>
+    <gl-button-group v-if="!glFeatures.movedMrSidebar">
       <gl-button
         v-gl-tooltip
         :title="toggleThreadsLabel"

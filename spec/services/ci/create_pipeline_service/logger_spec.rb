@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
   context 'pipeline logger' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }

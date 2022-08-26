@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder do
+RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
   include Ci::TemplateHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
@@ -26,13 +26,13 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
         { key: 'CI_JOB_NAME',
           value: job.name },
         { key: 'CI_JOB_STAGE',
-          value: job.stage },
+          value: job.stage_name },
         { key: 'CI_NODE_TOTAL',
           value: '1' },
         { key: 'CI_BUILD_NAME',
           value: job.name },
         { key: 'CI_BUILD_STAGE',
-          value: job.stage },
+          value: job.stage_name },
         { key: 'CI',
           value: 'true' },
         { key: 'GITLAB_CI',

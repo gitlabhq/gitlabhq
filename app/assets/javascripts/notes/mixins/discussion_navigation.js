@@ -7,13 +7,14 @@ import eventHub from '../event_hub';
  * @param {string} selector
  * @returns {boolean}
  */
-function scrollTo(selector, { withoutContext = false } = {}) {
+function scrollTo(selector, { withoutContext = false, offset = 0 } = {}) {
   const el = document.querySelector(selector);
   const scrollFunction = withoutContext ? scrollToElement : scrollToElementWithContext;
 
   if (el) {
     scrollFunction(el, {
       behavior: 'auto',
+      offset,
     });
     return true;
   }
@@ -67,7 +68,10 @@ function diffsJump({ expandDiscussion }, id, firstNoteId) {
 function discussionJump({ expandDiscussion }, id) {
   const selector = `div.discussion[data-discussion-id="${id}"]`;
   expandDiscussion({ discussionId: id });
-  return scrollTo(selector, { withoutContext: true });
+  return scrollTo(selector, {
+    withoutContext: true,
+    offset: window.gon?.features?.movedMrSidebar ? -28 : 0,
+  });
 }
 
 /**

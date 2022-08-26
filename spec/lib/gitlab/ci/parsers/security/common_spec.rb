@@ -262,7 +262,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         describe 'top-level scanner' do
           it 'is the primary scanner' do
             expect(report.primary_scanner.external_id).to eq('gemnasium')
-            expect(report.primary_scanner.name).to eq('Gemnasium')
+            expect(report.primary_scanner.name).to eq('Gemnasium top-level')
             expect(report.primary_scanner.vendor).to eq('GitLab')
             expect(report.primary_scanner.version).to eq('2.18.0')
           end
@@ -278,9 +278,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         describe 'parsing scanners' do
           subject(:scanner) { report.findings.first.scanner }
 
-          context 'when vendor is not missing in scanner' do
-            it 'returns scanner with parsed vendor value' do
-              expect(scanner.vendor).to eq('GitLab')
+          context 'when the report contains top-level scanner' do
+            it 'sets the scanner of finding as top-level scanner' do
+              expect(scanner.name).to eq('Gemnasium top-level')
+            end
+          end
+
+          context 'when the report does not contain top-level scanner' do
+            let(:artifact) { build(:ci_job_artifact, :common_security_report_without_top_level_scanner) }
+
+            it 'sets the scanner of finding as `vulnerabilities[].scanner`' do
+              expect(scanner.name).to eq('Gemnasium')
             end
           end
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, '#execute' do
+RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness do
   let_it_be(:group) { create(:group, name: 'my-organization') }
 
   let(:upstream_project) { create(:project, :repository, name: 'upstream', group: group) }

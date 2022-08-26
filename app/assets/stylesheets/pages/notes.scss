@@ -334,10 +334,10 @@ $system-note-svg-size: 16px;
     border-radius: 0;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      top: calc(#{$mr-tabs-height} + #{$header-height});
+      --initial-top: calc(#{$header-height} + #{$mr-tabs-height + 28px});
 
       .with-performance-bar & {
-        top: 123px;
+        --top: 123px;
       }
     }
 
