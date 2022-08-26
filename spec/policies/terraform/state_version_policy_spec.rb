@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Terraform::StateVersionPolicy do
   let_it_be(:project) { create(:project) }
-  let_it_be(:terraform_state) { create(:terraform_state, :with_version, project: project)}
+  let_it_be(:terraform_state) { create(:terraform_state, :with_version, project: project) }
 
   subject { described_class.new(user, terraform_state.latest_version) }
 

@@ -105,7 +105,11 @@ export default {
           <code-block-bubble-menu />
           <link-bubble-menu />
           <media-bubble-menu />
-          <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
+          <tiptap-editor-content
+            class="md"
+            data-testid="content_editor_editablebox"
+            :editor="contentEditor.tiptapEditor"
+          />
           <loading-indicator />
         </div>
       </div>

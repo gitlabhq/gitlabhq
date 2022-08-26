@@ -28,9 +28,9 @@ RSpec.describe ContainerRepositoriesFinder do
       context "with name set to #{name}" do
         let(:params) { { name: name } }
 
-        it { is_expected.to contain_exactly(project_repository)}
+        it { is_expected.to contain_exactly(project_repository) }
 
-        it { is_expected.not_to include(not_searched_repository)}
+        it { is_expected.not_to include(not_searched_repository) }
       end
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe ContainerRepositoriesFinder do
       context "with sort set to #{order}" do
         let(:params) { { sort: order } }
 
-        it { is_expected.to eq([sort_repository2, sort_repository])}
+        it { is_expected.to eq([sort_repository2, sort_repository]) }
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe ContainerRepositoriesFinder do
       context "with sort set to #{order}" do
         let(:params) { { sort: order } }
 
-        it { is_expected.to eq([sort_repository, sort_repository2])}
+        it { is_expected.to eq([sort_repository, sort_repository2]) }
       end
     end
   end

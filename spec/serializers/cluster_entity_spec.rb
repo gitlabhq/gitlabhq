@@ -45,7 +45,7 @@ RSpec.describe ClusterEntity do
     context 'when no application has been installed' do
       let(:cluster) { create(:cluster, :instance) }
 
-      subject { described_class.new(cluster, request: request).as_json[:applications]}
+      subject { described_class.new(cluster, request: request).as_json[:applications] }
 
       it 'contains helm as not_installable' do
         expect(subject).not_to be_empty

@@ -625,7 +625,7 @@ RSpec.describe SearchHelper do
       false     | false
     end
 
-    let(:params) {{ confidential: confidential }}
+    let(:params) { { confidential: confidential } }
 
     with_them do
       it 'transforms confidentiality param' do

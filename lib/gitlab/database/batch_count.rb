@@ -48,7 +48,7 @@ module Gitlab
       end
 
       def batch_average(relation, column, batch_size: nil, start: nil, finish: nil)
-        BatchCounter.new(relation, column: nil, operation: :average, operation_args: [column]).count(batch_size: batch_size, start: start, finish: finish)
+        BatchAverageCounter.new(relation, column).count(batch_size: batch_size)
       end
 
       class << self

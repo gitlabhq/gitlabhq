@@ -149,7 +149,7 @@
   margin: $sidebar-top-item-tb-margin $sidebar-top-item-lr-margin;
 
   &:hover {
-    background-color: $indigo-900-alpha-008;
+    background-color: $nav-active-bg;
   }
 }
 
@@ -275,7 +275,7 @@
 
       &:not(.fly-out-top-item) {
         > a:not(.has-sub-items) {
-          background-color: $indigo-900-alpha-008;
+          background-color: $nav-active-bg;
         }
       }
     }

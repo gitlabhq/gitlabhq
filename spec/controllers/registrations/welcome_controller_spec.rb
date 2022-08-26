@@ -36,7 +36,7 @@ RSpec.describe Registrations::WelcomeController do
         sign_in(user)
       end
 
-      it { is_expected.to redirect_to(dashboard_projects_path)}
+      it { is_expected.to redirect_to(dashboard_projects_path) }
     end
 
     context 'when role is set and setup_for_company is not set' do
@@ -78,7 +78,7 @@ RSpec.describe Registrations::WelcomeController do
         sign_in(user)
       end
 
-      it { is_expected.to redirect_to(dashboard_projects_path)}
+      it { is_expected.to redirect_to(dashboard_projects_path) }
 
       context 'when the new user already has any accepted group membership' do
         let!(:member1) { create(:group_member, user: user) }

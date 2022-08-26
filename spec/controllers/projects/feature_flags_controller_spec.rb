@@ -208,7 +208,7 @@ RSpec.describe Projects::FeatureFlagsController do
     end
 
     context 'when feature flag is not found' do
-      let!(:feature_flag) { }
+      let!(:feature_flag) {}
 
       let(:params) do
         {

@@ -25,10 +25,10 @@ RSpec.describe Projects::LabelsController do
     let_it_be(:group_label_3) { create(:group_label, group: group, title: 'Group Label 3') }
     let_it_be(:group_label_4) { create(:group_label, group: group, title: 'Group Label 4') }
 
-    let_it_be(:group_labels) { [group_label_3, group_label_4]}
-    let_it_be(:project_labels) { [label_4, label_5]}
-    let_it_be(:group_priority_labels) { [group_label_1, group_label_2]}
-    let_it_be(:project_priority_labels) { [label_1, label_2, label_3]}
+    let_it_be(:group_labels) { [group_label_3, group_label_4] }
+    let_it_be(:project_labels) { [label_4, label_5] }
+    let_it_be(:group_priority_labels) { [group_label_1, group_label_2] }
+    let_it_be(:project_priority_labels) { [label_1, label_2, label_3] }
 
     before do
       create(:label_priority, project: project, label: group_label_1, priority: 3)

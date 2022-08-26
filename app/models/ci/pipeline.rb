@@ -473,7 +473,7 @@ module Ci
     end
 
     def uses_needs?
-      builds.where(scheduling_type: :dag).any?
+      processables.where(scheduling_type: :dag).any?
     end
 
     def stages_count

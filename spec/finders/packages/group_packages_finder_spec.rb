@@ -217,7 +217,7 @@ RSpec.describe Packages::GroupPackagesFinder do
     context 'group is nil' do
       subject { described_class.new(user, nil).execute }
 
-      it { is_expected.to be_empty}
+      it { is_expected.to be_empty }
     end
 
     context 'package type is nil' do
@@ -225,7 +225,7 @@ RSpec.describe Packages::GroupPackagesFinder do
 
       subject { described_class.new(user, group, package_type: nil).execute }
 
-      it { is_expected.to match_array([package1])}
+      it { is_expected.to match_array([package1]) }
     end
 
     context 'with invalid package_type' do

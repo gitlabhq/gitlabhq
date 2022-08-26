@@ -4482,10 +4482,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     context 'when the scheduling type is `dag`' do
-      it 'returns true' do
-        create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
+      context 'when the processable is a bridge' do
+        it 'returns true' do
+          create(:ci_bridge, pipeline: pipeline, scheduling_type: :dag)
 
-        expect(pipeline.uses_needs?).to eq(true)
+          expect(pipeline.uses_needs?).to eq(true)
+        end
+      end
+
+      context 'when the processable is a build' do
+        it 'returns true' do
+          create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
+
+          expect(pipeline.uses_needs?).to eq(true)
+        end
       end
     end
 

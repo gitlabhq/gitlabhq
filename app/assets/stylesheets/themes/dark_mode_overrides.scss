@@ -64,20 +64,6 @@
     a {
       color: var(--gray-600);
     }
-
-    > a:hover {
-      background-color: var(--nav-active-bg);
-    }
-
-    &.active {
-      box-shadow: none;
-
-      &:not(.fly-out-top-item) {
-        > a:not(.has-sub-items) {
-          background-color: var(--nav-active-bg);
-        }
-      }
-    }
   }
 
   .sidebar-sub-level-items.fly-out-list {

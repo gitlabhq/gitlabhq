@@ -777,13 +777,13 @@ RSpec.describe ProjectPolicy do
           project.add_developer(user)
         end
 
-        it { is_expected.not_to be_allowed(:project_bot_access)}
+        it { is_expected.not_to be_allowed(:project_bot_access) }
       end
 
       context "when project bot and not part of the project" do
         let(:current_user) { project_bot }
 
-        it { is_expected.not_to be_allowed(:project_bot_access)}
+        it { is_expected.not_to be_allowed(:project_bot_access) }
       end
 
       context "when project bot and part of the project" do
@@ -793,7 +793,7 @@ RSpec.describe ProjectPolicy do
           project.add_developer(project_bot)
         end
 
-        it { is_expected.to be_allowed(:project_bot_access)}
+        it { is_expected.to be_allowed(:project_bot_access) }
       end
     end
 
@@ -804,7 +804,7 @@ RSpec.describe ProjectPolicy do
         project.add_maintainer(project_bot)
       end
 
-      it { is_expected.not_to be_allowed(:create_resource_access_tokens)}
+      it { is_expected.not_to be_allowed(:create_resource_access_tokens) }
     end
   end
 
@@ -946,7 +946,7 @@ RSpec.describe ProjectPolicy do
         context 'with anonymous' do
           let(:current_user) { anonymous }
 
-          it { is_expected.to be_disallowed(:metrics_dashboard)}
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
         end
       end
 

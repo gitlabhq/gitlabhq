@@ -113,14 +113,14 @@ RSpec.describe 'shared/runners/_runner_details.html.haml' do
   describe 'Tags value' do
     context 'when runner does not have tags' do
       it { is_expected.to have_content('Tags') }
-      it { is_expected.not_to have_selector('span.gl-badge.badge.badge-info')}
+      it { is_expected.not_to have_selector('span.gl-badge.badge.badge-info') }
     end
 
     context 'when runner have tags' do
       let(:runner) { create(:ci_runner, tag_list: %w(tag2 tag3 tag1)) }
 
       it { is_expected.to have_content('Tags tag1 tag2 tag3') }
-      it { is_expected.to have_selector('span.gl-badge.badge.badge-info')}
+      it { is_expected.to have_selector('span.gl-badge.badge.badge-info') }
     end
   end
 

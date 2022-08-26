@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Npm::PackageFinder do
-  let_it_be_with_reload(:project) { create(:project)}
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_refind(:package) { create(:npm_package, project: project) }
 
   let(:project) { package.project }

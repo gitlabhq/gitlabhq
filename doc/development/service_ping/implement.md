@@ -127,7 +127,7 @@ Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recomme
 
 #### Grouping and batch operations
 
-The `count`, `distinct_count`, `sum`, and `average` batch counters can accept an `ActiveRecord::Relation`
+The `count`, `distinct_count` and `sum` batch counters can accept an `ActiveRecord::Relation`
 object, which groups by a specified column. With a grouped relation, the methods do batch counting,
 handle errors, and returns a hash table of key-value pairs.
 
@@ -142,9 +142,6 @@ distinct_count(Project.group(:visibility_level), :creator_id)
 
 sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
-
-average(Issue.group(:state_id), :weight))
-# returns => {1=>3.5, 2=>2.5}
 ```
 
 #### Add operation

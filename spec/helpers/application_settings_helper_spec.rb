@@ -313,7 +313,7 @@ RSpec.describe ApplicationSettingsHelper do
       allow(helper).to receive(:can?).with(user, :read_cluster, instance_of(Clusters::Instance)).and_return(true)
     end
 
-    it { is_expected.to be_truthy}
+    it { is_expected.to be_truthy }
 
     context ':certificate_based_clusters feature flag is disabled' do
       before do

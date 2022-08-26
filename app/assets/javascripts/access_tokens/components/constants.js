@@ -12,8 +12,6 @@ export const FIELDS = [
     key: 'name',
     label: __('Token name'),
     sortable: true,
-    tdClass: `gl-text-black-normal`,
-    thClass: `gl-text-black-normal`,
   },
   {
     formatter(scopes) {
@@ -22,40 +20,30 @@ export const FIELDS = [
     key: 'scopes',
     label: __('Scopes'),
     sortable: true,
-    tdClass: `gl-text-black-normal`,
-    thClass: `gl-text-black-normal`,
   },
   {
     key: 'createdAt',
     label: s__('AccessTokens|Created'),
     sortable: true,
-    tdClass: `gl-text-black-normal`,
-    thClass: `gl-text-black-normal`,
   },
   {
     key: 'lastUsedAt',
     label: __('Last Used'),
     sortable: true,
-    tdClass: `gl-text-black-normal`,
-    thClass: `gl-text-black-normal`,
   },
   {
     key: 'expiresAt',
     label: __('Expires'),
     sortable: true,
-    tdClass: `gl-text-black-normal`,
-    thClass: `gl-text-black-normal`,
   },
   {
     key: 'role',
     label: __('Role'),
-    tdClass: `gl-text-black-normal`,
-    thClass: `gl-text-black-normal`,
     sortable: true,
   },
   {
     key: 'action',
     label: __('Action'),
-    thClass: `gl-text-black-normal`,
+    tdClass: 'gl-py-3!',
   },
 ];

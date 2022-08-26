@@ -560,7 +560,7 @@
   }
 
   .frequent-items-list-item-container > a:hover {
-    background-color: $nav-active-bg;
+    background-color: $nav-active-bg !important;
   }
 }
 
@@ -577,7 +577,7 @@
 .top-nav-menu-item {
   &.active,
   &:hover {
-    background-color: $nav-active-bg;
+    background-color: $nav-active-bg !important;
   }
 
   .gl-icon {

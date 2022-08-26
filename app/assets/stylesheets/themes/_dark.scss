@@ -101,7 +101,6 @@ $white-dark: #444;
 $theme-indigo-50: #1a1a40;
 
 $border-color: #4f4f4f;
-$nav-active-bg: rgba(255, 255, 255, 0.08);
 
 :root {
   color-scheme: dark;
@@ -206,7 +205,6 @@ body.gl-dark {
   --black: #{$black};
 
   --svg-status-bg: #{$white};
-  --nav-active-bg: #{$nav-active-bg};
 
   .gl-button.gl-button,
   .gl-button.gl-button.btn-block {

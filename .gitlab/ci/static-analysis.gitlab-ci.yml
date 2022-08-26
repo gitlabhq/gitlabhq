@@ -25,7 +25,7 @@ static-analysis:
   extends:
     - .static-analysis-base
     - .static-analysis-cache
-    - .static-analysis:rules:ee-and-foss
+    - .static-analysis:rules:static-analysis
   parallel: 2
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
@@ -34,14 +34,14 @@ static-analysis:
 static-analysis as-if-foss:
   extends:
     - static-analysis
-    - .static-analysis:rules:as-if-foss
+    - .static-analysis:rules:static-analysis-as-if-foss
     - .as-if-foss
 
 static-verification-with-database:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
-    - .static-analysis:rules:ee-and-foss
+    - .static-analysis:rules:static-verification-with-database
     - .use-pg12
   script:
     - bundle exec rake lint:static_verification_with_database
@@ -91,11 +91,11 @@ eslint as-if-foss:
     - .as-if-foss
   needs: ['generate-apollo-graphql-schema as-if-foss']
 
-haml-lint foss:
+haml-lint:
   extends:
     - .static-analysis-base
     - .ruby-cache
-    - .static-analysis:rules:ee-and-foss
+    - .static-analysis:rules:haml-lint
   script:
     - run_timed_command "bin/rake 'haml_lint[app/views]'"
   artifacts:
@@ -106,8 +106,8 @@ haml-lint foss:
 
 haml-lint ee:
   extends:
-    - "haml-lint foss"
-    - .static-analysis:rules:ee
+    - "haml-lint"
+    - .static-analysis:rules:haml-lint-ee
   script:
     - run_timed_command "bin/rake 'haml_lint[ee/app/views]'"
 
@@ -115,14 +115,21 @@ rubocop:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
-    - .static-analysis:rules:ee-and-foss
+    - .static-analysis:rules:rubocop
+  needs: ["detect-tests"]
   script:
-    - run_timed_command "bundle exec rubocop --parallel"
+    - |
+      # For non-merge request, or when RUN_ALL_RUBOCOP is 'true', run all RuboCop rules
+      if [ -z "${CI_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
+        run_timed_command "bundle exec rubocop --parallel"
+      else
+        run_timed_command "bundle exec rubocop --parallel --force-exclusion $(cat tmp/changed_files.txt)"
+      fi
 
 qa:metadata-lint:
   extends:
     - .static-analysis-base
-    - .static-analysis:rules:ee-and-foss-qa
+    - .static-analysis:rules:qa:metadata-lint
   before_script:
     - !reference [.default-before_script, before_script]
     - cd qa/
@@ -149,7 +156,7 @@ feature-flags-usage:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
-    - .static-analysis:rules:ee-and-foss
+    - .static-analysis:rules:rubocop
   script:
     # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
     # the cache would prevent these files from being created.

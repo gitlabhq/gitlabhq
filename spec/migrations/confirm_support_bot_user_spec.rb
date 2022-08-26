@@ -52,7 +52,7 @@ RSpec.describe ConfirmSupportBotUser, :migration do
     end
 
     it 'does not change the `created_at` attribute' do
-      expect { migrate!}.not_to change { support_bot.reload.created_at }.from(nil)
+      expect { migrate! }.not_to change { support_bot.reload.created_at }.from(nil)
     end
   end
 

@@ -16,17 +16,13 @@ options:
   events:
   - i_package_composer_deploy_token
   - i_package_conan_deploy_token
-  - i_package_container_deploy_token
-  - i_package_debian_deploy_token
   - i_package_generic_deploy_token
-  - i_package_golang_deploy_token
   - i_package_helm_deploy_token
   - i_package_maven_deploy_token
   - i_package_npm_deploy_token
   - i_package_nuget_deploy_token
   - i_package_pypi_deploy_token
   - i_package_rubygems_deploy_token
-  - i_package_tag_deploy_token
   - i_package_terraform_module_deploy_token
 distribution:
 - ee

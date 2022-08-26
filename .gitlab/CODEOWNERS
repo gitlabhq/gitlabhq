@@ -57,6 +57,84 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 
+^[Verify]
+/app/**/ci/ @gitlab-org/maintainers/cicd-verify
+/app/controllers/admin/jobs_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/admin/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/admin/runners_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/artifacts_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/build_artifacts_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/builds_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/jobs_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/runner_setup_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/pipeline_schedules_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/pipelines_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/pipelines_settings_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/runners_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/triggers_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/usage_quotas_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/controllers/projects/variables_controller.rb @gitlab-org/maintainers/cicd-verify
+/app/models/commit_status.rb @gitlab-org/maintainers/cicd-verify
+/app/models/external_pull_request.rb @gitlab-org/maintainers/cicd-verify
+/app/models/generic_commit_status.rb @gitlab-org/maintainers/cicd-verify
+/app/models/namespace_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
+/app/models/project_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
+/app/presenters/commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
+/app/presenters/generic_commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
+/app/views/projects/artifacts/ @gitlab-org/maintainers/cicd-verify
+/app/views/projects/generic_commit_statuses/ @gitlab-org/maintainers/cicd-verify
+/app/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
+/app/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
+/app/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
+/app/views/projects/triggers/ @gitlab-org/maintainers/cicd-verify
+/app/workers/build_hooks_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/build_queue_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/build_success_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/ci_platform_metrics_update_cron_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/create_pipeline_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/expire_build_artifacts_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/pipeline_hooks_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/pipeline_metrics_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/pipeline_notification_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/pipeline_process_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/pipeline_schedule_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/run_pipeline_schedule_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/stuck_ci_jobs_worker.rb @gitlab-org/maintainers/cicd-verify
+/app/workers/update_external_pull_requests_worker.rb @gitlab-org/maintainers/cicd-verify
+/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
+/lib/api/commit_statuses.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/**/ci/ @gitlab-org/maintainers/cicd-verify
+/ee/app/**/merge_trains/ @gitlab-org/maintainers/cicd-verify
+/ee/app/models/merge_train.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/finders/merge_trains_finder.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/services/auto_merge/merge_train_service.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/services/system_notes/merge_train_service.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/controllers/ee/admin/runners_controller.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/controllers/ee/projects/pipelines_controller.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/controllers/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
+/ee/app/controllers/projects/subscriptions_controller.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/models/merge_train.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/helpers/ee/projects/pipeline_helper.rb @gitlab-org/maintainers/cicd-verify
+/ee/app/views/ci_minutes_usage_mailer/ @gitlab-org/maintainers/cicd-verify
+/ee/app/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
+/ee/app/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
+/ee/app/workers/clear_shared_runners_minutes_worker.rb @gitlab-org/maintainers/cicd-verify
+/ee/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
+/ee/lib/ee/api/entities/merge_train.rb @gitlab-org/maintainers/cicd-verify
+/**/javascripts/jobs/ @pburdette @jivanvl 
+/**/javascripts/pipelines/ @pburdette @f_caplette @jivanvl @mfluharty @bsandlin @mgandres
+/app/assets/javascripts/pipeline_new/ @pburdette @f_caplette @jivanvl @mfluharty @bsandlin @mgandres
+/app/assets/javascripts/ci_lint/ @f_caplette @bsandlin @mgandres
+/app/assets/javascripts/ci_variable_list/ @pburdette @f_caplette @jivanvl @mfluharty @bsandlin @mgandres
+/app/assets/javascripts/pipeline_schedules/ @pburdette @jivanvl
+/app/assets/javascripts/pipeline_editor/ @f_caplette @bsandlin @mgandres
+/ee/app/assets/javascripts/ci_minutes_usage/ @pburdette @jivanvl
+/ee/app/assets/javascripts/usage_quotas/ci_minutes_usage/ @pburdette @jivanvl
+/ee/app/assets/javascripts/usage_quotas/pipelines/ @pburdette @jivanvl
+/ee/app/assets/javascripts/reports/ @mfluharty 
+
 ^[Templates]
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah

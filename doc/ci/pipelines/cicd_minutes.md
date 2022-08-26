@@ -201,9 +201,12 @@ can be higher than the end-to-end duration of a pipeline.
 
 The cost factors for jobs running on shared runners on GitLab.com are:
 
-- `0.008` for public projects, and projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
-  For every 125 minutes of job execution time, you use 1 CI/CD minute.
 - `1` for internal and private projects.
+- `0.5` for public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
+- `0.008` for public forks of public projects. For every 125 minutes of job execution time,
+  you use 1 CI/CD minute.
+- `0.04` for other public projects, after September 1, 2022 (previously `0.008`).
+  For every 25 minutes of job execution time, you use 1 CI/CD minute.
 - Calculated differently for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:

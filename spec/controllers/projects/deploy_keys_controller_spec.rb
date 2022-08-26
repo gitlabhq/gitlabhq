@@ -27,8 +27,8 @@ RSpec.describe Projects::DeployKeysController do
     end
 
     context 'when json requested' do
-      let(:project2) { create(:project, :internal)}
-      let(:project_private) { create(:project, :private)}
+      let(:project2) { create(:project, :internal) }
+      let(:project_private) { create(:project, :private) }
 
       let(:deploy_key_internal) { create(:deploy_key) }
       let(:deploy_key_actual) { create(:deploy_key) }

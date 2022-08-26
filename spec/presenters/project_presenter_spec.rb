@@ -613,7 +613,7 @@ RSpec.describe ProjectPresenter do
     end
 
     context 'empty repo' do
-      let(:project) { create(:project, :stubbed_repository)}
+      let(:project) { create(:project, :stubbed_repository) }
 
       context 'for a guest user' do
         it 'orders the items correctly' do

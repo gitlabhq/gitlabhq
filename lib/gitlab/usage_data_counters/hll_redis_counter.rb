@@ -22,7 +22,6 @@ module Gitlab
         analytics
         code_review
         compliance
-        deploy_token_packages
         ecosystem
         epic_boards_usage
         epics_usage
@@ -37,6 +36,7 @@ module Gitlab
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
         ci_users
+        deploy_token_packages
         error_tracking
         ide_edit
         importer

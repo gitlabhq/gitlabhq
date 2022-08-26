@@ -13,10 +13,10 @@ RSpec.describe 'layouts/_published_experiments', :experiment do
       test_variant: :variant_name
     )
 
-    experiment(:test_control) { }
+    experiment(:test_control) {}
     experiment(:test_excluded) { |e| e.exclude! }
-    experiment(:test_candidate) { |e| e.candidate { } }
-    experiment(:test_variant) { |e| e.variant(:variant_name) { } }
+    experiment(:test_candidate) { |e| e.candidate {} }
+    experiment(:test_variant) { |e| e.variant(:variant_name) {} }
     experiment(:test_published_only).publish
 
     render

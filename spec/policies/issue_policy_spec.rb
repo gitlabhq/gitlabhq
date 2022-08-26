@@ -398,7 +398,7 @@ RSpec.describe IssuePolicy do
     context 'with a hidden issue' do
       let(:user) { create(:user) }
       let(:banned_user) { create(:user, :banned) }
-      let(:admin) { create(:user, :admin)}
+      let(:admin) { create(:user, :admin) }
       let(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
       it 'does not allow non-admin user to read the issue' do

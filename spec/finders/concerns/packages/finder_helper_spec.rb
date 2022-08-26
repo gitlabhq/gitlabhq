@@ -24,7 +24,7 @@ RSpec.describe ::Packages::FinderHelper do
 
     subject { finder.execute(project1) }
 
-    it { is_expected.to eq [package1]}
+    it { is_expected.to eq [package1] }
   end
 
   describe '#packages_visible_to_user' do
@@ -61,7 +61,7 @@ RSpec.describe ::Packages::FinderHelper do
     end
 
     shared_examples 'returning package1' do
-      it { is_expected.to eq [package1]}
+      it { is_expected.to eq [package1] }
     end
 
     shared_examples 'returning no packages' do
@@ -165,7 +165,7 @@ RSpec.describe ::Packages::FinderHelper do
     end
 
     shared_examples 'returning project1' do
-      it { is_expected.to eq [project1]}
+      it { is_expected.to eq [project1] }
     end
 
     shared_examples 'returning no project' do

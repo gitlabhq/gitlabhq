@@ -49,12 +49,12 @@ RSpec.describe Packages::Debian::DistributionReleaseFileUploader do
       end
 
       describe '#filename' do
-        it { expect(subject.filename).to eq('Release')}
+        it { expect(subject.filename).to eq('Release') }
 
         context 'with signed_file' do
           let(:uploader) { described_class.new(distribution, :signed_file) }
 
-          it { expect(subject.filename).to eq('InRelease')}
+          it { expect(subject.filename).to eq('InRelease') }
         end
       end
     end

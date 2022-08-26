@@ -27,8 +27,8 @@ RSpec.describe GitlabScriptTagHelper do
   end
 
   describe 'inline script tag' do
-    let(:tag_with_nonce) {"<script nonce=\"noncevalue\">\n//<![CDATA[\nalert(1)\n//]]>\n</script>"}
-    let(:tag_with_nonce_and_type) {"<script type=\"application/javascript\" nonce=\"noncevalue\">\n//<![CDATA[\nalert(1)\n//]]>\n</script>"}
+    let(:tag_with_nonce) { "<script nonce=\"noncevalue\">\n//<![CDATA[\nalert(1)\n//]]>\n</script>" }
+    let(:tag_with_nonce_and_type) { "<script type=\"application/javascript\" nonce=\"noncevalue\">\n//<![CDATA[\nalert(1)\n//]]>\n</script>" }
 
     it 'returns a script tag with a nonce using block syntax' do
       expect(helper.javascript_tag { 'alert(1)' }.to_s).to eq tag_with_nonce

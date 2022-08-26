@@ -700,7 +700,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         expect(response).to match_response_schema('job/build_trace')
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
-        expect(json_response['lines'].flat_map {|l| l['content'].map { |c| c['text'] } }).to include("ヾ(´༎ຶД༎ຶ`)ﾉ")
+        expect(json_response['lines'].flat_map { |l| l['content'].map { |c| c['text'] } }).to include("ヾ(´༎ຶД༎ຶ`)ﾉ")
       end
     end
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Helm::ExtractionWorker, type: :worker do
   describe '#perform' do
-    let_it_be(:package) { create(:helm_package, without_package_files: true, status: 'processing')}
+    let_it_be(:package) { create(:helm_package, without_package_files: true, status: 'processing') }
 
     let!(:package_file) { create(:helm_package_file, without_loaded_metadatum: true, package: package) }
     let(:package_file_id) { package_file.id }

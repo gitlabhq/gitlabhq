@@ -8,7 +8,7 @@ RSpec.describe 'layouts/_header_search' do
   let(:scope) { nil }
   let(:ref) { nil }
   let(:code_search) { false }
-  let(:for_snippets) { false}
+  let(:for_snippets) { false }
 
   let(:header_search_context) do
     {

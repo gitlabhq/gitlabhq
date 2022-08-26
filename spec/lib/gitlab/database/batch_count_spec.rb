@@ -493,56 +493,18 @@ RSpec.describe Gitlab::Database::BatchCount do
   end
 
   describe '#batch_average' do
-    let(:model) { Issue }
     let(:column) { :weight }
 
     before do
-      Issue.update_all(weight: 2)
+      allow_next_instance_of(Gitlab::Database::BatchAverageCounter) do |instance|
+        allow(instance).to receive(:count).and_return
+      end
     end
 
-    it 'returns the average of values in the given column' do
-      expect(described_class.batch_average(model, column)).to eq(2)
-    end
-
-    it 'works when given an Arel column' do
-      expect(described_class.batch_average(model, model.arel_table[column])).to eq(2)
-    end
-
-    it 'works with a batch size of 50K' do
-      expect(described_class.batch_average(model, column, batch_size: 50_000)).to eq(2)
-    end
-
-    it 'works with start and finish provided' do
-      expect(described_class.batch_average(model, column, start: model.minimum(:id), finish: model.maximum(:id))).to eq(2)
-    end
-
-    it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_AVERAGE_BATCH_SIZE}" do
-      min_id = model.minimum(:id)
-      relation = instance_double(ActiveRecord::Relation)
-      allow(model).to receive_message_chain(:select, public_send: relation)
-      batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_AVERAGE_BATCH_SIZE)
-
-      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
+    it 'calls BatchAverageCounter' do
+      expect(Gitlab::Database::BatchAverageCounter).to receive(:new).with(model, column).and_call_original
 
       described_class.batch_average(model, column)
-    end
-
-    it_behaves_like 'when a transaction is open' do
-      subject { described_class.batch_average(model, column) }
-    end
-
-    it_behaves_like 'disallowed configurations', :batch_average do
-      let(:args) { [model, column] }
-      let(:default_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_AVERAGE_BATCH_SIZE }
-      let(:small_batch_size)   { Gitlab::Database::BatchCounter::DEFAULT_AVERAGE_BATCH_SIZE - 1 }
-    end
-
-    it_behaves_like 'when batch fetch query is canceled' do
-      let(:mode) { :itself }
-      let(:operation) { :average }
-      let(:operation_args) { [column] }
-
-      subject { described_class.method(:batch_average) }
     end
   end
 end

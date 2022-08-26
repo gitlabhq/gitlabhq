@@ -48,7 +48,7 @@ RSpec.describe RemoveDuplicateProjectAuthorizations, :migration do
         project_authorizations.create! project_id: project_1.id, user_id: user_1.id, access_level: Gitlab::Access::REPORTER
       end
 
-      it { expect { subject }.to change { ProjectAuthorization.count}.from(3).to(1) }
+      it { expect { subject }.to change { ProjectAuthorization.count }.from(3).to(1) }
 
       it 'retains the highest access level' do
         subject

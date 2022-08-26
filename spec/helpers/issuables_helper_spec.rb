@@ -448,7 +448,7 @@ RSpec.describe IssuablesHelper do
           allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
         end
 
-        it { is_expected.to include({ can_merge: can_merge })}
+        it { is_expected.to include({ can_merge: can_merge }) }
       end
     end
   end
@@ -480,7 +480,7 @@ RSpec.describe IssuablesHelper do
           allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
         end
 
-        it { is_expected.to include({ can_merge: can_merge })}
+        it { is_expected.to include({ can_merge: can_merge }) }
       end
     end
   end

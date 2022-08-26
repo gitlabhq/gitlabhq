@@ -76,7 +76,7 @@ RSpec.describe Emails::ServiceDesk do
 
   shared_examples 'read template from repository' do |template_key|
     let(:template_content) { 'custom text' }
-    let(:issue) { create(:issue, project: project)}
+    let(:issue) { create(:issue, project: project) }
 
     before do
       issue.issue_email_participants.create!(email: email)

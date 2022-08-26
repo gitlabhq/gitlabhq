@@ -23,7 +23,7 @@ RSpec.describe Import::ProviderRepoSerializer do
     end
 
     it 'raises an error if invalid provider supplied' do
-      expect { described_class.new.represent({}, { provider: :invalid })}.to raise_error { NotImplementedError }
+      expect { described_class.new.represent({}, { provider: :invalid }) }.to raise_error { NotImplementedError }
     end
   end
 end

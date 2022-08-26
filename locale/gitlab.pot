@@ -218,6 +218,11 @@ msgid_plural "%d contributions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d contributor"
+msgid_plural "%d contributors"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
@@ -365,6 +370,11 @@ msgstr[1] ""
 
 msgid "%d project selected"
 msgid_plural "%d projects selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d push"
+msgid_plural "%d pushes"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -10418,7 +10428,7 @@ msgstr ""
 msgid "ContributionAnalytics|%{created_count} created, %{merged_count} merged, %{closed_count} closed."
 msgstr ""
 
-msgid "ContributionAnalytics|%{pushes} pushes, more than %{commits} commits by %{people} contributors."
+msgid "ContributionAnalytics|%{pushes}, more than %{commits} by %{contributors}."
 msgstr ""
 
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
@@ -13102,6 +13112,12 @@ msgid "DeploymentApproval|Environment: %{environment}"
 msgstr ""
 
 msgid "DeploymentApproval|Manual job: %{jobName}"
+msgstr ""
+
+msgid "DeploymentApproval|Rejected %{time}"
+msgstr ""
+
+msgid "DeploymentApproval|Rejected by you %{time}"
 msgstr ""
 
 msgid "DeploymentTarget|GitLab Pages"
@@ -46175,7 +46191,7 @@ msgstr ""
 msgid "ciReport|Manage licenses"
 msgstr ""
 
-msgid "ciReport|Manually Added"
+msgid "ciReport|Manually added"
 msgstr ""
 
 msgid "ciReport|New"

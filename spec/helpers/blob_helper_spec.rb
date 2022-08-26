@@ -357,7 +357,7 @@ RSpec.describe BlobHelper do
 
   describe '#ide_merge_request_path' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project)}
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'returns IDE path for the given MR if MR is not merged' do
       expect(helper.ide_merge_request_path(merge_request)).to eq("/-/ide/project/#{project.full_path}/merge_requests/#{merge_request.iid}")

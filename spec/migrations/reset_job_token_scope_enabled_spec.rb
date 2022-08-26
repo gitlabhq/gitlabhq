@@ -9,8 +9,8 @@ RSpec.describe ResetJobTokenScopeEnabled do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab-org') }
-  let(:project_1) { projects.create!(name: 'proj-1', path: 'gitlab-org', namespace_id: namespace.id)}
-  let(:project_2) { projects.create!(name: 'proj-2', path: 'gitlab-org', namespace_id: namespace.id)}
+  let(:project_1) { projects.create!(name: 'proj-1', path: 'gitlab-org', namespace_id: namespace.id) }
+  let(:project_2) { projects.create!(name: 'proj-2', path: 'gitlab-org', namespace_id: namespace.id) }
 
   before do
     settings.create!(id: 1, project_id: project_1.id, job_token_scope_enabled: true)

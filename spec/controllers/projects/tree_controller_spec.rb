@@ -163,8 +163,8 @@ RSpec.describe Projects::TreeController do
     end
 
     context 'successful creation' do
-      let(:path) { 'files/new_dir'}
-      let(:branch_name) { 'master-test'}
+      let(:path) { 'files/new_dir' }
+      let(:branch_name) { 'master-test' }
 
       it 'redirects to the new directory' do
         expect(subject)
@@ -175,7 +175,7 @@ RSpec.describe Projects::TreeController do
 
     context 'unsuccessful creation' do
       let(:path) { 'README.md' }
-      let(:branch_name) { 'master'}
+      let(:branch_name) { 'master' }
 
       it 'does not allow overwriting of existing files' do
         expect(subject)

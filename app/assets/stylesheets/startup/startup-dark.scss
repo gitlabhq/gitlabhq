@@ -18,7 +18,6 @@ body.gl-dark {
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
-  --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 :root {
   --white: #333;
@@ -1128,7 +1127,7 @@ kbd {
   font-weight: 600;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: rgba(41, 41, 97, 0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 .nav-sidebar ul {
   padding-left: 0;
@@ -1781,7 +1780,6 @@ body.gl-dark {
   --white: #333;
   --black: #fff;
   --svg-status-bg: #333;
-  --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 .nav-sidebar,
 .toggle-sidebar-button,
@@ -1795,12 +1793,6 @@ body.gl-dark {
 }
 .nav-sidebar li a {
   color: var(--gray-600);
-}
-.nav-sidebar li.active {
-  box-shadow: none;
-}
-.nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: var(--nav-active-bg);
 }
 body.gl-dark {
   --gl-theme-accent: #868686;
@@ -2029,7 +2021,6 @@ body.gl-dark {
   --white: #333;
   --black: #fff;
   --svg-status-bg: #333;
-  --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 .tab-width-8 {
   tab-size: 8;

@@ -9,7 +9,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
   let(:admin) { create(:admin) }
-  let(:user) { create(:user)}
+  let(:user) { create(:user) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')

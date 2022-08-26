@@ -18,7 +18,7 @@ RSpec.describe Clusters::Cleanup::ProjectNamespaceWorker do
       end
 
       context 'when exceeded the execution limit' do
-        subject { worker_instance.perform(cluster.id, worker_instance.send(:execution_limit))}
+        subject { worker_instance.perform(cluster.id, worker_instance.send(:execution_limit)) }
 
         it 'logs the error' do
           expect(logger).to receive(:error)

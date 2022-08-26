@@ -28,7 +28,7 @@ RSpec.describe MilestonesFinder do
     end
 
     context 'milestones for groups and project' do
-      let(:extra_params) {{}}
+      let(:extra_params) { {} }
       let(:result) do
         described_class.new({ project_ids: [project_1.id, project_2.id], group_ids: group.id, state: 'all' }.merge(extra_params)).execute
       end
