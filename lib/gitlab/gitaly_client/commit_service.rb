@@ -5,6 +5,8 @@ module Gitlab
     class CommitService
       include Gitlab::EncodingHelper
 
+      TREE_ENTRIES_DEFAULT_LIMIT = 1000
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -112,6 +114,9 @@ module Gitlab
       end
 
       def tree_entries(repository, revision, path, recursive, pagination_params)
+        pagination_params ||= {}
+        pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
+
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
