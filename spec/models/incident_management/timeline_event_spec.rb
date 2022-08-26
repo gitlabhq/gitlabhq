@@ -47,11 +47,20 @@ RSpec.describe IncidentManagement::TimelineEvent do
 
   describe '#cache_markdown_field' do
     let(:note) { 'note **bold** _italic_ `code` ![image](/path/img.png) :+1:👍' }
-    let(:expected_note_html) do
-      # rubocop:disable Layout/LineLength
-      '<p>note <strong>bold</strong> <em>italic</em> <code>code</code> <a class="with-attachment-icon" href="/path/img.png" target="_blank" rel="noopener noreferrer">image</a> 👍👍</p>'
-      # rubocop:enable Layout/LineLength
+
+    let(:expected_image_html) do
+      '<a class="with-attachment-icon" href="/path/img.png" target="_blank" rel="noopener noreferrer">image</a>'
     end
+
+    # rubocop:disable Layout/LineLength
+    let(:expected_emoji_html) do
+      '<gl-emoji title="thumbs up sign" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji><gl-emoji title="thumbs up sign" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji>'
+    end
+
+    let(:expected_note_html) do
+      %Q(<p>note <strong>bold</strong> <em>italic</em> <code>code</code> #{expected_image_html} #{expected_emoji_html}</p>)
+    end
+    # rubocop:enable Layout/LineLength
 
     before do
       allow(Banzai::Renderer).to receive(:cacheless_render_field).and_call_original
