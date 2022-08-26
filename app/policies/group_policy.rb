@@ -82,10 +82,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
   end
 
-  condition(:change_prevent_sharing_groups_outside_hierarchy_available) do
-    change_prevent_sharing_groups_outside_hierarchy_available?
-  end
-
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -196,16 +192,13 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_new_user_signups_cap
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
     enable :update_runners_registration_token
     enable :owner_access
-  end
-
-  rule { owner & change_prevent_sharing_groups_outside_hierarchy_available }.policy do
-    enable :change_prevent_sharing_groups_outside_hierarchy
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -334,10 +327,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   def valid_dependency_proxy_deploy_token
     @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
-  end
-
-  def change_prevent_sharing_groups_outside_hierarchy_available?
-    true
   end
 end
 

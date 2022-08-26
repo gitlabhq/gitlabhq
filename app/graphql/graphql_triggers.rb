@@ -21,3 +21,5 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger('issuableDatesUpdated', { issuable_id: issuable.to_gid }, issuable)
   end
 end
+
+GraphqlTriggers.prepend_mod

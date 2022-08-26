@@ -13,6 +13,6 @@ RSpec.describe GitlabSchema.types['Subscription'] do
       merge_request_reviewers_updated
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields).only
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

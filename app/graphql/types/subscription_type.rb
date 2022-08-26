@@ -25,3 +25,5 @@ module Types
           description: 'Triggered when the reviewers of a merge request are updated.'
   end
 end
+
+Types::SubscriptionType.prepend_mod

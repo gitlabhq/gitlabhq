@@ -265,6 +265,31 @@ considered legacy, which will be phased out at some point.
   - Responsible for composing queries and define feature specific business logic.
   - `DataCollector`, `Event`, `StageEvents`, etc.
 
+## Frontend
+
+[Project VSA](../user/analytics/value_stream_analytics.md) is available for all users and:
+
+- Includes a mixture of key and DORA metrics based on the tier.
+- Uses the set of [default stages](#default-stages).
+
+[Group VSA](../user/group/value_stream_analytics/index.md) is only available for licensed users and extends project VSA to include:
+
+- An [overview stage](https://gitlab.com/gitlab-org/gitlab/-/issues/321438).
+- The ability to create custom value streams.
+
+The group and project level VSA frontends are both built with Vue and Vuex and follow a similar pattern:
+
+- The `index.js` file extracts any URL query parameters, creates the Vue app and Vuex store, and dispatches an `initialize` Vuex action.
+- The `base.vue` file is used to render the main components for each page, metrics, filters, charts, and the stage table.
+
+The group VSA Vuex store makes use of [Vuex modules](https://vuex.vuejs.org/guide/modules.html) to separate some of the state and logic used for rendering the charts.
+
+### Shared components
+
+Parts of the UI are shared between project VSA and group VSA such as the stage table and path. These shared components live in the project VSA directory `app/assets/javascripts/cycle_analytics/components` and are included at the group level VSA where needed. 
+
+All the frontend code for group-level features are located in `ee/app/assets/javascripts/analytics/cycle_analytics/components`.
+
 ## Testing
 
 Since we have a lots of events and possible pairings, testing each pairing is not possible. The rule is to have at least one test case using an `Event` class.
