@@ -125,12 +125,30 @@ To switch to Semgrep-based scanning early, you can:
 You can see how Semgrep-based scanning will work in your projects before the GitLab-managed Stable CI/CD template for SAST is updated.
 We recommend that you test this change in a merge request but continue using the Stable template in your default branch pipeline configuration.
 
-To preview the new configuration:
+In GitLab 15.3, we [activated a feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/362179) to migrate security findings on the default branch from other analyzers to Semgrep.
+We plan to [plan to remove the deprecated analyzers](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) from the Stable CI/CD template in GitLab 15.4.
 
-- In GitLab 15.3, open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yaml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yaml`.
-  The `latest` template contains all changes that we [plan to release](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in the Stable template in GitLab 15.4.
-  To learn more about Stable and Latest templates, see documentation on [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
-- In GitLab 15.3 or earlier versions, follow the [steps to activate Semgrep-based scanning early](#activate-semgrep-based-scanning), but don't merge the MR you create.
+To preview the upcoming changes to the CI/CD configuration:
+
+1. Open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yaml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yaml`.
+    - On GitLab.com, use the latest template directly:
+
+      ```yaml
+      include:
+        template: 'SAST.latest.gitlab-ci.yaml'
+      ```
+
+    - On a Self-Managed instance, download the template from GitLab.com:
+
+      ```yaml
+      include:
+        remote: 'https://gitlab.com/gitlab-org/gitlab/-/blob/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
+      ```
+
+1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
+1. Close the MR.
+
+To learn more about Stable and Latest templates, see documentation on [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
 
 ## Customize analyzers
 

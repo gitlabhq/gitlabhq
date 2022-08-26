@@ -15,6 +15,16 @@ RSpec.describe "User creates branch", :js do
     visit(new_project_branch_path(project))
   end
 
+  context 'on new branch page' do
+    it 'renders I18n supported text' do
+      page.within('#new-branch-form') do
+        expect(page).to have_content(_('Branch name'))
+        expect(page).to have_content(_('Create from'))
+        expect(page).to have_content(_('Existing branch name, tag, or commit SHA'))
+      end
+    end
+  end
+
   it "creates new branch" do
     branch_name = "deploy_keys"
 

@@ -186,6 +186,11 @@ class Group < Namespace
     where(project_creation_level: permitted_levels)
   end
 
+  scope :shared_into_ancestors, -> (group) do
+    joins(:shared_group_links)
+      .where(group_group_links: { shared_group_id: group.self_and_ancestors })
+  end
+
   class << self
     def sort_by_attribute(method)
       if method == 'storage_size_desc'

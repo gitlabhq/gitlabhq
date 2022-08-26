@@ -51,7 +51,8 @@ RSpec.describe GroupMembersFinder, '#execute' do
         user4_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user4, expires_at: 1.day.from_now),
         user4_group:                create(:group_member, :developer,  group: group,                user: user4, expires_at: 2.days.from_now),
         user4_public_shared_group:  create(:group_member, :developer,  group: public_shared_group,  user: user4),
-        user4_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user4)
+        user4_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user4),
+        user5_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user5)
       }
     end
 
@@ -76,15 +77,15 @@ RSpec.describe GroupMembersFinder, '#execute' do
       [:direct]                                                | :sub_group     | [:user1_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
       [:inherited]                                             | :sub_group     | [:user1_group, :user2_group, :user3_group, :user4_group]
       [:descendants]                                           | :sub_group     | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
-      [:shared_from_groups]                                    | :sub_group     | []
-      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_group     | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
+      [:shared_from_groups]                                    | :sub_group     | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
+      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_group     | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
       []                                                       | :sub_sub_group | []
       GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
       [:direct]                                                | :sub_sub_group | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
       [:inherited]                                             | :sub_sub_group | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
       [:descendants]                                           | :sub_sub_group | []
-      [:shared_from_groups]                                    | :sub_sub_group | []
-      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
+      [:shared_from_groups]                                    | :sub_sub_group | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
+      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
     end
 
     with_them do

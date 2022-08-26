@@ -60,37 +60,38 @@ RSpec.describe 'Group Packages & Registries settings' do
       visit_settings_page
 
       expect(page).to have_content('Duplicate packages')
+      expect(page).to have_content('Allow duplicates')
+      expect(page).to have_content('Exceptions')
     end
 
     it 'automatically saves changes to the server', :js do
       visit_settings_page
+      wait_for_requests
 
       within '[data-testid="maven-settings"]' do
-        expect(page).to have_content('Reject packages with the same name and version')
-        expect(page).not_to have_content('Exceptions')
+        expect(page).to have_field _('Exceptions'), disabled: true
 
-        find('.gl-toggle').click
+        click_button class: 'gl-toggle'
 
-        expect(page).to have_content('Exceptions')
+        expect(page).to have_field _('Exceptions'), disabled: false
 
         visit_settings_page
 
-        expect(page).to have_content('Exceptions')
+        expect(page).to have_field _('Exceptions'), disabled: false
       end
     end
 
     it 'shows an error on wrong regex', :js do
       visit_settings_page
+      wait_for_requests
 
       within '[data-testid="maven-settings"]' do
-        expect(page).to have_content('Reject packages with the same name and version')
+        click_button class: 'gl-toggle'
 
-        find('.gl-toggle').click
-
-        fill_in 'Exceptions', with: ')'
+        fill_in _('Exceptions'), with: ')'
 
         # simulate blur event
-        find('#maven-duplicated-settings-regex-input').native.send_keys(:tab)
+        send_keys(:tab)
       end
 
       expect(page).to have_content('is an invalid regexp')
@@ -99,13 +100,16 @@ RSpec.describe 'Group Packages & Registries settings' do
     context 'in a sub group' do
       it 'works correctly', :js do
         visit_sub_group_settings_page
+        wait_for_requests
 
         within '[data-testid="maven-settings"]' do
-          expect(page).to have_content('Reject packages with the same name and version')
+          expect(page).to have_content('Allow duplicates')
 
-          find('.gl-toggle').click
+          expect(page).to have_field _('Exceptions'), disabled: true
 
-          expect(page).to have_content('Exceptions')
+          click_button class: 'gl-toggle'
+
+          expect(page).to have_field _('Exceptions'), disabled: false
         end
       end
     end

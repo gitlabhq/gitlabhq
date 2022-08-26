@@ -5,6 +5,7 @@ require('spec_helper')
 RSpec.describe Projects::ProjectMembersController do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
+  let_it_be(:sub_group) { create(:group, parent: group) }
   let_it_be(:project, reload: true) { create(:project, :public) }
 
   before do
@@ -52,7 +53,36 @@ RSpec.describe Projects::ProjectMembersController do
         end
       end
 
-      context 'when invited members are present' do
+      context 'when project belongs to a sub-group' do
+        let_it_be(:user_in_group) { create(:user) }
+        let_it_be(:project_in_group) { create(:project, :public, group: sub_group) }
+
+        before do
+          group.add_owner(user_in_group)
+          project_in_group.add_maintainer(user)
+          sign_in(user)
+        end
+
+        it 'lists inherited project members by default' do
+          get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group }
+
+          expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id, user_in_group.id)
+        end
+
+        it 'lists direct project members only' do
+          get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group, with_inherited_permissions: 'exclude' }
+
+          expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id)
+        end
+
+        it 'lists inherited project members only' do
+          get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group, with_inherited_permissions: 'only' }
+
+          expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user_in_group.id)
+        end
+      end
+
+      context 'when invited project members are present' do
         let!(:invited_member) { create(:project_member, :invited, project: project) }
 
         before do

@@ -3,7 +3,7 @@
 module QA
   # This test modifies an instance level setting,
   # so skipping on live envs to avoid random transient issues
-  RSpec.describe 'Create', :requires_admin, :skip_live_env do
+  RSpec.describe 'Create', :requires_admin, :skip_live_env, product_group: :source_code do
     describe 'push after setting the file size limit via admin/application_settings' do
       include Support::API
 

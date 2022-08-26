@@ -24266,9 +24266,6 @@ msgstr ""
 msgid "Maximum allowable lifetime for access token (days)"
 msgstr ""
 
-msgid "Maximum allowable lifetime for personal access token (days)"
-msgstr ""
-
 msgid "Maximum allowed lifetime for SSH keys (in days)"
 msgstr ""
 
@@ -27787,6 +27784,9 @@ msgstr ""
 msgid "PackageRegistry|Additional metadata"
 msgstr ""
 
+msgid "PackageRegistry|Allow duplicates"
+msgstr ""
+
 msgid "PackageRegistry|Allow packages with the same name and version to be uploaded to the registry. The newest version of a package is always used when installing."
 msgstr ""
 
@@ -28005,6 +28005,9 @@ msgstr ""
 msgid "PackageRegistry|Package file deleted successfully"
 msgstr ""
 
+msgid "PackageRegistry|Package formats"
+msgstr ""
+
 msgid "PackageRegistry|Package has %{updatesCount} archived update"
 msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] ""
@@ -28035,9 +28038,6 @@ msgid "PackageRegistry|Recipe: %{recipe}"
 msgstr ""
 
 msgid "PackageRegistry|Registry setup"
-msgstr ""
-
-msgid "PackageRegistry|Reject packages with the same name and version"
 msgstr ""
 
 msgid "PackageRegistry|Remove package"

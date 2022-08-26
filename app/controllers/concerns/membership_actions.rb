@@ -150,7 +150,11 @@ module MembershipActions
     when 'only'
       [:inherited]
     else
-      [:inherited, :direct]
+      if Feature.enabled?(:webui_members_inherited_users, current_user)
+        [:inherited, :direct, :shared_from_groups]
+      else
+        [:inherited, :direct]
+      end
     end
   end
 end

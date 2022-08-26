@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository Usage Quota', :skip_live_env, feature_flag: {
+    describe 'Repository Usage Quota', :skip_live_env, product_group: :source_code, feature_flag: {
       name: 'gitaly_revlist_for_repo_size',
       scope: :global
     } do

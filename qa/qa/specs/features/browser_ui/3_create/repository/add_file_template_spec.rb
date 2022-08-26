@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'File templates' do
+    describe 'File templates', product_group: :source_code do
       include Runtime::Fixtures
 
       let(:project) do

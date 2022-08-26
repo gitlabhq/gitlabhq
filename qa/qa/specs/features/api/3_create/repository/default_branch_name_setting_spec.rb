@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Default branch name instance setting', :requires_admin, :skip_live_env do
+    describe 'Default branch name instance setting', :requires_admin, :skip_live_env, product_group: :source_code do
       before(:context) do
         Runtime::ApplicationSettings.set_application_settings(default_branch_name: 'main')
       end

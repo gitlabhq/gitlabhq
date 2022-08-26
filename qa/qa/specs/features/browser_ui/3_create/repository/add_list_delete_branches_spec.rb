@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Create, list, and delete branches via web', :requires_admin do
+    describe 'Create, list, and delete branches via web', :requires_admin, product_group: :source_code do
       master_branch = nil
       second_branch = 'second-branch'
       third_branch = 'third-branch'

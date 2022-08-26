@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository License Detection' do
+    describe 'Repository License Detection', product_group: :source_code do
       after do
         project.remove_via_api!
       end

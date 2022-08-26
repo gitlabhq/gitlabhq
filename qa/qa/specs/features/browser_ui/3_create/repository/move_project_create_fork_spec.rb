@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin do
+  RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin, product_group: :source_code do
     describe 'Gitaly repository storage' do
       let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:parent_project) do

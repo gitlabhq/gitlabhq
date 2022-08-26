@@ -237,6 +237,26 @@ RSpec.describe Gitlab::Database do
       end
     end
 
+    it 'does return a valid schema for a replica connection' do
+      with_replica_pool_for(ActiveRecord::Base) do |main_replica_pool|
+        expect(described_class.gitlab_schemas_for_connection(main_replica_pool.connection)).to include(:gitlab_main, :gitlab_shared)
+      end
+
+      with_replica_pool_for(Ci::ApplicationRecord) do |ci_replica_pool|
+        expect(described_class.gitlab_schemas_for_connection(ci_replica_pool.connection)).to include(:gitlab_ci, :gitlab_shared)
+      end
+    end
+
+    def with_replica_pool_for(base_model)
+      config = Gitlab::Database::LoadBalancing::Configuration.new(base_model, [base_model.connection_pool.db_config.host])
+      lb = Gitlab::Database::LoadBalancing::LoadBalancer.new(config)
+      pool = lb.create_replica_connection_pool(1)
+
+      yield pool
+    ensure
+      pool&.disconnect!
+    end
+
     context "when there's CI connection", :request_store do
       before do
         skip_if_multiple_databases_not_setup

@@ -5,7 +5,8 @@ require 'digest'
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Compare archives of different user projects with the same name and check they\'re different' do
+    describe 'Compare archives of different user projects with the same name and check they\'re different',
+             product_group: :source_code do
       include Support::API
       let(:project_name) { "project-archive-download-#{SecureRandom.hex(8)}" }
 

@@ -4,7 +4,7 @@ require 'airborne'
 
 module QA
   RSpec.describe 'Create' do
-    describe 'API basics' do
+    describe 'API basics', product_group: :source_code do
       before(:context) do
         @api_client = Runtime::API::Client.new(:gitlab)
       end
@@ -103,7 +103,7 @@ module QA
             expect(response.headers[:expires]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
             expect(response.headers[:content_disposition]).to include("attachment")
             expect(response.headers[:content_disposition]).not_to include("inline")
-            expect(response.headers[:content_type]).to include("image/svg+xml")
+            expect(response.headers[:content_type]).to include("application/octet-stream")
           end
 
           delete_project_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}")

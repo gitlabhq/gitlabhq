@@ -97,6 +97,25 @@ RSpec.describe Groups::GroupMembersController do
         expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id)
       end
     end
+
+    context 'when webui_members_inherited_users is disabled' do
+      let_it_be(:shared_group) { create(:group) }
+      let_it_be(:shared_group_user) { create(:user) }
+      let_it_be(:group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
+
+      before do
+        group.add_owner(user)
+        shared_group.add_owner(shared_group_user)
+        stub_feature_flags(webui_members_inherited_users: false)
+        sign_in(user)
+      end
+
+      it 'lists inherited group members only' do
+        get :index, params: { group_id: shared_group }
+
+        expect(assigns(:members).map(&:user_id)).to contain_exactly(shared_group_user.id)
+      end
+    end
   end
 
   describe 'PUT update' do
