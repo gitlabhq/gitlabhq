@@ -457,7 +457,7 @@ gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 1.3.0'
-gem 'stackprof', '~> 0.2.15', require: false
+gem 'stackprof', '~> 0.2.21', require: false
 gem 'rbtrace', '~> 0.4', require: false
 gem 'memory_profiler', '~> 0.9', require: false
 gem 'benchmark-memory', '~> 0.1', require: false
