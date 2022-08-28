@@ -344,7 +344,6 @@ module GitalySetup
   def spawn_gitaly(toml = nil)
     check_gitaly_config!
 
-    spawning_process = Process.pid
     pids = []
 
     if toml
@@ -364,8 +363,6 @@ module GitalySetup
       # scripts/gitaly-test-spawn during `make test`. Gitaly needs to remain
       # running until `make test` cleans it up.
       next if ENV['GITALY_PID_FILE']
-
-      next if Process.pid != spawning_process
 
       pids.each { |pid| stop(pid) }
     end
