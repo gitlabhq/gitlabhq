@@ -222,6 +222,34 @@ We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/
 
 See the dedicated [Documentation Style Guide](../documentation/styleguide/index.md).
 
+### Guidelines for good practices
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36576/) in GitLab 13.2 as GitLab Development documentation.
+
+*Good practice* examples demonstrate encouraged ways of writing code while
+comparing with examples of practices to avoid. These examples are labeled as
+*Bad* or *Good*. In GitLab development guidelines, when presenting the cases,
+it's recommended to follow a *first-bad-then-good* strategy. First demonstrate
+the *Bad* practice (how things *could* be done, which is often still working
+code), and then how things *should* be done better, using a *Good* example. This
+is typically an improved example of the same code.
+
+Consider the following guidelines when offering examples:
+
+- First, offer the *Bad* example, and then the *Good* one.
+- When only one bad case and one good case is given, use the same code block.
+- When more than one bad case or one good case is offered, use separated code
+  blocks for each. With many examples being presented, a clear separation helps
+  the reader to go directly to the good part. Consider offering an explanation
+  (for example, a comment, or a link to a resource) on why something is bad
+  practice.
+- Better and best cases can be considered part of the good cases' code block.
+  In the same code block, precede each with comments: `# Better` and `# Best`.
+
+Although the bad-then-good approach is acceptable for the GitLab development
+guidelines, do not use it for user documentation. For user documentation, use
+*Do* and *Don't*. For examples, see the [Pajamas Design System](https://design.gitlab.com/content/punctuation/).
+
 ## Python
 
 See the dedicated [Python Development Guidelines](../python_guide/index.md).

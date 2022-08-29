@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Learn how to contribute to GitLab Documentation.
 ---
 
-# GitLab Documentation guidelines
+# GitLab documentation
 
 The GitLab documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features and the use of GitLab with other applications.
 
@@ -379,6 +379,47 @@ code review. For docs changes in merge requests, whenever a change to files unde
 is made, Danger Bot leaves a comment with further instructions about the documentation
 process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/danger/documentation).
+
+## Help and feedback section
+
+This section ([introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319) in GitLab 11.4)
+is displayed at the end of each document and can be omitted by adding a key into
+the front matter:
+
+```yaml
+---
+feedback: false
+---
+```
+
+The default is to leave it there. If you want to omit it from a document, you
+must check with a technical writer before doing so.
+
+## Disqus
+
+We have integrated the docs site with Disqus (introduced by
+[!151](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/151)),
+allowing our users to post comments.
+
+To omit only the comments from the feedback section, use the following key in
+the front matter:
+
+```yaml
+---
+comments: false
+---
+```
+
+We're hiding comments only in main index pages, such as [the main documentation index](../../index.md),
+since its content is too broad to comment on. Before omitting Disqus, you must
+check with a technical writer.
+
+Note that after adding `feedback: false` to the front matter, it will omit
+Disqus, therefore, don't add both keys to the same document.
+
+The click events in the feedback section are tracked with Google Tag Manager.
+The conversions can be viewed on Google Analytics by navigating to
+**Behavior > Events > Top events > docs**.
 
 ## Automatic screenshot generator
 

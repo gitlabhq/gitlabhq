@@ -291,6 +291,7 @@ module API
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceMilestoneEvents
       mount ::API::ResourceStateEvents
+      mount ::API::RpmProjectPackages
       mount ::API::RubygemPackages
       mount ::API::Search
       mount ::API::Settings
