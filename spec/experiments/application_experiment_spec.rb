@@ -129,7 +129,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       expect_snowplow_event(
         category: 'namespaced/stub',
-        action: 'action',
+        action: :action,
         property: '_property_',
         context: [
           {
@@ -162,7 +162,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
         expect_snowplow_event(
           category: 'namespaced/stub',
-          action: 'action',
+          action: :action,
           user: user,
           project: project,
           namespace: namespace,
@@ -177,7 +177,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
         expect_snowplow_event(
           category: 'namespaced/stub',
-          action: 'action',
+          action: :action,
           user: user,
           project: project,
           namespace: group,
@@ -193,7 +193,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
           expect_snowplow_event(
             category: 'namespaced/stub',
-            action: 'action',
+            action: :action,
             user: actor,
             project: project,
             namespace: namespace,
@@ -208,7 +208,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
           expect_snowplow_event(
             category: 'namespaced/stub',
-            action: 'action',
+            action: :action,
             project: project,
             namespace: namespace,
             context: an_instance_of(Array)
@@ -297,7 +297,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       expect(Gitlab::Tracking).to have_received(:event).with( # rubocop:disable RSpec/ExpectGitlabTracking
         'top',
-        'nested',
+        :nested,
         hash_including(label: 'nested')
       )
     end

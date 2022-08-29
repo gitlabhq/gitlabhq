@@ -10,6 +10,8 @@ module Gitlab
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
         contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace, **extra).to_context, *context]
 
+        action = action.to_s
+
         tracker.event(category, action, label: label, property: property, value: value, context: contexts)
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)

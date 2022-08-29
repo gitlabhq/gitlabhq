@@ -145,6 +145,26 @@ RSpec.describe Gitlab::Tracking do
       end
     end
 
+    context 'when the action is not passed in as a string' do
+      it 'allows symbols' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+        described_class.event('category', :some_action)
+      end
+
+      it 'allows nil' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+        described_class.event('category', nil)
+      end
+
+      it 'allows integers' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+        described_class.event('category', 1)
+      end
+    end
+
     context 'when destination is Snowplow' do
       before do
         allow(Rails.env).to receive(:development?).and_return(true)
