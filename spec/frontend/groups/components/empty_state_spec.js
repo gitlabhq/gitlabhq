@@ -68,7 +68,7 @@ describe('EmptyState', () => {
     it('renders empty state', () => {
       createComponent({ provide: { canCreateSubgroups: false, canCreateProjects: false } });
 
-      expect(wrapper.find(GlEmptyState).props()).toMatchObject({
+      expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
         title: EmptyState.i18n.withoutLinks.title,
         description: EmptyState.i18n.withoutLinks.description,
         svgPath: defaultProvide.emptySubgroupIllustration,

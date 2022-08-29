@@ -73,11 +73,13 @@ export default {
 <template>
   <gl-dropdown
     v-gl-tooltip
-    :aria-label="__('Insert image')"
     :title="__('Insert image')"
+    :text="__('Insert image')"
     size="small"
     category="tertiary"
     icon="media"
+    text-sr-only
+    data-testid="insert-image-toolbar-button"
     @hidden="resetFields()"
   >
     <gl-dropdown-form class="gl-px-3!">

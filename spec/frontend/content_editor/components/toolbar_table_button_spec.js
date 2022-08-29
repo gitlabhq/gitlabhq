@@ -98,4 +98,14 @@ describe('content_editor/components/toolbar_table_button', () => {
 
     expect(getNumButtons()).toBe(100); // 10x10 (and not 11x11)
   });
+
+  describe('a11y tests', () => {
+    it('sets text, title, and text-sr-only properties to the table button dropdown', () => {
+      expect(findDropdown().props()).toMatchObject({
+        text: 'Insert table',
+        textSrOnly: true,
+      });
+      expect(findDropdown().attributes('title')).toBe('Insert table');
+    });
+  });
 });

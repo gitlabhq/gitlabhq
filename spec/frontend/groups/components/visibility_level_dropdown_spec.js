@@ -31,9 +31,9 @@ describe('Visibility Level Dropdown', () => {
 
   const hiddenInputValue = () =>
     wrapper.find("input[name='group[visibility_level]']").attributes('value');
-  const dropdownText = () => wrapper.find(GlDropdown).props('text');
+  const dropdownText = () => wrapper.findComponent(GlDropdown).props('text');
   const findDropdownItems = () =>
-    wrapper.findAll(GlDropdownItem).wrappers.map((option) => ({
+    wrapper.findAllComponents(GlDropdownItem).wrappers.map((option) => ({
       text: option.text(),
       secondaryText: option.props('secondaryText'),
     }));
@@ -56,7 +56,7 @@ describe('Visibility Level Dropdown', () => {
 
   describe('Selecting an option', () => {
     beforeEach(() => {
-      wrapper.findAll(GlDropdownItem).at(1).vm.$emit('click');
+      wrapper.findAllComponents(GlDropdownItem).at(1).vm.$emit('click');
     });
 
     it('sets the value of the hidden input to the selected value', () => {

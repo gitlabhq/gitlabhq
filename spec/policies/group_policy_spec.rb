@@ -9,7 +9,7 @@ RSpec.describe GroupPolicy do
     let(:group) { create(:group, :public, :crm_enabled) }
     let(:current_user) { nil }
 
-    it do
+    specify do
       expect_allowed(*public_permissions)
       expect_disallowed(:upload_file)
       expect_disallowed(*reporter_permissions)
@@ -24,7 +24,7 @@ RSpec.describe GroupPolicy do
     let(:group) { create(:group, :public, :crm_enabled) }
     let(:current_user) { create(:user) }
 
-    it do
+    specify do
       expect_allowed(*public_permissions)
       expect_disallowed(:upload_file)
       expect_disallowed(*reporter_permissions)
@@ -43,7 +43,7 @@ RSpec.describe GroupPolicy do
       create(:project_group_link, project: project, group: group)
     end
 
-    it do
+    specify do
       expect_disallowed(*public_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*owner_permissions)
@@ -58,7 +58,7 @@ RSpec.describe GroupPolicy do
       create(:project_group_link, project: project, group: group)
     end
 
-    it do
+    specify do
       expect_disallowed(*public_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*owner_permissions)
@@ -91,7 +91,7 @@ RSpec.describe GroupPolicy do
     let(:deploy_token) { create(:deploy_token) }
     let(:current_user) { deploy_token }
 
-    it do
+    specify do
       expect_disallowed(*public_permissions)
       expect_disallowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
@@ -104,7 +104,7 @@ RSpec.describe GroupPolicy do
   context 'guests' do
     let(:current_user) { guest }
 
-    it do
+    specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
@@ -121,7 +121,7 @@ RSpec.describe GroupPolicy do
   context 'reporter' do
     let(:current_user) { reporter }
 
-    it do
+    specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
@@ -138,7 +138,7 @@ RSpec.describe GroupPolicy do
   context 'developer' do
     let(:current_user) { developer }
 
-    it do
+    specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
@@ -195,7 +195,7 @@ RSpec.describe GroupPolicy do
   context 'owner' do
     let(:current_user) { owner }
 
-    it do
+    specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
@@ -282,7 +282,7 @@ RSpec.describe GroupPolicy do
     context 'with no user' do
       let(:current_user) { nil }
 
-      it do
+      specify do
         expect_disallowed(*public_permissions)
         expect_disallowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
@@ -295,7 +295,7 @@ RSpec.describe GroupPolicy do
     context 'guests' do
       let(:current_user) { guest }
 
-      it do
+      specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
@@ -308,7 +308,7 @@ RSpec.describe GroupPolicy do
     context 'reporter' do
       let(:current_user) { reporter }
 
-      it do
+      specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -321,7 +321,7 @@ RSpec.describe GroupPolicy do
     context 'developer' do
       let(:current_user) { developer }
 
-      it do
+      specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -334,7 +334,7 @@ RSpec.describe GroupPolicy do
     context 'maintainer' do
       let(:current_user) { maintainer }
 
-      it do
+      specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -347,7 +347,7 @@ RSpec.describe GroupPolicy do
     context 'owner' do
       let(:current_user) { owner }
 
-      it do
+      specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)

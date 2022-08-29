@@ -481,7 +481,7 @@ describe('AppComponent', () => {
     it('should render loading icon', async () => {
       vm.isLoading = true;
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('should render groups tree', async () => {
@@ -494,7 +494,7 @@ describe('AppComponent', () => {
     it('renders modal confirmation dialog', () => {
       createShallowComponent();
 
-      const findGlModal = wrapper.find(GlModal);
+      const findGlModal = wrapper.findComponent(GlModal);
 
       expect(findGlModal.exists()).toBe(true);
       expect(findGlModal.attributes('title')).toBe('Are you sure?');

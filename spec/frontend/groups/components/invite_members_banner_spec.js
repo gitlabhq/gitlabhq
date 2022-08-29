@@ -71,7 +71,7 @@ describe('InviteMembersBanner', () => {
     describe('when the button is clicked', () => {
       beforeEach(() => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        wrapper.find(GlBanner).vm.$emit('primary');
+        wrapper.findComponent(GlBanner).vm.$emit('primary');
       });
 
       it('calls openModal through the eventHub', () => {
@@ -92,7 +92,7 @@ describe('InviteMembersBanner', () => {
       mockAxios.onPost(provide.calloutsPath).replyOnce(200);
       const dismissEvent = 'invite_members_banner_dismissed';
 
-      wrapper.find(GlBanner).vm.$emit('close');
+      wrapper.findComponent(GlBanner).vm.$emit('close');
 
       expect(trackingSpy).toHaveBeenCalledWith(trackCategory, dismissEvent, {
         label: provide.trackLabel,
@@ -102,7 +102,7 @@ describe('InviteMembersBanner', () => {
 
   describe('rendering', () => {
     const findBanner = () => {
-      return wrapper.find(GlBanner);
+      return wrapper.findComponent(GlBanner);
     };
 
     beforeEach(() => {
@@ -132,16 +132,16 @@ describe('InviteMembersBanner', () => {
     });
 
     it('should render the banner when not dismissed', () => {
-      expect(wrapper.find(GlBanner).exists()).toBe(true);
+      expect(wrapper.findComponent(GlBanner).exists()).toBe(true);
     });
 
     it('should close the banner when dismiss is clicked', async () => {
       mockAxios.onPost(provide.calloutsPath).replyOnce(200);
-      expect(wrapper.find(GlBanner).exists()).toBe(true);
-      wrapper.find(GlBanner).vm.$emit('close');
+      expect(wrapper.findComponent(GlBanner).exists()).toBe(true);
+      wrapper.findComponent(GlBanner).vm.$emit('close');
 
       await nextTick();
-      expect(wrapper.find(GlBanner).exists()).toBe(false);
+      expect(wrapper.findComponent(GlBanner).exists()).toBe(false);
     });
   });
 });

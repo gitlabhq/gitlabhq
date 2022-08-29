@@ -91,9 +91,10 @@ export default {
   <editor-state-observer @transaction="updateLinkState">
     <gl-dropdown
       v-gl-tooltip
-      :aria-label="__('Insert link')"
       :title="__('Insert link')"
+      :text="__('Insert link')"
       :toggle-class="{ active: isActive }"
+      text-sr-only
       size="small"
       category="tertiary"
       icon="link"

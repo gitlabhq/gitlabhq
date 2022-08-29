@@ -1,5 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownDivider, GlDropdownForm, GlButton } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownForm,
+  GlButton,
+  GlTooltipDirective as GlTooltip,
+} from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { clamp } from '../services/utils';
 
@@ -16,6 +22,9 @@ export default {
     GlDropdown,
     GlDropdownDivider,
     GlDropdownForm,
+  },
+  directives: {
+    GlTooltip,
   },
   inject: ['tiptapEditor'],
   data() {
@@ -62,7 +71,17 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown size="small" category="tertiary" icon="table" class="content-editor-dropdown" right>
+  <gl-dropdown
+    v-gl-tooltip
+    size="small"
+    category="tertiary"
+    icon="table"
+    :title="__('Insert table')"
+    :text="__('Insert table')"
+    class="content-editor-dropdown"
+    right
+    text-sr-only
+  >
     <gl-dropdown-form class="gl-px-3!">
       <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
         <gl-button

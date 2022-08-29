@@ -205,4 +205,16 @@ describe('content_editor/components/toolbar_link_button', () => {
       });
     });
   });
+
+  describe('a11y tests', () => {
+    it('sets text, title, and text-sr-only properties to the table button dropdown', () => {
+      buildWrapper();
+
+      expect(findDropdown().props()).toMatchObject({
+        text: 'Insert link',
+        textSrOnly: true,
+      });
+      expect(findDropdown().attributes('title')).toBe('Insert link');
+    });
+  });
 });

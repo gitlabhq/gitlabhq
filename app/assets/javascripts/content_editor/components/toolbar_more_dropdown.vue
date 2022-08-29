@@ -46,7 +46,17 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown size="small" category="tertiary" icon="plus" class="content-editor-dropdown" right>
+  <gl-dropdown
+    v-gl-tooltip
+    size="small"
+    category="tertiary"
+    icon="plus"
+    :text="__('More')"
+    :title="__('More')"
+    text-sr-only
+    class="content-editor-dropdown"
+    right
+  >
     <gl-dropdown-item @click="insert('codeBlock')">
       {{ __('Code block') }}
     </gl-dropdown-item>
