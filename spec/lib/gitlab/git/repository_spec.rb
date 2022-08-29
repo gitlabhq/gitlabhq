@@ -21,7 +21,8 @@ RSpec.describe Gitlab::Git::Repository do
     end
   end
 
-  let_it_be(:repository) { create(:project, :repository).repository.raw }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
 
   let(:mutable_project) { create(:project, :repository) }
   let(:mutable_repository) { mutable_project.repository.raw }
@@ -188,7 +189,7 @@ RSpec.describe Gitlab::Git::Repository do
   describe '#to_s' do
     subject { repository.to_s }
 
-    it { is_expected.to eq("<Gitlab::Git::Repository: namespace1/project1>") }
+    it { is_expected.to eq("<Gitlab::Git::Repository: #{project.full_path}>") }
   end
 
   describe '#object_directory_size' do
