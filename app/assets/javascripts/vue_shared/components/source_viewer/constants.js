@@ -81,6 +81,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   protobuf: 'protobuf',
   puppet: 'puppet',
   python: 'python',
+  python3: 'python',
   q: 'q',
   qml: 'qml',
   r: 'r',

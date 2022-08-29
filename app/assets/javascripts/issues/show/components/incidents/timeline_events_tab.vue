@@ -3,10 +3,10 @@ import { GlButton, GlEmptyState, GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/graphql_shared/constants';
 import { fetchPolicies } from '~/lib/graphql';
+import notesEventHub from '~/notes/event_hub';
 import getTimelineEvents from './graphql/queries/get_timeline_events.query.graphql';
 import { displayAndLogError } from './utils';
 import { timelineTabI18n } from './constants';
-
 import CreateTimelineEvent from './create_timeline_event.vue';
 import IncidentTimelineEventsList from './timeline_events_list.vue';
 
@@ -56,7 +56,16 @@ export default {
       return !this.timelineEventLoading && !this.hasTimelineEvents;
     },
   },
+  mounted() {
+    notesEventHub.$on('comment-promoted-to-timeline-event', this.refreshTimelineEvents);
+  },
+  destroyed() {
+    notesEventHub.$off('comment-promoted-to-timeline-event', this.refreshTimelineEvents);
+  },
   methods: {
+    refreshTimelineEvents() {
+      this.$apollo.queries.timelineEvents.refetch();
+    },
     hideEventForm() {
       this.isEventFormVisible = false;
     },

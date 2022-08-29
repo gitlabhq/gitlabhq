@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlButton, GlDropdownItem } from '@gitlab/ui';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import createFlash from '~/flash';
@@ -11,6 +11,7 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { splitCamelCase } from '~/lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
+import TimelineEventButton from './note_actions/timeline_event_button.vue';
 
 export default {
   i18n: {
@@ -23,6 +24,7 @@ export default {
   components: {
     GlIcon,
     ReplyButton,
+    TimelineEventButton,
     GlButton,
     GlDropdownItem,
     UserAccessRoleBadge,
@@ -133,7 +135,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUserDataByProp', 'getNoteableData']),
+    ...mapState(['isPromoteCommentToTimelineEventInProgress']),
+    ...mapGetters(['getUserDataByProp', 'getNoteableData', 'canUserAddIncidentTimelineEvents']),
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
     },
@@ -199,7 +202,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleAwardRequest']),
+    ...mapActions(['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
     onEdit() {
       this.$emit('handleEdit');
     },
@@ -291,6 +294,12 @@ export default {
       :loading="isResolving"
       class="line-resolve-btn note-action-button"
       @click="onResolve"
+    />
+    <timeline-event-button
+      v-if="canUserAddIncidentTimelineEvents"
+      :note-id="noteId"
+      :is-promotion-in-progress="isPromoteCommentToTimelineEventInProgress"
+      @click-promote-comment-to-event="promoteCommentToTimelineEvent"
     />
     <emoji-picker
       v-if="canAwardEmoji"

@@ -30,6 +30,7 @@ export default () => ({
     isNotesFetched: false,
     isLoading: true,
     isLoadingDescriptionVersion: false,
+    isPromoteCommentToTimelineEventInProgress: false,
 
     // holds endpoints and permissions provided through haml
     notesData: {

@@ -1,0 +1,8 @@
+mutation PromoteTimelineEvent($input: TimelineEventPromoteFromNoteInput!) {
+  timelineEventPromoteFromNote(input: $input) {
+    timelineEvent {
+      id
+    }
+    errors
+  }
+}

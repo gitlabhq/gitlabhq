@@ -2227,6 +2227,9 @@ msgstr ""
 msgid "Add comment to design"
 msgstr ""
 
+msgid "Add comment to incident timeline"
+msgstr ""
+
 msgid "Add comment..."
 msgstr ""
 
@@ -9451,6 +9454,9 @@ msgstr ""
 msgid "Comment '%{label}' position"
 msgstr ""
 
+msgid "Comment added to the timeline."
+msgstr ""
+
 msgid "Comment form position"
 msgstr ""
 
@@ -15251,6 +15257,9 @@ msgid "Error occurred. User was not unlocked"
 msgstr ""
 
 msgid "Error parsing CSV file. Please make sure it has"
+msgstr ""
+
+msgid "Error promoting the note to timeline event: %{error}"
 msgstr ""
 
 msgid "Error rendering Markdown preview"
@@ -37000,6 +37009,9 @@ msgid "Something went wrong while obtaining the Let's Encrypt certificate."
 msgstr ""
 
 msgid "Something went wrong while promoting the issue to an epic. Please try again."
+msgstr ""
+
+msgid "Something went wrong while promoting the note to timeline event."
 msgstr ""
 
 msgid "Something went wrong while reopening a requirement."

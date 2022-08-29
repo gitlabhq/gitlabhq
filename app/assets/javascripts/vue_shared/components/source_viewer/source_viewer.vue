@@ -42,7 +42,7 @@ export default {
     return {
       languageDefinition: null,
       content: this.blob.rawTextBlob,
-      language: ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language],
+      language: ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language?.toLowerCase()],
       hljs: null,
       firstChunk: null,
       chunks: {},
@@ -62,7 +62,7 @@ export default {
       const supportedLanguages = Object.keys(languageLoader);
       return (
         !supportedLanguages.includes(this.language) &&
-        !supportedLanguages.includes(this.blob.language)
+        !supportedLanguages.includes(this.blob.language?.toLowerCase())
       );
     },
   },

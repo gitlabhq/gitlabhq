@@ -13,6 +13,7 @@ export const MERGED = 'merged';
 export const ISSUE_NOTEABLE_TYPE = 'Issue';
 export const EPIC_NOTEABLE_TYPE = 'Epic';
 export const MERGE_REQUEST_NOTEABLE_TYPE = 'MergeRequest';
+export const INCIDENT_NOTEABLE_TYPE = 'INCIDENT'; // TODO: check if value can be converted to `Incident`
 export const UNRESOLVE_NOTE_METHOD_NAME = 'delete';
 export const RESOLVE_NOTE_METHOD_NAME = 'post';
 export const DESCRIPTION_TYPE = 'changed the description';
@@ -31,6 +32,7 @@ export const NOTEABLE_TYPE_MAPPING = {
   Issue: ISSUE_NOTEABLE_TYPE,
   MergeRequest: MERGE_REQUEST_NOTEABLE_TYPE,
   Epic: EPIC_NOTEABLE_TYPE,
+  Incident: INCIDENT_NOTEABLE_TYPE,
 };
 
 export const DISCUSSION_FILTER_TYPES = {

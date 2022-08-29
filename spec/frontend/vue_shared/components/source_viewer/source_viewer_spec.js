@@ -110,6 +110,13 @@ describe('Source Viewer component', () => {
       expect(hljs.registerLanguage).toHaveBeenCalledWith('json', languageDefinition.default);
     });
 
+    it('correctly maps languages starting with uppercase', async () => {
+      await createComponent({ language: 'Python3' });
+      const languageDefinition = await import(`highlight.js/lib/languages/python`);
+
+      expect(hljs.registerLanguage).toHaveBeenCalledWith('python', languageDefinition.default);
+    });
+
     it('highlights the first chunk', () => {
       expect(hljs.highlight).toHaveBeenCalledWith(chunk1.trim(), { language: mappedLanguage });
     });

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import NotesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
 import { store } from './stores';
@@ -39,6 +40,7 @@ export default () => {
           username: parsedUserData.username,
           avatar_url: parsedUserData.avatar_path || parsedUserData.avatar_url,
           path: parsedUserData.path,
+          can_add_timeline_events: parseBoolean(notesDataset.canAddTimelineEvents),
         };
       }
 
