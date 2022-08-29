@@ -72,6 +72,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -252,6 +256,7 @@ export default {
           :users="assignees"
           :issuable-type="issuableType"
           :signed-in="signedIn"
+          :editable="editable"
           @assign-self="assignSelf"
           @expand-widget="expandWidget"
         />

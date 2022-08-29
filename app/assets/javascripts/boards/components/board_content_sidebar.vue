@@ -57,6 +57,9 @@ export default {
     labelsFilterBasePath: {
       default: '',
     },
+    canUpdate: {
+      default: false,
+    },
   },
   inheritAttrs: false,
   computed: {
@@ -163,6 +166,7 @@ export default {
           :full-path="fullPath"
           :initial-assignees="activeBoardItem.assignees"
           :allow-multiple-assignees="multipleAssigneesFeatureAvailable"
+          :editable="canUpdate"
           @assignees-updated="setAssignees"
         />
         <sidebar-dropdown-widget

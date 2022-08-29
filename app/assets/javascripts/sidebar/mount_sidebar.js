@@ -162,6 +162,7 @@ function mountAssigneesComponent() {
           issuableType,
           issuableId: id,
           allowMultipleAssignees: !el.dataset.maxAssignees,
+          editable,
         },
         scopedSlots: {
           collapsed: ({ users }) =>
