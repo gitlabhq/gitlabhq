@@ -19,10 +19,9 @@ namespace :tw do
     end
 
     CODE_OWNER_RULES = [
-      CodeOwnerRule.new('Activation', '@kpaizee'),
-      CodeOwnerRule.new("Adoption", '@kpaizee'),
-      CodeOwnerRule.new('Activation', '@kpaizee'),
-      CodeOwnerRule.new('Adoption', '@kpaizee'),
+      CodeOwnerRule.new('Activation', '@phillipwells'),
+      CodeOwnerRule.new('Acquisition', '@phillipwells'),
+      CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
       CodeOwnerRule.new('Authentication and Authorization', '@eread'),
       CodeOwnerRule.new('Certify', '@msedlakjakubowski'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
@@ -41,7 +40,6 @@ namespace :tw do
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
       CodeOwnerRule.new('Ecosystem', '@kpaizee'),
       CodeOwnerRule.new('Editor', '@aqualls'),
-      CodeOwnerRule.new('Expansion', '@kpaizee'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),

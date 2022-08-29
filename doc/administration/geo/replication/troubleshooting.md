@@ -276,7 +276,7 @@ sudo gitlab-rake gitlab:geo:check
   ```
 
   Ensure you have added the secondary node in the Admin Area of the **primary** node.
-  Also ensure you entered the `external_url` or `gitlab_rails['geo_node_name']`
+  Also ensure you entered the `gitlab_rails['geo_node_name']`
   when adding the secondary node in the Admin Area of the **primary** node.
   In GitLab 12.3 and earlier, edit the secondary node in the Admin Area of the **primary**
   node and ensure that there is a trailing `/` in the `Name` field.
