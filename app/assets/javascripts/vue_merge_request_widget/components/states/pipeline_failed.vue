@@ -26,9 +26,9 @@ export default {
 
 <template>
   <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="true" status="warning" />
+    <status-icon status="failed" />
     <div class="media-body space-children">
-      <span class="gl-ml-0! gl-text-body! bold">
+      <span class="gl-font-weight-bold">
         <gl-sprintf :message="$options.i18n.failedMessage">
           <template #link="{ content }">
             <gl-link :href="troubleshootingDocsPath" target="_blank">

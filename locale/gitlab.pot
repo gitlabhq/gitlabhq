@@ -19825,9 +19825,6 @@ msgstr ""
 msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}."
 msgstr ""
 
-msgid "If you are added to a project, it will be displayed here."
-msgstr ""
-
 msgid "If you did not initiate these sign-in attempts, please reach out to your administrator or enable two-factor authentication (2FA) on your account."
 msgstr ""
 
@@ -28096,12 +28093,6 @@ msgid "PackageRegistry|Required Python: %{pythonVersion}"
 msgstr ""
 
 msgid "PackageRegistry|RubyGems"
-msgstr ""
-
-msgid "PackageRegistry|Settings for Generic packages"
-msgstr ""
-
-msgid "PackageRegistry|Settings for Maven packages"
 msgstr ""
 
 msgid "PackageRegistry|Show Composer commands"
@@ -45239,6 +45230,9 @@ msgstr ""
 msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
 msgstr ""
 
+msgid "You see projects here when you're added to a group or project."
+msgstr ""
+
 msgid "You successfully declined the invitation"
 msgstr ""
 
@@ -46999,6 +46993,9 @@ msgid_plural "mrWidget|Mentions issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "mrWidget|Merge blocked: a Jira issue key must be mentioned in the title or description."
+msgstr ""
+
 msgid "mrWidget|Merge blocked: all required approvals must be given."
 msgstr ""
 
@@ -47132,9 +47129,6 @@ msgid "mrWidget|To change this default message, edit the template for merge comm
 msgstr ""
 
 msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "mrWidget|To merge, a Jira issue key must be mentioned in the title or description."
 msgstr ""
 
 msgid "mrWidget|Users who can write to the source or target branches can resolve the conflicts."

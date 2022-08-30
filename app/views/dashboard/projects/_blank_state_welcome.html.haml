@@ -11,14 +11,9 @@
         %p
           = _('Projects are where you store your code, access issues, wiki and other features of GitLab.')
   - else
-    .blank-state.gl-display-flex.gl-align-items-center.gl-border-1.gl-border-solid.gl-border-gray-100.gl-rounded-base.gl-mb-5
-      .blank-state-icon
-        = custom_icon("add_new_project", size: 50)
-      .blank-state-body.gl-sm-pl-0.gl-pl-6
-        %h3.gl-font-size-h2.gl-mt-0
-          = _('Create a project')
-        %p
-          = _('If you are added to a project, it will be displayed here.')
+    = render Pajamas::AlertComponent.new(variant: :info, alert_options: { class: 'gl-mb-5 gl-w-full' }) do |c|
+      = c.body do
+        = _("You see projects here when you're added to a group or project.").html_safe
 
   - if current_user.can_create_group?
     = link_to new_group_path, class: link_classes do

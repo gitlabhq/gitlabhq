@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import api from '~/api';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
@@ -16,7 +16,6 @@ export default {
   },
   components: {
     MrWidgetAuthorTime,
-    GlIcon,
     StateContainer,
   },
   props: {
@@ -48,18 +47,6 @@ export default {
     shouldShowSourceBranchRemoving() {
       const { sourceBranchRemoved, isRemovingSourceBranch } = this.mr;
       return !sourceBranchRemoved && (isRemovingSourceBranch || this.isMakingRequest);
-    },
-    shouldShowMergedButtons() {
-      const {
-        canRevertInCurrentMR,
-        canCherryPickInCurrentMR,
-        revertInForkPath,
-        cherryPickInForkPath,
-      } = this.mr;
-
-      return (
-        canRevertInCurrentMR || canCherryPickInCurrentMR || revertInForkPath || cherryPickInForkPath
-      );
     },
     revertTitle() {
       return s__('mrWidget|Revert this merge request in a new merge request');
@@ -163,10 +150,7 @@ export default {
 };
 </script>
 <template>
-  <state-container :actions="actions">
-    <template #icon>
-      <gl-icon name="merge" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
-    </template>
+  <state-container :actions="actions" status="merged">
     <mr-widget-author-time
       :action-text="s__('mrWidget|Merged by')"
       :author="mr.metrics.mergedBy"

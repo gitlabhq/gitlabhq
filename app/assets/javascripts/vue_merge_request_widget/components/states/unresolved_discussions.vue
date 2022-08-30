@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <state-container status="warning">
+  <state-container status="failed">
     <span
       class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!"
     >

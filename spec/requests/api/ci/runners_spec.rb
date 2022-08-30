@@ -896,7 +896,7 @@ RSpec.describe API::Ci::Runners do
           get api("/runners/#{shared_runner.id}/jobs", admin)
         end
 
-        create(:ci_build, :failed, runner: shared_runner, project: create(:project))
+        create(:ci_build, :failed, runner: shared_runner, project: project)
 
         expect do
           get api("/runners/#{shared_runner.id}/jobs", admin)

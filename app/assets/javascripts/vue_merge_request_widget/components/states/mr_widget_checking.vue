@@ -1,20 +1,17 @@
 <script>
-import StatusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetChecking',
   components: {
-    StatusIcon,
+    StateContainer,
   },
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="true" status="loading" />
-    <div class="media-body space-children">
-      <span class="gl-ml-0! gl-text-body! bold">
-        {{ s__('mrWidget|Checking if merge request can be merged…') }}
-      </span>
-    </div>
-  </div>
+  <state-container status="loading">
+    <span class="gl-font-weight-bold">
+      {{ s__('mrWidget|Checking if merge request can be merged…') }}
+    </span>
+  </state-container>
 </template>

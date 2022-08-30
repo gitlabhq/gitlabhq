@@ -6088,6 +6088,29 @@ The edge type for [`BoardList`](#boardlist).
 | <a id="boardlistedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="boardlistedgenode"></a>`node` | [`BoardList`](#boardlist) | The item at the end of the edge. |
 
+#### `BranchRuleConnection`
+
+The connection type for [`BranchRule`](#branchrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="branchruleconnectionedges"></a>`edges` | [`[BranchRuleEdge]`](#branchruleedge) | A list of edges. |
+| <a id="branchruleconnectionnodes"></a>`nodes` | [`[BranchRule]`](#branchrule) | A list of nodes. |
+| <a id="branchruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `BranchRuleEdge`
+
+The edge type for [`BranchRule`](#branchrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="branchruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="branchruleedgenode"></a>`node` | [`BranchRule`](#branchrule) | The item at the end of the edge. |
+
 #### `CiBuildNeedConnection`
 
 The connection type for [`CiBuildNeed`](#cibuildneed).
@@ -9984,6 +10007,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="branchcommit"></a>`commit` | [`Commit`](#commit) | Commit for the branch. |
 | <a id="branchname"></a>`name` | [`String!`](#string) | Name of the branch. |
+
+### `BranchRule`
+
+List of branch rules for a project, grouped by branch name.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="branchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the branch rule was created. |
+| <a id="branchrulename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
+| <a id="branchruleupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the branch rule was last updated. |
 
 ### `BurnupChartDailyTotals`
 
@@ -15589,6 +15624,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingassets"></a>`assets` | [`[AssetType!]`](#assettype) | List of assets associated with the vulnerability. |
 | <a id="pipelinesecurityreportfindingconfidence"></a>`confidence` | [`String`](#string) | Type of the security report that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindingdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="pipelinesecurityreportfindingevidence"></a>`evidence` | [`VulnerabilityEvidence`](#vulnerabilityevidence) | Evidence for the vulnerability. |
 | <a id="pipelinesecurityreportfindingfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
 | <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability finding. |
@@ -15618,6 +15654,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
 | <a id="projectautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
 | <a id="projectavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the project. |
+| <a id="projectbranchrules"></a>`branchRules` | [`BranchRuleConnection`](#branchruleconnection) | Branch rules configured for the project. (see [Connections](#connections)) |
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |

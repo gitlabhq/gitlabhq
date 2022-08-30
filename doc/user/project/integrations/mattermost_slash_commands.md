@@ -104,18 +104,20 @@ provide to GitLab:
 
 Your slash command can now communicate with your GitLab project.
 
-## Authorizing Mattermost to interact with GitLab
+## Connect your GitLab account to Mattermost
 
-The first time a user interacts with the newly created slash commands,
-Mattermost triggers an authorization process.
+Prerequisite:
 
-![Mattermost bot authorize](img/mattermost_bot_auth.png)
+- To run [slash commands](#available-slash-commands), you must have
+  [permission](../../permissions.md#project-members-permissions) to
+  perform the action in the GitLab project.
 
-This connects your Mattermost user with your GitLab user. You can
-see all authorized chat accounts in your profile's page under **Chat**.
+To interact with GitLab using Mattermost slash commands:
 
-When the authorization process is complete, you can start interacting with
-GitLab using the Mattermost commands.
+1. In a Mattermost chat environment, run your new slash command.
+1. Select **connect your GitLab account** to authorize access.
+
+You can see all authorized chat accounts in your Mattermost profile page under **Chat**.
 
 ## Available slash commands
 
@@ -123,30 +125,21 @@ The available slash commands for Mattermost are:
 
 | Command | Description | Example |
 | ------- | ----------- | ------- |
-| <kbd>/&lt;trigger&gt; issue new &lt;title&gt; <kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd> &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | `/gitlab issue new We need to change the homepage` |
-| <kbd>/&lt;trigger&gt; issue show &lt;issue-number&gt;</kbd> | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | `/gitlab issue show 42` |
-| <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured](../../../ci/yaml/index.md). | `/gitlab deploy staging to production` |
+| `/<trigger> issue new <title>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<description>` | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | `/gitlab issue new We need to change the homepage` |
+| `/<trigger> issue show <issue-number>` | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | `/gitlab issue show 42` |
+| `/<trigger> deploy <environment> to <environment>` | Start the CI/CD job that deploys from one environment to another (for example, `staging` to `production`). CI/CD must be [properly configured](../../../ci/yaml/index.md). | `/gitlab deploy staging to production` |
+| `/<trigger> help` | View a list of available slash commands. | `/gitlab help` |
 
-To see a list of available commands to interact with GitLab, type the
-trigger word followed by <kbd>help</kbd>. Example: `/gitlab help`
+## Related topics
 
-![Mattermost bot available commands](img/mattermost_bot_available_commands.png)
-
-## Permissions
-
-The permissions to run the [available commands](#available-slash-commands) derive from
-the [permissions you have on the project](../../permissions.md#project-members-permissions).
+- [Mattermost slash commands](https://developers.mattermost.com/integrate/slash-commands/)
+- [Omnibus GitLab Mattermost](../../../integration/mattermost/)
 
 ## Troubleshooting
 
-If an event is not being triggered, confirm that the channel you're using is a public one.
-Mattermost webhooks do not have access to private channels.
+When a Mattermost slash command does not trigger an event in GitLab:
 
-If a private channel is required, you can edit the webhook's channel in Mattermost and
-select a private channel. It is not possible to use different channels for
-different types of notifications. All events are sent to the specified channel.
-
-## Further reading
-
-- [Mattermost slash commands documentation](https://docs.mattermost.com/developer/slash-commands.html)
-- [Omnibus GitLab Mattermost](../../../integration/mattermost/)
+- Ensure you're using a public channel.
+  Mattermost webhooks do not have access to private channels.
+- If you require a private channel, edit the webhook channel,
+  and select a private one. All events are sent to the specified channel.

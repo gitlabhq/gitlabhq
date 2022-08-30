@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+# Script to generate e2e test child pipeline
+# This is required because environment variables that are generated dynamically are not picked up by rules in child pipelines
+
+pipeline_yml="${1:-package-and-test.yml}"
+
+if [ "$QA_SKIP_ALL_TESTS" == "true" ]; then
+  echo "Generated no-op child pipeline due to QA_SKIP_ALL_TESTS set to 'true'"
+  cp .gitlab/ci/package-and-test/skip.gitlab-ci.yml $pipeline_yml
+  exit
+fi
+
+variables=$(cat <<YML
+variables:
+  RELEASE: "${CI_REGISTRY}/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+  SKIP_REPORT_IN_ISSUES: "${SKIP_REPORT_IN_ISSUES:-true}"
+  COLORIZED_LOGS: "true"
+  QA_LOG_LEVEL: "info"
+  QA_TESTS: "$QA_TESTS"
+  QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
+  QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"
+  QA_SUITES: "$QA_SUITES"
+YML
+)
+
+echo "$variables" >$pipeline_yml
+cat .gitlab/ci/package-and-test/main.gitlab-ci.yml >>$pipeline_yml
+
+echo "Generated e2e:package-and-test pipeline with following variables section:"
+echo "$variables"

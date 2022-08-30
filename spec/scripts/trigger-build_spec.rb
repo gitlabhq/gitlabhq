@@ -268,13 +268,10 @@ RSpec.describe Trigger do
     describe '#variables' do
       it 'invokes the trigger with expected variables' do
         expect(subject.variables).to include(
-          'QA_IMAGE' => env['QA_IMAGE'],
+          'SKIP_QA_TEST' => 'true',
           'SKIP_QA_DOCKER' => 'true',
           'ALTERNATIVE_SOURCES' => 'true',
-          'CACHE_UPDATE' => env['OMNIBUS_GITLAB_CACHE_UPDATE'],
-          'GITLAB_QA_OPTIONS' => env['GITLAB_QA_OPTIONS'],
-          'QA_TESTS' => env['QA_TESTS'],
-          'ALLURE_JOB_NAME' => env['ALLURE_JOB_NAME']
+          'CACHE_UPDATE' => env['OMNIBUS_GITLAB_CACHE_UPDATE']
         )
       end
 
@@ -354,16 +351,6 @@ RSpec.describe Trigger do
 
         it 'sets ee to false' do
           expect(subject.variables['ee']).to eq('false')
-        end
-      end
-
-      context 'when QA_BRANCH is set' do
-        before do
-          stub_env('QA_BRANCH', 'qa_branch')
-        end
-
-        it 'sets QA_BRANCH to qa_branch' do
-          expect(subject.variables['QA_BRANCH']).to eq('qa_branch')
         end
       end
     end

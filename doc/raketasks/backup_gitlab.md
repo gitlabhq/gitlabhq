@@ -262,7 +262,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=p
 ### Skipping tar creation
 
 NOTE:
-It is not possible to skip the tar creation when using [object storage](#uploading-backups-to-a-remote-cloud-storage) for backups.
+It is not possible to skip the tar creation when using [object storage](#upload-backups-to-a-remote-cloud-storage) for backups.
 
 The last part of creating a backup is generation of a `.tar` file containing
 all the parts. In some cases (for example, if the backup is picked up by other
@@ -391,7 +391,7 @@ For example, to back up all repositories for all projects in **Group A** (`group
   sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c
   ```
 
-### Uploading backups to a remote (cloud) storage
+### Upload backups to a remote (cloud) storage
 
 NOTE:
 It is not possible to [skip the tar creation](#skipping-tar-creation) when using object storage for backups.
@@ -401,7 +401,7 @@ the `.tar` file it creates. In the following example, we use Amazon S3 for
 storage, but Fog also lets you use [other storage providers](https://fog.io/storage/).
 GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
 for AWS, Google, OpenStack Swift, Rackspace, and Aliyun. A local driver is
-[also available](#uploading-to-locally-mounted-shares).
+[also available](#upload-to-locally-mounted-shares).
 
 [Read more about using object storage with GitLab](../administration/object_storage.md).
 
@@ -722,7 +722,7 @@ Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:back
 
 ### Skip uploading backups to remote storage
 
-If you have configured GitLab to [upload backups in a remote storage](#uploading-backups-to-a-remote-cloud-storage),
+If you have configured GitLab to [upload backups in a remote storage](#upload-backups-to-a-remote-cloud-storage),
 you can use the `SKIP=remote` option to skip uploading your backups to the remote storage.
 
 For Omnibus GitLab packages:
@@ -737,23 +737,40 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=remote RAILS_ENV=production
 ```
 
-### Uploading to locally mounted shares
+### Upload to locally-mounted shares
 
-You may also send backups to a mounted share (for example, `NFS`,`CIFS`, or
-`SMB`) by using the Fog [`Local`](https://github.com/fog/fog-local#usage)
-storage provider. The directory pointed to by the `local_root` key _must_ be
-owned by the `git` user _when mounted_ (mounting with the `uid=` of the `git`
-user for `CIFS` and `SMB`) or the user that you are executing the backup tasks
-as (for Omnibus packages, this is the `git` user).
+You can send backups to a locally-mounted share (for example, `NFS`,`CIFS`, or `SMB`) using the Fog
+[`Local`](https://github.com/fog/fog-local#usage) storage provider.
 
-The `backup_upload_remote_directory` _must_ be set in addition to the
-`local_root` key. This is the sub directory inside the mounted directory that
-backups are copied to, and is created if it does not exist. If the
-directory that you want to copy the tarballs to is the root of your mounted
-directory, use `.` instead.
+To do this, you must set the following configuration keys:
+
+- `backup_upload_remote_directory`: mounted directory that backups are copied to.
+- `backup_upload_connection.local_root`: subdirectory of the `backup_upload_remote_directory` directory. It is created if it doesn't exist.
+  If you want to copy the tarballs to the root of your mounted directory, use `.`.
+
+When mounted, the directory set in the `local_root` key must be owned by either:
+
+- The `git` user. So, mounting with the `uid=` of the `git` user for `CIFS` and `SMB`.
+- The user that you are executing the backup tasks as. For Omnibus GitLab, this is the `git` user.
 
 Because file system performance may affect overall GitLab performance,
-[GitLab doesn't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
+[we don't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
+
+#### Avoid conflicting configuration
+
+Don't set the following configuration keys to the same path:
+
+- `gitlab_rails['backup_path']` (`backup.path` for source installations).
+- `gitlab_rails['backup_upload_connection'].local_root` (`backup.upload.connection.local_root` for source installations).
+
+The `backup_path` configuration key sets the local location of the backup file. The `upload` configuration key is
+intended for use when the backup file is uploaded to a separate server, perhaps for archival purposes.
+
+If these configuration keys are set to the same location, the upload feature fails because a backup already exists at
+the upload location. This failure causes the upload feature to delete the backup because it assumes it's a residual file
+remaining after the failed upload attempt.
+
+#### Configure uploads to locally-mounted shares
 
 For Omnibus GitLab packages:
 
@@ -878,7 +895,7 @@ for backups. The next time the backup task runs, backups older than the `backup_
 pruned.
 
 This configuration option manages only local files. GitLab doesn't prune old
-files stored in a third-party [object storage](#uploading-backups-to-a-remote-cloud-storage)
+files stored in a third-party [object storage](#upload-backups-to-a-remote-cloud-storage)
 because the user may not have permission to list and delete files. It's
 recommended that you configure the appropriate retention policy for your object
 storage (for example, [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-lifecycle.html)).

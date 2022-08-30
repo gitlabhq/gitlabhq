@@ -44,7 +44,13 @@ func SafeContentHeaders(data []byte, contentDisposition string) (string, string)
 	contentType := safeContentType(data)
 	contentDisposition = safeContentDisposition(contentType, contentDisposition)
 
-	if attachmentRegex.MatchString(contentDisposition) {
+	// Set attachments to application/octet-stream since browsers can do
+	// a better job distinguishing certain types (for example: ZIP files
+	// vs. Microsoft .docx files). However, browsers may safely render SVGs even
+	// when Content-Disposition is an attachment but only if the SVG
+	// Content-Type is set. Note that scripts in an SVG file will only be executed
+	// if the file is downloaded separately with an inline Content-Disposition.
+	if attachmentRegex.MatchString(contentDisposition) && !isType(contentType, svgMimeTypeRegex) {
 		contentType = "application/octet-stream"
 	}
 	return contentType, contentDisposition

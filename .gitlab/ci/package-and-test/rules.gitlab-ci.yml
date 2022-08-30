@@ -1,0 +1,99 @@
+# Specific specs passed
+.specific-specs: &specific-specs
+  if: $QA_TESTS != ""
+
+# No specific specs passed
+.all-specs: &all-specs
+  if: $QA_TESTS == ""
+
+# FF changes
+.feature-flags-set: &feature-flags-set
+  if: $QA_FEATURE_FLAGS != ""
+
+# Only deleted feature flags
+.feature-flags-deleted: &feature-flags-deleted
+  if: $QA_FEATURE_FLAGS != "" && $QA_FEATURE_FLAGS !~ /enabled|disabled/
+
+# Manually trigger job on ff changes but with default ff state instead of inverted
+.feature-flags-set-manual: &feature-flags-set-manual
+  <<: *feature-flags-set
+  when: manual
+  allow_failure: true
+
+# QA framework changes present
+.qa-framework-changes: &qa-framework-changes
+  if: $QA_FRAMEWORK_CHANGES == "true"
+
+# Process test results (notify failure to slack, create test session report, relate test failures)
+.process-test-results: &process-test-results
+  if: $PROCESS_TEST_RESULTS == "true"
+
+# Selective test execution against omnibus instance have following execution scenarios:
+#   * only e2e spec files changed - runs only changed specs
+#   * qa framework changes - runs full test suite
+#   * feature flag changed - runs full test suite with base gitlab instance configuration with both ff states
+#   * quarantined e2e spec - skips execution of e2e tests by creating a no-op pipeline
+
+# ------------------------------------------
+# Prepare
+# ------------------------------------------
+.rules:prepare:
+  rules:
+    - when: always
+
+# ------------------------------------------
+# Test
+# ------------------------------------------
+.rules:test:quarantine:
+  rules:
+    - when: manual
+      variables:
+        QA_TESTS: ""
+
+.rules:test:feature-flags-set:
+  rules:
+    # unset specific specs if pipeline has feature flag changes and run full suite
+    - <<: *feature-flags-set
+      variables:
+        QA_TESTS: ""
+
+.rules:test:feature-flags-deleted:
+  rules:
+    - <<: *feature-flags-deleted
+      when: never
+
+# parallel and non parallel rules are used for jobs that require parallel execution and thus need to switch
+# between parallel and non parallel when only certain specs are executed
+.rules:test:qa-non-parallel:
+  rules:
+    # always run parallel with full suite when framework changes present or ff state changed
+    - <<: *qa-framework-changes
+      when: never
+    - <<: *all-specs
+      when: never
+    - <<: *feature-flags-set
+      when: never
+
+.rules:test:qa-parallel:
+  rules:
+    - *qa-framework-changes
+    - <<: *specific-specs
+      when: never
+    - *feature-flags-set-manual
+
+# general qa job rule for jobs without the need to run in parallel
+.rules:test:qa:
+  rules:
+    - *qa-framework-changes
+    - *feature-flags-set-manual
+
+# ------------------------------------------
+# Report
+# ------------------------------------------
+.rules:report:allure-report:
+  rules:
+    - when: always
+
+.rules:report:process-results:
+  rules:
+    - *process-test-results

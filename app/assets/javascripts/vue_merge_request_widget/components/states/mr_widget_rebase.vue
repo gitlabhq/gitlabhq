@@ -81,12 +81,9 @@ export default {
         return 'loading';
       }
       if (!this.canPushToSourceBranch && !this.rebaseInProgress) {
-        return 'warning';
+        return 'failed';
       }
       return 'success';
-    },
-    showDisabledButton() {
-      return ['failed', 'loading'].includes(this.status);
     },
     fastForwardMergeText() {
       return __('Merge blocked: the source branch must be rebased onto the target branch.');

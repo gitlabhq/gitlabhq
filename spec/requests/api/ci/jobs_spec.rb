@@ -93,9 +93,13 @@ RSpec.describe API::Ci::Jobs do
       let(:params_with_token) { {} }
     end
 
+    def perform_request
+      get api('/job'), headers: headers_with_token, params: params_with_token
+    end
+
     before do |example|
       unless example.metadata[:skip_before_request]
-        get api('/job'), headers: headers_with_token, params: params_with_token
+        perform_request
       end
     end
 
@@ -122,6 +126,15 @@ RSpec.describe API::Ci::Jobs do
 
       it 'returns specific job data' do
         expect(json_response['finished_at']).to be_nil
+      end
+
+      it 'avoids N+1 queries', :skip_before_request do
+        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+        running_job = create(:ci_build, :running, project: project, user: user, pipeline: pipeline, artifacts_expire_at: 1.day.since)
+        running_job.save!
+
+        expect { perform_request }.not_to exceed_query_limit(control_count)
       end
 
       it_behaves_like 'returns common pipeline data' do

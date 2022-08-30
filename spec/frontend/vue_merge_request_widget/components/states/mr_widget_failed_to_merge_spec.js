@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import MrWidgetFailedToMerge from '~/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue';
+import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
 describe('MRWidgetFailedToMerge', () => {
@@ -128,7 +129,11 @@ describe('MRWidgetFailedToMerge', () => {
 
       await nextTick();
 
-      expect(wrapper.find('.js-refresh-label').text().trim()).toBe('Refreshing now');
+      const stateContainerWrapper = wrapper.findComponent(StateContainer);
+
+      expect(stateContainerWrapper.exists()).toBe(true);
+      expect(stateContainerWrapper.props('status')).toBe('loading');
+      expect(stateContainerWrapper.text().trim()).toBe('Refreshing now');
     });
   });
 
@@ -146,9 +151,9 @@ describe('MRWidgetFailedToMerge', () => {
     });
 
     it('renders refresh button', () => {
-      expect(
-        wrapper.find('[data-testid="merge-request-failed-refresh-button"]').text().trim(),
-      ).toBe('Refresh now');
+      expect(wrapper.findComponent(StateContainer).props('actions')).toMatchObject([
+        { text: 'Refresh now', onClick: expect.any(Function) },
+      ]);
     });
 
     it('renders remaining time', () => {

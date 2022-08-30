@@ -940,6 +940,13 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
+      changes: *feature-flag-development-config-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *nodejs-patterns
       allow_failure: true
@@ -958,22 +965,11 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
+      variables:
+        SKIP_REPORT_IN_ISSUES: "false"
+        PROCESS_TEST_RESULTS: "true"
     - <<: *if-force-ci
       when: manual
-      allow_failure: true
-
-.qa:rules:package-and-qa:feature-flags:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-revert
-      when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
-      changes: *feature-flag-development-config-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *feature-flag-development-config-patterns
       allow_failure: true
 
 ###############

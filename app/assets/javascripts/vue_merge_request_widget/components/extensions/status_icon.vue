@@ -49,19 +49,28 @@ export default {
   <div
     :class="[
       $options.EXTENSION_ICON_CLASS[iconName],
-      { 'mr-widget-extension-icon gl-w-6': !isLoading && level === 1 },
+      { 'gl-w-6': !isLoading && level === 1 },
       { 'gl-p-2': isLoading || level === 1 },
     ]"
-    class="gl-rounded-full gl-mr-3 gl-relative gl-p-2"
+    class="gl-mr-3 gl-p-2"
   >
-    <gl-loading-icon v-if="isLoading" size="sm" inline class="gl-display-block" />
-    <gl-icon
-      v-else
-      :name="$options.EXTENSION_ICON_NAMES[iconName]"
-      :size="size"
-      :aria-label="iconAriaLabel"
-      :data-qa-selector="`status_${iconName}_icon`"
-      class="gl-display-block"
-    />
+    <div
+      class="gl-rounded-full gl-relative gl-display-flex"
+      :class="{ 'mr-widget-extension-icon': !isLoading && level === 1 }"
+    >
+      <div class="gl-absolute gl-top-half gl-left-50p gl-translate-x-n50 gl-display-flex gl-m-auto">
+        <div class="gl-display-flex gl-m-auto gl-translate-y-n50">
+          <gl-loading-icon v-if="isLoading" size="md" inline />
+          <gl-icon
+            v-else
+            :name="$options.EXTENSION_ICON_NAMES[iconName]"
+            :size="size"
+            :aria-label="iconAriaLabel"
+            :data-qa-selector="`status_${iconName}_icon`"
+            class="gl-display-block"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

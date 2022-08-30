@@ -438,7 +438,7 @@ $tabs-holder-z-index: 250;
 
   .mr-widget-body {
     &:not(.mr-widget-body-line-height-1) {
-      line-height: 28px;
+      line-height: 24px;
     }
 
     @include clearfix;
@@ -473,12 +473,6 @@ $tabs-holder-z-index: 250;
       margin: 0 0 0 10px;
     }
 
-    .bold {
-      font-weight: $gl-font-weight-bold;
-      color: var(--gray-600, $gray-600);
-      margin-left: 10px;
-    }
-
     .state-label {
       font-weight: $gl-font-weight-bold;
       padding-right: 10px;
@@ -486,11 +480,6 @@ $tabs-holder-z-index: 250;
 
     .danger {
       color: var(--red-500, $red-500);
-    }
-
-    .spacing,
-    .bold {
-      vertical-align: middle;
     }
 
     .dropdown-menu {
@@ -619,8 +608,8 @@ $tabs-holder-z-index: 250;
 .mr-widget-extension-icon::before {
   @include gl-content-empty;
   @include gl-absolute;
-  @include gl-left-0;
-  @include gl-top-0;
+  @include gl-left-50p;
+  @include gl-top-half;
   @include gl-opacity-3;
   @include gl-border-solid;
   @include gl-border-4;
@@ -628,24 +617,20 @@ $tabs-holder-z-index: 250;
 
   width: 24px;
   height: 24px;
+  transform: translate(-50%, -50%);
 }
 
 .mr-widget-extension-icon::after {
   @include gl-content-empty;
   @include gl-absolute;
   @include gl-rounded-full;
+  @include gl-left-50p;
+  @include gl-top-half;
 
-  top: 4px;
-  left: 4px;
   width: 16px;
   height: 16px;
-  border: 4px solid currentColor;
-}
-
-.mr-widget-extension-icon svg {
-  position: relative;
-  top: 2px;
-  left: 2px;
+  border: 4px solid;
+  transform: translate(-50%, -50%);
 }
 
 .mr-widget-heading {

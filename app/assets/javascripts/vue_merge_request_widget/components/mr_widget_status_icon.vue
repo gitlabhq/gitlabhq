@@ -1,11 +1,11 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { GlIcon } from '@gitlab/ui';
+import StatusIcon from './extensions/status_icon.vue';
 
 export default {
   components: {
-    CiIcon,
-    GlLoadingIcon,
+    StatusIcon,
+    GlIcon,
   },
   props: {
     status: {
@@ -17,22 +17,20 @@ export default {
     isLoading() {
       return this.status === 'loading';
     },
-    statusObj() {
-      return {
-        group: this.status,
-        icon: `status_${this.status}`,
-      };
-    },
   },
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-align-self-start">
-    <div class="square s24 h-auto d-flex-center gl-mr-3">
-      <div v-if="isLoading" class="mr-widget-icon gl-display-inline-flex">
-        <gl-loading-icon size="md" class="mr-loading-icon gl-display-inline-flex" />
-      </div>
-      <ci-icon v-else :status="statusObj" :size="24" />
+  <div class="gl-w-6 gl-h-6 gl-display-flex gl-align-self-start gl-mr-3">
+    <div class="gl-display-flex gl-m-auto">
+      <gl-icon v-if="status === 'merged'" name="merge" :size="16" class="gl-text-blue-500" />
+      <gl-icon
+        v-else-if="status === 'closed'"
+        name="merge-request-close"
+        :size="16"
+        class="gl-text-red-500"
+      />
+      <status-icon v-else :is-loading="isLoading" :icon-name="status" :level="1" class="gl-m-0!" />
     </div>
   </div>
 </template>

@@ -4,16 +4,41 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
 <div
   class="mr-widget-body media"
 >
-  <svg
-    aria-hidden="true"
-    class="gl-text-blue-500 gl-mr-3 gl-mt-1 gl-icon s24"
-    data-testid="status_scheduled-icon"
-    role="img"
+  <div
+    class="gl-w-6 gl-h-6 gl-display-flex gl-align-self-start gl-mr-3"
   >
-    <use
-      href="#status_scheduled"
-    />
-  </svg>
+    <div
+      class="gl-display-flex gl-m-auto"
+    >
+      <div
+        class="gl-mr-3 gl-p-2 gl-m-0! gl-text-blue-500 gl-w-6 gl-p-2"
+      >
+        <div
+          class="gl-rounded-full gl-relative gl-display-flex mr-widget-extension-icon"
+        >
+          <div
+            class="gl-absolute gl-top-half gl-left-50p gl-translate-x-n50 gl-display-flex gl-m-auto"
+          >
+            <div
+              class="gl-display-flex gl-m-auto gl-translate-y-n50"
+            >
+              <svg
+                aria-label="Scheduled "
+                class="gl-display-block gl-icon s12"
+                data-qa-selector="status_scheduled_icon"
+                data-testid="status-scheduled-icon"
+                role="img"
+              >
+                <use
+                  href="#status-scheduled"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
    
   <div
     class="media-body gl-display-flex"
@@ -42,7 +67,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
     </h4>
      
     <div
-      class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto gl-mt-1"
+      class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
     >
       <div>
         <div
@@ -124,16 +149,41 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
 <div
   class="mr-widget-body media"
 >
-  <svg
-    aria-hidden="true"
-    class="gl-text-blue-500 gl-mr-3 gl-mt-1 gl-icon s24"
-    data-testid="status_scheduled-icon"
-    role="img"
+  <div
+    class="gl-w-6 gl-h-6 gl-display-flex gl-align-self-start gl-mr-3"
   >
-    <use
-      href="#status_scheduled"
-    />
-  </svg>
+    <div
+      class="gl-display-flex gl-m-auto"
+    >
+      <div
+        class="gl-mr-3 gl-p-2 gl-m-0! gl-text-blue-500 gl-w-6 gl-p-2"
+      >
+        <div
+          class="gl-rounded-full gl-relative gl-display-flex mr-widget-extension-icon"
+        >
+          <div
+            class="gl-absolute gl-top-half gl-left-50p gl-translate-x-n50 gl-display-flex gl-m-auto"
+          >
+            <div
+              class="gl-display-flex gl-m-auto gl-translate-y-n50"
+            >
+              <svg
+                aria-label="Scheduled "
+                class="gl-display-block gl-icon s12"
+                data-qa-selector="status_scheduled_icon"
+                data-testid="status-scheduled-icon"
+                role="img"
+              >
+                <use
+                  href="#status-scheduled"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
    
   <div
     class="media-body gl-display-flex"
@@ -162,7 +212,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
     </h4>
      
     <div
-      class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto gl-mt-1"
+      class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
     >
       <div>
         <div

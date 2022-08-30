@@ -194,16 +194,12 @@ module Trigger
       {
         'GITLAB_VERSION' => source_sha,
         'IMAGE_TAG' => source_sha,
-        'QA_IMAGE' => ENV['QA_IMAGE'],
         'SKIP_QA_DOCKER' => 'true',
+        'SKIP_QA_TEST' => 'true',
         'ALTERNATIVE_SOURCES' => 'true',
         'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
         'ee' => Trigger.ee? ? 'true' : 'false',
-        'QA_BRANCH' => ENV['QA_BRANCH'] || 'master',
-        'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE'],
-        'GITLAB_QA_OPTIONS' => ENV['GITLAB_QA_OPTIONS'],
-        'QA_TESTS' => ENV['QA_TESTS'],
-        'ALLURE_JOB_NAME' => ENV['ALLURE_JOB_NAME']
+        'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE']
       }
     end
   end

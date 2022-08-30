@@ -20,7 +20,7 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon status="warning" />
+    <status-icon status="closed" />
     <div class="media-body">
       <mr-widget-author-time
         :action-text="s__('mrWidget|Closed by')"

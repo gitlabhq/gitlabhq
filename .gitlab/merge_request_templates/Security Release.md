@@ -42,4 +42,4 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 [Code reviews and Approvals]: (https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#code-reviews-and-approvals)
 [Approval Guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
-[`package-and-qa` build]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-package-and-qa-job
+[`e2e:package-and-test` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-package-and-test-job

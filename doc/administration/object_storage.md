@@ -528,7 +528,7 @@ supported by consolidated configuration form, refer to the following guides:
 
 | Object storage type | Supported by consolidated configuration? |
 |---------------------|------------------------------------------|
-| [Backups](../raketasks/backup_gitlab.md#uploading-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
+| [Backups](../raketasks/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Job artifacts](job_artifacts.md#using-object-storage) including archived job logs | **{check-circle}** Yes |
 | [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |

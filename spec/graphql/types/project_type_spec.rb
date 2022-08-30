@@ -36,8 +36,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       cluster_agent cluster_agents agent_configurations
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
-      timelog_categories fork_targets
-      ci_config_variables
+      timelog_categories fork_targets branch_rules ci_config_variables
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -509,6 +508,20 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
   end
 
+  describe 'branch_rules field' do
+    subject { described_class.fields['branchRules'] }
+
+    let(:br_resolver) { Resolvers::Projects::BranchRulesResolver }
+
+    specify do
+      is_expected.to have_graphql_type(
+        Types::Projects::BranchRuleType.connection_type
+      )
+    end
+
+    specify { is_expected.to have_graphql_resolver(br_resolver) }
+  end
+
   describe 'agent_configurations' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
@@ -679,6 +692,56 @@ RSpec.describe GitlabSchema.types['Project'] do
 
       it 'is empty' do
         expect(subject.dig('data', 'project', 'serviceDeskAddress')).to be_blank
+      end
+    end
+  end
+
+  describe 'branch_rules' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project, reload: true) { create(:project, :public) }
+    let_it_be(:name) { 'feat/*' }
+    let_it_be(:protected_branch) do
+      create(:protected_branch, project: project, name: name)
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            branchRules {
+              nodes {
+                name
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:branch_rules_data) do
+      subject.dig('data', 'project', 'branchRules', 'nodes')
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    context 'when a user can read protected branches' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'is present and correct' do
+        expect(branch_rules_data.count).to eq(1)
+        expect(branch_rules_data.first['name']).to eq(name)
+      end
+    end
+
+    context 'when a user cannot read protected branches' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'is empty' do
+        expect(branch_rules_data.count).to eq(0)
       end
     end
   end

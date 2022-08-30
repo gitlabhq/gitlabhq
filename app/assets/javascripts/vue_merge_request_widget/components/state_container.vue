@@ -43,7 +43,7 @@ export default {
         <slot></slot>
         <div
           :class="{ 'gl-flex-direction-column-reverse': !actions.length }"
-          class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto gl-mt-1"
+          class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
         >
           <slot name="actions">
             <actions v-if="actions.length" :tertiary-buttons="actions" />

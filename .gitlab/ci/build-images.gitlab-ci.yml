@@ -8,9 +8,7 @@
 
 # This image is used by:
 # - The `review-qa-*` jobs
-# - The downstream `omnibus-gitlab-mirror` pipeline triggered by `package-and-qa` so that it doesn't have to rebuild it again.
-#   The downstream `omnibus-gitlab-mirror` pipeline itself passes the image name to the `gitlab-qa-mirror` pipeline so that
-#   it can use it instead of inferring an end-to-end imag from the GitLab image built by the downstream `omnibus-gitlab-mirror` pipeline.
+# - The `e2e:package-and-test` child pipeline test stage jobs
 # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
@@ -18,8 +16,12 @@ build-qa-image:
     - .build-images:rules:build-qa-image
   stage: build-images
   needs: []
+  variables:
+    # Default latest tag for particular branch
+    QA_IMAGE_BRANCH: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}
   script:
     - !reference [.base-image-build, script]
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
     - echo $QA_IMAGE
     - echo $QA_IMAGE_BRANCH
     - |
@@ -35,7 +37,7 @@ build-qa-image:
 
 # This image is used by:
 # - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335
-# - The `omnibus-gitlab` pipelines (via the `package-and-qa` job): https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130
+# - The `omnibus-gitlab` pipelines (via the `e2e:package-and-test` job): https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130
 build-assets-image:
   extends:
     - .base-image-build

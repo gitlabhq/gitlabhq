@@ -238,7 +238,6 @@ module API
       mount ::API::ImportGithub
       mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions
-      mount ::API::Integrations::Slack::Events
       mount ::API::Invitations
       mount ::API::IssueLinks
       mount ::API::Issues

@@ -368,6 +368,9 @@ Example of response
     "status": "pending",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -454,6 +457,9 @@ Example of response
   "failure_reason": "script_failure",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": {
     "id": 1,
     "name": "Administrator",
@@ -611,6 +617,9 @@ Example of response
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": {
     "id": 1,
     "name": "Administrator",
@@ -701,6 +710,9 @@ Example of response
   "status": "canceled",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```
@@ -751,6 +763,9 @@ Example of response
   "status": "pending",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```
@@ -806,6 +821,9 @@ Example of response
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```
@@ -882,6 +900,9 @@ Example response:
   "status": "pending",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```

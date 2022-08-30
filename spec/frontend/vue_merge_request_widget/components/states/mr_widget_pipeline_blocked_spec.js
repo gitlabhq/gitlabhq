@@ -1,26 +1,25 @@
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import PipelineBlockedComponent from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_blocked.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 
 describe('MRWidgetPipelineBlocked', () => {
   let wrapper;
 
-  const createWrapper = (mountFn = shallowMount) => {
-    wrapper = mountFn(PipelineBlockedComponent);
-  };
+  beforeEach(() => {
+    wrapper = shallowMount(PipelineBlockedComponent);
+  });
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
-  it('renders warning icon', () => {
-    createWrapper(mount);
-
-    expect(wrapper.find('.ci-status-icon-warning').exists()).toBe(true);
+  it('renders error icon', () => {
+    expect(wrapper.findComponent(StatusIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(StatusIcon).props().status).toBe('failed');
   });
 
   it('renders information text', () => {
-    createWrapper();
-
     expect(wrapper.text()).toBe(
       "Merge blocked: pipeline must succeed. It's waiting for a manual action to continue.",
     );

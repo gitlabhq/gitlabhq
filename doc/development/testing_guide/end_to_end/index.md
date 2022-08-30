@@ -8,16 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## What is end-to-end testing?
 
-End-to-end testing is a strategy used to check whether your application works
+End-to-end (e2e) testing is a strategy used to check whether your application works
 as expected across the entire software stack and architecture, including
 integration of all micro-services and components that are supposed to work
 together.
 
 ## How do we test GitLab?
 
-We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we
-test these packages using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool, which is
-a black-box testing framework for the API and the UI.
+We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we test these packages 
+using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool to run the end-to-end tests located in the `qa` directory.
 
 ### Testing nightly builds
 
@@ -33,11 +32,9 @@ You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/p
 
 ### Testing code in merge requests
 
-#### Using the `package-and-qa` job
+#### Using the package-and-test job
 
-It is possible to run end-to-end tests for a merge request, eventually being run in
-a pipeline in the [`gitlab-org/gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror) project,
-by triggering the `package-and-qa` manual action in the `qa` stage (not
+It is possible to run end-to-end tests for a merge request by triggering the `e2e:package-and-test` manual action in the `qa` stage (not
 available for forks).
 
 **This runs end-to-end tests against a custom EE (with an Ultimate license)
@@ -72,38 +69,30 @@ subgraph "`gitlab-org/gitlab-qa-mirror` pipeline"
 ```
 
 1. In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
-   1. Developer triggers the `package-and-qa` manual action (available once the `build-qa-image` and
+   1. Developer triggers the `e2e:package-and-test` manual action (available once the `build-qa-image` and
       `build-assets-image` jobs are done), that can be found in GitLab merge
-      requests. This starts a chain of pipelines in multiple projects.
-   1. The script being executed triggers a pipeline in
+      requests. This starts a e2e test child pipeline.
+   1. E2E child pipeline triggers a downstream pipeline in
       [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
       and polls for the resulting status. We call this a _status attribution_.
 
 1. In the [`gitlab-org/build/omnibus-gitlab-mirror` pipeline](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror):
    1. Docker image is being built and pushed to its Container Registry.
-   1. Finally, the `Trigger:qa-test` job triggers a new end-to-end pipeline in
-      [`gitlab-org/gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror/pipelines) and polls for the resulting status.
+   1. Once Docker images are built and pushed jobs in `test` stage are started
 
-1. In the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror):
+1. In the `Test` stage:
    1. Container for the Docker image stored in the [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) registry is spun-up.
    1. End-to-end tests are run with the `gitlab-qa` executable, which spin up a container for the end-to-end image from the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) registry.
 
-1. The result of the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror) is being
-   propagated upstream (through polling from upstream pipelines), through [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror), back to the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) merge request.
-
-We plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/156)
-about the tests included in each job/scenario that runs in `gitlab-org/gitlab-qa-mirror`.
-
 NOTE:
 You may have noticed that we use `gitlab-org/build/omnibus-gitlab-mirror` instead of
-`gitlab-org/omnibus-gitlab`, and `gitlab-org/gitlab-qa-mirror` instead of `gitlab-org/gitlab-qa`.
+`gitlab-org/omnibus-gitlab`.
 This is due to technical limitations in the GitLab permission model: the ability to run a pipeline
 against a protected branch is controlled by the ability to push/merge to this branch.
 This means that for developers to be able to trigger a pipeline for the default branch in
-`gitlab-org/omnibus-gitlab`/`gitlab-org/gitlab-qa`, they would need to have the
-Maintainer role for those projects.
+`gitlab-org/omnibus-gitlab`, they would need to have the Maintainer role for this project.
 For security reasons and implications, we couldn't open up the default branch to all the Developers.
-Hence we created these mirrors where Developers and Maintainers are allowed to push/merge to the default branch.
+Hence we created this mirror where Developers and Maintainers are allowed to push/merge to the default branch.
 This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues/63#note_107175160> and the "mirror"
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
@@ -231,7 +220,7 @@ a link to the current test report.
 
 Each type of scheduled pipeline generates a static link for the latest test report according to its stage:
 
-- [`master`](https://storage.googleapis.com/gitlab-qa-allure-reports/package-and-qa/master/index.html)
+- [`master`](https://storage.googleapis.com/gitlab-qa-allure-reports/e2e-package-and-test/master/index.html)
 - [`staging-full`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-full/master/index.html)
 - [`staging-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity/master/index.html)
 - [`staging-sanity-no-admin`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity-no-admin/master/index.html)

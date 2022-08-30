@@ -1,0 +1,499 @@
+# E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
+
+include:
+  - local: .gitlab/ci/global.gitlab-ci.yml
+  - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
+  - project: gitlab-org/quality/pipeline-common
+    ref: 1.0.1
+    file:
+      - /ci/base.gitlab-ci.yml
+      - /ci/allure-report.yml
+      - /ci/knapsack-report.yml
+
+# ==========================================
+# Templates
+# ==========================================
+.parallel:
+  parallel: 5
+  variables:
+    QA_KNAPSACK_REPORT_PATH: $CI_PROJECT_DIR/qa/knapsack
+
+.ruby-image:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
+
+.bundle-install:
+  extends: .qa-cache
+  variables:
+    RUN_WITH_BUNDLE: "true" # adds 'bundle exec' prefix for gitlab-qa commands in pipeline-common job templates
+  before_script:
+    - cd qa && bundle install
+
+.update-script:
+  script:
+    - export CURRENT_VERSION="$(cat ../VERSION)"
+    - export QA_COMMAND="bundle exec gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $CURRENT_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - echo "Running - '$QA_COMMAND'"
+    - eval "$QA_COMMAND"
+
+.manual-qa:
+  stage: test
+  allow_failure: true
+  needs:
+    - trigger-omnibus
+
+.qa:
+  extends:
+    - .use-docker-in-docker
+    - .qa-base
+    - .bundle-install
+    - .gitlab-qa-report
+  stage: test
+  tags:
+    - e2e
+  needs:
+    - trigger-omnibus
+    - download-knapsack-report
+  variables:
+    QA_GENERATE_ALLURE_REPORT: "true"
+    QA_CAN_TEST_PRAEFECT: "false"
+    QA_INTERCEPT_REQUESTS: "true"
+    QA_RUN_TYPE: e2e-package-and-test
+    TEST_LICENSE_MODE: $QA_TEST_LICENSE_MODE
+    EE_LICENSE: $QA_EE_LICENSE
+    GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
+
+# ==========================================
+# Prepare stage
+# ==========================================
+trigger-omnibus:
+  extends:
+    - .ruby-image
+    - .rules:prepare
+  stage: .pre
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - ./scripts/trigger-build.rb omnibus
+
+download-knapsack-report:
+  extends:
+    - .ruby-image
+    - .bundle-install
+    - .rules:prepare
+  stage: .pre
+  script:
+    - bundle exec rake "knapsack:download[test]"
+  allow_failure: true
+  artifacts:
+    paths:
+      - qa/knapsack/ee-*.json
+    expire_in: 1 day
+
+# ==========================================
+# Test stage
+# ==========================================
+
+# ------------------------------------------
+# Manual jobs
+# ------------------------------------------
+
+# Run manual quarantine job
+#   this job requires passing QA_SCENARIO variable
+#   and optionally QA_TESTS to run specific quarantined tests
+_ee:quarantine:
+  extends:
+    - .qa
+    - .manual-qa
+    - .rules:test:quarantine
+  variables:
+    QA_RSPEC_TAGS: --tag quarantine
+
+# ------------------------------------------
+# FF changes
+# ------------------------------------------
+
+# Run specs with feature flags set to the opposite of the default state
+ee:instance-parallel-ff-inverse:
+  extends:
+    - .qa
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
+    GITLAB_QA_OPTS: --set-feature-flags $QA_FEATURE_FLAGS
+  rules:
+    - !reference [.rules:test:feature-flags-deleted, rules] # skip job when only change is ff deletion
+    - !reference [.rules:test:feature-flags-set, rules]
+
+# ------------------------------------------
+# Jobs with parallel variant
+# ------------------------------------------
+ee:instance:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+  rules:
+    - !reference [.rules:test:qa-non-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+ee:instance-parallel:
+  extends:
+    - .parallel
+    - ee:instance
+  rules:
+    - !reference [.rules:test:feature-flags-set, rules] # always run instance-parallel to validate ff change
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+ee:praefect:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+  rules:
+    - !reference [.rules:test:qa-non-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+ee:praefect-parallel:
+  extends:
+    - .parallel
+    - ee:praefect
+  rules:
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+ee:relative-url:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::RelativeUrl
+  rules:
+    - !reference [.rules:test:qa-non-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+ee:relative-url-parallel:
+  extends:
+    - .parallel
+    - ee:relative-url
+  rules:
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+ee:decomposition-single-db:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
+  rules:
+    - !reference [.rules:test:qa-non-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+ee:decomposition-single-db-parallel:
+  extends:
+    - .parallel
+    - ee:decomposition-single-db
+  rules:
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+ee:decomposition-multiple-db:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
+  rules:
+    - !reference [.rules:test:qa-non-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+ee:decomposition-multiple-db-parallel:
+  extends:
+    - .parallel
+    - ee:decomposition-multiple-db
+  rules:
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+# ------------------------------------------
+# Non parallel jobs
+# ------------------------------------------
+ee:update-minor:
+  extends:
+    - .qa
+    - .update-script
+  variables:
+    UPDATE_TYPE: minor
+    QA_RSPEC_TAGS: --tag smoke
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Smoke/
+
+ee:update-major:
+  extends:
+    - .qa
+    - .update-script
+  variables:
+    UPDATE_TYPE: major
+    QA_RSPEC_TAGS: --tag smoke
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Smoke/
+
+ee:gitaly-cluster:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::GitalyCluster
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
+
+ee:group-saml:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::GroupSAML
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
+
+ee:instance-saml:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::InstanceSAML
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
+
+ee:jira:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Jira
+    JIRA_ADMIN_USERNAME: $QA_JIRA_ADMIN_USERNAME
+    JIRA_ADMIN_PASSWORD: $QA_JIRA_ADMIN_PASSWORD
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::Jira/
+
+ee:ldap-no-server:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::LDAPNoServer
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
+
+ee:ldap-tls:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::LDAPTLS
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
+
+ee:ldap-no-tls:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::LDAPNoTLS
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
+
+ee:mtls:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::MTLS
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::MTLS/
+
+ee:mattermost:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Mattermost
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::Mattermost/
+
+ee:registry:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Registry
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::Registry/
+
+ee:registry-with-cdn:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::RegistryWithCDN
+    GCS_CDN_BUCKET_NAME: $QA_GCS_CDN_BUCKET_NAME
+    GOOGLE_CDN_LB: $QA_GOOGLE_CDN_LB
+    GOOGLE_CDN_JSON_KEY: $QA_GOOGLE_CDN_JSON_KEY
+    GOOGLE_CDN_SIGNURL_KEY: $QA_GOOGLE_CDN_SIGNURL_KEY
+    GOOGLE_CDN_SIGNURL_KEY_NAME: $QA_GOOGLE_CDN_SIGNURL_KEY_NAME
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::RegistryWithCDN/
+
+ee:repository-storage:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::RepositoryStorage
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
+
+ee:service-ping-disabled:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::ServicePingDisabled
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
+
+ee:smtp:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::SMTP
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::SMTP/
+
+ee:cloud-activation:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag cloud_activation
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::CloudActivation/
+
+ee:large-setup:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag can_use_large_setup
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::LargeSetup/
+
+ee:metrics:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Metrics
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Metrics/
+
+ee:packages:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag packages
+    GITLAB_QA_OPTS: --omnibus-config packages
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Packages/
+
+ee:object-storage:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag object_storage
+    GITLAB_QA_OPTS: --omnibus-config object_storage
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
+
+ee:object-storage-aws:
+  extends: ee:object-storage
+  variables:
+    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
+    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
+    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
+    AWS_S3_REGION: $QA_AWS_S3_REGION
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
+
+ee:object-storage-gcs:
+  extends: ee:object-storage
+  variables:
+    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
+    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
+    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
+    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
+
+ee:registry-object-storage-tls:
+  extends: ee:object-storage-aws
+  variables:
+    QA_SCENARIO: Test::Integration::RegistryTLS
+    QA_RSPEC_TAGS: ""
+    GITLAB_TLS_CERTIFICATE: $QA_GITLAB_TLS_CERTIFICATE
+    GITLAB_QA_OPTS: --omnibus-config registry_object_storage
+
+# ==========================================
+# Post test stage
+# ==========================================
+allure-report:
+  extends:
+    - .generate-allure-report-base
+    - .rules:report:allure-report
+  stage: .post
+  variables:
+    GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
+    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
+    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
+    ALLURE_JOB_NAME: e2e-package-and-test
+
+notify-slack:
+  extends:
+    - .notify-slack-qa
+    - .ruby-image
+    - .bundle-install
+    - .rules:report:process-results
+  stage: .post
+  variables:
+    ALLURE_JOB_NAME: package-and-qa
+    SLACK_ICON_EMOJI: ci_failing
+    STATUS_SYM: ☠️
+    STATUS: failed
+  when: on_failure
+  script:
+    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml" # generate summary
+    - !reference [.notify-slack-qa, script]
+
+upload-knapsack-report:
+  extends:
+    - .generate-knapsack-report-base
+    - .ruby-image
+    - .bundle-install
+    - .rules:report:process-results
+  stage: .post
+  when: always
+
+relate-test-failures:
+  stage: .post
+  extends:
+    - .ruby-image
+    - .bundle-install
+    - .rules:report:process-results
+  variables:
+    QA_FAILURES_REPORTING_PROJECT: gitlab-org/gitlab
+    QA_FAILURES_MAX_DIFF_RATIO: "0.15"
+    GITLAB_QA_ACCESS_TOKEN: $GITLAB_QA_PRODUCTION_ACCESS_TOKEN
+  when: on_failure
+  script:
+    - |
+      bundle exec gitlab-qa-report \
+        --relate-failure-issue "gitlab-qa-run-*/**/rspec-*.json" \
+        --project "$QA_FAILURES_REPORTING_PROJECT" \
+        --max-diff-ratio "$QA_FAILURES_MAX_DIFF_RATIO"
+
+generate-test-session:
+  stage: .post
+  extends:
+    - .ruby-image
+    - .bundle-install
+    - .rules:report:process-results
+  variables:
+    QA_TESTCASE_SESSIONS_PROJECT: gitlab-org/quality/testcase-sessions
+    GITLAB_QA_ACCESS_TOKEN: $QA_TEST_SESSION_TOKEN
+  when: always
+  script:
+    - |
+      bundle exec gitlab-qa-report \
+        --generate-test-session "gitlab-qa-run-*/**/rspec-*.json" \
+        --project "$QA_TESTCASE_SESSIONS_PROJECT"

@@ -1,27 +1,25 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import checkingComponent from '~/vue_merge_request_widget/components/states/mr_widget_checking.vue';
+import { shallowMount } from '@vue/test-utils';
+import CheckingComponent from '~/vue_merge_request_widget/components/states/mr_widget_checking.vue';
+import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 
 describe('MRWidgetChecking', () => {
-  let Component;
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    Component = Vue.extend(checkingComponent);
-    vm = mountComponent(Component);
+    wrapper = shallowMount(CheckingComponent);
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders loading icon', () => {
-    expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('gl-spinner');
+    expect(wrapper.findComponent(StateContainer).exists()).toBe(true);
+    expect(wrapper.findComponent(StateContainer).props().status).toBe('loading');
   });
 
   it('renders information about merging', () => {
-    expect(vm.$el.querySelector('.media-body').textContent.trim()).toEqual(
-      'Checking if merge request can be merged…',
-    );
+    expect(wrapper.text()).toContain('Checking if merge request can be merged…');
   });
 });

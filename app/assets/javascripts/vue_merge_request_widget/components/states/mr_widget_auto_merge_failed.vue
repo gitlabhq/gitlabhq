@@ -58,8 +58,8 @@ export default {
 };
 </script>
 <template>
-  <state-container status="warning" :actions="actions">
-    <span class="bold gl-ml-0!">
+  <state-container status="failed" :actions="actions">
+    <span class="gl-font-weight-bold">
       <template v-if="mergeError">{{ mergeError }}</template>
       {{ s__('mrWidget|This merge request failed to be merged automatically') }}
     </span>
