@@ -366,12 +366,35 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to include_module(Sortable) }
   end
 
+  describe 'before_validation' do
+    context 'with removal of leading spaces' do
+      subject(:project) { build(:project, name: ' space first', path: 'some_path') }
+
+      it 'removes the leading space' do
+        expect(project.name).to eq ' space first'
+
+        expect(project).to be_valid # triggers before_validation and assures we automatically handle the bad format
+
+        expect(project.name).to eq 'space first'
+      end
+
+      context 'when name is nil' do
+        it 'falls through to the presence validation' do
+          project.name = nil
+
+          expect(project).not_to be_valid
+        end
+      end
+    end
+  end
+
   describe 'validation' do
     let!(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to allow_value('space last ').for(:name) }
     it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }

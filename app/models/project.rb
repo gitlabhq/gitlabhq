@@ -123,6 +123,7 @@ class Project < ApplicationRecord
   before_validation :ensure_project_namespace_in_sync
 
   before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
+  before_validation :remove_leading_spaces_on_name
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -3289,6 +3290,10 @@ class Project < ApplicationRecord
     if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
       raise ExportLimitExceeded, _('The project size exceeds the export limit.')
     end
+  end
+
+  def remove_leading_spaces_on_name
+    name&.lstrip!
   end
 
   def set_package_registry_access_level

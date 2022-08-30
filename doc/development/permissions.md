@@ -147,15 +147,41 @@ into different features like Merge Requests and CI flow.
 
 ## Where should permissions be checked?
 
-By default, controllers, API endpoints, and GraphQL types/fields are responsible for authorization. See [Secure Coding Guidelines > Permissions](secure_coding_guidelines.md#permissions).
+We should typically apply defense-in-depth (implementing multiple checks at
+various layers) starting with low-level layers, such as finders and services,
+followed by high-level layers, such as GraphQL, public REST API, and controllers.
+
+See [Guidelines for reusing abstractions](reusing_abstractions.md).
+
+Protecting the same resources at many points means that if one layer of defense is compromised
+or missing, customer data is still protected by the additional layers.
+
+See the permissions section in the [Secure Coding Guidelines](secure_coding_guidelines.md#permissions).
 
 ### Considerations
 
-- Many actions are completely or partially extracted to services, finders, and other classes, so it is normal to do permission checks "downstream".
-- Often, authorization logic must be incorporated in DB queries to filter records.
+Services or finders are appropriate locations because:
+
+- Multiple endpoints share services or finders so downstream logic is more likely to be re-used.
+- Sometimes authorization logic must be incorporated in DB queries to filter records.
+- Permission checks at the display layer should be avoided except to provide better UX
+  and not as a security check. For example, showing and hiding non-data elements like buttons.
+
+The downsides to defense-in-depth are:
+
 - `DeclarativePolicy` rules are relatively performant, but conditions may perform database calls.
-- Multiple permission checks across layers can be difficult to reason about, which is its own security risk. For example, duplicate authorization logic could diverge.
-- Should we apply defense-in-depth with permission checks? [Join the discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/324135)
+- Higher maintenance costs.
+
+### Exceptions
+
+Developers can choose to do authorization in only a single area after weighing
+the risks and drawbacks for their specific case.
+
+Prefer domain logic (services or finders) as the source of truth when making exceptions.
+
+Logic, like backend worker logic, might not need authorization based on the current user.
+If the service or finder's constructor does not expect `current_user`, then it typically won't
+check permissions.
 
 ### Tips
 

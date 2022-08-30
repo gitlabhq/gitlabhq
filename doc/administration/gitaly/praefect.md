@@ -222,7 +222,7 @@ For using Omnibus-provided PgBouncer you need to take the following additional s
 recommend using the PostgreSQL that is shipped with Omnibus as the backend. The following
 instructions only work on Omnibus-provided PostgreSQL:
 
-1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` user instead the of the
+1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` password instead the of the
    actual password:
 
    ```sql
@@ -885,7 +885,7 @@ For more information on Gitaly server configuration, see our
         gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
         ```
 
-1. Configure and `internal_api_url`, which is also needed for `git push` operations:
+1. Configure an `internal_api_url`, which is also needed for `git push` operations:
 
    ```ruby
    # Configure the gitlab-shell API callback URL. Without this, `git push` will

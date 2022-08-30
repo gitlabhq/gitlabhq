@@ -422,19 +422,21 @@ provide a script that performs an authentication flow or calculates the token.
 [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
 is an authentication method built in to the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
-To use HTTP basic authentication, two CI/CD variables are added to your `.gitlab-ci.yml` file:
+
+We recommended that you [create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables)
+for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
+variables from the GitLab project's page at **Settings > CI/CD**, in the **Variables** section.
+Because of the [limitations on masked variables](../../../ci/variables/index.md#mask-a-cicd-variable),
+you should Base64-encode the password before adding it as a variable.
+
+Finally, add two CI/CD variables to your `.gitlab-ci.yml` file:
 
 - `FUZZAPI_HTTP_USERNAME`: The username for authentication.
-- `FUZZAPI_HTTP_PASSWORD`: The password for authentication.
-
-For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables)
-(for example, `TEST_API_PASSWORD`) set to the password. You can create CI/CD variables from the
-GitLab projects page at **Settings > CI/CD**, in the **Variables** section. Use that variable
-as the value for `FUZZAPI_HTTP_PASSWORD`:
+- `FUZZAPI_HTTP_PASSWORD_BASE64`: The Base64-encoded password for authentication.
 
 ```yaml
 stages:
-     - fuzz
+    - fuzz
 
 include:
   - template: API-Fuzzing.gitlab-ci.yml
@@ -444,8 +446,12 @@ variables:
   FUZZAPI_HAR: test-api-recording.har
   FUZZAPI_TARGET_URL: http://test-deployment/
   FUZZAPI_HTTP_USERNAME: testuser
-  FUZZAPI_HTTP_PASSWORD: $TEST_API_PASSWORD
+  FUZZAPI_HTTP_PASSWORD_BASE64: $TEST_API_PASSWORD
 ```
+
+#### Raw password
+
+If you do not want to Base64-encode the password (or if you are using GitLab 15.3 or earlier) you can provide the raw password `FUZZAPI_HTTP_PASSWORD`, instead of using `FUZZAPI_HTTP_PASSWORD_BASE64`.
 
 #### Bearer Tokens
 
@@ -616,6 +622,7 @@ profile increases as the number of tests increases.
 |[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides)                   | How often to run overrides command in seconds. Defaults to `0` (once). |
 |[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication)        | Username for HTTP authentication. |
 |[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication)        | Password for HTTP authentication. |
+|[`FUZZAPI_HTTP_PASSWORD_BASE64`](#http-basic-authentication) | Password for HTTP authentication, Base64-encoded. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing-src/-/merge_requests/702) in GitLab 15.4. |
 
 ### Overrides
 
