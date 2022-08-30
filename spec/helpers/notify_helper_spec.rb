@@ -51,6 +51,33 @@ RSpec.describe NotifyHelper do
     end
   end
 
+  describe '#merge_request_approved_description' do
+    let(:merge_request) { create(:merge_request) }
+    let(:user) { create(:user) }
+    let(:avatar_icon_for_user) { 'avatar_icon_for_user' }
+
+    before do
+      allow(helper).to receive(:avatar_icon_for_user).and_return(avatar_icon_for_user)
+    end
+
+    it 'returns MR approved description' do
+      result = helper.merge_request_approved_description(merge_request, user)
+      expect(result).to eq "<span style=\"font-weight: 600;color:#333333;\">Merge request</span> " \
+       "#{
+        link_to(merge_request.to_reference, merge_request_url(merge_request),
+        style: "font-weight: 600;color:#3777b0;text-decoration:none")
+      } " \
+      "<span>was approved by</span> " \
+      "#{
+        content_tag(:img, nil, height: "24", src: avatar_icon_for_user,
+                               style: "border-radius:12px;margin:-7px 0 -7px 3px;",
+                               width: "24", alt: "Avatar", class: "avatar"
+        )
+      } " \
+      "#{link_to(user.name, user_url(user), style: "color:#333333;text-decoration:none;", class: "muted")}"
+    end
+  end
+
   def reference_link(entity, url)
     "<a href=\"#{url}\">#{entity.to_reference}</a>"
   end

@@ -26857,6 +26857,9 @@ msgstr ""
 msgid "Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}."
 msgstr ""
 
+msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{approved_highlight}was approved by%{highlight_end} %{approver_avatar} %{approver_link}"
+msgstr ""
+
 msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
 msgstr ""
 
@@ -26900,6 +26903,12 @@ msgid "Notify|Merge request %{mr_link} was closed by %{closed_by}"
 msgstr ""
 
 msgid "Notify|Merge request URL: %{merge_request_url}"
+msgstr ""
+
+msgid "Notify|Merge request was approved"
+msgstr ""
+
+msgid "Notify|Merge request was approved (%{approvals}/%{required_approvals})"
 msgstr ""
 
 msgid "Notify|Milestone changed to %{milestone}"

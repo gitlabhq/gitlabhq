@@ -78,10 +78,11 @@
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;" }
                                     %img{ alt: "✓", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-check-green-inverted.gif'), style: "display:block;", width: "13" }/
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;" }
-                                    - if @merge_request.respond_to? :approvals_required
-                                      %span Merge request was approved (#{@merge_request.approvals.count}/#{@merge_request.approvals_required})
-                                    - else
-                                      %span Merge request was approved
+                                    %span
+                                      - if @merge_request.respond_to? :approvals_required
+                                        = s_('Notify|Merge request was approved (%{approvals}/%{required_approvals})') % { approvals: @merge_request.approvals.count, required_approvals: @merge_request.approvals_required }
+                                      - else
+                                        = s_('Notify|Merge request was approved')
                       %tr.spacer
                         %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                           &nbsp;
@@ -92,12 +93,7 @@
                               %tr{ style: 'width:100%;' }
                                 %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;text-align:center;" }
                                   %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:-4px;", alt: "Merge request icon" }
-                                  %span{ style: "font-weight: 600;color:#333333;" } Merge request
-                                  %a{ href: merge_request_url(@merge_request), style: "font-weight: 600;color:#3777b0;text-decoration:none" }= @merge_request.to_reference
-                                  %span was approved by
-                                  %img.avatar{ height: "24", src: avatar_icon_for_user(@approved_by, 24, only_path: false), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
-                                  %a.muted{ href: user_url(@approved_by), style: "color:#333333;text-decoration:none;" }
-                                    = @approved_by.name
+                                  = merge_request_approved_description(@merge_request, @approved_by)
                         %tr.spacer
                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                             &nbsp;
@@ -106,7 +102,7 @@
                             %table.info{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;" }
                               %tbody
                                 %tr
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;" } Project
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;" }= _("Project")
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;" }
                                     - namespace_name = @project.group ? @project.group.name : @project.namespace.owner.name
                                     - namespace_url = @project.group ? group_url(@project.group) : user_url(@project.namespace.owner)
@@ -116,7 +112,7 @@
                                     %a.muted{ href: project_url(@project), style: "color:#333333;text-decoration:none;" }
                                       = @project.name
                                 %tr
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Branch
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }= _("Branch")
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
                                     %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
                                       %tbody
@@ -127,7 +123,7 @@
                                             %span.muted{ style: "color:#333333;text-decoration:none;" }
                                               = @merge_request.source_branch
                                 %tr
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Author
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }= _("Author")
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
                                     %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
                                       %tbody
