@@ -12,7 +12,9 @@ module API
       expose :trailers
 
       expose :web_url do |commit, _options|
-        Gitlab::UrlBuilder.build(commit)
+        c = commit
+        c = c.__subject__ if c.is_a?(Gitlab::View::Presenter::Base)
+        Gitlab::UrlBuilder.build(c)
       end
     end
   end

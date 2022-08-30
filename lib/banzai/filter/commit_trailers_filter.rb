@@ -17,20 +17,9 @@ module Banzai
       include ActionView::Helpers::TagHelper
       include AvatarsHelper
 
-      TRAILER_REGEXP = /(?<label>[[:alpha:]-]+-by:)/i.freeze
-      AUTHOR_REGEXP = /(?<author_name>.+)/.freeze
-      # Devise.email_regexp wouldn't work here since its designed to match
-      # against strings that only contains email addresses; the \A and \z
-      # around the expression will only match if the string being matched
-      # contains just the email nothing else.
-      MAIL_REGEXP = /&lt;(?<author_email>[^@\s]+@[^@\s]+)&gt;/.freeze
-      FILTER_REGEXP = /(?<trailer>^\s*#{TRAILER_REGEXP}\s*#{AUTHOR_REGEXP}\s+#{MAIL_REGEXP}$)/mi.freeze
-
       def call
         doc.xpath('descendant-or-self::text()').each do |node|
           content = node.to_html
-
-          next unless content.match(FILTER_REGEXP)
 
           html = trailer_filter(content)
 
@@ -52,11 +41,24 @@ module Banzai
       # Returns a String with all trailer lines replaced with links to GitLab
       # users and mailto links to non GitLab users. All links have `data-trailer`
       # and `data-user` attributes attached.
+      #
+      # The code intentionally avoids using Regex for security and performance
+      # reasons: https://gitlab.com/gitlab-org/gitlab/-/issues/363734
       def trailer_filter(text)
-        text.gsub(FILTER_REGEXP) do |author_match|
-          label = $~[:label]
-          "#{label} #{parse_user($~[:author_name], $~[:author_email], label)}"
-        end
+        text.lines.map! do |line|
+          trailer, rest = line.split(':', 2)
+
+          next line unless trailer.downcase.end_with?('-by') && rest.present?
+
+          chunks = rest.split
+          author_email = chunks.pop.delete_prefix('&lt;').delete_suffix('&gt;')
+          next line unless Devise.email_regexp.match(author_email)
+
+          author_name = chunks.join(' ').strip
+          trailer = "#{trailer.strip}:"
+
+          "#{trailer} #{link_to_user_or_email(author_name, author_email, trailer)}\n"
+        end.join
       end
 
       # Find a GitLab user using the supplied email and generate
@@ -67,7 +69,7 @@ module Banzai
       # trailer - String trailer used in the commit message
       #
       # Returns a String with a link to the user.
-      def parse_user(name, email, trailer)
+      def link_to_user_or_email(name, email, trailer)
         link_to_user User.find_by_any_email(email),
           name: name,
           email: email,

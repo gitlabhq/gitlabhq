@@ -156,10 +156,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
     let(:recursive) { false }
     let(:pagination_params) { nil }
 
-    it 'sends a get_tree_entries message' do
+    it 'sends a get_tree_entries message with default limit' do
+      expected_pagination_params = Gitaly::PaginationParameter.new(limit: Gitlab::GitalyClient::CommitService::TREE_ENTRIES_DEFAULT_LIMIT)
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:get_tree_entries)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .with(gitaly_request_with_params({ pagination_params: expected_pagination_params }), kind_of(Hash))
         .and_return([])
 
       is_expected.to eq([[], nil])
@@ -189,9 +190,10 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
           pagination_cursor: pagination_cursor
         )
 
+        expected_pagination_params = Gitaly::PaginationParameter.new(limit: 3)
         expect_any_instance_of(Gitaly::CommitService::Stub)
           .to receive(:get_tree_entries)
-          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .with(gitaly_request_with_params({ pagination_params: expected_pagination_params }), kind_of(Hash))
           .and_return([response])
 
         is_expected.to eq([[], pagination_cursor])

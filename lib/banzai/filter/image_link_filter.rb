@@ -34,16 +34,19 @@ module Banzai
             img.remove_attribute('data-diagram-src')
           end
 
-          link.children = if link_replaces_image
-                            img['alt'] || img['data-src'] || img['src']
-                          else
-                            img.clone
-                          end
+          link.children = link_replaces_image ? link_children(img) : img.clone
 
           img.replace(link)
         end
 
         doc
+      end
+
+      private
+
+      def link_children(img)
+        [img['alt'], img['data-src'], img['src']]
+          .map { |f| Sanitize.fragment(f).presence }.compact.first || ''
       end
     end
   end

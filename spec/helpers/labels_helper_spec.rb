@@ -112,6 +112,14 @@ RSpec.describe LabelsHelper do
     end
   end
 
+  describe 'render_label_text' do
+    it 'html escapes the bg_color correctly' do
+      xss_payload = '"><img src=x onerror=prompt(1)>'
+      label_text = render_label_text('xss', bg_color: xss_payload)
+      expect(label_text).to include(html_escape(xss_payload))
+    end
+  end
+
   describe 'text_color_for_bg' do
     it 'uses light text on dark backgrounds' do
       expect(text_color_for_bg('#222E2E')).to be_color('#FFFFFF')

@@ -2,7 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { listen } from 'codesandbox-api';
 import { isEmpty, debounce } from 'lodash';
-import { Manager } from 'smooshpack';
+import { SandpackClient } from '@codesandbox/sandpack-client';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   packageJsonPath,
@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      manager: {},
+      client: {},
       loading: false,
       sandpackReady: false,
     };
@@ -94,11 +94,11 @@ export default {
     this.sandpackReady = false;
     eventHub.$off('ide.files.change', this.onFilesChangeCallback);
 
-    if (!isEmpty(this.manager)) {
-      this.manager.listener();
+    if (!isEmpty(this.client)) {
+      this.client.cleanup();
     }
 
-    this.manager = {};
+    this.client = {};
 
     if (this.listener) {
       this.listener();
@@ -120,7 +120,7 @@ export default {
       return this.loadFileContent(this.mainEntry)
         .then(() => this.$nextTick())
         .then(() => {
-          this.initManager();
+          this.initClient();
 
           this.listener = listen((e) => {
             switch (e.type) {
@@ -136,15 +136,15 @@ export default {
     update() {
       if (!this.sandpackReady) return;
 
-      if (isEmpty(this.manager)) {
+      if (isEmpty(this.client)) {
         this.initPreview();
 
         return;
       }
 
-      this.manager.updatePreview(this.sandboxOpts);
+      this.client.updatePreview(this.sandboxOpts);
     },
-    initManager() {
+    initClient() {
       const { codesandboxBundlerUrl: bundlerURL } = this;
 
       const settings = {
@@ -155,7 +155,7 @@ export default {
         ...(bundlerURL ? { bundlerURL } : {}),
       };
 
-      this.manager = new Manager('#ide-preview', this.sandboxOpts, settings);
+      this.client = new SandpackClient('#ide-preview', this.sandboxOpts, settings);
     },
   },
 };
@@ -164,7 +164,7 @@ export default {
 <template>
   <div class="preview h-100 w-100 d-flex flex-column gl-bg-white">
     <template v-if="showPreview">
-      <navigator :manager="manager" />
+      <navigator :client="client" />
       <div id="ide-preview"></div>
     </template>
     <div

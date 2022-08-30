@@ -18952,7 +18952,7 @@ msgstr ""
 msgid "HTTP Archive (HAR)"
 msgstr ""
 
-msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
+msgid "HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See %{help_page_url}"
 msgstr ""
 
 msgid "Harbor Registry"
@@ -46136,6 +46136,9 @@ msgid "is read-only"
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."
+msgstr ""
+
+msgid "is too long (%{size}). The maximum size is %{max_size}."
 msgstr ""
 
 msgid "is too long (maximum is %{count} characters)"

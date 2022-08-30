@@ -869,7 +869,7 @@ GEM
       plist (~> 3.1)
       train-core
       wmi-lite (~> 1.0)
-    oj (3.13.19)
+    oj (3.13.21)
     omniauth (1.9.1)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -1467,7 +1467,7 @@ GEM
     xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yajl-ruby (1.4.1)
+    yajl-ruby (1.4.3)
     yard (0.9.26)
     zeitwerk (2.6.0)
 
@@ -1637,7 +1637,7 @@ DEPENDENCIES
   oauth2 (~> 2.0)
   octokit (~> 4.15)
   ohai (~> 16.10)
-  oj (~> 3.13.19)
+  oj (~> 3.13.21)
   omniauth (~> 1.8)
   omniauth-alicloud (~> 1.0.1)
   omniauth-atlassian-oauth2 (~> 0.2.0)
@@ -1765,7 +1765,7 @@ DEPENDENCIES
   webmock (~> 3.9.1)
   webrick (~> 1.6.1)
   wikicloth (= 0.8.1)
-  yajl-ruby (~> 1.4.1)
+  yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
    2.3.15

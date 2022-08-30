@@ -68,6 +68,10 @@ module Gitlab
       with { |redis| redis.ttl(cache_key(key)) }
     end
 
+    def count(key)
+      with { |redis| redis.scard(cache_key(key)) }
+    end
+
     private
 
     def with(&blk)

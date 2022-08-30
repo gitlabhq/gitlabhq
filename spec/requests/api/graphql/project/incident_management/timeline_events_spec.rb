@@ -6,11 +6,16 @@ RSpec.describe 'getting incident timeline events' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
+  let_it_be(:private_project) { create(:project, :private) }
+  let_it_be(:issue) { create(:issue, project: private_project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:updated_by_user) { create(:user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:another_incident) { create(:incident, project: project) }
   let_it_be(:promoted_from_note) { create(:note, project: project, noteable: incident) }
+  let_it_be(:issue_url) { project_issue_url(private_project, issue) }
+  let_it_be(:issue_ref) { "#{private_project.full_path}##{issue.iid}" }
+  let_it_be(:issue_link) { %Q(<a href="#{issue_url}">#{issue_url}</a>) }
 
   let_it_be(:timeline_event) do
     create(
@@ -18,7 +23,8 @@ RSpec.describe 'getting incident timeline events' do
       incident: incident,
       project: project,
       updated_by_user: updated_by_user,
-      promoted_from_note: promoted_from_note
+      promoted_from_note: promoted_from_note,
+      note: "Referencing #{issue.to_reference(full: true)} - Full URL #{issue_url}"
     )
   end
 
@@ -89,7 +95,7 @@ RSpec.describe 'getting incident timeline events' do
         'title' => incident.title
       },
       'note' => timeline_event.note,
-      'noteHtml' => timeline_event.note_html,
+      'noteHtml' => "<p>Referencing #{issue_ref} - Full URL #{issue_link}</p>",
       'promotedFromNote' => {
         'id' => promoted_from_note.to_global_id.to_s,
         'body' => promoted_from_note.note
