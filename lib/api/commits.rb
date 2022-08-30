@@ -21,7 +21,7 @@ module API
 
       def authorize_push_to_branch!(branch)
         unless user_access.can_push_to_branch?(branch)
-          forbidden!("You are not allowed to push into this branch")
+          forbidden!("You are not allowed to push into this branch!")
         end
       end
     end

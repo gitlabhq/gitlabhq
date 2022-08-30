@@ -51,7 +51,7 @@ RSpec.describe 'Puma' do
 
   def wait_puma_boot!(master_pid, ready_file)
     # We have seen the boot timeout after 2 minutes in CI so let's set it to 5 minutes.
-    timeout = 5 * 60
+    timeout = 300
     timeout.times do
       return if File.exist?(ready_file)
 

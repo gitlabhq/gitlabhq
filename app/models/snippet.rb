@@ -66,7 +66,7 @@ class Snippet < ApplicationRecord
                 current_value = ActiveSupport::NumberHelper.number_to_human_size(data[:value].size)
                 max_size = ActiveSupport::NumberHelper.number_to_human_size(Gitlab::CurrentSettings.snippet_size_limit)
 
-                _("is too long (%{current_value}). The maximum size is %{max_size}.") % { current_value: current_value, max_size: max_size }
+                _("is too long (%{current_value}), the maximum size is %{max_size}.") % { current_value: current_value, max_size: max_size }
               end
             },
             if: :content_changed?
