@@ -10,7 +10,7 @@ module Integrations
     URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_DOMAIN}/account_management/api-app-keys/"
 
     SUPPORTED_EVENTS = %w[
-      pipeline job
+      pipeline job archive_trace
     ].freeze
 
     TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x.freeze
@@ -36,14 +36,6 @@ module Integrations
 
     def self.supported_events
       SUPPORTED_EVENTS
-    end
-
-    def supported_events
-      events = super
-
-      return events + ['archive_trace'] if Feature.enabled?(:datadog_integration_logs_collection, parent)
-
-      events
     end
 
     def self.default_test_event
@@ -77,7 +69,7 @@ module Integrations
     end
 
     def fields
-      f = [
+      [
         {
           type: 'text',
           name: 'datadog_site',
@@ -110,21 +102,15 @@ module Integrations
             linkClose: '</a>'.html_safe
           },
           required: true
-        }
-      ]
-
-      if Feature.enabled?(:datadog_integration_logs_collection, parent)
-        f.append({
+        },
+        {
           type: 'checkbox',
           name: 'archive_trace_events',
           title: s_('Logs'),
           checkbox_label: s_('Enable logs collection'),
           help: s_('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.'),
           required: false
-        })
-      end
-
-      f += [
+        },
         {
           type: 'text',
           name: 'datadog_service',
@@ -161,8 +147,6 @@ module Integrations
           }
         }
       ]
-
-      f
     end
 
     override :hook_url

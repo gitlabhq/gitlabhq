@@ -46,7 +46,7 @@ configure the settings that are common for all providers.
 Setting                    | Description | Default value
 ---------------------------|-------------|--------------
 `allow_single_sign_on`     | Enables you to list the providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | The default is `false`. If `false`, users must be created manually, or they can't sign in using OmniAuth.
-`auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have the [LDAP (ActiveDirectory)](../administration/auth/ldap/index.md) integration enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
+`auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
 `block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
 
 To change these settings:

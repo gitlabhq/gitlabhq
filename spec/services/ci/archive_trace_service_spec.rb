@@ -17,19 +17,10 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
 
     context 'integration hooks' do
       it do
-        stub_feature_flags(datadog_integration_logs_collection: [job.project])
-
         expect(job.project).to receive(:execute_integrations) do |data, hook_type|
           expect(data).to eq Gitlab::DataBuilder::ArchiveTrace.build(job)
           expect(hook_type).to eq :archive_trace_hooks
         end
-        expect { subject }.not_to raise_error
-      end
-
-      it 'with feature flag disabled' do
-        stub_feature_flags(datadog_integration_logs_collection: false)
-
-        expect(job.project).not_to receive(:execute_integrations)
         expect { subject }.not_to raise_error
       end
     end

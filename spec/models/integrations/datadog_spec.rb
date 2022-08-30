@@ -203,12 +203,9 @@ RSpec.describe Integrations::Datadog do
     end
 
     before do
-      stub_feature_flags(datadog_integration_logs_collection: enable_logs_collection)
       stub_request(:post, expected_hook_url)
       saved_instance.execute(data)
     end
-
-    let(:enable_logs_collection) { true }
 
     context 'with pipeline data' do
       let(:data) { pipeline_data }
@@ -232,12 +229,6 @@ RSpec.describe Integrations::Datadog do
       let(:expected_body) { data.to_json }
 
       it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
-
-      context 'but feature flag disabled' do
-        let(:enable_logs_collection) { false }
-
-        it { expect(a_request(:post, expected_hook_url)).not_to have_been_made }
-      end
     end
   end
 end

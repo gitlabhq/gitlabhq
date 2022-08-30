@@ -657,6 +657,66 @@ end
 You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
 for each of these users.
 
+## Could not authenticate you from ldapmain because "Unknown provider"
+
+You can receive the following error when authenticating with an LDAP server:
+
+```plaintext
+Could not authenticate you from Ldapmain because "Unknown provider (ldapsecondary). available providers: ["ldapmain"]".
+```
+
+This error is caused when using an account that previously authenticated with an LDAP server that is renamed or removed from your GitLab configuration. For example:
+
+- Initially, `main` and `secondary` are set in `ldap_servers` in GitLab configuration.
+- The `secondary` setting is removed or renamed to `main`.
+- A user attempting to sign in has an `identify` record for `secondary`, but that is no longer configured.
+
+Use the [Rails console](../../operations/rails_console.md) to list affected users and check what LDAP servers they have identities for:
+
+```ruby
+ldap_identities = Identity.where(provider: "ldapsecondary")
+ldap_identities.each do |identity|
+  u=User.find_by_id(identity.user_id)
+  ui=Identity.where(user_id: identity.user_id)
+  puts "user: #{u.username}\n   #{u.email}\n   last activity: #{u.last_activity_on}\n   #{identity.provider} ID: #{identity.id} external: #{identity.extern_uid}"
+  puts "   all identities:"
+  ui.each do |alli|
+    puts "    - #{alli.provider} ID: #{alli.id} external: #{alli.extern_uid}"
+  end
+end;nil
+```
+
+You can solve this error in two ways.
+
+### Rename references to the LDAP server
+
+This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server. For example, if a
+load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
+
+NOTE:
+If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
+
+To [rename references to the LDAP server](../../raketasks/ldap.md#other-options) that is no longer configured, run:
+
+```shell
+sudo gitlab-rake gitlab:ldap:rename_provider[ldapsecondary,ldapmain]
+```
+
+### Remove the `identity` records that relate to the removed LDAP server
+
+With this solution, affected users can sign in with the configured LDAP servers and a new `identity` record is created by GitLab. In a
+[Rails console](../../operations/rails_console.md), delete the `ldapsecondary` identities:
+
+```ruby
+ldap_identities = Identity.where(provider: "ldapsecondary")
+ldap_identities.each do |identity|
+  puts "Destroying identity: #{identity.id} #{identity.provider}: #{identity.extern_uid}"
+  identity.destroy!
+rescue => e
+  puts 'Error generated when destroying identity:\n ' + e.to_s
+end; nil
+```
+
 ## Expired license causes errors with multiple LDAP servers
 
 Using [multiple LDAP servers](index.md#use-multiple-ldap-servers) requires a valid license. An expired license can

@@ -27,7 +27,7 @@ module Ci
       job.trace.archive!
       job.remove_pending_state!
 
-      if Feature.enabled?(:datadog_integration_logs_collection, job.project) && job.job_artifacts_trace.present?
+      if job.job_artifacts_trace.present?
         job.project.execute_integrations(Gitlab::DataBuilder::ArchiveTrace.build(job), :archive_trace_hooks)
       end
 
