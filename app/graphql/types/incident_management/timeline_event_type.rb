@@ -33,11 +33,6 @@ module Types
             null: true,
             description: 'Text note of the timeline event.'
 
-      field :note_html,
-            GraphQL::Types::String,
-            null: true,
-            description: 'HTML note of the timeline event.'
-
       field :promoted_from_note,
             Types::Notes::NoteType,
             null: true,
@@ -67,6 +62,8 @@ module Types
             Types::TimeType,
             null: false,
             description: 'Timestamp when the event updated.'
+
+      markdown_field :note_html, null: true, description: 'HTML note of the timeline event.'
     end
   end
 end

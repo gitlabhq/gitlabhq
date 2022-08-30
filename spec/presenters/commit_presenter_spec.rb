@@ -12,29 +12,51 @@ RSpec.describe CommitPresenter do
     it { expect(presenter.web_path).to eq("/#{project.full_path}/-/commit/#{commit.sha}") }
   end
 
-  describe '#status_for' do
-    subject { presenter.status_for('ref') }
+  describe '#detailed_status_for' do
+    using RSpec::Parameterized::TableSyntax
 
-    context 'when user can read_commit_status' do
-      before do
-        allow(presenter).to receive(:can?).with(user, :read_commit_status, project).and_return(true)
-      end
+    let(:pipeline) { create(:ci_pipeline, :success, project: project, sha: commit.sha, ref: 'ref') }
 
-      it 'returns commit status for ref' do
-        pipeline = double
-        status = double
+    subject { presenter.detailed_status_for('ref')&.text }
 
-        expect(commit).to receive(:latest_pipeline).with('ref').and_return(pipeline)
-        expect(pipeline).to receive(:detailed_status).with(user).and_return(status)
-
-        expect(subject).to eq(status)
-      end
+    where(:read_commit_status, :read_pipeline, :expected_result) do
+      true  | true  | 'passed'
+      true  | false | nil
+      false | true  | nil
+      false | false | nil
     end
 
-    context 'when user can not read_commit_status' do
-      it 'is nil' do
-        is_expected.to eq(nil)
+    with_them do
+      before do
+        allow(presenter).to receive(:can?).with(user, :read_commit_status, project).and_return(read_commit_status)
+        allow(presenter).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(read_pipeline)
       end
+
+      it { is_expected.to eq expected_result }
+    end
+  end
+
+  describe '#status_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:pipeline) { create(:ci_pipeline, :success, project: project, sha: commit.sha) }
+
+    subject { presenter.status_for }
+
+    where(:read_commit_status, :read_pipeline, :expected_result) do
+      true  | true  | 'success'
+      true  | false | nil
+      false | true  | nil
+      false | false | nil
+    end
+
+    with_them do
+      before do
+        allow(presenter).to receive(:can?).with(user, :read_commit_status, project).and_return(read_commit_status)
+        allow(presenter).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(read_pipeline)
+      end
+
+      it { is_expected.to eq expected_result }
     end
   end
 

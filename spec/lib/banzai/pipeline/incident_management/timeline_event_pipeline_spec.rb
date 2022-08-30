@@ -10,9 +10,9 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
       expect(described_class.filters).to eq(
         [
           *Banzai::Pipeline::PlainMarkdownPipeline.filters,
+          Banzai::Filter::SanitizationFilter,
           *Banzai::Pipeline::GfmPipeline.reference_filters,
           Banzai::Filter::EmojiFilter,
-          Banzai::Filter::SanitizationFilter,
           Banzai::Filter::ExternalLinkFilter,
           Banzai::Filter::ImageLinkFilter
         ]
@@ -62,7 +62,32 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
     context 'when markdown contains emojis' do
       let(:markdown) { ':+1:👍' }
 
-      it { is_expected.to eq('<p>👍👍</p>') }
+      it 'renders emojis wrapped in <gl-emoji> tag' do
+        # rubocop:disable Layout/LineLength
+        is_expected.to eq(
+          %q(<p><gl-emoji title="thumbs up sign" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji><gl-emoji title="thumbs up sign" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji></p>)
+        )
+        # rubocop:enable Layout/LineLength
+      end
+    end
+
+    context 'when markdown contains labels' do
+      let(:label) { create(:label, project: project, title: 'backend') }
+      let(:markdown) { %Q(~"#{label.name}" ~unknown) }
+
+      it 'replaces existing label to a link' do
+        # rubocop:disable Layout/LineLength
+        is_expected.to match(
+          %r(<p>.+<a href=\"[\w/]+-/issues\?label_name=#{label.name}\".+style=\"background-color: #\d{6}\".*>#{label.name}</span></a></span> ~unknown</p>)
+        )
+        # rubocop:enable Layout/LineLength
+      end
+    end
+
+    context 'when markdown contains table' do
+      let(:markdown) { '<table><tr><th>table head</th><tr><tr><td>table content</td></tr></table>'}
+
+      it { is_expected.to eq('table headtable content') }
     end
 
     context 'when markdown contains a reference to an issue' do

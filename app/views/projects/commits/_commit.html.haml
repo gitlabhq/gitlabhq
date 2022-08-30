@@ -14,7 +14,7 @@
 - project           = local_assigns.fetch(:project) { merge_request&.project }
 - ref               = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - commit            = commit.present(current_user: current_user)
-- commit_status     = commit.status_for(ref)
+- commit_status     = commit.detailed_status_for(ref)
 - collapsible       = local_assigns.fetch(:collapsible, true)
 - link_data_attrs   = local_assigns.fetch(:link_data_attrs, {})
 - link              = commit_path(project, commit, merge_request: merge_request)
