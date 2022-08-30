@@ -555,24 +555,29 @@ RSpec.describe Issues::CreateService do
           expect(reloaded_discussion.last_note.system).to eq(true)
         end
 
-        it 'assigns the title and description for the issue' do
-          issue = described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+        it 'sets default title and description values if not provided' do
+          issue = described_class.new(
+            project: project, current_user: user,
+            params: opts,
+            spam_params: spam_params
+          ).execute
 
-          expect(issue.title).not_to be_nil
-          expect(issue.description).not_to be_nil
+          expect(issue).to be_persisted
+          expect(issue.title).to eq("Follow-up from \"#{merge_request.title}\"")
+          expect(issue.description).to include("The following discussion from #{merge_request.to_reference} should be addressed")
         end
 
-        it 'can set nil explicitly to the title and description' do
+        it 'takes params from the request over the default values' do
           issue = described_class.new(project: project, current_user: user,
-                                      params: {
-                                        merge_request_to_resolve_discussions_of: merge_request,
-                                        description: nil,
-                                        title: nil
-                                      },
+                                      params: opts.merge(
+                                        description: 'Custom issue description',
+                                        title: 'My new issue'
+                                      ),
                                       spam_params: spam_params).execute
 
-          expect(issue.description).to be_nil
-          expect(issue.title).to be_nil
+          expect(issue).to be_persisted
+          expect(issue.description).to eq('Custom issue description')
+          expect(issue.title).to eq('My new issue')
         end
       end
 
@@ -594,24 +599,29 @@ RSpec.describe Issues::CreateService do
           expect(reloaded_discussion.last_note.system).to eq(true)
         end
 
-        it 'assigns the title and description for the issue' do
-          issue = described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+        it 'sets default title and description values if not provided' do
+          issue = described_class.new(
+            project: project, current_user: user,
+            params: opts,
+            spam_params: spam_params
+          ).execute
 
-          expect(issue.title).not_to be_nil
-          expect(issue.description).not_to be_nil
+          expect(issue).to be_persisted
+          expect(issue.title).to eq("Follow-up from \"#{merge_request.title}\"")
+          expect(issue.description).to include("The following discussion from #{merge_request.to_reference} should be addressed")
         end
 
-        it 'can set nil explicitly to the title and description' do
+        it 'takes params from the request over the default values' do
           issue = described_class.new(project: project, current_user: user,
-                                      params: {
-                                        merge_request_to_resolve_discussions_of: merge_request,
-                                        description: nil,
-                                        title: nil
-                                      },
+                                      params: opts.merge(
+                                        description: 'Custom issue description',
+                                        title: 'My new issue'
+                                      ),
                                       spam_params: spam_params).execute
 
-          expect(issue.description).to be_nil
-          expect(issue.title).to be_nil
+          expect(issue).to be_persisted
+          expect(issue.description).to eq('Custom issue description')
+          expect(issue.title).to eq('My new issue')
         end
       end
     end

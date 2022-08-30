@@ -47,7 +47,7 @@
         - 'jira_connect/'
         - 'kubernetes/'
         - 'protected_environments/'
-        - '/config/feature_flags/development/jira_connect_*'
+        - '/config/feature_flags/**/*'
         - '/config/metrics/'
         - '/app/controllers/groups/dependency_proxy_auth_controller.rb'
         - '/app/finders/ci/auth_job_finder.rb'
@@ -65,17 +65,19 @@
       keywords:
         - audit
       patterns:
-        - '**%{keyword}**'
+        - '/{,ee/}app/**/*%{keyword}*'
+        - '/{,ee/}config/**/*%{keyword}*'
+        - '/{,ee/}lib/**/*%{keyword}*'
     deny:
       keywords:
         - '*.png'
         - '*bundler-audit*'
         - '**/merge_requests/**'
-        - '/ee/app/services/audit_events/*'
+        - '/config/feature_flags/**/*'
+        - '/ee/app/services/audit_events/**/*'
         - '/ee/config/feature_flags/development/auditor_group_runner_access.yml'
-        - '/ee/spec/services/audit_events/*'
+        - '/ee/spec/services/audit_events/**/*'
         - '/ee/spec/services/ci/*'
         - '/ee/spec/services/personal_access_tokens/*'
-        - '/qa/**/*'
       patterns:
         - '%{keyword}'

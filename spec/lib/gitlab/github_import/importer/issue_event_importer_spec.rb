@@ -42,10 +42,6 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
   end
 
   describe '#execute' do
-    before do
-      issue_event.attributes[:issue_db_id] = issue.id
-    end
-
     context "when it's closed issue event" do
       let(:event_name) { 'closed' }
 

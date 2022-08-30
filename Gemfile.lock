@@ -25,6 +25,14 @@ PATH
       mail (~> 2.7)
 
 PATH
+  remote: vendor/gems/omniauth-azure-oauth2
+  specs:
+    omniauth-azure-oauth2 (0.0.10)
+      jwt (>= 1.0, < 3.0)
+      omniauth (~> 1.0, < 3)
+      omniauth-oauth2 (~> 1.4)
+
+PATH
   remote: vendor/gems/omniauth-cas3
   specs:
     omniauth-cas3 (1.1.4)
@@ -910,10 +918,6 @@ GEM
       omniauth-oauth2 (>= 1.5)
     omniauth-azure-activedirectory-v2 (1.0.0)
       omniauth-oauth2 (~> 1.7)
-    omniauth-azure-oauth2 (0.0.10)
-      jwt (>= 1.0, < 3.0)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.4)
     omniauth-dingtalk-oauth2 (1.0.1)
       omniauth-oauth2 (~> 1.7)
     omniauth-facebook (4.0.0)
@@ -1663,7 +1667,7 @@ DEPENDENCIES
   omniauth-auth0 (~> 2.0.0)
   omniauth-authentiq (~> 0.3.3)
   omniauth-azure-activedirectory-v2 (~> 1.0)
-  omniauth-azure-oauth2 (~> 0.0.9)
+  omniauth-azure-oauth2 (~> 0.0.9)!
   omniauth-cas3 (~> 1.1.4)!
   omniauth-dingtalk-oauth2 (~> 1.0)
   omniauth-facebook (~> 4.0.0)

@@ -27440,7 +27440,7 @@ CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_external_url ON ext
 
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_status_checks USING btree (project_id, name);
 
-CREATE INDEX idx_open_issues_on_project_id_and_confidential ON issues USING btree (project_id, confidential) WHERE (state_id = 1);
+CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON issues USING btree (project_id, confidential, author_id, id) WHERE (state_id = 1);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
 

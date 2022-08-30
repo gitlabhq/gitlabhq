@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:issue) { create(:issue, project: project) }
+  let(:issuable) { create(:issue, project: project) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:issue_event) do
@@ -20,14 +20,14 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
       'created_at' => '2022-04-26 18:30:53 UTC',
       'old_title' => 'old title',
       'new_title' => 'new title',
-      'issue' => { 'number' => issue.iid }
+      'issue' => { 'number' => issuable.iid, pull_request: issuable.is_a?(MergeRequest) }
     )
   end
 
   let(:expected_note_attrs) do
     {
-      noteable_id: issue.id,
-      noteable_type: Issue.name,
+      noteable_id: issuable.id,
+      noteable_type: issuable.class.name,
       project_id: project.id,
       author_id: user.id,
       note: "changed title from **{-old-} title** to **{+new+} title**",
@@ -48,31 +48,43 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
   describe '#execute' do
     before do
       allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
-        allow(finder).to receive(:database_id).and_return(issue.id)
+        allow(finder).to receive(:database_id).and_return(issuable.id)
       end
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
         allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
       end
     end
 
-    it 'creates expected note' do
-      expect { importer.execute(issue_event) }.to change { issue.notes.count }
-        .from(0).to(1)
-
-      expect(issue.notes.last)
-        .to have_attributes(expected_note_attrs)
-    end
-
-    it 'creates expected system note metadata' do
-      expect { importer.execute(issue_event) }.to change { SystemNoteMetadata.count }
+    shared_examples 'import renamed event' do
+      it 'creates expected note' do
+        expect { importer.execute(issue_event) }.to change { issuable.notes.count }
           .from(0).to(1)
 
-      expect(SystemNoteMetadata.last)
-        .to have_attributes(
-          expected_system_note_metadata_attrs.merge(
-            note_id: Note.last.id
+        expect(issuable.notes.last)
+          .to have_attributes(expected_note_attrs)
+      end
+
+      it 'creates expected system note metadata' do
+        expect { importer.execute(issue_event) }.to change { SystemNoteMetadata.count }
+            .from(0).to(1)
+
+        expect(SystemNoteMetadata.last)
+          .to have_attributes(
+            expected_system_note_metadata_attrs.merge(
+              note_id: Note.last.id
+            )
           )
-        )
+      end
+    end
+
+    context 'with Issue' do
+      it_behaves_like 'import renamed event'
+    end
+
+    context 'with MergeRequest' do
+      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+      it_behaves_like 'import renamed event'
     end
   end
 end

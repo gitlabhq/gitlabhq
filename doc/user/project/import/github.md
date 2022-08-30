@@ -184,6 +184,8 @@ The following items of a project are imported:
 - Pull request "merged by" information (GitLab.com and GitLab 13.7 and later).
 - Pull request comments replies in discussions ([GitLab.com and GitLab 14.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/336596)).
 - Diff Notes suggestions ([GitLab.com and GitLab 14.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)).
+- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4 with `github_importer_issue_events_import`
+  [feature flag](../../../administration/feature_flags.md) disabled by default.
 
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it

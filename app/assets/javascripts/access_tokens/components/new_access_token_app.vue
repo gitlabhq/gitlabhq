@@ -81,7 +81,12 @@ export default {
 
       this.infoAlert = createAlert({ message: this.alertInfoMessage, variant: VARIANT_INFO });
 
-      this.form.reset();
+      // Reset all input fields except the datepicker.
+      this.form.querySelectorAll('input:not([id$=expires_at])').forEach((el) => {
+        // The form token creation is not controlled by Vue.
+        el.checked = false;
+        el.value = '';
+      });
     },
   },
 };

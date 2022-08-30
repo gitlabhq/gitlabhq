@@ -4,7 +4,7 @@ module Types
   class TimelogType < BaseObject
     graphql_name 'Timelog'
 
-    authorize :read_issue
+    authorize :read_issuable
 
     expose_permissions Types::PermissionTypes::Timelog
 

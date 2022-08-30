@@ -34,7 +34,14 @@ describe('~/access_tokens/components/new_access_token_app', () => {
 
   beforeEach(() => {
     // NewAccessTokenApp observes a form element
-    setHTMLFixture(`<form id="${FORM_SELECTOR.slice(1)}"><input type="submit"/></form>`);
+    setHTMLFixture(
+      `<form id="${FORM_SELECTOR.slice(1)}">
+        <input type="text" id="expires_at" value="2022-01-01"/>
+        <input type="text" value='1'/>
+        <input type="checkbox" checked/>
+        <input type="submit"/>
+      </form>`,
+    );
 
     createComponent();
   });
@@ -93,12 +100,15 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       });
     });
 
-    it('should reset the form', async () => {
-      const resetSpy = jest.spyOn(wrapper.vm.form, 'reset');
-
+    it('should reset all input fields except the date', async () => {
+      expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
+      expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('1');
+      expect(document.querySelector('input[type=checkbox]').checked).toBe(true);
       await triggerSuccess();
 
-      expect(resetSpy).toHaveBeenCalled();
+      expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
+      expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('');
+      expect(document.querySelector('input[type=checkbox]').checked).toBe(false);
     });
   });
 

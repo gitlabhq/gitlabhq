@@ -5,6 +5,7 @@ class IssuablePolicy < BasePolicy
 
   condition(:locked, scope: :subject, score: 0) { @subject.discussion_locked? }
   condition(:is_project_member) { @user && @subject.project && @subject.project.team.member?(@user) }
+  condition(:can_read_issuable) { can?(:"read_#{@subject.to_ability_name}") }
 
   desc "User is the assignee or author"
   condition(:assignee_or_author) do
@@ -47,6 +48,10 @@ class IssuablePolicy < BasePolicy
 
   rule { can?(:reporter_access) }.policy do
     enable :create_timelog
+  end
+
+  rule { can_read_issuable }.policy do
+    enable :read_issuable
   end
 end
 

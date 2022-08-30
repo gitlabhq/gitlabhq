@@ -115,7 +115,7 @@ The **Storage** tab of the **Usage Quotas** page warns you of the following:
 
 ### Excess storage example
 
-The following example describes an excess storage scenario for namespace _Example Company_:
+The following example describes an excess storage scenario for a namespace:
 
 | Repository | Storage used | Excess storage | Quota  | Status            |
 |------------|--------------|----------------|--------|-------------------|

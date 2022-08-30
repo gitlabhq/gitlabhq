@@ -224,7 +224,7 @@ running `ALTER TABLE` on a non-partitioned table in a few key ways:
 
 ## Splitting large partitions into smaller ones
 
-We want to start with the initial `pipeline_id` number `100` (or higher, like
+We want to start with the initial `partition_id` number `100` (or higher, like
 `1000`, depending on our calculations and estimations). We do not want to start
 from 1, because existing tables are also large already, and we might want to
 split them into smaller partitions. If we start with `100`, we will be able to
@@ -237,6 +237,18 @@ resources at the same time. If we ever decide to split large partitions into
 smaller ones (it's not yet clear if we will need to do this), we might be able
 to just use background migrations to update partition IDs, and PostgreSQL is
 smart enough to move rows between partitions on its own.
+
+### Naming conventions
+
+A partitioned table is called a __routing__ table and it will use the `p_`
+prefix which should help us with building automated tooling for query analysis.
+
+A table partition will be simply called __partition__ and it can use the a
+physical partition ID as suffix, leaded by a `p` letter, for example
+`ci_builds_p101`. Existing CI tables will become __zero partitions__ of the
+new routing tables. Depending on the chosen
+[partitioning strategy](#how-do-we-want-to-partition-cicd-data) for a given
+table, it is possible to have many logical partitions per one physical partition.
 
 ## Storing partitions metadata in the database
 

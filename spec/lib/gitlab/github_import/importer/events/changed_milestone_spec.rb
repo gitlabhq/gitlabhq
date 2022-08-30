@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone do
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
-  let(:issue) { create(:issue, project: project) }
+  let(:issuable) { create(:issue, project: project) }
   let!(:milestone) { create(:milestone, project: project) }
 
   let(:issue_event) do
@@ -19,16 +19,15 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone do
       'event' => event_type,
       'commit_id' => nil,
       'milestone_title' => milestone.title,
-      'issue_db_id' => issue.id,
+      'issue_db_id' => issuable.id,
       'created_at' => '2022-04-26 18:30:53 UTC',
-      'issue' => { 'number' => issue.iid }
+      'issue' => { 'number' => issuable.iid, pull_request: issuable.is_a?(MergeRequest) }
     )
   end
 
   let(:event_attrs) do
     {
       user_id: user.id,
-      issue_id: issue.id,
       milestone_id: milestone.id,
       state: 'opened',
       created_at: issue_event.created_at
@@ -37,9 +36,9 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone do
 
   shared_examples 'new event' do
     it 'creates a new milestone event' do
-      expect { importer.execute(issue_event) }.to change { issue.resource_milestone_events.count }
+      expect { importer.execute(issue_event) }.to change { issuable.resource_milestone_events.count }
         .from(0).to(1)
-      expect(issue.resource_milestone_events.last)
+      expect(issuable.resource_milestone_events.last)
         .to have_attributes(expected_event_attrs)
     end
   end
@@ -48,25 +47,45 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone do
     before do
       allow(Gitlab::Cache::Import::Caching).to receive(:read_integer).and_return(milestone.id)
       allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
-        allow(finder).to receive(:database_id).and_return(issue.id)
+        allow(finder).to receive(:database_id).and_return(issuable.id)
       end
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
         allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
       end
     end
 
-    context 'when importing a milestoned event' do
-      let(:event_type) { 'milestoned' }
-      let(:expected_event_attrs) { event_attrs.merge(action: 'add') }
+    context 'with Issue' do
+      context 'when importing a milestoned event' do
+        let(:event_type) { 'milestoned' }
+        let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'add') }
 
-      it_behaves_like 'new event'
+        it_behaves_like 'new event'
+      end
+
+      context 'when importing demilestoned event' do
+        let(:event_type) { 'demilestoned' }
+        let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'remove') }
+
+        it_behaves_like 'new event'
+      end
     end
 
-    context 'when importing demilestoned event' do
-      let(:event_type) { 'demilestoned' }
-      let(:expected_event_attrs) { event_attrs.merge(action: 'remove') }
+    context 'with MergeRequest' do
+      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
 
-      it_behaves_like 'new event'
+      context 'when importing a milestoned event' do
+        let(:event_type) { 'milestoned' }
+        let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'add') }
+
+        it_behaves_like 'new event'
+      end
+
+      context 'when importing demilestoned event' do
+        let(:event_type) { 'demilestoned' }
+        let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'remove') }
+
+        it_behaves_like 'new event'
+      end
     end
   end
 end

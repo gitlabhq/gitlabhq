@@ -31,7 +31,7 @@ To instrument an audit event, the following attributes should be provided:
 
 | Attribute    | Type                 | Required? | Description                                                       |
 |:-------------|:---------------------|:----------|:------------------------------------------------------------------|
-| `name`       | String               | false     | Action name to be audited. Used for error tracking                |
+| `name`       | String               | false     | Action name to be audited. Represents the [type of the event](#event-type-definitions). Used for error tracking |
 | `author`     | User                 | true      | User who authors the change                                       |
 | `scope`      | User, Project, Group | true      | Scope which the audit event belongs to                            |
 | `target`     | Object               | true      | Target object being audited                                       |
@@ -40,17 +40,15 @@ To instrument an audit event, the following attributes should be provided:
 
 ## How to instrument new Audit Events
 
-There are three ways of instrumenting audit events:
+1. Create a [YAML type definition](#add-a-new-audit-event-type) for the new audit event.
+1. Call `Gitlab::Audit::Auditor.audit`, passing an action block.
+
+The following ways of instrumenting audit events are deprecated:
 
 - Create a new class in `ee/lib/ee/audit/` and extend `AuditEventService`
 - Call `AuditEventService` after a successful action
-- Call `Gitlab::Audit::Auditor.audit` passing an action block
 
-This inconsistency leads to unexpected bugs, increases maintainer effort, and worsens the
-developer experience. Therefore, we suggest you use `Gitlab::Audit::Auditor` to
-instrument new audit events.
-
-With new service, we can instrument audit events in two ways:
+With `Gitlab::Audit::Auditor` service, we can instrument audit events in two ways:
 
 - Using block for multiple events.
 - Using standard method call for single events.
@@ -196,6 +194,34 @@ deactivate B
 
 In addition to recording to the database, we also write these events to
 [a log file](../../administration/logs/index.md#audit_jsonlog).
+
+## Event type definitions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367847) in GitLab 15.4.
+
+All new audit events must have a type definition stored in `config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
+
+### Add a new audit event type
+
+To add a new audit event type:
+
+1. Create a new file in `config/audit_events/types/` with the filename matching the name of the event type. For example, a definition for the event type triggered when a
+   user is added to a project might be stored in `config/audit_events/types/project_add_user.yml`.
+1. Add contents to the file that conform to the [schema](#schema) defined in `config/audit_events/types/type_schema.json`.
+1. Ensure that all calls to `Gitlab::Audit::Auditor` use the `name` defined in your file.
+
+### Schema
+
+| Field | Required | Description |
+| ----- | -------- |--------------|
+| `name` | yes     | Unique, lowercase and underscored name describing the type of event. Must match the filename. |
+| `description` | yes | Human-readable description of how this event is triggered |
+| `group` | yes | Name of the group that introduced this audit event. For example, `manage::compliance` |
+| `introduced_by_issue` | yes | Issue URL that proposed the addition of this type |
+| `introduced_by_mr` | yes | MR URL that added this new type |
+| `milestone` | yes | Milestone in which this type was added |
+| `saved_to_database` | yes | Indicate whether to persist events to database and JSON logs |
+| `streamed` | yes | Indicate that events should be streamed to external services (if configured) |
 
 ## Event streaming
 

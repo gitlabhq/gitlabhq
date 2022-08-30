@@ -12,13 +12,14 @@ module Gitlab
           private
 
           def create_event(issue_event)
-            ResourceLabelEvent.create!(
-              issue_id: issuable_db_id(issue_event),
+            attrs = {
               user_id: author_id(issue_event),
               label_id: label_finder.id_for(issue_event.label_title),
               action: action(issue_event.event),
               created_at: issue_event.created_at
-            )
+            }.merge(resource_event_belongs_to(issue_event))
+
+            ResourceLabelEvent.create!(attrs)
           end
 
           def label_finder

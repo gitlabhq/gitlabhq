@@ -23,3 +23,5 @@ class Import::ProviderRepoSerializer < BaseSerializer
     super(repo, opts, entity)
   end
 end
+
+Import::ProviderRepoSerializer.prepend_mod

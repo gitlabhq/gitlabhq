@@ -53,7 +53,7 @@ Prerequisites:
 
 To create a task:
 
-1. In an issue description, in the **Tasks** section, select **Add**.
+1. In the issue description, in the **Tasks** section, select **Add**.
 1. Enter the task title.
 1. Select **Create task**.
 

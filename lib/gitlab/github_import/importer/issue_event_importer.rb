@@ -15,11 +15,7 @@ module Gitlab
           @client = client
         end
 
-        # TODO: Add MergeRequest events support
-        # https://gitlab.com/groups/gitlab-org/-/epics/7673
         def execute
-          return if issue_event.issuable_type == 'MergeRequest'
-
           importer = event_importer_class(issue_event)
           if importer
             importer.new(project, client).execute(issue_event)

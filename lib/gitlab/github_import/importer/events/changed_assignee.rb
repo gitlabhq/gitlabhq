@@ -19,7 +19,7 @@ module Gitlab
           def create_note(issue_event, note_body, assigner_id)
             Note.create!(
               system: true,
-              noteable_type: Issue.name,
+              noteable_type: issuable_type(issue_event),
               noteable_id: issuable_db_id(issue_event),
               project: project,
               author_id: assigner_id,

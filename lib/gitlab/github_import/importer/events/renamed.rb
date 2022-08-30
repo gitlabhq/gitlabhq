@@ -14,7 +14,7 @@ module Gitlab
           def note_params(issue_event)
             {
               noteable_id: issuable_db_id(issue_event),
-              noteable_type: Issue.name,
+              noteable_type: issuable_type(issue_event),
               project_id: project.id,
               author_id: author_id(issue_event),
               note: parse_body(issue_event),

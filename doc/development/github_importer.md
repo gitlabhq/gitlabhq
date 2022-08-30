@@ -101,7 +101,20 @@ label links in the same worker removes the need for performing a separate crawl
 through the API data, reducing the number of API calls necessary to import a
 project.
 
-### 8. Stage::ImportNotesWorker
+### 8. Stage::ImportIssueEventsWorker
+
+This worker imports all issues and pull request events. For every event, we
+schedule a job for the `Gitlab::GithubImport::ImportIssueEventWorker` worker.
+
+We can import both issues and pull request events by single stage because of a specific aspect of the GitHub API. It looks like that under the hood, issues and pull requests
+GitHub are stored in a single table. Therefore, they have globally-unique IDs and so:
+
+- Every pull request is an issue.
+- Issues aren't pull requests.
+
+Therefore, both issues and pull requests have a common API for most related things.
+
+### 9. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
 every comment, we schedule a job for the
@@ -112,7 +125,7 @@ returns comments for both issues and pull requests. This means we have to wait
 for all issues and pull requests to be imported before we can import regular
 comments.
 
-### 9. Stage::FinishImportWorker
+### 10. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.

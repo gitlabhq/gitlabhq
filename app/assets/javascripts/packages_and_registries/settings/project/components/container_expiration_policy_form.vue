@@ -199,7 +199,7 @@ export default {
 
     <div class="gl-display-flex gl-mt-7">
       <expiration-dropdown
-        v-model="prefilledForm.cadence"
+        :value="prefilledForm.cadence"
         :disabled="isFieldDisabled"
         :form-options="$options.formOptions.cadence"
         :label="$options.i18n.CADENCE_LABEL"
@@ -231,7 +231,7 @@ export default {
             </gl-sprintf>
           </p>
           <expiration-dropdown
-            v-model="prefilledForm.keepN"
+            :value="prefilledForm.keepN"
             :disabled="isFieldDisabled"
             :form-options="$options.formOptions.keepN"
             :label="$options.i18n.KEEP_N_LABEL"
@@ -270,7 +270,7 @@ export default {
             </gl-sprintf>
           </p>
           <expiration-dropdown
-            v-model="prefilledForm.olderThan"
+            :value="prefilledForm.olderThan"
             :disabled="isFieldDisabled"
             :form-options="$options.formOptions.olderThan"
             :label="$options.i18n.EXPIRATION_SCHEDULE_LABEL"

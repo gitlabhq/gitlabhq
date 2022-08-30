@@ -10,7 +10,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/tasks.html
-  image_url: https://about.gitlab.com/images/unreleased/create-tasks.gif
+  image_url: https://about.gitlab.com/images/15_3/create-tasks.gif
   published_at: 2022-08-22
   release: 15.3
 - name: "GitOps features are now free"
@@ -36,7 +36,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#submit-a-review
-  image_url: https://about.gitlab.com/images/unreleased/create-mr-review-summary.png
+  image_url: https://about.gitlab.com/images/15_3/create-mr-review-summary.png
   published_at: 2022-08-22
   release: 15.3
 - name: "Define password complexity requirements"
@@ -54,7 +54,7 @@
   gitlab-com: false
   available_in: [Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/admin_area/settings/sign_up_restrictions.html#password-complexity-requirements
-  image_url: https://about.gitlab.com/images/unreleased/manage-password-complexity-policy.png
+  image_url: https://about.gitlab.com/images/15_3/manage-password-complexity-policy.png
   published_at: 2022-08-22
   release: 15.3
 - name: "Maintain SAML Group Links with API"

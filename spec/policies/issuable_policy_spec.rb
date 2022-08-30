@@ -18,8 +18,8 @@ RSpec.describe IssuablePolicy, models: true do
     project.add_reporter(reporter)
   end
 
-  def permissions(user, issue)
-    described_class.new(user, issue)
+  def permissions(user, issuable)
+    described_class.new(user, issuable)
   end
 
   describe '#rules' do
@@ -151,6 +151,56 @@ RSpec.describe IssuablePolicy, models: true do
     context 'when user is at least reporter of the project' do
       it 'allows timelogs creation' do
         expect(permissions(reporter, issue)).to be_allowed(:create_timelog)
+      end
+    end
+
+    context 'when subject is a Merge Request' do
+      let(:issuable) { create(:merge_request) }
+      let(:policy) { permissions(user, issuable) }
+
+      before do
+        allow(policy).to receive(:can?).with(:read_merge_request).and_return(can_read_merge_request)
+      end
+
+      context 'when can_read_merge_request is false' do
+        let(:can_read_merge_request) { false }
+
+        it 'does not allow :read_issuable' do
+          expect(policy).not_to be_allowed(:read_issuable)
+        end
+      end
+
+      context 'when can_read_merge_request is true' do
+        let(:can_read_merge_request) { true }
+
+        it 'allows :read_issuable' do
+          expect(policy).to be_allowed(:read_issuable)
+        end
+      end
+    end
+
+    context 'when subject is an Issue' do
+      let(:issuable) { create(:issue) }
+      let(:policy) { permissions(user, issuable) }
+
+      before do
+        allow(policy).to receive(:can?).with(:read_issue).and_return(can_read_issue)
+      end
+
+      context 'when can_read_issue is false' do
+        let(:can_read_issue) { false }
+
+        it 'does not allow :read_issuable' do
+          expect(policy).not_to be_allowed(:read_issuable)
+        end
+      end
+
+      context 'when can_read_issue is true' do
+        let(:can_read_issue) { true }
+
+        it 'allows :read_issuable' do
+          expect(policy).to be_allowed(:read_issuable)
+        end
       end
     end
   end
