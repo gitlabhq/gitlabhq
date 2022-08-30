@@ -49,15 +49,17 @@ describe('Output component', () => {
       const htmlType = json.cells[4];
       createComponent(htmlType.outputs[0]);
 
-      expect(wrapper.findAll('p')).toHaveLength(1);
-      expect(wrapper.text()).toContain('test');
+      const iframe = wrapper.find('iframe');
+      expect(iframe.exists()).toBe(true);
+      expect(iframe.element.getAttribute('sandbox')).toBe('');
+      expect(iframe.element.getAttribute('srcdoc')).toBe('<p>test</p>');
     });
 
     it('renders multiple raw HTML outputs', () => {
       const htmlType = json.cells[4];
       createComponent([htmlType.outputs[0], htmlType.outputs[0]]);
 
-      expect(wrapper.findAll('p')).toHaveLength(2);
+      expect(wrapper.findAll('iframe')).toHaveLength(2);
     });
   });
 
@@ -84,7 +86,11 @@ describe('Output component', () => {
     });
 
     it('renders as an svg', () => {
-      expect(wrapper.find('svg').exists()).toBe(true);
+      const iframe = wrapper.find('iframe');
+
+      expect(iframe.exists()).toBe(true);
+      expect(iframe.element.getAttribute('sandbox')).toBe('');
+      expect(iframe.element.getAttribute('srcdoc')).toBe('<svg></svg>');
     });
   });
 

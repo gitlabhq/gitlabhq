@@ -52,6 +52,8 @@ module LoginHelpers
     visit new_admin_session_path
     fill_in 'user_password', with: user.password
     click_button 'Enter Admin Mode'
+
+    wait_for_requests
   end
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)

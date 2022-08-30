@@ -763,6 +763,96 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :commits, search: 'merge'
 
         it_behaves_like 'ping counters', scope: :commits
+
+        describe 'pipeline visibility' do
+          shared_examples 'pipeline information visible' do
+            it 'contains status and last_pipeline' do
+              request
+
+              expect(json_response[0]['status']).to eq 'success'
+              expect(json_response[0]['last_pipeline']).not_to be_nil
+            end
+          end
+
+          shared_examples 'pipeline information not visible' do
+            it 'does not contain status and last_pipeline' do
+              request
+
+              expect(json_response[0]['status']).to be_nil
+              expect(json_response[0]['last_pipeline']).to be_nil
+            end
+          end
+
+          let(:request) { get api(endpoint, user), params: { scope: 'commits', search: repo_project.commit.sha } }
+
+          before do
+            create(:ci_pipeline, :success, project: repo_project, sha: repo_project.commit.sha)
+          end
+
+          context 'with non public pipeline' do
+            let_it_be(:repo_project) do
+              create(:project, :public, :repository, public_builds: false, group: group)
+            end
+
+            context 'user is project member with reporter role or above' do
+              before do
+                repo_project.add_reporter(user)
+              end
+
+              it_behaves_like 'pipeline information visible'
+            end
+
+            context 'user is project member with guest role' do
+              before do
+                repo_project.add_guest(user)
+              end
+
+              it_behaves_like 'pipeline information not visible'
+            end
+
+            context 'user is not project member' do
+              let_it_be(:user) { create(:user) }
+
+              it_behaves_like 'pipeline information not visible'
+            end
+          end
+
+          context 'with public pipeline' do
+            let_it_be(:repo_project) do
+              create(:project, :public, :repository, public_builds: true, group: group)
+            end
+
+            context 'user is project member with reporter role or above' do
+              before do
+                repo_project.add_reporter(user)
+              end
+
+              it_behaves_like 'pipeline information visible'
+            end
+
+            context 'user is project member with guest role' do
+              before do
+                repo_project.add_guest(user)
+              end
+
+              it_behaves_like 'pipeline information visible'
+            end
+
+            context 'user is not project member' do
+              let_it_be(:user) { create(:user) }
+
+              it_behaves_like 'pipeline information visible'
+
+              context 'when CI/CD is set to only project members' do
+                before do
+                  repo_project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
+                end
+
+                it_behaves_like 'pipeline information not visible'
+              end
+            end
+          end
+        end
       end
 
       context 'for commits scope with project path as id' do

@@ -69,6 +69,10 @@ module Integrations
       }
     end
 
+    def client_url
+      api_url.presence || url
+    end
+
     def self.to_param
       name.demodulize.downcase
     end

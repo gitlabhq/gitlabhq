@@ -33,6 +33,22 @@ RSpec.describe JwtController do
     end
   end
 
+  shared_examples "with invalid credentials" do
+    it "returns a generic error message" do
+      subject
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(json_response).to eq(
+        {
+          "errors" => [{
+            "code" => "UNAUTHORIZED",
+            "message" => "HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/user/profile/account/two_factor_authentication#troubleshooting"
+          }]
+        }
+      )
+    end
+  end
+
   context 'authenticating against container registry' do
     context 'existing service' do
       subject! { get '/jwt/auth', params: parameters }
@@ -51,10 +67,7 @@ RSpec.describe JwtController do
         context 'with blocked user' do
           let(:user) { create(:user, :blocked) }
 
-          it 'rejects the request as unauthorized' do
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(response.body).to include('HTTP Basic: Access denied')
-          end
+          it_behaves_like 'with invalid credentials'
         end
       end
 
@@ -154,10 +167,7 @@ RSpec.describe JwtController do
           let(:user) { create(:user, :two_factor) }
 
           context 'without personal token' do
-            it 'rejects the authorization attempt' do
-              expect(response).to have_gitlab_http_status(:unauthorized)
-              expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
-            end
+            it_behaves_like 'with invalid credentials'
           end
 
           context 'with personal token' do
@@ -181,14 +191,10 @@ RSpec.describe JwtController do
 
       context 'using invalid login' do
         let(:headers) { { authorization: credentials('invalid', 'password') } }
+        let(:subject) { get '/jwt/auth', params: parameters, headers: headers }
 
         context 'when internal auth is enabled' do
-          it 'rejects the authorization attempt' do
-            get '/jwt/auth', params: parameters, headers: headers
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(response.body).not_to include('You must use a personal access token with \'api\' scope for Git over HTTP')
-          end
+          it_behaves_like 'with invalid credentials'
         end
 
         context 'when internal auth is disabled' do
@@ -196,12 +202,7 @@ RSpec.describe JwtController do
             stub_application_setting(password_authentication_enabled_for_git: false)
           end
 
-          it 'rejects the authorization attempt with personal access token message' do
-            get '/jwt/auth', params: parameters, headers: headers
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
-          end
+          it_behaves_like 'with invalid credentials'
         end
       end
     end

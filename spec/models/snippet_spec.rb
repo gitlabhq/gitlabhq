@@ -91,6 +91,45 @@ RSpec.describe Snippet do
         end
       end
     end
+
+    context 'description validations' do
+      let_it_be(:invalid_description) { 'a' * (described_class::DESCRIPTION_LENGTH_MAX * 2) }
+
+      context 'with existing snippets' do
+        let(:snippet) { create(:personal_snippet, description: 'This is a valid content at the time of creation') }
+
+        it 'does not raise a validation error if the description is not changed' do
+          snippet.title = 'new title'
+
+          expect(snippet).to be_valid
+        end
+
+        it 'raises and error if the description is changed and the size is bigger than limit' do
+          expect(snippet).to be_valid
+
+          snippet.description = invalid_description
+
+          expect(snippet).not_to be_valid
+        end
+      end
+
+      context 'with new snippets' do
+        it 'is valid when description is smaller than the limit' do
+          snippet = build(:personal_snippet, description: 'Valid Desc')
+
+          expect(snippet).to be_valid
+        end
+
+        it 'raises error when description is bigger than setting limit' do
+          snippet = build(:personal_snippet, description: invalid_description)
+
+          aggregate_failures do
+            expect(snippet).not_to be_valid
+            expect(snippet.errors.messages_for(:description)).to include("is too long (2 MB). The maximum size is 1 MB.")
+          end
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

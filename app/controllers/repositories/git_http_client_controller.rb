@@ -67,9 +67,21 @@ module Repositories
       end
 
       send_challenges
-      render plain: "HTTP Basic: Access denied\n", status: :unauthorized
+      render_access_denied
     rescue Gitlab::Auth::MissingPersonalAccessTokenError
-      render_missing_personal_access_token
+      render_access_denied
+    end
+
+    def render_access_denied
+      help_page = help_page_url(
+        'topics/git/troubleshooting_git',
+        anchor: 'error-on-git-fetch-http-basic-access-denied'
+      )
+
+      render(
+        plain: format(_("HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See %{help_page_url}"), help_page_url: help_page),
+        status: :unauthorized
+      )
     end
 
     def basic_auth_provided?
@@ -101,13 +113,6 @@ module Repositories
 
     def parse_repo_path
       @container, @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse(repository_path)
-    end
-
-    def render_missing_personal_access_token
-      render plain: "HTTP Basic: Access denied\n" \
-                    "You must use a personal access token with 'read_repository' or 'write_repository' scope for Git over HTTP.\n" \
-                    "You can generate one at #{profile_personal_access_tokens_url}",
-             status: :unauthorized
     end
 
     def repository

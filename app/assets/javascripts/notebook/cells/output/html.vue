@@ -40,6 +40,13 @@ export default {
 <template>
   <div class="output">
     <prompt type="Out" :count="count" :show-output="showOutput" />
-    <div v-safe-html:[$options.safeHtmlConfig]="rawCode" class="gl-overflow-auto"></div>
+    <iframe
+      sandbox
+      :srcdoc="rawCode"
+      frameborder="0"
+      scrolling="no"
+      width="100%"
+      class="gl-overflow-auto"
+    ></iframe>
   </div>
 </template>

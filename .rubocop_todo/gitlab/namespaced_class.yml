@@ -726,6 +726,7 @@ Gitlab/NamespacedClass:
     - 'app/validators/top_level_group_validator.rb'
     - 'app/validators/untrusted_regexp_validator.rb'
     - 'app/validators/x509_certificate_credentials_validator.rb'
+    - 'app/validators/bytesize_validator.rb'
     - 'app/workers/admin_email_worker.rb'
     - 'app/workers/approve_blocked_pending_approval_users_worker.rb'
     - 'app/workers/archive_trace_worker.rb'

@@ -823,13 +823,21 @@ RSpec.describe Issue do
     end
 
     describe '#to_branch_name exists ending with -index' do
-      before do
+      it 'returns #to_branch_name ending with max index + 1' do
         allow(repository).to receive(:branch_exists?).and_return(true)
         allow(repository).to receive(:branch_exists?).with("#{subject.to_branch_name}-3").and_return(false)
+
+        expect(subject.suggested_branch_name).to eq("#{subject.to_branch_name}-3")
       end
 
-      it 'returns #to_branch_name ending with max index + 1' do
-        expect(subject.suggested_branch_name).to eq("#{subject.to_branch_name}-3")
+      context 'when branch name still exists after 5 attempts' do
+        it 'returns #to_branch_name ending with random characters' do
+          allow(repository).to receive(:branch_exists?).with(subject.to_branch_name).and_return(true)
+          allow(repository).to receive(:branch_exists?).with(/#{subject.to_branch_name}-\d/).and_return(true)
+          allow(repository).to receive(:branch_exists?).with(/#{subject.to_branch_name}-\h{8}/).and_return(false)
+
+          expect(subject.suggested_branch_name).to match(/#{subject.to_branch_name}-\h{8}/)
+        end
       end
     end
   end
