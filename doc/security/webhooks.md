@@ -7,22 +7,14 @@ type: concepts, reference, howto
 
 # Webhooks and insecure internal web services **(FREE SELF)**
 
-NOTE:
-On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
+Users with at least the Maintainer role can set up [Webhooks](../user/project/integrations/webhooks.md) that are
+triggered when specific changes occur in a project. When triggered, a `POST` HTTP request is sent to a URL. A webhook is
+usually configured to send data to a specific external web service, which
+processes the data in an appropriate way.
 
-If you have non-GitLab web services running on your GitLab server or within its
-local network, these may be vulnerable to exploitation via Webhooks.
-
-With [Webhooks](../user/project/integrations/webhooks.md), you and your project
-maintainers and owners can set up URLs to be triggered when specific changes
-occur in your projects. Normally, these requests are sent to external web
-services specifically set up for this purpose, that process the request and its
-attached data in some appropriate way.
-
-Things get hairy, however, when a Webhook is set up with a URL that doesn't
-point to an external, but to an internal service, that may do something
-completely unintended when the webhook is triggered and the POST request is
-sent.
+However, a Webhook can be configured with a URL for an internal web service instead of an external web service.
+When the Webhook is triggered,
+non-GitLab web services running on your GitLab server or in its local network could be exploited.
 
 Webhook requests are made by the GitLab server itself and use a single
 (optional) secret token per hook for authorization (instead of a user or
@@ -38,6 +30,8 @@ If a web service does not require authentication, Webhooks can be used to
 trigger destructive commands by getting the GitLab server to make POST requests
 to endpoints like `http://localhost:123/some-resource/delete`.
 
+## Allow requests to local network
+
 To prevent this type of exploitation from happening, starting with GitLab 10.6,
 all Webhook requests to the current GitLab instance server address and/or in a
 private network are forbidden by default. That means that all requests made
@@ -48,8 +42,7 @@ This behavior can be overridden:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
-1. Expand the **Outbound requests** section:
-   ![Outbound requests Admin Area settings](img/outbound_requests_section_v12_2.png)
+1. Expand the **Outbound requests** section.
 1. Select **Allow requests to the local network from web hooks and services**.
 
 NOTE:

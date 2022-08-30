@@ -11,6 +11,12 @@ FactoryBot.define do
       default_access_level { true }
     end
 
+    after(:create) do |protected_branch, evaluator|
+      break unless protected_branch.project&.persisted?
+
+      ProtectedBranches::CacheService.new(protected_branch.project).refresh
+    end
+
     trait :create_branch_on_repository do
       association :project, factory: [:project, :repository]
 

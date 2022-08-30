@@ -72,10 +72,20 @@ RSpec.describe Gitlab::Metrics::System do
     end
 
     describe '.memory_usage_rss' do
-      it "returns the process' resident set size (RSS) in bytes" do
-        mock_existing_proc_file('/proc/self/status', proc_status)
+      context 'without PID' do
+        it "returns the current process' resident set size (RSS) in bytes" do
+          mock_existing_proc_file('/proc/self/status', proc_status)
 
-        expect(described_class.memory_usage_rss).to eq(2527232)
+          expect(described_class.memory_usage_rss).to eq(2527232)
+        end
+      end
+
+      context 'with PID' do
+        it "returns the given process' resident set size (RSS) in bytes" do
+          mock_existing_proc_file('/proc/7/status', proc_status)
+
+          expect(described_class.memory_usage_rss(pid: 7)).to eq(2527232)
+        end
       end
     end
 
@@ -96,11 +106,22 @@ RSpec.describe Gitlab::Metrics::System do
     end
 
     describe '.memory_usage_uss_pss' do
-      it "returns the process' unique and porportional set size (USS/PSS) in bytes" do
-        mock_existing_proc_file('/proc/self/smaps_rollup', proc_smaps_rollup)
+      context 'without PID' do
+        it "returns the current process' unique and porportional set size (USS/PSS) in bytes" do
+          mock_existing_proc_file('/proc/self/smaps_rollup', proc_smaps_rollup)
 
-        # (Private_Clean (152 kB) + Private_Dirty (312 kB) + Private_Hugetlb (0 kB)) * 1024
-        expect(described_class.memory_usage_uss_pss).to eq(uss: 475136, pss: 515072)
+          # (Private_Clean (152 kB) + Private_Dirty (312 kB) + Private_Hugetlb (0 kB)) * 1024
+          expect(described_class.memory_usage_uss_pss).to eq(uss: 475136, pss: 515072)
+        end
+      end
+
+      context 'with PID' do
+        it "returns the given process' unique and porportional set size (USS/PSS) in bytes" do
+          mock_existing_proc_file('/proc/7/smaps_rollup', proc_smaps_rollup)
+
+          # (Private_Clean (152 kB) + Private_Dirty (312 kB) + Private_Hugetlb (0 kB)) * 1024
+          expect(described_class.memory_usage_uss_pss(pid: 7)).to eq(uss: 475136, pss: 515072)
+        end
       end
     end
 

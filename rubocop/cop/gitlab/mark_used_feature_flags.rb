@@ -166,7 +166,7 @@ module RuboCop
         end
 
         def caller_is_feature?(node)
-          class_caller(node) == "Feature"
+          %w[Feature YamlProcessor::FeatureFlags].include?(class_caller(node))
         end
 
         def caller_is_feature_gitaly?(node)

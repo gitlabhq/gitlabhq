@@ -10,8 +10,8 @@ module Gitlab
       extend self
 
       PROC_STAT_PATH = '/proc/self/stat'
-      PROC_STATUS_PATH = '/proc/self/status'
-      PROC_SMAPS_ROLLUP_PATH = '/proc/self/smaps_rollup'
+      PROC_STATUS_PATH = '/proc/%s/status'
+      PROC_SMAPS_ROLLUP_PATH = '/proc/%s/smaps_rollup'
       PROC_LIMITS_PATH = '/proc/self/limits'
       PROC_FD_GLOB = '/proc/self/fd/*'
 
@@ -34,14 +34,14 @@ module Gitlab
         }
       end
 
-      # Returns the current process' RSS (resident set size) in bytes.
-      def memory_usage_rss
-        sum_matches(PROC_STATUS_PATH, rss: RSS_PATTERN)[:rss].kilobytes
+      # Returns the given process' RSS (resident set size) in bytes.
+      def memory_usage_rss(pid: 'self')
+        sum_matches(PROC_STATUS_PATH % pid, rss: RSS_PATTERN)[:rss].kilobytes
       end
 
-      # Returns the current process' USS/PSS (unique/proportional set size) in bytes.
-      def memory_usage_uss_pss
-        sum_matches(PROC_SMAPS_ROLLUP_PATH, uss: PRIVATE_PAGES_PATTERN, pss: PSS_PATTERN)
+      # Returns the given process' USS/PSS (unique/proportional set size) in bytes.
+      def memory_usage_uss_pss(pid: 'self')
+        sum_matches(PROC_SMAPS_ROLLUP_PATH % pid, uss: PRIVATE_PAGES_PATTERN, pss: PSS_PATTERN)
           .transform_values(&:kilobytes)
       end
 

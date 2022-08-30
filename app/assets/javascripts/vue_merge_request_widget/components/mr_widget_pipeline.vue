@@ -9,7 +9,6 @@ import {
   GlTooltipDirective,
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
-import mrWidgetPipelineMixin from '~/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
@@ -36,7 +35,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
-  mixins: [mrWidgetPipelineMixin],
   props: {
     pipeline: {
       type: Object,
@@ -277,10 +275,10 @@ export default {
           <span class="gl-align-items-center gl-display-inline-flex">
             <pipeline-mini-graph
               v-if="pipeline.details.stages"
-              :downstream-pipelines="triggered"
+              :downstream-pipelines="pipeline.triggered"
               :is-merge-train="isMergeTrain"
               :stages="pipeline.details.stages"
-              :upstream-pipeline="triggeredBy[0]"
+              :upstream-pipeline="pipeline.triggered_by"
               stages-class="mr-widget-pipeline-stages"
             />
             <pipeline-artifacts :pipeline-id="pipeline.id" :artifacts="artifacts" class="gl-ml-3" />
