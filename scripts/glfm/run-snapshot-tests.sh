@@ -28,8 +28,12 @@ printf "\n${BBlue}Running frontend 'yarn jest spec/frontend/content_editor/markd
 yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js
 printf "\n${BBlue}'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js' passed!${Color_Off}\n\n"
 
-printf "\n${BBlue}Running backend 'bundle exec rspec spec/requests/api/markdown_snapshot_spec.rb'...${Color_Off}\n\n"
+printf "\n${BBlue}Running CE backend 'bundle exec rspec spec/requests/api/markdown_snapshot_spec.rb'...${Color_Off}\n\n"
 bundle exec rspec spec/requests/api/markdown_snapshot_spec.rb
 printf "\n${BBlue}'bundle exec rspec spec/requests/api/markdown_snapshot_spec.rb' passed!${Color_Off}\n\n"
+
+printf "\n${BBlue}Running EE backend 'bundle exec rspec ee/spec/requests/api/markdown_snapshot_spec.rb'...${Color_Off}\n\n"
+bundle exec rspec ee/spec/requests/api/markdown_snapshot_spec.rb
+printf "\n${BBlue}'bundle exec rspec ee/spec/requests/api/markdown_snapshot_spec.rb' passed!${Color_Off}\n\n"
 
 printf "\n✅✅✅ ${BGreen}All GLFM snapshot example tests passed successfully!${Color_Off} ✅✅✅\n"

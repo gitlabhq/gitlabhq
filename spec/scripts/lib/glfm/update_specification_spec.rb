@@ -18,7 +18,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   let(:glfm_spec_txt_io) { StringIO.new }
 
   let(:ghfm_spec_txt_contents) do
-    <<~GHFM_SPEC_TXT_CONTENTS
+    <<~MARKDOWN
       ---
       title: GitHub Flavored Markdown Spec
       version: 0.29
@@ -49,25 +49,26 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       # Appendix
 
       Appendix text.
-    GHFM_SPEC_TXT_CONTENTS
+    MARKDOWN
   end
 
   let(:glfm_intro_txt_contents) do
-    <<~GLFM_INTRO_TXT_CONTENTS
+    # language=Markdown
+    <<~MARKDOWN
       # Introduction
 
       ## What is GitLab Flavored Markdown?
 
       Intro text about GitLab Flavored Markdown.
-    GLFM_INTRO_TXT_CONTENTS
+    MARKDOWN
   end
 
   let(:glfm_examples_txt_contents) do
-    <<~GLFM_EXAMPLES_TXT_CONTENTS
+    <<~MARKDOWN
       # GitLab-Specific Section with Examples
 
       Some examples.
-    GLFM_EXAMPLES_TXT_CONTENTS
+    MARKDOWN
   end
 
   before do
@@ -118,12 +119,12 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       context 'with error handling' do
         context 'with a version mismatch' do
           let(:ghfm_spec_txt_contents) do
-            <<~GHFM_SPEC_TXT_CONTENTS
+            <<~MARKDOWN
               ---
               title: GitHub Flavored Markdown Spec
               version: 0.30
               ...
-            GHFM_SPEC_TXT_CONTENTS
+            MARKDOWN
           end
 
           it 'raises an error' do
@@ -173,7 +174,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     end
 
     it 'inserts the GitLab examples sections before the appendix section' do
-      expected = <<~GHFM_SPEC_TXT_CONTENTS
+      expected = <<~MARKDOWN
         End of last GitHub examples section.
 
         # GitLab-Specific Section with Examples
@@ -183,7 +184,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
         <!-- END TESTS -->
 
         # Appendix
-      GHFM_SPEC_TXT_CONTENTS
+      MARKDOWN
       expect(glfm_contents).to match(/#{Regexp.escape(expected)}/m)
     end
   end

@@ -345,8 +345,50 @@ For the [Markdown snapshot testing](#markdown-snapshot-testing) to work
 properly, you must account for these differences in a way that ensures the tests are reliable,
 and always behave the same across different test runs or environments.
 
-To account for these differences, there is a process called **_normalization_**. Normalization
-allows custom regular expressions with
+To account for these differences, there is a process called **_normalization_**. Several ways to approach normalization exist:
+
+1. Fixture-based normalization
+1. Environment-variable-based normalization
+1. Regex-based normalization
+
+#### Fixture-based normalization
+
+Fixture-based normalization should be used whenever possible, because it is simpler and easier to
+understand than regex-based normalization.
+
+The [Markdown snapshot testing](#markdown-snapshot-testing) uses RSpec to generate the
+[example snapshot files](#example-snapshot-files). RSpec enables you to:
+
+- Use the same powerful fixture support and helpers as all the rest of the GitLab RSpec suite.
+- Use fixtures to control the state of the database when the example snapshots are generated.
+- Extract this fixture setup to an RSpec shared context. This shared context is used to ensure
+  the same database state exists wherever the snapshot tests are run, either by the CI suite, or
+  locally via [`run-snapshot-tests.sh`](#run-snapshot-testssh-script).
+
+You can see the RSpec shared context containing these fixtures in
+[`spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb).
+
+#### Environment-variable-based normalization
+
+In some cases, fixtures may not be usable, because they do not provide control over the varying
+values. In these cases, we can introduce support for a environment variable into the production
+code, which allows us to override the randommness in our test environment when we are
+generating the HTML for footnote examples. Even though it is in the production code path, it has
+no effect unless it is explicitly set, therefore it is innocuous. It allows us to avoid
+the more-complex regex-based normalization described below.
+
+The current example of this is when normally random footnote IDs are overridden to be deterministic
+by setting `GITLAB_TEST_FOOTNOTE_ID`. It is set along with the fixtures setup in the
+[`spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb)
+shared context.
+
+#### Regex-based normalization
+
+If neither fixture-based nor environment-variable-based normalization can be used, use regex-based
+normalization. It is powerful, but more complex, and requires more maintenance.
+It requires referring to specific examples by name, and crafting the proper regexes.
+
+Regex-based normalization allows custom regular expressions with
 [_capturing groups_](https://ruby-doc.org/core-3.1.2/Regexp.html#class-Regexp-label-Capturing)
 to be applied to two different versions of HTML or JSON for a given Markdown example,
 and the contents of the captured groups can be replaced with the same fixed values.
@@ -811,6 +853,39 @@ to be specified for a Markdown example.
   prosemirror_json:
     07_01_00_href: *07_01_00_href
     07_01_00_id: *07_01_00_id
+```
+
+##### `glfm_example_metadata.yml`
+
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_example_metadata.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_example_metadata.yml)
+allows control over other aspects of the snapshot example generation process.
+
+- It is manually updated.
+- The `ee` fields determine whether the example is an EE-only example. If the `ee` field is `true`,
+  the example will only be run by `ee/spec/requests/api/markdown_snapshot_spec.rb`, not by
+  `spec/requests/api/markdown_snapshot_spec.rb`.
+- The `api_request_override_path` field overrides the API endpoint path which is used to
+  generate the `static` HTML for the specifed example. Different endpoints can generate different
+  HTML in some cases, so we want to be able to exercise different API endpoints for the same
+  Markdown. By default, the `/markdown` endpoint is used.
+
+`glfm_specification/input/gitlab_flavored_markdown/glfm_example_metadata.yml` sample entries:
+
+```yaml
+---
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001:
+  api_request_override_path: /groups/glfm_group/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002:
+  api_request_override_path: /glfm_group/glfm_project/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003:
+  api_request_override_path: /glfm_group/glfm_project/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004:
+  api_request_override_path: /-/snippets/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005:
+  api_request_override_path: /glfm_group/glfm_project/-/wikis/new_page/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__006:
+  ee: true
+  api_request_override_path: /groups/glfm_group/-/wikis/new_page/preview_markdown
 ```
 
 #### Output specification files

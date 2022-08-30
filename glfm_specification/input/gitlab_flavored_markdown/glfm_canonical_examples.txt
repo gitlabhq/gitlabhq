@@ -250,3 +250,64 @@ Reference definitions work video as well:
 .
 <p><video src="video.mov" title="video title"></video></p>
 ````````````````````````````````
+
+# Examples Using Internal Extensions
+
+## Markdown Preview API Request Overrides
+
+This section contains examples of all controllers which use `PreviewMarkdown` module
+and use different `markdown_context_params`. They exercise the various `preview_markdown`
+endpoints via `glfm_example_metadata.yml`.
+
+
+`preview_markdown` exercising `groups` API endpoint and `UploadLinkFilter`:
+
+```````````````````````````````` example gitlab
+[groups-test-file](/uploads/groups-test-file)
+.
+<p><a href="groups-test-file">groups-test-file</a></p>
+````````````````````````````````
+
+`preview_markdown` exercising `projects` API endpoint and `RepositoryLinkFilter`:
+
+```````````````````````````````` example gitlab
+[projects-test-file](projects-test-file)
+.
+<p><a href="projects-test-file">projects-test-file</a></p>
+````````````````````````````````
+
+`preview_markdown` exercising `projects` API endpoint and `SnippetReferenceFilter`:
+
+```````````````````````````````` example gitlab
+This project snippet ID reference IS filtered: $88888
+.
+<p>This project snippet ID reference IS filtered: $88888</p>
+````````````````````````````````
+
+`preview_markdown` exercising personal (non-project) `snippets` API endpoint. This is
+only used by the comment field on personal snippets. It has no unique custom markdown
+extension behavior, and specifically does not render snippet references via
+`SnippetReferenceFilter`, even if the ID is valid.
+
+```````````````````````````````` example gitlab
+This personal snippet ID reference is not filtered: $99999
+.
+<p>This personal snippet ID reference is not filtered: $99999</p>
+````````````````````````````````
+
+`preview_markdown` exercising project `wikis` API endpoint and `WikiLinkFilter`:
+
+```````````````````````````````` example gitlab
+[project-wikis-test-file](project-wikis-test-file)
+.
+<p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
+````````````````````````````````
+
+`preview_markdown` exercising group `wikis` API endpoint and `WikiLinkFilter`. This example
+also requires an EE license enabling the `group_wikis` feature:
+
+```````````````````````````````` example gitlab
+[group-wikis-test-file](group-wikis-test-file)
+.
+<p><a href="group-wikis-test-file">group-wikis-test-file</a></p>
+````````````````````````````````

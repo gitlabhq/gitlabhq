@@ -2239,3 +2239,15 @@
   [video]: video.mov "video title"
 
   ![video][video]
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001: |
+  [groups-test-file](/uploads/groups-test-file)
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002: |
+  [projects-test-file](projects-test-file)
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003: |
+  This project snippet ID reference IS filtered: $88888
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004: |
+  This personal snippet ID reference is not filtered: $99999
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005: |
+  [project-wikis-test-file](project-wikis-test-file)
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__006: |
+  [group-wikis-test-file](group-wikis-test-file)

@@ -18,6 +18,9 @@ module Glfm
     GLFM_INTRO_TXT_PATH = specification_input_glfm_path.join('glfm_intro.txt')
     GLFM_EXAMPLES_TXT_PATH = specification_input_glfm_path.join('glfm_canonical_examples.txt')
     GLFM_EXAMPLE_STATUS_YML_PATH = specification_input_glfm_path.join('glfm_example_status.yml')
+    GLFM_EXAMPLE_METADATA_YML_PATH =
+      specification_input_glfm_path.join('glfm_example_metadata.yml')
+    GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH = specification_input_glfm_path.join('glfm_example_normalizations.yml')
     GLFM_SPEC_TXT_PATH = specification_path.join('output/spec.txt')
 
     # Example Snapshot (ES) files
@@ -28,15 +31,16 @@ module Glfm
     ES_PROSEMIRROR_JSON_YML_PATH = File.join(es_fixtures_path, 'prosemirror_json.yml')
 
     # Other constants used for processing files
-    GLFM_SPEC_TXT_HEADER = <<~GLFM_SPEC_TXT_HEADER
+    GLFM_SPEC_TXT_HEADER = <<~MARKDOWN
       ---
       title: GitLab Flavored Markdown (GLFM) Spec
       version: alpha
       ...
-    GLFM_SPEC_TXT_HEADER
+    MARKDOWN
     INTRODUCTION_HEADER_LINE_TEXT = /\A# Introduction\Z/.freeze
     END_TESTS_COMMENT_LINE_TEXT = /\A<!-- END TESTS -->\Z/.freeze
     MARKDOWN_TEMPFILE_BASENAME = %w[MARKDOWN_TEMPFILE_ .yml].freeze
+    METADATA_TEMPFILE_BASENAME = %w[METADATA_TEMPFILE_ .yml].freeze
     STATIC_HTML_TEMPFILE_BASENAME = %w[STATIC_HTML_TEMPFILE_ .yml].freeze
     WYSIWYG_HTML_AND_JSON_TEMPFILE_BASENAME = %w[WYSIWYG_HTML_AND_JSON_TEMPFILE_ .yml].freeze
   end

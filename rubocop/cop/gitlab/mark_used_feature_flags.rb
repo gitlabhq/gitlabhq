@@ -83,12 +83,12 @@ module RuboCop
               # Additionally, mark experiment-related feature flag as used as well
               matching_feature_flags = defined_feature_flags.select { |flag| flag == "#{flag_value}_experiment_percentage" }
               matching_feature_flags.each do |matching_feature_flag|
-                puts_if_ci(node, "The '#{matching_feature_flag}' feature flag tracks the #{flag_value} experiment, which is still in use, so we'll mark it as used.")
+                puts_if_debug(node, "The '#{matching_feature_flag}' feature flag tracks the #{flag_value} experiment, which is still in use, so we'll mark it as used.")
                 save_used_feature_flag(matching_feature_flag)
               end
             end
           elsif flag_arg_is_send_type?(flag_arg)
-            puts_if_ci(node, "Feature flag is dynamic: '#{flag_value}.")
+            puts_if_debug(node, "Feature flag is dynamic: '#{flag_value}.")
           elsif flag_arg_is_dstr_or_dsym?(flag_arg)
             str_prefix = flag_arg.children[0]
             rest_children = flag_arg.children[1..]
@@ -96,21 +96,23 @@ module RuboCop
             if rest_children.none? { |child| child.str_type? }
               matching_feature_flags = defined_feature_flags.select { |flag| flag.start_with?(str_prefix.value) }
               matching_feature_flags.each do |matching_feature_flag|
-                puts_if_ci(node, "The '#{matching_feature_flag}' feature flag starts with '#{str_prefix.value}', so we'll optimistically mark it as used.")
+                puts_if_debug(node, "The '#{matching_feature_flag}' feature flag starts with '#{str_prefix.value}', so we'll optimistically mark it as used.")
                 save_used_feature_flag(matching_feature_flag)
               end
             else
-              puts_if_ci(node, "Interpolated feature flag name has multiple static string parts, we won't track it.")
+              puts_if_debug(node, "Interpolated feature flag name has multiple static string parts, we won't track it.")
             end
           else
-            puts_if_ci(node, "Feature flag has an unknown type: #{flag_arg.type}.")
+            puts_if_debug(node, "Feature flag has an unknown type: #{flag_arg.type}.")
           end
         end
 
         private
 
-        def puts_if_ci(node, text)
-          puts "#{text} (call: `#{node.source}`, source: #{node.location.expression.source_buffer.name})" if ENV['CI']
+        def puts_if_debug(node, text)
+          return unless RuboCop::ConfigLoader.debug
+
+          warn "#{text} (call: `#{node.source}`, source: #{node.location.expression.source_buffer.name})"
         end
 
         def save_used_feature_flag(feature_flag_name)

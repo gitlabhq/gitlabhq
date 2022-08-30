@@ -29,34 +29,19 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
   include Glfm::Constants
   include Glfm::Shared
 
-  # TODO: Remove duplication of fixtures & logic with spec/support/shared_contexts/markdown_snapshot_shared_examples.rb
-
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'glfm_group').tap { |group| group.add_owner(user) } }
-
-  let_it_be(:project) do
-    # NOTE: We hardcode the IDs on all fixtures to prevent variability in the
-    #       rendered HTML/Prosemirror JSON, and to minimize the need for normalization:
-    #       https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
-    create(:project, :repository, creator: user, group: group, name: 'glfm_project', id: 77777)
-  end
-
-  let_it_be(:project_snippet) { create(:project_snippet, id: 88888, project: project) }
-  let_it_be(:personal_snippet) { create(:snippet, id: 99999) }
-
-  before do
-    stub_licensed_features(group_wikis: true)
-    sign_in(user)
-  end
+  # noinspection RailsParamDefResolve (RubyMine can't find the shared context from this file location)
+  include_context 'with GLFM example snapshot fixtures'
 
   it 'can create a project dependency graph using factories' do
     markdown_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_MARKDOWN_YML_PATH')), symbolize_names: true)
+    metadata_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_METADATA_YML_PATH')), symbolize_names: true)
 
     # NOTE: We cannot parallelize this loop like the Javascript WYSIWYG example generation does,
     # because the rspec `post` API cannot be parallized (it is not thread-safe, it can't find
     # the controller).
-    static_html_hash = markdown_hash.transform_values do |markdown|
-      api_url = api "/markdown"
+    static_html_hash = markdown_hash.transform_values.with_index do |markdown, index|
+      name = markdown_hash.keys[index]
+      api_url = metadata_hash.dig(name, :api_request_override_path) || (api "/markdown")
 
       post api_url, params: { text: markdown, gfm: true }
       # noinspection RubyResolve

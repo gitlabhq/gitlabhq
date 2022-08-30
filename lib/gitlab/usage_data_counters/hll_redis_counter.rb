@@ -36,7 +36,6 @@ module Gitlab
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
         ci_users
-        ci_templates
         deploy_token_packages
         error_tracking
         ide_edit

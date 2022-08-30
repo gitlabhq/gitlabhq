@@ -3285,14 +3285,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe '#mergeable_state?' do
     it_behaves_like 'for mergeable_state'
 
-    context 'when improved_mergeability_checks is off' do
-      before do
-        stub_feature_flags(improved_mergeability_checks: false)
-      end
-
-      it_behaves_like 'for mergeable_state'
-    end
-
     context 'when merge state caching is off' do
       before do
         stub_feature_flags(mergeability_caching: false)

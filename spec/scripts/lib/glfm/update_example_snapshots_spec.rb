@@ -35,6 +35,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   let(:glfm_spec_txt_local_io) { StringIO.new(glfm_spec_txt_contents) }
   let(:glfm_example_status_yml_path) { described_class::GLFM_EXAMPLE_STATUS_YML_PATH }
   let(:glfm_example_status_yml_io) { StringIO.new(glfm_example_status_yml_contents) }
+  let(:glfm_example_metadata_yml_path) { described_class::GLFM_EXAMPLE_METADATA_YML_PATH }
+  let(:glfm_example_metadata_yml_io) { StringIO.new(glfm_example_metadata_yml_contents) }
 
   # Example Snapshot (ES) output files
   let(:es_examples_index_yml_path) { described_class::ES_EXAMPLES_INDEX_YML_PATH }
@@ -52,7 +54,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   let(:static_html_tempfile_path) { Tempfile.new.path }
 
   let(:glfm_spec_txt_contents) do
-    <<~GLFM_SPEC_TXT_CONTENTS
+    <<~MARKDOWN
       ---
       title: GitLab Flavored Markdown Spec
       ...
@@ -183,17 +185,75 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>
       ````````````````````````````````
 
+      # API Request Overrides
+
+      This section contains examples which verify that all of the fixture models which are set up
+      in `render_static_html.rb` are correctly configured. They exercise various `preview_markdown`
+      endpoints via `glfm_example_metadata.yml`.
+
+      ## Group Upload Link
+
+      `preview_markdown` exercising `groups` API endpoint and `UploadLinkFilter`:
+
+      ```````````````````````````````` example gitlab
+      [groups-test-file](/uploads/groups-test-file)
+      .
+      <p><a href="groups-test-file">groups-test-file</a></p>
+      ````````````````````````````````
+
+      ## Project Repo Link
+
+      `preview_markdown` exercising `projects` API endpoint and `RepositoryLinkFilter`:
+
+      ```````````````````````````````` example gitlab
+      [projects-test-file](projects-test-file)
+      .
+      <p><a href="projects-test-file">projects-test-file</a></p>
+      ````````````````````````````````
+
+      ## Project Snippet Ref
+
+      `preview_markdown` exercising `projects` API endpoint and `SnippetReferenceFilter`:
+
+      ```````````````````````````````` example gitlab
+      This project snippet ID reference IS filtered: $88888
+      .
+      <p>This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888">$88888</a>
+      ````````````````````````````````
+
+      ## Personal Snippet Ref
+
+      `preview_markdown` exercising personal (non-project) `snippets` API endpoint. This is
+      only used by the comment field on personal snippets. It has no unique custom markdown
+      extension behavior, and specifically does not render snippet references via
+      `SnippetReferenceFilter`, even if the ID is valid.
+
+      ```````````````````````````````` example gitlab
+      This personal snippet ID reference is NOT filtered: $99999
+      .
+      <p>This personal snippet ID reference is NOT filtered: $99999</p>
+      ````````````````````````````````
+
+      ## Project Wiki Link
+
+      `preview_markdown` exercising project `wikis` API endpoint and `WikiLinkFilter`:
+
+      ```````````````````````````````` example gitlab
+      [project-wikis-test-file](project-wikis-test-file)
+      .
+      <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
+      ````````````````````````````````
+
       <!-- END TESTS -->
 
       # Appendix
 
       Appendix text.
-    GLFM_SPEC_TXT_CONTENTS
+    MARKDOWN
   end
 
   let(:glfm_example_status_yml_contents) do
-    # language=YAML
-    <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
+    <<~YAML
       ---
       02_01_00__inlines__strong__001:
         # The skip_update_example_snapshots key is present, but false, so this example is not skipped
@@ -206,12 +266,27 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
         # Always skip this example, but preserve the existing manual modifications
         skip_update_example_snapshots: 'skipping this example because we have manually modified it'
-    GLFM_EXAMPLE_STATUS_YML_CONTENTS
+    YAML
+  end
+
+  let(:glfm_example_metadata_yml_contents) do
+    <<~YAML
+      ---
+      06_01_00__api_request_overrides__group_upload_link__001:
+        api_request_override_path: /groups/glfm_group/preview_markdown
+      06_02_00__api_request_overrides__project_repo_link__001:
+        api_request_override_path: /glfm_group/glfm_project/preview_markdown
+      06_03_00__api_request_overrides__project_snippet_ref__001:
+        api_request_override_path: /glfm_group/glfm_project/preview_markdown
+      06_04_00__api_request_overrides__personal_snippet_ref__001:
+        api_request_override_path: /-/snippets/preview_markdown
+      06_05_00__api_request_overrides__project_wiki_link__001:
+        api_request_override_path: /glfm_group/glfm_project/-/wikis/new_page/preview_markdown
+    YAML
   end
 
   let(:es_html_yml_io_existing_contents) do
-    # language=YAML
-    <<~ES_HTML_YML_IO_EXISTING_CONTENTS
+    <<~YAML
       ---
       00_00_00__obsolete_entry_to_be_deleted__001:
         canonical: |
@@ -234,12 +309,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           <p>This is the manually modified static HTML which will be preserved</p>
         wysiwyg: |-
           <p>This is the manually modified WYSIWYG HTML which will be preserved</p>
-    ES_HTML_YML_IO_EXISTING_CONTENTS
+    YAML
   end
 
   let(:es_prosemirror_json_yml_io_existing_contents) do
-    # language=YAML
-    <<~ES_PROSEMIRROR_JSON_YML_IO_EXISTING_CONTENTS
+    <<~YAML
       ---
       00_00_00__obsolete_entry_to_be_deleted__001: |-
         {
@@ -272,7 +346,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
         {
           "existing": "This entry is manually modified and preserved because skip_update_example_snapshots will be truthy"
         }
-    ES_PROSEMIRROR_JSON_YML_IO_EXISTING_CONTENTS
+    YAML
   end
 
   before do
@@ -283,6 +357,9 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # input files
     allow(File).to receive(:open).with(glfm_spec_txt_path) { glfm_spec_txt_local_io }
     allow(File).to receive(:open).with(glfm_example_status_yml_path) { glfm_example_status_yml_io }
+    allow(File).to receive(:open).with(glfm_example_metadata_yml_path) do
+      glfm_example_metadata_yml_io
+    end
 
     # output files
     allow(File).to receive(:open).with(es_examples_index_yml_path, 'w') { es_examples_index_yml_io }
@@ -298,6 +375,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # Allow normal opening of Tempfile files created during script execution.
     tempfile_basenames = [
       described_class::MARKDOWN_TEMPFILE_BASENAME[0],
+      described_class::METADATA_TEMPFILE_BASENAME[0],
       described_class::STATIC_HTML_TEMPFILE_BASENAME[0],
       described_class::WYSIWYG_HTML_AND_JSON_TEMPFILE_BASENAME[0]
     ].join('|')
@@ -333,13 +411,12 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
       describe 'when any other skip_update_example_snapshot_* is also truthy' do
         let(:glfm_example_status_yml_contents) do
-          # language=YAML
-          <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
+          <<~YAML
             ---
             02_01_00__inlines__strong__001:
               skip_update_example_snapshots: 'if the skip_update_example_snapshots key is truthy...'
               skip_update_example_snapshot_html_static: '...then no other skip_update_example_* keys can be truthy'
-          GLFM_EXAMPLE_STATUS_YML_CONTENTS
+          YAML
         end
 
         it 'raises an error' do
@@ -354,8 +431,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   describe 'writing examples_index.yml' do
     let(:es_examples_index_yml_contents) { reread_io(es_examples_index_yml_io) }
     let(:expected_examples_index_yml_contents) do
-      # language=YAML
-      <<~ES_EXAMPLES_INDEX_YML_CONTENTS
+      <<~YAML
         ---
         02_01_00__inlines__strong__001:
           spec_txt_example_position: 1
@@ -381,7 +457,22 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
         05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
           spec_txt_example_position: 9
           source_specification: gitlab
-      ES_EXAMPLES_INDEX_YML_CONTENTS
+        06_01_00__api_request_overrides__group_upload_link__001:
+          spec_txt_example_position: 10
+          source_specification: gitlab
+        06_02_00__api_request_overrides__project_repo_link__001:
+          spec_txt_example_position: 11
+          source_specification: gitlab
+        06_03_00__api_request_overrides__project_snippet_ref__001:
+          spec_txt_example_position: 12
+          source_specification: gitlab
+        06_04_00__api_request_overrides__personal_snippet_ref__001:
+          spec_txt_example_position: 13
+          source_specification: gitlab
+        06_05_00__api_request_overrides__project_wiki_link__001:
+          spec_txt_example_position: 14
+          source_specification: gitlab
+      YAML
     end
 
     it 'writes the correct content' do
@@ -394,8 +485,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   describe 'writing markdown.yml' do
     let(:es_markdown_yml_contents) { reread_io(es_markdown_yml_io) }
     let(:expected_markdown_yml_contents) do
-      # language=YAML
-      <<~ES_MARKDOWN_YML_CONTENTS
+      <<~YAML
         ---
         02_01_00__inlines__strong__001: |
           __bold__
@@ -415,7 +505,17 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           **this example will be skipped**
         05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |
           **This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved**
-      ES_MARKDOWN_YML_CONTENTS
+        06_01_00__api_request_overrides__group_upload_link__001: |
+          [groups-test-file](/uploads/groups-test-file)
+        06_02_00__api_request_overrides__project_repo_link__001: |
+          [projects-test-file](projects-test-file)
+        06_03_00__api_request_overrides__project_snippet_ref__001: |
+          This project snippet ID reference IS filtered: $88888
+        06_04_00__api_request_overrides__personal_snippet_ref__001: |
+          This personal snippet ID reference is NOT filtered: $99999
+        06_05_00__api_request_overrides__project_wiki_link__001: |
+          [project-wikis-test-file](project-wikis-test-file)
+      YAML
     end
 
     it 'writes the correct content' do
@@ -425,6 +525,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   describe 'writing html.yml and prosemirror_json.yml' do
     let(:es_html_yml_contents) { reread_io(es_html_yml_io) }
     let(:es_prosemirror_json_yml_contents) { reread_io(es_prosemirror_json_yml_io) }
@@ -432,8 +533,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # NOTE: This example_status.yml is crafted in conjunction with expected_html_yml_contents
     # to test the behavior of the `skip_update_*` flags
     let(:glfm_example_status_yml_contents) do
-      # language=YAML
-      <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
+      <<~YAML
         ---
         02_01_00__inlines__strong__002:
           # NOTE: 02_01_00__inlines__strong__002: is omitted from the existing prosemirror_json.yml file, and is also
@@ -451,12 +551,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           skip_update_example_snapshots: 'skipping this example because it is very bad'
         05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
           skip_update_example_snapshots: 'skipping this example because we have manually modified it'
-      GLFM_EXAMPLE_STATUS_YML_CONTENTS
+      YAML
     end
 
     let(:expected_html_yml_contents) do
-      # language=YAML
-      <<~ES_HTML_YML_CONTENTS
+      <<~YAML
         ---
         02_01_00__inlines__strong__001:
           canonical: |
@@ -507,12 +606,46 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             <p>This is the manually modified static HTML which will be preserved</p>
           wysiwyg: |-
             <p>This is the manually modified WYSIWYG HTML which will be preserved</p>
-      ES_HTML_YML_CONTENTS
+        06_01_00__api_request_overrides__group_upload_link__001:
+          canonical: |
+            <p><a href="groups-test-file">groups-test-file</a></p>
+          static: |-
+            <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+          wysiwyg: |-
+            <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
+        06_02_00__api_request_overrides__project_repo_link__001:
+          canonical: |
+            <p><a href="projects-test-file">projects-test-file</a></p>
+          static: |-
+            <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
+          wysiwyg: |-
+            <p><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
+        06_03_00__api_request_overrides__project_snippet_ref__001:
+          canonical: |
+            <p>This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888">$88888</a>
+          static: |-
+            <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
+          wysiwyg: |-
+            <p>This project snippet ID reference IS filtered: $88888</p>
+        06_04_00__api_request_overrides__personal_snippet_ref__001:
+          canonical: |
+            <p>This personal snippet ID reference is NOT filtered: $99999</p>
+          static: |-
+            <p data-sourcepos="1:1-1:58" dir="auto">This personal snippet ID reference is NOT filtered: $99999</p>
+          wysiwyg: |-
+            <p>This personal snippet ID reference is NOT filtered: $99999</p>
+        06_05_00__api_request_overrides__project_wiki_link__001:
+          canonical: |
+            <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
+          static: |-
+            <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
+          wysiwyg: |-
+            <p><a target="_blank" rel="noopener noreferrer nofollow" href="project-wikis-test-file">project-wikis-test-file</a></p>
+      YAML
     end
 
     let(:expected_prosemirror_json_contents) do
-      # language=YAML
-      <<~ES_PROSEMIRROR_JSON_YML_CONTENTS
+      <<~YAML
         ---
         02_01_00__inlines__strong__001: |-
           {
@@ -601,7 +734,121 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           {
             "existing": "This entry is manually modified and preserved because skip_update_example_snapshots will be truthy"
           }
-      ES_PROSEMIRROR_JSON_YML_CONTENTS
+        06_01_00__api_request_overrides__group_upload_link__001: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "link",
+                        "attrs": {
+                          "href": "/uploads/groups-test-file",
+                          "target": "_blank",
+                          "class": null,
+                          "title": null,
+                          "canonicalSrc": "/uploads/groups-test-file",
+                          "isReference": false
+                        }
+                      }
+                    ],
+                    "text": "groups-test-file"
+                  }
+                ]
+              }
+            ]
+          }
+        06_02_00__api_request_overrides__project_repo_link__001: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "link",
+                        "attrs": {
+                          "href": "projects-test-file",
+                          "target": "_blank",
+                          "class": null,
+                          "title": null,
+                          "canonicalSrc": "projects-test-file",
+                          "isReference": false
+                        }
+                      }
+                    ],
+                    "text": "projects-test-file"
+                  }
+                ]
+              }
+            ]
+          }
+        06_03_00__api_request_overrides__project_snippet_ref__001: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "This project snippet ID reference IS filtered: $88888"
+                  }
+                ]
+              }
+            ]
+          }
+        06_04_00__api_request_overrides__personal_snippet_ref__001: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "This personal snippet ID reference is NOT filtered: $99999"
+                  }
+                ]
+              }
+            ]
+          }
+        06_05_00__api_request_overrides__project_wiki_link__001: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "link",
+                        "attrs": {
+                          "href": "project-wikis-test-file",
+                          "target": "_blank",
+                          "class": null,
+                          "title": null,
+                          "canonicalSrc": "project-wikis-test-file",
+                          "isReference": false
+                        }
+                      }
+                    ],
+                    "text": "project-wikis-test-file"
+                  }
+                ]
+              }
+            ]
+          }
+      YAML
     end
 
     before do
@@ -627,6 +874,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       expect(es_prosemirror_json_yml_contents).to eq(expected_prosemirror_json_contents)
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   def reread_io(io)
     # Reset the io StringIO to the beginning position of the buffer

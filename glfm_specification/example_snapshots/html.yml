@@ -7850,3 +7850,45 @@
   wysiwyg: |-
     <pre>[video]: video.mov "video title"</pre>
     <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov">video</a></span></p>
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001:
+  canonical: |
+    <p><a href="groups-test-file">groups-test-file</a></p>
+  static: |-
+    <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+  wysiwyg: |-
+    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002:
+  canonical: |
+    <p><a href="projects-test-file">projects-test-file</a></p>
+  static: |-
+    <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
+  wysiwyg: |-
+    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003:
+  canonical: |
+    <p>This project snippet ID reference IS filtered: $88888</p>
+  static: |-
+    <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
+  wysiwyg: |-
+    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004:
+  canonical: |
+    <p>This personal snippet ID reference is not filtered: $99999</p>
+  static: |-
+    <p data-sourcepos="1:1-1:58" dir="auto">This personal snippet ID reference is not filtered: $99999</p>
+  wysiwyg: |-
+    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005:
+  canonical: |
+    <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
+  static: |-
+    <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
+  wysiwyg: |-
+    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__006:
+  canonical: |
+    <p><a href="group-wikis-test-file">group-wikis-test-file</a></p>
+  static: |-
+    <p data-sourcepos="1:1-1:46" dir="auto"><a href="/groups/glfm_group/-/wikis/group-wikis-test-file" data-canonical-src="group-wikis-test-file">group-wikis-test-file</a></p>
+  wysiwyg: |-
+    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236

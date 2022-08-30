@@ -285,6 +285,14 @@ RSpec.describe API::Namespaces do
     end
 
     context 'when authenticated' do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :namespace_exists do
+        let(:current_user) { user }
+
+        def request
+          get api("/namespaces/#{namespace1.path}/exists", current_user)
+        end
+      end
+
       it 'returns JSON indicating the namespace exists and a suggestion' do
         get api("/namespaces/#{namespace1.path}/exists", user)
 

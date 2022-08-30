@@ -46518,6 +46518,9 @@ msgstr ""
 msgid "failed to dismiss finding: %{message}"
 msgstr ""
 
+msgid "failed to dismiss security finding: %{message}"
+msgstr ""
+
 msgid "failed to revert associated finding(id=%{finding_id}) to detected"
 msgstr ""
 

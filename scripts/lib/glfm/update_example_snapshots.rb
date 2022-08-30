@@ -29,8 +29,6 @@ module Glfm
     def process(skip_static_and_wysiwyg: false)
       output('Updating example snapshots...')
 
-      setup_environment
-
       output('(Skipping static HTML generation)') if skip_static_and_wysiwyg
 
       output("Reading #{GLFM_SPEC_TXT_PATH}...")
@@ -48,14 +46,6 @@ module Glfm
     end
 
     private
-
-    def setup_environment
-      # Set 'GITLAB_TEST_FOOTNOTE_ID' in order to override random number generation in
-      # Banzai::Filter::FootnoteFilter#random_number, and thus avoid the need to
-      # perform normalization on the value. See:
-      # https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
-      ENV['GITLAB_TEST_FOOTNOTE_ID'] = '42'
-    end
 
     def add_example_names(all_examples)
       # NOTE: This method and the parse_examples method assume:
@@ -137,11 +127,11 @@ module Glfm
         return
       end
 
-      # NOTE: We pass the INPUT_MARKDOWN_YML_PATH via
-      # environment variable to the static/wysiwyg HTML generation scripts. This is because it
-      # is implemented as a subprocess which invokes rspec/jest scripts, and rspec/jest do not make
+      # NOTE: We pass the INPUT_MARKDOWN_YML_PATH and INPUT_METADATA_YML_PATH via
+      # environment variables to the static/wysiwyg HTML generation scripts. This is because they
+      # are implemented as subprocesses which invoke rspec/jest scripts, and rspec/jest do not make
       # it straightforward to pass arguments via the command line.
-      ENV['INPUT_MARKDOWN_YML_PATH'] = copy_tempfiles_for_subprocesses
+      ENV['INPUT_MARKDOWN_YML_PATH'], ENV['INPUT_METADATA_YML_PATH'] = copy_tempfiles_for_subprocesses
       static_html_hash = generate_static_html
       wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json
 
@@ -168,16 +158,29 @@ module Glfm
         name = example.fetch(:name).to_sym
         hash[name] = {
           'spec_txt_example_position' => example.fetch(:example),
-          'source_specification' =>
-            if example[:extensions].empty?
-              'commonmark'
-            elsif example[:extensions].include?('gitlab')
-              'gitlab'
-            else
-              'github'
-            end
+          'source_specification' => source_specification_for_extensions(example.fetch(:extensions))
         }
       end
+    end
+
+    def source_specification_for_extensions(extensions)
+      unprocessed_extensions = extensions.map(&:to_sym)
+      unprocessed_extensions.delete(:disabled)
+
+      source_specification =
+        if unprocessed_extensions.empty?
+          'commonmark'
+        elsif unprocessed_extensions.include?(:gitlab)
+          unprocessed_extensions.delete(:gitlab)
+          'gitlab'
+        else
+          'github'
+        end
+
+      # We should only be left with at most one extension, which is an optional name for the example
+      raise "Error: Invalid extension(s) found: #{unprocessed_extensions.join(', ')}" if unprocessed_extensions.size > 1
+
+      source_specification
     end
 
     def write_markdown_yml(all_examples)
@@ -193,14 +196,17 @@ module Glfm
       # the scripts to read them, because the scripts are run in
       # separate subprocesses, and during unit testing we are unable to substitute the mock
       # StringIO when reading the input files in the subprocess.
-      { ES_MARKDOWN_YML_PATH => MARKDOWN_TEMPFILE_BASENAME }.map do |original_file_path, tempfile_basename|
+      {
+        ES_MARKDOWN_YML_PATH => MARKDOWN_TEMPFILE_BASENAME,
+        GLFM_EXAMPLE_METADATA_YML_PATH => METADATA_TEMPFILE_BASENAME
+      }.map do |original_file_path, tempfile_basename|
         Dir::Tmpname.create(tempfile_basename) do |path|
           io = File.open(original_file_path)
           io.seek(0) # rewind the file. This is necessary when testing with a mock StringIO
           contents = io.read
           write_file(path, contents)
         end
-      end.first
+      end
     end
 
     def generate_static_html

@@ -1192,25 +1192,13 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
-    if Feature.enabled?(:improved_mergeability_checks, self.project)
-      additional_checks = execute_merge_checks(params: {
-                                                 skip_ci_check: skip_ci_check,
-                                                 skip_discussions_check: skip_discussions_check
-                                               })
-      additional_checks.execute.success?
-    else
-      return false unless open?
-      return false if draft?
-      return false if broken?
-      return false unless skip_discussions_check || mergeable_discussions_state?
-      return false unless skip_ci_check || mergeable_ci_state?
-
-      true
-    end
+    additional_checks = execute_merge_checks(params: {
+                                               skip_ci_check: skip_ci_check,
+                                               skip_discussions_check: skip_discussions_check
+                                             })
+    additional_checks.execute.success?
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def ff_merge_possible?
     project.repository.ancestor?(target_branch_sha, diff_head_sha)

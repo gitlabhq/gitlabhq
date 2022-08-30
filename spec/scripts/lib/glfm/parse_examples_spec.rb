@@ -9,7 +9,7 @@ RSpec.describe Glfm::ParseExamples, '#parse_examples' do
   end
 
   let(:spec_txt_contents) do
-    <<~SPEC_TXT_CONTENTS
+    <<~MARKDOWN
       ---
       title: Spec
       ...
@@ -134,7 +134,7 @@ RSpec.describe Glfm::ParseExamples, '#parse_examples' do
       # Appendix
 
       Appendix text.
-    SPEC_TXT_CONTENTS
+    MARKDOWN
   end
 
   let(:spec_txt_lines) { spec_txt_contents.split("\n") }
@@ -311,7 +311,7 @@ RSpec.describe Glfm::ParseExamples, '#parse_examples' do
 
   describe "with incorrect header nesting" do
     let(:spec_txt_contents) do
-      <<~SPEC_TXT_CONTENTS
+      <<~MARKDOWN
         ---
         title: Spec
         ...
@@ -320,7 +320,7 @@ RSpec.describe Glfm::ParseExamples, '#parse_examples' do
 
         ### H3
 
-      SPEC_TXT_CONTENTS
+      MARKDOWN
     end
 
     it "raises if H3 is nested directly in H1" do
