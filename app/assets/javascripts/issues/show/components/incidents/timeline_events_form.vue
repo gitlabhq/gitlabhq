@@ -3,7 +3,7 @@ import { GlDatepicker, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { timelineFormI18n } from './constants';
-import { getUtcShiftedDateNow } from './utils';
+import { getUtcShiftedDate } from './utils';
 
 export default {
   name: 'TimelineEventsForm',
@@ -29,21 +29,32 @@ export default {
     autofocusonshow,
   },
   props: {
-    hasTimelineEvents: {
+    showSaveAndAdd: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     isEventProcessed: {
       type: Boolean,
       required: true,
     },
+    previousOccurredAt: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    previousNote: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
-    // if occurredAt is undefined, returns "now" in UTC
-    const placeholderDate = getUtcShiftedDateNow();
+    // if occurredAt is null, returns "now" in UTC
+    const placeholderDate = getUtcShiftedDate(this.previousOccurredAt);
 
     return {
-      timelineText: '',
+      timelineText: this.previousNote,
       placeholderDate,
       hourPickerInput: placeholderDate.getHours(),
       minutePickerInput: placeholderDate.getMinutes(),
@@ -51,7 +62,7 @@ export default {
     };
   },
   computed: {
-    occurredAt() {
+    occurredAtString() {
       const year = this.datePickerInput.getFullYear();
       const month = this.datePickerInput.getMonth();
       const day = this.datePickerInput.getDate();
@@ -63,38 +74,36 @@ export default {
       return utcDate.toISOString();
     },
   },
+  mounted() {
+    this.focusDate();
+  },
   methods: {
     clear() {
-      const newPlaceholderDate = getUtcShiftedDateNow();
+      const newPlaceholderDate = getUtcShiftedDate();
       this.datePickerInput = newPlaceholderDate;
       this.hourPickerInput = newPlaceholderDate.getHours();
       this.minutePickerInput = newPlaceholderDate.getMinutes();
       this.timelineText = '';
     },
     focusDate() {
-      this.$refs.datepicker.$el.focus();
+      this.$refs.datepicker.$el.querySelector('input').focus();
     },
     handleSave(addAnotherEvent) {
-      const eventDetails = {
+      const event = {
         note: this.timelineText,
-        occurredAt: this.occurredAt,
+        occurredAt: this.occurredAtString,
       };
-      this.$emit('save-event', eventDetails, addAnotherEvent);
+      this.$emit('save-event', event, addAnotherEvent);
     },
   },
 };
 </script>
 
 <template>
-  <form class="gl-flex-grow-1 gl-border-gray-50" :class="{ 'gl-border-t': hasTimelineEvents }">
+  <form class="gl-flex-grow-1 gl-border-gray-50">
     <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row">
       <gl-form-group :label="__('Date')" class="gl-mt-5 gl-mr-5">
-        <gl-datepicker
-          id="incident-date"
-          ref="datepicker"
-          v-model="datePickerInput"
-          data-testid="input-datepicker"
-        />
+        <gl-datepicker id="incident-date" ref="datepicker" v-model="datePickerInput" />
       </gl-form-group>
       <div class="gl-display-flex gl-mt-5">
         <gl-form-group :label="__('Time')">
@@ -163,6 +172,7 @@ export default {
         {{ $options.i18n.save }}
       </gl-button>
       <gl-button
+        v-if="showSaveAndAdd"
         variant="confirm"
         category="secondary"
         class="gl-mr-3 gl-ml-n2"
@@ -174,7 +184,7 @@ export default {
       <gl-button class="gl-ml-n2" :disabled="isEventProcessed" @click="$emit('cancel')">
         {{ $options.i18n.cancel }}
       </gl-button>
-      <div class="gl-border-b gl-pt-5"></div>
+      <div class="timeline-event-bottom-border"></div>
     </gl-form-group>
   </form>
 </template>

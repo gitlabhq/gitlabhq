@@ -100,7 +100,7 @@ To delete a task:
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.
 
-## Set task weight **PREMIUM**
+## Set task weight **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
 

@@ -3,8 +3,10 @@
 module API
   module Entities
     class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats, if: :stats
-      expose :status
+      include ::API::Helpers::Presentable
+
+      expose :stats, using: Entities::CommitStats, if: :include_stats
+      expose :status_for, as: :status
       expose :project_id
 
       expose :last_pipeline do |commit, options|

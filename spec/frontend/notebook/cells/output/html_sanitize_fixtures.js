@@ -38,7 +38,7 @@ export default [
         '</tr>\n',
         '</table>',
       ].join(''),
-      output: '<table>',
+      output: '<table data-myattr=&quot;XSS&quot;>',
     },
   ],
   // Note: style is sanitized out
@@ -98,7 +98,7 @@ export default [
         '</svg>',
       ].join(),
       output:
-        '<svg xmlns="http://www.w3.org/2000/svg" width="388.84pt" version="1.0" id="svg2" height="115.02pt">',
+        '<svg height=&quot;115.02pt&quot; id=&quot;svg2&quot; version=&quot;1.0&quot; width=&quot;388.84pt&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>',
     },
   ],
 ];

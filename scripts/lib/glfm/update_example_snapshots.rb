@@ -125,7 +125,7 @@ module Glfm
 
     def write_snapshot_example_files(all_examples, skip_static_and_wysiwyg:)
       output("Reading #{GLFM_EXAMPLE_STATUS_YML_PATH}...")
-      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH))
+      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH), symbolize_names: true)
       validate_glfm_example_status_yml(glfm_examples_statuses)
 
       write_examples_index_yml(all_examples)
@@ -153,8 +153,8 @@ module Glfm
     def validate_glfm_example_status_yml(glfm_examples_statuses)
       glfm_examples_statuses.each do |example_name, statuses|
         next unless statuses &&
-          statuses['skip_update_example_snapshots'] &&
-          statuses.any? { |key, value| key.include?('skip_update_example_snapshot_') && !!value }
+          statuses[:skip_update_example_snapshots] &&
+          statuses.any? { |key, value| key.to_s.include?('skip_update_example_snapshot_') && !!value }
 
         raise "Error: '#{example_name}' must not have any 'skip_update_example_snapshot_*' values specified " \
                 "if 'skip_update_example_snapshots' is truthy"
@@ -165,7 +165,8 @@ module Glfm
       generate_and_write_for_all_examples(
         all_examples, ES_EXAMPLES_INDEX_YML_PATH, literal_scalars: false
       ) do |example, hash|
-        hash[example.fetch(:name)] = {
+        name = example.fetch(:name).to_sym
+        hash[name] = {
           'spec_txt_example_position' => example.fetch(:example),
           'source_specification' =>
             if example[:extensions].empty?
@@ -181,7 +182,8 @@ module Glfm
 
     def write_markdown_yml(all_examples)
       generate_and_write_for_all_examples(all_examples, ES_MARKDOWN_YML_PATH) do |example, hash|
-        hash[example.fetch(:name)] = example.fetch(:markdown)
+        name = example.fetch(:name).to_sym
+        hash[name] = example.fetch(:markdown)
       end
     end
 
@@ -225,7 +227,7 @@ module Glfm
       run_external_cmd(cmd)
 
       output("Reading generated static HTML from tempfile #{static_html_tempfile_path}...")
-      YAML.load_file(static_html_tempfile_path)
+      YAML.safe_load(File.open(static_html_tempfile_path), symbolize_names: true)
     end
 
     def generate_wysiwyg_html_and_json
@@ -241,26 +243,26 @@ module Glfm
 
       output("Reading generated WYSIWYG HTML and prosemirror JSON from tempfile " \
         "#{wysiwyg_html_and_json_tempfile_path}...")
-      YAML.load_file(wysiwyg_html_and_json_tempfile_path)
+      YAML.safe_load(File.open(wysiwyg_html_and_json_tempfile_path), symbolize_names: true)
     end
 
     def write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
       generate_and_write_for_all_examples(
-        all_examples, ES_HTML_YML_PATH, glfm_examples_statuses
+        all_examples, ES_HTML_YML_PATH, glfm_examples_statuses: glfm_examples_statuses
       ) do |example, hash, existing_hash|
-        name = example.fetch(:name)
+        name = example.fetch(:name).to_sym
         example_statuses = glfm_examples_statuses[name] || {}
 
-        static = if example_statuses['skip_update_example_snapshot_html_static']
-                   existing_hash.dig(name, 'static')
+        static = if example_statuses[:skip_update_example_snapshot_html_static]
+                   existing_hash.dig(name, :static)
                  else
                    static_html_hash[name]
                  end
 
-        wysiwyg = if example_statuses['skip_update_example_snapshot_html_wysiwyg']
-                    existing_hash.dig(name, 'wysiwyg')
+        wysiwyg = if example_statuses[:skip_update_example_snapshot_html_wysiwyg]
+                    existing_hash.dig(name, :wysiwyg)
                   else
-                    wysiwyg_html_and_json_hash.dig(name, 'html')
+                    wysiwyg_html_and_json_hash.dig(name, :html)
                   end
 
         hash[name] = {
@@ -273,14 +275,14 @@ module Glfm
 
     def write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash, glfm_examples_statuses)
       generate_and_write_for_all_examples(
-        all_examples, ES_PROSEMIRROR_JSON_YML_PATH, glfm_examples_statuses
+        all_examples, ES_PROSEMIRROR_JSON_YML_PATH, glfm_examples_statuses: glfm_examples_statuses
       ) do |example, hash, existing_hash|
-        name = example.fetch(:name)
+        name = example.fetch(:name).to_sym
 
-        json = if glfm_examples_statuses.dig(name, 'skip_update_example_snapshot_prosemirror_json')
+        json = if glfm_examples_statuses.dig(name, :skip_update_example_snapshot_prosemirror_json)
                  existing_hash[name]
                else
-                 wysiwyg_html_and_json_hash.dig(name, 'json')
+                 wysiwyg_html_and_json_hash.dig(name, :json)
                end
 
         # Do not assign nil values
@@ -289,15 +291,15 @@ module Glfm
     end
 
     def generate_and_write_for_all_examples(
-      all_examples, output_file_path, glfm_examples_statuses = {}, literal_scalars: true
+      all_examples, output_file_path, glfm_examples_statuses: {}, literal_scalars: true
     )
       preserve_existing = !glfm_examples_statuses.empty?
       output("#{preserve_existing ? 'Creating/Updating' : 'Creating/Overwriting'} #{output_file_path}...")
-      existing_hash = preserve_existing ? YAML.safe_load(File.open(output_file_path)) : {}
+      existing_hash = preserve_existing ? YAML.safe_load(File.open(output_file_path), symbolize_names: true) : {}
 
       output_hash = all_examples.each_with_object({}) do |example, hash|
-        name = example.fetch(:name)
-        if (reason = glfm_examples_statuses.dig(name, 'skip_update_example_snapshots'))
+        name = example.fetch(:name).to_sym
+        if (reason = glfm_examples_statuses.dig(name, :skip_update_example_snapshots))
           # Output the reason for skipping the example, but only once, not multiple times for each file
           output("Skipping '#{name}'. Reason: #{reason}") unless glfm_examples_statuses.dig(name, :already_printed)
           # We just store the `:already_printed` flag in the hash entry itself. Then we
@@ -316,38 +318,6 @@ module Glfm
 
       yaml_string = dump_yaml_with_formatting(output_hash, literal_scalars: literal_scalars)
       write_file(output_file_path, yaml_string)
-    end
-
-    # Construct an AST so we can control YAML formatting for
-    # YAML block scalar literals and key quoting.
-    #
-    # Note that when Psych dumps the markdown to YAML, it will
-    # automatically use the default "clip" behavior of the Block Chomping Indicator (`|`)
-    # https://yaml.org/spec/1.2.2/#8112-block-chomping-indicator,
-    # when the markdown strings contain a trailing newline. The type of
-    # Block Chomping Indicator is automatically determined, you cannot specify it
-    # manually.
-    def dump_yaml_with_formatting(hash, literal_scalars:)
-      visitor = Psych::Visitors::YAMLTree.create
-      visitor << hash
-      ast = visitor.tree
-
-      # Force all scalars to have literal formatting (using Block Chomping Indicator instead of quotes)
-      if literal_scalars
-        ast.grep(Psych::Nodes::Scalar).each do |node|
-          node.style = Psych::Nodes::Scalar::LITERAL
-        end
-      end
-
-      # Do not quote the keys
-      ast.grep(Psych::Nodes::Mapping).each do |node|
-        node.children.each_slice(2) do |k, _|
-          k.quoted = false
-          k.style = Psych::Nodes::Scalar::ANY
-        end
-      end
-
-      ast.to_yaml
     end
   end
 end

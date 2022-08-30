@@ -16,9 +16,10 @@ module Gitlab
           TREE_SORT_ORDER = { tree: 0, blob: 1, commit: 2 }.freeze
 
           override :tree_entries
-          def tree_entries(repository, sha, path, recursive, pagination_params = nil)
+          def tree_entries(repository, sha, path, recursive, skip_flat_paths, pagination_params = nil)
             if use_rugged?(repository, :rugged_tree_entries)
-              entries = execute_rugged_call(:tree_entries_with_flat_path_from_rugged, repository, sha, path, recursive)
+              entries = execute_rugged_call(
+                :tree_entries_with_flat_path_from_rugged, repository, sha, path, recursive, skip_flat_paths)
 
               if pagination_params
                 paginated_response(entries, pagination_params[:limit], pagination_params[:page_token].to_s)
@@ -60,11 +61,11 @@ module Gitlab
             [result, cursor]
           end
 
-          def tree_entries_with_flat_path_from_rugged(repository, sha, path, recursive)
+          def tree_entries_with_flat_path_from_rugged(repository, sha, path, recursive, skip_flat_paths)
             tree_entries_from_rugged(repository, sha, path, recursive).tap do |entries|
               # This was an optimization to reduce N+1 queries for Gitaly
               # (https://gitlab.com/gitlab-org/gitaly/issues/530).
-              rugged_populate_flat_path(repository, sha, path, entries)
+              rugged_populate_flat_path(repository, sha, path, entries) unless skip_flat_paths
             end
           end
 

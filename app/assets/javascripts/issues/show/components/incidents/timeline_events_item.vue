@@ -8,6 +8,7 @@ export default {
   name: 'IncidentTimelineEventListItem',
   i18n: {
     delete: __('Delete'),
+    edit: __('Edit'),
     moreActions: __('More actions'),
     timeUTC: __('%{time} UTC'),
   },
@@ -22,10 +23,6 @@ export default {
   },
   inject: ['canUpdate'],
   props: {
-    isLastItem: {
-      type: Boolean,
-      required: true,
-    },
     occurredAt: {
       type: String,
       required: true,
@@ -50,15 +47,14 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div class="gl-display-flex gl-align-items-start">
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-n2 gl-mr-3 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-mr-3 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div
-      class="timeline-event-note gl-w-full gl-display-flex gl-flex-direction-row"
-      :class="{ 'gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid': !isLastItem }"
+      class="timeline-event-note timeline-event-border gl-w-full gl-display-flex gl-flex-direction-row"
       data-testid="event-text-container"
     >
       <div>
@@ -72,13 +68,16 @@ export default {
       <gl-dropdown
         v-if="canUpdate"
         right
-        class="event-note-actions gl-ml-auto gl-align-self-center"
+        class="event-note-actions gl-ml-auto gl-align-self-start"
         icon="ellipsis_v"
         text-sr-only
         :text="$options.i18n.moreActions"
         category="tertiary"
         no-caret
       >
+        <gl-dropdown-item @click="$emit('edit')">
+          {{ $options.i18n.edit }}
+        </gl-dropdown-item>
         <gl-dropdown-item @click="$emit('delete')">
           {{ $options.i18n.delete }}
         </gl-dropdown-item>

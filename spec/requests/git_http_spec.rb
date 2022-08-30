@@ -643,17 +643,17 @@ RSpec.describe 'Git HTTP requests' do
                 end
 
                 context 'when username and password are provided' do
-                  it 'rejects pulls with personal access token error message' do
+                  it 'rejects pulls with generic error message' do
                     download(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                     end
                   end
 
-                  it 'rejects the push attempt with personal access token error message' do
+                  it 'rejects the push attempt with generic error message' do
                     upload(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                     end
                   end
                 end
@@ -750,17 +750,17 @@ RSpec.describe 'Git HTTP requests' do
                   allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
                 end
 
-                it 'rejects pulls with personal access token error message' do
+                it 'rejects pulls with generic error message' do
                   download(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                    expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                   end
                 end
 
-                it 'rejects pushes with personal access token error message' do
+                it 'rejects pushes with generic error message' do
                   upload(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                    expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                   end
                 end
 
@@ -771,10 +771,10 @@ RSpec.describe 'Git HTTP requests' do
                       .to receive(:login).and_return(nil)
                   end
 
-                  it 'does not display the personal access token error message' do
+                  it 'displays the generic error message' do
                     upload(path, user: 'foo', password: 'bar') do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).not_to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                     end
                   end
                 end
@@ -1300,17 +1300,18 @@ RSpec.describe 'Git HTTP requests' do
                 end
 
                 context 'when username and password are provided' do
-                  it 'rejects pulls with personal access token error message' do
+                  it 'rejects pulls with generic error message' do
                     download(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+
+                      expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                     end
                   end
 
-                  it 'rejects the push attempt with personal access token error message' do
+                  it 'rejects the push attempt with generic error message' do
                     upload(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                     end
                   end
                 end
@@ -1381,17 +1382,17 @@ RSpec.describe 'Git HTTP requests' do
                   allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
                 end
 
-                it 'rejects pulls with personal access token error message' do
+                it 'rejects pulls with generic error message' do
                   download(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                    expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                   end
                 end
 
-                it 'rejects pushes with personal access token error message' do
+                it 'rejects pushes with generic error message' do
                   upload(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                    expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                   end
                 end
 
@@ -1402,10 +1403,10 @@ RSpec.describe 'Git HTTP requests' do
                       .to receive(:login).and_return(nil)
                   end
 
-                  it 'does not display the personal access token error message' do
+                  it 'returns a generic error message' do
                     upload(path, user: 'foo', password: 'bar') do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).not_to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to eq('HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See http://www.example.com/help/topics/git/troubleshooting_git#error-on-git-fetch-http-basic-access-denied')
                     end
                   end
                 end

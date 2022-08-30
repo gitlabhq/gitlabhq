@@ -33,9 +33,6 @@ export default {
     clearForm() {
       this.$refs.eventForm.clear();
     },
-    focusDate() {
-      this.$refs.eventForm.focusDate();
-    },
     updateCache(store, { data }) {
       const { timelineEvent: event, errors } = data?.timelineEventCreate || {};
 
@@ -110,7 +107,7 @@ export default {
 
 <template>
   <div
-    class="gl-relative gl-display-flex gl-align-items-center"
+    class="create-timeline-event gl-relative gl-display-flex gl-align-items-start"
     :class="{ 'timeline-entry-vertical-line': hasTimelineEvents }"
   >
     <div
@@ -121,8 +118,9 @@ export default {
     </div>
     <timeline-events-form
       ref="eventForm"
+      :class="{ 'gl-border-gray-50 gl-border-t': hasTimelineEvents }"
       :is-event-processed="createTimelineEventActive"
-      :has-timeline-events="hasTimelineEvents"
+      show-save-and-add
       @save-event="createIncidentTimelineEvent"
       @cancel="$emit('hide-new-timeline-events-form')"
     />

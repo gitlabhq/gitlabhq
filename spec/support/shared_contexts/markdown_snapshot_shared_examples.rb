@@ -43,10 +43,9 @@ RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_speci
 
         post api_url, params: { text: markdown, gfm: true }
         expect(response).to be_successful
-        response_body = Gitlab::Json.parse(response.body)
-        # Some requests have the HTML in the `html` key, others in the `body` key.
-        response_html = response_body['body'] ? response_body.fetch('body') : response_body.fetch('html')
-        # noinspection RubyResolve
+        parsed_response = Gitlab::Json.parse(response.body, symbolize_names: true)
+        # Some responses have the HTML in the `html` key, others in the `body` key.
+        response_html = parsed_response[:body] || parsed_response[:html]
         normalized_response_html = normalize_html(response_html, normalizations)
 
         expect(normalized_response_html).to eq(normalized_html)

@@ -267,3 +267,8 @@ To resolve this issue, you can update the password expiration by either:
    ```
 
 The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332455).
+
+## Error on Git fetch: "HTTP Basic: Access Denied"
+
+If you receive an `HTTP Basic: Access denied` error when using Git over HTTP(S),
+refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication.md#troubleshooting).

@@ -15,7 +15,6 @@ describe('IncidentTimelineEventList', () => {
         action,
         noteHtml,
         occurredAt,
-        isLastItem: false,
         ...propsData,
       },
       provide: {
@@ -26,7 +25,6 @@ describe('IncidentTimelineEventList', () => {
   };
 
   const findCommentIcon = () => wrapper.findComponent(GlIcon);
-  const findTextContainer = () => wrapper.findByTestId('event-text-container');
   const findEventTime = () => wrapper.findByTestId('event-time');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDeleteButton = () => wrapper.findByText('Delete');
@@ -48,20 +46,6 @@ describe('IncidentTimelineEventList', () => {
       mountComponent();
 
       expect(findEventTime().text()).toBe('15:59 UTC');
-    });
-
-    describe('last item in list', () => {
-      it('shows a bottom border when not the last item', () => {
-        mountComponent();
-
-        expect(findTextContainer().classes()).toContain('gl-border-1');
-      });
-
-      it('does not show a bottom border when the last item', () => {
-        mountComponent({ propsData: { isLastItem: true } });
-
-        expect(wrapper.classes()).not.toContain('gl-border-1');
-      });
     });
 
     describe.each`

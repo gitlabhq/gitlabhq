@@ -47,7 +47,7 @@ In addition, it:
 Geo provides:
 
 - Read-only **secondary** sites: Maintain one **primary** GitLab site while still enabling read-only **secondary** sites for each of your distributed teams.
-- Authentication system hooks: **Secondary** sites receives all authentication data (like user accounts and logins) from the **primary** instance.
+- Authentication system hooks: **Secondary** sites receive all authentication data (like user accounts and logins) from the **primary** instance.
 - An intuitive UI: **Secondary** sites use the same web interface your team has grown accustomed to. In addition, there are visual notifications that block write operations and make it clear that a user is on a **secondary** sites.
 
 ### Gitaly Cluster

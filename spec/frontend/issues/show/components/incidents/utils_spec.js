@@ -2,7 +2,7 @@ import timezoneMock from 'timezone-mock';
 import {
   displayAndLogError,
   getEventIcon,
-  getUtcShiftedDateNow,
+  getUtcShiftedDate,
 } from '~/issues/show/components/incidents/utils';
 import { createAlert } from '~/flash';
 
@@ -34,7 +34,7 @@ describe('incident utils', () => {
     });
   });
 
-  describe('getUtcShiftedDateNow', () => {
+  describe('getUtcShiftedDate', () => {
     beforeEach(() => {
       timezoneMock.register('US/Pacific');
     });
@@ -46,7 +46,7 @@ describe('incident utils', () => {
     it('should shift the date by the timezone offset', () => {
       const date = new Date();
 
-      const shiftedDate = getUtcShiftedDateNow();
+      const shiftedDate = getUtcShiftedDate();
 
       expect(shiftedDate > date).toBe(true);
     });

@@ -962,40 +962,26 @@
     border-left: 2px solid $gray-50;
     position: absolute;
     left: 39px;
-    height: 80%;
+    height: calc(100% + #{$gl-spacing-scale-5});
+    top: -#{$gl-spacing-scale-5};
   }
 
-  &:first-child::before,
-  &:last-child::after {
+  &:first-child::before {
     content: none;
   }
 
   &:first-child {
     &::after {
-      top: 50%;
+      top: $gl-spacing-scale-5;
+      height: calc(100% + #{$gl-spacing-scale-5});
     }
   }
 
-  &:last-child {
+  &:last-child,
+  &.create-timeline-event {
     &::before {
-      bottom: 50%;
-    }
-  }
-
-  &:not(:first-child):not(:last-child) {
-    &::before {
-      top: -10%;
-    }
-
-    &::after {
-      bottom: -10%;
-    }
-  }
-
-  &.timeline-event-note-form {
-    &::before {
-      top: -15% !important; // Override default positioning
-      height: 20%;
+      top: - #{$gl-spacing-scale-5} !important; // Override default positioning
+      @include gl-h-8;
     }
 
     &::after {
@@ -1006,4 +992,23 @@
 
 .timeline-event-note-form {
   padding-left: 20px;
+}
+
+.timeline-entry:not(:last-child) {
+  .timeline-event-border {
+    @include gl-pb-5;
+    @include gl-border-gray-50;
+    @include gl-border-1;
+    @include gl-border-b-solid;
+  }
+}
+
+.timeline-group:last-child {
+  .timeline-entry:last-child,
+  .create-timeline-event {
+    .timeline-event-bottom-border {
+      @include gl-border-b;
+      @include gl-pt-5;
+    }
+  }
 }

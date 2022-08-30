@@ -13,9 +13,9 @@
 
     a,
     button {
-      padding: $gl-padding-8;
-      font-size: 14px;
-      line-height: 28px;
+      padding: $gl-spacing-scale-5 $gl-spacing-scale-4;
+      font-size: $gl-font-size;
+      line-height: $gl-line-height-16;
       color: $gl-text-color-secondary;
       border: 0;
       white-space: nowrap;
@@ -86,10 +86,6 @@
 
     &.scrolling-tabs {
       float: left;
-    }
-
-    li a {
-      padding: 16px 15px 11px;
     }
 
     /* Small devices (phones, 768px and lower) */

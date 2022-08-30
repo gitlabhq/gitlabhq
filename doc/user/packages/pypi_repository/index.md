@@ -345,6 +345,11 @@ when a PyPI package is not found in the Package Registry, the request is forward
 
 Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
 
+WARNING:
+When you use the `--index-url` option, do not specify the port if it is a default
+port, such as `80` for a URL starting with `http` or `443` for a URL starting
+with `https`.
+
 ### Install from the project level
 
 To install the latest version of a package, use the following command:

@@ -2,6 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.3.2 (2022-08-30)
+
+### Security (17 changes)
+
+- [No overriding methods for Sawyer class](gitlab-org/security/gitlab@397aa9e269676f4ab3dfba4c3ba8fef131b5b4bd) ([merge request](gitlab-org/security/gitlab!2754))
+- [Update Oj to v3.13.21](gitlab-org/security/gitlab@15f86c00b579ad1b4aeedd395f9239e8229c6f8b) ([merge request](gitlab-org/security/gitlab!2730))
+- [Prevent long loops when generating suggested branch name](gitlab-org/security/gitlab@1479c9e2a0444794ea274b07e0f59e8a50ced6ee) ([merge request](gitlab-org/security/gitlab!2743))
+- [IDOR in Zentao integration issue show page](gitlab-org/security/gitlab@92fdf89045bf294d4ee0338ba3f26c91094a073e) ([merge request](gitlab-org/security/gitlab!2740))
+- [Patch VULNDB-255039 (potential Rack cache poisoning)](gitlab-org/security/gitlab@383c926cc8aa4e2c4273556a181e1ddc1b71049f) ([merge request](gitlab-org/security/gitlab!2697))
+- [HTML escape the label background color](gitlab-org/security/gitlab@1e43656560fbc13907af72d5d4f696df95d7f49c) ([merge request](gitlab-org/security/gitlab!2719))
+- [Sandbox jupyter notebook HTML output](gitlab-org/security/gitlab@3ade5f2fadbb0c15d9e5a14306d0a79136a8f23e) ([merge request](gitlab-org/security/gitlab!2710))
+- [Fix unauthorized GFM references in Incident Timeline](gitlab-org/security/gitlab@2e18b59472b5a43921d39433e60038b0f254d123) ([merge request](gitlab-org/security/gitlab!2707))
+- [Optimize handling repositories with huge trees](gitlab-org/security/gitlab@4bfaca71c8d8f663242138049cf5639e69326bbb) ([merge request](gitlab-org/security/gitlab!2706))
+- [Parse commit trailers without using regexp](gitlab-org/security/gitlab@c15b2cd9b5e572a9bbc7c0c5cb7c9511f1a04ead) ([merge request](gitlab-org/security/gitlab!2699))
+- [Check for pathological markdown input](gitlab-org/security/gitlab@2fd5e1133e1acd82cdb524f059b554976cd68f51) ([merge request](gitlab-org/security/gitlab!2733))
+- [Replaced smooshpack to fix the vulnerability in LivePreview](gitlab-org/security/gitlab@114637f8f0d9add00914ac3e4562419b0f1b4f63) ([merge request](gitlab-org/security/gitlab!2739))
+- [Update package auth for group IP allowlist](gitlab-org/security/gitlab@7e830349a8425dbab65ce92d3e8ebd0afa734381) ([merge request](gitlab-org/security/gitlab!2686))
+- [Don't show pipeline status](gitlab-org/security/gitlab@1b5fbb9bcb4dde12a2af075e45407cbc6109494d) ([merge request](gitlab-org/security/gitlab!2712))
+- [Sanitize img attributes in Banzai::Filter::ImageLinkFilter](gitlab-org/security/gitlab@22ece3568d6b3aed305ed97aab9fdbb22ca068e8) ([merge request](gitlab-org/security/gitlab!2722))
+- [Validate description length for snippets](gitlab-org/security/gitlab@24592d39d7b8956a0e712026e5b988a82d37e771) ([merge request](gitlab-org/security/gitlab!2702))
+- [Prevent brute force vuln for Git over HTTP(S) requests](gitlab-org/security/gitlab@fcff307eff525d15e835e65e0e3e3a2395f0b840) ([merge request](gitlab-org/security/gitlab!2716))
+
 ## 15.3.1 (2022-08-22)
 
 ### Security (1 change)
@@ -612,6 +634,29 @@ entry.
 - [Drop unused index on ci_builds](gitlab-org/gitlab@31b5d0992dc73b88a37430f50b20f9d5308dee3c) ([merge request](gitlab-org/gitlab!92747))
 - [Remove FF import_release_authors_from_github](gitlab-org/gitlab@c4d6871e4438a1626d688856903778623138f671) ([merge request](gitlab-org/gitlab!92686))
 - [Remove unused feature](gitlab-org/gitlab@0ef95d341e4a15150d6ccb3d104ebbe064aa062a) ([merge request](gitlab-org/gitlab!92753))
+
+## 15.2.4 (2022-08-30)
+
+### Security (18 changes)
+
+- [No overriding methods for Sawyer class](gitlab-org/security/gitlab@fafcaf91c510ace5c3fc845197fa71d2ad8943cc) ([merge request](gitlab-org/security/gitlab!2755))
+- [Update Oj to v3.13.21](gitlab-org/security/gitlab@e14f62112f51315288f3f08108b59cf40ab5635e) ([merge request](gitlab-org/security/gitlab!2729))
+- [Bump yajl-ruby gem version](gitlab-org/security/gitlab@ad7469e802aff36989276bd77afcebf9bcb8a545) ([merge request](gitlab-org/security/gitlab!2689))
+- [Prevent long loops when generating suggested branch name](gitlab-org/security/gitlab@f8f1631a7751b40444debbd69188187c895d2ad6) ([merge request](gitlab-org/security/gitlab!2744))
+- [IDOR in Zentao integration issue show page](gitlab-org/security/gitlab@01004871400564e5b18a2efa4f6d87c8ca37db5c) ([merge request](gitlab-org/security/gitlab!2741))
+- [Patch VULNDB-255039 (potential Rack cache poisoning)](gitlab-org/security/gitlab@a951318f5870e8f35c742eab58132c63d6d36198) ([merge request](gitlab-org/security/gitlab!2694))
+- [HTML escape the label background color](gitlab-org/security/gitlab@de115e3b0896aa1504882d3230b5427506fee3e2) ([merge request](gitlab-org/security/gitlab!2720))
+- [Sandbox jupyter notebook HTML output](gitlab-org/security/gitlab@67aeba4ae4c95d2668d0428cb66d263ee4247b68) ([merge request](gitlab-org/security/gitlab!2711))
+- [Fix unauthorized GFM references in Incident Timeline](gitlab-org/security/gitlab@f091bc238efa1d669c1257aa146339f4b1134a0c) ([merge request](gitlab-org/security/gitlab!2708))
+- [Optimize handling repositories with huge trees](gitlab-org/security/gitlab@9969c2cabccef2367631498f38ab8d0b19cf9da3) ([merge request](gitlab-org/security/gitlab!2666))
+- [Parse commit trailers without using regexp](gitlab-org/security/gitlab@9bd64457525313a949f151fd27f2954ff71e399d) ([merge request](gitlab-org/security/gitlab!2700))
+- [Check for pathological markdown input](gitlab-org/security/gitlab@c05642874c38e4d914297ad788a07c42b77b6b1e) ([merge request](gitlab-org/security/gitlab!2732))
+- [Replaced smooshpack to fix the vulnerability in LivePreview](gitlab-org/security/gitlab@e48df65563c6c66fd6d89fb7bf626bdf8b465cc0) ([merge request](gitlab-org/security/gitlab!2662))
+- [Update package auth for group IP allowlist](gitlab-org/security/gitlab@eb7b9e646732cc3590e00d5694d5a662e71c9f99) ([merge request](gitlab-org/security/gitlab!2684))
+- [Don't show pipeline status](gitlab-org/security/gitlab@a5962d9ee7aec4f86a982f2d686a690806df6f15) ([merge request](gitlab-org/security/gitlab!2680))
+- [Sanitize img attributes in Banzai::Filter::ImageLinkFilter](gitlab-org/security/gitlab@ee68b29c2199e1c399a4d0065ed53c50592e54a0) ([merge request](gitlab-org/security/gitlab!2676))
+- [Validate description length for snippets](gitlab-org/security/gitlab@e9e4c3b3109590a5c12ecb2f25e4641dd408ce36) ([merge request](gitlab-org/security/gitlab!2703))
+- [Prevent brute force vuln for Git over HTTP(S) requests](gitlab-org/security/gitlab@aab24e532b8c0b9e8acc90e7954434519e19b908) ([merge request](gitlab-org/security/gitlab!2717))
 
 ## 15.2.3 (2022-08-22)
 
@@ -1335,6 +1380,28 @@ entry.
 - [Support push options when creating merge request pipelines](gitlab-org/gitlab@e91c574425367c52f68f31c2194c6f46079f7b1b) ([merge request](gitlab-org/gitlab!87323)) **GitLab Enterprise Edition**
 - [Update GitLab Runner Helm Chart to 0.42.0](gitlab-org/gitlab@cc89200f498fe216864914c79b5b0d1d578edab3) ([merge request](gitlab-org/gitlab!90605))
 - [Address database documentation Vale warningss](gitlab-org/gitlab@e5f9a089766bace046d3bbd760a2979865a4bbc0) by @cgives ([merge request](gitlab-org/gitlab!90093))
+
+## 15.1.6 (2022-08-30)
+
+### Security (17 changes)
+
+- [No overriding methods for Sawyer class](gitlab-org/security/gitlab@720a17d03791c298d193b2d49d322a5f259bb6f2) ([merge request](gitlab-org/security/gitlab!2756))
+- [Bump yajl-ruby gem version](gitlab-org/security/gitlab@acb8bee73354ddbd7a7a52e3d09c870d1cd99e27) ([merge request](gitlab-org/security/gitlab!2690))
+- [Prevent long loops when generating suggested branch name](gitlab-org/security/gitlab@e331ecf658de25901def2ea4a368104b82a0109c) ([merge request](gitlab-org/security/gitlab!2745))
+- [IDOR in Zentao integration issue show page](gitlab-org/security/gitlab@0a238baf6a1d4aa0bc834448aefaf756d594a7be) ([merge request](gitlab-org/security/gitlab!2742))
+- [Patch VULNDB-255039 (potential Rack cache poisoning)](gitlab-org/security/gitlab@1f5ecd95b3631c8352ff57cf4bee23d26aa51ecc) ([merge request](gitlab-org/security/gitlab!2695))
+- [HTML escape the label background color](gitlab-org/security/gitlab@470b75a53ea4383ea30de5a482d39b322f87dfa2) ([merge request](gitlab-org/security/gitlab!2721))
+- [Sandbox jupyter notebook HTML output](gitlab-org/security/gitlab@72089898a60de7f17c19a2fa9d4f1330d3052b52) ([merge request](gitlab-org/security/gitlab!2713))
+- [Fix unauthorized GFM references in Incident Timeline](gitlab-org/security/gitlab@c62408682ed47bc2e5f93585a5b4e92e8cfebf9f) ([merge request](gitlab-org/security/gitlab!2709))
+- [Optimize handling repositories with huge trees](gitlab-org/security/gitlab@396f20e019a9888d1645e9345a82fdf21153bf76) ([merge request](gitlab-org/security/gitlab!2667))
+- [Parse commit trailers without using regexp](gitlab-org/security/gitlab@b377a1ecbb37c5359b2c2a0ecfbd911654664700) ([merge request](gitlab-org/security/gitlab!2701))
+- [Check for pathological markdown input](gitlab-org/security/gitlab@e3a1376ec70d8d60f11a380cce6e0b3c35f68646) ([merge request](gitlab-org/security/gitlab!2731))
+- [Replaced smooshpack to fix the vulnerability in LivePreview](gitlab-org/security/gitlab@d520ffd2a5a75d33ac98c39cd2f2fe623b0e1115) ([merge request](gitlab-org/security/gitlab!2664))
+- [Update package auth for group IP allowlist](gitlab-org/security/gitlab@12bb8656bdaa9a7502c0a1b77c12fefb72677ba1) ([merge request](gitlab-org/security/gitlab!2685))
+- [Don't show pipeline status](gitlab-org/security/gitlab@7fb43f899f2342704bda81643f8375a126efc2ae) ([merge request](gitlab-org/security/gitlab!2679))
+- [Sanitize img attributes in Banzai::Filter::ImageLinkFilter](gitlab-org/security/gitlab@594fa5874fb7cc6b6588bbf8aff2f04b8acbbfd0) ([merge request](gitlab-org/security/gitlab!2677))
+- [Validate description length for snippets](gitlab-org/security/gitlab@94ae3d05741bc69b9307e5f58f0d61bf2566c21b) ([merge request](gitlab-org/security/gitlab!2704))
+- [Prevent brute force vuln for Git over HTTP(S) requests](gitlab-org/security/gitlab@7b76542e197ea72289c881c312b3a519c8b28e63) ([merge request](gitlab-org/security/gitlab!2718))
 
 ## 15.1.5 (2022-08-22)
 

@@ -5,7 +5,9 @@ import { sprintf } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import IncidentTimelineEventItem from './timeline_events_item.vue';
+import EditTimelineEvent from './edit_timeline_event.vue';
 import deleteTimelineEvent from './graphql/queries/delete_timeline_event.mutation.graphql';
+import editTimelineEvent from './graphql/queries/edit_timeline_event.mutation.graphql';
 import { timelineListI18n } from './constants';
 
 export default {
@@ -13,6 +15,7 @@ export default {
   i18n: timelineListI18n,
   components: {
     IncidentTimelineEventItem,
+    EditTimelineEvent,
   },
   props: {
     timelineEventLoading: {
@@ -25,6 +28,9 @@ export default {
       required: true,
       default: () => [],
     },
+  },
+  data() {
+    return { eventToEdit: null, editTimelineEventActive: false };
   },
   computed: {
     dateGroupedEvents() {
@@ -44,11 +50,12 @@ export default {
     },
   },
   methods: {
-    isLastItem(groups, groupIndex, events, eventIndex) {
-      if (groupIndex < groups.size - 1) {
-        return false;
-      }
-      return eventIndex === events.length - 1;
+    handleEditSelection(event) {
+      this.eventToEdit = event.id;
+      this.$emit('hide-new-incident-timeline-event-form');
+    },
+    hideEdit() {
+      this.eventToEdit = null;
     },
     handleDelete: ignoreWhilePending(async function handleDelete(event) {
       const msg = this.$options.i18n.deleteModal;
@@ -85,6 +92,38 @@ export default {
         createAlert({ message: this.$options.i18n.deleteErrorGeneric, captureError: true, error });
       }
     }),
+    handleSaveEdit(eventDetails) {
+      this.editTimelineEventActive = true;
+      return this.$apollo
+        .mutate({
+          mutation: editTimelineEvent,
+          variables: {
+            input: {
+              id: eventDetails.id,
+              note: eventDetails.note,
+              occurredAt: eventDetails.occurredAt,
+            },
+          },
+        })
+        .then(({ data }) => {
+          this.editTimelineEventActive = false;
+          const errors = data.timelineEventUpdate?.errors;
+          if (errors.length) {
+            createAlert({
+              message: sprintf(this.$options.i18n.editError, { error: errors.join('. ') }, false),
+            });
+          } else {
+            this.hideEdit();
+          }
+        })
+        .catch((error) => {
+          createAlert({
+            message: this.$options.i18n.editErrorGeneric,
+            captureError: true,
+            error,
+          });
+        });
+    },
   },
 };
 </script>
@@ -92,9 +131,10 @@ export default {
 <template>
   <div class="issuable-discussion incident-timeline-events">
     <div
-      v-for="([eventDate, events], groupIndex) in dateGroupedEvents"
+      v-for="[eventDate, events] in dateGroupedEvents"
       :key="eventDate"
       data-testid="timeline-group"
+      class="timeline-group"
     >
       <div class="gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid">
         <strong class="gl-font-size-h2" data-testid="event-date">{{ eventDate }}</strong>
@@ -103,15 +143,25 @@ export default {
         <li
           v-for="(event, eventIndex) in events"
           :key="eventIndex"
-          class="timeline-entry-vertical-line note system-note note-wrapper gl-my-2! gl-pr-0!"
+          class="timeline-entry-vertical-line timeline-entry note system-note note-wrapper gl-my-2! gl-pr-0!"
         >
+          <edit-timeline-event
+            v-if="eventToEdit === event.id"
+            :key="`edit-${event.id}`"
+            ref="eventForm"
+            :event="event"
+            :edit-timeline-event-active="editTimelineEventActive"
+            @handle-save-edit="handleSaveEdit"
+            @hide-edit="hideEdit()"
+          />
           <incident-timeline-event-item
+            v-else
             :key="event.id"
             :action="event.action"
             :occurred-at="event.occurredAt"
             :note-html="event.noteHtml"
-            :is-last-item="isLastItem(dateGroupedEvents, groupIndex, events, eventIndex)"
             @delete="handleDelete(event)"
+            @edit="handleEditSelection(event)"
           />
         </li>
       </ul>

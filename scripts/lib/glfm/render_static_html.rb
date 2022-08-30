@@ -29,27 +29,28 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
   include Glfm::Constants
   include Glfm::Shared
 
-  let(:user) { create(:user, :admin, username: 'glfm_user') }
+  # TODO: Remove duplication of fixtures & logic with spec/support/shared_contexts/markdown_snapshot_shared_examples.rb
 
-  before do
-    stub_licensed_features(group_wikis: true)
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, name: 'glfm_group').tap { |group| group.add_owner(user) } }
 
-    group = create(:group, name: 'glfm_group')
-    group.add_owner(user)
-
-    project = create(:project, :repository, creator: user, group: group, name: 'glfm_project')
-
+  let_it_be(:project) do
     # NOTE: We hardcode the IDs on all fixtures to prevent variability in the
     #       rendered HTML/Prosemirror JSON, and to minimize the need for normalization:
     #       https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
-    create(:project_snippet, id: 88888, project: project) # project snippet
-    create(:snippet, id: 99999) # personal snippet
+    create(:project, :repository, creator: user, group: group, name: 'glfm_project', id: 77777)
+  end
 
+  let_it_be(:project_snippet) { create(:project_snippet, id: 88888, project: project) }
+  let_it_be(:personal_snippet) { create(:snippet, id: 99999) }
+
+  before do
+    stub_licensed_features(group_wikis: true)
     sign_in(user)
   end
 
   it 'can create a project dependency graph using factories' do
-    markdown_hash = YAML.load_file(ENV.fetch('INPUT_MARKDOWN_YML_PATH'))
+    markdown_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_MARKDOWN_YML_PATH')), symbolize_names: true)
 
     # NOTE: We cannot parallelize this loop like the Javascript WYSIWYG example generation does,
     # because the rspec `post` API cannot be parallized (it is not thread-safe, it can't find
@@ -58,12 +59,14 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
       api_url = api "/markdown"
 
       post api_url, params: { text: markdown, gfm: true }
+      # noinspection RubyResolve
+      expect(response).to be_successful
 
       returned_html_value =
         begin
-          parsed_response = Gitlab::Json.parse(response.body)
-          # The response may contain the HTML in either the `body` or `html` keys
-          parsed_response['body'] || parsed_response['html']
+          parsed_response = Gitlab::Json.parse(response.body, symbolize_names: true)
+          # Some responses have the HTML in the `html` key, others in the `body` key.
+          parsed_response[:body] || parsed_response[:html]
         rescue JSON::ParserError
           # if we got a parsing error, just return the raw response body for debugging purposes.
           response.body
@@ -79,7 +82,7 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
 
   def write_output_file(static_html_hash)
     tmpfile = File.open(ENV.fetch('OUTPUT_STATIC_HTML_TEMPFILE_PATH'), 'w')
-    YAML.dump(static_html_hash, tmpfile)
-    tmpfile.close
+    yaml_string = dump_yaml_with_formatting(static_html_hash)
+    write_file(tmpfile, yaml_string)
   end
 end

@@ -42,17 +42,15 @@ describe('Create Timeline events', () => {
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findNoteInput = () => wrapper.findByTestId('input-note');
   const setNoteInput = () => {
-    const textarea = findNoteInput().element;
-    textarea.value = mockInputData.note;
-    textarea.dispatchEvent(new Event('input'));
+    findNoteInput().setValue(mockInputData.note);
   };
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
   const setDatetime = () => {
     const inputDate = new Date(mockInputData.occurredAt);
     findDatePicker().vm.$emit('input', inputDate);
-    findHourInput().vm.$emit('input', inputDate.getHours());
-    findMinuteInput().vm.$emit('input', inputDate.getMinutes());
+    findHourInput().setValue(inputDate.getHours());
+    findMinuteInput().setValue(inputDate.getMinutes());
   };
   const fillForm = () => {
     setDatetime();

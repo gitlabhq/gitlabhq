@@ -51,7 +51,7 @@ Memory, CPU, and storage resource amounts vary depending on the amount of data y
 each node should have:
 
 - [Memory](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory): 8 GiB (minimum).
-- [CPU](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_cpus): Modern processor with multiple cores. GitLab.com has minimal CPU requirements for Elasticsearch. Multiple cores provide extra concurrency, which is more beneficial than faster CPUs.
+- [CPU](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_cpus): Modern processor with multiple cores. GitLab has minimal CPU requirements for Elasticsearch. Multiple cores provide extra concurrency, which is more beneficial than faster CPUs.
 - [Storage](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_disks): Use SSD storage. The total storage size of all Elasticsearch nodes is about 50% of the total size of your Git repositories. It includes one primary and one replica. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10) uses total repository size to estimate the Advanced Search storage requirements.
 
 ## Install Elasticsearch

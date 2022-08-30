@@ -81,4 +81,24 @@ RSpec.describe Integrations::Zentao do
       expect(zentao_integration.help).not_to be_empty
     end
   end
+
+  describe '#client_url' do
+    subject(:integration) { build(:zentao_integration, api_url: api_url, url: 'url').client_url }
+
+    context 'when api_url is set' do
+      let(:api_url) { 'api_url' }
+
+      it 'returns the api_url' do
+        is_expected.to eq(api_url)
+      end
+    end
+
+    context 'when api_url is not set' do
+      let(:api_url) { '' }
+
+      it 'returns the url' do
+        is_expected.to eq('url')
+      end
+    end
+  end
 end

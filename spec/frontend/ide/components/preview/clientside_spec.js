@@ -2,15 +2,15 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { dispatch } from 'codesandbox-api';
-import smooshpack from 'smooshpack';
+import { SandpackClient } from '@codesandbox/sandpack-client';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import Clientside from '~/ide/components/preview/clientside.vue';
 import { PING_USAGE_PREVIEW_KEY, PING_USAGE_PREVIEW_SUCCESS_KEY } from '~/ide/constants';
 import eventHub from '~/ide/eventhub';
 
-jest.mock('smooshpack', () => ({
-  Manager: jest.fn(),
+jest.mock('@codesandbox/sandpack-client', () => ({
+  SandpackClient: jest.fn(),
 }));
 
 Vue.use(Vuex);
@@ -78,8 +78,8 @@ describe('IDE clientside preview', () => {
     // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({
       sandpackReady: true,
-      manager: {
-        listener: jest.fn(),
+      client: {
+        cleanup: jest.fn(),
         updatePreview: jest.fn(),
       },
     });
@@ -90,9 +90,9 @@ describe('IDE clientside preview', () => {
   });
 
   describe('without main entry', () => {
-    it('creates sandpack manager', () => {
+    it('creates sandpack client', () => {
       createComponent();
-      expect(smooshpack.Manager).not.toHaveBeenCalled();
+      expect(SandpackClient).not.toHaveBeenCalled();
     });
   });
   describe('with main entry', () => {
@@ -102,8 +102,8 @@ describe('IDE clientside preview', () => {
       return waitForPromises();
     });
 
-    it('creates sandpack manager', () => {
-      expect(smooshpack.Manager).toHaveBeenCalledWith(
+    it('creates sandpack client', () => {
+      expect(SandpackClient).toHaveBeenCalledWith(
         '#ide-preview',
         expectedSandpackOptions(),
         expectedSandpackSettings(),
@@ -141,8 +141,8 @@ describe('IDE clientside preview', () => {
       return waitForPromises();
     });
 
-    it('creates sandpack manager with bundlerURL', () => {
-      expect(smooshpack.Manager).toHaveBeenCalledWith('#ide-preview', expectedSandpackOptions(), {
+    it('creates sandpack client with bundlerURL', () => {
+      expect(SandpackClient).toHaveBeenCalledWith('#ide-preview', expectedSandpackOptions(), {
         ...expectedSandpackSettings(),
         bundlerURL: TEST_BUNDLER_URL,
       });
@@ -156,8 +156,8 @@ describe('IDE clientside preview', () => {
       return waitForPromises();
     });
 
-    it('creates sandpack manager', () => {
-      expect(smooshpack.Manager).toHaveBeenCalledWith(
+    it('creates sandpack client', () => {
+      expect(SandpackClient).toHaveBeenCalledWith(
         '#ide-preview',
         {
           files: {},
@@ -332,7 +332,7 @@ describe('IDE clientside preview', () => {
     });
 
     describe('update', () => {
-      it('initializes manager if manager is empty', () => {
+      it('initializes client if client is empty', () => {
         createComponent({ getters: { packageJson: dummyPackageJson } });
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -340,7 +340,7 @@ describe('IDE clientside preview', () => {
         wrapper.vm.update();
 
         return waitForPromises().then(() => {
-          expect(smooshpack.Manager).toHaveBeenCalled();
+          expect(SandpackClient).toHaveBeenCalled();
         });
       });
 
@@ -349,7 +349,7 @@ describe('IDE clientside preview', () => {
 
         wrapper.vm.update();
 
-        expect(wrapper.vm.manager.updatePreview).toHaveBeenCalledWith(wrapper.vm.sandboxOpts);
+        expect(wrapper.vm.client.updatePreview).toHaveBeenCalledWith(wrapper.vm.sandboxOpts);
       });
     });
 
@@ -361,7 +361,7 @@ describe('IDE clientside preview', () => {
       });
 
       it('calls updatePreview', () => {
-        expect(wrapper.vm.manager.updatePreview).toHaveBeenCalledWith(wrapper.vm.sandboxOpts);
+        expect(wrapper.vm.client.updatePreview).toHaveBeenCalledWith(wrapper.vm.sandboxOpts);
       });
     });
   });
@@ -405,7 +405,7 @@ describe('IDE clientside preview', () => {
 
     beforeEach(() => {
       createInitializedComponent();
-      spy = wrapper.vm.manager.updatePreview;
+      spy = wrapper.vm.client.updatePreview;
       wrapper.destroy();
     });
 

@@ -32,7 +32,11 @@ module Resolvers
         page_token: cursor
       }
 
-      tree = repository.tree(args[:ref], args[:path], recursive: args[:recursive], pagination_params: pagination_params)
+      tree = repository.tree(
+        args[:ref], args[:path], recursive: args[:recursive],
+                                 skip_flat_paths: false,
+                                 pagination_params: pagination_params
+      )
 
       next_cursor = tree.cursor&.next_cursor
       Gitlab::Graphql::ExternallyPaginatedArray.new(cursor, next_cursor, *tree)

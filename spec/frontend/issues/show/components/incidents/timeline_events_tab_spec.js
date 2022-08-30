@@ -143,22 +143,13 @@ describe('TimelineEventsTab', () => {
     });
 
     it('should not show a form by default', () => {
-      expect(findCreateTimelineEvent().isVisible()).toBe(false);
+      expect(findCreateTimelineEvent().exists()).toBe(false);
     });
 
     it('should show a form when button is clicked', async () => {
       await findAddEventButton().trigger('click');
 
-      expect(findCreateTimelineEvent().isVisible()).toBe(true);
-    });
-
-    it('should clear the form when button is clicked', async () => {
-      const mockClear = jest.fn();
-      wrapper.vm.$refs.createEventForm.clearForm = mockClear;
-
-      await findAddEventButton().trigger('click');
-
-      expect(mockClear).toHaveBeenCalled();
+      expect(findCreateTimelineEvent().exists()).toBe(true);
     });
 
     it('should hide the form when the hide event is emitted', async () => {
@@ -167,7 +158,7 @@ describe('TimelineEventsTab', () => {
 
       await findCreateTimelineEvent().vm.$emit('hide-new-timeline-events-form');
 
-      expect(findCreateTimelineEvent().isVisible()).toBe(false);
+      expect(findCreateTimelineEvent().exists()).toBe(false);
     });
   });
 });

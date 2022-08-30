@@ -320,7 +320,7 @@ RSpec.describe CommitsHelper do
     let(:current_path) { "test" }
 
     before do
-      expect(commit).to receive(:status_for).with(ref).and_return(commit_status)
+      expect(commit).to receive(:detailed_status_for).with(ref).and_return(commit_status)
       assign(:path, current_path)
     end
 

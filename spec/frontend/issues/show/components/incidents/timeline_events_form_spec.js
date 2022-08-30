@@ -23,7 +23,7 @@ describe('Timeline events form', () => {
   const mountComponent = ({ mountMethod = shallowMountExtended }) => {
     wrapper = mountMethod(TimelineEventsForm, {
       propsData: {
-        hasTimelineEvents: true,
+        showSaveAndAdd: true,
         isEventProcessed: false,
       },
     });
@@ -42,8 +42,8 @@ describe('Timeline events form', () => {
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
   const setDatetime = () => {
     findDatePicker().vm.$emit('input', mockInputDate);
-    findHourInput().vm.$emit('input', 5);
-    findMinuteInput().vm.$emit('input', 45);
+    findHourInput().setValue(5);
+    findMinuteInput().setValue(45);
   };
 
   const submitForm = async () => {

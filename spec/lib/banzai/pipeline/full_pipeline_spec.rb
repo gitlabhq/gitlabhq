@@ -167,4 +167,16 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
       expect(output).to include('<em>@test_</em>')
     end
   end
+
+  describe 'unclosed image links' do
+    it 'detects a significat number of unclosed image links' do
+      markdown = '![a ' * 30
+      msg = <<~TEXT
+        Unable to render markdown - too many unclosed markdown image links detected.
+      TEXT
+      output = described_class.to_html(markdown, project: nil)
+
+      expect(output).to include(msg.strip)
+    end
+  end
 end

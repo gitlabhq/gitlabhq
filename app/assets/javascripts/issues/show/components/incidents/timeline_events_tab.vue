@@ -69,11 +69,8 @@ export default {
     hideEventForm() {
       this.isEventFormVisible = false;
     },
-    async showEventForm() {
-      this.$refs.createEventForm.clearForm();
+    showEventForm() {
       this.isEventFormVisible = true;
-      await this.$nextTick();
-      this.$refs.createEventForm.focusDate();
     },
   },
 };
@@ -94,7 +91,7 @@ export default {
       @hide-new-timeline-events-form="hideEventForm"
     />
     <create-timeline-event
-      v-show="isEventFormVisible"
+      v-if="isEventFormVisible"
       ref="createEventForm"
       :has-timeline-events="hasTimelineEvents"
       class="timeline-event-note timeline-event-note-form"

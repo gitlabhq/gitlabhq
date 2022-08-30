@@ -299,6 +299,10 @@ hub_docker_quota_check:
 
 ## Troubleshooting
 
+## Authentication error: "HTTP Basic: Access Denied"
+
+If you receive an `HTTP Basic: Access denied` error when authenticating against the Dependency Proxy, refer to the [two-factor authentication troubleshooting guide](../../profile/account/two_factor_authentication.md#troubleshooting).
+
 ### Dependency Proxy Connection Failure
 
 If a service alias is not set the `docker:20.10.16` image is unable to find the

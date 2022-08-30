@@ -41,7 +41,39 @@ RSpec.describe 'Incident timeline events', :js do
     end
   end
 
-  context 'when delete event is clicked' do
+  context 'when edit is clicked' do
+    before do
+      click_button 'Add new timeline event'
+      fill_in 'Description', with: 'Event note to edit'
+      click_button 'Save'
+    end
+
+    it 'shows the confirmation modal and edits the event' do
+      click_button 'More actions'
+
+      page.within '.gl-new-dropdown-contents' do
+        expect(page).to have_content('Edit')
+        page.find('.gl-new-dropdown-item-text-primary', text: 'Edit').click
+      end
+
+      expect(page).to have_selector('.common-note-form')
+
+      fill_in 'Description', with: 'Event note goes here'
+      fill_in 'timeline-input-hours', with: '07'
+      fill_in 'timeline-input-minutes', with: '25'
+
+      click_button 'Save'
+
+      wait_for_requests
+
+      page.within '.timeline-event-note' do
+        expect(page).to have_content('Event note goes here')
+        expect(page).to have_content('07:25')
+      end
+    end
+  end
+
+  context 'when delete is clicked' do
     before do
       click_button 'Add new timeline event'
       fill_in 'Description', with: 'Event note to delete'
@@ -51,7 +83,7 @@ RSpec.describe 'Incident timeline events', :js do
     it 'shows the confirmation modal and deletes the event' do
       click_button 'More actions'
 
-      page.within '.gl-new-dropdown-item-text-wrapper' do
+      page.within '.gl-new-dropdown-contents' do
         expect(page).to have_content('Delete')
         page.find('.gl-new-dropdown-item-text-primary', text: 'Delete').click
       end

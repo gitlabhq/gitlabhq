@@ -22,6 +22,8 @@ class Snippet < ApplicationRecord
 
   MAX_FILE_COUNT = 10
 
+  DESCRIPTION_LENGTH_MAX = 1.megabyte
+
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
   cache_markdown_field :content
@@ -57,19 +59,10 @@ class Snippet < ApplicationRecord
   validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
     length: { maximum: 255 }
+  validates :description, bytesize: { maximum: -> { DESCRIPTION_LENGTH_MAX } }, if: :description_changed?
 
   validates :content, presence: true
-  validates :content,
-            length: {
-              maximum: ->(_) { Gitlab::CurrentSettings.snippet_size_limit },
-              message: -> (_, data) do
-                current_value = ActiveSupport::NumberHelper.number_to_human_size(data[:value].size)
-                max_size = ActiveSupport::NumberHelper.number_to_human_size(Gitlab::CurrentSettings.snippet_size_limit)
-
-                _("is too long (%{current_value}). The maximum size is %{max_size}.") % { current_value: current_value, max_size: max_size }
-              end
-            },
-            if: :content_changed?
+  validates :content, bytesize: { maximum: -> { Gitlab::CurrentSettings.snippet_size_limit } }, if: :content_changed?
 
   after_create :create_statistics
 

@@ -49,6 +49,15 @@ export const mockEvents = [
   },
 ];
 
+const mockUpdatedEvent = {
+  id: 'gid://gitlab/IncidentManagement::TimelineEvent/8',
+  note: 'another one23',
+  noteHtml: '<p>another one23</p>',
+  action: 'comment',
+  occurredAt: '2022-07-01T12:47:00Z',
+  createdAt: '2022-07-20T12:47:40Z',
+};
+
 export const timelineEventsQueryListResponse = {
   data: {
     project: {
@@ -93,6 +102,29 @@ export const timelineEventsCreateEventError = {
   },
 };
 
+export const timelineEventsEditEventResponse = {
+  data: {
+    timelineEventUpdate: {
+      timelineEvent: {
+        ...mockUpdatedEvent,
+      },
+      errors: [],
+      __typename: 'TimelineEventUpdatePayload',
+    },
+  },
+};
+
+export const timelineEventsEditEventError = {
+  data: {
+    timelineEventUpdate: {
+      timelineEvent: {
+        ...mockUpdatedEvent,
+      },
+      errors: ['Create error'],
+    },
+  },
+};
+
 const timelineEventDeleteData = (errors = []) => {
   return {
     data: {
@@ -127,6 +159,11 @@ export const mockGetTimelineData = {
 };
 
 export const fakeDate = '2020-07-08T00:00:00.000Z';
+
+export const mockInputData = {
+  note: 'test',
+  occurredAt: '2020-08-10T02:30:00.000Z',
+};
 
 const { id, note, occurredAt } = mockEvents[0];
 export const fakeEventData = { id, note, occurredAt };

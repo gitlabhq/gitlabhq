@@ -2625,7 +2625,7 @@ RSpec.describe Repository do
   end
 
   shared_examples '#tree' do
-    subject { repository.tree(sha, path, recursive: recursive, pagination_params: pagination_params) }
+    subject { repository.tree(sha, path, recursive: recursive, skip_flat_paths: false, pagination_params: pagination_params) }
 
     let(:sha) { :head }
     let(:path) { nil }

@@ -26,4 +26,8 @@ export const timelineListI18n = Object.freeze({
     'Incident|Something went wrong while deleting the incident timeline event.',
   ),
   deleteModal: s__('Incident|Are you sure you want to delete this event?'),
+  editError: s__('Incident|Error updating incident timeline event: %{error}'),
+  editErrorGeneric: s__(
+    'Incident|Something went wrong while updating the incident timeline event.',
+  ),
 });

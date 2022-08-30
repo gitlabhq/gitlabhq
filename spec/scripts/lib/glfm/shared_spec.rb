@@ -9,6 +9,16 @@ RSpec.describe Glfm::Shared do
     end.new
   end
 
+  describe '#write_file' do
+    it 'works' do
+      filename = Dir::Tmpname.create('basename') do |path|
+        instance.write_file(path, 'test')
+      end
+
+      expect(File.read(filename)).to eq 'test'
+    end
+  end
+
   describe '#run_external_cmd' do
     it 'works' do
       expect(instance.run_external_cmd('echo "hello"')).to eq("hello\n")
@@ -21,6 +31,14 @@ RSpec.describe Glfm::Shared do
         expect(instance).to receive(:warn).with(/nonexistent_file.*no such file/i)
         expect { instance.run_external_cmd(invalid_cmd) }.to raise_error(RuntimeError)
       end
+    end
+  end
+
+  describe '#dump_yaml_with_formatting' do
+    it 'works' do
+      hash = { a: 'b' }
+      yaml = instance.dump_yaml_with_formatting(hash, literal_scalars: true)
+      expect(yaml).to eq("---\na: |-\n  b\n")
     end
   end
 
