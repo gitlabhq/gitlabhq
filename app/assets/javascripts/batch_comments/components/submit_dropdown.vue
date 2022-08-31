@@ -82,8 +82,11 @@ export default {
 
         this.autosave.reset();
 
-        if (window.mrTabs && this.note) {
-          window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
+        if (window.mrTabs && (this.noteData.note || this.noteData.approve)) {
+          if (this.noteData.note) {
+            window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
+          }
+
           window.mrTabs.tabShown('show');
 
           setTimeout(() =>

@@ -17,6 +17,7 @@ variables=$(cat <<YML
 variables:
   RELEASE: "${CI_REGISTRY}/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
   SKIP_REPORT_IN_ISSUES: "${SKIP_REPORT_IN_ISSUES:-true}"
+  OMNIBUS_GITLAB_CACHE_UPDATE: "${OMNIBUS_GITLAB_CACHE_UPDATE:-false}"
   COLORIZED_LOGS: "true"
   QA_LOG_LEVEL: "info"
   QA_TESTS: "$QA_TESTS"

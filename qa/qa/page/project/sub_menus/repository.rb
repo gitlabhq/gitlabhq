@@ -37,6 +37,14 @@ module QA
             end
           end
 
+          def go_to_repository_contributors
+            hover_repository do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Contributors')
+              end
+            end
+          end
+
           private
 
           def hover_repository

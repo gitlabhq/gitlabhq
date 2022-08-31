@@ -10,8 +10,17 @@ module Ci
     STORE_COLUMN = :file_store
     NotSupportedAdapterError = Class.new(StandardError)
     FILE_FORMAT_ADAPTERS = {
+      # While zip is a streamable file format, performing streaming
+      # reads requires that each entry in the zip has certain headers
+      # present at the front of the entry. These headers are OPTIONAL
+      # according to the file format specification. GitLab Runner uses
+      # Go's `archive/zip` to create zip archives, which does not include
+      # these headers. Go maintainers have expressed that they don't intend
+      # to support them: https://github.com/golang/go/issues/23301#issuecomment-363240781
+      #
+      # If you need GitLab to be able to read Artifactables, store them in
+      # raw or gzip format instead of zip.
       gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
-      zip: Gitlab::Ci::Build::Artifacts::Adapters::ZipStream,
       raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
     }.freeze
 

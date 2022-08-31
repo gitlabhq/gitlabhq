@@ -102,28 +102,6 @@ FactoryBot.define do
       end
     end
 
-    trait :zip_with_single_file do
-      file_type { :archive }
-      file_format { :zip }
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/lib/gitlab/ci/build/artifacts/adapters/zip_stream/single_file.zip'),
-          'application/zip')
-      end
-    end
-
-    trait :zip_with_multiple_files do
-      file_type { :archive }
-      file_format { :zip }
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/lib/gitlab/ci/build/artifacts/adapters/zip_stream/multiple_files.zip'),
-          'application/zip')
-      end
-    end
-
     trait :junit do
       file_type { :junit }
       file_format { :gzip }

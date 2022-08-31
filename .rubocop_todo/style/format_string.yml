@@ -65,6 +65,7 @@ Style/FormatString:
     - 'app/helpers/members_helper.rb'
     - 'app/helpers/merge_requests_helper.rb'
     - 'app/helpers/mirror_helper.rb'
+    - 'app/helpers/notify_helper.rb'
     - 'app/helpers/preferences_helper.rb'
     - 'app/helpers/profiles_helper.rb'
     - 'app/helpers/projects/project_members_helper.rb'

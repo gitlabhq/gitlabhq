@@ -190,9 +190,20 @@ RSpec.describe Users::DestroyService do
         ])
       end
 
-      it 'does not delete the user' do
+      it 'does not delete the user, nor the group' do
         service.execute(user)
+
         expect(User.find(user.id)).to eq user
+        expect(Group.find(solo_owned.id)).to eq solo_owned
+      end
+
+      context 'when delete solo owned groups option is passed' do
+        it 'deletes the user and the group' do
+          service.execute(user, delete_solo_owned_groups: true)
+
+          expect(User.where(id: user.id)).not_to exist
+          expect(Group.where(id: solo_owned.id)).not_to exist
+        end
       end
     end
 

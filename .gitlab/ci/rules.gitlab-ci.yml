@@ -968,6 +968,7 @@
       variables:
         SKIP_REPORT_IN_ISSUES: "false"
         PROCESS_TEST_RESULTS: "true"
+        KNAPSACK_GENERATE_REPORT: "true"
     - <<: *if-force-ci
       when: manual
       allow_failure: true

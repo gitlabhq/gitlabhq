@@ -4,7 +4,7 @@ include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.2.0
+    ref: 1.2.1
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -448,23 +448,6 @@ allure-report:
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     ALLURE_JOB_NAME: e2e-package-and-test
 
-notify-slack:
-  extends:
-    - .notify-slack-qa
-    - .ruby-image
-    - .bundle-install
-    - .rules:report:process-results
-  stage: .post
-  variables:
-    ALLURE_JOB_NAME: package-and-e2e
-    SLACK_ICON_EMOJI: ci_failing
-    STATUS_SYM: ☠️
-    STATUS: failed
-  when: on_failure
-  script:
-    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml" # generate summary
-    - !reference [.notify-slack-qa, script]
-
 upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
@@ -488,7 +471,7 @@ relate-test-failures:
   script:
     - |
       bundle exec gitlab-qa-report \
-        --relate-failure-issue "gitlab-qa-run-*/**/rspec-*.json" \
+        --relate-failure-issue "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.json" \
         --project "$QA_FAILURES_REPORTING_PROJECT" \
         --max-diff-ratio "$QA_FAILURES_MAX_DIFF_RATIO"
 
@@ -505,5 +488,29 @@ generate-test-session:
   script:
     - |
       bundle exec gitlab-qa-report \
-        --generate-test-session "gitlab-qa-run-*/**/rspec-*.json" \
+        --generate-test-session "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.json" \
         --project "$QA_TESTCASE_SESSIONS_PROJECT"
+  artifacts:
+    when: always
+    expire_in: 1d
+    paths:
+      - qa/REPORT_ISSUE_URL
+
+notify-slack:
+  extends:
+    - .notify-slack-qa
+    - .ruby-image
+    - .bundle-install
+    - .rules:report:process-results
+  stage: .post
+  needs:
+    - generate-test-session
+  variables:
+    ALLURE_JOB_NAME: e2e-package-and-test
+    SLACK_ICON_EMOJI: ci_failing
+    STATUS_SYM: ☠️
+    STATUS: failed
+  when: on_failure
+  script:
+    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml" # generate summary
+    - !reference [.notify-slack-qa, script]

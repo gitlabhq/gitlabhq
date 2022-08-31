@@ -23,6 +23,7 @@ function factory({ canApprove = true } = {}) {
         current_user: { can_approve: canApprove },
       }),
       noteableType: () => 'merge_request',
+      getCurrentUserLastNote: () => ({ id: 1 }),
     },
     modules: {
       batchComments: {
@@ -45,6 +46,7 @@ const findForm = () => wrapper.findByTestId('submit-gl-form');
 describe('Batch comments submit dropdown', () => {
   afterEach(() => {
     wrapper.destroy();
+    window.mrTabs = null;
   });
 
   it('calls publishReview with note data', async () => {
@@ -61,6 +63,19 @@ describe('Batch comments submit dropdown', () => {
       approve: false,
       approval_password: '',
     });
+  });
+
+  it('switches to the overview tab after submit', async () => {
+    window.mrTabs = { tabShown: jest.fn() };
+
+    factory();
+
+    findCommentTextarea().setValue('Hello world');
+
+    await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+    await Vue.nextTick();
+
+    expect(window.mrTabs.tabShown).toHaveBeenCalledWith('show');
   });
 
   it('sets submit dropdown to loading', async () => {

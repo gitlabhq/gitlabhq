@@ -5,12 +5,14 @@ require 'spec_helper'
 RSpec.describe CommitSignatures::GpgSignature do
   # This commit is seeded from https://gitlab.com/gitlab-org/gitlab-test
   # For instructions on how to add more seed data, see the project README
-  let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
-  let!(:project) { create(:project, :repository, path: 'sample-project') }
-  let!(:commit) { create(:commit, project: project, sha: commit_sha) }
-  let(:signature) { create(:gpg_signature, commit_sha: commit_sha) }
-  let(:gpg_key) { create(:gpg_key) }
-  let(:gpg_key_subkey) { create(:gpg_key_subkey) }
+  let_it_be(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
+  let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
+  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
+  let_it_be(:gpg_key) { create(:gpg_key) }
+  let_it_be(:gpg_key_subkey) { create(:gpg_key_subkey, gpg_key: gpg_key) }
+
+  let(:signature) { create(:gpg_signature, commit_sha: commit_sha, gpg_key: gpg_key) }
+
   let(:attributes) do
     {
       commit_sha: commit_sha,
@@ -35,8 +37,7 @@ RSpec.describe CommitSignatures::GpgSignature do
   end
 
   describe '.by_commit_sha scope' do
-    let(:gpg_key) { create(:gpg_key, key: GpgHelpers::User2.public_key) }
-    let!(:another_gpg_signature) { create(:gpg_signature, gpg_key: gpg_key) }
+    let_it_be(:another_gpg_signature) { create(:gpg_signature, gpg_key: gpg_key) }
 
     it 'returns all gpg signatures by sha' do
       expect(described_class.by_commit_sha(commit_sha)).to match_array([signature])
