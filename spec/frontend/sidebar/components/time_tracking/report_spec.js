@@ -161,7 +161,6 @@ describe('Issuable Time Tracking Report', () => {
             id: timelogToRemoveId,
           },
         },
-        update: expect.anything(),
       });
     });
 
@@ -179,7 +178,6 @@ describe('Issuable Time Tracking Report', () => {
             id: timelogToRemoveId,
           },
         },
-        update: expect.anything(),
       });
 
       expect(createFlash).toHaveBeenCalledWith({

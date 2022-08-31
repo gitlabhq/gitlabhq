@@ -97,7 +97,7 @@ haml-lint:
     - .ruby-cache
     - .static-analysis:rules:haml-lint
   script:
-    - run_timed_command "bin/rake 'haml_lint[app/views]'"
+    - run_timed_command "bundle exec haml-lint --parallel app/views"
   artifacts:
     expire_in: 31d
     when: always
@@ -109,7 +109,7 @@ haml-lint ee:
     - "haml-lint"
     - .static-analysis:rules:haml-lint-ee
   script:
-    - run_timed_command "bin/rake 'haml_lint[ee/app/views]'"
+    - run_timed_command "bundle exec haml-lint --parallel ee/app/views"
 
 rubocop:
   extends:

@@ -1,0 +1,13 @@
+#import "~/graphql_shared/fragments/issuable_timelogs.fragment.graphql"
+
+fragment MergeRequestTimeTrackingFragment on MergeRequest {
+  __typename
+  id
+  humanTotalTimeSpent
+  totalTimeSpent
+  timelogs {
+    nodes {
+      ...TimelogFragment
+    }
+  }
+}

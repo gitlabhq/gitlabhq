@@ -857,6 +857,8 @@ module GraphqlHelpers
   def positive_lookahead
     double(selects?: true).tap do |selection|
       allow(selection).to receive(:selection).and_return(selection)
+      allow(selection).to receive(:selections).and_return(selection)
+      allow(selection).to receive(:map).and_return(double(include?: true))
     end
   end
 

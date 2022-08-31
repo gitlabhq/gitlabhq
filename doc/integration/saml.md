@@ -171,7 +171,8 @@ is returned to GitLab and signed in.
 
 You can configure GitLab to use multiple SAML identity providers if:
 
-- Each provider has a unique name set that matches a name set in `args`.
+- Each provider has a unique name set that matches a name set in `args`. At least one provider **must** have the name `saml` to mitigate a
+  [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450) in GitLab 14.6 and newer.
 - The providers' names are:
   - Used in OmniAuth configuration for properties based on the provider name. For example, `allowBypassTwoFactor`, `allowSingleSignOn`, and
     `syncProfileFromProvider`.
@@ -184,9 +185,9 @@ Example multiple providers configuration for Omnibus GitLab:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: 'saml_1',
+    name: 'saml',
     args: {
-            name: 'saml_1', # This is mandatory and must match the provider name
+            name: 'saml', # This is mandatory and must match the provider name
             strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
@@ -194,9 +195,9 @@ gitlab_rails['omniauth_providers'] = [
     label: 'Provider 1' # Differentiate the two buttons and providers in the UI
   },
   {
-    name: 'saml_2',
+    name: 'saml1',
     args: {
-            name: 'saml_2', # This is mandatory and must match the provider name
+            name: 'saml1', # This is mandatory and must match the provider name
             strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
@@ -212,9 +213,9 @@ Example providers configuration for installations from source:
 omniauth:
   providers:
     - {
-      name: 'saml_1',
+      name: 'saml',
       args: {
-        name: 'saml_1', # This is mandatory and must match the provider name
+        name: 'saml', # This is mandatory and must match the provider name
         strategy_class: 'OmniAuth::Strategies::SAML',
         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
         ... # Put here all the required arguments similar to a single provider
@@ -222,9 +223,9 @@ omniauth:
       label: 'Provider 1' # Differentiate the two buttons and providers in the UI
     }
     - {
-      name: 'saml_2',
+      name: 'saml1',
       args: {
-        name: 'saml_2', # This is mandatory and must match the provider name
+        name: 'saml1', # This is mandatory and must match the provider name
         strategy_class: 'OmniAuth::Strategies::SAML',
         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
         ... # Put here all the required arguments similar to a single provider
@@ -871,6 +872,11 @@ To troubleshoot, [a complete GitLab+SAML testing environment using Docker compos
 is available.
 
 If you only require a SAML provider for testing, a [quick start guide to start a Docker container](../administration/troubleshooting/test_environments.md#saml) with a plug and play SAML 2.0 Identity Provider (IdP) is available.
+
+### "undefined method [] for nil:NilClass" exception on groups page
+
+On GitLab 14.6 and newer, you can see the `undefined method [] for nil:NilClass` error if you have not configured at least one SAML provider with the name `saml`. This error is
+caused by a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450). To resolve this error, ensure that at least one SAML provider has the name `saml`.
 
 ### 500 error after login
 

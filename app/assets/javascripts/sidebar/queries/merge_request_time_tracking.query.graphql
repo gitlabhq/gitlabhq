@@ -1,12 +1,12 @@
+#import "~/graphql_shared/fragments/merge_request_time_tracking.fragment.graphql"
+
 query mergeRequestTimeTracking($fullPath: ID!, $iid: String!) {
   workspace: project(fullPath: $fullPath) {
     id
     issuable: mergeRequest(iid: $iid) {
-      id
+      ...MergeRequestTimeTrackingFragment
       humanTimeEstimate
-      humanTotalTimeSpent
       timeEstimate
-      totalTimeSpent
     }
   }
 }

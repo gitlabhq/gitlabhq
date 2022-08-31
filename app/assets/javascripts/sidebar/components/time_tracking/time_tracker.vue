@@ -188,11 +188,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-cloak
-    class="time-tracker time-tracking-component-wrap sidebar-help-wrap"
-    data-testid="time-tracker"
-  >
+  <div v-cloak class="time-tracker sidebar-help-wrap" data-testid="time-tracker">
     <time-tracking-collapsed-state
       v-if="showCollapsed"
       :show-comparison-state="showComparisonState"
@@ -252,7 +248,6 @@ export default {
           size="lg"
           :title="__('Time tracking report')"
           :hide-footer="true"
-          @hide="refresh"
         >
           <time-tracking-report :limit-to-hours="limitToHours" :issuable-id="issuableId" />
         </gl-modal>

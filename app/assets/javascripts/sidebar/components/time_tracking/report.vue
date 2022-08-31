@@ -7,7 +7,6 @@ import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_ut
 import { __, s__ } from '~/locale';
 import { timelogQueries } from '~/sidebar/constants';
 import deleteTimelogMutation from './graphql/mutations/delete_timelog.mutation.graphql';
-import { removeTimelogFromStore } from './graphql/cache_update';
 
 const TIME_DATE_FORMAT = 'mmmm d, yyyy, HH:MM ("UTC:" o)';
 
@@ -99,14 +98,6 @@ export default {
         .mutate({
           mutation: deleteTimelogMutation,
           variables: { input: { id: timelogId } },
-          update: (store) => {
-            removeTimelogFromStore(
-              store,
-              timelogId,
-              timelogQueries[this.issuableType].query,
-              this.getQueryVariables(),
-            );
-          },
         })
         .then(({ data }) => {
           if (data.timelogDelete?.errors?.length) {

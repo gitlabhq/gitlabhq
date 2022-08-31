@@ -1,12 +1,12 @@
+#import "~/graphql_shared/fragments/issue_time_tracking.fragment.graphql"
+
 query issueTimeTracking($fullPath: ID!, $iid: String) {
   workspace: project(fullPath: $fullPath) {
     id
     issuable: issue(iid: $iid) {
-      id
+      ...IssueTimeTrackingFragment
       humanTimeEstimate
-      humanTotalTimeSpent
       timeEstimate
-      totalTimeSpent
     }
   }
 }

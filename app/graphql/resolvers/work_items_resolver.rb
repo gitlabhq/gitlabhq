@@ -35,6 +35,17 @@ module Resolvers
 
     private
 
+    # Allows to apply lookahead for fields
+    # selected from  WidgetInterface
+    override :node_selection
+    def node_selection
+      selected_fields = super
+
+      return unless selected_fields
+
+      selected_fields.selection(:widgets)
+    end
+
     def unconditional_includes
       [
         {

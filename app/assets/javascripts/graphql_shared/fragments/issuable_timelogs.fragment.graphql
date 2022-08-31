@@ -1,4 +1,5 @@
 fragment TimelogFragment on Timelog {
+  __typename
   id
   timeSpent
   user {

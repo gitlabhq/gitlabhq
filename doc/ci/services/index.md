@@ -8,9 +8,12 @@ type: index
 
 # Services **(FREE)**
 
-The `services` keyword defines a Docker image that runs during a `job`
-linked to the Docker image that the image keyword defines. This allows
-you to access the service image during build time.
+When you configure CI/CD, you specify an image, which is used to create the container
+where your jobs will run. To specify this image, you use the `image` keyword.
+
+You can specify an additional image by using the `services` keyword. This additional
+image is used to create another container, which is available to the first container.
+The two containers have access to one another and can communicate when running the job.
 
 The service image can run any application, but the most common use
 case is to run a database container, for example:

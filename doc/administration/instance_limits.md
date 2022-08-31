@@ -581,7 +581,7 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 The total number of instance level CI/CD variables is limited at the instance level.
 This limit is checked each time a new instance level variable is created. If a new variable
-would cause the total number of variables to exceed the limit, the new variable is created.
+would cause the total number of variables to exceed the limit, the new variable is not created.
 
 On self-managed instances this limit is defined for the `default` plan. By default,
 this limit is set to `25`.

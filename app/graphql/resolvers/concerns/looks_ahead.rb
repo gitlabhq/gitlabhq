@@ -33,10 +33,14 @@ module LooksAhead
   end
 
   def filtered_preloads
-    selection = node_selection
+    nodes = node_selection
+
+    return [] unless nodes
+
+    selected_fields = nodes.selections.map(&:name)
 
     preloads.each.flat_map do |name, requirements|
-      selection&.selects?(name) ? requirements : []
+      selected_fields.include?(name) ? requirements : []
     end
   end
 
