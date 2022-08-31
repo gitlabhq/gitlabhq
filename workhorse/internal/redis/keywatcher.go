@@ -15,17 +15,27 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
-var (
-	keyWatcher            = make(map[string][]chan string)
-	keyWatcherMutex       sync.Mutex
-	shutdown              = make(chan struct{})
-	redisReconnectTimeout = backoff.Backoff{
-		//These are the defaults
-		Min:    100 * time.Millisecond,
-		Max:    60 * time.Second,
-		Factor: 2,
-		Jitter: true,
+type KeyWatcher struct {
+	mu               sync.Mutex
+	subscribers      map[string][]chan string
+	shutdown         chan struct{}
+	reconnectBackoff backoff.Backoff
+}
+
+func NewKeyWatcher() *KeyWatcher {
+	return &KeyWatcher{
+		subscribers: make(map[string][]chan string),
+		shutdown:    make(chan struct{}),
+		reconnectBackoff: backoff.Backoff{
+			Min:    100 * time.Millisecond,
+			Max:    60 * time.Second,
+			Factor: 2,
+			Jitter: true,
+		},
 	}
+}
+
+var (
 	keyWatchers = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_keywatcher_keywatchers",
@@ -57,15 +67,9 @@ const (
 	keySubChannel = "workhorse:notifications"
 )
 
-// KeyChan holds a key and a channel
-type KeyChan struct {
-	Key  string
-	Chan chan string
-}
-
 func countAction(action string) { totalActions.WithLabelValues(action).Add(1) }
 
-func processInner(conn redis.Conn) error {
+func (kw *KeyWatcher) receivePubSubStream(conn redis.Conn) error {
 	defer conn.Close()
 	psc := redis.PubSubConn{Conn: conn}
 	if err := psc.Subscribe(keySubChannel); err != nil {
@@ -84,7 +88,7 @@ func processInner(conn redis.Conn) error {
 				log.WithError(fmt.Errorf("keywatcher: invalid notification: %q", dataStr)).Error()
 				continue
 			}
-			notifyChanWatchers(msg[0], msg[1])
+			kw.notifySubscribers(msg[0], msg[1])
 		case error:
 			log.WithError(fmt.Errorf("keywatcher: pubsub receive: %v", v)).Error()
 			// Intermittent error, return nil so that it doesn't wait before reconnect
@@ -109,45 +113,42 @@ func dialPubSub(dialer redisDialerFunc) (redis.Conn, error) {
 	return conn, nil
 }
 
-// Process redis subscriptions
-//
-// NOTE: There Can Only Be One!
-func Process() {
+func (kw *KeyWatcher) Process() {
 	log.Info("keywatcher: starting process loop")
 	for {
 		conn, err := dialPubSub(workerDialFunc)
 		if err != nil {
 			log.WithError(fmt.Errorf("keywatcher: %v", err)).Error()
-			time.Sleep(redisReconnectTimeout.Duration())
+			time.Sleep(kw.reconnectBackoff.Duration())
 			continue
 		}
-		redisReconnectTimeout.Reset()
+		kw.reconnectBackoff.Reset()
 
-		if err = processInner(conn); err != nil {
-			log.WithError(fmt.Errorf("keywatcher: process loop: %v", err)).Error()
+		if err = kw.receivePubSubStream(conn); err != nil {
+			log.WithError(fmt.Errorf("keywatcher: receivePubSubStream: %v", err)).Error()
 		}
 	}
 }
 
-func Shutdown() {
+func (kw *KeyWatcher) Shutdown() {
 	log.Info("keywatcher: shutting down")
 
-	keyWatcherMutex.Lock()
-	defer keyWatcherMutex.Unlock()
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
 
 	select {
-	case <-shutdown:
+	case <-kw.shutdown:
 		// already closed
 	default:
-		close(shutdown)
+		close(kw.shutdown)
 	}
 }
 
-func notifyChanWatchers(key, value string) {
-	keyWatcherMutex.Lock()
-	defer keyWatcherMutex.Unlock()
+func (kw *KeyWatcher) notifySubscribers(key, value string) {
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
 
-	chanList, ok := keyWatcher[key]
+	chanList, ok := kw.subscribers[key]
 	if !ok {
 		countAction("drop-message")
 		return
@@ -158,38 +159,38 @@ func notifyChanWatchers(key, value string) {
 		c <- value
 		keyWatchers.Dec()
 	}
-	delete(keyWatcher, key)
+	delete(kw.subscribers, key)
 }
 
-func addKeyChan(kc *KeyChan) {
-	keyWatcherMutex.Lock()
-	defer keyWatcherMutex.Unlock()
+func (kw *KeyWatcher) addSubscription(key string, notify chan string) {
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
 
-	keyWatcher[kc.Key] = append(keyWatcher[kc.Key], kc.Chan)
+	kw.subscribers[key] = append(kw.subscribers[key], notify)
 	keyWatchers.Inc()
-	if len(keyWatcher[kc.Key]) == 1 {
+	if len(kw.subscribers[key]) == 1 {
 		countAction("create-subscription")
 	}
 }
 
-func delKeyChan(kc *KeyChan) {
-	keyWatcherMutex.Lock()
-	defer keyWatcherMutex.Unlock()
+func (kw *KeyWatcher) delSubscription(key string, notify chan string) {
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
 
-	chans, ok := keyWatcher[kc.Key]
+	chans, ok := kw.subscribers[key]
 	if !ok {
 		return
 	}
 
 	for i, c := range chans {
-		if kc.Chan == c {
-			keyWatcher[kc.Key] = append(chans[:i], chans[i+1:]...)
+		if notify == c {
+			kw.subscribers[key] = append(chans[:i], chans[i+1:]...)
 			keyWatchers.Dec()
 			break
 		}
 	}
-	if len(keyWatcher[kc.Key]) == 0 {
-		delete(keyWatcher, kc.Key)
+	if len(kw.subscribers[key]) == 0 {
+		delete(kw.subscribers, key)
 		countAction("delete-subscription")
 	}
 }
@@ -209,15 +210,10 @@ const (
 	WatchKeyStatusNoChange
 )
 
-// WatchKey waits for a key to be updated or expired
-func WatchKey(key, value string, timeout time.Duration) (WatchKeyStatus, error) {
-	kw := &KeyChan{
-		Key:  key,
-		Chan: make(chan string, 1),
-	}
-
-	addKeyChan(kw)
-	defer delKeyChan(kw)
+func (kw *KeyWatcher) WatchKey(key, value string, timeout time.Duration) (WatchKeyStatus, error) {
+	notify := make(chan string, 1)
+	kw.addSubscription(key, notify)
+	defer kw.delSubscription(key, notify)
 
 	currentValue, err := GetString(key)
 	if errors.Is(err, redis.ErrNil) {
@@ -230,10 +226,10 @@ func WatchKey(key, value string, timeout time.Duration) (WatchKeyStatus, error) 
 	}
 
 	select {
-	case <-shutdown:
+	case <-kw.shutdown:
 		log.WithFields(log.Fields{"key": key}).Info("stopping watch due to shutdown")
 		return WatchKeyStatusNoChange, nil
-	case currentValue := <-kw.Chan:
+	case currentValue := <-notify:
 		if currentValue == "" {
 			return WatchKeyStatusNoChange, fmt.Errorf("keywatcher: redis GET failed")
 		}

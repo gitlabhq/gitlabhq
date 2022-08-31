@@ -799,7 +799,7 @@ func startWorkhorseServer(authBackend string) *httptest.Server {
 
 func startWorkhorseServerWithConfig(cfg *config.Config) *httptest.Server {
 	testhelper.ConfigureSecret()
-	u := upstream.NewUpstream(*cfg, logrus.StandardLogger())
+	u := upstream.NewUpstream(*cfg, logrus.StandardLogger(), nil)
 	return httptest.NewServer(u)
 }
 

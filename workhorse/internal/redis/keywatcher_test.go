@@ -38,20 +38,14 @@ func createUnsubscribeMessage(key string) []interface{} {
 	}
 }
 
-func countWatchers(key string) int {
-	keyWatcherMutex.Lock()
-	defer keyWatcherMutex.Unlock()
-	return len(keyWatcher[key])
-}
-
-func deleteWatchers(key string) {
-	keyWatcherMutex.Lock()
-	defer keyWatcherMutex.Unlock()
-	delete(keyWatcher, key)
+func (kw *KeyWatcher) countSubscribers(key string) int {
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
+	return len(kw.subscribers[key])
 }
 
 // Forces a run of the `Process` loop against a mock PubSubConn.
-func processMessages(numWatchers int, value string) {
+func (kw *KeyWatcher) processMessages(numWatchers int, value string) {
 	psc := redigomock.NewConn()
 
 	// Setup the initial subscription message
@@ -60,11 +54,11 @@ func processMessages(numWatchers int, value string) {
 	psc.AddSubscriptionMessage(createSubscriptionMessage(keySubChannel, runnerKey+"="+value))
 
 	// Wait for all the `WatchKey` calls to be registered
-	for countWatchers(runnerKey) != numWatchers {
+	for kw.countSubscribers(runnerKey) != numWatchers {
 		time.Sleep(time.Millisecond)
 	}
 
-	processInner(psc)
+	kw.receivePubSubStream(psc)
 }
 
 type keyChangeTestCase struct {
@@ -81,12 +75,13 @@ func TestKeyChangesBubblesUpError(t *testing.T) {
 	conn, td := setupMockPool()
 	defer td()
 
+	kw := NewKeyWatcher()
+	defer kw.Shutdown()
+
 	conn.Command("GET", runnerKey).ExpectError(errors.New("test error"))
 
-	_, err := WatchKey(runnerKey, "something", time.Second)
+	_, err := kw.WatchKey(runnerKey, "something", time.Second)
 	require.Error(t, err, "Expected error")
-
-	deleteWatchers(runnerKey)
 }
 
 func TestKeyChangesInstantReturn(t *testing.T) {
@@ -135,12 +130,13 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 				conn.Command("GET", runnerKey).Expect(tc.returnValue)
 			}
 
-			val, err := WatchKey(runnerKey, tc.watchValue, tc.timeout)
+			kw := NewKeyWatcher()
+			defer kw.Shutdown()
+
+			val, err := kw.WatchKey(runnerKey, tc.watchValue, tc.timeout)
 
 			require.NoError(t, err, "Expected no error")
 			require.Equal(t, tc.expectedStatus, val, "Expected value")
-
-			deleteWatchers(runnerKey)
 		})
 	}
 }
@@ -183,18 +179,21 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 				conn.Command("GET", runnerKey).Expect(tc.returnValue)
 			}
 
+			kw := NewKeyWatcher()
+			defer kw.Shutdown()
+
 			wg := &sync.WaitGroup{}
 			wg.Add(1)
 
 			go func() {
 				defer wg.Done()
-				val, err := WatchKey(runnerKey, tc.watchValue, time.Second)
+				val, err := kw.WatchKey(runnerKey, tc.watchValue, time.Second)
 
 				require.NoError(t, err, "Expected no error")
 				require.Equal(t, tc.expectedStatus, val, "Expected value")
 			}()
 
-			processMessages(1, tc.processedValue)
+			kw.processMessages(1, tc.processedValue)
 			wg.Wait()
 		})
 	}
@@ -238,17 +237,20 @@ func TestKeyChangesParallel(t *testing.T) {
 			wg := &sync.WaitGroup{}
 			wg.Add(runTimes)
 
+			kw := NewKeyWatcher()
+			defer kw.Shutdown()
+
 			for i := 0; i < runTimes; i++ {
 				go func() {
 					defer wg.Done()
-					val, err := WatchKey(runnerKey, tc.watchValue, time.Second)
+					val, err := kw.WatchKey(runnerKey, tc.watchValue, time.Second)
 
 					require.NoError(t, err, "Expected no error")
 					require.Equal(t, tc.expectedStatus, val, "Expected value")
 				}()
 			}
 
-			processMessages(runTimes, tc.processedValue)
+			kw.processMessages(runTimes, tc.processedValue)
 			wg.Wait()
 		})
 	}
@@ -257,7 +259,9 @@ func TestKeyChangesParallel(t *testing.T) {
 func TestShutdown(t *testing.T) {
 	conn, td := setupMockPool()
 	defer td()
-	defer func() { shutdown = make(chan struct{}) }()
+
+	kw := NewKeyWatcher()
+	defer kw.Shutdown()
 
 	conn.Command("GET", runnerKey).Expect("something")
 
@@ -265,7 +269,7 @@ func TestShutdown(t *testing.T) {
 	wg.Add(2)
 
 	go func() {
-		val, err := WatchKey(runnerKey, "something", 10*time.Second)
+		val, err := kw.WatchKey(runnerKey, "something", 10*time.Second)
 
 		require.NoError(t, err, "Expected no error")
 		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
@@ -273,22 +277,22 @@ func TestShutdown(t *testing.T) {
 	}()
 
 	go func() {
-		require.Eventually(t, func() bool { return countWatchers(runnerKey) == 1 }, 10*time.Second, time.Millisecond)
+		require.Eventually(t, func() bool { return kw.countSubscribers(runnerKey) == 1 }, 10*time.Second, time.Millisecond)
 
-		Shutdown()
+		kw.Shutdown()
 		wg.Done()
 	}()
 
 	wg.Wait()
 
-	require.Eventually(t, func() bool { return countWatchers(runnerKey) == 0 }, 10*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool { return kw.countSubscribers(runnerKey) == 0 }, 10*time.Second, time.Millisecond)
 
 	// Adding a key after the shutdown should result in an immediate response
 	var val WatchKeyStatus
 	var err error
 	done := make(chan struct{})
 	go func() {
-		val, err = WatchKey(runnerKey, "something", 10*time.Second)
+		val, err = kw.WatchKey(runnerKey, "something", 10*time.Second)
 		close(done)
 	}()
 

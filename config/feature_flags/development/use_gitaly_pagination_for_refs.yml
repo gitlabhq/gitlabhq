@@ -1,0 +1,8 @@
+---
+name: use_gitaly_pagination_for_refs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96448
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372049
+milestone: '15.4'
+type: development
+group: group::source code
+default_enabled: false

@@ -1217,6 +1217,40 @@ RSpec.describe ProjectsController do
       expect(json_response["Commits"]).to include("123456")
     end
 
+    it 'uses gitaly pagination' do
+      expected_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
+
+      expect_next_instance_of(BranchesFinder, project.repository, expected_params) do |finder|
+        expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
+      end
+
+      expect_next_instance_of(TagsFinder, project.repository, expected_params) do |finder|
+        expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
+      end
+
+      get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
+    end
+
+    context 'when use_gitaly_pagination_for_refs is disabled' do
+      before do
+        stub_feature_flags(use_gitaly_pagination_for_refs: false)
+      end
+
+      it 'does not use gitaly pagination' do
+        expected_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
+
+        expect_next_instance_of(BranchesFinder, project.repository, expected_params) do |finder|
+          expect(finder).to receive(:execute).with(gitaly_pagination: false).and_call_original
+        end
+
+        expect_next_instance_of(TagsFinder, project.repository, expected_params) do |finder|
+          expect(finder).to receive(:execute).with(gitaly_pagination: false).and_call_original
+        end
+
+        get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
+      end
+    end
+
     context 'when gitaly is unavailable' do
       before do
         expect_next_instance_of(TagsFinder) do |finder|

@@ -12,6 +12,8 @@ class ProjectsController < Projects::ApplicationController
   include SourcegraphDecorator
   include PlanningHierarchy
 
+  REFS_LIMIT = 100
+
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
@@ -309,6 +311,8 @@ class ProjectsController < Projects::ApplicationController
     find_tags = true
     find_commits = true
 
+    use_gitaly_pagination = Feature.enabled?(:use_gitaly_pagination_for_refs, @project)
+
     unless find_refs.nil?
       find_branches = find_refs.include?('branches')
       find_tags = find_refs.include?('tags')
@@ -318,13 +322,21 @@ class ProjectsController < Projects::ApplicationController
     options = {}
 
     if find_branches
-      branches = BranchesFinder.new(@repository, refs_params).execute.take(100).map(&:name)
+      branches = BranchesFinder.new(@repository, refs_params.merge(per_page: REFS_LIMIT))
+                   .execute(gitaly_pagination: use_gitaly_pagination)
+                   .take(REFS_LIMIT)
+                   .map(&:name)
+
       options['Branches'] = branches
     end
 
     if find_tags && @repository.tag_count.nonzero?
-      tags = TagsFinder.new(@repository, refs_params).execute
-      options['Tags'] = tags.take(100).map(&:name)
+      tags = TagsFinder.new(@repository, refs_params.merge(per_page: REFS_LIMIT))
+               .execute(gitaly_pagination: use_gitaly_pagination)
+               .take(REFS_LIMIT)
+               .map(&:name)
+
+      options['Tags'] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox

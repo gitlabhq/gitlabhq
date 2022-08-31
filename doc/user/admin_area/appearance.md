@@ -13,9 +13,9 @@ of GitLab. To access these settings:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Appearance**.
 
-## Navigation bar
+## Top bar
 
-By default, the navigation bar has the GitLab logo, but this can be customized with
+By default, the **top bar** has the GitLab logo, but this can be customized with
 any image desired. It is optimized for images 28px high (any width), but any image can be
 used (less than 1 MB) and it is automatically resized.
 

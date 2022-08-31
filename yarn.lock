@@ -1059,19 +1059,19 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.2.0"
 
-"@gitlab/svgs@3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.2.0.tgz#1ff40355642600e8807775f2b137c184e46380e9"
-  integrity sha512-djAEmvB3AljQaVKwEoNWls8Q6oWwGvUVrmtBe3ykyPF/E50QVmiM2kXIko2BAEPzmIKhaH9YchowfYqJX3y2vg==
+"@gitlab/svgs@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.3.0.tgz#99b044484fcf3d5a6431281e320e2405540ff5a9"
+  integrity sha512-S8Hqf+ms8aNrSgmci9SVoIyj/0qQnizU5uV5vUPAOwiufMDFDyI5qfcgn4EYZ6mnju3LiO+ReSL/PPTD4qNgHA==
 
-"@gitlab/ui@43.9.1":
-  version "43.9.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-43.9.1.tgz#8864687ebaffe3ff71b8d6087ce55e3e52e57a79"
-  integrity sha512-1Rn4ZEOyQ0flDsAbxsFSnHNFqO0I2kuJjdkXfiEI21g0pdZ3LrdNwE0WcoRZWQd+nQQ0XbvzRaqmxN53rTY21g==
+"@gitlab/ui@43.9.3":
+  version "43.9.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-43.9.3.tgz#2dd91b14da769a873e45ffe07b5863f6c47211ba"
+  integrity sha512-TONSf+6UJYWTVs5qnItR1uLZ/0kBE8jGN8aLOVv4CDAsORvln0ZxtcZvMTCFp76YEtzXLkMUfvm7ZngQ26tIiA==
   dependencies:
     "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.20.1"
-    dompurify "^2.3.10"
+    dompurify "^2.4.0"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
@@ -4834,7 +4834,7 @@ dompurify@2.3.8:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.8.tgz#224fe9ae57d7ebd9a1ae1ac18c1c1ca3f532226f"
   integrity sha512-eVhaWoVibIzqdGYjwsBWodIQIaXFSB+cKDf4cfxLMsK0xiud6SE+/WCVx/Xw/UwQsa4cS3T2eITcdtmTg2UKcw==
 
-dompurify@^2.3.10, dompurify@^2.4.0:
+dompurify@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.0.tgz#c9c88390f024c2823332615c9e20a453cf3825dd"
   integrity sha512-Be9tbQMZds4a3C6xTmz68NlMfeONA//4dOavl/1rNw50E+/QO0KVpbcU0PcaW0nsQxurXls9ZocqFxk8R2mWEA==
@@ -12119,10 +12119,10 @@ webpack-dev-middleware@^5.3.1:
     range-parser "^1.2.1"
     schema-utils "^4.0.0"
 
-webpack-dev-server@4.10.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.10.0.tgz#de270d0009eba050546912be90116e7fd740a9ca"
-  integrity sha512-7dezwAs+k6yXVFZ+MaL8VnE+APobiO3zvpp3rBHe/HmWQ+avwh0Q3d0xxacOiBybZZ3syTZw9HXzpa3YNbAZDQ==
+webpack-dev-server@4.10.1:
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.10.1.tgz#124ac9ac261e75303d74d95ab6712b4aec3e12ed"
+  integrity sha512-FIzMq3jbBarz3ld9l7rbM7m6Rj1lOsgq/DyLGMX/fPEB1UBUPtf5iL/4eNfhx8YYJTRlzfv107UfWSWcBK5Odw==
   dependencies:
     "@types/bonjour" "^3.5.9"
     "@types/connect-history-api-fallback" "^1.3.5"
@@ -12442,10 +12442,10 @@ yarn-check-webpack-plugin@^1.2.0:
   dependencies:
     chalk "^2.4.2"
 
-yarn-deduplicate@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/yarn-deduplicate/-/yarn-deduplicate-5.0.2.tgz#b56484c94d8f1163a828bf20516607f89c078675"
-  integrity sha512-pxKa+dM7DMQ4X2vYLKqGCUgtEoTtdMVk9gNoIsxsMSP0rOV51IWFcKHfRIcZjAPNgHTrxz46sKB4xr7Nte7jdw==
+yarn-deduplicate@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/yarn-deduplicate/-/yarn-deduplicate-6.0.0.tgz#91bc0b7b374efe24796606df2c6b00eabb5aab62"
+  integrity sha512-HjGVvuy10hetOuXeexXXT77V+6FfgS+NiW3FsmQD88yfF2kBqTpChvMglyKUlQ0xXEcI77VJazll5qKKBl3ssw==
   dependencies:
     "@yarnpkg/lockfile" "^1.1.0"
     commander "^9.4.0"

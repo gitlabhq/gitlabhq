@@ -52,8 +52,8 @@
     "@codesandbox/sandpack-client": "^1.2.2",
     "@gitlab/at.js": "1.5.7",
     "@gitlab/favicon-overlay": "2.0.0",
-    "@gitlab/svgs": "3.2.0",
-    "@gitlab/ui": "43.9.1",
+    "@gitlab/svgs": "3.3.0",
+    "@gitlab/ui": "43.9.3",
     "@gitlab/visual-review-tools": "1.7.3",
     "@gitlab/web-ide": "0.0.1-dev-20220815034418",
     "@rails/actioncable": "6.1.4-7",
@@ -244,10 +244,10 @@
     "sass": "^1.49.9",
     "stylelint": "^14.9.1",
     "timezone-mock": "^1.0.8",
-    "webpack-dev-server": "4.10.0",
+    "webpack-dev-server": "4.10.1",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
-    "yarn-deduplicate": "^5.0.2"
+    "yarn-deduplicate": "^6.0.0"
   },
   "blockedDependencies": {
     "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.html#bootstrapvue"
