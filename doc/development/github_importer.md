@@ -125,7 +125,19 @@ returns comments for both issues and pull requests. This means we have to wait
 for all issues and pull requests to be imported before we can import regular
 comments.
 
-### 10. Stage::FinishImportWorker
+### 10. Stage::ImportAttachmentsWorker
+
+This worker imports release notes attachments that are linked inside Markdown.
+For every release of the project, we schedule a job of
+`Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every comment.
+
+Each job:
+
+1. Iterates over all attachment links inside of a specific release note.
+1. Downloads the attachment.
+1. Replaces the old link with a newly-generated link to GitLab.
+
+### 11. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.

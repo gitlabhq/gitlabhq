@@ -15,6 +15,10 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         Class
       end
 
+      def sidekiq_worker_class
+        Class
+      end
+
       def object_type
         :dummy
       end

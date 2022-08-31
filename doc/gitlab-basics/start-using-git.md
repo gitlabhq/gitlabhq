@@ -148,7 +148,7 @@ between your computer and GitLab.
    ```
 
 1. GitLab requests your username and password:
-   - If you have 2FA enabled for your account, you must use a [Personal Access Token](../user/profile/personal_access_tokens.md)
+   - If you have 2FA enabled for your account, you must [clone using a token](#clone-using-a-token)
      with `read_repository` or `write_repository` permissions instead of your account's password.
    - If you don't have 2FA enabled, use your account's password.
 
@@ -162,6 +162,24 @@ NOTE:
 On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
 add your namespace (username or group) to the path:
 `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
+
+#### Clone using a token
+
+Clone with HTTPS using a token if:
+
+- You want to use 2FA.
+- You want to have a revokable set of credentials scoped to one or more repositories.
+
+You can use any of these tokens to authenticate when cloning over HTTPS:
+
+- [Personal access tokens](../user/profile/personal_access_tokens.md).
+- [Deploy tokens](../user/project/deploy_tokens/index.md).
+- [Project access tokens](../user/project/settings/project_access_tokens.md).
+- [Group access tokens](../user/group/settings/group_access_tokens.md).
+
+```shell
+git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.git
+```
 
 ### Convert a local directory into a repository
 

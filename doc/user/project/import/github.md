@@ -177,6 +177,8 @@ The following items of a project are imported:
 - Milestones.
 - Labels.
 - Release note descriptions.
+- Release note attachments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4 with `github_importer_attachments_import`
+  [feature flag](../../../administration/feature_flags.md) disabled by default.
 - Pull request review comments.
 - Regular issue and pull request comments.
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).

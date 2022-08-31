@@ -1,5 +1,7 @@
-import { sanitize as dompurifySanitize, addHook } from 'dompurify';
+import DOMPurify from 'dompurify';
 import { getNormalizedURL, getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+
+const { sanitize: dompurifySanitize, addHook, isValidAttribute } = DOMPurify;
 
 const defaultConfig = {
   // Safely allow SVG <use> tags
@@ -94,4 +96,4 @@ addHook('afterSanitizeAttributes', (node) => {
 
 export const sanitize = (val, config) => dompurifySanitize(val, { ...defaultConfig, ...config });
 
-export { isValidAttribute } from 'dompurify';
+export { isValidAttribute };

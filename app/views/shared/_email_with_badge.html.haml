@@ -1,5 +1,6 @@
 - variant = verified ? :success : :danger
 - text = verified ? _('Verified') : _('Unverified')
 
-= email
-= gl_badge_tag text, { variant: variant }, { class: 'gl-ml-3' }
+%span.gl-mr-3
+  = email
+= gl_badge_tag text, { variant: variant }

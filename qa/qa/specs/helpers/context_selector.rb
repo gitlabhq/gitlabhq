@@ -30,6 +30,8 @@ module QA
 
             next unless option.is_a?(Hash)
 
+            opts.merge!(option)
+
             if option[:pipeline].present?
               return true if Runtime::Env.ci_project_name.blank?
 
@@ -41,8 +43,6 @@ module QA
               return job_matches?(option[:job])
 
             elsif option[:subdomain].present?
-              opts.merge!(option)
-
               opts[:subdomain] = case option[:subdomain]
                                  when Array
                                    "(#{option[:subdomain].join("|")})\\."

@@ -38,29 +38,29 @@
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %ul
           %li= s_('Profiles|Primary email')
-          - if @primary_email === current_user.commit_email_or_default
+          - if @primary_email == current_user.commit_email_or_default
             %li= s_('Profiles|Commit email')
-          - if @primary_email === current_user.public_email
+          - if @primary_email == current_user.public_email
             %li= s_('Profiles|Public email')
-          - if @primary_email === current_user.notification_email_or_default
+          - if @primary_email == current_user.notification_email_or_default
             %li= s_('Profiles|Default notification email')
       - @emails.reject(&:user_primary_email?).each do |email|
         %li{ data: { qa_selector: 'email_row_content' } }
-          .gl-display-flex.gl-justify-content-space-between{ style: 'flex-flow: wrap-reverse; row-gap: 0.5rem' }
+          .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-gap-3
             %div
               = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-            .gl-ml-n3
+              %ul
+                - if email.email == current_user.commit_email_or_default
+                  %li= s_('Profiles|Commit email')
+                - if email.email == current_user.public_email
+                  %li= s_('Profiles|Public email')
+                - if email.email == current_user.notification_email_or_default
+                  %li= s_('Profiles|Notification email')
+            .gl-display-flex.gl-justify-content-end.gl-align-items-flex-end.gl-flex-grow-1.gl-flex-wrap-wrap-reverse.gl-gap-3
               - unless email.confirmed?
                 - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
-                = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-default gl-ml-3'
+                = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-default'
 
-              = link_to profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, class: 'gl-button btn btn-sm btn-danger gl-ml-3' do
+              = link_to profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, class: 'gl-button btn btn-sm btn-danger' do
                 %span.sr-only= _('Remove')
                 = sprite_icon('remove')
-          %ul
-            - if email.email === current_user.commit_email_or_default
-              %li= s_('Profiles|Commit email')
-            - if email.email === current_user.public_email
-              %li= s_('Profiles|Public email')
-            - if email.email === current_user.notification_email_or_default
-              %li= s_('Profiles|Notification email')
