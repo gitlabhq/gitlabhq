@@ -61,4 +61,5 @@ export default ({
   tagNotes: '',
   includeTagNotes: false,
   existingRelease: null,
+  originalReleasedAt: new Date(),
 });

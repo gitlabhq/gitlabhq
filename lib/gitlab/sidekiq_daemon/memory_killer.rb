@@ -41,11 +41,11 @@ module Gitlab
 
       def init_metrics
         {
-          sidekiq_current_rss:                  ::Gitlab::Metrics.gauge(:sidekiq_current_rss, 'Current RSS of Sidekiq Worker'),
+          sidekiq_current_rss: ::Gitlab::Metrics.gauge(:sidekiq_current_rss, 'Current RSS of Sidekiq Worker'),
           sidekiq_memory_killer_soft_limit_rss: ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_soft_limit_rss, 'Current soft_limit_rss of Sidekiq Worker'),
           sidekiq_memory_killer_hard_limit_rss: ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_hard_limit_rss, 'Current hard_limit_rss of Sidekiq Worker'),
-          sidekiq_memory_killer_phase:          ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_phase, 'Current phase of Sidekiq Worker'),
-          sidekiq_memory_killer_running_jobs:   ::Gitlab::Metrics.counter(:sidekiq_memory_killer_running_jobs_total, 'Current running jobs when limit was reached')
+          sidekiq_memory_killer_phase: ::Gitlab::Metrics.gauge(:sidekiq_memory_killer_phase, 'Current phase of Sidekiq Worker'),
+          sidekiq_memory_killer_running_jobs: ::Gitlab::Metrics.counter(:sidekiq_memory_killer_running_jobs_total, 'Current running jobs when limit was reached')
         }
       end
 

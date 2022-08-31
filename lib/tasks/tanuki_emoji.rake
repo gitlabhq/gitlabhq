@@ -148,11 +148,11 @@ namespace :tanuki_emoji do
       SpriteFactory.run!(tmpdir, {
         output_style: style_path,
         output_image: "app/assets/images/emoji.png",
-        selector:     '.emoji-',
-        style:        :scss,
-        nocomments:   true,
-        pngcrush:     true,
-        layout:       :packed
+        selector: '.emoji-',
+        style: :scss,
+        nocomments: true,
+        pngcrush: true,
+        layout: :packed
       })
 
       # SpriteFactory's SCSS is a bit too verbose for our purposes here, so
@@ -215,10 +215,10 @@ namespace :tanuki_emoji do
       # Combine the resized assets into a packed sprite and re-generate the SCSS
       SpriteFactory.run!(tmpdir, {
         output_image: "app/assets/images/emoji@2x.png",
-        style:        false,
-        nocomments:   true,
-        pngcrush:     true,
-        layout:       :packed
+        style: false,
+        nocomments: true,
+        pngcrush: true,
+        layout: :packed
       })
     end
 

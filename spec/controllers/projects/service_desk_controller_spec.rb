@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::ServiceDeskController do
   let_it_be(:project) do
     create(:project, :private, :custom_repo, service_desk_enabled: true,
-           files: { '.gitlab/issue_templates/service_desk.md' => 'template' })
+                                             files: { '.gitlab/issue_templates/service_desk.md' => 'template' })
   end
 
   let_it_be(:user) { create(:user) }

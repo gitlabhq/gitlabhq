@@ -163,7 +163,7 @@ module Trigger
 
   class Omnibus < Base
     def self.access_token
-      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'package-and-qa' job)" at https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/settings/access_tokens
+      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'e2e:package-and-test' job)" at https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/settings/access_tokens
       ENV['OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN'] || super
     end
 

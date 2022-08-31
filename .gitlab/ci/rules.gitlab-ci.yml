@@ -133,7 +133,7 @@
 .if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified: &if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_TESTS'
 
-.if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
+.if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_MANUAL_FF_PACKAGE_AND_QA'
 
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
@@ -916,7 +916,7 @@
     - <<: *if-default-refs
       changes: *qa-patterns
 
-.qa:rules:determine-qa-tests:
+.qa:rules:determine-e2e-tests:
   rules:
     - <<: *if-not-ee
       when: never
@@ -930,7 +930,7 @@
     - <<: *if-force-ci
       allow_failure: true
 
-.qa:rules:package-and-qa:
+.qa:rules:package-and-test:
   rules:
     - <<: *if-fork-merge-request
       when: never
@@ -940,7 +940,7 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
       changes: *feature-flag-development-config-patterns
       when: manual
       allow_failure: true

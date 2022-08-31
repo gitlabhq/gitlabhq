@@ -1142,7 +1142,7 @@ for more information.
 
 When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
 
-Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
+Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/index.md#disable-maintenance-mode).
 
 [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 

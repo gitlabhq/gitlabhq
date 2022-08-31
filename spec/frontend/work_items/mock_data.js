@@ -407,6 +407,20 @@ export const workItemTitleSubscriptionResponse = {
   },
 };
 
+export const workItemWeightSubscriptionResponse = {
+  data: {
+    issuableWeightUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetWeight',
+          weight: 1,
+        },
+      ],
+    },
+  },
+};
+
 export const workItemHierarchyEmptyResponse = {
   data: {
     workItem: {

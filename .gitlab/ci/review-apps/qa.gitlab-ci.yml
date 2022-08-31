@@ -162,7 +162,7 @@ allure-report-qa-blocking:
     - review-qa-smoke
     - review-qa-reliable
   variables:
-    ALLURE_JOB_NAME: review-qa-blocking
+    ALLURE_JOB_NAME: e2e-review-qa-blocking
 
 allure-report-qa-all:
   extends:
@@ -170,7 +170,7 @@ allure-report-qa-all:
     - .review:rules:review-qa-all-report
   needs: ["review-qa-all"]
   variables:
-    ALLURE_JOB_NAME: review-qa-all
+    ALLURE_JOB_NAME: e2e-review-qa-all
 
 upload-knapsack-report:
   extends:

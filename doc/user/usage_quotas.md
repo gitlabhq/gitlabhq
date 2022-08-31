@@ -32,7 +32,7 @@ To prevent exceeding the namespace storage quota, you can:
 
 1. Reduce storage consumption by following the suggestions in the [Manage Your Storage Usage](#manage-your-storage-usage) section of this page.
 1. Apply for [GitLab for Education](https://about.gitlab.com/solutions/education/join/), [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/), or [GitLab for Startups](https://about.gitlab.com/solutions/startups/) if you meet the eligibility requirements.
-1. Consider using a [self-managed instance](../subscriptions/self_managed/) of GitLab which does not have these limits on the free tier.
+1. Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab which does not have these limits on the free tier.
 1. [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10GB of storage.
 1. [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
 1. [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.

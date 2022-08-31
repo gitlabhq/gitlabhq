@@ -26,7 +26,6 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
 - [ ] Dequarantine test check-list
   - [ ] Follow the [Dequarantining Tests guide](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#dequarantining-tests).
   - [ ] Confirm the test consistently passes on the target GitLab environment(s).
-    - [ ] (Optionally) [Trigger a manual GitLab-QA pipeline](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release) against a specific GitLab environment using the `RELEASE` variable from the `package-and-qa` job of the current merge request.
 - [ ] To ensure a faster turnaround, ask in the `#quality` Slack channel for someone to review and merge the merge request, rather than assigning it directly.
 
 <!-- Base labels. -->

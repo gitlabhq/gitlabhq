@@ -47,17 +47,17 @@ module Gitlab
 
       def options
         {
-          s_('VisibilityLevel|Private')  => PRIVATE,
+          s_('VisibilityLevel|Private') => PRIVATE,
           s_('VisibilityLevel|Internal') => INTERNAL,
-          s_('VisibilityLevel|Public')   => PUBLIC
+          s_('VisibilityLevel|Public') => PUBLIC
         }
       end
 
       def string_options
         {
-          'private'  => PRIVATE,
+          'private' => PRIVATE,
           'internal' => INTERNAL,
-          'public'   => PUBLIC
+          'public' => PUBLIC
         }
       end
 

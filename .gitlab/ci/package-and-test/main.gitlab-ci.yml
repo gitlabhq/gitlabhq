@@ -4,7 +4,7 @@ include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.0.1
+    ref: 1.2.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -22,11 +22,12 @@ include:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
 
 .bundle-install:
-  extends: .qa-cache
+  extends:
+    - .gitlab-qa-install
+    - .qa-cache
   variables:
-    RUN_WITH_BUNDLE: "true" # adds 'bundle exec' prefix for gitlab-qa commands in pipeline-common job templates
-  before_script:
-    - cd qa && bundle install
+    RUN_WITH_BUNDLE: "true" # installs and runs gitlab-qa via bundler
+    QA_PATH: qa
 
 .update-script:
   script:
@@ -35,15 +36,8 @@ include:
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 
-.manual-qa:
-  stage: test
-  allow_failure: true
-  needs:
-    - trigger-omnibus
-
 .qa:
   extends:
-    - .use-docker-in-docker
     - .qa-base
     - .bundle-install
     - .gitlab-qa-report
@@ -90,6 +84,19 @@ download-knapsack-report:
       - qa/knapsack/ee-*.json
     expire_in: 1 day
 
+# e2e test jobs run on separate runner which has separate cache setup
+cache-gems:
+  extends:
+    - .ruby-image
+    - .bundle-install
+    - .qa-cache-push
+    - .rules:prepare
+  stage: .pre
+  tags:
+    - e2e
+  script:
+    - echo "Populated qa cache"
+
 # ==========================================
 # Test stage
 # ==========================================
@@ -104,8 +111,11 @@ download-knapsack-report:
 _ee:quarantine:
   extends:
     - .qa
-    - .manual-qa
     - .rules:test:quarantine
+  needs:
+    - trigger-omnibus
+  stage: test
+  allow_failure: true
   variables:
     QA_RSPEC_TAGS: --tag quarantine
 
@@ -446,7 +456,7 @@ notify-slack:
     - .rules:report:process-results
   stage: .post
   variables:
-    ALLURE_JOB_NAME: package-and-qa
+    ALLURE_JOB_NAME: package-and-e2e
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed

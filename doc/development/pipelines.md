@@ -103,7 +103,7 @@ When you need to revert a merge request, to get accelerated feedback, you can ad
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
-- The `package-and-qa` job.
+- The `e2e:package-and-test` job.
 - The `rspec:undercoverage` job.
 - The entire [Review Apps process](testing_guide/review_apps.md).
 
@@ -489,7 +489,7 @@ graph RL;
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_4-1["package-and-qa (102 minutes)"];
+  2_4-1["e2e:package-and-test (102 minutes)"];
   class 2_4-1 criticalPath;
   click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   2_4-1 --> 1-2 & 2_3-1 & 1-15;

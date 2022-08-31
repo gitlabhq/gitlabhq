@@ -42,6 +42,7 @@ RSpec.shared_examples 'a system note' do |params|
 
   it 'has the correct attributes', :aggregate_failures do
     exclude_project = !params.nil? && params[:exclude_project]
+    skip_persistence_check = !params.nil? && params[:skip_persistence_check]
 
     expect(subject).to be_valid
     expect(subject).to be_system
@@ -50,6 +51,7 @@ RSpec.shared_examples 'a system note' do |params|
     expect(subject.project).to eq project unless exclude_project
     expect(subject.author).to eq author
 
+    expect(subject.system_note_metadata).to be_persisted unless skip_persistence_check
     expect(subject.system_note_metadata.action).to eq(action)
     expect(subject.system_note_metadata.commit_count).to eq(commit_count)
   end

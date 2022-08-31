@@ -10,7 +10,7 @@ Experiments can be conducted by any GitLab team, most often the teams from the
 [Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/).
 Experiments are not tied to releases because they primarily target GitLab.com.
 
-Experiments are run as an A/B/n test, and are behind an [experiment feature flag](../feature_flags/#experiment-type)
+Experiments are run as an A/B/n test, and are behind an [experiment feature flag](../feature_flags/index.md#experiment-type)
 to turn the test on or off. Based on the data the experiment generates, the team decides
 if the experiment had a positive impact and should be made the new default, or rolled back.
 

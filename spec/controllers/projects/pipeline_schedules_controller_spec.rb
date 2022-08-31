@@ -360,7 +360,7 @@ RSpec.describe Projects::PipelineSchedulesController do
           id: pipeline_schedule,
           schedule: schedule
         },
-        as: :html
+                   as: :html
     end
   end
 

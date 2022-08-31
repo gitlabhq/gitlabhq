@@ -21,7 +21,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
   - [ ] Ensure it's approved according to our [Approval Guidelines].
   - [ ] Ensure it's approved by an AppSec engineer.
     - Please see the security release [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
-    - Trigger the [`package-and-qa` build]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
+    - Trigger the [`e2e:package-and-test` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Milestone is set to the version this backport applies to. A closed milestone can be assigned via [quick actions].
   - [ ] Ensure it's approved by a maintainer.

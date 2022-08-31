@@ -69,7 +69,7 @@ qa:update-qa-cache:
 populate-e2e-test-vars:
   extends:
     - .qa-job-base
-    - .qa:rules:determine-qa-tests
+    - .qa:rules:determine-e2e-tests
   stage: prepare
   variables:
     ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
@@ -83,7 +83,7 @@ populate-e2e-test-vars:
 
 e2e-test-pipeline-generate:
   extends:
-    - .qa:rules:determine-qa-tests
+    - .qa:rules:determine-e2e-tests
   stage: prepare
   when: on_success
   needs:
@@ -99,7 +99,7 @@ e2e-test-pipeline-generate:
 
 e2e:package-and-test:
   extends:
-    - .qa:rules:package-and-qa
+    - .qa:rules:package-and-test
   stage: qa
   when: on_success
   needs:

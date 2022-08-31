@@ -52,8 +52,8 @@ RSpec.describe Projects::GrafanaApiController do
           .with(project, '1', 'api/v1/query_range',
                  { 'query' => params[:query],
                    'start' => params[:start_time],
-                   'end'   => params[:end_time],
-                   'step'  => params[:step] })
+                   'end' => params[:end_time],
+                   'step' => params[:step] })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({})

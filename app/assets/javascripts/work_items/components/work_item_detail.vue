@@ -32,7 +32,6 @@ import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
-import WorkItemWeight from './work_item_weight.vue';
 import WorkItemInformation from './work_item_information.vue';
 
 export default {
@@ -53,7 +52,7 @@ export default {
     WorkItemLabels,
     WorkItemTitle,
     WorkItemState,
-    WorkItemWeight,
+    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemInformation,
     LocalStorageSync,
     WorkItemTypeIcon,

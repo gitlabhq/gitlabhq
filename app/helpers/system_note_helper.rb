@@ -45,7 +45,11 @@ module SystemNoteHelper
     'attention_requested' => 'user',
     'attention_request_removed' => 'user',
     'contact' => 'users',
-    'timeline_event' => 'clock'
+    'timeline_event' => 'clock',
+    'relate_to_child' => 'link',
+    'unrelate_from_child' => 'link',
+    'relate_to_parent' => 'link',
+    'unrelate_from_parent' => 'link'
   }.freeze
 
   def system_note_icon_name(note)

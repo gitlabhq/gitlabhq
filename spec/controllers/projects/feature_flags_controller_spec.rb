@@ -194,7 +194,7 @@ RSpec.describe Projects::FeatureFlagsController do
       other_project = create(:project)
       other_project.add_developer(user)
       other_feature_flag = create(:operations_feature_flag, project: other_project,
-                                  name: 'other_flag')
+                                                            name: 'other_flag')
       params = {
         namespace_id: other_project.namespace,
         project_id: other_project,
@@ -486,7 +486,7 @@ RSpec.describe Projects::FeatureFlagsController do
     context 'when creating a version 2 feature flag with a gitlabUserList strategy' do
       let!(:user_list) do
         create(:operations_feature_flag_user_list, project: project,
-               name: 'My List', user_xids: 'user1,user2')
+                                                   name: 'My List', user_xids: 'user1,user2')
       end
 
       let(:params) do

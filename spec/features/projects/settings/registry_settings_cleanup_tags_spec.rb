@@ -24,6 +24,76 @@ RSpec.describe 'Project > Settings > Packages & Registries > Container registry 
       subject
 
       expect(find('.breadcrumbs')).to have_content('Clean up image tags')
+
+      section = find('[data-testid="container-expiration-policy-project-settings"]')
+      expect(section).to have_text 'Clean up image tags'
+    end
+
+    it 'saves cleanup policy submit the form' do
+      subject
+
+      within '[data-testid="container-expiration-policy-project-settings"]' do
+        select('Every day', from: 'Run cleanup')
+        select('50 tags per image name', from: 'Keep the most recent:')
+        fill_in('Keep tags matching:', with: 'stable')
+        select('7 days', from: 'Remove tags older than:')
+        fill_in('Remove tags matching:', with: '.*-production')
+
+        submit_button = find('[data-testid="save-button"')
+        expect(submit_button).not_to be_disabled
+        submit_button.click
+      end
+
+      expect(find('.gl-toast')).to have_content('Cleanup policy successfully saved.')
+    end
+
+    it 'does not save cleanup policy submit form with invalid regex' do
+      subject
+
+      within '[data-testid="container-expiration-policy-project-settings"]' do
+        fill_in('Remove tags matching:', with: '*-production')
+
+        submit_button = find('[data-testid="save-button"')
+        expect(submit_button).not_to be_disabled
+        submit_button.click
+      end
+
+      expect(find('.gl-toast')).to have_content('Something went wrong while updating the cleanup policy.')
+    end
+  end
+
+  context 'with a project without expiration policy', :js do
+    before do
+      project.container_expiration_policy.destroy!
+    end
+
+    context 'with container_expiration_policies_enable_historic_entries enabled' do
+      before do
+        stub_application_setting(container_expiration_policies_enable_historic_entries: true)
+      end
+
+      it 'displays the related section' do
+        subject
+
+        within '[data-testid="container-expiration-policy-project-settings"]' do
+          expect(find('[data-testid="enable-toggle"]'))
+            .to have_content('Disabled - Tags will not be automatically deleted.')
+        end
+      end
+    end
+
+    context 'with container_expiration_policies_enable_historic_entries disabled' do
+      before do
+        stub_application_setting(container_expiration_policies_enable_historic_entries: false)
+      end
+
+      it 'does not display the related section' do
+        subject
+
+        within '[data-testid="container-expiration-policy-project-settings"]' do
+          expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
+        end
+      end
     end
   end
 

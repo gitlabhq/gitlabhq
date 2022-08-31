@@ -217,7 +217,7 @@ Therefore, in projects with compliance frameworks, we recommend replacing
 [parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md) with the following:
 
 - Direct [`include`](../../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
-- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/) rather than the parent-child
+- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/index.md) rather than the parent-child
   pipeline feature.
 
 This alternative ensures the compliance pipeline does not re-start the parent pipeline.
@@ -241,17 +241,17 @@ Use the toggles to enable or disable features in the project.
 | Option                           | More access limit options | Description   |
 |:---------------------------------|:--------------------------|:--------------|
 | **Issues**                       | ✓                         | Activates the GitLab issues tracker. |
-| **Repository**                   | ✓                         | Enables [repository](../repository/) functionality |
-| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
+| **Repository**                   | ✓                         | Enables [repository](../repository/index.md) functionality |
+| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
 | **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality. |
 | **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs). |
 | **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality. |
 | **CI/CD**                        | ✓                         | Enables [CI/CD](../../../ci/index.md) functionality. |
-| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/) for your Docker images. |
-| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/). |
+| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/index.md) for your Docker images. |
+| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/index.md). |
 | **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md). |
 | **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md). |
-| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
+| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
 | **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |

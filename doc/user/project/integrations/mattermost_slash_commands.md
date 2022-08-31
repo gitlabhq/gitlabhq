@@ -133,7 +133,7 @@ The available slash commands for Mattermost are:
 ## Related topics
 
 - [Mattermost slash commands](https://developers.mattermost.com/integrate/slash-commands/)
-- [Omnibus GitLab Mattermost](../../../integration/mattermost/)
+- [Omnibus GitLab Mattermost](../../../integration/mattermost/index.md)
 
 ## Troubleshooting
 

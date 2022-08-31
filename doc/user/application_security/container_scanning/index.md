@@ -190,7 +190,7 @@ Authenticating to a remote registry is not supported when [FIPS mode](../../../d
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
 
 The `CS_DISABLE_DEPENDENCY_LIST` CI/CD variable controls whether the scan creates a
-[Dependency List](../dependency_list/)
+[Dependency List](../dependency_list/index.md)
 report. This variable is currently only supported when the `trivy` analyzer is used. The variable's default setting of `"false"` causes the scan to create the report. To disable
 the report, set the variable to `"true"`:
 
@@ -230,10 +230,10 @@ container_scanning:
 ```
 
 When you enable this feature, you may see [duplicate findings](../terminology/index.md#duplicate-finding)
-in the [Vulnerability Report](../vulnerability_report/)
-if [Dependency Scanning](../dependency_scanning/)
+in the [Vulnerability Report](../vulnerability_report/index.md)
+if [Dependency Scanning](../dependency_scanning/index.md)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings
-across different types of scanning tools. Please reference [this comparison](../dependency_scanning/#dependency-scanning-compared-to-container-scanning)
+across different types of scanning tools. Please reference [this comparison](../dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning)
 between GitLab Dependency Scanning and Container Scanning for more details on which types of dependencies are likely to be duplicated.
 
 #### Available CI/CD variables
@@ -649,7 +649,7 @@ you're using a non-GitLab Docker registry, you must change the `$CI_REGISTRY` va
 To scan an image in an external private registry, you must configure access credentials so the
 container scanning analyzer can authenticate itself before attempting to access the image to scan.
 
-If you use the GitLab [Container Registry](../../packages/container_registry/),
+If you use the GitLab [Container Registry](../../packages/container_registry/index.md),
 the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables)
 are set automatically and you can skip this configuration.
 
@@ -666,7 +666,7 @@ container_scanning:
     DOCKER_IMAGE: "gcr.io/path-to-you-registry/image:tag"
 ```
 
-Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/#add-a-cicd-variable-to-a-project)
+Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/index.md#add-a-cicd-variable-to-a-project)
 for `GCP_CREDENTIALS` containing the JSON key, as described in the
 [Google Cloud Platform Container Registry documentation](https://cloud.google.com/container-registry/docs/advanced-authentication#json-key).
 Also:

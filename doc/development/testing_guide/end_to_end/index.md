@@ -56,7 +56,7 @@ graph TB
 
 subgraph "`gitlab-org/gitlab` pipeline"
     A1[`build-images` stage<br>`build-qa-image` and `build-assets-image` jobs]
-    A2[`qa` stage<br>`package-and-qa` job]
+    A2[`qa` stage<br>`e2e:package-and-test` job]
     end
 
 subgraph "`gitlab-org/build/omnibus-gitlab-mirror` pipeline"
@@ -186,7 +186,7 @@ Use these environment variables to configure metrics export:
 | -------- | -------- | ----------- |
 | `QA_INFLUXDB_URL` | `true` | Should be set to `https://influxdb.quality.gitlab.net`. No default value. |
 | `QA_INFLUXDB_TOKEN` | `true` | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value. |
-| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `package-and-qa`. Automatically inferred from the project name for live environment test executions. No default value. |
+| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `package-and-test`. Automatically inferred from the project name for live environment test executions. No default value. |
 | `QA_EXPORT_TEST_METRICS` | `false` | Flag to enable or disable metrics export. Defaults to `true`. |
 
 ## Test reports

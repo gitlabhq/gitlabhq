@@ -41,7 +41,7 @@ module IssuableLinks
       set_link_type(link)
 
       if link.changed? && link.save
-        create_notes(referenced_issuable)
+        create_notes(link)
       end
 
       link
@@ -124,9 +124,9 @@ module IssuableLinks
       :issue
     end
 
-    def create_notes(referenced_issuable)
-      SystemNoteService.relate_issuable(issuable, referenced_issuable, current_user)
-      SystemNoteService.relate_issuable(referenced_issuable, issuable, current_user)
+    def create_notes(issuable_link)
+      SystemNoteService.relate_issuable(issuable_link.source, issuable_link.target, current_user)
+      SystemNoteService.relate_issuable(issuable_link.target, issuable_link.source, current_user)
     end
 
     def linkable_issuables(objects)

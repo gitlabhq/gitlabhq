@@ -2,6 +2,7 @@ import { GlAlert, GlBadge, GlLoadingIcon, GlSkeletonLoader, GlButton } from '@gi
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import workItemWeightSubscription from 'ee_component/work_items/graphql/work_item_weight.subscription.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -12,7 +13,6 @@ import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import WorkItemWeight from '~/work_items/components/work_item_weight.vue';
 import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -25,6 +25,7 @@ import {
   workItemTitleSubscriptionResponse,
   workItemResponseFactory,
   mockParent,
+  workItemWeightSubscriptionResponse,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -41,6 +42,7 @@ describe('WorkItemDetail component', () => {
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
+  const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
@@ -51,7 +53,6 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
-  const findWorkItemWeight = () => wrapper.findComponent(WorkItemWeight);
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
@@ -70,13 +71,19 @@ describe('WorkItemDetail component', () => {
     includeWidgets = false,
     error = undefined,
   } = {}) => {
+    const handlers = [
+      [workItemQuery, handler],
+      [workItemTitleSubscription, subscriptionHandler],
+      confidentialityMock,
+    ];
+
+    if (IS_EE) {
+      handlers.push([workItemWeightSubscription, weightSubscriptionHandler]);
+    }
+
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(
-        [
-          [workItemQuery, handler],
-          [workItemTitleSubscription, subscriptionHandler],
-          confidentialityMock,
-        ],
+        handlers,
         {},
         {
           typePolicies: includeWidgets ? temporaryConfig.cacheConfig.typePolicies : {},
@@ -93,6 +100,7 @@ describe('WorkItemDetail component', () => {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
         },
+        hasIssueWeightsFeature: true,
       },
     });
   };
@@ -435,34 +443,6 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemLabels().exists()).toBe(exists);
-    });
-  });
-
-  describe('weight widget', () => {
-    describe.each`
-      description                               | weightWidgetPresent | exists
-      ${'when widget is returned from API'}     | ${true}             | ${true}
-      ${'when widget is not returned from API'} | ${false}            | ${false}
-    `('$description', ({ weightWidgetPresent, exists }) => {
-      it(`${weightWidgetPresent ? 'renders' : 'does not render'} weight component`, async () => {
-        const response = workItemResponseFactory({ weightWidgetPresent });
-        const handler = jest.fn().mockResolvedValue(response);
-        createComponent({ handler });
-        await waitForPromises();
-
-        expect(findWorkItemWeight().exists()).toBe(exists);
-      });
-    });
-
-    it('shows an error message when it emits an `error` event', async () => {
-      createComponent({ workItemsMvc2Enabled: true });
-      await waitForPromises();
-      const updateError = 'Failed to update';
-
-      findWorkItemWeight().vm.$emit('error', updateError);
-      await waitForPromises();
-
-      expect(findAlert().text()).toBe(updateError);
     });
   });
 

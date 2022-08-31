@@ -11,7 +11,7 @@ module Gitlab
         def categories
           {
             "Languages" => '',
-            "Global"    => 'Global'
+            "Global" => 'Global'
           }
         end
 

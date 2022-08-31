@@ -1,5 +1,16 @@
 import { mount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import workItemWeightSubscription from 'ee_component/work_items/graphql/work_item_weight.subscription.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import {
+  workItemResponseFactory,
+  workItemTitleSubscriptionResponse,
+  workItemWeightSubscriptionResponse,
+} from 'jest/work_items/mock_data';
 import App from '~/work_items/components/app.vue';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
@@ -7,25 +18,33 @@ import { createRouter } from '~/work_items/router';
 describe('Work items router', () => {
   let wrapper;
 
+  Vue.use(VueApollo);
+
+  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
+  const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
+  const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
+
   const createComponent = async (routeArg) => {
     const router = createRouter('/work_item');
     if (routeArg !== undefined) {
       await router.push(routeArg);
     }
 
+    const handlers = [
+      [workItemQuery, workItemQueryHandler],
+      [workItemTitleSubscription, titleSubscriptionHandler],
+    ];
+
+    if (IS_EE) {
+      handlers.push([workItemWeightSubscription, weightSubscriptionHandler]);
+    }
+
     wrapper = mount(App, {
+      apolloProvider: createMockApollo(handlers),
       router,
       provide: {
         fullPath: 'full-path',
         issuesListPath: 'full-path/-/issues',
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            workItem: {},
-            workItemTypes: {},
-          },
-        },
       },
     });
   };
