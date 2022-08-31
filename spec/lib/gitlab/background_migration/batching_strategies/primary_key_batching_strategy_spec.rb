@@ -77,25 +77,4 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
       end
     end
   end
-
-  context 'additional filters' do
-    let(:strategy_with_filters) do
-      Class.new(described_class) do
-        def apply_additional_filters(relation, job_arguments:, job_class: nil)
-          min_id = job_arguments.first
-
-          relation.where.not(type: 'Project').where('id >= ?', min_id)
-        end
-      end
-    end
-
-    let(:batching_strategy) { strategy_with_filters.new(connection: ActiveRecord::Base.connection) }
-    let!(:namespace5) { namespaces.create!(name: 'batchtest5', path: 'batch-test5', type: 'Project') }
-
-    it 'applies additional filters' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id, batch_size: 3, job_arguments: [1])
-
-      expect(batch_bounds).to eq([namespace4.id, namespace4.id])
-    end
-  end
 end

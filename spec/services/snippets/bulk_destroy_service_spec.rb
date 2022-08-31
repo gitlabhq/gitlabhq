@@ -71,8 +71,8 @@ RSpec.describe Snippets::BulkDestroyService do
         let(:error_message) { "You don't have access to delete these snippets." }
       end
 
-      context 'when hard_delete option is passed' do
-        subject { described_class.new(service_user, snippets).execute(hard_delete: true) }
+      context 'when skip_authorization option is passed' do
+        subject { described_class.new(service_user, snippets).execute(skip_authorization: true) }
 
         it 'returns a ServiceResponse success response' do
           expect(subject).to be_success

@@ -329,6 +329,10 @@ func configureRoutes(u *upstream) {
 		u.route("POST", apiPattern+`v4/projects\z`, tempfileMultipartProxy),
 		u.route("PUT", apiProjectPattern+`\z`, tempfileMultipartProxy),
 
+		// Group Avatar
+		u.route("POST", apiPattern+`v4/groups\z`, tempfileMultipartProxy),
+		u.route("PUT", apiPattern+`v4/groups/[^/]+\z`, tempfileMultipartProxy),
+
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),
 		u.route("", ciAPIPattern, proxy),

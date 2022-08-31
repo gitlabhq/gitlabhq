@@ -67,9 +67,9 @@ module Projects
     end
 
     def remove_snippets
-      # We're setting the hard_delete param because we dont need to perform the access checks within the service since
+      # We're setting the skip_authorization param because we dont need to perform the access checks within the service since
       # the user has enough access rights to remove the project and its resources.
-      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(hard_delete: true)
+      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(skip_authorization: true)
 
       if response.error?
         log_error("Snippet deletion failed on #{project.full_path} with the following message: #{response.message}")

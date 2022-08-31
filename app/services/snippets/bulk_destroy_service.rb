@@ -14,10 +14,10 @@ module Snippets
       @snippets = snippets
     end
 
-    def execute(options = {})
+    def execute(skip_authorization: false)
       return ServiceResponse.success(message: 'No snippets found.') if snippets.empty?
 
-      user_can_delete_snippets! unless options[:hard_delete]
+      user_can_delete_snippets! unless skip_authorization
       attempt_delete_repositories!
       snippets.destroy_all # rubocop: disable Cop/DestroyAll
 

@@ -8,11 +8,13 @@
 
 .base-script:
   script:
+    - source ./scripts/rspec_helpers.sh
     # Only install knapsack after bundle install! Otherwise oddly some native
     # gems could not be found under some circumstance. No idea why, hours wasted.
     - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source ./scripts/rspec_helpers.sh
+    - echo -e "\e[0Ksection_start:`date +%s`:gitaly-test-spawn[collapsed=true]\r\e[0KStarting Gitaly"
+    - run_timed_command "scripts/gitaly-test-spawn"  # Do not use 'bundle exec' here
+    - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
 .minimal-rspec-tests:
   variables:
@@ -966,7 +968,7 @@ rspec fail-fast:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast tmp/matching_tests.txt "--tag ~quarantine"
+    - rspec_fail_fast "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine"
   artifacts:
     expire_in: 7d
     paths:
@@ -976,10 +978,10 @@ rspec foss-impact:
   extends:
     - .rspec-base-pg12-as-if-foss
     - .rails:rules:rspec-foss-impact
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests as-if-foss"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_matched_foss_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
+    - rspec_matched_foss_tests "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine"
   artifacts:
     expire_in: 7d
     paths:

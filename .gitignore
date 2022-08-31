@@ -95,8 +95,6 @@ jsdoc/
 webpack-dev-server.json
 /.nvimrc
 .solargraph.yml
-/tmp/matching_foss_tests.txt
-/tmp/matching_tests.txt
 ee/changelogs/unreleased-ee
 /sitespeed-result
 tags.lock

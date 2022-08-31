@@ -269,7 +269,7 @@ function rspec_paralellized_job() {
   debug_rspec_variables
 
   if [[ -n $RSPEC_TESTS_MAPPING_ENABLED ]]; then
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "tmp/matching_tests.txt" || rspec_run_status=$?
+    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_MATCHING_TESTS_PATH}" || rspec_run_status=$?
   else
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?
   fi
@@ -360,9 +360,22 @@ function rspec_fail_fast() {
 function rspec_matched_foss_tests() {
   local test_file_count_threshold=20
   local matching_tests_file=${1}
+  local foss_matching_tests_file="${matching_tests_file}-foss"
+
+  # Keep only files that exists (i.e. exclude EE speficic files)
+  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| File.exist?(f) && f.include?("spec/") }.join(" ")' > "${foss_matching_tests_file}"
+
+  echo "Matching tests file:"
+  cat ${matching_tests_file}
+  echo -e "\n\n"
+
+  echo "FOSS matching tests file:"
+  cat ${foss_matching_tests_file}
+  echo -e "\n\n"
+
   local rspec_opts=${2}
-  local test_files="$(cat "${matching_tests_file}")"
-  local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
+  local test_files="$(cat ${foss_matching_tests_file})"
+  local test_file_count=$(wc -w "${foss_matching_tests_file}" | awk {'print $1'})
 
   if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
     echo "This job is intentionally failed because there are more than ${test_file_count_threshold} FOSS test files matched,"

@@ -423,11 +423,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       destroy_project(project, user)
     end
 
-    it 'calls the bulk snippet destroy service with the hard_delete param set to true' do
+    it 'calls the bulk snippet destroy service with the skip_authorization param set to true' do
       expect(project.snippets.count).to eq 2
 
       expect_next_instance_of(Snippets::BulkDestroyService, user, project.snippets) do |instance|
-        expect(instance).to receive(:execute).with(hard_delete: true).and_call_original
+        expect(instance).to receive(:execute).with(skip_authorization: true).and_call_original
       end
 
       expect do
@@ -485,9 +485,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     let!(:project_bot) { create(:user, :project_bot).tap { |user| project.add_maintainer(user) } }
 
     it 'deletes bot user as well' do
-      expect do
-        destroy_project(project, user)
-      end.to change { User.find_by(id: project_bot.id) }.to(nil)
+      expect_next_instance_of(Users::DestroyService, user) do |instance|
+        expect(instance).to receive(:execute).with(project_bot, skip_authorization: true).and_call_original
+      end
+
+      destroy_project(project, user)
     end
   end
 

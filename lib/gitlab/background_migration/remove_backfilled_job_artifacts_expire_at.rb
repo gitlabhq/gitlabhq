@@ -26,13 +26,16 @@ module Gitlab
         AND EXTRACT(second FROM timezone('UTC', expire_at)) = 0
       SQL
 
+      scope_to ->(relation) {
+        relation.where(EXPIRES_ON_21_22_23_AT_MIDNIGHT_IN_TIMEZONE)
+          .or(relation.where(file_type: 3))
+      }
+
       def perform
         each_sub_batch(
           operation_name: :update_all
         ) do |sub_batch|
-          sub_batch.where(EXPIRES_ON_21_22_23_AT_MIDNIGHT_IN_TIMEZONE)
-                   .or(sub_batch.where(file_type: 3))
-                   .update_all(expire_at: nil)
+          sub_batch.update_all(expire_at: nil)
         end
       end
     end

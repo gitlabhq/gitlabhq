@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Groups do
   include GroupAPIHelpers
   include UploadHelpers
+  include WorkhorseHelpers
 
   let_it_be(:user1) { create(:user, can_create_group: false) }
   let_it_be(:user2) { create(:user) }
@@ -872,21 +873,31 @@ RSpec.describe API::Groups do
         group_param = {
           avatar: fixture_file_upload(file_path)
         }
-        put api("/groups/#{group1.id}", user1), params: group_param
+        workhorse_form_with_file(
+          api("/groups/#{group1.id}", user1),
+          method: :put,
+          file_key: :avatar,
+          params: group_param
+        )
       end
     end
 
     context 'when authenticated as the group owner' do
       it 'updates the group' do
-        put api("/groups/#{group1.id}", user1), params: {
-          name: new_group_name,
-          request_access_enabled: true,
-          project_creation_level: "noone",
-          subgroup_creation_level: "maintainer",
-          default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
-          prevent_sharing_groups_outside_hierarchy: true,
-          avatar: fixture_file_upload(file_path)
-        }
+        workhorse_form_with_file(
+          api("/groups/#{group1.id}", user1),
+          method: :put,
+          file_key: :avatar,
+          params: {
+            name: new_group_name,
+            request_access_enabled: true,
+            project_creation_level: "noone",
+            subgroup_creation_level: "maintainer",
+            default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+            prevent_sharing_groups_outside_hierarchy: true,
+            avatar: fixture_file_upload(file_path)
+          }
+        )
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(new_group_name)
@@ -1787,7 +1798,12 @@ RSpec.describe API::Groups do
           attrs[:avatar] = fixture_file_upload(file_path)
         end
 
-        post api("/groups", user3), params: params
+        workhorse_form_with_file(
+          api('/groups', user3),
+          method: :post,
+          file_key: :avatar,
+          params: params
+        )
       end
     end
 

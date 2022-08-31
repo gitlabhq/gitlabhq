@@ -49,8 +49,11 @@ To reduce false negatives in [dependency scans](../../../user/application_securi
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285477) in GitLab 13.11, date range slider to visualize data between given dates.
 
 The project Security Dashboard shows the total number of vulnerabilities
-over time, with up to 365 days of historical data. Data refreshes daily at 01:15 UTC.
-It shows statistics for all vulnerabilities.
+over time, with up to 365 days of historical data. Data refresh begins daily at 01:15 UTC via a scheduled job. 
+Each refresh captures a snapshot of open vulnerabilities. Data is not backported to prior days
+so vulnerabilities opened after the job has already run for the day will not be reflected in the
+counts until the following day's refresh job.
+Project Security Dashboards show statistics for all vulnerabilities with a current status of `Needs triage` or `Confirmed` .
 
 To view total number of vulnerabilities over time:
 
