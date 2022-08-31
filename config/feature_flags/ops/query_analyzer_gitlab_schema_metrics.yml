@@ -1,8 +1,7 @@
 ---
 name: query_analyzer_gitlab_schema_metrics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73839
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345034
 milestone: '14.5'
-type: development
+type: ops
 group: group::sharding
 default_enabled: false

@@ -269,6 +269,13 @@ Use title case for the GitLab Container Registry.
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## default branch
+
+Use **default branch** to refer generically to the primary branch in the repository.
+Users can set the default branch by using a UI setting.
+
+For examples that use the default branch, use `main` instead of [`master`](#master).
+
 ## Dependency Proxy
 
 Use title case for the GitLab Dependency Proxy.
@@ -648,7 +655,8 @@ Do not use **manpower**. Use words like **workforce** or **GitLab team members**
 
 ## master
 
-Do not use **master**. Options are **primary** or **main**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+Do not use `master`. Use `main` when you need a sample [default branch name](#default-branch).
+([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## may, might
 

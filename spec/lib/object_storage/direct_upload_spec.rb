@@ -342,84 +342,68 @@ RSpec.describe ObjectStorage::DirectUpload do
       context 'when length is unknown' do
         let(:has_length) { false }
 
-        context 'when s3_omit_multipart_urls feature flag is enabled' do
-          let(:consolidated_settings) { true }
-
-          it 'omits multipart URLs' do
-            expect(subject).not_to have_key(:MultipartUpload)
-          end
-
-          it_behaves_like 'a valid upload'
-        end
-
-        context 'when s3_omit_multipart_urls feature flag is disabled' do
+        it_behaves_like 'a valid S3 upload with multipart data' do
           before do
-            stub_feature_flags(s3_omit_multipart_urls: false)
+            stub_object_storage_multipart_init(storage_url, "myUpload")
           end
 
-          it_behaves_like 'a valid S3 upload with multipart data' do
-            before do
-              stub_object_storage_multipart_init(storage_url, "myUpload")
+          context 'when maximum upload size is 0' do
+            let(:maximum_size) { 0 }
+
+            it 'returns maximum number of parts' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(100)
             end
 
-            context 'when maximum upload size is 0' do
-              let(:maximum_size) { 0 }
+            it 'part size is minimum, 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
+            end
+          end
 
-              it 'returns maximum number of parts' do
-                expect(subject[:MultipartUpload][:PartURLs].length).to eq(100)
-              end
+          context 'when maximum upload size is < 5 MB' do
+            let(:maximum_size) { 1024 }
 
-              it 'part size is minimum, 5MB' do
-                expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
-              end
+            it 'returns only 1 part' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(1)
             end
 
-            context 'when maximum upload size is < 5 MB' do
-              let(:maximum_size) { 1024 }
+            it 'part size is minimum, 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
+            end
+          end
 
-              it 'returns only 1 part' do
-                expect(subject[:MultipartUpload][:PartURLs].length).to eq(1)
-              end
+          context 'when maximum upload size is 10MB' do
+            let(:maximum_size) { 10.megabyte }
 
-              it 'part size is minimum, 5MB' do
-                expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
-              end
+            it 'returns only 2 parts' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(2)
             end
 
-            context 'when maximum upload size is 10MB' do
-              let(:maximum_size) { 10.megabyte }
+            it 'part size is minimum, 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
+            end
+          end
 
-              it 'returns only 2 parts' do
-                expect(subject[:MultipartUpload][:PartURLs].length).to eq(2)
-              end
+          context 'when maximum upload size is 12MB' do
+            let(:maximum_size) { 12.megabyte }
 
-              it 'part size is minimum, 5MB' do
-                expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
-              end
+            it 'returns only 3 parts' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(3)
             end
 
-            context 'when maximum upload size is 12MB' do
-              let(:maximum_size) { 12.megabyte }
+            it 'part size is rounded-up to 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
+            end
+          end
 
-              it 'returns only 3 parts' do
-                expect(subject[:MultipartUpload][:PartURLs].length).to eq(3)
-              end
+          context 'when maximum upload size is 49GB' do
+            let(:maximum_size) { 49.gigabyte }
 
-              it 'part size is rounded-up to 5MB' do
-                expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
-              end
+            it 'returns maximum, 100 parts' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(100)
             end
 
-            context 'when maximum upload size is 49GB' do
-              let(:maximum_size) { 49.gigabyte }
-
-              it 'returns maximum, 100 parts' do
-                expect(subject[:MultipartUpload][:PartURLs].length).to eq(100)
-              end
-
-              it 'part size is rounded-up to 5MB' do
-                expect(subject[:MultipartUpload][:PartSize]).to eq(505.megabyte)
-              end
+            it 'part size is rounded-up to 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(505.megabyte)
             end
           end
         end

@@ -479,6 +479,7 @@ sbom_components: :gitlab_main
 sbom_occurrences: :gitlab_main
 sbom_component_versions: :gitlab_main
 sbom_sources: :gitlab_main
+sbom_vulnerable_component_versions: :gitlab_main
 schema_migrations: :gitlab_internal
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main
@@ -549,6 +550,7 @@ user_statuses: :gitlab_main
 user_synced_attributes_metadata: :gitlab_main
 verification_codes: :gitlab_main
 vulnerabilities: :gitlab_main
+vulnerability_advisories: :gitlab_main
 vulnerability_exports: :gitlab_main
 vulnerability_external_issue_links: :gitlab_main
 vulnerability_feedback: :gitlab_main

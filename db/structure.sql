@@ -20856,6 +20856,23 @@ CREATE SEQUENCE sbom_sources_id_seq
 
 ALTER SEQUENCE sbom_sources_id_seq OWNED BY sbom_sources.id;
 
+CREATE TABLE sbom_vulnerable_component_versions (
+    id bigint NOT NULL,
+    vulnerability_advisory_id bigint,
+    sbom_component_version_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE sbom_vulnerable_component_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_vulnerable_component_versions_id_seq OWNED BY sbom_vulnerable_component_versions.id;
+
 CREATE TABLE schema_migrations (
     version character varying NOT NULL,
     finished_at timestamp with time zone DEFAULT now()
@@ -22284,6 +22301,44 @@ CREATE SEQUENCE vulnerabilities_id_seq
     CACHE 1;
 
 ALTER SEQUENCE vulnerabilities_id_seq OWNED BY vulnerabilities.id;
+
+CREATE TABLE vulnerability_advisories (
+    uuid uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    id bigint NOT NULL,
+    created_date date NOT NULL,
+    published_date date NOT NULL,
+    description text,
+    title text,
+    component_name text,
+    solution text,
+    not_impacted text,
+    cvss_v2 text,
+    cvss_v3 text,
+    affected_range text,
+    identifiers text[] DEFAULT '{}'::text[],
+    fixed_versions text[] DEFAULT '{}'::text[],
+    urls text[] DEFAULT '{}'::text[],
+    links text[] DEFAULT '{}'::text[],
+    CONSTRAINT check_3ab0544d19 CHECK ((char_length(title) <= 2048)),
+    CONSTRAINT check_3b57023409 CHECK ((char_length(affected_range) <= 32)),
+    CONSTRAINT check_4d5cd7be9c CHECK ((char_length(component_name) <= 2048)),
+    CONSTRAINT check_962f256a51 CHECK ((char_length(solution) <= 2048)),
+    CONSTRAINT check_aae93955fb CHECK ((char_length(cvss_v3) <= 128)),
+    CONSTRAINT check_b8a17497f3 CHECK ((char_length(cvss_v2) <= 128)),
+    CONSTRAINT check_c05a35f418 CHECK ((char_length(not_impacted) <= 2048)),
+    CONSTRAINT check_ff9f6483b6 CHECK ((char_length(description) <= 2048))
+);
+
+CREATE SEQUENCE vulnerability_advisories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_advisories_id_seq OWNED BY vulnerability_advisories.id;
 
 CREATE TABLE vulnerability_exports (
     id bigint NOT NULL,
@@ -23829,6 +23884,8 @@ ALTER TABLE ONLY sbom_occurrences ALTER COLUMN id SET DEFAULT nextval('sbom_occu
 
 ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_vulnerable_component_versions ALTER COLUMN id SET DEFAULT nextval('sbom_vulnerable_component_versions_id_seq'::regclass);
+
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
@@ -23948,6 +24005,8 @@ ALTER TABLE ONLY users_star_projects ALTER COLUMN id SET DEFAULT nextval('users_
 ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_advisories ALTER COLUMN id SET DEFAULT nextval('vulnerability_advisories_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_exports ALTER COLUMN id SET DEFAULT nextval('vulnerability_exports_id_seq'::regclass);
 
@@ -26049,6 +26108,9 @@ ALTER TABLE ONLY sbom_occurrences
 ALTER TABLE ONLY sbom_sources
     ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY sbom_vulnerable_component_versions
+    ADD CONSTRAINT sbom_vulnerable_component_versions_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
 
@@ -26264,6 +26326,9 @@ ALTER TABLE ONLY verification_codes
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT vulnerabilities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_advisories
+    ADD CONSTRAINT vulnerability_advisories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT vulnerability_exports_pkey PRIMARY KEY (id);
@@ -30522,6 +30587,10 @@ CREATE UNIQUE INDEX index_vulnerability_statistics_on_unique_project_id ON vulne
 
 CREATE UNIQUE INDEX index_vulnerability_user_mentions_on_note_id ON vulnerability_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
+CREATE INDEX index_vulnerable_component_versions_on_sbom_component_version ON sbom_vulnerable_component_versions USING btree (sbom_component_version_id);
+
+CREATE INDEX index_vulnerable_component_versions_on_vulnerability_advisory ON sbom_vulnerable_component_versions USING btree (vulnerability_advisory_id);
+
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON vulnerability_user_mentions USING btree (vulnerability_id) WHERE (note_id IS NULL);
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON vulnerability_user_mentions USING btree (vulnerability_id, note_id);
@@ -32520,6 +32589,9 @@ ALTER TABLE ONLY requirements_management_test_reports
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_899c8f3231 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY sbom_vulnerable_component_versions
+    ADD CONSTRAINT fk_8a2a1197f9 FOREIGN KEY (sbom_component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_8a3072ccb3 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
@@ -32819,6 +32891,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_d6f785c9fc FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY sbom_vulnerable_component_versions
+    ADD CONSTRAINT fk_d720a1959a FOREIGN KEY (vulnerability_advisory_id) REFERENCES vulnerability_advisories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY metrics_users_starred_dashboards
     ADD CONSTRAINT fk_d76a2b9a8c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

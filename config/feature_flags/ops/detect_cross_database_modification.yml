@@ -1,8 +1,7 @@
 ---
 name: detect_cross_database_modification
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73316
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344620
 milestone: '14.5'
-type: development
+type: ops
 group: group::sharding
 default_enabled: false

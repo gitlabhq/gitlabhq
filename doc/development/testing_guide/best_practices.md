@@ -1074,7 +1074,7 @@ Most tests for Elasticsearch logic relate to:
 
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
-The `:elastic_with_delete_by_query` trait was added to reduce run time for pipelines by creating and deleting indices
+The `:elastic_delete_by_query` trait was added to reduce run time for pipelines by creating and deleting indices
 at the start and end of each context only. The [Elasticsearch DeleteByQuery API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
 is used to delete data in all indices in between examples to ensure a clean index.
 
