@@ -85,7 +85,7 @@ Migrate the assets in this order:
 
 Keep in mind the limitations of the [import/export feature](../settings/import_export.md#items-that-are-exported).
 
-You must still migrate your [Container Registry](../../packages/container_registry/)
+You must still migrate your [Container Registry](../../packages/container_registry/index.md)
 over a series of Docker pulls and pushes. Re-run any CI pipelines to retrieve any build artifacts.
 
 ## Migrate from GitLab.com to self-managed GitLab

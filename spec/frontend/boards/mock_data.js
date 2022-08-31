@@ -266,6 +266,7 @@ export const rawIssue = {
 };
 
 export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
+export const mockEpicFullPath = 'gitlab-org/test-subgroup';
 
 export const mockIssue = {
   id: 'gid://gitlab/Issue/436',
@@ -289,6 +290,47 @@ export const mockIssue = {
     id: 'gid://gitlab/Epic/41',
   },
   type: 'ISSUE',
+};
+
+export const mockEpic = {
+  id: 'gid://gitlab/Epic/26',
+  iid: '1',
+  group: {
+    id: 'gid://gitlab/Group/33',
+    fullPath: 'twitter',
+    __typename: 'Group',
+  },
+  title: 'Eum animi debitis occaecati ad non odio repellat voluptatem similique.',
+  state: 'opened',
+  reference: '&1',
+  referencePath: `${mockEpicFullPath}&1`,
+  webPath: `/groups/${mockEpicFullPath}/-/epics/1`,
+  webUrl: `${mockEpicFullPath}/-/epics/1`,
+  createdAt: '2022-01-18T05:15:15Z',
+  closedAt: null,
+  __typename: 'Epic',
+  relativePosition: null,
+  confidential: false,
+  subscribed: true,
+  blocked: true,
+  blockedByCount: 1,
+  labels: {
+    nodes: [],
+    __typename: 'LabelConnection',
+  },
+  hasIssues: true,
+  descendantCounts: {
+    closedEpics: 0,
+    closedIssues: 0,
+    openedEpics: 0,
+    openedIssues: 2,
+    __typename: 'EpicDescendantCount',
+  },
+  descendantWeightSum: {
+    closedIssues: 0,
+    openedIssues: 0,
+    __typename: 'EpicDescendantWeights',
+  },
 };
 
 export const mockActiveIssue = {
@@ -523,6 +565,15 @@ export const mockBlockingIssue1 = {
   __typename: 'Issue',
 };
 
+export const mockBlockingEpic1 = {
+  id: 'gid://gitlab/Epic/29',
+  iid: '4',
+  title: 'Sint nihil exercitationem aspernatur unde molestiae rem accusantium.',
+  reference: 'twitter&4',
+  webUrl: 'http://gdk.test:3000/groups/gitlab-org/test-subgroup/-/epics/4',
+  __typename: 'Epic',
+};
+
 export const mockBlockingIssue2 = {
   id: 'gid://gitlab/Issue/524',
   iid: '5',
@@ -564,6 +615,23 @@ export const mockBlockingIssuablesResponse1 = {
   },
 };
 
+export const mockBlockingEpicIssuablesResponse1 = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/33',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/26',
+        blockingIssuables: {
+          __typename: 'EpicConnection',
+          nodes: [mockBlockingEpic1],
+        },
+      },
+    },
+  },
+};
+
 export const mockBlockingIssuablesResponse2 = {
   data: {
     issuable: {
@@ -599,6 +667,12 @@ export const mockBlockedIssue2 = {
   id: '527',
   blockedByCount: 4,
   webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/0',
+};
+
+export const mockBlockedEpic1 = {
+  id: '26',
+  blockedByCount: 1,
+  webUrl: 'http://gdk.test:3000/gitlab-org/test-subgroup/-/epics/1',
 };
 
 export const mockMoveIssueParams = {

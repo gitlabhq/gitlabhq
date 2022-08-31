@@ -68,7 +68,7 @@ information directly in the merge request.
 | [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | No | Yes |
 | Support for the [vulnerability allow list](#vulnerability-allowlisting) | No | Yes |
 | [Access to Security Dashboard page](#security-dashboard) | No | Yes |
-| [Access to Dependency List page](../dependency_list/) | No | Yes |
+| [Access to Dependency List page](../dependency_list/index.md) | No | Yes |
 
 ## Requirements
 
@@ -706,12 +706,12 @@ The results are stored in `gl-container-scanning-report.json`.
 ## Reports JSON format
 
 The container scanning tool emits JSON reports which the [GitLab Runner](https://docs.gitlab.com/runner/)
-recognizes through the [`artifacts:reports`](../../../ci/yaml/#artifactsreports)
+recognizes through the [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)
 keyword in the CI configuration file.
 
 Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
 the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../vulnerability_report/pipeline.md)
-and become part of the [Vulnerability Report](../vulnerability_report/).
+and become part of the [Vulnerability Report](../vulnerability_report/index.md).
 
 These reports must follow a format defined in the
 [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/). See:

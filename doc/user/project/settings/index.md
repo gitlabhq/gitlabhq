@@ -170,7 +170,7 @@ include:  # Execute individual project's configuration (if project contains .git
 When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
-[Enforce scan execution](../../application_security/#enforce-scan-execution).
+[Enforce scan execution](../../application_security/index.md#enforce-scan-execution).
 
 ### Ensure compliance jobs are always run
 

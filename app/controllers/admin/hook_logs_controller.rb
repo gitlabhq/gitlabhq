@@ -1,34 +1,17 @@
 # frozen_string_literal: true
 
-class Admin::HookLogsController < Admin::ApplicationController
-  include ::WebHooks::HookExecutionNotice
+module Admin
+  class HookLogsController < Admin::ApplicationController
+    include WebHooks::HookLogActions
 
-  before_action :hook, only: [:show, :retry]
-  before_action :hook_log, only: [:show, :retry]
+    private
 
-  respond_to :html
+    def hook
+      @hook ||= SystemHook.find(params[:hook_id])
+    end
 
-  feature_category :integrations
-  urgency :low, [:retry]
-
-  def show
-  end
-
-  def retry
-    result = hook.execute(hook_log.request_data, hook_log.trigger)
-
-    set_hook_execution_notice(result)
-
-    redirect_to edit_admin_hook_path(@hook)
-  end
-
-  private
-
-  def hook
-    @hook ||= SystemHook.find(params[:hook_id])
-  end
-
-  def hook_log
-    @hook_log ||= hook.web_hook_logs.find(params[:id])
+    def after_retry_redirect_path
+      edit_admin_hook_path(hook)
+    end
   end
 end

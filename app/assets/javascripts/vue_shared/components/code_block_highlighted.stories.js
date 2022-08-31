@@ -2,7 +2,7 @@ import CodeBlockHighlighted from './code_block_highlighted.vue';
 
 export default {
   component: CodeBlockHighlighted,
-  title: 'vue_shared/components/code_block_highlighted',
+  title: 'vue_shared/code_block_highlighted',
 };
 
 const Template = (args, { argTypes }) => ({

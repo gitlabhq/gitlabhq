@@ -304,6 +304,7 @@ module Gitlab
           end
         end
 
+        # This will be removed with the FF `ci_variables_refactoring_to_variable`.
         class VariablesValidator < ActiveModel::EachValidator
           include LegacyValidationHelpers
 
@@ -332,6 +333,18 @@ module Gitlab
           def validate_key_hash_values(record, attribute, value, allowed_value_data)
             unless validate_string_or_hash_value_variables(value, allowed_value_data)
               record.errors.add(attribute, 'should be a hash of key value pairs, value can be a hash')
+            end
+          end
+        end
+
+        class AlphanumericValidator < ActiveModel::EachValidator
+          def self.validate(value)
+            value.is_a?(String) || value.is_a?(Symbol) || value.is_a?(Integer)
+          end
+
+          def validate_each(record, attribute, value)
+            unless self.class.validate(value)
+              record.errors.add(attribute, 'must be an alphanumeric string')
             end
           end
         end

@@ -3,15 +3,12 @@ import {
   GlIcon,
   GlLink,
   GlForm,
-  GlFormInputGroup,
-  GlInputGroupText,
   GlFormInput,
   GlFormGroup,
   GlFormTextarea,
   GlButton,
   GlFormRadio,
   GlFormRadioGroup,
-  GlFormSelect,
 } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
@@ -21,6 +18,7 @@ import csrf from '~/lib/utils/csrf';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
+import ProjectNamespace from './project_namespace.vue';
 
 const PRIVATE_VISIBILITY = 'private';
 const INTERNAL_VISIBILITY = 'internal';
@@ -39,28 +37,18 @@ const initFormField = ({ value, required = true, skipValidation = false }) => ({
   feedback: null,
 });
 
-function sortNamespaces(namespaces) {
-  if (!namespaces || !namespaces?.length) {
-    return namespaces;
-  }
-
-  return namespaces.sort((a, b) => a.full_name.localeCompare(b.full_name));
-}
-
 export default {
   components: {
     GlForm,
     GlIcon,
     GlLink,
     GlButton,
-    GlFormInputGroup,
-    GlInputGroupText,
     GlFormInput,
     GlFormTextarea,
     GlFormGroup,
     GlFormRadio,
     GlFormRadioGroup,
-    GlFormSelect,
+    ProjectNamespace,
   },
   directives: {
     validation: validation(),
@@ -70,9 +58,6 @@ export default {
       default: '',
     },
     visibilityHelpPath: {
-      default: '',
-    },
-    endpoint: {
       default: '',
     },
     projectFullPath: {
@@ -96,6 +81,9 @@ export default {
     restrictedVisibilityLevels: {
       default: [],
     },
+    namespaceId: {
+      default: '',
+    },
   },
   data() {
     const form = {
@@ -117,14 +105,10 @@ export default {
     };
     return {
       isSaving: false,
-      namespaces: [],
       form,
     };
   },
   computed: {
-    projectUrl() {
-      return `${gon.gitlab_url}/`;
-    },
     projectVisibilityLevel() {
       return VISIBILITY_LEVEL[this.projectVisibility];
     },
@@ -188,31 +172,29 @@ export default {
   },
   watch: {
     // eslint-disable-next-line func-names
-    'form.fields.namespace.value': function () {
-      this.form.fields.visibility.value =
-        this.restrictedVisibilityLevels.length !== 0 ? null : PRIVATE_VISIBILITY;
-    },
-    // eslint-disable-next-line func-names
     'form.fields.name.value': function (newVal) {
       this.form.fields.slug.value = kebabCase(newVal);
     },
   },
-  mounted() {
-    this.fetchNamespaces();
-  },
   methods: {
-    async fetchNamespaces() {
-      const { data } = await axios.get(this.endpoint);
-      this.namespaces = sortNamespaces(data.namespaces);
-    },
     isVisibilityLevelDisabled(visibility) {
       return !this.allowedVisibilityLevels.includes(visibility);
     },
     getInitialVisibilityValue() {
       return this.restrictedVisibilityLevels.length !== 0 ? null : this.projectVisibility;
     },
+    setNamespace(namespace) {
+      this.form.fields.visibility.value =
+        this.restrictedVisibilityLevels.length !== 0 ? null : PRIVATE_VISIBILITY;
+      this.form.fields.namespace.value = namespace;
+      this.form.fields.namespace.state = true;
+    },
     async onSubmit() {
       this.form.showValidation = true;
+
+      if (!this.form.fields.namespace.value) {
+        this.form.fields.namespace.state = false;
+      }
 
       if (!this.form.state) {
         return;
@@ -282,30 +264,7 @@ export default {
           :state="form.fields.namespace.state"
           :invalid-feedback="s__('ForkProject|Please select a namespace')"
         >
-          <gl-form-input-group>
-            <template #prepend>
-              <gl-input-group-text>
-                {{ projectUrl }}
-              </gl-input-group-text>
-            </template>
-            <gl-form-select
-              id="fork-url"
-              v-model="form.fields.namespace.value"
-              v-validation:[form.showValidation]
-              name="namespace"
-              data-testid="fork-url-input"
-              data-qa-selector="fork_namespace_dropdown"
-              :state="form.fields.namespace.state"
-              required
-            >
-              <template #first>
-                <option :value="null" disabled>{{ s__('ForkProject|Select a namespace') }}</option>
-              </template>
-              <option v-for="namespace in namespaces" :key="namespace.id" :value="namespace">
-                {{ namespace.full_name }}
-              </option>
-            </gl-form-select>
-          </gl-form-input-group>
+          <project-namespace @select="setNamespace" />
         </gl-form-group>
       </div>
       <div class="gl-flex-basis-half">

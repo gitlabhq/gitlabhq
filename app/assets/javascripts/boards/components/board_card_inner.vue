@@ -274,16 +274,16 @@ export default {
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
         <gl-loading-icon v-if="item.isLoading" size="lg" class="gl-mt-5" />
-        <work-item-type-icon
-          v-if="showWorkItemTypeIcon"
-          :work-item-type="item.type"
-          show-tooltip-on-hover
-        />
         <span
           v-if="item.referencePath"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3 gl-text-secondary"
           :class="{ 'gl-font-base': isEpicBoard }"
         >
+          <work-item-type-icon
+            v-if="showWorkItemTypeIcon"
+            :work-item-type="item.type"
+            show-tooltip-on-hover
+          />
           <tooltip-on-truncate
             v-if="showReferencePath"
             :title="itemReferencePath"

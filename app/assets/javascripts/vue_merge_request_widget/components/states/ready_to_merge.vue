@@ -680,6 +680,7 @@ export default {
                     :is-fast-forward-enabled="!shouldShowMergeEdit"
                     :commits-count="commitsCount"
                     :target-branch="stateData.targetBranch"
+                    :merge-commit-path="mr.mergeCommitPath"
                   />
                 </li>
                 <li v-if="mr.state !== 'closed'" class="gl-line-height-normal">

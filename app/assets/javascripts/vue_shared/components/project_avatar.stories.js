@@ -2,7 +2,7 @@ import ProjectAvatar from './project_avatar.vue';
 
 export default {
   component: ProjectAvatar,
-  title: 'vue_shared/components/project_avatar',
+  title: 'vue_shared/project_avatar',
 };
 
 const Template = (args, { argTypes }) => ({

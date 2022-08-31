@@ -232,7 +232,7 @@ In progress.
 
 ## Timeline
 
-- 2021-01-21: Parent [CI Scaling](../ci_scale/) blueprint [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52203) created.
+- 2021-01-21: Parent [CI Scaling](../ci_scale/index.md) blueprint [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52203) created.
 - 2021-04-26: CI Scaling blueprint approved and merged.
 - 2021-09-10: CI/CD data time decay blueprint discussions started.
 - 2022-01-07: CI/CD data time decay blueprint [merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70052).

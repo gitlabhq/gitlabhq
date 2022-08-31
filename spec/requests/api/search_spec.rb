@@ -351,6 +351,17 @@ RSpec.describe API::Search do
         end
       end
 
+      it 'increments the custom search sli apdex' do
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
+          elapsed: a_kind_of(Numeric),
+          search_scope: 'issues',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
+      end
+
       it 'sets global search information for logging' do
         expect(Gitlab::Instrumentation::GlobalSearchApi).to receive(:set_information).with(
           type: 'basic',

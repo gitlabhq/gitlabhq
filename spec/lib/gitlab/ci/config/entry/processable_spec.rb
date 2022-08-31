@@ -197,6 +197,34 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
           end
         end
       end
+
+      context 'when a variable has an invalid data attribute' do
+        let(:config) do
+          {
+            script: 'echo',
+            variables: { 'VAR1' => 'val 1', 'VAR2' => { value: 'val 2', description: 'hello var 2' } }
+          }
+        end
+
+        it 'reports error about variable' do
+          expect(entry.errors)
+            .to include 'variables:var2 config must be a string'
+        end
+
+        context 'when the FF ci_variables_refactoring_to_variable is disabled' do
+          let(:entry_without_ff) { node_class.new(config, name: :rspec) }
+
+          before do
+            stub_feature_flags(ci_variables_refactoring_to_variable: false)
+            entry_without_ff.compose!
+          end
+
+          it 'reports error about variable' do
+            expect(entry_without_ff.errors)
+              .to include /config should be a hash of key value pairs/
+          end
+        end
+      end
     end
   end
 
@@ -212,13 +240,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
     let(:unspecified) { double('unspecified', 'specified?' => false) }
     let(:default) { double('default', '[]' => unspecified) }
     let(:workflow) { double('workflow', 'has_rules?' => false) }
-    let(:variables) {}
 
     let(:deps) do
       double('deps',
         default_entry: default,
-        workflow_entry: workflow,
-        variables_value: variables)
+        workflow_entry: workflow)
     end
 
     context 'with workflow rules' do

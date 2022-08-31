@@ -6392,6 +6392,9 @@ msgstr ""
 msgid "Blocking"
 msgstr ""
 
+msgid "Blocking epics"
+msgstr ""
+
 msgid "Blocking issues"
 msgstr ""
 
@@ -16804,6 +16807,9 @@ msgid "ForkProject|Public"
 msgstr ""
 
 msgid "ForkProject|Select a namespace"
+msgstr ""
+
+msgid "ForkProject|Something went wrong while loading data. Please refresh the page to try again."
 msgstr ""
 
 msgid "ForkProject|The project can be accessed by any logged in user."
@@ -33811,6 +33817,12 @@ msgstr ""
 msgid "Runners|An error has occurred fetching instructions"
 msgstr ""
 
+msgid "Runners|An upgrade is available for this runner"
+msgstr ""
+
+msgid "Runners|An upgrade is recommended for this runner"
+msgstr ""
+
 msgid "Runners|Architecture"
 msgstr ""
 
@@ -33857,6 +33869,9 @@ msgid "Runners|Copy instructions"
 msgstr ""
 
 msgid "Runners|Copy registration token"
+msgstr ""
+
+msgid "Runners|Created %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Delete %d runner"
@@ -33928,6 +33943,9 @@ msgid "Runners|Jobs"
 msgstr ""
 
 msgid "Runners|Last contact"
+msgstr ""
+
+msgid "Runners|Last contact: %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Locked to this project"
@@ -34211,6 +34229,9 @@ msgid "Runners|Value"
 msgstr ""
 
 msgid "Runners|Version"
+msgstr ""
+
+msgid "Runners|Version %{version}"
 msgstr ""
 
 msgid "Runners|View installation instructions"

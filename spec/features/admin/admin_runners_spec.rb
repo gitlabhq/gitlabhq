@@ -81,7 +81,7 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path
 
         within_runner_row(runner.id) do
-          expect(find("[data-label='Jobs']")).to have_content '2'
+          expect(find("[data-testid='job-count']")).to have_content '2'
         end
       end
 

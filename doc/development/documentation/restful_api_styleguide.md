@@ -129,7 +129,7 @@ To deprecate an attribute:
    ```
 
 To widely announce a deprecation, or if it's a breaking change,
-[update the deprecations and removals documentation](../deprecation_guidelines/#update-the-deprecations-and-removals-documentation).
+[update the deprecations and removals documentation](../deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation).
 
 ## Method description
 

@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import App from './components/app.vue';
 
 const mountElement = document.getElementById('fork-groups-mount-element');
@@ -17,9 +19,14 @@ const {
   restrictedVisibilityLevels,
 } = mountElement.dataset;
 
+Vue.use(VueApollo);
+
 // eslint-disable-next-line no-new
 new Vue({
   el: mountElement,
+  apolloProvider: new VueApollo({
+    defaultClient: createDefaultClient(),
+  }),
   provide: {
     newGroupPath,
     visibilityHelpPath,

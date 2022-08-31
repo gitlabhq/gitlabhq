@@ -125,7 +125,7 @@ upgrading to [GitLab Premium or Ultimate](https://about.gitlab.com/upgrade/).
 
 ## Purchase additional data transfer
 
-Read more about managing your [data transfer limits](../../../subscriptions/gitlab_com/#purchase-more-storage-and-transfer).
+Read more about managing your [data transfer limits](../../../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
 
 ## Related issues
 

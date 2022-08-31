@@ -65,6 +65,13 @@ module API
 
         set_global_search_log_information
 
+        Gitlab::Metrics::GlobalSearchSlis.record_apdex(
+          elapsed: @search_duration_s,
+          search_type: search_type,
+          search_level: search_service.level,
+          search_scope: search_scope
+        )
+
         Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
 
         paginate(@results)

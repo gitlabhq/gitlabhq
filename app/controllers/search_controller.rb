@@ -57,6 +57,13 @@ class SearchController < ApplicationController
       @search_highlight = @search_service.search_highlight
     end
 
+    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
+      elapsed: @global_search_duration_s,
+      search_type: @search_type,
+      search_level: @search_level,
+      search_scope: @scope
+    )
+
     increment_search_counters
   end
 

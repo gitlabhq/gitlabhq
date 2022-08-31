@@ -22,7 +22,10 @@ describe('RunnerList', () => {
   const findCell = ({ row = 0, fieldKey }) =>
     extendedWrapper(findRows().at(row).find(`[data-testid="td-${fieldKey}"]`));
 
-  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
+  const createComponent = (
+    { props = {}, provide = {}, ...options } = {},
+    mountFn = shallowMountExtended,
+  ) => {
     wrapper = mountFn(RunnerList, {
       propsData: {
         runners: mockRunners,
@@ -32,6 +35,7 @@ describe('RunnerList', () => {
       provide: {
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
+        ...provide,
       },
       ...options,
     });
@@ -219,6 +223,62 @@ describe('RunnerList', () => {
       createComponent({ props: { loading: true } }, mountExtended);
 
       expect(findSkeletonLoader().exists()).toBe(false);
+    });
+  });
+
+  describe.each`
+    glFeatures
+    ${{ runnerListStackedLayoutAdmin: true }}
+    ${{ runnerListStackedLayout: true }}
+  `('When glFeatures = $glFeatures', ({ glFeatures }) => {
+    beforeEach(() => {
+      createComponent(
+        {
+          stubs: {
+            RunnerStatusPopover: {
+              template: '<div/>',
+            },
+          },
+          provide: {
+            glFeatures,
+          },
+        },
+        mountExtended,
+      );
+    });
+
+    it('Displays stacked list headers', () => {
+      const headerLabels = findHeaders().wrappers.map((w) => w.text());
+
+      expect(headerLabels).toEqual([
+        'Status',
+        'Runner',
+        '', // actions has no label
+      ]);
+    });
+
+    it('Displays stacked details of a runner', () => {
+      const { id, description, version, shortSha } = mockRunners[0];
+      const numericId = getIdFromGraphQLId(id);
+
+      // Badges
+      expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('never contacted');
+
+      // Runner summary
+      const summary = findCell({ fieldKey: 'summary' }).text();
+
+      expect(summary).toContain(`#${numericId} (${shortSha})`);
+      expect(summary).toContain('specific');
+
+      expect(summary).toContain(version);
+      expect(summary).toContain(description);
+
+      expect(summary).toContain('Last contact');
+      expect(summary).toContain('0'); // job count
+      expect(summary).toContain('Created');
+
+      // Actions
+      expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
     });
   });
 });

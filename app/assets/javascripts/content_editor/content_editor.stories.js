@@ -2,7 +2,7 @@ import { ContentEditor } from './index';
 
 export default {
   component: ContentEditor,
-  title: 'content_editor/components/content_editor',
+  title: 'content_editor/content_editor',
 };
 
 const Template = (_, { argTypes }) => ({

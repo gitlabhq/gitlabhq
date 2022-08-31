@@ -385,7 +385,9 @@ group :development, :test do
   gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false
 
+  # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.3.0', require: false
+  gem 'benchmark-memory', '~> 0.1', require: false
 
   gem 'knapsack', '~> 1.21.1'
   gem 'crystalball', '~> 0.7.0', require: false
@@ -460,7 +462,6 @@ gem 'ruby-prof', '~> 1.3.0'
 gem 'stackprof', '~> 0.2.21', require: false
 gem 'rbtrace', '~> 0.4', require: false
 gem 'memory_profiler', '~> 0.9', require: false
-gem 'benchmark-memory', '~> 0.1', require: false
 gem 'activerecord-explain-analyze', '~> 0.1', require: false
 
 # OAuth

@@ -19,6 +19,8 @@ const steps = [
   },
 ];
 
+const MR_RENDER_LS_KEY = 'mr_survey_rendered';
+
 export default {
   name: 'MergeRequestExperienceSurveyApp',
   components: {
@@ -68,9 +70,20 @@ export default {
     onQueryLoaded({ shouldShowCallout }) {
       this.visible = shouldShowCallout;
       if (!this.visible) this.$emit('close');
+      else if (!localStorage?.getItem(MR_RENDER_LS_KEY)) {
+        this.track('survey:mr_experience', {
+          label: 'render',
+          extra: {
+            accountAge: this.accountAge,
+          },
+        });
+        localStorage?.setItem(MR_RENDER_LS_KEY, '1');
+      }
     },
     onRate(event) {
+      this.$refs.dismisser?.dismiss();
       this.$emit('rate');
+      localStorage?.removeItem(MR_RENDER_LS_KEY);
       this.track('survey:mr_experience', {
         label: this.step.label,
         value: event,
@@ -87,21 +100,18 @@ export default {
     },
     handleKeyup(e) {
       if (e.key !== 'Escape') return;
-      this.$emit('close');
+      this.dismiss();
+    },
+    dismiss() {
       this.$refs.dismisser?.dismiss();
-      this.trackDismissal();
-    },
-    close() {
-      this.trackDismissal();
       this.$emit('close');
-    },
-    trackDismissal() {
       this.track('survey:mr_experience', {
         label: 'dismiss',
         extra: {
           accountAge: this.accountAge,
         },
       });
+      localStorage?.removeItem(MR_RENDER_LS_KEY);
     },
   },
 };
@@ -113,79 +123,71 @@ export default {
     feature-name="mr_experience_survey"
     @queryResult.once="onQueryLoaded"
   >
-    <template #default="{ dismiss }">
-      <aside
-        class="mr-experience-survey-wrapper gl-fixed gl-bottom-0 gl-right-0 gl-p-5"
-        :aria-label="$options.i18n.survey"
-      >
-        <transition name="survey-slide-up">
+    <aside
+      class="mr-experience-survey-wrapper gl-fixed gl-bottom-0 gl-right-0 gl-p-5"
+      :aria-label="$options.i18n.survey"
+    >
+      <transition name="survey-slide-up">
+        <div
+          v-if="visible"
+          class="mr-experience-survey-body gl-relative gl-display-flex gl-flex-direction-column gl-bg-white gl-p-5 gl-border gl-rounded-base"
+        >
+          <gl-button
+            v-tooltip="$options.i18n.close"
+            :aria-label="$options.i18n.close"
+            variant="default"
+            category="tertiary"
+            class="gl-top-4 gl-right-3 gl-absolute"
+            icon="close"
+            @click="dismiss"
+          />
           <div
-            v-if="visible"
-            class="mr-experience-survey-body gl-relative gl-display-flex gl-flex-direction-column gl-bg-white gl-p-5 gl-border gl-rounded-base"
+            v-if="stepIndex === 0"
+            class="mr-experience-survey-legal gl-border-t gl-mt-5 gl-pt-3 gl-text-gray-500 gl-font-sm"
+            role="note"
           >
-            <gl-button
-              v-tooltip="$options.i18n.close"
-              :aria-label="$options.i18n.close"
-              variant="default"
-              category="tertiary"
-              class="gl-top-4 gl-right-3 gl-absolute"
-              icon="close"
-              @click="
-                dismiss();
-                close();
-              "
-            />
-            <div
-              v-if="stepIndex === 0"
-              class="mr-experience-survey-legal gl-border-t gl-mt-5 gl-pt-3 gl-text-gray-500 gl-font-sm"
-              role="note"
-            >
-              <p class="gl-m-0">
-                <gl-sprintf :message="$options.i18n.legal">
-                  <template #link="{ content }">
-                    <a
-                      class="gl-text-decoration-underline gl-text-gray-500"
-                      href="https://about.gitlab.com/privacy/"
-                      target="_blank"
-                      rel="noreferrer nofollow"
-                      v-text="content"
-                    ></a>
-                  </template>
-                </gl-sprintf>
-              </p>
-            </div>
-            <div class="gl-relative">
-              <div class="gl-absolute">
-                <div
-                  v-safe-html="$options.gitlabLogo"
-                  aria-hidden="true"
-                  class="mr-experience-survey-logo"
-                ></div>
-              </div>
-            </div>
-            <section v-if="step">
-              <p id="mr_survey_question" ref="question" class="gl-m-0 gl-px-7">
-                <gl-sprintf :message="step.question">
-                  <template #strong="{ content }">
-                    <strong>{{ content }}</strong>
-                  </template>
-                </gl-sprintf>
-              </p>
-              <satisfaction-rate
-                aria-labelledby="mr_survey_question"
-                class="gl-mt-5"
-                @rate="
-                  dismiss();
-                  onRate($event);
-                "
-              />
-            </section>
-            <section v-else class="gl-px-7">
-              {{ $options.i18n.thanks }}
-            </section>
+            <p class="gl-m-0">
+              <gl-sprintf :message="$options.i18n.legal">
+                <template #link="{ content }">
+                  <a
+                    class="gl-text-decoration-underline gl-text-gray-500"
+                    href="https://about.gitlab.com/privacy/"
+                    target="_blank"
+                    rel="noreferrer nofollow"
+                    v-text="content"
+                  ></a>
+                </template>
+              </gl-sprintf>
+            </p>
           </div>
-        </transition>
-      </aside>
-    </template>
+          <div class="gl-relative">
+            <div class="gl-absolute">
+              <div
+                v-safe-html="$options.gitlabLogo"
+                aria-hidden="true"
+                class="mr-experience-survey-logo"
+              ></div>
+            </div>
+          </div>
+          <section v-if="step">
+            <p id="mr_survey_question" ref="question" class="gl-m-0 gl-px-7">
+              <gl-sprintf :message="step.question">
+                <template #strong="{ content }">
+                  <strong>{{ content }}</strong>
+                </template>
+              </gl-sprintf>
+            </p>
+            <satisfaction-rate
+              aria-labelledby="mr_survey_question"
+              class="gl-mt-5"
+              @rate="onRate"
+            />
+          </section>
+          <section v-else class="gl-px-7">
+            {{ $options.i18n.thanks }}
+          </section>
+        </div>
+      </transition>
+    </aside>
   </user-callout-dismisser>
 </template>

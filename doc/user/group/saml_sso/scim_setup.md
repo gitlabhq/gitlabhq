@@ -220,7 +220,7 @@ It is important that this SCIM `id` and SCIM `externalId` are configured to the 
 
 ### How do I verify user's SAML NameId matches the SCIM externalId
 
-Admins can use the Admin Area to [list SCIM identities for a user](../../admin_area/#user-identities).
+Admins can use the Admin Area to [list SCIM identities for a user](../../admin_area/index.md#user-identities).
 
 Group owners can see the list of users and the `externalId` stored for each user in the group SAML SSO Settings page.
 

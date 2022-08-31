@@ -36,7 +36,7 @@ module QA
       def fabricate!
         populate(:upstream, :user)
 
-        namespace_path ||= user.name
+        namespace_path ||= user.username
 
         # Sign out as admin and sign is as the fork user
         Flow::Login.sign_in(as: user)

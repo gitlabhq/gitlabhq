@@ -4,11 +4,14 @@ import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { kebabCase } from 'lodash';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import createFlash from '~/flash';
-import httpStatus from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
 import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import searchQuery from '~/pages/projects/forks/new/queries/search_forkable_namespaces.query.graphql';
+import ProjectNamespace from '~/pages/projects/forks/new/components/project_namespace.vue';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -16,6 +19,7 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 describe('ForkForm component', () => {
   let wrapper;
   let axiosMock;
+  let mockQueryResponse;
 
   const PROJECT_VISIBILITY_TYPE = {
     private:
@@ -24,26 +28,11 @@ describe('ForkForm component', () => {
     public: 'Public The project can be accessed without any authentication.',
   };
 
-  const GON_GITLAB_URL = 'https://gitlab.com';
   const GON_API_VERSION = 'v7';
-
-  const MOCK_NAMESPACES_RESPONSE = [
-    {
-      name: 'one',
-      full_name: 'one-group/one',
-      id: 1,
-    },
-    {
-      name: 'two',
-      full_name: 'two-group/two',
-      id: 2,
-    },
-  ];
 
   const DEFAULT_PROVIDE = {
     newGroupPath: 'some/groups/path',
     visibilityHelpPath: 'some/visibility/help/path',
-    endpoint: '/some/project-full-path/-/forks/new.json',
     projectFullPath: '/some/project-full-path',
     projectId: '10',
     projectName: 'Project Name',
@@ -53,12 +42,44 @@ describe('ForkForm component', () => {
     restrictedVisibilityLevels: [],
   };
 
-  const mockGetRequest = (data = {}, statusCode = httpStatus.OK) => {
-    axiosMock.onGet(DEFAULT_PROVIDE.endpoint).replyOnce(statusCode, data);
-  };
+  Vue.use(VueApollo);
 
   const createComponentFactory = (mountFn) => (provide = {}, data = {}) => {
+    const queryResponse = {
+      project: {
+        id: 'gid://gitlab/Project/1',
+        forkTargets: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Group/21',
+              fullPath: 'flightjs',
+              name: 'Flight JS',
+              visibility: 'public',
+            },
+            {
+              id: 'gid://gitlab/Namespace/4',
+              fullPath: 'root',
+              name: 'Administrator',
+              visibility: 'public',
+            },
+          ],
+        },
+      },
+    };
+
+    mockQueryResponse = jest.fn().mockResolvedValue({ data: queryResponse });
+    const requestHandlers = [[searchQuery, mockQueryResponse]];
+    const apolloProvider = createMockApollo(requestHandlers);
+
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: searchQuery,
+      data: {
+        ...queryResponse,
+      },
+    });
+
     wrapper = mountFn(ForkForm, {
+      apolloProvider,
       provide: {
         ...DEFAULT_PROVIDE,
         ...provide,
@@ -83,7 +104,6 @@ describe('ForkForm component', () => {
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
     window.gon = {
-      gitlab_url: GON_GITLAB_URL,
       api_version: GON_API_VERSION,
     };
   });
@@ -93,12 +113,11 @@ describe('ForkForm component', () => {
     axiosMock.restore();
   });
 
-  const findFormSelectOptions = () => wrapper.find('select[name="namespace"]').findAll('option');
   const findPrivateRadio = () => wrapper.find('[data-testid="radio-private"]');
   const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
   const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
   const findForkNameInput = () => wrapper.find('[data-testid="fork-name-input"]');
-  const findForkUrlInput = () => wrapper.find('[data-testid="fork-url-input"]');
+  const findForkUrlInput = () => wrapper.findComponent(ProjectNamespace);
   const findForkSlugInput = () => wrapper.find('[data-testid="fork-slug-input"]');
   const findForkDescriptionTextarea = () =>
     wrapper.find('[data-testid="fork-description-textarea"]');
@@ -106,7 +125,6 @@ describe('ForkForm component', () => {
     wrapper.find('[data-testid="fork-visibility-radio-group"]');
 
   it('will go to projectFullPath when click cancel button', () => {
-    mockGetRequest();
     createComponent();
 
     const { projectFullPath } = DEFAULT_PROVIDE;
@@ -115,8 +133,13 @@ describe('ForkForm component', () => {
     expect(cancelButton.attributes('href')).toBe(projectFullPath);
   });
 
+  const selectedMockNamespace = { name: 'two', full_name: 'two-group/two', id: 2 };
+
+  const fillForm = () => {
+    findForkUrlInput().vm.$emit('select', selectedMockNamespace);
+  };
+
   it('has input with csrf token', () => {
-    mockGetRequest();
     createComponent();
 
     expect(wrapper.find('input[name="authenticity_token"]').attributes('value')).toBe(
@@ -125,7 +148,6 @@ describe('ForkForm component', () => {
   });
 
   it('pre-populate form from project props', () => {
-    mockGetRequest();
     createComponent();
 
     expect(findForkNameInput().attributes('value')).toBe(DEFAULT_PROVIDE.projectName);
@@ -135,75 +157,19 @@ describe('ForkForm component', () => {
     );
   });
 
-  it('sets project URL prepend text with gon.gitlab_url', () => {
-    mockGetRequest();
-    createComponent();
-
-    expect(wrapper.find(GlFormInputGroup).text()).toContain(`${GON_GITLAB_URL}/`);
-  });
-
   it('will have required attribute for required fields', () => {
-    mockGetRequest();
     createComponent();
 
     expect(findForkNameInput().attributes('required')).not.toBeUndefined();
-    expect(findForkUrlInput().attributes('required')).not.toBeUndefined();
     expect(findForkSlugInput().attributes('required')).not.toBeUndefined();
     expect(findVisibilityRadioGroup().attributes('required')).not.toBeUndefined();
     expect(findForkDescriptionTextarea().attributes('required')).toBeUndefined();
-  });
-
-  describe('forks namespaces', () => {
-    beforeEach(() => {
-      mockGetRequest({ namespaces: MOCK_NAMESPACES_RESPONSE });
-      createFullComponent();
-    });
-
-    it('make GET request from endpoint', async () => {
-      await axios.waitForAll();
-
-      expect(axiosMock.history.get[0].url).toBe(DEFAULT_PROVIDE.endpoint);
-    });
-
-    it('generate default option', async () => {
-      await axios.waitForAll();
-
-      const optionsArray = findForkUrlInput().findAll('option');
-
-      expect(optionsArray.at(0).text()).toBe('Select a namespace');
-    });
-
-    it('populate project url namespace options', async () => {
-      await axios.waitForAll();
-
-      const optionsArray = findForkUrlInput().findAll('option');
-
-      expect(optionsArray).toHaveLength(MOCK_NAMESPACES_RESPONSE.length + 1);
-      expect(optionsArray.at(1).text()).toBe(MOCK_NAMESPACES_RESPONSE[0].full_name);
-      expect(optionsArray.at(2).text()).toBe(MOCK_NAMESPACES_RESPONSE[1].full_name);
-    });
-
-    it('set namespaces in alphabetical order', async () => {
-      const namespace = {
-        name: 'three',
-        full_name: 'aaa/three',
-        id: 3,
-      };
-      mockGetRequest({
-        namespaces: [...MOCK_NAMESPACES_RESPONSE, namespace],
-      });
-      createComponent();
-      await axios.waitForAll();
-
-      expect(wrapper.vm.namespaces).toEqual([namespace, ...MOCK_NAMESPACES_RESPONSE]);
-    });
   });
 
   describe('project slug', () => {
     const projectPath = 'some other project slug';
 
     beforeEach(() => {
-      mockGetRequest();
       createComponent({
         projectPath,
       });
@@ -232,7 +198,6 @@ describe('ForkForm component', () => {
 
   describe('visibility level', () => {
     it('displays the correct description', () => {
-      mockGetRequest();
       createComponent();
 
       const formRadios = wrapper.findAll(GlFormRadio);
@@ -243,7 +208,6 @@ describe('ForkForm component', () => {
     });
 
     it('displays all 3 visibility levels', () => {
-      mockGetRequest();
       createComponent();
 
       expect(wrapper.findAll(GlFormRadio)).toHaveLength(3);
@@ -262,16 +226,12 @@ describe('ForkForm component', () => {
         },
       ];
 
-      beforeEach(() => {
-        mockGetRequest();
-      });
-
       it('resets the visibility to default "private"', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
         expect(wrapper.vm.form.fields.visibility.value).toBe('public');
-        await findFormSelectOptions().at(1).setSelected();
 
+        fillForm();
         await nextTick();
 
         expect(getByRole(wrapper.element, 'radio', { name: /private/i }).checked).toBe(true);
@@ -280,8 +240,7 @@ describe('ForkForm component', () => {
       it('sets the visibility to be null when restrictedVisibilityLevels is set', async () => {
         createFullComponent({ restrictedVisibilityLevels: [10] }, { namespaces });
 
-        await findFormSelectOptions().at(1).setSelected();
-
+        fillForm();
         await nextTick();
 
         const container = getByRole(wrapper.element, 'radiogroup', { name: /visibility/i });
@@ -315,8 +274,7 @@ describe('ForkForm component', () => {
       ${'public'}   | ${[0, 20]}
       ${'public'}   | ${[10, 20]}
       ${'public'}   | ${[0, 10, 20]}
-    `('checks the correct radio button', async ({ project, restrictedVisibilityLevels }) => {
-      mockGetRequest();
+    `('checks the correct radio button', ({ project, restrictedVisibilityLevels }) => {
       createFullComponent({
         projectVisibility: project,
         restrictedVisibilityLevels,
@@ -357,7 +315,7 @@ describe('ForkForm component', () => {
       ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
     `(
       'sets appropriate radio button disabled state',
-      async ({
+      ({
         project,
         namespace,
         privateIsDisabled,
@@ -365,7 +323,6 @@ describe('ForkForm component', () => {
         publicIsDisabled,
         restrictedVisibilityLevels,
       }) => {
-        mockGetRequest();
         createComponent(
           {
             projectVisibility: project,
@@ -387,11 +344,9 @@ describe('ForkForm component', () => {
     const setupComponent = (fields = {}) => {
       jest.spyOn(urlUtility, 'redirectTo').mockImplementation();
 
-      mockGetRequest();
       createFullComponent(
         {},
         {
-          namespaces: MOCK_NAMESPACES_RESPONSE,
           form: {
             state: true,
             ...fields,
@@ -400,17 +355,13 @@ describe('ForkForm component', () => {
       );
     };
 
-    const selectedMockNamespaceIndex = 1;
-    const namespaceId = MOCK_NAMESPACES_RESPONSE[selectedMockNamespaceIndex].id;
-
-    const fillForm = async () => {
-      const namespaceOptions = findForkUrlInput().findAll('option');
-
-      await namespaceOptions.at(selectedMockNamespaceIndex + 1).setSelected();
-    };
+    beforeEach(() => {
+      setupComponent();
+    });
 
     const submitForm = async () => {
-      await fillForm();
+      fillForm();
+      await nextTick();
       const form = wrapper.find(GlForm);
 
       await form.trigger('submit');
@@ -418,7 +369,7 @@ describe('ForkForm component', () => {
     };
 
     describe('with invalid form', () => {
-      it('does not make POST request', async () => {
+      it('does not make POST request', () => {
         jest.spyOn(axios, 'post');
 
         setupComponent();
@@ -471,7 +422,7 @@ describe('ForkForm component', () => {
           description: projectDescription,
           id: projectId,
           name: projectName,
-          namespace_id: namespaceId,
+          namespace_id: selectedMockNamespace.id,
           path: projectPath,
           visibility: projectVisibility,
         };

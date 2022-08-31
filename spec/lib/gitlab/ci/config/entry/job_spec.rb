@@ -605,8 +605,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
     let(:deps) do
       double('deps',
         'default_entry' => default,
-        'workflow_entry' => workflow,
-        'variables_value' => nil)
+        'workflow_entry' => workflow)
     end
 
     context 'when job config overrides default config' do

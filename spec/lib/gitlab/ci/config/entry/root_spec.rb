@@ -350,6 +350,33 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         end
       end
     end
+
+    context 'when a variable has an invalid data key' do
+      let(:hash) do
+        { variables: { VAR1: { invalid: 'hello' } }, rspec: { script: 'hello' } }
+      end
+
+      describe '#errors' do
+        it 'reports errors about the invalid variable' do
+          expect(root.errors)
+            .to include /var1 config uses invalid data keys: invalid/
+        end
+
+        context 'when the FF ci_variables_refactoring_to_variable is disabled' do
+          let(:root_without_ff) { described_class.new(hash, user: user, project: project) }
+
+          before do
+            stub_feature_flags(ci_variables_refactoring_to_variable: false)
+            root_without_ff.compose!
+          end
+
+          it 'reports errors about the invalid variable' do
+            expect(root_without_ff.errors)
+              .to include /variables config should be a hash of key value pairs, value can be a hash/
+          end
+        end
+      end
+    end
   end
 
   context 'when value is not a hash' do

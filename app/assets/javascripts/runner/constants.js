@@ -77,9 +77,13 @@ export const I18N_DELETE_DISABLED_UNKNOWN_REASON = s__(
 );
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
+// List
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );
+export const I18N_VERSION_LABEL = s__('Runners|Version %{version}');
+export const I18N_LAST_CONTACT_LABEL = s__('Runners|Last contact: %{timeAgo}');
+export const I18N_CREATED_AT_LABEL = s__('Runners|Created %{timeAgo}');
 
 // Runner details
 

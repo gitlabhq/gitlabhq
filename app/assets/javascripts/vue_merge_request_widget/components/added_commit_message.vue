@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { n__, s__, sprintf } from '~/locale';
@@ -9,6 +9,7 @@ const mergeCommitCount = s__('mrWidgetCommitsAdded|%{strongStart}1%{strongEnd} m
 export default {
   components: {
     GlSprintf,
+    GlLink,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -36,6 +37,11 @@ export default {
       required: true,
     },
     mergeCommitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    mergeCommitPath: {
       type: String,
       required: false,
       default: '',
@@ -124,7 +130,9 @@ export default {
         </template>
       </template>
       <template #mergeCommitSha>
-        <span class="label-branch">{{ mergeCommitSha }}</span>
+        <gl-link :href="mergeCommitPath" class="label-branch" data-testid="merge-commit-sha">{{
+          mergeCommitSha
+        }}</gl-link>
       </template>
     </gl-sprintf>
   </span>

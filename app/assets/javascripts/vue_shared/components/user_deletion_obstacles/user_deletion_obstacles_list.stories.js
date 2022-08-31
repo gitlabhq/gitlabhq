@@ -5,7 +5,7 @@ import UserDeletionObstaclesList from './user_deletion_obstacles_list.vue';
 
 export default {
   component: UserDeletionObstaclesList,
-  title: 'vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list',
+  title: 'vue_shared/user_deletion_obstacles/user_deletion_obstacles_list',
 };
 
 const Template = (args, { argTypes }) => ({

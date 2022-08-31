@@ -1033,24 +1033,26 @@ module Gitlab
         end
       end
 
-      describe 'Variables' do
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+      # Change this to a `describe` block when removing the FF ci_variables_refactoring_to_variable
+      shared_examples 'Variables' do
+        subject(:execute) { described_class.new(config).execute }
 
-        let(:build) { subject.builds.first }
+        let(:build) { execute.builds.first }
         let(:job_variables) { build[:job_variables] }
         let(:root_variables_inheritance) { build[:root_variables_inheritance] }
 
         context 'when global variables are defined' do
-          let(:variables) do
-            { 'VAR1' => 'value1', 'VAR2' => 'value2' }
-          end
-
           let(:config) do
-            {
-              variables: variables,
-              before_script: ['pwd'],
-              rspec: { script: 'rspec' }
-            }
+            <<~YAML
+            variables:
+              VAR1: value1
+              VAR2: value2
+
+            before_script: [pwd]
+
+            rspec:
+              script: rspec
+            YAML
           end
 
           it 'returns global variables' do
@@ -1060,16 +1062,17 @@ module Gitlab
         end
 
         context 'when job variables are defined' do
-          let(:config) do
-            {
-              before_script: ['pwd'],
-              rspec: { script: 'rspec', variables: variables }
-            }
-          end
-
           context 'when syntax is correct' do
-            let(:variables) do
-              { 'VAR1' => 'value1', 'VAR2' => 'value2' }
+            let(:config) do
+              <<~YAML
+              before_script: [pwd]
+
+              rspec:
+                script: rspec
+                variables:
+                  VAR1: value1
+                  VAR2: value2
+              YAML
             end
 
             it 'returns job variables' do
@@ -1083,16 +1086,28 @@ module Gitlab
 
           context 'when syntax is incorrect' do
             context 'when variables defined but invalid' do
-              let(:variables) do
-                %w(VAR1 value1 VAR2 value2)
+              let(:config) do
+                <<~YAML
+                before_script: [pwd]
+
+                rspec:
+                  script: rspec
+                  variables: [VAR1 value1 VAR2 value2]
+                YAML
               end
 
-              it_behaves_like 'returns errors', /jobs:rspec:variables config should be a hash of key value pairs/
+              it_behaves_like 'returns errors', /jobs:rspec:variables config should be a hash/
             end
 
             context 'when variables key defined but value not specified' do
-              let(:variables) do
-                nil
+              let(:config) do
+                <<~YAML
+                before_script: [pwd]
+
+                rspec:
+                  script: rspec
+                  variables: null
+                YAML
               end
 
               it 'returns empty array' do
@@ -1109,10 +1124,12 @@ module Gitlab
 
         context 'when job variables are not defined' do
           let(:config) do
-            {
-              before_script: ['pwd'],
-              rspec: { script: 'rspec' }
-            }
+            <<~YAML
+            before_script: ['pwd']
+
+            rspec:
+              script: rspec
+            YAML
           end
 
           it 'returns empty array' do
@@ -1120,6 +1137,42 @@ module Gitlab
             expect(root_variables_inheritance).to eq(true)
           end
         end
+
+        context 'when variables have different type of values' do
+          let(:config) do
+            <<~YAML
+            before_script: [pwd]
+
+            rspec:
+              variables:
+                VAR1: value1
+                VAR2: :value2
+                VAR3: 123
+              script: rspec
+            YAML
+          end
+
+          it 'returns job variables' do
+            expect(job_variables).to contain_exactly(
+              { key: 'VAR1', value: 'value1', public: true },
+              { key: 'VAR2', value: 'value2', public: true },
+              { key: 'VAR3', value: '123', public: true }
+            )
+            expect(root_variables_inheritance).to eq(true)
+          end
+        end
+      end
+
+      context 'when ci_variables_refactoring_to_variable is enabled' do
+        it_behaves_like 'Variables'
+      end
+
+      context 'when ci_variables_refactoring_to_variable is disabled' do
+        before do
+          stub_feature_flags(ci_variables_refactoring_to_variable: false)
+        end
+
+        it_behaves_like 'Variables'
       end
 
       context 'when using `extends`' do
@@ -2705,13 +2758,13 @@ module Gitlab
         context 'returns errors if variables is not a map' do
           let(:config) { YAML.dump({ variables: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs, value can be a hash'
+          it_behaves_like 'returns errors', 'variables config should be a hash'
         end
 
         context 'returns errors if variables is not a map of key-value strings' do
           let(:config) { YAML.dump({ variables: { test: false }, rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs, value can be a hash'
+          it_behaves_like 'returns errors', 'variable definition must be either a string or a hash'
         end
 
         context 'returns errors if job when is not on_success, on_failure or always' do

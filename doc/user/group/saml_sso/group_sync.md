@@ -70,9 +70,9 @@ role.
 Users granted:
 
 - A higher role with Group Sync are displayed as having
-  [direct membership](../../project/members/#display-direct-members) of the group.
+  [direct membership](../../project/members/index.md#display-direct-members) of the group.
 - A lower or the same role with Group Sync are displayed as having
-  [inherited membership](../../project/members/#display-inherited-members) of the group.
+  [inherited membership](../../project/members/index.md#display-inherited-members) of the group.
 
 ### Automatic member removal
 

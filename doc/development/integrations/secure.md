@@ -254,7 +254,7 @@ Following the POSIX exit code standard, the scanner exits with 0 for success and
 Success also includes the case when vulnerabilities are found.
 
 When a CI job fails, security report results are not ingested by GitLab, even if the job
-[allows failure](../../ci/yaml/#allow_failure). The report artifacts are still uploaded to GitLab and available
+[allows failure](../../ci/yaml/index.md#allow_failure). The report artifacts are still uploaded to GitLab and available
 for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#download-security-scan-outputs).
 
 When executing a scanning job using the [Docker-in-Docker privileged mode](../../user/application_security/sast/index.md#requirements),

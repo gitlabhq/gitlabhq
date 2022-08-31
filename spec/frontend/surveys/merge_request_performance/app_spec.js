@@ -6,6 +6,17 @@ import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisse
 import MergeRequestExperienceSurveyApp from '~/surveys/merge_request_experience/app.vue';
 import SatisfactionRate from '~/surveys/components/satisfaction_rate.vue';
 
+const createRenderTrackedArguments = () => [
+  undefined,
+  'survey:mr_experience',
+  {
+    label: 'render',
+    extra: {
+      accountAge: 0,
+    },
+  },
+];
+
 describe('MergeRequestExperienceSurveyApp', () => {
   let trackingSpy;
   let wrapper;
@@ -24,6 +35,7 @@ describe('MergeRequestExperienceSurveyApp', () => {
       dismiss,
       shouldShowCallout,
     });
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
     wrapper = shallowMountExtended(MergeRequestExperienceSurveyApp, {
       propsData: {
         accountAge: 0,
@@ -33,8 +45,11 @@ describe('MergeRequestExperienceSurveyApp', () => {
         GlSprintf,
       },
     });
-    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   describe('when user callout is visible', () => {
     beforeEach(() => {
@@ -45,6 +60,16 @@ describe('MergeRequestExperienceSurveyApp', () => {
       expect(wrapper.html()).toContain('Overall, how satisfied are you with merge requests?');
       expect(wrapper.findComponent(SatisfactionRate).exists()).toBe(true);
       expect(wrapper.emitted().close).toBe(undefined);
+    });
+
+    it('tracks render once', async () => {
+      expect(trackingSpy).toHaveBeenCalledWith(...createRenderTrackedArguments());
+    });
+
+    it("doesn't track subsequent renders", async () => {
+      createWrapper();
+      expect(trackingSpy).toHaveBeenCalledWith(...createRenderTrackedArguments());
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
     });
 
     describe('when close button clicked', () => {
@@ -67,6 +92,15 @@ describe('MergeRequestExperienceSurveyApp', () => {
             accountAge: 0,
           },
         });
+      });
+
+      it('tracks subsequent renders', async () => {
+        createWrapper();
+        expect(trackingSpy.mock.calls).toEqual([
+          createRenderTrackedArguments(),
+          expect.anything(),
+          createRenderTrackedArguments(),
+        ]);
       });
     });
 
@@ -147,6 +181,10 @@ describe('MergeRequestExperienceSurveyApp', () => {
 
     it('emits close event', async () => {
       expect(wrapper.emitted()).toMatchObject({ close: [[]] });
+    });
+
+    it("doesn't track anything", async () => {
+      expect(trackingSpy).toHaveBeenCalledTimes(0);
     });
   });
 

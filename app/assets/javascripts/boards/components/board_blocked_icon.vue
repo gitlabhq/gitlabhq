@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlLoadingIcon } from '@gitlab/ui';
 import { blockingIssuablesQueries, issuableTypes } from '~/boards/constants';
-import { TYPE_ISSUE } from '~/graphql_shared/constants';
+import { TYPE_ISSUE, TYPE_EPIC } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { truncate } from '~/lib/utils/text_utility';
 import { __, n__, s__, sprintf } from '~/locale';
@@ -10,10 +10,12 @@ export default {
   i18n: {
     issuableType: {
       [issuableTypes.issue]: __('issue'),
+      [issuableTypes.epic]: __('epic'),
     },
   },
   graphQLIdType: {
     [issuableTypes.issue]: TYPE_ISSUE,
+    [issuableTypes.epic]: TYPE_EPIC,
   },
   referenceFormatter: {
     [issuableTypes.issue]: (r) => r.split('/')[1],
@@ -40,7 +42,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [issuableTypes.issue].includes(value);
+        return [issuableTypes.issue, issuableTypes.epic].includes(value);
       },
     },
   },
@@ -53,14 +55,21 @@ export default {
         return blockingIssuablesQueries[this.issuableType].query;
       },
       variables() {
+        if (this.isEpic) {
+          return {
+            fullPath: this.item.group.fullPath,
+            iid: Number(this.item.iid),
+          };
+        }
         return {
           id: convertToGraphQLId(this.$options.graphQLIdType[this.issuableType], this.item.id),
         };
       },
       update(data) {
         this.skip = true;
+        const issuable = this.isEpic ? data?.group?.issuable : data?.issuable;
 
-        return data?.issuable?.blockingIssuables?.nodes || [];
+        return issuable?.blockingIssuables?.nodes || [];
       },
       error(error) {
         const message = sprintf(s__('Boards|Failed to fetch blocking %{issuableType}s'), {
@@ -77,13 +86,16 @@ export default {
     };
   },
   computed: {
+    isEpic() {
+      return this.issuableType === issuableTypes.epic;
+    },
     displayedIssuables() {
       const { defaultDisplayLimit, referenceFormatter } = this.$options;
       return this.blockingIssuables.slice(0, defaultDisplayLimit).map((i) => {
         return {
           ...i,
           title: truncate(i.title, this.$options.textTruncateWidth),
-          reference: referenceFormatter[this.issuableType](i.reference),
+          reference: this.isEpic ? i.reference : referenceFormatter[this.issuableType](i.reference),
         };
       });
     },
@@ -105,6 +117,9 @@ export default {
           issuableType: this.issuableTypeText,
         },
       );
+    },
+    blockIcon() {
+      return this.issuableType === issuableTypes.issue ? 'issue-block' : 'entity-blocked';
     },
     glIconId() {
       return `blocked-icon-${this.uniqueId}`;
@@ -153,7 +168,7 @@ export default {
     <gl-icon
       :id="glIconId"
       ref="icon"
-      name="issue-block"
+      :name="blockIcon"
       class="issue-blocked-icon gl-mr-2 gl-cursor-pointer gl-text-red-500"
       data-testid="issue-blocked-icon"
       @mouseenter="handleMouseEnter"

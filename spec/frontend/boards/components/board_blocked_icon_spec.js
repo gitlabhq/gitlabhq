@@ -10,13 +10,17 @@ import { blockingIssuablesQueries, issuableTypes } from '~/boards/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import {
   mockIssue,
+  mockEpic,
   mockBlockingIssue1,
   mockBlockingIssue2,
+  mockBlockingEpic1,
   mockBlockingIssuablesResponse1,
   mockBlockingIssuablesResponse2,
   mockBlockingIssuablesResponse3,
   mockBlockedIssue1,
   mockBlockedIssue2,
+  mockBlockedEpic1,
+  mockBlockingEpicIssuablesResponse1,
 } from '../mock_data';
 
 describe('BoardBlockedIcon', () => {
@@ -51,9 +55,11 @@ describe('BoardBlockedIcon', () => {
   const createWrapperWithApollo = ({
     item = mockBlockedIssue1,
     blockingIssuablesSpy = jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1),
+    issuableItem = mockIssue,
+    issuableType = issuableTypes.issue,
   } = {}) => {
     mockApollo = createMockApollo([
-      [blockingIssuablesQueries[issuableTypes.issue].query, blockingIssuablesSpy],
+      [blockingIssuablesQueries[issuableType].query, blockingIssuablesSpy],
     ]);
 
     Vue.use(VueApollo);
@@ -62,27 +68,34 @@ describe('BoardBlockedIcon', () => {
         apolloProvider: mockApollo,
         propsData: {
           item: {
-            ...mockIssue,
+            ...issuableItem,
             ...item,
           },
           uniqueId: 'uniqueId',
-          issuableType: issuableTypes.issue,
+          issuableType,
         },
         attachTo: document.body,
       }),
     );
   };
 
-  const createWrapper = ({ item = {}, queries = {}, data = {}, loading = false } = {}) => {
+  const createWrapper = ({
+    item = {},
+    queries = {},
+    data = {},
+    loading = false,
+    mockIssuable = mockIssue,
+    issuableType = issuableTypes.issue,
+  } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(BoardBlockedIcon, {
         propsData: {
           item: {
-            ...mockIssue,
+            ...mockIssuable,
             ...item,
           },
           uniqueId: 'uniqueid',
-          issuableType: issuableTypes.issue,
+          issuableType,
         },
         data() {
           return {
@@ -105,11 +118,24 @@ describe('BoardBlockedIcon', () => {
     );
   };
 
-  it('should render blocked icon', () => {
-    createWrapper();
+  it.each`
+    mockIssuable | issuableType           | expectedIcon
+    ${mockIssue} | ${issuableTypes.issue} | ${'issue-block'}
+    ${mockEpic}  | ${issuableTypes.epic}  | ${'entity-blocked'}
+  `(
+    'should render blocked icon for $issuableType',
+    ({ mockIssuable, issuableType, expectedIcon }) => {
+      createWrapper({
+        mockIssuable,
+        issuableType,
+      });
 
-    expect(findGlIcon().exists()).toBe(true);
-  });
+      expect(findGlIcon().exists()).toBe(true);
+      const icon = findGlIcon();
+      expect(icon.exists()).toBe(true);
+      expect(icon.props('name')).toBe(expectedIcon);
+    },
+  );
 
   it('should display a loading spinner while loading', () => {
     createWrapper({ loading: true });
@@ -124,17 +150,29 @@ describe('BoardBlockedIcon', () => {
   });
 
   describe('on mouseenter on blocked icon', () => {
-    it('should query for blocking issuables and render the result', async () => {
-      createWrapperWithApollo();
+    it.each`
+      item                 | issuableType           | mockBlockingIssuable  | issuableItem | blockingIssuablesSpy
+      ${mockBlockedIssue1} | ${issuableTypes.issue} | ${mockBlockingIssue1} | ${mockIssue} | ${jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1)}
+      ${mockBlockedEpic1}  | ${issuableTypes.epic}  | ${mockBlockingEpic1}  | ${mockEpic}  | ${jest.fn().mockResolvedValue(mockBlockingEpicIssuablesResponse1)}
+    `(
+      'should query for blocking issuables and render the result for $issuableType',
+      async ({ item, issuableType, issuableItem, mockBlockingIssuable, blockingIssuablesSpy }) => {
+        createWrapperWithApollo({
+          item,
+          issuableType,
+          issuableItem,
+          blockingIssuablesSpy,
+        });
 
-      expect(findGlPopover().text()).not.toContain(mockBlockingIssue1.title);
+        expect(findGlPopover().text()).not.toContain(mockBlockingIssuable.title);
 
-      await mouseenter();
+        await mouseenter();
 
-      expect(findGlPopover().exists()).toBe(true);
-      expect(findIssuableTitle().text()).toContain(mockBlockingIssue1.title);
-      expect(wrapper.vm.skip).toBe(true);
-    });
+        expect(findGlPopover().exists()).toBe(true);
+        expect(findIssuableTitle().text()).toContain(mockBlockingIssuable.title);
+        expect(wrapper.vm.skip).toBe(true);
+      },
+    );
 
     it('should emit "blocking-issuables-error" event on query error', async () => {
       const mockError = new Error('mayday');

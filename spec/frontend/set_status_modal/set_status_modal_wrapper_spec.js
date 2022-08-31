@@ -9,6 +9,7 @@ import stubChildren from 'helpers/stub_children';
 import SetStatusModalWrapper, {
   AVAILABILITY_STATUS,
 } from '~/set_status_modal/set_status_modal_wrapper.vue';
+import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 
 jest.mock('~/flash');
 
@@ -42,6 +43,7 @@ describe('SetStatusModalWrapper', () => {
         ...stubChildren(SetStatusModalWrapper),
         GlFormInput: false,
         GlFormInputGroup: false,
+        SetStatusForm: false,
         EmojiPicker: EmojiPickerStub,
       },
       mocks: {
@@ -118,10 +120,10 @@ describe('SetStatusModalWrapper', () => {
       });
     });
 
-    it('sets emojiTag when clicking in emoji picker', async () => {
+    it('passes emoji to `SetStatusForm`', async () => {
       await getEmojiPicker().vm.$emit('click', 'thumbsup');
 
-      expect(wrapper.vm.emojiTag).toContain('data-name="thumbsup"');
+      expect(wrapper.findComponent(SetStatusForm).props('emoji')).toBe('thumbsup');
     });
   });
 
@@ -194,7 +196,7 @@ describe('SetStatusModalWrapper', () => {
         findAvailabilityCheckbox().vm.$emit('input', true);
 
         // set the currentClearStatusAfter to 30 minutes
-        wrapper.find('[data-testid="thirtyMinutes"]').vm.$emit('click');
+        wrapper.find('[data-testid="thirtyMinutes"]').trigger('click');
 
         findModal().vm.$emit('primary');
         await nextTick();

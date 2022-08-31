@@ -1,0 +1,33 @@
+<script>
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+
+export default {
+  components: {
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    icon: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tooltip: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+};
+</script>
+
+<template>
+  <div v-gl-tooltip="tooltip" class="gl-display-inline-block gl-text-secondary gl-my-2 gl-mr-2">
+    <gl-icon v-if="icon" :name="icon" />
+    <!-- display tooltip as a label for screen readers -->
+    <span class="gl-sr-only">{{ tooltip }}</span>
+    <slot></slot>
+  </div>
+</template>

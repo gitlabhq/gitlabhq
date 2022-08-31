@@ -238,7 +238,7 @@ to the default branch (`main`).
 
 NOTE:
 For this tutorial, you merge your branch directly to the default branch for your
-repository. In GitLab, you typically use a [merge request](../user/project/merge_requests/)
+repository. In GitLab, you typically use a [merge request](../user/project/merge_requests/index.md)
 to merge your branch.
 
 ### View your changes in GitLab
