@@ -24,6 +24,10 @@ module Integrations
       s_("HarborIntegration|After the Harbor integration is activated, global variables '$HARBOR_USERNAME', '$HARBOR_HOST', '$HARBOR_OCI', '$HARBOR_PASSWORD', '$HARBOR_URL' and '$HARBOR_PROJECT' will be created for CI/CD use.")
     end
 
+    def hostname
+      Gitlab::Utils.parse_url(url).hostname
+    end
+
     class << self
       def to_param
         name.demodulize.downcase

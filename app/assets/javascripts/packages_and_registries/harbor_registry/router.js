@@ -22,10 +22,11 @@ export default function createRouter(base, breadCrumbState) {
       },
       {
         name: 'details',
-        path: '/:id',
+        path: '/:project/:image',
         component: Details,
         meta: {
           nameGenerator: () => breadCrumbState.name,
+          hrefGenerator: () => breadCrumbState.href,
         },
       },
     ],

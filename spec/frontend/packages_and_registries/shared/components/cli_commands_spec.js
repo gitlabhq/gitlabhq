@@ -15,7 +15,7 @@ import {
 import Tracking from '~/tracking';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
-import { dockerCommands } from '../../mock_data';
+import { dockerCommands } from 'jest/packages_and_registries/container_registry/explorer/mock_data';
 
 Vue.use(Vuex);
 

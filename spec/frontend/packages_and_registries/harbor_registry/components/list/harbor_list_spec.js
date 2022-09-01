@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import HarborList from '~/packages_and_registries/harbor_registry/components/list/harbor_list.vue';
 import HarborListRow from '~/packages_and_registries/harbor_registry/components/list/harbor_list_row.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
-import { harborListResponse } from '../../mock_data';
+import { harborImagesList } from '../../mock_data';
 
 describe('Harbor List', () => {
   let wrapper;
@@ -13,8 +13,8 @@ describe('Harbor List', () => {
     wrapper = shallowMount(HarborList, {
       stubs: { RegistryList },
       propsData: {
-        images: harborListResponse.repositories,
-        pageInfo: harborListResponse.pageInfo,
+        images: harborImagesList,
+        pageInfo: {},
         ...props,
       },
     });
@@ -28,7 +28,7 @@ describe('Harbor List', () => {
     it('contains one list element for each image', () => {
       mountComponent();
 
-      expect(findHarborListRow().length).toBe(harborListResponse.repositories.length);
+      expect(findHarborListRow().length).toBe(harborImagesList.length);
     });
 
     it('passes down the metadataLoading prop', () => {

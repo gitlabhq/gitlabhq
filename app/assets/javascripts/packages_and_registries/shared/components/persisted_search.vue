@@ -18,6 +18,11 @@ export default {
       type: String,
       required: true,
     },
+    tokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -68,7 +73,7 @@ export default {
         v-if="mountRegistrySearch"
         :filters="filters"
         :sorting="sorting"
-        :tokens="$options.tokens"
+        :tokens="tokens"
         :sortable-fields="sortableFields"
         @sorting:changed="updateSortingAndEmitUpdate"
         @filter:changed="updateFilters"

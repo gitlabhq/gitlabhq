@@ -32,7 +32,7 @@ export default {
     },
   },
   i18n: {
-    HARBOR_REGISTRY_TITLE,
+    harborRegistryTitle: HARBOR_REGISTRY_TITLE,
   },
   computed: {
     imagesCountText() {
@@ -48,7 +48,7 @@ export default {
 
 <template>
   <title-area
-    :title="$options.i18n.HARBOR_REGISTRY_TITLE"
+    :title="$options.i18n.harborRegistryTitle"
     :info-messages="infoMessages"
     :metadata-loading="metadataLoading"
   >

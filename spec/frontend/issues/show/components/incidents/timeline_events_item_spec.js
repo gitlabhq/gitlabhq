@@ -1,6 +1,7 @@
 import timezoneMock from 'timezone-mock';
 import { GlIcon, GlDropdown } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { timelineItemI18n } from '~/issues/show/components/incidents/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IncidentTimelineEventItem from '~/issues/show/components/incidents/timeline_events_item.vue';
 import { mockEvents } from './mock_data';
@@ -27,7 +28,7 @@ describe('IncidentTimelineEventList', () => {
   const findCommentIcon = () => wrapper.findComponent(GlIcon);
   const findEventTime = () => wrapper.findByTestId('event-time');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDeleteButton = () => wrapper.findByText('Delete');
+  const findDeleteButton = () => wrapper.findByText(timelineItemI18n.delete);
 
   describe('template', () => {
     it('shows comment icon', () => {

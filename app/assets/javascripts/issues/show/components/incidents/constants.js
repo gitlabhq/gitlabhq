@@ -31,3 +31,10 @@ export const timelineListI18n = Object.freeze({
     'Incident|Something went wrong while updating the incident timeline event.',
   ),
 });
+
+export const timelineItemI18n = Object.freeze({
+  delete: __('Delete'),
+  edit: __('Edit'),
+  moreActions: __('More actions'),
+  timeUTC: __('%{time} UTC'),
+});

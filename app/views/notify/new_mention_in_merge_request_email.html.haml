@@ -1,4 +1,4 @@
 %p
-  You have been mentioned in merge request #{merge_request_reference_link(@merge_request)}
+  = (s_("Notify|You have been mentioned in merge request %{mr_link}") % { mr_link: merge_request_reference_link(@merge_request) }).html_safe
 
 = render template: 'notify/new_merge_request_email'

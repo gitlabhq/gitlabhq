@@ -81,7 +81,11 @@ RSpec.describe 'Group navbar' do
   end
 
   context 'when harbor registry is available' do
+    let(:harbor_integration) { create(:harbor_integration, group: group, project: nil) }
+
     before do
+      group.update!(harbor_integration: harbor_integration)
+
       stub_feature_flags(harbor_registry_integration: true)
 
       insert_harbor_registry_nav(_('Package Registry'))

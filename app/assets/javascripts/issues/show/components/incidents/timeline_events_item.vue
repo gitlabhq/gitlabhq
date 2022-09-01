@@ -1,17 +1,12 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlIcon, GlSafeHtmlDirective, GlSprintf } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
+import { timelineItemI18n } from './constants';
 import { getEventIcon } from './utils';
 
 export default {
   name: 'IncidentTimelineEventListItem',
-  i18n: {
-    delete: __('Delete'),
-    edit: __('Edit'),
-    moreActions: __('More actions'),
-    timeUTC: __('%{time} UTC'),
-  },
+  i18n: timelineItemI18n,
   components: {
     GlDropdown,
     GlDropdownItem,

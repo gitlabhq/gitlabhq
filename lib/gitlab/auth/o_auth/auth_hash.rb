@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def password
-          @password ||= Gitlab::Utils.force_utf8(::User.random_password.downcase)
+          @password ||= Gitlab::Utils.force_utf8(::User.random_password)
         end
 
         def location

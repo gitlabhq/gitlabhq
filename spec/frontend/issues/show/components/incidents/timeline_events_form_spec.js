@@ -4,6 +4,7 @@ import { GlDatepicker } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsForm from '~/issues/show/components/incidents/timeline_events_form.vue';
+import { timelineFormI18n } from '~/issues/show/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -34,9 +35,9 @@ describe('Timeline events form', () => {
     wrapper.destroy();
   });
 
-  const findSubmitButton = () => wrapper.findByText('Save');
-  const findSubmitAndAddButton = () => wrapper.findByText('Save and add another event');
-  const findCancelButton = () => wrapper.findByText('Cancel');
+  const findSubmitButton = () => wrapper.findByText(timelineFormI18n.save);
+  const findSubmitAndAddButton = () => wrapper.findByText(timelineFormI18n.saveAndAdd);
+  const findCancelButton = () => wrapper.findByText(timelineFormI18n.cancel);
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');

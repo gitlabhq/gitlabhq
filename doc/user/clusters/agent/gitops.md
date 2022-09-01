@@ -49,7 +49,7 @@ For details, view the [architecture documentation](https://gitlab.com/gitlab-org
 
 To update a Kubernetes cluster by using GitOps, complete the following steps.
 
-1. Ensure you have a working Kubernetes cluster, and that the manifests are in a GitLab project.
+1. Ensure you have a working Kubernetes cluster, and that the manifests or [Helm charts](gitops/helm.md) are in a GitLab project.
 1. In the same project, [register and install the GitLab agent](install/index.md).
 1. Configure the agent configuration file so that the agent monitors the project for changes to the Kubernetes manifests.
    Use the [GitOps configuration reference](#gitops-configuration-reference) for guidance.
@@ -112,12 +112,12 @@ a Kubernetes SIG project. You can read more about the available annotations in t
 
 ## Automatic drift remediation
 
-Drift happens when the current configuration of an infrastructure resource differs from its expected configuration.
-Typically, this is caused by manually editing resources directly through the service that created the resource. Minimizing the
-risk of drift helps to ensure configuration consistency and successful operations.
+Drift happens when the current configuration of an infrastructure resource differs from its desired configuration.
+Typically, this is caused by manually editing resources directly rather than via the used infrastructure-as-code
+mechanism. Minimizing the risk of drift helps to ensure configuration consistency and successful operations.
 
-In GitLab, the agent for Kubernetes regularly compares the expected state from the `git` repository with
-the known state from the `cluster`. Deviations from the `git` state are fixed at every check. These checks
+In GitLab, the agent for Kubernetes regularly compares the desired state from the `git` repository with
+the actual state from the Kubernetes cluster. Deviations from the `git` state are fixed at every check. These checks
 happen automatically every 5 minutes. They are not configurable.
 
 The agent uses [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/).
@@ -127,6 +127,7 @@ are checked for drift. This facilitates the use of in-cluster controllers to mod
 
 ## Related topics
 
+- [Deploying Helm charts with the GitOps workflow](gitops/helm.md)
 - [GitOps working examples for training and demos](https://gitlab.com/groups/guided-explorations/gl-k8s-agent/gitops/-/wikis/home)
 - [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)
 - [Managing Kubernetes secrets in a GitOps workflow](gitops/secrets_management.md)

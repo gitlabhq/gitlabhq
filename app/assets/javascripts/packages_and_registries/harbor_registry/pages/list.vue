@@ -1,19 +1,31 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { escape } from 'lodash';
 import HarborListHeader from '~/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import HarborList from '~/packages_and_registries/harbor_registry/components/list/harbor_list.vue';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import {
+  extractSortingDetail,
+  formatPagination,
+  parseFilter,
+  dockerBuildCommand,
+  dockerPushCommand,
+  dockerLoginCommand,
+} from '~/packages_and_registries/harbor_registry/utils';
+import { createAlert } from '~/flash';
 import {
   SORT_FIELDS,
   CONNECTION_ERROR_TITLE,
   CONNECTION_ERROR_MESSAGE,
   EMPTY_RESULT_TITLE,
   EMPTY_RESULT_MESSAGE,
+  DEFAULT_PER_PAGE,
+  FETCH_IMAGES_LIST_ERROR_MESSAGE,
+  EMPTY_IMAGES_TITLE,
+  EMPTY_IMAGES_MESSAGE,
 } from '~/packages_and_registries/harbor_registry/constants';
 import Tracking from '~/tracking';
-import { harborListResponse } from '../mock_api';
+import { getHarborRepositoriesList } from '~/rest_api';
 
 export default {
   name: 'HarborListPage',
@@ -31,17 +43,26 @@ export default {
       ),
   },
   mixins: [Tracking.mixin()],
-  inject: ['config', 'dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand'],
+  inject: [
+    'endpoint',
+    'repositoryUrl',
+    'harborIntegrationProjectName',
+    'projectName',
+    'isGroupPage',
+    'connectionError',
+    'invalidPathError',
+    'containersErrorImage',
+    'helpPagePath',
+    'noContainersImage',
+  ],
   loader: {
     repeat: 10,
     width: 1000,
     height: 40,
   },
   i18n: {
-    CONNECTION_ERROR_TITLE,
-    CONNECTION_ERROR_MESSAGE,
-    EMPTY_RESULT_TITLE,
-    EMPTY_RESULT_MESSAGE,
+    connectionErrorTitle: CONNECTION_ERROR_TITLE,
+    connectionErrorMessage: CONNECTION_ERROR_MESSAGE,
   },
   searchConfig: SORT_FIELDS,
   data() {
@@ -56,42 +77,81 @@ export default {
     };
   },
   computed: {
+    dockerCommand() {
+      return {
+        build: dockerBuildCommand({
+          repositoryUrl: this.repositoryUrl,
+          harborProjectName: this.harborIntegrationProjectName,
+          projectName: this.projectName,
+        }),
+        push: dockerPushCommand({
+          repositoryUrl: this.repositoryUrl,
+          harborProjectName: this.harborIntegrationProjectName,
+          projectName: this.projectName,
+        }),
+        login: dockerLoginCommand(this.repositoryUrl),
+      };
+    },
     showCommands() {
-      return !this.isLoading && !this.config?.isGroupPage && this.images?.length;
+      return !this.isLoading && !this.isGroupPage && this.images?.length;
     },
     showConnectionError() {
-      return this.config.connectionError || this.config.invalidPathError;
+      return this.connectionError || this.invalidPathError;
+    },
+    currentPage() {
+      return this.pageInfo.page || 1;
+    },
+    emptyStateTexts() {
+      return {
+        title: this.name ? EMPTY_RESULT_TITLE : EMPTY_IMAGES_TITLE,
+        message: this.name ? EMPTY_RESULT_MESSAGE : EMPTY_IMAGES_MESSAGE,
+      };
     },
   },
   methods: {
-    fetchHarborImages() {
-      // TODO: Waiting for harbor api integration to finish: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82777
+    fetchHarborImages(requestPage) {
       this.isLoading = true;
 
-      harborListResponse()
+      const { orderBy, sort } = extractSortingDetail(this.sorting);
+      const sortOptions = `${orderBy} ${sort}`;
+
+      const params = {
+        requestPath: this.endpoint,
+        limit: DEFAULT_PER_PAGE,
+        search: this.name,
+        page: requestPage,
+        sort: sortOptions,
+      };
+
+      getHarborRepositoriesList(params)
         .then((res) => {
-          this.images = res?.repositories || [];
-          this.totalCount = res?.totalCount || 0;
-          this.pageInfo = res?.pageInfo || {};
+          this.images = (res?.data || []).map((item) => {
+            return convertObjectPropsToCamelCase(item);
+          });
+          const pagination = formatPagination(res.headers);
+
+          this.totalCount = pagination?.total || 0;
+          this.pageInfo = pagination;
+
           this.isLoading = false;
         })
-        .catch(() => {});
+        .catch(() => {
+          createAlert({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
+        });
     },
     handleSearchUpdate({ sort, filters }) {
       this.sorting = sort;
+      this.name = parseFilter(filters, 'name');
 
-      const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);
-      this.name = escape(search?.value?.data);
-
-      this.fetchHarborImages();
+      this.fetchHarborImages(1);
     },
     fetchPrevPage() {
-      // TODO: Waiting for harbor api integration to finish: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82777
-      this.fetchHarborImages();
+      const prevPageNum = this.currentPage - 1;
+      this.fetchHarborImages(prevPageNum);
     },
     fetchNextPage() {
-      // TODO: Waiting for harbor api integration to finish: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82777
-      this.fetchHarborImages();
+      const nextPageNum = this.currentPage + 1;
+      this.fetchHarborImages(nextPageNum);
     },
   },
 };
@@ -101,14 +161,14 @@ export default {
   <div>
     <gl-empty-state
       v-if="showConnectionError"
-      :title="$options.i18n.CONNECTION_ERROR_TITLE"
-      :svg-path="config.containersErrorImage"
+      :title="$options.i18n.connectionErrorTitle"
+      :svg-path="containersErrorImage"
     >
       <template #description>
         <p>
-          <gl-sprintf :message="$options.i18n.CONNECTION_ERROR_MESSAGE">
+          <gl-sprintf :message="$options.i18n.connectionErrorMessage">
             <template #docLink="{ content }">
-              <gl-link :href="`${config.helpPagePath}#docker-connection-error`" target="_blank">
+              <gl-link :href="`${helpPagePath}#docker-connection-error`" target="_blank">
                 {{ content }}
               </gl-link>
             </template>
@@ -120,14 +180,14 @@ export default {
       <harbor-list-header
         :metadata-loading="isLoading"
         :images-count="totalCount"
-        :help-page-path="config.helpPagePath"
+        :help-page-path="helpPagePath"
       >
         <template #commands>
           <cli-commands
             v-if="showCommands"
-            :docker-build-command="dockerBuildCommand"
-            :docker-push-command="dockerPushCommand"
-            :docker-login-command="dockerLoginCommand"
+            :docker-build-command="dockerCommand.build"
+            :docker-push-command="dockerCommand.push"
+            :docker-login-command="dockerCommand.login"
           />
         </template>
       </harbor-list-header>
@@ -152,26 +212,24 @@ export default {
         </gl-skeleton-loader>
       </div>
       <template v-else>
-        <template v-if="images.length > 0 || name">
-          <harbor-list
-            v-if="images.length"
-            :images="images"
-            :meta-data-loading="isLoading"
-            :page-info="pageInfo"
-            @prev-page="fetchPrevPage"
-            @next-page="fetchNextPage"
-          />
-          <gl-empty-state
-            v-else
-            :svg-path="config.noContainersImage"
-            data-testid="emptySearch"
-            :title="$options.i18n.EMPTY_RESULT_TITLE"
-          >
-            <template #description>
-              {{ $options.i18n.EMPTY_RESULT_MESSAGE }}
-            </template>
-          </gl-empty-state>
-        </template>
+        <harbor-list
+          v-if="images.length"
+          :images="images"
+          :metadata-loading="isLoading"
+          :page-info="pageInfo"
+          @prev-page="fetchPrevPage"
+          @next-page="fetchNextPage"
+        />
+        <gl-empty-state
+          v-else
+          :svg-path="noContainersImage"
+          data-testid="emptySearch"
+          :title="emptyStateTexts.title"
+        >
+          <template #description>
+            {{ emptyStateTexts.message }}
+          </template>
+        </gl-empty-state>
       </template>
     </template>
   </div>

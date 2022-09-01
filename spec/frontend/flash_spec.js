@@ -36,7 +36,7 @@ describe('Flash', () => {
       hideFlash(el, false);
 
       expect(el.style.opacity).toBe('');
-      expect(el.style.transition).toBeFalsy();
+      expect(el.style.transition).toHaveLength(0);
     });
 
     it('removes element after transitionend', () => {

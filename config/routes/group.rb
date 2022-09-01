@@ -122,7 +122,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :email_campaigns, only: :index
 
     namespace :harbor do
-      resources :repositories, only: [:index] do
+      resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do
         resources :artifacts, only: [:index] do
           resources :tags, only: [:index]
         end

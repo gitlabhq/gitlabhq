@@ -27,6 +27,12 @@ RSpec.describe Integrations::Harbor do
     it { is_expected.to allow_value('https://demo.goharbor.io').for(:url) }
   end
 
+  describe 'hostname' do
+    it 'returns the host of the integration url' do
+      expect(harbor_integration.hostname).to eq('demo.goharbor.io')
+    end
+  end
+
   describe '#fields' do
     it 'returns custom fields' do
       expect(harbor_integration.fields.pluck(:name)).to eq(%w[url project_name username password])

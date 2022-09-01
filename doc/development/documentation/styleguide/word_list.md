@@ -8,8 +8,12 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 # Recommended word list
 
 To help ensure consistency in the documentation, the Technical Writing team
-recommends these wording choices. The GitLab handbook also maintains a list of
-[top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
+recommends these word choices. In addition:
+
+- The GitLab handbook contains a list of
+  [top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
+- The documentation [style guide](../styleguide#language) includes details
+  about language and capitalization.
 
 For guidance not on this page, we defer to these style guides:
 

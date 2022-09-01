@@ -42,6 +42,23 @@ module API
 
               present_carrierwave_file!(package_file.file)
             end
+
+            def present_index_file!(file_type)
+              relation = "::Packages::Debian::#{project_or_group.class.name}ComponentFile".constantize
+
+              component_file = relation
+                .preload_distribution
+                .with_container(project_or_group)
+                .with_codename_or_suite(params[:distribution])
+                .with_component_name(params[:component])
+                .with_file_type(file_type)
+                .with_architecture_name(params[:architecture])
+                .with_compression_type(nil)
+                .order_created_asc
+                .last!
+
+              present_carrierwave_file!(component_file.file)
+            end
           end
 
           rescue_from ArgumentError do |e|
@@ -66,6 +83,7 @@ module API
 
           namespace 'dists/*distribution', requirements: DISTRIBUTION_REQUIREMENTS do
             # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release.gpg
+            # https://wiki.debian.org/DebianRepository/Format#A.22Release.22_files
             desc 'The Release file signature' do
               detail 'This feature was introduced in GitLab 13.5'
             end
@@ -76,6 +94,7 @@ module API
             end
 
             # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release
+            # https://wiki.debian.org/DebianRepository/Format#A.22Release.22_files
             desc 'The unsigned Release file' do
               detail 'This feature was introduced in GitLab 13.5'
             end
@@ -86,6 +105,7 @@ module API
             end
 
             # GET {projects|groups}/:id/packages/debian/dists/*distribution/InRelease
+            # https://wiki.debian.org/DebianRepository/Format#A.22Release.22_files
             desc 'The signed Release file' do
               detail 'This feature was introduced in GitLab 13.5'
             end
@@ -97,31 +117,54 @@ module API
 
             params do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :architecture, type: String, desc: 'The Debian Architecture', regexp: Gitlab::Regex.debian_architecture_regex
             end
 
-            namespace ':component/binary-:architecture', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
-              # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages
-              desc 'The binary files index' do
-                detail 'This feature was introduced in GitLab 13.5'
+            namespace ':component', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
+              params do
+                requires :architecture, type: String, desc: 'The Debian Architecture', regexp: Gitlab::Regex.debian_architecture_regex
               end
 
-              route_setting :authentication, authenticate_non_public: true
-              get 'Packages' do
-                relation = "::Packages::Debian::#{project_or_group.class.name}ComponentFile".constantize
+              namespace 'debian-installer/binary-:architecture' do
+                # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages
+                # https://wiki.debian.org/DebianRepository/Format#A.22Packages.22_Indices
+                desc 'The installer (udeb) binary files index' do
+                  detail 'This feature was introduced in GitLab 15.4'
+                end
 
-                component_file = relation
-                  .preload_distribution
-                  .with_container(project_or_group)
-                  .with_codename_or_suite(params[:distribution])
-                  .with_component_name(params[:component])
-                  .with_file_type(:packages)
-                  .with_architecture_name(params[:architecture])
-                  .with_compression_type(nil)
-                  .order_created_asc
-                  .last!
+                route_setting :authentication, authenticate_non_public: true
+                get 'Packages' do
+                  present_index_file!(:di_packages)
+                end
+              end
 
-                present_carrierwave_file!(component_file.file)
+              namespace 'source', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
+                # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/source/Sources
+                # https://wiki.debian.org/DebianRepository/Format#A.22Sources.22_Indices
+                desc 'The source files index' do
+                  detail 'This feature was introduced in GitLab 15.4'
+                end
+
+                route_setting :authentication, authenticate_non_public: true
+                get 'Sources' do
+                  present_index_file!(:sources)
+                end
+              end
+
+              params do
+                requires :architecture, type: String, desc: 'The Debian Architecture', regexp: Gitlab::Regex.debian_architecture_regex
+              end
+
+              namespace 'binary-:architecture', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
+                # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages
+                # https://wiki.debian.org/DebianRepository/Format#A.22Packages.22_Indices
+                desc 'The binary files index' do
+                  detail 'This feature was introduced in GitLab 13.5'
+                end
+
+                route_setting :authentication, authenticate_non_public: true
+                get 'Packages' do
+                  present_index_file!(:packages)
+                end
               end
             end
           end

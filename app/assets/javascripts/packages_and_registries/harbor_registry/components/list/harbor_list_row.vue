@@ -1,15 +1,14 @@
 <script>
-import { GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { n__ } from '~/locale';
-
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
+import { getNameFromParams } from '~/packages_and_registries/harbor_registry/utils';
 
 export default {
   name: 'HarborListRow',
   components: {
     ClipboardButton,
-    GlSprintf,
     GlIcon,
     ListItem,
     GlSkeletonLoader,
@@ -26,18 +25,17 @@ export default {
     },
   },
   computed: {
-    id() {
-      return this.item.id;
+    linkTo() {
+      const { projectName, imageName } = getNameFromParams(this.item.name);
+
+      return { name: 'details', params: { project: projectName, image: imageName } };
     },
     artifactCountText() {
       return n__(
-        'HarborRegistry|%{count} Tag',
-        'HarborRegistry|%{count} Tags',
+        'HarborRegistry|%d artifact',
+        'HarborRegistry|%d artifacts',
         this.item.artifactCount,
       );
-    },
-    imageName() {
-      return this.item.name;
     },
   },
 };
@@ -50,9 +48,9 @@ export default {
         class="gl-text-body gl-font-weight-bold"
         data-testid="details-link"
         data-qa-selector="registry_image_content"
-        :to="{ name: 'details', params: { id } }"
+        :to="linkTo"
       >
-        {{ imageName }}
+        {{ item.name }}
       </router-link>
       <clipboard-button
         v-if="item.location"
@@ -63,13 +61,9 @@ export default {
     </template>
     <template #left-secondary>
       <template v-if="!metadataLoading">
-        <span class="gl-display-flex gl-align-items-center" data-testid="tags-count">
-          <gl-icon name="tag" class="gl-mr-2" />
-          <gl-sprintf :message="artifactCountText">
-            <template #count>
-              {{ item.artifactCount }}
-            </template>
-          </gl-sprintf>
+        <span class="gl-display-flex gl-align-items-center" data-testid="artifacts-count">
+          <gl-icon name="package" class="gl-mr-2" />
+          {{ artifactCountText }}
         </span>
       </template>
 

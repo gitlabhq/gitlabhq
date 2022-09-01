@@ -17,7 +17,7 @@ module Gitlab
         message: 'Id invalid'
       }, allow_blank: true
       validates :artifact_id, format: {
-        with: /\A[a-zA-Z0-9\_\.\-$]+\z/,
+        with: /\A[a-zA-Z0-9\_\.\-$:]+\z/,
         message: 'Id invalid'
       }, allow_blank: true
       validates :sort, format: {

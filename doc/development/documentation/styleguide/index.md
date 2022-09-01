@@ -1365,32 +1365,24 @@ It renders on the GitLab documentation site as:
 
 On the docs site, you can format text so it's displayed as tabs.
 
-NOTE:
-For now, tabs are for testing only. Do not use them on the production docs site.
-
 To create a set of tabs, follow this example:
 
-```markdown
-{::options parse_block_html="true" /}
+```plaintext
+::Tabs
 
-<div class="js-tabs">
+:::TabTitle Tab One
 
-## This is the first tab
-{: .no_toc}
+Here's some content in tab one.
 
-Here's some content in tab panel one.
+:::TabTitle Tab Two
 
-## Tab two
-{: .no_toc}
+Here's some other content in tab two.
 
-Here's some content in tab panel two.
-
-</div>
+::EndTabs
 ```
 
-The headings determine the tab titles. Each tab is populated with the content between the titles.
-
-Use brief words for the titles, ensure they are parallel, and start each with a capital letter. For example:
+For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
+For example:
 
 - `Omnibus package`, `Helm chart`, `Source`
 - `15.1 and earlier`, `15.2 and later`

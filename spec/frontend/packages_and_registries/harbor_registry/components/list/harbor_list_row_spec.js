@@ -1,25 +1,24 @@
 import { shallowMount, RouterLinkStub as RouterLink } from '@vue/test-utils';
-import { GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 
 import HarborListRow from '~/packages_and_registries/harbor_registry/components/list/harbor_list_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { harborListResponse } from '../../mock_data';
+import { harborImagesList } from '../../mock_data';
 
 describe('Harbor List Row', () => {
   let wrapper;
-  const [item] = harborListResponse.repositories;
+  const item = harborImagesList[0];
 
   const findDetailsLink = () => wrapper.find(RouterLink);
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
-  const findTagsCount = () => wrapper.find('[data-testid="tags-count"]');
+  const findArtifactsCount = () => wrapper.find('[data-testid="artifacts-count"]');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(HarborListRow, {
       stubs: {
         RouterLink,
-        GlSprintf,
         ListItem,
       },
       propsData: {
@@ -42,7 +41,8 @@ describe('Harbor List Row', () => {
       expect(findDetailsLink().props('to')).toMatchObject({
         name: 'details',
         params: {
-          id: item.id,
+          image: 'nginx',
+          project: 'nginx',
         },
       });
     });
@@ -56,17 +56,17 @@ describe('Harbor List Row', () => {
     });
   });
 
-  describe('tags count', () => {
+  describe('artifacts count', () => {
     it('exists', () => {
       mountComponent();
-      expect(findTagsCount().exists()).toBe(true);
+      expect(findArtifactsCount().exists()).toBe(true);
     });
 
-    it('contains a tag icon', () => {
+    it('contains a package icon', () => {
       mountComponent();
-      const icon = findTagsCount().find(GlIcon);
+      const icon = findArtifactsCount().find(GlIcon);
       expect(icon.exists()).toBe(true);
-      expect(icon.props('name')).toBe('tag');
+      expect(icon.props('name')).toBe('package');
     });
 
     describe('loading state', () => {
@@ -76,23 +76,23 @@ describe('Harbor List Row', () => {
         expect(findSkeletonLoader().exists()).toBe(true);
       });
 
-      it('hides the tags count while loading', () => {
+      it('hides the artifacts count while loading', () => {
         mountComponent({ metadataLoading: true });
 
-        expect(findTagsCount().exists()).toBe(false);
+        expect(findArtifactsCount().exists()).toBe(false);
       });
     });
 
-    describe('tags count text', () => {
-      it('with one tag in the image', () => {
+    describe('artifacts count text', () => {
+      it('with one artifact in the image', () => {
         mountComponent({ item: { ...item, artifactCount: 1 } });
 
-        expect(findTagsCount().text()).toMatchInterpolatedText('1 Tag');
+        expect(findArtifactsCount().text()).toMatchInterpolatedText('1 artifact');
       });
-      it('with more than one tag in the image', () => {
+      it('with more than one artifact in the image', () => {
         mountComponent({ item: { ...item, artifactCount: 3 } });
 
-        expect(findTagsCount().text()).toMatchInterpolatedText('3 Tags');
+        expect(findArtifactsCount().text()).toMatchInterpolatedText('3 artifacts');
       });
     });
   });

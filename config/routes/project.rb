@@ -466,7 +466,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :harbor do
-          resources :repositories, only: [:index, :show] do
+          resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do
             resources :artifacts, only: [:index] do
               resources :tags, only: [:index]
             end

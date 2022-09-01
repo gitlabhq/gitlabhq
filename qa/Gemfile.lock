@@ -11,8 +11,8 @@ GEM
     adamantium (0.2.0)
       ice_nine (~> 0.11.0)
       memoizable (~> 0.4.0)
-    addressable (2.8.0)
-      public_suffix (>= 2.0.2, < 5.0)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     airborne (0.3.4)
       activesupport
       rack
@@ -118,7 +118,7 @@ GEM
     gitlab (4.18.0)
       httparty (~> 0.18)
       terminal-table (>= 1.5.1)
-    gitlab-qa (8.4.0)
+    gitlab-qa (8.4.1)
       activesupport (~> 6.1)
       gitlab (~> 4.18.0)
       http (~> 5.0)
@@ -223,7 +223,7 @@ GEM
     pry-byebug (3.5.1)
       byebug (~> 9.1)
       pry (~> 0.10)
-    public_suffix (4.0.7)
+    public_suffix (5.0.0)
     racc (1.6.0)
     rack (2.2.3.1)
     rack-test (1.1.0)

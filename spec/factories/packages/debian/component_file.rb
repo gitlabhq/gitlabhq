@@ -30,10 +30,12 @@ FactoryBot.define do
     trait(:sources) do
       file_type { :sources }
       architecture { nil }
+      file_fixture { 'spec/fixtures/packages/debian/distribution/Sources' }
     end
 
     trait(:di_packages) do
       file_type { :di_packages }
+      file_fixture { 'spec/fixtures/packages/debian/distribution/D-I-Packages' }
     end
 
     trait(:object_storage) do

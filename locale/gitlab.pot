@@ -148,6 +148,11 @@ msgid_plural "%d approvers (you've approved)"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d artifact"
+msgid_plural "%d artifacts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d assigned issue"
 msgid_plural "%d assigned issues"
 msgstr[0] ""
@@ -19220,17 +19225,17 @@ msgstr ""
 msgid "HarborIntegration|Use Harbor as this project's container registry."
 msgstr ""
 
+msgid "HarborRegistry|%d artifact"
+msgid_plural "HarborRegistry|%d artifacts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "HarborRegistry|%{count} Image repository"
 msgid_plural "HarborRegistry|%{count} Image repositories"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "HarborRegistry|%{count} Tag"
-msgid_plural "HarborRegistry|%{count} Tags"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "HarborRegistry|Configuration digest: %{digest}"
+msgid "HarborRegistry|-- artifacts"
 msgstr ""
 
 msgid "HarborRegistry|Digest: %{imageId}"
@@ -19242,49 +19247,46 @@ msgstr ""
 msgid "HarborRegistry|Harbor connection error"
 msgstr ""
 
-msgid "HarborRegistry|Invalid tag: missing manifest digest"
-msgstr ""
-
-msgid "HarborRegistry|Last updated %{time}"
-msgstr ""
-
-msgid "HarborRegistry|Manifest digest: %{digest}"
-msgstr ""
-
 msgid "HarborRegistry|Please try different search criteria"
 msgstr ""
 
 msgid "HarborRegistry|Published %{timeInfo}"
 msgstr ""
 
-msgid "HarborRegistry|Published to the %{repositoryPath} image repository at %{time} on %{date}"
+msgid "HarborRegistry|Root image"
 msgstr ""
 
-msgid "HarborRegistry|Root image"
+msgid "HarborRegistry|Something went wrong while fetching the artifact list."
+msgstr ""
+
+msgid "HarborRegistry|Something went wrong while fetching the repository list."
+msgstr ""
+
+msgid "HarborRegistry|Something went wrong while fetching the tags."
 msgstr ""
 
 msgid "HarborRegistry|Sorry, your filter produced no results."
 msgstr ""
 
+msgid "HarborRegistry|Tag"
+msgstr ""
+
 msgid "HarborRegistry|The filter returned no results"
 msgstr ""
 
-msgid "HarborRegistry|The image repository could not be found."
+msgid "HarborRegistry|There are no harbor images stored for this project"
 msgstr ""
 
-msgid "HarborRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
-msgstr ""
-
-msgid "HarborRegistry|The requested image repository does not exist or has been deleted. If you think this is an error, try refreshing the page."
-msgstr ""
-
-msgid "HarborRegistry|This image has no active tags"
+msgid "HarborRegistry|This image has no artifacts"
 msgstr ""
 
 msgid "HarborRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
 msgid "HarborRegistry|We are having trouble connecting to the Harbor Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
+msgstr ""
+
+msgid "HarborRegistry|With the Harbor Registry, every project can connect to a harbor space to store its Docker images."
 msgstr ""
 
 msgid "HarborRegistry|With the Harbor Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}"
@@ -26960,6 +26962,9 @@ msgid "Notify|You don't have access to the project."
 msgstr ""
 
 msgid "Notify|You have been mentioned in an issue."
+msgstr ""
+
+msgid "Notify|You have been mentioned in merge request %{mr_link}"
 msgstr ""
 
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."

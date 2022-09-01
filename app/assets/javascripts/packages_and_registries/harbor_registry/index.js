@@ -3,14 +3,8 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
-import RegistryBreadcrumb from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
+import RegistryBreadcrumb from '~/packages_and_registries/harbor_registry/components/harbor_registry_breadcrumb.vue';
 import { renderBreadcrumb } from '~/packages_and_registries/shared/utils';
-import { helpPagePath } from '~/helpers/help_page_helper';
-import {
-  dockerBuildCommand,
-  dockerPushCommand,
-  dockerLoginCommand,
-} from '~/packages_and_registries/harbor_registry/constants';
 import createRouter from './router';
 import HarborRegistryExplorer from './pages/index.vue';
 
@@ -35,12 +29,26 @@ export default (id) => {
     return null;
   }
 
-  const { endpoint, connectionError, invalidPathError, isGroupPage, ...config } = el.dataset;
+  const {
+    endpoint,
+    connectionError,
+    invalidPathError,
+    isGroupPage,
+    noContainersImage,
+    containersErrorImage,
+    repositoryUrl,
+    harborIntegrationProjectName,
+    projectName,
+  } = el.dataset;
 
   const breadCrumbState = Vue.observable({
     name: '',
+    href: '',
     updateName(value) {
       this.name = value;
+    },
+    updateHref(value) {
+      this.href = value;
     },
   });
 
@@ -53,16 +61,16 @@ export default (id) => {
       provide() {
         return {
           breadCrumbState,
-          config: {
-            ...config,
-            connectionError: parseBoolean(connectionError),
-            invalidPathError: parseBoolean(invalidPathError),
-            isGroupPage: parseBoolean(isGroupPage),
-            helpPagePath: helpPagePath('user/packages/container_registry/index'),
-          },
-          dockerBuildCommand: dockerBuildCommand(config.repositoryUrl),
-          dockerPushCommand: dockerPushCommand(config.repositoryUrl),
-          dockerLoginCommand: dockerLoginCommand(config.registryHostUrlWithPort),
+          endpoint,
+          connectionError: parseBoolean(connectionError),
+          invalidPathError: parseBoolean(invalidPathError),
+          isGroupPage: parseBoolean(isGroupPage),
+          repositoryUrl,
+          harborIntegrationProjectName,
+          projectName,
+          containersErrorImage,
+          noContainersImage,
+          helpPagePath: '',
         };
       },
       render(createElement) {
