@@ -86,8 +86,9 @@ export default {
       :class="{
         'gl-bg-orange-50': blocksMerge && !allResolved && !glFeatures.movedMrSidebar,
         'gl-bg-gray-50': !blocksMerge || allResolved || glFeatures.movedMrSidebar,
-        'gl-pr-4': allResolved && !glFeatures.movedMrSidebar,
+        'gl-pr-4': allResolved && glFeatures.movedMrSidebar,
         'gl-pr-2': !allResolved && !glFeatures.movedMrSidebar,
+        'gl-min-h-7': glFeatures.movedMrSidebar,
       }"
       data-testid="discussions-counter-text"
     >

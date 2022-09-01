@@ -7,6 +7,8 @@ import {
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
+import { TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import StatusBox from '~/issuable/components/status_box.vue';
@@ -47,7 +49,7 @@ export default {
       doneFetchingBatchDiscussions: (state) => state.notes.doneFetchingBatchDiscussions,
     }),
     issuableId() {
-      return `${this.getNoteableData.id}`;
+      return convertToGraphQLId(TYPE_MERGE_REQUEST, this.getNoteableData.id);
     },
     issuableIid() {
       return `${this.getNoteableData.iid}`;
@@ -114,8 +116,8 @@ export default {
               <template #source>
                 <gl-link
                   :title="getNoteableData.source_branch"
+                  :href="getNoteableData.source_branch_path"
                   class="gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-text-truncate gl-max-w-26"
-                  href="/gitlab-org/gitlab-test/-/tree/master-change-vue-comp"
                 >
                   {{ getNoteableData.source_branch }}
                 </gl-link>
@@ -123,8 +125,8 @@ export default {
               <template #target>
                 <gl-link
                   :title="getNoteableData.target_branch"
+                  :href="getNoteableData.target_branch_path"
                   class="gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-text-truncate gl-max-w-26 gl-ml-2"
-                  href="/gitlab-org/gitlab-test/-/tree/master-change-vue-comp"
                 >
                   {{ getNoteableData.target_branch }}
                 </gl-link>

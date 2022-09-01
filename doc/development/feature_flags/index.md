@@ -433,8 +433,8 @@ When using the percentage rollout of actors on multiple feature flags, the actor
 For example, the following feature flags are enabled for a certain percentage of actors:
 
 ```plaintext
-/chatops run chatops feature set feature-set-1 25 --actors
-/chatops run chatops feature set feature-set-2 25 --actors
+/chatops run feature set feature-set-1 25 --actors
+/chatops run feature set feature-set-2 25 --actors
 ```
 
 If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.

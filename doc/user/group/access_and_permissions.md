@@ -17,9 +17,14 @@ Configure your groups to control group permissions and access.
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
-To configure push rules for a group:
+In GitLab 15.4 and later, to configure push rules for a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select Push rules. 
+1. Select the settings you want.
+1. Select **Save Push Rules**.
+
+In GitLab 15.3 and earlier, to configure push rules for a group:
+
 1. On the left sidebar, select **Settings > Repository** page.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.

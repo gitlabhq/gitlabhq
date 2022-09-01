@@ -20,7 +20,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Implement a new EE feature
 
-If you're developing a GitLab Starter, GitLab Premium, or GitLab Ultimate licensed feature, use these steps to
+If you're developing a GitLab Premium or GitLab Ultimate licensed feature, use these steps to
 add your new feature or extend it.
 
 GitLab license features are added to [`ee/app/models/gitlab_subscriptions/features.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/gitlab_subscriptions/features.rb). To determine how
@@ -33,9 +33,9 @@ Use the following questions to guide you:
      must locate the existing feature identifier to [guard it](#guard-your-ee-feature).
    - If this is a new feature, decide on an identifier, such as `my_feature_name`, to add to the
      `features.rb` file.
-1. Is this a **GitLab Starter**, **GitLab Premium**, or **GitLab Ultimate** feature?
-   - Based on the plan you choose to use the feature in, add the feature identifier to `STARTER_FEATURES`,
-     `PREMIUM_FEATURES`, or `ULTIMATE_FEATURES`.
+1. Is this a **GitLab Premium** or **GitLab Ultimate** feature?
+   - Based on the plan you choose to use the feature in, add the feature identifier to `PREMIUM_FEATURES`
+     or `ULTIMATE_FEATURES`.
 1. Will this feature be available globally (system-wide at the GitLab instance level)?
     - Features such as [Geo](../administration/geo/index.md) and
     [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
@@ -1128,7 +1128,7 @@ EE licensed features that enhance existing functionality in the UI add new
 elements or interactions to your Vue application as components.
 
 To separate template differences, use a child EE component to separate Vue template differences.
-You must import the EE component [asynchronously](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+You must import the EE component [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
 
 This allows GitLab to load the correct component in EE, while in CE GitLab loads an empty component
 that renders nothing. This code **must** exist in the CE repository, in addition to the EE repository.

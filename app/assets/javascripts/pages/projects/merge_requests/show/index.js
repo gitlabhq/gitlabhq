@@ -5,6 +5,7 @@ import { initIssuableHeaderWarnings } from '~/issuable';
 import initMrNotes from '~/mr_notes';
 import store from '~/mr_notes/stores';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import initShow from '../init_merge_request_show';
 import getStateQuery from '../queries/get_state.query.graphql';
 
@@ -26,6 +27,7 @@ requestIdleCallback(() => {
     new Vue({
       el,
       store,
+      apolloProvider,
       provide: {
         query: getStateQuery,
         iid,

@@ -12,6 +12,8 @@
     "state": { "type": "string" },
     "source_branch": { "type": "string" },
     "target_branch": { "type": "string" },
+    "source_branch_path": { "type": "string" },
+    "target_branch_path": { "type": "string" },
     "diff_head_sha": { "type": "string" },
     "create_note_path": { "type": ["string", "null"] },
     "preview_note_path": { "type": ["string", "null"] },

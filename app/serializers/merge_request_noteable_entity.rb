@@ -10,6 +10,15 @@ class MergeRequestNoteableEntity < IssuableEntity
   expose :state
   expose :source_branch
   expose :target_branch
+
+  expose :source_branch_path, if: -> (merge_request) { merge_request.source_project } do |merge_request|
+    project_tree_path(merge_request.source_project, merge_request.source_branch)
+  end
+
+  expose :target_branch_path, if: -> (merge_request) { merge_request.source_project } do |merge_request|
+    project_tree_path(merge_request.source_project, merge_request.target_branch)
+  end
+
   expose :diff_head_sha
 
   expose :create_note_path do |merge_request|
