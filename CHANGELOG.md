@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.3.3 (2022-09-01)
+
+### Fixed (5 changes)
+
+- [Skip file removal if GitLab managed replication is disabled](gitlab-org/gitlab@dbec61270621df70775c98946d09deca913bd187) ([merge request](gitlab-org/gitlab!96556)) **GitLab Enterprise Edition**
+- [Geo: Fix redirects of LFS transfer downloads](gitlab-org/gitlab@98092958c879d1dc9dda0ba2953ba548aa0b93c0) ([merge request](gitlab-org/gitlab!96654)) **GitLab Enterprise Edition**
+- [Improve blame link feature](gitlab-org/gitlab@163cadb49f96951a0f747d61a8cd1cb92b7d4296) ([merge request](gitlab-org/gitlab!96654))
+- [Bypass earliest date validation in importing of iteration cadences](gitlab-org/gitlab@66f56eb2551a302d80ca0891ff0bddec1c84f025) ([merge request](gitlab-org/gitlab!96654)) **GitLab Enterprise Edition**
+- [Fix user recent activity links for work item actions](gitlab-org/gitlab@9d9368545847cf558fad26a64b216a00b2db36b4) ([merge request](gitlab-org/gitlab!96654))
+
 ## 15.3.2 (2022-08-30)
 
 ### Security (17 changes)
