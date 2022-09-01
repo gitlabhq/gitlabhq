@@ -88,6 +88,12 @@ module EventsHelper
     end
   end
 
+  def event_target_path(event)
+    return Gitlab::UrlBuilder.build(event.target, only_path: true) if event.work_item?
+
+    event.target_link_options
+  end
+
   def event_feed_title(event)
     words = []
     words << event.author_name

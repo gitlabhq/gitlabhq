@@ -1444,7 +1444,7 @@ response attributes:
 | Attribute          | Type   | Description                                                                          |
 |:-------------------|:-------|:-------------------------------------------------------------------------------------|
 | `[].name`          | string | Name of the SAML group                                                               |
-| `[].access_level`  | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| `[].access_level`  | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
 
 Example request:
 
@@ -1458,11 +1458,11 @@ Example response:
 [
   {
     "name": "saml-group-1",
-    "access_level": "Guest"
+    "access_level": 10
   },
   {
     "name": "saml-group-2",
-    "access_level": "Maintainer"
+    "access_level": 40
   }
 ]
 ```
@@ -1488,7 +1488,7 @@ response attributes:
 | Attribute      | Type   | Description                                                                          |
 |:---------------|:-------|:-------------------------------------------------------------------------------------|
 | `name`         | string | Name of the SAML group                                                               |
-| `access_level` | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| `access_level` | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
 
 Example request:
 
@@ -1501,7 +1501,7 @@ Example response:
 ```json
 {
 "name": "saml-group-1",
-"access_level": "Guest"
+"access_level": 10
 }
 ```
 
@@ -1519,7 +1519,7 @@ Supported attributes:
 |:-------------------|:---------------|:---------|:-------------------------------------------------------------------------------------|
 | `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)             |
 | `saml_group_name`  | string         | yes      | Name of a SAML group                                                                 |
-| `access_level`     | string         | yes      | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| `access_level`     | integer         | yes      | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
 
 If successful, returns [`201`](index.md#status-codes) and the following
 response attributes:
@@ -1527,7 +1527,7 @@ response attributes:
 | Attribute      | Type   | Description                                                                          |
 |:---------------|:-------|:-------------------------------------------------------------------------------------|
 | `name`         | string | Name of the SAML group                                                               |
-| `access_level` | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| `access_level` | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
 
 Example request:
 
@@ -1540,7 +1540,7 @@ Example response:
 ```json
 {
 "name": "saml-group-1",
-"access_level": "Guest"
+"access_level": 10
 }
 ```
 

@@ -1,0 +1,70 @@
+- name: "Create tasks in issues"
+  description: |
+    Tasks provide a robust way to refine an issue into smaller, discrete work units. Previously in GitLab, you could break down an issue into smaller parts using markdown checklists within the description. However, these checklist items could not be easily assigned, labeled, or managed anywhere outside of the description field.
+
+    You can now create tasks within issues from the Child Items widget. Then, you can open the task directly within the issue to quickly update the title, set the weight, or add a description. Tasks break down work within projects for GitLab Free and increase the planning hierarchy for our GitLab Premium customers to three levels (epic, issue, and task). In our next iteration, you will be able to add labels, milestones, and iterations to each task.
+
+    Tasks represent our first step toward evolving issues, epics, incidents, requirements, and test cases to [work items](https://docs.gitlab.com/ee/development/work_items.html). If you have feedback or suggestions about tasks, please comment on [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/363613).
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/tasks.html
+  image_url: https://about.gitlab.com/images/15_3/create-tasks.gif
+  published_at: 2022-08-22
+  release: 15.3
+- name: "GitOps features are now free"
+  description: |
+    When you use GitOps to update a Kubernetes cluster, also called a pull-based deployment, you get an improved security model, better scalability and stability.
+
+    The GitLab agent for Kubernetes has supported [GitOps workflows](https://docs.gitlab.com/ee/user/clusters/agent/gitops.html) from its initial release, but until now, the functionality was available only if you had a GitLab Premium or Ultimate subscription. Now if you have a Free subscription, you also get pull-based deployment support. The features available in GitLab Free should serve small, high-trust teams or be suitable to test the agent before upgrading to a higher tier.
+
+    In the future, we plan to add [built-in multi-tenant support](https://gitlab.com/gitlab-org/gitlab/-/issues/337904) for Premium subscriptions. This feature would be similar to the impersonation feature already available for the [CI/CD workflow](https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html#restrict-project-and-group-access-by-using-impersonation).
+  stage: configure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/clusters/agent/gitops.html
+  image_url: https://img.youtube.com/vi/jgVxOnMfOZA/hqdefault.jpg
+  published_at: 2022-08-22
+  release: 15.3
+- name: "Submit merge request review with summary comment"
+  description: |
+    When you finish reviewing a merge request, there are probably some common things that you do, like summarizing your review for others or approving the changes if they look good to you. Those common tasks are now quicker and easier: when you submit your review, you can add a summary comment along with any [quick actions](https://docs.gitlab.com/ee/user/project/quick_actions.html) like `/approve`.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#submit-a-review
+  image_url: https://about.gitlab.com/images/15_3/create-mr-review-summary.png
+  published_at: 2022-08-22
+  release: 15.3
+- name: "Define password complexity requirements"
+  description: |
+    GitLab administrators can now define password complexity requirements in addition to minimum password length. For new passwords, you can now require:
+
+    - Numbers.
+    - Uppercase letters.
+    - Lowercase letters.
+    - Symbols.
+
+    Complex passwords are less likely to be compromised, and the ability to configure password complexity requirements helps administrators enforce their password policies.
+  stage: manage
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/admin_area/settings/sign_up_restrictions.html#password-complexity-requirements
+  image_url: https://about.gitlab.com/images/15_3/manage-password-complexity-policy.png
+  published_at: 2022-08-22
+  release: 15.3
+- name: "Maintain SAML Group Links with API"
+  description: |
+    Until now, SAML group links had to be configured in the UI. Now, you can manage SAML group links programmatically using the API so you can automate SAML groups management.
+  stage: manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/api/groups.html#saml-group-links
+  image_url: https://img.youtube.com/vi/Pft61UFM5LM/hqdefault.jpg
+  published_at: 2022-08-22
+  release: 15.3

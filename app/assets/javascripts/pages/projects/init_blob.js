@@ -4,7 +4,6 @@ import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import LineHighlighter from '~/blob/line_highlighter';
 import initBlobBundle from '~/blob_edit/blob_bundle';
-import addBlobLinksTracking from '~/blob/blob_links_tracking';
 
 export default () => {
   new LineHighlighter(); // eslint-disable-line no-new
@@ -15,12 +14,6 @@ export default () => {
     '.file-line-num[data-line-number], .file-line-num[data-line-number] *',
     document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
   );
-
-  const eventsToTrack = [
-    { selector: '.file-line-blame', property: 'blame' },
-    { selector: '.file-line-num', property: 'link' },
-  ];
-  addBlobLinksTracking('#blob-content-holder', eventsToTrack);
 
   const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
   const fileBlobPermalinkUrl =

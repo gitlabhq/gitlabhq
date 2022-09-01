@@ -1,17 +1,14 @@
 #blob-content.file-content.code.js-syntax-highlight
   -  offset = defined?(first_line_number) ? first_line_number : 1
-  .line-numbers{ class: "gl-p-0\!" }
+  - blame_path = project_blame_path(@project, tree_join(@ref, blob.path))
+  .line-numbers{ class: "gl-px-0!", data: { blame_path: blame_path } }
     - if blob.data.present?
       - link = blob_link if defined?(blob_link)
-      - blame_link = project_blame_path(@project, tree_join(@ref, blob.path))
       - blob.data.each_line.each_with_index do |_, index|
         - i = index + offset
         -# We're not using `link_to` because it is too slow once we get to thousands of lines.
-        .line-links.diff-line-num
-          - if Feature.enabled?(:file_line_blame)
-            %a.file-line-blame{ href: "#{blame_link}#L#{i}" }
-          %a.file-line-num{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
-            = i
+        %a.file-line-num.diff-line-num{ class: ("js-line-links" if Feature.enabled?(:file_line_blame)), href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
+          = i
   - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
   .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }
     %pre.code.highlight

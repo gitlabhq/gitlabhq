@@ -209,7 +209,9 @@ RSpec.describe 'Projects > Settings > Repository settings' do
       end
 
       it 'generates an SSH public key on submission', :js do
-        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        fill_in 'url', with: ssh_url
+        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+
         select 'SSH public key', from: 'Authentication method'
 
         select_direction

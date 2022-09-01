@@ -38,25 +38,64 @@ to work items and adding custom work item types, visit
 [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or
 [Plan direction page](https://about.gitlab.com/direction/plan/).
 
+## View tasks
+
+View tasks in issues, in the **Child items** section.
+
+You can also [filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
+for `Type = task`.
+
 ## Create a task
+
+Prerequisites:
+
+- You must have at least the Guest role for the project, or the project must be public.
 
 To create a task:
 
-1. In an issue description, create a [task list](markdown.md#task-lists).
-1. Hover over a task item and select **Create task** (**{doc-new}**).
+1. In an issue description, in the **Child items** section, select **Add a task**.
+1. Enter the task title.
+1. Select **Create task**.
 
 ## Edit a task
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 To edit a task:
 
-1. In the issue description, view the task links.
-1. Select a link. The task is displayed.
-   - To edit the description, select **Edit**, then select **Save**.
-   - To edit the title or state, make your changes, then select any area outside the field. The changes are saved automatically.
+1. In the issue description, in the **Child items** section, select the task you want to edit.
+   The task window opens.
+1. Optional. To edit the title, select it and make your changes.
+1. Optional. To edit the description, select the edit icon (**{pencil}**), make your changes, and
+   select **Save**.
+1. Select the close icon (**{close}**).
+
+## Remove a task from an issue
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can remove a task from an issue. The task is not deleted, but the two are no longer connected.
+It's not possible to connect them again.
+
+To remove a task from an issue:
+
+1. In the issue description, in the **Child items** section, next to the task you want to remove, select the options menu (**{ellipsis_v}**).
+1. Select **Remove task**.
 
 ## Delete a task
 
+Prerequisites:
+
+- You must either:
+  - Be the author of the task and have at least the Guest role for the project.
+  - Have the Owner role for the project.
+
 To delete a task:
 
-1. In the issue description, select the task.
-1. From the options menu (**{ellipsis_v}**), select **Delete task**.
+1. In the issue description, in the **Child items** section, select the task you want to edit.
+1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
+1. Select **OK**.
