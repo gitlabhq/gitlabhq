@@ -50,6 +50,20 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
       it { expect(project_calculated_column).to be_ascending_order }
       it { expect(project_calculated_column).not_to be_descending_order }
 
+      context 'when order expression is an Arel node with nulls_last' do
+        it 'can automatically determine the reversed expression' do
+          column_order_definition = described_class.new(
+            attribute_name: :name,
+            column_expression: Project.arel_table[:name],
+            order_expression: Project.arel_table[:name].asc.nulls_last,
+            nullable: :nulls_last,
+            distinct: false
+          )
+
+          expect(column_order_definition).to be_ascending_order
+        end
+      end
+
       it 'raises error when order direction cannot be infered' do
         expect do
           described_class.new(
@@ -130,6 +144,21 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
         )
 
         expect(column_order_definition.reverse.order_expression).to eq('name desc')
+      end
+    end
+
+    context 'when order expression is an Arel node with nulls_last' do
+      it 'can automatically determine the reversed expression' do
+        column_order_definition = described_class.new(
+          attribute_name: :name,
+          column_expression: Project.arel_table[:name],
+          order_expression: Project.arel_table[:name].asc.nulls_last,
+          order_direction: :asc,
+          nullable: :nulls_last,
+          distinct: false
+        )
+
+        expect(column_order_definition.reverse.order_expression).to eq(Project.arel_table[:name].desc.nulls_first)
       end
     end
   end

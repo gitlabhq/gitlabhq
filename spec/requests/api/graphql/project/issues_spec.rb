@@ -301,7 +301,7 @@ RSpec.describe 'getting an issue list for a project' do
       let_it_be(:relative_issue5) { create(:issue, project: sort_project, relative_position: 500) }
 
       context 'when ascending' do
-        it_behaves_like 'sorted paginated query' do
+        it_behaves_like 'sorted paginated query', is_reversible: true do
           let(:sort_param)       { :RELATIVE_POSITION_ASC }
           let(:first_param)      { 2 }
           let(:all_records) do

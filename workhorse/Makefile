@@ -112,8 +112,7 @@ clean-build:
 	rm -rf $(TARGET_DIR)
 
 .PHONY:	prepare-tests
-prepare-tests:	testdata/data/group/test.git $(EXE_ALL)
-prepare-tests:	testdata/scratch
+prepare-tests: testdata/scratch $(EXE_ALL)
 
 .PHONY: run-gitaly
 run-gitaly: $(GITALY_PID_FILE)
@@ -129,10 +128,6 @@ gitaly.toml: ../tmp/tests/gitaly/config.toml
 ../tmp/tests/gitaly/config.toml:
 	$(call message, "Building a complete test environment")
 	cd .. ; ./scripts/setup-test-env
-
-testdata/data/group/test.git:
-	$(call message,$@)
-	git clone --quiet --bare https://gitlab.com/gitlab-org/gitlab-test.git $@
 
 testdata/scratch:
 	mkdir -p testdata/scratch

@@ -213,7 +213,7 @@ module Gitlab
         attr_reader :reversed_order_expression, :nullable, :distinct
 
         def calculate_reversed_order(order_expression)
-          unless AREL_ORDER_CLASSES.has_key?(order_expression.class) # Arel can reverse simple orders
+          unless order_expression.is_a?(Arel::Nodes::Ordering)
             raise "Couldn't determine reversed order for `#{order_expression}`, please provide the `reversed_order_expression` parameter."
           end
 
@@ -229,10 +229,10 @@ module Gitlab
         end
 
         def parse_order_direction(order_expression, order_direction)
-          transformed_order_direction = if order_direction.nil? && AREL_ORDER_CLASSES[order_expression.class]
-                                          AREL_ORDER_CLASSES[order_expression.class]
-                                        elsif order_direction.present?
+          transformed_order_direction = if order_direction.present?
                                           order_direction.to_s.downcase.to_sym
+                                        elsif order_expression.is_a?(Arel::Nodes::Ordering)
+                                          AREL_ORDER_CLASSES[order_expression.class] || AREL_ORDER_CLASSES[order_expression.value.class]
                                         end
 
           unless REVERSED_ORDER_DIRECTIONS.has_key?(transformed_order_direction)

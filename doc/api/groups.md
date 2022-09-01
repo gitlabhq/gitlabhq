@@ -1469,7 +1469,7 @@ To delete the LDAP group link, provide either a `cn` or a `filter`, but not both
 ## SAML Group Links **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
-> - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.2.
+> - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
 
 List, get, add, and delete SAML group links.
 
@@ -1492,7 +1492,7 @@ If successful, returns [`200`](index.md#status-codes) and the following response
 | Attribute          | Type    | Description                                                                  |
 |:-------------------|:--------|:-----------------------------------------------------------------------------|
 | `[].name`          | string  | Name of the SAML group                                                       |
-| `[].access_level`  | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.2 |
+| `[].access_level`  | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1535,7 +1535,7 @@ If successful, returns [`200`](index.md#status-codes) and the following response
 | Attribute      | Type    | Description                                                                  |
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
-| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.2 |
+| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1573,7 +1573,7 @@ If successful, returns [`201`](index.md#status-codes) and the following response
 | Attribute      | Type    | Description                                                                  |
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
-| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.2 |
+| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 

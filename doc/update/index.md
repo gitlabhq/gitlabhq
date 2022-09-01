@@ -470,9 +470,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - GitLab 15.4.0 includes a [batched background migration](#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
 
-### 15.3.2
+### 15.3.3
 
-In GitLab 15.3.2, [SAML Group Links](../api/groups.md#saml-group-links) API `access_level` attribute type changed to `integer`. See
+In GitLab 15.3.3, [SAML Group Links](../api/groups.md#saml-group-links) API `access_level` attribute type changed to `integer`. See
 [valid access levels](../api/members.md#valid-access-levels) documentation.
 
 ### 15.2.0

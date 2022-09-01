@@ -606,7 +606,6 @@ included_attributes:
   merge_request_assignees:
     - :user_id
     - :created_at
-    - :state
   merge_request_reviewers:
     - :user_id
     - :created_at
