@@ -25,8 +25,8 @@ RSpec.describe PagesDomainSslRenewalCronWorker do
     end
 
     let!(:domain_with_failed_auto_ssl) do
-      create(:pages_domain, :without_certificate, :without_key, project: project,
-             auto_ssl_enabled: true, auto_ssl_failed: true)
+      create(:pages_domain, :without_certificate, :without_key,
+        project: project, auto_ssl_enabled: true, auto_ssl_failed: true)
     end
 
     let!(:domain_with_expired_auto_ssl) do

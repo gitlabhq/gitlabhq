@@ -19,9 +19,9 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     let(:counters) do
       {
         'count' => a_kind_of(Numeric),
-        'avg'   => a_kind_of(Numeric),
-        'max'   => a_kind_of(Numeric),
-        'min'   => a_kind_of(Numeric)
+        'avg' => a_kind_of(Numeric),
+        'max' => a_kind_of(Numeric),
+        'min' => a_kind_of(Numeric)
       }
     end
 

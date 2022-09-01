@@ -149,9 +149,9 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         it 'logs the import success' do
           expect(import_logger).to receive(:info).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    'Group Import/Export: Import succeeded'
+            message: 'Group Import/Export: Import succeeded'
           ).once
 
           subject
@@ -161,9 +161,9 @@ RSpec.describe Groups::ImportExport::ImportService do
       context 'when user does not have correct permissions' do
         it 'logs the error and raises an exception' do
           expect(import_logger).to receive(:error).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    a_string_including('Errors occurred')
+            message: a_string_including('Errors occurred')
           )
 
           expect { subject }.to raise_error(Gitlab::ImportExport::Error)
@@ -186,9 +186,9 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         it 'logs the error and raises an exception' do
           expect(import_logger).to receive(:error).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    a_string_including('Errors occurred')
+            message: a_string_including('Errors occurred')
           ).once
 
           expect { subject }.to raise_error(Gitlab::ImportExport::Error)
@@ -267,9 +267,9 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         it 'logs the import success' do
           expect(import_logger).to receive(:info).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    'Group Import/Export: Import succeeded'
+            message: 'Group Import/Export: Import succeeded'
           ).once
 
           subject
@@ -279,9 +279,9 @@ RSpec.describe Groups::ImportExport::ImportService do
       context 'when user does not have correct permissions' do
         it 'logs the error and raises an exception' do
           expect(import_logger).to receive(:error).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    a_string_including('Errors occurred')
+            message: a_string_including('Errors occurred')
           )
 
           expect { subject }.to raise_error(Gitlab::ImportExport::Error)
@@ -304,9 +304,9 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         it 'logs the error and raises an exception' do
           expect(import_logger).to receive(:error).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    a_string_including('Errors occurred')
+            message: a_string_including('Errors occurred')
           ).once
 
           expect { subject }.to raise_error(Gitlab::ImportExport::Error)
@@ -328,9 +328,9 @@ RSpec.describe Groups::ImportExport::ImportService do
           allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
 
           expect(import_logger).to receive(:info).with(
-            group_id:   group.id,
+            group_id: group.id,
             group_name: group.name,
-            message:    'Group Import/Export: Import succeeded'
+            message: 'Group Import/Export: Import succeeded'
           )
 
           subject

@@ -37,7 +37,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     context 'tags persistence' do
       let(:config) do
         {
-          build:  {
+          build: {
             script: 'ls',
             stage: 'build',
             tags: build_tag_list(label: 'build')

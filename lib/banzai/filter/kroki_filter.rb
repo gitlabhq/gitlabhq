@@ -14,7 +14,10 @@ module Banzai
         return doc unless settings.kroki_enabled
 
         diagram_selectors = ::Gitlab::Kroki.formats(settings)
-                                .map { |diagram_type| %(pre[lang="#{diagram_type}"] > code) }
+                                .map do |diagram_type|
+                                  %(pre[lang="#{diagram_type}"] > code,
+                                  pre > code[lang="#{diagram_type}"])
+                                end
                                 .join(', ')
 
         xpath = Gitlab::Utils::Nokogiri.css_to_xpath(diagram_selectors)
@@ -22,7 +25,7 @@ module Banzai
 
         diagram_format = "svg"
         doc.xpath(xpath).each do |node|
-          diagram_type = node.parent['lang']
+          diagram_type = node.parent['lang'] || node['lang']
           diagram_src = node.content
           image_src = create_image_src(diagram_type, diagram_format, diagram_src)
           img_tag = Nokogiri::HTML::DocumentFragment.parse(%(<img src="#{image_src}" />))
@@ -33,8 +36,8 @@ module Banzai
             img_tag.set_attribute('hidden', '') if lazy_load
             img_tag.set_attribute('class', 'js-render-kroki')
 
-            img_tag.set_attribute('data-diagram', node.parent['lang'])
-            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
+            img_tag.set_attribute('data-diagram', diagram_type)
+            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(diagram_src)}")
 
             node.parent.replace(img_tag)
           end

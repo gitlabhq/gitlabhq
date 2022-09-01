@@ -31,7 +31,6 @@ module Gitlab
         issues_edit
         pipeline_authoring
         quickactions
-        user_packages
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
@@ -49,6 +48,7 @@ module Gitlab
         source_code
         terraform
         testing
+        user_packages
         work_items
       ].freeze
 

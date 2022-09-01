@@ -30341,7 +30341,7 @@ CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id ON user_canonical_ema
 
 CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id_and_canonical_email ON user_canonical_emails USING btree (user_id, canonical_email);
 
-CREATE INDEX index_user_credit_card_validations_meta_data_full_match ON user_credit_card_validations USING btree (holder_name, expiration_date, last_digits, credit_card_validated_at);
+CREATE INDEX index_user_credit_card_validations_meta_data_full_match_lower ON user_credit_card_validations USING btree (lower(holder_name), expiration_date, last_digits, credit_card_validated_at);
 
 CREATE INDEX index_user_credit_card_validations_meta_data_partial_match ON user_credit_card_validations USING btree (expiration_date, last_digits, network, credit_card_validated_at);
 

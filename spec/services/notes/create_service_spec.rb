@@ -134,8 +134,7 @@ RSpec.describe Notes::CreateService do
       context 'in a merge request' do
         let_it_be(:project_with_repo) { create(:project, :repository) }
         let_it_be(:merge_request) do
-          create(:merge_request, source_project: project_with_repo,
-                 target_project: project_with_repo)
+          create(:merge_request, source_project: project_with_repo, target_project: project_with_repo)
         end
 
         context 'noteable highlight cache clearing' do
@@ -181,8 +180,7 @@ RSpec.describe Notes::CreateService do
 
           it 'does not clear cache when note is not the first of the discussion' do
             prev_note =
-              create(:diff_note_on_merge_request, noteable: merge_request,
-                     project: project_with_repo)
+              create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
             reply_opts =
               opts.merge(in_reply_to_discussion_id: prev_note.discussion_id,
                          type: 'DiffNote',

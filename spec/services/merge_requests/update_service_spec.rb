@@ -510,9 +510,9 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         before do
           create(:ci_pipeline,
             project: project,
-            ref:     merge_request.source_branch,
-            sha:     merge_request.diff_head_sha,
-            status:  :success)
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            status: :success)
 
           perform_enqueued_jobs do
             @merge_request = service.execute(merge_request)

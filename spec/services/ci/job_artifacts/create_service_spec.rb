@@ -151,9 +151,8 @@ RSpec.describe Ci::JobArtifacts::CreateService do
 
           expect { subject }.not_to change { Ci::JobArtifact.count }
           expect(subject).to match(
-            a_hash_including(http_status: :bad_request,
-              message: 'another artifact of the same type already exists',
-              status: :error))
+            a_hash_including(
+              http_status: :bad_request, message: 'another artifact of the same type already exists', status: :error))
         end
       end
     end

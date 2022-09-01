@@ -97,6 +97,10 @@ module Gitlab
                   last_sign_in_ip: current_user.last_sign_in_ip,
                   sign_in_count: current_user.sign_in_count
                 },
+                credit_card: {
+                  similar_cards_count: current_user.credit_card_validation&.similar_records&.count.to_i,
+                  similar_holder_names_count: current_user.credit_card_validation&.similar_holder_names_count.to_i
+                },
                 pipeline: {
                   sha: pipeline.sha,
                   ref: pipeline.ref,

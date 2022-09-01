@@ -208,8 +208,11 @@ RSpec.describe Environments::StopService do
 
       context 'when pipeline is a branch pipeline for merge request' do
         let(:pipeline) do
-          create(:ci_pipeline, source: :push, project: project, sha: merge_request.diff_head_sha,
-                 merge_requests_as_head_pipeline: [merge_request])
+          create(:ci_pipeline,
+            source: :push,
+            project: project,
+            sha: merge_request.diff_head_sha,
+            merge_requests_as_head_pipeline: [merge_request])
         end
 
         it 'does not stop the active environment' do

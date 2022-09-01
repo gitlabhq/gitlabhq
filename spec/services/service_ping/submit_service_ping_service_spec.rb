@@ -386,12 +386,12 @@ RSpec.describe ServicePing::SubmitService do
     let(:payload) do
       {
         uuid: 'uuid',
-          metric_a: metric_double,
-          metric_group: {
+        metric_a: metric_double,
+        metric_group: {
             metric_b: metric_double
           },
-          metric_without_timing: "value",
-          recorded_at: Time.current
+        metric_without_timing: "value",
+        recorded_at: Time.current
         }
     end
 
@@ -399,10 +399,10 @@ RSpec.describe ServicePing::SubmitService do
       {
         metadata: {
           uuid: 'uuid',
-            metrics: [
-              { name: 'metric_a', time_elapsed: 123 },
-              { name: 'metric_group.metric_b', time_elapsed: 123 }
-            ]
+          metrics: [
+            { name: 'metric_a', time_elapsed: 123 },
+            { name: 'metric_group.metric_b', time_elapsed: 123 }
+          ]
           }
         }
     end

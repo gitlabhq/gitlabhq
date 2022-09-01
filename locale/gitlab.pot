@@ -11894,15 +11894,6 @@ msgstr ""
 msgid "DastProfiles|Delete profile"
 msgstr ""
 
-msgid "DastProfiles|Do you want to discard this scanner profile?"
-msgstr ""
-
-msgid "DastProfiles|Do you want to discard this site profile?"
-msgstr ""
-
-msgid "DastProfiles|Do you want to discard your changes?"
-msgstr ""
-
 msgid "DastProfiles|Edit profile"
 msgstr ""
 
@@ -27282,6 +27273,12 @@ msgstr ""
 msgid "OnDemandScans|Description (optional)"
 msgstr ""
 
+msgid "OnDemandScans|Discard changes"
+msgstr ""
+
+msgid "OnDemandScans|Do you want to discard the changes or keep editing this profile? Unsaved changes will be lost."
+msgstr ""
+
 msgid "OnDemandScans|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
@@ -27301,6 +27298,9 @@ msgid "OnDemandScans|Enable scan schedule"
 msgstr ""
 
 msgid "OnDemandScans|For example: Tests the login page for SQL injections"
+msgstr ""
+
+msgid "OnDemandScans|Keep editing"
 msgstr ""
 
 msgid "OnDemandScans|Manage scanner profiles"
@@ -27424,6 +27424,9 @@ msgid "OnDemandScans|Use existing site profile"
 msgstr ""
 
 msgid "OnDemandScans|View results"
+msgstr ""
+
+msgid "OnDemandScans|You have unsaved changes"
 msgstr ""
 
 msgid "OnDemandScans|You must create a repository within your project to run an on-demand scan."

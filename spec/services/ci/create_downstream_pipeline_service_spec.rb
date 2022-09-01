@@ -440,10 +440,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
           let!(:trigger_project_bridge) do
             create(
-              :ci_bridge, status: :pending,
-              user: user,
-              options: trigger_downstream_project,
-              pipeline: child_pipeline
+              :ci_bridge, status: :pending, user: user, options: trigger_downstream_project, pipeline: child_pipeline
             )
           end
 

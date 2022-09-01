@@ -7,14 +7,13 @@ RSpec.describe Ci::RetryJobService do
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline) do
-    create(:ci_pipeline, project: project,
-           sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
+    create(:ci_pipeline, project: project, sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
   end
 
   let_it_be(:stage) do
     create(:ci_stage, project: project,
-                             pipeline: pipeline,
-                             name: 'test')
+                      pipeline: pipeline,
+                      name: 'test')
   end
 
   let(:job_variables_attributes) { [{ key: 'MANUAL_VAR', value: 'manual test var' }] }
@@ -31,9 +30,8 @@ RSpec.describe Ci::RetryJobService do
     let_it_be(:downstream_project) { create(:project, :repository) }
 
     let_it_be_with_refind(:job) do
-      create(
-        :ci_bridge, :success, pipeline: pipeline, downstream: downstream_project,
-        description: 'a trigger job', stage_id: stage.id
+      create(:ci_bridge, :success,
+        pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', stage_id: stage.id
       )
     end
 
@@ -133,9 +131,7 @@ RSpec.describe Ci::RetryJobService do
       end
 
       let!(:subsequent_bridge) do
-        create(:ci_bridge, :skipped, stage_idx: 2,
-                                      pipeline: pipeline,
-                                      stage: 'deploy')
+        create(:ci_bridge, :skipped, stage_idx: 2, pipeline: pipeline, stage: 'deploy')
       end
 
       it 'resumes pipeline processing in the subsequent stage' do
@@ -245,10 +241,13 @@ RSpec.describe Ci::RetryJobService do
         let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
 
         let!(:job) do
-          create(:ci_build, :with_deployment, environment: environment_name,
-                options: { environment: { name: environment_name } },
-                pipeline: pipeline, stage_id: stage.id, project: project,
-                user: other_developer)
+          create(:ci_build, :with_deployment,
+            environment: environment_name,
+            options: { environment: { name: environment_name } },
+            pipeline: pipeline,
+            stage_id: stage.id,
+            project: project,
+            user: other_developer)
         end
 
         it 'creates a new deployment' do

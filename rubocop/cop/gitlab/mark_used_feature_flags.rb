@@ -37,7 +37,8 @@ module RuboCop
 
         USAGE_DATA_COUNTERS_EVENTS_YAML_GLOBS = [
           File.expand_path("../../../config/metrics/aggregates/*.yml", __dir__),
-          File.expand_path("../../../lib/gitlab/usage_data_counters/known_events/*.yml", __dir__)
+          File.expand_path("../../../lib/gitlab/usage_data_counters/known_events/*.yml", __dir__),
+          File.expand_path("../../../ee/lib/ee/gitlab/usage_data_counters/known_events/*.yml", __dir__)
         ].freeze
 
         class << self

@@ -44,6 +44,7 @@ required number of seconds.
   "required" : [
     "project",
     "user",
+    "credit_card",
     "pipeline",
     "builds",
     "total_builds_count",
@@ -83,6 +84,17 @@ required number of seconds.
         "current_sign_in_ip": { "type": ["string", "null"] },
         "last_sign_in_ip": { "type": ["string", "null"] },
         "sign_in_count": { "type": "integer" }
+      }
+    },
+    "credit_card": {
+      "type": "object",
+      "required": [
+        "similar_cards_count",
+        "similar_holder_names_count"
+      ],
+      "properties": {
+        "similar_cards_count": { "type": "integer" },
+        "similar_holder_names_count": { "type": "integer" }
       }
     },
     "pipeline": {

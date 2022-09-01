@@ -24,7 +24,7 @@ RSpec.describe Tooling::Danger::Datateam do
           impacted: true,
           impacted_files: %w(db/structure.sql)
         },
-         'with structure.sql changes and Data Warehouse::Impact Check label' => {
+        'with structure.sql changes and Data Warehouse::Impact Check label' => {
           modified_files: %w(db/structure.sql),
           changed_lines: ['+group_id bigint NOT NULL)'],
           mr_labels: ['Data Warehouse::Impact Check'],

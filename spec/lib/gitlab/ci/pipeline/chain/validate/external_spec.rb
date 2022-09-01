@@ -179,6 +179,70 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
           perform!
         end
       end
+
+      describe 'credit_card' do
+        context 'with no registered credit_card' do
+          it 'returns the expected credit card counts' do
+            expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+              payload = Gitlab::Json.parse(params[:body])
+
+              expect(payload['credit_card']['similar_cards_count']).to eq(0)
+              expect(payload['credit_card']['similar_holder_names_count']).to eq(0)
+            end
+
+            perform!
+          end
+        end
+
+        context 'with a registered credit card' do
+          let!(:credit_card) { create(:credit_card_validation, last_digits: 10, holder_name: 'Alice', user: user) }
+
+          it 'returns the expected credit card counts' do
+            expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+              payload = Gitlab::Json.parse(params[:body])
+
+              expect(payload['credit_card']['similar_cards_count']).to eq(1)
+              expect(payload['credit_card']['similar_holder_names_count']).to eq(1)
+            end
+
+            perform!
+          end
+
+          context 'with similar credit cards registered by other users' do
+            before do
+              create(:credit_card_validation, last_digits: 10, holder_name: 'Bob')
+            end
+
+            it 'returns the expected credit card counts' do
+              expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+                payload = Gitlab::Json.parse(params[:body])
+
+                expect(payload['credit_card']['similar_cards_count']).to eq(2)
+                expect(payload['credit_card']['similar_holder_names_count']).to eq(1)
+              end
+
+              perform!
+            end
+          end
+
+          context 'with similar holder names registered by other users' do
+            before do
+              create(:credit_card_validation, last_digits: 11, holder_name: 'Alice')
+            end
+
+            it 'returns the expected credit card counts' do
+              expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+                payload = Gitlab::Json.parse(params[:body])
+
+                expect(payload['credit_card']['similar_cards_count']).to eq(1)
+                expect(payload['credit_card']['similar_holder_names_count']).to eq(2)
+              end
+
+              perform!
+            end
+          end
+        end
+      end
     end
 
     context 'when EXTERNAL_VALIDATION_SERVICE_TOKEN is set' do

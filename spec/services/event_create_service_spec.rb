@@ -420,9 +420,9 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         service.save_designs(author, create: [design])
 
         expect_snowplow_event(
-          category:  Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
+          category: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
           action: 'create',
-          namespace:  design.project.namespace,
+          namespace: design.project.namespace,
           user: author,
           project: design.project,
           label: 'design_users'
@@ -433,9 +433,9 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         service.save_designs(author, update: [design])
 
         expect_snowplow_event(
-          category:  Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
+          category: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
           action: 'update',
-          namespace:  design.project.namespace,
+          namespace: design.project.namespace,
           user: author,
           project: design.project,
           label: 'design_users'
@@ -481,9 +481,9 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         service.destroy_designs([design], author)
 
         expect_snowplow_event(
-          category:  Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
+          category: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
           action: 'destroy',
-          namespace:  design.project.namespace,
+          namespace: design.project.namespace,
           user: author,
           project: design.project,
           label: 'design_users'

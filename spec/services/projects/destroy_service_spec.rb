@@ -312,7 +312,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       before do
         stub_container_registry_tags(repository: project.full_path + '/image',
-                                      tags: ['tag'])
+                                     tags: ['tag'])
         project.container_repositories << container_repository
       end
 
@@ -350,7 +350,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     context 'when there are tags for legacy root repository' do
       before do
         stub_container_registry_tags(repository: project.full_path,
-                                      tags: ['tag'])
+                                     tags: ['tag'])
       end
 
       context 'when image repository tags deletion succeeds' do

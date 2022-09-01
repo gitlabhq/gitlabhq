@@ -60,12 +60,6 @@
 }
 
 .nav-sidebar {
-  li {
-    a {
-      color: var(--gray-600);
-    }
-  }
-
   .sidebar-sub-level-items.fly-out-list {
     box-shadow: none;
     border: 1px solid $border-color;
@@ -78,7 +72,7 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
 }
 
 body.gl-dark {
-  @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $gray-900, $white);
+  @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $white);
 
   .terms {
     .logo-text {

@@ -159,21 +159,32 @@ and artifacts, will share the same value. We want to add the `partition_id`
 column into all 6 problematic tables because we can avoid backfilling this data
 when we decide it is time to start partitioning them.
 
-We want to partition CI/CD data iteratively, so we will start with the
-pipelines table, and create at least one, but likely two, partitions. The
-pipelines table will be partitioned using the `LIST` partitioning strategy. It
-is possible that, after some time, `p_ci_pipelines` will store data in two
-partitions with IDs of `100` and `101`. Then we will try partitioning
-`ci_builds`. Therefore we might want to use `RANGE` partitioning in
-`p_ci_builds` with IDs `100` and `101`, because builds for the two logical
-partitions used will still be stored in a single table.
+We want to partition CI/CD data iteratively. We plan to start with the
+`ci_builds_metadata` table, because this is the fastest growing table in the CI
+database and want to contain this rapid growth. This table has also the most
+simple access patterns - a row from it is being read when a build is exposed to
+a runner, and other access patterns are relatively simple too. Starting with
+`p_ci_builds_metadata` will allow us to achieve tangible and quantifiable
+results earlier, and will become a new pattern that makes partitioning the
+largest table possible. We will partition builds metadata using the `LIST`
+partitioning strategy.
+
+Once we have many partitions attached to `p_ci_builds_metadata`, with many
+`partition_ids` we will choose another CI table to partition next. In that case
+we might want to use `RANGE` partitioning in for that next table because
+`p_ci_builds_metadata` will already have many physical partitions, and
+therefore many logical `partition_ids` will be used at that time. For example,
+if we choose `ci_builds` as the next partitioning candidate, after having
+partitioned `p_ci_builds_metadata`, it will have many different values stored
+in `ci_builds.partition_id`. Using `RANGE` partitioning in that case might be
+easier.
 
 Physical partitioning and logical partitioning will be separated, and a
-strategy will be determined when we implement partitioning for the respective
-database tables. Using `RANGE` partitioning works similarly to using `LIST`
-partitioning in database tables other than `ci_pipelines`, but because we can
-guarantee continuity of `partition_id` values, using `RANGE` partitioning might
-be a better strategy.
+strategy will be determined when we implement physical partitioning for the
+respective database tables. Using `RANGE` partitioning works similarly to using
+`LIST` partitioning in database tables, but because we can guarantee continuity
+of `partition_id` values, using `RANGE` partitioning might be a better
+strategy.
 
 ## Why do we want to use explicit logical partition ids?
 
@@ -335,9 +346,116 @@ scope block takes an argument). Preloading instance dependent scopes is not
 supported.
 ```
 
-We also need to build a proof of concept for removing data on the PostgreSQL
-side (using foreign keys with `ON DELETE CASCADE`) and removing data through
-Rails associations, as this might be an important area of uncertainty.
+### Foreign keys
+
+Foreign keys must reference columns that either are a primary key or form a
+unique constraint. We can define them using these strategies:
+
+#### Between routing tables sharing partition ID
+
+For relations that are part of the same pipeline hierarchy it is possible to
+share the `partition_id` column to define the foreign key constraint:
+
+```plaintext
+p_ci_pipelines:
+ - id
+ - partition_id
+
+p_ci_builds:
+ - id
+ - partition_id
+ - pipeline_id
+```
+
+In this case, `p_ci_builds.partition_id` indicates the partition for the build
+and also for the pipeline. We can add a FK on the routing table using:
+
+```sql
+ALTER TABLE ONLY p_ci_builds
+    ADD CONSTRAINT fk_on_pipeline_and_partition
+    FOREIGN KEY (pipeline_id, partition_id)
+    REFERENCES p_ci_pipelines(id, partition_id) ON DELETE CASCADE;
+```
+
+#### Between routing tables with different partition IDs
+
+It's not possible to reuse the `partition_id` for all relations in the CI domain,
+so in this case we'll need to store the value as a different attribute. For
+example, when canceling redundant pipelines we store on the old pipeline row
+the ID of the new pipeline that cancelled it as `auto_canceled_by_id`:
+
+```plaintext
+p_ci_pipelines:
+ - id
+ - partition_id
+ - auto_canceled_by_id
+ - auto_canceled_by_partition_id
+```
+
+In this case we can't ensure that the canceling pipeline is part of the same
+hierarchy as the canceled pipelines, so we need an extra attribute to store its
+partition, `auto_canceled_by_partition_id`, and the FK becomes:
+
+```sql
+ALTER TABLE ONLY p_ci_pipelines
+    ADD CONSTRAINT fk_cancel_redundant_pieplines
+    FOREIGN KEY (auto_canceled_by_id, auto_canceled_by_partition_id)
+    REFERENCES p_ci_pipelines(id, partition_id) ON DELETE SET NULL;
+```
+
+#### Between routing tables and regular tables
+
+Not all of the tables in the CI domain will be partitioned, so we'll have routing
+tables that will reference non-partitioned tables, for example we reference
+`external_pull_requests` from `ci_pipelines`:
+
+```sql
+FOREIGN KEY (external_pull_request_id)
+REFERENCES external_pull_requests(id)
+ON DELETE SET NULL
+```
+
+In this case we only need to move the FK definition from the partition level
+to the routing table so that new pipeline partitions may use it:
+
+```sql
+ALTER TABLE p_ci_pipelines
+  ADD CONSTRAINT fk_external_request
+  FOREIGN KEY (external_pull_request_id)
+  REFERENCES external_pull_requests(id) ON DELETE SET NULL;
+```
+
+#### Between regular tables and routing tables
+
+Most of the tables from the CI domain reference at least one table that will be
+turned into a routing tables, for example `ci_pipeline_messages` references
+`ci_pipelines`. These definitions will need to be updated to use the routing
+tables and for this they will need a `partition_id` column:
+
+```plaintext
+p_ci_pipelines:
+ - id
+ - partition_id
+
+ci_pipeline_messages:
+ - id
+ - pipeline_id
+ - pipeline_partition_id
+```
+
+The foreign key can be defined by using:
+
+```sql
+ALTER TABLE ci_pipeline_messages ADD CONSTRAINT fk_pipeline_partitioned
+  FOREIGN KEY (pipeline_id, pipeline_partition_id)
+  REFERENCES p_ci_pipelines(id, partition_id) ON DELETE CASCADE;
+```
+
+The old FK definition will need to be removed, otherwise new inserts in the
+`ci_pipeline_messages` with pipeline IDs from non-zero partition will fail with
+reference errors.
+
+### Indexes
 
 We [learned](https://gitlab.com/gitlab-org/gitlab/-/issues/360148) that `PostgreSQL`
 does not allow to create a single index (unique or otherwise) across all partitions of a table.
