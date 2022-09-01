@@ -2,13 +2,194 @@
 require 'spec_helper'
 
 RSpec.describe API::RpmProjectPackages do
-  include PackagesManagerApiSpecHelpers
-  let(:project) { create(:project) }
+  include HttpBasicAuthHelpers
+
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
+  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
   let(:headers) { {} }
   let(:package_name) { 'rpm-package.0-1.x86_64.rpm' }
   let(:package_file_id) { 1 }
 
-  shared_examples 'an unimplemented route' do
+  shared_examples 'rejects rpm packages access' do |status|
+    it_behaves_like 'returning response status', status
+
+    if status == :unauthorized
+      it 'has the correct response header' do
+        subject
+
+        expect(response.headers['WWW-Authenticate']).to eq 'Basic realm="GitLab Packages Registry"'
+      end
+    end
+  end
+
+  shared_examples 'process rpm packages upload/download' do |status|
+    it_behaves_like 'returning response status', status
+  end
+
+  shared_examples 'a deploy token for RPM requests' do
+    context 'with deploy token headers' do
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
+
+      context 'when token is valid' do
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'when token is invalid' do
+        let(:headers) { basic_auth_header(deploy_token.username, 'bar') }
+
+        it_behaves_like 'returning response status', :unauthorized
+      end
+    end
+  end
+
+  shared_examples 'a job token for RPM requests' do
+    context 'with job token headers' do
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        project.add_developer(user)
+      end
+
+      context 'with valid token' do
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'with invalid token' do
+        let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar') }
+
+        it_behaves_like 'returning response status', :unauthorized
+      end
+
+      context 'with invalid user' do
+        let(:headers) { basic_auth_header('foo', job.token) }
+
+        it_behaves_like 'returning response status', :unauthorized
+      end
+    end
+  end
+
+  shared_examples 'a user token for RPM requests' do
+    context 'with valid project' do
+      where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+        'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
+        'PUBLIC'  | :guest      | true  | true  | 'process rpm packages upload/download' | :forbidden
+        'PUBLIC'  | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
+        'PUBLIC'  | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
+        'PUBLIC'  | :developer  | false | true  | 'process rpm packages upload/download' | :not_found
+        'PUBLIC'  | :guest      | false | true  | 'process rpm packages upload/download' | :not_found
+        'PUBLIC'  | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
+        'PUBLIC'  | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
+        'PUBLIC'  | :anonymous  | false | true  | 'process rpm packages upload/download' | :unauthorized
+        'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
+        'PRIVATE' | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
+        'PRIVATE' | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
+        'PRIVATE' | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
+        'PRIVATE' | :developer  | false | true  | 'rejects rpm packages access'          | :not_found
+        'PRIVATE' | :guest      | false | true  | 'rejects rpm packages access'          | :not_found
+        'PRIVATE' | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
+        'PRIVATE' | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
+        'PRIVATE' | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized
+      end
+
+      with_them do
+        let(:token) { user_token ? personal_access_token.token : 'wrong' }
+        let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+
+        subject { get api(url), headers: headers }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level))
+          project.send("add_#{user_role}", user) if member && user_role != :anonymous
+        end
+
+        it_behaves_like params[:shared_examples_name], params[:expected_status]
+      end
+    end
+  end
+
+  describe 'GET /api/v4/projects/:project_id/packages/rpm/repodata/:filename' do
+    let(:url) { "/projects/#{project.id}/packages/rpm/repodata/#{package_name}" }
+
+    subject { get api(url), headers: headers }
+
+    it_behaves_like 'a job token for RPM requests'
+    it_behaves_like 'a deploy token for RPM requests'
+    it_behaves_like 'a user token for RPM requests'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/rpm/:package_file_id/:filename' do
+    let(:url) { "/projects/#{project.id}/packages/rpm/#{package_file_id}/#{package_name}" }
+
+    subject { get api(url), headers: headers }
+
+    it_behaves_like 'a job token for RPM requests'
+    it_behaves_like 'a deploy token for RPM requests'
+    it_behaves_like 'a user token for RPM requests'
+  end
+
+  describe 'POST /api/v4/projects/:project_id/packages/rpm' do
+    let(:url) { "/projects/#{project.id}/packages/rpm" }
+
+    subject { post api(url), headers: headers }
+
+    context 'with user token' do
+      context 'with valid project' do
+        where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+          'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
+          'PUBLIC'  | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
+          'PUBLIC'  | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
+          'PUBLIC'  | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
+          'PUBLIC'  | :developer  | false | true  | 'rejects rpm packages access'          | :not_found
+          'PUBLIC'  | :guest      | false | true  | 'rejects rpm packages access'          | :not_found
+          'PUBLIC'  | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
+          'PUBLIC'  | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
+          'PUBLIC'  | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized
+          'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
+          'PRIVATE' | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
+          'PRIVATE' | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
+          'PRIVATE' | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
+          'PRIVATE' | :developer  | false | true  | 'rejects rpm packages access'          | :not_found
+          'PRIVATE' | :guest      | false | true  | 'rejects rpm packages access'          | :not_found
+          'PRIVATE' | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
+          'PRIVATE' | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
+          'PRIVATE' | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized
+        end
+
+        with_them do
+          let(:token) { user_token ? personal_access_token.token : 'wrong' }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+
+          before do
+            project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level))
+            project.send("add_#{user_role}", user) if member && user_role != :anonymous
+          end
+
+          it_behaves_like params[:shared_examples_name], params[:expected_status]
+        end
+      end
+    end
+
+    it_behaves_like 'a deploy token for RPM requests'
+    it_behaves_like 'a job token for RPM requests'
+  end
+
+  describe 'POST /api/v4/projects/:project_id/packages/rpm/authorize' do
+    let(:url) { api("/projects/#{project.id}/packages/rpm/authorize") }
+
+    subject { post(url, headers: headers) }
+
     it_behaves_like 'returning response status', :not_found
 
     context 'when feature flag is disabled' do
@@ -26,37 +207,5 @@ RSpec.describe API::RpmProjectPackages do
 
       it_behaves_like 'returning response status', :not_found
     end
-  end
-
-  describe 'GET /api/v4/projects/:project_id/packages/rpm/repodata/:filename' do
-    let(:url) { api("/projects/#{project.id}/packages/rpm/repodata/#{package_name}") }
-
-    subject { get(url, headers: headers) }
-
-    it_behaves_like 'an unimplemented route'
-  end
-
-  describe 'GET /api/v4/projects/:project_id/packages/rpm/:package_file_id/:filename' do
-    let(:url) { api("/projects/#{project.id}/packages/rpm/#{package_file_id}/#{package_name}") }
-
-    subject { get(url, headers: headers) }
-
-    it_behaves_like 'an unimplemented route'
-  end
-
-  describe 'POST /api/v4/projects/:project_id/packages/rpm/authorize' do
-    let(:url) { api("/projects/#{project.id}/packages/rpm/authorize") }
-
-    subject { post(url, headers: headers) }
-
-    it_behaves_like 'an unimplemented route'
-  end
-
-  describe 'POST /api/v4/projects/:project_id/packages/rpm' do
-    let(:url) { api("/projects/#{project.id}/packages/rpm") }
-
-    subject { post(url, headers: headers) }
-
-    it_behaves_like 'an unimplemented route'
   end
 end

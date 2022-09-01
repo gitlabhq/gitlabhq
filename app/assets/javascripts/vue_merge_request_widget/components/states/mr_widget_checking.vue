@@ -6,10 +6,16 @@ export default {
   components: {
     StateContainer,
   },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>
 <template>
-  <state-container status="loading">
+  <state-container :mr="mr" status="loading">
     <span class="gl-font-weight-bold">
       {{ s__('mrWidget|Checking if merge request can be merged…') }}
     </span>

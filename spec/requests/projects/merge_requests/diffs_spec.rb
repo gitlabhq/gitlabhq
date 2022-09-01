@@ -97,34 +97,14 @@ RSpec.describe 'Merge Requests Diffs' do
         end
 
         context 'when using ETags' do
-          context 'when etag_merge_request_diff_batches is true' do
-            let(:headers) { { 'If-None-Match' => response.etag } }
+          let(:headers) { { 'If-None-Match' => response.etag } }
 
-            it 'does not serialize diffs' do
-              expect(PaginatedDiffSerializer).not_to receive(:new)
+          it 'does not serialize diffs' do
+            expect(PaginatedDiffSerializer).not_to receive(:new)
 
-              go(headers: headers, page: 0, per_page: 5)
+            go(headers: headers, page: 0, per_page: 5)
 
-              expect(response).to have_gitlab_http_status(:not_modified)
-            end
-          end
-
-          context 'when etag_merge_request_diff_batches is false' do
-            let(:headers) { { 'If-None-Match' => response.etag } }
-
-            before do
-              stub_feature_flags(etag_merge_request_diff_batches: false)
-            end
-
-            it 'does not serialize diffs' do
-              expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-                expect(instance).not_to receive(:represent)
-              end
-
-              subject
-
-              expect(response).to have_gitlab_http_status(:success)
-            end
+            expect(response).to have_gitlab_http_status(:not_modified)
           end
         end
 
@@ -279,28 +259,12 @@ RSpec.describe 'Merge Requests Diffs' do
         context 'when using ETag caching' do
           let(:headers) { { 'If-None-Match' => response.etag } }
 
-          context 'when etag_merge_request_diff_batches is true' do
-            it 'does not serialize diffs' do
-              expect(PaginatedDiffSerializer).not_to receive(:new)
+          it 'does not serialize diffs' do
+            expect(PaginatedDiffSerializer).not_to receive(:new)
 
-              subject
+            subject
 
-              expect(response).to have_gitlab_http_status(:not_modified)
-            end
-          end
-
-          context 'when etag_merge_request_diff_batches is false' do
-            before do
-              stub_feature_flags(etag_merge_request_diff_batches: false)
-            end
-
-            it 'does not use cache' do
-              expect(Rails.cache).not_to receive(:fetch).with(/cache:gitlab:PaginatedDiffSerializer/).and_call_original
-
-              subject
-
-              expect(response).to have_gitlab_http_status(:success)
-            end
+            expect(response).to have_gitlab_http_status(:not_modified)
           end
         end
 

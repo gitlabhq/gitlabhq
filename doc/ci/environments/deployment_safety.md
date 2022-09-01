@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deployment safety **(FREE)**
 
-[Deployment jobs](../jobs/#deployment-jobs) are a specific kind of CI/CD
+[Deployment jobs](../jobs/index.md#deployment-jobs) are a specific kind of CI/CD
 job. They can be more sensitive than other jobs in a pipeline,
 and might need to be treated with extra care. GitLab has several features
 that help maintain deployment security and stability.
@@ -66,7 +66,7 @@ For more information, see [Resource Group documentation](../resource_groups/inde
 ## Skip outdated deployment jobs
 
 The effective execution order of pipeline jobs can vary from run to run, which
-could cause undesired behavior. For example, a [deployment job](../jobs/#deployment-jobs)
+could cause undesired behavior. For example, a [deployment job](../jobs/index.md#deployment-jobs)
 in a newer pipeline could finish before a deployment job in an older pipeline.
 This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.

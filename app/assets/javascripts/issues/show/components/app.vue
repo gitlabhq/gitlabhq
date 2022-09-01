@@ -51,16 +51,7 @@ export default {
       required: true,
       type: Boolean,
     },
-    canDestroy: {
-      required: true,
-      type: Boolean,
-    },
     showInlineEditButton: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    showDeleteButton: {
       type: Boolean,
       required: false,
       default: true,
@@ -494,14 +485,12 @@ export default {
         :endpoint="endpoint"
         :form-state="formState"
         :initial-description-text="initialDescriptionText"
-        :can-destroy="canDestroy"
         :issuable-templates="issuableTemplates"
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
         :project-path="projectPath"
         :project-id="projectId"
         :project-namespace="projectNamespace"
-        :show-delete-button="showDeleteButton"
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"

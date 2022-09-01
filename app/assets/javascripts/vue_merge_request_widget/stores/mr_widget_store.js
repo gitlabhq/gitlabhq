@@ -28,6 +28,7 @@ export default class MergeRequestStore {
 
     this.stateMachine = machine(STATE_MACHINE.definition);
     this.machineValue = this.stateMachine.value;
+    this.mergeDetailsCollapsed = window.innerWidth < 768;
 
     this.setPaths(data);
 
@@ -404,5 +405,9 @@ export default class MergeRequestStore {
     }
 
     this.transitionStateMachine(transitionOptions);
+  }
+
+  toggleMergeDetails(val = !this.mergeDetailsCollapsed) {
+    this.mergeDetailsCollapsed = val;
   }
 }

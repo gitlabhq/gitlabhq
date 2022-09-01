@@ -86,7 +86,7 @@ export default {
 };
 </script>
 <template>
-  <state-container status="failed" :is-loading="isLoading">
+  <state-container :mr="mr" status="failed" :is-loading="isLoading">
     <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="7" width="150" height="16" rx="4" />

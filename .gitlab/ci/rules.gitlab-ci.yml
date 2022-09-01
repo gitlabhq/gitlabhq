@@ -336,7 +336,7 @@
 
 .qa-patterns: &qa-patterns
   - ".dockerignore"
-  - "qa/**/*"
+  - "{,jh/}qa/**/*"
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
@@ -414,7 +414,7 @@
   - ".gitlab/ci/**/*"
   # QA changes
   - ".dockerignore"
-  - "qa/**/*"
+  - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
 
@@ -448,7 +448,7 @@
   - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"
-  - "qa/**/*"
+  - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
 
@@ -483,7 +483,7 @@
   - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"
-  - "qa/**/*"
+  - "{,jh/}qa/**/*"
   # Workhorse changes
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"

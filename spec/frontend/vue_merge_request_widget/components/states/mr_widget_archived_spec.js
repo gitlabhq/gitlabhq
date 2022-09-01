@@ -6,7 +6,7 @@ describe('MRWidgetArchived', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(archivedComponent);
+    wrapper = shallowMount(archivedComponent, { propsData: { mr: {} } });
   });
 
   afterEach(() => {

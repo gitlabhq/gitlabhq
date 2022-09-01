@@ -7,78 +7,80 @@ type: concepts, reference, howto
 
 # Webhooks and insecure internal web services **(FREE SELF)**
 
-Users with at least the Maintainer role can set up [Webhooks](../user/project/integrations/webhooks.md) that are
+Users with at least the Maintainer role can set up [webhooks](../user/project/integrations/webhooks.md) that are
 triggered when specific changes occur in a project. When triggered, a `POST` HTTP request is sent to a URL. A webhook is
-usually configured to send data to a specific external web service, which
-processes the data in an appropriate way.
+usually configured to send data to a specific external web service, which processes the data in an appropriate way.
 
-However, a Webhook can be configured with a URL for an internal web service instead of an external web service.
-When the Webhook is triggered,
-non-GitLab web services running on your GitLab server or in its local network could be exploited.
+However, a webhook can be configured with a URL for an internal web service instead of an external web service.
+When the webhook is triggered, non-GitLab web services running on your GitLab server or in its local network could be
+exploited.
 
-Webhook requests are made by the GitLab server itself and use a single
-(optional) secret token per hook for authorization (instead of a user or
-repository-specific token). As a result, these requests may have broader access than
-intended, including access to everything running on the server hosting the webhook. This
-may include the GitLab server or API itself (for example, `http://localhost:123`).
-Depending on the called webhook, this may also result in network access
-to other servers within that webhook server's local network (for example,
-`http://192.168.1.12:345`), even if these services are otherwise protected
-and inaccessible from the outside world.
+Webhook requests are made by the GitLab server itself and use a single optional secret token per hook for authorization
+instead of:
 
-If a web service does not require authentication, Webhooks can be used to
-trigger destructive commands by getting the GitLab server to make POST requests
-to endpoints like `http://localhost:123/some-resource/delete`.
+- A user token.
+- A repository-specific token.
 
-## Allow requests to local network
+As a result, these requests can have broader access than intended, including access to everything running on the server
+that hosts the webhook including:
 
-To prevent this type of exploitation from happening, starting with GitLab 10.6,
-all Webhook requests to the current GitLab instance server address and/or in a
-private network are forbidden by default. That means that all requests made
-to `127.0.0.1`, `::1` and `0.0.0.0`, as well as IPv4 `10.0.0.0/8`, `172.16.0.0/12`,
-`192.168.0.0/16` and IPv6 site-local (`ffc0::/10`) addresses aren't allowed.
+- The GitLab server.
+- The API itself.
+- For some webhooks, network access to other servers in that webhook server's local network, even if these services
+  are otherwise protected and inaccessible from the outside world.
 
-This behavior can be overridden:
+Webhooks can be used to trigger destructive commands using web services that don't require authentication. These webhooks
+can get the GitLab server to make `POST` HTTP requests to endpoints that delete resources.
+
+## Allow webhook and service requests to local network
+
+To prevent exploitation of insecure internal web services, all webhook requests to the following local network addresses are not allowed:
+
+- The current GitLab instance server address.
+- Private network addresses, including `127.0.0.1`, `::1`, `0.0.0.0`, `10.0.0.0/8`, `172.16.0.0/12`,
+  `192.168.0.0/16`, and IPv6 site-local (`ffc0::/10`) addresses.
+
+To allow access to these addresses:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
-1. Expand the **Outbound requests** section.
-1. Select **Allow requests to the local network from web hooks and services**.
+1. Expand **Outbound requests**.
+1. Select the **Allow requests to the local network from web hooks and services** checkbox.
 
-NOTE:
-*System hooks* are enabled to make requests to local network by default since they are
-set up by administrators. However, you can turn this off by disabling the
-**Allow requests to the local network from system hooks** option.
+## Prevent system hook requests to local network
 
-## Allowlist for local requests
+[System hooks](../administration/system_hooks.md) are permitted to make requests to local network by default because
+they are set up by administrators. To prevent system hook requests to the local network:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Network**.
+1. Expand **Outbound requests**.
+1. Clear the **Allow requests to the local network from system hooks** checkbox.
+
+## Create an allowlist for local requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2
 
-You can allow certain domains and IP addresses to be accessible to both *system hooks*
-and *webhooks* even when local requests are not allowed by adding them to the
-allowlist:
+You can allow certain domains and IP addresses to be accessible to both system hooks and webhooks, even when local
+requests are forbidden. To add these domains to the allowlist:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Network** (`/admin/application_settings/network`)
-   and expand **Outbound requests**:
+1. On the left sidebar, select **Settings > Network**.
+1. Expand **Outbound requests** and add entries.
 
-   ![Outbound local requests allowlist](img/allowlist_v13_0.png)
+The entries can:
 
-The allowed entries can be separated by semicolons, commas or whitespaces
-(including newlines) and be in different formats like hostnames, IP addresses and/or
-IP ranges. IPv6 is supported. Hostnames that contain Unicode characters should
-use [Internationalized Domain Names in Applications](https://www.icann.org/en/icann-acronyms-and-terms/internationalized-domain-names-in-applications-en)
-(IDNA) encoding.
+- Be separated by semicolons, commas, or whitespaces (including newlines).
+- Be in different formats like hostnames, IP addresses, IP address ranges. IPv6 is supported. Hostnames that contain
+  Unicode characters should use [Internationalized Domain Names in Applications](https://www.icann.org/en/icann-acronyms-and-terms/internationalized-domain-names-in-applications-en)
+  (IDNA) encoding.
+- Include ports. For example, `127.0.0.1:8080` only allows connections to port 8080 on `127.0.0.1`. If no port is specified,
+  all ports on that IP address or domain are allowed. An IP address range allows all ports on all IP addresses in that
+  range.
+- Number no more than 1000 entries of no more than 255 characters for each entry.
+- Not contain wildcards (for example, `*.example.com`).
 
-The allowlist can hold a maximum of 1000 entries. Each entry can be a maximum of
-255 characters.
-
-You can allow a particular port by specifying it in the allowlist entry.
-For example `127.0.0.1:8080` only allows connections to port 8080 on `127.0.0.1`.
-If no port is mentioned, all ports on that IP/domain are allowed. An IP range
-allows all ports on all IPs in that range.
-
-Example:
+For example:
 
 ```plaintext
 example.com;gitlab.example.com
@@ -88,9 +90,6 @@ example.com;gitlab.example.com
 127.0.0.1:8080
 example.com:8080
 ```
-
-NOTE:
-Wildcards (`*.example.com`) are not currently supported.
 
 <!-- ## Troubleshooting
 

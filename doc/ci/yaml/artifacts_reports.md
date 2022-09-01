@@ -169,7 +169,7 @@ GitLab can display the results of one or more reports in:
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
-- The [dependency list](../../user/application_security/dependency_list/).
+- The [dependency list](../../user/application_security/dependency_list/index.md).
 
 ## `artifacts:reports:dotenv`
 

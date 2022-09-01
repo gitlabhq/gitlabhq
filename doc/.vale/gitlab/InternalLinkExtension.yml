@@ -5,9 +5,9 @@
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
-message: 'Link "%s" must use the .md file extension.'
+message: 'Link "%s" must link directly to a file and use the .md file extension.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links-to-internal-documentation
 level: error
 scope: raw
 raw:
-  - '\[.+\]\([\w\/\.-]+\.html[^)]*\)'
+  - '\[[^\]]+\]\([^:\)]+(\/(#[^\)]+)?\)|\.html(#.+)?\))'

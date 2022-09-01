@@ -13,7 +13,8 @@ export default {
   props: {
     issuePath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     issueType: {
       type: String,

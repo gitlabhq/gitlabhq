@@ -706,7 +706,7 @@ ProtectedEnvironment:
 - name
 - created_at
 - updated_at
-ProtectedEnvironment::DeployAccessLevel:
+ProtectedEnvironments::DeployAccessLevel:
 - id
 - protected_environment_id
 - access_level

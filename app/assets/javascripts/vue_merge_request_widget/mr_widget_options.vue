@@ -230,6 +230,11 @@ export default {
     shouldShowCodeQualityExtension() {
       return window.gon?.features?.refactorCodeQualityExtension;
     },
+    shouldShowMergeDetails() {
+      if (this.mr.state === 'readyToMerge') return true;
+
+      return !this.mr.mergeDetailsCollapsed;
+    },
   },
   watch: {
     'mr.machineValue': {
@@ -318,6 +323,12 @@ export default {
       this.initPolling();
       this.bindEventHubListeners();
       eventHub.$on('mr.discussion.updated', this.checkStatus);
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          this.mr.toggleMergeDetails(false);
+        }
+      });
     },
     getServiceEndpoints(store) {
       return {
@@ -621,7 +632,12 @@ export default {
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />
-        <ready-to-merge v-if="mr.commitsCount" :mr="mr" :service="service" />
+        <ready-to-merge
+          v-if="mr.commitsCount"
+          v-show="shouldShowMergeDetails"
+          :mr="mr"
+          :service="service"
+        />
       </div>
     </div>
     <mr-widget-pipeline-container

@@ -62,9 +62,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       options[:allow_tree_conflicts]
     ]
 
-    if Feature.enabled?(:etag_merge_request_diff_batches, @merge_request.project)
-      return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
-    end
+    return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
 
     if diff_options_hash[:paths].blank?
       if Feature.enabled?(:remove_caching_diff_batches, @merge_request.project)

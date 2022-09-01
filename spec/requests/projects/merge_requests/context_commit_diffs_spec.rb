@@ -98,30 +98,12 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
         end
 
         context 'when using ETags' do
-          context 'when etag_merge_request_diff_batches is true' do
-            it 'does not serialize diffs' do
-              expect(PaginatedDiffSerializer).not_to receive(:new)
+          it 'does not serialize diffs' do
+            expect(PaginatedDiffSerializer).not_to receive(:new)
 
-              go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
+            go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
 
-              expect(response).to have_gitlab_http_status(:not_modified)
-            end
-          end
-
-          context 'when etag_merge_request_diff_batches is false' do
-            before do
-              stub_feature_flags(etag_merge_request_diff_batches: false)
-            end
-
-            it 'does not serialize diffs' do
-              expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-                expect(instance).not_to receive(:represent)
-              end
-
-              go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
-
-              expect(response).to have_gitlab_http_status(:success)
-            end
+            expect(response).to have_gitlab_http_status(:not_modified)
           end
         end
 

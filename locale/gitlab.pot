@@ -9391,6 +9391,9 @@ msgstr ""
 msgid "Collapse jobs"
 msgstr ""
 
+msgid "Collapse merge details"
+msgstr ""
+
 msgid "Collapse milestones"
 msgstr ""
 
@@ -12502,6 +12505,9 @@ msgstr ""
 msgid "Delete deploy key"
 msgstr ""
 
+msgid "Delete epic"
+msgstr ""
+
 msgid "Delete file"
 msgstr ""
 
@@ -14986,6 +14992,9 @@ msgstr ""
 msgid "Epic Boards"
 msgstr ""
 
+msgid "Epic actions"
+msgstr ""
+
 msgid "Epic cannot be found."
 msgstr ""
 
@@ -15685,6 +15694,9 @@ msgid "Expand issues"
 msgstr ""
 
 msgid "Expand jobs"
+msgstr ""
+
+msgid "Expand merge details"
 msgstr ""
 
 msgid "Expand milestones"

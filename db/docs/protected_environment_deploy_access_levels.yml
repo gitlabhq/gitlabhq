@@ -1,7 +1,7 @@
 ---
 table_name: protected_environment_deploy_access_levels
 classes:
-- ProtectedEnvironment::DeployAccessLevel
+- ProtectedEnvironments::DeployAccessLevel
 feature_categories:
 - continuous_delivery
 description: https://docs.gitlab.com/ee/ci/environments/protected_environments.html

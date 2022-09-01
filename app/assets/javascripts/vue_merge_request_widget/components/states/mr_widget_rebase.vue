@@ -152,7 +152,7 @@ export default {
 };
 </script>
 <template>
-  <state-container :status="status" :is-loading="isLoading">
+  <state-container :mr="mr" :status="status" :is-loading="isLoading">
     <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="3" width="24" height="24" rx="4" />

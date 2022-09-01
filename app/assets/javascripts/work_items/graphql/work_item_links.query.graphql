@@ -26,6 +26,8 @@ query workItemLinksQuery($id: WorkItemID!) {
             }
             title
             state
+            createdAt
+            closedAt
           }
         }
       }

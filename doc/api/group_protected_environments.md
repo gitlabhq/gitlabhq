@@ -15,7 +15,7 @@ Read more about [group-level protected environments](../ci/environments/protecte
 
 ## Valid access levels
 
-The access levels are defined in the `ProtectedEnvironment::DeployAccessLevel::ALLOWED_ACCESS_LEVELS` method.
+The access levels are defined in the `ProtectedEnvironments::DeployAccessLevel::ALLOWED_ACCESS_LEVELS` method.
 Currently, these levels are recognized:
 
 ```plaintext

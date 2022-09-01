@@ -515,6 +515,48 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
   },
 };
 
+export const workItemTask = {
+  id: 'gid://gitlab/WorkItem/4',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    __typename: 'WorkItemType',
+  },
+  title: 'bar',
+  state: 'OPEN',
+  confidential: false,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  __typename: 'WorkItem',
+};
+
+export const confidentialWorkItemTask = {
+  id: 'gid://gitlab/WorkItem/2',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    __typename: 'WorkItemType',
+  },
+  title: 'xyz',
+  state: 'OPEN',
+  confidential: true,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  __typename: 'WorkItem',
+};
+
+export const closedWorkItemTask = {
+  id: 'gid://gitlab/WorkItem/3',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    __typename: 'WorkItemType',
+  },
+  title: 'abc',
+  state: 'CLOSED',
+  confidential: false,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: '2022-08-12T13:07:52Z',
+  __typename: 'WorkItem',
+};
+
 export const workItemHierarchyResponse = {
   data: {
     workItem: {
@@ -544,45 +586,9 @@ export const workItemHierarchyResponse = {
           parent: null,
           children: {
             nodes: [
-              {
-                id: 'gid://gitlab/WorkItem/2',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
-                  __typename: 'WorkItemType',
-                },
-                title: 'xyz',
-                state: 'OPEN',
-                confidential: true,
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                __typename: 'WorkItem',
-              },
-              {
-                id: 'gid://gitlab/WorkItem/3',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
-                  __typename: 'WorkItemType',
-                },
-                title: 'abc',
-                state: 'CLOSED',
-                confidential: false,
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: '2022-08-12T13:07:52Z',
-                __typename: 'WorkItem',
-              },
-              {
-                id: 'gid://gitlab/WorkItem/4',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
-                  __typename: 'WorkItemType',
-                },
-                title: 'bar',
-                state: 'OPEN',
-                confidential: false,
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                __typename: 'WorkItem',
-              },
+              confidentialWorkItemTask,
+              closedWorkItemTask,
+              workItemTask,
               {
                 id: 'gid://gitlab/WorkItem/5',
                 workItemType: {

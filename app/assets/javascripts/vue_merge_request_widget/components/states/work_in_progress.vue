@@ -163,7 +163,7 @@ export default {
 </script>
 
 <template>
-  <state-container status="failed">
+  <state-container :mr="mr" status="failed">
     <span class="gl-font-weight-bold gl-ml-0! gl-text-body! gl-flex-grow-1">
       {{ __("Merge blocked: merge request must be marked as ready. It's still marked as draft.") }}
     </span>

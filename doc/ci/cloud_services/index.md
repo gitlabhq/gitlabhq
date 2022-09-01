@@ -16,7 +16,7 @@ GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) t
 - Account on GitLab.
 - Access to a cloud provider that supports OIDC to configure authorization and create roles.
 
-The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, Azure, GCP, and Vault.
+The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/index.md). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, Azure, GCP, and Vault.
 
 NOTE:
 Configuring OIDC enables JWT token access to the target environments for all pipelines.

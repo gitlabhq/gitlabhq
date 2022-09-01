@@ -95,12 +95,12 @@ export default {
 };
 </script>
 <template>
-  <state-container v-if="isRefreshing" status="loading">
+  <state-container v-if="isRefreshing" :mr="mr" status="loading">
     <span class="gl-font-weight-bold">
       {{ s__('mrWidget|Refreshing now') }}
     </span>
   </state-container>
-  <state-container v-else status="failed" :actions="actions">
+  <state-container v-else :mr="mr" status="failed" :actions="actions">
     <span class="gl-font-weight-bold">
       <span v-if="mr.mergeError" class="has-error-message" data-testid="merge-error">
         {{ mergeError }}

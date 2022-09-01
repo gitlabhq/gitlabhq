@@ -34,7 +34,7 @@ require (
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/net v0.0.0-20220531201128-c960675eff93
 	golang.org/x/tools v0.1.11
-	google.golang.org/grpc v1.48.0
+	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
 	honnef.co/go/tools v0.3.3
 )

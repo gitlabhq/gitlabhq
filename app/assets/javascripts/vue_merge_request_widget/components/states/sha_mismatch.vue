@@ -22,7 +22,7 @@ export default {
 </script>
 
 <template>
-  <state-container status="failed">
+  <state-container :mr="mr" status="failed">
     <span
       class="gl-font-weight-bold gl-md-mr-3 gl-flex-grow-1 gl-ml-0! gl-text-body!"
       data-qa-selector="head_mismatch_content"
