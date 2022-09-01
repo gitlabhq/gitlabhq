@@ -215,6 +215,14 @@ jest minimal:
   script:
     - run_timed_command "yarn jest:ci:minimal"
 
+jest as-if-foss:
+  extends:
+    - .jest-base
+    - .frontend:rules:jest:as-if-foss
+    - .as-if-foss
+  needs: ["rspec-all frontend_fixture as-if-foss"]
+  parallel: 2
+
 jest minimal as-if-foss:
   extends:
     - .jest-base
@@ -235,14 +243,6 @@ jest-integration:
   needs:
     - job: "rspec-all frontend_fixture"
     - job: "graphql-schema-dump"
-
-jest-as-if-foss:
-  extends:
-    - .jest-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
-    - .as-if-foss
-  needs: ["rspec-all frontend_fixture as-if-foss"]
-  parallel: 2
 
 coverage-frontend:
   extends:

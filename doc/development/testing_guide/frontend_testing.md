@@ -420,7 +420,11 @@ it('passes', () => {
 ### Waiting in tests
 
 Sometimes a test needs to wait for something to happen in the application before it continues.
-Avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) because it makes the reason for waiting unclear. Instead use one of the following approaches.
+
+You should try to avoid:
+
+- [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) because it makes the reason for waiting unclear. Additionally, it is faked in our tests so its usage is tricky.
+- [`setImmediate`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate) because it is no longer supported in Jest 27 and later. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7002) for details.
 
 #### Promises and Ajax calls
 
@@ -448,14 +452,15 @@ it('waits for an Ajax call', async () => {
 });
 ```
 
-If you are not able to register handlers to the `Promise`, for example because it is executed in a synchronous Vue life cycle hook, take a look at the [waitFor](#wait-until-axios-requests-finish) helpers or you can flush all pending `Promise`s:
+If you cannot register handlers to the `Promise`, for example because it is executed in a synchronous Vue lifecycle hook, take a look at the [`waitFor`](#wait-until-axios-requests-finish) helpers or flush all pending `Promise`s with:
 
 **in Jest:**
 
 ```javascript
-it('waits for an Ajax call', () => {
+it('waits for an Ajax call', async () => {
   synchronousFunction();
-  jest.runAllTicks();
+  
+  await waitForPromises();
 
   expect(something).toBe('done');
 });
@@ -1073,7 +1078,7 @@ testAction(
 
 <!-- vale gitlab.Spelling = NO -->
 
-The Axios Utils mock module located in `spec/frontend/mocks/ce/lib/utils/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
+The Axios Utils mock module located in `spec/frontend/__helpers__/mocks/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
 These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its life cycle.
 
 <!-- vale gitlab.Spelling = YES -->

@@ -25,7 +25,7 @@ GitLab provides two types of snippets:
   You can set a [visibility level](public_access.md)
   for your snippet: public, internal, or private.
 - **Project snippets**: Always related to a specific project.
-  Project snippets can be visible publicly or to only group members.
+  Project snippets can be visible publicly, or to only project members.
 
 ## Create snippets
 

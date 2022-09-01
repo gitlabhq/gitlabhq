@@ -8,7 +8,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
       set_protected_branch_name('master')
 
       find(".js-allowed-to-merge").click
-      within('.rspec-allowed-to-merge-dropdown') do
+      within('[data-testid="allowed-to-merge-dropdown"]') do
         expect(first("li")).to have_content("Roles")
         find(:link, 'No one').click
       end
@@ -35,13 +35,13 @@ RSpec.shared_examples "protected branches > access control > CE" do
       set_protected_branch_name('master')
 
       find(".js-allowed-to-merge").click
-      within('.rspec-allowed-to-merge-dropdown') do
+      within('[data-testid="allowed-to-merge-dropdown"]') do
         expect(first("li")).to have_content("Roles")
         find(:link, 'No one').click
       end
 
       find(".js-allowed-to-push").click
-      within('.rspec-allowed-to-push-dropdown') do
+      within('[data-testid="allowed-to-push-dropdown"]') do
         expect(first("li")).to have_content("Roles")
         find(:link, 'No one').click
       end
@@ -83,7 +83,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
       end
 
       find(".js-allowed-to-push").click
-      within('.rspec-allowed-to-push-dropdown') do
+      within('[data-testid="allowed-to-push-dropdown"]') do
         expect(first("li")).to have_content("Roles")
         find(:link, 'No one').click
       end
@@ -100,13 +100,13 @@ RSpec.shared_examples "protected branches > access control > CE" do
       set_protected_branch_name('master')
 
       find(".js-allowed-to-merge").click
-      within('.rspec-allowed-to-merge-dropdown') do
+      within('[data-testid="allowed-to-merge-dropdown"]') do
         expect(first("li")).to have_content("Roles")
         find(:link, 'No one').click
       end
 
       find(".js-allowed-to-push").click
-      within('.rspec-allowed-to-push-dropdown') do
+      within('[data-testid="allowed-to-push-dropdown"]') do
         expect(first("li")).to have_content("Roles")
         find(:link, 'No one').click
       end

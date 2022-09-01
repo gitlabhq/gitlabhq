@@ -15,6 +15,7 @@ query securityReportDownloadPaths(
             name
             artifacts {
               nodes {
+                id
                 downloadPath
                 fileType
               }

@@ -23,119 +23,120 @@
           = last_check_message.html_safe
 .row
   .col-md-6
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
+      - c.header do
         = _('Project info:')
-      %ul.content-list
-        %li
-          %span.light
-            = _('Name:')
-          %strong
-            = link_to @project.name, project_path(@project)
-        %li
-          %span.light
-            = _('Namespace:')
-          %strong
-            - if @project.namespace
-              = link_to @project.namespace.human_name, [:admin, @project.personal? ? @project.namespace.owner : @project.group]
-            - else
-              = s_('ProjectSettings|Global')
-        %li
-          %span.light
-            = _('Owned by:')
-          %strong
-            - if @project.owners.any?
-              = safe_join(@project.owners.map { |owner| link_to(owner.name, [:admin, owner]) }, ", ".html_safe)
-            - else
-              = _('(deleted)')
-
-        %li
-          %span.light
-            = _('Created by:')
-          %strong
-            = @project.creator.try(:name) || _('(deleted)')
-
-        %li
-          %span.light
-            = _('Created on:')
-          %strong
-            = @project.created_at.to_s(:medium)
-
-        %li
-          %span.light
-            = _('ID:')
-          %strong
-            = @project.id
-
-        %li
-          %span.light
-            = _('http:')
-          %strong
-            = link_to @project.http_url_to_repo, project_path(@project)
-        %li
-          %span.light
-            = _('ssh:')
-          %strong
-            = link_to @project.ssh_url_to_repo, project_path(@project)
-        - if @project.repository.exists?
-          %li
+      - c.body do
+        %ul.content-list
+          %li{ class: 'gl-px-5!' }
             %span.light
-              = _('Gitaly storage name:')
+              = _('Name:')
             %strong
-              = @project.repository.storage
-          %li
+              = link_to @project.name, project_path(@project)
+          %li{ class: 'gl-px-5!' }
             %span.light
-              = _('Gitaly relative path:')
+              = _('Namespace:')
             %strong
-              = @project.repository.relative_path
-
-          %li
-            = render 'shared/storage_counter_statistics', storage_size: @project.statistics&.storage_size, storage_details: @project.statistics
-
-          %li
+              - if @project.namespace
+                = link_to @project.namespace.human_name, [:admin, @project.personal? ? @project.namespace.owner : @project.group]
+              - else
+                = s_('ProjectSettings|Global')
+          %li{ class: 'gl-px-5!' }
             %span.light
-              = _('last commit:')
+              = _('Owned by:')
             %strong
-              = last_commit(@project)
+              - if @project.owners.any?
+                = safe_join(@project.owners.map { |owner| link_to(owner.name, [:admin, owner]) }, ", ".html_safe)
+              - else
+                = _('(deleted)')
 
-          %li
+          %li{ class: 'gl-px-5!' }
             %span.light
-              = _('Git LFS status:')
+              = _('Created by:')
             %strong
-              = project_lfs_status(@project)
-              = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
-        - else
-          %li
-            %span.light
-              = _('repository:')
-            %strong.cred
-              = _('does not exist')
+              = @project.creator.try(:name) || _('(deleted)')
 
-        - if @project.archived?
-          %li
+          %li{ class: 'gl-px-5!' }
             %span.light
-              = _('archived:')
+              = _('Created on:')
             %strong
-              = _('project is read-only')
+              = @project.created_at.to_s(:medium)
 
-        = render_if_exists "shared_runner_status", project: @project
+          %li{ class: 'gl-px-5!' }
+            %span.light
+              = _('ID:')
+            %strong
+              = @project.id
 
-        %li
-          %span.light
-            = _('access:')
-          %strong
-            %span{ class: visibility_level_color(@project.visibility_level) }
-              = visibility_level_icon(@project.visibility_level)
-              = visibility_level_label(@project.visibility_level)
+          %li{ class: 'gl-px-5!' }
+            %span.light
+              = _('http:')
+            %strong
+              = link_to @project.http_url_to_repo, project_path(@project)
+          %li{ class: 'gl-px-5!' }
+            %span.light
+              = _('ssh:')
+            %strong
+              = link_to @project.ssh_url_to_repo, project_path(@project)
+          - if @project.repository.exists?
+            %li{ class: 'gl-px-5!' }
+              %span.light
+                = _('Gitaly storage name:')
+              %strong
+                = @project.repository.storage
+            %li{ class: 'gl-px-5!' }
+              %span.light
+                = _('Gitaly relative path:')
+              %strong
+                = @project.repository.relative_path
+
+            %li{ class: 'gl-px-5!' }
+              = render 'shared/storage_counter_statistics', storage_size: @project.statistics&.storage_size, storage_details: @project.statistics
+
+            %li{ class: 'gl-px-5!' }
+              %span.light
+                = _('last commit:')
+              %strong
+                = last_commit(@project)
+
+            %li{ class: 'gl-px-5!' }
+              %span.light
+                = _('Git LFS status:')
+              %strong
+                = project_lfs_status(@project)
+                = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
+          - else
+            %li{ class: 'gl-px-5!' }
+              %span.light
+                = _('repository:')
+              %strong.cred
+                = _('does not exist')
+
+          - if @project.archived?
+            %li{ class: 'gl-px-5!' }
+              %span.light
+                = _('archived:')
+              %strong
+                = _('project is read-only')
+
+          = render_if_exists "admin/projects/shared_runner_status", project: @project
+
+          %li{ class: 'gl-px-5!' }
+            %span.light
+              = _('access:')
+            %strong
+              %span{ class: visibility_level_color(@project.visibility_level) }
+                = visibility_level_icon(@project.visibility_level)
+                = visibility_level_label(@project.visibility_level)
 
     = render 'shared/custom_attributes', custom_attributes: @project.custom_attributes
 
     = render_if_exists 'admin/projects/geo_status_widget', locals: { project: @project }
 
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
+      - c.header do
         = s_('ProjectSettings|Transfer project')
-      .card-body
+      - c.body do
         = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
           .form-group.row
             .col-sm-3.col-form-label
@@ -150,10 +151,10 @@
             .offset-sm-3.col-sm-9
               = f.submit _('Transfer'), class: 'gl-button btn btn-confirm'
 
-    .card.repository-check
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5 repository-check' }) do |c|
+      - c.header do
         = _("Repository check")
-      .card-body
+      - c.body do
         = form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
           .form-group
             - if @project.last_repository_check_at.nil?
@@ -172,34 +173,36 @@
 
   .col-md-6
     - if @group
-      .card
-        .card-header
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }, footer_options: { class: 'gl-p-4' }) do |c|
+        - c.header do
           %strong= @group.name
           = _('group members')
           = gl_badge_tag @group_members.size
           = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
-        %ul.content-list.members-list
-          = render partial: 'shared/members/member',
-                   collection: @group_members, as: :member,
-                   locals: { membership_source: @project,
-                             group: @group,
-                             current_user_is_group_owner: current_user_is_group_owner }
-        .card-footer
+        - c.body do
+          %ul.content-list.members-list
+            = render partial: 'shared/members/member',
+                    collection: @group_members, as: :member,
+                    locals: { membership_source: @project,
+                              group: @group,
+                              current_user_is_group_owner: current_user_is_group_owner }
+        - c.footer do
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
     = render 'shared/members/requests', membership_source: @project, group: @group, requesters: @requesters
 
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }, footer_options: { class: 'gl-p-4' }) do |c|
+      - c.header do
         %strong= @project.name
         = _('project members')
         = gl_badge_tag @project.users.size
         = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
-      %ul.content-list.project_members.members-list
-        = render partial: 'shared/members/member',
-                 collection: @project_members, as: :member,
-                 locals: { membership_source: @project,
-                           group: @group,
-                           current_user_is_group_owner: current_user_is_group_owner }
-      .card-footer
+      - c.body do
+        %ul.content-list.project_members.members-list
+          = render partial: 'shared/members/member',
+                  collection: @project_members, as: :member,
+                  locals: { membership_source: @project,
+                            group: @group,
+                            current_user_is_group_owner: current_user_is_group_owner }
+      - c.footer do
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

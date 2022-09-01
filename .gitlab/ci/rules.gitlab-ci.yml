@@ -806,30 +806,28 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
 
+.frontend:rules:jest:as-if-foss:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patterns-for-as-if-foss
+
 .frontend:rules:jest:minimal:as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
-      when: never
-    - <<: *if-merge-request-labels-as-if-foss
-      when: never
+    - !reference [".rails:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
-      when: never
-    - <<: *if-merge-request-labels-run-all-rspec
-      when: never
-    - <<: *if-merge-request
-      changes: *startup-css-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *ci-patterns
       when: never
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request
-      changes: *core-frontend-patterns
-    - <<: *if-merge-request
-      changes: *code-backstage-patterns
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:eslint-as-if-foss:
   rules:

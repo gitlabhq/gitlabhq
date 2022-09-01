@@ -1851,6 +1851,9 @@ msgstr ""
 msgid "AWS Access Key"
 msgstr ""
 
+msgid "AWS OpenSearch IAM credentials"
+msgstr ""
+
 msgid "AWS Secret Access Key"
 msgstr ""
 
@@ -2910,7 +2913,7 @@ msgstr ""
 msgid "AdminSettings|Total number of jobs in currently active pipelines"
 msgstr ""
 
-msgid "AdminSettings|Use AWS hosted Elasticsearch with IAM credentials"
+msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
 msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
@@ -14292,9 +14295,6 @@ msgstr ""
 msgid "Elapsed time"
 msgstr ""
 
-msgid "Elasticsearch AWS IAM credentials"
-msgstr ""
-
 msgid "Elasticsearch HTTP client timeout value in seconds."
 msgstr ""
 
@@ -14317,9 +14317,6 @@ msgid "Elasticsearch reindexing was not started: %{errors}"
 msgstr ""
 
 msgid "Elasticsearch zero-downtime reindexing"
-msgstr ""
-
-msgid "Elasticsearch's region."
 msgstr ""
 
 msgid "Elastic|None. Select namespaces to index."
@@ -26877,6 +26874,9 @@ msgstr ""
 msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{approved_highlight}was approved by%{highlight_end} %{approver_avatar} %{approver_link}"
 msgstr ""
 
+msgid "Notify|%{paragraph_start}Hi %{name}!%{paragraph_end} %{paragraph_start}A new public key was added to your account:%{paragraph_end} %{paragraph_start}title: %{key_title}%{paragraph_end} %{paragraph_start}If this key was added in error, you can remove it under %{removal_link}%{paragraph_end}"
+msgstr ""
+
 msgid "Notify|A new GPG key was added to your account:"
 msgstr ""
 
@@ -27602,6 +27602,9 @@ msgid "OpenAPI"
 msgstr ""
 
 msgid "OpenAPI Specification file path or URL"
+msgstr ""
+
+msgid "OpenSearch's region."
 msgstr ""
 
 msgid "Opened"
@@ -44038,6 +44041,9 @@ msgstr ""
 msgid "Webhooks|A subgroup is created or removed."
 msgstr ""
 
+msgid "Webhooks|A webhook in this project was automatically disabled after being retried multiple times."
+msgstr ""
+
 msgid "Webhooks|A wiki page is created or updated."
 msgstr ""
 
@@ -44078,6 +44084,9 @@ msgid "Webhooks|Fails to connect"
 msgstr ""
 
 msgid "Webhooks|Feature flag events"
+msgstr ""
+
+msgid "Webhooks|Go to webhooks"
 msgstr ""
 
 msgid "Webhooks|Issues events"
@@ -44135,6 +44144,9 @@ msgid "Webhooks|URL must be percent-encoded if it contains one or more special c
 msgstr ""
 
 msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token HTTP%{code_end} header."
+msgstr ""
+
+msgid "Webhooks|Webhook disabled"
 msgstr ""
 
 msgid "Webhooks|Webhook failed to connect"

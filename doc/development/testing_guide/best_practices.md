@@ -257,7 +257,7 @@ Here is an example of when `let_it_be` cannot be used, but `let_it_be_with_reloa
 
 ```ruby
 let_it_be(:user) { create(:user) }
-let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used 
+let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used
 
 context 'with a developer' do
   before do
@@ -1107,12 +1107,11 @@ Snowplow performs **runtime type checks** by using the [contracts gem](https://r
 Because Snowplow is **by default disabled in tests and development**, it can be hard to
 **catch exceptions** when mocking `Gitlab::Tracking`.
 
-To catch runtime errors due to type checks, you can enable Snowplow in tests. Mark the spec with
-`:snowplow` and use the `expect_snowplow_event` helper, which checks for
+To catch runtime errors due to type checks you can use `expect_snowplow_event`, which checks for
 calls to `Gitlab::Tracking#event`.
 
 ```ruby
-describe '#show', :snowplow do
+describe '#show' do
   it 'tracks snowplow events' do
     get :show
 
@@ -1137,7 +1136,7 @@ end
 When you want to ensure that no event got called, you can use `expect_no_snowplow_event`.
 
 ```ruby
-  describe '#show', :snowplow do
+  describe '#show' do
     it 'does not track any snowplow events' do
       get :show
 

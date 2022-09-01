@@ -146,6 +146,30 @@ GitLab can display the results of one or more reports in:
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
+## `artifacts:reports:cyclonedx`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
+
+This report is a Software Bill of Materials describing the components of a project
+following the [cyclonedx](https://cyclonedx.org/docs/1.4) protocol format.
+
+You can specify multiple cyclonedx reports per job. These can be either supplied
+as a list of filenames, a filename pattern, or both:
+
+- List of filenames: `cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`.
+- A filename pattern: `cyclonedx: gl-sbom-*.json`.
+- Combination of both of the above: `cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`.
+
+Below is an example of a job exposing cyclonedx artifacts:
+
+```yaml
+artifacts:
+  reports:
+    cyclonedx:
+      - gl-sbom-npm-npm.cdx.json
+      - gl-sbom-bundler-gem.cdx.json
+```
+
 ## `artifacts:reports:dast` **(ULTIMATE)**
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
@@ -315,27 +339,3 @@ GitLab can display the results of one or more reports in the merge request
 [terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
 
 For more information, see [Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).
-
-## `artifacts:reports:cyclonedx`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
-
-This report is a Software Bill of Materials describing the components of a project
-following the [cyclonedx](https://cyclonedx.org/docs/1.4) protocol format.
-
-You can specify multiple cyclonedx reports per job. These can be either supplied
-as a list of filenames, a filename pattern, or both:
-
-- List of filenames: `cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`.
-- A filename pattern: `cyclonedx: gl-sbom-*.json`.
-- Combination of both of the above: `cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`.
-
-Below is an example of a job exposing cyclonedx artifacts:
-
-```yaml
-artifacts:
-  reports:
-    cyclonedx:
-      - gl-sbom-npm-npm.cdx.json
-      - gl-sbom-bundler-gem.cdx.json
-```

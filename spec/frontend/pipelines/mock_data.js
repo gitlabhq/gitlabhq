@@ -528,6 +528,7 @@ export const mockPipelineJobsQueryResponse = {
               artifacts: {
                 nodes: [
                   {
+                    id: 'gid://gitlab/Ci::JobArtifact/101',
                     downloadPath: '/root/ci-project/-/jobs/620/artifacts/download?file_type=trace',
                     fileType: 'TRACE',
                     __typename: 'CiJobArtifact',
@@ -580,6 +581,7 @@ export const mockPipelineJobsQueryResponse = {
               artifacts: {
                 nodes: [
                   {
+                    id: 'gid://gitlab/Ci::JobArtifact/102',
                     downloadPath: '/root/ci-project/-/jobs/619/artifacts/download?file_type=trace',
                     fileType: 'TRACE',
                     __typename: 'CiJobArtifact',

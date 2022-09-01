@@ -1,4 +1,4 @@
-.protected-branches-list.js-protected-branches-list.qa-protected-branches-list
+.protected-branches-list.js-protected-branches-list{ data: { testid: 'protected-branches-list' } }
   - if @protected_branches.empty?
     .card-header.bg-white
       = s_("ProtectedBranch|Protected branch (%{protected_branches_count})") % { protected_branches_count: 0 }

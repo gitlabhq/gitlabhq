@@ -12,6 +12,7 @@ query getPipelineJobs($fullPath: ID!, $iid: ID!, $after: String) {
         nodes {
           artifacts {
             nodes {
+              id
               downloadPath
               fileType
             }
