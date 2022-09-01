@@ -1517,6 +1517,12 @@
       changes: ["vendor/gems/omniauth-gitlab/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:omniauth-google-oauth2:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth-google-oauth2/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .vendor:rules:omniauth-salesforce:
   rules:
     - <<: *if-merge-request

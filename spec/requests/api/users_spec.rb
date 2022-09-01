@@ -116,7 +116,7 @@ RSpec.describe API::Users do
         end
 
         it "returns a 403 if the target user is an admin" do
-          expect(TwoFactor::DestroyService).to receive(:new).never
+          expect(TwoFactor::DestroyService).not_to receive(:new)
 
           expect do
             patch api("/users/#{admin_with_2fa.id}/disable_two_factor", admin)
@@ -127,7 +127,7 @@ RSpec.describe API::Users do
         end
 
         it "returns a 404 if the target user cannot be found" do
-          expect(TwoFactor::DestroyService).to receive(:new).never
+          expect(TwoFactor::DestroyService).not_to receive(:new)
 
           patch api("/users/#{non_existing_record_id}/disable_two_factor", admin)
 

@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Database::Partitioning do
       end
 
       it 'does not call sync_partitions' do
-        expect(described_class).to receive(:sync_partitions).never
+        expect(described_class).not_to receive(:sync_partitions)
 
         described_class.sync_partitions_ignore_db_error
       end

@@ -46,6 +46,14 @@ vendor omniauth-gitlab:
     include: vendor/gems/omniauth-gitlab/.gitlab-ci.yml
     strategy: depend
 
+vendor omniauth-google-oauth2:
+  extends:
+    - .vendor:rules:omniauth-google-oauth2
+  needs: []
+  trigger:
+    include: vendor/gems/omniauth-google-oauth2/.gitlab-ci.yml
+    strategy: depend
+
 vendor omniauth-salesforce:
   extends:
     - .vendor:rules:omniauth-salesforce

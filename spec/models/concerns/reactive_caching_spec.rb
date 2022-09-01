@@ -281,7 +281,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it 'does not delete the value key' do
-        expect(Rails.cache).to receive(:delete).with(cache_key).never
+        expect(Rails.cache).not_to receive(:delete).with(cache_key)
 
         go!
       end
@@ -338,7 +338,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
     context 'when lifetime is exceeded' do
       it 'skips the calculation' do
-        expect(instance).to receive(:calculate_reactive_cache).never
+        expect(instance).not_to receive(:calculate_reactive_cache)
 
         go!
       end
@@ -354,7 +354,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       it 'skips the calculation' do
         stub_exclusive_lease_taken(cache_key)
 
-        expect(instance).to receive(:calculate_reactive_cache).never
+        expect(instance).not_to receive(:calculate_reactive_cache)
 
         go!
       end

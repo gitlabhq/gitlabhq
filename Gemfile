@@ -46,7 +46,7 @@ gem 'omniauth-alicloud', '~> 1.0.1'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.4'
 gem 'omniauth-gitlab', '~> 4.0.0', path: 'vendor/gems/omniauth-gitlab' # See vendor/gems/omniauth-gitlab/README.md
-gem 'omniauth-google-oauth2', '~> 0.6.0'
+gem 'omniauth-google-oauth2', '~> 0.6.0', path: 'vendor/gems/omniauth-google-oauth2' # See gem README.md
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.3.0'

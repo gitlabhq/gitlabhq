@@ -1,0 +1,83 @@
+PATH
+  remote: .
+  specs:
+    omniauth-google-oauth2 (0.6.0)
+      jwt (>= 2.0)
+      omniauth (>= 1.9, < 3)
+      omniauth-oauth2 (>= 1.5)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.2)
+    diff-lcs (1.5.0)
+    faraday (2.5.2)
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.0)
+    hashie (5.0.0)
+    jwt (2.4.1)
+    multi_xml (0.6.0)
+    oauth2 (2.0.3)
+      faraday (>= 0.17.3, < 3.0)
+      jwt (>= 1.0, < 3.0)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 3)
+      rash_alt (>= 0.4, < 1)
+      version_gem (~> 1.0)
+    omniauth (1.9.2)
+      hashie (>= 3.4.6)
+      rack (>= 1.6.2, < 3)
+    omniauth-oauth2 (1.7.3)
+      oauth2 (>= 1.4, < 3)
+      omniauth (>= 1.9, < 3)
+    parallel (1.22.1)
+    parser (3.1.2.0)
+      ast (~> 2.4.1)
+    rack (2.2.4)
+    rainbow (3.1.1)
+    rake (12.3.3)
+    rash_alt (0.4.12)
+      hashie (>= 3.4)
+    regexp_parser (2.5.0)
+    rexml (3.2.5)
+    rspec (3.11.0)
+      rspec-core (~> 3.11.0)
+      rspec-expectations (~> 3.11.0)
+      rspec-mocks (~> 3.11.0)
+    rspec-core (3.11.0)
+      rspec-support (~> 3.11.0)
+    rspec-expectations (3.11.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-mocks (3.11.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-support (3.11.0)
+    rubocop (0.93.1)
+      parallel (~> 1.10)
+      parser (>= 2.7.1.5)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8)
+      rexml
+      rubocop-ast (>= 0.6.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (1.19.1)
+      parser (>= 3.1.1.0)
+    ruby-progressbar (1.11.0)
+    ruby2_keywords (0.0.5)
+    unicode-display_width (1.8.0)
+    version_gem (1.1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  omniauth-google-oauth2!
+  rake (~> 12.0)
+  rspec (~> 3.6)
+  rubocop (~> 0.49)
+
+BUNDLED WITH
+   2.3.21

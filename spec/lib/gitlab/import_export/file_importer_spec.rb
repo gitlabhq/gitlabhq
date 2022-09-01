@@ -169,7 +169,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter do
       end
 
       it 'skips validation' do
-        expect(subject).to receive(:validate_decompressed_archive_size).never
+        expect(subject).not_to receive(:validate_decompressed_archive_size)
 
         subject.import
       end

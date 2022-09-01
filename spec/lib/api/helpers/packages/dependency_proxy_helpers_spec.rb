@@ -18,8 +18,8 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
 
     shared_examples 'executing fallback' do
       it 'redirects to package registry' do
-        expect(helper).to receive(:registry_url).never
-        expect(helper).to receive(:redirect).never
+        expect(helper).not_to receive(:registry_url)
+        expect(helper).not_to receive(:redirect)
         expect(helper).to receive(:fallback).once
 
         subject
@@ -30,7 +30,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
       it 'redirects to package registry', :snowplow do
         expect(helper).to receive(:registry_url).once
         expect(helper).to receive(:redirect).once
-        expect(helper).to receive(:fallback).never
+        expect(helper).not_to receive(:fallback)
 
         subject
 

@@ -80,7 +80,7 @@ RSpec.describe API::Helpers::PackagesHelpers do
 
     context 'with packages enabled' do
       it "doesn't call not_found!" do
-        expect(helper).to receive(:not_found!).never
+        expect(helper).not_to receive(:not_found!)
 
         expect(subject).to eq nil
       end

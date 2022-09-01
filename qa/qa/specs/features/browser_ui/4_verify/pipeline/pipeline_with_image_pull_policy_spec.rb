@@ -33,7 +33,10 @@ module QA
         runner.remove_via_api!
       end
 
-      context 'when policy is allowed' do
+      context(
+        'when policy is allowed',
+        quarantine: { type: :flaky, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/369397' }
+      ) do
         let(:allowed_policies) { %w[if-not-present always never] }
 
         where do

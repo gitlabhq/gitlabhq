@@ -34,31 +34,3 @@ For more information, see the links shown on this page for each external provide
 | **User Removal**                                | SCIM (remove user from top-level group) | LDAP (remove user from groups and block from the instance) |
 
 1. Using Just-In-Time (JIT) provisioning, user accounts are created when the user first signs in.
-
-## Change apps or configuration
-
-When GitLab doesn't support having multiple providers (such as OAuth), GitLab configuration and user identification must be
-updated at the same time if the provider or app is changed.
-
-These instructions apply to all methods of authentication where GitLab stores an `extern_uid` and it is the only data used
-for user authentication.
-
-When changing apps within a provider, if the user `extern_uid` does not change, only the GitLab configuration must be
-updated.
-
-To swap configurations:
-
-1. Change provider configuration in your `gitlab.rb` file.
-1. Update `extern_uid` for all users that have an identity in GitLab for the previous provider.
-
-To find the `extern_uid`, look at an existing user's current `extern_uid` for an ID that matches the appropriate field in
-your current provider for the same user.
-
-There are two methods to update the `extern_uid`:
-
-- Using the [Users API](../../api/users.md#user-modification). Pass the provider name and the new `extern_uid`.
-- Using the [Rails console](../operations/rails_console.md):
-
-  ```ruby
-  Identity.where(extern_uid: 'old-id').update!(extern_uid: 'new-id')`
-  ```

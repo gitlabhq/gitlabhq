@@ -60,3 +60,12 @@ mapping:
   # Whats New should map to its respective spec
   - source: data/whats_new/\w*.yml
     test: spec/lib/release_highlights/validator_spec.rb
+
+  - source: (ee/)?app/workers/.+\.rb
+    test: spec/workers/every_sidekiq_worker_spec.rb
+
+  - source: lib/gitlab/usage_data_counters/known_events/.+\.yml
+    test: spec/lib/gitlab/usage_data_counters/hll_redis_counter_spec.rb
+  - source: lib/gitlab/usage_data_counters/known_events/.+\.yml
+    test: spec/lib/gitlab/usage_data_spec.rb
+

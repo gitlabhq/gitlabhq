@@ -48,6 +48,14 @@ PATH
       omniauth-oauth2 (~> 1.7.1)
 
 PATH
+  remote: vendor/gems/omniauth-google-oauth2
+  specs:
+    omniauth-google-oauth2 (0.6.0)
+      jwt (>= 2.0)
+      omniauth (>= 1.9, < 3)
+      omniauth-oauth2 (>= 1.5)
+
+PATH
   remote: vendor/gems/omniauth-salesforce
   specs:
     omniauth-salesforce (1.0.5)
@@ -925,10 +933,6 @@ GEM
     omniauth-github (1.4.0)
       omniauth (~> 1.5)
       omniauth-oauth2 (>= 1.4.0, < 2.0)
-    omniauth-google-oauth2 (0.6.0)
-      jwt (>= 2.0)
-      omniauth (>= 1.1.1)
-      omniauth-oauth2 (>= 1.5)
     omniauth-oauth (1.2.0)
       oauth
       omniauth (>= 1.0, < 3)
@@ -1673,7 +1677,7 @@ DEPENDENCIES
   omniauth-facebook (~> 4.0.0)
   omniauth-github (~> 1.4)
   omniauth-gitlab (~> 4.0.0)!
-  omniauth-google-oauth2 (~> 0.6.0)
+  omniauth-google-oauth2 (~> 0.6.0)!
   omniauth-oauth2-generic (~> 0.2.2)
   omniauth-salesforce (~> 1.0.5)!
   omniauth-saml (~> 1.10)

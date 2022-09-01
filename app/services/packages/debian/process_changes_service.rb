@@ -42,9 +42,13 @@ module Packages
 
       def update_files_metadata
         files.each do |filename, entry|
-          entry.package_file.package = package
-
           file_metadata = ::Packages::Debian::ExtractMetadataService.new(entry.package_file).execute
+
+          ::Packages::UpdatePackageFileService.new(entry.package_file, package_id: package.id)
+            .execute
+
+          # Force reload from database, as package has changed
+          entry.package_file.reload_package
 
           entry.package_file.debian_file_metadatum.update!(
             file_type: file_metadata[:file_type],
@@ -52,12 +56,16 @@ module Packages
             architecture: file_metadata[:architecture],
             fields: file_metadata[:fields]
           )
-          entry.package_file.save!
         end
       end
 
       def update_changes_metadata
-        package_file.update!(package: package)
+        ::Packages::UpdatePackageFileService.new(package_file, package_id: package.id)
+          .execute
+
+        # Force reload from database, as package has changed
+        package_file.reload_package
+
         package_file.debian_file_metadatum.update!(
           file_type: metadata[:file_type],
           fields: metadata[:fields]
