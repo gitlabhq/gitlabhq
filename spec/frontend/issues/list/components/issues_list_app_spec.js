@@ -1,4 +1,4 @@
-import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -122,7 +122,6 @@ describe('CE IssuesListApp component', () => {
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findGlLink = () => wrapper.findComponent(GlLink);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
 
@@ -562,15 +561,16 @@ describe('CE IssuesListApp component', () => {
 
         it('shows Jira integration information', () => {
           const paragraphs = wrapper.findAll('p');
-          expect(paragraphs.at(2).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(3).text()).toContain(
+          const links = wrapper.findAll('.gl-link');
+          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
+          expect(paragraphs.at(2).text()).toContain(
             'Enable the Jira integration to view your Jira issues in GitLab.',
           );
-          expect(paragraphs.at(4).text()).toContain(
+          expect(paragraphs.at(3).text()).toContain(
             IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
           );
-          expect(findGlLink().text()).toBe('Enable the Jira integration');
-          expect(findGlLink().attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
+          expect(links.at(1).text()).toBe('Enable the Jira integration');
+          expect(links.at(1).attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
         });
       });
 

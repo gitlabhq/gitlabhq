@@ -41,12 +41,8 @@ export const i18n = {
   ),
   noOpenIssuesDescription: __('To keep this project going, create a new issue'),
   noOpenIssuesTitle: __('There are no open issues'),
-  noIssuesSignedInDescription: __(
-    'Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.',
-  ),
-  noIssuesSignedInTitle: __(
-    'The Issue Tracker is the place to add things that need to be improved or solved in a project',
-  ),
+  noIssuesSignedInDescription: __('Learn more about issues.'),
+  noIssuesSignedInTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
   noIssuesSignedOutDescription: __(
     'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',

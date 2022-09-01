@@ -11915,6 +11915,9 @@ msgstr ""
 msgid "DastProfiles|Enable Authentication"
 msgstr ""
 
+msgid "DastProfiles|Enable Basic Authentication"
+msgstr ""
+
 msgid "DastProfiles|Enter URLs in a comma-separated list."
 msgstr ""
 
@@ -23284,6 +23287,9 @@ msgid "Learn more about group-level project templates"
 msgstr ""
 
 msgid "Learn more about groups."
+msgstr ""
+
+msgid "Learn more about issues."
 msgstr ""
 
 msgid "Learn more about max seats used"
@@ -42529,6 +42535,9 @@ msgid "Use issue count"
 msgstr ""
 
 msgid "Use issue weight"
+msgstr ""
+
+msgid "Use issues to collaborate on ideas, solve problems, and plan work"
 msgstr ""
 
 msgid "Use one line per URI"

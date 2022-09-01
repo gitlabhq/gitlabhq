@@ -2469,7 +2469,7 @@ when to add jobs to pipelines.
   | `external`               | When you use CI services other than GitLab. |
   | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
   | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
-  | `pipelines`              | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
+  | `pipelines`              | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
@@ -3877,10 +3877,23 @@ test:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in GitLab Premium 11.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-Use `trigger` to start a [downstream pipeline](../pipelines/downstream_pipelines.md) that is either:
+Use `trigger` to declare that a job is a "trigger job" which starts a
+[downstream pipeline](../pipelines/downstream_pipelines.md) that is either:
 
-- [A multi-project pipeline](../pipelines/multi_project_pipelines.md).
+- [A multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
 - [A child pipeline](../pipelines/parent_child_pipelines.md).
+
+Trigger jobs can use only a limited set of the GitLab CI/CD configuration keywords.
+The keywords available for use in trigger jobs are:
+
+- [`trigger`](#trigger).
+- [`stage`](#stage).
+- [`allow_failure`](#allow_failure).
+- [`rules`](#rules).
+- [`only` and `except`](#only--except).
+- [`when`](#when) (only with a value of `on_success`, `on_failure`, or `always`).
+- [`extends`](#extends).
+- [`needs`](#needs), but not [`needs:project`](#needsproject).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -3888,7 +3901,7 @@ Use `trigger` to start a [downstream pipeline](../pipelines/downstream_pipelines
 
 - For multi-project pipelines, path to the downstream project. CI/CD variables
   [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later.
+  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
 - For child pipelines, path to the child pipeline CI/CD configuration file.
 
 **Example of `trigger` for multi-project pipeline**:
@@ -3913,9 +3926,6 @@ trigger_job:
 
 **Additional details**:
 
-- Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
-  For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
-  or [`after_script`](#after_script). Also, [`environment`](#environment) is not supported with `trigger`.
 - You [cannot use the API to start `when:manual` trigger jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 - In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
   can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
@@ -3931,7 +3941,7 @@ trigger_job:
 
 **Related topics**:
 
-- [Multi-project pipeline configuration examples](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
 - [Child pipeline configuration examples](../pipelines/parent_child_pipelines.md#examples).
 - To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
@@ -3978,7 +3988,7 @@ successfully complete before starting.
 
 Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control
 what is forwarded to both [parent-child pipelines](../pipelines/parent_child_pipelines.md)
-and [multi-project pipelines](../pipelines/multi_project_pipelines.md).
+and [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines).
 
 **Possible inputs**:
 

@@ -9,7 +9,7 @@
     - else
       = html_escape(s_('MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}')) % { markdownDocsLinkStart: markdownLinkStart, markdownDocsLinkEnd: '</a>'.html_safe }
   - if supports_file_upload
-    %span.uploading-container
+    %span.uploading-container.gl-line-height-32
       %span.uploading-progress-container.hide
         = sprite_icon('paperclip', css_class: 'gl-icon gl-vertical-align-text-bottom')
         %span.attaching-file-message

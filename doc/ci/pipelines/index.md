@@ -60,7 +60,7 @@ Pipelines can be configured in many different ways:
 - [Parent-child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
-- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
+- [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines) combine pipelines for different projects together.
 
 ## Configure a pipeline
 
@@ -382,8 +382,8 @@ You can group the jobs by:
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
   jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
 
-[Multi-project pipeline graphs](multi_project_pipelines.md#multi-project-pipeline-visualization) help
-you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
+[Multi-project pipeline graphs](downstream_pipelines.md#view-multi-project-pipelines-in-pipeline-graphs) help
+you visualize the entire pipeline, including all cross-project inter-dependencies.
 
 If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
 pipeline graph. The remaining jobs still run as normal. To see the jobs:

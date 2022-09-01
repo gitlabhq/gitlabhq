@@ -40,8 +40,8 @@ RSpec.describe 'Issues > User sees empty state', :js do
       it 'user sees empty state' do
         visit project_issues_path(project)
 
-        expect(page).to have_content('The Issue Tracker is the place to add things that need to be improved or solved in a project')
-        expect(page).to have_content('Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.')
+        expect(page).to have_content('Use issues to collaborate on ideas, solve problems, and plan work')
+        expect(page).to have_content('Learn more about issues.')
         expect(page).to have_content('New issue')
       end
 

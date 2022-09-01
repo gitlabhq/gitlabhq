@@ -11,13 +11,13 @@
   .md-header
     = gl_tabs_nav({ class: 'clearfix nav-links'}) do
       %li.md-header-tab.active
-        %button.js-md-write-button
+        %button.js-md-write-button{ class: 'gl-py-3!' }
           = _("Write")
       %li.md-header-tab
-        %button.js-md-preview-button
+        %button.js-md-preview-button{ class: 'gl-py-3!' }
           = _("Preview")
 
-      %li.md-header-toolbar.active
+      %li.md-header-toolbar.active.gl-py-2
         = render 'shared/blob/markdown_buttons', show_fullscreen_button: true
 
   .md-write-holder

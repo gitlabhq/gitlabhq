@@ -25,7 +25,7 @@ YAML is dynamically generated.
 
 ![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
 
-Similarly to [multi-project pipelines](multi_project_pipelines.md), a pipeline can trigger a
+Similarly to [multi-project pipelines](downstream_pipelines.md#multi-project-pipelines), a pipeline can trigger a
 set of concurrently running [downstream](downstream_pipelines.md) child pipelines, but in the same project:
 
 - Child pipelines still execute each of their jobs according to a stage sequence, but
@@ -89,7 +89,7 @@ microservice_a:
 
 The maximum number of entries that are accepted for `trigger:include` is three.
 
-Similar to [multi-project pipelines](multi_project_pipelines.md), we can set the
+Similar to [multi-project pipelines](downstream_pipelines.md#multi-project-pipelines), we can set the
 parent pipeline to [depend on the status](downstream_pipelines.md#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job)
 of the child pipeline upon completion:
 

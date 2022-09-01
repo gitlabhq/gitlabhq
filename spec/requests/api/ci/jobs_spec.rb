@@ -249,6 +249,10 @@ RSpec.describe API::Ci::Jobs do
         it 'includes environment slug' do
           expect(json_response.dig('environment', 'slug')).to eq('production')
         end
+
+        it 'includes environment tier' do
+          expect(json_response.dig('environment', 'tier')).to eq('production')
+        end
       end
 
       context 'when non-deployment environment action' do
@@ -259,6 +263,10 @@ RSpec.describe API::Ci::Jobs do
 
         it 'includes environment slug' do
           expect(json_response.dig('environment', 'slug')).to eq('review')
+        end
+
+        it 'includes environment tier' do
+          expect(json_response.dig('environment', 'tier')).to eq('development')
         end
       end
 

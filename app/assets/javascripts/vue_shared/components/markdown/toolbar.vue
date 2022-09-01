@@ -72,7 +72,7 @@ export default {
         </gl-sprintf>
       </template>
     </div>
-    <span v-if="canAttachFile" class="uploading-container">
+    <span v-if="canAttachFile" class="uploading-container gl-line-height-32">
       <span class="uploading-progress-container hide">
         <gl-icon name="paperclip" />
         <span class="attaching-file-message"></span>

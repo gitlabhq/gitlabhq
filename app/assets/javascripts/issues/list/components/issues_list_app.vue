@@ -24,6 +24,7 @@ import axios from '~/lib/utils/axios_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS_ONLY,
@@ -462,6 +463,9 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
+    issuesHelpPagePath() {
+      return helpPagePath('user/project/issues/index');
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -899,7 +903,9 @@ export default {
     <template v-else-if="isSignedIn">
       <gl-empty-state :title="$options.i18n.noIssuesSignedInTitle" :svg-path="emptyStateSvgPath">
         <template #description>
-          <p>{{ $options.i18n.noIssuesSignedInDescription }}</p>
+          <gl-link :href="issuesHelpPagePath" target="_blank">{{
+            $options.i18n.noIssuesSignedInDescription
+          }}</gl-link>
           <p v-if="canCreateProjects">
             <strong>{{ $options.i18n.noGroupIssuesSignedInDescription }}</strong>
           </p>

@@ -87,7 +87,7 @@ and [templates](examples/index.md#cicd-templates).
 Some pipeline types have their own detailed usage guides that you should read
 if you are using that type:
 
-- [Multi-project pipelines](pipelines/multi_project_pipelines.md): Have your pipeline trigger
+- [Multi-project pipelines](pipelines/downstream_pipelines.md#multi-project-pipelines): Have your pipeline trigger
   a pipeline in a different project.
 - [Parent/child pipelines](pipelines/parent_child_pipelines.md): Have your main pipeline trigger
   and run separate pipelines in the same project. You can also
