@@ -605,15 +605,15 @@ RSpec.describe Clusters::Platforms::Kubernetes do
           { 'app.gitlab.com/app' => project.full_path_slug, 'app.gitlab.com/env' => 'env-000000' }
         ])
         expect(rollout_status.instances).to eq([{ pod_name: "kube-pod",
-                                                 stable: true,
-                                                 status: "pending",
-                                                 tooltip: "kube-pod (Pending)",
-                                                 track: "stable" },
+                                                  stable: true,
+                                                  status: "pending",
+                                                  tooltip: "kube-pod (Pending)",
+                                                  track: "stable" },
                                                 { pod_name: "Not provided",
-                                                 stable: true,
-                                                 status: "pending",
-                                                 tooltip: "Not provided (Pending)",
-                                                 track: "stable" }])
+                                                  stable: true,
+                                                  status: "pending",
+                                                  tooltip: "Not provided (Pending)",
+                                                  track: "stable" }])
       end
 
       context 'with canary ingress' do

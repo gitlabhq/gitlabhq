@@ -736,7 +736,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 - To update the maximum YAML size, update `max_yaml_size_bytes` with the new value in megabytes:
 
   ```ruby
-  ApplicationSetting.update!(max_yaml_size_bytes: 2.megabytes)
+  ApplicationSetting.update(max_yaml_size_bytes: 2.megabytes)
   ```
 
   The `max_yaml_size_bytes` value is not directly tied to the size of the YAML file,
@@ -745,7 +745,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 - To update the maximum YAML depth, update `max_yaml_depth` with the new value in megabytes:
 
   ```ruby
-  ApplicationSetting.update!(max_yaml_depth: 125)
+  ApplicationSetting.update(max_yaml_depth: 125)
   ```
 
 ### Limit dotenv variables

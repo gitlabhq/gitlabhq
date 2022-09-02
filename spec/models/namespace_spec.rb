@@ -744,30 +744,30 @@ RSpec.describe Namespace do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:               namespace,
-                               repository_size:         101,
-                               wiki_size:               505,
-                               lfs_objects_size:        202,
-                               build_artifacts_size:    303,
+                               namespace: namespace,
+                               repository_size: 101,
+                               wiki_size: 505,
+                               lfs_objects_size: 202,
+                               build_artifacts_size: 303,
                                pipeline_artifacts_size: 707,
-                               packages_size:           404,
-                               snippets_size:           605,
-                               uploads_size:            808))
+                               packages_size: 404,
+                               snippets_size: 605,
+                               uploads_size: 808))
     end
 
     let(:project2) do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:               namespace,
-                               repository_size:         10,
-                               wiki_size:               50,
-                               lfs_objects_size:        20,
-                               build_artifacts_size:    30,
+                               namespace: namespace,
+                               repository_size: 10,
+                               wiki_size: 50,
+                               lfs_objects_size: 20,
+                               build_artifacts_size: 30,
                                pipeline_artifacts_size: 70,
-                               packages_size:           40,
-                               snippets_size:           60,
-                               uploads_size:            80))
+                               packages_size: 40,
+                               snippets_size: 60,
+                               uploads_size: 80))
     end
 
     it "sums all project storage counters in the namespace" do

@@ -163,8 +163,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'running',
-              status_changed_at: Time.current)
+            .to receive(:perform_async)
+            .with(deployment_id: deployment.id, status: 'running', status_changed_at: Time.current)
 
           deployment.run!
         end
@@ -200,8 +200,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-          .to receive(:perform_async).with(deployment_id: deployment.id, status: 'success',
-            status_changed_at: Time.current)
+          .to receive(:perform_async)
+          .with(deployment_id: deployment.id, status: 'success', status_changed_at: Time.current)
 
           deployment.succeed!
         end
@@ -230,8 +230,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'failed',
-              status_changed_at: Time.current)
+            .to receive(:perform_async)
+            .with(deployment_id: deployment.id, status: 'failed', status_changed_at: Time.current)
 
           deployment.drop!
         end
@@ -260,8 +260,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'canceled',
-              status_changed_at: Time.current)
+            .to receive(:perform_async)
+            .with(deployment_id: deployment.id, status: 'canceled', status_changed_at: Time.current)
 
           deployment.cancel!
         end

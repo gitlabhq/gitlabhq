@@ -2662,17 +2662,17 @@ RSpec.describe Ci::Build do
 
   describe '#ref_slug' do
     {
-      'master'                => 'master',
-      '1-foo'                 => '1-foo',
-      'fix/1-foo'             => 'fix-1-foo',
-      'fix-1-foo'             => 'fix-1-foo',
-      'a' * 63                => 'a' * 63,
-      'a' * 64                => 'a' * 63,
-      'FOO'                   => 'foo',
-      '-' + 'a' * 61 + '-'    => 'a' * 61,
-      '-' + 'a' * 62 + '-'    => 'a' * 62,
-      '-' + 'a' * 63 + '-'    => 'a' * 62,
-      'a' * 62 + ' '          => 'a' * 62
+      'master' => 'master',
+      '1-foo' => '1-foo',
+      'fix/1-foo' => 'fix-1-foo',
+      'fix-1-foo' => 'fix-1-foo',
+      'a' * 63 => 'a' * 63,
+      'a' * 64 => 'a' * 63,
+      'FOO' => 'foo',
+      '-' + 'a' * 61 + '-' => 'a' * 61,
+      '-' + 'a' * 62 + '-' => 'a' * 62,
+      '-' + 'a' * 63 + '-' => 'a' * 62,
+      'a' * 62 + ' ' => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref

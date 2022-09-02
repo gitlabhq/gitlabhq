@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DiffView from '~/diffs/components/diff_view.vue';
-import DiffCodeQuality from '~/diffs/components/diff_code_quality.vue';
+import DiffLine from '~/diffs/components/diff_line.vue';
 import { diffCodeQuality } from '../mock_data/diff_code_quality';
 
 describe('DiffView', () => {
@@ -51,28 +51,27 @@ describe('DiffView', () => {
     return shallowMount(DiffView, { propsData, store, stubs, provide });
   };
 
-  it('does not render a codeQuality diff view when there is no finding', () => {
+  it('does not render a diff-line component when there is no finding', () => {
     const wrapper = createWrapper();
-    expect(wrapper.findComponent(DiffCodeQuality).exists()).toBe(false);
+    expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
   });
 
-  it('does render a codeQuality diff view with the correct props  when there is a finding & refactorCodeQualityInlineFindings flag is true ', async () => {
+  it('does render a diff-line component with the correct props when there is a finding & refactorCodeQualityInlineFindings flag is true ', async () => {
     const wrapper = createWrapper(diffCodeQuality, {
       glFeatures: { refactorCodeQualityInlineFindings: true },
     });
     wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
     await nextTick();
-    expect(wrapper.findComponent(DiffCodeQuality).exists()).toBe(true);
-    expect(wrapper.findComponent(DiffCodeQuality).props().codeQuality.length).not.toBe(0);
+    expect(wrapper.findComponent(DiffLine).props('line')).toBe(diffCodeQuality.diffLines[2]);
   });
 
-  it('does not render a codeQuality diff view when there is a finding & refactorCodeQualityInlineFindings flag is false ', async () => {
+  it('does not render a diff-line component when there is a finding & refactorCodeQualityInlineFindings flag is false ', async () => {
     const wrapper = createWrapper(diffCodeQuality, {
       glFeatures: { refactorCodeQualityInlineFindings: false },
     });
     wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
     await nextTick();
-    expect(wrapper.findComponent(DiffCodeQuality).exists()).toBe(false);
+    expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
   });
 
   it.each`

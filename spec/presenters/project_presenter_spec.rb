@@ -102,7 +102,7 @@ RSpec.describe ProjectPresenter do
           expect(release).to be_truthy
           expect(presenter.releases_anchor_data).to have_attributes(
             is_link: true,
-            label:  a_string_including("#{project.releases.count}"),
+            label: a_string_including("#{project.releases.count}"),
             link: presenter.project_releases_path(project)
           )
         end
@@ -216,7 +216,7 @@ RSpec.describe ProjectPresenter do
       it 'returns storage data' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including('0 Bytes'),
+          label: a_string_including('0 Bytes'),
           link: nil
         )
       end
@@ -270,7 +270,7 @@ RSpec.describe ProjectPresenter do
       it 'returns storage data without usage quotas link for non-admin users' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including('0 Bytes'),
+          label: a_string_including('0 Bytes'),
           link: nil
         )
       end
@@ -280,7 +280,7 @@ RSpec.describe ProjectPresenter do
 
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including('0 Bytes'),
+          label: a_string_including('0 Bytes'),
           link: presenter.project_usage_quotas_path(project)
         )
       end
@@ -293,7 +293,7 @@ RSpec.describe ProjectPresenter do
         expect(release).to be_truthy
         expect(presenter.releases_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including("#{project.releases.count}"),
+          label: a_string_including("#{project.releases.count}"),
           link: presenter.project_releases_path(project)
         )
       end
@@ -566,7 +566,7 @@ RSpec.describe ProjectPresenter do
         it 'returns upload_anchor_data' do
           expect(presenter.upload_anchor_data).to have_attributes(
             is_link: false,
-            label:  a_string_including('Upload file'),
+            label: a_string_including('Upload file'),
             data: {
               "can_push_code" => "true",
               "original_branch" => "master",

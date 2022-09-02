@@ -175,9 +175,9 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
       end
 
       {
-        "killed"  => :canceled,
+        "killed" => :canceled,
         "failure" => :failed,
-        "error"   => :failed,
+        "error" => :failed,
         "success" => "success"
       }.each do |drone_status, our_status|
         it "sets commit status to #{our_status.inspect} when returned status is #{drone_status.inspect}" do

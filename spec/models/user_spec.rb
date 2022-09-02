@@ -2071,11 +2071,12 @@ RSpec.describe User do
       context 'user has existing U2F registration' do
         it 'returns false' do
           device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration, name: 'my u2f device',
-                 user: user,
-                 certificate: Base64.strict_encode64(device.cert_raw),
-                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+          create(:u2f_registration,
+            name: 'my u2f device',
+            user: user,
+            certificate: Base64.strict_encode64(device.cert_raw),
+            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+            public_key: Base64.strict_encode64(device.origin_public_key_raw))
 
           expect(user.two_factor_u2f_enabled?).to eq(false)
         end
@@ -2094,11 +2095,12 @@ RSpec.describe User do
       context 'user has existing U2F registration' do
         it 'returns true' do
           device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration, name: 'my u2f device',
-                 user: user,
-                 certificate: Base64.strict_encode64(device.cert_raw),
-                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+          create(:u2f_registration,
+            name: 'my u2f device',
+            user: user,
+            certificate: Base64.strict_encode64(device.cert_raw),
+            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+            public_key: Base64.strict_encode64(device.origin_public_key_raw))
 
           expect(user.two_factor_u2f_enabled?).to eq(true)
         end

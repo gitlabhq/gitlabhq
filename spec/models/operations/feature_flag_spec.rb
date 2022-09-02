@@ -55,7 +55,7 @@ RSpec.describe Operations::FeatureFlag do
       it 'is valid if associated with Operations::FeatureFlags::Strategy models' do
         project = create(:project)
         feature_flag = described_class.create!({ name: 'test', project: project, version: 2,
-                                                strategies_attributes: [{ name: 'default', parameters: {} }] })
+                                                 strategies_attributes: [{ name: 'default', parameters: {} }] })
 
         expect(feature_flag).to be_valid
       end
@@ -114,13 +114,11 @@ RSpec.describe Operations::FeatureFlag do
     let_it_be(:project) { create(:project) }
 
     let!(:feature_flag) do
-      create(:operations_feature_flag, project: project,
-             name: 'feature1', active: true, version: 2)
+      create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
     end
 
     let!(:strategy) do
-      create(:operations_strategy, feature_flag: feature_flag,
-             name: 'default', parameters: {})
+      create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
     end
 
     it 'matches wild cards in the scope' do
@@ -141,10 +139,8 @@ RSpec.describe Operations::FeatureFlag do
 
     it 'returns feature flags ordered by id' do
       create(:operations_scope, strategy: strategy, environment_scope: 'production')
-      feature_flag_b = create(:operations_feature_flag, project: project,
-                              name: 'feature2', active: true, version: 2)
-      strategy_b = create(:operations_strategy, feature_flag: feature_flag_b,
-                          name: 'default', parameters: {})
+      feature_flag_b = create(:operations_feature_flag, project: project, name: 'feature2', active: true, version: 2)
+      strategy_b = create(:operations_strategy, feature_flag: feature_flag_b, name: 'default', parameters: {})
       create(:operations_scope, strategy: strategy_b, environment_scope: '*')
 
       flags = described_class.for_unleash_client(project, 'production')

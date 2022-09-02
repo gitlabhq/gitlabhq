@@ -32,17 +32,17 @@ RSpec.describe PagesDomain do
 
     describe "hostname" do
       {
-        'my.domain.com'    => true,
-        '123.456.789'      => true,
-        '0x12345.com'      => true,
-        '0123123'          => true,
-        'a-reserved.com'   => true,
+        'my.domain.com' => true,
+        '123.456.789' => true,
+        '0x12345.com' => true,
+        '0123123' => true,
+        'a-reserved.com' => true,
         'a.b-reserved.com' => true,
-        'reserved.com'     => true,
-        '_foo.com'         => false,
-        'a.reserved.com'   => false,
+        'reserved.com' => true,
+        '_foo.com' => false,
+        'a.reserved.com' => false,
         'a.b.reserved.com' => false,
-        nil                => false
+        nil => false
       }.each do |value, validity|
         context "domain #{value.inspect} validity" do
           before do
@@ -66,8 +66,7 @@ RSpec.describe PagesDomain do
       end
 
       let(:pages_domain) do
-        build(:pages_domain, certificate: certificate, key: key,
-              auto_ssl_enabled: auto_ssl_enabled).tap do |pd|
+        build(:pages_domain, certificate: certificate, key: key, auto_ssl_enabled: auto_ssl_enabled).tap do |pd|
           allow(pd).to receive(:project).and_return(project)
           pd.valid?
         end

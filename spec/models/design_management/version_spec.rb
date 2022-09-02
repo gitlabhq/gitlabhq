@@ -256,7 +256,7 @@ RSpec.describe DesignManagement::Version do
       it 'puts them in the right buckets' do
         expect(version.designs_by_event).to match(
           a_hash_including(
-            'creation' =>  have_attributes(size: 3),
+            'creation' => have_attributes(size: 3),
             'modification' => have_attributes(size: 4),
             'deletion' => have_attributes(size: 5)
           )

@@ -3729,9 +3729,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       let(:expected_diff_refs) do
         Gitlab::Diff::DiffRefs.new(
-          base_sha:  subject.merge_request_diff.base_commit_sha,
+          base_sha: subject.merge_request_diff.base_commit_sha,
           start_sha: subject.merge_request_diff.start_commit_sha,
-          head_sha:  subject.merge_request_diff.head_commit_sha
+          head_sha: subject.merge_request_diff.head_commit_sha
         )
       end
 

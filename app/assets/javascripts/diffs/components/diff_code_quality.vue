@@ -5,10 +5,6 @@ import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/reports/codequality_report/c
 export default {
   components: { GlButton, GlIcon },
   props: {
-    line: {
-      type: Number,
-      required: true,
-    },
     codeQuality: {
       type: Array,
       required: true,
@@ -50,7 +46,7 @@ export default {
       size="small"
       icon="close"
       class="gl-absolute gl-right-2 gl-top-2"
-      @click="$emit('hideCodeQualityFindings', line)"
+      @click="$emit('hideCodeQualityFindings')"
     />
   </div>
 </template>

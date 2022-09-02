@@ -43,10 +43,10 @@ module Users
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
       security_training_feature_promotion: 42, # EE-only
-      storage_enforcement_banner_first_enforcement_threshold: 43,
-      storage_enforcement_banner_second_enforcement_threshold: 44,
-      storage_enforcement_banner_third_enforcement_threshold: 45,
-      storage_enforcement_banner_fourth_enforcement_threshold: 46,
+      storage_enforcement_banner_first_enforcement_threshold: 43, # EE-only
+      storage_enforcement_banner_second_enforcement_threshold: 44, # EE-only
+      storage_enforcement_banner_third_enforcement_threshold: 45, # EE-only
+      storage_enforcement_banner_fourth_enforcement_threshold: 46, # EE-only
       # 47 and 48 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
       # 49 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91533
       # because the banner was no longer relevant.

@@ -3306,7 +3306,7 @@ RSpec.describe Repository do
     before do
       storages = {
         'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
-        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
+        'picked' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
       }
 
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
