@@ -474,6 +474,10 @@ input:-ms-input-placeholder {
 .login-page p {
   font-size: 13px;
 }
+.login-page .signin-text p {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
 .login-page .borderless .login-box,
 .login-page .borderless .omniauth-container {
   box-shadow: none;

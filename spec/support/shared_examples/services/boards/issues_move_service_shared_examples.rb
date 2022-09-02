@@ -140,6 +140,40 @@ RSpec.shared_examples 'issues move service' do |group|
       expect(issue2.reload.updated_at.change(usec: 0)).to eq updated_at2.change(usec: 0)
     end
 
+    context 'when moving to a specific list position' do
+      before do
+        [issue1, issue2, issue].each do |issue|
+          issue.move_to_end && issue.save!
+        end
+      end
+
+      it 'moves issue to the top of the list' do
+        described_class.new(parent, user, params.merge({ position_in_list: 0 })).execute(issue)
+
+        expect(issue.relative_position).to be < issue1.relative_position
+      end
+
+      it 'moves issue to a position in the middle of the list' do
+        described_class.new(parent, user, params.merge({ position_in_list: 1 })).execute(issue)
+
+        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+      end
+
+      it 'moves issue to the bottom of the list' do
+        described_class.new(parent, user, params.merge({ position_in_list: -1 })).execute(issue1)
+
+        expect(issue1.relative_position).to be > issue.relative_position
+      end
+
+      context 'when given position is greater than number of issues in the list' do
+        it 'moves the issue to the bottom of the list' do
+          described_class.new(parent, user, params.merge({ position_in_list: 5 })).execute(issue1)
+
+          expect(issue1.relative_position).to be > issue.relative_position
+        end
+      end
+    end
+
     def reorder_issues(params, issues: [])
       issues.each do |issue|
         issue.move_to_end && issue.save!

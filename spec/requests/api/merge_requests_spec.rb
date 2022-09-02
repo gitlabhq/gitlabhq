@@ -2337,6 +2337,16 @@ RSpec.describe API::MergeRequests do
 
         expect(merge_request.notes.system.last.note).to include("assigned to #{user2.to_reference}")
       end
+
+      it 'triggers webhooks', :sidekiq_inline do
+        hook = create(:project_hook, merge_requests_events: true, project: merge_request.project)
+
+        expect(WebHookWorker).to receive(:perform_async).with(hook.id, anything, 'merge_request_hooks', anything)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
     context 'when assignee_id=user2.id' do

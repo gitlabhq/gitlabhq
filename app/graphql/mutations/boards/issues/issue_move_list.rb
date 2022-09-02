@@ -38,15 +38,39 @@ module Mutations
                  required: false,
                  description: 'ID of issue that should be placed after the current issue.'
 
+        argument :position_in_list, GraphQL::Types::Int,
+                 required: false,
+                 description: "Position of issue within the board list. Positions start at 0. "\
+                              "Use #{::Boards::Issues::MoveService::LIST_END_POSITION} to move to the end of the list."
+
         def ready?(**args)
           if move_arguments(args).blank?
             raise Gitlab::Graphql::Errors::ArgumentError,
-                  'At least one of the arguments fromListId, toListId, afterId or beforeId is required'
+                  'At least one of the arguments ' \
+                  'fromListId, toListId, positionInList, moveAfterId, or moveBeforeId is required'
           end
 
           if move_list_arguments(args).one?
             raise Gitlab::Graphql::Errors::ArgumentError,
                   'Both fromListId and toListId must be present'
+          end
+
+          if args[:position_in_list].present?
+            if move_list_arguments(args).empty?
+              raise Gitlab::Graphql::Errors::ArgumentError,
+                    'Both fromListId and toListId are required when positionInList is given'
+            end
+
+            if args[:move_before_id].present? || args[:move_after_id].present?
+              raise Gitlab::Graphql::Errors::ArgumentError,
+                    'positionInList is mutually exclusive with any of moveBeforeId or moveAfterId'
+            end
+
+            if args[:position_in_list] != ::Boards::Issues::MoveService::LIST_END_POSITION &&
+                args[:position_in_list] < 0
+              raise Gitlab::Graphql::Errors::ArgumentError,
+                    "positionInList must be >= 0 or #{::Boards::Issues::MoveService::LIST_END_POSITION}"
+            end
           end
 
           super
@@ -77,7 +101,7 @@ module Mutations
         end
 
         def move_arguments(args)
-          args.slice(:from_list_id, :to_list_id, :move_after_id, :move_before_id)
+          args.slice(:from_list_id, :to_list_id, :position_in_list, :move_after_id, :move_before_id)
         end
 
         def error_for(result)

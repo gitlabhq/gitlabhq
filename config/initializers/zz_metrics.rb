@@ -17,7 +17,6 @@
 if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && defined?(Rails::Generators))
   require 'pathname'
   require 'connection_pool'
-  require 'method_source'
 
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.

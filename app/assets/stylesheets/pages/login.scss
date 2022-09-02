@@ -41,6 +41,13 @@
     font-size: 13px;
   }
 
+  .signin-text {
+    p {
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+  }
+
   .borderless {
     .login-box,
     .omniauth-container {

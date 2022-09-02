@@ -32,8 +32,8 @@ require (
 	gocloud.dev v0.25.0
 	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
-	golang.org/x/net v0.0.0-20220531201128-c960675eff93
-	golang.org/x/tools v0.1.11
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
+	golang.org/x/tools v0.1.12
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
 	honnef.co/go/tools v0.3.3
@@ -106,8 +106,8 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20220218215828-6cf2b201936e // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect
-	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

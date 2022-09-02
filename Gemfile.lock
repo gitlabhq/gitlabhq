@@ -1654,7 +1654,6 @@ DEPENDENCIES
   mail-smtp_pool (~> 0.1.0)!
   marginalia (~> 1.10.0)
   memory_profiler (~> 0.9)
-  method_source (~> 1.0)
   mini_magick (~> 4.10.1)
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)

@@ -296,6 +296,12 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          ::Ci::JobArtifacts::TrackArtifactReportWorker.perform_async(pipeline.id)
+        end
+      end
+
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
           pipeline.persistent_ref.delete

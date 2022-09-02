@@ -1556,6 +1556,42 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    describe 'track artifact report' do
+      let(:pipeline) { create(:ci_pipeline, :running, :with_test_reports, status: :running) }
+
+      context 'when transitioning to completed status' do
+        %i[drop! skip! succeed! cancel!].each do |command|
+          it "performs worker on transition to #{command}" do
+            expect(Ci::JobArtifacts::TrackArtifactReportWorker).to receive(:perform_async).with(pipeline.id)
+            pipeline.send(command)
+          end
+        end
+      end
+
+      context 'when pipeline retried from failed to success', :clean_gitlab_redis_shared_state do
+        let(:test_event_name) { 'i_testing_test_report_uploaded' }
+        let(:start_time) { 1.week.ago }
+        let(:end_time) { 1.week.from_now }
+
+        it 'counts only one report' do
+          expect(Ci::JobArtifacts::TrackArtifactReportWorker).to receive(:perform_async).with(pipeline.id).twice.and_call_original
+
+          Sidekiq::Testing.inline! do
+            pipeline.drop!
+            pipeline.run!
+            pipeline.succeed!
+          end
+
+          unique_pipeline_pass = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
+            event_names: test_event_name,
+            start_date: start_time,
+            end_date: end_time
+          )
+          expect(unique_pipeline_pass).to eq(1)
+        end
+      end
+    end
+
     describe 'merge request metrics' do
       let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
 

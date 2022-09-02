@@ -4334,9 +4334,6 @@ msgstr[1] ""
 msgid "An error occurred while saving your settings. Try saving them again."
 msgstr ""
 
-msgid "An error occurred while subscribing to notifications."
-msgstr ""
-
 msgid "An error occurred while triggering the job."
 msgstr ""
 
@@ -4350,9 +4347,6 @@ msgid "An error occurred while trying to run a new pipeline for this merge reque
 msgstr ""
 
 msgid "An error occurred while trying to unfollow this user, please try again."
-msgstr ""
-
-msgid "An error occurred while unsubscribing to notifications."
 msgstr ""
 
 msgid "An error occurred while updating approvers"
@@ -15027,12 +15021,6 @@ msgstr ""
 msgid "Epics|Add an existing epic"
 msgstr ""
 
-msgid "Epics|An error occurred while saving the %{epicDateType} date"
-msgstr ""
-
-msgid "Epics|An error occurred while updating labels."
-msgstr ""
-
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr ""
 
@@ -15099,16 +15087,7 @@ msgstr ""
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr ""
 
-msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
-msgstr ""
-
 msgid "Epics|Unable to save epic. Please try again"
-msgstr ""
-
-msgid "Epics|due"
-msgstr ""
-
-msgid "Epics|start"
 msgstr ""
 
 msgid "Erased"
@@ -26351,9 +26330,6 @@ msgstr ""
 msgid "No deployments found"
 msgstr ""
 
-msgid "No due date"
-msgstr ""
-
 msgid "No email participants were added. Either none were provided, or they already exist."
 msgstr ""
 
@@ -26526,9 +26502,6 @@ msgid "No stack trace for this error"
 msgstr ""
 
 msgid "No starrers matched your search"
-msgstr ""
-
-msgid "No start date"
 msgstr ""
 
 msgid "No suggestions found"
@@ -39649,6 +39622,9 @@ msgstr ""
 msgid "There are currently no events."
 msgstr ""
 
+msgid "There are currently no mirrored repositories."
+msgstr ""
+
 msgid "There are merge conflicts"
 msgstr ""
 
@@ -45220,7 +45196,7 @@ msgstr ""
 msgid "You have successfully purchased %{product}. You'll receive a receipt by email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."
 msgstr ""
 
-msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email."
+msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email. It might take a moment for GitLab.com to fully reflect your purchase."
 msgstr ""
 
 msgid "You have unsaved changes"

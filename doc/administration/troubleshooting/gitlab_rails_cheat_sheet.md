@@ -28,22 +28,6 @@ mentioned above, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 
-## Find specific methods for an object
-
-```ruby
-Array.methods.select { |m| m.to_s.include? "sing" }
-Array.methods.grep(/sing/)
-```
-
-## Find method source
-
-```ruby
-instance_of_object.method(:foo).source_location
-
-# Example for when we would call project.private?
-project.method(:private?).source_location
-```
-
 ## Attributes
 
 View available attributes, formatted using pretty print (`pp`).
@@ -811,18 +795,6 @@ You can use this method when a configured external authentication provider (thro
 
 ```ruby
 Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
-```
-
-## SCIM
-
-### Find groups using an SQL query
-
-Find and store an array of groups based on an SQL query:
-
-```ruby
-# Finds groups and subgroups that end with '%oup'
-Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
-=> [#<Group id:3 @test-group>, #<Group id:4 @template-group/template-subgroup>]
 ```
 
 ## Routes

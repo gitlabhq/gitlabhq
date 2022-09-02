@@ -18,10 +18,10 @@
                   = current_appearance&.title.presence || _('GitLab')
                 - if current_appearance&.description?
                   = brand_text
+                = render_if_exists 'layouts/devise_help_text'
             .mb-3
               .gl-w-half.gl-xs-w-full.gl-ml-auto.gl-mr-auto.bar
                 = yield
-                = render_if_exists 'layouts/devise_help_text'
 
 
         = render 'devise/shared/footer', footer_message: footer_message

@@ -1596,6 +1596,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pipeline_background:ci_job_artifacts_track_artifact_report
+  :worker_name: Ci::JobArtifacts::TrackArtifactReportWorker
+  :feature_category: :code_testing
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_pending_builds_update_group
   :worker_name: Ci::PendingBuilds::UpdateGroupWorker
   :feature_category: :continuous_integration

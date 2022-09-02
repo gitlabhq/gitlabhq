@@ -55,7 +55,7 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
       let(:move_params) { {} }
 
       it 'generates an error' do
-        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'At least one of the arguments fromListId, toListId, afterId or beforeId is required') do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'At least one of the arguments fromListId, toListId, positionInList, moveAfterId, or moveBeforeId is required') do
           subject
         end
       end
@@ -68,6 +68,50 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
 
       it 'raises an error' do
         expect { subject }.to raise_error(::GraphQL::CoercionError, "\"#{params[:board_id]}\" does not represent an instance of Board")
+      end
+    end
+
+    context 'when positionInList is given' do
+      let(:move_params) { { from_list_id: list1.id, to_list_id: list2.id, position_in_list: 0 } }
+
+      context 'when fromListId and toListId are missing' do
+        let(:move_params) { { position_in_list: 0 } }
+
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'Both fromListId and toListId are required when positionInList is given') do
+            subject
+          end
+        end
+      end
+
+      context 'when move_before_id is also given' do
+        let(:move_params) { { from_list_id: list1.id, to_list_id: list2.id, position_in_list: 0, move_before_id: 1 } }
+
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'positionInList is mutually exclusive with any of moveBeforeId or moveAfterId') do
+            subject
+          end
+        end
+      end
+
+      context 'when move_after_id is also given' do
+        let(:move_params) { { from_list_id: list1.id, to_list_id: list2.id, position_in_list: 0, move_after_id: 1 } }
+
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'positionInList is mutually exclusive with any of moveBeforeId or moveAfterId') do
+            subject
+          end
+        end
+      end
+
+      context 'when position_in_list is invalid' do
+        let(:move_params) { { from_list_id: list1.id, to_list_id: list2.id, position_in_list: -5 } }
+
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, "positionInList must be >= 0 or #{Boards::Issues::MoveService::LIST_END_POSITION}") do
+            subject
+          end
+        end
       end
     end
 

@@ -3038,6 +3038,7 @@ Input type: `IssueMoveListInput`
 | <a id="mutationissuemovelistiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuemovelistmoveafterid"></a>`moveAfterId` | [`ID`](#id) | ID of issue that should be placed after the current issue. |
 | <a id="mutationissuemovelistmovebeforeid"></a>`moveBeforeId` | [`ID`](#id) | ID of issue that should be placed before the current issue. |
+| <a id="mutationissuemovelistpositioninlist"></a>`positionInList` | [`Int`](#int) | Position of issue within the board list. Positions start at 0. Use -1 to move to the end of the list. |
 | <a id="mutationissuemovelistprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 | <a id="mutationissuemovelisttolistid"></a>`toListId` | [`ID`](#id) | ID of the board list that the issue will be moved to. |
 

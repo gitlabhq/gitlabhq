@@ -569,3 +569,13 @@ the following checks when creating or updating namespaces or groups:
 
 In the unlikely event that you see these errors in your GitLab installation,
 [contact Support](https://about.gitlab.com/support/) so that we can improve this validation.
+
+### Find groups using an SQL query
+
+To find and store an array of groups based on an SQL query in the [rails console](../../administration/operations/rails_console.md):
+
+```ruby
+# Finds groups and subgroups that end with '%oup'
+Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
+=> [#<Group id:3 @test-group>, #<Group id:4 @template-group/template-subgroup>]
+```

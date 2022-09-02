@@ -202,6 +202,22 @@ sudo chmod 700 /scripts
 sudo gitlab-rails runner /scripts/helloworld.rb
 ```
 
+## Find specific methods for an object
+
+```ruby
+Array.methods.select { |m| m.to_s.include? "sing" }
+Array.methods.grep(/sing/)
+```
+
+## Find method source
+
+```ruby
+instance_of_object.method(:foo).source_location
+
+# Example for when we would call project.private?
+project.method(:private?).source_location
+```
+
 ## Active Record objects
 
 ### Looking up database-persisted objects

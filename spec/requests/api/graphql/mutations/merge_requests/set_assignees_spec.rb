@@ -93,6 +93,16 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_assignee_nodes).to match_array(expected_result)
     end
+
+    it 'triggers webhooks', :sidekiq_inline do
+      hook = create(:project_hook, merge_requests_events: true, project: merge_request.project)
+
+      expect(WebHookWorker).to receive(:perform_async).with(hook.id, anything, 'merge_request_hooks', anything)
+
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(response).to have_gitlab_http_status(:success)
+    end
   end
 
   context 'when passing an empty list of assignees' do
