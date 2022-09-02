@@ -8,7 +8,6 @@ import {
   trackSaasTrialSubmit,
   trackSaasTrialSkip,
   trackSaasTrialGroup,
-  trackSaasTrialProject,
   trackSaasTrialGetStarted,
   trackTrialAcceptTerms,
   trackCheckout,
@@ -149,9 +148,6 @@ describe('~/google_tag_manager/index', () => {
     }),
     createTestCase(trackSaasTrialGroup, {
       forms: [{ cls: 'js-saas-trial-group', expectation: { event: 'saasTrialGroup' } }],
-    }),
-    createTestCase(trackSaasTrialProject, {
-      forms: [{ id: 'new_project', expectation: { event: 'saasTrialProject' } }],
     }),
     createTestCase(trackProjectImport, {
       links: [
@@ -481,11 +477,11 @@ describe('~/google_tag_manager/index', () => {
     });
 
     it('no ops', () => {
-      setHTMLFixture(createHTML({ forms: [{ id: 'new_project' }] }));
+      setHTMLFixture(createHTML({ forms: [{ cls: 'js-saas-trial-group' }] }));
 
-      trackSaasTrialProject();
+      trackSaasTrialGroup();
 
-      triggerEvent('#new_project', 'submit');
+      triggerEvent('.js-saas-trial-group', 'submit');
 
       expect(spy).not.toHaveBeenCalled();
       expect(logError).not.toHaveBeenCalled();
@@ -506,11 +502,11 @@ describe('~/google_tag_manager/index', () => {
     });
 
     it('logs error', () => {
-      setHTMLFixture(createHTML({ forms: [{ id: 'new_project' }] }));
+      setHTMLFixture(createHTML({ forms: [{ cls: 'js-saas-trial-group' }] }));
 
-      trackSaasTrialProject();
+      trackSaasTrialGroup();
 
-      triggerEvent('#new_project', 'submit');
+      triggerEvent('.js-saas-trial-group', 'submit');
 
       expect(logError).toHaveBeenCalledWith(
         'Unexpected error while pushing to dataLayer',

@@ -24,6 +24,10 @@ RSpec.describe QA::Resource::Base do
           'block'
         end
 
+        attribute :token do
+          'token_value'
+        end
+
         attribute :username do
           'qa'
         end
@@ -206,6 +210,24 @@ RSpec.describe QA::Resource::Base do
           expect(result.test).to eq('api_with_block')
           expect(QA::Runtime::Logger)
             .to have_received(:debug).with(/api_with_block/)
+        end
+      end
+
+      context 'when the attribute is token and has a block' do
+        let(:api_resource) { { token: 'another_token_value' } }
+
+        before do
+          allow(QA::Runtime::Logger).to receive(:debug)
+        end
+
+        it 'emits a masked debug log entry' do
+          result = subject.fabricate!(resource: resource)
+
+          expect(result).to be_a(described_class)
+          expect(result.token).to eq('another_token_value')
+
+          expect(QA::Runtime::Logger)
+            .to have_received(:debug).with(/MASKED/)
         end
       end
     end

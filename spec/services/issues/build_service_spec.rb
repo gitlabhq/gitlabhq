@@ -63,11 +63,13 @@ RSpec.describe Issues::BuildService do
 
       it 'wraps the note in a blockquote' do
         note_text = "This is a string\n"\
+                    "\n"\
                     ">>>\n"\
                     "with a blockquote\n"\
                     "> That has a quote\n"\
                     ">>>\n"
         note_result = "    > This is a string\n"\
+                      "    > \n"\
                       "    > \n"\
                       "    > > with a blockquote\n"\
                       "    > > > That has a quote\n"\

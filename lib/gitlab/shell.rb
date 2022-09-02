@@ -70,7 +70,9 @@ module Gitlab
 
         link_path = File.join(shell_path, '.gitlab_shell_secret')
         if File.exist?(shell_path) && !File.exist?(link_path)
-          FileUtils.symlink(secret_file, link_path)
+          # It could happen that link_path is a broken symbolic link.
+          # In that case !File.exist?(link_path) is true, but we still want to overwrite the (broken) symbolic link.
+          FileUtils.ln_sf(secret_file, link_path)
         end
       end
     end

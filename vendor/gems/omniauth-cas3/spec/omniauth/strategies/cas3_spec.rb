@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'securerandom'
 
 describe OmniAuth::Strategies::CAS3, type: :strategy do
   include Rack::Test::Methods
@@ -15,17 +16,32 @@ describe OmniAuth::Strategies::CAS3, type: :strategy do
     }.to_app
   end
 
+  let(:csrf_token) { SecureRandom.base64(32) }
+  let(:base_env) { { 'rack.session' => { csrf: csrf_token }, 'rack.input' => StringIO.new("authenticity_token=#{escaped_token}") } }
+  let(:post_env) { make_env('/auth/cas3', base_env.merge(request_env)) }
+  let(:escaped_token) { URI.encode_www_form_component(csrf_token, Encoding::UTF_8) }
+
+  def make_env(path = '/auth/cas3', props = {})
+    {
+      'REQUEST_METHOD' => 'POST',
+      'PATH_INFO' => path,
+      'rack.session' => {},
+      'rack.input' => StringIO.new('test=true')
+    }.merge(props)
+  end
+
   # TODO: Verify that these are even useful tests
   shared_examples_for 'a CAS redirect response' do
     let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas3/callback?url=#{Rack::Utils.escape(return_url)}") }
 
-    before { get url, nil, request_env }
+    before { post url, nil, post_env }
 
     subject { last_response }
 
     it { should be_redirect }
 
     it 'redirects to the CAS server' do
+      expect(subject.status).to eq(302)
       expect(subject.headers).to include 'Location' => "http://cas.example.org:8080/login?#{redirect_params}"
     end
   end
@@ -78,7 +94,7 @@ describe OmniAuth::Strategies::CAS3, type: :strategy do
     it { should include('ssl' => true) }
   end
 
-  describe 'GET /auth/cas3' do
+  describe 'POST /auth/cas3' do
     let(:return_url) { 'http://myapp.com/admin/foo' }
 
     context 'with a referer' do

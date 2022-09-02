@@ -263,6 +263,8 @@ module QA
       end
 
       def log_having_both_api_result_and_block(name, api_value)
+        api_value = "[MASKED]" if name == :token
+
         QA::Runtime::Logger.debug(<<~MSG.strip)
           <#{self.class}> Attribute #{name.inspect} has both API response `#{api_value}` and a block. API response will be picked. Block will be ignored.
         MSG

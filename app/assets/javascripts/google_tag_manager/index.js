@@ -140,17 +140,6 @@ export const trackSaasTrialGroup = () => {
   });
 };
 
-export const trackSaasTrialProject = () => {
-  if (!isSupported()) {
-    return;
-  }
-
-  const form = document.getElementById('new_project');
-  form.addEventListener('submit', () => {
-    pushEvent('saasTrialProject');
-  });
-};
-
 export const trackProjectImport = () => {
   if (!isSupported()) {
     return;

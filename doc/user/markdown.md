@@ -611,9 +611,10 @@ Quote break.
 If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiline-blockquote).
 
 GitLab Flavored Markdown extends the standard Markdown by also supporting multi-line blockquotes
-fenced by `>>>`:
+fenced by `>>>`, with a blank line before and after the block:
 
 ```markdown
+
 >>>
 If you paste a message from somewhere else
 
@@ -621,6 +622,7 @@ that spans multiple lines,
 
 you can quote that without having to manually prepend `>` to every line!
 >>>
+
 ```
 
 >>>

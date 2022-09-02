@@ -96,7 +96,7 @@ module Projects
       log_info("#{current_user.name} created a new project \"#{@project.full_name}\"")
 
       if @project.import?
-        experiment(:combined_registration, user: current_user).track(:import_project)
+        Gitlab::Tracking.event(self.class.name, 'import_project', user: current_user)
       else
         # Skip writing the config for project imports/forks because it
         # will always fail since the Git directory doesn't exist until

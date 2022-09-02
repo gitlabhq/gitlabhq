@@ -19,24 +19,24 @@ Here is a list of steps you should take to attempt to fix problem:
 
 Before attempting more advanced troubleshooting:
 
-- Check [the health of the **secondary** node](#check-the-health-of-the-secondary-node).
+- Check [the health of the **secondary** site](#check-the-health-of-the-secondary-site).
 - Check [if PostgreSQL replication is working](#check-if-postgresql-replication-is-working).
 
-### Check the health of the **secondary** node
+### Check the health of the **secondary** site
 
-On the **primary** node:
+On the **primary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. On the left sidebar, select **Geo > Sites**.
 
-We perform the following health checks on each **secondary** node
+We perform the following health checks on each **secondary** site
 to help identify if something is wrong:
 
-- Is the node running?
-- Is the node's secondary database configured for streaming replication?
-- Is the node's secondary tracking database configured?
-- Is the node's secondary tracking database connected?
-- Is the node's secondary tracking database up-to-date?
+- Is the site running?
+- Is the secondary site's database configured for streaming replication?
+- Is the secondary site's tracking database configured?
+- Is the secondary site's tracking database connected?
+- Is the secondary site's tracking database up-to-date?
 
 ![Geo health check](img/geo_site_health_v14_0.png)
 
@@ -48,8 +48,8 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
-This Rake task can be run on an app node in the **primary** or **secondary**
-Geo nodes:
+This Rake task can be run on a **Rails** node in the **primary** or **secondary**
+Geo sites:
 
 ```shell
 sudo gitlab-rake gitlab:geo:check
@@ -275,11 +275,11 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary node in the Admin Area of the **primary** node.
+  Ensure you have added the secondary site in the **Menu > Admin > Geo > Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
-  when adding the secondary node in the Admin Area of the **primary** node.
-  In GitLab 12.3 and earlier, edit the secondary node in the Admin Area of the **primary**
-  node and ensure that there is a trailing `/` in the `Name` field.
+  when adding the secondary site in the Admin Area of the **primary** site.
+  In GitLab 12.3 and earlier, edit the secondary site in the Admin Area of the **primary**
+  site and ensure that there is a trailing `/` in the `Name` field.
 
 - Check returns `Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist`.
 
@@ -321,7 +321,7 @@ error messages (indicated by `Database replication working? ... no` in the
 
 This means that the `max_replication_slots` PostgreSQL variable needs to
 be set on the **primary** database. This setting defaults to 1. You may need to
-increase this value if you have more **secondary** nodes.
+increase this value if you have more **secondary** sites.
 
 Be sure to restart PostgreSQL for this to take effect. See the
 [PostgreSQL replication setup](../setup/database.md#postgresql-replication) guide for more details.
@@ -329,13 +329,13 @@ Be sure to restart PostgreSQL for this to take effect. See the
 ### Message: `FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist`?
 
 This occurs when PostgreSQL does not have a replication slot for the
-**secondary** node by that name.
+**secondary** site by that name.
 
-You may want to rerun the [replication process](../setup/database.md) on the **secondary** node .
+You may want to rerun the [replication process](../setup/database.md) on the **secondary** site .
 
 ### Message: "Command exceeded allowed execution time" when setting up replication?
 
-This may happen while [initiating the replication process](../setup/database.md#step-3-initiate-the-replication-process) on the **secondary** node,
+This may happen while [initiating the replication process](../setup/database.md#step-3-initiate-the-replication-process) on the **secondary** site,
 and indicates your initial dataset is too large to be replicated in the default timeout (30 minutes).
 
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
@@ -374,8 +374,8 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 
 Slots where `active` is `f` are not active.
 
-- When this slot should be active, because you have a **secondary** node configured using that slot,
-  sign in to that **secondary** node and check the [PostgreSQL logs](../../logs/index.md#postgresql-logs)
+- When this slot should be active, because you have a **secondary** site configured using that slot,
+  sign in on the web interface for the **secondary** site and check the [PostgreSQL logs](../../logs/index.md#postgresql-logs)
   to view why the replication is not running.
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
@@ -398,12 +398,12 @@ These long-running queries are
 [planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
 but as a workaround, we recommend enabling
 [`hot_standby_feedback`](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
-This increases the likelihood of bloat on the **primary** node as it prevents
+This increases the likelihood of bloat on the **primary** site as it prevents
 `VACUUM` from removing recently-dead rows. However, it has been used
 successfully in production on GitLab.com.
 
 To enable `hot_standby_feedback`, add the following to `/etc/gitlab/gitlab.rb`
-on the **secondary** node:
+on the **secondary** site:
 
 ```ruby
 postgresql['hot_standby_feedback'] = 'on'
@@ -463,14 +463,14 @@ This happens if data is detected in the `projects` table. When one or more proje
 is aborted to prevent accidental data loss. To bypass this message, pass the `--force` option to the command.
 
 In GitLab 13.4, a seed project is added when GitLab is first installed. This makes it necessary to pass `--force` even
-on a new Geo secondary node. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
+on a new Geo secondary site. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
 when checking the database.
 
 ### Message: `Synchronization failed - Error syncing repository`
 
 WARNING:
 If large repositories are affected by this problem,
-their resync may take a long time and cause significant load on your Geo nodes,
+their resync may take a long time and cause significant load on your Geo sites,
 storage and network systems.
 
 If you see the error message `Synchronization failed - Error syncing repository` along with `fatal: fsck error in packed object`, this indicates
@@ -483,7 +483,7 @@ it's possible to override the consistency checks instead. To do that, follow
 [the instructions in the Gitaly docs](../../gitaly/configure_gitaly.md#repository-consistency-checks).
 
 You can also get the error message `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
-of a repository on the secondary Geo node's file system:
+of a repository on the secondary Geo site's file system:
 
 ```json
 {
@@ -505,7 +505,7 @@ of a repository on the secondary Geo node's file system:
 
 To solve this:
 
-1. Sign in to the secondary Geo node.
+1. Sign in on the web interface for the secondary Geo site.
 
 1. Back up [the `.git` folder](../../repository_storage_types.md#translate-hashed-storage-paths).
 
@@ -538,7 +538,7 @@ To solve this:
    end
    ```
 
-### Very large repositories never successfully synchronize on the **secondary** node
+### Very large repositories never successfully synchronize on the **secondary** site
 
 GitLab places a timeout on all repository clones, including project imports
 and Geo synchronization operations. If a fresh `git clone` of a repository
@@ -546,7 +546,8 @@ on the **primary** takes more than the default three hours, you may be affected 
 
 To increase the timeout:
 
-1. On the **secondary** node, add the following line to `/etc/gitlab/gitlab.rb`:
+1. On the **Sidekiq nodes on your secondary** site,
+add the following line to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_rails['gitlab_shell_git_timeout'] = 14400
@@ -563,9 +564,9 @@ long enough to accommodate a full clone of your largest repositories.
 
 ### New LFS objects are never replicated
 
-If new LFS objects are never replicated to secondary Geo nodes, check the version of
+If new LFS objects are never replicated to secondary Geo sites, check the version of
 GitLab you are running. GitLab versions 11.11.x or 12.0.x are affected by
-[a bug that results in new LFS objects not being replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
+[a bug that results in new LFS objects not being replicated to Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 
 To resolve the issue, upgrade to GitLab 12.1 or later.
 
@@ -574,9 +575,9 @@ To resolve the issue, upgrade to GitLab 12.1 or later.
 During a [backfill](../index.md#backfill), failures are scheduled to be retried at the end
 of the backfill queue, therefore these failures only clear up **after** the backfill completes.
 
-### Resetting Geo **secondary** node replication
+### Resetting Geo **secondary** site replication
 
-If you get a **secondary** node in a broken state and want to reset the replication state,
+If you get a **secondary** site in a broken state and want to reset the replication state,
 to start again from scratch, there are a few steps that can help you:
 
 1. Stop Sidekiq and the Geo LogCursor.
@@ -617,8 +618,8 @@ to start again from scratch, there are a few steps that can help you:
 1. Optional. Rename other data folders and create new ones.
 
    WARNING:
-   You may still have files on the **secondary** node that have been removed from the **primary** node, but this
-   removal has not been reflected. If you skip this step, these files are not removed from the Geo node.
+   You may still have files on the **secondary** site that have been removed from the **primary** site, but this
+   removal has not been reflected. If you skip this step, these files are not removed from the Geo **secondary** site.
 
    Any uploaded content (like file attachments, avatars, or LFS objects) is stored in a
    subfolder in one of these paths:
@@ -667,7 +668,7 @@ to start again from scratch, there are a few steps that can help you:
 
 ### Design repository failures on mirrored projects and project imports
 
-On the top bar, under **Menu > Admin > Geo > Nodes**,
+On the top bar, under **Menu > Admin > Geo > Sites**,
 if the Design repositories progress bar shows
 `Synced` and `Failed` greater than 100%, and negative `Queued`, the instance
 is likely affected by
@@ -714,7 +715,7 @@ Counts:
 {"synced"=>3}
 ```
 
-#### If you are promoting a Geo secondary site running on a single server
+#### If you are promoting a Geo secondary site running on a single node
 
 `gitlab-ctl promotion-preflight-checks` fails due to the existence of
 `failed` rows in the `geo_design_registry` table. Use the
@@ -831,10 +832,10 @@ We recommend transferring each failing repository individually and checking for 
 after each transfer. Follow the [single target `rsync` instructions](../../operations/moving_repositories.md#single-rsync-to-another-server)
 to transfer each affected repository from the primary to the secondary site.
 
-## Fixing errors during a failover or when promoting a secondary to a primary node
+## Fixing errors during a failover or when promoting a secondary to a primary site
 
 The following are possible error messages that might be encountered during failover or
-when promoting a secondary to a primary node with strategies to resolve them.
+when promoting a secondary to a primary site with strategies to resolve them.
 
 ### Message: `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
 
@@ -873,9 +874,9 @@ or `gitlab-ctl promote-to-primary-node`, either:
 
 ### Message: `ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled`
 
-If you disabled a secondary node, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
+If you disabled a secondary site, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
 (GitLab 13.2) or by using the user interface (GitLab 13.1 and earlier), you must first
-re-enable the node before you can continue. This is fixed in GitLab 13.4.
+re-enable the site before you can continue. This is fixed in GitLab 13.4.
 
 This can be fixed in the database.
 
@@ -894,7 +895,7 @@ This can be fixed in the database.
    ```
 
 1. Run the following command, replacing  `https://<secondary url>/` with the URL
-   for your secondary server. You can use either `http` or `https`, but ensure that you
+   for your secondary node. You can use either `http` or `https`, but ensure that you
    end the URL with a slash (`/`):
 
    ```sql
@@ -987,32 +988,31 @@ sudo gitlab-rake geo:set_secondary_as_primary
 ## Expired artifacts
 
 If you notice for some reason there are more artifacts on the Geo
-secondary node than on the Geo primary node, you can use the Rake task
+**secondary** site than on the Geo **primary** site, you can use the Rake task
 to [cleanup orphan artifact files](../../../raketasks/cleanup.md#remove-orphan-artifact-files).
 
-On a Geo **secondary** node, this command also cleans up all Geo
+On a Geo **secondary** site, this command also cleans up all Geo
 registry record related to the orphan files on disk.
 
 ## Fixing sign in errors
 
 ### Message: The redirect URI included is not valid
 
-If you are able to sign in to the **primary** node, but you receive this error message
-when attempting to sign in to a **secondary**, you should verify the Geo
-node's URL matches its external URL.
+If you are able to sign in to the web interface for the **primary** site, but you receive this error message
+when attempting to sign in to a **secondary** web interface, you should verify the Geo
+site's URL matches its external URL.
 
-On the **primary** node:
+On the **primary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. On the left sidebar, select **Geo > Sites**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
-   in `external_url "https://gitlab.example.com"` on the frontend servers of
-   the **secondary** node.
+   in `external_url "https://gitlab.example.com"` on the **Rails nodes of the secondary** site.
 
 ## Fixing common errors
 
-This section documents common error messages reported in the Admin Area, and how to fix them.
+This section documents common error messages reported in the Admin Area on the web interface, and how to fix them.
 
 ### Geo database configuration file is missing
 
@@ -1029,11 +1029,11 @@ has the correct permissions.
 Geo cannot reuse an existing tracking database.
 
 It is safest to use a fresh secondary, or reset the whole secondary by following
-[Resetting Geo secondary node replication](#resetting-geo-secondary-node-replication).
+[Resetting Geo secondary site replication](#resetting-geo-secondary-site-replication).
 
-### Geo node has a database that is writable which is an indication it is not configured for replication with the primary node
+### Geo site has a database that is writable which is an indication it is not configured for replication with the primary site
 
-This error message refers to a problem with the database replica on a **secondary** node,
+This error message refers to a problem with the database replica on a **secondary** site,
 which Geo expects to have access to. It usually means, either:
 
 - An unsupported replication method was used (for example, logical replication).
@@ -1043,24 +1043,24 @@ which Geo expects to have access to. It usually means, either:
 
 Geo **secondary** sites require two separate PostgreSQL instances:
 
-- A read-only replica of the **primary** node.
+- A read-only replica of the **primary** site.
 - A regular, writable instance that holds replication metadata. That is, the Geo tracking database.
 
 This error message indicates that the replica database in the **secondary** site is misconfigured and replication has stopped.
 
 To restore the database and resume replication, you can do one of the following:
 
-- [Reset the Geo secondary site replication](#resetting-geo-secondary-node-replication).
+- [Reset the Geo secondary site replication](#resetting-geo-secondary-site-replication).
 - [Set up a new secondary Geo Omnibus instance](../setup/index.md#using-omnibus-gitlab).
 
 If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](remove_geo_site.md#removing-secondary-geo-sites).
 
-### Geo node does not appear to be replicating the database from the primary node
+### Geo site does not appear to be replicating the database from the primary site
 
 The most common problems that prevent the database from replicating correctly are:
 
-- **Secondary** nodes cannot reach the **primary** node. Check credentials, firewall rules, and so on.
-- SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** node.
+- **Secondary** sites cannot reach the **primary** site. Check credentials, [firewall rules](../index.md#firewall-rules), and so on.
+- SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** site.
 - Database storage disk is full.
 - Database replication slot is misconfigured.
 - Database is not using a replication slot or another alternative and cannot catch-up because WAL files were purged.
@@ -1072,26 +1072,26 @@ Make sure you follow the [Geo database replication](../setup/database.md) instru
 If you are using Omnibus GitLab installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
-- Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the **secondary** node.
+- Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the **secondary** site.
 
 ### GitLab indicates that more than 100% of repositories were synced
 
 This can be caused by orphaned records in the project registry. You can clear them
 [using a Rake task](../../../administration/raketasks/geo.md#remove-orphaned-project-registries).
 
-### Geo Admin Area returns 404 error for a secondary node
+### Geo Admin Area returns 404 error for a secondary site
 
-Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that the **secondary** node is
-healthy, but a 404 Not Found error message for the **secondary** node is returned in the Geo Admin Area on
-the **primary** node.
+Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are
+healthy, but a 404 Not Found error message for the **secondary** site is returned in the Geo Admin Area on the web interface for
+the **primary** site.
 
 To resolve this issue:
 
-- Try restarting the **secondary** using `sudo gitlab-ctl restart`.
-- Check `/var/log/gitlab/gitlab-rails/geo.log` to see if the **secondary** node is
-  using IPv6 to send its status to the **primary** node. If it is, add an entry to
-  the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
-  [enable IPv6 on the **primary** node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
+- Try restarting **each Rails, Sidekiq and Gitaly nodes on your secondary site** using `sudo gitlab-ctl restart`.
+- Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the **secondary** site is
+  using IPv6 to send its status to the **primary** site. If it is, add an entry to
+  the **primary** site using IPv4 in the `/etc/hosts` file. Alternatively, you should
+  [enable IPv6 on the **primary** site](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
 
 ### Secondary site returns 502 errors with Geo proxying
 
@@ -1167,7 +1167,7 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 
 You may have problems if you're running a version of [Git LFS](https://git-lfs.github.com/) before 2.4.2.
 As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issues/3025),
-requests redirected from the secondary to the primary node do not properly send the
+requests redirected from the secondary to the primary site do not properly send the
 Authorization header. This may result in either an infinite `Authorization <-> Redirect`
 loop, or Authorization error messages.
 
@@ -1194,13 +1194,13 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
 
 1. SSH into every Sidekiq, PostgresSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
 
-   - To promote the secondary node to primary:
+   - To promote the secondary site to primary:
 
      ```shell
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary node to primary **without any further confirmation**:
+   - To promote the secondary site to primary **without any further confirmation**:
 
      ```shell
      sudo gitlab-ctl geo promote --force

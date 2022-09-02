@@ -417,10 +417,10 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(imported_project.import_url).to eq('http://import-url')
     end
 
-    it 'tracks for the combined_registration experiment', :experiment do
-      expect(experiment(:combined_registration)).to track(:import_project).on_next_instance
-
+    it 'tracks for imported project' do
       imported_project
+
+      expect_snowplow_event(category: described_class.name, action: 'import_project', user: user)
     end
 
     describe 'import scheduling' do

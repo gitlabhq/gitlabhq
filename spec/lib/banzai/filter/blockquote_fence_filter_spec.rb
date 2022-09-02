@@ -14,8 +14,20 @@ RSpec.describe Banzai::Filter::BlockquoteFenceFilter do
     expect(output).to eq(expected)
   end
 
+  it 'does not require newlines at start or end of string' do
+    expect(filter(">>>\ntest\n>>>")).to eq("\n> test\n")
+  end
+
   it 'allows trailing whitespace on blockquote fence lines' do
     expect(filter(">>> \ntest\n>>> ")).to eq("\n> test\n")
+  end
+
+  context 'when feature flag is turned off' do
+    it 'does not require a leading or trailing blank line' do
+      stub_feature_flags(markdown_corrected_blockquote: false)
+
+      expect(filter("Foo\n>>>\ntest\n>>>\nBar")).to eq("Foo\n\n> test\n\nBar")
+    end
   end
 
   context 'when incomplete blockquote fences with multiple blocks are present' do

@@ -3918,9 +3918,6 @@ msgstr ""
 msgid "Allowed"
 msgstr ""
 
-msgid "Allowed characters: +, 0-9, -, and spaces."
-msgstr ""
-
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
@@ -11051,9 +11048,6 @@ msgstr ""
 msgid "Create, update, or delete a merge request."
 msgstr ""
 
-msgid "Create/import your first project"
-msgstr ""
-
 msgid "CreateGroup|You don’t have permission to create a subgroup in this group."
 msgstr ""
 
@@ -15184,9 +15178,6 @@ msgid "Error loading branches."
 msgstr ""
 
 msgid "Error loading burndown chart data"
-msgstr ""
-
-msgid "Error loading countries data."
 msgstr ""
 
 msgid "Error loading file viewer."
@@ -23235,9 +23226,6 @@ msgid "Lead time"
 msgstr ""
 
 msgid "Learn GitLab"
-msgstr ""
-
-msgid "Learn GitLab - Ultimate trial"
 msgstr ""
 
 msgid "Learn More"
@@ -40531,9 +40519,6 @@ msgstr ""
 msgid "This project will be deleted on %{date} since its parent group '%{parent_group_name}' has been scheduled for deletion."
 msgstr ""
 
-msgid "This project will live in your group %{strong_open}%{namespace}%{strong_close}. A project is where you store your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
-msgstr ""
-
 msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."
 msgstr ""
 
@@ -41477,37 +41462,10 @@ msgstr ""
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
-msgid "Trial|Company name"
-msgstr ""
-
 msgid "Trial|Continue"
 msgstr ""
 
-msgid "Trial|Continue using the basic features of GitLab for free."
-msgstr ""
-
-msgid "Trial|Country"
-msgstr ""
-
 msgid "Trial|Dismiss"
-msgstr ""
-
-msgid "Trial|GitLab Ultimate trial (optional)"
-msgstr ""
-
-msgid "Trial|Number of employees"
-msgstr ""
-
-msgid "Trial|Please select a country"
-msgstr ""
-
-msgid "Trial|Telephone number"
-msgstr ""
-
-msgid "Trial|Upgrade to Ultimate to keep using GitLab with advanced features."
-msgstr ""
-
-msgid "Trial|We will activate your trial on your group after you complete this step. After 30 days, you can:"
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
@@ -45623,9 +45581,6 @@ msgid "Your device was successfully set up! Give it a name and register it with 
 msgstr ""
 
 msgid "Your file must contain a column named %{codeStart}title%{codeEnd}. A %{codeStart}description%{codeEnd} column is optional. The maximum file size allowed is 10 MB."
-msgstr ""
-
-msgid "Your first project"
 msgstr ""
 
 msgid "Your free group is now limited to %d member"
