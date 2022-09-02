@@ -292,7 +292,7 @@ describe('issue_note', () => {
 
   describe('internal note', () => {
     it('has internal note class for internal notes', () => {
-      createWrapper({ note: { ...note, confidential: true } });
+      createWrapper({ note: { ...note, internal: true } });
 
       expect(wrapper.classes()).toContain('internal-note');
     });

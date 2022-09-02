@@ -214,11 +214,7 @@ export default {
             note: {
               noteable_type: this.noteableType,
               noteable_id: this.getNoteableData.id,
-              // Internal notes were identified as `confidential`
-              // before we decided to treat them as _internal_
-              // so now until API is updated we need to use `confidential`
-              // in request payload.
-              confidential: this.noteIsInternal,
+              internal: this.noteIsInternal,
               note: this.note,
             },
             merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,

@@ -12127,13 +12127,13 @@ msgstr ""
 msgid "DastProfiles|You cannot run an active scan against an unvalidated site."
 msgstr ""
 
-msgid "DastProfiles|folder/dast_example.har or https://example.com/dast_example.har"
+msgid "DastProfiles|https://example.com/dast_example.har"
 msgstr ""
 
-msgid "DastProfiles|folder/example.postman_collection.json or https://example.com/"
+msgid "DastProfiles|https://example.com/openapi.json"
 msgstr ""
 
-msgid "DastProfiles|folder/openapi.json or https://example.com/openapi.json"
+msgid "DastProfiles|https://example.com/postman_collection.json"
 msgstr ""
 
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
@@ -19166,6 +19166,9 @@ msgid "Guideline"
 msgstr ""
 
 msgid "HAR (HTTP Archive)"
+msgstr ""
+
+msgid "HAR file URL"
 msgstr ""
 
 msgid "HAR file path or URL"
@@ -27589,6 +27592,9 @@ msgstr ""
 msgid "OpenAPI"
 msgstr ""
 
+msgid "OpenAPI Specification file URL"
+msgstr ""
+
 msgid "OpenAPI Specification file path or URL"
 msgstr ""
 
@@ -29699,6 +29705,9 @@ msgid "Port"
 msgstr ""
 
 msgid "Postman collection"
+msgstr ""
+
+msgid "Postman collection file URL"
 msgstr ""
 
 msgid "Postman collection file path or URL"

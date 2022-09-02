@@ -586,10 +586,10 @@ describe('issue_comment_form component', () => {
         ${true}
         ${false}
       `('when checkbox value is `$shouldCheckboxBeChecked`', ({ shouldCheckboxBeChecked }) => {
-        it(`sets \`confidential\` to \`${shouldCheckboxBeChecked}\``, async () => {
+        it(`sets \`internal\` to \`${shouldCheckboxBeChecked}\``, async () => {
           mountComponent({
             mountFunction: mount,
-            initialData: { note: 'confidential note' },
+            initialData: { note: 'internal note' },
             noteableData: { ...notableDataMockCanUpdateIssuable },
           });
 
@@ -606,7 +606,7 @@ describe('issue_comment_form component', () => {
           findCommentButton().trigger('click');
 
           const [providedData] = wrapper.vm.saveNote.mock.calls[0];
-          expect(providedData.data.note.confidential).toBe(shouldCheckboxBeChecked);
+          expect(providedData.data.note.internal).toBe(shouldCheckboxBeChecked);
         });
       });
 

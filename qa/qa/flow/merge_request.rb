@@ -3,7 +3,7 @@
 module QA
   module Flow
     module MergeRequest
-      module_function
+      extend self
 
       def enable_merge_trains
         Page::Project::Menu.perform(&:go_to_general_settings)
@@ -33,3 +33,5 @@ module QA
     end
   end
 end
+
+QA::Flow::MergeRequest.prepend_mod_with('Flow::MergeRequest', namespace: QA)

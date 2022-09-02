@@ -71,7 +71,7 @@ export default {
       return this.note.note;
     },
     saveButtonTitle() {
-      return this.note.confidential ? __('Save internal note') : __('Save comment');
+      return this.note.internal ? __('Save internal note') : __('Save comment');
     },
     hasSuggestion() {
       return this.note.suggestions && this.note.suggestions.length;

@@ -96,7 +96,7 @@ export default {
       return isLoggedIn();
     },
     commentType() {
-      return this.discussion.confidential ? __('internal note') : __('comment');
+      return this.discussion.internal ? __('internal note') : __('comment');
     },
     autosaveKey() {
       return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);
@@ -108,7 +108,7 @@ export default {
       return this.discussion.notes.slice(0, 1)[0];
     },
     saveButtonTitle() {
-      return this.discussion.confidential ? __('Reply internally') : __('Reply');
+      return this.discussion.internal ? __('Reply internally') : __('Reply');
     },
     shouldShowJumpToNextDiscussion() {
       return this.showJumpToNextDiscussion(this.discussionsByDiffOrder ? 'diff' : 'discussion');

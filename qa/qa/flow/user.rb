@@ -3,7 +3,7 @@
 module QA
   module Flow
     module User
-      module_function
+      extend self
 
       def page
         Capybara.current_session
@@ -24,3 +24,5 @@ module QA
     end
   end
 end
+
+QA::Flow::User.prepend_mod_with('Flow::User', namespace: QA)

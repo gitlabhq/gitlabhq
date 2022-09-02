@@ -3,7 +3,7 @@
 module QA
   module Flow
     module Settings
-      module_function
+      extend self
 
       def disable_snowplow
         Flow::Login.while_signed_in_as_admin do
@@ -23,3 +23,5 @@ module QA
     end
   end
 end
+
+QA::Flow::Settings.prepend_mod_with('Flow::Settings', namespace: QA)

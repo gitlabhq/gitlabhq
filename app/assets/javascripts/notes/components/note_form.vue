@@ -136,7 +136,7 @@ export default {
       );
     },
     textareaPlaceholder() {
-      return this.discussionNote?.confidential
+      return this.discussionNote?.internal
         ? this.$options.i18n.bodyPlaceholderInternal
         : this.$options.i18n.bodyPlaceholder;
     },
@@ -331,7 +331,7 @@ export default {
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <comment-field-layout
         :noteable-data="getNoteableData"
-        :is-internal-note="discussion.confidential"
+        :is-internal-note="discussion.internal"
       >
         <markdown-field
           :markdown-preview-path="markdownPreviewPath"

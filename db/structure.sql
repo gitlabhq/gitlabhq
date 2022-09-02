@@ -28972,6 +28972,8 @@ CREATE INDEX index_issues_on_project_id_closed_at_desc_state_id_and_id ON issues
 
 CREATE INDEX index_issues_on_project_id_closed_at_state_id_and_id ON issues USING btree (project_id, closed_at, state_id, id);
 
+CREATE INDEX index_issues_on_project_id_health_status_created_at_id ON issues USING btree (project_id, health_status, created_at, id);
+
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
 
 CREATE INDEX index_issues_on_sprint_id ON issues USING btree (sprint_id);

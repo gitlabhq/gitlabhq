@@ -116,15 +116,15 @@ describe('issue_note_form component', () => {
     });
 
     it.each`
-      confidential | placeholder
-      ${false}     | ${'Write a comment or drag your files here…'}
-      ${true}      | ${'Write an internal note or drag your files here…'}
+      internal | placeholder
+      ${false} | ${'Write a comment or drag your files here…'}
+      ${true}  | ${'Write an internal note or drag your files here…'}
     `(
-      'should set correct textarea placeholder text when discussion confidentiality is $confidential',
-      ({ confidential, placeholder }) => {
+      'should set correct textarea placeholder text when discussion confidentiality is $internal',
+      ({ internal, placeholder }) => {
         props.note = {
           ...note,
-          confidential,
+          internal,
         };
         wrapper = createComponentWrapper();
 

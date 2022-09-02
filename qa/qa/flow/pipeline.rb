@@ -3,7 +3,7 @@
 module QA
   module Flow
     module Pipeline
-      module_function
+      extend self
 
       # Acceptable statuses:
       # canceled, created, failed, manual, passed
@@ -27,3 +27,5 @@ module QA
     end
   end
 end
+
+QA::Flow::Pipeline.prepend_mod_with('Flow::Pipeline', namespace: QA)
