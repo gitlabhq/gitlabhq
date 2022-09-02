@@ -6240,12 +6240,6 @@ msgstr ""
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
-msgid "Billings|The last owner cannot be removed from a seat."
-msgstr ""
-
-msgid "Billings|To make this member active, you must first remove an existing active member, or toggle them to over limit."
-msgstr ""
-
 msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -6259,12 +6253,6 @@ msgid "Billings|Validate account"
 msgstr ""
 
 msgid "Billings|Validate user account"
-msgstr ""
-
-msgid "Billings|You can't change the seat status of a user who was invited via a group or project."
-msgstr ""
-
-msgid "Billings|You can't remove yourself from a seat, but you can leave the group."
 msgstr ""
 
 msgid "Billings|You'll now be able to take advantage of free CI/CD minutes on shared runners."
@@ -20065,9 +20053,6 @@ msgid "Import|There is not a valid Git repository at this URL. If your HTTP repo
 msgstr ""
 
 msgid "Improve customer support with Service Desk"
-msgstr ""
-
-msgid "In a seat"
 msgstr ""
 
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."

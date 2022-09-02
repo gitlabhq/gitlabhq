@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import AdminRunnerEditApp from './admin_runner_edit_app.vue';
+import RunnerEditApp from './runner_edit_app.vue';
 
 Vue.use(VueApollo);
 
-export const initAdminRunnerEdit = (selector = '#js-admin-runner-edit') => {
+export const initRunnerEdit = (selector) => {
   const el = document.querySelector(selector);
 
   if (!el) {
@@ -22,7 +22,7 @@ export const initAdminRunnerEdit = (selector = '#js-admin-runner-edit') => {
     el,
     apolloProvider,
     render(h) {
-      return h(AdminRunnerEditApp, {
+      return h(RunnerEditApp, {
         props: {
           runnerId,
           runnerPath,

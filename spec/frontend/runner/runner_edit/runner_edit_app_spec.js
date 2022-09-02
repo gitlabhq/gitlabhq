@@ -9,7 +9,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
 import RunnerUpdateForm from '~/runner/components/runner_update_form.vue';
 import runnerFormQuery from '~/runner/graphql/edit/runner_form.query.graphql';
-import AdminRunnerEditApp from '~//runner/admin_runner_edit/admin_runner_edit_app.vue';
+import RunnerEditApp from '~//runner/runner_edit/runner_edit_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
 import { runnerFormData } from '../mock_data';
@@ -24,7 +24,7 @@ const mockRunnerPath = `/admin/runners/${mockRunnerId}`;
 
 Vue.use(VueApollo);
 
-describe('AdminRunnerEditApp', () => {
+describe('RunnerEditApp', () => {
   let wrapper;
   let mockRunnerQuery;
 
@@ -32,7 +32,7 @@ describe('AdminRunnerEditApp', () => {
   const findRunnerUpdateForm = () => wrapper.findComponent(RunnerUpdateForm);
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
-    wrapper = mountFn(AdminRunnerEditApp, {
+    wrapper = mountFn(RunnerEditApp, {
       apolloProvider: createMockApollo([[runnerFormQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
@@ -102,7 +102,7 @@ describe('AdminRunnerEditApp', () => {
     it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Error!'),
-        component: 'AdminRunnerEditApp',
+        component: 'RunnerEditApp',
       });
     });
 

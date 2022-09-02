@@ -1,14 +1,16 @@
+- runner_name = "##{@runner.id} (#{@runner.short_sha})"
 - breadcrumb_title _('Edit')
-- page_title _('Edit'), "##{@runner.id} (#{@runner.short_sha})"
-
+- page_title _('Edit'), runner_name
 - add_to_breadcrumbs _('Runners'), group_runners_path(@group)
-- add_to_breadcrumbs "#{@runner.short_sha}", group_runner_path(@group, @runner)
+- add_to_breadcrumbs runner_name, group_runner_path(@group, @runner)
 
+- if Feature.enabled?(:group_runner_edit_vue_ui, @group)
+  #js-group-runner-edit{ data: {runner_id: @runner.id, runner_path: group_runner_path(@group, @runner) } }
+- else
+  %h1.page-title.gl-font-size-h-display
+    = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
+    = render 'shared/runners/runner_type_badge', runner: @runner
 
-%h1.page-title.gl-font-size-h-display
-  = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
-  = render 'shared/runners/runner_type_badge', runner: @runner
+  = render 'shared/runners/runner_type_alert', runner: @runner
 
-= render 'shared/runners/runner_type_alert', runner: @runner
-
-= render 'shared/runners/form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)
+  = render 'shared/runners/form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)

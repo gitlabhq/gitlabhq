@@ -4,6 +4,7 @@ import ToolbarMoreDropdown from '~/content_editor/components/toolbar_more_dropdo
 import Diagram from '~/content_editor/extensions/diagram';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import { stubComponent } from 'helpers/stub_component';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 describe('content_editor/components/toolbar_more_dropdown', () => {
@@ -23,6 +24,9 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
       provide: {
         tiptapEditor,
         eventHub,
+      },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown),
       },
       propsData,
     });

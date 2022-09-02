@@ -4,6 +4,7 @@ import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.v
 import eventHubFactory from '~/helpers/event_hub_factory';
 import Link from '~/content_editor/extensions/link';
 import { hasSelection } from '~/content_editor/services/utils';
+import { stubComponent } from 'helpers/stub_component';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 jest.mock('~/content_editor/services/utils');
@@ -17,6 +18,9 @@ describe('content_editor/components/toolbar_link_button', () => {
       provide: {
         tiptapEditor: editor,
         eventHub: eventHubFactory(),
+      },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown),
       },
     });
   };

@@ -3,6 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarImageButton from '~/content_editor/components/toolbar_image_button.vue';
 import Attachment from '~/content_editor/extensions/attachment';
 import Image from '~/content_editor/extensions/image';
+import { stubComponent } from 'helpers/stub_component';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_image_button', () => {
@@ -13,6 +14,9 @@ describe('content_editor/components/toolbar_image_button', () => {
     wrapper = mountExtended(ToolbarImageButton, {
       provide: {
         tiptapEditor: editor,
+      },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown),
       },
     });
   };

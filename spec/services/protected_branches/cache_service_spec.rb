@@ -75,10 +75,12 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache do
           expect(service.fetch('main', dry_run: true) { true }).to eq(true)
 
           expect(Gitlab::AppLogger).to receive(:error).with(
-            'class' => described_class.name,
-            'message' => /Cache mismatch/,
-            'project_id' => project.id,
-            'project_path' => project.full_path
+            {
+              'class' => described_class.name,
+              'message' => /Cache mismatch/,
+              'project_id' => project.id,
+              'project_path' => project.full_path
+            }
           )
 
           expect(service.fetch('main', dry_run: true) { false }).to eq(false)

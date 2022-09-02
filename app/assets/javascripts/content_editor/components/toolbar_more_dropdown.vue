@@ -56,6 +56,7 @@ export default {
     text-sr-only
     class="content-editor-dropdown"
     right
+    lazy
   >
     <gl-dropdown-item @click="insert('codeBlock')">
       {{ __('Code block') }}

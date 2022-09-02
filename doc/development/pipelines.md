@@ -341,13 +341,20 @@ We also run our test suite against PG11 upon specific database library changes i
 
 ### Current versions testing
 
-| Where? | PostgreSQL version | Ruby version |
-| ------ | ------------------ | ------------ |
-| Merge requests    | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `master` branch commits | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines (every 2 hours at even hour) | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines (every 2 hours at odd hour) | 12 (default version), 11 for DB library changes | 3.0 (set in the schedule variables) |
-| `nightly` scheduled pipelines | 12 (default version), 11, 13 | 2.7 (default version) |
+| Where?                                                                                         | PostgreSQL version                              | Ruby version |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
+| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `maintenance` scheduled pipelines for the `ruby3` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 3.0 (coded in the branch) |
+| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 2.7 (default version) |
+
+The pipeline configuration for the scheduled pipeline testing Ruby 3 is
+stored in the `ruby3-sync` branch. The pipeline updates the `ruby3` branch
+with latest `master`, and then it triggers a regular branch pipeline for
+`ruby3`. Any changes in `ruby3` are only for running the pipeline. It should
+never be merged back to `master`. Any other Ruby 3 changes should go into
+`master` directly, which should be compatible with Ruby 2.7.
 
 ### Long-term plan
 

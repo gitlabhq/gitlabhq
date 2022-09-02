@@ -18,7 +18,9 @@ extra load for Redis and PostgreSQL.
 
 To change the expiry value:
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Omnibus package
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -34,7 +36,7 @@ To change the expiry value:
    gitlab-ctl restart
    ```
 
-**For installations from source**
+:::TabTitle Source
 
 1. Edit `config/gitlab.yml`:
 
@@ -45,3 +47,5 @@ To change the expiry value:
 
 1. Save the file, and then [restart](restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
+
+::EndTabs

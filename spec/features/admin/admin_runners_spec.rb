@@ -520,44 +520,19 @@ RSpec.describe "Admin Runners" do
   end
 
   describe "Runner edit page" do
-    let(:runner) { create(:ci_runner, :project) }
+    let(:project_runner) { create(:ci_runner, :project) }
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project) }
 
     before do
-      visit edit_admin_runner_path(runner)
+      visit edit_admin_runner_path(project_runner)
 
       wait_for_requests
     end
 
-    describe 'breadcrumbs' do
-      it 'contains the current runner id and token' do
-        page.within '[data-testid="breadcrumb-links"]' do
-          expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
-          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
-        end
-      end
-    end
-
-    describe 'runner header', :js do
-      it 'contains the runner status, type and id' do
-        expect(page).to have_content("never contacted specific Runner ##{runner.id} created")
-      end
-    end
-
-    context 'when a runner is updated', :js do
-      before do
-        click_on _('Save changes')
-        wait_for_requests
-      end
-
-      it 'show success alert' do
-        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
-      end
-
-      it 'redirects to runner page' do
-        expect(current_url).to match(admin_runner_path(runner))
-      end
+    it_behaves_like 'submits edit runner form' do
+      let(:runner) { project_runner }
+      let(:runner_page_path) { admin_runner_path(project_runner) }
     end
 
     describe 'projects' do
@@ -583,7 +558,7 @@ RSpec.describe "Admin Runners" do
     describe 'enable/create' do
       shared_examples 'assignable runner' do
         it 'enables a runner for a project' do
-          within '[data-testid="unassigned-projects"]' do
+          within find('[data-testid="unassigned-projects"] tr', text: project2.full_name) do
             click_on 'Enable'
           end
 
@@ -594,21 +569,21 @@ RSpec.describe "Admin Runners" do
         end
       end
 
-      context 'with specific runner' do
-        let(:runner) { create(:ci_runner, :project, projects: [project1]) }
+      context 'with project runner' do
+        let(:project_runner) { create(:ci_runner, :project, projects: [project1]) }
 
         before do
-          visit edit_admin_runner_path(runner)
+          visit edit_admin_runner_path(project_runner)
         end
 
         it_behaves_like 'assignable runner'
       end
 
       context 'with locked runner' do
-        let(:runner) { create(:ci_runner, :project, projects: [project1], locked: true) }
+        let(:locked_runner) { create(:ci_runner, :project, projects: [project1], locked: true) }
 
         before do
-          visit edit_admin_runner_path(runner)
+          visit edit_admin_runner_path(locked_runner)
         end
 
         it_behaves_like 'assignable runner'

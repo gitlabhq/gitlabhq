@@ -71,29 +71,31 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    v-gl-tooltip
-    :title="__('Insert image')"
-    :text="__('Insert image')"
-    size="small"
-    category="tertiary"
-    icon="media"
-    text-sr-only
-    data-testid="insert-image-toolbar-button"
-    @hidden="resetFields()"
-  >
-    <gl-dropdown-form class="gl-px-3!">
-      <gl-form-input-group v-model="imgSrc" :placeholder="__('Image URL')">
-        <template #append>
-          <gl-button variant="confirm" @click="insertImage">{{ __('Insert') }}</gl-button>
-        </template>
-      </gl-form-input-group>
-    </gl-dropdown-form>
-    <gl-dropdown-divider />
-    <gl-dropdown-item @click="openFileUpload">
-      {{ __('Upload image') }}
-    </gl-dropdown-item>
-
+  <span class="gl-display-inline-flex">
+    <gl-dropdown
+      v-gl-tooltip
+      :text="__('Insert image')"
+      :title="__('Insert image')"
+      size="small"
+      category="tertiary"
+      icon="media"
+      lazy
+      text-sr-only
+      data-testid="insert-image-toolbar-button"
+      @hidden="resetFields()"
+    >
+      <gl-dropdown-form class="gl-px-3!">
+        <gl-form-input-group v-model="imgSrc" :placeholder="__('Image URL')">
+          <template #append>
+            <gl-button variant="confirm" @click="insertImage">{{ __('Insert') }}</gl-button>
+          </template>
+        </gl-form-input-group>
+      </gl-dropdown-form>
+      <gl-dropdown-divider />
+      <gl-dropdown-item @click="openFileUpload">
+        {{ __('Upload image') }}
+      </gl-dropdown-item>
+    </gl-dropdown>
     <input
       ref="fileSelector"
       type="file"
@@ -103,5 +105,5 @@ export default {
       data-qa-selector="file_upload_field"
       @change="onFileSelect"
     />
-  </gl-dropdown>
+  </span>
 </template>

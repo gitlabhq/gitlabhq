@@ -75,20 +75,6 @@ In GitLab, the agent for Kubernetes regularly compares the desired state from th
 the actual state from the Kubernetes cluster. Deviations from the desired state are fixed at every check. These checks
 happen automatically every 5 minutes. They are not configurable.
 
-## Known issues
-
-The following are known issues:
-
-- Your chart must be in a GitLab project. The project must be an agent configuration project or a public
-  project. This known issue also exists for manifest-based GitOps and is tracked in
-  [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7704).
-- Values for the chart must be in a `values.yaml` file. This file must be with the chart,
-  in the same project and path.
-- Because of drift detection and remediation, release history, stored in the cluster, is not useful.
-  A new release is created every five minutes and the oldest release is discarded.
-  Eventually history consists only of the same information.
-  View [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372023) for details.
-
 ## Example repository layout
 
 ```plaintext
@@ -103,6 +89,20 @@ The following are known issues:
  ├── values.schema.json
  └── some-file-used-in-chart.txt
 ```
+
+## Known issues
+
+The following are known issues:
+
+- Your chart must be in a GitLab project. The project must be an agent configuration project or a public
+  project. This known issue also exists for manifest-based GitOps and is tracked in
+  [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7704).
+- Values for the chart must be in a `values.yaml` file. This file must be with the chart,
+  in the same project and path.
+- Because of drift detection and remediation, release history, stored in the cluster, is not useful.
+  A new release is created every five minutes and the oldest release is discarded.
+  Eventually history consists only of the same information.
+  View [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372023) for details.
 
 ## Troubleshooting
 

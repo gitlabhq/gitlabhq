@@ -25,7 +25,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-display-flex gl-flex-wrap gl-pb-3 gl-pt-0 gl-border-b-solid gl-border-b-1 gl-border-b-gray-200"
+    class="gl-display-flex gl-flex-wrap gl-pb-3 gl-pt-3 gl-border-b-solid gl-border-b-1 gl-border-b-gray-200"
   >
     <toolbar-text-style-dropdown
       data-testid="text-styles"

@@ -89,32 +89,34 @@ export default {
 </script>
 <template>
   <editor-state-observer @transaction="updateLinkState">
-    <gl-dropdown
-      v-gl-tooltip
-      :title="__('Insert link')"
-      :text="__('Insert link')"
-      :toggle-class="{ active: isActive }"
-      text-sr-only
-      size="small"
-      category="tertiary"
-      icon="link"
-      @show="selectLink()"
-    >
-      <gl-dropdown-form class="gl-px-3!">
-        <gl-form-input-group v-model="linkHref" :placeholder="__('Link URL')">
-          <template #append>
-            <gl-button variant="confirm" @click="updateLink">{{ __('Apply') }}</gl-button>
-          </template>
-        </gl-form-input-group>
-      </gl-dropdown-form>
-      <gl-dropdown-divider />
-      <gl-dropdown-item v-if="isActive" @click="removeLink">
-        {{ __('Remove link') }}
-      </gl-dropdown-item>
-      <gl-dropdown-item v-else @click="openFileUpload">
-        {{ __('Upload file') }}
-      </gl-dropdown-item>
-
+    <span class="gl-display-inline-flex">
+      <gl-dropdown
+        v-gl-tooltip
+        :title="__('Insert link')"
+        :text="__('Insert link')"
+        :toggle-class="{ active: isActive }"
+        size="small"
+        category="tertiary"
+        icon="link"
+        text-sr-only
+        lazy
+        @show="selectLink()"
+      >
+        <gl-dropdown-form class="gl-px-3!">
+          <gl-form-input-group v-model="linkHref" :placeholder="__('Link URL')">
+            <template #append>
+              <gl-button variant="confirm" @click="updateLink">{{ __('Apply') }}</gl-button>
+            </template>
+          </gl-form-input-group>
+        </gl-dropdown-form>
+        <gl-dropdown-divider />
+        <gl-dropdown-item v-if="isActive" @click="removeLink">
+          {{ __('Remove link') }}
+        </gl-dropdown-item>
+        <gl-dropdown-item v-else @click="openFileUpload">
+          {{ __('Upload file') }}
+        </gl-dropdown-item>
+      </gl-dropdown>
       <input
         ref="fileSelector"
         type="file"
@@ -122,6 +124,6 @@ export default {
         class="gl-display-none"
         @change="onFileSelect"
       />
-    </gl-dropdown>
+    </span>
   </editor-state-observer>
 </template>

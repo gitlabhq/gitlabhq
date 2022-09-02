@@ -1,3 +1,3 @@
 import { initRunnerEdit } from '~/runner/runner_edit';
 
-initRunnerEdit('#js-admin-runner-edit');
+initRunnerEdit('#js-group-runner-edit');

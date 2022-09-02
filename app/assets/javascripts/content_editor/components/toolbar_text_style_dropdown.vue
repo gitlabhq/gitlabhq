@@ -64,6 +64,7 @@ export default {
       data-qa-selector="text_style_dropdown"
       :disabled="!activeItem"
       :text="activeItemLabel"
+      lazy
     >
       <gl-dropdown-item
         v-for="(item, index) in $options.items"

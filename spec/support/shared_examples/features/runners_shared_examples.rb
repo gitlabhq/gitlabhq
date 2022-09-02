@@ -145,3 +145,39 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
     end
   end
 end
+
+RSpec.shared_examples 'submits edit runner form' do
+  it 'breadcrumb contains runner id and token' do
+    page.within '[data-testid="breadcrumb-links"]' do
+      expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
+      expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
+    end
+  end
+
+  describe 'runner header', :js do
+    it 'contains the runner id' do
+      expect(page).to have_content("Runner ##{runner.id} created")
+    end
+  end
+
+  context 'when a runner is updated', :js do
+    before do
+      find('[data-testid="runner-field-description"] input').set('new-runner-description')
+
+      click_on _('Save changes')
+      wait_for_requests
+    end
+
+    it 'redirects to runner page' do
+      expect(current_url).to match(runner_page_path)
+    end
+
+    it 'show success alert' do
+      expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+    end
+
+    it 'shows updated information' do
+      expect(page).to have_content("#{s_('Runners|Description')} new-runner-description")
+    end
+  end
+end
