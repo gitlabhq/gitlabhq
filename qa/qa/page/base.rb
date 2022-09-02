@@ -500,3 +500,5 @@ module QA
     end
   end
 end
+
+QA::Page::Base.prepend_mod_with('Page::Base', namespace: QA)

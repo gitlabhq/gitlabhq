@@ -3607,17 +3607,6 @@ RSpec.describe Ci::Build do
           it 'includes deploy token variables' do
             is_expected.to include(*deploy_token_variables)
           end
-
-          context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
-            before do
-              stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
-            end
-
-            it 'does not include deploy token variables' do
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER' }).to be_nil
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD' }).to be_nil
-            end
-          end
         end
       end
     end

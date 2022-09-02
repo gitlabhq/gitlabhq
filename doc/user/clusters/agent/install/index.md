@@ -40,7 +40,7 @@ To install the agent in your cluster:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the agent configuration file can be added to multiple directories (or subdirectories) of the repository.
 > - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-The agent uses a YAML file for configuration settings. You must create this file if:
+For configuration settings, the agent uses a YAML file in the GitLab project. You must create this file if:
 
 - You use [a GitOps workflow](../gitops.md#gitops-workflow-steps).
 - You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#gitlab-cicd-workflow-steps) and want to authorize a different project to use the agent.
@@ -56,7 +56,7 @@ To create an agent configuration file:
    - Start with an alphanumeric character.
    - End with an alphanumeric character.
 
-1. In the repository, create a directory in this location:
+1. In the repository, in the default branch, create this directory at the root:
 
    ```plaintext
    .gitlab/agents/<agent-name>

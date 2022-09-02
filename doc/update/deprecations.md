@@ -45,6 +45,30 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.4
+
+<div class="deprecation removal-160 breaking-change">
+
+### Non-expiring access tokens
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2022-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Currently, you can create access tokens that have no expiration date. These access tokens are valid indefinitely, which presents a security risk if the access token is
+divulged. Because expiring access tokens are better, from GitLab 15.3 we [populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).
+
+In GitLab 16.0, any personal, project, or group access token that does not have an expiration date will automatically have an expiration date set at one year.
+
+We recommend giving your tokens an expiration date in line with your company's security policies before the default is applied in GitLab 16.0.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.3
 
 <div class="deprecation removal-160 breaking-change">

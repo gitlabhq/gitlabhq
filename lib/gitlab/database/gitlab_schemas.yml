@@ -228,6 +228,7 @@ geo_repository_deleted_events: :gitlab_main
 geo_repository_renamed_events: :gitlab_main
 geo_repository_updated_events: :gitlab_main
 geo_reset_checksum_events: :gitlab_main
+ghost_user_migrations: :gitlab_main
 gitlab_subscription_histories: :gitlab_main
 gitlab_subscriptions: :gitlab_main
 gpg_keys: :gitlab_main

@@ -50,6 +50,7 @@ RSpec.describe 'Database schema' do
     geo_node_statuses: %w[last_event_id cursor_last_event_id],
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],
+    ghost_user_migrations: %w[initiator_user_id],
     gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
     identities: %w[user_id],
     import_failures: %w[project_id],

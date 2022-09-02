@@ -1111,12 +1111,16 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ## Remove group
 
+> - Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `immediate_delete_subgroup_api`. Disabled by default.
+> - Immediately deleting subgroups was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
+
 Only available to group owners and administrators.
 
 This endpoint either:
 
 - Removes group, and queues a background job to delete all projects in the group as well.
 - Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion happens 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 
 ```plaintext
 DELETE /groups/:id
@@ -1124,9 +1128,11 @@ DELETE /groups/:id
 
 Parameters:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| Attribute            | Type             | Required | Description                                                                                                                                                 |
+|----------------------|------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)                                                                                |
+| `permanently_remove` **(PREMIUM)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
+| `full_path` **(PREMIUM)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
 
 The response is `202 Accepted` if the user has authorization.
 

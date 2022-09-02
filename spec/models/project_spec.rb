@@ -6157,14 +6157,6 @@ RSpec.describe Project, factory_default: :keep do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
 
       it { is_expected.to eq(deploy_token) }
-
-      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
-        before do
-          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
-        end
-
-        it { is_expected.to be_nil }
-      end
     end
 
     context 'when the project and its group has a gitlab deploy token associated' do
@@ -6174,14 +6166,6 @@ RSpec.describe Project, factory_default: :keep do
       let!(:group_deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
 
       it { is_expected.to eq(project_deploy_token) }
-
-      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
-        before do
-          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
-        end
-
-        it { is_expected.to eq(project_deploy_token) }
-      end
     end
   end
 
