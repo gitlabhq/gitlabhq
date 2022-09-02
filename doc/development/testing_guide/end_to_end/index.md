@@ -100,22 +100,19 @@ A feature proposal to segregate access control regarding running pipelines from 
 #### With merged results pipelines
 
 In a merged results pipeline, the pipeline runs on a new ref that contains the merge result of the source and target branch.
-However, this ref is not available to the `gitlab-qa-mirror` pipeline.
 
-For this reason, the end-to-end tests on a merged results pipeline would use the head of the merge request source branch.
+The end-to-end tests on a merged results pipeline would use the new ref instead of the head of the merge request source branch.
 
 ```mermaid
 graph LR
 
-A["a1b1c1 - branch HEAD (CI_MERGE_REQUEST_SOURCE_BRANCH_SHA)"]
-B["x1y1z1 - master HEAD"]
-C["d1e1f1 - merged results (CI_COMMIT_SHA)"]
+A["x1y1z1 - master HEAD"]
+B["d1e1f1 - merged results (CI_COMMIT_SHA)"]
 
-A --> C
-B --> C
+A --> B
 
-A --> E["E2E tests"]
-C --> D["Merged results pipeline"]
+B --> C["Merged results pipeline"]
+C --> D["E2E tests"]
  ```
 
 ##### Running custom tests

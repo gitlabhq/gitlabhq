@@ -2,8 +2,6 @@
   extends: .use-kaniko
   variables:
     GIT_LFS_SKIP_SMUDGE: 1
-  script:
-    - scripts/checkout-mr-source-sha
   retry: 2
 
 # This image is used by:
@@ -20,8 +18,7 @@ build-qa-image:
     # Default latest tag for particular branch
     QA_IMAGE_BRANCH: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}
   script:
-    - !reference [.base-image-build, script]
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
     - echo $QA_IMAGE
     - echo $QA_IMAGE_BRANCH
     - |
@@ -45,7 +42,6 @@ build-assets-image:
   stage: build-images
   needs: ["compile-production-assets"]
   script:
-    - !reference [.base-image-build, script]
     # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
     # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
     # https://gitlab.com/gitlab-org/gitlab/issues/208389

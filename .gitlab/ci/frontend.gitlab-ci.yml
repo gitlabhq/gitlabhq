@@ -43,7 +43,6 @@ compile-production-assets:
       - webpack-report/
     when: always
   before_script:
-    - scripts/checkout-mr-source-sha
     - !reference [.default-before_script, before_script]
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here

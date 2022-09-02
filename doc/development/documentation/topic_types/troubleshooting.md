@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Troubleshooting topics should be the last topics on a page.
 
-If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshoot <featurename>`
+If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshooting <feature>`
 and in the left nav, use the word `Troubleshoot` only.
 
 Troubleshooting can be one of three types.

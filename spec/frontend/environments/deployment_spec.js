@@ -101,10 +101,11 @@ describe('~/environments/components/deployment.vue', () => {
       });
 
       it('shows the short SHA for the commit of the deployment', () => {
-        const sha = wrapper.findByTitle(__('Commit SHA'));
+        const sha = wrapper.findByRole('link', { name: __('Commit SHA') });
 
         expect(sha.exists()).toBe(true);
         expect(sha.text()).toBe(deployment.commit.shortId);
+        expect(sha.attributes('href')).toBe(deployment.commit.commitPath);
       });
 
       it('shows the commit icon', () => {

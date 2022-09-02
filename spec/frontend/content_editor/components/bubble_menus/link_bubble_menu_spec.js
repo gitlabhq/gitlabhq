@@ -1,11 +1,13 @@
 import { GlLink, GlForm } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
+import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import Link from '~/content_editor/extensions/link';
-import { createTestEditor, emitEditorEvent } from '../../test_utils';
+import { createTestEditor } from '../../test_utils';
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
@@ -13,7 +15,6 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   let wrapper;
   let tiptapEditor;
   let contentEditor;
-  let bubbleMenu;
   let eventHub;
 
   const buildEditor = () => {
@@ -35,6 +36,22 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
     });
   };
 
+  const showMenu = () => {
+    wrapper.findComponent(BubbleMenu).vm.$emit('show');
+    return nextTick();
+  };
+
+  const buildWrapperAndDisplayMenu = () => {
+    buildWrapper();
+
+    return showMenu();
+  };
+
+  const findBubbleMenu = () => wrapper.findComponent(BubbleMenu);
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
+  const findEditLinkButton = () => wrapper.findByTestId('edit-link');
+
   const expectLinkButtonsToExist = (exist = true) => {
     expect(wrapper.findComponent(GlLink).exists()).toBe(exist);
     expect(wrapper.findByTestId('copy-link-url').exists()).toBe(exist);
@@ -44,7 +61,6 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
   beforeEach(async () => {
     buildEditor();
-    buildWrapper();
 
     tiptapEditor
       .chain()
@@ -53,10 +69,6 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       )
       .setTextSelection(14) // put cursor in the middle of the link
       .run();
-
-    await emitEditorEvent({ event: 'transaction', tiptapEditor });
-
-    bubbleMenu = wrapper.findComponent(BubbleMenu);
   });
 
   afterEach(() => {
@@ -64,12 +76,15 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   });
 
   it('renders bubble menu component', async () => {
-    expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
+    await buildWrapperAndDisplayMenu();
+
+    expect(findBubbleMenu().classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
   });
 
   it('shows a clickable link to the URL in the link node', async () => {
-    const link = wrapper.findComponent(GlLink);
-    expect(link.attributes()).toEqual(
+    await buildWrapperAndDisplayMenu();
+
+    expect(findLink().attributes()).toEqual(
       expect.objectContaining({
         href: '/path/to/project/-/wikis/uploads/my_file.pdf',
         'aria-label': 'uploads/my_file.pdf',
@@ -77,11 +92,82 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
         target: '_blank',
       }),
     );
-    expect(link.text()).toBe('uploads/my_file.pdf');
+    expect(findLink().text()).toBe('uploads/my_file.pdf');
+  });
+
+  it('updates the bubble menu state when @selectionUpdate event is triggered', async () => {
+    const linkUrl = 'https://gitlab.com';
+
+    await buildWrapperAndDisplayMenu();
+
+    expect(findLink().attributes()).toEqual(
+      expect.objectContaining({
+        href: '/path/to/project/-/wikis/uploads/my_file.pdf',
+      }),
+    );
+
+    tiptapEditor
+      .chain()
+      .setContent(
+        `Link to <a href="${linkUrl}" data-canonical-src="${linkUrl}" title="Click here to download">GitLab</a>`,
+      )
+      .setTextSelection(11)
+      .run();
+
+    findEditorStateObserver().vm.$emit('selectionUpdate');
+
+    await nextTick();
+
+    expect(findLink().attributes()).toEqual(
+      expect.objectContaining({
+        href: linkUrl,
+      }),
+    );
+  });
+
+  describe('when the selection changes within the same link', () => {
+    it('does not update the bubble menu state', async () => {
+      await buildWrapperAndDisplayMenu();
+
+      await findEditLinkButton().trigger('click');
+
+      expect(wrapper.findComponent(GlForm).exists()).toBe(true);
+
+      tiptapEditor.commands.setTextSelection(13);
+
+      findEditorStateObserver().vm.$emit('selectionUpdate');
+
+      await nextTick();
+
+      expect(wrapper.findComponent(GlForm).exists()).toBe(true);
+    });
+  });
+
+  it('cleans bubble menu state when hidden event is triggered', async () => {
+    await buildWrapperAndDisplayMenu();
+
+    expect(findLink().attributes()).toEqual(
+      expect.objectContaining({
+        href: '/path/to/project/-/wikis/uploads/my_file.pdf',
+      }),
+    );
+
+    findBubbleMenu().vm.$emit('hidden');
+
+    await nextTick();
+
+    expect(findLink().attributes()).toEqual(
+      expect.objectContaining({
+        href: '#',
+      }),
+    );
+    expect(findLink().text()).toEqual('');
   });
 
   describe('copy button', () => {
     it('copies the canonical link to clipboard', async () => {
+      await buildWrapperAndDisplayMenu();
+
       jest.spyOn(navigator.clipboard, 'writeText');
 
       await wrapper.findByTestId('copy-link-url').vm.$emit('click');
@@ -92,6 +178,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
   describe('remove link button', () => {
     it('removes the link', async () => {
+      await buildWrapperAndDisplayMenu();
       await wrapper.findByTestId('remove-link').vm.$emit('click');
 
       expect(tiptapEditor.getHTML()).toBe('<p>Download PDF File</p>');
@@ -109,7 +196,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
         .setTextSelection(4)
         .run();
 
-      await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      await buildWrapperAndDisplayMenu();
     });
 
     it('directly opens the edit form for a placeholder link', async () => {
@@ -136,6 +223,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
     let linkTitleInput;
 
     beforeEach(async () => {
+      await buildWrapperAndDisplayMenu();
       await wrapper.findByTestId('edit-link').vm.$emit('click');
 
       linkHrefInput = wrapper.findByTestId('link-href');

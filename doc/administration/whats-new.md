@@ -32,13 +32,13 @@ You can configure **What's new** to display features based on the tier,
 or you can hide it. To configure it:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Preferences**, then expand **What's new**.
-1. Choose one of the following options:
+1. On the left sidebar, select **Settings > Preferences**.
+1. Expand **What's new**, and choose one of the following options:
 
    | Option | Description |
    | ------ | ----------- |
-   | Enable What's new: All tiers | What's new presents new features from all tiers to help you keep track of all new features. |
-   | Enable What's new: Current tier only | What's new presents new features for your current subscription tier, while hiding new features not available to your subscription tier. |
-   | Disable What's new | What's new is disabled and can no longer be viewed. |
+   | Enable What's new: All tiers | Presents new features from all tiers. |
+   | Enable What's new: Current tier only | Presents new features for your current subscription tier, and hides new features outside of your tier. |
+   | Disable What's new | Disables this feature, so it no longer displays under the **{question}** icon. |
 
 1. Select **Save changes**.

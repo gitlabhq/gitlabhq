@@ -36,18 +36,9 @@ export default {
       isEditing: false,
     };
   },
-  watch: {
-    linkCanonicalSrc(value) {
-      if (!value) this.isEditing = true;
-    },
-  },
   methods: {
     shouldShow() {
-      const shouldShow = this.tiptapEditor.isActive(Link.name);
-
-      if (!shouldShow) this.isEditing = false;
-
-      return shouldShow;
+      return this.tiptapEditor.isActive(Link.name);
     },
 
     startEditingLink() {
@@ -92,13 +83,23 @@ export default {
     },
 
     updateLinkToState() {
-      if (!this.tiptapEditor.isActive(Link.name)) return;
+      const editor = this.tiptapEditor;
 
-      const { href, title, canonicalSrc } = this.tiptapEditor.getAttributes(Link.name);
+      const { href, title, canonicalSrc } = editor.getAttributes(Link.name);
+
+      if (
+        canonicalSrc === this.linkCanonicalSrc &&
+        href === this.linkHref &&
+        title === this.linkTitle
+      ) {
+        return;
+      }
 
       this.linkTitle = title;
       this.linkHref = href;
       this.linkCanonicalSrc = canonicalSrc || href;
+
+      this.isEditing = !this.linkCanonicalSrc;
     },
 
     copyLinkHref() {
@@ -107,6 +108,12 @@ export default {
 
     removeLink() {
       this.tiptapEditor.chain().focus().extendMarkRange(Link.name).unsetLink().run();
+    },
+
+    resetBubbleMenuState() {
+      this.linkTitle = undefined;
+      this.linkHref = undefined;
+      this.linkCanonicalSrc = undefined;
     },
   },
   tippyOptions: {
@@ -121,8 +128,10 @@ export default {
     plugin-key="bubbleMenuLink"
     :should-show="shouldShow"
     :tippy-options="$options.tippyOptions"
+    @show="updateLinkToState"
+    @hidden="resetBubbleMenuState"
   >
-    <editor-state-observer @transaction="updateLinkToState">
+    <editor-state-observer @selectionUpdate="updateLinkToState">
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
         <gl-link
           v-gl-tooltip

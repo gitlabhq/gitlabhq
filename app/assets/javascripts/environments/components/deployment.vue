@@ -47,6 +47,9 @@ export default {
     commit() {
       return this.deployment?.commit;
     },
+    commitPath() {
+      return this.commit?.commitPath;
+    },
     user() {
       return this.deployment?.user;
     },
@@ -147,7 +150,9 @@ export default {
             class="gl-font-monospace gl-display-flex gl-align-items-center"
           >
             <gl-icon ref="deployment-commit-icon" name="commit" class="gl-mr-2" />
-            <span v-gl-tooltip :title="$options.i18n.commitSha">{{ shortSha }}</span>
+            <gl-link v-gl-tooltip :title="$options.i18n.commitSha" :href="commitPath">
+              {{ shortSha }}
+            </gl-link>
             <clipboard-button
               :text="shortSha"
               category="tertiary"

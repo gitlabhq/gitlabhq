@@ -5,7 +5,9 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# LDAP Troubleshooting for Administrators **(FREE SELF)**
+# Troubleshooting LDAP **(FREE SELF)**
+
+If you are an administrator, use the following information to troubleshoot LDAP.
 
 ## Common Problems & Workflows
 

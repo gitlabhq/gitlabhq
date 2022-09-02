@@ -144,12 +144,10 @@ module Trigger
     end
 
     def base_variables
-      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results,
-      # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
       {
         'GITLAB_REF_SLUG' => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
-        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
+        'TOP_UPSTREAM_SOURCE_SHA' => ENV['CI_COMMIT_SHA']
       }
     end
 
@@ -186,14 +184,9 @@ module Trigger
     end
 
     def extra_variables
-      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA (MR HEAD commit) so that the image is in sync with the assets and QA images.
-      # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results.
-      # We also set IMAGE_TAG so the GitLab Docker image is tagged with that SHA.
-      source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
-
       {
-        'GITLAB_VERSION' => source_sha,
-        'IMAGE_TAG' => source_sha,
+        'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
+        'IMAGE_TAG' => ENV['CI_COMMIT_SHA'],
         'SKIP_QA_DOCKER' => 'true',
         'SKIP_QA_TEST' => 'true',
         'ALTERNATIVE_SOURCES' => 'true',
@@ -228,14 +221,11 @@ module Trigger
     end
 
     def extra_variables
-      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA (MR HEAD commit) so that the image is in sync with the assets and QA images.
-      source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
-
       {
         "TRIGGER_BRANCH" => ref,
-        "GITLAB_VERSION" => source_sha,
+        "GITLAB_VERSION" => ENV['CI_COMMIT_SHA'],
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'], # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
-        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : source_sha,
+        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_SHA'],
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
@@ -399,9 +389,7 @@ module Trigger
 
     def extra_variables
       {
-        # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
-        # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
-        'GITLAB_COMMIT_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
+        'GITLAB_COMMIT_SHA' => ENV['CI_COMMIT_SHA'],
         'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN']
       }
     end

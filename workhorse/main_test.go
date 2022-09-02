@@ -35,7 +35,7 @@ import (
 )
 
 const scratchDir = "testdata/scratch"
-const testRepoRoot = "testdata/data"
+const testRepoRoot = "testdata/repo"
 const testDocumentRoot = "testdata/public"
 const testAltDocumentRoot = "testdata/alt-public"
 

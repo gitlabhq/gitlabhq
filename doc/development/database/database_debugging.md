@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting and Debugging Database
+# Troubleshooting and debugging the database
 
 This section is to help give some copy-pasta you can use as a reference when you
 run into some head-banging database problems.
