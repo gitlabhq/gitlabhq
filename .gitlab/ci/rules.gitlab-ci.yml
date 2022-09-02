@@ -771,7 +771,8 @@
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
-    - !reference [".frontend:rules:jest:minimal:as-if-foss", rules]
+    - <<: *if-merge-request
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:jest:
   rules:

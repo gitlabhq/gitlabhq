@@ -374,9 +374,9 @@ Possible values are "Amazon Aurora PostgreSQL", "PostgreSQL on Amazon RDS", "Clo
 
 In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
 
-## Export Service Ping SQL queries and definitions
+## Export Service Ping data
 
-Two Rake tasks exist to export Service Ping definitions.
+Rake tasks exist to export Service Ping data in different formats.
 
 - The Rake tasks export the raw SQL queries for `count`, `distinct_count`, `sum`.
 - The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
@@ -385,11 +385,14 @@ Two Rake tasks exist to export Service Ping definitions.
 In the home directory of your local GitLab installation run the following Rake tasks for the YAML and JSON versions respectively:
 
 ```shell
-# for YAML export
+# for YAML export of SQL queries
 bin/rake gitlab:usage_data:dump_sql_in_yaml
 
-# for JSON export
+# for JSON export of SQL queries
 bin/rake gitlab:usage_data:dump_sql_in_json
+
+# for JSON export of Non SQL data
+bin/rake gitlab:usage_data:dump_non_sql_in_json
 
 # You may pipe the output into a file
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml

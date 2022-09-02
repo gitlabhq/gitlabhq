@@ -620,7 +620,7 @@ alt_usage_data(999)
 ### Add counters to build new metrics
 
 When adding the results of two counters, use the `add` Service Data method that
-handles fallback values and exceptions. It also generates a valid [SQL export](index.md#export-service-ping-sql-queries-and-definitions).
+handles fallback values and exceptions. It also generates a valid [SQL export](index.md#export-service-ping-data).
 
 Example:
 

@@ -26,7 +26,7 @@ You can restrict the password authentication for web interface and Git over HTTP
 - **Git over HTTP(S)**: When this feature is disabled, a [Personal Access Token](../../profile/personal_access_tokens.md)
   or LDAP password must be used to authenticate.
 
-In the event of an external authentication provider outage, use the [GitLab Rails console](../../../administration/operations/rails_console.md) to [re-enable the standard web sign-in form](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#re-enable-standard-web-sign-in-form). This configuration can also be changed over the [Application settings REST API](../../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
+In the event of an external authentication provider outage, use the [GitLab Rails console](../../../administration/operations/rails_console.md) to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console). This configuration can also be changed over the [Application settings REST API](../../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
 
 ## Admin Mode
 
@@ -128,14 +128,14 @@ To access this text box:
 Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your
 GitLab instance.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Re-enable standard web sign-in form in rails console
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](#password-authentication-enabled).
+
+You can use this method through the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) when a configured external authentication provider (through SSO or an LDAP configuration) is facing an outage and direct sign-in access to GitLab is required.
+
+```ruby
+Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
+```

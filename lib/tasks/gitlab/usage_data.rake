@@ -17,6 +17,11 @@ namespace :gitlab do
       puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values))
     end
 
+    desc 'GitLab | UsageData | Generate non SQL data for usage ping in JSON'
+    task dump_non_sql_in_json: :environment do
+      puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :non_sql_metrics_values))
+    end
+
     desc 'GitLab | UsageData | Generate usage ping and send it to Versions Application'
     task generate_and_send: :environment do
       result = ServicePing::SubmitService.new.execute

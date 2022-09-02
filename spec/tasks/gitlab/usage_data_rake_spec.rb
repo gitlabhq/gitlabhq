@@ -31,6 +31,12 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout do
     end
   end
 
+  describe 'dump_non_sql_in_json' do
+    it 'dumps non SQL data in json format' do
+      expect { run_rake_task('gitlab:usage_data:dump_non_sql_in_json') }.to output(/.*"recorded_at":.*/).to_stdout
+    end
+  end
+
   describe 'generate_sql_metrics_fixture' do
     it 'generates fixture file correctly' do
       run_rake_task('gitlab:usage_data:generate_sql_metrics_queries')

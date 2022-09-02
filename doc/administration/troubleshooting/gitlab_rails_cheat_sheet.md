@@ -785,18 +785,6 @@ subgroup.members.map(&:errors).map(&:full_messages)
 subgroup.members_and_requesters.map(&:errors).map(&:full_messages)
 ```
 
-## Authentication
-
-### Re-enable standard web sign-in form
-
-Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
-
-You can use this method when a configured external authentication provider (through SSO or an LDAP configuration) is facing an outage and direct sign-in access to GitLab is required.
-
-```ruby
-Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
-```
-
 ## Routes
 
 ### Remove redirecting routes

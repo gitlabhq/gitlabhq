@@ -504,23 +504,24 @@ Before taking the decision to merge:
   before merging. A comment must be posted if the MR is merged with any failed job.
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
-If a merge request is fundamentally ready, but needs only trivial fixes (such as
-typos), consider demonstrating a [bias for action](https://about.gitlab.com/handbook/values/#bias-for-action)
-by making those changes directly without going back to the author. You can do this by
-using the [suggest changes](../user/project/merge_requests/reviews/suggestions.md) feature to apply
-your own suggestions to the merge request. Note that:
+At least one maintainer must approve an MR before it can be merged. MR authors and
+people who add commits to an MR are not authorized to approve the merge request,
+so they must seek a maintainer who has not contributed to the MR to approve the MR before it can be merged.
 
-- If the changes are not straightforward, please prefer allowing the author to make the change.
-- **Before applying suggestions**, edit the merge request to make sure
-  [squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
-  is enabled, otherwise, the pipeline's Danger job fails.
-  - If a merge request does not have squash and merge enabled, and it
-    has more than one commit, then see the note below about rewriting
-    commit history.
-
-Authors are not authorized to merge their own merge requests and need to seek another maintainer to merge.
 This policy is in place to satisfy the CHG-04 control of the GitLab
 [Change Management Controls](https://about.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/guidance/change-management.html).
+
+To implement this policy in `gitlab-org/gitlab`, we have enabled the following
+settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
+
+- [Prevent approval by author](../user/project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+- [Prevent approvals by users who add commits](../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
+- [Prevent editing approval rules in merge requests](../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests).
+- [Remove all approvals when commits are added to the source branch](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)
+
+  There are scenarios such as rebasing locally or applying suggestions that are considered
+  the same as adding a commit and could reset existing approvals. Approvals are not removed
+  when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md).
 
 When ready to merge:
 

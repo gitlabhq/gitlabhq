@@ -14,6 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Integration with Grype as an alternative scanner [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326279) in GitLab 14.0.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
+> - Container Scanning variables that reference Docker [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/357264) in GitLab 15.4.
 
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
@@ -83,7 +84,7 @@ To enable container scanning in your pipeline, you need the following:
 - [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
   the Docker image to your project's container registry.
 - If you're using a third-party container registry, you might need to provide authentication
-  credentials through the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables).
+  credentials through the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables).
   For more details on how to use these variables, see [authenticate to a remote registry](#authenticate-to-a-remote-registry).
 
 ## Configuration
@@ -157,13 +158,13 @@ include:
 
 container_scanning:
   variables:
-    DOCKER_IMAGE: example.com/user/image:tag
+    CS_IMAGE: example.com/user/image:tag
 ```
 
 ##### Authenticate to a remote registry
 
-Scanning an image in a private registry requires authentication. Provide the username in the `DOCKER_USER`
-variable, and the password in the `DOCKER_PASSWORD` configuration variable.
+Scanning an image in a private registry requires authentication. Provide the username in the `CS_REGISTRY_USER`
+variable, and the password in the `CS_REGISTRY_PASSWORD` configuration variable.
 
 For example, to scan an image from AWS Elastic Container Registry:
 
@@ -178,9 +179,9 @@ container_scanning:
 
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
-    DOCKER_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
-    DOCKER_USER: AWS
-    DOCKER_PASSWORD: "$AWS_ECR_PASSWORD"
+    CS_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
+    CS_REGISTRY_USER: AWS
+    CS_REGISTRY_PASSWORD: "$AWS_ECR_PASSWORD"
 ```
 
 Authenticating to a remote registry is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
@@ -251,7 +252,7 @@ including a large number of false positives.
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
 | `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:5` | Docker image of the analyzer. | All |
-| `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `DOCKER_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
+| `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
@@ -259,10 +260,14 @@ including a large number of false positives.
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
-| `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
-| `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
-| `DOCKER_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
-| `DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
+| <!-- start_remove The following content will be removed on remove_date: '2023-08-22' --> `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_IMAGE`. The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
+| `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_REGISTRY_PASSWORD`. Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
+| `DOCKER_USER`                  | `$CI_REGISTRY_USER` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_REGISTRY_USER`. Username for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
+| `DOCKERFILE_PATH`              | `Dockerfile`  | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_DOCKERFILE_PATH`. The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All <!-- end_remove --> |
+| `CS_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
+| `CS_REGISTRY_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
+| `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
+| `CS_DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. | All |
 
 ### Supported distributions
@@ -309,7 +314,7 @@ Starting with GitLab 14.10, `-fips` is automatically added to `CS_ANALYZER_IMAGE
 enabled in the GitLab instance.
 
 Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode)
-is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `DOCKER_USER` or `DOCKER_PASSWORD` is set,
+is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
 the analyzer exits with an error and does not perform the scan.
 
 ### Enable Container Scanning through an automatic merge request
@@ -426,14 +431,14 @@ container_scanning:
   variables:
     CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
   before_script:
-    - export DOCKER_IMAGE="$CI_REGISTRY_IMAGE/$CI_COMMIT_BRANCH:$CI_COMMIT_SHA"
+    - export CS_IMAGE="$CI_REGISTRY_IMAGE/$CI_COMMIT_BRANCH:$CI_COMMIT_SHA"
     - |
       if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
-        export DOCKER_IMAGE="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+        export CS_IMAGE="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
       fi
 ```
 
-`CS_DEFAULT_BRANCH_IMAGE` should remain the same for a given `DOCKER_IMAGE`. If it changes, then a
+`CS_DEFAULT_BRANCH_IMAGE` should remain the same for a given `CS_IMAGE`. If it changes, then a
 duplicate set of vulnerabilities are created, which must be manually dismissed.
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), `CS_DEFAULT_BRANCH_IMAGE` is
@@ -500,7 +505,7 @@ This example excludes from `gl-container-scanning-report.json`:
 
 - `generalallowlist` block allows you to specify CVE IDs globally. All vulnerabilities with matching CVE IDs are excluded from the scan report.
 
-- `images` block allows you to specify CVE IDs for each container image independently. All vulnerabilities from the given image with matching CVE IDs are excluded from the scan report. The image name is retrieved from one of the environment variables used to specify the Docker image to be scanned, such as `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` or `DOCKER_IMAGE`. The image provided in this block **must** match this value and **must not** include the tag value. For example, if you specify the image to be scanned using `DOCKER_IMAGE=alpine:3.7`, then you would use `alpine` in the `images` block, but you cannot use `alpine:3.7`.
+- `images` block allows you to specify CVE IDs for each container image independently. All vulnerabilities from the given image with matching CVE IDs are excluded from the scan report. The image name is retrieved from one of the environment variables used to specify the Docker image to be scanned, such as `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` or `CS_IMAGE`. The image provided in this block **must** match this value and **must not** include the tag value. For example, if you specify the image to be scanned using `CS_IMAGE=alpine:3.7`, then you would use `alpine` in the `images` block, but you cannot use `alpine:3.7`.
 
   You can specify container image in multiple ways:
 
@@ -650,7 +655,7 @@ To scan an image in an external private registry, you must configure access cred
 container scanning analyzer can authenticate itself before attempting to access the image to scan.
 
 If you use the GitLab [Container Registry](../../packages/container_registry/index.md),
-the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables)
+the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables)
 are set automatically and you can skip this configuration.
 
 This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/container-registry/):
@@ -661,9 +666,9 @@ include:
 
 container_scanning:
   variables:
-    DOCKER_USER: _json_key
-    DOCKER_PASSWORD: "$GCP_CREDENTIALS"
-    DOCKER_IMAGE: "gcr.io/path-to-you-registry/image:tag"
+    CS_REGISTRY_USER: _json_key
+    CS_REGISTRY_PASSWORD: "$GCP_CREDENTIALS"
+    CS_IMAGE: "gcr.io/path-to-you-registry/image:tag"
 ```
 
 Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/index.md#add-a-cicd-variable-to-a-project)
@@ -772,7 +777,7 @@ Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.
 
 To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
-the [`DOCKERFILE_PATH`](#available-cicd-variables) CI/CD variable. To ensure that the scanning tool
+the [`CS_DOCKERFILE_PATH`](#available-cicd-variables) CI/CD variable. To ensure that the scanning tool
 has access to this
 file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/configure_runners.md#git-strategy) in
 your `.gitlab-ci.yml` file by following the instructions described in this document's
