@@ -151,7 +151,7 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
 
     context 'with older sentry versions where keys are not present' do
       let(:sentry_api_response) do
-        issues_sample_response[0...1].map do |issue|
+        issues_sample_response.first(1).map do |issue|
           issue[:project].delete(:id)
           issue
         end
@@ -167,7 +167,7 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
 
     context 'when essential keys are missing in API response' do
       let(:sentry_api_response) do
-        issues_sample_response[0...1].map do |issue|
+        issues_sample_response.first(1).map do |issue|
           issue.except(:id)
         end
       end

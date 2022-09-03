@@ -6,8 +6,8 @@ RSpec.describe Environments::EnvironmentsFinder do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.creator }
   let_it_be(:environment) { create(:environment, :available, project: project) }
-  let_it_be(:environment_stopped) { create(:environment, :stopped, name: 'test2', project: project) }
-  let_it_be(:environment_available) { create(:environment, :available, name: 'test3', project: project) }
+  let_it_be(:environment_stopped) { create(:environment, :stopped, name: 'test/test2', project: project) }
+  let_it_be(:environment_available) { create(:environment, :available, name: 'test/test3', project: project) }
 
   before do
     project.add_maintainer(user)
@@ -64,6 +64,12 @@ RSpec.describe Environments::EnvironmentsFinder do
 
         expect(result).to contain_exactly(environment_available)
       end
+    end
+
+    it 'filters environments by type' do
+      result = described_class.new(project, user, type: 'test').execute
+
+      expect(result).to contain_exactly(environment_stopped, environment_available)
     end
   end
 end

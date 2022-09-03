@@ -218,6 +218,28 @@ instance_of_object.method(:foo).source_location
 project.method(:private?).source_location
 ```
 
+## Limiting output
+
+Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This can be used if you are already explicitly printing details and potentially have a lot of return output:
+
+```ruby
+puts ActiveRecord::Base.descendants; :ok
+Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
+```
+
+## Get or store the result of last operation
+
+Underscore(`_`) represents the implicit return of the previous statement. You can use this to quickly assign a variable from the output of the previous command:
+
+```ruby
+Project.last
+# => #<Project id:2537 root/discard>>
+project = _
+# => #<Project id:2537 root/discard>>
+project.id
+# => 2537
+```
+
 ## Active Record objects
 
 ### Looking up database-persisted objects
@@ -346,6 +368,15 @@ D, [2020-03-05T17:18:30.406047 #910] DEBUG -- :   User Load (2.6ms)  SELECT "use
 
 For more on different ways to retrieve data from the database using Active
 Record, please see the [Active Record Query Interface documentation](https://guides.rubyonrails.org/active_record_querying.html).
+
+## Query the database using an Active Record model
+
+```ruby
+m = Model.where('attribute like ?', 'ex%')
+
+# for example to query the projects
+projects = Project.where('path like ?', 'Oumua%')
+```
 
 ### Modifying Active Record objects
 

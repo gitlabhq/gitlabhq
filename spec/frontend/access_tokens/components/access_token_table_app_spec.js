@@ -190,6 +190,21 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(button.props('category')).toBe('tertiary');
   });
 
+  describe('revoke path', () => {
+    beforeEach(() => {
+      createComponent({ showRole: true });
+    });
+
+    it.each([{ revoke_path: null }, { revoke_path: undefined }])(
+      'with %p, does not show revoke button',
+      async (input) => {
+        await triggerSuccess(defaultActiveAccessTokens.map((data) => ({ ...data, ...input })));
+
+        expect(findCells().at(6).findComponent(GlButton).exists()).toBe(false);
+      },
+    );
+  });
+
   it('sorts rows alphabetically', async () => {
     createComponent({ showRole: true });
     await triggerSuccess();

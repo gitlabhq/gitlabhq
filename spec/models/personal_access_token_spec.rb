@@ -65,6 +65,46 @@ RSpec.describe PersonalAccessToken do
       end
     end
 
+    describe '.created_before' do
+      let(:last_used_at) { 1.month.ago.beginning_of_hour }
+      let!(:new_used_token) do
+        create(:personal_access_token,
+          created_at: last_used_at + 1.minute,
+          last_used_at: last_used_at + 1.minute
+        )
+      end
+
+      let!(:old_unused_token) do
+        create(:personal_access_token,
+          created_at: last_used_at - 1.minute
+        )
+      end
+
+      let!(:old_formerly_used_token) do
+        create(:personal_access_token,
+          created_at: last_used_at - 1.minute,
+          last_used_at: last_used_at - 1.minute
+        )
+      end
+
+      let!(:old_still_used_token) do
+        create(:personal_access_token,
+          created_at: last_used_at - 1.minute,
+          last_used_at: 1.minute.ago
+        )
+      end
+
+      subject { described_class.created_before(last_used_at) }
+
+      it do
+        is_expected.to contain_exactly(
+          old_unused_token,
+          old_formerly_used_token,
+          old_still_used_token
+        )
+      end
+    end
+
     describe '.last_used_before' do
       let(:last_used_at) { 1.month.ago.beginning_of_hour }
       let!(:unused_token)  { create(:personal_access_token) }

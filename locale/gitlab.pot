@@ -11576,6 +11576,9 @@ msgstr ""
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
+msgid "CycleAnalytics|Average time to completion (days)"
+msgstr ""
+
 msgid "CycleAnalytics|Change Failure Rate"
 msgstr ""
 

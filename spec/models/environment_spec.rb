@@ -318,6 +318,16 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.for_type' do
+    it 'filters by type' do
+      create(:environment)
+      create(:environment, name: 'type1/prod')
+      env = create(:environment, name: 'type2/prod')
+
+      expect(described_class.for_type('type2')).to contain_exactly(env)
+    end
+  end
+
   describe '#guess_tier' do
     using RSpec::Parameterized::TableSyntax
 

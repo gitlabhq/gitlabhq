@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Cleanup::UnusedPersonalAccessTokens do
+RSpec.describe Gitlab::Cleanup::PersonalAccessTokens do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project_bot) { create(:user, :project_bot) }
@@ -14,6 +14,10 @@ RSpec.describe Gitlab::Cleanup::UnusedPersonalAccessTokens do
 
   let!(:old_unused_token) do
     create(:personal_access_token, created_at: last_used_at - 1.minute)
+  end
+
+  let!(:old_actively_used_token) do
+    create(:personal_access_token, created_at: last_used_at - 1.minute, last_used_at: 1.day.ago)
   end
 
   let!(:old_unused_token_for_non_group_member) do
@@ -37,6 +41,7 @@ RSpec.describe Gitlab::Cleanup::UnusedPersonalAccessTokens do
 
   before do
     group.add_member(old_formerly_used_token.user, Gitlab::Access::DEVELOPER)
+    group.add_member(old_actively_used_token.user, Gitlab::Access::DEVELOPER)
     group.add_member(unused_token.user, Gitlab::Access::DEVELOPER)
     group.add_member(old_unused_token.user, Gitlab::Access::DEVELOPER)
     group.add_member(project_bot, Gitlab::Access::MAINTAINER)
@@ -47,7 +52,7 @@ RSpec.describe Gitlab::Cleanup::UnusedPersonalAccessTokens do
   subject do
     described_class.new(
       logger: logger,
-      last_used_before: last_used_at,
+      cut_off_date: last_used_at,
       group_full_path: group_full_path
     )
   end
@@ -76,16 +81,42 @@ RSpec.describe Gitlab::Cleanup::UnusedPersonalAccessTokens do
     context 'in a real run' do
       let(:args) { { dry_run: false } }
 
-      it 'revokes only revocable tokens' do
-        subject.run!(**args)
+      context 'when revoking unused tokens' do
+        it 'revokes human-owned tokens created and last used over 1 year ago' do
+          subject.run!(**args)
 
-        expect(PersonalAccessToken.active).to contain_exactly(
-          unused_token,
-          old_unused_project_access_token,
-          old_unused_token_for_non_group_member,
-          old_unused_token_for_subgroup_member
-        )
-        expect(PersonalAccessToken.revoked).to contain_exactly(old_unused_token, old_formerly_used_token)
+          expect(PersonalAccessToken.active).to contain_exactly(
+            unused_token,
+            old_actively_used_token,
+            old_unused_project_access_token,
+            old_unused_token_for_non_group_member,
+            old_unused_token_for_subgroup_member
+          )
+          expect(PersonalAccessToken.revoked).to contain_exactly(
+            old_unused_token,
+            old_formerly_used_token
+          )
+        end
+      end
+
+      context 'when revoking used and unused tokens' do
+        let(:args) { { dry_run: false, revoke_active_tokens: true } }
+
+        it 'revokes human-owned tokens created over 1 year ago' do
+          subject.run!(**args)
+
+          expect(PersonalAccessToken.active).to contain_exactly(
+            unused_token,
+            old_unused_project_access_token,
+            old_unused_token_for_non_group_member,
+            old_unused_token_for_subgroup_member
+          )
+          expect(PersonalAccessToken.revoked).to contain_exactly(
+            old_unused_token,
+            old_actively_used_token,
+            old_formerly_used_token
+          )
+        end
       end
 
       it 'updates updated_at' do
