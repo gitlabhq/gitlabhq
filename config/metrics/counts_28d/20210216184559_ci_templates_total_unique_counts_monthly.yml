@@ -172,6 +172,7 @@ options:
   - p_ci_templates_liquibase
   - p_ci_templates_matlab
   - p_ci_templates_themekit
+  - p_ci_templates_katalon
 distribution:
 - ce
 - ee

@@ -52,25 +52,15 @@ module API
 
           merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-          if Feature.enabled?(:api_caching_branches, user_project, type: :development)
-            present_cached(
-              branches,
-              with: Entities::Branch,
-              current_user: current_user,
-              project: user_project,
-              merged_branch_names: merged_branch_names,
-              expires_in: 10.minutes,
-              cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
-            )
-          else
-            present(
-              branches,
-              with: Entities::Branch,
-              current_user: current_user,
-              project: user_project,
-              merged_branch_names: merged_branch_names
-            )
-          end
+          present_cached(
+            branches,
+            with: Entities::Branch,
+            current_user: current_user,
+            project: user_project,
+            merged_branch_names: merged_branch_names,
+            expires_in: 10.minutes,
+            cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
+          )
         end
       end
 

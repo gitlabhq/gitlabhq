@@ -3463,6 +3463,26 @@ Input type: `JiraImportUsersInput`
 | <a id="mutationjiraimportuserserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationjiraimportusersjirausers"></a>`jiraUsers` | [`[JiraUser!]`](#jirauser) | Users returned from Jira, matched by email and name if possible. |
 
+### `Mutation.jobArtifactsDestroy`
+
+Input type: `JobArtifactsDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobartifactsdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobartifactsdestroyid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobartifactsdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobartifactsdestroydestroyedartifactscount"></a>`destroyedArtifactsCount` | [`Int!`](#int) | Number of artifacts deleted. |
+| <a id="mutationjobartifactsdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationjobartifactsdestroyjob"></a>`job` | [`CiJob`](#cijob) | Job with artifacts to be deleted. |
+
 ### `Mutation.jobCancel`
 
 Input type: `JobCancelInput`
