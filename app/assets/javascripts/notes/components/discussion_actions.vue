@@ -59,6 +59,7 @@ export default {
         <resolve-discussion-button
           v-if="discussion.resolvable"
           data-qa-selector="resolve_discussion_button"
+          data-testid="resolve-discussion-button"
           :is-resolving="isResolving"
           :button-title="resolveButtonTitle"
           @onClick="$emit('resolve')"

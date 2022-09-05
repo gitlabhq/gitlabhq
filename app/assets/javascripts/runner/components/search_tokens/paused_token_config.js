@@ -1,7 +1,7 @@
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import { PARAM_KEY_PAUSED } from '../../constants';
+import { PARAM_KEY_PAUSED, I18N_PAUSED } from '../../constants';
 
 const options = [
   { value: 'true', title: __('Yes') },
@@ -10,7 +10,7 @@ const options = [
 
 export const pausedTokenConfig = {
   icon: 'pause',
-  title: s__('Runners|Paused'),
+  title: I18N_PAUSED,
   type: PARAM_KEY_PAUSED,
   token: BaseToken,
   unique: true,

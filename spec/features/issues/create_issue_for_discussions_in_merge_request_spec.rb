@@ -39,7 +39,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
     context 'resolving the thread' do
       before do
-        find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+        find('button[data-testid="resolve-discussion-button"]').click
       end
 
       it 'hides the link for creating a new issue' do

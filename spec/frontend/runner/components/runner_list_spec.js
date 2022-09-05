@@ -7,6 +7,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStatusPopover from '~/runner/components/runner_status_popover.vue';
+import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/runner/constants';
 import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
@@ -91,7 +92,7 @@ describe('RunnerList', () => {
     createComponent({}, mountExtended);
 
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('never contacted');
+    expect(findCell({ fieldKey: 'status' }).text()).toBe(I18N_STATUS_NEVER_CONTACTED);
 
     // Runner summary
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(
@@ -262,13 +263,15 @@ describe('RunnerList', () => {
       const numericId = getIdFromGraphQLId(id);
 
       // Badges
-      expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('never contacted');
+      expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
+        I18N_STATUS_NEVER_CONTACTED,
+      );
 
       // Runner summary
       const summary = findCell({ fieldKey: 'summary' }).text();
 
       expect(summary).toContain(`#${numericId} (${shortSha})`);
-      expect(summary).toContain('specific');
+      expect(summary).toContain(I18N_PROJECT_TYPE);
 
       expect(summary).toContain(version);
       expect(summary).toContain(description);

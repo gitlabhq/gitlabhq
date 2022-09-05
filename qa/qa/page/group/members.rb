@@ -9,7 +9,7 @@ module QA
         include Page::Component::MembersFilter
 
         view 'app/assets/javascripts/members/components/modals/remove_member_modal.vue' do
-          element :remove_member_modal_content
+          element :remove_member_modal
         end
 
         view 'app/assets/javascripts/pages/groups/group_members/index.js' do
@@ -45,7 +45,7 @@ module QA
             click_element :delete_member_button
           end
 
-          within_element(:remove_member_modal_content) do
+          within_element(:remove_member_modal) do
             click_button("Remove member")
           end
         end

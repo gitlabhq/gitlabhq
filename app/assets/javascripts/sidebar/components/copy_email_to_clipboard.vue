@@ -16,7 +16,7 @@ export default {
 
 <template>
   <copyable-field
-    data-qa-selector="copy-forward-email"
+    data-testid="copy-forward-email"
     :name="s__('RightSidebar|Issue email')"
     :clipboard-tooltip-text="s__('RightSidebar|Copy email address')"
     :value="issueEmailAddress"

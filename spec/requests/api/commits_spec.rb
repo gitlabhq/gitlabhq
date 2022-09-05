@@ -15,6 +15,8 @@ RSpec.describe API::Commits do
   let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
   let(:project_id) { project.id }
   let(:current_user) { nil }
+  let(:group) { create(:group, :public) }
+  let(:inherited_guest) { create(:user).tap { |u| group.add_guest(u) } }
 
   before do
     project.add_maintainer(user)
@@ -56,311 +58,340 @@ RSpec.describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a maintainer' do
-      let(:current_user) { user }
+    context 'when authenticated' do
+      context 'when user is a direct project member' do
+        context 'and user is a maintainer' do
+          let(:current_user) { user }
 
-      it_behaves_like 'project commits'
+          it_behaves_like 'project commits'
 
-      context "since optional parameter" do
-        it "returns project commits since provided parameter" do
-          commits = project.repository.commits("master", limit: 2)
-          after = commits.second.created_at
+          context "since optional parameter" do
+            it "returns project commits since provided parameter" do
+              commits = project.repository.commits("master", limit: 2)
+              after = commits.second.created_at
 
-          get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
+              get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
 
-          expect(json_response.size).to eq 2
-          expect(json_response.first["id"]).to eq(commits.first.id)
-          expect(json_response.second["id"]).to eq(commits.second.id)
-        end
+              expect(json_response.size).to eq 2
+              expect(json_response.first["id"]).to eq(commits.first.id)
+              expect(json_response.second["id"]).to eq(commits.second.id)
+            end
 
-        it 'include correct pagination headers' do
-          commits = project.repository.commits("master", limit: 2)
-          after = commits.second.created_at
+            it 'include correct pagination headers' do
+              commits = project.repository.commits("master", limit: 2)
+              after = commits.second.created_at
 
-          get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
+              get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
 
-          expect(response).to include_limited_pagination_headers
-          expect(response.headers['X-Page']).to eql('1')
-        end
-      end
-
-      context "until optional parameter" do
-        it "returns project commits until provided parameter" do
-          commits = project.repository.commits("master", limit: 20)
-          before = commits.second.created_at
-
-          get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
-
-          if commits.size == 20
-            expect(json_response.size).to eq(20)
-          else
-            expect(json_response.size).to eq(commits.size - 1)
+              expect(response).to include_limited_pagination_headers
+              expect(response.headers['X-Page']).to eql('1')
+            end
           end
 
-          expect(json_response.first["id"]).to eq(commits.second.id)
-          expect(json_response.second["id"]).to eq(commits.third.id)
-        end
+          context "until optional parameter" do
+            it "returns project commits until provided parameter" do
+              commits = project.repository.commits("master", limit: 20)
+              before = commits.second.created_at
 
-        it 'include correct pagination headers' do
-          commits = project.repository.commits("master", limit: 2)
-          before = commits.second.created_at
+              get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-          get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
+              if commits.size == 20
+                expect(json_response.size).to eq(20)
+              else
+                expect(json_response.size).to eq(commits.size - 1)
+              end
 
-          expect(response).to include_limited_pagination_headers
-          expect(response.headers['X-Page']).to eql('1')
-        end
-      end
+              expect(json_response.first["id"]).to eq(commits.second.id)
+              expect(json_response.second["id"]).to eq(commits.third.id)
+            end
 
-      context "invalid xmlschema date parameters" do
-        it "returns an invalid parameter error message" do
-          get api("/projects/#{project_id}/repository/commits?since=invalid-date", user)
+            it 'include correct pagination headers' do
+              commits = project.repository.commits("master", limit: 2)
+              before = commits.second.created_at
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['error']).to eq('since is invalid')
-        end
-      end
+              get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-      context "with empty ref_name parameter" do
-        let(:route) { "/projects/#{project_id}/repository/commits?ref_name=" }
-
-        it_behaves_like 'project commits'
-      end
-
-      context 'when repository does not exist' do
-        let(:project) { create(:project, creator: user, path: 'my.project') }
-
-        it_behaves_like '404 response' do
-          let(:request) { get api(route, current_user) }
-          let(:message) { '404 Repository Not Found' }
-        end
-      end
-
-      context "path optional parameter" do
-        it "returns project commits matching provided path parameter" do
-          path = 'files/ruby/popen.rb'
-
-          get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
-
-          expect(json_response.size).to eq(3)
-          expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
-          expect(response).to include_limited_pagination_headers
-        end
-
-        it 'include correct pagination headers' do
-          path = 'files/ruby/popen.rb'
-
-          get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
-
-          expect(response).to include_limited_pagination_headers
-          expect(response.headers['X-Page']).to eql('1')
-        end
-      end
-
-      context 'all optional parameter' do
-        it 'returns all project commits' do
-          expected_commit_ids = project.repository.commits(nil, all: true, limit: 50).map(&:id)
-
-          get api("/projects/#{project_id}/repository/commits?all=true&per_page=50", user)
-
-          commit_ids = json_response.map { |c| c['id'] }
-
-          expect(response).to include_limited_pagination_headers
-          expect(commit_ids).to eq(expected_commit_ids)
-          expect(response.headers['X-Page']).to eql('1')
-        end
-      end
-
-      context 'first_parent optional parameter' do
-        it 'returns all first_parent commits' do
-          expected_commit_ids = project.repository.commits(SeedRepo::Commit::ID, limit: 50, first_parent: true).map(&:id)
-
-          get api("/projects/#{project_id}/repository/commits?per_page=50", user), params: { ref_name: SeedRepo::Commit::ID, first_parent: 'true' }
-
-          commit_ids = json_response.map { |c| c['id'] }
-
-          expect(response).to include_limited_pagination_headers
-          expect(expected_commit_ids.size).to eq(12)
-          expect(commit_ids).to eq(expected_commit_ids)
-        end
-      end
-
-      context 'with_stats optional parameter' do
-        let(:project) { create(:project, :public, :repository) }
-
-        it_behaves_like 'project commits', schema: 'public_api/v4/commits_with_stats' do
-          let(:route) { "/projects/#{project_id}/repository/commits?with_stats=true" }
-
-          it 'include commits details' do
-            commit = project.repository.commit
-            get api(route, current_user)
-
-            expect(json_response.first['stats']['additions']).to eq(commit.stats.additions)
-            expect(json_response.first['stats']['deletions']).to eq(commit.stats.deletions)
-            expect(json_response.first['stats']['total']).to eq(commit.stats.total)
-          end
-        end
-      end
-
-      context 'with pagination params' do
-        let(:page) { 1 }
-        let(:per_page) { 5 }
-        let(:ref_name) { 'master' }
-        let(:request) do
-          get api("/projects/#{project_id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
-        end
-
-        it 'returns correct headers' do
-          request
-
-          expect(response).to include_limited_pagination_headers
-          expect(response.headers['Link']).to match(/page=1&per_page=5/)
-          expect(response.headers['Link']).to match(/page=2&per_page=5/)
-        end
-
-        context 'viewing the first page' do
-          it 'returns the first 5 commits' do
-            request
-
-            commit = project.repository.commit
-
-            expect(json_response.size).to eq(per_page)
-            expect(json_response.first['id']).to eq(commit.id)
-            expect(response.headers['X-Page']).to eq('1')
-          end
-        end
-
-        context 'viewing the third page' do
-          let(:page) { 3 }
-
-          it 'returns the third 5 commits' do
-            request
-
-            commit = project.repository.commits('HEAD', limit: per_page, offset: (page - 1) * per_page).first
-
-            expect(json_response.size).to eq(per_page)
-            expect(json_response.first['id']).to eq(commit.id)
-            expect(response.headers['X-Page']).to eq('3')
-          end
-        end
-
-        context 'when pagination params are invalid' do
-          let_it_be(:project) { create(:project, :repository) }
-
-          using RSpec::Parameterized::TableSyntax
-
-          where(:page, :per_page, :error_message) do
-            0   | nil | 'page does not have a valid value'
-            -1  | nil | 'page does not have a valid value'
-            'a' | nil | 'page is invalid'
-            nil | 0   | 'per_page does not have a valid value'
-            nil | -1  | 'per_page does not have a valid value'
-            nil | 'a' | 'per_page is invalid'
+              expect(response).to include_limited_pagination_headers
+              expect(response.headers['X-Page']).to eql('1')
+            end
           end
 
-          with_them do
-            it 'returns 400 response' do
-              request
+          context "invalid xmlschema date parameters" do
+            it "returns an invalid parameter error message" do
+              get api("/projects/#{project_id}/repository/commits?since=invalid-date", user)
 
               expect(response).to have_gitlab_http_status(:bad_request)
-              expect(json_response['error']).to eq(error_message)
+              expect(json_response['error']).to eq('since is invalid')
             end
           end
 
-          context 'when FF is off' do
-            before do
-              stub_feature_flags(only_positive_pagination_values: false)
+          context "with empty ref_name parameter" do
+            let(:route) { "/projects/#{project_id}/repository/commits?ref_name=" }
+
+            it_behaves_like 'project commits'
+          end
+
+          context 'when repository does not exist' do
+            let(:project) { create(:project, creator: user, path: 'my.project') }
+
+            it_behaves_like '404 response' do
+              let(:request) { get api(route, current_user) }
+              let(:message) { '404 Repository Not Found' }
+            end
+          end
+
+          context "path optional parameter" do
+            it "returns project commits matching provided path parameter" do
+              path = 'files/ruby/popen.rb'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(3)
+              expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+              expect(response).to include_limited_pagination_headers
             end
 
-            where(:page, :per_page, :error_message, :status) do
-              0   | nil  | nil                               | :success
-              -10 | nil  | nil                               | :internal_server_error
-              'a' | nil | 'page is invalid'                  | :bad_request
-              nil | 0   | 'per_page has a value not allowed' | :bad_request
-              nil | -1  | nil                                | :success
-              nil | 'a' | 'per_page is invalid'              | :bad_request
+            it 'include correct pagination headers' do
+              path = 'files/ruby/popen.rb'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(response).to include_limited_pagination_headers
+              expect(response.headers['X-Page']).to eql('1')
+            end
+          end
+
+          context 'all optional parameter' do
+            it 'returns all project commits' do
+              expected_commit_ids = project.repository.commits(nil, all: true, limit: 50).map(&:id)
+
+              get api("/projects/#{project_id}/repository/commits?all=true&per_page=50", user)
+
+              commit_ids = json_response.map { |c| c['id'] }
+
+              expect(response).to include_limited_pagination_headers
+              expect(commit_ids).to eq(expected_commit_ids)
+              expect(response.headers['X-Page']).to eql('1')
+            end
+          end
+
+          context 'first_parent optional parameter' do
+            it 'returns all first_parent commits' do
+              expected_commit_ids = project.repository.commits(SeedRepo::Commit::ID, limit: 50, first_parent: true).map(&:id)
+
+              get api("/projects/#{project_id}/repository/commits?per_page=50", user), params: { ref_name: SeedRepo::Commit::ID, first_parent: 'true' }
+
+              commit_ids = json_response.map { |c| c['id'] }
+
+              expect(response).to include_limited_pagination_headers
+              expect(expected_commit_ids.size).to eq(12)
+              expect(commit_ids).to eq(expected_commit_ids)
+            end
+          end
+
+          context 'with_stats optional parameter' do
+            let(:project) { create(:project, :public, :repository) }
+
+            it_behaves_like 'project commits', schema: 'public_api/v4/commits_with_stats' do
+              let(:route) { "/projects/#{project_id}/repository/commits?with_stats=true" }
+
+              it 'include commits details' do
+                commit = project.repository.commit
+                get api(route, current_user)
+
+                expect(json_response.first['stats']['additions']).to eq(commit.stats.additions)
+                expect(json_response.first['stats']['deletions']).to eq(commit.stats.deletions)
+                expect(json_response.first['stats']['total']).to eq(commit.stats.total)
+              end
+            end
+          end
+
+          context 'with pagination params' do
+            let(:page) { 1 }
+            let(:per_page) { 5 }
+            let(:ref_name) { 'master' }
+            let(:request) do
+              get api("/projects/#{project_id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
             end
 
-            with_them do
-              it 'returns a response' do
+            it 'returns correct headers' do
+              request
+
+              expect(response).to include_limited_pagination_headers
+              expect(response.headers['Link']).to match(/page=1&per_page=5/)
+              expect(response.headers['Link']).to match(/page=2&per_page=5/)
+            end
+
+            context 'viewing the first page' do
+              it 'returns the first 5 commits' do
                 request
 
-                expect(response).to have_gitlab_http_status(status)
+                commit = project.repository.commit
 
-                if error_message
+                expect(json_response.size).to eq(per_page)
+                expect(json_response.first['id']).to eq(commit.id)
+                expect(response.headers['X-Page']).to eq('1')
+              end
+            end
+
+            context 'viewing the third page' do
+              let(:page) { 3 }
+
+              it 'returns the third 5 commits' do
+                request
+
+                commit = project.repository.commits('HEAD', limit: per_page, offset: (page - 1) * per_page).first
+
+                expect(json_response.size).to eq(per_page)
+                expect(json_response.first['id']).to eq(commit.id)
+                expect(response.headers['X-Page']).to eq('3')
+              end
+            end
+
+            context 'when pagination params are invalid' do
+              let_it_be(:project) { create(:project, :repository) }
+
+              using RSpec::Parameterized::TableSyntax
+
+              where(:page, :per_page, :error_message) do
+                0   | nil | 'page does not have a valid value'
+                -1  | nil | 'page does not have a valid value'
+                'a' | nil | 'page is invalid'
+                nil | 0   | 'per_page does not have a valid value'
+                nil | -1  | 'per_page does not have a valid value'
+                nil | 'a' | 'per_page is invalid'
+              end
+
+              with_them do
+                it 'returns 400 response' do
+                  request
+
+                  expect(response).to have_gitlab_http_status(:bad_request)
                   expect(json_response['error']).to eq(error_message)
+                end
+              end
+
+              context 'when FF is off' do
+                before do
+                  stub_feature_flags(only_positive_pagination_values: false)
+                end
+
+                where(:page, :per_page, :error_message, :status) do
+                  0   | nil  | nil                               | :success
+                  -10 | nil  | nil                               | :internal_server_error
+                  'a' | nil | 'page is invalid'                  | :bad_request
+                  nil | 0   | 'per_page has a value not allowed' | :bad_request
+                  nil | -1  | nil                                | :success
+                  nil | 'a' | 'per_page is invalid'              | :bad_request
+                end
+
+                with_them do
+                  it 'returns a response' do
+                    request
+
+                    expect(response).to have_gitlab_http_status(status)
+
+                    if error_message
+                      expect(json_response['error']).to eq(error_message)
+                    end
+                  end
                 end
               end
             end
           end
+
+          context 'with order parameter' do
+            let(:route) { "/projects/#{project_id}/repository/commits?ref_name=0031876&per_page=6&order=#{order}" }
+
+            context 'set to topo' do
+              let(:order) { 'topo' }
+
+              # git log --graph -n 6 --pretty=format:"%h" --topo-order 0031876
+              # *   0031876
+              # |\
+              # | * 48ca272
+              # | * 335bc94
+              # * | bf6e164
+              # * | 9d526f8
+              # |/
+              # * 1039376
+              it 'returns project commits ordered by topo order' do
+                commits = project.repository.commits("0031876", limit: 6, order: 'topo')
+
+                get api(route, current_user)
+
+                expect(json_response.size).to eq(6)
+                expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+              end
+            end
+
+            context 'set to default' do
+              let(:order) { 'default' }
+
+              # git log --graph -n 6 --pretty=format:"%h" --date-order 0031876
+              # *   0031876
+              # |\
+              # * | bf6e164
+              # | * 48ca272
+              # * | 9d526f8
+              # | * 335bc94
+              # |/
+              # * 1039376
+              it 'returns project commits ordered by default order' do
+                commits = project.repository.commits("0031876", limit: 6, order: 'default')
+
+                get api(route, current_user)
+
+                expect(json_response.size).to eq(6)
+                expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+              end
+            end
+
+            context 'set to an invalid parameter' do
+              let(:order) { 'invalid' }
+
+              it_behaves_like '400 response' do
+                let(:request) { get api(route, current_user) }
+              end
+            end
+          end
+
+          context 'with the optional trailers parameter' do
+            it 'includes the Git trailers' do
+              get api("/projects/#{project_id}/repository/commits?ref_name=6d394385cf567f80a8fd85055db1ab4c5295806f&trailers=true", current_user)
+
+              commit = json_response[0]
+
+              expect(commit['trailers']).to eq(
+                'Signed-off-by' => 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>'
+              )
+            end
+          end
         end
       end
 
-      context 'with order parameter' do
-        let(:route) { "/projects/#{project_id}/repository/commits?ref_name=0031876&per_page=6&order=#{order}" }
+      context 'when user is an inherited member from the group' do
+        context 'when project is public with private repository' do
+          let(:project) { create(:project, :public, :repository, :repository_private, group: group) }
 
-        context 'set to topo' do
-          let(:order) { 'topo' }
+          context 'and user is a guest' do
+            let(:current_user) { inherited_guest }
 
-          # git log --graph -n 6 --pretty=format:"%h" --topo-order 0031876
-          # *   0031876
-          # |\
-          # | * 48ca272
-          # | * 335bc94
-          # * | bf6e164
-          # * | 9d526f8
-          # |/
-          # * 1039376
-          it 'returns project commits ordered by topo order' do
-            commits = project.repository.commits("0031876", limit: 6, order: 'topo')
-
-            get api(route, current_user)
-
-            expect(json_response.size).to eq(6)
-            expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+            it_behaves_like 'project commits'
           end
         end
 
-        context 'set to default' do
-          let(:order) { 'default' }
+        context 'when project is private' do
+          let(:project) { create(:project, :private, :repository, group: group) }
 
-          # git log --graph -n 6 --pretty=format:"%h" --date-order 0031876
-          # *   0031876
-          # |\
-          # * | bf6e164
-          # | * 48ca272
-          # * | 9d526f8
-          # | * 335bc94
-          # |/
-          # * 1039376
-          it 'returns project commits ordered by default order' do
-            commits = project.repository.commits("0031876", limit: 6, order: 'default')
+          context 'and user is a guest' do
+            let(:current_user) { inherited_guest }
 
-            get api(route, current_user)
-
-            expect(json_response.size).to eq(6)
-            expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+            it_behaves_like '404 response' do
+              let(:request) { get api(route) }
+              let(:message) { '404 Project Not Found' }
+            end
           end
-        end
-
-        context 'set to an invalid parameter' do
-          let(:order) { 'invalid' }
-
-          it_behaves_like '400 response' do
-            let(:request) { get api(route, current_user) }
-          end
-        end
-      end
-
-      context 'with the optional trailers parameter' do
-        it 'includes the Git trailers' do
-          get api("/projects/#{project_id}/repository/commits?ref_name=6d394385cf567f80a8fd85055db1ab4c5295806f&trailers=true", current_user)
-
-          commit = json_response[0]
-
-          expect(commit['trailers']).to eq(
-            'Signed-off-by' => 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>'
-          )
         end
       end
     end
@@ -466,11 +497,37 @@ RSpec.describe API::Commits do
       end
 
       context 'a new file in project repo' do
-        before do
-          post api(url, user), params: valid_c_params
+        context 'when user is a direct project member' do
+          before do
+            post api(url, user), params: valid_c_params
+          end
+
+          it_behaves_like 'successfully creates the commit'
         end
 
-        it_behaves_like "successfully creates the commit"
+        context 'when user is an inherited member from the group' do
+          context 'when project is public with private repository' do
+            let(:project) { create(:project, :public, :repository, :repository_private, group: group) }
+
+            context 'and user is a guest' do
+              it_behaves_like '403 response' do
+                let(:request) { post api(url, inherited_guest), params: valid_c_params }
+                let(:message) { '403 Forbidden' }
+              end
+            end
+          end
+
+          context 'when project is private' do
+            let(:project) { create(:project, :private, :repository, group: group) }
+
+            context 'and user is a guest' do
+              it_behaves_like '403 response' do
+                let(:request) { post api(url, inherited_guest), params: valid_c_params }
+                let(:message) { '403 Forbidden' }
+              end
+            end
+          end
+        end
       end
 
       context 'a new file with utf8 chars in project repo' do

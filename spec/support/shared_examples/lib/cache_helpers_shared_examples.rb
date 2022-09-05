@@ -185,6 +185,28 @@ RSpec.shared_examples_for 'collection cache helper' do
       end
     end
 
+    context 'when presentable has a group by clause' do
+      let(:presentable) { MergeRequest.group(:id) }
+
+      it "returns the presentables" do
+        expect(transaction)
+          .to receive(:increment)
+          .with(:cached_object_operations_total, 0, { caller_id: caller_id, render_type: :collection, cache_hit: true }).once
+
+        expect(transaction)
+          .to receive(:increment)
+          .with(:cached_object_operations_total, MergeRequest.count, { caller_id: caller_id, render_type: :collection, cache_hit: false }).once
+
+        parsed = Gitlab::Json.parse(subject.to_s)
+
+        expect(parsed).to be_an(Array)
+
+        presentable.each_with_index do |item, i|
+          expect(parsed[i]["id"]).to eq(item.id)
+        end
+      end
+    end
+
     context 'when the presentables all miss' do
       it 'increments the counters' do
         expect(transaction)

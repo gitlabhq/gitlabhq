@@ -34,7 +34,6 @@ describe('RunnerTags', () => {
 
   it('Displays tags with correct style', () => {
     expect(findBadge().props('size')).toBe('sm');
-    expect(findBadge().props('variant')).toBe('neutral');
   });
 
   it('Displays tags with md size', () => {

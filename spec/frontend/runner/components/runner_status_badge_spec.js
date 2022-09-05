@@ -3,12 +3,16 @@ import { shallowMount } from '@vue/test-utils';
 import RunnerStatusBadge from '~/runner/components/runner_status_badge.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import {
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_NEVER_CONTACTED,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
+  I18N_NEVER_CONTACTED_TOOLTIP,
+  I18N_STALE_NEVER_CONTACTED_TOOLTIP,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
   STATUS_NEVER_CONTACTED,
-  I18N_NEVER_CONTACTED_TOOLTIP,
-  I18N_STALE_NEVER_CONTACTED_TOOLTIP,
 } from '~/runner/constants';
 
 describe('RunnerTypeBadge', () => {
@@ -46,7 +50,7 @@ describe('RunnerTypeBadge', () => {
   it('renders online state', () => {
     createComponent();
 
-    expect(wrapper.text()).toBe('online');
+    expect(wrapper.text()).toBe(I18N_STATUS_ONLINE);
     expect(findBadge().props('variant')).toBe('success');
     expect(getTooltip().value).toBe('Runner is online; last contact was 1 minute ago');
   });
@@ -59,7 +63,7 @@ describe('RunnerTypeBadge', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('never contacted');
+    expect(wrapper.text()).toBe(I18N_STATUS_NEVER_CONTACTED);
     expect(findBadge().props('variant')).toBe('muted');
     expect(getTooltip().value).toBe(I18N_NEVER_CONTACTED_TOOLTIP);
   });
@@ -72,7 +76,7 @@ describe('RunnerTypeBadge', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('offline');
+    expect(wrapper.text()).toBe(I18N_STATUS_OFFLINE);
     expect(findBadge().props('variant')).toBe('muted');
     expect(getTooltip().value).toBe('Runner is offline; last contact was 1 day ago');
   });
@@ -85,7 +89,7 @@ describe('RunnerTypeBadge', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('stale');
+    expect(wrapper.text()).toBe(I18N_STATUS_STALE);
     expect(findBadge().props('variant')).toBe('warning');
     expect(getTooltip().value).toBe('Runner is stale; last contact was 1 year ago');
   });
@@ -98,7 +102,7 @@ describe('RunnerTypeBadge', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('stale');
+    expect(wrapper.text()).toBe(I18N_STATUS_STALE);
     expect(findBadge().props('variant')).toBe('warning');
     expect(getTooltip().value).toBe(I18N_STALE_NEVER_CONTACTED_TOOLTIP);
   });
@@ -112,7 +116,7 @@ describe('RunnerTypeBadge', () => {
         },
       });
 
-      expect(wrapper.text()).toBe('online');
+      expect(wrapper.text()).toBe(I18N_STATUS_ONLINE);
       expect(getTooltip().value).toBe('Runner is online; last contact was never');
     });
 

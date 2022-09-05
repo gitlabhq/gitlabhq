@@ -14,7 +14,7 @@ export default {
 };
 </script>
 <template>
-  <span class="gl-font-weight-bold"
+  <span class="gl-font-weight-bold gl-vertical-align-middle"
     >#{{ getIdFromGraphQLId(runner.id) }} ({{ runner.shortSha }})</span
   >
 </template>

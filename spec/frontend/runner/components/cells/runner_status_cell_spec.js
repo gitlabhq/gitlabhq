@@ -3,7 +3,14 @@ import RunnerStatusCell from '~/runner/components/cells/runner_status_cell.vue';
 
 import RunnerStatusBadge from '~/runner/components/runner_status_badge.vue';
 import RunnerPausedBadge from '~/runner/components/runner_paused_badge.vue';
-import { INSTANCE_TYPE, STATUS_ONLINE, STATUS_OFFLINE } from '~/runner/constants';
+import {
+  I18N_PAUSED,
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  INSTANCE_TYPE,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+} from '~/runner/constants';
 
 describe('RunnerStatusCell', () => {
   let wrapper;
@@ -31,8 +38,8 @@ describe('RunnerStatusCell', () => {
   it('Displays online status', () => {
     createComponent();
 
-    expect(wrapper.text()).toMatchInterpolatedText('online');
-    expect(findStatusBadge().text()).toBe('online');
+    expect(wrapper.text()).toContain(I18N_STATUS_ONLINE);
+    expect(findStatusBadge().text()).toBe(I18N_STATUS_ONLINE);
   });
 
   it('Displays offline status', () => {
@@ -42,8 +49,8 @@ describe('RunnerStatusCell', () => {
       },
     });
 
-    expect(wrapper.text()).toMatchInterpolatedText('offline');
-    expect(findStatusBadge().text()).toBe('offline');
+    expect(wrapper.text()).toMatchInterpolatedText(I18N_STATUS_OFFLINE);
+    expect(findStatusBadge().text()).toBe(I18N_STATUS_OFFLINE);
   });
 
   it('Displays paused status', () => {
@@ -54,8 +61,8 @@ describe('RunnerStatusCell', () => {
       },
     });
 
-    expect(wrapper.text()).toMatchInterpolatedText('online paused');
-    expect(findPausedBadge().text()).toBe('paused');
+    expect(wrapper.text()).toMatchInterpolatedText(`${I18N_STATUS_ONLINE} ${I18N_PAUSED}`);
+    expect(findPausedBadge().text()).toBe(I18N_PAUSED);
   });
 
   it('Is empty when data is missing', () => {

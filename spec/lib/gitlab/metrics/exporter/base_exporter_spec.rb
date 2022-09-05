@@ -10,11 +10,12 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
   describe 'when exporter is enabled' do
     before do
       allow(::WEBrick::HTTPServer).to receive(:new).with(
-        Port: anything,
-        BindAddress: anything,
-        Logger: anything,
-        AccessLog: anything
-      ).and_call_original
+        {
+          Port: anything,
+          BindAddress: anything,
+          Logger: anything,
+          AccessLog: anything
+        }).and_call_original
 
       allow(settings).to receive(:enabled).and_return(true)
       allow(settings).to receive(:port).and_return(0)
@@ -45,11 +46,12 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
 
           it 'starts server with port and address from settings' do
             expect(::WEBrick::HTTPServer).to receive(:new).with(
-              Port: port,
-              BindAddress: address,
-              Logger: anything,
-              AccessLog: anything
-            ).and_wrap_original do |m, *args|
+              {
+                Port: port,
+                BindAddress: address,
+                Logger: anything,
+                AccessLog: anything
+              }).and_wrap_original do |m, *args|
               m.call(DoNotListen: true, Logger: args.first[:Logger])
             end
 

@@ -1,8 +1,15 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { s__ } from '~/locale';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RunnerSingleStat from '~/runner/components/stat/runner_single_stat.vue';
-import { INSTANCE_TYPE, STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '~/runner/constants';
+import {
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
+  INSTANCE_TYPE,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
+} from '~/runner/constants';
 
 describe('RunnerStats', () => {
   let wrapper;
@@ -46,9 +53,9 @@ describe('RunnerStats', () => {
     });
 
     const text = wrapper.text();
-    expect(text).toContain(`${s__('Runners|Online')} 3`);
-    expect(text).toContain(`${s__('Runners|Offline')} 2`);
-    expect(text).toContain(`${s__('Runners|Stale')} 1`);
+    expect(text).toContain(`${I18N_STATUS_ONLINE} 3`);
+    expect(text).toContain(`${I18N_STATUS_OFFLINE} 2`);
+    expect(text).toContain(`${I18N_STATUS_STALE} 1`);
   });
 
   it('Skips query for other stats', () => {

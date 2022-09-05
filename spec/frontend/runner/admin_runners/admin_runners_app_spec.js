@@ -33,6 +33,12 @@ import {
   CREATED_ASC,
   CREATED_DESC,
   DEFAULT_SORT,
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
+  I18N_INSTANCE_TYPE,
+  I18N_GROUP_TYPE,
+  I18N_PROJECT_TYPE,
   INSTANCE_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
@@ -156,15 +162,16 @@ describe('AdminRunnersApp', () => {
     });
 
     it('shows the runner tabs', () => {
-      expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-        `All ${mockRunnersCount} Instance ${mockRunnersCount} Group ${mockRunnersCount} Project ${mockRunnersCount}`,
+      const tabs = findRunnerTypeTabs().text();
+      expect(tabs).toMatchInterpolatedText(
+        `All ${mockRunnersCount} ${I18N_INSTANCE_TYPE} ${mockRunnersCount} ${I18N_GROUP_TYPE} ${mockRunnersCount} ${I18N_PROJECT_TYPE} ${mockRunnersCount}`,
       );
     });
 
     it('shows the total', () => {
-      expect(findRunnerStats().text()).toContain(`${s__('Runners|Online')} ${mockRunnersCount}`);
-      expect(findRunnerStats().text()).toContain(`${s__('Runners|Offline')} ${mockRunnersCount}`);
-      expect(findRunnerStats().text()).toContain(`${s__('Runners|Stale')} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${I18N_STATUS_ONLINE} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${I18N_STATUS_OFFLINE} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${I18N_STATUS_STALE} ${mockRunnersCount}`);
     });
   });
 

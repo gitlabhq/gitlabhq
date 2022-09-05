@@ -2,7 +2,14 @@ import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerTypeBadge from '~/runner/components/runner_type_badge.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
+import {
+  INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  I18N_INSTANCE_TYPE,
+  I18N_GROUP_TYPE,
+  I18N_PROJECT_TYPE,
+} from '~/runner/constants';
 
 describe('RunnerTypeBadge', () => {
   let wrapper;
@@ -27,9 +34,9 @@ describe('RunnerTypeBadge', () => {
 
   describe.each`
     type             | text
-    ${INSTANCE_TYPE} | ${'shared'}
-    ${GROUP_TYPE}    | ${'group'}
-    ${PROJECT_TYPE}  | ${'specific'}
+    ${INSTANCE_TYPE} | ${I18N_INSTANCE_TYPE}
+    ${GROUP_TYPE}    | ${I18N_GROUP_TYPE}
+    ${PROJECT_TYPE}  | ${I18N_PROJECT_TYPE}
   `('displays $type runner', ({ type, text }) => {
     beforeEach(() => {
       createComponent({ props: { type } });
@@ -37,7 +44,7 @@ describe('RunnerTypeBadge', () => {
 
     it(`as "${text}" with an "info" variant`, () => {
       expect(findBadge().text()).toBe(text);
-      expect(findBadge().props('variant')).toBe('info');
+      expect(findBadge().props('variant')).toBe('muted');
     });
 
     it('with a tooltip', () => {

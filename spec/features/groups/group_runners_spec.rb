@@ -61,7 +61,7 @@ RSpec.describe "Group Runners" do
 
       it 'shows a group badge' do
         within_runner_row(group_runner.id) do
-          expect(page).to have_selector '.badge', text: 'group'
+          expect(page).to have_selector '.badge', text: s_('Runners|Group')
         end
       end
 
@@ -101,9 +101,9 @@ RSpec.describe "Group Runners" do
         let(:runner) { project_runner }
       end
 
-      it 'shows a project (specific) badge' do
+      it 'shows a project badge' do
         within_runner_row(project_runner.id) do
-          expect(page).to have_selector '.badge', text: 'specific'
+          expect(page).to have_selector '.badge', text: s_('Runners|Project')
         end
       end
 
@@ -137,7 +137,7 @@ RSpec.describe "Group Runners" do
         focus_filtered_search
 
         page.within(search_bar_selector) do
-          expect(page).to have_link('Paused')
+          expect(page).to have_link(s_('Runners|Paused'))
           expect(page).to have_content('Status')
         end
       end

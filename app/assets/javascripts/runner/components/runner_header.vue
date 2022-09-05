@@ -38,31 +38,33 @@ export default {
 </script>
 <template>
   <div
-    class="gl-display-flex gl-align-items-center gl-py-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-gap-3 gl-flex-wrap gl-py-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
   >
-    <div>
+    <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap">
       <runner-status-badge :runner="runner" />
       <runner-type-badge v-if="runner" :type="runner.runnerType" />
-      <template v-if="runner.createdAt">
-        <gl-sprintf :message="__('%{runner} created %{timeago}')">
-          <template #runner>
-            <strong>{{ heading }}</strong>
-            <gl-icon
-              v-if="runner.locked"
-              v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
-              name="lock"
-              :aria-label="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
-            />
-          </template>
-          <template #timeago>
-            <time-ago :time="runner.createdAt" />
-          </template>
-        </gl-sprintf>
-      </template>
-      <template v-else>
-        <strong>{{ heading }}</strong>
-      </template>
+      <span>
+        <template v-if="runner.createdAt">
+          <gl-sprintf :message="__('%{runner} created %{timeago}')">
+            <template #runner>
+              <strong>{{ heading }}</strong>
+              <gl-icon
+                v-if="runner.locked"
+                v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
+                name="lock"
+                :aria-label="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
+              />
+            </template>
+            <template #timeago>
+              <time-ago :time="runner.createdAt" />
+            </template>
+          </gl-sprintf>
+        </template>
+        <template v-else>
+          <strong>{{ heading }}</strong>
+        </template>
+      </span>
     </div>
-    <div class="gl-ml-auto gl-flex-shrink-0"><slot name="actions"></slot></div>
+    <div class="gl-display-flex gl-gap-3 gl-flex-wrap"><slot name="actions"></slot></div>
   </div>
 </template>

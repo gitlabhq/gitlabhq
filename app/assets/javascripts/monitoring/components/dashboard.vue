@@ -391,7 +391,11 @@ export default {
 };
 </script>
 <template>
-  <div class="prometheus-graphs" data-qa-selector="prometheus_graphs">
+  <div
+    class="prometheus-graphs"
+    data-qa-selector="prometheus_graphs_content"
+    data-testid="prometheus-graphs"
+  >
     <div>
       <gl-alert
         v-if="!isDeprecationNoticeDismissed"

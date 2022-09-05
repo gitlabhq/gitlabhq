@@ -38,7 +38,7 @@ describe('pages/shared/wikis/components/wiki_content', () => {
 
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findContent = () => wrapper.find('[data-testid="wiki_page_content"]');
+  const findContent = () => wrapper.find('[data-testid="wiki-page-content"]');
 
   describe('when loading content', () => {
     beforeEach(() => {

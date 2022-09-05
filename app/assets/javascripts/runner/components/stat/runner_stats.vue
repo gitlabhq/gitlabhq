@@ -1,7 +1,13 @@
 <script>
-import { s__ } from '~/locale';
 import RunnerSingleStat from '~/runner/components/stat/runner_single_stat.vue';
-import { STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '../../constants';
+import {
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
+} from '../../constants';
 
 export default {
   components: {
@@ -29,7 +35,7 @@ export default {
             skip: this.statusCountSkip(STATUS_ONLINE),
             variables: { ...this.variables, status: STATUS_ONLINE },
             variant: 'success',
-            title: s__('Runners|Online'),
+            title: I18N_STATUS_ONLINE,
             metaIcon: 'status-active',
           },
         },
@@ -39,7 +45,7 @@ export default {
             skip: this.statusCountSkip(STATUS_OFFLINE),
             variables: { ...this.variables, status: STATUS_OFFLINE },
             variant: 'muted',
-            title: s__('Runners|Offline'),
+            title: I18N_STATUS_OFFLINE,
             metaIcon: 'status-waiting',
           },
         },
@@ -49,7 +55,7 @@ export default {
             skip: this.statusCountSkip(STATUS_STALE),
             variables: { ...this.variables, status: STATUS_STALE },
             variant: 'warning',
-            title: s__('Runners|Stale'),
+            title: I18N_STATUS_STALE,
             metaIcon: 'time-out',
           },
         },

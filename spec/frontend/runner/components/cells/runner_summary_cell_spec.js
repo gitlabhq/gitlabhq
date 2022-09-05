@@ -2,7 +2,7 @@ import { __ } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerSummaryCell from '~/runner/components/cells/runner_summary_cell.vue';
 import RunnerTags from '~/runner/components/runner_tags.vue';
-import { INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
+import { INSTANCE_TYPE, I18N_INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
 
 const mockId = '1';
 const mockShortSha = '2P6oDVDm';
@@ -46,7 +46,7 @@ describe('RunnerTypeCell', () => {
   });
 
   it('Displays the runner type', () => {
-    expect(wrapper.text()).toContain('shared');
+    expect(wrapper.text()).toContain(I18N_INSTANCE_TYPE);
   });
 
   it('Does not display the locked icon', () => {

@@ -1,6 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { GROUP_TYPE, STATUS_ONLINE } from '~/runner/constants';
+import { I18N_STATUS_ONLINE, I18N_GROUP_TYPE, GROUP_TYPE, STATUS_ONLINE } from '~/runner/constants';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -49,7 +49,7 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(findRunnerStatusBadge().text()).toContain('online');
+    expect(findRunnerStatusBadge().text()).toContain(I18N_STATUS_ONLINE);
   });
 
   it('displays the runner type', () => {
@@ -60,7 +60,7 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(findRunnerTypeBadge().text()).toContain('group');
+    expect(findRunnerTypeBadge().text()).toContain(I18N_GROUP_TYPE);
   });
 
   it('displays the runner id', () => {

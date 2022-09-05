@@ -28,6 +28,9 @@ import {
   CREATED_ASC,
   CREATED_DESC,
   DEFAULT_SORT,
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
   INSTANCE_TYPE,
   GROUP_TYPE,
   PARAM_KEY_PAUSED,
@@ -154,9 +157,9 @@ describe('GroupRunnersApp', () => {
     });
 
     const text = findRunnerStats().text();
-    expect(text).toContain(`${s__('Runners|Online')} ${mockGroupRunnersCount}`);
-    expect(text).toContain(`${s__('Runners|Offline')} ${mockGroupRunnersCount}`);
-    expect(text).toContain(`${s__('Runners|Stale')} ${mockGroupRunnersCount}`);
+    expect(text).toContain(`${I18N_STATUS_ONLINE} ${mockGroupRunnersCount}`);
+    expect(text).toContain(`${I18N_STATUS_OFFLINE} ${mockGroupRunnersCount}`);
+    expect(text).toContain(`${I18N_STATUS_STALE} ${mockGroupRunnersCount}`);
   });
 
   it('shows the runners list', async () => {

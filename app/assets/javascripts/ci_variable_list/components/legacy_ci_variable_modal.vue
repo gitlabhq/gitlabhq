@@ -255,6 +255,7 @@ export default {
         v-model="key"
         :token-list="$options.tokenList"
         :label-text="__('Key')"
+        data-testid="pipeline-form-ci-variable-key"
         data-qa-selector="ci_variable_key_field"
       />
 
@@ -271,6 +272,7 @@ export default {
           :state="variableValidationState"
           rows="3"
           max-rows="6"
+          data-testid="pipeline-form-ci-variable-value"
           data-qa-selector="ci_variable_value_field"
           class="gl-font-monospace!"
         />

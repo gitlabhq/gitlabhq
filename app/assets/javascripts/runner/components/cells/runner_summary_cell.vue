@@ -57,7 +57,7 @@ export default {
       :title="$options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION"
       name="lock"
     />
-    <runner-type-badge class="gl-ml-2" :type="runnerType" size="sm" />
+    <runner-type-badge class="gl-ml-2 gl-vertical-align-middle" :type="runnerType" size="sm" />
 
     <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="description">
       {{ description }}

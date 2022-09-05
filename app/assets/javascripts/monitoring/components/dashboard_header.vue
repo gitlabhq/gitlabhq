@@ -189,6 +189,7 @@ export default {
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
         data-qa-selector="environments_dropdown"
+        data-testid="environments-dropdown"
         toggle-class="dropdown-menu-toggle"
         menu-class="monitor-environment-dropdown-menu"
         :text="environmentDropdownText"

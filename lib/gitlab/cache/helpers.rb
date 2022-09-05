@@ -81,7 +81,6 @@ module Gitlab
       # @param expires_in [ActiveSupport::Duration, Integer] an expiry time for the cache entry
       # @return [Array<String>]
       def cached_collection(collection, presenter:, presenter_args:, context:, expires_in:)
-        total_count = collection.size
         misses = 0
 
         json = fetch_multi(presenter, collection, context: context, expires_in: expires_in) do |obj|
@@ -92,7 +91,7 @@ module Gitlab
           end
         end
 
-        increment_cache_metric(render_type: :collection, total_count: total_count, miss_count: misses)
+        increment_cache_metric(render_type: :collection, total_count: collection.length, miss_count: misses)
 
         json.values
       end

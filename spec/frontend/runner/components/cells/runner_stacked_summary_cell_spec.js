@@ -6,7 +6,7 @@ import RunnerTags from '~/runner/components/runner_tags.vue';
 import RunnerSummaryField from '~/runner/components/cells/runner_summary_field.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
-import { INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
+import { INSTANCE_TYPE, I18N_INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
 
 import { allRunnersData } from '../../mock_data';
 
@@ -69,7 +69,7 @@ describe('RunnerTypeCell', () => {
       locked: true,
     });
 
-    expect(wrapper.text()).toContain('shared');
+    expect(wrapper.text()).toContain(I18N_INSTANCE_TYPE);
   });
 
   it('Displays the runner version', () => {

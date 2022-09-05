@@ -11,6 +11,7 @@ import RunnerUpdateForm from '~/runner/components/runner_update_form.vue';
 import runnerFormQuery from '~/runner/graphql/edit/runner_form.query.graphql';
 import RunnerEditApp from '~//runner/runner_edit/runner_edit_app.vue';
 import { captureException } from '~/runner/sentry_utils';
+import { I18N_STATUS_NEVER_CONTACTED, I18N_INSTANCE_TYPE } from '~/runner/constants';
 
 import { runnerFormData } from '../mock_data';
 
@@ -69,8 +70,8 @@ describe('RunnerEditApp', () => {
   it('displays the runner type and status', async () => {
     await createComponentWithApollo({ mountFn: mount });
 
-    expect(findRunnerHeader().text()).toContain(`never contacted`);
-    expect(findRunnerHeader().text()).toContain(`shared`);
+    expect(findRunnerHeader().text()).toContain(I18N_STATUS_NEVER_CONTACTED);
+    expect(findRunnerHeader().text()).toContain(I18N_INSTANCE_TYPE);
   });
 
   it('displays a loading runner form', () => {

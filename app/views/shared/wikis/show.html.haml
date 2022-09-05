@@ -27,6 +27,6 @@
       - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
         = link_to sprite_icon('pencil', css_class: 'gl-icon'), wiki_page_path(@wiki, @page, action: :edit), title: 'Edit', role: "button", class: 'btn gl-button btn-icon btn-default js-wiki-edit', data: { qa_selector: 'edit_page_button', testid: 'wiki_edit_button' }
 
-  .js-async-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki_page_content', tracking_context: wiki_page_tracking_context(@page).to_json, get_wiki_content_url: wiki_page_render_api_endpoint(@page) } }
+  .js-async-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki-page-content', tracking_context: wiki_page_tracking_context(@page).to_json, get_wiki_content_url: wiki_page_render_api_endpoint(@page) } }
 
 = render 'shared/wikis/sidebar'

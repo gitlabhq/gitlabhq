@@ -23,6 +23,12 @@ export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
 );
 export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
 
+// Status
+export const I18N_STATUS_ONLINE = s__('Runners|Online');
+export const I18N_STATUS_NEVER_CONTACTED = s__('Runners|Never contacted');
+export const I18N_STATUS_OFFLINE = s__('Runners|Offline');
+export const I18N_STATUS_STALE = s__('Runners|Stale');
+
 // Status help popover
 export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
 
@@ -62,6 +68,7 @@ export const I18N_STALE_NEVER_CONTACTED_TOOLTIP = s__(
 export const I18N_EDIT = __('Edit');
 
 export const I18N_PAUSE = __('Pause');
+export const I18N_PAUSED = s__('Runners|Paused');
 export const I18N_PAUSE_TOOLTIP = s__('Runners|Pause from accepting jobs');
 export const I18N_PAUSED_DESCRIPTION = s__('Runners|Not accepting jobs');
 
@@ -94,7 +101,7 @@ export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.
 
 // Styles
 
-export const RUNNER_TAG_BADGE_VARIANT = 'neutral';
+export const RUNNER_TAG_BADGE_VARIANT = 'info';
 export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 
 // Filtered search parameter names

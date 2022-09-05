@@ -64,9 +64,9 @@ end
 
 RSpec.shared_examples 'shows no runners registered' do
   it 'shows counts with 0' do
-    expect(page).to have_text "Online 0"
-    expect(page).to have_text "Offline 0"
-    expect(page).to have_text "Stale 0"
+    expect(page).to have_text "#{s_('Runners|Online')} 0"
+    expect(page).to have_text "#{s_('Runners|Offline')} 0"
+    expect(page).to have_text "#{s_('Runners|Stale')} 0"
   end
 
   it 'shows "no runners" message' do
@@ -101,7 +101,7 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
     within_runner_row(runner.id) do
       click_button "Pause"
 
-      expect(page).to have_text 'paused'
+      expect(page).to have_text s_('Runners|Paused')
       expect(page).to have_button 'Resume'
       expect(page).not_to have_button 'Pause'
 

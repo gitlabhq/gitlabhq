@@ -34251,15 +34251,6 @@ msgstr ""
 msgid "Runners|group"
 msgstr ""
 
-msgid "Runners|never contacted"
-msgstr ""
-
-msgid "Runners|offline"
-msgstr ""
-
-msgid "Runners|online"
-msgstr ""
-
 msgid "Runners|paused"
 msgstr ""
 
@@ -34267,15 +34258,6 @@ msgid "Runners|shared"
 msgstr ""
 
 msgid "Runners|specific"
-msgstr ""
-
-msgid "Runners|stale"
-msgstr ""
-
-msgid "Runners|upgrade available"
-msgstr ""
-
-msgid "Runners|upgrade recommended"
 msgstr ""
 
 msgid "Runner|Owner"

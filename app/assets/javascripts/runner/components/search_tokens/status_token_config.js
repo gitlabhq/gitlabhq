@@ -1,7 +1,11 @@
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import {
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_NEVER_CONTACTED,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_NEVER_CONTACTED,
@@ -10,10 +14,10 @@ import {
 } from '../../constants';
 
 const options = [
-  { value: STATUS_ONLINE, title: s__('Runners|Online') },
-  { value: STATUS_OFFLINE, title: s__('Runners|Offline') },
-  { value: STATUS_NEVER_CONTACTED, title: s__('Runners|Never contacted') },
-  { value: STATUS_STALE, title: s__('Runners|Stale') },
+  { value: STATUS_ONLINE, title: I18N_STATUS_ONLINE },
+  { value: STATUS_OFFLINE, title: I18N_STATUS_OFFLINE },
+  { value: STATUS_NEVER_CONTACTED, title: I18N_STATUS_NEVER_CONTACTED },
+  { value: STATUS_STALE, title: I18N_STATUS_STALE },
 ];
 
 export const statusTokenConfig = {

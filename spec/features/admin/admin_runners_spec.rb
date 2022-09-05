@@ -50,7 +50,7 @@ RSpec.describe "Admin Runners" do
 
         it 'shows an instance badge' do
           within_runner_row(instance_runner.id) do
-            expect(page).to have_selector '.badge', text: 'shared'
+            expect(page).to have_selector '.badge', text: 'Instance'
           end
         end
       end
@@ -66,9 +66,9 @@ RSpec.describe "Admin Runners" do
 
         it 'has all necessary texts' do
           expect(page).to have_text "Register an instance runner"
-          expect(page).to have_text "Online 1"
-          expect(page).to have_text "Offline 2"
-          expect(page).to have_text "Stale 1"
+          expect(page).to have_text "#{s_('Runners|Online')} 1"
+          expect(page).to have_text "#{s_('Runners|Offline')} 2"
+          expect(page).to have_text "#{s_('Runners|Stale')} 1"
         end
       end
 
@@ -145,7 +145,7 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'shows paused runners' do
-          input_filtered_search_filter_is_only('Paused', 'Yes')
+          input_filtered_search_filter_is_only(s_('Runners|Paused'), 'Yes')
 
           expect(page).to have_link('All 1')
 
@@ -154,7 +154,7 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'shows active runners' do
-          input_filtered_search_filter_is_only('Paused', 'No')
+          input_filtered_search_filter_is_only(s_('Runners|Paused'), 'No')
 
           expect(page).to have_link('All 1')
 
@@ -186,7 +186,7 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'shows correct runner when status matches' do
-          input_filtered_search_filter_is_only('Status', 'Online')
+          input_filtered_search_filter_is_only('Status', s_('Runners|Online'))
 
           expect(page).to have_link('All 2')
 
@@ -197,7 +197,7 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'shows correct runner when status is selected and search term is entered' do
-          input_filtered_search_filter_is_only('Status', 'Online')
+          input_filtered_search_filter_is_only('Status', s_('Runners|Online'))
           input_filtered_search_keys('runner-1')
 
           expect(page).to have_link('All 1')
@@ -220,7 +220,7 @@ RSpec.describe "Admin Runners" do
           expect(page).to have_content 'runner-never-contacted'
 
           within_runner_row(never_contacted.id) do
-            expect(page).to have_selector '.badge', text: 'never contacted'
+            expect(page).to have_selector '.badge', text: s_('Runners|Never contacted')
           end
         end
 
@@ -308,7 +308,7 @@ RSpec.describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_filter_is_only('Paused', 'No')
+          input_filtered_search_filter_is_only(s_('Runners|Paused'), 'No')
 
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-group'
@@ -533,6 +533,36 @@ RSpec.describe "Admin Runners" do
     it_behaves_like 'submits edit runner form' do
       let(:runner) { project_runner }
       let(:runner_page_path) { admin_runner_path(project_runner) }
+    end
+
+    describe 'breadcrumbs' do
+      it 'contains the current runner id and token' do
+        page.within '[data-testid="breadcrumb-links"]' do
+          expect(page).to have_link("##{project_runner.id} (#{project_runner.short_sha})")
+          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
+        end
+      end
+    end
+
+    describe 'runner header', :js do
+      it 'contains the runner status, type and id' do
+        expect(page).to have_content("#{s_('Runners|Never contacted')} Project Runner ##{project_runner.id} created")
+      end
+    end
+
+    context 'when a runner is updated', :js do
+      before do
+        click_on _('Save changes')
+        wait_for_requests
+      end
+
+      it 'show success alert' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+      end
+
+      it 'redirects to runner page' do
+        expect(current_url).to match(admin_runner_path(project_runner))
+      end
     end
 
     describe 'projects' do
