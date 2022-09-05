@@ -1565,9 +1565,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    disabled_integrations = []
-    disabled_integrations << 'shimo' unless Feature.enabled?(:shimo_integration, self)
-    disabled_integrations
+    []
   end
 
   def find_or_initialize_integration(name)

@@ -51,8 +51,7 @@ module Sidebars
       end
 
       def third_party_wiki_menu
-        wiki_menu_list = [::Sidebars::Projects::Menus::ConfluenceMenu]
-        wiki_menu_list << ::Sidebars::Projects::Menus::ShimoMenu if Feature.enabled?(:shimo_integration, context.project)
+        wiki_menu_list = [::Sidebars::Projects::Menus::ConfluenceMenu, ::Sidebars::Projects::Menus::ShimoMenu]
 
         wiki_menu_list.find { |wiki_menu| wiki_menu.new(context).render? }
       end

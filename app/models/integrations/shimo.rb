@@ -9,8 +9,6 @@ module Integrations
       required: true
 
     def render?
-      return false unless Feature.enabled?(:shimo_integration, project)
-
       valid? && activated?
     end
 

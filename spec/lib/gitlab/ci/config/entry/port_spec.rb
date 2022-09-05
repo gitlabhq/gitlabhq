@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Port do
       let(:config) do
         { number: 80,
           protocol: 'http',
-          name:  'foobar' }
+          name: 'foobar' }
       end
 
       describe '#valid?' do

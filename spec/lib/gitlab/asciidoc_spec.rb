@@ -638,9 +638,9 @@ module Gitlab
     context 'with project' do
       let(:context) do
         {
-          commit:         commit,
-          project:        project,
-          ref:            ref,
+          commit: commit,
+          project: project,
+          ref: ref,
           requested_path: requested_path
         }
       end

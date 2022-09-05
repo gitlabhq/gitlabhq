@@ -1,8 +1,0 @@
----
-name: shimo_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73129
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345356
-milestone: '14.5'
-type: development
-group: group::integrations
-default_enabled: false

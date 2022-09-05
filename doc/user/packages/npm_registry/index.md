@@ -325,6 +325,7 @@ deploy:
   script:
     - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}">.npmrc
     - npm publish
+  environment: production
 ```
 
 See the

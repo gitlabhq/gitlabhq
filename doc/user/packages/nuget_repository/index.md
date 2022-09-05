@@ -403,6 +403,7 @@ updated:
        - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
      only:
        - main
+     environment: production
    ```
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI/CD build.

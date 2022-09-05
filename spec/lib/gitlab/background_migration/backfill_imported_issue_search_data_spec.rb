@@ -14,10 +14,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData,
     table(:projects)
     .create!(
       namespace_id: namespace.id,
-       creator_id: user.id,
-       name: 'projecty',
-       path: 'path',
-       project_namespace_id: namespace.id)
+      creator_id: user.id,
+      name: 'projecty',
+      path: 'path',
+      project_namespace_id: namespace.id)
   end
 
   let!(:issue) do

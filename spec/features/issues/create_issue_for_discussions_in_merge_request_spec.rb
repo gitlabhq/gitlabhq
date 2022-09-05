@@ -30,8 +30,10 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     end
 
     it 'shows a button to resolve all threads by creating a new issue' do
+      find('.discussions-counter .dropdown-toggle').click
+
       within('.discussions-counter') do
-        expect(page).to have_selector resolve_all_discussions_link_selector( title: "Create issue to resolve all threads" )
+        expect(page).to have_link(_("Create issue to resolve all threads"), href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid))
       end
     end
 
@@ -48,6 +50,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
     context 'creating an issue for threads' do
       before do
+        find('.discussions-counter .dropdown-toggle').click
         find(resolve_all_discussions_link_selector).click
       end
 

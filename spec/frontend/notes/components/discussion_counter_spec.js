@@ -1,5 +1,5 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlDropdownItem } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
@@ -45,7 +45,7 @@ describe('DiscussionCounter component', () => {
 
   describe('has no discussions', () => {
     it('does not render', () => {
-      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
       expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -55,7 +55,7 @@ describe('DiscussionCounter component', () => {
     it('does not render', () => {
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [{ ...discussionMock, resolvable: false }]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
       expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -75,7 +75,7 @@ describe('DiscussionCounter component', () => {
 
     it('renders', () => {
       updateStore();
-      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
       expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(true);
     });
@@ -89,7 +89,7 @@ describe('DiscussionCounter component', () => {
       ({ blocksMerge, color }) => {
         updateStore();
         store.state.unresolvedDiscussionsCount = 1;
-        wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge } });
+        wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge } });
 
         expect(wrapper.find('[data-testid="discussions-counter-text"]').classes()).toContain(color);
       },
@@ -97,60 +97,58 @@ describe('DiscussionCounter component', () => {
 
     it.each`
       title                | resolved | groupLength
-      ${'not allResolved'} | ${false} | ${4}
+      ${'not allResolved'} | ${false} | ${2}
       ${'allResolved'}     | ${true}  | ${1}
-    `('renders correctly if $title', ({ resolved, groupLength }) => {
+    `('renders correctly if $title', async ({ resolved, groupLength }) => {
       updateStore({ resolvable: true, resolved });
-      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      await wrapper.find('.dropdown-toggle').trigger('click');
 
-      expect(wrapper.findAllComponents(GlButton)).toHaveLength(groupLength);
+      expect(wrapper.findAllComponents(GlDropdownItem)).toHaveLength(groupLength);
     });
   });
 
   describe('toggle all threads button', () => {
     let toggleAllButton;
-    const updateStoreWithExpanded = (expanded) => {
+    const updateStoreWithExpanded = async (expanded) => {
       const discussion = { ...discussionMock, expanded };
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
-      toggleAllButton = wrapper.find('.toggle-all-discussions-btn');
+      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      await wrapper.find('.dropdown-toggle').trigger('click');
+      toggleAllButton = wrapper.find('[data-testid="toggle-all-discussions-btn"]');
     };
 
     afterEach(() => wrapper.destroy());
 
-    it('calls button handler when clicked', () => {
-      updateStoreWithExpanded(true);
+    it('calls button handler when clicked', async () => {
+      await updateStoreWithExpanded(true);
 
-      toggleAllButton.vm.$emit('click');
+      toggleAllButton.trigger('click');
 
       expect(setExpandDiscussionsFn).toHaveBeenCalledTimes(1);
     });
 
     it('collapses all discussions if expanded', async () => {
-      updateStoreWithExpanded(true);
+      await updateStoreWithExpanded(true);
 
       expect(wrapper.vm.allExpanded).toBe(true);
-      expect(toggleAllButton.props('icon')).toBe('collapse');
 
-      toggleAllButton.vm.$emit('click');
+      toggleAllButton.trigger('click');
 
       await nextTick();
       expect(wrapper.vm.allExpanded).toBe(false);
-      expect(toggleAllButton.props('icon')).toBe('expand');
     });
 
     it('expands all discussions if collapsed', async () => {
-      updateStoreWithExpanded(false);
+      await updateStoreWithExpanded(false);
 
       expect(wrapper.vm.allExpanded).toBe(false);
-      expect(toggleAllButton.props('icon')).toBe('expand');
 
-      toggleAllButton.vm.$emit('click');
+      toggleAllButton.trigger('click');
 
       await nextTick();
       expect(wrapper.vm.allExpanded).toBe(true);
-      expect(toggleAllButton.props('icon')).toBe('collapse');
     });
   });
 });

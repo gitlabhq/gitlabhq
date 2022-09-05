@@ -10,10 +10,10 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
   before do
     stub_ldap_config(
       options: {
-        'uid'        => 'uid',
+        'uid' => 'uid',
         'attributes' => {
-          'name'     => 'cn',
-          'email'    => %w(mail email userPrincipalName),
+          'name' => 'cn',
+          'email' => %w(mail email userPrincipalName),
           'username' => username_attribute
         }
       }
@@ -53,10 +53,10 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
     it 'returns a compact and unique array' do
       stub_ldap_config(
         options: {
-          'uid'        => nil,
+          'uid' => nil,
           'attributes' => {
-            'name'     => 'cn',
-            'email'    => 'mail',
+            'name' => 'cn',
+            'email' => 'mail',
             'username' => %w(uid mail),
             'first_name' => ''
           }

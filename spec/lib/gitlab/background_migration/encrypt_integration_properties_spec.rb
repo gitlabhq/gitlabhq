@@ -40,10 +40,10 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptIntegrationProperties, schema
     expect(integrations.count).to eq(4)
 
     expect(props).to match(
-      no_properties.id    => both(be_nil),
+      no_properties.id => both(be_nil),
       with_plaintext_1.id => both(eq some_props(1)),
       with_plaintext_2.id => both(eq some_props(2)),
-      with_encrypted.id   => match([be_nil, eq(some_props(3))])
+      with_encrypted.id => match([be_nil, eq(some_props(3))])
     )
   end
 

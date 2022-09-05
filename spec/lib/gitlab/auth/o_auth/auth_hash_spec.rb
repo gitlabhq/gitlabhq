@@ -40,12 +40,12 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash do
 
   let(:info_hash) do
     {
-      email:      email_ascii,
+      email: email_ascii,
       first_name: first_name_ascii,
-      last_name:  last_name_ascii,
-      name:       name_ascii,
-      nickname:   nickname_ascii,
-      uid:        uid_ascii,
+      last_name: last_name_ascii,
+      name: name_ascii,
+      nickname: nickname_ascii,
+      uid: uid_ascii,
       address: {
         locality: 'some locality',
         country: 'some country'
