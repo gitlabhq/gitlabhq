@@ -27,6 +27,9 @@ The following identity providers are supported:
 - Azure
 - Okta
 
+NOTE:
+Other providers can work with GitLab but they have not been tested and are not supported.
+
 ## Requirements
 
 - [Group Single Sign-On](index.md) must be configured.

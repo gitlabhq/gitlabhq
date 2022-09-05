@@ -171,6 +171,7 @@ deploy:
     include: deploy.gitlab-ci.yml
     strategy: depend
   resource_group: AWS-production
+  environment: production
 ```
 
 ```yaml
@@ -187,6 +188,7 @@ provision:
 deployment:
   stage: deploy
   script: echo "Deploying..."
+  environment: production
 ```
 
 You must define [`strategy: depend`](../yaml/index.md#triggerstrategy)
@@ -224,6 +226,7 @@ deploy:
   stage: deploy
   script: echo
   resource_group: production
+  environment: production
 ```
 
 In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
@@ -250,4 +253,5 @@ deploy:
   stage: deploy
   script: echo
   resource_group: production
+  environment: production
 ```

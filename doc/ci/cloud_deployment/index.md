@@ -50,6 +50,7 @@ deploy:
   script:
    - aws s3 ...
    - aws create-deployment ...
+  environment: production
 ```
 
 GitLab provides a Docker image that includes the AWS CLI:

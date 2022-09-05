@@ -301,6 +301,7 @@ deploy:
     - ./deploy.sh
   only:
     - main
+  environment: production
 ```
 
 NOTE:

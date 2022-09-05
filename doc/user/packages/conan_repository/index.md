@@ -310,6 +310,7 @@ create_package:
     - conan new <package-name>/0.1 -t
     - conan create . <group-name>+<project-name>/stable
     - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload <package-name>/0.1@<group-name>+<project-name>/stable --all --remote=gitlab
+  environment: production
 ```
 
 Additional Conan images to use as the basis of your CI file are available in the

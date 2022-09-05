@@ -11,14 +11,13 @@ import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { getCurrentUser } from '~/rest_api';
+import { getCurrentUser } from '~/jira_connect/subscriptions/api';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ACCESS_TOKEN } from '~/jira_connect/subscriptions/store/mutation_types';
 
 jest.mock('~/lib/utils/accessor');
 jest.mock('~/jira_connect/subscriptions/utils');
 jest.mock('~/jira_connect/subscriptions/api');
-jest.mock('~/rest_api');
 jest.mock('~/jira_connect/subscriptions/pkce', () => ({
   createCodeVerifier: jest.fn().mockReturnValue('mock-verifier'),
   createCodeChallenge: jest.fn().mockResolvedValue('mock-challenge'),

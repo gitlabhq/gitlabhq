@@ -172,6 +172,9 @@ If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agen
 
 #### Elasticsearch
 
+Before updating GitLab, confirm Advanced Search migrations are complete by
+[checking for pending advanced search migrations](index.md#checking-for-pending-advanced-search-migrations).
+
 After updating GitLab, you may have to upgrade
 [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).
 Updating Elasticsearch is **out of scope for GitLab Support**.

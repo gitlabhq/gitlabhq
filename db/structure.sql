@@ -29698,6 +29698,8 @@ CREATE INDEX index_project_group_links_on_project_id ON project_group_links USIN
 
 CREATE INDEX index_project_import_data_on_project_id ON project_import_data USING btree (project_id);
 
+CREATE INDEX index_project_members_on_id_temp ON members USING btree (id) WHERE ((source_type)::text = 'Project'::text);
+
 CREATE INDEX index_project_mirror_data_on_last_successful_update_at ON project_mirror_data USING btree (last_successful_update_at);
 
 CREATE INDEX index_project_mirror_data_on_last_update_at_and_retry_count ON project_mirror_data USING btree (last_update_at, retry_count);

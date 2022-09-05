@@ -313,6 +313,7 @@ deploy_to_production:
   script: deploy_to_prod.sh
   rules:
     - if: $CI_DEPLOY_FREEZE == null
+  environment: production
 ```
 
 To set a deploy freeze window in the UI, complete these steps:

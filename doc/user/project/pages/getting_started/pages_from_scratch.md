@@ -266,6 +266,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 ```
 
 Now add another job to the CI file, telling it to
@@ -289,6 +290,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 
 test:
   stage: test
@@ -342,6 +344,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 
 test:
   stage: test
@@ -386,6 +389,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 
 test:
   stage: test
