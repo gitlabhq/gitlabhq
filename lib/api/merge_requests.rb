@@ -544,6 +544,19 @@ module API
         render_api_error!(e.message, 409)
       end
 
+      desc 'Remove merge request approvals' do
+        detail 'This feature was added in GitLab 15.4'
+      end
+      put ':id/merge_requests/:merge_request_iid/reset_approvals', feature_category: :code_review, urgency: :low do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
+
+        unauthorized! unless current_user.bot? && merge_request.can_be_approved_by?(current_user)
+
+        merge_request.approvals.delete_all
+
+        status :accepted
+      end
+
       desc 'List issues that will be closed on merge' do
         success Entities::MRNote
       end

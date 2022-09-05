@@ -1308,7 +1308,7 @@ GEM
     slack-messenger (2.3.4)
     snowplow-tracker (0.6.1)
       contracts (~> 0.7, <= 0.11)
-    solargraph (0.45.0)
+    solargraph (0.46.0)
       backport (~> 1.2)
       benchmark
       bundler (>= 1.17.2)
@@ -1756,7 +1756,7 @@ DEPENDENCIES
   simplecov-lcov (~> 0.8.0)
   slack-messenger (~> 2.3.4)
   snowplow-tracker (~> 0.6.1)
-  solargraph (~> 0.45.0)
+  solargraph (~> 0.46.0)
   spamcheck (~> 1.0.0)
   spring (~> 2.1.0)
   spring-commands-rspec (~> 1.0.4)
