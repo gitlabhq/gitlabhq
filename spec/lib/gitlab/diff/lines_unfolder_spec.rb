@@ -189,14 +189,14 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
 
   let(:diff) do
     Gitlab::Git::Diff.new({ diff: raw_diff,
-                          new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                          old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                          a_mode: "100644",
-                          b_mode: "100644",
-                          new_file: false,
-                          renamed_file: false,
-                          deleted_file: false,
-                          too_large: false })
+                            new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
+                            old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
+                            a_mode: "100644",
+                            b_mode: "100644",
+                            new_file: false,
+                            renamed_file: false,
+                            deleted_file: false,
+                            too_large: false })
   end
 
   let(:diff_file) do

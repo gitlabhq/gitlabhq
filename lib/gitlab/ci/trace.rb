@@ -23,7 +23,6 @@ module Gitlab
 
       attr_reader :job
 
-      delegate :old_trace, to: :job
       delegate :can_attempt_archival_now?, :increment_archival_attempts!,
         :archival_attempts_message, :archival_attempts_available?, to: :trace_metadata
 
@@ -82,7 +81,7 @@ module Gitlab
       end
 
       def live?
-        job.trace_chunks.any? || current_path.present? || old_trace.present?
+        job.trace_chunks.any? || current_path.present?
       end
 
       def read(&block)
@@ -111,7 +110,6 @@ module Gitlab
         # Erase the live trace
         erase_trace_chunks!
         FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
-        job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
       ensure
         @current_path = nil
       end
@@ -162,8 +160,6 @@ module Gitlab
             Gitlab::Ci::Trace::ChunkedIO.new(job)
           elsif current_path
             File.open(current_path, "rb")
-          elsif old_trace
-            StringIO.new(old_trace)
           end
         end
 
@@ -209,11 +205,6 @@ module Gitlab
           File.open(current_path) do |stream|
             archive_stream!(stream)
             FileUtils.rm(current_path)
-          end
-        elsif old_trace
-          StringIO.new(old_trace, 'rb').tap do |stream|
-            archive_stream!(stream)
-            job.erase_old_trace!
           end
         end
       end

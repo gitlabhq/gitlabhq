@@ -706,24 +706,6 @@ module Ci
       job_artifacts.of_report_type(:test).exists?
     end
 
-    def has_old_trace?
-      old_trace.present?
-    end
-
-    def trace=(data)
-      raise NotImplementedError
-    end
-
-    def old_trace
-      read_attribute(:trace)
-    end
-
-    def erase_old_trace!
-      return unless has_old_trace?
-
-      update_column(:trace, nil)
-    end
-
     def ensure_trace_metadata!
       Ci::BuildTraceMetadata.find_or_upsert_for!(id)
     end

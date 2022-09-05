@@ -134,6 +134,8 @@ module Projects
       destroy_ci_records!
       destroy_mr_diff_relations!
 
+      destroy_merge_request_diffs! if ::Feature.enabled?(:extract_mr_diff_deletions)
+
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
       # This ensures we delete records in batches.
@@ -175,6 +177,24 @@ module Projects
 
             break if deleted_rows == 0
           end
+        end
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def destroy_merge_request_diffs!
+      mr_batch_size = 100
+      delete_batch_size = 1000
+
+      project.merge_requests.each_batch(column: :iid, of: mr_batch_size) do |relation_ids|
+        loop do
+          deleted_rows = MergeRequestDiff
+            .where(merge_request_id: relation_ids)
+            .limit(delete_batch_size)
+            .delete_all
+
+          break if deleted_rows == 0
         end
       end
     end

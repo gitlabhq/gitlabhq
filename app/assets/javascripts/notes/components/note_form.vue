@@ -423,7 +423,7 @@ export default {
               category="primary"
               variant="confirm"
               data-qa-selector="reply_comment_button"
-              class="gl-mr-3 js-vue-issue-save js-comment-button"
+              class="gl-sm-mr-3 gl-xs-mb-3 js-vue-issue-save js-comment-button"
               @click="handleUpdate()"
             >
               {{ saveButtonTitle }}
@@ -432,7 +432,7 @@ export default {
               v-if="discussion.resolvable"
               category="secondary"
               variant="default"
-              class="gl-mr-3 js-comment-resolve-button"
+              class="gl-sm-mr-3 gl-xs-mb-3 js-comment-resolve-button"
               @click.prevent="handleUpdate(true)"
             >
               {{ resolveButtonTitle }}

@@ -210,7 +210,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           { 'local' => local_file },
           { 'local' => local_file }
         ],
-        image: 'image:1.0' }
+          image: 'image:1.0' }
       end
 
       it 'does not raise an exception' do
@@ -427,7 +427,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           { 'local' => 'hello/secret-file1.yml' },
           { 'local' => 'hello/secret-file2.yml' }
         ],
-        image: 'ruby:2.7' }
+          image: 'ruby:2.7' }
       end
 
       it 'has expanset with two' do

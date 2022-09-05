@@ -75,6 +75,7 @@ RSpec.describe API::PersonalAccessTokens do
 
   describe 'GET /personal_access_tokens/:id' do
     let_it_be(:user_token) { create(:personal_access_token, user: current_user) }
+    let_it_be(:user_read_only_token) { create(:personal_access_token, scopes: ['read_repository'], user: current_user) }
     let_it_be(:user_token_path) { "/personal_access_tokens/#{user_token.id}" }
     let_it_be(:invalid_path) { "/personal_access_tokens/#{non_existing_record_id}" }
 
@@ -125,53 +126,11 @@ RSpec.describe API::PersonalAccessTokens do
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
-    end
-  end
 
-  describe 'DELETE /personal_access_tokens/self' do
-    let(:path) { '/personal_access_tokens/self' }
-    let(:token) { create(:personal_access_token, user: current_user) }
+      it 'fails to return own PAT by id with read_repository token' do
+        get api(user_token_path, current_user, personal_access_token: user_read_only_token)
 
-    subject { delete api(path, current_user, personal_access_token: token) }
-
-    shared_examples 'revoking token succeeds' do
-      it 'revokes token' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(token.reload).to be_revoked
-      end
-    end
-
-    shared_examples 'revoking token denied' do |status|
-      it 'cannot revoke token' do
-        subject
-
-        expect(response).to have_gitlab_http_status(status)
-      end
-    end
-
-    context 'when current_user is an administrator', :enable_admin_mode do
-      let(:current_user) { create(:admin) }
-
-      it_behaves_like 'revoking token succeeds'
-    end
-
-    context 'when current_user is not an administrator' do
-      let(:current_user) { create(:user) }
-
-      it_behaves_like 'revoking token succeeds'
-
-      context 'with impersonated token' do
-        let(:token) { create(:personal_access_token, :impersonation, user: current_user) }
-
-        it_behaves_like 'revoking token denied', :bad_request
-      end
-
-      context 'with already revoked token' do
-        let(:token) { create(:personal_access_token, :revoked, user: current_user) }
-
-        it_behaves_like 'revoking token denied', :unauthorized
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end
@@ -183,6 +142,9 @@ RSpec.describe API::PersonalAccessTokens do
       let_it_be(:admin_user) { create(:admin) }
       let_it_be(:admin_token) { create(:personal_access_token, user: admin_user) }
       let_it_be(:admin_path) { "/personal_access_tokens/#{admin_token.id}" }
+      let_it_be(:admin_read_only_token) do
+        create(:personal_access_token, scopes: ['read_repository'], user: admin_user)
+      end
 
       it 'revokes a different users token' do
         delete api(path, admin_user)
@@ -195,6 +157,12 @@ RSpec.describe API::PersonalAccessTokens do
         delete api(admin_path, admin_user)
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'fails to revoke a different user token using a readonly scope' do
+        delete api(path, personal_access_token: admin_read_only_token)
+
+        expect(token1.reload.revoked?).to be false
       end
     end
 

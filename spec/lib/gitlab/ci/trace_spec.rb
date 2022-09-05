@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
 
   describe "associations" do
     it { expect(trace).to respond_to(:job) }
-    it { expect(trace).to delegate_method(:old_trace).to(:job) }
   end
 
   context 'when trace is migrated to object storage' do

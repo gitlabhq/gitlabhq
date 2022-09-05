@@ -684,7 +684,7 @@ RSpec.describe Gitlab::Diff::Position do
           "old_line" => 18,
           "new_line" => 18
         },
-         "end" => {
+        "end" => {
           "line_code" => end_line_code,
           "type" => nil,
           "old_line" => end_old_line,

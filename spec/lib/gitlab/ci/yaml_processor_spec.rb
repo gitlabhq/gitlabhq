@@ -298,8 +298,8 @@ module Gitlab
           context 'when delayed is defined' do
             let(:config) do
               YAML.dump(rspec: {
-                script:   'rollout 10%',
-                when:     'delayed',
+                script: 'rollout 10%',
+                when: 'delayed',
                 start_in: '1 day'
               })
             end
@@ -315,7 +315,7 @@ module Gitlab
           context 'when resource group is defined' do
             let(:config) do
               YAML.dump(rspec: {
-                script:   'test',
+                script: 'test',
                 resource_group: 'iOS'
               })
             end
@@ -1676,10 +1676,10 @@ module Gitlab
       describe "Artifacts" do
         it "returns artifacts when defined" do
           config = YAML.dump({
-                               image:         "image:1.0",
-                               services:      ["mysql"],
+                               image: "image:1.0",
+                               services: ["mysql"],
                                before_script: ["pwd"],
-                               rspec:         {
+                               rspec: {
                                  artifacts: {
                                    paths: ["logs/", "binaries/"],
                                    expose_as: "Exposed artifacts",
@@ -1935,7 +1935,7 @@ module Gitlab
         let(:config) do
           {
             deploy_to_production: {
-              stage:  'deploy',
+              stage: 'deploy',
               script: 'test'
             }
           }
@@ -2304,15 +2304,15 @@ module Gitlab
 
         let(:config) do
           {
-            var_default:     { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null' }] },
-            var_when:        { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null', when: 'always' }] },
+            var_default: { stage: 'build', script: 'test', rules: [{ if: '$VAR == null' }] },
+            var_when: { stage: 'build', script: 'test', rules: [{ if: '$VAR == null', when: 'always' }] },
             var_and_changes: { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null', changes: %w[README], when: 'always' }] },
             changes_not_var: { stage: 'test',   script: 'test', rules: [{ if: '$VAR != null', changes: %w[README] }] },
             var_not_changes: { stage: 'test',   script: 'test', rules: [{ if: '$VAR == null', changes: %w[other/file.rb], when: 'always' }] },
-            nothing:         { stage: 'test',   script: 'test', rules: [{ when: 'manual' }] },
-            var_never:       { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'never' }] },
-            var_delayed:     { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] },
-            two_rules:       { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'on_success' }, { changes: %w[README], when: 'manual' }] }
+            nothing: { stage: 'test', script: 'test', rules: [{ when: 'manual' }] },
+            var_never: { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'never' }] },
+            var_delayed: { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] },
+            two_rules: { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'on_success' }, { changes: %w[README], when: 'manual' }] }
           }
         end
 

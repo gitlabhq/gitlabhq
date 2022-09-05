@@ -17,6 +17,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
 import { createLocalState } from '~/runner/graphql/list/local_state';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
+import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
@@ -86,6 +87,7 @@ describe('AdminRunnersApp', () => {
   let localMutations;
   let showToast;
 
+  const findRunnerStackedLayoutBanner = () => wrapper.findComponent(RunnerStackedLayoutBanner);
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
@@ -143,6 +145,11 @@ describe('AdminRunnersApp', () => {
     mockRunnersCountHandler.mockReset();
     showToast.mockReset();
     wrapper.destroy();
+  });
+
+  it('shows the feedback banner', () => {
+    createComponent();
+    expect(findRunnerStackedLayoutBanner().exists()).toBe(true);
   });
 
   it('shows the runner setup instructions', () => {

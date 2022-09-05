@@ -49,8 +49,7 @@ RSpec.describe Gitlab::DataBuilder::Note do
     let(:label) { create(:label, project: project) }
 
     let(:issue) do
-      create(:labeled_issue, created_at: fixed_time, updated_at: fixed_time,
-             project: project, labels: [label])
+      create(:labeled_issue, created_at: fixed_time, updated_at: fixed_time, project: project, labels: [label])
     end
 
     let(:note) do
@@ -84,15 +83,15 @@ RSpec.describe Gitlab::DataBuilder::Note do
   describe 'When asking for a note on merge request' do
     let(:label) { create(:label, project: project) }
     let(:merge_request) do
-      create(:labeled_merge_request, created_at: fixed_time,
-                             updated_at: fixed_time,
-                             source_project: project,
-                             labels: [label])
+      create(:labeled_merge_request,
+        created_at: fixed_time,
+        updated_at: fixed_time,
+        source_project: project,
+        labels: [label])
     end
 
     let(:note) do
-      create(:note_on_merge_request, noteable: merge_request,
-                                     project: project)
+      create(:note_on_merge_request, noteable: merge_request, project: project)
     end
 
     it_behaves_like 'includes general data'
@@ -112,14 +111,15 @@ RSpec.describe Gitlab::DataBuilder::Note do
   describe 'When asking for a note on merge request diff' do
     let(:label) { create(:label, project: project) }
     let(:merge_request) do
-      create(:labeled_merge_request, created_at: fixed_time, updated_at: fixed_time,
-                             source_project: project,
-                             labels: [label])
+      create(:labeled_merge_request,
+        created_at: fixed_time,
+        updated_at: fixed_time,
+        source_project:
+        project, labels: [label])
     end
 
     let(:note) do
-      create(:diff_note_on_merge_request, noteable: merge_request,
-                                          project: project)
+      create(:diff_note_on_merge_request, noteable: merge_request, project: project)
     end
 
     it_behaves_like 'includes general data'
@@ -138,13 +138,11 @@ RSpec.describe Gitlab::DataBuilder::Note do
 
   describe 'When asking for a note on project snippet' do
     let!(:snippet) do
-      create(:project_snippet, created_at: fixed_time, updated_at: fixed_time,
-                               project: project)
+      create(:project_snippet, created_at: fixed_time, updated_at: fixed_time, project: project)
     end
 
     let!(:note) do
-      create(:note_on_project_snippet, noteable: snippet,
-                                       project: project)
+      create(:note_on_project_snippet, noteable: snippet, project: project)
     end
 
     it_behaves_like 'includes general data'

@@ -19,8 +19,10 @@
     display: none;
   }
 
-  .assignees-selector:hover .assign-myself {
-    display: block;
+  @include media-breakpoint-up(sm) {
+    .assignees-selector:hover .assign-myself {
+      display: block;
+    }
   }
 }
 

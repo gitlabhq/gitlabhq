@@ -266,7 +266,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-row gl-mb-5 work-item-assignees gl-relative">
+  <div class="form-row gl-mb-5 work-item-assignees gl-relative gl-flex-nowrap">
     <span
       class="gl-font-weight-bold col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
       data-testid="assignees-title"

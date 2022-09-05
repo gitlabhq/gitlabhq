@@ -181,8 +181,8 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         let(:existing_project) { create(:project, namespace: existing_group) }
 
         before do
-          application_setting.update!(instance_administrators_group_id: existing_group.id,
-                                     self_monitoring_project_id: existing_project.id)
+          application_setting.update!(
+            instance_administrators_group_id: existing_group.id, self_monitoring_project_id: existing_project.id)
         end
 
         it 'returns success' do

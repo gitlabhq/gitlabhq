@@ -9,8 +9,10 @@ module Ci
 
         free_resources = resource_group.resources.free.count
 
-        resource_group.upcoming_processables.take(free_resources).each do |processable|
-          processable.enqueue_waiting_for_resource
+        resource_group.upcoming_processables.take(free_resources).each do |upcoming|
+          Gitlab::OptimisticLocking.retry_lock(upcoming, name: 'enqueue_waiting_for_resource') do |processable|
+            processable.enqueue_waiting_for_resource
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

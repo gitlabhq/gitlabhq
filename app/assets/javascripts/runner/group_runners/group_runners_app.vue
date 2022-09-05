@@ -13,6 +13,7 @@ import {
 import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
+import RunnerStackedLayoutBanner from '../components/runner_stacked_layout_banner.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerListEmptyState from '../components/runner_list_empty_state.vue';
@@ -37,6 +38,7 @@ export default {
   components: {
     GlLink,
     RegistrationDropdown,
+    RunnerStackedLayoutBanner,
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerListEmptyState,
@@ -179,6 +181,8 @@ export default {
 
 <template>
   <div>
+    <runner-stacked-layout-banner />
+
     <div class="gl-display-flex gl-align-items-center">
       <runner-type-tabs
         ref="runner-type-tabs"

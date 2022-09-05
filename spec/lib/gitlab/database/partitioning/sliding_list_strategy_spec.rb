@@ -181,9 +181,10 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
         Class.new(ApplicationRecord) do
           include PartitionedTable
 
-          partitioned_by :partition, strategy: :sliding_list,
-                       next_partition_if: proc { false },
-                       detach_partition_if: proc { false }
+          partitioned_by :partition,
+                         strategy: :sliding_list,
+                         next_partition_if: proc { false },
+                         detach_partition_if: proc { false }
         end
       end.to raise_error(/ignored_columns/)
     end
@@ -195,7 +196,8 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
 
           self.ignored_columns = [:partition]
 
-          partitioned_by :partition, strategy: :sliding_list,
+          partitioned_by :partition,
+                         strategy: :sliding_list,
                          next_partition_if: proc { false },
                          detach_partition_if: proc { false }
         end
@@ -221,7 +223,8 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
         def self.detach_partition_if_wrapper(...)
           detach_partition?(...)
         end
-        partitioned_by :partition, strategy: :sliding_list,
+        partitioned_by :partition,
+                       strategy: :sliding_list,
                        next_partition_if: method(:next_partition_if_wrapper),
                        detach_partition_if: method(:detach_partition_if_wrapper)
 

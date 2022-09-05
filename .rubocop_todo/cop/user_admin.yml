@@ -52,7 +52,6 @@ Cop/UserAdmin:
   - lib/api/entities/ci/runner_details.rb
   - lib/api/groups.rb
   - lib/api/helpers.rb
-  - lib/api/personal_access_tokens.rb
   - lib/api/users.rb
   - lib/api/v3/github.rb
   - lib/constraints/admin_constrainer.rb

@@ -172,6 +172,7 @@ module ProjectsHelper
 
   def project_list_cache_key(project, pipeline_status: true)
     key = [
+      project.star_count,
       project.route.cache_key,
       project.cache_key,
       project.last_activity_date,

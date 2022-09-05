@@ -38,10 +38,10 @@ RSpec.describe Gitlab::ErrorTracking::Processor::ContextPayloadProcessor do
 
       expect(result_hash[:tags])
         .to include(priority: 'high',
-               locale: 'en',
-               program: 'test',
-               feature_category: 'feature_a',
-               correlation_id: 'cid')
+                    locale: 'en',
+                    program: 'test',
+                    feature_category: 'feature_a',
+                    correlation_id: 'cid')
 
       expect(result_hash[:extra])
         .to include(some_info: 'info',

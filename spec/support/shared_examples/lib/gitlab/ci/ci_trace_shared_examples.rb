@@ -370,15 +370,6 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
       end
     end
 
-    shared_examples 'read successfully with StringIO' do
-      it 'yields with source' do
-        trace.read do |stream|
-          expect(stream).to be_a(Gitlab::Ci::Trace::Stream)
-          expect(stream.stream).to be_a(StringIO)
-        end
-      end
-    end
-
     shared_examples 'failed to read' do
       it 'yields without source' do
         trace.read do |stream|
@@ -402,14 +393,6 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
       end
 
       it_behaves_like 'read successfully with IO'
-    end
-
-    context 'when db trace exists' do
-      before do
-        build.send(:write_attribute, :trace, "data")
-      end
-
-      it_behaves_like 'read successfully with StringIO'
     end
 
     context 'when no sources exist' do
@@ -462,25 +445,6 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
         expect(trace.exist?).to be(false)
       end
     end
-
-    context 'stored in database' do
-      before do
-        build.send(:write_attribute, :trace, "data")
-      end
-
-      it "trace exist" do
-        expect(trace.exist?).to be(true)
-      end
-
-      it "can be erased" do
-        trace.erase!
-        expect(trace.exist?).to be(false)
-      end
-
-      it "returns database data" do
-        expect(trace.raw).to eq("data")
-      end
-    end
   end
 
   describe '#archive!' do
@@ -520,21 +484,9 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
         expect(build.trace.exist?).to be_truthy
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
-        expect(build.old_trace).to be_nil
         expect(src_checksum)
           .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
-      end
-    end
-
-    shared_examples 'source trace in database stays intact' do |error:|
-      it do
-        expect { subject }.to raise_error(error)
-
-        build.reload
-        expect(build.trace.exist?).to be_truthy
-        expect(build.job_artifacts_trace).to be_nil
-        expect(build.old_trace).to eq(trace_content)
       end
     end
 
@@ -562,58 +514,6 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
           end
 
           it_behaves_like 'source trace file stays intact', error: ActiveRecord::RecordInvalid
-        end
-      end
-
-      context 'when trace is stored in database' do
-        let(:build) { create(:ci_build, :success) }
-        let(:trace_content) { 'Sample trace' }
-        let(:src_checksum) { Digest::SHA256.hexdigest(trace_content) }
-
-        before do
-          build.update_column(:trace, trace_content)
-        end
-
-        it_behaves_like 'archive trace in database'
-
-        context 'when failed to create clone file' do
-          before do
-            allow(IO).to receive(:copy_stream).and_return(0)
-          end
-
-          it_behaves_like 'source trace in database stays intact', error: Gitlab::Ci::Trace::ArchiveError
-        end
-
-        context 'when failed to create job artifact record' do
-          before do
-            allow_any_instance_of(Ci::JobArtifact).to receive(:save).and_return(false)
-            allow_any_instance_of(Ci::JobArtifact).to receive_message_chain(:errors, :full_messages)
-              .and_return(%w[Error Error])
-          end
-
-          it_behaves_like 'source trace in database stays intact', error: ActiveRecord::RecordInvalid
-        end
-
-        context 'when there is a validation error on Ci::Build' do
-          before do
-            allow_any_instance_of(Ci::Build).to receive(:save).and_return(false)
-            allow_any_instance_of(Ci::Build).to receive_message_chain(:errors, :full_messages)
-              .and_return(%w[Error Error])
-          end
-
-          context "when erase old trace with 'save'" do
-            before do
-              build.send(:write_attribute, :trace, nil)
-              build.save # rubocop:disable Rails/SaveBang
-            end
-
-            it 'old trace is not deleted' do
-              build.reload
-              expect(build.trace.raw).to eq(trace_content)
-            end
-          end
-
-          it_behaves_like 'archive trace in database'
         end
       end
     end
@@ -645,22 +545,6 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
     subject { trace.erase! }
 
     context 'when it is a live trace' do
-      context 'when trace is stored in database' do
-        let(:build) { create(:ci_build) }
-
-        before do
-          build.update_column(:trace, 'sample trace')
-        end
-
-        it { expect(trace.raw).not_to be_nil }
-
-        it "removes trace" do
-          subject
-
-          expect(trace.raw).to be_nil
-        end
-      end
-
       context 'when trace is stored in file storage' do
         let(:build) { create(:ci_build, :trace_live) }
 

@@ -138,11 +138,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
         { key: 'GITLAB_USER_ID',
           value: user.id.to_s },
         { key: 'GITLAB_USER_EMAIL',
-         value: user.email },
+          value: user.email },
         { key: 'GITLAB_USER_LOGIN',
-         value: user.username },
+          value: user.username },
         { key: 'GITLAB_USER_NAME',
-         value: user.name }
+          value: user.name }
       ].map { |var| var.merge(public: true, masked: false) }
     end
 

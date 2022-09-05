@@ -151,7 +151,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/protect/container-security-backend
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/govern/security-policies-backend
 
 ^[Project Alias]
 /ee/app/models/project_alias.rb @patrickbajao
@@ -183,23 +183,23 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/services/app_sec/dast/ @gitlab-org/secure/dynamic-analysis-be
 
 ^[Container Security]
-/ee/app/views/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend
-/ee/app/views/projects/security/policies/** @gitlab-org/protect/container-security-frontend
-/ee/spec/views/projects/security/policies/** @gitlab-org/protect/container-security-frontend
-/ee/app/assets/javascripts/pages/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend
-/ee/app/assets/javascripts/threat_monitoring/** @gitlab-org/protect/container-security-frontend
-/ee/spec/frontend/threat_monitoring/** @gitlab-org/protect/container-security-frontend
+/ee/app/views/projects/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
+/ee/app/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/pages/projects/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
 
-/ee/app/controllers/projects/threat_monitoring_controller.rb @gitlab-org/protect/container-security-backend
-/ee/spec/controllers/projects/threat_monitoring_controller_spec.rb @gitlab-org/protect/container-security-backend
-/ee/app/controllers/projects/security/policies_controller.rb @gitlab-org/protect/container-security-backend
-/ee/spec/requests/projects/security/policies_controller_spec.rb @gitlab-org/protect/container-security-backend
-/ee/app/models/security/orchestration_policy_configuration.rb @gitlab-org/protect/container-security-backend
-/ee/spec/models/security/orchestration_policy_configuration_spec.rb @gitlab-org/protect/container-security-backend
-/app/models/clusters/applications/cilium.rb @gitlab-org/protect/container-security-backend
-/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/protect/container-security-backend
-/ee/app/services/security/orchestration/** @gitlab-org/protect/container-security-backend
-/ee/spec/services/security/orchestration/** @gitlab-org/protect/container-security-backend
+/ee/app/controllers/projects/threat_monitoring_controller.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/controllers/projects/threat_monitoring_controller_spec.rb @gitlab-org/govern/container-security-backend
+/ee/app/controllers/projects/security/policies_controller.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/requests/projects/security/policies_controller_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/app/models/security/orchestration_policy_configuration.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/models/security/orchestration_policy_configuration_spec.rb @gitlab-org/govern/security-policies-backend
+/app/models/clusters/applications/cilium.rb @gitlab-org/govern/security-policies-backend
+/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/app/services/security/orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/spec/services/security/orchestration/** @gitlab-org/govern/security-policies-backend
 
 ^[Code Owners]
 /ee/lib/gitlab/code_owners.rb @reprazent @kerrizor @garyh

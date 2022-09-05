@@ -46,7 +46,7 @@ RSpec.describe 'getting a list of work item types for a group' do
     end
   end
 
-  context "when user doesn't have acces to the group" do
+  context "when user doesn't have access to the group" do
     let(:current_user) { create(:user) }
 
     before do

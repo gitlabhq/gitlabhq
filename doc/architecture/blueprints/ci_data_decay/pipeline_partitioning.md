@@ -74,6 +74,11 @@ violates our [principle of 100 GB max size](../database_scaling/size-limits.md).
 We also want to [build alerting](https://gitlab.com/gitlab-com/gl-infra/tamland/-/issues/5)
 to notify us when this number is exceeded.
 
+Large SQL tables increase index maintenance time, during which freshly deleted tuples
+cannot be cleaned by `autovacuum`. This highlight the need for small tables.
+We will measure how much bloat we accumulate when [re]indexing huge tables. Base on this analysis,
+we will be able to set up SLO (dead tuples / bloat), associated with [re]indexing.
+
 We’ve seen numerous S1 and S2 database-related production environment
 incidents, over the last couple of months, for example:
 

@@ -119,11 +119,11 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
     let(:expected_items) do
       {
         etag_route: endpoint,
-        params:     {},
-        format:     :html,
-        method:     'GET',
-        path:       enabled_path,
-        status:     status_code
+        params: {},
+        format: :html,
+        method: 'GET',
+        path: enabled_path,
+        status: status_code
       }
     end
 

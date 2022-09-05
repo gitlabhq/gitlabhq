@@ -73,7 +73,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
             },
             assignees: {
               previous: [],
-                current: [{
+              current: [{
                   name: "Foo Bar",
                   username: "foobar",
                   avatar_url: "http://www.example.com/my-avatar.jpg"

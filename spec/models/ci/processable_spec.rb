@@ -55,8 +55,7 @@ RSpec.describe Ci::Processable do
       let(:clone_accessors) { ::Ci::Build.clone_accessors.without(::Ci::Build.extra_accessors) }
 
       let(:reject_accessors) do
-        %i[id status user token_encrypted coverage trace runner
-           artifacts_expire_at
+        %i[id status user token_encrypted coverage runner artifacts_expire_at
            created_at updated_at started_at finished_at queued_at erased_by
            erased_at auto_canceled_by job_artifacts job_artifacts_archive
            job_artifacts_metadata job_artifacts_trace job_artifacts_junit
