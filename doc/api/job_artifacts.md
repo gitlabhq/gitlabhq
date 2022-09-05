@@ -70,7 +70,7 @@ is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
 NOTE:
-If a pipeline is [parent of other child pipelines](../ci/pipelines/parent_child_pipelines.md), artifacts
+If a pipeline is [parent of other child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines), artifacts
 are searched in hierarchical order from parent to child. For example, if both parent and
 child pipelines have a job with the same name, the artifact from the parent pipeline is returned.
 
@@ -175,7 +175,7 @@ The artifact file provides more detail than what is available in the
 [CSV export](../user/application_security/vulnerability_report/index.md#export-vulnerability-details).
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
-for [parent and child pipelines](../ci/pipelines/parent_child_pipelines.md) are searched in hierarchical
+for [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the artifact from the parent pipeline is returned.
 

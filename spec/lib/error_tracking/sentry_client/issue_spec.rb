@@ -58,6 +58,8 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
 
     it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
     it_behaves_like 'issues have correct length', 3
+    it_behaves_like 'maps Sentry exceptions'
+    it_behaves_like 'Sentry API response size limit', enabled_by_default: true
 
     shared_examples 'has correct external_url' do
       describe '#external_url' do
@@ -178,18 +180,6 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
       end
     end
 
-    context 'when sentry api response is too large' do
-      it 'raises exception' do
-        deep_size = instance_double(Gitlab::Utils::DeepSize, valid?: false)
-        allow(Gitlab::Utils::DeepSize).to receive(:new).with(sentry_api_response).and_return(deep_size)
-
-        expect { subject }.to raise_error(ErrorTracking::SentryClient::ResponseInvalidSizeError,
-                                          'Sentry API response is too big. Limit is 1 MB.')
-      end
-    end
-
-    it_behaves_like 'maps Sentry exceptions'
-
     context 'when search term is present' do
       let(:search_term) { 'NoMethodError' }
       let(:sentry_request_url) { "#{sentry_url}/issues/?limit=20&query=is:unresolved NoMethodError" }
@@ -219,9 +209,13 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
     end
 
     let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
-    let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: issue_sample_response) }
+    let(:sentry_api_response) { issue_sample_response }
+    let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
 
     subject { client.issue_details(issue_id: issue_id) }
+
+    it_behaves_like 'maps Sentry exceptions'
+    it_behaves_like 'Sentry API response size limit'
 
     context 'with error object created from sentry response' do
       using RSpec::Parameterized::TableSyntax
@@ -320,6 +314,10 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
     end
 
     subject { client.update_issue(issue_id: issue_id, params: params) }
+
+    it_behaves_like 'Sentry API response size limit' do
+      let(:sentry_api_response) { {} }
+    end
 
     it_behaves_like 'calls sentry api' do
       let(:sentry_api_request) { stub_sentry_request(sentry_request_url, :put) }

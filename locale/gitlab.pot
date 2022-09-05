@@ -26898,6 +26898,9 @@ msgstr ""
 msgid "Notify|Milestone changed to %{milestone}"
 msgstr ""
 
+msgid "Notify|Milestone removed"
+msgstr ""
+
 msgid "Notify|New issue: %{project_issue_url}"
 msgstr ""
 

@@ -9,6 +9,7 @@ RSpec.describe ErrorTracking::SentryClient::IssueLink do
   let_it_be(:error_tracking_setting) { create(:project_error_tracking_setting, api_url: sentry_url) }
   let_it_be(:issue) { create(:issue, project: error_tracking_setting.project) }
 
+  let(:token) { 'test-token' }
   let(:client) { error_tracking_setting.sentry_client }
   let(:sentry_issue_id) { 11111111 }
 
@@ -22,11 +23,12 @@ RSpec.describe ErrorTracking::SentryClient::IssueLink do
 
     subject { client.create_issue_link(integration_id, sentry_issue_id, issue) }
 
+    it_behaves_like 'Sentry API response size limit'
     it_behaves_like 'calls sentry api'
 
     it { is_expected.to be_present }
 
-    context 'redirects' do
+    context 'with redirects' do
       let(:sentry_api_url) { sentry_issue_link_url }
 
       it_behaves_like 'no Sentry redirects', :put
@@ -45,11 +47,12 @@ RSpec.describe ErrorTracking::SentryClient::IssueLink do
       let(:issue_link_sample_response) { Gitlab::Json.parse(fixture_file('sentry/plugin_link_sample_response.json')) }
       let!(:sentry_api_request) { stub_sentry_request(sentry_issue_link_url, :post, body: sentry_api_response) }
 
+      it_behaves_like 'Sentry API response size limit'
       it_behaves_like 'calls sentry api'
 
       it { is_expected.to be_present }
 
-      context 'redirects' do
+      context 'with redirects' do
         let(:sentry_api_url) { sentry_issue_link_url }
 
         it_behaves_like 'no Sentry redirects', :post

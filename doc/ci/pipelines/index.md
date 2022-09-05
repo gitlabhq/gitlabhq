@@ -57,7 +57,7 @@ Pipelines can be configured in many different ways:
   already been merged into the target branch.
 - [Merge trains](../pipelines/merge_trains.md)
   use merged results pipelines to queue merges one after the other.
-- [Parent-child pipelines](parent_child_pipelines.md) break down complex pipelines
+- [Parent-child pipelines](downstream_pipelines.md#parent-child-pipelines) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines) combine pipelines for different projects together.
@@ -254,7 +254,7 @@ page, then selecting **Delete**.
 ![Pipeline Delete](img/pipeline-delete.png)
 
 Deleting a pipeline does not automatically delete its
-[child pipelines](parent_child_pipelines.md).
+[child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
 for details.
 

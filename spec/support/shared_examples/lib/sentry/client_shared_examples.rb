@@ -43,7 +43,7 @@ RSpec.shared_examples 'maps Sentry exceptions' do |http_method|
   }
 
   exceptions.each do |exception, message|
-    context "#{exception}" do
+    context exception do
       before do
         stub_request(
           http_method || :get,
@@ -54,6 +54,53 @@ RSpec.shared_examples 'maps Sentry exceptions' do |http_method|
       it do
         expect { subject }
           .to raise_exception(ErrorTracking::SentryClient::Error, message)
+      end
+    end
+  end
+end
+
+# Expects to following variables:
+#   - subject
+#   - sentry_api_response
+#   - sentry_url, token - only if enabled_by_default: false
+RSpec.shared_examples 'Sentry API response size limit' do |enabled_by_default: false|
+  let(:invalid_deep_size) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
+
+  before do
+    allow(Gitlab::Utils::DeepSize)
+      .to receive(:new)
+      .with(sentry_api_response, any_args)
+      .and_return(invalid_deep_size)
+  end
+
+  if enabled_by_default
+    it 'raises an exception when response is too large' do
+      expect { subject }.to raise_error(ErrorTracking::SentryClient::ResponseInvalidSizeError,
+                                        'Sentry API response is too big. Limit is 1 MB.')
+    end
+  else
+    context 'when guarded by feature flag' do
+      let(:client) do
+        ErrorTracking::SentryClient.new(sentry_url, token, validate_size_guarded_by_feature_flag: feature_flag)
+      end
+
+      context 'with feature flag enabled' do
+        let(:feature_flag) { true }
+
+        it 'raises an exception when response is too large' do
+          expect { subject }.to raise_error(ErrorTracking::SentryClient::ResponseInvalidSizeError,
+                                            'Sentry API response is too big. Limit is 1 MB.')
+        end
+      end
+
+      context 'with feature flag disabled' do
+        let(:feature_flag) { false }
+
+        it 'does not check the limit and thus not raise' do
+          expect { subject }.not_to raise_error
+
+          expect(Gitlab::Utils::DeepSize).not_to have_received(:new)
+        end
       end
     end
   end

@@ -277,7 +277,7 @@ For a complete example, read the [Go coverage-guided fuzzing example](https://gi
 
 It's also possible to run the coverage-guided fuzzing jobs longer and without blocking your main
 pipeline. This configuration uses the GitLab
-[parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md).
+[parent-child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 The suggested workflow in this scenario is to have long-running, asynchronous fuzzing jobs on the
 main or development branch, and short synchronous fuzzing jobs on all other branches and MRs. This

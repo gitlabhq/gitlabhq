@@ -305,7 +305,7 @@ the artifact.
 ## How searching for job artifacts works
 
 In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201784), artifacts
-for [parent and child pipelines](parent_child_pipelines.md) are searched in hierarchical
+for [parent and child pipelines](downstream_pipelines.md#parent-child-pipelines) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the job artifact from the parent pipeline is returned.
 

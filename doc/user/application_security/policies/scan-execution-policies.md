@@ -128,7 +128,7 @@ Note the following:
 - A container scanning and cluster image scanning scans configured for the `pipeline` rule type ignores the cluster defined in the `clusters` object.
   They use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
   A cluster with a name provided in the `clusters` object must be created and configured for the project.
-- The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/parent_child_pipelines.md).
+- The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 ## Example security policies project
 

@@ -137,6 +137,13 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter do
       expect(doc.to_html).to match Regexp.escape(exp)
     end
 
+    it 'trailers without emails' do
+      exp = message = commit_html(Array.new(5) { 'Merged-By:' }.join("\n"))
+      doc = filter(message)
+
+      expect(doc.to_html).to match Regexp.escape(exp)
+    end
+
     it 'trailers that are inline the commit message body' do
       message = commit_html %(
         #{FFaker::Lorem.sentence} #{commit_message} #{FFaker::Lorem.sentence}

@@ -80,7 +80,7 @@ Example of response
 
 Get one pipeline from a project.
 
-You can also get a single [child pipeline](../ci/pipelines/parent_child_pipelines.md).
+You can also get a single [child pipeline](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.3.
 
 ```plaintext
@@ -427,7 +427,7 @@ related objects, such as builds, logs, artifacts, and triggers.
 **This action cannot be undone.**
 
 Deleting a pipeline does not automatically delete its
-[child pipelines](../ci/pipelines/parent_child_pipelines.md).
+[child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
 for details.
 

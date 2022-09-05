@@ -35,6 +35,7 @@ RSpec.describe ErrorTracking::SentryClient::Projects do
 
     it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Project
     it_behaves_like 'has correct length', 2
+    it_behaves_like 'Sentry API response size limit'
 
     context 'essential keys missing in API response' do
       let(:sentry_api_response) do

@@ -214,7 +214,7 @@ Compliance pipelines start on the run of _every_ pipeline in a relevant project.
 triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
 
 Therefore, in projects with compliance frameworks, we recommend replacing
-[parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md) with the following:
+[parent-child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
 
 - Direct [`include`](../../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
 - Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/index.md) rather than the parent-child

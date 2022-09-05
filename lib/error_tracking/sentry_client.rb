@@ -10,15 +10,31 @@ module ErrorTracking
 
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
+    ResponseInvalidSizeError = Class.new(StandardError)
+
+    RESPONSE_SIZE_LIMIT = 1.megabyte
 
     attr_accessor :url, :token
 
-    def initialize(api_url, token)
+    def initialize(api_url, token, validate_size_guarded_by_feature_flag: false)
       @url = api_url
       @token = token
+      @validate_size_guarded_by_feature_flag = validate_size_guarded_by_feature_flag
+    end
+
+    def validate_size_guarded_by_feature_flag?
+      @validate_size_guarded_by_feature_flag
     end
 
     private
+
+    def validate_size(response)
+      return if Gitlab::Utils::DeepSize.new(response, max_size: RESPONSE_SIZE_LIMIT).valid?
+
+      limit = ActiveSupport::NumberHelper.number_to_human_size(RESPONSE_SIZE_LIMIT)
+      message = "Sentry API response is too big. Limit is #{limit}."
+      raise ResponseInvalidSizeError, message
+    end
 
     def api_urls
       @api_urls ||= SentryClient::ApiUrls.new(@url)
@@ -85,6 +101,8 @@ module ErrorTracking
 
     def handle_response(response)
       raise_error "Sentry response status code: #{response.code}" unless response.code.between?(200, 204)
+
+      validate_size(response.parsed_response) if validate_size_guarded_by_feature_flag?
 
       { body: response.parsed_response, headers: response.headers }
     end

@@ -58,10 +58,4 @@ RSpec.describe Gitlab::Utils::DeepSize do
       it { is_expected.not_to be_valid }
     end
   end
-
-  describe '.human_default_max_size' do
-    it 'returns 1 MB' do
-      expect(described_class.human_default_max_size).to eq('1 MB')
-    end
-  end
 end

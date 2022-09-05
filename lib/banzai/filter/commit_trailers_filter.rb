@@ -48,7 +48,7 @@ module Banzai
         text.lines.map! do |line|
           trailer, rest = line.split(':', 2)
 
-          next line unless trailer.downcase.end_with?('-by')
+          next line unless trailer.downcase.end_with?('-by') && rest.present?
 
           chunks = rest.split
           author_email = chunks.pop.delete_prefix('&lt;').delete_suffix('&gt;')

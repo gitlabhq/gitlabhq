@@ -4,7 +4,6 @@ module ErrorTracking
   class SentryClient
     module Issue
       BadRequestError = Class.new(StandardError)
-      ResponseInvalidSizeError = Class.new(StandardError)
 
       SENTRY_API_SORT_VALUE_MAP = {
         # <accepted_by_client> => <accepted_by_sentry_api>
@@ -19,7 +18,9 @@ module ErrorTracking
         issues = response[:issues]
         pagination = response[:pagination]
 
-        validate_size(issues)
+        # We check validate size only with feture flag disabled because when
+        # enabled we already check it when parsing the response.
+        validate_size(issues) unless validate_size_guarded_by_feature_flag?
 
         handle_mapping_exceptions do
           {
@@ -62,13 +63,6 @@ module ErrorTracking
           sort: SENTRY_API_SORT_VALUE_MAP[sort],
           cursor: cursor
         }.compact
-      end
-
-      def validate_size(issues)
-        return if Gitlab::Utils::DeepSize.new(issues).valid?
-
-        message = "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
-        raise ResponseInvalidSizeError, message
       end
 
       def get_issue(issue_id:)

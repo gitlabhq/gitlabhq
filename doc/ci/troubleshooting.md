@@ -89,9 +89,9 @@ if you are using that type:
 
 - [Multi-project pipelines](pipelines/downstream_pipelines.md#multi-project-pipelines): Have your pipeline trigger
   a pipeline in a different project.
-- [Parent/child pipelines](pipelines/parent_child_pipelines.md): Have your main pipeline trigger
+- [Parent/child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines): Have your main pipeline trigger
   and run separate pipelines in the same project. You can also
-  [dynamically generate the child pipeline's configuration](pipelines/parent_child_pipelines.md#dynamic-child-pipelines)
+  [dynamically generate the child pipeline's configuration](pipelines/downstream_pipelines.md#dynamic-child-pipelines)
   at runtime.
 - [Merge request pipelines](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.
@@ -316,7 +316,7 @@ To reduce the configuration size, you can:
   [merged YAML](pipeline_editor/index.md#view-expanded-configuration) tab. Look for
   duplicated configuration that can be removed or simplified.
 - Move long or repeated `script` sections into standalone scripts in the project.
-- Use [parent and child pipelines](pipelines/parent_child_pipelines.md) to move some
+- Use [parent and child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines) to move some
   work to jobs in an independent child pipeline.
 
 On a self-managed instance, you can [increase the size limits](../administration/instance_limits.md#maximum-size-and-depth-of-cicd-configuration-yaml-files).

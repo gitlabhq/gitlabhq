@@ -210,7 +210,7 @@ Read more how you can use GitLab for [safe deployments](../environments/deployme
 Because [`oldest_first` process mode](#process-modes) enforces the jobs to be executed in a pipeline order,
 there is a case that it doesn't work well with the other CI features.
 
-For example, when you run [a child pipeline](../pipelines/parent_child_pipelines.md)
+For example, when you run [a child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 that requires the same resource group with the parent pipeline,
 a dead lock could happen. Here is an example of a _bad_ setup:
 

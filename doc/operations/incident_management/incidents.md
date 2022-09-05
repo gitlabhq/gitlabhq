@@ -231,6 +231,10 @@ To view the event timeline of an incident:
 
 #### Create a timeline event
 
+You can create a timeline event in many ways in GitLab.
+
+##### Using the form
+
 Create a timeline event manually using the form.
 
 Prerequisites:
@@ -246,6 +250,24 @@ To create a timeline event:
 1. Select **Add new timeline event**.
 1. Complete the required fields.
 1. Select **Save** or **Save and add another event**.
+
+##### From a comment on the incident
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344058) in GitLab 15.4.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To create a timeline event from a comment on the incident:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Create a comment or choose an existing comment.
+1. On the comment you want to add, select **Add comment to incident timeline** (**{clock}**).
+
+The comment is shown on the incident timeline as a timeline event.
 
 #### Delete a timeline event
 

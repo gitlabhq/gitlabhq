@@ -303,7 +303,7 @@ Example of response
 ```
 
 In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#get-a-single-pipeline)
-including [child pipelines](../ci/pipelines/parent_child_pipelines.md).
+including [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 In GitLab 13.5 and later, this endpoint does not return retried jobs in the response
 by default. Additionally, jobs are sorted by ID in descending order (newest first).
