@@ -530,6 +530,26 @@ RSpec.describe API::Commits do
         end
       end
 
+      context 'when repository is empty' do
+        let!(:project) { create(:project, :empty_repo) }
+
+        context 'when params are valid' do
+          before do
+            post api(url, user), params: valid_c_params
+          end
+
+          it_behaves_like "successfully creates the commit"
+        end
+
+        context 'when branch name is invalid' do
+          before do
+            post api(url, user), params: valid_c_params.merge(branch: 'wrong:name')
+          end
+
+          it { expect(response).to have_gitlab_http_status(:bad_request) }
+        end
+      end
+
       context 'a new file with utf8 chars in project repo' do
         before do
           post api(url, user), params: valid_utf8_c_params

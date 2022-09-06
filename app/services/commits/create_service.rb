@@ -66,7 +66,7 @@ module Commits
       validate_on_branch!
       validate_branch_existence!
 
-      validate_new_branch_name! if different_branch?
+      validate_new_branch_name! if project.empty_repo? || different_branch?
     end
 
     def validate_permissions!

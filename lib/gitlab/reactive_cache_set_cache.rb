@@ -15,8 +15,10 @@ module Gitlab
         keys = read(key).map { |value| "#{cache_namespace}:#{value}" }
         keys << cache_key(key)
 
-        redis.pipelined do |pipeline|
-          keys.each_slice(1000) { |subset| pipeline.unlink(*subset) }
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          redis.pipelined do |pipeline|
+            keys.each_slice(1000) { |subset| pipeline.unlink(*subset) }
+          end
         end
       end
     end

@@ -1,0 +1,10 @@
+# Default variables for package-and-test
+
+variables:
+  RELEASE: "gitlab/gitlab-ee:nightly"
+  SKIP_REPORT_IN_ISSUES: "true"
+  OMNIBUS_GITLAB_CACHE_UPDATE: "false"
+  COLORIZED_LOGS: "true"
+  QA_LOG_LEVEL: "info"
+  QA_TESTS: ""
+  QA_FEATURE_FLAGS: ""

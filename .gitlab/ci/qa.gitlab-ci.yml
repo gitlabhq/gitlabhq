@@ -66,48 +66,18 @@ qa:update-qa-cache:
   script:
     - echo "Cache has been updated and ready to be uploaded."
 
-populate-e2e-test-vars:
-  extends:
-    - .qa-job-base
-    - .qa:rules:determine-e2e-tests
-  stage: prepare
-  variables:
-    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
-    COLORIZED_LOGS: "true"
-  script:
-    - bundle exec rake "ci:detect_changes[$ENV_FILE]"
-  artifacts:
-    expire_in: 1 day
-    reports:
-      dotenv: $ENV_FILE
-
-e2e-test-pipeline-generate:
-  extends:
-    - .qa:rules:determine-e2e-tests
-  stage: prepare
-  when: on_success
-  needs:
-    - populate-e2e-test-vars
-  variables:
-    PIPELINE_YML: package-and-test.yml
-  script:
-    - scripts/generate-e2e-pipeline $PIPELINE_YML
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - $PIPELINE_YML
-
 e2e:package-and-test:
   extends:
     - .qa:rules:package-and-test
   stage: qa
-  when: on_success
   needs:
     - build-assets-image
     - build-qa-image
     - e2e-test-pipeline-generate
+  variables:
+    SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
   trigger:
     strategy: depend
     include:
-      - artifact: package-and-test.yml
+      - artifact: package-and-test-pipeline.yml
         job: e2e-test-pipeline-generate

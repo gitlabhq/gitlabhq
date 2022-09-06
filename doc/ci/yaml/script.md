@@ -244,6 +244,7 @@ pages-job:
   stage: deploy
   script:
     - curl --header 'PRIVATE-TOKEN: ${PRIVATE_TOKEN}' "https://gitlab.example.com/api/v4/projects"
+  environment: production
 ```
 
 The YAML parser thinks the `:` defines a YAML keyword, and outputs the
@@ -257,6 +258,7 @@ pages-job:
   stage: deploy
   script:
     - 'curl --header "PRIVATE-TOKEN: ${PRIVATE_TOKEN}" "https://gitlab.example.com/api/v4/projects"'
+  environment: production
 ```
 
 ### Job does not fail when using `&&` in a script

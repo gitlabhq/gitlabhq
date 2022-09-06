@@ -47,9 +47,20 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
     let(:instrumentation_class) { Gitlab::Redis::SharedState.instrumentation_class }
 
     it 'counts successful requests' do
-      expect(instrumentation_class).to receive(:instance_count_request).and_call_original
+      expect(instrumentation_class).to receive(:instance_count_request).with(1).and_call_original
 
       Gitlab::Redis::SharedState.with { |redis| redis.call(:get, 'foobar') }
+    end
+
+    it 'counts successful pipelined requests' do
+      expect(instrumentation_class).to receive(:instance_count_request).with(2).and_call_original
+
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.pipelined do |pipeline|
+          pipeline.call(:get, 'foobar')
+          pipeline.call(:get, 'foobarbaz')
+        end
+      end
     end
 
     it 'counts exceptions' do
@@ -84,6 +95,20 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
           Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
         end
       end
+
+      context 'with pipelined commands' do
+        it 'measures requests that do not have blocking commands' do
+          expect(instrumentation_class).to receive(:instance_observe_duration).twice.with(a_value > 0)
+            .and_call_original
+
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.pipelined do |pipeline|
+              pipeline.call(:get, 'foobar')
+              pipeline.call(:get, 'foobarbaz')
+            end
+          end
+        end
+      end
     end
 
     describe 'commands not in the apdex' do
@@ -106,6 +131,19 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
           begin
             Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
           rescue Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError, ::Redis::CommandError
+          end
+        end
+      end
+
+      context 'with pipelined commands' do
+        it 'skips requests that have blocking commands' do
+          expect(instrumentation_class).not_to receive(:instance_observe_duration)
+
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.pipelined do |pipeline|
+              pipeline.call(:get, 'foo')
+              pipeline.call(:brpop, 'foobar', '0.01')
+            end
           end
         end
       end

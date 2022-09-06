@@ -16,7 +16,11 @@ module Peek
       private
 
       def format_call_details(call)
-        super.merge(cmd: format_command(call[:cmd]),
+        cmd = call[:commands].map do |command|
+          format_command(command)
+        end.join(', ')
+
+        super.merge(cmd: cmd,
                     instance: call[:storage])
       end
 

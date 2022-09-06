@@ -20,21 +20,19 @@ module Gitlab
           ::RequestStore[call_duration_key] += duration
         end
 
-        def add_call_details(duration, args)
+        def add_call_details(duration, commands)
           return unless Gitlab::PerformanceBar.enabled_for_request?
-          # redis-rb passes an array (e.g. [[:get, key]])
-          return unless args.length == 1
 
           detail_store << {
-            cmd: args.first,
+            commands: commands,
             duration: duration,
             backtrace: ::Gitlab::BacktraceCleaner.clean_backtrace(caller)
           }
         end
 
-        def increment_request_count
+        def increment_request_count(amount = 1)
           ::RequestStore[request_count_key] ||= 0
-          ::RequestStore[request_count_key] += 1
+          ::RequestStore[request_count_key] += amount
         end
 
         def increment_read_bytes(num_bytes)
@@ -78,9 +76,9 @@ module Gitlab
           self
         end
 
-        def instance_count_request
+        def instance_count_request(amount = 1)
           @request_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_requests_total, 'Client side Redis request count, per Redis server')
-          @request_counter.increment({ storage: storage_key })
+          @request_counter.increment({ storage: storage_key }, amount)
         end
 
         def instance_count_exception(ex)

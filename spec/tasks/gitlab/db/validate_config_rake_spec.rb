@@ -216,7 +216,7 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_sc
       let(:exception) { ActiveRecord::StatementInvalid.new("READONLY") }
 
       before do
-        allow(exception).to receive(:cause).and_return(PG::ReadOnlySqlTransaction.new("cannot execute INSERT in a read-only transaction"))
+        allow(exception).to receive(:cause).and_return(PG::ReadOnlySqlTransaction.new("cannot execute UPSERT in a read-only transaction"))
         allow(ActiveRecord::InternalMetadata).to receive(:upsert).at_least(:once).and_raise(exception)
       end
 

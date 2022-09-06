@@ -607,6 +607,7 @@ job3:
   stage: deploy
   script:
     - deploy_to_staging
+  environment: staging
 ```
 
 In this example, `job1` and `job2` run in parallel:
@@ -1478,6 +1479,7 @@ test linux:
 deploy:
   stage: deploy
   script: make deploy
+  environment: production
 ```
 
 In this example, two jobs have artifacts: `build osx` and `build linux`. When `test osx` is executed,
@@ -2120,6 +2122,7 @@ mac:rspec:
 production:
   stage: deploy
   script: echo "Running production..."
+  environment: production
 ```
 
 This example creates four paths of execution:
@@ -2382,12 +2385,14 @@ deploy-job:
     - job: test-job2
       optional: true
     - job: test-job1
+  environment: production
 
 review-job:
   stage: deploy
   needs:
     - job: test-job2
       optional: true
+  environment: review
 ```
 
 In this example:
@@ -2668,6 +2673,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
 ```
 
 This example moves all files from the root of the project to the `public/` directory.
@@ -2749,6 +2755,7 @@ deploystacks:
         STACK: [monitoring, backup, app]
       - PROVIDER: [gcp, vultr]
         STACK: [data, processing]
+  environment: $PROVIDER/$STACK
 ```
 
 The example generates 10 parallel `deploystacks` jobs, each with different values
@@ -3718,6 +3725,7 @@ job4:
   stage: deploy
   script:
     - echo "This job deploys the code. It runs when the test stage completes."
+  environment: production
 ```
 
 **Additional details**:
@@ -4065,6 +4073,7 @@ deploy_job:
   stage: deploy
   script:
     - deploy-script --url $DEPLOY_SITE --path "/"
+  environment: production
 
 deploy_review_job:
   stage: deploy
@@ -4072,6 +4081,7 @@ deploy_review_job:
     REVIEW_PATH: "/review"
   script:
     - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
+  environment: production
 ```
 
 **Additional details**:
@@ -4164,6 +4174,7 @@ deploy_job:
   script:
     - make deploy
   when: manual
+  environment: production
 
 cleanup_job:
   stage: cleanup

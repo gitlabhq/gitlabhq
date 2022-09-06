@@ -5,21 +5,21 @@ set -e
 # Script to generate e2e test child pipeline
 # This is required because environment variables that are generated dynamically are not picked up by rules in child pipelines
 
-pipeline_yml="${1:-package-and-test.yml}"
+source $ENV_FILE
+
+echo "Generating child pipeline yml definitions for review-app and package-and-test child pipelines"
 
 if [ "$QA_SKIP_ALL_TESTS" == "true" ]; then
-  echo "Generated no-op child pipeline due to QA_SKIP_ALL_TESTS set to 'true'"
-  cp .gitlab/ci/package-and-test/skip.gitlab-ci.yml $pipeline_yml
+  skip_pipeline=".gitlab/ci/_skip.yml"
+
+  echo "Using ${skip_pipeline} due to QA_SKIP_ALL_TESTS set to 'true'"
+  cp $skip_pipeline "$OMNIBUS_PIPELINE_YML"
+  cp $skip_pipeline "$REVIEW_PIPELINE_YML"
   exit
 fi
 
-variables=$(cat <<YML
+common_variables=$(cat <<YML
 variables:
-  RELEASE: "${CI_REGISTRY}/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
-  SKIP_REPORT_IN_ISSUES: "${SKIP_REPORT_IN_ISSUES:-true}"
-  OMNIBUS_GITLAB_CACHE_UPDATE: "${OMNIBUS_GITLAB_CACHE_UPDATE:-false}"
-  COLORIZED_LOGS: "true"
-  QA_LOG_LEVEL: "info"
   QA_TESTS: "$QA_TESTS"
   QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
   QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"
@@ -27,8 +27,20 @@ variables:
 YML
 )
 
-echo "$variables" >$pipeline_yml
-cat .gitlab/ci/package-and-test/main.gitlab-ci.yml >>$pipeline_yml
+echo "Using .gitlab/ci/review-apps/main.gitlab-ci.yml and .gitlab/ci/package-and-test/main.gitlab-ci.yml"
 
-echo "Generated e2e:package-and-test pipeline with following variables section:"
-echo "$variables"
+cp .gitlab/ci/review-apps/main.gitlab-ci.yml "$REVIEW_PIPELINE_YML"
+echo "$common_variables" >>"$REVIEW_PIPELINE_YML"
+echo "Successfully generated review-app pipeline with following variables section:"
+echo -e "$common_variables"
+
+omnibus_variables=$(cat <<YML
+  RELEASE: "${CI_REGISTRY}/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
+  OMNIBUS_GITLAB_CACHE_UPDATE: "${OMNIBUS_GITLAB_CACHE_UPDATE:-false}"
+YML
+)
+cp .gitlab/ci/package-and-test/main.gitlab-ci.yml "$OMNIBUS_PIPELINE_YML"
+echo "$common_variables" >>"$OMNIBUS_PIPELINE_YML"
+echo "$omnibus_variables" >>"$OMNIBUS_PIPELINE_YML"
+echo "Successfully generated package-and-test pipeline with following variables section:"
+echo -e "${common_variables}\n${omnibus_variables}"

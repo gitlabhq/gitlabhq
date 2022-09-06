@@ -23,34 +23,13 @@ review-cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
-review-app-pipeline-generate:
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
-  stage: prepare
-  extends:
-    - .review:rules:start-review-app-pipeline
-  needs:
-    - populate-e2e-test-vars
-  script:
-    - |
-      if [ "$QA_SKIP_ALL_TESTS" == "true" ]; then
-        echo "Skip Review App because the MR includes only quarantine changes"
-        cp .gitlab/ci/review-apps/skip-qa.gitlab-ci.yml review-app-pipeline.yml
-      else
-        echo "Review App will use the full pipeline"
-        cp .gitlab/ci/review-apps/main.gitlab-ci.yml review-app-pipeline.yml
-      fi
-  artifacts:
-    expire_in: 7d
-    paths:
-      - review-app-pipeline.yml
-
 start-review-app-pipeline:
   extends:
     - .review:rules:start-review-app-pipeline
   resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: review
   needs:
-    - review-app-pipeline-generate
+    - job: e2e-test-pipeline-generate
     - job: build-assets-image
       artifacts: false
   # These variables are set in the pipeline schedules.
@@ -59,11 +38,12 @@ start-review-app-pipeline:
   variables:
     SCHEDULE_TYPE: $SCHEDULE_TYPE
     DAST_RUN: $DAST_RUN
+    SKIP_MESSAGE: Skipping review-app due to mr containing only quarantine changes!
   trigger:
+    strategy: depend
     include:
       - artifact: review-app-pipeline.yml
-        job: review-app-pipeline-generate
-    strategy: depend
+        job: e2e-test-pipeline-generate
 
 danger-review:
   extends:

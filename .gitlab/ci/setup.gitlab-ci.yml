@@ -156,3 +156,23 @@ detect-previous-failed-tests:
     expire_in: 7d
     paths:
       - ${PREVIOUS_FAILED_TESTS_DIR}
+
+e2e-test-pipeline-generate:
+  extends:
+    - .qa-job-base
+    - .minimal-job
+    - .qa:rules:determine-e2e-tests
+  stage: prepare
+  variables:
+    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
+    OMNIBUS_PIPELINE_YML: package-and-test-pipeline.yml
+    REVIEW_PIPELINE_YML: review-app-pipeline.yml
+    COLORIZED_LOGS: "true"
+  script:
+    - bundle exec rake "ci:detect_changes[$ENV_FILE]"
+    - cd $CI_PROJECT_DIR && scripts/generate-e2e-pipeline
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - $OMNIBUS_PIPELINE_YML
+      - $REVIEW_PIPELINE_YML

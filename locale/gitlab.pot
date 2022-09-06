@@ -11809,6 +11809,12 @@ msgstr ""
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr ""
 
+msgid "DastProfiles|A scanner profile defines the configuration details of a security scanner. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "DastProfiles|A site profile defines the attributes and configuration details of your deployed application, website, or API. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "DastProfiles|AJAX spider"
 msgstr ""
 
@@ -12007,16 +12013,13 @@ msgstr ""
 msgid "DastProfiles|Scan mode"
 msgstr ""
 
-msgid "DastProfiles|Scanner Profile"
-msgstr ""
-
-msgid "DastProfiles|Scanner Profiles"
-msgstr ""
-
 msgid "DastProfiles|Scanner name"
 msgstr ""
 
-msgid "DastProfiles|Scanner profiles define the configuration details of a security scanner. %{linkStart}Learn more%{linkEnd}."
+msgid "DastProfiles|Scanner profile"
+msgstr ""
+
+msgid "DastProfiles|Scanner profiles"
 msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
@@ -12037,16 +12040,13 @@ msgstr ""
 msgid "DastProfiles|Show debug messages"
 msgstr ""
 
-msgid "DastProfiles|Site Profile"
-msgstr ""
-
-msgid "DastProfiles|Site Profiles"
-msgstr ""
-
 msgid "DastProfiles|Site name"
 msgstr ""
 
-msgid "DastProfiles|Site profiles define the attributes and configuration details of your deployed application, website, or API. %{linkStart}Learn more%{linkEnd}."
+msgid "DastProfiles|Site profile"
+msgstr ""
+
+msgid "DastProfiles|Site profiles"
 msgstr ""
 
 msgid "DastProfiles|Site type"

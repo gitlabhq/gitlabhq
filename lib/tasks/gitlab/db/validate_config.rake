@@ -144,7 +144,7 @@ namespace :gitlab do
     rescue ActiveRecord::StatementInvalid => err
       raise unless err.cause.is_a?(PG::ReadOnlySqlTransaction)
 
-      warn "WARNING: Could not write to the database #{db_config.name}: #{err.message}"
+      warn "WARNING: Could not write to the database #{db_config.name}: cannot execute UPSERT in a read-only transaction"
     end
 
     def get_db_identifier(db_config)
