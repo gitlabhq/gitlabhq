@@ -39547,6 +39547,12 @@ msgstr ""
 msgid "The source project of this merge request has been removed."
 msgstr ""
 
+msgid "The source topic and the target topic are identical."
+msgstr ""
+
+msgid "The source topic is not a topic."
+msgstr ""
+
 msgid "The specified tab is invalid, please select another"
 msgstr ""
 
@@ -39557,6 +39563,9 @@ msgid "The subject will be used as the title of the new issue, and the message w
 msgstr ""
 
 msgid "The tag name can't be changed for an existing release."
+msgstr ""
+
+msgid "The target topic is not a topic."
 msgstr ""
 
 msgid "The time period in seconds that the maximum requests per project limit applies to."
@@ -41262,6 +41271,9 @@ msgid "TopicSelect|Select a topic"
 msgstr ""
 
 msgid "Topics"
+msgstr ""
+
+msgid "Topics could not be merged!"
 msgstr ""
 
 msgid "Total"

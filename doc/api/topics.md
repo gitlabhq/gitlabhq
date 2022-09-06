@@ -217,7 +217,7 @@ curl --request PUT \
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80725) in GitLab 14.9.
 
-You must be an administrator to delete a project.
+You must be an administrator to delete a project topic.
 When you delete a project topic, you also delete the topic assignment for projects.
 
 ```plaintext
@@ -236,4 +236,44 @@ Example request:
 curl --request DELETE \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/topics/1"
+```
+
+## Merge topics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95501) in GitLab 15.4.
+
+You must be an administrator to merge a source topic into a target topic.
+When you merge topics, you delete the source topic and move all assigned projects to the target topic.
+
+```plaintext
+POST /topics/merge
+```
+
+Supported attributes:
+
+| Attribute         | Type    | Required               | Description                |
+| ----------------- | ------- | ---------------------- | -------------------------- |
+| `source_topic_id` | integer | **{check-circle}** Yes | ID of source project topic |
+| `target_topic_id` | integer | **{check-circle}** Yes | ID of target project topic |
+
+Example request:
+
+```shell
+curl --request POST \
+     --data "source_topic_id=2&target_topic_id=1" \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/topics/merge"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "topic1",
+  "title": "Topic 1",
+  "description": null,
+  "total_projects_count": 0,
+  "avatar_url": null
+}
 ```

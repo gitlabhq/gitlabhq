@@ -645,6 +645,7 @@ timed rollout 10%:
   script: echo 'Rolling out 10% ...'
   when: delayed
   start_in: 30 minutes
+  environment: production
 ```
 
 To stop the active timer of a delayed job, select **Unschedule** (**{time-out}**).
@@ -698,6 +699,7 @@ deploystacks:
   parallel:
     matrix:
       - PROVIDER: [aws, ovh, gcp, vultr]
+  environment: production/$PROVIDER
 ```
 
 You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix).
@@ -722,6 +724,7 @@ deploystacks:
         STACK: [monitoring, backup]
       - PROVIDER: [gcp, vultr]
         STACK: [data]
+  environment: $PROVIDER/$STACK
 ```
 
 This example generates 6 parallel `deploystacks` trigger jobs, each with different values
@@ -754,6 +757,7 @@ deploystacks:
         STACK: [data]
   tags:
     - ${PROVIDER}-${STACK}
+  environment: $PROVIDER/$STACK
 ```
 
 #### Fetch artifacts from a `parallel:matrix` job
@@ -784,6 +788,7 @@ deploy:
   dependencies:
     - "ruby: [2.7, aws]"
   script: echo hello
+  environment: production
 ```
 
 Quotes around the `dependencies` entry are required.

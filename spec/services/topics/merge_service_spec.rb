@@ -30,7 +30,9 @@ RSpec.describe Topics::MergeService do
       it 'reverts previous changes' do
         allow(source_topic.reload).to receive(:destroy!).and_raise(ActiveRecord::RecordNotDestroyed)
 
-        expect { subject }.to raise_error(ActiveRecord::RecordNotDestroyed)
+        response = subject
+        expect(response).to be_error
+        expect(response.message).to eq('Topics could not be merged!')
 
         expect(source_topic.projects).to contain_exactly(project_1, project_2, project_4)
         expect(target_topic.projects).to contain_exactly(project_3, project_4)
@@ -50,9 +52,9 @@ RSpec.describe Topics::MergeService do
 
       with_them do
         it 'raises correct error' do
-          expect { subject }.to raise_error(ArgumentError) do |error|
-            expect(error.message).to eq(expected_message)
-          end
+          response = subject
+          expect(response).to be_error
+          expect(response.message).to eq(expected_message)
         end
       end
     end

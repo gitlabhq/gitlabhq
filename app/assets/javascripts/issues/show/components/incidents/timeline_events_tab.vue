@@ -20,7 +20,7 @@ export default {
     IncidentTimelineEventsList,
   },
   i18n: timelineTabI18n,
-  inject: ['canUpdate', 'fullPath', 'issuableId'],
+  inject: ['canUpdateTimelineEvent', 'fullPath', 'issuableId'],
   data() {
     return {
       isEventFormVisible: false,
@@ -98,7 +98,12 @@ export default {
       :class="{ 'gl-pl-0': !hasTimelineEvents }"
       @hide-new-timeline-events-form="hideEventForm"
     />
-    <gl-button v-if="canUpdate" variant="default" class="gl-mb-3 gl-mt-7" @click="showEventForm">
+    <gl-button
+      v-if="canUpdateTimelineEvent"
+      variant="default"
+      class="gl-mb-3 gl-mt-7"
+      @click="showEventForm"
+    >
       {{ $options.i18n.addEventButton }}
     </gl-button>
   </gl-tab>

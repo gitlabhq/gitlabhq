@@ -121,6 +121,7 @@ trigger_pipeline:
     - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
   rules:
     - if: $CI_COMMIT_TAG
+  environment: production
 ```
 
 If you use the `CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)

@@ -57,3 +57,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::UserAccessDeniedReason.prepend_mod

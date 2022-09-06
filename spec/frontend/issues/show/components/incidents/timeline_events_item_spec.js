@@ -19,7 +19,7 @@ describe('IncidentTimelineEventList', () => {
         ...propsData,
       },
       provide: {
-        canUpdate: false,
+        canUpdateTimelineEvent: false,
         ...provide,
       },
     });
@@ -81,14 +81,14 @@ describe('IncidentTimelineEventList', () => {
       });
 
       it('shows dropdown and delete item when user has update permission', () => {
-        mountComponent({ provide: { canUpdate: true } });
+        mountComponent({ provide: { canUpdateTimelineEvent: true } });
 
         expect(findDropdown().exists()).toBe(true);
         expect(findDeleteButton().exists()).toBe(true);
       });
 
       it('triggers a delete when the delete button is clicked', async () => {
-        mountComponent({ provide: { canUpdate: true } });
+        mountComponent({ provide: { canUpdateTimelineEvent: true } });
 
         findDeleteButton().trigger('click');
 

@@ -16,7 +16,7 @@ export default {
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
-  inject: ['canUpdate'],
+  inject: ['canUpdateTimelineEvent'],
   props: {
     occurredAt: {
       type: String,
@@ -61,7 +61,7 @@ export default {
         <div v-safe-html="noteHtml"></div>
       </div>
       <gl-dropdown
-        v-if="canUpdate"
+        v-if="canUpdateTimelineEvent"
         right
         class="event-note-actions gl-ml-auto gl-align-self-start"
         icon="ellipsis_v"

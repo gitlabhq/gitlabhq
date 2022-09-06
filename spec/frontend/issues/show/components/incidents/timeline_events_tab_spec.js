@@ -36,7 +36,7 @@ describe('TimelineEventsTab', () => {
       provide: {
         fullPath: 'group/project',
         issuableId: '1',
-        canUpdate: true,
+        canUpdateTimelineEvent: true,
         ...provide,
       },
       apolloProvider: mockApollo,
@@ -136,7 +136,7 @@ describe('TimelineEventsTab', () => {
     it('should not show a button when user cannot update', () => {
       mountComponent({
         mockApollo: createMockApolloProvider(emptyResponse),
-        provide: { canUpdate: false },
+        provide: { canUpdateTimelineEvent: false },
       });
 
       expect(findAddEventButton().exists()).toBe(false);

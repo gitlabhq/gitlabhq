@@ -52,7 +52,7 @@ describe('IncidentTimelineEventList', () => {
       provide: {
         fullPath: 'group/project',
         issuableId: '1',
-        canUpdate: true,
+        canUpdateTimelineEvent: true,
       },
       apolloProvider,
     });

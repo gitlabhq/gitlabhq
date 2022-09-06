@@ -240,6 +240,7 @@ module IssuablesHelper
       updateEndpoint: "#{issuable_path(issuable)}.json",
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issuable),
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),

@@ -136,6 +136,7 @@ job3:
 job4:
   stage: deploy
   script: make deploy
+  environment: production
 ```
 
 #### Scheduled run
@@ -196,6 +197,7 @@ deploy_prod:
   script:
     - echo "Deploy to production server"
   when: manual
+  environment: production
 ```
 
 ### Filter job by branch
@@ -222,6 +224,7 @@ deploy:
     - echo "Deploy job"
   rules:
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^rc-/
+  environment: production
 ```
 
 ### Caching
