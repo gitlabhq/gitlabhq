@@ -26,6 +26,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
       CREATE TABLE #{table_name} (
         id serial NOT NULL,
         created_at timestamptz NOT NULL,
+        updated_at timestamptz NOT NULL,
         PRIMARY KEY (id, created_at)
       ) PARTITION BY RANGE (created_at);
 
@@ -201,6 +202,32 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         expect do
           migration.remove_concurrent_partitioned_index_by_name(table_name, index_name)
         end.to raise_error(/can not be run inside a transaction/)
+      end
+    end
+  end
+
+  describe '#find_duplicate_indexes' do
+    context 'when duplicate and non-duplicate indexes exist' do
+      let(:nonduplicate_column_name) { 'updated_at' }
+      let(:nonduplicate_index_name) { 'updated_at_idx' }
+      let(:duplicate_column_name) { 'created_at' }
+      let(:duplicate_index_name1) { 'created_at_idx' }
+      let(:duplicate_index_name2) { 'index_on_created_at' }
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE INDEX #{nonduplicate_index_name} ON #{table_name} (#{nonduplicate_column_name});
+          CREATE INDEX #{duplicate_index_name1} ON #{table_name} (#{duplicate_column_name});
+          CREATE INDEX #{duplicate_index_name2} ON #{table_name} (#{duplicate_column_name});
+        SQL
+      end
+
+      subject do
+        migration.find_duplicate_indexes(table_name)
+      end
+
+      it 'finds the duplicate index' do
+        expect(subject).to match_array([match_array([duplicate_index_name1, duplicate_index_name2])])
       end
     end
   end

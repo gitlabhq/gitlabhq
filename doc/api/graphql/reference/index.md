@@ -742,6 +742,25 @@ Input type: `ApiFuzzingCiConfigurationCreateInput`
 | <a id="mutationapifuzzingciconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
 
+### `Mutation.artifactDestroy`
+
+Input type: `ArtifactDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationartifactdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationartifactdestroyid"></a>`id` | [`CiJobArtifactID!`](#cijobartifactid) | ID of the artifact to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationartifactdestroyartifact"></a>`artifact` | [`CiJobArtifact`](#cijobartifact) | Deleted artifact. |
+| <a id="mutationartifactdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationartifactdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.auditEventsStreamingHeadersCreate`
 
 Input type: `AuditEventsStreamingHeadersCreateInput`
