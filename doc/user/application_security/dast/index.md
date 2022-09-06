@@ -1157,16 +1157,13 @@ A site profile contains:
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
 - **Request headers**: A comma-separated list of HTTP request headers, including names and values. These headers are added to every request made by DAST.
-- **Authentication (for website)**:
+- **Authentication**:
   - **Authenticated URL**: The URL of the page containing the sign-in HTML form on the target website. The username and password are submitted with the login form to create an authenticated scan.
   - **Username**: The username used to authenticate to the website.
   - **Password**: The password used to authenticate to the website.
   - **Username form field**: The name of username field at the sign-in HTML form.
   - **Password form field**: The name of password field at the sign-in HTML form.
   - **Submit form field**: The `id` or `name` of the element that when clicked submits the sign-in HTML form.
-- **Authentication (for API scan)**:
-  - **Username**: The username used to authenticate to the API.
-  - **Password**: The password used to authenticate to the API.
 
 When an API site type is selected, a [host override](#host-override) is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
 

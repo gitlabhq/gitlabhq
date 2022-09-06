@@ -1,0 +1,23 @@
+---
+key_path: usage_activity_by_stage.manage.count_user_auth
+description: Number of unique user logins
+product_section: dev
+product_stage: manage
+product_group: authentication_and_authorization
+product_category: system_access
+value_type: number
+status: active
+milestone: "15.4"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96321"
+time_frame: all
+data_source: database
+instrumentation_class: CountUserAuthMetric
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

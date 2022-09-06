@@ -43,7 +43,7 @@ describe('MR Widget', () => {
       createComponent({ propsData: { fetchCollapsedData } });
       await waitForPromises();
       expect(fetchCollapsedData).toHaveBeenCalled();
-      expect(wrapper.vm.error).toBe(null);
+      expect(wrapper.vm.summaryError).toBe(null);
     });
 
     it('sets the error text when fetch method fails', async () => {

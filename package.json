@@ -172,6 +172,7 @@
     "three": "^0.143.0",
     "timeago.js": "^4.0.2",
     "unified": "^10.1.2",
+    "unist-builder": "^3.0.0",
     "unist-util-visit-parents": "^5.1.0",
     "url-loader": "^4.1.1",
     "uuid": "8.1.0",

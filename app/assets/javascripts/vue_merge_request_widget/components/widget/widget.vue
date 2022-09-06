@@ -7,6 +7,7 @@ import Poll from '~/lib/utils/poll';
 import StatusIcon from '../extensions/status_icon.vue';
 import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
+import ContentSection from './widget_content_section.vue';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 const FETCH_TYPE_EXPANDED = 'expanded';
@@ -17,6 +18,7 @@ export default {
     StatusIcon,
     GlButton,
     GlLoadingIcon,
+    ContentSection,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -92,15 +94,16 @@ export default {
       isCollapsed: true,
       isLoading: false,
       isLoadingExpandedContent: false,
-      error: null,
+      summaryError: null,
+      contentError: null,
     };
   },
   computed: {
     collapseButtonLabel() {
       return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
     },
-    statusIcon() {
-      return this.error ? EXTENSION_ICONS.failed : this.statusIconName;
+    summaryStatusIcon() {
+      return this.summaryError ? this.$options.failedStatusIcon : this.statusIconName;
     },
   },
   watch: {
@@ -114,7 +117,7 @@ export default {
     try {
       await this.fetch(this.fetchCollapsedData, FETCH_TYPE_COLLAPSED);
     } catch {
-      this.error = this.errorText;
+      this.summaryError = this.errorText;
     }
 
     this.isLoading = false;
@@ -130,12 +133,12 @@ export default {
     },
     async fetchExpandedContent() {
       this.isLoadingExpandedContent = true;
-      this.error = null;
+      this.contentError = null;
 
       try {
         await this.fetch(this.fetchExpandedData, FETCH_TYPE_EXPANDED);
       } catch {
-        this.error = this.errorText;
+        this.contentError = this.errorText;
 
         // Reset these values so that we allow refetching
         this.isExpandedForTheFirstTime = true;
@@ -178,20 +181,26 @@ export default {
       });
     },
   },
+  failedStatusIcon: EXTENSION_ICONS.failed,
 };
 </script>
 
 <template>
   <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <status-icon :level="1" :name="widgetName" :is-loading="isLoading" :icon-name="statusIcon" />
+      <status-icon
+        :level="1"
+        :name="widgetName"
+        :is-loading="isLoading"
+        :icon-name="summaryStatusIcon"
+      />
       <div
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
-          <slot v-if="!error" name="summary">{{ isLoading ? loadingText : summary }}</slot>
-          <span v-else>{{ error }}</span>
+          <span v-if="summaryError">{{ summaryError }}</span>
+          <slot v-else name="summary">{{ isLoading ? loadingText : summary }}</slot>
         </div>
         <action-buttons
           v-if="actionButtons.length > 0"
@@ -217,14 +226,24 @@ export default {
       </div>
     </div>
     <div
-      v-if="!isCollapsed"
+      v-if="!isCollapsed || contentError"
       class="mr-widget-grouped-section gl-relative"
       data-testid="widget-extension-collapsed-section"
     >
       <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
         <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
       </div>
-      <slot v-else name="content">{{ content }}</slot>
+      <content-section
+        v-else-if="contentError"
+        class="report-block-container"
+        :status-icon-name="$options.failedStatusIcon"
+        :widget-name="widgetName"
+      >
+        {{ contentError }}
+      </content-section>
+      <slot v-else name="content">
+        {{ content }}
+      </slot>
     </div>
   </section>
 </template>

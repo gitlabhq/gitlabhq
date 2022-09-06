@@ -215,14 +215,28 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         groups: 2,
         users_created: 10,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
+        user_auth_by_provider: {
+          'group_saml' => 2,
+          'ldap' => 4,
+          'standard' => 0,
+          'two-factor' => 0,
+          'two-factor-via-u2f-device' => 0,
+          "two-factor-via-webauthn-device" => 0
+        }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         events: be_within(error_rate).percent_of(2),
         groups: 1,
         users_created: 6,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
+        user_auth_by_provider: {
+          'group_saml' => 1,
+          'ldap' => 2,
+          'standard' => 0,
+          'two-factor' => 0,
+          'two-factor-via-u2f-device' => 0,
+          "two-factor-via-webauthn-device" => 0
+        }
       )
     end
 

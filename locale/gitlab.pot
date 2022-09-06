@@ -41117,6 +41117,18 @@ msgstr ""
 msgid "Todos|Filter by project"
 msgstr ""
 
+msgid "Todos|Give yourself a pat on the back!"
+msgstr ""
+
+msgid "Todos|Good job! Looks like you don't have anything left on your To-Do List"
+msgstr ""
+
+msgid "Todos|Henceforth, you shall be known as \"To-Do Destroyer\""
+msgstr ""
+
+msgid "Todos|Isn't an empty To-Do List beautiful?"
+msgstr ""
+
 msgid "Todos|It's how you always know what to work on next."
 msgstr ""
 
@@ -41124,6 +41136,9 @@ msgid "Todos|Mark all as done"
 msgstr ""
 
 msgid "Todos|Nothing is on your to-do list. Nice work!"
+msgstr ""
+
+msgid "Todos|Nothing left to do. High five!"
 msgstr ""
 
 msgid "Todos|Undo mark all as done"

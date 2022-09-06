@@ -212,7 +212,17 @@ module API
 
         recheck_mergeability_of(merge_requests: merge_requests) unless options[:skip_merge_status_recheck]
 
-        present_cached merge_requests, expires_in: 8.hours, cache_context: -> (mr) { "#{current_user&.cache_key}:#{mr.merge_status}" }, **options
+        present_cached merge_requests,
+          expires_in: 8.hours,
+          cache_context: -> (mr) do
+            [
+              current_user&.cache_key,
+              mr.merge_status,
+              mr.merge_request_assignees.map(&:cache_key),
+              mr.merge_request_reviewers.map(&:cache_key)
+            ].join(":")
+          end,
+          **options
       end
 
       desc 'Create a merge request' do

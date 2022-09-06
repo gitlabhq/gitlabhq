@@ -1023,6 +1023,22 @@ RSpec.describe API::MergeRequests do
           it_behaves_like 'a non-cached MergeRequest api request', 1
         end
 
+        context 'when the assignees change' do
+          before do
+            merge_request.assignees << create(:user)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
+        context 'when the reviewers change' do
+          before do
+            merge_request.reviewers << create(:user)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
         context 'when another user requests' do
           before do
             sign_in(user2)

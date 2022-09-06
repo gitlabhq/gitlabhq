@@ -37,6 +37,10 @@ RSpec.describe Gitlab::UsageDataMetrics do
         expect(subject[:usage_activity_by_stage][:plan]).to include(:issues)
       end
 
+      it 'includes usage_activity_by_stage metrics' do
+        expect(subject[:usage_activity_by_stage][:manage]).to include(:count_user_auth)
+      end
+
       it 'includes usage_activity_by_stage_monthly keys' do
         expect(subject[:usage_activity_by_stage_monthly][:plan]).to include(:issues)
       end
