@@ -77,6 +77,14 @@ module QA
             end
           end
 
+          def go_to_merge_request_settings
+            hover_settings do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Merge requests')
+              end
+            end
+          end
+
           private
 
           def hover_settings

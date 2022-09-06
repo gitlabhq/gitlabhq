@@ -13345,6 +13345,9 @@ msgstr ""
 msgid "DesignManagement|Discard comment"
 msgstr ""
 
+msgid "DesignManagement|Discussion"
+msgstr ""
+
 msgid "DesignManagement|Download design"
 msgstr ""
 
@@ -24759,6 +24762,9 @@ msgstr ""
 msgid "Merge requests"
 msgstr ""
 
+msgid "Merge requests and approvals settings have moved."
+msgstr ""
+
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
@@ -27028,6 +27034,9 @@ msgid "On %{end_date}, your trial will end and %{namespace_name} will be limited
 msgid_plural "On %{end_date}, your trial will end and %{namespace_name} will be limited to %{free_user_limit} members"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "On the left sidebar, select %{merge_requests_link} to view them."
+msgstr ""
 
 msgid "On track"
 msgstr ""

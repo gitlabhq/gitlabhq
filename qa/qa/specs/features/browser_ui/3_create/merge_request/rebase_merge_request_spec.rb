@@ -12,11 +12,9 @@ module QA
       it 'user rebases source branch of merge request', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347735' do
         merge_request.project.visit!
 
-        Page::Project::Menu.perform(&:go_to_general_settings)
-        Page::Project::Settings::Main.perform do |main|
-          main.expand_merge_requests_settings do |settings|
-            settings.enable_ff_only
-          end
+        Page::Project::Menu.perform(&:go_to_merge_request_settings)
+        Page::Project::Settings::MergeRequest.perform do |settings|
+          settings.enable_ff_only
         end
 
         Resource::Repository::ProjectPush.fabricate! do |push|

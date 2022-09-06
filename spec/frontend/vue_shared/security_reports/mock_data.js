@@ -356,14 +356,12 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               artifacts: {
                 nodes: [
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/101',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=trace',
                     fileType: 'TRACE',
                     __typename: 'CiJobArtifact',
                   },
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/102',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=secret_detection',
                     fileType: 'SECRET_DETECTION',
@@ -380,14 +378,12 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               artifacts: {
                 nodes: [
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/103',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=trace',
                     fileType: 'TRACE',
                     __typename: 'CiJobArtifact',
                   },
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/104',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=sast',
                     fileType: 'SAST',
@@ -404,14 +400,12 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               artifacts: {
                 nodes: [
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/105',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=trace',
                     fileType: 'TRACE',
                     __typename: 'CiJobArtifact',
                   },
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/106',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=sast',
                     fileType: 'SAST',
@@ -428,21 +422,18 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               artifacts: {
                 nodes: [
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/107',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=archive',
                     fileType: 'ARCHIVE',
                     __typename: 'CiJobArtifact',
                   },
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/108',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=trace',
                     fileType: 'TRACE',
                     __typename: 'CiJobArtifact',
                   },
                   {
-                    id: 'gid://gitlab/Ci::JobArtifact/109',
                     downloadPath:
                       '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=metadata',
                     fileType: 'METADATA',
@@ -477,14 +468,12 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             artifacts: {
               nodes: [
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/110',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=trace',
                   fileType: 'TRACE',
                   __typename: 'CiJobArtifact',
                 },
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/111',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=secret_detection',
                   fileType: 'SECRET_DETECTION',
@@ -501,14 +490,12 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             artifacts: {
               nodes: [
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/112',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=trace',
                   fileType: 'TRACE',
                   __typename: 'CiJobArtifact',
                 },
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/113',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=sast',
                   fileType: 'SAST',
@@ -525,14 +512,12 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             artifacts: {
               nodes: [
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/114',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=trace',
                   fileType: 'TRACE',
                   __typename: 'CiJobArtifact',
                 },
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/115',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=sast',
                   fileType: 'SAST',
@@ -549,21 +534,18 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             artifacts: {
               nodes: [
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/116',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=archive',
                   fileType: 'ARCHIVE',
                   __typename: 'CiJobArtifact',
                 },
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/117',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=trace',
                   fileType: 'TRACE',
                   __typename: 'CiJobArtifact',
                 },
                 {
-                  id: 'gid://gitlab/Ci::JobArtifact/118',
                   downloadPath:
                     '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=metadata',
                   fileType: 'METADATA',

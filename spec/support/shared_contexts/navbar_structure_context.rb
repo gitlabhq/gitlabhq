@@ -109,6 +109,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Webhooks'),
           _('Access Tokens'),
           _('Repository'),
+          _('Merge requests'),
           _('CI/CD'),
           _('Packages and registries'),
           _('Monitor'),

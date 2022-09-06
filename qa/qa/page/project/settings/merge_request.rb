@@ -7,7 +7,7 @@ module QA
         class MergeRequest < QA::Page::Base
           include QA::Page::Settings::Common
 
-          view 'app/views/projects/edit.html.haml' do
+          view 'app/views/projects/settings/merge_requests/show.html.haml' do
             element :save_merge_request_changes_button
           end
 

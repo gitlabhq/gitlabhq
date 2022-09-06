@@ -10267,11 +10267,8 @@ CI/CD variables for a GitLab instance.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobartifactdownloadpath"></a>`downloadPath` | [`String`](#string) | URL for downloading the artifact's file. |
-| <a id="cijobartifactexpireat"></a>`expireAt` | [`Time`](#time) | Expiry date of the artifact. |
 | <a id="cijobartifactfiletype"></a>`fileType` | [`JobArtifactFileType`](#jobartifactfiletype) | File type of the artifact. |
-| <a id="cijobartifactid"></a>`id` | [`CiJobArtifactID!`](#cijobartifactid) | ID of the artifact. |
 | <a id="cijobartifactname"></a>`name` | [`String`](#string) | File name of the artifact. |
-| <a id="cijobartifactsize"></a>`size` | [`Int!`](#int) | Size of the artifact in bytes. |
 
 ### `CiJobTokenScopeType`
 
@@ -20962,6 +20959,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumgeo_migrate_hashed_storage"></a>`GEO_MIGRATE_HASHED_STORAGE` | Callout feature name for geo_migrate_hashed_storage. |
 | <a id="usercalloutfeaturenameenumgke_cluster_integration"></a>`GKE_CLUSTER_INTEGRATION` | Callout feature name for gke_cluster_integration. |
 | <a id="usercalloutfeaturenameenumgold_trial_billings"></a>`GOLD_TRIAL_BILLINGS` | Callout feature name for gold_trial_billings. |
+| <a id="usercalloutfeaturenameenummerge_request_settings_moved_callout"></a>`MERGE_REQUEST_SETTINGS_MOVED_CALLOUT` | Callout feature name for merge_request_settings_moved_callout. |
 | <a id="usercalloutfeaturenameenummr_experience_survey"></a>`MR_EXPERIENCE_SURVEY` | Callout feature name for mr_experience_survey. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_banner_alert_threshold"></a>`NAMESPACE_STORAGE_LIMIT_BANNER_ALERT_THRESHOLD` | Callout feature name for namespace_storage_limit_banner_alert_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_banner_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_BANNER_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_banner_error_threshold. |
@@ -21287,12 +21285,6 @@ Represents `true` or `false` values.
 A `CiBuildID` is a global ID. It is encoded as a string.
 
 An example `CiBuildID` is: `"gid://gitlab/Ci::Build/1"`.
-
-### `CiJobArtifactID`
-
-A `CiJobArtifactID` is a global ID. It is encoded as a string.
-
-An example `CiJobArtifactID` is: `"gid://gitlab/Ci::JobArtifact/1"`.
 
 ### `CiPipelineID`
 

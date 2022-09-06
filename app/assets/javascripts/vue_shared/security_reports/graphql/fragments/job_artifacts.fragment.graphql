@@ -6,7 +6,6 @@ fragment JobArtifacts on Pipeline {
       name
       artifacts {
         nodes {
-          id
           downloadPath
           fileType
         }

@@ -309,15 +309,15 @@ To resolve a thread:
 
 At the top of the page, the number of unresolved threads is updated:
 
-![Count of unresolved threads](img/unresolved_threads_v15.png)
+![Count of unresolved threads](img/unresolved_threads_v15_4.png)
 
 ### Move all unresolved threads in a merge request to an issue
 
 If you have multiple unresolved threads in a merge request, you can
 create an issue to resolve them separately. In the merge request, at the top of the page,
-select **Create issue to resolve all threads** (**{issue-new}**):
+click the ellipsis icon button (**{ellipsis_v}**) in the threads control and then select **Create issue to resolve all threads**:
 
-![Open new issue for all unresolved threads](img/create-new-issue_v15.png)
+![Open new issue for all unresolved threads](img/create_new_issue_v15_4.png)
 
 All threads are marked as resolved, and a link is added from the merge request to
 the newly created issue.

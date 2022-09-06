@@ -418,8 +418,7 @@ RSpec.describe 'Project' do
       visit path
     end
 
-    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' },
-                                          { form: '.rspec-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' }]
   end
 
   describe 'view for a user without an access to a repo' do

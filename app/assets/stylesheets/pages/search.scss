@@ -383,6 +383,10 @@ input[type='checkbox']:hover {
   .line_holder {
     pre {
       padding: 0; // This overrides the existing style that will add space between each line.
+      .line {
+        @include gl-word-break-word;
+        white-space: break-spaces;
+      }
     }
 
     svg {

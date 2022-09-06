@@ -43,6 +43,7 @@ describe('Design note component', () => {
     wrapper = shallowMountExtended(DesignNote, {
       propsData: {
         note: {},
+        noteableId: 'gid://gitlab/DesignManagement::Design/6',
         ...props,
       },
       data() {

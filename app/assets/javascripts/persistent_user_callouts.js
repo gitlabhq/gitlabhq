@@ -18,6 +18,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-project-usage-limitations-callout',
   '.js-namespace-storage-alert',
   '.js-web-hook-disabled-callout',
+  '.js-merge-request-settings-callout',
 ];
 
 const initCallouts = () => {

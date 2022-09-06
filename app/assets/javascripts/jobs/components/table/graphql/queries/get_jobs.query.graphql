@@ -12,7 +12,6 @@ query getJobs($fullPath: ID!, $after: String, $first: Int = 30, $statuses: [CiJo
       nodes {
         artifacts {
           nodes {
-            id
             downloadPath
             fileType
           }

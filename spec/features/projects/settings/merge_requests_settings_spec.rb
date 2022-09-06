@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User manages merge request settings' do
+RSpec.describe 'Projects > Settings > Merge requests' do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
@@ -9,7 +10,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
   before do
     sign_in(user)
-    visit project_settings_merge_requests_path(project)
+
+    visit(project_settings_merge_requests_path(project))
   end
 
   it 'shows "Merge commit" strategy' do
@@ -42,7 +44,6 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
       expect(page).to have_content 'Checkbox is visible and selected by default.'
 
       expect(page).to have_content 'Require'
-      expect(page).to have_content 'Squashing is always performed. Checkbox is visible and selected, and users cannot change it.'
     end
   end
 
@@ -54,18 +55,24 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
         visit edit_project_path(project)
 
-        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
+        within('.sharing-permissions-form') do
+          within('[data-for="project[project_feature_attributes][merge_requests_access_level]"]') do
+            find('.gl-toggle').click
+          end
+        end
+
         find('[data-testid="project-features-save-button"]').send_keys(:return)
 
         visit project_settings_merge_requests_path(project)
 
-        expect(page).to have_content "Page Not Found"
+        expect(page).to have_content('Not Found')
       end
     end
 
     context 'when Pipelines are initially disabled', :js do
       before do
         project.project_feature.update_attribute('builds_access_level', ProjectFeature::DISABLED)
+
         visit project_settings_merge_requests_path(project)
       end
 
@@ -75,7 +82,12 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
         visit edit_project_path(project)
 
-        find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
+        within('.sharing-permissions-form') do
+          within('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"]') do
+            find('.gl-toggle').click
+          end
+        end
+
         find('[data-testid="project-features-save-button"]').send_keys(:return)
 
         visit project_settings_merge_requests_path(project)
@@ -89,19 +101,22 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
   context 'when Merge Request are initially disabled', :js do
     before do
       project.project_feature.update_attribute('merge_requests_access_level', ProjectFeature::DISABLED)
-      visit project_settings_merge_requests_path(project)
+
+      visit(project_settings_merge_requests_path(project))
     end
 
     it 'does not show the Merge Requests settings' do
-      expect(page).not_to have_content 'Pipelines must succeed'
-      expect(page).not_to have_content 'All threads must be resolved'
+      expect(page).to have_content('Not Found')
 
       visit edit_project_path(project)
 
       within('.sharing-permissions-form') do
-        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
-        find('[data-testid="project-features-save-button"]').send_keys(:return)
+        within('[data-for="project[project_feature_attributes][merge_requests_access_level]"]') do
+          find('.gl-toggle').click
+        end
       end
+
+      find('[data-testid="project-features-save-button"]').send_keys(:return)
 
       visit project_settings_merge_requests_path(project)
 
@@ -123,8 +138,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      wait_for_all_requests
-
+      find('.flash-notice')
       checkbox = find_field('project_printing_merge_request_link_enabled')
 
       expect(checkbox).not_to be_checked
@@ -147,8 +161,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      wait_for_all_requests
-
+      find('.flash-notice')
       checkbox = find_field('project_remove_source_branch_after_merge')
 
       expect(checkbox).not_to be_checked

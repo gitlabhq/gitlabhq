@@ -60,7 +60,8 @@ module Users
       namespace_storage_limit_banner_warning_threshold: 56, # EE-only
       namespace_storage_limit_banner_alert_threshold: 57, # EE-only
       namespace_storage_limit_banner_error_threshold: 58, # EE-only
-      project_quality_summary_feedback: 59       # EE-only
+      project_quality_summary_feedback: 59,       # EE-only
+      merge_request_settings_moved_callout: 60
     }
 
     validates :feature_name,
