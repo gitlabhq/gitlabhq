@@ -160,18 +160,18 @@ Dangerfile @gl-quality/eng-prod
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 ^[Threat Insights]
-/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
-/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
-/ee/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
-/ee/app/models/security/ @gitlab-org/secure/threat-insights-backend-team
-/ee/app/models/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
-/ee/app/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
-/ee/app/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
-/ee/app/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
-/ee/lib/api/vulnerabilit*.rb @gitlab-org/secure/threat-insights-backend-team
-/ee/spec/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
-/ee/spec/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
-/ee/spec/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
+/app/finders/security/ @gitlab-org/govern/threat-insights-backend-team
+/app/models/vulnerability.rb @gitlab-org/govern/threat-insights-backend-team
+/ee/app/finders/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/app/models/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/app/models/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
+/ee/app/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
+/ee/app/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
+/ee/app/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/lib/api/vulnerabilit*.rb @gitlab-org/govern/threat-insights-backend-team
+/ee/spec/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
+/ee/spec/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
+/ee/spec/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
 
 ^[Secure]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be

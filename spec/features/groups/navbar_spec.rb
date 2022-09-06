@@ -49,7 +49,7 @@ RSpec.describe 'Group navbar' do
       if Gitlab.ee?
         insert_customer_relations_nav(_('Analytics'))
       else
-        insert_customer_relations_nav(_('Packages & Registries'))
+        insert_customer_relations_nav(_('Packages and registries'))
       end
 
       visit group_path(group)

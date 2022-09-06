@@ -33,15 +33,15 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer do
 
   let(:relation_tree_restorer) do
     described_class.new(
-      user:                  user,
-      shared:                shared,
-      relation_reader:       relation_reader,
-      object_builder:        Gitlab::ImportExport::Group::ObjectBuilder,
-      members_mapper:        members_mapper,
-      relation_factory:      Gitlab::ImportExport::Group::RelationFactory,
-      reader:                reader,
-      importable:            importable,
-      importable_path:       nil,
+      user: user,
+      shared: shared,
+      relation_reader: relation_reader,
+      object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
+      members_mapper: members_mapper,
+      relation_factory: Gitlab::ImportExport::Group::RelationFactory,
+      reader: reader,
+      importable: importable,
+      importable_path: nil,
       importable_attributes: attributes
     )
   end

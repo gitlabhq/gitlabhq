@@ -17,11 +17,11 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
 
       let(:error_hash) do
         {
-          'data'         => 'property_name',
+          'data' => 'property_name',
           'data_pointer' => pointer,
-          'type'         => type,
-          'schema'       => 'schema',
-          'details'      => details
+          'type' => type,
+          'schema' => 'schema',
+          'details' => details
         }
       end
 
@@ -72,10 +72,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
           let(:type) { 'pattern' }
           let(:error_hash) do
             {
-              'data'         => 'property_name',
+              'data' => 'property_name',
               'data_pointer' => pointer,
-              'type'         => type,
-              'schema'       => { 'pattern' => 'aa.*' }
+              'type' => type,
+              'schema' => { 'pattern' => 'aa.*' }
             }
           end
 
@@ -86,10 +86,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
           let(:type) { 'format' }
           let(:error_hash) do
             {
-              'data'         => 'property_name',
+              'data' => 'property_name',
               'data_pointer' => pointer,
-              'type'         => type,
-              'schema'       => { 'format' => 'date-time' }
+              'type' => type,
+              'schema' => { 'format' => 'date-time' }
             }
           end
 
@@ -100,10 +100,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
           let(:type) { 'const' }
           let(:error_hash) do
             {
-              'data'         => 'property_name',
+              'data' => 'property_name',
               'data_pointer' => pointer,
-              'type'         => type,
-              'schema'       => { 'const' => 'one' }
+              'type' => type,
+              'schema' => { 'const' => 'one' }
             }
           end
 
@@ -114,10 +114,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
           let(:type) { 'enum' }
           let(:error_hash) do
             {
-              'data'         => 'property_name',
+              'data' => 'property_name',
               'data_pointer' => pointer,
-              'type'         => type,
-              'schema'       => { 'enum' => %w(one two) }
+              'type' => type,
+              'schema' => { 'enum' => %w(one two) }
             }
           end
 
@@ -128,10 +128,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
           let(:type) { 'unknown' }
           let(:error_hash) do
             {
-              'data'         => 'property_name',
+              'data' => 'property_name',
               'data_pointer' => pointer,
-              'type'         => type,
-              'schema'       => 'schema'
+              'type' => type,
+              'schema' => 'schema'
             }
           end
 

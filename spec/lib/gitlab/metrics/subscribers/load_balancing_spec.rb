@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store do
         double(
           :event,
           name: 'load_balancing.caught_up_replica_pick',
-          payload:  payload
+          payload: payload
         )
       end
 
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store do
       double(
         :event,
         name: 'load_balancing.web_transaction_completed',
-        payload:  {}
+        payload: {}
       )
     end
 

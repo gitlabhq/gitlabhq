@@ -559,7 +559,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     it 'top level navigation link is visible and points to package registry page' do
       render
 
-      expect(rendered).to have_link('Packages & Registries', href: project_packages_path(project))
+      expect(rendered).to have_link('Packages and registries', href: project_packages_path(project))
     end
 
     describe 'Packages Registry' do
@@ -908,7 +908,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
-    describe 'Packages & Registries' do
+    describe 'Packages and registries' do
       let(:packages_enabled) { false }
 
       before do
@@ -919,20 +919,20 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       context 'when registry is enabled' do
         let(:registry_enabled) { true }
 
-        it 'has a link to the Packages & Registries settings' do
+        it 'has a link to the Package and registry settings' do
           render
 
-          expect(rendered).to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+          expect(rendered).to have_link('Packages and registries', href: project_settings_packages_and_registries_path(project))
         end
       end
 
       context 'when registry is not enabled' do
         let(:registry_enabled) { false }
 
-        it 'does not have a link to the Packages & Registries settings' do
+        it 'does not have a link to the Package and registry settings' do
           render
 
-          expect(rendered).not_to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+          expect(rendered).not_to have_link('Packages and registries', href: project_settings_packages_and_registries_path(project))
         end
       end
 
@@ -940,10 +940,10 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         let(:registry_enabled) { false }
         let(:packages_enabled) { true }
 
-        it 'has a link to the Packages & Registries settings' do
+        it 'has a link to the Package and registry settings' do
           render
 
-          expect(rendered).to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+          expect(rendered).to have_link('Packages and registries', href: project_settings_packages_and_registries_path(project))
         end
       end
     end

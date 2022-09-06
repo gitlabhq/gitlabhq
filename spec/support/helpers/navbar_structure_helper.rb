@@ -34,7 +34,7 @@ module NavbarStructureHelper
     insert_after_nav_item(
       within,
       new_nav_item: {
-        nav_item: _('Packages & Registries'),
+        nav_item: _('Packages and registries'),
         nav_sub_items: [_('Package Registry')]
       }
     )
@@ -56,7 +56,7 @@ module NavbarStructureHelper
   def insert_container_nav
     insert_after_sub_nav_item(
       _('Package Registry'),
-      within: _('Packages & Registries'),
+      within: _('Packages and registries'),
       new_sub_nav_item_name: _('Container Registry')
     )
   end
@@ -64,7 +64,7 @@ module NavbarStructureHelper
   def insert_dependency_proxy_nav
     insert_after_sub_nav_item(
       _('Package Registry'),
-      within: _('Packages & Registries'),
+      within: _('Packages and registries'),
       new_sub_nav_item_name: _('Dependency Proxy')
     )
   end
@@ -72,7 +72,7 @@ module NavbarStructureHelper
   def insert_infrastructure_registry_nav
     insert_after_sub_nav_item(
       _('Package Registry'),
-      within: _('Packages & Registries'),
+      within: _('Packages and registries'),
       new_sub_nav_item_name: _('Infrastructure Registry')
     )
   end
@@ -80,7 +80,7 @@ module NavbarStructureHelper
   def insert_harbor_registry_nav(within)
     insert_after_sub_nav_item(
       within,
-      within: _('Packages & Registries'),
+      within: _('Packages and registries'),
       new_sub_nav_item_name: _('Harbor Registry')
     )
   end

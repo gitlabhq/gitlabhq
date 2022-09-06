@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         :event,
         name: 'transaction.active_record',
         duration: 230,
-        payload:  { connection: connection }
+        payload: { connection: connection }
       )
     end
 
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         :event,
         name: 'sql.active_record',
         duration: 2,
-        payload:  payload
+        payload: payload
       )
     end
 
@@ -278,7 +278,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         :event,
         name: 'sql.active_record',
         duration: 2,
-        payload:  payload
+        payload: payload
       )
     end
 

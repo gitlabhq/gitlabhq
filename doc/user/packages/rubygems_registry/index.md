@@ -130,7 +130,7 @@ Pushing gem to https://gitlab.example.com/api/v4/projects/1/packages/rubygems...
 {"message":"201 Created"}
 ```
 
-To view the published gem, go to your project's **Packages & Registries** page. Gems pushed to
+To view the published gem, go to your project's **Packages and registries** page. Gems pushed to
 GitLab aren't displayed in your project's Packages UI immediately. It can take up to 10 minutes to
 process a gem.
 

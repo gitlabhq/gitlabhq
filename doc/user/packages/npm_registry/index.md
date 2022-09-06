@@ -284,7 +284,7 @@ To upload an npm package to your project, run this command:
 npm publish
 ```
 
-To view the package, go to your project's **Packages & Registries**.
+To view the package, go to your project's **Packages and registries**.
 
 You can also define `"publishConfig"` for your project in `package.json`. For example:
 

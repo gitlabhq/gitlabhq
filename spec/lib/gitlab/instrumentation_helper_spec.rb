@@ -140,13 +140,13 @@ RSpec.describe Gitlab::InstrumentationHelper do
       subject
 
       expect(payload).to include(db_replica_count: 0,
-                                  db_replica_cached_count: 0,
-                                  db_primary_count: 0,
-                                  db_primary_cached_count: 0,
-                                  db_primary_wal_count: 0,
-                                  db_replica_wal_count: 0,
-                                  db_primary_wal_cached_count: 0,
-                                  db_replica_wal_cached_count: 0)
+                                 db_replica_cached_count: 0,
+                                 db_primary_count: 0,
+                                 db_primary_cached_count: 0,
+                                 db_primary_wal_count: 0,
+                                 db_replica_wal_count: 0,
+                                 db_primary_wal_cached_count: 0,
+                                 db_replica_wal_cached_count: 0)
     end
 
     context 'when replica caught up search was made' do

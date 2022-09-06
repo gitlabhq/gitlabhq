@@ -6,9 +6,9 @@ RSpec.describe Gitlab::ImportExport::Group::ObjectBuilder do
   let(:group) { create(:group) }
   let(:base_attributes) do
     {
-      'title'       => 'title',
+      'title' => 'title',
       'description' => 'description',
-      'group'       => group
+      'group' => group
     }
   end
 

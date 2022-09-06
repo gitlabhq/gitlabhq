@@ -605,7 +605,7 @@ To publish a package by using Gradle:
    gradle publish
    ```
 
-Now navigate to your project's **Packages & Registries** page and view the published artifacts.
+Now navigate to your project's **Packages and registries** page and view the published artifacts.
 
 ### Publishing a package with the same name or version
 
@@ -624,7 +624,7 @@ To prevent users from publishing duplicate Maven packages, you can use the [Grap
 
 In the UI:
 
-1. For your group, go to **Settings > Packages & Registries**.
+1. For your group, go to **Settings > Packages and registries**.
 1. Expand the **Package Registry** section.
 1. Turn on the **Reject duplicates** toggle.
 1. Optional. To allow some duplicate packages, in the **Exceptions** box, enter a regex pattern that matches the names and/or versions of packages you want to allow.
@@ -699,7 +699,7 @@ dependencies {
 
 ## Remove a package
 
-For your project, go to **Packages & Registries > Package Registry**.
+For your project, go to **Packages and registries > Package Registry**.
 
 To remove a package, select the red trash icon or, from the package details, the **Delete** button.
 

@@ -109,7 +109,7 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
     end
   end
 
-  describe 'Packages & Registries' do
+  describe 'Packages and registries' do
     it 'has a link to the package registry page' do
       stub_config(packages: { enabled: true })
 
@@ -178,10 +178,10 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       expect(rendered).to have_link('Applications', href: group_settings_applications_path(group))
     end
 
-    it 'has a link to the Package & Registries settings page' do
+    it 'has a link to the Package and registry settings page' do
       render
 
-      expect(rendered).to have_link('Packages & Registries', href: group_settings_packages_and_registries_path(group))
+      expect(rendered).to have_link('Packages and registries', href: group_settings_packages_and_registries_path(group))
     end
   end
 end

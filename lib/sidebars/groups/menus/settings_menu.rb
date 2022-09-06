@@ -117,7 +117,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Packages & Registries'),
+            title: _('Packages and registries'),
             link: group_settings_packages_and_registries_path(context.group),
             active_routes: { controller: :packages_and_registries },
             item_id: :packages_and_registries

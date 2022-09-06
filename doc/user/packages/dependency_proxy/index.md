@@ -38,7 +38,7 @@ For a list of planned additions, view the
 To enable or turn off the Dependency Proxy for a group:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Packages & Registries**.
+1. On the left sidebar, select **Settings > Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
 
@@ -51,7 +51,7 @@ for the entire GitLab instance.
 To view the Dependency Proxy:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Packages & Registries > Dependency Proxy**.
+1. On the left sidebar, select **Packages and registries > Dependency Proxy**.
 
 The Dependency Proxy is not available for projects.
 
@@ -176,7 +176,7 @@ You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-
 To store a Docker image in Dependency Proxy storage:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Packages & Registries > Dependency Proxy**.
+1. On the left sidebar, select **Packages and registries > Dependency Proxy**.
 1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
 1. You can also pull images by digest to specify exactly which version of an image to pull.

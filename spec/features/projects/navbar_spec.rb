@@ -49,7 +49,7 @@ RSpec.describe 'Project navbar' do
       stub_config(pages: { enabled: true })
 
       insert_after_sub_nav_item(
-        _('Packages & Registries'),
+        _('Packages and registries'),
         within: _('Settings'),
         new_sub_nav_item_name: _('Pages')
       )

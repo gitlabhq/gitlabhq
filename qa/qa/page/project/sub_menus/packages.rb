@@ -35,8 +35,8 @@ module QA
 
           def hover_registry
             within_sidebar do
-              scroll_to_element(:sidebar_menu_link, menu_item: 'Packages & Registries')
-              find_element(:sidebar_menu_link, menu_item: 'Packages & Registries').hover
+              scroll_to_element(:sidebar_menu_link, menu_item: 'Packages and registries')
+              find_element(:sidebar_menu_link, menu_item: 'Packages and registries').hover
 
               yield
             end

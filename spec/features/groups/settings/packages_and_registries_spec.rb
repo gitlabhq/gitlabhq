@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Packages & Registries settings' do
+RSpec.describe 'Group Package and registry settings' do
   include WaitForRequests
 
   let(:user) { create(:user) }
@@ -25,7 +25,7 @@ RSpec.describe 'Group Packages & Registries settings' do
 
       settings_menu = find_settings_menu
 
-      expect(settings_menu).not_to have_content 'Packages & Registries'
+      expect(settings_menu).not_to have_content 'Packages and registries'
     end
 
     it 'renders 404 when navigating to page' do
@@ -40,20 +40,20 @@ RSpec.describe 'Group Packages & Registries settings' do
       visit group_path(group)
 
       settings_menu = find_settings_menu
-      expect(settings_menu).to have_content 'Packages & Registries'
+      expect(settings_menu).to have_content 'Packages and registries'
     end
 
     it 'has a page title set' do
       visit_settings_page
 
-      expect(page).to have_title _('Package & registry settings')
+      expect(page).to have_title _('Package and registry settings')
     end
 
     it 'sidebar menu is open' do
       visit_settings_page
 
       sidebar = find('.nav-sidebar')
-      expect(sidebar).to have_link _('Packages & Registries')
+      expect(sidebar).to have_link _('Packages and registries')
     end
 
     it 'has a Duplicate packages section', :js do

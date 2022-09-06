@@ -127,7 +127,7 @@ To publish the package with a deploy token:
   - `<tag>` is the Git tag name of the version you want to publish.
      To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
 
-You can view the published package by going to **Packages & Registries > Package Registry** and
+You can view the published package by going to **Packages and registries > Package Registry** and
 selecting the **Composer** tab.
 
 ## Publish a Composer package by using CI/CD
@@ -150,7 +150,7 @@ You can publish a Composer package to the Package Registry as part of your CI/CD
 
 1. Run the pipeline.
 
-To view the published package, go to **Packages & Registries > Package Registry** and select the **Composer** tab.
+To view the published package, go to **Packages and registries > Package Registry** and select the **Composer** tab.
 
 ### Use a CI/CD template
 

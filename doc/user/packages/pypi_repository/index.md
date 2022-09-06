@@ -309,7 +309,7 @@ Uploading mypypipackage-0.0.1.tar.gz
 100%|███████████████████████████████████████████████████████████████████████████████████████████| 4.24k/4.24k [00:00<00:00, 11.0kB/s]
 ```
 
-To view the published package, go to your project's **Packages & Registries**
+To view the published package, go to your project's **Packages and registries**
 page.
 
 If you didn't use a `.pypirc` file to define your repository source, you can

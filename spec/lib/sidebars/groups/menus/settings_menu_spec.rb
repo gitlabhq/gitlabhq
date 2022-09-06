@@ -80,7 +80,7 @@ RSpec.describe Sidebars::Groups::Menus::SettingsMenu do
       it_behaves_like 'access rights checks'
     end
 
-    describe 'Packages & Registries' do
+    describe 'Packages and registries' do
       let(:item_id) { :packages_and_registries }
 
       before do

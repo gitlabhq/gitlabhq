@@ -26,7 +26,7 @@ Registry for your GitLab instance, visit the
 You can view the Container Registry for a project or group.
 
 1. Go to your project or group.
-1. Go to **Packages & Registries > Container Registry**.
+1. Go to **Packages and registries > Container Registry**.
 
 You can search, sort, filter, and [delete](#delete-images-from-within-gitlab)
 containers on this page. You can share a filtered view by copying the URL from your browser.
@@ -40,7 +40,7 @@ If a project is public, so is the Container Registry.
 You can view a list of tags associated with a given container image:
 
 1. Go to your project or group.
-1. Go to **Packages & Registries > Container Registry**.
+1. Go to **Packages and registries > Container Registry**.
 1. Select the container image you are interested in.
 
 This brings up the Container Registry **Tag Details** page. You can view details about each tag,
@@ -55,7 +55,7 @@ tags on this page. You can share a filtered view by copying the URL from your br
 To download and run a container image hosted in the GitLab Container Registry:
 
 1. Copy the link to your container image:
-   - Go to your project or group's **Packages & Registries > Container Registry**
+   - Go to your project or group's **Packages and registries > Container Registry**
      and find the image you want.
    - Next to the image name, select **Copy**.
 
@@ -139,7 +139,7 @@ To build and push to the Container Registry:
    docker push registry.example.com/group/project/image
    ```
 
-To view these commands, go to your project's **Packages & Registries > Container Registry**.
+To view these commands, go to your project's **Packages and registries > Container Registry**.
 
 ## Build and push by using GitLab CI/CD
 
@@ -395,7 +395,7 @@ images), are automatically scheduled for deletion after 24 hours if left unrefer
 
 To delete images from within GitLab:
 
-1. Navigate to your project's or group's **Packages & Registries > Container Registry**.
+1. Navigate to your project's or group's **Packages and registries > Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 
@@ -509,7 +509,7 @@ You can, however, remove the Container Registry for a project:
    and disable **Container Registry**.
 1. Select **Save changes**.
 
-The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
+The **Packages and registries > Container Registry** entry is removed from the project's sidebar.
 
 ## Change visibility of the Container Registry
 

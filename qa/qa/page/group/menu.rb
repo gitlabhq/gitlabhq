@@ -47,7 +47,7 @@ module QA
         def go_to_package_settings
           hover_group_settings do
             within_submenu do
-              click_element(:sidebar_menu_item_link, menu_item: 'Packages & Registries')
+              click_element(:sidebar_menu_item_link, menu_item: 'Packages and registries')
             end
           end
         end
@@ -122,8 +122,8 @@ module QA
 
         def hover_group_packages
           within_sidebar do
-            scroll_to_element(:sidebar_menu_link, menu_item: 'Packages & Registries')
-            find_element(:sidebar_menu_link, menu_item: 'Packages & Registries').hover
+            scroll_to_element(:sidebar_menu_link, menu_item: 'Packages and registries')
+            find_element(:sidebar_menu_link, menu_item: 'Packages and registries').hover
 
             yield
           end

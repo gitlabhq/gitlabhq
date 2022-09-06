@@ -29,7 +29,7 @@ You can delete packages by using [the API](../../../api/packages.md#delete-a-pro
 
 To delete a package in the UI, from your group or project:
 
-1. Go to **Packages & Registries > Package Registry**.
+1. Go to **Packages and registries > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 
@@ -43,7 +43,7 @@ You can delete packages by using [the API](../../../api/packages.md#delete-a-pac
 
 To delete package files in the UI, from your group or project:
 
-1. Go to **Packages & Registries > Package Registry**.
+1. Go to **Packages and registries > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Select the package to view additional details.
 1. Find the name of the file you would like to delete.
@@ -62,7 +62,7 @@ A cleanup policy defines a set of rules that, applied to a project, defines whic
 
 By default, the packages cleanup policy is disabled. To enable it:
 
-1. Go to your project **Settings > Packages & Registries**.
+1. Go to your project **Settings > Packages and registries**.
 1. Expand **Manage storage used by package assets**.
 1. Set the rules appropriately.
 

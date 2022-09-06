@@ -15,7 +15,7 @@ module Sidebars
 
         override :title
         def title
-          _('Packages & Registries')
+          _('Packages and registries')
         end
 
         override :sprite_icon

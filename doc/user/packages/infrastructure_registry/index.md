@@ -18,7 +18,7 @@ projects.
 To view packages within your project:
 
 1. Go to the project.
-1. Go to **Packages & Registries > Infrastructure Registry**.
+1. Go to **Packages and registries > Infrastructure Registry**.
 
 You can search, sort, and filter packages on this page.
 
@@ -49,7 +49,7 @@ You can see the pipeline that published the package as well as the commit and th
 
 To download a package:
 
-1. Go to **Packages & Registries > Infrastructure Registry**.
+1. Go to **Packages and registries > Infrastructure Registry**.
 1. Select the name of the package you want to download.
 1. In the **Activity** section, select the name of the package you want to download.
 
@@ -64,7 +64,7 @@ You can delete packages by using [the API](../../../api/packages.md#delete-a-pro
 
 To delete a package in the UI, from your project:
 
-1. Go to **Packages & Registries > Infrastructure Registry**.
+1. Go to **Packages and registries > Infrastructure Registry**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 
@@ -75,7 +75,7 @@ The package is permanently deleted.
 The Infrastructure Registry is automatically enabled.
 
 For self-managed instances, a GitLab administrator can
-[disable](../../../administration/packages/index.md) **Packages & Registries**,
+[disable](../../../administration/packages/index.md) **Packages and registries**,
 which removes this menu item from the sidebar.
 
 You can also remove the Infrastructure Registry for a specific project:
