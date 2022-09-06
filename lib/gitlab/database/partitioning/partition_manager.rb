@@ -16,6 +16,8 @@ module Gitlab
         end
 
         def sync_partitions
+          return skip_synching_partitions unless table_partitioned?
+
           Gitlab::AppLogger.info(
             message: "Checking state of dynamic postgres partitions",
             table_name: model.table_name,
@@ -128,6 +130,18 @@ module Gitlab
             logger: Gitlab::AppLogger,
             connection: connection
           ).run(&block)
+        end
+
+        def table_partitioned?
+          Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(model.table_name).present?
+        end
+
+        def skip_synching_partitions
+          Gitlab::AppLogger.warn(
+            message: "Skipping synching partitions",
+            table_name: model.table_name,
+            connection_name: @connection_name
+          )
         end
       end
     end

@@ -10,11 +10,7 @@ module Gitlab
 
       if queues.any?
         Sidekiq.redis do |conn|
-          conn.pipelined do
-            queues.each do |queue|
-              conn.sadd('queues', queue)
-            end
-          end
+          conn.sadd('queues', queues)
         end
       end
     rescue ::Redis::BaseError, SocketError, Errno::ENOENT, Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED

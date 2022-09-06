@@ -462,6 +462,9 @@ class Project < ApplicationRecord
            :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
            to: :project_setting, allow_nil: true
 
+  delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
+           to: :project_setting
+
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
   delegate :squash_option, :squash_option=, to: :project_setting
   delegate :mr_default_target_self, :mr_default_target_self=, to: :project_setting

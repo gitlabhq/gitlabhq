@@ -31,8 +31,8 @@ describe('JiraConnectApp', () => {
   const findUserLink = () => wrapper.findComponent(UserLink);
   const findBrowserSupportAlert = () => wrapper.findComponent(BrowserSupportAlert);
 
-  const createComponent = ({ provide, mountFn = shallowMountExtended } = {}) => {
-    store = createStore({ subscriptions: [mockSubscription] });
+  const createComponent = ({ provide, mountFn = shallowMountExtended, initialState = {} } = {}) => {
+    store = createStore({ ...initialState, subscriptions: [mockSubscription] });
     jest.spyOn(store, 'dispatch').mockImplementation();
 
     wrapper = mountFn(JiraConnectApp, {
@@ -60,7 +60,7 @@ describe('JiraConnectApp', () => {
       });
 
       it(`${shouldRenderSignInPage ? 'renders' : 'does not render'} sign in page`, () => {
-        expect(findSignInPage().exists()).toBe(shouldRenderSignInPage);
+        expect(findSignInPage().isVisible()).toBe(shouldRenderSignInPage);
         if (shouldRenderSignInPage) {
           expect(findSignInPage().props('hasSubscriptions')).toBe(true);
         }
@@ -133,7 +133,7 @@ describe('JiraConnectApp', () => {
     });
 
     it('renders link when `linkUrl` is set', async () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent({ provide: { usersPath: '' }, mountFn: mountExtended });
 
       store.commit(SET_ALERT, {
         message: __('test message %{linkStart}test link%{linkEnd}'),
@@ -211,21 +211,22 @@ describe('JiraConnectApp', () => {
   describe('when `jiraConnectOauth` feature flag is enabled', () => {
     const mockSubscriptionsPath = '/mockSubscriptionsPath';
 
-    beforeEach(() => {
+    beforeEach(async () => {
       jest.spyOn(api, 'fetchSubscriptions').mockResolvedValue({ data: { subscriptions: [] } });
+      jest.spyOn(AccessorUtilities, 'canUseCrypto').mockReturnValue(true);
 
       createComponent({
+        initialState: {
+          currentUser: { name: 'root' },
+        },
         provide: {
           glFeatures: { jiraConnectOauth: true },
           subscriptionsPath: mockSubscriptionsPath,
         },
       });
-    });
 
-    describe('when component mounts', () => {
-      it('dispatches `fetchSubscriptions` action', async () => {
-        expect(store.dispatch).toHaveBeenCalledWith('fetchSubscriptions', mockSubscriptionsPath);
-      });
+      findSignInPage().vm.$emit('sign-in-oauth');
+      await nextTick();
     });
 
     describe('when oauth button emits `sign-in-oauth` event', () => {

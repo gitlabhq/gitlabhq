@@ -63,8 +63,11 @@ module Types
                                               description: 'Indicates the runner is paused and not available to run jobs.'
       field :project_count, GraphQL::Types::Int, null: true,
                                                  description: 'Number of projects that the runner is associated with.'
-      field :projects, ::Types::ProjectType.connection_type, null: true,
-                                                             description: 'Projects the runner is associated with. For project runners only.'
+      field :projects,
+            ::Types::ProjectType.connection_type,
+            null: true,
+            resolver: ::Resolvers::Ci::RunnerProjectsResolver,
+            description: 'Find projects the runner is associated with. For project runners only.'
       field :revision, GraphQL::Types::String, null: true,
                                                description: 'Revision of the runner.'
       field :run_untagged, GraphQL::Types::Boolean, null: false,
@@ -131,12 +134,6 @@ module Types
         batched_owners(::Ci::RunnerNamespace, Group, :runner_groups, :namespace_id)
       end
 
-      def projects
-        return unless runner.project_type?
-
-        batched_owners(::Ci::RunnerProject, Project, :runner_projects, :project_id)
-      end
-
       private
 
       def can_admin_runners?
@@ -159,19 +156,12 @@ module Types
           owner_ids = runner_owner_ids_by_runner_id.values.flatten.uniq
           owners = assoc_type.where(id: owner_ids).index_by(&:id)
 
-          # Preload projects namespaces to avoid N+1 queries when checking the `read_project` policy for each
-          preload_projects_namespaces(owners.values) if assoc_type == Project
-
           runner_ids.each do |runner_id|
             loader.call(runner_id, runner_owner_ids_by_runner_id[runner_id]&.map { |owner_id| owners[owner_id] } || [])
           end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
-
-      def preload_projects_namespaces(_projects)
-        # overridden in EE
-      end
     end
   end
 end

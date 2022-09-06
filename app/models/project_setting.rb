@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectSetting < ApplicationRecord
+  include ::Gitlab::Utils::StrongMemoize
+
   ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos android).freeze
 
   belongs_to :project, inverse_of: :project_setting
@@ -46,6 +48,15 @@ class ProjectSetting < ApplicationRecord
     when 'default_off' then 'Allow'
     end
   end
+
+  def show_diff_preview_in_email?
+    if project.group
+      super && project.group&.show_diff_preview_in_email?
+    else
+      !!super
+    end
+  end
+  strong_memoize_attr :show_diff_preview_in_email
 
   private
 

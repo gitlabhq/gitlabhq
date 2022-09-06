@@ -9,7 +9,7 @@ module Resolvers
 
       alias_method :runner, :object
 
-      def resolve_with_lookahead(**args)
+      def resolve_with_lookahead(**_args)
         resolve_owner
       end
 
@@ -19,6 +19,8 @@ module Resolvers
         }
       end
 
+      private
+
       def filtered_preloads
         selection = lookahead
 
@@ -26,8 +28,6 @@ module Resolvers
           selection&.selects?(name) ? requirements : []
         end
       end
-
-      private
 
       def resolve_owner
         return unless runner.project_type?
@@ -48,14 +48,13 @@ module Resolvers
               .transform_values { |runner_projects| runner_projects.first.project_id }
           project_ids = owner_project_id_by_runner_id.values.uniq
 
-          all_preloads = unconditional_includes + filtered_preloads
-          owner_relation = Project.all
-          owner_relation = owner_relation.preload(*all_preloads) if all_preloads.any?
-          projects = owner_relation.where(id: project_ids).index_by(&:id)
+          projects = Project.where(id: project_ids)
+          Preloaders::ProjectPolicyPreloader.new(projects, current_user).execute
+          projects_by_id = projects.index_by(&:id)
 
           runner_ids.each do |runner_id|
             owner_project_id = owner_project_id_by_runner_id[runner_id]
-            loader.call(runner_id, projects[owner_project_id])
+            loader.call(runner_id, projects_by_id[owner_project_id])
           end
           # rubocop: enable CodeReuse/ActiveRecord
         end

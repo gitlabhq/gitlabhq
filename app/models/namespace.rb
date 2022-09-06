@@ -128,6 +128,8 @@ class Namespace < ApplicationRecord
   delegate :avatar_url, to: :owner, allow_nil: true
   delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,
            to: :namespace_settings, allow_nil: true
+  delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
+           to: :namespace_settings
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
   after_save :reload_namespace_details

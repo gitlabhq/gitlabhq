@@ -21326,6 +21326,9 @@ msgstr ""
 msgid "Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}"
 msgstr ""
 
+msgid "Integrations|Sign in to %{url}"
+msgstr ""
+
 msgid "Integrations|Sign in to GitLab"
 msgstr ""
 

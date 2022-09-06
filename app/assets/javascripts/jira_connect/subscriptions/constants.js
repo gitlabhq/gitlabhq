@@ -3,11 +3,13 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const DEFAULT_GROUPS_PER_PAGE = 10;
 export const ALERT_LOCALSTORAGE_KEY = 'gitlab_alert';
+export const BASE_URL_LOCALSTORAGE_KEY = 'gitlab_base_url';
 export const MINIMUM_SEARCH_TERM_LENGTH = 3;
 
 export const ADD_NAMESPACE_MODAL_ID = 'add-namespace-modal';
 
 export const I18N_DEFAULT_SIGN_IN_BUTTON_TEXT = s__('Integrations|Sign in to GitLab');
+export const I18N_CUSTOM_SIGN_IN_BUTTON_TEXT = s__('Integrations|Sign in to %{url}');
 export const I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE = s__('Integrations|Failed to sign in to GitLab.');
 export const I18N_DEFAULT_SUBSCRIPTIONS_ERROR_MESSAGE = s__(
   'Integrations|Failed to load subscriptions.',
@@ -25,6 +27,8 @@ export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira_development_
 export const I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE = s__(
   'Integrations|Failed to link namespace. Please try again.',
 );
+
+export const GITLAB_COM_BASE_PATH = 'https://gitlab.com';
 
 const OAUTH_WINDOW_SIZE = 800;
 export const OAUTH_WINDOW_OPTIONS = [

@@ -457,6 +457,22 @@ CREATE TABLE loose_foreign_keys_deleted_records (
 )
 PARTITION BY LIST (partition);
 
+CREATE TABLE security_findings (
+    id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    scanner_id bigint NOT NULL,
+    severity smallint NOT NULL,
+    confidence smallint,
+    project_fingerprint text,
+    deduplicated boolean DEFAULT false NOT NULL,
+    uuid uuid,
+    overridden_uuid uuid,
+    partition_number integer DEFAULT 1 NOT NULL,
+    CONSTRAINT check_6c2851a8c9 CHECK ((uuid IS NOT NULL)),
+    CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
+)
+PARTITION BY LIST (partition_number);
+
 CREATE TABLE verification_codes (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     visitor_id_code text NOT NULL,
@@ -17718,6 +17734,7 @@ CREATE TABLE ml_experiments (
     project_id bigint NOT NULL,
     user_id bigint,
     name text NOT NULL,
+    deleted_on timestamp with time zone,
     CONSTRAINT check_ee07a0be2c CHECK ((char_length(name) <= 255))
 );
 
@@ -17836,6 +17853,7 @@ CREATE TABLE namespace_settings (
     subgroup_runner_token_expiration_interval integer,
     project_runner_token_expiration_interval integer,
     exclude_from_free_user_cap boolean DEFAULT false NOT NULL,
+    show_diff_preview_in_email boolean DEFAULT true NOT NULL,
     enabled_git_access_protocol smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit_interval_in_seconds integer DEFAULT 0 NOT NULL,
@@ -19954,6 +19972,7 @@ CREATE TABLE project_settings (
     target_platforms character varying[] DEFAULT '{}'::character varying[] NOT NULL,
     enforce_auth_checks_on_uploads boolean DEFAULT true NOT NULL,
     selective_code_owner_removals boolean DEFAULT false NOT NULL,
+    show_diff_preview_in_email boolean DEFAULT true NOT NULL,
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
@@ -20931,22 +20950,6 @@ CREATE SEQUENCE scim_oauth_access_tokens_id_seq
     CACHE 1;
 
 ALTER SEQUENCE scim_oauth_access_tokens_id_seq OWNED BY scim_oauth_access_tokens.id;
-
-CREATE TABLE security_findings (
-    id bigint NOT NULL,
-    scan_id bigint NOT NULL,
-    scanner_id bigint NOT NULL,
-    severity smallint NOT NULL,
-    confidence smallint,
-    project_fingerprint text,
-    deduplicated boolean DEFAULT false NOT NULL,
-    uuid uuid,
-    overridden_uuid uuid,
-    partition_number integer DEFAULT 1 NOT NULL,
-    CONSTRAINT check_6c2851a8c9 CHECK ((uuid IS NOT NULL)),
-    CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40)),
-    CONSTRAINT check_partition_number CHECK ((partition_number = 1))
-);
 
 CREATE SEQUENCE security_findings_id_seq
     START WITH 1
@@ -30066,20 +30069,6 @@ CREATE INDEX index_secure_ci_builds_on_user_id_name_created_at ON ci_builds USIN
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
-CREATE INDEX index_security_findings_on_confidence ON security_findings USING btree (confidence);
-
-CREATE INDEX index_security_findings_on_project_fingerprint ON security_findings USING btree (project_fingerprint);
-
-CREATE INDEX index_security_findings_on_scan_id_and_deduplicated ON security_findings USING btree (scan_id, deduplicated);
-
-CREATE INDEX index_security_findings_on_scan_id_and_id ON security_findings USING btree (scan_id, id);
-
-CREATE INDEX index_security_findings_on_scanner_id ON security_findings USING btree (scanner_id);
-
-CREATE INDEX index_security_findings_on_severity ON security_findings USING btree (severity);
-
-CREATE UNIQUE INDEX index_security_findings_on_unique_columns ON security_findings USING btree (uuid, scan_id, partition_number);
-
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
 
 CREATE INDEX index_security_scans_on_date_created_at_and_id ON security_scans USING btree (date(timezone('UTC'::text, created_at)), id);
@@ -30721,6 +30710,20 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orches
 CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
+
+CREATE INDEX security_findings_confidence_idx ON ONLY security_findings USING btree (confidence);
+
+CREATE INDEX security_findings_project_fingerprint_idx ON ONLY security_findings USING btree (project_fingerprint);
+
+CREATE INDEX security_findings_scan_id_deduplicated_idx ON ONLY security_findings USING btree (scan_id, deduplicated);
+
+CREATE INDEX security_findings_scan_id_id_idx ON ONLY security_findings USING btree (scan_id, id);
+
+CREATE INDEX security_findings_scanner_id_idx ON ONLY security_findings USING btree (scanner_id);
+
+CREATE INDEX security_findings_severity_idx ON ONLY security_findings USING btree (severity);
+
+CREATE UNIQUE INDEX security_findings_uuid_scan_id_partition_number_idx ON ONLY security_findings USING btree (uuid, scan_id, partition_number);
 
 CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_and_note_id_index ON snippet_user_mentions USING btree (snippet_id, note_id);
 
@@ -33817,7 +33820,7 @@ ALTER TABLE ONLY project_custom_attributes
 ALTER TABLE ONLY ci_pending_builds
     ADD CONSTRAINT fk_rails_725a2644a3 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY security_findings
+ALTER TABLE security_findings
     ADD CONSTRAINT fk_rails_729b763a54 FOREIGN KEY (scanner_id) REFERENCES vulnerability_scanners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_scanner_profiles
@@ -34255,7 +34258,7 @@ ALTER TABLE ONLY approval_project_rules_users
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_rails_baed5f39b7 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY security_findings
+ALTER TABLE security_findings
     ADD CONSTRAINT fk_rails_bb63863cf1 FOREIGN KEY (scan_id) REFERENCES security_scans(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_project_component_files

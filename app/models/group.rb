@@ -191,6 +191,22 @@ class Group < Namespace
       .where(group_group_links: { shared_group_id: group.self_and_ancestors })
   end
 
+  # WARNING: This method should never be used on its own
+  # please do make sure the number of rows you are filtering is small
+  # enough for this query
+  #
+  # It's a replacement for `public_or_visible_to_user` that correctly
+  # supports subgroup permissions
+  scope :accessible_to_user, -> (user) do
+    if user
+      Preloaders::GroupPolicyPreloader.new(self, user).execute
+
+      select { |group| user.can?(:read_group, group) }
+    else
+      public_to_user
+    end
+  end
+
   class << self
     def sort_by_attribute(method)
       if method == 'storage_size_desc'

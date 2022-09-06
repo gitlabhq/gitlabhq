@@ -56,6 +56,14 @@ func TestHighlight(t *testing.T) {
 			},
 		},
 		{
+			name:     "ruby by file extension",
+			language: "rb",
+			value:    `print hello`,
+			want: [][]token{
+				{{Value: "print hello"}},
+			},
+		},
+		{
 			name:     "unknown/malicious language is passed",
 			language: "<lang> alert(1); </lang>",
 			value:    `def a;\nend`,
@@ -115,4 +123,44 @@ func TestTruncatingMultiByteChars(t *testing.T) {
 
 	symbolSize := 3
 	require.Equal(t, value[0:maxValueSize*symbolSize], c.TruncatedValue.Value)
+}
+
+func BenchmarkHighlight(b *testing.B) {
+	type entry struct {
+		Language string `json:"language"`
+		Value    string `json:"value"`
+	}
+
+	tests := []entry{
+		{
+			Language: "go",
+			Value:    "func main()",
+		},
+		{
+			Language: "ruby",
+			Value:    "def read(line)",
+		},
+		{
+			Language: "",
+			Value:    "<html><head>foobar</head></html>",
+		},
+		{
+			Language: "zzz",
+			Value:    "def read(line)",
+		},
+	}
+
+	for _, tc := range tests {
+		b.Run("lang:"+tc.Language, func(b *testing.B) {
+			raw, err := json.Marshal(tc)
+			require.NoError(b, err)
+
+			b.ResetTimer()
+
+			for n := 0; n < b.N; n++ {
+				_, err := newCodeHovers(raw)
+				require.NoError(b, err)
+			}
+		})
+	}
 }

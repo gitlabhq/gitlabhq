@@ -8,7 +8,7 @@ module Gitlab
 
         def self.from_sql(table, partition_name, definition)
           # A list partition can support multiple values, but we only support a single number
-          matches = definition.match(/FOR VALUES IN \('(?<value>\d+)'\)/)
+          matches = definition.match(/FOR VALUES IN \('?(?<value>\d+)'?\)/)
 
           raise ArgumentError, 'Unknown partition definition' unless matches
 

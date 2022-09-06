@@ -58,7 +58,17 @@ class NamespaceSetting < ApplicationRecord
     namespace.root_ancestor.prevent_sharing_groups_outside_hierarchy
   end
 
+  def show_diff_preview_in_email?
+    return show_diff_preview_in_email unless namespace.has_parent?
+
+    all_ancestors_allow_diff_preview_in_email?
+  end
+
   private
+
+  def all_ancestors_allow_diff_preview_in_email?
+    !self.class.where(namespace_id: namespace.self_and_ancestors, show_diff_preview_in_email: false).exists?
+  end
 
   def normalize_default_branch_name
     self.default_branch_name = default_branch_name.presence

@@ -267,6 +267,7 @@ class ProjectPolicy < BasePolicy
     enable :set_note_created_at
     enable :set_emails_disabled
     enable :set_show_default_award_emojis
+    enable :set_show_diff_preview_in_email
     enable :set_warn_about_potentially_unwanted_characters
 
     enable :register_project_runners

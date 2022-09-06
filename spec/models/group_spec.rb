@@ -707,7 +707,8 @@ RSpec.describe Group do
   end
 
   describe '.public_or_visible_to_user' do
-    let!(:private_group)  { create(:group, :private)  }
+    let!(:private_group) { create(:group, :private) }
+    let!(:private_subgroup) { create(:group, :private, parent: private_group) }
     let!(:internal_group) { create(:group, :internal) }
 
     subject { described_class.public_or_visible_to_user(user) }
@@ -731,6 +732,10 @@ RSpec.describe Group do
         end
 
         it { is_expected.to match_array([private_group, internal_group, group]) }
+
+        it 'does not have access to subgroups (see accessible_to_user scope)' do
+          is_expected.not_to include(private_subgroup)
+        end
       end
 
       context 'when user is a member of private subgroup' do
@@ -837,6 +842,36 @@ RSpec.describe Group do
         new_group = create(:group)
 
         expect(described_class.by_ids_or_paths([new_group.id], [group_path])).to match_array([group, new_group])
+      end
+    end
+
+    describe 'accessible_to_user' do
+      subject { described_class.accessible_to_user(user) }
+
+      let_it_be(:public_group) { create(:group, :public) }
+      let_it_be(:unaccessible_group) { create(:group, :private) }
+      let_it_be(:unaccessible_subgroup) { create(:group, :private, parent: unaccessible_group) }
+      let_it_be(:accessible_group) { create(:group, :private) }
+      let_it_be(:accessible_subgroup) { create(:group, :private, parent: accessible_group) }
+
+      context 'when user is nil' do
+        let(:user) { nil }
+
+        it { is_expected.to match_array([group, public_group]) }
+      end
+
+      context 'when user is present' do
+        let(:user) { create(:user) }
+
+        it { is_expected.to match_array([group, internal_group, public_group]) }
+
+        context 'when user has access to accessible group' do
+          before do
+            accessible_group.add_developer(user)
+          end
+
+          it { is_expected.to match_array([group, internal_group, public_group, accessible_group, accessible_subgroup]) }
+        end
       end
     end
   end

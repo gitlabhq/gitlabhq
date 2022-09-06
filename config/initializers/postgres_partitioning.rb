@@ -10,7 +10,8 @@ Gitlab::Database::Partitioning.register_models([
 if Gitlab.ee?
   Gitlab::Database::Partitioning.register_models([
     IncidentManagement::PendingEscalations::Alert,
-    IncidentManagement::PendingEscalations::Issue
+    IncidentManagement::PendingEscalations::Issue,
+    Security::Finding
   ])
 else
   Gitlab::Database::Partitioning.register_tables([

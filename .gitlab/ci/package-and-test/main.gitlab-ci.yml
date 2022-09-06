@@ -35,10 +35,24 @@ stages:
     RUN_WITH_BUNDLE: "true" # installs and runs gitlab-qa via bundler
     QA_PATH: qa
 
+.omnibus-env:
+  variables:
+    BUILD_ENV: build.env
+  script:
+    - |
+      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
+      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
+      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
+      echo "Built environment file for omnibus build:"
+      cat $BUILD_ENV
+  artifacts:
+    reports:
+      dotenv: $BUILD_ENV
+
 .update-script:
   script:
-    - export CURRENT_VERSION="$(cat ../VERSION)"
-    - export QA_COMMAND="bundle exec gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $CURRENT_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - export QA_COMMAND="bundle exec gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 
@@ -65,16 +79,38 @@ stages:
 # ==========================================
 # Prepare stage
 # ==========================================
-trigger-omnibus:
+trigger-omnibus-env:
   extends:
-    - .ruby-image
+    - .omnibus-env
     - .rules:prepare
   stage: .pre
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - ./scripts/trigger-build.rb omnibus
+
+trigger-omnibus:
+  extends: .rules:prepare
+  stage: .pre
+  needs:
+    - trigger-omnibus-env
+  inherit:
+    variables: false
+  variables:
+    GITALY_SERVER_VERSION: $GITALY_SERVER_VERSION
+    GITLAB_ELASTICSEARCH_INDEXER_VERSION: $GITLAB_ELASTICSEARCH_INDEXER_VERSION
+    GITLAB_KAS_VERSION: $GITLAB_KAS_VERSION
+    GITLAB_METRICS_EXPORTER_VERSION: $GITLAB_METRICS_EXPORTER_VERSION
+    GITLAB_PAGES_VERSION: $GITLAB_PAGES_VERSION
+    GITLAB_SHELL_VERSION: $GITLAB_SHELL_VERSION
+    GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
+    GITLAB_VERSION: $CI_COMMIT_SHA
+    IMAGE_TAG: $CI_COMMIT_SHA
+    TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
+    SECURITY_SOURCES: $SECURITY_SOURCES
+    CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
+    SKIP_QA_DOCKER: "true"
+    SKIP_QA_TEST: "true"
+    ee: "true"
+  trigger:
+    project: gitlab-org/build/omnibus-gitlab-mirror
+    strategy: depend
 
 download-knapsack-report:
   extends:

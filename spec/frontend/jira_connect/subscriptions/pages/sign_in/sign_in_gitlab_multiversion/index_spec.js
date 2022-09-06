@@ -8,6 +8,8 @@ import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_o
 describe('SignInGitlabMultiversion', () => {
   let wrapper;
 
+  const mockBasePath = 'gitlab.mycompany.com';
+
   const findVersionSelectForm = () => wrapper.findComponent(VersionSelectForm);
   const findSignInOauthButton = () => wrapper.findComponent(SignInOauthButton);
   const findSubtitle = () => wrapper.findByTestId('subtitle');
@@ -32,7 +34,7 @@ describe('SignInGitlabMultiversion', () => {
         it('hides the version select form and shows the sign in button', async () => {
           createComponent();
 
-          findVersionSelectForm().vm.$emit('submit', 'gitlab.mycompany.com');
+          findVersionSelectForm().vm.$emit('submit', mockBasePath);
           await nextTick();
 
           expect(findVersionSelectForm().exists()).toBe(false);
@@ -46,13 +48,14 @@ describe('SignInGitlabMultiversion', () => {
     beforeEach(async () => {
       createComponent();
 
-      findVersionSelectForm().vm.$emit('submit', 'gitlab.mycompany.com');
+      findVersionSelectForm().vm.$emit('submit', mockBasePath);
       await nextTick();
     });
 
     describe('sign in button', () => {
       it('renders sign in button', () => {
         expect(findSignInOauthButton().exists()).toBe(true);
+        expect(findSignInOauthButton().props('gitlabBasePath')).toBe(mockBasePath);
       });
 
       describe('when button emits `sign-in` event', () => {

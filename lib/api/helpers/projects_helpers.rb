@@ -39,6 +39,7 @@ module API
 
         optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
+        optional :show_diff_preview_in_email, type: Boolean, desc: 'Include the code diff preview in merge request notification emails'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about Potentially Unwanted Characters'
         optional :enforce_auth_checks_on_uploads, type: Boolean, desc: 'Enforce auth check on uploads'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
@@ -159,6 +160,7 @@ module API
           :request_access_enabled,
           :resolve_outdated_diff_discussions,
           :restrict_user_defined_variables,
+          :show_diff_preview_in_email,
           :security_and_compliance_access_level,
           :squash_option,
           :shared_runners_enabled,

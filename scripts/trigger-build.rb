@@ -389,8 +389,9 @@ module Trigger
 
     def extra_variables
       {
-        'GITLAB_COMMIT_SHA' => ENV['CI_COMMIT_SHA'],
-        'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN']
+        'GITLAB_COMMIT_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
+        'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN'],
+        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
       }
     end
 

@@ -154,11 +154,13 @@ project_setting:
     - project_id
     - push_rule_id
     - show_default_award_emojis
+    - show_diff_preview_in_email
     - updated_at
     - cve_id_request_enabled
     - mr_default_target_self
     - target_platforms
     - selective_code_owner_removals
+    - show_diff_preview_in_email
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

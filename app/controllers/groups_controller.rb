@@ -276,6 +276,7 @@ class GroupsController < Groups::ApplicationController
       :avatar,
       :description,
       :emails_disabled,
+      :show_diff_preview_in_email,
       :mentions_disabled,
       :lfs_enabled,
       :name,

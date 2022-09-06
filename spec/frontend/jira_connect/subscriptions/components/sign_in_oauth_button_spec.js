@@ -2,6 +2,7 @@ import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import {
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
@@ -66,6 +67,20 @@ describe('SignInOauthButton', () => {
     expect(findButton().exists()).toBe(true);
     expect(findButton().text()).toBe(I18N_DEFAULT_SIGN_IN_BUTTON_TEXT);
     expect(findButton().props('category')).toBe('primary');
+  });
+
+  describe('when `gitlabBasePath` is passed', () => {
+    const mockBasePath = 'gitlab.mycompany.com';
+
+    it('uses custom text for button', () => {
+      createComponent({
+        props: {
+          gitlabBasePath: mockBasePath,
+        },
+      });
+
+      expect(findButton().text()).toBe(`Sign in to ${mockBasePath}`);
+    });
   });
 
   it.each`

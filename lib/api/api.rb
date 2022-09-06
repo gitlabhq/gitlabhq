@@ -318,6 +318,7 @@ module API
       mount ::API::Users
       mount ::API::Version
       mount ::API::Wikis
+      mount ::API::Ml::Mlflow
     end
 
     mount ::API::Internal::Base

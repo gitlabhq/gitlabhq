@@ -63,4 +63,51 @@ RSpec.describe ProjectSetting, type: :model do
       target_platforms.permutation(n).to_a
     end
   end
+
+  describe '#show_diff_preview_in_email?' do
+    context 'when a project is a top-level namespace' do
+      let(:project_settings ) { create(:project_setting, show_diff_preview_in_email: false) }
+      let(:project) { create(:project, project_setting: project_settings) }
+
+      context 'when show_diff_preview_in_email is disabled' do
+        it 'returns false' do
+          expect(project).not_to be_show_diff_preview_in_email
+        end
+      end
+
+      context 'when show_diff_preview_in_email is enabled' do
+        let(:project_settings ) { create(:project_setting, show_diff_preview_in_email: true) }
+
+        it 'returns true' do
+          settings = create(:project_setting, show_diff_preview_in_email: true)
+          project = create(:project, project_setting: settings)
+
+          expect(project).to be_show_diff_preview_in_email
+        end
+      end
+    end
+
+    context 'when a parent group has a parent group' do
+      let(:namespace_settings) { create(:namespace_settings, show_diff_preview_in_email: false) }
+      let(:project_settings) { create(:project_setting, show_diff_preview_in_email: true) }
+      let(:group) { create(:group, namespace_settings: namespace_settings) }
+      let!(:project) { create(:project, namespace_id: group.id, project_setting: project_settings) }
+
+      context 'when show_diff_preview_in_email is disabled for the parent group' do
+        it 'returns false' do
+          expect(project).not_to be_show_diff_preview_in_email
+        end
+      end
+
+      context 'when all ancestors have enabled diff previews' do
+        let(:namespace_settings) { create(:namespace_settings, show_diff_preview_in_email: true) }
+
+        it 'returns true' do
+          group.update_attribute(:show_diff_preview_in_email, true)
+
+          expect(project).to be_show_diff_preview_in_email
+        end
+      end
+    end
+  end
 end

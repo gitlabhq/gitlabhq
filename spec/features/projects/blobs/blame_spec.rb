@@ -14,6 +14,24 @@ RSpec.describe 'File blame', :js do
     wait_for_all_requests
   end
 
+  context 'as a developer' do
+    let(:user) { create(:user) }
+    let(:role) { :developer }
+
+    before do
+      project.add_role(user, role)
+      sign_in(user)
+    end
+
+    it 'does not display lock, replace and delete buttons' do
+      visit_blob_blame(path)
+
+      expect(page).not_to have_button("Lock")
+      expect(page).not_to have_button("Replace")
+      expect(page).not_to have_button("Delete")
+    end
+  end
+
   it 'displays the blame page without pagination' do
     visit_blob_blame(path)
 

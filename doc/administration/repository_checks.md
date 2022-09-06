@@ -68,7 +68,7 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
 1. Run the check. For example:
 
    ```shell
-   sudo /opt/gitlab/embedded/bin/git -C /var/opt/gitlab/git-data/repositories/@hashed/0b/91/0b91...f9.git fsck
+   sudo -u git /opt/gitlab/embedded/bin/git -C /var/opt/gitlab/git-data/repositories/@hashed/0b/91/0b91...f9.git fsck
    ```
 
 ## What to do if a check failed

@@ -127,4 +127,50 @@ RSpec.describe NamespaceSetting, type: :model do
       end
     end
   end
+
+  describe '#show_diff_preview_in_email?' do
+    context 'when not a subgroup' do
+      it 'returns false' do
+        settings = create(:namespace_settings, show_diff_preview_in_email: false)
+        group = create(:group, namespace_settings: settings )
+
+        expect(group.show_diff_preview_in_email?).to be_falsey
+      end
+
+      it 'returns true' do
+        settings = create(:namespace_settings, show_diff_preview_in_email: true)
+        group = create(:group, namespace_settings: settings )
+
+        expect(group.show_diff_preview_in_email?).to be_truthy
+      end
+
+      it 'does not query the db when there is no parent group' do
+        group = create(:group)
+
+        expect { group.show_diff_preview_in_email? }.not_to exceed_query_limit(0)
+      end
+    end
+
+    context 'when a group has parent groups' do
+      let(:grandparent) { create(:group, namespace_settings: settings) }
+      let(:parent)      { create(:group, parent: grandparent) }
+      let!(:group) { create(:group, parent: parent) }
+
+      context "when a parent group has disabled diff previews" do
+        let(:settings) { create(:namespace_settings, show_diff_preview_in_email: false) }
+
+        it 'returns false' do
+          expect(group.show_diff_preview_in_email?).to be_falsey
+        end
+      end
+
+      context 'when all parent groups have enabled diff previews' do
+        let(:settings) { create(:namespace_settings, show_diff_preview_in_email: true) }
+
+        it 'returns true' do
+          expect(group.show_diff_preview_in_email?).to be_truthy
+        end
+      end
+    end
+  end
 end

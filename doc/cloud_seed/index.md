@@ -106,6 +106,53 @@ This creates a new branch with the Cloud Run deployment pipeline (or injected in
 and creates an associated merge request where the changes and deployment pipeline execution can be reviewed and merged
 into the main branch.
 
+## Provision Cloud SQL Databases
+
+Relational database instances can be provisioned from the `Project :: Infrastructure :: Google Cloud` page. Cloud SQL is
+the underlying Google Cloud service that is used to provision the database instances.
+
+The following databases and versions are supported:
+
+- PostgreSQL: 14, 13, 12, 11, 10 and 9.6
+- MySQL: 8.0, 5.7 and 5.6
+- SQL Server
+  - 2019: Standard, Enterprise, Express and Web
+  - 2017: Standard, Enterprise, Express and Web
+
+Google Cloud pricing applies. Please refer to the [Cloud SQL pricing page](https://cloud.google.com/sql/pricing).
+
+1. [Create a database instance](#create-a-database-instance)
+1. [Database setup through a background worker](#database-setup-through-a-background-worker)
+1. [Connect to the database](#connect-to-the-database)
+1. [Managing the database instance](#managing-the-database-instance)
+
+### Create a database instance
+
+From the `Project :: Infrastructure :: Google Cloud` page, select the **Database** tab. Here you will find three
+buttons to create Postgres, MySQL, and SQL Server database instances.
+
+The database instance creation form has fields for GCP project, Git ref (branch or tag), database version and
+machine type. Upon submission, the database instance is created and the database setup is queued as a background job.
+
+### Database setup through a background worker
+
+Successful creation of the database instance triggers a background worker to perform the following tasks:
+
+- Create a database user
+- Create a database schema
+- Store the database details in the project's CI/CD variables
+
+### Connect to the database
+
+Once the database instance setup is complete, the database connection details are available as project variables. These
+can be managed through the `Project :: Settings :: CI` page and are made available to pipeline executing in the
+appropriate environment.
+
+### Managing the database instance
+
+The list of instances in the `Project :: Infrastructure :: Google Cloud :: Databases` links back to the Google Cloud
+Console. Select an instance to view the details and manage the instance.
+
 ## Contribute to Cloud Seed
 
 There are several ways you can contribute to Cloud Seed:

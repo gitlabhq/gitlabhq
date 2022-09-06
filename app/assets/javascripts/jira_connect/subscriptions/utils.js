@@ -1,38 +1,67 @@
 import AccessorUtilities from '~/lib/utils/accessor';
 import { objectToQuery } from '~/lib/utils/url_utility';
-import { ALERT_LOCALSTORAGE_KEY } from './constants';
+import { ALERT_LOCALSTORAGE_KEY, BASE_URL_LOCALSTORAGE_KEY } from './constants';
 
 const isFunction = (fn) => typeof fn === 'function';
+const { canUseLocalStorage } = AccessorUtilities;
+
+const persistToStorage = (key, payload) => {
+  localStorage.setItem(key, payload);
+};
+
+const retrieveFromStorage = (key) => {
+  return localStorage.getItem(key);
+};
+
+const removeFromStorage = (key) => {
+  localStorage.removeItem(key);
+};
 
 /**
  * Persist alert data to localStorage.
  */
 export const persistAlert = ({ title, message, linkUrl, variant } = {}) => {
-  if (!AccessorUtilities.canUseLocalStorage()) {
+  if (!canUseLocalStorage()) {
     return;
   }
 
   const payload = JSON.stringify({ title, message, linkUrl, variant });
-  localStorage.setItem(ALERT_LOCALSTORAGE_KEY, payload);
+  persistToStorage(ALERT_LOCALSTORAGE_KEY, payload);
 };
 
 /**
  * Return alert data from localStorage.
  */
 export const retrieveAlert = () => {
-  if (!AccessorUtilities.canUseLocalStorage()) {
+  if (!canUseLocalStorage()) {
     return null;
   }
 
-  const initialAlertJSON = localStorage.getItem(ALERT_LOCALSTORAGE_KEY);
+  const initialAlertJSON = retrieveFromStorage(ALERT_LOCALSTORAGE_KEY);
   // immediately clean up
-  localStorage.removeItem(ALERT_LOCALSTORAGE_KEY);
+  removeFromStorage(ALERT_LOCALSTORAGE_KEY);
 
   if (!initialAlertJSON) {
     return null;
   }
 
   return JSON.parse(initialAlertJSON);
+};
+
+export const persistBaseUrl = (baseUrl) => {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
+  persistToStorage(BASE_URL_LOCALSTORAGE_KEY, baseUrl);
+};
+
+export const retrieveBaseUrl = () => {
+  if (!canUseLocalStorage()) {
+    return null;
+  }
+
+  return retrieveFromStorage(BASE_URL_LOCALSTORAGE_KEY);
 };
 
 export const getJwt = () => {

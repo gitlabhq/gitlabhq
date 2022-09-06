@@ -2,8 +2,10 @@
 import { mapActions, mapMutations } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
+import { sprintf } from '~/locale';
 import {
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+  I18N_CUSTOM_SIGN_IN_BUTTON_TEXT,
   OAUTH_WINDOW_OPTIONS,
   PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM,
 } from '~/jira_connect/subscriptions/constants';
@@ -17,13 +19,28 @@ export default {
     GlButton,
   },
   inject: ['oauthMetadata'],
+  props: {
+    gitlabBasePath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+  },
   data() {
     return {
-      token: null,
       loading: false,
       codeVerifier: null,
       canUseCrypto: AccessorUtilities.canUseCrypto(),
     };
+  },
+  computed: {
+    buttonText() {
+      if (!this.gitlabBasePath) {
+        return I18N_DEFAULT_SIGN_IN_BUTTON_TEXT;
+      }
+
+      return sprintf(I18N_CUSTOM_SIGN_IN_BUTTON_TEXT, { url: this.gitlabBasePath });
+    },
   },
   created() {
     window.addEventListener('message', this.handleWindowMessage);
@@ -56,7 +73,7 @@ export default {
 
       window.open(
         oauthAuthorizeURLWithChallenge,
-        this.$options.i18n.defaultButtonText,
+        I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
         OAUTH_WINDOW_OPTIONS,
       );
     },
@@ -105,9 +122,6 @@ export default {
       return data.access_token;
     },
   },
-  i18n: {
-    defaultButtonText: I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
-  },
 };
 </script>
 <template>
@@ -119,7 +133,7 @@ export default {
     @click="startOAuthFlow"
   >
     <slot>
-      {{ $options.i18n.defaultButtonText }}
+      {{ buttonText }}
     </slot>
   </gl-button>
 </template>

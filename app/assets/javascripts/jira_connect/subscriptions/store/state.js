@@ -1,4 +1,8 @@
-export default function createState({ subscriptions = [], subscriptionsLoading = false } = {}) {
+export default function createState({
+  subscriptions = [],
+  subscriptionsLoading = false,
+  currentUser = null,
+} = {}) {
   return {
     alert: undefined,
 
@@ -9,7 +13,7 @@ export default function createState({ subscriptions = [], subscriptionsLoading =
     addSubscriptionLoading: false,
     addSubscriptionError: false,
 
-    currentUser: null,
+    currentUser,
     currentUserError: null,
 
     accessToken: null,

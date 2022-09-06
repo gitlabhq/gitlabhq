@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
+
 import SignInOauthButton from '../../../components/sign_in_oauth_button.vue';
 import VersionSelectForm from './version_select_form.vue';
 
@@ -58,6 +59,7 @@ export default {
     <div v-else class="gl-text-center">
       <sign-in-oauth-button
         class="gl-mb-5"
+        :gitlab-base-path="gitlabBasePath"
         @sign-in="$emit('sign-in-oauth', $event)"
         @error="onSignInError"
       />

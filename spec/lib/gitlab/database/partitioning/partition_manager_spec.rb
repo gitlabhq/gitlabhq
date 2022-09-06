@@ -21,18 +21,9 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
     let(:connection) { ActiveRecord::Base.connection }
-    let(:table) { "issues" }
+    let(:table) { "my_model_example_table" }
     let(:partitioning_strategy) do
       double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil)
-    end
-
-    before do
-      allow(connection).to receive(:table_exists?).and_call_original
-      allow(connection).to receive(:table_exists?).with(table).and_return(true)
-      allow(connection).to receive(:execute).and_call_original
-      expect(partitioning_strategy).to receive(:validate_and_fix)
-
-      stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
     end
 
     let(:partitions) do
@@ -42,19 +33,49 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       ]
     end
 
-    it 'creates the partition' do
-      expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
-      expect(connection).to receive(:execute).with(partitions.first.to_sql)
-      expect(connection).to receive(:execute).with(partitions.second.to_sql)
+    context 'when the given table is partitioned' do
+      before do
+        create_partitioned_table(connection, table)
 
-      sync_partitions
+        allow(connection).to receive(:table_exists?).and_call_original
+        allow(connection).to receive(:table_exists?).with(table).and_return(true)
+        allow(connection).to receive(:execute).and_call_original
+        expect(partitioning_strategy).to receive(:validate_and_fix)
+
+        stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
+      end
+
+      it 'creates the partition' do
+        expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
+        expect(connection).to receive(:execute).with(partitions.first.to_sql)
+        expect(connection).to receive(:execute).with(partitions.second.to_sql)
+
+        sync_partitions
+      end
+
+      context 'when an error occurs during partition management' do
+        it 'does not raise an error' do
+          expect(partitioning_strategy).to receive(:missing_partitions).and_raise('this should never happen (tm)')
+
+          expect { sync_partitions }.not_to raise_error
+        end
+      end
     end
 
-    context 'when an error occurs during partition management' do
-      it 'does not raise an error' do
-        expect(partitioning_strategy).to receive(:missing_partitions).and_raise('this should never happen (tm)')
+    context 'when the table is not partitioned' do
+      let(:table) { 'this_does_not_need_to_be_real_table' }
 
-        expect { sync_partitions }.not_to raise_error
+      it 'does not try creating the partitions' do
+        expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          {
+            message: 'Skipping synching partitions',
+            table_name: table,
+            connection_name: 'main'
+          }
+        )
+
+        sync_partitions
       end
     end
   end
@@ -74,11 +95,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     end
 
     before do
-      connection.execute(<<~SQL)
-        CREATE TABLE my_model_example_table
-        (id serial not null, created_at timestamptz not null, primary key (id, created_at))
-        PARTITION BY RANGE (created_at);
-      SQL
+      create_partitioned_table(connection, 'my_model_example_table')
     end
 
     it 'creates partitions' do
@@ -98,6 +115,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     end
 
     before do
+      create_partitioned_table(connection, table)
+
       allow(connection).to receive(:table_exists?).and_call_original
       allow(connection).to receive(:table_exists?).with(table).and_return(true)
       expect(partitioning_strategy).to receive(:validate_and_fix)
@@ -259,5 +278,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
       expect { described_class.new(my_model).sync_partitions }.to change { has_partition(my_model, 2.months.ago.beginning_of_month) }.from(true).to(false).and(change { num_partitions(my_model) }.by(0))
     end
+  end
+
+  def create_partitioned_table(connection, table)
+    connection.execute(<<~SQL)
+      CREATE TABLE #{table}
+      (id serial not null, created_at timestamptz not null, primary key (id, created_at))
+      PARTITION BY RANGE (created_at);
+    SQL
   end
 end

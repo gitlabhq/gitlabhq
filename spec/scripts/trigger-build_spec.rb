@@ -761,15 +761,33 @@ RSpec.describe Trigger do
         expect(subject.variables).to include('TRIGGERED_USER_LOGIN' => env['GITLAB_USER_LOGIN'])
       end
 
-      describe "GITLAB_COMMIT_SHA" do
-        context 'when CI_COMMIT_SHA is set' do
-          before do
-            stub_env('CI_COMMIT_SHA', 'ci_commit_sha')
-          end
+      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
+        before do
+          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
+        end
 
-          it 'sets GITLAB_COMMIT_SHA to ci_commit_sha' do
-            expect(subject.variables['GITLAB_COMMIT_SHA']).to eq('ci_commit_sha')
-          end
+        it 'sets TOP_UPSTREAM_SOURCE_SHA to ci_merge_request_source_branch_sha' do
+          expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq('ci_merge_request_source_branch_sha')
+        end
+      end
+
+      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
+        before do
+          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', '')
+        end
+
+        it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
+        end
+      end
+
+      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
+        before do
+          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
+        end
+
+        it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
         end
       end
     end

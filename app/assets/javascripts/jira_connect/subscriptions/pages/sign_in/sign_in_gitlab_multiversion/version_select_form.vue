@@ -9,13 +9,14 @@ import {
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
+import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
+
 const RADIO_OPTIONS = {
   saas: 'saas',
   selfManaged: 'selfManaged',
 };
 
 const DEFAULT_RADIO_OPTION = RADIO_OPTIONS.saas;
-const GITLAB_COM_BASE_PATH = 'https://gitlab.com';
 
 export default {
   name: 'VersionSelectForm',
