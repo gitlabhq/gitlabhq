@@ -79,7 +79,7 @@ cannot be cleaned by `autovacuum`. This highlight the need for small tables.
 We will measure how much bloat we accumulate when [re]indexing huge tables. Base on this analysis,
 we will be able to set up SLO (dead tuples / bloat), associated with [re]indexing.
 
-We’ve seen numerous S1 and S2 database-related production environment
+We've seen numerous S1 and S2 database-related production environment
 incidents, over the last couple of months, for example:
 
 - S1: 2022-03-17 [Increase in writes in `ci_builds` table](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6625)
@@ -135,7 +135,7 @@ remaining database tables when it becomes necessary.
 It is also important to avoid large data migrations. We store almost 6
 terabytes of data in the biggest CI/CD tables, in many different columns and
 indexes. Migrating this amount of data might be challenging and could cause
-instability in the production environment. Due to this concern, we’ve developed
+instability in the production environment. Due to this concern, we've developed
 a way to attach an existing database table as a partition zero without downtime
 and excessive database locking, what has been demonstrated in one of the
 [first proofs of concept](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186).
@@ -150,7 +150,7 @@ Our plan is to use logical partition IDs. We want to start with the
 `ci_pipelines` table and create a `partition_id` column with a `DEFAULT` value
 of `100` or `1000`. Using a `DEFAULT` value avoids the challenge of backfilling
 this value for every row. Adding a `CHECK` constraint prior to attaching the
-first partition tells PostgreSQL that we’ve already ensured consistency and
+first partition tells PostgreSQL that we've already ensured consistency and
 there is no need to check it while holding an exclusive table lock when
 attaching this table as a partition to the routing table (partitioned schema
 definition). We will increment this value every time we create a new partition
@@ -256,12 +256,12 @@ smart enough to move rows between partitions on its own.
 
 ### Naming conventions
 
-A partitioned table is called a __routing__ table and it will use the `p_`
+A partitioned table is called a **routing** table and it will use the `p_`
 prefix which should help us with building automated tooling for query analysis.
 
-A table partition will be simply called __partition__ and it can use the a
+A table partition will be simply called **partition** and it can use the a
 physical partition ID as suffix, leaded by a `p` letter, for example
-`ci_builds_p101`. Existing CI tables will become __zero partitions__ of the
+`ci_builds_p101`. Existing CI tables will become **zero partitions** of the
 new routing tables. Depending on the chosen
 [partitioning strategy](#how-do-we-want-to-partition-cicd-data) for a given
 table, it is possible to have many logical partitions per one physical partition.
@@ -274,8 +274,8 @@ metadata table, called `ci_partitions`. In that table we would store metadata
 about all the logical partitions, with many pipelines per partition. We may
 need to store a range of pipeline ids per logical partition. Using it we will
 be able to find the `partition_id` number for a given pipeline ID and we will
-also find information about which logical partitions are “active” or
-“archived”, which will help us to implement a time-decay pattern using database
+also find information about which logical partitions are "active" or
+"archived", which will help us to implement a time-decay pattern using database
 declarative partitioning.
 
 `ci_partitions` table will store information about a partition identifier,
@@ -621,7 +621,7 @@ strategy. The strategy, described in this document, is subject to iteration as
 well. Whenever we find a better way to reduce the risk and improve our plan, we
 should update this document as well.
 
-We’ve managed to find a way to avoid large-scale data migrations, and we are
+We've managed to find a way to avoid large-scale data migrations, and we are
 building an iterative strategy for partitioning CI/CD data. We documented our
 strategy here to share knowledge and solicit feedback from other team members.
 

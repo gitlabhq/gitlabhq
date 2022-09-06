@@ -8,6 +8,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
   it 'has the expected fields' do
     expected_fields = %w[
       name id state metrics_dashboard latest_opened_most_severe_alert path external_url deployments
+      slug createdAt updatedAt autoStopAt autoDeleteAt tier environmentType
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

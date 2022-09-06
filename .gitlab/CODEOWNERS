@@ -9,7 +9,7 @@ docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @j
 .gitlab/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu
 
 ## Allows release tooling to update the Gitaly Version
-GITALY_SERVER_VERSION @project_278964_bot6
+GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Excludes documentation markdown file changes from required approval
 /doc/*.md

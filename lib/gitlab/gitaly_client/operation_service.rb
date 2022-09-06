@@ -85,8 +85,20 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
-      rescue GRPC::FailedPrecondition => ex
-        raise Gitlab::Git::Repository::InvalidRef, ex
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
+        else
+          if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
+            raise Gitlab::Git::Repository::InvalidRef, e
+          end
+
+          raise
+        end
       end
 
       def user_update_branch(branch_name, user, newrev, oldrev)

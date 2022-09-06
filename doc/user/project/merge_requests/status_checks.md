@@ -61,9 +61,8 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 
 Within each project's settings, you can see a list of status checks added to the project:
 
-1. In your project, go to **Settings > General**.
-1. Expand the **Merge requests** section.
-1. Scroll down to the **Status checks** sub-section.
+1. In your project, go to **Settings > Merge requests** section.
+1. Scroll down to **Status checks**.
 
 ![Status checks list](img/status_checks_list_view_v14_0.png)
 

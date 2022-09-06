@@ -11536,12 +11536,19 @@ Describes where code is deployed for a project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="environmentautodeleteat"></a>`autoDeleteAt` | [`Time`](#time) | When the environment is going to be deleted automatically. |
+| <a id="environmentautostopat"></a>`autoStopAt` | [`Time`](#time) | When the environment is going to be stopped automatically. |
+| <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
+| <a id="environmentenvironmenttype"></a>`environmentType` | [`String`](#string) | Folder name of the environment. |
 | <a id="environmentexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="environmentid"></a>`id` | [`ID!`](#id) | ID of the environment. |
 | <a id="environmentlatestopenedmostseverealert"></a>`latestOpenedMostSevereAlert` | [`AlertManagementAlert`](#alertmanagementalert) | Most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned. |
 | <a id="environmentname"></a>`name` | [`String!`](#string) | Human-readable name of the environment. |
 | <a id="environmentpath"></a>`path` | [`String!`](#string) | Path to the environment. |
+| <a id="environmentslug"></a>`slug` | [`String`](#string) | Slug of the environment. |
 | <a id="environmentstate"></a>`state` | [`String!`](#string) | State of the environment, for example: available/stopped. |
+| <a id="environmenttier"></a>`tier` | [`DeploymentTier`](#deploymenttier) | Deployment tier of the environment. |
+| <a id="environmentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the environment was updated. |
 
 #### Fields with arguments
 

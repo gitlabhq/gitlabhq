@@ -16,8 +16,8 @@ those rules are applied as a merge request moves toward completion.
 
 To view or edit merge request approval settings:
 
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
+1. Go to your project and select **Settings > Merge requests**.
+1. Expand **Approvals**.
 
 ### Approval settings
 
@@ -44,9 +44,9 @@ You can further define what happens to existing approvals when commits are added
 
 By default, the author of a merge request cannot approve it. To change this setting:
 
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Clear the **Prevent approval by author** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   clear the **Prevent approval by author** checkbox.
 1. Select **Save changes**.
 
 Authors can edit the approval rule in an individual merge request and override
@@ -68,9 +68,9 @@ the project level or [instance level](../../../admin_area/merge_requests_approva
 you can prevent committers from approving merge requests that are partially
 their own. To do this:
 
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Select the **Prevent approvals by users who add commits** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   select **Prevent approvals by users who add commits**.
    If this checkbox is cleared, an administrator has disabled it
    [at the instance level](../../../admin_area/merge_requests_approvals.md), and
    it can't be changed at the project level.
@@ -94,9 +94,9 @@ By default, users can override the approval rules you [create for a project](rul
 on a per-merge-request basis. If you don't want users to change approval rules
 on merge requests, you can disable this setting:
 
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Select the **Prevent editing approval rules in merge requests** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   select **Prevent editing approval rules in merge requests**.
 1. Select **Save changes**.
 
 This change affects all open merge requests.
@@ -112,9 +112,9 @@ permission enables an electronic signature for approvals, such as the one define
 
 1. Enable password authentication for the web interface, as described in the
    [sign-in restrictions documentation](../../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Select the **Require user password to approve** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   select **Require user password to approve**.
 1. Select **Save changes**.
 
 ## Remove all approvals when commits are added to the source branch
@@ -123,9 +123,9 @@ By default, an approval on a merge request remains in place, even if you add mor
 after the approval. If you want to remove all existing approvals on a merge request
 when more changes are added to it:
 
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Select the **Remove all approvals when commits are added to the source branch** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   select **Remove all approvals when commits are added to the source branch**.
 1. Select **Save changes**.
 
 Approvals aren't removed when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
@@ -143,10 +143,9 @@ Prerequisite:
 
 To do this:
 
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge request approvals**.
-1. Select **Remove approvals by Code Owners if their files changed**.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   select **Remove approvals by Code Owners if their files changed**.
 1. Select **Save changes**.
 
 ## Code coverage check approvals

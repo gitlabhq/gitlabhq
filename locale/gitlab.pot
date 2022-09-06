@@ -26841,6 +26841,9 @@ msgstr ""
 msgid "Notify|A new GPG key was added to your account:"
 msgstr ""
 
+msgid "Notify|All discussions on merge request %{mr_link} were resolved by %{name}"
+msgstr ""
+
 msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
 msgstr ""
 

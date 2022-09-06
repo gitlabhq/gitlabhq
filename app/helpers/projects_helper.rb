@@ -440,7 +440,6 @@ module ProjectsHelper
   def show_inactive_project_deletion_banner?(project)
     return false unless project.present? && project.saved?
     return false unless delete_inactive_projects?
-    return false unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
 
     project.inactive?
   end

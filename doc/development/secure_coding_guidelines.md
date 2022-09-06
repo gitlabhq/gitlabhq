@@ -81,7 +81,7 @@ text = "foo\nbar"
 p text.match /^bar$/
 ```
 
-The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. In order to match the whole __string__ the Regex anchors `\A` and `\z` should be used.
+The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. To match the whole **string**, the Regex anchors `\A` and `\z` should be used.
 
 #### Impact
 

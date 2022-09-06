@@ -333,7 +333,7 @@
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
-    border-radius: 2px;
+    border-radius: $border-radius-default;
 
     // Multi-line code blocks should scroll horizontally
     code {

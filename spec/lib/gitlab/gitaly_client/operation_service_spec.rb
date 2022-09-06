@@ -56,6 +56,85 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
           Gitlab::Git::PreReceiveError, "something failed")
       end
     end
+
+    context 'with structured errors' do
+      context 'with CustomHookError' do
+        let(:stdout) { nil }
+        let(:stderr) { nil }
+        let(:error_message) { "error_message" }
+
+        let(:custom_hook_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            error_message,
+            Gitaly::UserCreateBranchError.new(
+              custom_hook: Gitaly::CustomHookError.new(
+                stdout: stdout,
+                stderr: stderr,
+                hook_type: Gitaly::CustomHookError::HookType::HOOK_TYPE_PRERECEIVE
+              )))
+        end
+
+        shared_examples 'failed branch creation' do
+          it 'raised a PreRecieveError' do
+            expect_any_instance_of(Gitaly::OperationService::Stub)
+              .to receive(:user_create_branch)
+              .and_raise(custom_hook_error)
+
+            expect { subject }.to raise_error do |error|
+              expect(error).to be_a(Gitlab::Git::PreReceiveError)
+              expect(error.message).to eq(expected_message)
+              expect(error.raw_message).to eq(expected_raw_message)
+            end
+          end
+        end
+
+        context 'when details contain stderr without prefix' do
+          let(:stderr) { "something" }
+          let(:stdout) { "GL-HOOK-ERR: stdout is overridden by stderr" }
+          let(:expected_message) { error_message }
+          let(:expected_raw_message) { stderr }
+
+          it_behaves_like 'failed branch creation'
+        end
+
+        context 'when details contain stderr with prefix' do
+          let(:stderr) { "GL-HOOK-ERR: something" }
+          let(:stdout) { "GL-HOOK-ERR: stdout is overridden by stderr" }
+          let(:expected_message) { "something" }
+          let(:expected_raw_message) { stderr }
+
+          it_behaves_like 'failed branch creation'
+        end
+
+        context 'when details contain stdout without prefix' do
+          let(:stderr) { "      \n" }
+          let(:stdout) { "something" }
+          let(:expected_message) { error_message }
+          let(:expected_raw_message) { stdout }
+
+          it_behaves_like 'failed branch creation'
+        end
+
+        context 'when details contain stdout with prefix' do
+          let(:stderr) { "      \n" }
+          let(:stdout) { "GL-HOOK-ERR: something" }
+          let(:expected_message) { "something" }
+          let(:expected_raw_message) { stdout }
+
+          it_behaves_like 'failed branch creation'
+        end
+
+        context 'when details contain no stderr or stdout' do
+          let(:stderr) { "      \n" }
+          let(:stdout) { "\n    \n" }
+          let(:expected_message) { error_message }
+          let(:expected_raw_message) { "\n    \n" }
+
+          it_behaves_like 'failed branch creation'
+        end
+      end
+    end
   end
 
   describe '#user_update_branch' do

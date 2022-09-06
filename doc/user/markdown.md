@@ -774,6 +774,8 @@ Combined emphasis with **asterisks and _underscores_**.
 Strikethrough uses two tildes. ~~Scratch this.~~
 ```
 
+<!-- markdownlint-disable MD050 -->
+
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
 Strong emphasis, aka bold, with double **asterisks** or __underscores__.
@@ -781,6 +783,8 @@ Strong emphasis, aka bold, with double **asterisks** or __underscores__.
 Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
+
+<!-- markdownlint-enable MD050 -->
 
 #### Multiple underscores in words and mid-word emphasis
 

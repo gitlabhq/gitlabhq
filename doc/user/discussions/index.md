@@ -340,9 +340,8 @@ resolved. When this setting is enabled, the **Unresolved threads** counter in a 
 is shown in orange when at least one thread remains unresolved.
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
-1. Under **Merge checks**, select the **All threads must be resolved** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
 
 ### Automatically resolve threads in a merge request when they become outdated
@@ -351,10 +350,9 @@ You can set merge requests to automatically resolve threads when lines are modif
 with a new push.
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
-1. Under **Merge options**, select the
-   **Automatically resolve merge request diff threads when they become outdated** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge options** section, select
+   **Automatically resolve merge request diff threads when they become outdated**.
 1. Select **Save changes**.
 
 Threads are now resolved if a push makes a diff section outdated.

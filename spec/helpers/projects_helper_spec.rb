@@ -1147,37 +1147,23 @@ RSpec.describe ProjectsHelper do
     context 'with the setting enabled' do
       before do
         stub_application_setting(delete_inactive_projects: true)
+        stub_application_setting(inactive_projects_min_size_mb: 0)
+        stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
       end
 
-      context 'with the feature flag disabled' do
-        before do
-          stub_feature_flags(inactive_projects_deletion: false)
-        end
-
+      context 'with an active project' do
         it_behaves_like 'does not show the banner'
       end
 
-      context 'with the feature flag enabled' do
+      context 'with an inactive project' do
         before do
-          stub_feature_flags(inactive_projects_deletion: true)
-          stub_application_setting(inactive_projects_min_size_mb: 0)
-          stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
+          project.statistics.storage_size = 1.megabyte
+          project.last_activity_at = 1.year.ago
+          project.save!
         end
 
-        context 'with an active project' do
-          it_behaves_like 'does not show the banner'
-        end
-
-        context 'with an inactive project' do
-          before do
-            project.statistics.storage_size = 1.megabyte
-            project.last_activity_at = 1.year.ago
-            project.save!
-          end
-
-          it 'shows the banner' do
-            expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
-          end
+        it 'shows the banner' do
+          expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
         end
       end
     end

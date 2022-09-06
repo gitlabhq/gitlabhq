@@ -53,8 +53,13 @@ end
 
 ## Add a `NOT NULL` constraint to an existing column
 
-Adding `NOT NULL` to existing database columns requires multiple steps split into at least two
-different releases:
+Adding `NOT NULL` to existing database columns usually requires multiple steps split into at least two
+different releases. If your table is small enough that you don't need to
+use a background migration, you can include all these in the same merge
+request. We recommend to use separate migrations to reduce
+transaction durations.
+
+The steps required are:
 
 1. Release `N.M` (current release)
 

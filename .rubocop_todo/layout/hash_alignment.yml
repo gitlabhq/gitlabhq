@@ -3,10 +3,4 @@
 Layout/HashAlignment:
   Exclude:
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
-    - 'spec/controllers/projects/merge_requests_controller_spec.rb'
-    - 'spec/routing/project_routing_spec.rb'
-    - 'spec/serializers/ci/lint/job_entity_spec.rb'
-    - 'spec/serializers/container_repository_entity_spec.rb'
-    - 'spec/serializers/deployment_entity_spec.rb'
     - 'spec/serializers/environment_serializer_spec.rb'
-    - 'spec/serializers/merge_request_metrics_helper_spec.rb'

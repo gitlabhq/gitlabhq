@@ -20,6 +20,8 @@ export const createAppOptions = (selector, apolloProvider) => {
   const {
     canGenerateCodequalityReports,
     codequalityReportDownloadPath,
+    codequalityBlobPath,
+    codequalityProjectPath,
     downloadablePathForReportType,
     exposeSecurityDashboard,
     exposeLicenseScanningData,
@@ -40,9 +42,12 @@ export const createAppOptions = (selector, apolloProvider) => {
     hasTestReport,
     emptyStateImagePath,
     artifactsExpiredImagePath,
+    isFullCodequalityReportAvailable,
     testsCount,
   } = dataset;
 
+  // TODO remove projectPath variable once https://gitlab.com/gitlab-org/gitlab/-/issues/371641 is resolved
+  const projectPath = fullPath;
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
 
   return {
@@ -63,6 +68,10 @@ export const createAppOptions = (selector, apolloProvider) => {
     provide: {
       canGenerateCodequalityReports: parseBoolean(canGenerateCodequalityReports),
       codequalityReportDownloadPath,
+      codequalityBlobPath,
+      codequalityProjectPath,
+      isFullCodequalityReportAvailable: parseBoolean(isFullCodequalityReportAvailable),
+      projectPath,
       defaultTabValue,
       downloadablePathForReportType,
       exposeSecurityDashboard: parseBoolean(exposeSecurityDashboard),

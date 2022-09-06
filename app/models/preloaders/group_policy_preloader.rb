@@ -17,4 +17,4 @@ module Preloaders
   end
 end
 
-Preloaders::GroupPolicyPreloader.prepend_mod_with('Preloaders::GroupPolicyPreloader')
+Preloaders::GroupPolicyPreloader.prepend_mod

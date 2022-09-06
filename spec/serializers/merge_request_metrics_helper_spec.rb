@@ -57,9 +57,9 @@ RSpec.describe MergeRequestMetricsHelper do
 
         expect(MergeRequest::Metrics).to receive(:new)
             .with(latest_closed_at: closed_event&.updated_at,
-              latest_closed_by: closed_event&.author,
-              merged_at: merge_event&.updated_at,
-              merged_by: merge_event&.author)
+                  latest_closed_by: closed_event&.author,
+                  merged_at: merge_event&.updated_at,
+                  merged_by: merge_event&.author)
             .and_call_original
 
         subject

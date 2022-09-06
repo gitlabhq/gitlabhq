@@ -57,9 +57,8 @@ does not disable this feature, as it is possible to use pipelines from external
 CI providers with this feature. To enable it, you must:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
-1. Under **Merge checks**, select the **Pipelines must succeed** checkbox.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge checks** section, select **Pipelines must succeed**.
 1. Select **Save**.
 
 This setting also prevents merge requests from being merged if there is no pipeline.
@@ -106,11 +105,10 @@ When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../
 merge requests from being merged. To change this behavior:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
-1. Under **Merge checks**:
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge checks** section:
    - Ensure **Pipelines must succeed** is selected.
-   - Select the **Skipped pipelines are considered successful** checkbox.
+   - Select **Skipped pipelines are considered successful**.
 1. Select **Save**.
 
 ## From the command line
