@@ -417,6 +417,7 @@ GET /users/:user_id/projects
     "merge_method": "merge",
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -539,6 +540,7 @@ GET /users/:user_id/projects
     "service_desk_enabled": false,
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -671,6 +673,7 @@ Example response:
     "merge_method": "merge",
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -786,6 +789,7 @@ Example response:
     "service_desk_enabled": false,
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -962,6 +966,7 @@ GET /projects/:id
   "service_desk_address": null,
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "enforce_auth_checks_on_uploads": true,
   "merge_commit_template": null,
   "squash_commit_template": null,
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
@@ -1277,6 +1282,7 @@ POST /projects/user/:user_id
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
+| `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
@@ -1370,6 +1376,7 @@ Supported attributes:
 | `default_branch`                                            | string         | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
+| `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `import_url`                                                | string         | **{dotted-circle}** No | URL the repository was imported from. |
@@ -1542,6 +1549,7 @@ Example responses:
     "merge_method": "merge",
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1648,6 +1656,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1752,6 +1761,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1952,6 +1962,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -2079,6 +2090,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",

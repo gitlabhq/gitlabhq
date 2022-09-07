@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab/redis'
+
 Redis.raise_deprecations = true unless Rails.env.production?
 
 # We set the instance variable directly to suppress warnings.
@@ -15,11 +17,6 @@ Redis::Client.prepend(Gitlab::Instrumentation::RedisInterceptor)
 # 1. Sidekiq
 # 2. Rails.cache
 # 3. HTTP clients
-Gitlab::Redis::Cache.with { nil }
-Gitlab::Redis::Queues.with { nil }
-Gitlab::Redis::SharedState.with { nil }
-Gitlab::Redis::TraceChunks.with { nil }
-Gitlab::Redis::RateLimiting.with { nil }
-Gitlab::Redis::Sessions.with { nil }
-Gitlab::Redis::DuplicateJobs.with { nil }
-Gitlab::Redis::SidekiqStatus.with { nil }
+Gitlab::Redis::ALL_CLASSES.each do |redis_instance|
+  redis_instance.with { nil }
+end

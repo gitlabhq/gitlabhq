@@ -71,14 +71,10 @@ RSpec.describe Gitlab::Instrumentation::Redis do
 
       stub_storages(:detail_store, [details_row])
 
-      expect(described_class.detail_store)
-        .to contain_exactly(details_row.merge(storage: 'ActionCable'),
-                            details_row.merge(storage: 'Cache'),
-                            details_row.merge(storage: 'Queues'),
-                            details_row.merge(storage: 'SharedState'),
-                            details_row.merge(storage: 'TraceChunks'),
-                            details_row.merge(storage: 'RateLimiting'),
-                            details_row.merge(storage: 'Sessions'))
+      expected_detail_stores = Gitlab::Redis::ALL_CLASSES.map(&:store_name)
+                                 .map { |store_name| details_row.merge(storage: store_name) }
+      expected_detail_stores << details_row.merge(storage: 'ActionCable')
+      expect(described_class.detail_store).to contain_exactly(*expected_detail_stores)
     end
   end
 end

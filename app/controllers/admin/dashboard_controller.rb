@@ -14,14 +14,7 @@ class Admin::DashboardController < Admin::ApplicationController
     @groups = Group.order_id_desc.with_route.limit(10)
     @notices = Gitlab::ConfigChecker::PumaRuggedChecker.check
     @notices += Gitlab::ConfigChecker::ExternalDatabaseChecker.check
-    @redis_versions = [
-      Gitlab::Redis::Queues,
-      Gitlab::Redis::SharedState,
-      Gitlab::Redis::Cache,
-      Gitlab::Redis::TraceChunks,
-      Gitlab::Redis::RateLimiting,
-      Gitlab::Redis::Sessions
-    ].map(&:version).uniq
+    @redis_versions = Gitlab::Redis::ALL_CLASSES.map(&:version).uniq
   end
 
   def stats

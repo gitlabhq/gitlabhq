@@ -12074,7 +12074,10 @@ CREATE TABLE board_group_recent_visits (
     updated_at timestamp with time zone NOT NULL,
     user_id integer,
     board_id integer,
-    group_id integer
+    group_id integer,
+    CONSTRAINT check_409f6caea4 CHECK ((user_id IS NOT NULL)),
+    CONSTRAINT check_ddc74243ef CHECK ((group_id IS NOT NULL)),
+    CONSTRAINT check_fa7711a898 CHECK ((board_id IS NOT NULL))
 );
 
 CREATE SEQUENCE board_group_recent_visits_id_seq
@@ -12107,7 +12110,10 @@ CREATE TABLE board_project_recent_visits (
     updated_at timestamp with time zone NOT NULL,
     user_id integer,
     project_id integer,
-    board_id integer
+    board_id integer,
+    CONSTRAINT check_0386e26981 CHECK ((board_id IS NOT NULL)),
+    CONSTRAINT check_d9cc9b79da CHECK ((project_id IS NOT NULL)),
+    CONSTRAINT check_df7762a99a CHECK ((user_id IS NOT NULL))
 );
 
 CREATE SEQUENCE board_project_recent_visits_id_seq
@@ -30762,8 +30768,6 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_ci_job_artifacts_on_id_expire_at_file_type_trace ON ci_job_artifacts USING btree (id) WHERE (((date_part('day'::text, timezone('UTC'::text, expire_at)) = ANY (ARRAY[(21)::double precision, (22)::double precision, (23)::double precision])) AND (date_part('minute'::text, timezone('UTC'::text, expire_at)) = ANY (ARRAY[(0)::double precision, (30)::double precision, (45)::double precision])) AND (date_part('second'::text, timezone('UTC'::text, expire_at)) = (0)::double precision)) OR (file_type = 3));
-
-CREATE INDEX tmp_index_ci_job_artifacts_on_id_where_trace_and_expire_at ON ci_job_artifacts USING btree (id) WHERE ((file_type = 3) AND (expire_at = ANY (ARRAY['2021-04-22 00:00:00+00'::timestamp with time zone, '2021-05-22 00:00:00+00'::timestamp with time zone, '2021-06-22 00:00:00+00'::timestamp with time zone, '2022-01-22 00:00:00+00'::timestamp with time zone, '2022-02-22 00:00:00+00'::timestamp with time zone, '2022-03-22 00:00:00+00'::timestamp with time zone, '2022-04-22 00:00:00+00'::timestamp with time zone])));
 
 CREATE INDEX tmp_index_cis_vulnerability_reads_on_id ON vulnerability_reads USING btree (id) WHERE (report_type = 7);
 

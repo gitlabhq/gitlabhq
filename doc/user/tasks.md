@@ -13,10 +13,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 Tasks are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features).
 
-The following list are the known limitations:
+Known limitation:
 
 - [Tasks currently cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)
-- An issue's tasks can only currently be accessed via a reference within a description, comment, or direct URL (`.../-/work_items/[global_id]`).
 
 For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
 

@@ -116,9 +116,9 @@ the following preparations into account.
 - Ensure that the Database Dictionary is updated as [documented](database/database_dictionary.md).
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
-- Add the output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations into the MR description.
-  - Ensure the down method reverts the changes in `db/structure.sql`.
-  - Update the migration output whenever you modify the migrations during the review process.
+- Check that the [`db:check-migrations`](database/dbcheck-migrations-job.md) pipeline job has run successfully and the migration rollback behaves as expected.
+  - Ensure the `db:check-schema` job has run successfully and no unexpected schema changes are introduced in a rollback. This job may only trigger a warning if the schema was changed.
+  - Verify that the previously mentioned jobs continue to succeed whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
 - When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`enable_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) method to enable lock-retries. Review the relevant [examples in our documentation](migration_style_guide.md#usage-with-transactional-migrations) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.

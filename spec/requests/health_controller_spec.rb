@@ -142,17 +142,27 @@ RSpec.describe HealthController do
           end
 
           it 'responds with readiness checks data when a failure happens' do
-            allow(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_return(
-              Gitlab::HealthChecks::Result.new('redis_check', false, "check error"))
+            allow(Gitlab::HealthChecks::Redis::SharedStateCheck).to receive(:readiness).and_return(
+              Gitlab::HealthChecks::Result.new('shared_state_check', false, "check error"))
 
             subject
 
             expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
-            expect(json_response['redis_check']).to contain_exactly(
+            expect(json_response['shared_state_check']).to contain_exactly(
               { 'status' => 'failed', 'message' => 'check error' })
 
             expect(response).to have_gitlab_http_status(:service_unavailable)
             expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+          end
+
+          it 'checks all redis instances' do
+            expected_redis_checks = Gitlab::Redis::ALL_CLASSES.map do |redis|
+              { "#{redis.store_name.underscore}_check" => [{ 'status' => 'ok' }] }
+            end
+
+            subject
+
+            expect(json_response).to include(*expected_redis_checks)
           end
 
           context 'when DB is not accessible and connection raises an exception' do
@@ -174,7 +184,7 @@ RSpec.describe HealthController do
 
           context 'when any exception happens during the probing' do
             before do
-              expect(Gitlab::HealthChecks::Redis::RedisCheck)
+              expect(Gitlab::HealthChecks::Redis::CacheCheck)
                 .to receive(:readiness)
                 .and_raise(::Redis::CannotConnectError, 'Redis down')
             end

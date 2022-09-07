@@ -343,7 +343,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/logs/log_parsing.md @axil
 /doc/administration/logs/tracing_correlation_id.md @axil
 /doc/administration/maintenance_mode/ @axil
-/doc/administration/merge_request_diffs.md @aqualls 
+/doc/administration/merge_request_diffs.md @aqualls
 /doc/administration/monitoring/ @msedlakjakubowski
 /doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @sselhorn
@@ -1200,6 +1200,13 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /lib/system_check/incoming_email/imap_authentication_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/tasks/gitlab/password.rake @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/tasks/tokens.rake @gitlab-org/manage/authentication-and-authorization/approvers
+
+[Manage::Workspace]
+lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers
+lib/api/entities/project_with_access.rb @gitlab-org/manage/manage-workspace/backend-approvers
+lib/api/entities/project_identity.rb @gitlab-org/manage/manage-workspace/backend-approvers
+lib/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-approvers
+ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-approvers
 
 [Compliance]
 /ee/app/services/audit_events/build_service.rb @gitlab-org/manage/compliance

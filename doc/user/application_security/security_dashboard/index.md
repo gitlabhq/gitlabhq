@@ -91,15 +91,16 @@ To view vulnerabilities over time for a group:
 
 ## View project security status for a group
 
-Use the group Security Dashboard to view the security status of projects. The security status is based
-on the number of detected vulnerabilities.
+Use the group Security Dashboard to view the security status of projects.
 
 To view project security status for a group:
 
 1. On the top bar, select **Menu > Groups** and select a group.
 1. Select **Security > Security Dashboard**.
 
-Projects are [graded](#project-vulnerability-grades) by vulnerability severity. Dismissed vulnerabilities are excluded.
+Each project is assigned a letter [grade](#project-vulnerability-grades) according to the highest-severity open vulnerability.
+Dismissed or resolved vulnerabilities are excluded. Each project can receive only one letter grade and will appear only once 
+in the Project security status report.
 
 To view vulnerabilities, go to the group's [vulnerability report](../vulnerability_report/index.md).
 
