@@ -386,7 +386,7 @@ POST /projects/:id/releases
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link. Link URLs must be unique within the release.                                                                |
 | `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets).
 | `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`.
-| `released_at`      | datetime        | no                          | The date when the release is/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `released_at`      | datetime        | no                          | Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an [upcoming](../../user/project/releases/index.md#upcoming-releases) or [historical](../../user/project/releases/index.md#historical-releases) release.  |
 
 Example request:
 

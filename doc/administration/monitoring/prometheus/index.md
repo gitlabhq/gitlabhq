@@ -277,11 +277,6 @@ To use an external Prometheus server:
        static_configs:
          - targets:
            - 1.1.1.1:9168
-     - job_name: gitlab_exporter_process
-       metrics_path: "/process"
-       static_configs:
-         - targets:
-           - 1.1.1.1:9168
      - job_name: gitaly
        static_configs:
          - targets:

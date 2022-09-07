@@ -4371,7 +4371,7 @@ Input type: `ReleaseCreateInput`
 | <a id="mutationreleasecreatename"></a>`name` | [`String`](#string) | Name of the release. |
 | <a id="mutationreleasecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the release is associated with. |
 | <a id="mutationreleasecreateref"></a>`ref` | [`String`](#string) | Commit SHA or branch name to use if creating a new tag. |
-| <a id="mutationreleasecreatereleasedat"></a>`releasedAt` | [`Time`](#time) | Date and time for the release. Defaults to the current date and time. |
+| <a id="mutationreleasecreatereleasedat"></a>`releasedAt` | [`Time`](#time) | Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an upcoming or historical release. |
 | <a id="mutationreleasecreatetagmessage"></a>`tagMessage` | [`String`](#string) | Message to use if creating a new annotated tag. |
 | <a id="mutationreleasecreatetagname"></a>`tagName` | [`String!`](#string) | Name of the tag to associate with the release. |
 
