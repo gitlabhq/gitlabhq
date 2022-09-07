@@ -49,3 +49,16 @@ Enable the Google Chat integration in GitLab:
 
 To test the integration, make a change based on the events you selected and
 see the notification in your Google Chat room.
+
+### Enable threads in Google Chat
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27823) in GitLab 15.4.
+
+To enable threaded notifications for the same GitLab object (for example, an issue or merge request):
+
+1. Go to [Google Chat](https://chat.google.com/).
+1. In **Spaces**, select **+ > Create space**.
+1. Enter the space name and (optionally) other details, and select **Use threaded replies**.
+1. Select **Create**.
+
+You cannot enable threaded replies for existing Google Chat spaces.

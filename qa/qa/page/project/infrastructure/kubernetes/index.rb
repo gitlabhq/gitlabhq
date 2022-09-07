@@ -10,17 +10,12 @@ module QA
               element :clusters_actions_button
             end
 
-            def connect_existing_cluster
-              within_element(:clusters_actions_button) { click_button(class: 'dropdown-toggle-split') }
-              click_link 'Connect a cluster (certificate - deprecated)'
+            def connect_cluster
+              click_element(:clusters_actions_button)
             end
 
             def has_cluster?(cluster)
               has_element?(:cluster, cluster_name: cluster.to_s)
-            end
-
-            def click_on_cluster(cluster)
-              click_on cluster.cluster_name
             end
           end
         end

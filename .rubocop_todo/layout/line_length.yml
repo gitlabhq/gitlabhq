@@ -3666,7 +3666,6 @@ Layout/LineLength:
     - 'qa/qa/ee/page/project/secure/security_dashboard.rb'
     - 'qa/qa/ee/page/project/secure/show.rb'
     - 'qa/qa/ee/resource/license.rb'
-    - 'qa/qa/fixtures/auto_devops_rack/config.ru'
     - 'qa/qa/flow/sign_up.rb'
     - 'qa/qa/git/repository.rb'
     - 'qa/qa/page/base.rb'

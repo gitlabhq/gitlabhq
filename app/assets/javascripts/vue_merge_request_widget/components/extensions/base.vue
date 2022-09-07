@@ -13,6 +13,7 @@ import Poll from '~/lib/utils/poll';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import Actions from '../action_buttons.vue';
+import StateContainer from '../state_container.vue';
 import StatusIcon from './status_icon.vue';
 import ChildContent from './child_content.vue';
 import { createTelemetryHub } from './telemetry';
@@ -36,6 +37,7 @@ export default {
     ChildContent,
     DynamicScroller,
     DynamicScrollerItem,
+    StateContainer,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -312,18 +314,15 @@ export default {
     data-testid="widget-extension"
     data-qa-selector="mr_widget_extension"
   >
-    <div
+    <state-container
+      :mr="mr"
+      :status="statusIconName"
+      :is-loading="isLoadingSummary"
       :class="{ 'gl-cursor-pointer': isCollapsible }"
-      class="media gl-p-5"
+      class="gl-p-5"
       @mousedown="onRowMouseDown"
       @mouseup="onRowMouseUp"
     >
-      <status-icon
-        :level="1"
-        :name="$options.label || $options.name"
-        :is-loading="isLoadingSummary"
-        :icon-name="statusIconName"
-      />
       <div
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
@@ -362,7 +361,7 @@ export default {
           />
         </div>
       </div>
-    </div>
+    </state-container>
     <div
       v-if="!isCollapsed"
       class="mr-widget-grouped-section gl-relative"

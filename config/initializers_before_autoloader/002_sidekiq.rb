@@ -9,5 +9,5 @@
 require 'sidekiq/web'
 
 if Rails.env.development?
-  Sidekiq.default_worker_options[:backtrace] = true
+  Sidekiq.default_job_options[:backtrace] = true
 end

@@ -40,7 +40,7 @@ describe('AppComponent', () => {
   const store = new GroupsStore({ hideProjects: false });
   const service = new GroupsService(mockEndpoint);
 
-  const createShallowComponent = ({ propsData = {}, provide = {} } = {}) => {
+  const createShallowComponent = ({ propsData = {} } = {}) => {
     store.state.pageInfo = mockPageInfo;
     wrapper = shallowMount(appComponent, {
       propsData: {
@@ -52,10 +52,6 @@ describe('AppComponent', () => {
       },
       mocks: {
         $toast,
-      },
-      provide: {
-        renderEmptyState: false,
-        ...provide,
       },
     });
     vm = wrapper.vm;
@@ -402,8 +398,7 @@ describe('AppComponent', () => {
         ({ action, groups, fromSearch, renderEmptyState, expected }) => {
           it(expected ? 'renders empty state' : 'does not render empty state', async () => {
             createShallowComponent({
-              propsData: { action },
-              provide: { renderEmptyState },
+              propsData: { action, renderEmptyState },
             });
 
             vm.updateGroups(groups, fromSearch);
@@ -420,7 +415,6 @@ describe('AppComponent', () => {
       it('renders legacy empty state', async () => {
         createShallowComponent({
           propsData: { action: 'subgroups_and_projects' },
-          provide: { renderEmptyState: false },
         });
 
         vm.updateGroups([], false);

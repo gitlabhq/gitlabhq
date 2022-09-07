@@ -39,6 +39,11 @@ function format(searchTerm, isFallbackKey = false) {
   return formattedQuery;
 }
 
+function getSearchTerm(newIssuePath) {
+  const { search, pathname } = document.location;
+  return newIssuePath === pathname ? '' : format(search);
+}
+
 function getFallbackKey() {
   const searchTerm = format(document.location.search, true);
   return ['autosave', document.location.pathname, searchTerm].join('/');
@@ -72,7 +77,8 @@ export default class IssuableForm {
     this.reviewersSelect = new UsersSelect(undefined, '.js-reviewer-search');
     this.zenMode = new ZenMode();
 
-    this.newIssuePath = form[0].getAttribute(DATA_ISSUES_NEW_PATH);
+    this.searchTerm = getSearchTerm(form[0].getAttribute(DATA_ISSUES_NEW_PATH));
+    this.fallbackKey = getFallbackKey();
     this.titleField = this.form.find('input[name*="[title]"]');
     this.descriptionField = this.form.find('textarea[name*="[description]"]');
     if (!(this.titleField.length && this.descriptionField.length)) {
@@ -109,20 +115,16 @@ export default class IssuableForm {
   }
 
   initAutosave() {
-    const { search, pathname } = document.location;
-    const searchTerm = this.newIssuePath === pathname ? '' : format(search);
-    const fallbackKey = getFallbackKey();
-
-    this.autosave = new Autosave(
+    this.autosaveTitle = new Autosave(
       this.titleField,
-      [document.location.pathname, searchTerm, 'title'],
-      `${fallbackKey}=title`,
+      [document.location.pathname, this.searchTerm, 'title'],
+      `${this.fallbackKey}=title`,
     );
 
-    return new Autosave(
+    this.autosaveDescription = new Autosave(
       this.descriptionField,
-      [document.location.pathname, searchTerm, 'description'],
-      `${fallbackKey}=description`,
+      [document.location.pathname, this.searchTerm, 'description'],
+      `${this.fallbackKey}=description`,
     );
   }
 
@@ -131,8 +133,8 @@ export default class IssuableForm {
   }
 
   resetAutosave() {
-    this.titleField.data('autosave').reset();
-    return this.descriptionField.data('autosave').reset();
+    this.autosaveTitle.reset();
+    this.autosaveDescription.reset();
   }
 
   initWip() {

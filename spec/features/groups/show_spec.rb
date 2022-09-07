@@ -331,6 +331,7 @@ RSpec.describe 'Group show page' do
     end
 
     it 'does not include structured markup in shared projects tab', :aggregate_failures, :js do
+      stub_feature_flags(group_overview_tabs_vue: false)
       other_project = create(:project, :public)
       other_project.project_group_links.create!(group: group)
 
@@ -342,6 +343,7 @@ RSpec.describe 'Group show page' do
     end
 
     it 'does not include structured markup in archived projects tab', :aggregate_failures, :js do
+      stub_feature_flags(group_overview_tabs_vue: false)
       project.update!(archived: true)
 
       visit group_archived_path(group)

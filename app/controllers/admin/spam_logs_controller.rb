@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::SpamLogsController < Admin::ApplicationController
-  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+  feature_category :instance_resiliency
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

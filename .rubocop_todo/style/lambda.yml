@@ -217,7 +217,6 @@ Style/Lambda:
     - 'lib/gitlab/sidekiq_signals.rb'
     - 'lib/gitlab/utils/measuring.rb'
     - 'lib/gitlab/visibility_level.rb'
-    - 'qa/qa/fixtures/auto_devops_rack/config.ru'
     - 'rubocop/cop/rspec/modify_sidekiq_middleware.rb'
     - 'rubocop/cop/rspec/timecop_freeze.rb'
     - 'rubocop/cop/rspec/timecop_travel.rb'

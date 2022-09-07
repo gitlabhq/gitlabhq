@@ -52,7 +52,6 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
           newSubgroupIllustration,
           newProjectIllustration,
           emptySubgroupIllustration,
-          renderEmptyState,
           canCreateSubgroups,
           canCreateProjects,
           currentGroupVisibility,
@@ -65,7 +64,6 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
         newSubgroupIllustration,
         newProjectIllustration,
         emptySubgroupIllustration,
-        renderEmptyState: parseBoolean(renderEmptyState),
         canCreateSubgroups: parseBoolean(canCreateSubgroups),
         canCreateProjects: parseBoolean(canCreateProjects),
         currentGroupVisibility,
@@ -75,6 +73,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
       const { dataset } = dataEl || this.$options.el;
       const hideProjects = parseBoolean(dataset.hideProjects);
       const showSchemaMarkup = parseBoolean(dataset.showSchemaMarkup);
+      const renderEmptyState = parseBoolean(dataset.renderEmptyState);
       const service = new GroupsService(endpoint || dataset.endpoint);
       const store = new GroupsStore({ hideProjects, showSchemaMarkup });
 
@@ -83,6 +82,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
         store,
         service,
         hideProjects,
+        renderEmptyState,
         loading: true,
         containerId,
       };
@@ -119,6 +119,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
           store: this.store,
           service: this.service,
           hideProjects: this.hideProjects,
+          renderEmptyState: this.renderEmptyState,
           containerId: this.containerId,
         },
       });

@@ -11,7 +11,7 @@ export default {
       type: String,
       default: '',
       required: false,
-      validator: (value) => value === '' || Object.keys(EXTENSION_ICONS).indexOf(value) > -1,
+      validator: (value) => value === '' || Object.keys(EXTENSION_ICONS).includes(value),
     },
     widgetName: {
       type: String,

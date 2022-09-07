@@ -44,7 +44,14 @@ export default {
 <template>
   <div class="mr-widget-body media">
     <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
-      <slot name="loading"></slot>
+      <slot name="loading">
+        <div class="gl-display-flex">
+          <status-icon status="loading" />
+          <div class="media-body">
+            <slot></slot>
+          </div>
+        </div>
+      </slot>
     </div>
     <template v-else>
       <slot name="icon">

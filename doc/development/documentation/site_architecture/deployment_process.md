@@ -144,14 +144,14 @@ graph LR
 
 ### Manually deploy to production
 
-GitLab Docs is deployed to production whenever the `Build docs.gitlab.com every 4 hours` scheduled pipeline runs. By
-default, this pipeline runs every four hours.
+GitLab Docs is deployed to production whenever the `Build docs.gitlab.com every hour` scheduled pipeline runs. By
+default, this pipeline runs every hour.
 
 Maintainers can [manually](../../../ci/pipelines/schedules.md#run-manually) run this pipeline to force a deployment to
 production:
 
 1. Go to the [scheduled pipelines](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules) for `gitlab-docs`.
-1. Next to `Build docs.gitlab.com every 4 hours`, select **Play** (**{play}**).
+1. Next to `Build docs.gitlab.com every hour`, select **Play** (**{play}**).
 
 The updated documentation is available in production after the `pages` and `pages:deploy` jobs
 complete in the new pipeline.

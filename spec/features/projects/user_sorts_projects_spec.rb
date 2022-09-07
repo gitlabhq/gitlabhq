@@ -24,6 +24,7 @@ RSpec.describe 'User sorts projects and order persists' do
     end
 
     it "is set on the group_canonical_path" do
+      stub_feature_flags(group_overview_tabs_vue: false)
       visit(group_canonical_path(group))
 
       within '[data-testid=group_sort_by_dropdown]' do
@@ -32,6 +33,7 @@ RSpec.describe 'User sorts projects and order persists' do
     end
 
     it "is set on the details_group_path" do
+      stub_feature_flags(group_overview_tabs_vue: false)
       visit(details_group_path(group))
 
       within '[data-testid=group_sort_by_dropdown]' do
@@ -64,6 +66,7 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context 'from group homepage', :js do
     before do
+      stub_feature_flags(group_overview_tabs_vue: false)
       sign_in(user)
       visit(group_canonical_path(group))
       within '[data-testid=group_sort_by_dropdown]' do
@@ -77,6 +80,7 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context 'from group details', :js do
     before do
+      stub_feature_flags(group_overview_tabs_vue: false)
       sign_in(user)
       visit(details_group_path(group))
       within '[data-testid=group_sort_by_dropdown]' do

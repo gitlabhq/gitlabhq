@@ -172,6 +172,15 @@ module GroupsHelper
     }
   end
 
+  def group_overview_tabs_app_data(group)
+    {
+      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      shared_projects_endpoint: group_shared_projects_path(group, format: :json),
+      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      current_group_visibility: group.visibility
+    }.merge(subgroups_and_projects_list_app_data(group))
+  end
+
   def enabled_git_access_protocol_options_for_group
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""

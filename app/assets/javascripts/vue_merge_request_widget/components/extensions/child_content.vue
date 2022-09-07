@@ -62,7 +62,9 @@ export default {
       <strong v-else v-safe-html="generateText(data.header)"></strong>
     </div>
     <div class="gl-display-flex">
-      <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" class="gl-pl-0" />
+      <div v-if="data.icon" class="report-block-child-icon gl-display-flex">
+        <status-icon :icon-name="data.icon.name" :size="12" class="gl-m-auto" />
+      </div>
       <div class="gl-w-full">
         <div class="gl-display-flex gl-flex-nowrap">
           <div class="gl-flex-wrap gl-display-flex gl-w-full">
