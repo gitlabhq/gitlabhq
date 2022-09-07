@@ -163,3 +163,40 @@ For Ruby 3 compliance, this should be changed to one of the following invocation
 
 - `f(**{k: v})`
 - `f(k: v)`
+
+## RSpec `with` argument matcher fails for shorthand Hash syntax
+
+Because keyword arguments ("kwargs") are a first-class concept in Ruby 3, keyword arguments are not
+converted into internal `Hash` instances anymore. This leads to RSpec method argument matchers failing
+when the receiver takes a positional options hash instead of kwargs:
+
+```ruby
+def m(options={}); end
+```
+
+```ruby
+expect(subject).to receive(:m).with(a: 42)
+```
+
+In Ruby 3 this expectations fails with the following error:
+
+```plaintext
+  Failure/Error:
+
+     #<subject> received :m with unexpected arguments
+       expected: ({:a=>42})
+            got: ({:a=>42})
+```
+
+This happens because RSpec uses a kwargs argument matcher here, but the method takes a hash.
+It works in Ruby 2, because `a: 42` is converted to a hash first and RSpec will use a hash argument matcher.
+
+A workaround is to not use the shorthand syntax and pass an actual `Hash` instead whenever we know a method
+to take an options hash:
+
+```ruby
+# Note the braces around the key-value pair.
+expect(subject).to receive(:m).with({ a: 42 })
+```
+
+For more information, see [the official issue report for RSpec](https://github.com/rspec/rspec-mocks/issues/1460).

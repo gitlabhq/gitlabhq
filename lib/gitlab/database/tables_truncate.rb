@@ -61,12 +61,10 @@ module Gitlab
       def truncate_tables_in_batches(connection, tables_sorted, min_batch_size)
         truncated_tables = []
 
-        unless dry_run
-          tables_sorted.flatten.compact.each do |table|
-            sql_statement = "SELECT set_config('lock_writes.#{table}', 'false', false)"
-            logger&.info sql_statement
-            connection.execute(sql_statement)
-          end
+        tables_sorted.flatten.each do |table|
+          sql_statement = "SELECT set_config('lock_writes.#{table}', 'false', false)"
+          logger&.info(sql_statement)
+          connection.execute(sql_statement) unless dry_run
         end
 
         # We do the truncation in stages to avoid high IO
@@ -74,14 +72,23 @@ module Gitlab
         # tables before. That's because PostgreSQL doesn't allow to truncate any table (A)
         # without truncating any other table (B) that has a Foreign Key pointing to the table (A).
         # even if table (B) is empty, because it has been already truncated in a previous stage.
-        tables_sorted.in_groups_of(min_batch_size).each do |tables_groups|
-          new_tables_to_truncate = tables_groups.flatten.compact
+        tables_sorted.in_groups_of(min_batch_size, false).each do |tables_groups|
+          new_tables_to_truncate = tables_groups.flatten
           logger&.info "= New tables to truncate: #{new_tables_to_truncate.join(', ')}"
           truncated_tables.push(*new_tables_to_truncate).tap(&:sort!)
-          sql_statement = "TRUNCATE TABLE #{truncated_tables.join(', ')} RESTRICT"
+          sql_statements = [
+            "SET LOCAL statement_timeout = 0",
+            "SET LOCAL lock_timeout = 0",
+            "TRUNCATE TABLE #{truncated_tables.join(', ')} RESTRICT"
+          ]
 
-          logger&.info sql_statement
-          connection.execute(sql_statement) unless dry_run
+          sql_statements.each { |sql_statement| logger&.info(sql_statement) }
+
+          next if dry_run
+
+          connection.transaction do
+            sql_statements.each { |sql_statement| connection.execute(sql_statement) }
+          end
         end
       end
     end

@@ -368,6 +368,15 @@ GitLab supports, authentication fails with a message like this in the log:
 OmniauthKerberosSpnegoController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested Unknown error
 ```
 
+There are a number of potential causes and solutions for this error message.
+
+#### Kerberos integration not using a dedicated port
+
+GitLab CI/CD doesn’t work with a Kerberos-enabled GitLab instance unless the Kerberos integration 
+is configured to [use a dedicated port](kerberos.md#http-git-access-with-kerberos-token-passwordless-authentication). 
+
+#### Lack of connectivity between client machine and Kerberos server
+
 This is usually seen when the browser is unable to contact the Kerberos server
 directly. It falls back to an unsupported mechanism known as
 [`IAKERB`](https://k5wiki.kerberos.org/wiki/Projects/IAKERB), which tries to use
@@ -376,6 +385,8 @@ the GitLab server as an intermediary to the Kerberos server.
 If you're experiencing this error, ensure there is connectivity between the
 client machine and the Kerberos server - this is a prerequisite! Traffic may be
 blocked by a firewall, or the DNS records may be incorrect.
+
+#### Mismatched forward and reverse DNS records for GitLab instance hostname
 
 Another failure mode occurs when the forward and reverse DNS records for the
 GitLab server do not match. Often, Windows clients work in this case while
@@ -388,6 +399,8 @@ To fix this, ensure that the forward and reverse DNS for your GitLab server
 match. So for instance, if you access GitLab as `gitlab.example.com`, resolving
 to IP address `1.2.3.4`, then `4.3.2.1.in-addr.arpa` must be a `PTR` record for
 `gitlab.example.com`.
+
+#### Missing Kerberos libraries on browser or client machine
 
 Finally, it's possible that the browser or client machine lack Kerberos support
 completely. Ensure that the Kerberos libraries are installed and that you can

@@ -53,8 +53,8 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         );
       SQL
 
-      ApplicationRecord.connection.execute(main_tables_sql)
-      Ci::ApplicationRecord.connection.execute(main_tables_sql)
+      main_connection.execute(main_tables_sql)
+      ci_connection.execute(main_tables_sql)
 
       ci_tables_sql = <<~SQL
         CREATE TABLE _test_gitlab_ci_items (id serial NOT NULL PRIMARY KEY);
@@ -66,15 +66,15 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         );
       SQL
 
-      ApplicationRecord.connection.execute(ci_tables_sql)
-      Ci::ApplicationRecord.connection.execute(ci_tables_sql)
+      main_connection.execute(ci_tables_sql)
+      ci_connection.execute(ci_tables_sql)
 
       internal_tables_sql = <<~SQL
         CREATE TABLE _test_gitlab_shared_items (id serial NOT NULL PRIMARY KEY);
       SQL
 
-      ApplicationRecord.connection.execute(internal_tables_sql)
-      Ci::ApplicationRecord.connection.execute(internal_tables_sql)
+      main_connection.execute(internal_tables_sql)
+      ci_connection.execute(internal_tables_sql)
 
       # Filling the tables
       5.times do |i|
@@ -138,6 +138,8 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
       end
 
       it 'logs the sql statements to the logger' do
+        expect(logger).to receive(:info).with("SET LOCAL lock_timeout = 0")
+        expect(logger).to receive(:info).with("SET LOCAL statement_timeout = 0")
         expect(logger).to receive(:info)
                       .with(/TRUNCATE TABLE #{legacy_tables_models.map(&:table_name).sort.join(', ')} RESTRICT/)
         truncate_legacy_tables

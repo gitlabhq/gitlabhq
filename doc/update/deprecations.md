@@ -51,7 +51,7 @@ sole discretion of GitLab Inc.
 
 ### Non-expiring access tokens
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2022-05-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Get started with GitLab application security **(ULTIMATE)**
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Adopting GitLab application security](https://www.youtube.com/watch?v=5QlxkiKR04k).
+
 The following steps will help you get the most from GitLab application security tools. These steps are a recommended order of operations. You can choose to implement capabilities in a different order or omit features that do not apply to your specific needs.
 
 1. Enable [Secret Detection](secret_detection/index.md) and [Dependency Scanning](dependency_scanning/index.md)

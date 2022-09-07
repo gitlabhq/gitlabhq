@@ -21331,6 +21331,12 @@ A `CiBuildID` is a global ID. It is encoded as a string.
 
 An example `CiBuildID` is: `"gid://gitlab/Ci::Build/1"`.
 
+### `CiJobArtifactID`
+
+A `CiJobArtifactID` is a global ID. It is encoded as a string.
+
+An example `CiJobArtifactID` is: `"gid://gitlab/Ci::JobArtifact/1"`.
+
 ### `CiPipelineID`
 
 A `CiPipelineID` is a global ID. It is encoded as a string.
