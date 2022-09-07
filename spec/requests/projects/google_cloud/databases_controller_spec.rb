@@ -105,10 +105,9 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow do
         expect(response).to redirect_to(project_google_cloud_databases_path(project))
 
         expect_snowplow_event(
-          category: 'Projects::GoogleCloud',
-          action: 'databases#cloudsql_create',
-          label: 'error_enable_cloudsql_service',
-          extra: { status: :error, message: 'error' },
+          category: 'Projects::GoogleCloud::DatabasesController',
+          action: 'error_enable_cloudsql_services',
+          label: nil,
           project: project,
           user: user
         )
@@ -133,10 +132,9 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow do
           expect(response).to redirect_to(project_google_cloud_databases_path(project))
 
           expect_snowplow_event(
-            category: 'Projects::GoogleCloud',
-            action: 'databases#cloudsql_create',
-            label: 'error_create_cloudsql_instance',
-            extra: { status: :error, message: 'error' },
+            category: 'Projects::GoogleCloud::DatabasesController',
+            action: 'error_create_cloudsql_instance',
+            label: nil,
             project: project,
             user: user
           )
@@ -156,10 +154,9 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow do
             expect(response).to redirect_to(project_google_cloud_databases_path(project))
 
             expect_snowplow_event(
-              category: 'Projects::GoogleCloud',
-              action: 'databases#cloudsql_create',
-              label: 'success',
-              extra: nil,
+              category: 'Projects::GoogleCloud::DatabasesController',
+              action: 'create_cloudsql_instance',
+              label: "{}",
               project: project,
               user: user
             )

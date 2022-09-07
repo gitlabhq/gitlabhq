@@ -8,8 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609) in GitLab 12.4.
 
-In order to communicate synchronously for incidents management,
-GitLab allows to associate a Zoom meeting with an issue.
+To communicate synchronously for incidents management,
+you can associate a Zoom meeting with an issue.
 After you start a Zoom call for a fire-fight, you need a way to
 associate the conference call with an issue. This is so that your
 team members can join swiftly without requesting a link.
@@ -35,6 +35,9 @@ appears right under the issue's title.
 You are only allowed to attach a single Zoom meeting to an issue. If you attempt
 to add a second Zoom meeting using the `/zoom` quick action, it doesn't work. You
 need to [remove it](#removing-an-existing-zoom-meeting-from-an-issue) first.
+
+Users on GitLab Premium and higher can also
+[add multiple Zoom links to incidents](../../../operations/incident_management/linked_resources.md#link-zoom-meetings-from-an-incident).
 
 ## Removing an existing Zoom meeting from an issue
 

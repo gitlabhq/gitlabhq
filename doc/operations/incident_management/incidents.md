@@ -320,7 +320,7 @@ team members can join the Zoom call without requesting a link.
 
 ## Linked resources
 
-In an incident, you can [links to various resources](linked_resources.md),
+In an incident, you can add [links to various resources](linked_resources.md),
 for example:
 
 - The incident Slack channel

@@ -85,7 +85,7 @@ module Spam
         [result, attribs]
 
       rescue StandardError => e
-        Gitlab::ErrorTracking.log_exception(e)
+        Gitlab::ErrorTracking.log_exception(e, error: ERROR_TYPE)
 
         # Default to ALLOW if any errors occur
         [ALLOW, attribs, true]

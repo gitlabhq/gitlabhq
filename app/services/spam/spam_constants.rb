@@ -2,6 +2,7 @@
 
 module Spam
   module SpamConstants
+    ERROR_TYPE = 'spamcheck'
     BLOCK_USER = 'block'
     DISALLOW = 'disallow'
     CONDITIONAL_ALLOW = 'conditional_allow'

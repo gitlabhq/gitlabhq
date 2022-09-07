@@ -16,7 +16,7 @@ module Projects
           revokeOauthUrl: revoke_oauth_url
         }
         @js_data = js_data.to_json
-        track_event('configuration#index', 'success', js_data)
+        track_event(:render_page)
       end
 
       private

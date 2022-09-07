@@ -26,10 +26,9 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController do
 
         get url
         expect_snowplow_event(
-          category: 'Projects::GoogleCloud',
-          action: 'admin_project_google_cloud!',
-          label: 'error_access_denied',
-          property: 'invalid_user',
+          category: 'Projects::GoogleCloud::ConfigurationController',
+          action: 'error_invalid_user',
+          label: nil,
           project: project,
           user: unauthorized_member
         )
@@ -65,11 +64,9 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController do
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect_snowplow_event(
-            category: 'Projects::GoogleCloud',
-            action: 'google_oauth2_enabled!',
-            label: 'error_access_denied',
-            extra: { reason: 'google_oauth2_not_configured',
-                     config: unconfigured_google_oauth2 },
+            category: 'Projects::GoogleCloud::ConfigurationController',
+            action: 'error_google_oauth2_not_enabled',
+            label: nil,
             project: project,
             user: authorized_member
           )
@@ -90,10 +87,9 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController do
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect_snowplow_event(
-            category: 'Projects::GoogleCloud',
-            action: 'feature_flag_enabled!',
-            label: 'error_access_denied',
-            property: 'feature_flag_not_enabled',
+            category: 'Projects::GoogleCloud::ConfigurationController',
+            action: 'error_feature_flag_not_enabled',
+            label: nil,
             project: project,
             user: authorized_member
           )
@@ -114,20 +110,9 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController do
 
           expect(response).to be_successful
           expect_snowplow_event(
-            category: 'Projects::GoogleCloud',
-            action: 'configuration#index',
-            label: 'success',
-            extra: {
-              configurationUrl: project_google_cloud_configuration_path(project),
-              deploymentsUrl: project_google_cloud_deployments_path(project),
-              databasesUrl: project_google_cloud_databases_path(project),
-              serviceAccounts: [],
-              createServiceAccountUrl: project_google_cloud_service_accounts_path(project),
-              emptyIllustrationUrl: ActionController::Base.helpers.image_path('illustrations/pipelines_empty.svg'),
-              configureGcpRegionsUrl: project_google_cloud_gcp_regions_path(project),
-              gcpRegions: [],
-              revokeOauthUrl: nil
-            },
+            category: 'Projects::GoogleCloud::ConfigurationController',
+            action: 'render_page',
+            label: nil,
             project: project,
             user: authorized_member
           )

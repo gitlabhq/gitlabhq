@@ -50,11 +50,27 @@ To add a linked resource:
 1. Complete the required fields.
 1. Select **Add**.
 
+### Link Zoom meetings from an incident **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
+
+Use the `/zoom` [quick action](../../user/project/quick_actions.md) to add multiple Zoom links to an incident:
+
+```plaintext
+/zoom https://example.zoom.us/j/123456789
+```
+
+You can also submit a short optional description with the link. The description shows instead of the URL in the **Linked resources** section of the incident issue:
+
+```plaintext
+/zoom https://example.zoom.us/j/123456789, Low on memory incident
+```
+
 ## Remove a linked resource
 
 You can also remove a linked resource.
 
-Prerequisities:
+Prerequisites:
 
 - You must have at least the Reporter role for the project.
 

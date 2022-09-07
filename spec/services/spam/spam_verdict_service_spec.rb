@@ -371,6 +371,9 @@ RSpec.describe Spam::SpamVerdictService do
           end
 
           it 'returns nil' do
+            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+              an_instance_of(GRPC::Aborted), error: ::Spam::SpamConstants::ERROR_TYPE
+            )
             expect(subject).to eq([ALLOW, attribs, true])
           end
         end
@@ -383,17 +386,20 @@ RSpec.describe Spam::SpamVerdictService do
             expect(subject).to eq [DISALLOW, attribs]
           end
         end
-      end
 
-      context 'if the endpoint times out' do
-        let(:attribs) { nil }
+        context 'if the endpoint times out' do
+          let(:attribs) { nil }
 
-        before do
-          allow(spam_client).to receive(:spam?).and_raise(GRPC::DeadlineExceeded)
-        end
+          before do
+            allow(spam_client).to receive(:spam?).and_raise(GRPC::DeadlineExceeded)
+          end
 
-        it 'returns nil' do
-          expect(subject).to eq([ALLOW, attribs, true])
+          it 'returns nil' do
+            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+              an_instance_of(GRPC::DeadlineExceeded), error: ::Spam::SpamConstants::ERROR_TYPE
+            )
+            expect(subject).to eq([ALLOW, attribs, true])
+          end
         end
       end
     end

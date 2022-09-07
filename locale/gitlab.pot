@@ -9575,6 +9575,9 @@ msgstr ""
 msgid "Compare Revisions"
 msgstr ""
 
+msgid "Compare branches and continue"
+msgstr ""
+
 msgid "Compare changes"
 msgstr ""
 

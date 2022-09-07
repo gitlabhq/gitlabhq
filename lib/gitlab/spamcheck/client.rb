@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def spam?(spammable:, user:, context: {}, extra_features: {})
-        metadata = { 'authorization' => Gitlab::CurrentSettings.spam_check_api_key }
+        metadata = { 'authorization' => Gitlab::CurrentSettings.spam_check_api_key || '' }
         protobuf_args = { spammable: spammable, user: user, context: context, extra_features: extra_features }
 
         pb, grpc_method = build_protobuf(**protobuf_args)

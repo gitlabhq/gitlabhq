@@ -19,7 +19,7 @@ module Projects
         }
         @js_data = js_data.to_json
 
-        track_event('databases#index', 'success', nil)
+        track_event(:render_page)
       end
 
       def new
@@ -37,6 +37,7 @@ module Projects
           tiers: Projects::GoogleCloud::CloudsqlHelper::TIERS
         }.to_json
 
+        track_event(:render_form)
         render template: 'projects/google_cloud/databases/cloudsql_form', formats: :html
       end
 
@@ -46,7 +47,7 @@ module Projects
                             .execute
 
         if enable_response[:status] == :error
-          track_event('databases#cloudsql_create', 'error_enable_cloudsql_service', enable_response)
+          track_event(:error_enable_cloudsql_services)
           flash[:error] = error_message(enable_response[:message])
         else
           permitted_params = params.permit(:gcp_project, :ref, :database_version, :tier)
@@ -55,10 +56,10 @@ module Projects
                               .execute
 
           if create_response[:status] == :error
-            track_event('databases#cloudsql_create', 'error_create_cloudsql_instance', create_response)
+            track_event(:error_create_cloudsql_instance)
             flash[:warning] = error_message(create_response[:message])
           else
-            track_event('databases#cloudsql_create', 'success', nil)
+            track_event(:create_cloudsql_instance, permitted_params.to_s)
             flash[:notice] = success_message
           end
         end

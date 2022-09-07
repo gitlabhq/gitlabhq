@@ -8,7 +8,7 @@
     .col-lg-6
       .card-new-merge-request
         %h2.gl-font-size-h2
-          Source branch
+          = _('Source branch')
         .clearfix
           .merge-request-select.dropdown
             = f.hidden_field :source_project_id
@@ -38,7 +38,7 @@
     .col-lg-6
       .card-new-merge-request
         %h2.gl-font-size-h2
-          Target branch
+          = _('Target branch')
         .clearfix
           - projects = target_projects(@project)
           .merge-request-select.dropdown
@@ -68,4 +68,4 @@
 
   - if @merge_request.errors.any?
     = form_errors(@merge_request)
-  = f.submit 'Compare branches and continue', class: "gl-button btn btn-confirm mr-compare-btn gl-mt-4", data: { qa_selector: "compare_branches_button" }
+  = f.submit _('Compare branches and continue'), class: "gl-button btn btn-confirm mr-compare-btn gl-mt-4", data: { qa_selector: "compare_branches_button" }

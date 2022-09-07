@@ -207,19 +207,22 @@ module Gitlab
 
         desc { _('Add Zoom meeting') }
         explanation { _('Adds a Zoom meeting.') }
-        params '<Zoom URL>'
+        params do
+          zoom_link_params
+        end
         types Issue
         condition do
           @zoom_service = zoom_link_service
+
           @zoom_service.can_add_link?
         end
-        parse_params do |link|
-          @zoom_service.parse_link(link)
+        parse_params do |link_params|
+          @zoom_service.parse_link(link_params)
         end
-        command :zoom do |link|
-          result = @zoom_service.add_link(link)
+        command :zoom do |link, link_text = nil|
+          result = add_zoom_link(link, link_text)
           @execution_message[:zoom] = result.message
-          @updates.merge!(result.payload) if result.payload
+          merge_updates(result, @updates)
         end
 
         desc { _('Remove Zoom meeting') }
@@ -314,12 +317,24 @@ module Gitlab
         command :remove_contacts do |contact_emails|
           @updates[:remove_contacts] = contact_emails.split(' ')
         end
+      end
 
-        private
+      private
 
-        def zoom_link_service
-          ::Issues::ZoomLinkService.new(project: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })
-        end
+      def zoom_link_service
+        ::Issues::ZoomLinkService.new(project: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })
+      end
+
+      def zoom_link_params
+        '<Zoom URL>'
+      end
+
+      def add_zoom_link(link, _link_text)
+        zoom_link_service.add_link(link)
+      end
+
+      def merge_updates(result, update_hash)
+        update_hash.merge!(result.payload) if result.payload
       end
     end
   end

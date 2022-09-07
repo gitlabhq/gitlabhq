@@ -49,6 +49,6 @@ describe('ItemTitle', () => {
     findInputEl().element.innerText = mockUpdatedTitle;
     await findInputEl().trigger(sourceEvent);
 
-    expect(wrapper.emitted(eventName)).toBeTruthy();
+    expect(wrapper.emitted(eventName)).toBeDefined();
   });
 });

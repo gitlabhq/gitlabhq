@@ -30,10 +30,9 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect_snowplow_event(
-          category: 'Projects::GoogleCloud',
-          action: 'admin_project_google_cloud!',
-          label: 'error_access_denied',
-          property: 'invalid_user',
+          category: 'Projects::GoogleCloud::ServiceAccountsController',
+          action: 'error_invalid_user',
+          label: nil,
           project: project,
           user: nil
         )
@@ -53,10 +52,9 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
           get url
           expect_snowplow_event(
-            category: 'Projects::GoogleCloud',
-            action: 'admin_project_google_cloud!',
-            label: 'error_access_denied',
-            property: 'invalid_user',
+            category: 'Projects::GoogleCloud::ServiceAccountsController',
+            action: 'error_invalid_user',
+            label: nil,
             project: project,
             user: unauthorized_member
           )
@@ -71,10 +69,9 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
           post url
           expect_snowplow_event(
-            category: 'Projects::GoogleCloud',
-            action: 'admin_project_google_cloud!',
-            label: 'error_access_denied',
-            property: 'invalid_user',
+            category: 'Projects::GoogleCloud::ServiceAccountsController',
+            action: 'error_invalid_user',
+            label: nil,
             project: project,
             user: unauthorized_member
           )
@@ -135,10 +132,9 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
               expect(response).to redirect_to(project_google_cloud_configuration_path(project))
               expect(flash[:warning]).to eq('No Google Cloud projects - You need at least one Google Cloud project')
               expect_snowplow_event(
-                category: 'Projects::GoogleCloud',
-                action: 'service_accounts#index',
-                label: 'error_form',
-                property: 'no_gcp_projects',
+                category: 'Projects::GoogleCloud::ServiceAccountsController',
+                action: 'error_no_gcp_projects',
+                label: nil,
                 project: project,
                 user: authorized_member
               )
@@ -207,11 +203,10 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
             expect(response).to redirect_to(project_google_cloud_configuration_path(project))
             expect(flash[:warning]).to eq('Google Cloud Error - client-error')
             expect_snowplow_event(
-              category: 'Projects::GoogleCloud',
-              action: 'service_accounts#index',
-              label: 'error_gcp',
-              extra: google_client_error,
+              category: 'Projects::GoogleCloud::ServiceAccountsController',
+              action: 'error_google_api',
               project: project,
+              label: nil,
               user: authorized_member
             )
           end
@@ -226,10 +221,9 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
             expect(response).to redirect_to(project_google_cloud_configuration_path(project))
             expect(flash[:warning]).to eq('Google Cloud Error - client-error')
             expect_snowplow_event(
-              category: 'Projects::GoogleCloud',
-              action: 'service_accounts#create',
-              label: 'error_gcp',
-              extra: google_client_error,
+              category: 'Projects::GoogleCloud::ServiceAccountsController',
+              action: 'error_google_api',
+              label: nil,
               project: project,
               user: authorized_member
             )
