@@ -111,8 +111,8 @@ describe('diffs/components/commit_item', () => {
       const descElement = getDescElement();
       const descExpandElement = getDescExpandElement();
 
-      expect(descElement.exists()).toBeFalsy();
-      expect(descExpandElement.exists()).toBeFalsy();
+      expect(descElement.exists()).toBe(false);
+      expect(descExpandElement.exists()).toBe(false);
     });
   });
 

@@ -80,7 +80,7 @@ If you remove everything below this comment, the pipeline will succeed.
 
 ### The main `helmfile.yml` file
 
-The template contains a [Helmfile](https://github.com/roboll/helmfile) you can use to manage
+The template contains a [Helmfile](https://github.com/helmfile/helmfile) you can use to manage
 cluster applications with [Helm v3](https://helm.sh/).
 
 This file has a list of paths to other Helm files for each app. They're all commented out by default, so you must uncomment

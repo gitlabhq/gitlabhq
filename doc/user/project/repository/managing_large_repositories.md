@@ -16,7 +16,7 @@ In the following sections, we detail several best practices for improving perfor
 
 It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, or graphics) are stored as Large File Storage (LFS) objects. In such setup, the Objects are stored elsewhere, such as in Object Storage, and this can reduce the repository size significantly, thus improving performance.
 
-To analyze if the repository has these sorts of objects, it's recommended to run [`git-sizer`](https://github.com/github/git-sizer) to get a detailed analysis. This tool shows in detail what makes up the repository as well as highlights any areas of concern. If any large objects are found, it's then recommended removing them with tools such as the [BFG Repo Cleaner](https://rtyley.github.io/bfg-repo-cleaner/).
+To analyze if the repository has these sorts of objects, it's recommended to run a tool like [`git-sizer`](https://github.com/github/git-sizer) to get a detailed analysis. These tools can show in detail what makes up the repository as well as highlights any areas of concern. If any large objects are found, it's then recommended removing them with tools such as [`git filter-repo`](reducing_the_repo_size_using_git.md).
 
 Refer to the [Git LFS documentation for more information](../../../topics/git/lfs/index.md).
 

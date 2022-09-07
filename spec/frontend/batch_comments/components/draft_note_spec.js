@@ -115,7 +115,7 @@ describe('Batch comments draft note component', () => {
       await nextTick();
       const publishNowButton = findSubmitReviewButton();
 
-      expect(publishNowButton.attributes().disabled).toBeTruthy();
+      expect(publishNowButton.attributes().disabled).toBe('true');
     });
   });
 

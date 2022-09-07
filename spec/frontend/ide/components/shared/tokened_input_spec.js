@@ -50,7 +50,7 @@ describe('IDE shared/TokenedInput', () => {
   });
 
   it('renders input', () => {
-    expect(vm.$refs.input).toBeTruthy();
+    expect(vm.$refs.input).toBeInstanceOf(HTMLInputElement);
     expect(vm.$refs.input).toHaveValue(TEST_VALUE);
   });
 

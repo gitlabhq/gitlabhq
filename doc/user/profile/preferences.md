@@ -119,7 +119,7 @@ While `1280px` is the standard max width when using fixed layout, some pages sti
 ### Default dashboard
 
 For users who have access to a large number of projects but only keep up with a
-select few, the amount of activity on the default Dashboard page can be
+select few, the amount of activity on the default dashboard page can be
 overwhelming. Changing this setting allows you to redefine your default
 dashboard.
 
