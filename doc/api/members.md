@@ -76,8 +76,7 @@ Example response:
     },
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
-    "group_saml_identity": null,
-    "membership_state": "active"
+    "group_saml_identity": null
   },
   {
     "id": 2,
@@ -102,8 +101,7 @@ Example response:
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
       "saml_provider_id": 10
-    },
-    "membership_state": "active"
+    }
   }
 ]
 ```
@@ -163,8 +161,7 @@ Example response:
     },
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
-    "group_saml_identity": null,
-    "membership_state": "active"
+    "group_saml_identity": null
   },
   {
     "id": 2,
@@ -189,8 +186,7 @@ Example response:
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
       "saml_provider_id": 10
-    },
-    "membership_state": "active"
+    }
   },
   {
     "id": 3,
@@ -210,8 +206,7 @@ Example response:
     },
     "expires_at": "2012-11-22T14:13:35Z",
     "access_level": 30,
-    "group_saml_identity": null,
-    "membership_state": "active"
+    "group_saml_identity": null
   }
 ]
 ```
@@ -257,8 +252,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root"
   },
   "expires_at": null,
-  "group_saml_identity": null,
-  "membership_state": "active"
+  "group_saml_identity": null
 }
 ```
 
@@ -305,8 +299,7 @@ Example response:
   },
   "email": "john@example.com",
   "expires_at": null,
-  "group_saml_identity": null,
-  "membership_state": "active"
+  "group_saml_identity": null
 }
 ```
 
@@ -370,7 +363,6 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-27",
     "membership_type": "group_member",
-    "membership_state": "active",
     "removable": true,
     "created_at": "2021-01-03T12:16:02.000Z"
   },
@@ -384,7 +376,6 @@ Example response:
     "email": "john@example.com",
     "last_activity_on": "2021-01-25",
     "membership_type": "group_member",
-    "membership_state": "active",
     "removable": true,
     "created_at": "2021-01-04T18:46:42.000Z"
   },
@@ -397,7 +388,6 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-20",
     "membership_type": "group_invite",
-    "membership_state": "awaiting",
     "removable": false,
     "created_at": "2021-01-09T07:12:31.000Z"
   }

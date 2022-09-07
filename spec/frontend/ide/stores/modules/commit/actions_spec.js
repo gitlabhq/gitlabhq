@@ -210,7 +210,7 @@ describe('IDE commit module actions', () => {
         branch,
       });
       store.state.openFiles.forEach((entry) => {
-        expect(entry.changed).toBeFalsy();
+        expect(entry.changed).toBe(false);
       });
     });
 

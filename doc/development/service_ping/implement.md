@@ -272,7 +272,7 @@ Events are handled by counter classes in the `Gitlab::UsageDataCounters` namespa
 
 1. Listed in [`Gitlab::UsageDataCounters::COUNTERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters.rb#L5) to be then included in `Gitlab::UsageData`.
 
-1. Specified in the metric definition using the `RedisMetric` instrumentation class as a `counter_class` option to be picked up using the [metric instrumentation](metrics_instrumentation.md) framework. Refer to the [Redis metrics](metrics_instrumentation.md#redis-metrics) documentation for an example implementation.
+1. Specified in the metric definition using the `RedisMetric` instrumentation class by their `prefix` option to be picked up using the [metric instrumentation](metrics_instrumentation.md) framework. Refer to the [Redis metrics](metrics_instrumentation.md#redis-metrics) documentation for an example implementation.
 
 Inheriting classes are expected to override `KNOWN_EVENTS` and `PREFIX` constants to build event names and associated metrics. For example, for prefix `issues` and events array `%w[create, update, delete]`, three metrics will be added to the Service Ping payload: `counts.issues_create`, `counts.issues_update` and `counts.issues_delete`.
 

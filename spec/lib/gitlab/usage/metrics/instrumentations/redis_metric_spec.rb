@@ -11,18 +11,18 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
 
   let(:expected_value) { 4 }
 
-  it_behaves_like 'a correct instrumented metric value', { options: { event: 'pushes', counter_class: 'SourceCodeCounter' } }
+  it_behaves_like 'a correct instrumented metric value', { options: { event: 'pushes', prefix: 'source_code' } }
 
   it 'raises an exception if event option is not present' do
-    expect { described_class.new(counter_class: 'SourceCodeCounter') }.to raise_error(ArgumentError)
+    expect { described_class.new(prefix: 'source_code') }.to raise_error(ArgumentError)
   end
 
-  it 'raises an exception if counter_class option is not present' do
+  it 'raises an exception if prefix option is not present' do
     expect { described_class.new(event: 'pushes') }.to raise_error(ArgumentError)
   end
 
   describe 'children classes' do
-    let(:options) { { event: 'pushes', counter_class: 'SourceCodeCounter' } }
+    let(:options) { { event: 'pushes', prefix: 'source_code' } }
 
     context 'availability not defined' do
       subject { Class.new(described_class).new(time_frame: nil, options: options) }

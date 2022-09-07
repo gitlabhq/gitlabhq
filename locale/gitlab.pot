@@ -17962,6 +17962,9 @@ msgstr ""
 msgid "Global Shortcuts"
 msgstr ""
 
+msgid "Global notification level"
+msgstr ""
+
 msgid "Global notification settings"
 msgstr ""
 
@@ -18047,6 +18050,12 @@ msgid "GlobalSearch|in %{scope}"
 msgstr ""
 
 msgid "GlobalSearch|project"
+msgstr ""
+
+msgid "GlobalShortcuts|Copied source branch name to clipboard."
+msgstr ""
+
+msgid "GlobalShortcuts|Unable to copy the source branch name at this time."
 msgstr ""
 
 msgid "Globally-allowed IP ranges"
@@ -26696,6 +26705,9 @@ msgid "Note|The created date provided is too far in the past."
 msgstr ""
 
 msgid "Nothing to preview."
+msgstr ""
+
+msgid "Notification Email"
 msgstr ""
 
 msgid "Notification events"

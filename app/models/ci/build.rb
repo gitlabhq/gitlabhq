@@ -217,7 +217,8 @@ module Ci
            allow_failure stage stage_idx trigger_request
            yaml_variables when environment coverage_regex
            description tag_list protected needs_attributes
-           job_variables_attributes resource_group scheduling_type ci_stage].freeze
+           job_variables_attributes resource_group scheduling_type
+           ci_stage partition_id].freeze
       end
     end
 

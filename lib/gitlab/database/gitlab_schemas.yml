@@ -91,6 +91,7 @@ ci_job_artifact_states: :gitlab_ci
 ci_minutes_additional_packs: :gitlab_ci
 ci_namespace_monthly_usages: :gitlab_ci
 ci_namespace_mirrors: :gitlab_ci
+ci_partitions: :gitlab_ci
 ci_pending_builds: :gitlab_ci
 ci_pipeline_artifacts: :gitlab_ci
 ci_pipeline_chat_data: :gitlab_ci

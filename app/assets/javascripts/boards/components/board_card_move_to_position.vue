@@ -48,20 +48,11 @@ export default {
     listHasNextPage() {
       return this.pageInfoByListId[this.list.id]?.hasNextPage;
     },
-    firstItemInListId() {
-      return this.listItems[0]?.id;
-    },
     lengthOfListItemsInBoard() {
       return this.listItems?.length;
     },
-    lastItemInTheListId() {
-      return this.listItems[this.lengthOfListItemsInBoard - 1]?.id;
-    },
     itemIdentifier() {
       return `${this.item.id}-${this.item.iid}-${this.index}`;
-    },
-    showMoveToEndOfList() {
-      return !this.listHasNextPage;
     },
     isFirstItemInList() {
       return this.index === 0;
@@ -80,9 +71,8 @@ export default {
       if (this.isFirstItemInList) {
         return;
       }
-      const moveAfterId = this.firstItemInListId;
       this.moveToPosition({
-        moveAfterId,
+        positionInList: 0,
       });
     },
     moveToEnd() {
@@ -93,20 +83,20 @@ export default {
       if (this.isLastItemInList) {
         return;
       }
-      const moveBeforeId = this.lastItemInTheListId;
       this.moveToPosition({
-        moveBeforeId,
+        positionInList: -1,
       });
     },
-    moveToPosition({ moveAfterId, moveBeforeId }) {
+    moveToPosition({ positionInList }) {
       this.moveItem({
         itemId: this.item.id,
         itemIid: this.item.iid,
         itemPath: this.item.referencePath,
         fromListId: this.list.id,
         toListId: this.list.id,
-        moveAfterId,
-        moveBeforeId,
+        positionInList,
+        atIndex: this.index,
+        allItemsLoadedInList: !this.listHasNextPage,
       });
     },
   },
@@ -117,7 +107,6 @@ export default {
   <gl-dropdown
     ref="dropdown"
     :key="itemIdentifier"
-    data-testid="move-card-dropdown"
     icon="ellipsis_v"
     :text="s__('Boards|Move card')"
     :text-sr-only="true"
@@ -128,14 +117,10 @@ export default {
     @keydown.esc.native="$emit('hide')"
   >
     <div>
-      <gl-dropdown-item data-testid="action-move-to-first" @click.stop="moveToStart">
+      <gl-dropdown-item @click.stop="moveToStart">
         {{ $options.i18n.moveToStartText }}
       </gl-dropdown-item>
-      <gl-dropdown-item
-        v-if="showMoveToEndOfList"
-        data-testid="action-move-to-end"
-        @click.stop="moveToEnd"
-      >
+      <gl-dropdown-item @click.stop="moveToEnd">
         {{ $options.i18n.moveToEndText }}
       </gl-dropdown-item>
     </div>

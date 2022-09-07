@@ -1,0 +1,9 @@
+---
+table_name: ci_partitions
+classes:
+- Ci::Partition
+feature_categories:
+- continuous_integration
+description: Database partitioning metadata for CI tables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96856
+milestone: '15.4'

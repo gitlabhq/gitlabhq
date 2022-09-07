@@ -66,7 +66,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams']),
+    ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams', 'isUpdateIssueOrderInProgress']),
     ...mapGetters(['isEpicBoard']),
     listItemsCount() {
       return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
@@ -131,6 +131,9 @@ export default {
       };
 
       return this.canMoveIssue ? options : {};
+    },
+    disableScrollingWhenMutationInProgress() {
+      return this.hasNextPage && this.isUpdateIssueOrderInProgress;
     },
   },
   watch: {
@@ -285,9 +288,13 @@ export default {
       v-bind="treeRootOptions"
       :data-board="list.id"
       :data-board-type="list.listType"
-      :class="{ 'bg-danger-100': boardItemsSizeExceedsMax }"
+      :class="{
+        'bg-danger-100': boardItemsSizeExceedsMax,
+        'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
+        'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
+      }"
       draggable=".board-card"
-      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-3 gl-pt-0 gl-overflow-y-auto gl-overflow-x-hidden"
+      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-3 gl-pt-0 gl-overflow-x-hidden"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"

@@ -12632,6 +12632,7 @@ CREATE TABLE ci_builds (
     scheduling_type smallint,
     id bigint NOT NULL,
     stage_id bigint,
+    partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -12658,7 +12659,8 @@ CREATE TABLE ci_builds_metadata (
     build_id bigint NOT NULL,
     id bigint NOT NULL,
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
-    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL
+    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_builds_metadata_id_seq
@@ -12823,6 +12825,7 @@ CREATE TABLE ci_job_artifacts (
     job_id bigint NOT NULL,
     locked smallint DEFAULT 2,
     original_filename text,
+    partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
     CONSTRAINT check_85573000db CHECK ((char_length(original_filename) <= 512))
 );
@@ -12927,6 +12930,21 @@ CREATE SEQUENCE ci_namespace_monthly_usages_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_namespace_monthly_usages_id_seq OWNED BY ci_namespace_monthly_usages.id;
+
+CREATE TABLE ci_partitions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE ci_partitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_partitions_id_seq OWNED BY ci_partitions.id;
 
 CREATE TABLE ci_pending_builds (
     id bigint NOT NULL,
@@ -13071,7 +13089,8 @@ CREATE TABLE ci_pipeline_variables (
     encrypted_value_iv character varying,
     pipeline_id integer NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
-    raw boolean DEFAULT true NOT NULL
+    raw boolean DEFAULT true NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
@@ -13113,6 +13132,7 @@ CREATE TABLE ci_pipelines (
     external_pull_request_id bigint,
     ci_ref_id bigint,
     locked smallint DEFAULT 1 NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 
@@ -13417,6 +13437,7 @@ CREATE TABLE ci_stages (
     lock_version integer DEFAULT 0,
     "position" integer,
     id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 
@@ -23241,6 +23262,8 @@ ALTER TABLE ONLY ci_namespace_mirrors ALTER COLUMN id SET DEFAULT nextval('ci_na
 
 ALTER TABLE ONLY ci_namespace_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_namespace_monthly_usages_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_partitions ALTER COLUMN id SET DEFAULT nextval('ci_partitions_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_pending_builds ALTER COLUMN id SET DEFAULT nextval('ci_pending_builds_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pipeline_artifacts ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_artifacts_id_seq'::regclass);
@@ -24975,6 +24998,9 @@ ALTER TABLE ONLY ci_namespace_mirrors
 
 ALTER TABLE ONLY ci_namespace_monthly_usages
     ADD CONSTRAINT ci_namespace_monthly_usages_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_partitions
+    ADD CONSTRAINT ci_partitions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_pending_builds
     ADD CONSTRAINT ci_pending_builds_pkey PRIMARY KEY (id);

@@ -1056,6 +1056,8 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
           originalIndex = 0,
           moveBeforeId = undefined,
           moveAfterId = undefined,
+          allItemsLoadedInList = true,
+          listPosition = undefined,
         } = {}) => {
           state = {
             boardLists: {
@@ -1065,12 +1067,28 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
             boardItems: { [itemId]: originalIssue },
             boardItemsByListId: { [fromListId]: [123] },
           };
-          params = { itemId, fromListId, toListId, moveBeforeId, moveAfterId };
+          params = {
+            itemId,
+            fromListId,
+            toListId,
+            moveBeforeId,
+            moveAfterId,
+            listPosition,
+            allItemsLoadedInList,
+          };
           moveMutations = [
             { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
             {
               type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: toListId, moveBeforeId, moveAfterId },
+              payload: {
+                itemId,
+                listId: toListId,
+                moveBeforeId,
+                moveAfterId,
+                listPosition,
+                allItemsLoadedInList,
+                atIndex: originalIndex,
+              },
             },
           ];
           undoMutations = [
@@ -1366,8 +1384,16 @@ describe('updateIssueOrder', () => {
       state,
       [
         {
+          type: types.MUTATE_ISSUE_IN_PROGRESS,
+          payload: true,
+        },
+        {
           type: types.MUTATE_ISSUE_SUCCESS,
           payload: { issue: rawIssue },
+        },
+        {
+          type: types.MUTATE_ISSUE_IN_PROGRESS,
+          payload: false,
         },
       ],
       [],
@@ -1389,6 +1415,14 @@ describe('updateIssueOrder', () => {
       { moveData },
       state,
       [
+        {
+          type: types.MUTATE_ISSUE_IN_PROGRESS,
+          payload: true,
+        },
+        {
+          type: types.MUTATE_ISSUE_IN_PROGRESS,
+          payload: false,
+        },
         {
           type: types.SET_ERROR,
           payload: 'An error occurred while moving the issue. Please try again.',

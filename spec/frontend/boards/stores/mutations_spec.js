@@ -513,6 +513,31 @@ describe('Board Store Mutations', () => {
           listState: [mockIssue2.id, mockIssue.id],
         },
       ],
+      [
+        'to the top of the list',
+        {
+          payload: {
+            itemId: mockIssue2.id,
+            listId: mockList.id,
+            positionInList: 0,
+            atIndex: 1,
+          },
+          listState: [mockIssue2.id, mockIssue.id],
+        },
+      ],
+      [
+        'to the bottom of the list when the list is fully loaded',
+        {
+          payload: {
+            itemId: mockIssue2.id,
+            listId: mockList.id,
+            positionInList: -1,
+            atIndex: 0,
+            allItemsLoadedInList: true,
+          },
+          listState: [mockIssue.id, mockIssue2.id],
+        },
+      ],
     ])(`inserts an item into a list %s`, (_, { payload, listState }) => {
       mutations.ADD_BOARD_ITEM_TO_LIST(state, payload);
 

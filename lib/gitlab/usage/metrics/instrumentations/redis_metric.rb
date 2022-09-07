@@ -11,36 +11,40 @@ module Gitlab
         # instrumentation_class: RedisMetric
         # options:
         #   event: pushes
-        #   counter_class: SourceCodeCounter
+        #   prefix: source_code
         #
         class RedisMetric < BaseMetric
+          include Gitlab::UsageDataCounters::RedisCounter
+
           def initialize(time_frame:, options: {})
             super
 
             raise ArgumentError, "'event' option is required" unless metric_event.present?
-            raise ArgumentError, "'counter class' option is required" unless counter_class.present?
+            raise ArgumentError, "'prefix' option is required" unless prefix.present?
           end
 
           def metric_event
             options[:event]
           end
 
-          def counter_class_name
-            options[:counter_class]
-          end
-
-          def counter_class
-            "Gitlab::UsageDataCounters::#{counter_class_name}".constantize
+          def prefix
+            options[:prefix]
           end
 
           def value
             redis_usage_data do
-              counter_class.read(metric_event)
+              total_count(redis_key)
             end
           end
 
           def suggested_name
             Gitlab::Usage::Metrics::NameSuggestion.for(:redis)
+          end
+
+          private
+
+          def redis_key
+            "USAGE_#{prefix}_#{metric_event}".upcase
           end
         end
       end
