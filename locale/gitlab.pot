@@ -23037,6 +23037,9 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. If a group label with the same title exists, it will also be merged. This action cannot be reversed."
 msgstr ""
 
+msgid "Label|Assignee"
+msgstr ""
+
 msgid "Language"
 msgstr ""
 
@@ -26860,6 +26863,9 @@ msgid "Notify|Auto DevOps pipeline was disabled for %{project}"
 msgstr ""
 
 msgid "Notify|CI/CD project settings"
+msgstr ""
+
+msgid "Notify|Don't want to receive updates from GitLab administrators?"
 msgstr ""
 
 msgid "Notify|Fingerprint: %{fingerprint}"

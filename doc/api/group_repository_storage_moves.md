@@ -194,6 +194,11 @@ Example response:
 
 ## Schedule a repository storage move for a group
 
+Schedules a repository storage move for a group. This endpoint:
+
+- Moves only group Wiki repositories.
+- Doesn't move repositories for projects in a group. To schedule project moves, use the [Project repository storage moves](project_repository_storage_moves.md) API.
+
 ```plaintext
 POST /groups/:group_id/repository_storage_moves
 ```

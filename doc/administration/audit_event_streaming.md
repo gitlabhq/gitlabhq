@@ -317,7 +317,7 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the
 feature, ask an administrator to [disable the feature flag](feature_flags.md) named `audit_event_streaming_git_operations`.
 
-Streaming audit events can be sent when signed-in users push or pull a project's remote Git repositories:
+Streaming audit events can be sent when signed-in users push, pull, or clone a project's remote Git repositories:
 
 - [Using SSH](../user/ssh.md).
 - Using HTTP or HTTPS.

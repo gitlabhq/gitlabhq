@@ -160,10 +160,9 @@ module Projects
     #
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_mr_diff_relations!
-      mr_batch_size = 100
       delete_batch_size = 1000
 
-      project.merge_requests.each_batch(column: :iid, of: mr_batch_size) do |relation_ids|
+      project.merge_requests.each_batch(column: :iid, of: BATCH_SIZE) do |relation_ids|
         [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
           loop do
             inner_query = model
@@ -184,13 +183,12 @@ module Projects
 
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_merge_request_diffs!
-      mr_batch_size = 100
       delete_batch_size = 1000
 
-      project.merge_requests.each_batch(column: :iid, of: mr_batch_size) do |relation_ids|
+      project.merge_requests.each_batch(column: :iid, of: BATCH_SIZE) do |relation|
         loop do
           deleted_rows = MergeRequestDiff
-            .where(merge_request_id: relation_ids)
+            .where(merge_request: relation)
             .limit(delete_batch_size)
             .delete_all
 
