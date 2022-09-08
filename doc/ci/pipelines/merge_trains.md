@@ -209,7 +209,7 @@ If it succeeds after a retry, the merge request is not removed from the merge tr
 Sometimes the **Start/Add to merge train** button is not available and the merge request says,
 "The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure."
 
-This issue occurs when [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+This issue occurs when [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
 is enabled in **Settings > General > Merge requests**. This option requires that you
 run a new successful pipeline before you can re-add a merge request to a merge train.
 

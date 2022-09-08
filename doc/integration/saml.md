@@ -873,7 +873,7 @@ is available.
 
 If you only require a SAML provider for testing, a [quick start guide to start a Docker container](../administration/troubleshooting/test_environments.md#saml) with a plug and play SAML 2.0 Identity Provider (IdP) is available.
 
-### "undefined method [] for nil:NilClass" exception on groups page
+### `undefined method [] for nil:NilClass` exception on groups page
 
 On GitLab 14.6 and newer, you can see the `undefined method [] for nil:NilClass` error if you have not configured at least one SAML provider with the name `saml`. This error is
 caused by a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450). To resolve this error, ensure that at least one SAML provider has the name `saml`.

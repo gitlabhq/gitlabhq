@@ -85,3 +85,11 @@ If periodic repository checks cause false alarms, you can clear all repository c
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.
 1. Select **Clear all repository checks**.
+
+### Error: `failed to parse commit <commit SHA> from object database for commit-graph`
+
+You can see a `failed to parse commit <commit SHA> from object database for commit-graph` error in repository check logs. This error occurs if your `commit-graph` cache is out
+of date. The `commit-graph` cache is an auxiliary cache and is not required for regular Git operations.
+
+While the message can be safely ignored, see the issue [error: Could not read from object database for commit-graph](https://gitlab.com/gitlab-org/gitaly/-/issues/2359)
+for more details.

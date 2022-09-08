@@ -259,7 +259,7 @@ are enabled, the button is either **Add to merge train** or **Add to merge train
 
 #### "A CI/CD pipeline must run and be successful before merge" message
 
-This message is shown if the [Pipelines must succeed](../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+This message is shown if the [Pipelines must succeed](../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
 setting is enabled in the project and a pipeline has not yet run successfully.
 This also applies if the pipeline has not been created yet, or if you are waiting
 for an external CI service. If you don't use pipelines for your project, then you

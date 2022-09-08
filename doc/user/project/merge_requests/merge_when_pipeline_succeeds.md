@@ -7,123 +7,143 @@ type: reference, concepts
 
 # Merge when pipeline succeeds **(FREE)**
 
-When reviewing a merge request that looks ready to merge but still has a
-pipeline running, you can set it to merge automatically when the
-pipeline succeeds. This way, you don't have to wait for the pipeline to
-finish and remember to merge the request manually.
+If you review a merge request and it's ready to merge, but the pipeline hasn't
+completed yet, you can set it to merge when the pipeline succeeds (MWPS). You don't
+have to remember later to merge the work manually:
 
-![Enable](img/merge_when_pipeline_succeeds_enable.png)
+![Enable MWPS on a merge request](img/mwps_v15_4.png)
 
-## How it works
+If the pipeline succeeds, the merge request is merged. If the pipeline fails, the
+author can either retry any failed jobs, or push new commits to fix the failure:
 
-When you select "Merge When Pipeline Succeeds", the status of the merge
-request is updated to show the impending merge. If you can't wait
-for the pipeline to succeed, you can choose **Merge immediately**
-in the dropdown menu on the right of the main button.
+- If a retried job succeeds on the second try, the merge request is merged.
+- If new commits are added to the merge request, GitLab cancels the MWPS request
+  to ensure the new changes are reviewed before merge.
 
-The author of the merge request and project members with the Developer role can
-cancel the automatic merge at any time before the pipeline finishes.
+## Set a merge request to MWPS
 
-![Status](img/merge_when_pipeline_succeeds_status.png)
+Prerequisites:
 
-When the pipeline succeeds, the merge request is automatically merged.
-When the pipeline fails, the author gets a chance to retry any failed jobs,
-or to push new commits to fix the failure.
+- You must have at least the Developer role in the project.
+- If the project is configured to require it, all threads in the
+  merge request [must be resolved](../../discussions/index.md#resolve-a-thread).
+- The merge request must have received all required approvals.
 
-When the jobs are retried and succeed on the second try, the merge request
-is automatically merged. When the merge request is updated with
-new commits, the automatic merge is canceled to allow the new
-changes to be reviewed.
+To do this when pushing from the command line, use the `merge_request.merge_when_pipeline_succeeds`
+[push option](../push_options.md).
 
-By default, all threads must be resolved before you see the **Merge when
-pipeline succeeds** button. If someone adds a new comment after
-the button is selected, but before the jobs in the CI pipeline are
-complete, the merge is blocked until you resolve all existing threads.
+To do this from the GitLab user interface:
 
-## Only allow merge requests to be merged if the pipeline succeeds
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
+1. Scroll to the merge request reports section.
+1. Optional. Select your desired merge options, such as **Delete source branch**,
+   **Squash commits**, or **Edit commit message**.
+1. Select **Merge when pipeline succeeds**.
 
-You can prevent merge requests from being merged if:
+If a new comment is added to the merge request after you select **Merge when pipeline succeeds**,
+but before the pipeline completes, GitLab blocks the merge until you
+resolve all existing threads.
 
-- No pipeline ran.
-- The pipeline did not succeed.
+## Cancel an auto-merge
 
-This works for both:
+If a merge request is set to MWPS, you can cancel it.
 
-- GitLab CI/CD pipelines
-- Pipelines run from an [external CI integration](../integrations/index.md#available-integrations)
+Prerequisites:
+
+- You must either be the author of the merge request, or a project member with
+  at least the Developer role.
+- The merge request's pipeline must still be in progress.
+
+To do this:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
+1. Scroll to the merge request reports section.
+1. Select **Cancel auto-merge**.
+
+![Status](img/cancel-mwps_v15_4.png)
+
+## Require a successful pipeline for merge
+
+You can configure your project to require a complete and successful pipeline before
+merge. This configuration works for both:
+
+- GitLab CI/CD pipelines.
+- Pipelines run from an [external CI integration](../integrations/index.md#available-integrations).
 
 As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md)
-does not disable this feature, as it is possible to use pipelines from external
-CI providers with this feature. To enable it, you must:
+does not disable this feature, but you can use pipelines from external
+CI providers with it.
+
+Prerequisites:
+
+- Ensure CI/CD is configured to run a pipeline for every merge request.
+- You must have at least the Maintainer role in the project.
+
+To enable this setting:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
-1. In the **Merge checks** section, select **Pipelines must succeed**.
+1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
+   This setting also prevents merge requests from being merged if there is no pipeline,
+   which can [conflict with some rules](#merge-requests-dont-merge-when-successful-pipeline-is-required).
 1. Select **Save**.
 
-This setting also prevents merge requests from being merged if there is no pipeline.
-You should be careful to configure CI/CD so that pipelines run for every merge request.
+### Allow merge after skipped pipelines
 
-### Limitations
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
 
-When this setting is enabled, a merge request is prevented from being merged if there
-is no pipeline. This may conflict with some use cases where [`only/except`](../../../ci/yaml/index.md#only--except)
-or [`rules`](../../../ci/yaml/index.md#rules) are used and they don't generate any pipelines.
+When the **Pipelines must succeed** checkbox is checked,
+[skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
+merge requests from being merged.
 
-You should ensure that [there is always a pipeline](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54226)
-and that it's successful.
+Prerequisite:
 
-If both a branch pipeline and a merge request pipeline are triggered for a single
-merge request, only the success or failure of the *merge request pipeline* is checked.
-If the merge request pipeline is configured with fewer jobs than the branch pipeline,
-it could allow code that fails tests to be merged:
+- You must have at least the Maintainer role in the project.
+
+To change this behavior:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. Under **Merge checks**:
+   - Select **Pipelines must succeed**.
+   - Select **Skipped pipelines are considered successful**.
+1. Select **Save**.
+
+## Troubleshooting
+
+### Merge requests don't merge when successful pipeline is required
+
+If you require a successful pipeline for a merge, this setting can conflict with some
+use cases that do not generate pipelines, such as [`only/except`](../../../ci/yaml/index.md#only--except)
+or [`rules`](../../../ci/yaml/index.md#rules). Ensure your project
+[runs a pipeline](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54226) for
+every merge request, and that the pipeline is successful.
+
+### Ensure test parity between pipeline types
+
+If a merge request triggers both a branch pipeline and a merge request pipeline,
+the success or failure of only the *merge request pipeline* is checked.
+If the merge request pipeline contains fewer jobs than the branch pipeline,
+it could allow code that fails tests to be merged, like in this example:
 
 ```yaml
 branch-pipeline-job:
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
   script:
-    - echo "Code testing scripts here, for example."
+    - echo "Testing happens here."
 
 merge-request-pipeline-job:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - echo "No tests run, but this pipeline always succeeds and enables merge."
+    - echo "No testing happens here. This pipeline always succeeds, and enables merge."
     - echo true
 ```
 
-You should avoid configuration like this, and only use branch (`push`) pipelines
-or merge request pipelines, when possible. See [`rules` documentation](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines)
-for details on avoiding two pipelines for a single merge request.
-
-### Skipped pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
-
-When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
-merge requests from being merged. To change this behavior:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
-1. In the **Merge checks** section:
-   - Ensure **Pipelines must succeed** is selected.
-   - Select **Skipped pipelines are considered successful**.
-1. Select **Save**.
-
-## From the command line
-
-You can use [Push Options](../push_options.md) to enable merge when pipeline succeeds
-for a merge request when pushing from the command line.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+Instead, use branch (`push`) pipelines or merge request pipelines, when possible.
+For details on avoiding two pipelines for a single merge request, read the
+[`rules` documentation](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines).
