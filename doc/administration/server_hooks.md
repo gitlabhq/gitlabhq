@@ -65,16 +65,21 @@ To create a Git hook that applies to all repositories, set a global server hook.
 
 ### Choose a server hook directory
 
-Before creating a global server hook, you must choose a directory for it. The global server hook directory:
+Before creating a global server hook, you must choose a directory for it.
 
-- For Omnibus GitLab installations, set the directory in `gitlab.rb` under `gitaly['custom_hooks_dir']`. You can use the default suggestion `/var/opt/gitlab/gitaly/custom_hooks` directory
-  by uncommenting `gitaly['custom_hooks_dir']` to enable it.
-- For an installation from source is usually `/home/git/gitlab-shell/hooks`.
+For Omnibus GitLab installations, the directory is set in `gitlab.rb` under `gitaly['custom_hooks_dir']`. You can either:
 
-- For source installations, the configuration location depends on the GitLab version. For:
-  - GitLab 13.0 and earlier, set in `gitlab-shell/config.yml`.
-  - GitLab 13.1 and later, set in `gitaly/config.toml` under the `[hooks]` section. However, GitLab honors the
-    `custom_hooks_dir` value in `gitlab-shell/config.yml` if the value in `gitaly/config.toml` is blank or non-existent.
+- Use the default suggestion of the `/var/opt/gitlab/gitaly/custom_hooks` directory by uncommenting it.
+- Add your own setting.
+
+For installations from source:
+
+- The directory is set in a configuration file. The location of the configuration file depends on the GitLab version:
+  - For GitLab 13.1 and later, the directory is set in `gitaly/config.toml` under the `[hooks]` section. However,
+    GitLab honors the `custom_hooks_dir` value in `gitlab-shell/config.yml` if the value in `gitaly/config.toml` is blank
+    or non-existent.
+  - For GitLab 13.0 and earlier, the directory set in `gitlab-shell/config.yml`.
+- The default directory is `/home/git/gitlab-shell/hooks`.
 
 ### Create the global server hook
 

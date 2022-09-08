@@ -18,7 +18,7 @@ module QA
       end
 
       it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818', quarantine: {
-        only: { subdomain: :production },
+        only: :production,
         type: :investigating,
         issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/372258'
       } do

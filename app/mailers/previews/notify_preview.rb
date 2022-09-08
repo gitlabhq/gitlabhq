@@ -60,6 +60,10 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def user_cap_reached
+    Notify.user_cap_reached(user.id).message
+  end
+
   def new_mention_in_merge_request_email
     Notify.new_mention_in_merge_request_email(user.id, issue.id, user.id).message
   end

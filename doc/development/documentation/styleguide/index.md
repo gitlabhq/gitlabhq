@@ -1381,6 +1381,10 @@ Here's some other content in tab two.
 ::EndTabs
 ```
 
+This code renders on the GitLab documentation site as:
+
+![tab example](img/tabs.png)
+
 For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
 For example:
 
