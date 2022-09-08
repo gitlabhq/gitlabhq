@@ -115,6 +115,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   it_behaves_like Integrations::HasWebHook do
     include_context :drone_ci_integration
 
+    let(:drone_url) { 'https://cloud.drone.io' }
     let(:integration) { drone }
     let(:hook_url) { "#{drone_url}/hook?owner=#{project.namespace.full_path}&name=#{project.path}&access_token=#{token}" }
 

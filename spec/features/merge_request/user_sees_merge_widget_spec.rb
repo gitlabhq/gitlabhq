@@ -219,7 +219,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     shared_examples 'pipeline widget' do
       it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
-          expect(page).to have_content("Detached merge request pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
+          expect(page).to have_content("Merge request pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
         end
       end
     end

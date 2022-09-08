@@ -36,7 +36,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
       expect(pipeline.statuses).to match_array [test, bridge]
       expect(bridge.options).to eq(expected_bridge_options)
       expect(bridge.yaml_variables)
-        .to include(key: 'CROSS', value: 'downstream', public: true)
+        .to include(key: 'CROSS', value: 'downstream')
     end
   end
 

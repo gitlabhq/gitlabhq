@@ -38,11 +38,11 @@ class Notify < ApplicationMailer
   helper InProductMarketingHelper
 
   def test_email(recipient_email, subject, body)
-    mail(to: recipient_email,
-         subject: subject,
-         body: body.html_safe,
-         content_type: 'text/html'
-        )
+    mail_with_locale(to: recipient_email,
+                     subject: subject,
+                     body: body.html_safe,
+                     content_type: 'text/html'
+                    )
   end
 
   # Splits "gitlab.corp.company.com" up into "gitlab.corp.company.com",
@@ -139,7 +139,7 @@ class Notify < ApplicationMailer
       @reply_by_email = true
     end
 
-    mail(headers)
+    mail_with_locale(headers)
   end
 
   # `model` is used on EE code
@@ -225,7 +225,7 @@ class Notify < ApplicationMailer
   end
 
   def email_with_layout(to:, subject:, layout: 'mailer')
-    mail(to: to, subject: subject) do |format|
+    mail_with_locale(to: to, subject: subject) do |format|
       format.html { render layout: layout }
       format.text { render layout: layout }
     end

@@ -652,10 +652,10 @@ RSpec.describe 'Pipelines', :js do
         expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
 
         # stages
-        expect(page).to have_text('Build')
-        expect(page).to have_text('Test')
-        expect(page).to have_text('Deploy')
-        expect(page).to have_text('External')
+        expect(page).to have_text('build')
+        expect(page).to have_text('test')
+        expect(page).to have_text('deploy')
+        expect(page).to have_text('external')
 
         # builds
         expect(page).to have_text('rspec')

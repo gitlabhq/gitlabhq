@@ -20890,6 +20890,130 @@
       }
     ]
   }
+07_06_00__gitlab_specific_markdown__table_of_contents__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "tableOfContents"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 1"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 2"
+          }
+        ]
+      }
+    ]
+  }
+07_06_00__gitlab_specific_markdown__table_of_contents__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "tableOfContents"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 1"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 2"
+          }
+        ]
+      }
+    ]
+  }
+07_06_00__gitlab_specific_markdown__table_of_contents__003: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "[["
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "TOC"
+          },
+          {
+            "type": "text",
+            "text": "]]\ntext"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "text\n[TOC]"
+          }
+        ]
+      }
+    ]
+  }
+07_06_00__gitlab_specific_markdown__table_of_contents__004: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "tableOfContents"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 1"
+          }
+        ]
+      }
+    ]
+  }
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001: |-
   Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002: |-

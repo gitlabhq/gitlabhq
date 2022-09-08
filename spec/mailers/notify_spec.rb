@@ -167,6 +167,17 @@ RSpec.describe Notify do
             is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
           end
         end
+
+        context 'when sent with a non default locale' do
+          let(:email_obj) { create(:email, :confirmed, user_id: recipient.id, email: '123@abc') }
+          let(:recipient) { create(:user, preferred_language: :zh_CN) }
+
+          it 'is translated into zh_CN' do
+            recipient.notification_email = email_obj.email
+            recipient.save!
+            is_expected.to have_body_text '指派人从 <strong>Previous Assignee</strong> 更改为 <strong>John Doe</strong>'
+          end
+        end
       end
 
       describe 'that have been relabeled' do

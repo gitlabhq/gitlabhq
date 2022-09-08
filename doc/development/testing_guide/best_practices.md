@@ -1382,6 +1382,47 @@ RSpec.configure do |config|
 end
 ```
 
+### Testing Ruby constants
+
+When testing code that uses Ruby constants, focus the test on the behavior that depends on the constant,
+rather than testing the values of the constant.
+
+For example, the following is preferred because it tests the behavior of the class method `.categories`.
+
+```ruby
+  describe '.categories' do
+    it 'gets CE unique category names' do
+      expect(described_class.categories).to include(
+        'deploy_token_packages',
+        'user_packages',
+        # ...
+        'kubernetes_agent'
+      )
+    end
+  end
+```
+
+On the other hand, testing the value of the constant itself, often only repeats the values
+in the code and the test, which provides little value.
+
+```ruby
+  describe CATEGORIES do
+  it 'has values' do
+    expect(CATEGORIES).to eq([
+                            'deploy_token_packages',
+                            'user_packages',
+                            # ...
+                            'kubernetes_agent'
+                             ])
+  end
+end
+```
+
+In critical cases where an error on a constant could have a catastrophic impact,
+testing the constant values might be useful as an added safeguard. For example,
+if it could bring down the entire GitLab service, cause a customer to be billed more than they should be,
+or [cause the universe to implode](../contributing/verify/index.md#do-not-cause-our-universe-to-implode).
+
 ### Factories
 
 GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test fixture replacement.

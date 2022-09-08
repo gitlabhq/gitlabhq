@@ -72,9 +72,9 @@ RSpec.describe 'Pipeline', :js do
       visit_pipeline
 
       expect(page).to have_selector('.js-pipeline-graph')
-      expect(page).to have_content('Build')
-      expect(page).to have_content('Test')
-      expect(page).to have_content('Deploy')
+      expect(page).to have_content('build')
+      expect(page).to have_content('test')
+      expect(page).to have_content('deploy')
       expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel running')
     end
@@ -793,9 +793,9 @@ RSpec.describe 'Pipeline', :js do
 
       it 'shows the pipeline graph' do
         expect(page).to have_selector('.js-pipeline-graph')
-        expect(page).to have_content('Build')
-        expect(page).to have_content('Test')
-        expect(page).to have_content('Deploy')
+        expect(page).to have_content('build')
+        expect(page).to have_content('test')
+        expect(page).to have_content('deploy')
         expect(page).to have_content('Retry')
         expect(page).to have_content('Cancel running')
       end

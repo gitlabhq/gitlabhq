@@ -92,15 +92,16 @@ module MergeRequests
         raise_error(GENERIC_ERROR_MESSAGE)
       end
 
-      merge_request.update!(merge_commit_sha: commit_id)
+      data_to_update = { merge_commit_sha: commit_id }
+      data_to_update[:squash_commit_sha] = source if merge_request.squash_on_merge?
+
+      merge_request.update!(**data_to_update)
     ensure
       merge_request.update_and_mark_in_progress_merge_commit_sha(nil)
     end
 
     def try_merge
-      repository.merge(current_user, source, merge_request, commit_message).tap do
-        merge_request.update_column(:squash_commit_sha, source) if merge_request.squash_on_merge?
-      end
+      repository.merge(current_user, source, merge_request, commit_message)
     rescue Gitlab::Git::PreReceiveError => e
       raise MergeError,
             "Something went wrong during merge pre-receive hook. #{e.message}".strip

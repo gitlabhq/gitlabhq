@@ -88,6 +88,8 @@ The following table lists project permissions available for each role:
 | [Incident Management](../operations/incident_management/index.md):<br>View [escalation policies](../operations/incident_management/escalation_policies.md)                           |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)                              |          |          |           | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [escalation policies](../operations/incident_management/escalation_policies.md)                         |          |          |           | ✓          | ✓        |
+| [Issue boards](project/issue_board.md):<br>Create or delete lists                                                                                                                    |          | ✓        | ✓         | ✓          | ✓        |
+| [Issue boards](project/issue_board.md):<br>Move issues between lists                                                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                                                                                     | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Assign                                                                                                                                         | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Create (*18*)                                                                                                                                  | ✓        | ✓        | ✓         | ✓          | ✓        |
@@ -347,11 +349,6 @@ from pushing to a protected branch. Read through the documentation on
 
 Find the current permissions on the value stream analytics dashboard, as described in
 [related documentation](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics).
-
-### Issue board permissions
-
-Find the current permissions for interacting with the issue board feature in the
-[issue boards permissions page](project/issue_board.md#permissions).
 
 ### File Locking permissions **(PREMIUM)**
 

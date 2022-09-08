@@ -22,6 +22,6 @@ class EmailRejectionMailer < ApplicationMailer
 
     headers['Reply-To'] = @original_message.to.first if can_retry
 
-    mail(headers)
+    mail_with_locale(headers)
   end
 end

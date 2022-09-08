@@ -5,7 +5,6 @@ module Integrations
     extend ActiveSupport::Concern
 
     included do
-      after_save :update_web_hook!, if: :activated?
       has_one :service_hook, inverse_of: :integration, foreign_key: :service_id
     end
 

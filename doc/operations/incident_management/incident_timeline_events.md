@@ -16,7 +16,7 @@ Incident timelines are an important part of record keeping for incidents.
 Timelines can show executives and external viewers what happened during an incident,
 and which steps were taken for it to be resolved.
 
-## View the event timeline
+## View the timeline
 
 Incident timeline events are listed in ascending order of the date and time.
 They are grouped with dates and are listed in ascending order of the time when they occurred:
@@ -30,7 +30,7 @@ To view the event timeline of an incident:
 1. Select an incident.
 1. Select the **Timeline** tab.
 
-## Create a timeline event
+## Create an event
 
 You can create a timeline event in many ways in GitLab.
 
@@ -70,7 +70,7 @@ To create a timeline event from a comment on the incident:
 
 The comment is shown on the incident timeline as a timeline event.
 
-## Delete a timeline event
+## Delete an event
 
 You can also delete timeline events.
 

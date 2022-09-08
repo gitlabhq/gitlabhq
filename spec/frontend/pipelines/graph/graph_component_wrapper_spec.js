@@ -299,7 +299,7 @@ describe('Pipeline graph wrapper', () => {
         const groupsInFirstColumn =
           mockPipelineResponse.data.project.pipeline.stages.nodes[0].groups.nodes.length;
         expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn);
-        expect(getStageColumnTitle().text()).toBe('Build');
+        expect(getStageColumnTitle().text()).toBe('build');
         await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
         expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn + 1);
         expect(getStageColumnTitle().text()).toBe('');

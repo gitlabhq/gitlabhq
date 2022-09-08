@@ -34,6 +34,7 @@ import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
+import TableOfContents from '~/content_editor/extensions/table_of_contents';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
 import Video from '~/content_editor/extensions/video';
@@ -75,6 +76,7 @@ const tiptapEditor = createTestEditor({
     TableCell,
     TableHeader,
     TableRow,
+    TableOfContents,
     TaskItem,
     TaskList,
     Video,

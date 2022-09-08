@@ -100,7 +100,7 @@ RSpec.describe Ci::PipelinePresenter do
     context 'for a detached merge request pipeline' do
       let(:event_type) { :detached }
 
-      it { is_expected.to eq('Detached merge request pipeline') }
+      it { is_expected.to eq('Merge request pipeline') }
     end
 
     context 'for a merged result pipeline' do

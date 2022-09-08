@@ -97,15 +97,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       let(:attributes) do
         { name: 'rspec',
           ref: 'master',
-          job_variables: [{ key: 'VAR1', value: 'var 1', public: true },
-                          { key: 'VAR2', value: 'var 2', public: true }],
+          job_variables: [{ key: 'VAR1', value: 'var 1' },
+                          { key: 'VAR2', value: 'var 2' }],
           rules: [{ if: '$VAR == null', variables: { VAR1: 'new var 1', VAR3: 'var 3' } }] }
       end
 
       it do
-        is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1', public: true },
-                                                { key: 'VAR2', value: 'var 2', public: true },
-                                                { key: 'VAR3', value: 'var 3', public: true }])
+        is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1' },
+                                                { key: 'VAR2', value: 'var 2' },
+                                                { key: 'VAR3', value: 'var 3' }])
       end
     end
 
@@ -114,13 +114,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         {
           name: 'rspec',
           ref: 'master',
-          job_variables: [{ key: 'VARIABLE', value: 'value', public: true }],
+          job_variables: [{ key: 'VARIABLE', value: 'value' }],
           tag_list: ['static-tag', '$VARIABLE', '$NO_VARIABLE']
         }
       end
 
       it { is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE']) }
-      it { is_expected.to include(yaml_variables: [{ key: 'VARIABLE', value: 'value', public: true }]) }
+      it { is_expected.to include(yaml_variables: [{ key: 'VARIABLE', value: 'value' }]) }
     end
 
     context 'with cache:key' do
@@ -257,19 +257,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       let(:attributes) do
         { name: 'rspec',
           ref: 'master',
-          yaml_variables: [{ key: 'VAR2', value: 'var 2', public: true },
-                           { key: 'VAR3', value: 'var 3', public: true }],
-          job_variables: [{ key: 'VAR2', value: 'var 2', public: true },
-                          { key: 'VAR3', value: 'var 3', public: true }],
+          yaml_variables: [{ key: 'VAR2', value: 'var 2' },
+                           { key: 'VAR3', value: 'var 3' }],
+          job_variables: [{ key: 'VAR2', value: 'var 2' },
+                          { key: 'VAR3', value: 'var 3' }],
           root_variables_inheritance: root_variables_inheritance }
       end
 
       context 'when the pipeline has variables' do
         let(:root_variables) do
-          [{ key: 'VAR1', value: 'var overridden pipeline 1', public: true },
-           { key: 'VAR2', value: 'var pipeline 2', public: true },
-           { key: 'VAR3', value: 'var pipeline 3', public: true },
-           { key: 'VAR4', value: 'new var pipeline 4', public: true }]
+          [{ key: 'VAR1', value: 'var overridden pipeline 1' },
+           { key: 'VAR2', value: 'var pipeline 2' },
+           { key: 'VAR3', value: 'var pipeline 3' },
+           { key: 'VAR4', value: 'new var pipeline 4' }]
         end
 
         context 'when root_variables_inheritance is true' do
@@ -277,10 +277,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
           it 'returns calculated yaml variables' do
             expect(subject[:yaml_variables]).to match_array(
-              [{ key: 'VAR1', value: 'var overridden pipeline 1', public: true },
-               { key: 'VAR2', value: 'var 2', public: true },
-               { key: 'VAR3', value: 'var 3', public: true },
-               { key: 'VAR4', value: 'new var pipeline 4', public: true }]
+              [{ key: 'VAR1', value: 'var overridden pipeline 1' },
+               { key: 'VAR2', value: 'var 2' },
+               { key: 'VAR3', value: 'var 3' },
+               { key: 'VAR4', value: 'new var pipeline 4' }]
             )
           end
         end
@@ -290,8 +290,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
           it 'returns job variables' do
             expect(subject[:yaml_variables]).to match_array(
-              [{ key: 'VAR2', value: 'var 2', public: true },
-               { key: 'VAR3', value: 'var 3', public: true }]
+              [{ key: 'VAR2', value: 'var 2' },
+               { key: 'VAR3', value: 'var 3' }]
             )
           end
         end
@@ -301,9 +301,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
           it 'returns calculated yaml variables' do
             expect(subject[:yaml_variables]).to match_array(
-              [{ key: 'VAR1', value: 'var overridden pipeline 1', public: true },
-               { key: 'VAR2', value: 'var 2', public: true },
-               { key: 'VAR3', value: 'var 3', public: true }]
+              [{ key: 'VAR1', value: 'var overridden pipeline 1' },
+               { key: 'VAR2', value: 'var 2' },
+               { key: 'VAR3', value: 'var 3' }]
             )
           end
         end
@@ -314,8 +314,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it 'returns seed yaml variables' do
           expect(subject[:yaml_variables]).to match_array(
-            [{ key: 'VAR2', value: 'var 2', public: true },
-             { key: 'VAR3', value: 'var 3', public: true }])
+            [{ key: 'VAR2', value: 'var 2' },
+             { key: 'VAR3', value: 'var 3' }])
         end
       end
     end
@@ -324,8 +324,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       let(:attributes) do
         { name: 'rspec',
           ref: 'master',
-          yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true }],
-          job_variables: [{ key: 'VAR1', value: 'var 1', public: true }],
+          yaml_variables: [{ key: 'VAR1', value: 'var 1' }],
+          job_variables: [{ key: 'VAR1', value: 'var 1' }],
           root_variables_inheritance: root_variables_inheritance,
           rules: rules }
       end
@@ -338,14 +338,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         end
 
         it 'recalculates the variables' do
-          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1', public: true },
-                                                              { key: 'VAR2', value: 'new var 2', public: true })
+          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1' },
+                                                              { key: 'VAR2', value: 'new var 2' })
         end
       end
 
       context 'when the rules use root variables' do
         let(:root_variables) do
-          [{ key: 'VAR2', value: 'var pipeline 2', public: true }]
+          [{ key: 'VAR2', value: 'var pipeline 2' }]
         end
 
         let(:rules) do
@@ -353,15 +353,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         end
 
         it 'recalculates the variables' do
-          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1', public: true },
-                                                              { key: 'VAR2', value: 'overridden var 2', public: true })
+          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1' },
+                                                              { key: 'VAR2', value: 'overridden var 2' })
         end
 
         context 'when the root_variables_inheritance is false' do
           let(:root_variables_inheritance) { false }
 
           it 'does not recalculate the variables' do
-            expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'var 1', public: true })
+            expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'var 1' })
           end
         end
       end

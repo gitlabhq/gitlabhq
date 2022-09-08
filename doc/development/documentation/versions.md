@@ -205,7 +205,7 @@ You can say that we plan to remove a feature.
 
 ### Legal disclaimer for future features
 
-If you **must** write about features we have not yet delivered, put this exact disclaimer near the content it applies to.
+If you **must** write about features we have not yet delivered, put this exact disclaimer about forward-looking statements near the content it applies to.
 
 ```markdown
 DISCLAIMER:
@@ -227,6 +227,6 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
-If all of the content on the page is not available, use the disclaimer once at the top of the page.
+If all of the content on the page is not available, use the disclaimer about forward-looking statements once at the top of the page.
 
 If the content in a topic is not ready, use the disclaimer in the topic.

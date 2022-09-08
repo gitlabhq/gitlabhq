@@ -72,7 +72,11 @@ module ProductAnalyticsTracking
       p_analytics_valuestream: :route_hll_to_snowplow_phase2,
       p_analytics_insights: :route_hll_to_snowplow_phase2,
       p_analytics_issues: :route_hll_to_snowplow_phase2,
-      p_analytics_repo: :route_hll_to_snowplow_phase2
+      p_analytics_repo: :route_hll_to_snowplow_phase2,
+      g_analytics_insights: :route_hll_to_snowplow_phase2,
+      g_analytics_issues: :route_hll_to_snowplow_phase2,
+      g_analytics_productivity: :route_hll_to_snowplow_phase2,
+      i_analytics_cohorts: :route_hll_to_snowplow_phase2
     }
 
     Feature.enabled?(events_to_ff[event.to_sym], tracking_namespace_source)

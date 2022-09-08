@@ -14,6 +14,15 @@ RSpec.describe RepositoryCheckMailer do
       expect(mail).to deliver_to admins.map(&:email)
     end
 
+    it 'email with I18n.default_locale' do
+      admins = [create(:admin, preferred_language: :zh_CN), create(:admin, preferred_language: :zh_CN)]
+
+      mail = described_class.notify(3)
+
+      expect(mail).to deliver_to admins.map(&:email)
+      expect(mail).to have_subject 'GitLab Admin | 3 projects failed their last repository check'
+    end
+
     it 'omits blocked admins' do
       blocked = create(:admin, :blocked)
       admins = create_list(:admin, 3)

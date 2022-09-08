@@ -2239,6 +2239,28 @@
   [video]: video.mov "video title"
 
   ![video][video]
+07_06_00__gitlab_specific_markdown__table_of_contents__001: |
+  [TOC]
+
+  # Heading 1
+
+  ## Heading 2
+07_06_00__gitlab_specific_markdown__table_of_contents__002: |
+  [[_TOC_]]
+
+  # Heading 1
+
+  ## Heading 2
+07_06_00__gitlab_specific_markdown__table_of_contents__003: |
+  [[_TOC_]]
+  text
+
+  text
+  [TOC]
+07_06_00__gitlab_specific_markdown__table_of_contents__004: |2
+     [[_TOC_]]
+
+  # Heading 1
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001: |
   [groups-test-file](/uploads/groups-test-file)
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002: |

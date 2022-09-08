@@ -23,6 +23,7 @@ import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
 import TableHeader from '~/content_editor/extensions/table_header';
+import TableOfContents from '~/content_editor/extensions/table_of_contents';
 import TableRow from '~/content_editor/extensions/table_row';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TaskList from '~/content_editor/extensions/task_list';
@@ -61,6 +62,7 @@ const tiptapEditor = createTestEditor({
     TableRow,
     TableHeader,
     TableCell,
+    TableOfContents,
     TaskList,
     TaskItem,
     Video,
@@ -98,6 +100,7 @@ const {
     tableRow,
     tableHeader,
     tableCell,
+    tableOfContents,
     taskItem,
     taskList,
     video,
@@ -130,6 +133,7 @@ const {
     tableCell: { nodeType: TableCell.name },
     tableHeader: { nodeType: TableHeader.name },
     tableRow: { nodeType: TableRow.name },
+    tableOfContents: { nodeType: TableOfContents.name },
     taskItem: { nodeType: TaskItem.name },
     taskList: { nodeType: TaskList.name },
     video: { nodeType: Video.name },
@@ -1294,6 +1298,14 @@ content
         expectedDoc: doc(diagram({ ...source(markdown), language }, 'content')),
       };
     }),
+    {
+      markdown: '[[_TOC_]]',
+      expectedDoc: doc(tableOfContents(source('[[_TOC_]]'))),
+    },
+    {
+      markdown: '[TOC]',
+      expectedDoc: doc(tableOfContents(source('[TOC]'))),
+    },
   ];
 
   const runOnly = examples.find((example) => example.only === true);

@@ -1,0 +1,8 @@
+---
+name: gitaly_simplify_find_local_branches_response
+introduced_by_url: https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4850
+rollout_issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/4452
+milestone: '15.4'
+type: undefined
+group: group::gitaly
+default_enabled: false

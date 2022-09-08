@@ -14,7 +14,7 @@ class RepositoryCheckMailer < ApplicationMailer
         "#{failed_count} projects failed their last repository check"
       end
 
-    mail(
+    mail_with_locale(
       to: User.admins.active.pluck(:email),
       subject: "GitLab Admin | #{@message}"
     )

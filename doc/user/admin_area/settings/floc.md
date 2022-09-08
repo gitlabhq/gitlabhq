@@ -24,8 +24,8 @@ To enable it:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
-1. Expand **Federated Learning of Cohorts**.
-1. Check the box.
+1. Expand **Federated Learning of Cohorts (FLoC)**.
+1. Select the **Participate in FLoC** checkbox.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting

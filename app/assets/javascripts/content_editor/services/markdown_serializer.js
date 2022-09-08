@@ -206,10 +206,10 @@ const defaultSerializerConfig = {
       },
       overwriteSourcePreservationStrategy: true,
     }),
-    [TableOfContents.name]: (state, node) => {
+    [TableOfContents.name]: preserveUnchanged((state, node) => {
       state.write('[[_TOC_]]');
       state.closeBlock(node);
-    },
+    }),
     [Table.name]: preserveUnchanged(renderTable),
     [TableCell.name]: renderTableCell,
     [TableHeader.name]: renderTableCell,

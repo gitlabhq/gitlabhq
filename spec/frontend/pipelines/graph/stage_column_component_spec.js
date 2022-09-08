@@ -126,9 +126,9 @@ describe('stage column component', () => {
         });
       });
 
-      it('capitalizes and escapes name', () => {
-        expect(findStageColumnTitle().text()).toBe(
-          'Test &lt;img src=x onerror=alert(document.domain)&gt;',
+      it('escapes name', () => {
+        expect(findStageColumnTitle().html()).toContain(
+          'test &lt;img src=x onerror=alert(document.domain)&gt;',
         );
       });
 

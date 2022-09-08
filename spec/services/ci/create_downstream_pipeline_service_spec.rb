@@ -5,9 +5,12 @@ require 'spec_helper'
 RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
   include Ci::SourcePipelineHelpers
 
-  let_it_be(:user) { create(:user) }
+  # Using let_it_be on user and projects for these specs can cause
+  # spec-ordering failures due to the project-based permissions
+  # associating them. They should be recreated every time.
+  let(:user) { create(:user) }
   let(:upstream_project) { create(:project, :repository) }
-  let_it_be(:downstream_project, refind: true) { create(:project, :repository) }
+  let(:downstream_project) { create(:project, :repository) }
 
   let!(:upstream_pipeline) do
     create(:ci_pipeline, :running, project: upstream_project)

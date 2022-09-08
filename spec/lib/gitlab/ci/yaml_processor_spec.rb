@@ -448,7 +448,7 @@ module Gitlab
 
           it 'parses the root:variables as #root_variables' do
             expect(subject.root_variables)
-              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed' })
           end
         end
 
@@ -490,7 +490,7 @@ module Gitlab
 
           it 'parses the root:variables as #root_variables' do
             expect(subject.root_variables)
-              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed' })
           end
         end
 
@@ -1077,8 +1077,8 @@ module Gitlab
 
             it 'returns job variables' do
               expect(job_variables).to contain_exactly(
-                { key: 'VAR1', value: 'value1', public: true },
-                { key: 'VAR2', value: 'value2', public: true }
+                { key: 'VAR1', value: 'value1' },
+                { key: 'VAR2', value: 'value2' }
               )
               expect(root_variables_inheritance).to eq(true)
             end
@@ -1154,9 +1154,9 @@ module Gitlab
 
           it 'returns job variables' do
             expect(job_variables).to contain_exactly(
-              { key: 'VAR1', value: 'value1', public: true },
-              { key: 'VAR2', value: 'value2', public: true },
-              { key: 'VAR3', value: '123', public: true }
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' },
+              { key: 'VAR3', value: '123' }
             )
             expect(root_variables_inheritance).to eq(true)
           end
@@ -1232,21 +1232,21 @@ module Gitlab
             expect(config_processor.builds[0]).to include(
               name: 'test1',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'test1 var 1', public: true },
-                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'test1 var 1' },
+                              { key: 'VAR2', value: 'test2 var 2' }]
             )
 
             expect(config_processor.builds[1]).to include(
               name: 'test2',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true },
-                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'base var 1' },
+                              { key: 'VAR2', value: 'test2 var 2' }]
             )
 
             expect(config_processor.builds[2]).to include(
               name: 'test3',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'base var 1' }]
             )
 
             expect(config_processor.builds[3]).to include(

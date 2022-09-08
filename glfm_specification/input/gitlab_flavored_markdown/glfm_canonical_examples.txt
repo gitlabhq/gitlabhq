@@ -209,7 +209,7 @@ GLFM renders image elements as an audio player as long as the resource’s file 
 one of the following supported audio extensions `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`.
 Audio ignore the alternative text part of an image declaration.
 
-```````````````````````````````` example gitlab audio
+```````````````````````````````` example gitlab
 ![audio](audio.oga "audio title")
 .
 <p><audio src="audio.oga" title="audio title"></audio></p>
@@ -217,7 +217,7 @@ Audio ignore the alternative text part of an image declaration.
 
 Reference definitions work audio as well:
 
-```````````````````````````````` example gitlab audio
+```````````````````````````````` example gitlab
 [audio]: audio.oga "audio title"
 
 ![audio][audio]
@@ -235,7 +235,7 @@ one of the following supported video extensions  `.mp4`, `.m4v`, `.mov`, `.webm`
 Videos ignore the alternative text part of an image declaration.
 
 
-```````````````````````````````` example gitlab video
+```````````````````````````````` example gitlab
 ![video](video.m4v "video title")
 .
 <p><video src="video.m4v" title="video title"></video></p>
@@ -243,12 +243,88 @@ Videos ignore the alternative text part of an image declaration.
 
 Reference definitions work video as well:
 
-```````````````````````````````` example gitlab video
+```````````````````````````````` example gitlab
 [video]: video.mov "video title"
 
 ![video][video]
 .
 <p><video src="video.mov" title="video title"></video></p>
+````````````````````````````````
+
+## Table of contents
+
+See
+[table of contents](https://docs.gitlab.com/ee/user/markdown.html#table-of-contents)
+in the GitLab Flavored Markdown documentation.
+
+A table of contents is an unordered list that links to subheadings in the document.
+Add either the `[[_TOC_]]` or `[TOC]` tag on its own line.
+
+```````````````````````````````` example gitlab
+[TOC]
+
+# Heading 1
+
+## Heading 2
+.
+<nav>
+  <ul>
+    <li><a href="#heading-1">Heading 1</a></li>
+    <ul>
+      <li><a href="#heading-2">Heading 2</a></li>
+    </ul>
+  </ul>
+</nav>
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+````````````````````````````````
+
+```````````````````````````````` example gitlab
+[[_TOC_]]
+
+# Heading 1
+
+## Heading 2
+.
+<nav>
+  <ul>
+    <li><a href="#heading-1">Heading 1</a></li>
+    <ul>
+      <li><a href="#heading-2">Heading 2</a></li>
+    </ul>
+  </ul>
+</nav>
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+````````````````````````````````
+
+A table of contents is a block element. It should preceded and followed by a blank
+line.
+
+```````````````````````````````` example gitlab
+[[_TOC_]]
+text
+
+text
+[TOC]
+.
+<p>[[<em>TOC</em>]]text</p>
+<p>text[TOC]</p>
+````````````````````````````````
+
+A table of contents can be indented with up to three spaces.
+
+```````````````````````````````` example gitlab
+   [[_TOC_]]
+
+# Heading 1
+.
+<nav>
+  <ul>
+    <li><a href="#heading-1">Heading 1</a></li>
+  </ul>
+</nav>
+<h1>Heading 1</h1>
 ````````````````````````````````
 
 # Examples Using Internal Extensions

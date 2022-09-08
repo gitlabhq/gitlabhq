@@ -156,35 +156,84 @@ RSpec.describe Gitlab::GitalyClient::RefService do
   end
 
   describe '#local_branches' do
-    it 'sends a find_local_branches message' do
-      expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:find_local_branches)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return([])
+    let(:remote_name) { 'my_remote' }
 
-      client.local_branches
+    shared_examples 'common examples' do
+      it 'sends a find_local_branches message' do
+        target_commits = create_list(:gitaly_commit, 4)
+        branches = target_commits.each_with_index.map do |gitaly_commit, i|
+          Gitaly::FindLocalBranchResponse.new(
+            name: "#{remote_name}/#{i}",
+            commit: gitaly_commit,
+            commit_author: Gitaly::FindLocalBranchCommitAuthor.new(
+              name: gitaly_commit.author.name,
+              email: gitaly_commit.author.email,
+              date: gitaly_commit.author.date,
+              timezone: gitaly_commit.author.timezone
+            ),
+            commit_committer: Gitaly::FindLocalBranchCommitAuthor.new(
+              name: gitaly_commit.committer.name,
+              email: gitaly_commit.committer.email,
+              date: gitaly_commit.committer.date,
+              timezone: gitaly_commit.committer.timezone
+            )
+          )
+        end
+        local_branches = target_commits.each_with_index.map do |gitaly_commit, i|
+          Gitaly::Branch.new(name: "#{remote_name}/#{i}", target_commit: gitaly_commit)
+        end
+        response = [
+          Gitaly::FindLocalBranchesResponse.new(branches: branches[0, 2], local_branches: local_branches[0, 2]),
+          Gitaly::FindLocalBranchesResponse.new(branches: branches[2, 2], local_branches: local_branches[2, 2])
+        ]
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_local_branches)
+                .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+                .and_return(response)
+
+        subject = client.local_branches
+
+        expect(subject.length).to be(target_commits.length)
+      end
+
+      it 'parses and sends the sort parameter' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_local_branches)
+                .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
+                .and_return([])
+
+        client.local_branches(sort_by: 'updated_desc')
+      end
+
+      it 'translates known mismatches on sort param values' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_local_branches)
+                .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
+                .and_return([])
+
+        client.local_branches(sort_by: 'name_asc')
+      end
+
+      it 'raises an argument error if an invalid sort_by parameter is passed' do
+        expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
+      end
     end
 
-    it 'parses and sends the sort parameter' do
-      expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:find_local_branches)
-        .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
-        .and_return([])
+    context 'when feature flag :gitaly_simplify_find_local_branches_response is enabled' do
+      before do
+        stub_feature_flags(gitaly_simplify_find_local_branches_response: true)
+      end
 
-      client.local_branches(sort_by: 'updated_desc')
+      it_behaves_like 'common examples'
     end
 
-    it 'translates known mismatches on sort param values' do
-      expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:find_local_branches)
-        .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
-        .and_return([])
+    context 'when feature flag :gitaly_simplify_find_local_branches_response is disabled' do
+      before do
+        stub_feature_flags(gitaly_simplify_find_local_branches_response: false)
+      end
 
-      client.local_branches(sort_by: 'name_asc')
-    end
-
-    it 'raises an argument error if an invalid sort_by parameter is passed' do
-      expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
+      it_behaves_like 'common examples'
     end
   end
 

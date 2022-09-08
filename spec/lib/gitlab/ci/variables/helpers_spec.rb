@@ -15,9 +15,9 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     end
 
     let(:result) do
-      [{ key: 'key1', value: 'value1', public: true },
-       { key: 'key2', value: 'value22', public: true },
-       { key: 'key3', value: 'value3', public: true }]
+      [{ key: 'key1', value: 'value1' },
+       { key: 'key2', value: 'value22' },
+       { key: 'key3', value: 'value3' }]
     end
 
     subject { described_class.merge_variables(current_variables, new_variables) }
@@ -43,8 +43,8 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     context 'when new variables is nil' do
       let(:new_variables) {}
       let(:result) do
-        [{ key: 'key1', value: 'value1', public: true },
-         { key: 'key2', value: 'value2', public: true }]
+        [{ key: 'key1', value: 'value1' },
+         { key: 'key2', value: 'value2' }]
       end
 
       it { is_expected.to eq(result) }
@@ -57,8 +57,8 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     end
 
     let(:result) do
-      [{ key: 'key1', value: 'value1', public: true },
-       { key: 'key2', value: 'value2', public: true }]
+      [{ key: 'key1', value: 'value1' },
+       { key: 'key2', value: 'value2' }]
     end
 
     subject { described_class.transform_to_yaml_variables(variables) }
@@ -74,8 +74,8 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
 
   describe '.transform_from_yaml_variables' do
     let(:variables) do
-      [{ key: 'key1', value: 'value1', public: true },
-       { key: 'key2', value: 'value2', public: true }]
+      [{ key: 'key1', value: 'value1' },
+       { key: 'key2', value: 'value2' }]
     end
 
     let(:result) do
@@ -127,9 +127,9 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     let(:inheritance) { true }
 
     let(:result) do
-      [{ key: 'key1', value: 'value1', public: true },
-       { key: 'key2', value: 'value22', public: true },
-       { key: 'key3', value: 'value3', public: true }]
+      [{ key: 'key1', value: 'value1' },
+       { key: 'key2', value: 'value22' },
+       { key: 'key3', value: 'value3' }]
     end
 
     subject { described_class.inherit_yaml_variables(from: from, to: to, inheritance: inheritance) }
@@ -140,8 +140,8 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       let(:inheritance) { false }
 
       let(:result) do
-        [{ key: 'key2', value: 'value22', public: true },
-         { key: 'key3', value: 'value3', public: true }]
+        [{ key: 'key2', value: 'value22' },
+         { key: 'key3', value: 'value3' }]
       end
 
       it { is_expected.to eq(result) }
@@ -151,8 +151,8 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       let(:inheritance) { ['key2'] }
 
       let(:result) do
-        [{ key: 'key2', value: 'value22', public: true },
-         { key: 'key3', value: 'value3', public: true }]
+        [{ key: 'key2', value: 'value22' },
+         { key: 'key3', value: 'value3' }]
       end
 
       it { is_expected.to eq(result) }

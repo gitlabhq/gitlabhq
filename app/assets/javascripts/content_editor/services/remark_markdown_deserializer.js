@@ -237,6 +237,11 @@ const factorySpecs = {
       language: hastNode.properties.language,
     }),
   },
+
+  tableOfContents: {
+    type: 'block',
+    selector: 'tableofcontents',
+  },
 };
 
 const SANITIZE_ALLOWLIST = ['level', 'identifier', 'numeric', 'language', 'url', 'isReference'];
@@ -294,6 +299,7 @@ export default () => {
           'yaml',
           'toml',
           'json',
+          'tableOfContents',
         ],
       });
 

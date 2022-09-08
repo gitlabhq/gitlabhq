@@ -12,8 +12,8 @@ patch, and security releases. New releases are announced on the [GitLab blog](ht
 
 Our current policy is:
 
-- Backporting bug fixes for **only the current stable release** at any given time. (See [patch releases](#patch-releases).)
-- Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. (See [security releases](#security-releases).)
+- Backporting bug fixes for **only the current stable release** at any given time - see [patch releases](#patch-releases) below.
+- Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. In some circumstances (outlined in [security releases](#security-releases) below) we may address a security vulnerability using the [patch release](#patch-releases) process or regular monthly release process, that is, providing an update to the current stable release only, with no backports.
 
 In rare cases, release managers may make an exception and backport to more than
 the last two monthly releases. See
@@ -132,12 +132,15 @@ To request backporting to more than one stable release for consideration, raise 
 ### Security releases
 
 Security releases are a special kind of patch release that only include security
-fixes and patches (see below) for the previous two monthly releases in addition to the current stable release.
+fixes and patches for the previous two monthly releases in addition to the current stable release.
 
 For very serious security issues, there is
 [precedent](https://about.gitlab.com/releases/2016/05/02/cve-2016-4340-patches/)
 to backport security fixes to even more monthly releases of GitLab.
 This decision is made on a case-by-case basis.
+
+In some circumstances we may choose to address a vulnerability using the [patch release](#patch-releases) process or the regular monthly release process, that is, updating the current stable release only, with no backports. Factors influencing this decision include very low likelihood of exploitation, low impact, fix complexity and risk to stability. We will **always address 
+high and critical** security issues with a security release.
 
 ## More information
 

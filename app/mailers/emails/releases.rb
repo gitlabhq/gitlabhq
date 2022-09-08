@@ -11,7 +11,7 @@ module Emails
       )
       @recipient = User.find(user_id)
 
-      mail(
+      mail_with_locale(
         to: @recipient.notification_email_for(@project.group),
         subject: subject(release_email_subject)
       )

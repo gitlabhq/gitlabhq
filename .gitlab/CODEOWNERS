@@ -4,16 +4,17 @@
 
 * @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @kwiebers @nolith @jacobvosmaer-gitlab
 
-CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu
-docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu
-.gitlab/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu
+CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu @susantacker @dianalogan @kpaizee @sselhorn
+docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu @susantacker @dianalogan @kpaizee @sselhorn
+.gitlab/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @jeromezng @stanhu @susantacker @dianalogan @kpaizee @sselhorn
 
 ## Allows release tooling to update the Gitaly Version
 GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
-## Excludes documentation markdown files and deprecation/removal announcements from required approval
+## Excludes documentation files and deprecation/removal announcements from required approval
 /doc/*.md
 /doc/**/*.md
+/doc/**/*.png
 /data/deprecations/
 /data/removals/
 

@@ -72,6 +72,11 @@ msgstr ""
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
+msgid "#%d commit"
+msgid_plural "#%d commits"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "#%{issueIid} (closed)"
 msgstr ""
 
@@ -16652,13 +16657,13 @@ msgstr ""
 msgid "Flags"
 msgstr ""
 
-msgid "FloC|Configure whether you want to participate in FloC."
+msgid "FloC|Configure whether you want to participate in FLoC. %{floc_link_start}What is FLoC?%{floc_link_end}"
 msgstr ""
 
-msgid "FloC|Enable FloC (Federated Learning of Cohorts)"
+msgid "FloC|Federated Learning of Cohorts (FLoC)"
 msgstr ""
 
-msgid "FloC|Federated Learning of Cohorts"
+msgid "FloC|Participate in FLoC"
 msgstr ""
 
 msgid "FlowdockService|Enter your Flowdock token."
@@ -26871,6 +26876,9 @@ msgstr ""
 msgid "Notify|%{commit_link} in %{mr_link}"
 msgstr ""
 
+msgid "Notify|%{commits_text} from branch `%{target_branch}`"
+msgstr ""
+
 msgid "Notify|%{invite_email}, now known as %{user_name}, has accepted your invitation to join the %{target_name} %{target_model_name}."
 msgstr ""
 
@@ -26886,10 +26894,16 @@ msgstr ""
 msgid "Notify|%{paragraph_start}Hi %{name}!%{paragraph_end} %{paragraph_start}A new public key was added to your account:%{paragraph_end} %{paragraph_start}title: %{key_title}%{paragraph_end} %{paragraph_start}If this key was added in error, you can remove it under %{removal_link}%{paragraph_end}"
 msgstr ""
 
+msgid "Notify|%{updated_by_user_name} pushed new commits to merge request %{mr_link}"
+msgstr ""
+
 msgid "Notify|A new GPG key was added to your account:"
 msgstr ""
 
 msgid "Notify|All discussions on merge request %{mr_link} were resolved by %{name}"
+msgstr ""
+
+msgid "Notify|And %{total_stripped_new_commits_count} more"
 msgstr ""
 
 msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
@@ -29308,9 +29322,6 @@ msgstr ""
 msgid "Pipeline|Date"
 msgstr ""
 
-msgid "Pipeline|Detached merge request pipeline"
-msgstr ""
-
 msgid "Pipeline|Failed"
 msgstr ""
 
@@ -29318,6 +29329,9 @@ msgid "Pipeline|In progress"
 msgstr ""
 
 msgid "Pipeline|Manual"
+msgstr ""
+
+msgid "Pipeline|Merge request pipeline"
 msgstr ""
 
 msgid "Pipeline|Merge train pipeline"
@@ -33981,6 +33995,9 @@ msgid "Runners|Enter the number of seconds. This timeout takes precedence over l
 msgstr ""
 
 msgid "Runners|Executor"
+msgstr ""
+
+msgid "Runners|Filter projects"
 msgstr ""
 
 msgid "Runners|Get started with runners"

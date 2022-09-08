@@ -27,6 +27,7 @@ import Table from './table';
 import TableCell from './table_cell';
 import TableHeader from './table_header';
 import TableRow from './table_row';
+import TableOfContents from './table_of_contents';
 import Video from './video';
 
 export default Extension.create({
@@ -61,6 +62,7 @@ export default Extension.create({
           TableCell.name,
           TableHeader.name,
           TableRow.name,
+          TableOfContents.name,
           Video.name,
           ...HTMLNodes.map((htmlNode) => htmlNode.name),
         ],

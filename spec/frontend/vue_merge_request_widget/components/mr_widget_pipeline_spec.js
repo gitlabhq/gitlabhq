@@ -262,13 +262,13 @@ describe('MRWidgetPipeline', () => {
     });
 
     describe('for a detached merge request pipeline', () => {
-      it('renders a pipeline widget that reads "Detached merge request pipeline <ID> <status> for <SHA>"', () => {
-        pipeline.details.name = 'Detached merge request pipeline';
+      it('renders a pipeline widget that reads "Merge request pipeline <ID> <status> for <SHA>"', () => {
+        pipeline.details.name = 'Merge request pipeline';
         pipeline.merge_request_event_type = 'detached';
 
         factory();
 
-        const expected = `Detached merge request pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const expected = `Merge request pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
         const actual = trimText(findPipelineInfoContainer().text());
 
         expect(actual).toBe(expected);

@@ -269,14 +269,23 @@ module Gitlab
       end
 
       def consume_find_local_branches_response(response)
-        response.flat_map do |message|
-          message.branches.map do |gitaly_branch|
-            Gitlab::Git::Branch.new(
-              @repository,
-              gitaly_branch.name.dup,
-              gitaly_branch.commit_id,
-              commit_from_local_branches_response(gitaly_branch)
-            )
+        if Feature.enabled?(:gitaly_simplify_find_local_branches_response, type: :undefined)
+          response.flat_map do |message|
+            message.local_branches.map do |branch|
+              target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+              Gitlab::Git::Branch.new(@repository, branch.name, branch.target_commit.id, target_commit)
+            end
+          end
+        else
+          response.flat_map do |message|
+            message.branches.map do |gitaly_branch|
+              Gitlab::Git::Branch.new(
+                @repository,
+                gitaly_branch.name.dup,
+                gitaly_branch.commit_id,
+                commit_from_local_branches_response(gitaly_branch)
+              )
+            end
           end
         end
       end
