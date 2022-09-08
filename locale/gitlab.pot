@@ -46000,6 +46000,9 @@ msgstr ""
 msgid "cannot be changed if shared runners are enabled"
 msgstr ""
 
+msgid "cannot be changed since member is associated with a custom role"
+msgstr ""
+
 msgid "cannot be enabled"
 msgstr ""
 

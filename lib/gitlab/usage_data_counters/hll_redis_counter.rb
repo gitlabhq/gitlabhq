@@ -21,7 +21,6 @@ module Gitlab
       CATEGORIES_FOR_TOTALS = %w[
         analytics
         compliance
-        ecosystem
         epic_boards_usage
         epics_usage
         error_tracking
@@ -36,6 +35,7 @@ module Gitlab
         ci_users
         deploy_token_packages
         code_review
+        ecosystem
         error_tracking
         ide_edit
         importer

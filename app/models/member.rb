@@ -60,6 +60,7 @@ class Member < ApplicationRecord
     if: :project_bot?
   validate :access_level_inclusion
   validate :validate_member_role_access_level
+  validate :validate_access_level_locked_for_member_role, on: :update
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -435,6 +436,14 @@ class Member < ApplicationRecord
 
     if access_level != member_role.base_access_level
       errors.add(:member_role_id, _("role's base access level does not match the access level of the membership"))
+    end
+  end
+
+  def validate_access_level_locked_for_member_role
+    return unless member_role_id
+
+    if access_level_changed?
+      errors.add(:access_level, _("cannot be changed since member is associated with a custom role"))
     end
   end
 

@@ -52,13 +52,19 @@ module API
 
           merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
+          expiry_time = if Feature.enabled?(:increase_branch_cache_expiry, type: :ops)
+                          60.minutes
+                        else
+                          10.minutes
+                        end
+
           present_cached(
             branches,
             with: Entities::Branch,
             current_user: current_user,
             project: user_project,
             merged_branch_names: merged_branch_names,
-            expires_in: 10.minutes,
+            expires_in: expiry_time,
             cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
           )
         end

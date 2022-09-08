@@ -122,7 +122,7 @@ prompts the user to sign in again through SSO.
 
 An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API activity.
 
-SSO has the following effects when enabled:
+SSO enforcement has the following effects when enabled:
 
 - For groups, users can't share a project in the group outside the top-level group,
   even if the project is forked.
@@ -157,8 +157,8 @@ If you have any questions on configuring the SAML app, please contact your provi
 Follow the Azure documentation on [configuring single sign-on to applications](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) with the notes below for consideration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU). The video is outdated in regard to
-objectID mapping and the [SCIM documentation should be followed](scim_setup.md#azure-configuration-steps).
+For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
+The video is outdated in regard to objectID mapping and you should follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory).
 
 | GitLab Setting                       | Azure Field                                |
 | ------------------------------------ | ------------------------------------------ |
@@ -168,7 +168,7 @@ objectID mapping and the [SCIM documentation should be followed](scim_setup.md#a
 | Identity provider single sign-on URL | Login URL                                  |
 | Certificate fingerprint              | Thumbprint                                 |
 
-The recommended attributes and claims settings are:
+The recommended attributes are:
 
 - **Unique User Identifier (Name identifier)** set to `user.objectID`.
 - **nameid-format** set to persistent.

@@ -195,6 +195,15 @@ RSpec.describe Member do
             expect(member).not_to be_valid
           end
         end
+
+        context 'access_level cannot be changed' do
+          it 'is invalid' do
+            member.access_level = Gitlab::Access::MAINTAINER
+
+            expect(member).not_to be_valid
+            expect(member.errors.full_messages).to include( "Access level cannot be changed since member is associated with a custom role")
+          end
+        end
       end
     end
   end

@@ -10,7 +10,7 @@ Integrate your project to send notifications from GitLab to a
 room of your choice in [Google Chat](https://chat.google.com/) (former Google
 Hangouts).
 
-## How it works
+## Integration workflow
 
 To enable this integration, first you need to create a webhook for the room in
 Google Chat where you want to receive the notifications from your project.
@@ -23,9 +23,9 @@ notifications to Google Chat:
 
 ![Google Chat integration illustration](img/google_chat_integration_v13_11.png)
 
-## In Google Chat
+## Enable the integration in Google Chat
 
-Select a room and create a webhook:
+To enable the integration in Google Chat:
 
 1. Enter the room where you want to receive notifications from GitLab.
 1. Open the room dropdown menu on the top-left and select **Manage webhooks**.
@@ -35,20 +35,6 @@ Select a room and create a webhook:
 1. Copy the webhook URL.
 
 For further details, see [the Google Chat documentation for configuring webhooks](https://developers.google.com/chat/how-tos/webhooks).
-
-## In GitLab
-
-Enable the Google Chat integration in GitLab:
-
-1. In your project, go to **Settings > Integrations** and select **Google Chat**.
-1. Scroll down to the end of the page where you find a **Webhook** field.
-1. Enter the webhook URL you copied from Google Chat.
-1. Select the events you want to be notified about in your Google Chat room.
-1. Optional. Select **Test settings** to verify the connection.
-1. Select **Save changes**.
-
-To test the integration, make a change based on the events you selected and
-see the notification in your Google Chat room.
 
 ### Enable threads in Google Chat
 
@@ -62,3 +48,17 @@ To enable threaded notifications for the same GitLab object (for example, an iss
 1. Select **Create**.
 
 You cannot enable threaded replies for existing Google Chat spaces.
+
+## Enable the integration in GitLab
+
+To enable the integration in GitLab:
+
+1. In your project, go to **Settings > Integrations** and select **Google Chat**.
+1. Scroll down to the end of the page where you find a **Webhook** field.
+1. Enter the webhook URL you copied from Google Chat.
+1. Select the events you want to be notified about in your Google Chat room.
+1. Optional. Select **Test settings** to verify the connection.
+1. Select **Save changes**.
+
+To test the integration, make a change based on the events you selected and
+see the notification in your Google Chat room.

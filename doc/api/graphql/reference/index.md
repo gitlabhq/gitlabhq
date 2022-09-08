@@ -6093,6 +6093,7 @@ The connection type for [`BoardEpic`](#boardepic).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="boardepicconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="boardepicconnectionedges"></a>`edges` | [`[BoardEpicEdge]`](#boardepicedge) | A list of edges. |
 | <a id="boardepicconnectionnodes"></a>`nodes` | [`[BoardEpic]`](#boardepic) | A list of nodes. |
 | <a id="boardepicconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -7265,6 +7266,7 @@ The connection type for [`Epic`](#epic).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="epicconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="epicconnectionedges"></a>`edges` | [`[EpicEdge]`](#epicedge) | A list of edges. |
 | <a id="epicconnectionnodes"></a>`nodes` | [`[Epic]`](#epic) | A list of nodes. |
 | <a id="epicconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

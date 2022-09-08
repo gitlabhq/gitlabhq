@@ -5,110 +5,129 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SCIM provisioning using SAML SSO for GitLab.com groups **(PREMIUM SAAS)**
+# Configure SCIM for GitLab.com groups **(PREMIUM SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
 
-System for Cross-domain Identity Management (SCIM), is an open standard that enables the
-automation of user provisioning. When SCIM is provisioned for a GitLab group, membership of
-that group is synchronized between GitLab and the identity provider.
+You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
+
+- Create users.
+- Remove users (deactivate SCIM identity).
+
+GitLab SAML SSO SCIM doesn't support updating users.
+
+When SCIM is enabled for a GitLab group, membership of that group is synchronized between GitLab and an identity provider.
 
 The GitLab [SCIM API](../../../api/scim.md) implements part of [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
 
-## Features
+## Configure GitLab
 
-The following actions are available:
+Prerequisites:
 
-- Create users
-- Remove users (deactivate SCIM identity)
+- [Group single sign-on](index.md) must be configured.
 
-The following identity providers are supported:
-
-- Azure
-- Okta
-
-NOTE:
-Other providers can work with GitLab but they have not been tested and are not supported.
-
-## Requirements
-
-- [Group Single Sign-On](index.md) must be configured.
-
-## GitLab configuration
-
-Once [Group Single Sign-On](index.md) has been configured, we can:
+To configure GitLab SAML SSO SCIM:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > SAML SSO**.
 1. Select **Generate a SCIM token**.
-1. Save the token and URL for use in the next step.
+1. For configuration of your identity provider, save the:
+   - Token from the **Your SCIM token** field.
+   - URL from the **SCIM API endpoint URL** field.
 
-![SCIM token configuration](img/scim_token_v13_3.png)
+## Configure an identity provider
 
-## Identity Provider configuration
+You can configure one of the following as an identity provider:
 
-- [Azure](#azure-configuration-steps)
-- [Okta](#okta-configuration-steps)
+- [Azure Active Directory](#configure-azure-active-directory).
+- [Okta](#configure-okta).
+- [OneLogin](#configure-onelogin).
 
-### Azure configuration steps
+NOTE:
+Other providers can work with GitLab but they have not been tested and are not supported.
 
-The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) now needs to be set up for SCIM. You can refer to [Azure SCIM setup documentation](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/use-scim-to-provision-users-and-groups#getting-started).
+### Configure Azure Active Directory
 
-1. In your app, go to the Provisioning tab, and set the **Provisioning Mode** to **Automatic**.
-   Then fill in the **Admin Credentials**, and save. The **Tenant URL** and **secret token** are the items
-   retrieved in the [previous step](#gitlab-configuration).
+The SAML application created during [single sign-on](index.md) set up for
+[Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal)
+must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
-1. After saving, two more tabs appear:
+To configure Azure Active Directory for SCIM:
 
-    - **Settings**: We recommend setting a notification email and selecting the **Send an email notification when a failure occurs** checkbox.
-      You also control what is actually synced by selecting the **Scope**. For example, **Sync only assigned users and groups** only syncs the users and groups assigned to the application. Otherwise, it syncs the whole Active Directory.
+1. In your app, go to the **Provisioning** tab and select **Get started**.
+1. Set the **Provisioning Mode** to **Automatic**.
+1. Complete the **Admin Credentials** using the value of:
+   - **SCIM API endpoint URL** in GitLab for the **Tenant URL** field.
+   - **Your SCIM token** in GitLab for the **Secret Token** field.
+1. Select **Test Connection**. If the test is successful, save your configuration before continuing, or see the
+   [troubleshooting](#troubleshooting) information.
+1. Select **Save**.
 
-    - **Mappings**: We recommend keeping **Provision Azure Active Directory Users** enabled, and disable **Provision Azure Active Directory Groups**.
-      Leaving **Provision Azure Active Directory Groups** enabled does not break the SCIM user provisioning, but it causes errors in Azure AD that may be confusing and misleading.
+After saving, **Settings** and **Mappings** sections appear.
 
-1. You can then test the connection by selecting **Test Connection**. If the connection is successful, save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
-
-#### Configure attribute mapping
-
-Follow [Azure documentation to configure the attribute mapping](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/customize-application-attributes).
-
-The following table below provides an attribute mapping known to work with GitLab. If
-your SAML configuration differs from [the recommended SAML settings](index.md#azure-setup-notes),
-modify the corresponding `customappsso` settings accordingly. In particular, the `externalId` must
-match the [SAML NameID](index.md#nameid).
-If a mapping is not listed in the table, use the Azure defaults.
-For a list of required attributes, refer to the [SCIM API documentation](../../../api/scim.md).
-
-| Azure Active Directory Attribute | `customappsso` Attribute       | Matching precedence |
-| -------------------------------- | ------------------------------ | ------------------- |
-| `objectId`                       | `externalId`                   | 1                   |
-| `userPrincipalName`              | `emails[type eq "work"].value` |                     |
-| `mailNickname`                   | `userName`                     |                     |
-
-For guidance, you can view [an example configuration](example_saml_config.md#azure-active-directory).
-
-1. Below the mapping list select **Show advanced options > Edit attribute list for AppName**.
-1. Ensure the `id` is the primary and required field, and `externalId` is also required.
-
-   NOTE:
-   `username` should neither be primary nor required as we don't support
-   that field on GitLab SCIM yet.
-
-1. Save all changes.
-1. In the **Provisioning** step, set the `Provisioning Status` to `On`.
-
-Once enabled, the synchronization details and any errors appears on the
-bottom of the **Provisioning** screen, together with a link to the audit events.
+1. Under **Settings**, if required, set a notification email and select the
+   **Send an email notification when a failure occurs** checkbox.
+1. Under **Mappings**, we recommend you:
+   1. Keep **Provision Azure Active Directory Users** enabled and select the **Provision Azure Active Directory Users**
+      link to [configure attribute mappings](#configure-attribute-mappings).
+   1. Below the mapping list select the **Show advanced options** checkbox.
+   1. Select the **Edit attribute list for customappsso** link.
+   1. Ensure the `id` is the primary and required field, and `externalId` is also required.
+   1. Select **Save**.
+1. Return to the **Provisioning** tab, saving unsaved changes if necessary.
+1. Select **Edit attribute mappings**.
+1. Under **Mappings**:
+   1. Select **Provision Azure Active Directory Groups**.
+   1. On the Attribute Mapping page, turn off the **Enabled** toggle. Leaving it turned on doesn't break the SCIM user
+      provisioning, but it causes errors in Azure Active Directory that may be confusing and misleading.
+   1. Select **Save**.
+1. Return to the **Provisioning** tab, saving unsaved changes if necessary.
+1. Select **Edit attribute mappings**.
+1. Turn on the **Provisioning Status** toggle. Synchronization details and any errors appears on the bottom of the
+   **Provisioning** screen, together with a link to the audit events.
 
 WARNING:
-Once synchronized, changing the field mapped to `id` and `externalId` may cause a number of errors. These include provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
+Once synchronized, changing the field mapped to `id` and `externalId` may cause a number of errors. These include
+provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
 
-### Okta configuration steps
+#### Configure attribute mappings
+
+While [configuring Azure Active Directory for SCIM](#configure-azure-active-directory), you configure attribute mappings.
+For an example, see [example configuration](example_saml_config.md#scim-mapping).
+
+The following table provides attribute mappings known to work with GitLab.
+
+| Source attribute    | Target attribute               | Matching precedence |
+|:--------------------|:-------------------------------|:--------------------|
+| `objectId`          | `externalId`                   | 1                   |
+| `userPrincipalName` | `emails[type eq "work"].value` |                     |
+| `mailNickname`      | `userName`                     |                     |
+
+Each attribute mapping has:
+
+- An Azure Active Directory attribute (source attribute).
+- A `customappsso` attribute (target attribute).
+- A matching precedence.
+
+For each attribute:
+
+1. Select the attribute to edit it.
+1. Select the required settings.
+1. Select **Ok**.
+
+If your SAML configuration differs from [the recommended SAML settings](index.md#azure-setup-notes), select the mapping
+attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
+target attribute.
+
+If a mapping is not listed in the table, use the Azure Active Directory defaults. For a list of required attributes,
+refer to the [SCIM API documentation](../../../api/scim.md).
+
+### Configure Okta
 
 Before you start this section:
 
 - Check that you are using Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This product tier is required to use SCIM on Okta. To check which Okta product you are using, check your signed Okta contract, contact your Okta AE, CSM, or Okta support.
-- Complete the [GitLab configuration](#gitlab-configuration) process.
+- Complete the [GitLab configuration](#configure-gitlab) process.
 - Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/), as described in the [Okta setup notes](index.md#okta-setup-notes).
 - Check that your Okta SAML setup matches our documentation exactly, especially the NameID configuration. Otherwise, the Okta SCIM app may not work properly.
 
@@ -140,7 +159,7 @@ The Okta GitLab application currently only supports SCIM. Continue
 using the separate Okta [SAML SSO](index.md) configuration along with the new SCIM
 application described above. An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/216173) to add SAML support to the Okta GitLab application.
 
-### OneLogin
+### Configure OneLogin
 
 As the developers of this app, OneLogin provides a "GitLab (SaaS)" app in their catalog, which includes a SCIM integration.
 Please reach out to OneLogin if you encounter issues.
@@ -317,4 +336,4 @@ and the error response can include a HTML result of the GitLab URL `https://gitl
 
 This error is harmless and occurs because Group provisioning was turned on but GitLab SCIM integration does not support it nor require it. To
 remove the error, follow the instructions in the Azure configuration guide to disable the option
-[`Synchronize Azure Active Directory Groups to AppName`](#azure-configuration-steps).
+[`Synchronize Azure Active Directory Groups to AppName`](#configure-azure-active-directory).

@@ -159,44 +159,6 @@ module Trigger
     end
   end
 
-  class Omnibus < Base
-    def self.access_token
-      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'e2e:package-and-test' job)" at https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/settings/access_tokens
-      ENV['OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN'] || super
-    end
-
-    private
-
-    def downstream_project_path
-      ENV.fetch('OMNIBUS_PROJECT_PATH', 'gitlab-org/build/omnibus-gitlab-mirror')
-    end
-
-    def ref_param_name
-      'OMNIBUS_BRANCH'
-    end
-
-    def primary_ref
-      'master'
-    end
-
-    def trigger_stable_branch_if_detected?
-      true
-    end
-
-    def extra_variables
-      {
-        'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
-        'IMAGE_TAG' => ENV['CI_COMMIT_SHA'],
-        'SKIP_QA_DOCKER' => 'true',
-        'SKIP_QA_TEST' => 'true',
-        'ALTERNATIVE_SOURCES' => 'true',
-        'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
-        'ee' => Trigger.ee? ? 'true' : 'false',
-        'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE']
-      }
-    end
-  end
-
   class CNG < Base
     def variables
       # Delete variables that aren't useful when using native triggers.
@@ -467,8 +429,6 @@ end
 
 if $0 == __FILE__
   case ARGV[0]
-  when 'omnibus'
-    Trigger::Omnibus.new.invoke!(downstream_job_name: 'Trigger:qa-test').wait!
   when 'cng'
     Trigger::CNG.new.invoke!.wait!
   when 'gitlab-com-database-testing'
