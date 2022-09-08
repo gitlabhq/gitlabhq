@@ -173,6 +173,7 @@ RSpec.configure do |config|
   config.include TestEnv
   config.include FileReadHelpers
   config.include Database::MultipleDatabases
+  config.include Database::WithoutCheckConstraint
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature

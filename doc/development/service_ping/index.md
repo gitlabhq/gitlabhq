@@ -408,7 +408,7 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
 1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
-1. Run `ServicePing::SubmitService.new.execute`.
+1. Run `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`.
 
 #### Trigger Service Ping with a detached screen session
 
@@ -433,7 +433,7 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 1. Run:
 
    ```shell
-   ServicePing::SubmitService.new.execute
+   GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
    ```
 
 1. To detach from screen, press `ctrl + A`, `ctrl + D`.
@@ -493,7 +493,7 @@ To skip database write operations, DevOps report creation, and storage of usage 
 
 ```shell
 skip_db_write:
-ServicePing::SubmitService.new(skip_db_write: true).execute
+GitlabServicePingWorker.new.perform('triggered_from_cron' => false, 'skip_db_write' => true)
 ```
 
 ## Monitoring

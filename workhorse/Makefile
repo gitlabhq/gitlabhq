@@ -84,8 +84,8 @@ test: prepare-tests
 	else \
 		$(MAKE) run-gitaly ; \
 	fi
-	@go test -tags "$(BUILD_TAGS)" ./... ;\
-	status="$$?" ;\
+	go test ${TEST_OPTIONS} -tags "$(BUILD_TAGS)" ./...
+	@status="$$?" ;\
 	if [ -f "$(GITALY_PID_FILE)" ] ; then \
 		echo "Clean up Gitaly server for workhorse integration test" ;\
 		kill -9 $$(cat $(GITALY_PID_FILE)) ;\
@@ -96,10 +96,21 @@ test: prepare-tests
 	exit "$$status"
 	@echo SUCCESS
 
+.PHONY: test-race
+test-race: TEST_OPTIONS = -race
+test-race: test
+
+.PHONY: test-coverage
+test-coverage: TEST_OPTIONS = -cover -coverprofile=cover.out
+test-coverage: test
+	$(call message, "Calculating the coverage")
+	[ -f cover.out ] && go tool cover -html cover.out -o coverage.html
+	[ -f cover.out ] && go tool cover -func cover.out
+
 .PHONY:	clean
 clean: clean-workhorse clean-build
 	$(call message,$@)
-	rm -rf testdata/data testdata/scratch
+	rm -rf testdata/data testdata/scratch cover.out coverage.html
 
 .PHONY:	clean-workhorse
 clean-workhorse:

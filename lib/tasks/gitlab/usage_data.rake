@@ -24,9 +24,9 @@ namespace :gitlab do
 
     desc 'GitLab | UsageData | Generate usage ping and send it to Versions Application'
     task generate_and_send: :environment do
-      result = ServicePing::SubmitService.new.execute
+      response = GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
 
-      puts Gitlab::Json.pretty_generate(result.attributes)
+      puts response.body, response.code, response.message, response.headers.inspect
     end
 
     desc 'GitLab | UsageDataMetrics | Generate usage ping from metrics definition YAML files in JSON'

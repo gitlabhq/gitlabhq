@@ -220,7 +220,9 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	secret.SetPath(boot.secretPath)
 
-	keyWatcher := redis.NewKeyWatcher()
+	keyWatcher := redis.NewKeyWatcher(
+		os.Getenv("GITLAB_WORKHORSE_REDIS_SUBSCRIBE_MANY") == "1",
+	)
 	if cfg.Redis != nil {
 		redis.Configure(cfg.Redis, redis.DefaultDialFunc)
 		go keyWatcher.Process()

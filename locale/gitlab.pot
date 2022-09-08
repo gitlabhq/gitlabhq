@@ -6731,6 +6731,12 @@ msgstr ""
 msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
+msgid "BranchRules|default"
+msgstr ""
+
+msgid "BranchRules|protected"
+msgstr ""
+
 msgid "Branches"
 msgstr ""
 
@@ -29755,10 +29761,10 @@ msgstr ""
 msgid "Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout."
 msgstr ""
 
-msgid "Preferences|Choose what content you want to see on a project’s overview page."
+msgid "Preferences|Choose what content you want to see by default on your dashboard."
 msgstr ""
 
-msgid "Preferences|Choose what content you want to see on your homepage."
+msgid "Preferences|Choose what content you want to see on a project’s overview page."
 msgstr ""
 
 msgid "Preferences|Color for added lines"
@@ -29782,6 +29788,9 @@ msgstr ""
 msgid "Preferences|Customize the colors of removed and added lines in diffs."
 msgstr ""
 
+msgid "Preferences|Dashboard"
+msgstr ""
+
 msgid "Preferences|Diff colors"
 msgstr ""
 
@@ -29801,9 +29810,6 @@ msgid "Preferences|For example: 30 minutes ago."
 msgstr ""
 
 msgid "Preferences|Gitpod"
-msgstr ""
-
-msgid "Preferences|Homepage content"
 msgstr ""
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."

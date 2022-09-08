@@ -116,12 +116,11 @@ between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
 NOTE:
 While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
 
-### Default dashboard
+### Dashboard
 
 For users who have access to a large number of projects but only keep up with a
-select few, the amount of activity on the default dashboard page can be
-overwhelming. Changing this setting allows you to redefine your default
-dashboard.
+select few, the amount of activity on the your dashboard can be
+overwhelming. Changing this setting allows you to redefine what is displayed by default.
 
 You can include the following options for your default dashboard view:
 

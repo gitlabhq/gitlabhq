@@ -218,6 +218,11 @@ module Gitlab
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
             redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
+
+            if Feature.enabled?(:workhorse_long_polling_publish_many)
+              redis.publish("#{NOTIFICATION_CHANNEL}:#{key}", value)
+            end
+
             value
           else
             redis.get(key)

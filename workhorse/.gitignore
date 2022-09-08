@@ -8,5 +8,6 @@ testdata/alt-public
 /gitlab-zip-metadata
 /_build
 coverage.html
+cover.out
 /*.toml
 /gitaly.pid

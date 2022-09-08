@@ -50,7 +50,7 @@ RSpec.describe "Admin Runners" do
 
         it 'shows an instance badge' do
           within_runner_row(instance_runner.id) do
-            expect(page).to have_selector '.badge', text: 'Instance'
+            expect(page).to have_selector '.badge', text: s_('Runners|Instance')
           end
         end
       end

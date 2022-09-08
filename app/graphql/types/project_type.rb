@@ -566,7 +566,7 @@ module Types
       project.container_repositories.size
     end
 
-    def ci_config_variables(sha)
+    def ci_config_variables(sha:)
       result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
 
       return if result.nil?

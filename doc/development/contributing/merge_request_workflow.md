@@ -35,12 +35,23 @@ and see the [Development section](../../index.md) for the required guidelines.
 
 ## Merge request guidelines for contributors
 
-If you find an issue, please submit a merge request with a fix or improvement, if
-you can, and include tests. If you don't know how to fix the issue but can write a test
-that exposes the issue, we will accept that as well. In general, bug fixes that
-include a regression test are merged quickly, while new features without proper
-tests might be slower to receive feedback. The workflow to make a merge
-request is as follows:
+If you find an issue, please submit a merge request with a fix or improvement,
+if you can, and include tests.
+
+If the change is non-trivial, we encourage you to
+start a discussion with [a product manager or a member of the team](https://about.gitlab.com/handbook/product/categories/).
+You can do
+this by tagging them in an MR before submitting the code for review. Talking
+to team members can be helpful when making design decisions. Communicating the
+intent behind your changes can also help expedite merge request reviews.
+
+If
+you don't know how to fix the issue but can write a test that exposes the
+issue, we will accept that as well. In general, bug fixes that include a
+regression test are merged quickly. New features without proper tests
+might be slower to receive feedback.
+
+To create a merge request:
 
 1. [Fork](../../user/project/repository/forking_workflow.md) the project into
    your personal namespace (or group) on GitLab.com.

@@ -770,7 +770,7 @@ To set up Service Ping locally, you must:
 1. Using the `gitlab` Rails console, manually trigger Service Ping:
 
    ```ruby
-   ServicePing::SubmitService.new.execute
+   GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
    ```
 
 1. Use the `versions` Rails console to check the Service Ping was successfully received,

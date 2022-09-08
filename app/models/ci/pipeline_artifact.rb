@@ -7,6 +7,7 @@ module Ci
     include UpdateProjectStatistics
     include Artifactable
     include FileStoreMounter
+    include Lockable
     include Presentable
 
     FILE_SIZE_LIMIT = 10.megabytes.freeze
