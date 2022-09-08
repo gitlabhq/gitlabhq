@@ -9,7 +9,7 @@ class OnboardingProgressService
     end
 
     def execute(action:)
-      return unless OnboardingProgress.not_completed?(namespace_id, action)
+      return unless Onboarding::Progress.not_completed?(namespace_id, action)
 
       Namespaces::OnboardingProgressWorker.perform_async(namespace_id, action)
     end
@@ -26,6 +26,6 @@ class OnboardingProgressService
   def execute(action:)
     return unless @namespace
 
-    OnboardingProgress.register(@namespace, action)
+    Onboarding::Progress.register(@namespace, action)
   end
 end

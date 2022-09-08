@@ -137,7 +137,7 @@ module Ci
       return false unless @bridge.triggers_child_pipeline?
 
       # only applies to parent-child pipelines not multi-project
-      ancestors_of_new_child = @bridge.pipeline.self_and_ancestors
+      ancestors_of_new_child = @bridge.pipeline.self_and_project_ancestors
       ancestors_of_new_child.count > MAX_NESTED_CHILDREN
     end
 

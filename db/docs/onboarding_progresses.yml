@@ -1,7 +1,7 @@
 ---
 table_name: onboarding_progresses
 classes:
-- OnboardingProgress
+- Onboarding::Progress
 feature_categories:
 - onboarding
 description: TODO

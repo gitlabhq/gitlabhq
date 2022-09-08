@@ -35,7 +35,7 @@ module Gitlab
         private
 
         def report_builds
-          @pipeline.latest_report_builds_in_self_and_descendants(::Ci::JobArtifact.of_report_type(:coverage))
+          @pipeline.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:coverage))
         end
       end
     end

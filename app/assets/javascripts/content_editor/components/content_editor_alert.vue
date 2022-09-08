@@ -14,19 +14,32 @@ export default {
     };
   },
   methods: {
-    displayAlert({ message, variant }) {
+    displayAlert({ message, variant, action, actionLabel }) {
       this.message = message;
       this.variant = variant;
+      this.action = action;
+      this.actionLabel = actionLabel;
     },
     dismissAlert() {
       this.message = null;
+    },
+    primaryAction() {
+      this.dismissAlert();
+      this.action?.();
     },
   },
 };
 </script>
 <template>
   <editor-state-observer @alert="displayAlert">
-    <gl-alert v-if="message" class="gl-mb-6" :variant="variant" @dismiss="dismissAlert">
+    <gl-alert
+      v-if="message"
+      class="gl-mb-6"
+      :variant="variant"
+      :primary-button-text="actionLabel"
+      @dismiss="dismissAlert"
+      @primaryAction="primaryAction"
+    >
       {{ message }}
     </gl-alert>
   </editor-state-observer>

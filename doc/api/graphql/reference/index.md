@@ -12682,6 +12682,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupgroupmembersaccesslevels"></a>`accessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Filter members by the given access levels. |
 | <a id="groupgroupmembersrelations"></a>`relations` | [`[GroupMemberRelation!]`](#groupmemberrelation) | Filter members by the given member relations. |
 | <a id="groupgroupmemberssearch"></a>`search` | [`String`](#string) | Search query. |
+| <a id="groupgroupmemberssort"></a>`sort` | [`MemberSort`](#membersort) | sort query. |
 
 ##### `Group.issues`
 
@@ -16597,6 +16598,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectprojectmembersrelations"></a>`relations` | [`[ProjectMemberRelation!]`](#projectmemberrelation) | Filter members by the given member relations. |
 | <a id="projectprojectmemberssearch"></a>`search` | [`String`](#string) | Search query. |
+| <a id="projectprojectmemberssort"></a>`sort` | [`MemberSort`](#membersort) | sort query. |
 
 ##### `Project.release`
 
@@ -20317,6 +20319,25 @@ Possible identifier types for a measurement.
 | <a id="measurementidentifierpipelines_succeeded"></a>`PIPELINES_SUCCEEDED` | Pipeline count with success status. |
 | <a id="measurementidentifierprojects"></a>`PROJECTS` | Project count. |
 | <a id="measurementidentifierusers"></a>`USERS` | User count. |
+
+### `MemberSort`
+
+Values for sorting members.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="membersortaccess_level_asc"></a>`ACCESS_LEVEL_ASC` | Access level ascending order. |
+| <a id="membersortaccess_level_desc"></a>`ACCESS_LEVEL_DESC` | Access level descending order. |
+| <a id="membersortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="membersortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="membersortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="membersortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="membersortuser_full_name_asc"></a>`USER_FULL_NAME_ASC` | User's full name ascending order. |
+| <a id="membersortuser_full_name_desc"></a>`USER_FULL_NAME_DESC` | User's full name descending order. |
+| <a id="membersortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="membersortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="membersortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="membersortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `MergeRequestNewState`
 

@@ -13,11 +13,11 @@ RSpec.describe LearnGitlab::Onboarding do
         *described_class::ACTION_ISSUE_IDS.keys,
         *described_class::ACTION_PATHS,
         :security_scan_enabled
-      ].map { |key| OnboardingProgress.column_name(key) }
+      ].map { |key| ::Onboarding::Progress.column_name(key) }
     end
 
     before do
-      expect(OnboardingProgress).to receive(:find_by).with(namespace: namespace).and_return(onboarding_progress)
+      expect(::Onboarding::Progress).to receive(:find_by).with(namespace: namespace).and_return(onboarding_progress)
     end
 
     subject { described_class.new(namespace).completed_percentage }

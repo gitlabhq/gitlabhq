@@ -6,7 +6,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
   let_it_be(:plan) { create(:default_plan) }
   let_it_be_with_reload(:project_hook) { create(:project_hook) }
   let_it_be_with_reload(:system_hook) { create(:system_hook) }
-  let_it_be_with_reload(:integration_hook) { create(:service_hook) }
+  let_it_be_with_reload(:integration_hook) { create(:jenkins_integration).service_hook }
   let_it_be(:limit) { 1 }
 
   using RSpec::Parameterized::TableSyntax

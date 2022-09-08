@@ -359,14 +359,6 @@ module Ci
       runner_projects.limit(2).count(:all) > 1
     end
 
-    def assigned_to_group?
-      runner_namespaces.any?
-    end
-
-    def assigned_to_project?
-      runner_projects.any?
-    end
-
     def match_build_if_online?(build)
       active? && online? && matches_build?(build)
     end

@@ -43,7 +43,7 @@ module Ci
     end
 
     def last_update_timestamp(pipeline_hierarchy)
-      pipeline_hierarchy&.self_and_descendants&.maximum(:updated_at)
+      pipeline_hierarchy&.self_and_project_descendants&.maximum(:updated_at)
     end
   end
 end

@@ -19,11 +19,11 @@ RSpec.describe Namespaces::OnboardingIssueCreatedWorker, '#perform' do
     let(:job_args) { [namespace.id] }
 
     it 'sets the onboarding progress action' do
-      OnboardingProgress.onboard(namespace)
+      Onboarding::Progress.onboard(namespace)
 
       subject
 
-      expect(OnboardingProgress.completed?(namespace, :issue_created)).to eq(true)
+      expect(Onboarding::Progress.completed?(namespace, :issue_created)).to eq(true)
     end
   end
 end

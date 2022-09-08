@@ -96,7 +96,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/namespace_statistics.rb'
     - 'app/models/note.rb'
     - 'app/models/note_diff_file.rb'
-    - 'app/models/onboarding_progress.rb'
     - 'app/models/operations/feature_flags/user_list.rb'
     - 'app/models/packages/build_info.rb'
     - 'app/models/packages/maven/metadatum.rb'

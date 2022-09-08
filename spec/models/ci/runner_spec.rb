@@ -1326,54 +1326,6 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe '#assigned_to_group?' do
-    subject { runner.assigned_to_group? }
-
-    context 'when project runner' do
-      let(:runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-      let(:project) { create(:project) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when shared runner' do
-      let(:runner) { create(:ci_runner, :instance, description: 'Shared runner') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when group runner' do
-      let(:group) { create(:group) }
-      let(:runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#assigned_to_project?' do
-    subject { runner.assigned_to_project? }
-
-    context 'when group runner' do
-      let(:runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
-      let(:group) { create(:group) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when shared runner' do
-      let(:runner) { create(:ci_runner, :instance, description: 'Shared runner') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when project runner' do
-      let(:runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-      let(:project) { create(:project) }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
   describe '#pick_build!' do
     let(:build) { create(:ci_build) }
     let(:runner) { create(:ci_runner) }

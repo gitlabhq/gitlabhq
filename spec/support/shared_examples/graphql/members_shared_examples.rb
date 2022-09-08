@@ -52,6 +52,15 @@ RSpec.shared_examples 'querying members with a group' do
       expect(subject).to contain_exactly(resource_member, group_1_member, root_group_member)
     end
 
+    context 'with sort options' do
+      let(:args) { { sort: 'name_asc' } }
+
+      it 'searches users by user name' do
+        # the order is important here
+        expect(subject.items).to eq([root_group_member, resource_member, group_1_member])
+      end
+    end
+
     context 'with search' do
       context 'when the search term matches a user' do
         let(:args) { { search: 'test' } }

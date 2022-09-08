@@ -19,12 +19,12 @@ RSpec.describe OnboardingProgressService do
 
     context 'when onboarded' do
       before do
-        OnboardingProgress.onboard(namespace)
+        Onboarding::Progress.onboard(namespace)
       end
 
       context 'when action is already completed' do
         before do
-          OnboardingProgress.register(namespace, action)
+          Onboarding::Progress.register(namespace, action)
         end
 
         it 'does not schedule a worker' do
@@ -52,13 +52,13 @@ RSpec.describe OnboardingProgressService do
 
     context 'when the namespace is a root' do
       before do
-        OnboardingProgress.onboard(namespace)
+        Onboarding::Progress.onboard(namespace)
       end
 
       it 'registers a namespace onboarding progress action for the given namespace' do
         execute_service
 
-        expect(OnboardingProgress.completed?(namespace, :subscription_created)).to eq(true)
+        expect(Onboarding::Progress.completed?(namespace, :subscription_created)).to eq(true)
       end
     end
 
@@ -66,13 +66,13 @@ RSpec.describe OnboardingProgressService do
       let(:group) { create(:group, :nested) }
 
       before do
-        OnboardingProgress.onboard(group)
+        Onboarding::Progress.onboard(group)
       end
 
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(OnboardingProgress.completed?(group, :subscription_created)).to be(nil)
+        expect(Onboarding::Progress.completed?(group, :subscription_created)).to be(nil)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe OnboardingProgressService do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(OnboardingProgress.completed?(namespace, :subscription_created)).to be(nil)
+        expect(Onboarding::Progress.completed?(namespace, :subscription_created)).to be(nil)
       end
     end
   end

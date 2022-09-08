@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupMembersResolver do
+RSpec.describe 'Resolvers::GroupMembersResolver' do
   include GraphqlHelpers
+
+  let(:described_class) { Resolvers::GroupMembersResolver }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::GroupMemberType.connection_type)

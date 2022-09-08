@@ -1466,7 +1466,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
-    actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
+    actual_head_pipeline&.environments_in_self_and_project_descendants(deployment_status: deployment_status) || Environment.none
   end
 
   def fetch_ref!

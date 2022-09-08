@@ -312,6 +312,8 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "lib/gitlab/markdown_cache/active_record/**/*"
+  - "lib/api/admin/batched_background_migrations.rb"
+  - "spec/requests/api/admin/batched_background_migrations_spec.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538

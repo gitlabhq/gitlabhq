@@ -21,7 +21,7 @@ module LearnGitlabHelper
   end
 
   def learn_gitlab_onboarding_available?(project)
-    OnboardingProgress.onboarding?(project.namespace) &&
+    Onboarding::Progress.onboarding?(project.namespace) &&
       LearnGitlab::Project.new(current_user).available?
   end
 
@@ -34,7 +34,7 @@ module LearnGitlabHelper
       [
         action,
         url: url,
-        completed: attributes[OnboardingProgress.column_name(action)].present?,
+        completed: attributes[Onboarding::Progress.column_name(action)].present?,
         svg: image_path("learn_gitlab/#{action}.svg"),
         enabled: true
       ]
@@ -95,7 +95,7 @@ module LearnGitlabHelper
   end
 
   def onboarding_progress(project)
-    OnboardingProgress.find_by(namespace: project.namespace) # rubocop: disable CodeReuse/ActiveRecord
+    Onboarding::Progress.find_by(namespace: project.namespace) # rubocop: disable CodeReuse/ActiveRecord
   end
 end
 

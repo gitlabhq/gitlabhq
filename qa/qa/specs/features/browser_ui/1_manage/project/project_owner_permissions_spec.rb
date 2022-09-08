@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project owner permissions', :reliable do
+    describe 'Project owner permissions', :reliable, quarantine: {
+      only: { subdomain: %i[staging staging-canary] },
+      type: :investigating,
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373038'
+    } do
       let!(:owner) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end

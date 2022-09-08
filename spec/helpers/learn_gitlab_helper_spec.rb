@@ -15,8 +15,8 @@ RSpec.describe LearnGitlabHelper do
       allow(learn_gitlab).to receive(:project).and_return(project)
     end
 
-    OnboardingProgress.onboard(namespace)
-    OnboardingProgress.register(namespace, :git_write)
+    Onboarding::Progress.onboard(namespace)
+    Onboarding::Progress.register(namespace, :git_write)
   end
 
   describe '#learn_gitlab_enabled?' do
@@ -37,7 +37,7 @@ RSpec.describe LearnGitlabHelper do
 
     with_them do
       before do
-        allow(OnboardingProgress).to receive(:onboarding?).with(project.namespace).and_return(onboarding)
+        allow(Onboarding::Progress).to receive(:onboarding?).with(project.namespace).and_return(onboarding)
         allow_next(LearnGitlab::Project, user).to receive(:available?).and_return(learn_gitlab_available)
       end
 

@@ -19,7 +19,6 @@ Rails/WhereExists:
     - 'app/models/lfs_object.rb'
     - 'app/models/merge_request_diff.rb'
     - 'app/models/namespace.rb'
-    - 'app/models/onboarding_progress.rb'
     - 'app/models/project.rb'
     - 'app/models/protected_branch/push_access_level.rb'
     - 'app/services/projects/transfer_service.rb'

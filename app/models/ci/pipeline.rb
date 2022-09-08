@@ -611,7 +611,7 @@ module Ci
 
       if cascade_to_children
         # cancel any bridges that could spin up new child pipelines
-        cancel_jobs(bridges_in_self_and_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
+        cancel_jobs(bridges_in_self_and_project_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
         cancel_children(auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id, execute_async: execute_async)
       end
     end
@@ -943,26 +943,26 @@ module Ci
       ).base_and_descendants.select(:id)
     end
 
-    def build_with_artifacts_in_self_and_descendants(name)
-      builds_in_self_and_descendants
+    def build_with_artifacts_in_self_and_project_descendants(name)
+      builds_in_self_and_project_descendants
         .ordered_by_pipeline # find job in hierarchical order
         .with_downloadable_artifacts
         .find_by_name(name)
     end
 
-    def builds_in_self_and_descendants
-      Ci::Build.latest.where(pipeline: self_and_descendants)
+    def builds_in_self_and_project_descendants
+      Ci::Build.latest.where(pipeline: self_and_project_descendants)
     end
 
-    def bridges_in_self_and_descendants
-      Ci::Bridge.latest.where(pipeline: self_and_descendants)
+    def bridges_in_self_and_project_descendants
+      Ci::Bridge.latest.where(pipeline: self_and_project_descendants)
     end
 
-    def environments_in_self_and_descendants(deployment_status: nil)
+    def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
-        builds_in_self_and_descendants.joins(:metadata)
+        builds_in_self_and_project_descendants.joins(:metadata)
                                       .where.not('ci_builds_metadata.expanded_environment_name' => nil)
                                       .distinct('ci_builds_metadata.expanded_environment_name')
                                       .limit(100)
@@ -977,17 +977,17 @@ module Ci
     end
 
     # With multi-project and parent-child pipelines
-    def all_pipelines_in_hierarchy
+    def upstream_and_all_downstreams
       object_hierarchy.all_objects
     end
 
     # With only parent-child pipelines
-    def self_and_ancestors
+    def self_and_project_ancestors
       object_hierarchy(project_condition: :same).base_and_ancestors
     end
 
     # With only parent-child pipelines
-    def self_and_descendants
+    def self_and_project_descendants
       object_hierarchy(project_condition: :same).base_and_descendants
     end
 
@@ -996,8 +996,8 @@ module Ci
       object_hierarchy(project_condition: :same).descendants
     end
 
-    def self_and_descendants_complete?
-      self_and_descendants.all?(&:complete?)
+    def self_and_project_descendants_complete?
+      self_and_project_descendants.all?(&:complete?)
     end
 
     # Follow the parent-child relationships and return the top-level parent
@@ -1061,8 +1061,8 @@ module Ci
       latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata)
     end
 
-    def latest_report_builds_in_self_and_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
-      builds_in_self_and_descendants.with_artifacts(reports_scope)
+    def latest_report_builds_in_self_and_project_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
+      builds_in_self_and_project_descendants.with_artifacts(reports_scope)
     end
 
     def builds_with_coverage

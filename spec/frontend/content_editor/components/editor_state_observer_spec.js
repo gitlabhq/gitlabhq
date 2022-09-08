@@ -4,12 +4,7 @@ import EditorStateObserver, {
   tiptapToComponentMap,
 } from '~/content_editor/components/editor_state_observer.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import {
-  LOADING_CONTENT_EVENT,
-  LOADING_SUCCESS_EVENT,
-  LOADING_ERROR_EVENT,
-  ALERT_EVENT,
-} from '~/content_editor/constants';
+import { ALERT_EVENT } from '~/content_editor/constants';
 import { createTestEditor } from '../test_utils';
 
 describe('content_editor/components/editor_state_observer', () => {
@@ -18,9 +13,6 @@ describe('content_editor/components/editor_state_observer', () => {
   let onDocUpdateListener;
   let onSelectionUpdateListener;
   let onTransactionListener;
-  let onLoadingContentListener;
-  let onLoadingSuccessListener;
-  let onLoadingErrorListener;
   let onAlertListener;
   let eventHub;
 
@@ -38,9 +30,6 @@ describe('content_editor/components/editor_state_observer', () => {
         selectionUpdate: onSelectionUpdateListener,
         transaction: onTransactionListener,
         [ALERT_EVENT]: onAlertListener,
-        [LOADING_CONTENT_EVENT]: onLoadingContentListener,
-        [LOADING_SUCCESS_EVENT]: onLoadingSuccessListener,
-        [LOADING_ERROR_EVENT]: onLoadingErrorListener,
       },
     });
   };
@@ -50,9 +39,6 @@ describe('content_editor/components/editor_state_observer', () => {
     onSelectionUpdateListener = jest.fn();
     onTransactionListener = jest.fn();
     onAlertListener = jest.fn();
-    onLoadingSuccessListener = jest.fn();
-    onLoadingContentListener = jest.fn();
-    onLoadingErrorListener = jest.fn();
     buildEditor();
   });
 
@@ -81,11 +67,8 @@ describe('content_editor/components/editor_state_observer', () => {
   });
 
   it.each`
-    event                    | listener
-    ${ALERT_EVENT}           | ${() => onAlertListener}
-    ${LOADING_CONTENT_EVENT} | ${() => onLoadingContentListener}
-    ${LOADING_SUCCESS_EVENT} | ${() => onLoadingSuccessListener}
-    ${LOADING_ERROR_EVENT}   | ${() => onLoadingErrorListener}
+    event          | listener
+    ${ALERT_EVENT} | ${() => onAlertListener}
   `('listens to $event event in the eventBus object', ({ event, listener }) => {
     const args = {};
 
@@ -114,9 +97,6 @@ describe('content_editor/components/editor_state_observer', () => {
     it.each`
       event
       ${ALERT_EVENT}
-      ${LOADING_CONTENT_EVENT}
-      ${LOADING_SUCCESS_EVENT}
-      ${LOADING_ERROR_EVENT}
     `('removes $event event hook from eventHub', ({ event }) => {
       jest.spyOn(eventHub, '$off');
       jest.spyOn(eventHub, '$on');

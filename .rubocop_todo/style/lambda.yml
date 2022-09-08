@@ -77,7 +77,7 @@ Style/Lambda:
     - 'app/models/note.rb'
     - 'app/models/note_diff_file.rb'
     - 'app/models/notification_setting.rb'
-    - 'app/models/onboarding_progress.rb'
+    - 'app/models/onboarding/progress.rb'
     - 'app/models/operations/feature_flags/user_list.rb'
     - 'app/models/packages/package.rb'
     - 'app/models/packages/package_file.rb'

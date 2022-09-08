@@ -5,7 +5,6 @@ import {
   GlLink,
   GlButton,
   GlSprintf,
-  GlAlert,
   GlFormGroup,
   GlFormInput,
   GlFormSelect,
@@ -59,14 +58,6 @@ export default {
       label: s__('WikiPage|Content'),
       placeholder: s__('WikiPage|Write your content or drag files here…'),
     },
-    contentEditor: {
-      renderFailed: {
-        message: s__(
-          'WikiPage|An error occurred while trying to render the content editor. Please try again later.',
-        ),
-        primaryAction: s__('WikiPage|Retry'),
-      },
-    },
     linksHelpText: s__(
       'WikiPage|To link to a (new) page, simply type %{linkExample}. More examples are in the %{linkStart}documentation%{linkEnd}.',
     ),
@@ -88,7 +79,6 @@ export default {
     { text: s__('Wiki Page|Rich text'), value: 'richText' },
   ],
   components: {
-    GlAlert,
     GlIcon,
     GlForm,
     GlFormGroup,
@@ -115,14 +105,12 @@ export default {
       content: this.pageInfo.content || '',
       commitMessage: '',
       isDirty: false,
-      contentEditorRenderFailed: false,
       contentEditorEmpty: false,
       switchEditingControlDisabled: false,
     };
   },
   computed: {
     noContent() {
-      if (this.isContentEditorActive) return this.contentEditorEmpty;
       return !this.content.trim();
     },
     csrfToken() {
@@ -144,11 +132,6 @@ export default {
     },
     linkExample() {
       return MARKDOWN_LINK_TEXT[this.format];
-    },
-    toggleEditingModeButtonText() {
-      return this.isContentEditorActive
-        ? this.$options.i18n.editSourceButtonText
-        : this.$options.i18n.editRichTextButtonText;
     },
     submitButtonText() {
       return this.pageInfo.persisted
@@ -177,7 +160,7 @@ export default {
       return !this.isContentEditorActive;
     },
     disableSubmitButton() {
-      return this.noContent || !this.title || this.contentEditorRenderFailed;
+      return this.noContent || !this.title;
     },
     isContentEditorActive() {
       return this.isMarkdownFormat && this.useContentEditor;
@@ -201,23 +184,14 @@ export default {
         .then(({ data }) => data.body);
     },
 
-    toggleEditingMode(editingMode) {
+    setEditingMode(editingMode) {
       this.editingMode = editingMode;
-      if (!this.useContentEditor && this.contentEditor) {
-        this.content = this.contentEditor.getSerializedContent();
-      }
-    },
-
-    setEditingMode(value) {
-      this.editingMode = value;
     },
 
     async handleFormSubmit(e) {
       e.preventDefault();
 
       if (this.useContentEditor) {
-        this.content = this.contentEditor.getSerializedContent();
-
         this.trackFormSubmit();
       }
 
@@ -235,30 +209,10 @@ export default {
       this.isDirty = true;
     },
 
-    async loadInitialContent(contentEditor) {
-      this.contentEditor = contentEditor;
-
-      try {
-        await this.contentEditor.setSerializedContent(this.content);
-        this.trackContentEditorLoaded();
-      } catch (e) {
-        this.contentEditorRenderFailed = true;
-      }
-    },
-
-    async retryInitContentEditor() {
-      try {
-        this.contentEditorRenderFailed = false;
-        await this.contentEditor.setSerializedContent(this.content);
-      } catch (e) {
-        this.contentEditorRenderFailed = true;
-      }
-    },
-
-    handleContentEditorChange({ empty }) {
+    handleContentEditorChange({ empty, markdown, changed }) {
       this.contentEditorEmpty = empty;
-      // TODO: Implement a precise mechanism to detect changes in the Content
-      this.isDirty = true;
+      this.isDirty = changed;
+      this.content = markdown;
     },
 
     onPageUnload(event) {
@@ -320,17 +274,6 @@ export default {
     class="wiki-form common-note-form gl-mt-3 js-quick-submit"
     @submit="handleFormSubmit"
   >
-    <gl-alert
-      v-if="isContentEditorActive && contentEditorRenderFailed"
-      class="gl-mb-6"
-      :dismissible="false"
-      variant="danger"
-      :primary-button-text="$options.i18n.contentEditor.renderFailed.primaryAction"
-      @primaryAction="retryInitContentEditor"
-    >
-      {{ $options.i18n.contentEditor.renderFailed.message }}
-    </gl-alert>
-
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
     <input v-if="pageInfo.persisted" type="hidden" name="_method" value="put" />
     <input
@@ -350,7 +293,6 @@ export default {
               {{ $options.i18n.title.helpText.learnMore }}
             </gl-link>
           </template>
-
           <gl-form-input
             id="wiki_title"
             v-model="title"
@@ -395,7 +337,7 @@ export default {
               :checked="editingMode"
               :options="$options.switchEditingControlOptions"
               :disabled="switchEditingControlDisabled"
-              @input="toggleEditingMode"
+              @input="setEditingMode"
             />
           </div>
           <local-storage-sync
@@ -436,7 +378,8 @@ export default {
             <content-editor
               :render-markdown="renderMarkdown"
               :uploads-path="pageInfo.uploadsPath"
-              @initialized="loadInitialContent"
+              :markdown="content"
+              @initialized="trackContentEditorLoaded"
               @change="handleContentEditorChange"
               @loading="disableSwitchEditingControl"
               @loadingSuccess="enableSwitchEditingControl"

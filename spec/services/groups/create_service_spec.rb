@@ -79,7 +79,7 @@ RSpec.describe Groups::CreateService, '#execute' do
       it { is_expected.to be_persisted }
 
       it 'adds an onboarding progress record' do
-        expect { subject }.to change(OnboardingProgress, :count).from(0).to(1)
+        expect { subject }.to change(Onboarding::Progress, :count).from(0).to(1)
       end
 
       context 'with before_commit callback' do
@@ -108,7 +108,7 @@ RSpec.describe Groups::CreateService, '#execute' do
       it { is_expected.to be_persisted }
 
       it 'does not add an onboarding progress record' do
-        expect { subject }.not_to change(OnboardingProgress, :count).from(0)
+        expect { subject }.not_to change(Onboarding::Progress, :count).from(0)
       end
 
       it_behaves_like 'has sync-ed traversal_ids'

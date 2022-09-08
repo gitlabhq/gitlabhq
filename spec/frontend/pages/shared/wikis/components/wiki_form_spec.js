@@ -302,19 +302,15 @@ describe('WikiForm', () => {
     });
 
     it.each`
-      format        | enabled  | action
+      format        | exists   | action
       ${'markdown'} | ${true}  | ${'displays'}
       ${'rdoc'}     | ${false} | ${'hides'}
       ${'asciidoc'} | ${false} | ${'hides'}
       ${'org'}      | ${false} | ${'hides'}
-    `('$action toggle editing mode button when format is $format', async ({ format, enabled }) => {
+    `('$action toggle editing mode button when format is $format', async ({ format, exists }) => {
       await setFormat(format);
 
-      expect(findToggleEditingModeButton().exists()).toBe(enabled);
-    });
-
-    it('displays toggle editing mode button', () => {
-      expect(findToggleEditingModeButton().exists()).toBe(true);
+      expect(findToggleEditingModeButton().exists()).toBe(exists);
     });
 
     describe('when content editor is not active', () => {
@@ -351,15 +347,8 @@ describe('WikiForm', () => {
     });
 
     describe('when content editor is active', () => {
-      let mockContentEditor;
-
       beforeEach(() => {
         createWrapper();
-        mockContentEditor = {
-          getSerializedContent: jest.fn(),
-          setSerializedContent: jest.fn(),
-        };
-
         findToggleEditingModeButton().vm.$emit('input', 'richText');
       });
 
@@ -368,14 +357,7 @@ describe('WikiForm', () => {
       });
 
       describe('when clicking the toggle editing mode button', () => {
-        const contentEditorFakeSerializedContent = 'fake content';
-
         beforeEach(async () => {
-          mockContentEditor.getSerializedContent.mockReturnValueOnce(
-            contentEditorFakeSerializedContent,
-          );
-
-          findContentEditor().vm.$emit('initialized', mockContentEditor);
           await findToggleEditingModeButton().vm.$emit('input', 'source');
           await nextTick();
         });
@@ -386,10 +368,6 @@ describe('WikiForm', () => {
 
         it('displays the classic editor', () => {
           expect(findClassicEditor().exists()).toBe(true);
-        });
-
-        it('updates the classic editor content field', () => {
-          expect(findContent().element.value).toBe(contentEditorFakeSerializedContent);
         });
       });
 
@@ -480,8 +458,14 @@ describe('WikiForm', () => {
       });
 
       describe('when wiki content is updated', () => {
+        const updatedMarkdown = 'hello **world**';
+
         beforeEach(() => {
-          findContentEditor().vm.$emit('change', { empty: false });
+          findContentEditor().vm.$emit('change', {
+            empty: false,
+            changed: true,
+            markdown: updatedMarkdown,
+          });
         });
 
         it('sets before unload warning', () => {
@@ -512,16 +496,8 @@ describe('WikiForm', () => {
           });
         });
 
-        it('updates content from content editor on form submit', async () => {
-          // old value
-          expect(findContent().element.value).toBe('  My page content  ');
-
-          // wait for content editor to load
-          await waitForPromises();
-
-          await triggerFormSubmit();
-
-          expect(findContent().element.value).toBe('hello **world**');
+        it('sets content field to the content editor updated markdown', async () => {
+          expect(findContent().element.value).toBe(updatedMarkdown);
         });
       });
     });

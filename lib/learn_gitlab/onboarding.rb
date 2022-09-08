@@ -39,13 +39,13 @@ module LearnGitlab
 
     def onboarding_progress
       strong_memoize(:onboarding_progress) do
-        OnboardingProgress.find_by(namespace: namespace) # rubocop: disable CodeReuse/ActiveRecord
+        ::Onboarding::Progress.find_by(namespace: namespace) # rubocop: disable CodeReuse/ActiveRecord
       end
     end
 
     def action_columns
       strong_memoize(:action_columns) do
-        tracked_actions.map { |action_key| OnboardingProgress.column_name(action_key) }
+        tracked_actions.map { |action_key| ::Onboarding::Progress.column_name(action_key) }
       end
     end
 

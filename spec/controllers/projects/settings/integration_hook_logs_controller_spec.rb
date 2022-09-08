@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Settings::IntegrationHookLogsController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:service_hook) { create(:service_hook) }
-  let(:integration) { create(:drone_ci_integration, project: project, service_hook: service_hook) }
+  let(:integration) { create(:drone_ci_integration, project: project) }
   let(:log) { create(:web_hook_log, web_hook: integration.service_hook) }
   let(:log_params) do
     {

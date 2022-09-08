@@ -51,6 +51,16 @@ describe('content_editor/components/content_editor_alert', () => {
     },
   );
 
+  it('does not show primary action by default', async () => {
+    const message = 'error message';
+
+    createWrapper();
+    eventHub.$emit(ALERT_EVENT, { message });
+    await nextTick();
+
+    expect(findErrorAlert().attributes().primaryButtonText).toBeUndefined();
+  });
+
   it('allows dismissing the error', async () => {
     const message = 'error message';
 
@@ -60,6 +70,21 @@ describe('content_editor/components/content_editor_alert', () => {
     findErrorAlert().vm.$emit('dismiss');
     await nextTick();
 
+    expect(findErrorAlert().exists()).toBe(false);
+  });
+
+  it('allows dismissing the error with a primary action button', async () => {
+    const message = 'error message';
+    const actionLabel = 'Retry';
+    const action = jest.fn();
+
+    createWrapper();
+    eventHub.$emit(ALERT_EVENT, { message, action, actionLabel });
+    await nextTick();
+    findErrorAlert().vm.$emit('primaryAction');
+    await nextTick();
+
+    expect(action).toHaveBeenCalled();
     expect(findErrorAlert().exists()).toBe(false);
   });
 });

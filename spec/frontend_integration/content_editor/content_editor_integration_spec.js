@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { ContentEditor } from '~/content_editor';
+import waitForPromises from 'helpers/wait_for_promises';
 
 /**
  * This spec exercises some workflows in the Content Editor without mocking
@@ -10,32 +11,34 @@ import { ContentEditor } from '~/content_editor';
 describe('content_editor', () => {
   let wrapper;
   let renderMarkdown;
-  let contentEditorService;
 
-  const buildWrapper = () => {
-    renderMarkdown = jest.fn();
+  const buildWrapper = ({ markdown = '' } = {}) => {
     wrapper = mountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
         uploadsPath: '/',
-      },
-      listeners: {
-        initialized(contentEditor) {
-          contentEditorService = contentEditor;
-        },
+        markdown,
       },
     });
   };
 
+  const waitUntilContentIsLoaded = async () => {
+    await waitForPromises();
+    await nextTick();
+  };
+
+  beforeEach(() => {
+    renderMarkdown = jest.fn();
+  });
+
   describe('when loading initial content', () => {
     describe('when the initial content is empty', () => {
       it('still hides the loading indicator', async () => {
-        buildWrapper();
-
         renderMarkdown.mockResolvedValue('');
 
-        await contentEditorService.setSerializedContent('');
-        await nextTick();
+        buildWrapper();
+
+        await waitUntilContentIsLoaded();
 
         expect(wrapper.findByTestId('content-editor-loading-indicator').exists()).toBe(false);
       });
@@ -44,14 +47,13 @@ describe('content_editor', () => {
     describe('when the initial content is not empty', () => {
       const initialContent = '<p><strong>bold text</strong></p>';
       beforeEach(async () => {
-        buildWrapper();
-
         renderMarkdown.mockResolvedValue(initialContent);
 
-        await contentEditorService.setSerializedContent('**bold text**');
-        await nextTick();
+        buildWrapper();
+
+        await waitUntilContentIsLoaded();
       });
-      it('hides the loading indicator', async () => {
+      it('hides the loading indicator', () => {
         expect(wrapper.findByTestId('content-editor-loading-indicator').exists()).toBe(false);
       });
 
@@ -70,27 +72,29 @@ describe('content_editor', () => {
     });
 
     it('processes and renders footnote ids alongside the footnote definition', async () => {
-      buildWrapper();
-
-      await contentEditorService.setSerializedContent(`
+      buildWrapper({
+        markdown: `
 This reference tag is a mix of letters and numbers [^footnote].
 
 [^footnote]: This is another footnote.
-    `);
-      await nextTick();
+        `,
+      });
+
+      await waitUntilContentIsLoaded();
 
       expect(wrapper.text()).toContain('footnote: This is another footnote');
     });
 
     it('processes and displays reference definitions', async () => {
-      buildWrapper();
-
-      await contentEditorService.setSerializedContent(`
+      buildWrapper({
+        markdown: `
 [GitLab][gitlab]
 
 [gitlab]: https://gitlab.com
-      `);
-      await nextTick();
+        `,
+      });
+
+      await waitUntilContentIsLoaded();
 
       expect(wrapper.find('pre').text()).toContain('[gitlab]: https://gitlab.com');
     });
@@ -99,9 +103,7 @@ This reference tag is a mix of letters and numbers [^footnote].
   it('renders table of contents', async () => {
     jest.useFakeTimers();
 
-    buildWrapper();
-
-    renderMarkdown.mockResolvedValue(`
+    renderMarkdown.mockResolvedValueOnce(`
 <ul class="section-nav">
 </ul>
 <h1 dir="auto" data-sourcepos="3:1-3:11">
@@ -112,16 +114,17 @@ This reference tag is a mix of letters and numbers [^footnote].
 </h2>
     `);
 
-    await contentEditorService.setSerializedContent(`
+    buildWrapper({
+      markdown: `
 [TOC]
 
 # Heading 1
 
 ## Heading 2
-    `);
+      `,
+    });
 
-    await nextTick();
-    jest.runAllTimers();
+    await waitUntilContentIsLoaded();
 
     expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 1');
     expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 2');

@@ -1,4 +1,6 @@
-import { EditorContent } from '@tiptap/vue-2';
+import { GlAlert } from '@gitlab/ui';
+import { EditorContent, Editor } from '@tiptap/vue-2';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
@@ -10,112 +12,205 @@ import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
-import { emitEditorEvent } from '../test_utils';
+import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/emoji');
 
 describe('ContentEditor', () => {
   let wrapper;
-  let contentEditor;
   let renderMarkdown;
   const uploadsPath = '/uploads';
 
   const findEditorElement = () => wrapper.findByTestId('content-editor');
   const findEditorContent = () => wrapper.findComponent(EditorContent);
   const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
-  const createWrapper = (propsData = {}) => {
-    renderMarkdown = jest.fn();
-
+  const findLoadingIndicator = () => wrapper.findComponent(LoadingIndicator);
+  const findContentEditorAlert = () => wrapper.findComponent(ContentEditorAlert);
+  const createWrapper = ({ markdown } = {}) => {
     wrapper = shallowMountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
         uploadsPath,
-        ...propsData,
+        markdown,
       },
       stubs: {
         EditorStateObserver,
         ContentEditorProvider,
-      },
-      listeners: {
-        initialized(editor) {
-          contentEditor = editor;
-        },
+        ContentEditorAlert,
       },
     });
   };
+
+  beforeEach(() => {
+    renderMarkdown = jest.fn();
+  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('triggers initialized event and provides contentEditor instance as event data', () => {
+  it('triggers initialized event', () => {
     createWrapper();
 
-    expect(contentEditor).not.toBe(false);
+    expect(wrapper.emitted('initialized')).toHaveLength(1);
   });
 
-  it('renders EditorContent component and provides tiptapEditor instance', () => {
-    createWrapper();
+  it('renders EditorContent component and provides tiptapEditor instance', async () => {
+    const markdown = 'hello world';
+
+    createWrapper({ markdown });
+
+    renderMarkdown.mockResolvedValueOnce(markdown);
+
+    await nextTick();
 
     const editorContent = findEditorContent();
 
-    expect(editorContent.props().editor).toBe(contentEditor.tiptapEditor);
+    expect(editorContent.props().editor).toBeInstanceOf(Editor);
     expect(editorContent.classes()).toContain('md');
   });
 
-  it('renders ContentEditorProvider component', () => {
-    createWrapper();
+  it('renders ContentEditorProvider component', async () => {
+    await createWrapper();
 
     expect(wrapper.findComponent(ContentEditorProvider).exists()).toBe(true);
   });
 
-  it('renders top toolbar component', () => {
-    createWrapper();
+  it('renders top toolbar component', async () => {
+    await createWrapper();
 
     expect(wrapper.findComponent(TopToolbar).exists()).toBe(true);
   });
 
-  it('adds is-focused class when focus event is emitted', async () => {
-    createWrapper();
+  describe('when setting initial content', () => {
+    it('displays loading indicator', async () => {
+      createWrapper();
 
-    await emitEditorEvent({ tiptapEditor: contentEditor.tiptapEditor, event: 'focus' });
+      await nextTick();
 
-    expect(findEditorElement().classes()).toContain('is-focused');
+      expect(findLoadingIndicator().exists()).toBe(true);
+    });
+
+    it('emits loading event', async () => {
+      createWrapper();
+
+      await nextTick();
+
+      expect(wrapper.emitted('loading')).toHaveLength(1);
+    });
+
+    describe('succeeds', () => {
+      beforeEach(async () => {
+        renderMarkdown.mockResolvedValueOnce('hello world');
+
+        createWrapper({ markddown: 'hello world' });
+        await nextTick();
+      });
+
+      it('hides loading indicator', async () => {
+        await nextTick();
+        expect(findLoadingIndicator().exists()).toBe(false);
+      });
+
+      it('emits loadingSuccess event', () => {
+        expect(wrapper.emitted('loadingSuccess')).toHaveLength(1);
+      });
+    });
+
+    describe('fails', () => {
+      beforeEach(async () => {
+        renderMarkdown.mockRejectedValueOnce(new Error());
+
+        createWrapper({ markddown: 'hello world' });
+        await nextTick();
+      });
+
+      it('sets the content editor as read only when loading content fails', async () => {
+        await nextTick();
+
+        expect(findEditorContent().props().editor.isEditable).toBe(false);
+      });
+
+      it('hides loading indicator', async () => {
+        await nextTick();
+
+        expect(findLoadingIndicator().exists()).toBe(false);
+      });
+
+      it('emits loadingError event', () => {
+        expect(wrapper.emitted('loadingError')).toHaveLength(1);
+      });
+
+      it('displays error alert indicating that the content editor failed to load', () => {
+        expect(findContentEditorAlert().text()).toContain(
+          'An error occurred while trying to render the content editor. Please try again.',
+        );
+      });
+
+      describe('when clicking the retry button in the loading error alert and loading succeeds', () => {
+        beforeEach(async () => {
+          renderMarkdown.mockResolvedValueOnce('hello markdown');
+          await wrapper.findComponent(GlAlert).vm.$emit('primaryAction');
+        });
+
+        it('hides the loading error alert', () => {
+          expect(findContentEditorAlert().text()).toBe('');
+        });
+
+        it('sets the content editor as writable', async () => {
+          await nextTick();
+
+          expect(findEditorContent().props().editor.isEditable).toBe(true);
+        });
+      });
+    });
   });
 
-  it('removes is-focused class when blur event is emitted', async () => {
-    createWrapper();
+  describe('when focused event is emitted', () => {
+    beforeEach(async () => {
+      createWrapper();
 
-    await emitEditorEvent({ tiptapEditor: contentEditor.tiptapEditor, event: 'focus' });
-    await emitEditorEvent({ tiptapEditor: contentEditor.tiptapEditor, event: 'blur' });
+      findEditorStateObserver().vm.$emit('focus');
 
-    expect(findEditorElement().classes()).not.toContain('is-focused');
+      await nextTick();
+    });
+
+    it('adds is-focused class when focus event is emitted', () => {
+      expect(findEditorElement().classes()).toContain('is-focused');
+    });
+
+    it('removes is-focused class when blur event is emitted', async () => {
+      findEditorStateObserver().vm.$emit('blur');
+
+      await nextTick();
+
+      expect(findEditorElement().classes()).not.toContain('is-focused');
+    });
   });
 
-  it('emits change event when document is updated', async () => {
-    createWrapper();
+  describe('when editorStateObserver emits docUpdate event', () => {
+    it('emits change event with the latest markdown', async () => {
+      const markdown = 'Loaded content';
 
-    await emitEditorEvent({ tiptapEditor: contentEditor.tiptapEditor, event: 'update' });
+      renderMarkdown.mockResolvedValueOnce(markdown);
 
-    expect(wrapper.emitted('change')).toEqual([
-      [
-        {
-          empty: contentEditor.empty,
-        },
-      ],
-    ]);
-  });
+      createWrapper({ markdown: 'initial content' });
 
-  it('renders content_editor_alert component', () => {
-    createWrapper();
+      await nextTick();
+      await waitForPromises();
 
-    expect(wrapper.findComponent(ContentEditorAlert).exists()).toBe(true);
-  });
+      findEditorStateObserver().vm.$emit('docUpdate');
 
-  it('renders loading indicator component', () => {
-    createWrapper();
-
-    expect(wrapper.findComponent(LoadingIndicator).exists()).toBe(true);
+      expect(wrapper.emitted('change')).toEqual([
+        [
+          {
+            markdown,
+            changed: false,
+            empty: false,
+          },
+        ],
+      ]);
+    });
   });
 
   it.each`
@@ -128,18 +223,5 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);
-  });
-
-  it.each`
-    event
-    ${'loading'}
-    ${'loadingSuccess'}
-    ${'loadingError'}
-  `('broadcasts $event event triggered by editor-state-observer component', ({ event }) => {
-    createWrapper();
-
-    findEditorStateObserver().vm.$emit(event);
-
-    expect(wrapper.emitted(event)).toHaveLength(1);
   });
 });

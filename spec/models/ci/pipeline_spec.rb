@@ -3629,8 +3629,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#environments_in_self_and_descendants' do
-    subject { pipeline.environments_in_self_and_descendants }
+  describe '#environments_in_self_and_project_descendants' do
+    subject { pipeline.environments_in_self_and_project_descendants }
 
     context 'when pipeline is not child nor parent' do
       let_it_be(:pipeline) { create(:ci_pipeline, :created) }
@@ -4036,13 +4036,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#self_and_descendants_complete?' do
+  describe '#self_and_project_descendants_complete?' do
     let_it_be(:pipeline) { create(:ci_pipeline, :success) }
     let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
     let_it_be_with_reload(:grandchild_pipeline) { create(:ci_pipeline, :success, child_of: child_pipeline) }
 
     context 'when all pipelines in the hierarchy is complete' do
-      it { expect(pipeline.self_and_descendants_complete?).to be(true) }
+      it { expect(pipeline.self_and_project_descendants_complete?).to be(true) }
     end
 
     context 'when a pipeline in the hierarchy is not complete' do
@@ -4050,12 +4050,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         grandchild_pipeline.update!(status: :running)
       end
 
-      it { expect(pipeline.self_and_descendants_complete?).to be(false) }
+      it { expect(pipeline.self_and_project_descendants_complete?).to be(false) }
     end
   end
 
-  describe '#builds_in_self_and_descendants' do
-    subject(:builds) { pipeline.builds_in_self_and_descendants }
+  describe '#builds_in_self_and_project_descendants' do
+    subject(:builds) { pipeline.builds_in_self_and_project_descendants }
 
     let(:pipeline) { create(:ci_pipeline) }
     let!(:build) { create(:ci_build, pipeline: pipeline) }
@@ -4087,7 +4087,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#build_with_artifacts_in_self_and_descendants' do
+  describe '#build_with_artifacts_in_self_and_project_descendants' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     let!(:build) { create(:ci_build, name: 'test', pipeline: pipeline) }
@@ -4095,14 +4095,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let!(:child_build) { create(:ci_build, :artifacts, name: 'test', pipeline: child_pipeline) }
 
     it 'returns the build with a given name, having artifacts' do
-      expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(child_build)
+      expect(pipeline.build_with_artifacts_in_self_and_project_descendants('test')).to eq(child_build)
     end
 
     context 'when same job name is present in both parent and child pipeline' do
       let!(:build) { create(:ci_build, :artifacts, name: 'test', pipeline: pipeline) }
 
       it 'returns the job in the parent pipeline' do
-        expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(build)
+        expect(pipeline.build_with_artifacts_in_self_and_project_descendants('test')).to eq(build)
       end
     end
   end
@@ -4183,7 +4183,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#latest_report_builds_in_self_and_descendants' do
+  describe '#latest_report_builds_in_self_and_project_descendants' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
     let_it_be(:grandchild_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
@@ -4193,21 +4193,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       child_build = create(:ci_build, :coverage_reports, pipeline: child_pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants).to contain_exactly(parent_build, child_build, grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_project_descendants).to contain_exactly(parent_build, child_build, grandchild_build)
     end
 
     it 'filters builds by scope' do
       create(:ci_build, :test_reports, pipeline: pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants(Ci::JobArtifact.of_report_type(:codequality))).to contain_exactly(grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality))).to contain_exactly(grandchild_build)
     end
 
     it 'only returns builds that are not retried' do
       create(:ci_build, :codequality_reports, :retried, pipeline: grandchild_pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants).to contain_exactly(grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_project_descendants).to contain_exactly(grandchild_build)
     end
   end
 
@@ -4967,8 +4967,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#self_and_ancestors' do
-    subject(:self_and_ancestors) { pipeline.self_and_ancestors }
+  describe '#self_and_project_ancestors' do
+    subject(:self_and_project_ancestors) { pipeline.self_and_project_ancestors }
 
     context 'when pipeline is child' do
       let(:pipeline) { create(:ci_pipeline, :created) }
@@ -4981,7 +4981,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns parent and self' do
-        expect(self_and_ancestors).to contain_exactly(parent, pipeline)
+        expect(self_and_project_ancestors).to contain_exactly(parent, pipeline)
       end
     end
 
@@ -4995,7 +4995,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns only self' do
-        expect(self_and_ancestors).to contain_exactly(pipeline)
+        expect(self_and_project_ancestors).to contain_exactly(pipeline)
       end
     end
   end

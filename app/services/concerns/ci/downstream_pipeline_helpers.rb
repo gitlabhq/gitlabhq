@@ -5,7 +5,7 @@ module Ci
     def log_downstream_pipeline_creation(downstream_pipeline)
       return unless downstream_pipeline&.persisted?
 
-      hierarchy_size = downstream_pipeline.all_pipelines_in_hierarchy.count
+      hierarchy_size = downstream_pipeline.upstream_and_all_downstreams.count
       root_pipeline = downstream_pipeline.upstream_root
 
       ::Gitlab::AppLogger.info(

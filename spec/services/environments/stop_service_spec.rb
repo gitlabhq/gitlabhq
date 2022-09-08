@@ -193,7 +193,7 @@ RSpec.describe Environments::StopService do
     end
 
     it 'has active environment at first' do
-      expect(pipeline.environments_in_self_and_descendants.first).to be_available
+      expect(pipeline.environments_in_self_and_project_descendants.first).to be_available
     end
 
     context 'when user is a developer' do
@@ -203,7 +203,7 @@ RSpec.describe Environments::StopService do
 
       it 'stops the active environment' do
         subject
-        expect(pipeline.environments_in_self_and_descendants.first).to be_stopping
+        expect(pipeline.environments_in_self_and_project_descendants.first).to be_stopping
       end
 
       context 'when pipeline is a branch pipeline for merge request' do
@@ -218,7 +218,7 @@ RSpec.describe Environments::StopService do
         it 'does not stop the active environment' do
           subject
 
-          expect(pipeline.environments_in_self_and_descendants.first).to be_available
+          expect(pipeline.environments_in_self_and_project_descendants.first).to be_available
         end
       end
 
@@ -244,7 +244,7 @@ RSpec.describe Environments::StopService do
       it 'does not stop the active environment' do
         subject
 
-        expect(pipeline.environments_in_self_and_descendants.first).to be_available
+        expect(pipeline.environments_in_self_and_project_descendants.first).to be_available
       end
     end
 
@@ -268,7 +268,7 @@ RSpec.describe Environments::StopService do
       it 'does not stop the active environment' do
         subject
 
-        expect(pipeline.environments_in_self_and_descendants.first).to be_available
+        expect(pipeline.environments_in_self_and_project_descendants.first).to be_available
       end
     end
   end

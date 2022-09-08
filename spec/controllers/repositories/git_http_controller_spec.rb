@@ -55,11 +55,11 @@ RSpec.describe Repositories::GitHttpController do
           let_it_be(:namespace) { project.namespace }
 
           before do
-            OnboardingProgress.onboard(namespace)
+            Onboarding::Progress.onboard(namespace)
             send_request
           end
 
-          subject { OnboardingProgress.completed?(namespace, :git_pull) }
+          subject { Onboarding::Progress.completed?(namespace, :git_pull) }
 
           it { is_expected.to be(true) }
         end

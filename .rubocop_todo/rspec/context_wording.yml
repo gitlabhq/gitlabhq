@@ -2466,7 +2466,6 @@ RSpec/ContextWording:
     - 'spec/models/note_spec.rb'
     - 'spec/models/notification_recipient_spec.rb'
     - 'spec/models/notification_setting_spec.rb'
-    - 'spec/models/onboarding_progress_spec.rb'
     - 'spec/models/operations/feature_flag_spec.rb'
     - 'spec/models/packages/conan/file_metadatum_spec.rb'
     - 'spec/models/packages/debian/file_metadatum_spec.rb'

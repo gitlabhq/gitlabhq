@@ -4354,6 +4354,9 @@ msgstr ""
 msgid "An error occurred while trying to generate the report. Please try again later."
 msgstr ""
 
+msgid "An error occurred while trying to render the content editor. Please try again."
+msgstr ""
+
 msgid "An error occurred while trying to run a new pipeline for this merge request."
 msgstr ""
 
@@ -15150,6 +15153,9 @@ msgid "Error creating vulnerability finding: %{errors}"
 msgstr ""
 
 msgid "Error deleting project. Check logs for error details."
+msgstr ""
+
+msgid "Error fetching branches"
 msgstr ""
 
 msgid "Error fetching burnup chart data"
@@ -44476,9 +44482,6 @@ msgstr ""
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
-msgid "WikiPage|An error occurred while trying to render the content editor. Please try again later."
-msgstr ""
-
 msgid "WikiPage|Cancel"
 msgstr ""
 
@@ -44501,9 +44504,6 @@ msgid "WikiPage|Learn more."
 msgstr ""
 
 msgid "WikiPage|Page title"
-msgstr ""
-
-msgid "WikiPage|Retry"
 msgstr ""
 
 msgid "WikiPage|Save changes"
