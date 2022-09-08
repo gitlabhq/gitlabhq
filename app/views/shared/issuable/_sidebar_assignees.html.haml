@@ -6,7 +6,7 @@
   max_assignees: dropdown_options[:data][:"max-select"],
   directly_invite_members: can_admin_project_member?(@project) } }
   .title.hide-collapsed
-    = _('Assignee')
+    = s_('Label|Assignee')
     = gl_loading_icon(inline: true)
 
 .js-sidebar-assignee-data.selectbox.hide-collapsed

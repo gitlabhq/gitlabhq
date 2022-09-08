@@ -131,28 +131,28 @@
 ############################
 # rspec job parallel configs
 .rspec-migration-parallel:
-  parallel: 9
+  parallel: 12
 
 .rspec-ee-migration-parallel:
-  parallel: 3
-
-.rspec-unit-parallel:
-  parallel: 22
-
-.rspec-ee-unit-parallel:
-  parallel: 16
-
-.rspec-integration-parallel:
-  parallel: 10
-
-.rspec-ee-integration-parallel:
   parallel: 4
 
+.rspec-unit-parallel:
+  parallel: 28
+
+.rspec-ee-unit-parallel:
+  parallel: 18
+
+.rspec-integration-parallel:
+  parallel: 12
+
+.rspec-ee-integration-parallel:
+  parallel: 6
+
 .rspec-system-parallel:
-  parallel: 24
+  parallel: 28
 
 .rspec-ee-system-parallel:
-  parallel: 6
+  parallel: 10
 # rspec job parallel configs
 ############################
 

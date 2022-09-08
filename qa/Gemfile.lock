@@ -118,7 +118,7 @@ GEM
     gitlab (4.18.0)
       httparty (~> 0.18)
       terminal-table (>= 1.5.1)
-    gitlab-qa (8.4.1)
+    gitlab-qa (8.4.2)
       activesupport (~> 6.1)
       gitlab (~> 4.18.0)
       http (~> 5.0)

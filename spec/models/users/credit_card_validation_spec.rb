@@ -29,14 +29,26 @@ RSpec.describe Users::CreditCardValidation do
     end
   end
 
-  describe '.similar_holder_names_count' do
-    subject!(:credit_card_validation) { create(:credit_card_validation, holder_name: 'ALICE M SMITH') }
+  describe '#similar_holder_names_count' do
+    subject!(:credit_card_validation) { create(:credit_card_validation, holder_name: holder_name) }
 
-    let!(:match) { create(:credit_card_validation, holder_name: 'Alice M Smith') }
-    let!(:non_match) { create(:credit_card_validation, holder_name: 'Bob B Brown') }
+    context 'when holder_name is present' do
+      let(:holder_name) { 'ALICE M SMITH' }
 
-    it 'returns the count of cards with similar case insensitive holder names' do
-      expect(subject.similar_holder_names_count).to eq(2)
+      let!(:match) { create(:credit_card_validation, holder_name: 'Alice M Smith') }
+      let!(:non_match) { create(:credit_card_validation, holder_name: 'Bob B Brown') }
+
+      it 'returns the count of cards with similar case insensitive holder names' do
+        expect(subject.similar_holder_names_count).to eq(2)
+      end
+    end
+
+    context 'when holder_name is nil' do
+      let(:holder_name) { nil }
+
+      it 'returns 0' do
+        expect(subject.similar_holder_names_count).to eq(0)
+      end
     end
   end
 end

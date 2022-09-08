@@ -9,8 +9,12 @@ RSpec.describe Git::WikiPushService, services: true do
   let_it_be(:key_id) { create(:key, user: current_user).shell_id }
 
   let(:wiki) { create(:project_wiki, user: current_user) }
-  let(:git_wiki) { wiki.wiki }
+  let(:default_branch) { wiki.default_branch }
   let(:repository) { wiki.repository }
+
+  before do
+    repository.create_if_not_exists(default_branch)
+  end
 
   describe '#execute' do
     it 'executes model-specific callbacks' do
@@ -351,7 +355,12 @@ RSpec.describe Git::WikiPushService, services: true do
   # that have not gone through our services.
 
   def write_new_page
-    generate(:wiki_page_title).tap { |t| git_wiki.write_page(t, 'markdown', 'Hello', commit_details) }
+    generate(:wiki_page_title).tap do |t|
+      repository.create_file(
+        current_user, ::Wiki.sluggified_full_path(t, 'md'), 'Hello',
+        **commit_details
+      )
+    end
   end
 
   # We write something to the wiki-repo that is not a page - as, for example, an
@@ -368,15 +377,26 @@ RSpec.describe Git::WikiPushService, services: true do
 
   def update_page(title, new_title = nil)
     new_title = title unless new_title.present?
-    page = git_wiki.page(title: title)
-    git_wiki.update_page(page.path, new_title, 'markdown', 'Hey', commit_details)
+
+    old_path = ::Wiki.sluggified_full_path(title, 'md')
+    new_path = ::Wiki.sluggified_full_path(new_title, 'md')
+
+    repository.update_file(
+      current_user, new_path, 'Hey',
+      **commit_details.merge(previous_path: old_path)
+    )
   end
 
   def delete_page(page)
-    wiki.delete_page(page, 'commit message')
+    repository.delete_file(current_user, page.path, **commit_details)
   end
 
   def commit_details
-    create(:git_wiki_commit_details, author: current_user)
+    {
+      branch_name: default_branch,
+      message: "commit message",
+      author_email: current_user.email,
+      author_name: current_user.name
+    }
   end
 end

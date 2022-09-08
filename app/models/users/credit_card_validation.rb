@@ -23,7 +23,9 @@ module Users
     end
 
     def similar_holder_names_count
-      self.class.where('lower(holder_name) = :value', value: holder_name.downcase).count
+      return 0 unless holder_name
+
+      self.class.where('lower(holder_name) = lower(:value)', value: holder_name).count
     end
   end
 end

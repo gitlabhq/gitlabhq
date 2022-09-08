@@ -11,9 +11,11 @@ docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @whaber @dsatcher @sgoldstein @j
 ## Allows release tooling to update the Gitaly Version
 GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
-## Excludes documentation markdown file changes from required approval
+## Excludes documentation markdown files and deprecation/removal announcements from required approval
 /doc/*.md
 /doc/**/*.md
+/data/deprecations/
+/data/removals/
 
 ^[Backend]
 *.rb @gitlab-org/maintainers/rails-backend
@@ -290,10 +292,10 @@ ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
 lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 
 ^[Documentation Directories]
-.markdownlint.yml @marcel.amirault @eread @aqualls @dianalogan
-/doc/.markdownlint @marcel.amirault @eread @aqualls @dianalogan
+.markdownlint.yml @marcel.amirault @eread @aqualls @dianalogan @kpaizee
+/doc/.markdownlint @marcel.amirault @eread @aqualls @dianalogan @kpaizee
 /doc/ @gl-docsteam
-/doc/.vale/ @marcel.amirault @eread @aqualls @dianalogan
+/doc/.vale/ @marcel.amirault @eread @aqualls @dianalogan @kpaizee
 
 ^[Documentation Pages]
 /doc/administration/application_settings_cache.md @sselhorn
