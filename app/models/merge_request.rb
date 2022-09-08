@@ -343,23 +343,24 @@ class MergeRequest < ApplicationRecord
     column_expression = MergeRequest::Metrics.arel_table[metric]
     column_expression_with_direction = direction == 'ASC' ? column_expression.asc : column_expression.desc
 
-    order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: "merge_request_metrics_#{metric}",
-        column_expression: column_expression,
-        order_expression: column_expression_with_direction.nulls_last,
-        reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
-        order_direction: direction,
-        nullable: :nulls_last,
-        distinct: false,
-        add_to_projections: true
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'merge_request_metrics_id',
-        order_expression: MergeRequest::Metrics.arel_table[:id].desc,
-        add_to_projections: true
-      )
-    ])
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: "merge_request_metrics_#{metric}",
+          column_expression: column_expression,
+          order_expression: column_expression_with_direction.nulls_last,
+          reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
+          order_direction: direction,
+          nullable: :nulls_last,
+          distinct: false,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'merge_request_metrics_id',
+          order_expression: MergeRequest::Metrics.arel_table[:id].desc,
+          add_to_projections: true
+        )
+      ])
 
     order.apply_cursor_conditions(join_metrics).order(order)
   end

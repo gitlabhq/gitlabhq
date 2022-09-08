@@ -569,26 +569,29 @@ class Project < ApplicationRecord
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
   scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
-    order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
-      { column: arel_table["path"], multiplier: 1 },
-      { column: arel_table["name"], multiplier: 0.7 },
-      { column: arel_table["description"], multiplier: 0.2 }
-    ])
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["path"], multiplier: 1 },
+        { column: arel_table["name"], multiplier: 0.7 },
+        { column: arel_table["description"], multiplier: 0.2 }
+      ])
 
-    order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'similarity',
-        column_expression: order_expression,
-        order_expression: order_expression.desc,
-        order_direction: :desc,
-        distinct: false,
-        add_to_projections: true
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'id',
-        order_expression: Project.arel_table[:id].desc
-      )
-    ])
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'similarity',
+          column_expression: order_expression,
+          order_expression: order_expression.desc,
+          order_direction: :desc,
+          distinct: false,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Project.arel_table[:id].desc
+        )
+      ])
 
     order.apply_cursor_conditions(reorder(order))
   end
@@ -2562,10 +2565,7 @@ class Project < ApplicationRecord
   def badges
     return project_badges unless group
 
-    Badge.from_union([
-      project_badges,
-      GroupBadge.where(group: group.self_and_ancestors)
-    ])
+    Badge.from_union([project_badges, GroupBadge.where(group: group.self_and_ancestors)])
   end
 
   def merge_requests_allowing_push_to_user(user)

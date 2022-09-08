@@ -1,0 +1,8 @@
+---
+name: epic_widget_edit_confirmation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96872
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372429
+milestone: '15.4'
+type: development
+group: group::product planning
+default_enabled: false

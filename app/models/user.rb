@@ -696,28 +696,29 @@ class User < ApplicationRecord
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
-      order = Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'users_match_priority',
-          order_expression: sanitized_order_sql.asc,
-          add_to_projections: true,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'users_name',
-          order_expression: arel_table[:name].asc,
-          add_to_projections: true,
-          nullable: :not_nullable,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'users_id',
-          order_expression: arel_table[:id].asc,
-          add_to_projections: true,
-          nullable: :not_nullable,
-          distinct: true
-        )
-      ])
+      order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_match_priority',
+            order_expression: sanitized_order_sql.asc,
+            add_to_projections: true,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_name',
+            order_expression: arel_table[:name].asc,
+            add_to_projections: true,
+            nullable: :not_nullable,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_id',
+            order_expression: arel_table[:id].asc,
+            add_to_projections: true,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
       scope.reorder(order)
     end
 
@@ -1357,10 +1358,11 @@ class User < ApplicationRecord
   end
 
   def accessible_deploy_keys
-    DeployKey.from_union([
-      DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
-      DeployKey.are_public
-    ])
+    DeployKey.from_union(
+      [
+        DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
+        DeployKey.are_public
+      ])
   end
 
   def created_by
@@ -1661,10 +1663,11 @@ class User < ApplicationRecord
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)
 
-      Namespace.from_union([
-        manageable_groups(include_groups_with_developer_maintainer_access: true),
-        personal_namespace
-      ])
+      Namespace.from_union(
+        [
+          manageable_groups(include_groups_with_developer_maintainer_access: true),
+          personal_namespace
+        ])
     end
   end
 
@@ -2243,10 +2246,11 @@ class User < ApplicationRecord
   end
 
   def authorized_groups_without_shared_membership
-    Group.from_union([
-      groups.select(*Namespace.cached_column_list),
-      authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
-    ])
+    Group.from_union(
+      [
+        groups.select(*Namespace.cached_column_list),
+        authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
+      ])
   end
 
   def authorized_groups_with_shared_membership
@@ -2256,10 +2260,10 @@ class User < ApplicationRecord
     Group
       .with(cte.to_arel)
       .from_union([
-        Group.from(cte_alias),
-        Group.joins(:shared_with_group_links)
-             .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
-    ])
+                    Group.from(cte_alias),
+                    Group.joins(:shared_with_group_links)
+                         .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
+                  ])
   end
 
   def default_private_profile_to_false

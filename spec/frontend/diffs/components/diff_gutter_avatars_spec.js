@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
+import { HIDE_COMMENTS } from '~/diffs/i18n';
 import discussionsMockData from '../mock_data/diff_discussions';
 
 const getDiscussionsMockData = () => [{ ...discussionsMockData }];
@@ -41,6 +42,11 @@ describe('DiffGutterAvatars', () => {
 
       await nextTick();
       expect(wrapper.emitted().toggleLineDiscussions).toBeDefined();
+    });
+
+    it('renders the proper title and aria-label ', () => {
+      expect(findCollapseButton().attributes('title')).toBe(HIDE_COMMENTS);
+      expect(findCollapseButton().attributes('aria-label')).toBe(HIDE_COMMENTS);
     });
   });
 

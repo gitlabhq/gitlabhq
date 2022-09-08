@@ -401,9 +401,9 @@ class Integration < ApplicationRecord
         .or(where(type: integration.type, instance: true)).select(:id)
 
     from_union([
-      where(type: integration.type, inherit_from_id: inherit_from_ids, group: integration.group.descendants),
-      where(type: integration.type, inherit_from_id: inherit_from_ids, project: Project.in_namespace(integration.group.self_and_descendants))
-    ])
+                 where(type: integration.type, inherit_from_id: inherit_from_ids, group: integration.group.descendants),
+                 where(type: integration.type, inherit_from_id: inherit_from_ids, project: Project.in_namespace(integration.group.self_and_descendants))
+               ])
   end
 
   def activated?

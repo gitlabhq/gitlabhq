@@ -1,8 +1,16 @@
 <script>
-import { GlIcon, GlLink, GlModal, GlButton, GlModalDirective, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlLink,
+  GlModal,
+  GlButton,
+  GlModalDirective,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
 import { s__, __ } from '~/locale';
-import { timeTrackingQueries } from '~/sidebar/constants';
+import { HOW_TO_TRACK_TIME, timeTrackingQueries } from '~/sidebar/constants';
 
 import eventHub from '../../event_hub';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
@@ -31,6 +39,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     issuableType: {
@@ -162,6 +171,12 @@ export default {
         this.issuableId
       );
     },
+    timeTrackingIconTitle() {
+      return this.showHelpState ? '' : HOW_TO_TRACK_TIME;
+    },
+    timeTrackingIconName() {
+      return this.showHelpState ? 'close' : 'question-o';
+    },
   },
   watch: {
     /**
@@ -212,7 +227,12 @@ export default {
         class="gl-ml-auto"
         @click="toggleHelpState(!showHelpState)"
       >
-        <gl-icon :name="showHelpState ? 'close' : 'question-o'" class="gl-text-gray-900!" />
+        <gl-icon
+          v-gl-tooltip.left
+          :title="timeTrackingIconTitle"
+          :name="timeTrackingIconName"
+          class="gl-text-gray-900!"
+        />
       </gl-button>
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">

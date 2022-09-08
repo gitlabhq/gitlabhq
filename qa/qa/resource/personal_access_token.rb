@@ -5,12 +5,13 @@ require 'date'
 module QA
   module Resource
     class PersonalAccessToken < Base
-      attr_accessor :name
+      attr_writer :name
 
       # The user for which the personal access token is to be created
       # This *could* be different than the api_client.user or the api_user provided by the QA::Resource::ApiFabricator
       attr_writer :user
 
+      attribute :id
       attribute :token
 
       # Only Admins can create PAT via the API.
@@ -41,13 +42,28 @@ module QA
       end
 
       def api_get_path
-        '/personal_access_tokens'
+        "/personal_access_tokens/#{id}"
+      rescue NoValueError
+        user_id = user.respond_to?(:id) ? user.id : Resource::User.build(user).reload!.id
+
+        token = auto_paginated_response(request_url("/personal_access_tokens?user_id=#{user_id}", per_page: '100'))
+                  .find { |t| t[:name] == name }
+
+        raise ResourceNotFoundError unless token
+
+        @id = token[:id]
+        retry
+      end
+
+      def name
+        @name ||= "api-personal-access-token-#{Faker::Alphanumeric.alphanumeric(number: 8)}"
       end
 
       def api_post_body
         {
-          name: name || 'api-test-token',
-          scopes: ["api"]
+          name: name,
+          scopes: ["api"],
+          expires_at: expires_at.to_s
         }
       end
 
@@ -65,6 +81,11 @@ module QA
         QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, self.token) if @user && self.token
       end
 
+      # Expire in 2 days just in case the token is created just before midnight
+      def expires_at
+        @expires_at || Time.now.utc.to_date + 2
+      end
+
       def fabricate!
         return if find_and_set_value
 
@@ -76,8 +97,7 @@ module QA
         Page::Profile::PersonalAccessTokens.perform do |token_page|
           token_page.fill_token_name(name || 'api-test-token')
           token_page.check_api
-          # Expire in 2 days just in case the token is created just before midnight
-          token_page.fill_expiry_date(Time.now.utc.to_date + 2)
+          token_page.fill_expiry_date(expires_at)
           token_page.click_create_token_button
 
           self.token = Page::Profile::PersonalAccessTokens.perform(&:created_access_token)

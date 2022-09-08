@@ -263,10 +263,10 @@ class ContainerRepository < ApplicationRecord
                         .with_migration_import_started_at_nil_or_before(before_timestamp)
 
     union = ::Gitlab::SQL::Union.new([
-          stale_pre_importing,
-          stale_pre_import_done,
-          stale_importing
-        ])
+                                       stale_pre_importing,
+                                       stale_pre_import_done,
+                                       stale_importing
+                                     ])
     from("(#{union.to_sql}) #{ContainerRepository.table_name}")
   end
 

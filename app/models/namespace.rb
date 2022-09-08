@@ -176,10 +176,12 @@ class Namespace < ApplicationRecord
   end
 
   scope :sorted_by_similarity_and_parent_id_desc, -> (search) do
-    order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
-      { column: arel_table["path"], multiplier: 1 },
-      { column: arel_table["name"], multiplier: 0.7 }
-    ])
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["path"], multiplier: 1 },
+        { column: arel_table["name"], multiplier: 0.7 }
+      ])
     reorder(order_expression.desc, Namespace.arel_table['parent_id'].desc.nulls_last, Namespace.arel_table['id'].desc)
   end
 

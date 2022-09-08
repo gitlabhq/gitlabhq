@@ -27,7 +27,6 @@ module QA
       include Support::API
 
       IGNORED_RESOURCES = [
-        'QA::Resource::PersonalAccessToken',
         'QA::Resource::CiVariable',
         'QA::Resource::Repository::Commit',
         'QA::EE::Resource::GroupIteration',

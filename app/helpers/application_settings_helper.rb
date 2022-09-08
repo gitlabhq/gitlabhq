@@ -7,6 +7,7 @@ module ApplicationSettingsHelper
            :gravatar_enabled?,
            :password_authentication_enabled_for_web?,
            :akismet_enabled?,
+           :spam_check_endpoint_enabled?,
            to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
@@ -58,6 +59,10 @@ module ApplicationSettingsHelper
 
   def http_enabled?
     all_protocols_enabled? || Gitlab::CurrentSettings.enabled_git_access_protocol == 'http'
+  end
+
+  def anti_spam_service_enabled?
+    akismet_enabled? || spam_check_endpoint_enabled?
   end
 
   def enabled_protocol_button(container, protocol)

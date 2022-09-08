@@ -18,9 +18,11 @@ module Projects
     scope :without_assigned_projects, -> { where(total_projects_count: 0) }
     scope :order_by_non_private_projects_count, -> { order(non_private_projects_count: :desc).order(id: :asc) }
     scope :reorder_by_similarity, -> (search) do
-      order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
-        { column: arel_table['name'] }
-      ])
+      order_expression = Gitlab::Database::SimilarityScore.build_expression(
+        search: search,
+        rules: [
+          { column: arel_table['name'] }
+        ])
       reorder(order_expression.desc, arel_table['non_private_projects_count'].desc, arel_table['id'])
     end
 

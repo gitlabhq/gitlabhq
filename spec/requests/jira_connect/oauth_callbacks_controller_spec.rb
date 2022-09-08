@@ -5,12 +5,6 @@ require 'spec_helper'
 RSpec.describe JiraConnect::OauthCallbacksController do
   describe 'GET /-/jira_connect/oauth_callbacks' do
     context 'when logged in' do
-      let_it_be(:user) { create(:user) }
-
-      before do
-        sign_in(user)
-      end
-
       it 'renders a page prompting the user to close the window' do
         get '/-/jira_connect/oauth_callbacks'
 

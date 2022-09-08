@@ -96,10 +96,11 @@ class Todo < ApplicationRecord
     def for_group_ids_and_descendants(group_ids)
       groups = Group.groups_including_descendants_by(group_ids)
 
-      from_union([
-        for_project(Project.for_group(groups)),
-        for_group(groups)
-      ])
+      from_union(
+        [
+          for_project(Project.for_group(groups)),
+          for_group(groups)
+        ])
     end
 
     # Returns `true` if the current user has any todos for the given target with the optional given state.

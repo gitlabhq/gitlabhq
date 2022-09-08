@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Users do
+  include WorkhorseHelpers
+
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user, reload: true) { create(:user, username: 'user.withdot') }
   let_it_be(:key) { create(:key, user: user) }
@@ -1180,6 +1182,22 @@ RSpec.describe API::Users do
       expect(new_user.user_preference.view_diffs_file_by_file?).to eq(true)
     end
 
+    it "creates user with avatar" do
+      workhorse_form_with_file(
+        api('/users', admin),
+        method: :post,
+        file_key: :avatar,
+        params: attributes_for(:user, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
+      )
+
+      expect(response).to have_gitlab_http_status(:created)
+
+      new_user = User.find_by(id: json_response['id'])
+
+      expect(new_user).not_to eq(nil)
+      expect(json_response['avatar_url']).to include(new_user.avatar_path)
+    end
+
     it "does not create user with invalid email" do
       post api('/users', admin),
         params: {
@@ -1478,7 +1496,12 @@ RSpec.describe API::Users do
     end
 
     it 'updates user with avatar' do
-      put api("/users/#{user.id}", admin), params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      workhorse_form_with_file(
+        api("/users/#{user.id}", admin),
+        method: :put,
+        file_key: :avatar,
+        params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      )
 
       user.reload
 

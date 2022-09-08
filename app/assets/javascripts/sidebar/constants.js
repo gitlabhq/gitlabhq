@@ -1,4 +1,4 @@
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
@@ -313,8 +313,26 @@ export function dropdowni18nText(issuableAttribute, issuableType) {
       ),
       { issuableAttribute, issuableType },
     ),
+    noPermissionToView: sprintf(
+      s__("DropdownWidget|You don't have permission to view this %{issuableAttribute}."),
+      { issuableAttribute },
+    ),
+    editConfirmation: sprintf(
+      s__(
+        'DropdownWidget|You do not have permission to view the currently assigned %{issuableAttribute} and will not be able to choose it again if you reassign it.',
+      ),
+      {
+        issuableAttribute,
+      },
+    ),
+    editConfirmationCta: sprintf(s__('DropdownWidget|Edit %{issuableAttribute}'), {
+      issuableAttribute,
+    }),
+    editConfirmationCancel: s__('DropdownWidget|Cancel'),
   };
 }
 
 export const escalationStatusQuery = getEscalationStatusQuery;
 export const escalationStatusMutation = updateEscalationStatusMutation;
+
+export const HOW_TO_TRACK_TIME = __('How to track time');

@@ -297,6 +297,66 @@ RSpec.describe ApplicationSettingsHelper do
     end
   end
 
+  describe '.spam_check_endpoint_enabled?' do
+    subject { helper.spam_check_endpoint_enabled? }
+
+    context 'when spam check endpoint is enabled' do
+      before do
+        stub_application_setting(spam_check_endpoint_enabled: true)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when spam check endpoint is disabled' do
+      before do
+        stub_application_setting(spam_check_endpoint_enabled: false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '.anti_spam_service_enabled?' do
+    subject { helper.anti_spam_service_enabled? }
+
+    context 'when akismet is enabled and spam check endpoint is disabled' do
+      before do
+        stub_application_setting(spam_check_endpoint_enabled: false)
+        stub_application_setting(akismet_enabled: true)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when akismet is disabled and spam check endpoint is enabled' do
+      before do
+        stub_application_setting(spam_check_endpoint_enabled: true)
+        stub_application_setting(akismet_enabled: false)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when akismet and spam check endpoint are both enabled' do
+      before do
+        stub_application_setting(spam_check_endpoint_enabled: true)
+        stub_application_setting(akismet_enabled: true)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when akismet and spam check endpoint are both disabled' do
+      before do
+        stub_application_setting(spam_check_endpoint_enabled: false)
+        stub_application_setting(akismet_enabled: false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '#sidekiq_job_limiter_modes_for_select' do
     subject { helper.sidekiq_job_limiter_modes_for_select }
 

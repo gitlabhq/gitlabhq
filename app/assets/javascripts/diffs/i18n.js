@@ -47,3 +47,5 @@ export const CONFLICT_TEXT = {
     'Conflict: This file was added both in the source and target branches, but with different contents.',
   ),
 };
+
+export const HIDE_COMMENTS = __('Hide comments');

@@ -80,6 +80,7 @@ export default {
       v-if="!showDropdownContentsCreateView"
       ref="searchInput"
       :value="searchKey"
+      :placeholder="__('Search labels')"
       :disabled="labelsFetchInProgress"
       data-qa-selector="dropdown_input_field"
       data-testid="dropdown-input-field"

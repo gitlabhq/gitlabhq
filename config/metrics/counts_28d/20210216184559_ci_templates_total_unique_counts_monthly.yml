@@ -151,6 +151,7 @@ options:
   - p_ci_templates_implicit_jobs_browser_performance_testing_latest
   - p_ci_templates_implicit_jobs_cf_provision
   - p_ci_templates_implicit_jobs_build_latest
+  - p_ci_templates_implicit_jobs_sast_iac
   - p_ci_templates_implicit_security_sast
   - p_ci_templates_implicit_security_dast_runner_validation
   - p_ci_templates_implicit_security_dast_on_demand_scan
@@ -167,6 +168,7 @@ options:
   - p_ci_templates_implicit_security_api_fuzzing
   - p_ci_templates_implicit_security_dast
   - p_ci_templates_implicit_security_cluster_image_scanning
+  - p_ci_templates_implicit_security_sast_iac
   - p_ci_templates_kaniko
   - p_ci_templates_qualys_iac_security
   - p_ci_templates_liquibase

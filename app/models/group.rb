@@ -635,11 +635,11 @@ class Group < Namespace
   # 4. They belong to an ancestor group
   def direct_and_indirect_users
     User.from_union([
-      User
-        .where(id: direct_and_indirect_members.select(:user_id))
-        .reorder(nil),
-      project_users_with_descendants
-    ])
+                      User
+                        .where(id: direct_and_indirect_members.select(:user_id))
+                        .reorder(nil),
+                      project_users_with_descendants
+                    ])
   end
 
   # Returns all users (also inactive) that are members of the group because:
@@ -649,11 +649,11 @@ class Group < Namespace
   # 4. They belong to an ancestor group
   def direct_and_indirect_users_with_inactive
     User.from_union([
-      User
-        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
-        .reorder(nil),
-      project_users_with_descendants
-    ])
+                      User
+                        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
+                        .reorder(nil),
+                      project_users_with_descendants
+                    ])
   end
 
   def users_count

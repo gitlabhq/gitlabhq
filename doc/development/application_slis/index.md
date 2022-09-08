@@ -25,6 +25,7 @@ to be emitted from the rails application:
 ## Existing SLIs
 
 1. [`rails_request_apdex`](rails_request_apdex.md)
+1. `global_search_apdex`
 
 ## Defining a new SLI
 
@@ -135,10 +136,7 @@ After that, add the following information:
   into the error budgets for stage groups.
 - `description`: a Markdown string explaining the SLI. It will
   be shown on dashboards and alerts.
-- `kind`: the kind of indicator. Only `sliDefinition.apdexKind` is supported at the moment.
-  Reach out in
-  [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1395)
-  if you want to implement an SLI for success or error rates.
+- `kind`: the kind of indicator. For example `sliDefinition.apdexKind`.
 
 When done, run `make generate` to generate recording rules for
 the new SLI. This command creates recordings for all services
@@ -152,9 +150,9 @@ When these changes are merged, and the aggregations in
 the success ratio of the new aggregated metrics. For example:
 
 ```prometheus
-sum by (environment, stage, type)(gitlab_sli_aggregation:rails_request_apdex:apdex:success:rate_1h)
+sum by (environment, stage, type)(application_sli_aggregation:rails_request:apdex:success:rate_1h)
 /
-sum by (environment, stage, type)(gitlab_sli_aggregation:rails_request_apdex:apdex:weight:rate_1h)
+sum by (environment, stage, type)(application_sli_aggregation:rails_request:apdex:weight:score_1h)
 ```
 
 This shows the success ratio, which can guide you to set an

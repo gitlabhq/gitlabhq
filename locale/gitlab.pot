@@ -2289,6 +2289,9 @@ msgstr ""
 msgid "Add label(s)"
 msgstr ""
 
+msgid "Add license"
+msgstr ""
+
 msgid "Add list"
 msgstr ""
 
@@ -2721,7 +2724,7 @@ msgstr ""
 msgid "AdminSettings|Enable Service Ping"
 msgstr ""
 
-msgid "AdminSettings|Enable a Prometheus endpoint that exposes health and performance statistics. The Health Check menu item appears in the Monitoring section of the Admin Area. Restart required. %{link_start}Learn more.%{link_end}"
+msgid "AdminSettings|Enable collection of application metrics. Restart required. %{link_start}Learn how to export metrics to Prometheus%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Enable kuromoji custom analyzer: Indexing"
@@ -14028,6 +14031,12 @@ msgstr ""
 msgid "DropdownWidget|Assign %{issuableAttribute}"
 msgstr ""
 
+msgid "DropdownWidget|Cancel"
+msgstr ""
+
+msgid "DropdownWidget|Edit %{issuableAttribute}"
+msgstr ""
+
 msgid "DropdownWidget|Failed to fetch the %{issuableAttribute} for this %{issuableType}. Please try again."
 msgstr ""
 
@@ -14041,6 +14050,12 @@ msgid "DropdownWidget|No %{issuableAttribute} found"
 msgstr ""
 
 msgid "DropdownWidget|No open %{issuableAttribute} found"
+msgstr ""
+
+msgid "DropdownWidget|You do not have permission to view the currently assigned %{issuableAttribute} and will not be able to choose it again if you reassign it."
+msgstr ""
+
+msgid "DropdownWidget|You don't have permission to view this %{issuableAttribute}."
 msgstr ""
 
 msgid "Due Date"
@@ -14454,6 +14469,9 @@ msgstr ""
 msgid "Enable GitLab Error Tracking"
 msgstr ""
 
+msgid "Enable GitLab Prometheus metrics endpoint"
+msgstr ""
+
 msgid "Enable Gitpod"
 msgstr ""
 
@@ -14536,9 +14554,6 @@ msgid "Enable group runners"
 msgstr ""
 
 msgid "Enable header and footer in emails"
-msgstr ""
-
-msgid "Enable health and performance metrics endpoint"
 msgstr ""
 
 msgid "Enable in-product marketing emails"
@@ -19414,6 +19429,9 @@ msgid_plural "Hide charts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Hide comments"
+msgstr ""
+
 msgid "Hide comments on this file"
 msgstr ""
 
@@ -19576,6 +19594,9 @@ msgid "How many seconds an IP counts toward the IP address limit."
 msgstr ""
 
 msgid "How the job limiter handles jobs exceeding the thresholds specified below. The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and raises an exception if the compressed size exceeds the limit."
+msgstr ""
+
+msgid "How to track time"
 msgstr ""
 
 msgid "I accept the %{terms_link}"
@@ -25657,10 +25678,10 @@ msgstr ""
 msgid "Monitor"
 msgstr ""
 
-msgid "Monitor Settings"
+msgid "Monitor GitLab with Prometheus."
 msgstr ""
 
-msgid "Monitor the health and performance of GitLab with Prometheus."
+msgid "Monitor Settings"
 msgstr ""
 
 msgid "Monitor your errors by integrating with Sentry."

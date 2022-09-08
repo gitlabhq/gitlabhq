@@ -333,6 +333,10 @@ func configureRoutes(u *upstream) {
 		u.route("POST", apiPattern+`v4/groups\z`, tempfileMultipartProxy),
 		u.route("PUT", apiPattern+`v4/groups/[^/]+\z`, tempfileMultipartProxy),
 
+		// User Avatar
+		u.route("POST", apiPattern+`v4/users\z`, tempfileMultipartProxy),
+		u.route("PUT", apiPattern+`v4/users/[0-9]+\z`, tempfileMultipartProxy),
+
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),
 		u.route("", ciAPIPattern, proxy),

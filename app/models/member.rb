@@ -74,10 +74,7 @@ class Member < ApplicationRecord
     projects = source.root_ancestor.all_projects
     project_members = Member.default_scoped.where(source: projects).select(*Member.cached_column_list)
 
-    Member.default_scoped.from_union([
-      group_members,
-      project_members
-    ]).merge(self)
+    Member.default_scoped.from_union([group_members, project_members]).merge(self)
   end
 
   scope :excluding_users, ->(user_ids) do

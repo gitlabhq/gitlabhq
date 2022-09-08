@@ -34,6 +34,13 @@ module QA
         end
       end
 
+      def self.build(struct)
+        Resource::User.init do |usr|
+          usr.username = struct.username
+          usr.password = struct.password
+        end
+      end
+
       def admin?
         api_resource&.dig(:is_admin) || false
       end

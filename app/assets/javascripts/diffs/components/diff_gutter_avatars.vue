@@ -4,6 +4,7 @@ import { truncate } from '~/lib/utils/text_utility';
 import { n__ } from '~/locale';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import { COUNT_OF_AVATARS_IN_GUTTER, LENGTH_OF_AVATAR_TOOLTIP } from '../constants';
+import { HIDE_COMMENTS } from '../i18n';
 
 export default {
   components: {
@@ -55,6 +56,9 @@ export default {
       return `${noteData.author.name}: ${note}`;
     },
   },
+  i18n: {
+    HIDE_COMMENTS,
+  },
 };
 </script>
 
@@ -62,8 +66,10 @@ export default {
   <div class="diff-comment-avatar-holders">
     <button
       v-if="discussionsExpanded"
+      v-gl-tooltip
+      :title="$options.i18n.HIDE_COMMENTS"
       type="button"
-      :aria-label="__('Show comments')"
+      :aria-label="$options.i18n.HIDE_COMMENTS"
       class="diff-notes-collapse js-diff-comment-avatar js-diff-comment-button"
       @click="$emit('toggleLineDiscussions')"
     >

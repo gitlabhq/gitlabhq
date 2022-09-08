@@ -562,7 +562,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'change Prometheus settings' do
         page.within('.as-prometheus') do
-          check 'Enable health and performance metrics endpoint'
+          check 'Enable GitLab Prometheus metrics endpoint'
           click_button 'Save changes'
         end
 

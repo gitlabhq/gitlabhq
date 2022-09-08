@@ -14,6 +14,11 @@ export default {
     },
   },
   props: {
+    buttonId: {
+      type: String,
+      required: false,
+      default: '',
+    },
     title: {
       type: String,
       required: false,
@@ -47,6 +52,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    shouldShowConfirmationPopover: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -97,6 +107,11 @@ export default {
       window.removeEventListener('keyup', this.collapseOnEscape);
     },
     toggle({ emitEvent = true } = {}) {
+      if (this.shouldShowConfirmationPopover) {
+        this.$emit('edit-confirm');
+        return;
+      }
+
       if (this.edit) {
         this.collapse({ emitEvent });
       } else {
@@ -132,6 +147,7 @@ export default {
       <slot name="collapsed-right"></slot>
       <gl-button
         v-if="canUpdate && !initialLoading && canEdit"
+        :id="buttonId"
         category="tertiary"
         size="small"
         class="gl-text-gray-900! gl-ml-auto hide-collapsed gl-mr-n2 shortcut-sidebar-dropdown-toggle"
@@ -151,7 +167,7 @@ export default {
         <slot name="collapsed">{{ __('None') }}</slot>
       </div>
       <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">
-        <slot :edit="edit"></slot>
+        <slot :edit="edit" :toggle="toggle"></slot>
       </div>
     </template>
   </div>

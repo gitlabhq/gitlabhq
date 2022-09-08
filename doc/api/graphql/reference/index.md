@@ -12972,7 +12972,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="grouprunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
-| <a id="grouprunnersmembership"></a>`membership` | [`RunnerMembershipFilter`](#runnermembershipfilter) | Control which runners to include in the results. |
+| <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -19513,6 +19513,15 @@ Values for YAML processor result.
 | <a id="cirunneraccesslevelnot_protected"></a>`NOT_PROTECTED` | A runner that is not protected. |
 | <a id="cirunneraccesslevelref_protected"></a>`REF_PROTECTED` | A runner that is ref protected. |
 
+### `CiRunnerMembershipFilter`
+
+Values for filtering runners in namespaces. The previous type name `RunnerMembershipFilter` was deprecated in 15.4.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
+| <a id="cirunnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
+
 ### `CiRunnerSort`
 
 Values for sorting runners.
@@ -20717,15 +20726,6 @@ Status of a requirement based on last test report.
 | <a id="requirementstatusfilterfailed"></a>`FAILED` | Failed test report. |
 | <a id="requirementstatusfiltermissing"></a>`MISSING` | Requirements without any test report. |
 | <a id="requirementstatusfilterpassed"></a>`PASSED` | Passed test report. |
-
-### `RunnerMembershipFilter`
-
-Values for filtering runners in namespaces.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="runnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct relationship or a relationship with descendants. These can be project runners or group runners (in the case where group is queried). |
-| <a id="runnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
 
 ### `SastUiComponentSize`
 

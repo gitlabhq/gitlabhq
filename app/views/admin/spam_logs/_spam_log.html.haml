@@ -26,11 +26,13 @@
       = link_to _('Remove user'), admin_spam_log_path(spam_log, remove_user: true),
         data: { confirm: _("USER %{user_name} WILL BE REMOVED! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' }, aria: { label: _('Remove user') }, method: :delete, class: "gl-button btn btn-sm btn-danger"
   %td
-    - if spam_log.submitted_as_ham?
-      .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
-        = _("Submitted as ham")
-    - else
-      = link_to _('Submit as ham'), mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-default btn-sm gl-mb-3'
+    -# TODO: Remove conditonal once spamcheck supports this https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/190
+    - if akismet_enabled?
+      - if spam_log.submitted_as_ham?
+        .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
+          = _("Submitted as ham")
+      - else
+        = link_to _('Submit as ham'), mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-default btn-sm gl-mb-3'
     - if user && !user.blocked?
       = link_to _('Block user'), block_admin_user_path(user), data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')}, method: :put, class: "gl-button btn btn-default btn-sm gl-mb-3"
     - else

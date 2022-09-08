@@ -258,22 +258,23 @@ class Issue < ApplicationRecord
       reversed_direction = direction == :asc ? :desc : :asc
 
       # rubocop: disable GitlabSecurity/PublicSend
-      order = ::Gitlab::Pagination::Keyset::Order.build([
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: attribute_name,
-          column_expression: column,
-          order_expression: column.send(direction).send(nullable),
-          reversed_order_expression: column.send(reversed_direction).send(nullable),
-          order_direction: direction,
-          distinct: false,
-          add_to_projections: true,
-          nullable: nullable
-        ),
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id',
-          order_expression: arel_table['id'].desc
-        )
-      ])
+      order = ::Gitlab::Pagination::Keyset::Order.build(
+        [
+          ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: attribute_name,
+            column_expression: column,
+            order_expression: column.send(direction).send(nullable),
+            reversed_order_expression: column.send(reversed_direction).send(nullable),
+            order_direction: direction,
+            distinct: false,
+            add_to_projections: true,
+            nullable: nullable
+          ),
+          ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            order_expression: arel_table['id'].desc
+          )
+        ])
       # rubocop: enable GitlabSecurity/PublicSend
 
       order.apply_cursor_conditions(scope).order(order)
