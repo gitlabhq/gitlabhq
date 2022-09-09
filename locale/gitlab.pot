@@ -10175,6 +10175,9 @@ msgstr ""
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
+msgid "ContainerRegistry|Edit cleanup rules"
+msgstr ""
+
 msgid "ContainerRegistry|Enable expiration policy"
 msgstr ""
 
@@ -10277,6 +10280,12 @@ msgid "ContainerRegistry|Run cleanup:"
 msgstr ""
 
 msgid "ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Set cleanup rules"
+msgstr ""
+
+msgid "ContainerRegistry|Set rules to automatically remove unused packages to save storage space."
 msgstr ""
 
 msgid "ContainerRegistry|Set up cleanup"
@@ -26407,6 +26416,9 @@ msgstr ""
 msgid "No credit card required."
 msgstr ""
 
+msgid "No data available"
+msgstr ""
+
 msgid "No data found"
 msgstr ""
 
@@ -27937,6 +27949,9 @@ msgid "Package type must be NuGet"
 msgstr ""
 
 msgid "Package type must be PyPi"
+msgstr ""
+
+msgid "Package type must be RPM"
 msgstr ""
 
 msgid "Package type must be RubyGems"
@@ -45794,6 +45809,9 @@ msgid "Your primary email is used for avatar detection. You can change it in you
 msgstr ""
 
 msgid "Your profile"
+msgstr ""
+
+msgid "Your project is no longer receiving GitLab Ultimate benefits as of 2022-07-01. As notified in-app previously, public open source projects on the Free tier can apply to the GitLab for Open Source Program to receive GitLab Ultimate benefits. Please refer to the %{faq_link_start}FAQ%{link_end} for more details."
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"

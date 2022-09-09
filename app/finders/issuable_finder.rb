@@ -58,19 +58,19 @@ class IssuableFinder
   class << self
     def scalar_params
       @scalar_params ||= %i[
-      assignee_id
-      assignee_username
-      author_id
-      author_username
-      crm_contact_id
-      crm_organization_id
-      label_name
-      milestone_title
-      release_tag
-      my_reaction_emoji
-      search
-      in
-    ]
+        assignee_id
+        assignee_username
+        author_id
+        author_username
+        crm_contact_id
+        crm_organization_id
+        label_name
+        milestone_title
+        release_tag
+        my_reaction_emoji
+        search
+        in
+      ]
     end
 
     def array_params

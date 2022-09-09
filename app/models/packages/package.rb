@@ -22,7 +22,8 @@ class Packages::Package < ApplicationRecord
     debian: 9,
     rubygems: 10,
     helm: 11,
-    terraform_module: 12
+    terraform_module: 12,
+    rpm: 13
   }
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4 }
@@ -43,6 +44,7 @@ class Packages::Package < ApplicationRecord
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
   has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
+  has_one :rpm_metadatum, inverse_of: :package, class_name: 'Packages::Rpm::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true

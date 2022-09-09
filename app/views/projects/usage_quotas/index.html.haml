@@ -1,5 +1,7 @@
 - page_title s_("UsageQuota|Usage")
 
+= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
+
 = render Pajamas::AlertComponent.new(title: _('Repository usage recalculation started'),
   variant: :info,
   alert_options: { class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 gl-display-none' }) do |c|

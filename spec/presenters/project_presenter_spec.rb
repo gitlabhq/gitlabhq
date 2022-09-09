@@ -484,6 +484,12 @@ RSpec.describe ProjectPresenter do
     end
 
     describe '#autodevops_anchor_data' do
+      it 'returns nil if builds feature is not available' do
+        allow(project).to receive(:feature_available?).with(:builds, user).and_return(false)
+
+        expect(presenter.autodevops_anchor_data).to be_nil
+      end
+
       context 'when Auto Devops is enabled' do
         it 'returns anchor data' do
           allow(project).to receive(:auto_devops_enabled?).and_return(true)

@@ -9,7 +9,7 @@ module Ci
       @user.owns_runner?(@subject)
     end
 
-    condition(:belongs_to_multiple_projects) do
+    condition(:belongs_to_multiple_projects, scope: :subject) do
       @subject.belongs_to_more_than_one_project?
     end
 

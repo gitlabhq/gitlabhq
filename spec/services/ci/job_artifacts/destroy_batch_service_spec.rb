@@ -221,6 +221,15 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       end
 
       context 'with update_stats: false' do
+        let_it_be(:extra_artifact_with_file) do
+          create(:ci_job_artifact, :zip, project: artifact_with_file.project)
+        end
+
+        let(:artifacts) do
+          Ci::JobArtifact.where(id: [artifact_with_file.id, extra_artifact_with_file.id,
+                                     artifact_without_file.id, trace_artifact.id])
+        end
+
         it 'does not update project statistics' do
           expect(ProjectStatistics).not_to receive(:increment_statistic)
 
@@ -230,7 +239,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
         it 'returns size statistics' do
           expected_updates = {
             statistics_updates: {
-              artifact_with_file.project => -artifact_with_file.file.size,
+              artifact_with_file.project => -(artifact_with_file.file.size + extra_artifact_with_file.file.size),
               artifact_without_file.project => 0
             }
           }

@@ -337,6 +337,14 @@ FactoryBot.define do
       size { 3989.bytes }
     end
 
+    trait(:rpm) do
+      package
+      file_fixture { 'spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm' }
+      file_name { 'hello-0.0.1-1.fc29.x86_64.rpm' }
+      file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
+      size { 115.kilobytes }
+    end
+
     trait(:object_storage) do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end

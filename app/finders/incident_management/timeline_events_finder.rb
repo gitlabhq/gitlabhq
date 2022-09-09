@@ -31,7 +31,7 @@ module IncidentManagement
     end
 
     def sort(collection)
-      collection.order_occurred_at_asc
+      collection.order_occurred_at_asc_id_asc
     end
   end
 end

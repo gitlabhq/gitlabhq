@@ -55,6 +55,12 @@ FactoryBot.define do
       end
     end
 
+    factory :rpm_package do
+      sequence(:name) { |n| "package-#{n}" }
+      sequence(:version) { |n| "v1.0.#{n}" }
+      package_type { :rpm }
+    end
+
     factory :debian_package do
       sequence(:name) { |n| "package-#{n}" }
       sequence(:version) { |n| "1.0-#{n}" }

@@ -57,11 +57,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   after_action :log_merge_request_show, only: [:show]
 
   feature_category :code_review, [
-                     :assign_related_issues, :bulk_update, :cancel_auto_merge,
-                     :commit_change_content, :commits, :context_commits, :destroy,
-                     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-                     :show, :toggle_award_emoji, :toggle_subscription, :update
-                   ]
+    :assign_related_issues, :bulk_update, :cancel_auto_merge,
+    :commit_change_content, :commits, :context_commits, :destroy,
+    :discussions, :edit, :index, :merge, :rebase, :remove_wip,
+    :show, :toggle_award_emoji, :toggle_subscription, :update
+  ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
   feature_category :code_quality, [:codequality_reports, :codequality_mr_diff_reports]

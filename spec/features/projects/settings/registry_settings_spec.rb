@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Settings > Packages and registries > Container registry tag expiration policy', :js do
+RSpec.describe 'Project > Settings > Packages and registries > Container registry tag expiration policy' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 
@@ -19,7 +19,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
     stub_container_registry_config(enabled: container_registry_enabled)
   end
 
-  context 'as owner' do
+  context 'as owner', :js do
     it 'shows available section' do
       subject
 
@@ -27,40 +27,14 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       expect(settings_block).to have_text 'Clean up image tags'
     end
 
-    it 'saves cleanup policy submit the form' do
+    it 'contains link to clean up image tags page' do
       subject
 
-      within '[data-testid="container-expiration-policy-project-settings"]' do
-        select('Every day', from: 'Run cleanup')
-        select('50 tags per image name', from: 'Keep the most recent:')
-        fill_in('Keep tags matching:', with: 'stable')
-        select('7 days', from: 'Remove tags older than:')
-        fill_in('Remove tags matching:', with: '.*-production')
-
-        submit_button = find('[data-testid="save-button"')
-        expect(submit_button).not_to be_disabled
-        submit_button.click
-      end
-
-      expect(find('.gl-toast')).to have_content('Cleanup policy successfully saved.')
-    end
-
-    it 'does not save cleanup policy submit form with invalid regex' do
-      subject
-
-      within '[data-testid="container-expiration-policy-project-settings"]' do
-        fill_in('Remove tags matching:', with: '*-production')
-
-        submit_button = find('[data-testid="save-button"')
-        expect(submit_button).not_to be_disabled
-        submit_button.click
-      end
-
-      expect(find('.gl-toast')).to have_content('Something went wrong while updating the cleanup policy.')
+      expect(page).to have_link('Edit cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
     end
   end
 
-  context 'with a project without expiration policy' do
+  context 'with a project without expiration policy', :js do
     before do
       project.container_expiration_policy.destroy!
     end
@@ -74,7 +48,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
         subject
 
         within '[data-testid="container-expiration-policy-project-settings"]' do
-          expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
+          expect(page).to have_link('Set cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
         end
       end
     end

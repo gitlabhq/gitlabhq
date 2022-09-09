@@ -49,9 +49,9 @@ class GroupsController < Groups::ApplicationController
   layout :determine_layout
 
   feature_category :subgroups, [
-                     :index, :new, :create, :show, :edit, :update,
-                     :destroy, :details, :transfer, :activity
-                   ]
+    :index, :new, :create, :show, :edit, :update,
+    :destroy, :details, :transfer, :activity
+  ]
 
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review, [:merge_requests, :unfoldered_environment_names]

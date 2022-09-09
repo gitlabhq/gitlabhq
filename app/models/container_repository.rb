@@ -598,6 +598,7 @@ class ContainerRepository < ApplicationRecord
     tags_response_body.map do |raw_tag|
       tag = ContainerRegistry::Tag.new(self, raw_tag['name'])
       tag.force_created_at_from_iso8601(raw_tag['created_at'])
+      tag.updated_at = raw_tag['updated_at']
       tag
     end
   end

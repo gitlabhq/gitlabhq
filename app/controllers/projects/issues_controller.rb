@@ -65,19 +65,19 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :designs, :show
 
   feature_category :team_planning, [
-                     :index, :calendar, :show, :new, :create, :edit, :update,
-                     :destroy, :move, :reorder, :designs, :toggle_subscription,
-                     :discussions, :bulk_update, :realtime_changes,
-                     :toggle_award_emoji, :mark_as_spam, :related_branches,
-                     :can_create_branch, :create_merge_request
-                   ]
+    :index, :calendar, :show, :new, :create, :edit, :update,
+    :destroy, :move, :reorder, :designs, :toggle_subscription,
+    :discussions, :bulk_update, :realtime_changes,
+    :toggle_award_emoji, :mark_as_spam, :related_branches,
+    :can_create_branch, :create_merge_request
+  ]
   urgency :low, [
-                     :index, :calendar, :show, :new, :create, :edit, :update,
-                     :destroy, :move, :reorder, :designs, :toggle_subscription,
-                     :discussions, :bulk_update, :realtime_changes,
-                     :toggle_award_emoji, :mark_as_spam, :related_branches,
-                     :can_create_branch, :create_merge_request
-                   ]
+    :index, :calendar, :show, :new, :create, :edit, :update,
+    :destroy, :move, :reorder, :designs, :toggle_subscription,
+    :discussions, :bulk_update, :realtime_changes,
+    :toggle_award_emoji, :mark_as_spam, :related_branches,
+    :can_create_branch, :create_merge_request
+  ]
 
   feature_category :service_desk, [:service_desk]
   urgency :low, [:service_desk]

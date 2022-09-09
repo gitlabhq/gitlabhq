@@ -57,14 +57,15 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   end
 
   def broadcast_message_params
-    params.require(:broadcast_message).permit(%i(
-      theme
-      ends_at
-      message
-      starts_at
-      target_path
-      broadcast_type
-      dismissable
-    ), target_access_levels: []).reverse_merge!(target_access_levels: [])
+    params.require(:broadcast_message)
+      .permit(%i(
+                theme
+                ends_at
+                message
+                starts_at
+                target_path
+                broadcast_type
+                dismissable
+              ), target_access_levels: []).reverse_merge!(target_access_levels: [])
   end
 end

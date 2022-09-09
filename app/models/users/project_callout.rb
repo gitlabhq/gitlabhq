@@ -10,7 +10,8 @@ module Users
 
     enum feature_name: {
       awaiting_members_banner: 1, # EE-only
-      web_hook_disabled: 2
+      web_hook_disabled: 2,
+      ultimate_feature_removal_banner: 3
     }
 
     validates :project, presence: true

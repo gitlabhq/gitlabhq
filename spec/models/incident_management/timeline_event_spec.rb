@@ -29,7 +29,7 @@ RSpec.describe IncidentManagement::TimelineEvent do
     it { is_expected.to validate_length_of(:action).is_at_most(128) }
   end
 
-  describe '.order_occurred_at_asc' do
+  describe '.order_occurred_at_asc_id_asc' do
     let_it_be(:occurred_3mins_ago) do
       create(:incident_management_timeline_event, project: project, occurred_at: 3.minutes.ago)
     end
@@ -38,10 +38,22 @@ RSpec.describe IncidentManagement::TimelineEvent do
       create(:incident_management_timeline_event, project: project, occurred_at: 2.minutes.ago)
     end
 
-    subject(:order) { described_class.order_occurred_at_asc }
+    subject(:order) { described_class.order_occurred_at_asc_id_asc }
 
     it 'sorts timeline events by occurred_at' do
       is_expected.to eq([occurred_3mins_ago, occurred_2mins_ago, timeline_event])
+    end
+
+    context 'when two events occured at the same time' do
+      let_it_be(:also_occurred_2mins_ago) do
+        create(:incident_management_timeline_event, project: project, occurred_at: occurred_2mins_ago.occurred_at)
+      end
+
+      it 'sorts timeline events by occurred_at then sorts by id' do
+        occurred_2mins_ago.touch # Interact with record of earlier id to switch default DB ordering
+
+        is_expected.to eq([occurred_3mins_ago, occurred_2mins_ago, also_occurred_2mins_ago, timeline_event])
+      end
     end
   end
 

@@ -7,10 +7,11 @@ RSpec.describe API::Commits do
   include ProjectForksHelper
   include SessionHelpers
 
-  let(:user) { create(:user) }
-  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-  let(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+  let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
   let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
   let(:project_id) { project.id }
@@ -46,7 +47,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'project commits'
     end
@@ -413,6 +414,9 @@ RSpec.describe API::Commits do
     end
 
     describe 'create' do
+      let_it_be(:sequencer) { FactoryBot::Sequence.new(:new_file_path) { |n| "files/test/#{n}.rb" } }
+
+      let(:new_file_path) { sequencer.next }
       let(:message) { 'Created a new file with a very very looooooooooooooooooooooooooooooooooooooooooooooong commit message' }
       let(:invalid_c_params) do
         {
@@ -435,7 +439,7 @@ RSpec.describe API::Commits do
           actions: [
             {
               action: 'create',
-              file_path: 'foo/bar/baz.txt',
+              file_path: new_file_path,
               content: 'puts 8'
             }
           ]
@@ -449,7 +453,7 @@ RSpec.describe API::Commits do
           actions: [
             {
               action: 'create',
-              file_path: 'foo/bar/baz.txt',
+              file_path: new_file_path,
               content: 'puts 🦊'
             }
           ]
@@ -959,6 +963,7 @@ RSpec.describe API::Commits do
     end
 
     describe 'multiple operations' do
+      let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
       let(:message) { 'Multiple actions' }
       let(:invalid_mo_params) do
         {
@@ -1028,17 +1033,11 @@ RSpec.describe API::Commits do
         }
       end
 
-      it 'are committed as one in project repo' do
+      it 'is committed as one in project repo and includes stats' do
         post api(url, user), params: valid_mo_params
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['title']).to eq(message)
-      end
-
-      it 'includes the commit stats' do
-        post api(url, user), params: valid_mo_params
-
-        expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to include 'stats'
       end
 
@@ -1124,7 +1123,8 @@ RSpec.describe API::Commits do
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/refs' do
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :repository) }
+
     let(:tag) { project.repository.find_tag('v1.1.0') }
     let(:commit_id) { tag.dereferenced_target.id }
     let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/refs" }
@@ -1139,6 +1139,8 @@ RSpec.describe API::Commits do
     end
 
     context 'when repository is disabled' do
+      let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+
       include_context 'disabled repository'
 
       it_behaves_like '404 response' do
@@ -1228,6 +1230,8 @@ RSpec.describe API::Commits do
       end
 
       context 'when repository is disabled' do
+        let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+
         include_context 'disabled repository'
 
         it_behaves_like '404 response' do
@@ -1269,8 +1273,14 @@ RSpec.describe API::Commits do
     end
 
     shared_examples_for 'ref with unaccessible pipeline' do
-      let!(:pipeline) do
-        create(:ci_empty_pipeline, project: project, status: :created, source: :push, ref: 'master', sha: commit.sha, protected: false)
+      let(:pipeline) do
+        create(:ci_empty_pipeline,
+          project: project,
+          status: :created,
+          source: :push,
+          ref: 'master',
+          sha: commit.sha,
+          protected: false)
       end
 
       it 'does not include last_pipeline' do
@@ -1308,7 +1318,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'ref commit'
       it_behaves_like 'ref with pipeline'
@@ -1338,6 +1348,7 @@ RSpec.describe API::Commits do
       context 'when builds are disabled' do
         before do
           project
+            .reload
             .project_feature
             .update!(builds_access_level: ProjectFeature::DISABLED)
         end
@@ -1389,7 +1400,7 @@ RSpec.describe API::Commits do
 
       context 'with private builds' do
         before do
-          project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
+          project.reload.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
         end
 
         it_behaves_like 'ref with pipeline'
@@ -1415,8 +1426,8 @@ RSpec.describe API::Commits do
     end
 
     context 'when authenticated', 'as non_member and project is public' do
-      let(:current_user) { create(:user) }
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:current_user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'ref with pipeline'
 
@@ -1469,6 +1480,8 @@ RSpec.describe API::Commits do
       end
 
       context 'when repository is disabled' do
+        let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+
         include_context 'disabled repository'
 
         it_behaves_like '404 response' do
@@ -1478,7 +1491,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'ref diff'
     end
@@ -1568,6 +1581,8 @@ RSpec.describe API::Commits do
       end
 
       context 'when repository is disabled' do
+        let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+
         include_context 'disabled repository'
 
         it_behaves_like '404 response' do
@@ -1577,7 +1592,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'ref comments'
     end
@@ -1666,6 +1681,7 @@ RSpec.describe API::Commits do
   end
 
   describe 'POST :id/repository/commits/:sha/cherry_pick' do
+    let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
     let(:commit) { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
     let(:commit_id) { commit.id }
     let(:branch) { 'master' }
@@ -1703,6 +1719,8 @@ RSpec.describe API::Commits do
       end
 
       context 'when repository is disabled' do
+        let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+
         include_context 'disabled repository'
 
         it_behaves_like '404 response' do
@@ -1712,7 +1730,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like '403 response' do
         let(:request) { post api(route), params: { branch: 'master' } }
@@ -1851,6 +1869,7 @@ RSpec.describe API::Commits do
   end
 
   describe 'POST :id/repository/commits/:sha/revert' do
+    let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
     let(:commit_id) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     let(:commit)    { project.commit(commit_id) }
     let(:branch)    { 'master' }
@@ -1891,7 +1910,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like '403 response' do
         let(:request) { post api(route), params: { branch: branch } }
@@ -1998,6 +2017,7 @@ RSpec.describe API::Commits do
   end
 
   describe 'POST /projects/:id/repository/commits/:sha/comments' do
+    let(:project) { create(:project, :repository, :private) }
     let(:commit) { project.repository.commit }
     let(:commit_id) { commit.id }
     let(:note) { 'My comment' }
@@ -2018,6 +2038,8 @@ RSpec.describe API::Commits do
       end
 
       context 'when repository is disabled' do
+        let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+
         include_context 'disabled repository'
 
         it_behaves_like '404 response' do
@@ -2027,7 +2049,7 @@ RSpec.describe API::Commits do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like '400 response' do
         let(:request) { post api(route), params: { note: 'My comment' } }
@@ -2047,12 +2069,13 @@ RSpec.describe API::Commits do
       it_behaves_like 'ref new comment'
 
       it 'returns the inline comment' do
-        post api(route, current_user), params: { note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new' }
+        path = project.repository.commit.raw_diffs.first.new_path
+        post api(route, current_user), params: { note: 'My comment', path: path, line: 1, line_type: 'new' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/commit_note')
         expect(json_response['note']).to eq('My comment')
-        expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
+        expect(json_response['path']).to eq(path)
         expect(json_response['line']).to eq(1)
         expect(json_response['line_type']).to eq('new')
       end
@@ -2127,7 +2150,8 @@ RSpec.describe API::Commits do
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
-    let(:project) { create(:project, :repository, :private) }
+    let_it_be(:project) { create(:project, :repository, :private) }
+
     let(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
     let(:commit) { merged_mr.merge_request_diff.commits.last }
 
@@ -2159,7 +2183,8 @@ RSpec.describe API::Commits do
     end
 
     context 'public project' do
-      let(:project) { create(:project, :repository, :public, :merge_requests_private) }
+      let_it_be(:project) { create(:project, :repository, :public, :merge_requests_private) }
+
       let(:non_member) { create(:user) }
 
       it 'responds 403 when only members are allowed to read merge requests' do

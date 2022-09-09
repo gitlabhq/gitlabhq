@@ -4640,6 +4640,27 @@ Input type: `SecurityFindingCreateIssueInput`
 | <a id="mutationsecurityfindingcreateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecurityfindingcreateissueissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 
+### `Mutation.securityFindingDismiss`
+
+Input type: `SecurityFindingDismissInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingdismisscomment"></a>`comment` | [`String`](#string) | Comment why finding should be dismissed. |
+| <a id="mutationsecurityfindingdismissdismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason why finding should be dismissed. |
+| <a id="mutationsecurityfindingdismissuuid"></a>`uuid` | [`String!`](#string) | UUID of the finding to be dismissed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecurityfindingdismissuuid"></a>`uuid` | [`String`](#string) | UUID of dismissed finding. |
+
 ### `Mutation.securityPolicyProjectAssign`
 
 Assigns the specified project(`security_policy_project_id`) as security policy project for the given project(`full_path`). If the project already has a security policy project, this reassigns the project's security policy project with the given `security_policy_project_id`.
@@ -20605,6 +20626,7 @@ Values for sorting package.
 | <a id="packagetypeenumnpm"></a>`NPM` | Packages from the npm package manager. |
 | <a id="packagetypeenumnuget"></a>`NUGET` | Packages from the Nuget package manager. |
 | <a id="packagetypeenumpypi"></a>`PYPI` | Packages from the PyPI package manager. |
+| <a id="packagetypeenumrpm"></a>`RPM` | Packages from the Rpm package manager. |
 | <a id="packagetypeenumrubygems"></a>`RUBYGEMS` | Packages from the Rubygems package manager. |
 | <a id="packagetypeenumterraform_module"></a>`TERRAFORM_MODULE` | Packages from the Terraform Module package manager. |
 

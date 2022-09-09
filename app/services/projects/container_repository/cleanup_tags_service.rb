@@ -2,10 +2,7 @@
 
 module Projects
   module ContainerRepository
-    class CleanupTagsService
-      include BaseServiceUtility
-      include ::Gitlab::Utils::StrongMemoize
-
+    class CleanupTagsService < CleanupTagsBaseService
       def initialize(container_repository, user = nil, params = {})
         @container_repository = container_repository
         @current_user = user
@@ -43,74 +40,20 @@ module Projects
 
       private
 
-      def delete_tags
-        return success(deleted: []) unless @tags.any?
-
-        service = Projects::ContainerRepository::DeleteTagsService.new(
-          @project,
-          @current_user,
-          tags: @tags.map(&:name),
-          container_expiration_policy: container_expiration_policy
-        )
-
-        service.execute(@container_repository)
-      end
-
-      def filter_out_latest
-        @tags.reject!(&:latest?)
-      end
-
-      def order_by_date
-        now = DateTime.current
-        @tags.sort_by! { |tag| tag.created_at || now }
-             .reverse!
-      end
-
-      def filter_by_name
-        regex_delete = ::Gitlab::UntrustedRegexp.new("\\A#{name_regex_delete || name_regex}\\z")
-        regex_retain = ::Gitlab::UntrustedRegexp.new("\\A#{name_regex_keep}\\z")
-
-        @tags.select! do |tag|
-          # regex_retain will override any overlapping matches by regex_delete
-          regex_delete.match?(tag.name) && !regex_retain.match?(tag.name)
-        end
-      end
-
       def filter_keep_n
-        return unless keep_n
-
-        order_by_date
-        cache_tags(@tags.first(keep_n_as_integer))
-        @tags = @tags.drop(keep_n_as_integer)
-      end
-
-      def filter_by_older_than
-        return unless older_than
-
-        older_than_timestamp = older_than_in_seconds.ago
-
-        @tags, tags_to_keep = @tags.partition do |tag|
-          tag.created_at && tag.created_at < older_than_timestamp
-        end
+        @tags, tags_to_keep = partition_by_keep_n
 
         cache_tags(tags_to_keep)
       end
 
-      def can_destroy?
-        return true if container_expiration_policy
+      def filter_by_older_than
+        @tags, tags_to_keep = partition_by_older_than
 
-        can?(@current_user, :destroy_container_image, @project)
+        cache_tags(tags_to_keep)
       end
 
-      def valid_regex?
-        %w(name_regex_delete name_regex name_regex_keep).each do |param_name|
-          regex = @params[param_name]
-          ::Gitlab::UntrustedRegexp.new(regex) unless regex.blank?
-        end
-        true
-      rescue RegexpError => e
-        ::Gitlab::ErrorTracking.log_exception(e, project_id: @project.id)
-        false
+      def pushed_at(tag)
+        tag.created_at
       end
 
       def truncate
@@ -152,40 +95,6 @@ module Projects
 
       def max_list_size
         ::Gitlab::CurrentSettings.current_application_settings.container_registry_cleanup_tags_service_max_list_size.to_i
-      end
-
-      def keep_n
-        @params['keep_n']
-      end
-
-      def keep_n_as_integer
-        keep_n.to_i
-      end
-
-      def older_than_in_seconds
-        strong_memoize(:older_than_in_seconds) do
-          ChronicDuration.parse(older_than).seconds
-        end
-      end
-
-      def older_than
-        @params['older_than']
-      end
-
-      def name_regex_delete
-        @params['name_regex_delete']
-      end
-
-      def name_regex
-        @params['name_regex']
-      end
-
-      def name_regex_keep
-        @params['name_regex_keep']
-      end
-
-      def container_expiration_policy
-        @params['container_expiration_policy']
       end
     end
   end

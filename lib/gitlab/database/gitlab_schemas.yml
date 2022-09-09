@@ -383,6 +383,7 @@ packages_events: :gitlab_main
 packages_helm_file_metadata: :gitlab_main
 packages_maven_metadata: :gitlab_main
 packages_npm_metadata: :gitlab_main
+packages_rpm_metadata: :gitlab_main
 packages_nuget_dependency_link_metadata: :gitlab_main
 packages_nuget_metadata: :gitlab_main
 packages_package_file_build_infos: :gitlab_main

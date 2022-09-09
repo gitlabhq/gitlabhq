@@ -18907,6 +18907,22 @@ CREATE TABLE packages_pypi_metadata (
     CONSTRAINT check_379019d5da CHECK ((char_length(required_python) <= 255))
 );
 
+CREATE TABLE packages_rpm_metadata (
+    package_id bigint NOT NULL,
+    release text DEFAULT '1'::text NOT NULL,
+    summary text DEFAULT ''::text NOT NULL,
+    description text DEFAULT ''::text NOT NULL,
+    arch text DEFAULT ''::text NOT NULL,
+    license text,
+    url text,
+    CONSTRAINT check_3798bae3d6 CHECK ((char_length(arch) <= 255)),
+    CONSTRAINT check_5d29ba59ac CHECK ((char_length(description) <= 5000)),
+    CONSTRAINT check_6e8cbd536d CHECK ((char_length(url) <= 1000)),
+    CONSTRAINT check_845ba4d7d0 CHECK ((char_length(license) <= 1000)),
+    CONSTRAINT check_b010bf4870 CHECK ((char_length(summary) <= 1000)),
+    CONSTRAINT check_c3e2fc2e89 CHECK ((char_length(release) <= 128))
+);
+
 CREATE TABLE packages_rubygems_metadata (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -19194,7 +19210,8 @@ CREATE TABLE plan_limits (
     web_hook_calls_low integer DEFAULT 0 NOT NULL,
     project_ci_variables integer DEFAULT 200 NOT NULL,
     group_ci_variables integer DEFAULT 200 NOT NULL,
-    ci_max_artifact_size_cyclonedx integer DEFAULT 1 NOT NULL
+    ci_max_artifact_size_cyclonedx integer DEFAULT 1 NOT NULL,
+    rpm_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -25926,6 +25943,9 @@ ALTER TABLE ONLY packages_packages
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT packages_pypi_metadata_pkey PRIMARY KEY (package_id);
 
+ALTER TABLE ONLY packages_rpm_metadata
+    ADD CONSTRAINT packages_rpm_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY packages_rubygems_metadata
     ADD CONSTRAINT packages_rubygems_metadata_pkey PRIMARY KEY (package_id);
 
@@ -29619,6 +29639,8 @@ CREATE INDEX index_packages_packages_on_project_id_and_status_and_id ON packages
 CREATE INDEX index_packages_packages_on_project_id_and_version ON packages_packages USING btree (project_id, version);
 
 CREATE INDEX index_packages_project_id_name_partial_for_nuget ON packages_packages USING btree (project_id, name) WHERE (((name)::text <> 'NuGet.Temporary.Package'::text) AND (version IS NOT NULL) AND (package_type = 4));
+
+CREATE INDEX index_packages_rpm_metadata_on_package_id ON packages_rpm_metadata USING btree (package_id);
 
 CREATE INDEX index_packages_tags_on_package_id ON packages_tags USING btree (package_id);
 
@@ -34490,6 +34512,9 @@ ALTER TABLE ONLY geo_hashed_storage_attachments_events
 
 ALTER TABLE ONLY ml_candidate_params
     ADD CONSTRAINT fk_rails_d4a51d1185 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id);
+
+ALTER TABLE ONLY packages_rpm_metadata
+    ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

@@ -18,23 +18,23 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   feature_category :not_owned, [ # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
-                     :general, :reporting, :metrics_and_profiling, :network,
-                     :preferences, :update, :reset_health_check_token
-                   ]
+    :general, :reporting, :metrics_and_profiling, :network,
+    :preferences, :update, :reset_health_check_token
+  ]
 
   feature_category :metrics, [
-                     :create_self_monitoring_project,
-                     :status_create_self_monitoring_project,
-                     :delete_self_monitoring_project,
-                     :status_delete_self_monitoring_project
-                   ]
+    :create_self_monitoring_project,
+    :status_create_self_monitoring_project,
+    :delete_self_monitoring_project,
+    :status_delete_self_monitoring_project
+  ]
   urgency :low, [
-            :create_self_monitoring_project,
-            :status_create_self_monitoring_project,
-            :delete_self_monitoring_project,
-            :status_delete_self_monitoring_project,
-            :reset_error_tracking_access_token
-          ]
+    :create_self_monitoring_project,
+    :status_create_self_monitoring_project,
+    :delete_self_monitoring_project,
+    :status_delete_self_monitoring_project,
+    :reset_error_tracking_access_token
+  ]
 
   feature_category :source_code_management, [:repository, :clear_repository_check_states]
   feature_category :continuous_integration, [:ci_cd, :reset_registration_token]

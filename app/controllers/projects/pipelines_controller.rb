@@ -51,10 +51,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   POLLING_INTERVAL = 10_000
 
   feature_category :continuous_integration, [
-                     :charts, :show, :config_variables, :stage, :cancel, :retry,
-                     :builds, :dag, :failures, :status,
-                     :index, :create, :new, :destroy
-                   ]
+    :charts, :show, :config_variables, :stage, :cancel, :retry,
+    :builds, :dag, :failures, :status,
+    :index, :create, :new, :destroy
+  ]
   feature_category :code_testing, [:test_report]
   feature_category :build_artifacts, [:downloadable_artifacts]
 

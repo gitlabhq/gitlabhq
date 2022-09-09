@@ -20,6 +20,6 @@ module IncidentManagement
     validates :action, presence: true, length: { maximum: 128 }
     validates :note, :note_html, presence: true, length: { maximum: 10_000 }
 
-    scope :order_occurred_at_asc, -> { reorder(occurred_at: :asc) }
+    scope :order_occurred_at_asc_id_asc, -> { reorder(occurred_at: :asc, id: :asc) }
   end
 end

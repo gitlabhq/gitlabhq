@@ -56,9 +56,9 @@ class ProjectsController < Projects::ApplicationController
   layout :determine_layout
 
   feature_category :projects, [
-                     :index, :show, :new, :create, :edit, :update, :transfer,
-                     :destroy, :archive, :unarchive, :toggle_star, :activity
-                   ]
+    :index, :show, :new, :create, :edit, :update, :transfer,
+    :destroy, :archive, :unarchive, :toggle_star, :activity
+  ]
 
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]

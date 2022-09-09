@@ -30,10 +30,7 @@ class AbuseReportsController < ApplicationController
   private
 
   def report_params
-    params.require(:abuse_report).permit(%i(
-      message
-      user_id
-    ))
+    params.require(:abuse_report).permit(:message, :user_id)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

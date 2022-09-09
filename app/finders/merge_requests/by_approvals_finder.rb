@@ -71,9 +71,7 @@ module MergeRequests
     #
     # @param [ActiveRecord::Relation] items the activerecord relation
     def with_any_approvals(items)
-      items.select_from_union([
-        items.with_approvals
-      ])
+      items.select_from_union([items.with_approvals])
     end
 
     # Merge requests approved by given usernames

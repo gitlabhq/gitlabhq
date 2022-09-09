@@ -5,6 +5,8 @@
 - expanded = expanded_by_default?
 - reduce_visibility_form_id = 'reduce-visibility-form'
 
+= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
+
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')

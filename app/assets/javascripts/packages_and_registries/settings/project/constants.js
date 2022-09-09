@@ -4,6 +4,12 @@ export const CONTAINER_CLEANUP_POLICY_TITLE = s__(`ContainerRegistry|Clean up im
 export const CONTAINER_CLEANUP_POLICY_DESCRIPTION = s__(
   `ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}`,
 );
+export const CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION = s__(
+  'ContainerRegistry|Set rules to automatically remove unused packages to save storage space.',
+);
+export const CONTAINER_CLEANUP_POLICY_EDIT_RULES = s__('ContainerRegistry|Edit cleanup rules');
+export const CONTAINER_CLEANUP_POLICY_SET_RULES = s__('ContainerRegistry|Set cleanup rules');
+
 export const SET_CLEANUP_POLICY_BUTTON = __('Save changes');
 export const UNAVAILABLE_FEATURE_TITLE = s__(
   `ContainerRegistry|Cleanup policy for tags is disabled`,

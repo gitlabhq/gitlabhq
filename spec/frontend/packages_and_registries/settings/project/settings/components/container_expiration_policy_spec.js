@@ -1,12 +1,14 @@
-import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlSprintf, GlLink, GlCard } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
-import ContainerExpirationPolicyForm from '~/packages_and_registries/settings/project/components/container_expiration_policy_form.vue';
 import {
+  CONTAINER_CLEANUP_POLICY_EDIT_RULES,
+  CONTAINER_CLEANUP_POLICY_SET_RULES,
+  CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_INTRO_TEXT,
   UNAVAILABLE_USER_FEATURE_TEXT,
@@ -14,11 +16,7 @@ import {
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
-import {
-  expirationPolicyPayload,
-  emptyExpirationPolicyPayload,
-  containerExpirationPolicyData,
-} from '../mock_data';
+import { expirationPolicyPayload, emptyExpirationPolicyPayload } from '../mock_data';
 
 describe('Container expiration policy project settings', () => {
   let wrapper;
@@ -28,17 +26,19 @@ describe('Container expiration policy project settings', () => {
     projectPath: 'path',
     isAdmin: false,
     adminSettingsPath: 'settingsPath',
+    cleanupSettingsPath: 'cleanupSettingsPath',
     enableHistoricEntries: false,
     helpPagePath: 'helpPagePath',
-    showCleanupPolicyLink: false,
   };
 
-  const findFormComponent = () => wrapper.find(ContainerExpirationPolicyForm);
-  const findAlert = () => wrapper.find(GlAlert);
+  const findFormComponent = () => wrapper.findComponent(GlCard);
+  const findDescription = () => wrapper.findByTestId('description');
+  const findButton = () => wrapper.findByTestId('rules-button');
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findSettingsBlock = () => wrapper.find(SettingsBlock);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       stubs: {
         GlSprintf,
         SettingsBlock,
@@ -63,37 +63,19 @@ describe('Container expiration policy project settings', () => {
     wrapper.destroy();
   });
 
-  describe('isEdited status', () => {
-    it.each`
-      description                                  | apiResponse                       | workingCopy                                                   | result
-      ${'empty response and no changes from user'} | ${emptyExpirationPolicyPayload()} | ${{}}                                                         | ${false}
-      ${'empty response and changes from user'}    | ${emptyExpirationPolicyPayload()} | ${{ enabled: true }}                                          | ${true}
-      ${'response and no changes'}                 | ${expirationPolicyPayload()}      | ${containerExpirationPolicyData()}                            | ${false}
-      ${'response and changes'}                    | ${expirationPolicyPayload()}      | ${{ ...containerExpirationPolicyData(), nameRegex: '12345' }} | ${true}
-      ${'response and empty'}                      | ${expirationPolicyPayload()}      | ${{}}                                                         | ${true}
-    `('$description', async ({ apiResponse, workingCopy, result }) => {
-      mountComponentWithApollo({
-        provide: { ...defaultProvidedValues, enableHistoricEntries: true },
-        resolver: jest.fn().mockResolvedValue(apiResponse),
-      });
-      await waitForPromises();
-
-      findFormComponent().vm.$emit('input', workingCopy);
-
-      await waitForPromises();
-
-      expect(findFormComponent().props('isEdited')).toBe(result);
-    });
-  });
-
   it('renders the setting form', async () => {
     mountComponentWithApollo({
       resolver: jest.fn().mockResolvedValue(expirationPolicyPayload()),
     });
     await waitForPromises();
 
-    expect(findFormComponent().exists()).toBe(true);
     expect(findSettingsBlock().exists()).toBe(true);
+    expect(findFormComponent().exists()).toBe(true);
+    expect(findDescription().text()).toMatchInterpolatedText(
+      CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
+    );
+    expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_EDIT_RULES);
+    expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
   });
 
   describe('the form is disabled', () => {
@@ -157,6 +139,10 @@ describe('Container expiration policy project settings', () => {
       await waitForPromises();
 
       expect(findFormComponent().exists()).toBe(isShown);
+      if (isShown) {
+        expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_SET_RULES);
+        expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
+      }
     });
   });
 });
