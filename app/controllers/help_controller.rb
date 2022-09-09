@@ -12,8 +12,7 @@ class HelpController < ApplicationController
   YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m.freeze
 
   def index
-    # Remove YAML frontmatter so that it doesn't look weird
-    @help_index = File.read(path_to_doc('index.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
+    @help_index = get_markdown_without_frontmatter(path_to_doc('index.md'))
 
     # Prefix Markdown links with `help/` unless they are external links.
     # '//' not necessarily part of URL, e.g., mailto:mail@example.com
@@ -59,7 +58,24 @@ class HelpController < ApplicationController
     @instance_configuration = InstanceConfiguration.new
   end
 
+  def drawers
+    @clean_path = Rack::Utils.clean_path_info(params[:markdown_file])
+    @path = path_to_doc("#{@clean_path}.md")
+
+    if File.exist?(@path)
+      render :drawers, formats: :html, layout: false
+    else
+      head :not_found
+    end
+  end
+
   private
+
+  # Remove YAML frontmatter so that it doesn't look weird
+  helper_method :get_markdown_without_frontmatter
+  def get_markdown_without_frontmatter(path)
+    File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
+  end
 
   def redirect_to_documentation_website?
     Gitlab::UrlSanitizer.valid_web?(documentation_url)
@@ -100,8 +116,7 @@ class HelpController < ApplicationController
     path = path_to_doc("#{@path}.md")
 
     if File.exist?(path)
-      # Remove YAML frontmatter so that it doesn't look weird
-      @markdown = File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
+      @markdown = get_markdown_without_frontmatter(path)
 
       render :show, formats: :html
     else

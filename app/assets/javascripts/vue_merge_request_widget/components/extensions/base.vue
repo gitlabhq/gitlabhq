@@ -319,7 +319,7 @@ export default {
       :status="statusIconName"
       :is-loading="isLoadingSummary"
       :class="{ 'gl-cursor-pointer': isCollapsible }"
-      class="gl-p-5"
+      class="gl-p-5 gl--flex-center"
       @mousedown="onRowMouseDown"
       @mouseup="onRowMouseUp"
     >

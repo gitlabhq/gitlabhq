@@ -84,6 +84,20 @@ describe('IssuableForm', () => {
           'autosave//issues/new/bar=true=description',
         );
       });
+
+      it('creates due_date autosave when due_date input exist', () => {
+        $form.append(`<input type="text" name="issue[due_date]"/>`);
+        const $dueDate = $form.find(`input[name*="[due_date]"]`);
+        const totalAutosaveFormFields = $form.children().length;
+        createIssuable($form);
+
+        expect(Autosave).toHaveBeenCalledTimes(totalAutosaveFormFields);
+        expect(Autosave).toHaveBeenLastCalledWith(
+          $dueDate,
+          ['/', '', 'due_date'],
+          `autosave///=due_date`,
+        );
+      });
     });
 
     describe('resetAutosave', () => {
@@ -92,8 +106,8 @@ describe('IssuableForm', () => {
 
         instance.resetAutosave();
 
-        expect(instance.autosaveTitle.reset).toHaveBeenCalledTimes(1);
-        expect(instance.autosaveDescription.reset).toHaveBeenCalledTimes(1);
+        expect(instance.autosaves.get('title').reset).toHaveBeenCalledTimes(1);
+        expect(instance.autosaves.get('description').reset).toHaveBeenCalledTimes(1);
       });
 
       it('resets autosave when submit', () => {
@@ -113,6 +127,14 @@ describe('IssuableForm', () => {
         $form.find('.js-reset-autosave').trigger('click');
 
         expect(resetAutosave).toHaveBeenCalledTimes(1);
+      });
+
+      it('creates due_date autosave when due_date input exist', () => {
+        $form.append(`<input type="text" name="issue[due_date]"/>`);
+        instance = createIssuable($form);
+        instance.resetAutosave();
+
+        expect(instance.autosaves.get('due_date').reset).toHaveBeenCalledTimes(1);
       });
     });
   });

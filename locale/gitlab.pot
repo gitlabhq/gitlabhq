@@ -2294,6 +2294,9 @@ msgstr ""
 msgid "Add label(s)"
 msgstr ""
 
+msgid "Add labels"
+msgstr ""
+
 msgid "Add license"
 msgstr ""
 
@@ -13471,6 +13474,9 @@ msgid "DevOps Reports"
 msgstr ""
 
 msgid "DevOps adoption"
+msgstr ""
+
+msgid "Development"
 msgstr ""
 
 msgid "Devices (optional)"

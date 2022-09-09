@@ -45,4 +45,30 @@ RSpec.describe JiraConnectInstallation do
       expect(subject).to contain_exactly(subscription.installation)
     end
   end
+
+  describe '#oauth_authorization_url' do
+    let_it_be(:installation) { create(:jira_connect_installation) }
+
+    subject { installation.oauth_authorization_url }
+
+    before do
+      allow(Gitlab).to receive_message_chain('config.gitlab.host') { 'http://test.host' }
+    end
+
+    it { is_expected.to eq('http://test.host') }
+
+    context 'with instance_url' do
+      let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://gitlab.example.com') }
+
+      it { is_expected.to eq('https://gitlab.example.com') }
+
+      context 'and jira_connect_oauth_self_managed feature is disabled' do
+        before do
+          stub_feature_flags(jira_connect_oauth_self_managed: false)
+        end
+
+        it { is_expected.to eq('http://test.host') }
+      end
+    end
+  end
 end

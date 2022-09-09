@@ -326,14 +326,20 @@ database: gitlabhq_production
 Database migrations can be stuck in an incomplete state, with a `down`
 status in the output of the `sudo gitlab-rake db:migrate:status` command.
 
-To complete these migrations, use the following Rake task:
+1. To complete these migrations, use the following Rake task:
 
-```shell
-sudo gitlab-rake db:migrate
-```
+   ```shell
+   sudo gitlab-rake db:migrate
+   ```
 
-After the command completes, run `sudo gitlab-rake db:migrate:status` to check if all
-migrations are completed (have an `up` status).
+1. After the command completes, run `sudo gitlab-rake db:migrate:status` to check if all migrations are completed (have an `up` status).
+
+1. Hot reload `puma` and `sidekiq` services:
+
+   ```shell
+   sudo gitlab-ctl hup puma
+   sudo gitlab-ctl restart sidekiq
+   ```
 
 ## Rebuild database indexes
 

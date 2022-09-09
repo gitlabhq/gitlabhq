@@ -157,6 +157,13 @@ to perform the following additional steps for the zero-downtime upgrade:
    sudo gitlab-rake db:migrate
    ```
 
+1. Hot reload `puma` and `sidekiq` services:
+
+   ```shell
+   sudo gitlab-ctl hup puma
+   sudo gitlab-ctl restart sidekiq
+   ```
+
 If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
 encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you might
 see the following error:

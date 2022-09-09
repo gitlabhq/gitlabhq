@@ -64,7 +64,7 @@ export default {
         :title="$options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION"
         name="lock"
       />
-      <runner-type-badge :type="runner.runnerType" size="sm" />
+      <runner-type-badge :type="runner.runnerType" size="sm" class="gl-vertical-align-middle" />
     </div>
 
     <div class="gl-ml-auto gl-display-inline-flex gl-max-w-full gl-py-2">

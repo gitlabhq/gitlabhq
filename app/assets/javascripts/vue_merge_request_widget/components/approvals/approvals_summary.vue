@@ -103,7 +103,7 @@ export default {
       <span v-if="approvalLeftMessage">{{ message }}</span>
       <span v-else class="gl-font-weight-bold">{{ message }}</span>
       <user-avatar-list
-        class="gl-display-inline-block gl-vertical-align-middle"
+        class="gl-display-inline-block gl-vertical-align-middle gl-pt-1"
         :img-size="24"
         :items="approvers"
       />

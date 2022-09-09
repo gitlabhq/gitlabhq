@@ -219,7 +219,7 @@ export default {
           class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-400 gl-pr-4 gl-top-2"
           data-testid="empty-state"
         >
-          <span v-if="canUpdate" class="gl-ml-2">{{ __('Select labels') }}</span>
+          <span v-if="canUpdate" class="gl-ml-2">{{ __('Add labels') }}</span>
           <span v-else class="gl-ml-2">{{ __('None') }}</span>
         </div>
       </template>

@@ -147,6 +147,7 @@ export const TOKEN_TYPE_EPIC = 'epic_id';
 export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_CONTACT = 'crm_contact';
 export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
+export const TOKEN_TYPE_HEALTH = 'health_status';
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'task-done', title: 'task', value: 'task' };
 
@@ -320,6 +321,16 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
+      },
+    },
+  },
+  [TOKEN_TYPE_HEALTH]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'healthStatus',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'health_status',
       },
     },
   },

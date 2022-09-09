@@ -74,16 +74,12 @@ export default {
   <div class="js-deployment-info deployment-info">
     <template v-if="hasDeploymentMeta">
       <span>{{ deployedText }}</span>
-      <tooltip-on-truncate
-        :title="deployment.name"
-        truncate-target="child"
-        class="deploy-link label-truncate"
-      >
+      <tooltip-on-truncate :title="deployment.name" truncate-target="child" class="label-truncate">
         <gl-link
           :href="deployment.url"
           target="_blank"
           rel="noopener noreferrer nofollow"
-          class="js-deploy-meta gl-font-sm"
+          class="js-deploy-meta gl-font-sm gl-pb-1"
         >
           {{ deployment.name }}
         </gl-link>

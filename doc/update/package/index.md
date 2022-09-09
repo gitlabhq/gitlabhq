@@ -330,3 +330,10 @@ To fix this error:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+1. Hot reload `puma` and `sidekiq` services:
+
+   ```shell
+   sudo gitlab-ctl hup puma
+   sudo gitlab-ctl restart sidekiq
+   ```
