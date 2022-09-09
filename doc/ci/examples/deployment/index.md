@@ -47,6 +47,7 @@ staging:
   script:
     - gem install dpl
     - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
+  environment: staging
 ```
 
 In the above example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
@@ -70,6 +71,7 @@ staging:
     - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
     - main
+  environment: staging
 ```
 
 The first line `apt-get update -yq` updates the list of available packages,
@@ -93,6 +95,7 @@ staging:
     - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
     - main
+  environment: staging
 
 production:
   stage: deploy
@@ -101,6 +104,7 @@ production:
     - dpl --provider=heroku --app=my-app-production --api_key=$HEROKU_PRODUCTION_API_KEY
   only:
     - tags
+  environment: production
 ```
 
 We created two deploy jobs that are executed on different events:

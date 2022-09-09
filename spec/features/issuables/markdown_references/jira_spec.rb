@@ -15,6 +15,8 @@ RSpec.describe "Jira", :js do
     before do
       remotelink = double(:remotelink, all: [], build: double(save!: true))
 
+      stub_feature_flags(remove_user_attributes: false)
+
       stub_request(:get, "https://jira.example.com/rest/api/2/issue/JIRA-5")
       stub_request(:post, "https://jira.example.com/rest/api/2/issue/JIRA-5/comment")
       allow_next_instance_of(JIRA::Resource::Issue) do |instance|

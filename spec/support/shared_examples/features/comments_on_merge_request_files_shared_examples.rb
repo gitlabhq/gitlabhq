@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'comment on merge request file' do
+  before do
+    stub_feature_flags(remove_user_attributes: false)
+  end
+
   it 'adds a comment' do
     click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
 

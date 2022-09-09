@@ -42,6 +42,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:incident_timeline, project)
+    push_frontend_feature_flag(:remove_user_attributes, @group)
   end
 
   before_action only: [:index, :show] do

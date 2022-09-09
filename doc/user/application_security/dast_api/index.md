@@ -1017,21 +1017,21 @@ This example excludes the `/auth` resource. This does not exclude child resource
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/auth
+  DAST_API_EXCLUDE_PATHS: /auth
 ```
 
 To exclude `/auth`, and child resources (`/auth/child`), we use a wildcard.
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/auth*
+  DAST_API_EXCLUDE_PATHS: /auth*
 ```
 
 To exclude multiple paths we use the `;` character. In this example we exclude `/auth*` and `/v1/*`.
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/auth*;/v1/*
+  DAST_API_EXCLUDE_PATHS: /auth*;/v1/*
 ```
 
 To exclude one or more nested levels within a path we use `**`. In this example we are testing API endpoints. We are testing `/api/v1/` and `/api/v2/` of a data query requesting `mass`, `brightness` and `coordinates` data for `planet`, `moon`, `star`, and `satellite` objects. Example paths that could be scanned include, but are not limited to:
@@ -1044,7 +1044,7 @@ In this example we test the `brightness` endpoint only:
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/api/**/mass;/api/**/coordinates
+  DAST_API_EXCLUDE_PATHS: /api/**/mass;/api/**/coordinates
 ```
 
 ### Exclude parameters
@@ -1304,7 +1304,15 @@ Each value in `DAST_API_EXCLUDE_URLS` is a regular expression. Characters such a
 The following example excludes the URL `http://target/api/auth` and its child resources.
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: http://target/api/auth
 ```
 
@@ -1313,7 +1321,15 @@ variables:
 To exclude the URLs `http://target/api/buy` and `http://target/api/sell` but allowing to scan their child resources, for instance: `http://target/api/buy/toy` or `http://target/api/sell/chair`. You could use the value `http://target/api/buy/$,http://target/api/sell/$`. This value is using two regular expressions, each of them separated by a `,` character. Hence, it contains `http://target/api/buy$` and `http://target/api/sell$`. In each regular expression, the trailing `$` character points out where the matching URL should end.
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: http://target/api/buy/$,http://target/api/sell/$
 ```
 
@@ -1322,7 +1338,15 @@ variables:
 In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: http://target/api/buy,http://target/api/sell
 ```
 
@@ -1331,7 +1355,15 @@ variables:
 In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: https://target/api/v.*/user/create$
 ```
 
@@ -1575,12 +1607,15 @@ This solution is for pipelines in which the target API URL doesn't change (is st
 For environments where the target API remains the same, we recommend you specify the target URL by using the `DAST_API_TARGET_URL` environment variable. In your `.gitlab-ci.yml`, add a variable `DAST_API_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
 
 ```yaml
-include:
-    - template: DAST-API.gitlab-ci.yml
+stages:
+  - dast
 
-  variables:
-    DAST_API_TARGET_URL: http://test-deployment/
-    DAST_API_OPENAPI: test-api-specification.json
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_OPENAPI: test-api-specification.json
 ```
 
 #### Dynamic environment solutions
@@ -1630,17 +1665,17 @@ Relaxed validation is meant for cases when the OpenAPI document cannot meet Open
 API Security can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API Security to perform a relaxed validation, set the variable `DAST_API_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
 ```yaml
-   stages:
-     - dast
+stages:
+  - dast
 
-   include:
-     - template: DAST-API.gitlab-ci.yml
+include:
+  - template: DAST-API.gitlab-ci.yml
 
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_TARGET_URL: http://test-deployment/
-     DAST_API_OPENAPI: test-api-specification.json
-     DAST_API_OPENAPI_RELAXED_VALIDATION: On
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_OPENAPI_RELAXED_VALIDATION: 'On'
 ```
 
 ### `No operation in the OpenAPI document is consuming any supported media type`

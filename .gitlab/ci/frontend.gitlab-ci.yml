@@ -247,7 +247,7 @@ coverage-frontend:
   extends:
     - .default-retry
     - .yarn-cache
-    - .frontend:rules:ee-mr-and-default-branch-only
+    - .frontend:rules:coverage-frontend
   needs:
     - job: "jest"
       optional: true

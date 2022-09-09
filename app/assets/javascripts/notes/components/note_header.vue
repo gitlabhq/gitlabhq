@@ -10,6 +10,7 @@ import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -26,6 +27,7 @@ export default {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     author: {
       type: Object,
@@ -183,21 +185,28 @@ export default {
         :data-user-id="author.id"
         :data-username="author.username"
       >
+        <span
+          v-if="glFeatures.removeUserAttributes"
+          class="note-header-author-name gl-font-weight-bold"
+        >
+          {{ authorName }}
+        </span>
         <user-name-with-status
+          v-if="!glFeatures.removeUserAttributes"
           :name="authorName"
           :availability="userAvailability(author)"
           container-classes="note-header-author-name gl-font-weight-bold"
         />
       </a>
       <span
-        v-if="authorStatus"
+        v-if="authorStatus && !glFeatures.removeUserAttributes"
         ref="authorStatus"
         v-safe-html:[$options.safeHtmlConfig]="authorStatus"
         v-on="
           authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
         "
       ></span>
-      <span class="text-nowrap author-username">
+      <span v-if="!glFeatures.removeUserAttributes" class="text-nowrap author-username">
         <a
           ref="authorUsernameLink"
           class="author-username-link"

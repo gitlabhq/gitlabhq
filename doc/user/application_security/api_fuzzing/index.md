@@ -1069,21 +1069,21 @@ This example excludes the `/auth` resource. This does not exclude child resource
 
 ```yaml
 variables:
-  FUZZAPI_EXCLUDE_PATHS=/auth
+  FUZZAPI_EXCLUDE_PATHS: /auth
 ```
 
 To exclude `/auth`, and child resources (`/auth/child`), we use a wildcard.
 
 ```yaml
 variables:
-  FUZZAPI_EXCLUDE_PATHS=/auth*
+  FUZZAPI_EXCLUDE_PATHS: /auth*
 ```
 
 To exclude multiple paths we can use the `;` character. In this example we exclude `/auth*` and `/v1/*`.
 
 ```yaml
 variables:
-  FUZZAPI_EXCLUDE_PATHS=/auth*;/v1/*
+  FUZZAPI_EXCLUDE_PATHS: /auth*;/v1/*
 ```
 
 ### Exclude parameters
@@ -1343,7 +1343,15 @@ Each value in `FUZZAPI_EXCLUDE_URLS` is a regular expression. Characters such as
 The following example excludes the URL `http://target/api/auth` and its child resources.
 
 ```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
 variables:
+  FUZZAPI_TARGET_URL: http://target/
+  FUZZAPI_OPENAPI: test-api-specification.json
   FUZZAPI_EXCLUDE_URLS: http://target/api/auth
 ```
 
@@ -1352,7 +1360,15 @@ variables:
 To exclude the URLs `http://target/api/buy` and `http://target/api/sell` but allowing to scan their child resources, for instance: `http://target/api/buy/toy` or `http://target/api/sell/chair`. You could use the value `http://target/api/buy/$,http://target/api/sell/$`. This value is using two regular expressions, each of them separated by a `,` character. Hence, it contains `http://target/api/buy$` and `http://target/api/sell$`. In each regular expression, the trailing `$` character points out where the matching URL should end.
 
 ```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
 variables:
+  FUZZAPI_TARGET_URL: http://target/
+  FUZZAPI_OPENAPI: test-api-specification.json
   FUZZAPI_EXCLUDE_URLS: http://target/api/buy/$,http://target/api/sell/$
 ```
 
@@ -1361,7 +1377,15 @@ variables:
 In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
 
 ```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
 variables:
+  FUZZAPI_TARGET_URL: http://target/
+  FUZZAPI_OPENAPI: test-api-specification.json
   FUZZAPI_EXCLUDE_URLS: http://target/api/buy,http://target/api/sell
 ```
 
@@ -1370,7 +1394,15 @@ variables:
 In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
 
 ```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
 variables:
+  FUZZAPI_TARGET_URL: http://target/
+  FUZZAPI_OPENAPI: test-api-specification.json
   FUZZAPI_EXCLUDE_URLS: https://target/api/v.*/user/create$
 ```
 
@@ -1757,12 +1789,15 @@ This solution is for pipelines in which the target API URL doesn't change (is st
 For environments where the target API remains the same, we recommend you specify the target URL by using the `FUZZAPI_TARGET_URL` environment variable. In your `.gitlab-ci.yml` file, add a variable `FUZZAPI_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
 
 ```yaml
-include:
-    - template: API-Fuzzing.gitlab-ci.yml
+stages:
+  - fuzz
 
-  variables:
-    FUZZAPI_TARGET_URL: http://test-deployment/
-    FUZZAPI_OPENAPI: test-api-specification.json
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+variables:
+  FUZZAPI_TARGET_URL: http://test-deployment/
+  FUZZAPI_OPENAPI: test-api-specification.json
 ```
 
 #### Dynamic environment solutions
@@ -1820,17 +1855,17 @@ Relaxed validation is meant for cases when the OpenAPI document cannot meet Open
 API Security can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API Security to perform a relaxed validation, set the variable `FUZZAPI_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
 ```yaml
-   stages:
-     - fuzz
+stages:
+  - fuzz
 
-   include:
-     - template: API-Fuzzing.gitlab-ci.yml
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
 
-   variables:
-     FUZZAPI_PROFILE: Quick-10
-     FUZZAPI_TARGET_URL: http://test-deployment/
-     FUZZAPI_OPENAPI: test-api-specification.json
-     FUZZAPI_OPENAPI_RELAXED_VALIDATION: On
+variables:
+  FUZZAPI_PROFILE: Quick-10
+  FUZZAPI_TARGET_URL: http://test-deployment/
+  FUZZAPI_OPENAPI: test-api-specification.json
+  FUZZAPI_OPENAPI_RELAXED_VALIDATION: 'On'
 ```
 
 ### `No operation in the OpenAPI document is consuming any supported media type`

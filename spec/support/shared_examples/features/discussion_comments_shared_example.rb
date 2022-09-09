@@ -10,6 +10,10 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
   let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
   let(:comment) { 'My comment' }
 
+  before do
+    stub_feature_flags(remove_user_attributes: false)
+  end
+
   it 'clicking "Comment" will post a comment' do
     wait_for_all_requests
 

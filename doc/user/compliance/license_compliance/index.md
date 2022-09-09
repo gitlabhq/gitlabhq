@@ -890,3 +890,17 @@ root@6abb70e9f193:~#
 
 NOTE:
 Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet) is currently not supported.
+
+### LicenseFinder::Maven: is not installed error
+
+If your project contains a `mvnw` or `mvnw.cmd` file, then the license scanning job may fail with the `LicenseFinder::Maven: is not installed error` error. To resolve this, modify the license scanning job to remove the files in the `before_script` section. Example:
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  before_script:
+    - rm mvnw
+    - rm mvnw.cmd
+```

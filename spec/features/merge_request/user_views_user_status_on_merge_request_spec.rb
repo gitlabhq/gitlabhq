@@ -8,6 +8,10 @@ RSpec.describe 'Project > Merge request > View user status' do
     create(:merge_request, source_project: project, target_project: project, author: create(:user))
   end
 
+  before do
+    stub_feature_flags(remove_user_attributes: false)
+  end
+
   subject { visit merge_request_path(merge_request) }
 
   context 'for notes', :js do

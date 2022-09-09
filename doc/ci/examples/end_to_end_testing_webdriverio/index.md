@@ -228,6 +228,7 @@ deploy_terraform:
   script:
     # Your Review App deployment scripts - for a working example please check https://gitlab.com/Flockademic/Flockademic/blob/5a45f1c2412e93810fab50e2dab8949e2d0633c7/.gitlab-ci.yml#L315
     - echo
+  environment: production
 e2e:firefox:
   stage: confidence-check
   services:

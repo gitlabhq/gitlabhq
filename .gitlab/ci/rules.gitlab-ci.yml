@@ -839,13 +839,14 @@
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 
-.frontend:rules:ee-mr-and-default-branch-only:
+.frontend:rules:coverage-frontend:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-pipeline-revert
+      when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-      when: always
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
@@ -1374,12 +1375,12 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-pipeline-revert
+      when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-      when: always
     - <<: *if-default-branch-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
-      when: always
 
 .rails:rules:rspec-undercoverage:
   rules:
@@ -1418,6 +1419,8 @@
 .rails:rules:flaky-tests-report:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-revert
       when: never
     - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
       changes: *code-backstage-patterns

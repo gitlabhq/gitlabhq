@@ -53,12 +53,11 @@ module QA
           project.api_client = api_client
         end
 
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
-          push.file_name = 'README.md'
-          push.file_content = '# This is a test project'
-          push.commit_message = 'Add README.md'
-          push.user = user
+        Resource::Repository::Commit.fabricate_via_api! do |commit|
+          commit.project = project
+          commit.add_files([{ file_path: 'README.md', content: '# This is a test project' }])
+          commit.commit_message = 'Add README.md'
+          commit.api_client = api_client
         end
 
         project

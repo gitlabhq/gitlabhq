@@ -40,19 +40,44 @@ describe('NoteHeader component', () => {
     availability: '',
   };
 
-  const createComponent = (props) => {
+  const createComponent = (props, userAttributes = false) => {
     wrapper = shallowMountExtended(NoteHeader, {
       store: new Vuex.Store({
         actions,
       }),
       propsData: { ...props },
       stubs: { GlSprintf, UserNameWithStatus },
+      provide: {
+        glFeatures: {
+          removeUserAttributes: userAttributes,
+        },
+      },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  describe('when removeUserAttributes feature flag is enabled', () => {
+    it('does not render busy status', () => {
+      createComponent({ author: { ...author, availability: AVAILABILITY_STATUS.BUSY } }, true);
+
+      expect(wrapper.find('.note-header-info').text()).not.toContain('(Busy)');
+    });
+
+    it('does not render author status', () => {
+      createComponent({ author }, true);
+
+      expect(findAuthorStatus().exists()).toBe(false);
+    });
+
+    it('does not render username', () => {
+      createComponent({ author }, true);
+
+      expect(wrapper.find('.note-header-info').text()).not.toContain('@');
+    });
   });
 
   it('does not render discussion actions when includeToggle is false', () => {

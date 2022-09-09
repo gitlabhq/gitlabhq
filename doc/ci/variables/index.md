@@ -592,6 +592,7 @@ deploy:
     BUILD_VARIABLE: value_from_deploy_job
   script:
     - echo "$BUILD_VARIABLE"  # Output is: 'value_from_build_job' due to precedence
+  environment: production
 ```
 
 The [`dependencies`](../yaml/index.md#dependencies) or
@@ -616,12 +617,19 @@ deploy_one:
     - echo "$BUILD_VERSION"  # Output is: 'hello'
   dependencies:
     - build
+  environment:
+    name: customer1
+    deployment_tier: production
+
 
 deploy_two:
   stage: deploy
   script:
     - echo "$BUILD_VERSION"  # Output is empty
   dependencies: []
+  environment:
+    name: customer2
+    deployment_tier: production
 
 deploy_three:
   stage: deploy
@@ -629,6 +637,10 @@ deploy_three:
     - echo "$BUILD_VERSION"  # Output is: 'hello'
   needs:
     - build
+  environment:
+    name: customer3
+    deployment_tier: production
+
 
 deploy_four:
   stage: deploy
@@ -637,6 +649,9 @@ deploy_four:
   needs:
     job: build
     artifacts: true
+  environment:
+    name: customer4
+    deployment_tier: production
 
 deploy_five:
   stage: deploy
@@ -645,6 +660,9 @@ deploy_five:
   needs:
     job: build
     artifacts: false
+  environment:
+    name: customer5
+    deployment_tier: production
 ```
 
 [Multi-project pipelines](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job)

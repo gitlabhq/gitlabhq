@@ -14,6 +14,7 @@ RSpec.describe 'List issue resource label events', :js do
     let!(:event)    { create(:resource_label_event, user: user, issue: issue, label: label) }
 
     before do
+      stub_feature_flags(remove_user_attributes: false)
       visit project_issue_path(project, issue)
       wait_for_requests
     end

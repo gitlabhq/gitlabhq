@@ -8,6 +8,7 @@ RSpec.describe 'Thread Comments Merge Request', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
+    stub_feature_flags(remove_user_attributes: false)
     project.add_maintainer(user)
     sign_in(user)
 

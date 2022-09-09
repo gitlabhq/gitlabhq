@@ -50,6 +50,8 @@ Rails.application.configure do
   # Push preview path now to prevent FrozenError during view_component's initialzer
   config.autoload_paths.push("#{config.root}/spec/components/previews")
 
+  config.lookbook.page_paths = ["#{config.root}/spec/components/docs"]
+
   # Adds additional error checking when serving assets at runtime.
   # Checks for improperly declared sprockets dependencies.
   # Raises helpful error messages.

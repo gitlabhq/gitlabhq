@@ -27,9 +27,11 @@ RSpec.describe Nav::TopNavHelper do
 
     let(:subject) { helper.top_nav_view_model(project: current_project, group: current_group) }
 
-    let(:active_title) { 'Menu' }
+    let(:menu_title) { 'Menu' }
 
     before do
+      stub_feature_flags(new_navbar_layout: false)
+
       allow(Gitlab::CurrentSettings).to receive(:admin_mode) { with_current_settings_admin_mode }
       allow(helper).to receive(:header_link?).with(:admin_mode) { with_header_link_admin_mode }
 
@@ -44,8 +46,8 @@ RSpec.describe Nav::TopNavHelper do
       allow(helper).to receive(:dashboard_nav_link?).with(:activity) { with_activity }
     end
 
-    it 'has :activeTitle' do
-      expect(subject[:activeTitle]).to eq(active_title)
+    it 'has :menuTitle' do
+      expect(subject[:menuTitle]).to eq(menu_title)
     end
 
     context 'when current_user is nil (anonymous)' do
@@ -103,7 +105,7 @@ RSpec.describe Nav::TopNavHelper do
       let(:current_user) { user }
 
       it 'has no menu items or views by default' do
-        expect(subject).to eq({ activeTitle: active_title,
+        expect(subject).to eq({ menuTitle: menu_title,
                                 primary: [],
                                 secondary: [],
                                 shortcuts: [],
