@@ -53,6 +53,20 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
         sync_partitions
       end
 
+      context 'with eplicitly provided connection' do
+        let(:connection) { Ci::ApplicationRecord.connection }
+
+        it 'uses the explicitly provided connection when any' do
+          skip_if_multiple_databases_not_setup
+
+          expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
+          expect(connection).to receive(:execute).with(partitions.first.to_sql)
+          expect(connection).to receive(:execute).with(partitions.second.to_sql)
+
+          described_class.new(model, connection: connection).sync_partitions
+        end
+      end
+
       context 'when an error occurs during partition management' do
         it 'does not raise an error' do
           expect(partitioning_strategy).to receive(:missing_partitions).and_raise('this should never happen (tm)')

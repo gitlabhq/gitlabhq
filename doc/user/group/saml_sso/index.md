@@ -101,6 +101,19 @@ After you set up your identity provider to work with GitLab, you must configure 
 NOTE:
 The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-configuring-your-identity-provider) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace-setup-notes)), use a secure signature algorithm.
 
+### Additional configuration information
+
+Many SAML terms can vary between providers. It is possible that the information you are looking for is listed under another name.
+
+For more information, start with your identity provider's documentation. Look for their options and examples to see how they configure SAML. This can provide hints on what you need to configure GitLab to work with these providers.
+
+It can also help to look at our [more detailed docs for self-managed GitLab](../../../integration/saml.md).
+SAML configuration for GitLab.com is mostly the same as for self-managed instances.
+However, self-managed GitLab instances use a configuration file that supports more options as described in the external [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
+Internally that uses the [`ruby-saml` library](https://github.com/onelogin/ruby-saml), so we sometimes check there to verify low level details of less commonly used options.
+
+It can also help to compare the XML response from your provider with our [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/fixtures/saml/response.xml).
+
 ### SSO enforcement
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
@@ -311,6 +324,13 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 1. From the list of apps, select the "GitLab.com" app. (The name is set by the administrator of the identity provider.)
 1. You are then signed in to GitLab.com and redirected to the group.
 
+### Change NameID for one or more users
+
+If the NameID changes for one or more users, they need to reconnect their SAML account.
+
+1. Ask relevant users to [unlink their account from the group](#unlinking-accounts).
+1. Ask relevant users to [link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).
+
 ### Configure user settings from SAML response
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
@@ -412,160 +432,4 @@ The [Generated passwords for users created through integrated authentication](..
 
 ## Troubleshooting
 
-This section contains possible solutions for problems you might encounter.
-
-### SAML debugging tools
-
-SAML responses are base64 encoded, so we recommend the following browser plugins to decode them on the fly:
-
-- [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
-- [SAML Message Decoder](https://chrome.google.com/webstore/detail/saml-message-decoder/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
-
-Specific attention should be paid to:
-
-- The [NameID](#nameid), which we use to identify which user is signing in. If the user has previously signed in, this [must match the value we have stored](#verifying-nameid).
-- The presence of a `X509Certificate`, which we require to verify the response signature.
-- The `SubjectConfirmation` and `Conditions`, which can cause errors if misconfigured.
-
-#### Generate a SAML Response
-
-SAML Responses can be used to preview the attribute names and values sent in the assertions list while attempting to sign in using an IdP.
-
-To generate a SAML Response:
-
-1. Install either:
-   - [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace) for Chrome.
-   - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
-1. Open a new browser tab.
-1. Open the SAML tracer console:
-   - Chrome: Right-click on the page, select **Inspect**, then select the **SAML** tab in the opened developer console.
-   - Firefox: Select the SAML-tracer icon located on the browser toolbar.
-1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
-1. Select **Authorize** or attempt to log in. A SAML response is displayed in the tracer console that resembles this
-   [example SAML response](#example-saml-response).
-1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
-
-### Verifying configuration
-
-For convenience, we've included some [example resources](../../../user/group/saml_sso/example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
-
-### Verifying NameID
-
-In troubleshooting the Group SAML setup, any authenticated user can use the API to verify the NameID GitLab already has linked to the user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
-
-Similarly, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
-
-This can then be compared to the [NameID](#nameid) being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match in order to identify users.
-
-### Users receive a 404
-
-Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
-If all users are receiving a `404` when attempting to log in using SAML, confirm
-[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) being used in this SAML SSO namespace.
-
-If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
-[SHA-1 generated fingerprint](../../../integration/saml.md#notes-on-configuring-your-identity-provider).
-
-If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](#configure-your-identity-provider), they may see a 404.
-As outlined in the [user access section](#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
-
-### Message: "SAML authentication failed: Extern UID has already been taken"
-
-This error suggests you are signed in as a GitLab user but have already linked your SAML identity to a different GitLab user. Sign out and then try to sign in again using the SSO SAML link, which should log you into GitLab with the linked user account.
-
-If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the group's SAML](#unlinking-accounts).
-
-### Message: "SAML authentication failed: User has already been taken"
-
-The user that you're signed in with already has SAML linked to a different identity, or the NameID value has changed.
-Here are possible causes and solutions:
-
-| Cause                                                                                          | Solution                                                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](#unlinking-accounts) from this GitLab account before attempting to sign in again. |
-| The NameID changes every time the user requests SSO identification | Check the NameID is not set with `Transient` format, or the NameID is not changing on subsequent requests.|
-
-### Message: "SAML authentication failed: Email has already been taken"
-
-| Cause                                                                                                                                    | Solution                                                                 |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](#user-access-and-management). |
-
-User accounts are created in one of the following ways:
-
-- User registration
-- Sign in through OAuth
-- Sign in through SAML
-- SCIM provisioning
-
-### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
-
-Getting both of these errors at the same time suggests the NameID capitalization provided by the identity provider didn't exactly match the previous value for that user.
-
-This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this causes group membership and to-do items to be lost.
-
-### Message: "Request to link SAML account must be authorized"
-
-Ensure that the user who is trying to link their GitLab account has been added as a user within the identity provider's SAML app.
-
-Alternatively, the SAML response may be missing the `InResponseTo` attribute in the
-`samlp:Response` tag, which is [expected by the SAML gem](https://github.com/onelogin/ruby-saml/blob/9f710c5028b069bfab4b9e2b66891e0549765af5/lib/onelogin/ruby-saml/response.rb#L307-L316).
-The identity provider administrator should ensure that the login is
-initiated by the service provider and not the identity provider.
-
-### Message: "Sign in to GitLab to connect your organization's account"
-
-A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account).
-
-To resolve this problem, the user should check they are using the correct GitLab password to log in. They first need to
-[reset their password](https://gitlab.com/users/password/new) if both:
-
-- The account was provisioned by SCIM.
-- This is the first time the user has logged in the username and password.
-
-### Stuck in a login "loop"
-
-Ensure that the **GitLab single sign-on URL** has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
-
-Alternatively, when users need to [link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
-
-### The NameID has changed
-
-| Cause                                                                                                                                                                                    | Solution                                                                                                                                                               |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| As mentioned in the [NameID](#nameid) section, if the NameID changes for any user, the user can be locked out. This is a common problem when an email address is used as the identifier. | Follow the steps outlined in the ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken) section. |
-
-### I need additional information to configure my identity provider
-
-Many SAML terms can vary between providers. It is possible that the information you are looking for is listed under another name.
-
-For more information, start with your identity provider's documentation. Look for their options and examples to see how they configure SAML. This can provide hints on what you need to configure GitLab to work with these providers.
-
-It can also help to look at our [more detailed docs for self-managed GitLab](../../../integration/saml.md).
-SAML configuration for GitLab.com is mostly the same as for self-managed instances.
-However, self-managed GitLab instances use a configuration file that supports more options as described in the external [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
-Internally that uses the [`ruby-saml` library](https://github.com/onelogin/ruby-saml), so we sometimes check there to verify low level details of less commonly used options.
-
-It can also help to compare the XML response from your provider with our [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/fixtures/saml/response.xml).
-
-### Searching Rails log
-
-With access to the rails log or `production_json.log` (available only to GitLab team members for GitLab.com),
-you should be able to find the base64 encoded SAML response by searching with the following filters:
-
-- `json.meta.caller_id`: `Groups::OmniauthCallbacksController#group_saml`
-- `json.meta.user` or `json.username`: `username`
-- `json.method`: `POST`
-- `json.path`: `/groups/GROUP-PATH/-/saml/callback`
-
-In a relevant log entry, the `json.params` should provide a valid response with:
-
-- `"key": "SAMLResponse"` and the `"value": (full SAML response)`,
-- `"key": "RelayState"` with `"value": "/group-path"`, and
-- `"key": "group_id"` with `"value": "group-path"`.
-
-In some cases, if the SAML response is lengthy, you may receive a `"key": "truncated"` with `"value":"..."`.
-In these cases, please ask a group owner for a copy of the SAML response from when they select
-the "Verify SAML Configuration" button on the group SSO Settings page.
-
-Use a base64 decoder to see a human-readable version of the SAML response.
+See our [troubleshooting SAML guide](troubleshooting.md).

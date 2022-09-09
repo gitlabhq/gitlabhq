@@ -183,6 +183,7 @@ design_management_versions: :gitlab_main
 design_user_mentions: :gitlab_main
 detached_partitions: :gitlab_shared
 diff_note_positions: :gitlab_main
+dora_configurations: :gitlab_main
 dora_daily_metrics: :gitlab_main
 draft_notes: :gitlab_main
 elastic_index_settings: :gitlab_main

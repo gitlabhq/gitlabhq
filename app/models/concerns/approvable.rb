@@ -47,7 +47,7 @@ module Approvable
   def approved_by?(user)
     return false unless user
 
-    approved_by_users.include?(user)
+    approvals.where(user: user).any?
   end
 
   def can_be_approved_by?(user)

@@ -1383,7 +1383,17 @@ Here's some other content in tab two.
 
 This code renders on the GitLab documentation site as:
 
-![tab example](img/tabs.png)
+::Tabs
+
+:::TabTitle Tab One
+
+Here's some content in tab one.
+
+:::TabTitle Tab Two
+
+Here's some other content in tab two.
+
+::EndTabs
 
 For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
 For example:

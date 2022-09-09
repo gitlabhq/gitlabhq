@@ -480,6 +480,10 @@ module QA
         enabled?(ENV['QA_USE_PUBLIC_IP_API'], default: false)
       end
 
+      def chrome_default_download_path
+        ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
+      end
+
       private
 
       def remote_grid_credentials

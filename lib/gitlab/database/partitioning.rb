@@ -33,6 +33,18 @@ module Gitlab
             PartitionManager.new(model).sync_partitions
           end
 
+          unless only_on
+            models_to_sync.each do |model|
+              next if model < ::Gitlab::Database::SharedModel && !(model < TableWithoutModel)
+
+              Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
+                if connection_name != model.connection_db_config.name
+                  PartitionManager.new(model, connection: connection).sync_partitions
+                end
+              end
+            end
+          end
+
           Gitlab::AppLogger.info(message: 'Finished sync of dynamic postgres partitions')
         end
 

@@ -238,7 +238,7 @@ The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenev
 
 This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
 
-It is important that this SCIM `id` and SCIM `externalId` are configured to the same value as the SAML `NameId`. SAML responses can be traced using [debugging tools](index.md#saml-debugging-tools), and any errors can be checked against our [SAML troubleshooting docs](index.md#troubleshooting).
+It is important that this SCIM `id` and SCIM `externalId` are configured to the same value as the SAML `NameId`. SAML responses can be traced using [debugging tools](troubleshooting.md#saml-debugging-tools), and any errors can be checked against our [SAML troubleshooting docs](troubleshooting.md).
 
 ### How do I verify user's SAML NameId matches the SCIM externalId
 
@@ -248,7 +248,7 @@ Group owners can see the list of users and the `externalId` stored for each user
 
 A possible alternative is to use the [SCIM API](../../../api/scim.md#get-a-list-of-scim-provisioned-users) to manually retrieve the `externalId` we have stored for users, also called the `external_uid` or `NameId`.
 
-To see how the `external_uid` compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
+To see how the `external_uid` compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](troubleshooting.md#saml-debugging-tools).
 
 ### Update or fix mismatched SCIM externalId and SAML NameId
 
@@ -263,7 +263,7 @@ that provider may create duplicate users.
 If the `externalId` for a user is not correct, and also doesn't match the SAML NameID,
 you can address the problem in the following ways:
 
-- You can have users unlink and relink themselves, based on the ["SAML authentication failed: User has already been taken"](index.md#message-saml-authentication-failed-user-has-already-been-taken) section.
+- You can have users unlink and relink themselves, based on the ["SAML authentication failed: User has already been taken"](troubleshooting.md#message-saml-authentication-failed-user-has-already-been-taken) section.
 - You can unlink all users simultaneously, by removing all users from the SAML app while provisioning is turned on.
 - It may be possible to use the [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
   To look up a user, you need to know the desired value that matches the `NameId` as well as the current `externalId`.

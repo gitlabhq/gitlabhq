@@ -10,9 +10,10 @@ module Gitlab
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
 
-        def initialize(model)
+        def initialize(model, connection: nil)
           @model = model
-          @connection_name = model.connection.pool.db_config.name
+          @connection = connection || model.connection
+          @connection_name = @connection.pool.db_config.name
         end
 
         def sync_partitions
@@ -45,9 +46,7 @@ module Gitlab
 
         private
 
-        attr_reader :model
-
-        delegate :connection, to: :model
+        attr_reader :model, :connection
 
         def missing_partitions
           return [] unless connection.table_exists?(model.table_name)
@@ -133,7 +132,9 @@ module Gitlab
         end
 
         def table_partitioned?
-          Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(model.table_name).present?
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(model.table_name).present?
+          end
         end
 
         def skip_synching_partitions

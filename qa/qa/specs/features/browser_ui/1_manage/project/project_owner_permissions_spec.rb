@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Manage' do
     describe 'Project owner permissions', :reliable, quarantine: {
-      only: { subdomain: %i[staging staging-canary] },
+      only: { pipeline: %i[staging staging-canary production canary] },
       type: :investigating,
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373038'
     } do

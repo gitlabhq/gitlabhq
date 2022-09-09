@@ -64,6 +64,7 @@ RSpec.describe Gitlab::Database::Partitioning do
   end
 
   describe '.sync_partitions' do
+    let(:ci_connection) { Ci::ApplicationRecord.connection }
     let(:table_names) { %w[partitioning_test1 partitioning_test2] }
     let(:models) do
       table_names.map do |table_name|
@@ -94,6 +95,38 @@ RSpec.describe Gitlab::Database::Partitioning do
         .and change { find_partitions(table_names.last).size }.from(0)
     end
 
+    context 'with multiple databases' do
+      before do
+        table_names.each do |table_name|
+          ci_connection.execute("DROP TABLE IF EXISTS #{table_name}")
+
+          ci_connection.execute(<<~SQL)
+          CREATE TABLE #{table_name} (
+            id serial not null,
+            created_at timestamptz not null,
+            PRIMARY KEY (id, created_at))
+          PARTITION BY RANGE (created_at);
+          SQL
+        end
+      end
+
+      after do
+        table_names.each do |table_name|
+          ci_connection.execute("DROP TABLE IF EXISTS #{table_name}")
+        end
+      end
+
+      it 'creates partitions in each database' do
+        skip_if_multiple_databases_not_setup
+
+        expect { described_class.sync_partitions(models) }
+          .to change { find_partitions(table_names.first, conn: connection).size }.from(0)
+          .and change { find_partitions(table_names.last, conn: connection).size }.from(0)
+          .and change { find_partitions(table_names.first, conn: ci_connection).size }.from(0)
+          .and change { find_partitions(table_names.last, conn: ci_connection).size }.from(0)
+      end
+    end
+
     context 'when no partitioned models are given' do
       it 'manages partitions for each registered model' do
         described_class.register_models([models.first])
@@ -111,16 +144,44 @@ RSpec.describe Gitlab::Database::Partitioning do
     end
 
     context 'when only a specific database is requested' do
+      let(:ci_model) do
+        Class.new(Ci::ApplicationRecord) do
+          include PartitionedTable
+
+          self.table_name = 'partitioning_test3'
+          partitioned_by :created_at, strategy: :monthly
+        end
+      end
+
       before do
-        allow(models.first).to receive_message_chain('connection_db_config.name').and_return('main')
-        allow(models.last).to receive_message_chain('connection_db_config.name').and_return('ci')
+        (table_names + ['partitioning_test3']).each do |table_name|
+          ci_connection.execute("DROP TABLE IF EXISTS #{table_name}")
+
+          ci_connection.execute(<<~SQL)
+          CREATE TABLE #{table_name} (
+            id serial not null,
+            created_at timestamptz not null,
+            PRIMARY KEY (id, created_at))
+          PARTITION BY RANGE (created_at);
+          SQL
+        end
+      end
+
+      after do
+        (table_names + ['partitioning_test3']).each do |table_name|
+          ci_connection.execute("DROP TABLE IF EXISTS #{table_name}")
+        end
       end
 
       it 'manages partitions for models for the given database', :aggregate_failures do
-        expect { described_class.sync_partitions(models, only_on: 'ci') }
-          .to change { find_partitions(table_names.last).size }.from(0)
+        skip_if_multiple_databases_not_setup
 
-        expect(find_partitions(table_names.first).size).to eq(0)
+        expect { described_class.sync_partitions([models.first, ci_model], only_on: 'ci') }
+          .to change { find_partitions(ci_model.table_name, conn: ci_connection).size }.from(0)
+
+        expect(find_partitions(models.first.table_name).size).to eq(0)
+        expect(find_partitions(models.first.table_name, conn: ci_connection).size).to eq(0)
+        expect(find_partitions(ci_model.table_name).size).to eq(0)
       end
     end
   end

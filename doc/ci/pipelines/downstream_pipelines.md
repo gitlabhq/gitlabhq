@@ -398,7 +398,7 @@ by using [`strategy: depend`](../yaml/index.md#triggerstrategy):
 
 ::Tabs
 
-:::TabTitle Multi-Project pipeline
+:::TabTitle Multi-project pipeline
 
 ```yaml
 trigger_job:
