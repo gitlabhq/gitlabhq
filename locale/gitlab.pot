@@ -2201,6 +2201,9 @@ msgstr ""
 msgid "Add a table"
 msgstr ""
 
+msgid "Add a timeline event to incident"
+msgstr ""
+
 msgid "Add a title..."
 msgstr ""
 
@@ -2469,6 +2472,9 @@ msgid "Adds %{labels} %{label_text}."
 msgstr ""
 
 msgid "Adds a Zoom meeting."
+msgstr ""
+
+msgid "Adds a timeline event to incident."
 msgstr ""
 
 msgid "Adds a to do."
@@ -37111,6 +37117,9 @@ msgstr ""
 msgid "Something went wrong when reordering designs. Please try again"
 msgstr ""
 
+msgid "Something went wrong while adding timeline event."
+msgstr ""
+
 msgid "Something went wrong while adding your award. Please try again."
 msgstr ""
 
@@ -40971,6 +40980,9 @@ msgstr ""
 msgid "Timeago|right now"
 msgstr ""
 
+msgid "Timeline event added successfully."
+msgstr ""
+
 msgid "Timeline|Turn recent updates view off"
 msgstr ""
 
@@ -43386,7 +43398,13 @@ msgstr ""
 msgid "View all environments."
 msgstr ""
 
+msgid "View all groups"
+msgstr ""
+
 msgid "View all issues"
+msgstr ""
+
+msgid "View all projects"
 msgstr ""
 
 msgid "View blame"

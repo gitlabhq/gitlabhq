@@ -52,6 +52,12 @@ To create a timeline event:
 1. Complete the required fields.
 1. Select **Save** or **Save and add another event**.
 
+### Using a quick action
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368721) in GitLab 15.4.
+
+You can create a timeline event using the `/timeline` [quick action](../../user/project/quick_actions.md).
+
 ### From a comment on the incident
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344058) in GitLab 15.4.

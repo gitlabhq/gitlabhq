@@ -135,7 +135,7 @@ module Nav
             id: 'general_new_group',
             title: _('New group'),
             href: new_group_path,
-            data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown' }
+            data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_group_link' }
           )
         )
       end

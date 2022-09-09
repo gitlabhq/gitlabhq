@@ -22,7 +22,7 @@ module LearnGitlabHelper
 
   def learn_gitlab_onboarding_available?(project)
     Onboarding::Progress.onboarding?(project.namespace) &&
-      LearnGitlab::Project.new(current_user).available?
+      Onboarding::LearnGitlab.new(current_user).available?
   end
 
   private
@@ -33,10 +33,12 @@ module LearnGitlabHelper
     action_urls(project).to_h do |action, url|
       [
         action,
-        url: url,
-        completed: attributes[Onboarding::Progress.column_name(action)].present?,
-        svg: image_path("learn_gitlab/#{action}.svg"),
-        enabled: true
+        {
+          url: url,
+          completed: attributes[Onboarding::Progress.column_name(action)].present?,
+          svg: image_path("learn_gitlab/#{action}.svg"),
+          enabled: true
+        }
       ]
     end
   end
@@ -70,11 +72,14 @@ module LearnGitlabHelper
   end
 
   def action_issue_urls
-    LearnGitlab::Onboarding::ACTION_ISSUE_IDS.transform_values { |id| project_issue_url(learn_gitlab_project, id) }
+    Onboarding::Completion::ACTION_ISSUE_IDS.transform_values do |id|
+      project_issue_url(learn_gitlab_project, id)
+    end
   end
 
   def deploy_section_action_urls(project)
-    experiment(:security_actions_continuous_onboarding,
+    experiment(
+      :security_actions_continuous_onboarding,
       namespace: project.namespace,
       user: current_user,
       sticky_to: current_user
@@ -91,7 +96,7 @@ module LearnGitlabHelper
   end
 
   def learn_gitlab_project
-    @learn_gitlab_project ||= LearnGitlab::Project.new(current_user).project
+    @learn_gitlab_project ||= Onboarding::LearnGitlab.new(current_user).project
   end
 
   def onboarding_progress(project)

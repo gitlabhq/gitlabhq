@@ -59,4 +59,13 @@ RSpec.describe Ci::FreezePeriodStatus do
 
     it_behaves_like 'outside freeze period', Time.utc(2020, 4, 13, 8, 1)
   end
+
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/370472
+  context 'when period overlaps with itself' do
+    let!(:freeze_period) { create(:ci_freeze_period, project: project, freeze_start: '* * * 8 *', freeze_end: '* * * 10 *') }
+
+    it_behaves_like 'within freeze period', Time.utc(2020, 8, 11, 0, 0)
+
+    it_behaves_like 'outside freeze period', Time.utc(2020, 10, 11, 0, 0)
+  end
 end

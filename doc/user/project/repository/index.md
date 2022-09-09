@@ -49,7 +49,7 @@ to a branch in the repository. When you use the command line, you can commit mul
   on their respective thread.
 - **Cherry-pick a commit:**
   In GitLab, you can
-  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-commit)
+  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
   from the UI.
 - **Revert a commit:**
   [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)

@@ -2,13 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe LearnGitlab::Onboarding do
-  describe '#completed_percentage' do
+RSpec.describe Onboarding::Completion do
+  describe '#percentage' do
     let(:completed_actions) { {} }
-    let(:onboarding_progress) { build(:onboarding_progress, namespace: namespace, **completed_actions) }
-    let(:namespace) { create(:namespace) }
-
-    let_it_be(:tracked_action_columns) do
+    let!(:onboarding_progress) { create(:onboarding_progress, namespace: namespace, **completed_actions) }
+    let(:tracked_action_columns) do
       [
         *described_class::ACTION_ISSUE_IDS.keys,
         *described_class::ACTION_PATHS,
@@ -16,14 +14,12 @@ RSpec.describe LearnGitlab::Onboarding do
       ].map { |key| ::Onboarding::Progress.column_name(key) }
     end
 
-    before do
-      expect(::Onboarding::Progress).to receive(:find_by).with(namespace: namespace).and_return(onboarding_progress)
-    end
+    let_it_be(:namespace) { create(:namespace) }
 
-    subject { described_class.new(namespace).completed_percentage }
+    subject { described_class.new(namespace).percentage }
 
     context 'when no onboarding_progress exists' do
-      let(:onboarding_progress) { nil }
+      subject { described_class.new(build(:namespace)).percentage }
 
       it { is_expected.to eq(0) }
     end
@@ -34,13 +30,13 @@ RSpec.describe LearnGitlab::Onboarding do
 
     context 'when all tracked actions have been completed' do
       let(:completed_actions) do
-        tracked_action_columns.to_h { |action| [action, Time.current] }
+        tracked_action_columns.index_with { Time.current }
       end
 
       it { is_expected.to eq(100) }
     end
 
-    describe 'security_actions_continuous_onboarding experiment' do
+    context 'with security_actions_continuous_onboarding experiment' do
       let(:completed_actions) { Hash[tracked_action_columns.first, Time.current] }
 
       context 'when control' do

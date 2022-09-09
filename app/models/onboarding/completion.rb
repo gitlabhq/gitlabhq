@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module LearnGitlab
-  class Onboarding
+module Onboarding
+  class Completion
     include Gitlab::Utils::StrongMemoize
     include Gitlab::Experiment::Dsl
 
@@ -24,7 +24,7 @@ module LearnGitlab
       @current_user = current_user
     end
 
-    def completed_percentage
+    def percentage
       return 0 unless onboarding_progress
 
       attributes = onboarding_progress.attributes.symbolize_keys
@@ -32,14 +32,14 @@ module LearnGitlab
       total_actions = action_columns.count
       completed_actions = action_columns.count { |column| attributes[column].present? }
 
-      (completed_actions.to_f / total_actions.to_f * 100).round
+      (completed_actions.to_f / total_actions * 100).round
     end
 
     private
 
     def onboarding_progress
       strong_memoize(:onboarding_progress) do
-        ::Onboarding::Progress.find_by(namespace: namespace) # rubocop: disable CodeReuse/ActiveRecord
+        ::Onboarding::Progress.find_by(namespace: namespace)
       end
     end
 
@@ -54,7 +54,8 @@ module LearnGitlab
     end
 
     def deploy_section_tracked_actions
-      experiment(:security_actions_continuous_onboarding,
+      experiment(
+        :security_actions_continuous_onboarding,
         namespace: namespace,
         user: current_user,
         sticky_to: current_user

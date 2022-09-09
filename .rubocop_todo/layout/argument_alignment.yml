@@ -391,7 +391,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/features/projects/environments/environments_spec.rb'
     - 'ee/spec/features/projects/merge_requests/user_edits_merge_request_spec.rb'
     - 'ee/spec/features/projects/pipelines/pipeline_spec.rb'
-    - 'ee/spec/features/uncompleted_learn_gitlab_link_spec.rb'
     - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
     - 'ee/spec/frontend/fixtures/search.rb'
     - 'ee/spec/graphql/mutations/requirements_management/export_requirements_spec.rb'

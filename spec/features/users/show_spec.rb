@@ -339,7 +339,7 @@ RSpec.describe 'User page' do
 
       subject
 
-      page.within '.navbar-nav' do
+      page.within '.navbar-gitlab' do
         expect(page).to have_link('Sign in')
       end
     end
@@ -351,7 +351,7 @@ RSpec.describe 'User page' do
 
       subject
 
-      page.within '.navbar-nav' do
+      page.within '.navbar-gitlab' do
         expect(page).to have_link('Sign in / Register')
       end
     end

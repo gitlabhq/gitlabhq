@@ -317,6 +317,30 @@ module Gitlab
         command :remove_contacts do |contact_emails|
           @updates[:remove_contacts] = contact_emails.split(' ')
         end
+
+        desc { _('Add a timeline event to incident') }
+        explanation { _('Adds a timeline event to incident.') }
+        params '<timeline comment> | <date(YYYY-MM-DD)> <time(HH:MM)>'
+        types Issue
+        condition do
+          quick_action_target.incident? &&
+            current_user.can?(:admin_incident_management_timeline_event, quick_action_target)
+        end
+        parse_params do |event_params|
+          Gitlab::QuickActions::TimelineTextAndDateTimeSeparator.new(event_params).execute
+        end
+        command :timeline do |event_text, date_time|
+          if event_text && date_time
+            timeline_event = timeline_event_create_service(event_text, date_time).execute
+
+            @execution_message[:timeline] =
+              if timeline_event.success?
+                _('Timeline event added successfully.')
+              else
+                _('Something went wrong while adding timeline event.')
+              end
+          end
+        end
       end
 
       private
@@ -335,6 +359,10 @@ module Gitlab
 
       def merge_updates(result, update_hash)
         update_hash.merge!(result.payload) if result.payload
+      end
+
+      def timeline_event_create_service(event_text, event_date_time)
+        ::IncidentManagement::TimelineEvents::CreateService.new(quick_action_target, current_user, { note: event_text, occurred_at: event_date_time, editable: true })
       end
     end
   end

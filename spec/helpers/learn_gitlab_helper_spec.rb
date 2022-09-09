@@ -7,11 +7,11 @@ RSpec.describe LearnGitlabHelper do
   include Devise::Test::ControllerHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, name: LearnGitlab::Project::PROJECT_NAME, namespace: user.namespace) }
+  let_it_be(:project) { create(:project, name: Onboarding::LearnGitlab::PROJECT_NAME, namespace: user.namespace) }
   let_it_be(:namespace) { project.namespace }
 
   before do
-    allow_next_instance_of(LearnGitlab::Project) do |learn_gitlab|
+    allow_next_instance_of(Onboarding::LearnGitlab) do |learn_gitlab|
       allow(learn_gitlab).to receive(:project).and_return(project)
     end
 
@@ -38,7 +38,7 @@ RSpec.describe LearnGitlabHelper do
     with_them do
       before do
         allow(Onboarding::Progress).to receive(:onboarding?).with(project.namespace).and_return(onboarding)
-        allow_next(LearnGitlab::Project, user).to receive(:available?).and_return(learn_gitlab_available)
+        allow_next(Onboarding::LearnGitlab, user).to receive(:available?).and_return(learn_gitlab_available)
       end
 
       context 'when signed in' do
@@ -81,7 +81,7 @@ RSpec.describe LearnGitlabHelper do
 
       it 'has all section data', :aggregate_failures do
         expect(onboarding_sections_data.keys).to contain_exactly(:deploy, :plan, :workspace)
-        expect(onboarding_sections_data.values.map { |section| section.keys }).to match_array([[:svg]] * 3)
+        expect(onboarding_sections_data.values.map(&:keys)).to match_array([[:svg]] * 3)
       end
 
       it 'has all project data', :aggregate_failures do

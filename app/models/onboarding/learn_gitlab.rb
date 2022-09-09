@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module LearnGitlab
-  class Project
+module Onboarding
+  class LearnGitlab
     PROJECT_NAME = 'Learn GitLab'
     PROJECT_NAME_ULTIMATE_TRIAL = 'Learn GitLab - Ultimate trial'
     BOARD_NAME = 'GitLab onboarding'

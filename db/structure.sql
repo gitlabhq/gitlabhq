@@ -22823,6 +22823,7 @@ CREATE TABLE vulnerability_state_transitions (
     updated_at timestamp with time zone NOT NULL,
     author_id bigint,
     comment text,
+    dismissal_reason smallint,
     CONSTRAINT check_fca4a7ca39 CHECK ((char_length(comment) <= 255))
 );
 

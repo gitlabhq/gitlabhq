@@ -43,7 +43,6 @@ Rails/IndexWith:
     - 'spec/lib/gitlab/import_export/model_configuration_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
-    - 'spec/lib/learn_gitlab/onboarding_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/presenters/projects/security/configuration_presenter_spec.rb'
     - 'spec/support/database/multiple_databases.rb'
