@@ -142,7 +142,8 @@ module API
 
           reject_if_build_artifacts_size_refreshing!(build.project)
 
-          build.erase(erased_by: current_user)
+          ::Ci::BuildEraseService.new(build, current_user).execute
+
           present build, with: Entities::Ci::Job
         end
 

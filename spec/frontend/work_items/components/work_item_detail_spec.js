@@ -403,8 +403,8 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  describe('when work_items_mvc_2 feature flag is enabled', () => {
-    it('renders assignees component when assignees widget is returned from the API', async () => {
+  describe('assignees widget', () => {
+    it('renders assignees component when widget is returned from the API', async () => {
       createComponent({
         workItemsMvc2Enabled: true,
       });
@@ -413,7 +413,7 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemAssignees().exists()).toBe(true);
     });
 
-    it('does not render assignees component when assignees widget is not returned from the API', async () => {
+    it('does not render assignees component when widget is not returned from the API', async () => {
       createComponent({
         workItemsMvc2Enabled: true,
         handler: jest
@@ -424,13 +424,6 @@ describe('WorkItemDetail component', () => {
 
       expect(findWorkItemAssignees().exists()).toBe(false);
     });
-  });
-
-  it('does not render assignees component when assignees feature flag is disabled', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(findWorkItemAssignees().exists()).toBe(false);
   });
 
   describe('labels widget', () => {

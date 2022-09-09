@@ -514,7 +514,7 @@ pass this variable to the downstream pipeline using variable inheritance:
      needs:
        - project: my/upstream_project
          job: build_artifacts
-         ref: UPSTREAM_REF
+         ref: $UPSTREAM_REF
          artifacts: true
    ```
 

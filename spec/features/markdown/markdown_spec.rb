@@ -263,6 +263,10 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
         expect(doc).to parse_task_lists
       end
 
+      aggregate_failures 'MathFilter' do
+        expect(doc).to parse_math
+      end
+
       aggregate_failures 'InlineDiffFilter' do
         expect(doc).to parse_inline_diffs
       end

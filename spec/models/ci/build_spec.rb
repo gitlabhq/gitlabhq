@@ -1782,12 +1782,6 @@ RSpec.describe Ci::Build do
     context 'build is not erasable' do
       let!(:build) { create(:ci_build) }
 
-      describe '#erase' do
-        subject { build.erase }
-
-        it { is_expected.to be false }
-      end
-
       describe '#erasable?' do
         subject { build.erasable? }
 
@@ -1796,70 +1790,8 @@ RSpec.describe Ci::Build do
     end
 
     context 'build is erasable' do
-      context 'logging erase' do
-        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
-
-        it 'logs erased artifacts' do
-          expect(Gitlab::Ci::Artifacts::Logger)
-            .to receive(:log_deleted)
-            .with(
-              match_array(build.job_artifacts.to_a),
-              'Ci::Build#erase'
-            )
-
-          build.erase
-        end
-      end
-
-      context 'when project is undergoing stats refresh' do
-        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
-
-        describe '#erase' do
-          before do
-            allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
-          end
-
-          it 'logs and continues with deleting the artifacts' do
-            expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
-              method: 'Ci::Build#erase',
-              project_id: build.project.id
-            )
-
-            build.erase
-
-            expect(build.job_artifacts.count).to eq(0)
-          end
-        end
-      end
-
       context 'new artifacts' do
         let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
-
-        describe '#erase' do
-          before do
-            build.erase(erased_by: erased_by)
-          end
-
-          context 'erased by user' do
-            let!(:erased_by) { create(:user, username: 'eraser') }
-
-            include_examples 'erasable'
-
-            it 'records user who erased a build' do
-              expect(build.erased_by).to eq erased_by
-            end
-          end
-
-          context 'erased by system' do
-            let(:erased_by) { nil }
-
-            include_examples 'erasable'
-
-            it 'does not set user who erased a build' do
-              expect(build.erased_by).to be_nil
-            end
-          end
-        end
 
         describe '#erasable?' do
           subject { build.erasable? }
@@ -1878,24 +1810,10 @@ RSpec.describe Ci::Build do
 
           context 'job has been erased' do
             before do
-              build.erase
+              build.update!(erased_at: 1.minute.ago)
             end
 
             it { is_expected.to be_truthy }
-          end
-        end
-
-        context 'metadata and build trace are not available' do
-          let!(:build) { create(:ci_build, :success, :artifacts) }
-
-          before do
-            build.erase_erasable_artifacts!
-          end
-
-          describe '#erase' do
-            it 'does not raise error' do
-              expect { build.erase }.not_to raise_error
-            end
           end
         end
       end
@@ -1913,14 +1831,7 @@ RSpec.describe Ci::Build do
       end
     end
 
-    it "erases erasable artifacts and logs them" do
-      expect(Gitlab::Ci::Artifacts::Logger)
-        .to receive(:log_deleted)
-        .with(
-          match_array(build.job_artifacts.erasable.to_a),
-          'Ci::Build#erase_erasable_artifacts!'
-        )
-
+    it "erases erasable artifacts" do
       subject
 
       expect(build.job_artifacts.erasable).to be_empty
@@ -3934,10 +3845,6 @@ RSpec.describe Ci::Build do
       context 'when artifacts of depended job has been erased' do
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
 
-        before do
-          pre_stage_job.erase
-        end
-
         it { expect(job).not_to have_valid_build_dependencies }
       end
     end
@@ -3957,10 +3864,6 @@ RSpec.describe Ci::Build do
 
       context 'when artifacts of depended job has been erased' do
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
-
-        before do
-          pre_stage_job.erase
-        end
 
         it { expect(job).to have_valid_build_dependencies }
       end

@@ -1126,8 +1126,8 @@ gitlab.com/gitlab-org/gitaly v1.68.0 h1:VlcJs1+PrhW7lqJUU7Fh1q8FMJujmbbivdfde/cw
 gitlab.com/gitlab-org/gitaly v1.68.0/go.mod h1:/pCsB918Zu5wFchZ9hLYin9WkJ2yQqdVNz0zlv5HbXg=
 gitlab.com/gitlab-org/gitaly/v14 v14.0.0-rc1/go.mod h1:4Cz8tOAyueSZX5o6gYum1F/unupaOclxqETPcg4ODvQ=
 gitlab.com/gitlab-org/gitaly/v14 v14.9.0-rc5.0.20220329111719-51da8bc17059/go.mod h1:uX1qhFKBDuPqATlpMcFL2dKDiX8D/tbUg7CYWx7OXt4=
-gitlab.com/gitlab-org/gitaly/v15 v15.3.2 h1:H8NoBZil23mZ8Y31XdPWCNp27m2nfFGV+z/pQd5Rsq4=
-gitlab.com/gitlab-org/gitaly/v15 v15.3.2/go.mod h1:DPO/d7DnhJ0TTcL6UZNJ6mcRHhdBPg+f/iBA+LEKEq0=
+gitlab.com/gitlab-org/gitaly/v15 v15.3.3 h1:BAlskWIiPSBtFrsIZXABaBR6mRCEWyvXoCvnQzKH7xk=
+gitlab.com/gitlab-org/gitaly/v15 v15.3.3/go.mod h1:DPO/d7DnhJ0TTcL6UZNJ6mcRHhdBPg+f/iBA+LEKEq0=
 gitlab.com/gitlab-org/gitlab-shell v1.9.8-0.20201117050822-3f9890ef73dc/go.mod h1:5QSTbpAHY2v0iIH5uHh2KA9w7sPUqPmnLjDApI/sv1U=
 gitlab.com/gitlab-org/gitlab-shell v1.9.8-0.20210720163109-50da611814d2/go.mod h1:QWDYBwuy24qGMandtCngLRPzFgnGPg6LSNoJWPKmJMc=
 gitlab.com/gitlab-org/gitlab-shell/v14 v14.10.0/go.mod h1:ynuwa2oLLQSOs6Ss6RpLDkAQuFUNreI3NdEOJxfh1ac=

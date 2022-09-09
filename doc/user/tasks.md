@@ -99,6 +99,24 @@ To delete a task:
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.
 
+## Assign users to a task
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
+
+To show who is responsible for a task, you can assign users to it.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To change the assignee on a task:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Assignees**, select **Add assignees**.
+1. From the dropdown list, select the user(s) to add as an assignee.
+1. Select any area outside the dropdown list.
+
 ## Set task weight **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.

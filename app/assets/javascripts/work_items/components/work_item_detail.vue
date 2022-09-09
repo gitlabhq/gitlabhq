@@ -320,18 +320,18 @@ export default {
         :can-update="canUpdate"
         @error="error = $event"
       />
+      <work-item-assignees
+        v-if="workItemAssignees"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :assignees="workItemAssignees.assignees.nodes"
+        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+        :work-item-type="workItemType"
+        :can-invite-members="workItemAssignees.canInviteMembers"
+        :full-path="fullPath"
+        @error="error = $event"
+      />
       <template v-if="workItemsMvc2Enabled">
-        <work-item-assignees
-          v-if="workItemAssignees"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :assignees="workItemAssignees.assignees.nodes"
-          :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-          :work-item-type="workItemType"
-          :can-invite-members="workItemAssignees.canInviteMembers"
-          :full-path="fullPath"
-          @error="error = $event"
-        />
         <work-item-labels
           v-if="workItemLabels"
           :work-item-id="workItem.id"

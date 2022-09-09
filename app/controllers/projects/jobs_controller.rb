@@ -120,11 +120,13 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def erase
-    if @build.erase(erased_by: current_user)
+    service_response = Ci::BuildEraseService.new(@build, current_user).execute
+
+    if service_response.success?
       redirect_to project_job_path(project, @build),
                 notice: _("Job has been successfully erased!")
     else
-      respond_422
+      head service_response.http_status
     end
   end
 

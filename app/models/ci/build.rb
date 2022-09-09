@@ -813,26 +813,6 @@ module Ci
       destroyed_artifacts
     end
 
-    def erase(opts = {})
-      return false unless erasable?
-
-      if project.refreshing_build_artifacts_size?
-        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
-          method: 'Ci::Build#erase',
-          project_id: project_id
-        )
-      end
-
-      # TODO: We should use DestroyBatchService here
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/369132
-      destroyed_artifacts = job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
-
-      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase')
-
-      erase_trace!
-      update_erased!(opts[:erased_by])
-    end
-
     def erasable?
       complete? && (artifacts? || has_job_artifacts? || has_trace?)
     end
@@ -1214,14 +1194,6 @@ module Ci
     def job_artifacts_for_types(report_types)
       # Use select to leverage cached associations and avoid N+1 queries
       job_artifacts.select { |artifact| artifact.file_type.in?(report_types) }
-    end
-
-    def erase_trace!
-      trace.erase!
-    end
-
-    def update_erased!(user = nil)
-      self.update(erased_by: user, erased_at: Time.current, artifacts_expire_at: nil)
     end
 
     def environment_url

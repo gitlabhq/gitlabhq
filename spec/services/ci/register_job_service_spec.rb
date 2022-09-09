@@ -571,10 +571,6 @@ module Ci
             context 'when artifacts of depended job has been erased' do
               let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
 
-              before do
-                pre_stage_job.erase
-              end
-
               it_behaves_like 'not pick'
             end
 
@@ -611,10 +607,6 @@ module Ci
 
             context 'when artifacts of depended job has been erased' do
               let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
-
-              before do
-                pre_stage_job.erase
-              end
 
               it { expect(subject).to eq(pending_job) }
             end

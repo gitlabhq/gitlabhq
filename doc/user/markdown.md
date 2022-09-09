@@ -346,10 +346,13 @@ backslash `\`. Otherwise the diff highlight does not render correctly:
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#math).
 
 Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
+_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
+the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-Math written between dollar signs `$` is rendered inline with the text. Math written
-in a [code block](#code-spans-and-blocks) with the language declared as `math` is rendered
-on a separate line:
+Math written between dollar signs with backticks (``$`...`$``) is rendered
+inline with the text. Math written in a [code block](#code-spans-and-blocks) with
+the language declared as `math` is rendered on a separate line:
 
 ````markdown
 This math is inline: $`a^2+b^2=c^2`$.
@@ -369,10 +372,44 @@ This math is on a separate line:
 a^2+b^2=c^2
 ```
 
-_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+#### LaTeX-compatible fencing
 
-This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
-the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
+> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default.
+
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#latex-compatible-fencing).
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `markdown_dollar_math`.
+On GitLab.com, this feature is available.
+The feature is not ready for production use.
+
+Math written between dollar signs (`$...$`) is rendered
+inline with the text. Math written between double dollar signs (`$$...$$`) is rendered
+on a separate line:
+
+````markdown
+This math is inline: $a^2+b^2=c^2$.
+
+This math is on a separate line: $$a^2+b^2=c^2$$
+
+This math is on a separate line:
+
+$$
+a^2+b^2=c^2
+$$
+````
+
+<!-- Uncomment the example below when the flag is enabled on GitLab.com -->
+<!-- This math is inline: $a^2+b^2=c^2$.
+
+This math is on a separate line: $$a^2+b^2=c^2$$
+
+This math is on a separate line:
+
+$$
+a^2+b^2=c^2
+$$ -->
 
 ### Task lists
 
