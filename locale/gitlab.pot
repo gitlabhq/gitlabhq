@@ -41407,7 +41407,16 @@ msgstr ""
 msgid "Too many users found. Quick actions are limited to at most %{max_count} users"
 msgstr ""
 
+msgid "TopNav|Explore"
+msgstr ""
+
 msgid "TopNav|Go back"
+msgstr ""
+
+msgid "TopNav|Switch to"
+msgstr ""
+
+msgid "TopNav|Your dashboard"
 msgstr ""
 
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."

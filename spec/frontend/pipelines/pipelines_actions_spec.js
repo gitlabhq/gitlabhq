@@ -2,6 +2,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import createFlash from '~/flash';
@@ -9,6 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
+import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
@@ -94,6 +96,22 @@ describe('Pipelines Actions dropdown', () => {
         await waitForPromises();
         expect(findDropdown().props('loading')).toBe(false);
         expect(createFlash).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('tracking', () => {
+      afterEach(() => {
+        unmockTracking();
+      });
+
+      it('tracks manual actions click', () => {
+        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+        findDropdown().vm.$emit('shown');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_manual_actions', {
+          label: TRACKING_CATEGORIES.index,
+        });
       });
     });
   });

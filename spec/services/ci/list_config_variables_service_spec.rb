@@ -40,8 +40,8 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
     it 'returns variable list' do
       expect(subject['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
       expect(subject['KEY2']).to eq({ value: 'val 2', description: '' })
-      expect(subject['KEY3']).to eq({ value: 'val 3', description: nil })
-      expect(subject['KEY4']).to eq({ value: 'val 4', description: nil })
+      expect(subject['KEY3']).to eq({ value: 'val 3' })
+      expect(subject['KEY4']).to eq({ value: 'val 4' })
     end
   end
 

@@ -30,7 +30,7 @@ RSpec.describe Projects::PipelineHelper do
         summary_endpoint: summary_project_pipeline_tests_path(project, pipeline, format: :json),
         suite_endpoint: project_pipeline_test_path(project, pipeline, suite_name: 'suite', format: :json),
         blob_path: project_blob_path(project, pipeline.sha),
-        has_test_report: pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)),
+        has_test_report: pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test)),
         empty_state_image_path: match_asset_path('illustrations/empty-state/empty-test-cases-lg.svg'),
         artifacts_expired_image_path: match_asset_path('illustrations/pipeline.svg'),
         tests_count: pipeline.test_report_summary.total[:count]

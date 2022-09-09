@@ -41,6 +41,7 @@ const ROOT_RAILS = IS_EE ? path.join(ROOT, 'ee') : ROOT;
 const FIXTURES_FOLDER_NAME = IS_EE ? 'fixtures-ee' : 'fixtures';
 const FIXTURES_ROOT = path.join(ROOT, 'tmp/tests/frontend', FIXTURES_FOLDER_NAME);
 const PATH_SIGNIN_HTML = path.join(FIXTURES_ROOT, 'startup_css/sign-in.html');
+const PATH_SIGNIN_OLD_HTML = path.join(FIXTURES_ROOT, 'startup_css/sign-in-old.html');
 const PATH_ASSETS = path.join(ROOT, 'tmp/startup_css_assets');
 const PATH_STARTUP_SCSS = path.join(ROOT_RAILS, 'app/assets/stylesheets/startup');
 
@@ -80,7 +81,7 @@ const OUTPUTS = [
   }),
   {
     outFile: 'startup-signin',
-    htmlPaths: [PATH_SIGNIN_HTML],
+    htmlPaths: [PATH_SIGNIN_HTML, PATH_SIGNIN_OLD_HTML],
     cssKeys: [APPLICATION_CSS_PREFIX, UTILITIES_CSS_PREFIX],
     purgeOptions: {
       safelist: {

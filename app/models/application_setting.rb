@@ -10,11 +10,7 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
-  ignore_column %i[max_package_files_for_package_destruction], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
-  ignore_column :pseudonymizer_enabled, remove_with: '15.1', remove_after: '2022-06-22'
-  ignore_column :enforce_ssh_key_expiration, remove_with: '15.2', remove_after: '2022-07-22'
-  ignore_column :enforce_pat_expiration, remove_with: '15.2', remove_after: '2022-07-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

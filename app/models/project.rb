@@ -51,8 +51,6 @@ class Project < ApplicationRecord
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
 
-  ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
-  ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
   ignore_columns :build_coverage_regex, remove_after: '2022-10-22', remove_with: '15.5'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'

@@ -48,6 +48,13 @@ module Nav
 
     private
 
+    def top_nav_localized_headers
+      {
+        explore: s_('TopNav|Explore'),
+        switch_to: s_('TopNav|Switch to')
+      }.freeze
+    end
+
     def build_base_view_model(builder:, project:, group:)
       if current_user
         build_view_model(builder: builder, project: project, group: group)
@@ -60,6 +67,7 @@ module Nav
       # These come from `app/views/layouts/nav/_explore.html.ham`
       if explore_nav_link?(:projects)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           href: explore_root_path,
           active: nav == 'project' || active_nav_link?(path: %w[dashboard#show root#show projects#trending projects#starred projects#index]),
           **projects_menu_item_attrs
@@ -68,6 +76,7 @@ module Nav
 
       if explore_nav_link?(:groups)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           href: explore_groups_path,
           active: nav == 'group' || active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
           **groups_menu_item_attrs
@@ -76,6 +85,7 @@ module Nav
 
       if explore_nav_link?(:snippets)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           active: active_nav_link?(controller: :snippets),
           href: explore_snippets_path,
           **snippets_menu_item_attrs
@@ -89,6 +99,7 @@ module Nav
         current_item = project ? current_project(project: project) : {}
 
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:switch_to],
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
           css_class: 'qa-projects-dropdown',
           data: { track_label: "projects_dropdown", track_action: "click_dropdown" },
@@ -103,6 +114,7 @@ module Nav
         current_item = group ? current_group(group: group) : {}
 
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:switch_to],
           active: nav == 'group' || active_nav_link?(path: %w[dashboard/groups explore/groups]),
           css_class: 'qa-groups-dropdown',
           data: { track_label: "groups_dropdown", track_action: "click_dropdown" },
@@ -116,6 +128,7 @@ module Nav
       if dashboard_nav_link?(:milestones)
         builder.add_primary_menu_item_with_shortcut(
           id: 'milestones',
+          header: top_nav_localized_headers[:explore],
           title: _('Milestones'),
           href: dashboard_milestones_path,
           active: active_nav_link?(controller: 'dashboard/milestones'),
@@ -127,6 +140,7 @@ module Nav
 
       if dashboard_nav_link?(:snippets)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           active: active_nav_link?(controller: 'dashboard/snippets'),
           data: { qa_selector: 'snippets_link', **menu_data_tracking_attrs('snippets') },
           href: dashboard_snippets_path,
@@ -137,6 +151,7 @@ module Nav
       if dashboard_nav_link?(:activity)
         builder.add_primary_menu_item_with_shortcut(
           id: 'activity',
+          header: top_nav_localized_headers[:explore],
           title: _('Activity'),
           href: activity_dashboard_path,
           active: active_nav_link?(path: 'dashboard#activity'),

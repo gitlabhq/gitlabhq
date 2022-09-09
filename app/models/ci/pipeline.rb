@@ -1073,7 +1073,7 @@ module Ci
       latest_test_report_builds.failed.limit(limit)
     end
 
-    def has_reports?(reports_scope)
+    def complete_and_has_reports?(reports_scope)
       if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
         latest_report_builds(reports_scope).exists?
       else
@@ -1090,7 +1090,7 @@ module Ci
     end
 
     def can_generate_codequality_reports?
-      has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
     end
 
     def test_report_summary
@@ -1313,7 +1313,7 @@ module Ci
 
     def has_test_reports?
       strong_memoize(:has_test_reports) do
-        has_reports?(::Ci::JobArtifact.of_report_type(:test))
+        complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:test))
       end
     end
 

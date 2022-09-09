@@ -11,6 +11,7 @@ module Gitlab
       def self.build(id:, title:, active: false, icon: '', href: '', view: '', css_class: nil, data: nil, emoji: nil)
         {
           id: id,
+          type: :item,
           title: title,
           active: active,
           icon: icon,

@@ -1,3 +1,27 @@
+# This file contains code based on the wikicloth project:
+# https://github.com/nricciar/wikicloth
+#
+# Copyright (c) 2009 The wikicloth authors.
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
 # frozen_string_literal: true
 
 require 'wikicloth'
@@ -20,7 +44,10 @@ require 'digest/sha2'
 # - https://gitlab.com/gitlab-org/gitlab/-/issues/361266
 
 # Guard to ensure we remember to delete this patch if they ever release a new version of wikicloth
-raise 'New version of WikiCloth detected, please remove this patch' unless Gem::Version.new(WikiCloth::VERSION) == Gem::Version.new('0.8.1')
+unless Gem::Version.new(WikiCloth::VERSION) == Gem::Version.new('0.8.1')
+  raise 'New version of WikiCloth detected, please either update the version for this check, ' \
+    'or remove this patch if no longer needed'
+end
 
 # rubocop:disable Style/ClassAndModuleChildren
 # rubocop:disable Layout/SpaceAroundEqualsInParameterDefault
@@ -43,6 +70,12 @@ raise 'New version of WikiCloth detected, please remove this patch' unless Gem::
 # rubocop:disable Style/RegexpLiteralMixedPreserve
 # rubocop:disable Style/RedundantRegexpCharacterClass
 # rubocop:disable Performance/StringInclude
+# rubocop:disable Layout/LineLength
+# rubocop:disable Style/RedundantSelf
+# rubocop:disable Style/SymbolProc
+# rubocop:disable Layout/SpaceInsideParens
+# rubocop:disable Style/GuardClause
+# rubocop:disable Style/RedundantRegexpEscape
 module WikiCloth
   class WikiCloth
     def render(opt={})
@@ -218,3 +251,9 @@ end
 # rubocop:enable Style/RegexpLiteralMixedPreserve
 # rubocop:enable Style/RedundantRegexpCharacterClass
 # rubocop:enable Performance/StringInclude
+# rubocop:enable Layout/LineLength
+# rubocop:enable Style/RedundantSelf
+# rubocop:enable Style/SymbolProc
+# rubocop:enable Layout/SpaceInsideParens
+# rubocop:enable Style/GuardClause
+# rubocop:enable Style/RedundantRegexpEscape

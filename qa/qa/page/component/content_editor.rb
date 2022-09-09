@@ -21,6 +21,10 @@ module QA
           base.view 'app/assets/javascripts/content_editor/components/toolbar_image_button.vue' do
             element :file_upload_field
           end
+
+          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue' do
+            element :wiki_hidden_content
+          end
         end
 
         def add_heading(heading, text)
@@ -40,6 +44,13 @@ module QA
             # add image on a new line
             text_area.send_keys(:return)
             find_element(:file_upload_field, visible: false).send_keys(image_path)
+          end
+
+          wait_for_requests
+
+          QA::Support::Retrier.retry_on_exception do
+            source = find_element(:wiki_hidden_content, visible: false)
+            source.value =~ %r{uploads/.*#{::File.basename(image_path)}}
           end
         end
 

@@ -32,6 +32,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         get :index, params: environment_params
       end
+
+      it_behaves_like 'tracking unique visits', :index do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
     end
 
     context 'when requesting JSON response for folders' do
@@ -169,6 +174,18 @@ RSpec.describe Projects::EnvironmentsController do
         expect(response).to be_ok
         expect(response).to render_template 'folder'
       end
+
+      it_behaves_like 'tracking unique visits', :folder do
+        let(:request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: 'staging-1.0'
+          }
+        end
+
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
     end
 
     context 'when using JSON format' do
@@ -197,6 +214,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         expect(response).to be_ok
       end
+
+      it_behaves_like 'tracking unique visits', :show do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
     end
 
     context 'with invalid id' do
@@ -210,11 +232,29 @@ RSpec.describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET new' do
+    it 'responds with a status code 200' do
+      get :new, params: environment_params
+
+      expect(response).to be_ok
+    end
+
+    it_behaves_like 'tracking unique visits', :new do
+      let(:request_params) { environment_params }
+      let(:target_id) { 'users_visiting_environments_pages' }
+    end
+  end
+
   describe 'GET edit' do
     it 'responds with a status code 200' do
       get :edit, params: environment_params
 
       expect(response).to be_ok
+    end
+
+    it_behaves_like 'tracking unique visits', :edit do
+      let(:request_params) { environment_params }
+      let(:target_id) { 'users_visiting_environments_pages' }
     end
   end
 
@@ -229,6 +269,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['path']).to eq("/#{project.full_path}/-/environments/#{environment.id}")
+      end
+
+      it_behaves_like 'tracking unique visits', :update do
+        let(:request_params) { params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
@@ -294,6 +339,11 @@ RSpec.describe Projects::EnvironmentsController do
           { 'redirect_url' =>
               project_environment_url(project, environment) })
       end
+
+      it_behaves_like 'tracking unique visits', :stop do
+        let(:request_params) { environment_params(format: :json) }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
     end
 
     context 'when no stop action' do
@@ -320,6 +370,11 @@ RSpec.describe Projects::EnvironmentsController do
       let(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
 
       it_behaves_like 'successful response for #cancel_auto_stop'
+
+      it_behaves_like 'tracking unique visits', :cancel_auto_stop do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
 
       context 'when user is reporter' do
         let(:user) { reporter }
@@ -356,6 +411,11 @@ RSpec.describe Projects::EnvironmentsController do
           .to receive(:terminals)
 
         get :terminal, params: environment_params
+      end
+
+      it_behaves_like 'tracking unique visits', :terminal do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
@@ -858,6 +918,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['path']).to eq("/#{project.full_path}/-/environments/#{json_response['environment']['id']}")
+      end
+
+      it_behaves_like 'tracking unique visits', :create do
+        let(:request_params) { params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 

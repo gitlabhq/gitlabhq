@@ -385,7 +385,13 @@ export default {
               @loadingSuccess="enableSwitchEditingControl"
               @loadingError="enableSwitchEditingControl"
             />
-            <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
+            <input
+              id="wiki_content"
+              v-model.trim="content"
+              type="hidden"
+              name="wiki[content]"
+              data-qa-selector="wiki_hidden_content"
+            />
           </div>
 
           <div class="clearfix"></div>

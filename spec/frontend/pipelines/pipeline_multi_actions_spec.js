@@ -1,12 +1,14 @@
 import { GlAlert, GlDropdown, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PipelineMultiActions, {
   i18n,
 } from '~/pipelines/components/pipelines_list/pipeline_multi_actions.vue';
+import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 
 describe('Pipeline Multi Actions Dropdown', () => {
   let wrapper;
@@ -133,6 +135,24 @@ describe('Pipeline Multi Actions Dropdown', () => {
         const error = findAlert();
         expect(error.exists()).toBe(true);
         expect(error.text()).toBe(i18n.artifactsFetchErrorMessage);
+      });
+    });
+  });
+
+  describe('tracking', () => {
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks artifacts dropdown click', () => {
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+      createComponent();
+
+      findDropdown().vm.$emit('show');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_artifacts_dropdown', {
+        label: TRACKING_CATEGORIES.index,
       });
     });
   });

@@ -6,6 +6,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/226002 for more details.
 
   include MetricsDashboard
+  include ProductAnalyticsTracking
 
   layout 'project'
 
@@ -25,6 +26,18 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
+
+  track_event :index,
+              :folder,
+              :show,
+              :new,
+              :edit,
+              :create,
+              :update,
+              :stop,
+              :cancel_auto_stop,
+              :terminal,
+              name: 'users_visiting_environments_pages'
 
   feature_category :continuous_delivery
   urgency :low

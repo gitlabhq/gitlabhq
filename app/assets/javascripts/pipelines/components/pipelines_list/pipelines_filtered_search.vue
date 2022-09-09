@@ -2,7 +2,9 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { map } from 'lodash';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { TRACKING_CATEGORIES } from '../../constants';
 import PipelineBranchNameToken from './tokens/pipeline_branch_name_token.vue';
 import PipelineSourceToken from './tokens/pipeline_source_token.vue';
 import PipelineStatusToken from './tokens/pipeline_status_token.vue';
@@ -19,6 +21,7 @@ export default {
   components: {
     GlFilteredSearch,
   },
+  mixins: [Tracking.mixin()],
   props: {
     projectId: {
       type: String,
@@ -110,6 +113,7 @@ export default {
   },
   methods: {
     onSubmit(filters) {
+      this.track('click_filtered_search', { label: TRACKING_CATEGORIES.index });
       this.$emit('filterPipelines', filters);
     },
   },

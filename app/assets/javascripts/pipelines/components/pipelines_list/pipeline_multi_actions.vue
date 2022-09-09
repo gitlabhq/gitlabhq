@@ -10,6 +10,8 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
+import Tracking from '~/tracking';
+import { TRACKING_CATEGORIES } from '../../constants';
 
 export const i18n = {
   downloadArtifacts: __('Download artifacts'),
@@ -29,6 +31,7 @@ export default {
     GlSearchBoxByType,
     GlLoadingIcon,
   },
+  mixins: [Tracking.mixin()],
   inject: {
     artifactsEndpoint: {
       default: '',
@@ -60,6 +63,10 @@ export default {
   },
   methods: {
     fetchArtifacts() {
+      // refactor tracking based on action once this dropdown supports
+      // actions other than artifacts
+      this.track('click_artifacts_dropdown', { label: TRACKING_CATEGORIES.index });
+
       this.isLoading = true;
       // Replace the placeholder with the ID of the pipeline we are viewing
       const endpoint = this.artifactsEndpoint.replace(

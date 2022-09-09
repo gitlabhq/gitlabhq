@@ -34,9 +34,9 @@ module Gitlab
 
           def expand_value(value)
             if value.is_a?(Hash)
-              { value: value[:value].to_s, description: value[:description] }
+              { value: value[:value].to_s, description: value[:description] }.compact
             else
-              { value: value.to_s, description: nil }
+              { value: value.to_s }
             end
           end
         end

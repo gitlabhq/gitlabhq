@@ -22922,7 +22922,8 @@ CREATE TABLE web_hooks (
     disabled_until timestamp with time zone,
     encrypted_url_variables bytea,
     encrypted_url_variables_iv bytea,
-    integration_id integer
+    integration_id integer,
+    branch_filter_strategy smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE web_hooks_id_seq

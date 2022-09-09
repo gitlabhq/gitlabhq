@@ -25,7 +25,8 @@ module Gitlab
             { name: @attributes.fetch(:name),
               position: @attributes.fetch(:index),
               pipeline: @pipeline,
-              project: @pipeline.project }
+              project: @pipeline.project,
+              partition_id: @pipeline.partition_id }
           end
 
           def seeds

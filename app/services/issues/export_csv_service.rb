@@ -5,20 +5,20 @@ module Issues
     include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
 
-    def initialize(issuables_relation, project)
-      super
+    def initialize(issuables_relation, project, user = nil)
+      super(issuables_relation, project)
 
       @labels = @issuables.labels_hash.transform_values { |labels| labels.sort.join(',').presence }
     end
 
-    def email(user)
-      Notify.issues_csv_email(user, project, csv_data, csv_builder.status).deliver_now
+    def email(mail_to_user)
+      Notify.issues_csv_email(mail_to_user, project, csv_data, csv_builder.status).deliver_now
     end
 
     private
 
     def associations_to_preload
-      %i(author assignees timelogs milestone project)
+      [:author, :assignees, :timelogs, :milestone, { project: { namespace: :route } }]
     end
 
     def header_to_value_hash

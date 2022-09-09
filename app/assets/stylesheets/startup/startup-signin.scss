@@ -11,6 +11,9 @@ html {
   font-family: sans-serif;
   line-height: 1.15;
 }
+header {
+  display: block;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -28,7 +31,8 @@ hr {
   height: 0;
   overflow: visible;
 }
-h1 {
+h1,
+h3 {
   margin-top: 0;
   margin-bottom: 0.25rem;
 }
@@ -49,25 +53,48 @@ img {
   vertical-align: middle;
   border-style: none;
 }
+svg {
+  overflow: hidden;
+  vertical-align: middle;
+}
 label {
   display: inline-block;
   margin-bottom: 0.5rem;
 }
-input {
+button {
+  border-radius: 0;
+}
+input,
+button {
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
 }
+button,
 input {
   overflow: visible;
 }
+button {
+  text-transform: none;
+}
+[role="button"] {
+  cursor: pointer;
+}
+button:not(:disabled),
+[type="button"]:not(:disabled),
 [type="submit"]:not(:disabled) {
   cursor: pointer;
 }
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
   padding: 0;
   border-style: none;
+}
+input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
 }
 fieldset {
   min-width: 0;
@@ -78,7 +105,8 @@ fieldset {
 [hidden] {
   display: none !important;
 }
-h1 {
+h1,
+h3 {
   margin-bottom: 0.25rem;
   font-weight: 600;
   line-height: 1.2;
@@ -86,6 +114,9 @@ h1 {
 }
 h1 {
   font-size: 2.1875rem;
+}
+h3 {
+  font-size: 1.53125rem;
 }
 hr {
   margin-top: 0.5rem;
@@ -120,22 +151,41 @@ hr {
     max-width: 1140px;
   }
 }
-.col-sm-12,
-.col {
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+.col-md-6,
+.col-sm-12 {
   position: relative;
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
 }
-.col {
-  flex-basis: 0;
-  flex-grow: 1;
-  max-width: 100%;
+.order-1 {
+  order: 1;
+}
+.order-12 {
+  order: 12;
 }
 @media (min-width: 576px) {
   .col-sm-12 {
     flex: 0 0 100%;
     max-width: 100%;
+  }
+  .order-sm-1 {
+    order: 1;
+  }
+  .order-sm-12 {
+    order: 12;
+  }
+}
+@media (min-width: 768px) {
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 }
 .form-control {
@@ -169,16 +219,6 @@ hr {
 .form-group {
   margin-bottom: 1rem;
 }
-.form-row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -5px;
-  margin-left: -5px;
-}
-.form-row > .col {
-  padding-right: 5px;
-  padding-left: 5px;
-}
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -204,6 +244,137 @@ hr {
 fieldset:disabled a.btn {
   pointer-events: none;
 }
+.btn-block {
+  display: block;
+  width: 100%;
+}
+.btn-block + .btn-block {
+  margin-top: 0.5rem;
+}
+input.btn-block[type="submit"],
+input.btn-block[type="button"] {
+  width: 100%;
+}
+.custom-control {
+  position: relative;
+  z-index: 1;
+  display: block;
+  min-height: 1.5rem;
+  padding-left: 1.5rem;
+  color-adjust: exact;
+}
+.custom-control-input {
+  position: absolute;
+  left: 0;
+  z-index: -1;
+  width: 1rem;
+  height: 1.25rem;
+  opacity: 0;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #007bff;
+  background-color: #007bff;
+}
+.custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+  color: #fff;
+  background-color: #b3d7ff;
+  border-color: #b3d7ff;
+}
+.custom-control-input:disabled ~ .custom-control-label {
+  color: #5e5e5e;
+}
+.custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: #fafafa;
+}
+.custom-control-label {
+  position: relative;
+  margin-bottom: 0;
+  vertical-align: top;
+}
+.custom-control-label::before {
+  position: absolute;
+  top: 0.25rem;
+  left: -1.5rem;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  content: "";
+  background-color: #fff;
+  border: #666 solid 1px;
+}
+.custom-control-label::after {
+  position: absolute;
+  top: 0.25rem;
+  left: -1.5rem;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  content: "";
+  background: no-repeat 50% / 50% 50%;
+}
+.custom-checkbox .custom-control-label::before {
+  border-radius: 0.25rem;
+}
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/%3e%3c/svg%3e");
+}
+.custom-checkbox
+  .custom-control-input:indeterminate
+  ~ .custom-control-label::before {
+  border-color: #007bff;
+  background-color: #007bff;
+}
+.custom-checkbox
+  .custom-control-input:indeterminate
+  ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3e%3cpath stroke='%23fff' d='M0 2h4'/%3e%3c/svg%3e");
+}
+.custom-checkbox
+  .custom-control-input:disabled:checked
+  ~ .custom-control-label::before {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+.custom-checkbox
+  .custom-control-input:disabled:indeterminate
+  ~ .custom-control-label::before {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+@media (prefers-reduced-motion: reduce) {
+}
+.tab-content > .tab-pane {
+  display: none;
+}
+.tab-content > .active {
+  display: block;
+}
+.navbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+}
+.navbar .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.clearfix::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+.fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
 .mt-3 {
   margin-top: 1rem !important;
 }
@@ -213,8 +384,8 @@ fieldset:disabled a.btn {
 .text-nowrap {
   white-space: nowrap !important;
 }
-.text-center {
-  text-align: center !important;
+.font-weight-normal {
+  font-weight: 400 !important;
 }
 .gl-form-input,
 .gl-form-input.form-control {
@@ -251,13 +422,103 @@ fieldset:disabled a.btn {
 .gl-form-input.form-control::placeholder {
   color: #868686;
 }
+.gl-form-checkbox {
+  font-size: 0.875rem;
+  line-height: 1rem;
+  color: #303030;
+}
+.gl-form-checkbox .custom-control-input:disabled,
+.gl-form-checkbox .custom-control-input:disabled ~ .custom-control-label {
+  cursor: not-allowed;
+  color: #868686;
+}
+.gl-form-checkbox.custom-control .custom-control-input ~ .custom-control-label {
+  cursor: pointer;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input
+  ~ .custom-control-label::before,
+.gl-form-checkbox.custom-control
+  .custom-control-input
+  ~ .custom-control-label::after {
+  top: 0;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input
+  ~ .custom-control-label::before {
+  background-color: #fff;
+  border-color: #868686;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input:checked
+  ~ .custom-control-label::before {
+  background-color: #1f75cb;
+  border-color: #1f75cb;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input[type="checkbox"]:checked
+  ~ .custom-control-label::after,
+.gl-form-checkbox.custom-control
+  .custom-control-input[type="checkbox"]:indeterminate
+  ~ .custom-control-label::after {
+  background: none;
+  background-color: #fff;
+  mask-repeat: no-repeat;
+  mask-position: center center;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input[type="checkbox"]:checked
+  ~ .custom-control-label::after {
+  mask-image: url('data:image/svg+xml,%3Csvg width="8" height="7" viewBox="0 0 8 7" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M1 3.05299L2.99123 5L7 1" stroke="white" stroke-width="2"/%3E%3C/svg%3E%0A');
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input[type="checkbox"]:indeterminate
+  ~ .custom-control-label::after {
+  mask-image: url('data:image/svg+xml,%3Csvg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M0 1L8 1" stroke="white" stroke-width="2"/%3E%3C/svg%3E%0A');
+}
+.gl-form-checkbox.custom-control.custom-checkbox
+  .custom-control-input:indeterminate
+  ~ .custom-control-label::before {
+  background-color: #1f75cb;
+  border-color: #1f75cb;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input:disabled
+  ~ .custom-control-label {
+  cursor: not-allowed;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input:disabled
+  ~ .custom-control-label::before {
+  background-color: #f0f0f0;
+  border-color: #dbdbdb;
+  pointer-events: auto;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input:checked:disabled
+  ~ .custom-control-label::before,
+.gl-form-checkbox.custom-control
+  .custom-control-input:indeterminate:disabled
+  ~ .custom-control-label::before {
+  background-color: #dbdbdb;
+  border-color: #dbdbdb;
+}
+.gl-form-checkbox.custom-control
+  .custom-control-input:checked:disabled
+  ~ .custom-control-label::after,
+.gl-form-checkbox.custom-control
+  .custom-control-input:indeterminate:disabled
+  ~ .custom-control-label::after {
+  background-color: #5e5e5e;
+}
 .gl-button {
   display: inline-flex;
 }
 .gl-button:not(.btn-link):active {
   text-decoration: none;
 }
-.gl-button.gl-button {
+.gl-button.gl-button,
+.gl-button.gl-button.btn-block {
   border-width: 0;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -273,7 +534,8 @@ fieldset:disabled a.btn {
   font-size: 0.875rem;
   border-radius: 0.25rem;
 }
-.gl-button.gl-button .gl-button-text {
+.gl-button.gl-button .gl-button-text,
+.gl-button.gl-button.btn-block .gl-button-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -282,29 +544,39 @@ fieldset:disabled a.btn {
   margin-top: -1px;
   margin-bottom: -1px;
 }
-.gl-button.gl-button .gl-button-icon {
+.gl-button.gl-button .gl-button-icon,
+.gl-button.gl-button.btn-block .gl-button-icon {
   height: 1rem;
   width: 1rem;
   flex-shrink: 0;
   margin-right: 0.25rem;
   top: auto;
 }
-.gl-button.gl-button.btn-default {
+.gl-button.gl-button.btn-default,
+.gl-button.gl-button.btn-block.btn-default {
   background-color: #fff;
 }
-.gl-button.gl-button.btn-default:active {
+.gl-button.gl-button.btn-default:active,
+.gl-button.gl-button.btn-default.active,
+.gl-button.gl-button.btn-block.btn-default:active,
+.gl-button.gl-button.btn-block.btn-default.active {
   box-shadow: inset 0 0 0 1px #5e5e5e, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
   background-color: #dbdbdb;
 }
-.gl-button.gl-button.btn-confirm {
+.gl-button.gl-button.btn-confirm,
+.gl-button.gl-button.btn-block.btn-confirm {
   color: #fff;
 }
-.gl-button.gl-button.btn-confirm {
+.gl-button.gl-button.btn-confirm,
+.gl-button.gl-button.btn-block.btn-confirm {
   background-color: #1f75cb;
   box-shadow: inset 0 0 0 1px #1068bf;
 }
-.gl-button.gl-button.btn-confirm:active {
+.gl-button.gl-button.btn-confirm:active,
+.gl-button.gl-button.btn-confirm.active,
+.gl-button.gl-button.btn-block.btn-confirm:active,
+.gl-button.gl-button.btn-block.btn-confirm.active {
   box-shadow: inset 0 0 0 1px #033464, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
   background-color: #0b5cad;
@@ -312,10 +584,14 @@ fieldset:disabled a.btn {
 body {
   font-size: 0.875rem;
 }
-[type="submit"] {
+button,
+html [type="button"],
+[type="submit"],
+[role="button"] {
   cursor: pointer;
 }
-h1 {
+h1,
+h3 {
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -325,15 +601,15 @@ a {
 hr {
   overflow: hidden;
 }
+svg {
+  vertical-align: baseline;
+}
 .form-control {
   font-size: 0.875rem;
 }
 .hidden {
   display: none !important;
   visibility: hidden !important;
-}
-.hide {
-  display: none;
 }
 html {
   overflow-y: scroll;
@@ -372,13 +648,34 @@ body.navless {
   background-color: #f0f0f0;
   box-shadow: none;
 }
-.btn:active {
+.btn:active,
+.btn.active {
   background-color: #eaeaea;
   border-color: #e3e3e3;
   color: #303030;
 }
-.light {
-  color: #303030;
+.btn svg {
+  height: 15px;
+  width: 15px;
+}
+.btn svg:not(:last-child) {
+  margin-right: 5px;
+}
+.btn-block {
+  width: 100%;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+.btn-block.btn {
+  padding: 6px 0;
+}
+.tab-content {
+  overflow: visible;
+}
+@media (max-width: 767.98px) {
+  .tab-content {
+    isolation: isolate;
+  }
 }
 hr {
   margin: 1.5rem 0;
@@ -416,6 +713,9 @@ input {
 label {
   font-weight: 600;
 }
+label.custom-control-label {
+  font-weight: 400;
+}
 label.label-bold {
   font-weight: 600;
 }
@@ -429,8 +729,25 @@ label.label-bold {
 .gl-show-field-errors .form-control:not(textarea) {
   height: 34px;
 }
-.gl-show-field-errors .gl-field-hint {
-  color: #303030;
+.navbar-empty {
+  justify-content: center;
+  height: var(--header-height, 48px);
+  background: #fff;
+  border-bottom: 1px solid #dbdbdb;
+}
+.navbar-empty .tanuki-logo,
+.navbar-empty .brand-header-logo {
+  max-height: 100%;
+}
+.tanuki-logo .tanuki {
+  fill: #e24329;
+}
+.tanuki-logo .left-cheek,
+.tanuki-logo .right-cheek {
+  fill: #fc6d26;
+}
+.tanuki-logo .chin {
+  fill: #fca326;
 }
 input::-moz-placeholder {
   color: #868686;
@@ -441,6 +758,9 @@ input::-ms-input-placeholder {
 }
 input:-ms-input-placeholder {
   color: #868686;
+}
+svg {
+  fill: currentColor;
 }
 .login-page .container {
   max-width: 960px;
@@ -649,14 +969,17 @@ input:-ms-input-placeholder {
   }
 }
 
-.gl-text-green-600 {
-  color: #217645;
+.gl-display-flex {
+  display: flex;
 }
-.gl-text-red-500 {
-  color: #dd2b0e;
+.gl-display-inline-block {
+  display: inline-block;
 }
-.gl-display-block {
-  display: block;
+.gl-flex-wrap {
+  flex-wrap: wrap;
+}
+.gl-float-right {
+  float: right;
 }
 .gl-w-10 {
   width: 3.5rem;
@@ -675,14 +998,18 @@ input:-ms-input-placeholder {
     width: 100%;
   }
 }
-.gl-p-4 {
-  padding: 0.75rem;
+.gl-p-5 {
+  padding: 1rem;
+}
+.gl-px-5 {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 .gl-pt-5 {
   padding-top: 1rem;
 }
-.gl-mt-2 {
-  margin-top: 0.25rem;
+.gl-mt-3 {
+  margin-top: 0.5rem;
 }
 .gl-mt-5 {
   margin-top: 1rem;
@@ -702,14 +1029,16 @@ input:-ms-input-placeholder {
 .gl-mb-3 {
   margin-bottom: 0.5rem;
 }
-.gl-mb-5 {
-  margin-bottom: 1rem;
-}
 .gl-ml-auto {
   margin-left: auto;
 }
 .gl-ml-2 {
   margin-left: 0.25rem;
+}
+@media (min-width: 576px) {
+  .gl-sm-mt-0 {
+    margin-top: 0;
+  }
 }
 .gl-text-center {
   text-align: center;
@@ -719,6 +1048,9 @@ input:-ms-input-placeholder {
 }
 .gl-font-weight-normal {
   font-weight: 400;
+}
+.gl-font-weight-bold {
+  font-weight: 600;
 }
 
 @import "startup/cloaking";

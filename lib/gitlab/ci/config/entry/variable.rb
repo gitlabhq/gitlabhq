@@ -30,7 +30,7 @@ module Gitlab
             end
 
             def value_with_data
-              { value: @config.to_s, description: nil }
+              { value: @config.to_s }
             end
           end
 
@@ -66,7 +66,7 @@ module Gitlab
             end
 
             def value_with_data
-              { value: value, description: config_description }
+              { value: value, description: config_description }.compact
             end
 
             def config_value

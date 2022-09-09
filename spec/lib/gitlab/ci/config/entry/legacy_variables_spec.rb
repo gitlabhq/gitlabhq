@@ -61,8 +61,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::LegacyVariables do
     describe '#value_with_data' do
       it 'returns variable with data' do
         expect(entry.value_with_data).to eq(
-          'VARIABLE_1' => { value: 'value 1', description: nil },
-          'VARIABLE_2' => { value: 'value 2', description: nil }
+          'VARIABLE_1' => { value: 'value 1' },
+          'VARIABLE_2' => { value: 'value 2' }
         )
       end
     end
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::LegacyVariables do
         it 'returns variable with data' do
           expect(entry.value_with_data).to eq(
             'VARIABLE_1' => { value: 'value 1', description: 'variable 1' },
-            'VARIABLE_2' => { value: 'value 2', description: nil }
+            'VARIABLE_2' => { value: 'value 2' }
           )
         end
       end

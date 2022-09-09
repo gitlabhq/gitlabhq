@@ -1,12 +1,15 @@
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 import { mockPipeline, mockPipelineBranch, mockPipelineTag } from './mock_data';
 
 const projectPath = 'test/test';
 
 describe('Pipeline Url Component', () => {
   let wrapper;
+  let trackingSpy;
 
   const findTableCell = () => wrapper.findByTestId('pipeline-url-table-cell');
   const findPipelineUrlLink = () => wrapper.findByTestId('pipeline-url-link');
@@ -14,6 +17,7 @@ describe('Pipeline Url Component', () => {
   const findCommitShortSha = () => wrapper.findByTestId('commit-short-sha');
   const findCommitIcon = () => wrapper.findByTestId('commit-icon');
   const findCommitIconType = () => wrapper.findByTestId('commit-icon-type');
+  const findCommitRefName = () => wrapper.findByTestId('commit-ref-name');
 
   const findCommitTitleContainer = () => wrapper.findByTestId('commit-title-container');
   const findCommitTitle = (commitWrapper) => commitWrapper.find('[data-testid="commit-title"]');
@@ -31,7 +35,6 @@ describe('Pipeline Url Component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('should render pipeline url table cell', () => {
@@ -49,7 +52,7 @@ describe('Pipeline Url Component', () => {
   });
 
   it('should render the commit title, commit reference and commit-short-sha', () => {
-    createComponent({}, true);
+    createComponent();
 
     const commitWrapper = findCommitTitleContainer();
 
@@ -83,7 +86,7 @@ describe('Pipeline Url Component', () => {
   });
 
   it('should render commit icon tooltip', () => {
-    createComponent({}, true);
+    createComponent();
 
     expect(findCommitIcon().attributes('title')).toBe('Commit');
   });
@@ -94,8 +97,68 @@ describe('Pipeline Url Component', () => {
     ${mockPipelineBranch()} | ${'Branch'}
     ${mockPipeline()}       | ${'Merge Request'}
   `('should render tooltip $expectedTitle for commit icon type', ({ pipeline, expectedTitle }) => {
-    createComponent(pipeline, true);
+    createComponent(pipeline);
 
     expect(findCommitIconType().attributes('title')).toBe(expectedTitle);
+  });
+
+  describe('tracking', () => {
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks pipeline id click', () => {
+      createComponent();
+
+      findPipelineUrlLink().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_pipeline_id', {
+        label: TRACKING_CATEGORIES.index,
+      });
+    });
+
+    it('tracks merge request ref click', () => {
+      createComponent();
+
+      findRefName().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_mr_ref', {
+        label: TRACKING_CATEGORIES.index,
+      });
+    });
+
+    it('tracks commit ref name click', () => {
+      createComponent(mockPipelineBranch());
+
+      findCommitRefName().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_name', {
+        label: TRACKING_CATEGORIES.index,
+      });
+    });
+
+    it('tracks commit title click', () => {
+      createComponent(mockPipelineBranch());
+
+      findCommitTitle(findCommitTitleContainer()).vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_title', {
+        label: TRACKING_CATEGORIES.index,
+      });
+    });
+
+    it('tracks commit short sha click', () => {
+      createComponent(mockPipelineBranch());
+
+      findCommitShortSha().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_sha', {
+        label: TRACKING_CATEGORIES.index,
+      });
+    });
   });
 });

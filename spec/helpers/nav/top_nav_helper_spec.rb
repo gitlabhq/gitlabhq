@@ -52,6 +52,9 @@ RSpec.describe Nav::TopNavHelper do
 
     context 'when current_user is nil (anonymous)' do
       it 'has expected :primary' do
+        expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
+          title: 'Explore'
+        )
         expected_primary = [
           { href: '/explore', icon: 'project', id: 'project', title: 'Projects' },
           { href: '/explore/groups', icon: 'group', id: 'groups', title: 'Groups' },
@@ -60,7 +63,7 @@ RSpec.describe Nav::TopNavHelper do
           ::Gitlab::Nav::TopNavMenuItem.build(**item)
         end
 
-        expect(subject[:primary]).to eq(expected_primary)
+        expect(subject[:primary]).to eq([expected_header, *expected_primary])
       end
 
       it 'has expected :shortcuts' do
@@ -117,6 +120,9 @@ RSpec.describe Nav::TopNavHelper do
         let(:projects_view) { subject[:views][:projects] }
 
         it 'has expected :primary' do
+          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
+            title: 'Switch to'
+          )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             css_class: 'qa-projects-dropdown',
             data: {
@@ -128,7 +134,7 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Projects',
             view: 'projects'
           )
-          expect(subject[:primary]).to eq([expected_primary])
+          expect(subject[:primary]).to eq([expected_header, expected_primary])
         end
 
         it 'has expected :shortcuts' do
@@ -253,6 +259,9 @@ RSpec.describe Nav::TopNavHelper do
         let(:groups_view) { subject[:views][:groups] }
 
         it 'has expected :primary' do
+          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
+            title: 'Switch to'
+          )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             css_class: 'qa-groups-dropdown',
             data: {
@@ -264,7 +273,7 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Groups',
             view: 'groups'
           )
-          expect(subject[:primary]).to eq([expected_primary])
+          expect(subject[:primary]).to eq([expected_header, expected_primary])
         end
 
         it 'has expected :shortcuts' do
@@ -376,6 +385,9 @@ RSpec.describe Nav::TopNavHelper do
         let(:with_milestones) { true }
 
         it 'has expected :primary' do
+          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
+            title: 'Explore'
+          )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             data: {
               qa_selector: 'milestones_link',
@@ -386,7 +398,7 @@ RSpec.describe Nav::TopNavHelper do
             id: 'milestones',
             title: 'Milestones'
           )
-          expect(subject[:primary]).to eq([expected_primary])
+          expect(subject[:primary]).to eq([expected_header, expected_primary])
         end
 
         it 'has expected :shortcuts' do
@@ -404,6 +416,9 @@ RSpec.describe Nav::TopNavHelper do
         let(:with_snippets) { true }
 
         it 'has expected :primary' do
+          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
+            title: 'Explore'
+          )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             data: {
               qa_selector: 'snippets_link',
@@ -414,7 +429,7 @@ RSpec.describe Nav::TopNavHelper do
             id: 'snippets',
             title: 'Snippets'
           )
-          expect(subject[:primary]).to eq([expected_primary])
+          expect(subject[:primary]).to eq([expected_header, expected_primary])
         end
 
         it 'has expected :shortcuts' do
@@ -432,6 +447,9 @@ RSpec.describe Nav::TopNavHelper do
         let(:with_activity) { true }
 
         it 'has expected :primary' do
+          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
+            title: 'Explore'
+          )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             data: {
               qa_selector: 'activity_link',
@@ -442,7 +460,7 @@ RSpec.describe Nav::TopNavHelper do
             id: 'activity',
             title: 'Activity'
           )
-          expect(subject[:primary]).to eq([expected_primary])
+          expect(subject[:primary]).to eq([expected_header, expected_primary])
         end
 
         it 'has expected :shortcuts' do

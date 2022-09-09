@@ -4211,8 +4211,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#has_reports?' do
-    subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
+  describe '#complete_and_has_reports?' do
+    subject { pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 
     context 'when pipeline has builds with test reports' do
       before do

@@ -80,13 +80,13 @@ func (u *uploader) Consume(outerCtx context.Context, reader io.Reader, deadline 
 
 	cr := &countReader{r: reader}
 	if err := u.strategy.Upload(uploadCtx, cr); err != nil {
-		return cr.n, err
+		return 0, err
 	}
 
 	if u.checkETag {
 		if err := compareMD5(hexString(hasher), u.strategy.ETag()); err != nil {
 			log.ContextLogger(uploadCtx).WithError(err).Error("error comparing MD5 checksum")
-			return cr.n, err
+			return 0, err
 		}
 	}
 

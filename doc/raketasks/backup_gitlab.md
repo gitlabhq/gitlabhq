@@ -744,8 +744,8 @@ You can send backups to a locally-mounted share (for example, `NFS`,`CIFS`, or `
 
 To do this, you must set the following configuration keys:
 
-- `backup_upload_remote_directory`: mounted directory that backups are copied to.
-- `backup_upload_connection.local_root`: subdirectory of the `backup_upload_remote_directory` directory. It is created if it doesn't exist.
+- `backup_upload_connection.local_root`: mounted directory that backups are copied to.
+- `backup_upload_remote_directory`: subdirectory of the `backup_upload_connection.local_root` directory. It is created if it doesn't exist.
   If you want to copy the tarballs to the root of your mounted directory, use `.`.
 
 When mounted, the directory set in the `local_root` key must be owned by either:

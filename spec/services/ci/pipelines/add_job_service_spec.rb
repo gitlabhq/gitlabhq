@@ -34,6 +34,14 @@ RSpec.describe Ci::Pipelines::AddJobService do
       ).and change { job.metadata.project }.to(pipeline.project)
     end
 
+    it 'assigns partition_id to job and metadata' do
+      pipeline.partition_id = 123
+
+      expect { execute }
+        .to change(job, :partition_id).to(pipeline.partition_id)
+        .and change { job.metadata.partition_id }.to(pipeline.partition_id)
+    end
+
     it 'returns a service response with the job as payload' do
       expect(execute).to be_success
       expect(execute.payload[:job]).to eq(job)

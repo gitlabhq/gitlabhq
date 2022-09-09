@@ -109,3 +109,7 @@ export const DEFAULT_FIELDS = [
     columnClass: 'gl-w-20p',
   },
 ];
+
+export const TRACKING_CATEGORIES = {
+  index: 'pipelines_table_component',
+};

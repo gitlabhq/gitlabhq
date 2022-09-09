@@ -8,14 +8,11 @@ module Ci
     include ChronicDurationAttribute
     include FromUnion
     include TokenAuthenticatable
-    include IgnorableColumns
     include FeatureGate
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
     include Presentable
     include EachBatch
-
-    ignore_column :semver, remove_with: '15.4', remove_after: '2022-08-22'
 
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
 

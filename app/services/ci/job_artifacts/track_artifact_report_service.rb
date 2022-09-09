@@ -10,7 +10,7 @@ module Ci
 
       def execute(pipeline)
         REPORT_TRACKED.each do |report|
-          if pipeline.has_reports?(Ci::JobArtifact.of_report_type(report))
+          if pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(report))
             track_usage_event(event_name(report), [pipeline.id, pipeline.user_id].join(VALUES_DELIMITER))
           end
         end

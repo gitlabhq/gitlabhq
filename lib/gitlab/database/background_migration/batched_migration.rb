@@ -8,6 +8,7 @@ module Gitlab
         BATCH_CLASS_MODULE = "#{JOB_CLASS_MODULE}::BatchingStrategies"
         MAXIMUM_FAILED_RATIO = 0.5
         MINIMUM_JOBS = 50
+        FINISHED_PROGRESS_VALUE = 100
 
         self.table_name = :batched_background_migrations
 
@@ -232,7 +233,15 @@ module Gitlab
           "BatchedMigration[id: #{id}]"
         end
 
+        # Computes an estimation of the progress of the migration in percents.
+        #
+        # Because `total_tuple_count` is an estimation of the tuples based on DB statistics
+        # when the migration is complete there can actually be more or less tuples that initially
+        # estimated as `total_tuple_count` so the progress may not show 100%. For that reason when
+        # we know migration completed successfully, we just return the 100 value
         def progress
+          return FINISHED_PROGRESS_VALUE if finished?
+
           return unless total_tuple_count.to_i > 0
 
           100 * migrated_tuple_count / total_tuple_count

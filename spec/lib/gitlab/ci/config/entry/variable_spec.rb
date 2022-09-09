@@ -204,7 +204,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
         describe '#value_with_data' do
           subject(:value_with_data) { entry.value_with_data }
 
-          it { is_expected.to eq(value: 'value', description: nil) }
+          it { is_expected.to eq(value: 'value') }
         end
       end
     end

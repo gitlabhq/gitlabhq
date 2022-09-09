@@ -6,6 +6,7 @@ import { GitLabDropdown } from '~/deprecated_jquery_dropdown/gl_dropdown';
 
 import initMergeRequest from '~/pages/projects/merge_requests/init_merge_request';
 import initCheckFormState from './check_form_state';
+import initFormUpdate from './update_form';
 
 function initTargetBranchSelector() {
   const targetBranch = document.querySelector('.js-target-branch');
@@ -68,5 +69,6 @@ function initTargetBranchSelector() {
 }
 
 initMergeRequest();
+initFormUpdate();
 initCheckFormState();
 initTargetBranchSelector();

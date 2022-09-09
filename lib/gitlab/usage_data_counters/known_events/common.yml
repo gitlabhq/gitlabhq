@@ -357,3 +357,8 @@
   category: manage
   aggregation: weekly
   expiry: 42
+# Environments page
+- name: users_visiting_environments_pages
+  category: environments
+  redis_slot: users
+  aggregation: weekly

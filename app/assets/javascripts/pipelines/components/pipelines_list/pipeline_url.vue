@@ -1,9 +1,10 @@
 <script>
 import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { ICONS } from '../../constants';
+import { ICONS, TRACKING_CATEGORIES } from '../../constants';
 import PipelineLabels from './pipeline_labels.vue';
 
 export default {
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     pipeline: {
       type: Object,
@@ -114,6 +116,11 @@ export default {
       return this.pipeline?.commit?.title;
     },
   },
+  methods: {
+    trackClick(action) {
+      this.track(action, { label: TRACKING_CATEGORIES.index });
+    },
+  },
 };
 </script>
 <template>
@@ -125,6 +132,7 @@ export default {
             :href="commitUrl"
             class="commit-row-message gl-text-gray-900"
             data-testid="commit-title"
+            @click="trackClick('click_commit_title')"
             >{{ commitTitle }}</gl-link
           >
         </tooltip-on-truncate>
@@ -137,6 +145,7 @@ export default {
         class="gl-text-decoration-underline gl-text-blue-600! gl-mr-3"
         data-testid="pipeline-url-link"
         data-qa-selector="pipeline_url_link"
+        @click="trackClick('click_pipeline_id')"
         >#{{ pipeline[pipelineKey] }}</gl-link
       >
       <!--Commit row-->
@@ -154,11 +163,17 @@ export default {
           :href="mergeRequestRef.path"
           class="ref-name gl-mr-3"
           data-testid="merge-request-ref"
+          @click="trackClick('click_mr_ref')"
           >{{ mergeRequestRef.iid }}</gl-link
         >
-        <gl-link v-else :href="refUrl" class="ref-name gl-mr-3" data-testid="commit-ref-name">{{
-          commitRef.name
-        }}</gl-link>
+        <gl-link
+          v-else
+          :href="refUrl"
+          class="ref-name gl-mr-3"
+          data-testid="commit-ref-name"
+          @click="trackClick('click_commit_name')"
+          >{{ commitRef.name }}</gl-link
+        >
       </tooltip-on-truncate>
       <gl-icon
         v-gl-tooltip
@@ -167,9 +182,13 @@ export default {
         :title="__('Commit')"
         data-testid="commit-icon"
       />
-      <gl-link :href="commitUrl" class="commit-sha mr-0" data-testid="commit-short-sha">{{
-        commitShortSha
-      }}</gl-link>
+      <gl-link
+        :href="commitUrl"
+        class="commit-sha mr-0"
+        data-testid="commit-short-sha"
+        @click="trackClick('click_commit_sha')"
+        >{{ commitShortSha }}</gl-link
+      >
       <user-avatar-link
         v-if="commitAuthor"
         :link-href="commitAuthor.path"

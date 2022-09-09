@@ -75,4 +75,56 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations do
       end
     end
   end
+
+  describe 'PUT /admin/batched_background_migrations/:id/resume' do
+    let!(:migration) { create(:batched_background_migration, :paused) }
+    let(:database) { :main }
+
+    subject(:resume) do
+      put api("/admin/batched_background_migrations/#{migration.id}/resume", admin), params: { database: database }
+    end
+
+    it 'pauses the batched background migration' do
+      resume
+
+      aggregate_failures "testing response" do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(migration.id)
+        expect(json_response['status']).to eq('active')
+      end
+    end
+
+    context 'when the batched background migration does not exist' do
+      let(:params) { { database: database } }
+
+      it 'returns 404' do
+        put api("/admin/batched_background_migrations/#{non_existing_record_id}/resume", admin), params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when multiple database is enabled' do
+      let(:ci_model) { Ci::ApplicationRecord }
+      let(:database) { :ci }
+
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
+      it 'uses the correct connection' do
+        expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ci_model.connection).and_yield
+
+        resume
+      end
+    end
+
+    context 'when authenticated as a non-admin user' do
+      it 'returns 403' do
+        put api("/admin/batched_background_migrations/#{migration.id}/resume", unauthorized_user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
 end
