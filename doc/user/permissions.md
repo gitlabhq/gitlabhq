@@ -383,7 +383,7 @@ The following table lists group permissions available for each role:
 | Pull a container image using the dependency proxy                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Contribution analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group [epic](group/epics/index.md)                                                 | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View [group wiki](project/wiki/group.md) pages                                          | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
+| View [group wiki](project/wiki/group.md) pages                                          | ✓ (5) | ✓        | ✓         | ✓          | ✓     |
 | View [Insights](project/insights/index.md)                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View [Insights](project/insights/index.md) charts                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View [Issue analytics](analytics/issue_analytics.md)                                    | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -395,13 +395,13 @@ The following table lists group permissions available for each role:
 | Pull [packages](packages/index.md)                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |
 | Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages)                                                    |       |          |           | ✓          | ✓     |
-| Pull a Container Registry image                                                         | ✓ (7) | ✓        | ✓         | ✓          | ✓     |
+| Pull a Container Registry image                                                         | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
 | Remove a Container Registry image                                                       |       |          | ✓         | ✓          | ✓     |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit [group wiki](project/wiki/group.md) pages                               |       |          | ✓         | ✓          | ✓     |
-| Create project in group                                                                 |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
+| Create project in group                                                                 |       |          | ✓ (2)(4)  | ✓ (2)      | ✓ (2) |
 | Create/edit/delete group milestones                                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                                                           |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |
@@ -409,10 +409,10 @@ The following table lists group permissions available for each role:
 | Purge the dependency proxy for a group                                                  |       |          |           |            | ✓     |
 | Create/edit/delete dependency proxy [cleanup policies](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies)                                                  |       |          |           | ✓          | ✓     |
 | Use [security dashboard](application_security/security_dashboard/index.md)              |       |          | ✓         | ✓          | ✓     |
-| View group Audit Events                                                                 |       |          | ✓ (7)     | ✓ (7)      | ✓     |
+| View group Audit Events                                                                 |       |          | ✓ (6)     | ✓ (6)      | ✓     |
 | Create subgroup                                                                         |       |          |           | ✓ (1)      | ✓     |
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |
-| Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓ (2)      | ✓ (2) |
+| Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓          | ✓     |
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
 | Manage [group push rules](group/access_and_permissions.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
@@ -423,14 +423,14 @@ The following table lists group permissions available for each role:
 | Delete group [epic](group/epics/index.md)                                               |       |          |           |            | ✓     |
 | Disable notification emails                                                             |       |          |           |            | ✓     |
 | Edit group settings                                                                     |       |          |           |            | ✓     |
-| Edit [SAML SSO](group/saml_sso/index.md)                                                |       |          |           |            | ✓ (4) |
+| Edit [SAML SSO](group/saml_sso/index.md)                                                |       |          |           |            | ✓ (3) |
 | Filter members by 2FA status                                                            |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                                                      |       |          |           |            | ✓     |
 | Manage group members                                                                    |       |          |           |            | ✓     |
 | Share (invite) groups with groups                                                       |       |          |           |            | ✓     |
 | View 2FA status of members                                                              |       |          |           |            | ✓     |
-| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (4) |
-| View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (4) |
+| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (3) |
+| View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase CI/CD minutes and storage](../subscriptions/gitlab_com/index.md)         |       |          |           |            | ✓     |
@@ -438,14 +438,13 @@ The following table lists group permissions available for each role:
 <!-- markdownlint-disable MD029 -->
 
 1. Groups can be set to allow either Owners, or Owners and users with the Maintainer role, to [create subgroups](group/subgroups/index.md#create-a-subgroup).
-2. Introduced in GitLab 12.2.
-3. Default project creation role can be changed at:
+2. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
    - The [group level](group/manage.md#specify-who-can-add-projects-to-a-group).
-4. Does not apply to subgroups.
-5. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
-6. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
-7. Users can only view events based on their individual actions.
+3. Does not apply to subgroups.
+4. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
+5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
+6. Users can only view events based on their individual actions.
 
 <!-- markdownlint-enable MD029 -->
 

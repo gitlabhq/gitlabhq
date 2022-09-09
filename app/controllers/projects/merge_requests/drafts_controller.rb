@@ -50,7 +50,11 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     result = DraftNotes::PublishService.new(merge_request, current_user).execute(draft_note(allow_nil: true))
 
     if Feature.enabled?(:mr_review_submit_comment, @project)
-      ::Notes::CreateService.new(@project, current_user, create_note_params).execute if create_note_params[:note]
+      if create_note_params[:note]
+        ::Notes::CreateService.new(@project, current_user, create_note_params).execute
+
+        merge_request_activity_counter.track_submit_review_comment(user: current_user)
+      end
 
       if Gitlab::Utils.to_boolean(approve_params[:approve])
         success = ::MergeRequests::ApprovalService.new(project: @project, current_user: current_user, params: approve_params).execute(merge_request)
@@ -58,6 +62,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
         unless success
           return render json: { message: _('An error occurred while approving, please try again.') }, status: :internal_server_error
         end
+
+        merge_request_activity_counter.track_submit_review_approve(user: current_user)
       end
     end
 
@@ -158,6 +164,10 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def authorize_create_note!
     access_denied! unless can?(current_user, :create_note, merge_request)
+  end
+
+  def merge_request_activity_counter
+    Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
   end
 end
 

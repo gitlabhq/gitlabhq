@@ -36,7 +36,8 @@ Sign in to BrowserStack with the credentials saved in the **Engineering** vault 
 
 ## Initiatives
 
-Current high-level frontend goals are listed on [Frontend Epics](https://gitlab.com/groups/gitlab-org/-/epics?label_name%5B%5D=frontend).
+You can find current frontend initiatives with a cross-functional impact on epics 
+with the label [frontend-initiative](https://gitlab.com/groups/gitlab-org/-/epics?state=opened&page=1&sort=UPDATED_AT_DESC&label_name[]=frontend-initiative).
 
 ## Principles
 

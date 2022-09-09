@@ -7,7 +7,8 @@ module Gitlab
 
       TAGS_SORT_KEY = {
         'name' => Gitaly::FindAllTagsRequest::SortBy::Key::REFNAME,
-        'updated' => Gitaly::FindAllTagsRequest::SortBy::Key::CREATORDATE
+        'updated' => Gitaly::FindAllTagsRequest::SortBy::Key::CREATORDATE,
+        'version' => Gitaly::FindAllTagsRequest::SortBy::Key::VERSION_REFNAME
       }.freeze
 
       TAGS_SORT_DIRECTION = {
@@ -258,7 +259,7 @@ module Gitlab
       end
 
       def sort_tags_by_param(sort_by)
-        match = sort_by.match(/^(?<key>name|updated)_(?<direction>asc|desc)$/)
+        match = sort_by.match(/^(?<key>name|updated|version)_(?<direction>asc|desc)$/)
 
         return unless match
 

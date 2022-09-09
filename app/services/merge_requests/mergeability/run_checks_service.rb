@@ -15,11 +15,16 @@ module MergeRequests
 
           next if check.skip?
 
-          check_result = run_check(check)
+          check_result = logger.instrument(mergeability_name: check_class.to_s.demodulize.underscore) do
+            run_check(check)
+          end
+
           result_hash << check_result
 
           break result_hash if check_result.failed?
         end
+
+        logger.commit
 
         self
       end
@@ -55,6 +60,12 @@ module MergeRequests
       def cached_results
         strong_memoize(:cached_results) do
           Gitlab::MergeRequests::Mergeability::ResultsStore.new(merge_request: merge_request)
+        end
+      end
+
+      def logger
+        strong_memoize(:logger) do
+          MergeRequests::Mergeability::Logger.new(merge_request: merge_request)
         end
       end
     end

@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showBlobControls">
+  <div v-if="showBlobControls" class="gl-display-flex gl-gap-3">
     <gl-button data-testid="find" :href="blobInfo.findFilePath" :class="$options.buttonClassList">
       {{ $options.i18n.findFile }}
     </gl-button>

@@ -55,7 +55,10 @@ you must purchase additional storage. For more details, see [Excess storage usag
 
 ## View storage usage
 
-You can view storage usage for your project or [namespace](../user/namespace/index.md).
+Prerequisites:
+
+- To view storage usage for a project, you must be a project Maintainer or namespace Owner.
+- To view storage usage for a namespace, you must be the namespace Owner.
 
 1. Go to your project or namespace:
    - For a project, on the top bar, select **Menu > Projects** and find your project.
@@ -84,16 +87,16 @@ The following storage usage statistics are available to a maintainer:
 
 ## Manage your storage usage
 
-You can use several methods to manage and reduce your usage for some storage types.
+To manage your storage, if you are a namespace Owner you can [purchase more storage for the namespace](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
 
-For more information, see the following pages:
+Depending on your role, you can also use the following methods to manage or reduce your storage:
 
-- [Reduce package registry storage](packages/package_registry/reduce_package_registry_storage.md)
-- [Reduce dependency proxy storage](packages/dependency_proxy/reduce_dependency_proxy_storage.md)
-- [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md)
-- [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md)
-- [Reduce container registry data transfers](packages/container_registry/reduce_container_registry_data_transfer.md)
-- [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size)
+- [Reduce package registry storage](packages/package_registry/reduce_package_registry_storage.md).
+- [Reduce dependency proxy storage](packages/dependency_proxy/reduce_dependency_proxy_storage.md).
+- [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md).
+- [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md).
+- [Reduce container registry data transfers](packages/container_registry/reduce_container_registry_data_transfer.md).
+- [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size).
 
 ## Excess storage usage
 

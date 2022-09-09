@@ -12,6 +12,8 @@ module QA
 
       NoValueError = Class.new(RuntimeError)
 
+      attr_reader :retrieved_from_cache
+
       class << self
         # Initialize new instance of class without fabrication
         #
@@ -81,7 +83,7 @@ module QA
           Support::FabricationTracker.start_fabrication
           result = yield.tap do
             fabrication_time = Time.now - start
-            fabrication_http_method = if resource.api_fabrication_http_method == :get
+            fabrication_http_method = if resource.api_fabrication_http_method == :get || resource.retrieved_from_cache
                                         if include?(Reusable)
                                           "Retrieved for reuse"
                                         else
@@ -92,24 +94,28 @@ module QA
                                       end
 
             Support::FabricationTracker.save_fabrication(:"#{fabrication_method}_fabrication", fabrication_time)
-            Tools::TestResourceDataProcessor.collect(
-              resource: resource,
-              info: resource.identifier,
-              fabrication_method: fabrication_method,
-              fabrication_time: fabrication_time
-            )
+
+            unless resource.retrieved_from_cache
+              Tools::TestResourceDataProcessor.collect(
+                resource: resource,
+                info: resource.identifier,
+                fabrication_method: fabrication_method,
+                fabrication_time: fabrication_time
+              )
+            end
 
             Runtime::Logger.info do
               msg = ["==#{'=' * parents.size}>"]
               msg << "#{fabrication_http_method} a #{Rainbow(name).black.bg(:white)}"
               msg << resource.identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
-              msg << "via #{fabrication_method}"
+              msg << "via #{resource.retrieved_from_cache ? 'cache' : fabrication_method}"
               msg << "in #{fabrication_time.round(2)} seconds"
 
               msg.compact.join(' ')
             end
           end
+
           Support::FabricationTracker.finish_fabrication
 
           result

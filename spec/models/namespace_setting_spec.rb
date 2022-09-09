@@ -130,18 +130,22 @@ RSpec.describe NamespaceSetting, type: :model do
 
   describe '#show_diff_preview_in_email?' do
     context 'when not a subgroup' do
-      it 'returns false' do
-        settings = create(:namespace_settings, show_diff_preview_in_email: false)
-        group = create(:group, namespace_settings: settings )
+      context 'when :show_diff_preview_in_email is false' do
+        it 'returns false' do
+          settings = create(:namespace_settings, show_diff_preview_in_email: false)
+          group = create(:group, namespace_settings: settings )
 
-        expect(group.show_diff_preview_in_email?).to be_falsey
+          expect(group.show_diff_preview_in_email?).to be_falsey
+        end
       end
 
-      it 'returns true' do
-        settings = create(:namespace_settings, show_diff_preview_in_email: true)
-        group = create(:group, namespace_settings: settings )
+      context 'when :show_diff_preview_in_email is true' do
+        it 'returns true' do
+          settings = create(:namespace_settings, show_diff_preview_in_email: true)
+          group = create(:group, namespace_settings: settings )
 
-        expect(group.show_diff_preview_in_email?).to be_truthy
+          expect(group.show_diff_preview_in_email?).to be_truthy
+        end
       end
 
       it 'does not query the db when there is no parent group' do

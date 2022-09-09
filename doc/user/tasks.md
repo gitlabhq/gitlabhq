@@ -10,9 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.3.
 
-WARNING:
-Tasks are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features).
-
 Known limitation:
 
 - [Tasks currently cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)

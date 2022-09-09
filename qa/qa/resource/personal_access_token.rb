@@ -46,8 +46,15 @@ module QA
       rescue NoValueError
         user_id = user.respond_to?(:id) ? user.id : Resource::User.build(user).reload!.id
 
-        token = auto_paginated_response(request_url("/personal_access_tokens?user_id=#{user_id}", per_page: '100'))
-                  .find { |t| t[:name] == name }
+        api_client = Runtime::API::Client.new(:gitlab,
+          is_new_session: false,
+          user: user,
+          personal_access_token: self.token)
+        request_url = Runtime::API::Request.new(api_client,
+          "/personal_access_tokens?user_id=#{user_id}",
+          per_page: '100').url
+
+        token = auto_paginated_response(request_url).find { |t| t[:name] == name }
 
         raise ResourceNotFoundError unless token
 
@@ -56,7 +63,7 @@ module QA
       end
 
       def name
-        @name ||= "api-personal-access-token-#{Faker::Alphanumeric.alphanumeric(number: 8)}"
+        @name ||= "api-pat-#{user.username}-#{Faker::Alphanumeric.alphanumeric(number: 8)}"
       end
 
       def api_post_body
@@ -75,6 +82,9 @@ module QA
 
       def find_and_set_value
         @token ||= QA::Resource::PersonalAccessTokenCache.get_token_for_username(user.username)
+        @retrieved_from_cache = true if @token
+
+        @token
       end
 
       def cache_token

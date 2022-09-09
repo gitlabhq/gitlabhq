@@ -13,6 +13,12 @@ module Types
             null: false,
             description: 'Branch name, with wildcards, for the branch rules.'
 
+      field :branch_protection,
+            type: Types::BranchRules::BranchProtectionType,
+            null: false,
+            description: 'Branch protections configured for this branch rule.',
+            method: :itself
+
       field :created_at,
             Types::TimeType,
             null: false,

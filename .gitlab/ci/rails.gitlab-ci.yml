@@ -167,6 +167,7 @@ setup-test-env:
   variables:
     SETUP_DB: "false"
   script:
+    - echo $CI_MERGE_REQUEST_APPROVED
     - source scripts/gitlab_workhorse_component_helpers.sh
     - run_timed_command "download_and_extract_gitlab_workhorse_package" || true
     - run_timed_command "scripts/setup-test-env"

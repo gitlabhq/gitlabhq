@@ -21,7 +21,6 @@ module Gitlab
       CATEGORIES_FOR_TOTALS = %w[
         analytics
         compliance
-        epic_boards_usage
         epics_usage
         error_tracking
         ide_edit

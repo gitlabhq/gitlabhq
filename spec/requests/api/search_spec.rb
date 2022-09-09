@@ -9,6 +9,7 @@ RSpec.describe API::Search do
   let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
 
   before do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(0)
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
   end

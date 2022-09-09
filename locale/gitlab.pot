@@ -21005,7 +21005,7 @@ msgstr ""
 msgid "Include the username in the URL if required: %{code_open}https://username@gitlab.company.com/group/project.git%{code_close}."
 msgstr ""
 
-msgid "Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited."
+msgid "Includes LFS objects. It can be overridden per group, or per project. Set to 0 for no limit."
 msgstr ""
 
 msgid "Includes an MVC structure to help you get started"
@@ -24385,7 +24385,7 @@ msgstr ""
 msgid "Maximum allowable lifetime for access token (days)"
 msgstr ""
 
-msgid "Maximum allowed lifetime for SSH keys (in days)"
+msgid "Maximum allowed lifetime for SSH keys (days)"
 msgstr ""
 
 msgid "Maximum artifacts size"
@@ -28677,7 +28677,7 @@ msgstr ""
 msgid "Period of inactivity (days)"
 msgstr ""
 
-msgid "Period of inactivity before deactivation"
+msgid "Period of inactivity before deactivation."
 msgstr ""
 
 msgid "Permalink"
@@ -43092,7 +43092,7 @@ msgstr ""
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
 msgstr ""
 
-msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}"
+msgid "Users can reactivate their account by signing in. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki."

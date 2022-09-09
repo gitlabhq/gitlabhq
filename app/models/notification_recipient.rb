@@ -38,6 +38,7 @@ class NotificationRecipient
     return !unsubscribed? if @type == :subscription
 
     return false unless suitable_notification_level?
+    return false if email_blocked?
 
     # check this last because it's expensive
     # nobody should receive notifications if they've specifically unsubscribed
@@ -93,6 +94,15 @@ class NotificationRecipient
     else
       false
     end
+  end
+
+  def email_blocked?
+    return false if Feature.disabled?(:block_emails_with_failures)
+
+    recipient_email = user.notification_email_for(@group)
+
+    Gitlab::ApplicationRateLimiter.peek(:permanent_email_failure, scope: recipient_email) ||
+      Gitlab::ApplicationRateLimiter.peek(:temporary_email_failure, scope: recipient_email)
   end
 
   def has_access?

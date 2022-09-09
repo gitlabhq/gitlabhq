@@ -11,7 +11,7 @@ module Projects
       before_action :integration, only: [:edit, :update, :test]
       before_action :default_integration, only: [:edit, :update]
       before_action :web_hook_logs, only: [:edit, :update]
-      before_action -> { check_rate_limit!(:project_testing_integration, scope: [@project, current_user]) }, only: :test
+      before_action -> { check_test_rate_limit! }, only: :test
 
       respond_to :html
 
@@ -139,6 +139,15 @@ module Projects
 
       def use_inherited_settings?(attributes)
         default_integration && attributes[:inherit_from_id] == default_integration.id.to_s
+      end
+
+      def check_test_rate_limit!
+        check_rate_limit!(:project_testing_integration, scope: [@project, current_user]) do
+          render json: {
+            error: true,
+            message: _('This endpoint has been requested too many times. Try again later.')
+          }, status: :ok
+        end
       end
     end
   end

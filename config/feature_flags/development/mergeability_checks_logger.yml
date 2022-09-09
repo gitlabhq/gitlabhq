@@ -1,0 +1,8 @@
+---
+name: mergeability_checks_logger
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96128
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371717
+milestone: '15.4'
+type: development
+group: group::code review
+default_enabled: false

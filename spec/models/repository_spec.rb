@@ -161,6 +161,33 @@ RSpec.describe Repository do
       end
     end
 
+    context 'semantic versioning sort' do
+      let(:version_two) { 'v2.0.0' }
+      let(:version_ten) { 'v10.0.0' }
+
+      before do
+        repository.add_tag(user, version_two, repository.commit.id)
+        repository.add_tag(user, version_ten, repository.commit.id)
+      end
+
+      after do
+        repository.rm_tag(user, version_two)
+        repository.rm_tag(user, version_ten)
+      end
+
+      context 'desc' do
+        subject { repository.tags_sorted_by('version_desc').map(&:name) & (tags_to_compare + [version_two, version_ten]) }
+
+        it { is_expected.to eq([version_ten, version_two, 'v1.1.0', 'v1.0.0']) }
+      end
+
+      context 'asc' do
+        subject { repository.tags_sorted_by('version_asc').map(&:name) & (tags_to_compare + [version_two, version_ten]) }
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', version_two, version_ten]) }
+      end
+    end
+
     context 'unknown option' do
       subject { repository.tags_sorted_by('unknown_desc').map(&:name) & tags_to_compare }
 

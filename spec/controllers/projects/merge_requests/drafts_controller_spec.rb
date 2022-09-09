@@ -404,6 +404,11 @@ RSpec.describe Projects::MergeRequests::DraftsController do
       end
 
       context 'when feature flag is enabled' do
+        before do
+          allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_submit_review_comment)
+        end
+
         it 'creates note' do
           post :publish, params: params.merge!(note: 'Hello world')
 
@@ -414,6 +419,13 @@ RSpec.describe Projects::MergeRequests::DraftsController do
           post :publish, params: params.merge!(note: '')
 
           expect(merge_request.notes.reload.size).to be(1)
+        end
+
+        it 'tracks merge request activity' do
+          post :publish, params: params.merge!(note: 'Hello world')
+
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to have_received(:track_submit_review_comment).with(user: user)
         end
       end
     end
@@ -436,6 +448,11 @@ RSpec.describe Projects::MergeRequests::DraftsController do
       end
 
       context 'when feature flag is enabled' do
+        before do
+          allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_submit_review_approve)
+        end
+
         it 'approves merge request' do
           post :publish, params: params.merge!(approve: true)
 
@@ -446,6 +463,13 @@ RSpec.describe Projects::MergeRequests::DraftsController do
           post :publish, params: params.merge!(approve: false)
 
           expect(merge_request.approvals.reload.size).to be(0)
+        end
+
+        it 'tracks merge request activity' do
+          post :publish, params: params.merge!(approve: true)
+
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to have_received(:track_submit_review_approve).with(user: user)
         end
       end
     end

@@ -538,6 +538,9 @@
   rules:
     - <<: *if-merge-request-approved
       when: never
+    # Temporarily disabled minimal rspec jobs before and after approval because of https://gitlab.com/gitlab-org/gitlab/-/issues/373064.
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-automated-merge-request
       when: never
     - <<: *if-security-merge-request
@@ -559,8 +562,6 @@
       changes: *backend-patterns
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
 
 .rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules:
   rules:
@@ -590,8 +591,6 @@
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
 
 .rails:rules:system:minimal-default-rules:
   rules:
@@ -725,6 +724,16 @@
 ##################
 # Frontend rules #
 ##################
+
+.frontend:rules:minimal-default-rules:
+  rules:
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
+      when: never
+
 .frontend:rules:compile-production-assets:
   rules:
     - <<: *if-not-canonical-namespace
@@ -798,7 +807,7 @@
   rules:
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
+    - !reference [".frontend:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
       when: never
     - changes: *core-frontend-patterns
@@ -824,7 +833,7 @@
 .frontend:rules:jest:minimal:as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - !reference [".rails:rules:minimal-default-rules", rules]
+    - !reference [".frontend:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
       when: never
     - <<: *if-fork-merge-request
@@ -1022,8 +1031,6 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - changes: *db-patterns
 
 .rails:rules:ee-and-foss-migration:minimal:
@@ -1127,8 +1134,6 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - changes: *db-patterns
 
 .rails:rules:ee-only-migration:minimal:
@@ -1218,8 +1223,6 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
 
 .rails:rules:as-if-foss-migration:minimal:
   rules:
