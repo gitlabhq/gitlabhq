@@ -41428,7 +41428,7 @@ msgstr ""
 msgid "TopNav|Switch to"
 msgstr ""
 
-msgid "TopNav|Your dashboard"
+msgid "TopNav|Your dashboards"
 msgstr ""
 
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
