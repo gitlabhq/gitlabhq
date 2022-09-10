@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OnboardingProgressService do
+RSpec.describe Onboarding::ProgressService do
   describe '.async' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:action) { :git_pull }

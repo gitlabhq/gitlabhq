@@ -18,7 +18,7 @@ module Namespaces
       namespace = Namespace.find_by_id(namespace_id)
       return unless namespace
 
-      OnboardingProgressService.new(namespace).execute(action: :issue_created)
+      Onboarding::ProgressService.new(namespace).execute(action: :issue_created)
     end
   end
 end

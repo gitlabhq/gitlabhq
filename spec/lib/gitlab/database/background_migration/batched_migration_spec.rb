@@ -59,6 +59,50 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#pause!' do
+    context 'when an invalid transition is applied' do
+      %i[finished failed finalizing].each do |state|
+        it 'raises an exception' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect { batched_migration.pause! }.to raise_error(StateMachines::InvalidTransition, /Cannot transition status/)
+        end
+      end
+    end
+
+    context 'when a valid transition is applied' do
+      %i[active paused].each do |state|
+        it 'moves to pause' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect(batched_migration.pause!).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#execute!' do
+    context 'when an invalid transition is applied' do
+      %i[finished finalizing].each do |state|
+        it 'raises an exception' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect { batched_migration.execute! }.to raise_error(StateMachines::InvalidTransition, /Cannot transition status/)
+        end
+      end
+    end
+
+    context 'when a valid transition is applied' do
+      %i[active paused failed].each do |state|
+        it 'moves to active' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect(batched_migration.execute!).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '.valid_status' do
     valid_status = [:paused, :active, :finished, :failed, :finalizing]
 

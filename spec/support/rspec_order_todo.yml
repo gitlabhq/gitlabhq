@@ -10195,7 +10195,6 @@
 - './spec/services/notification_recipients/builder/new_note_spec.rb'
 - './spec/services/notification_recipients/build_service_spec.rb'
 - './spec/services/notification_service_spec.rb'
-- './spec/services/onboarding_progress_service_spec.rb'
 - './spec/services/packages/cleanup/execute_policy_service_spec.rb'
 - './spec/services/packages/cleanup/update_policy_service_spec.rb'
 - './spec/services/packages/composer/composer_json_service_spec.rb'

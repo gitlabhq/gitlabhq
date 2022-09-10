@@ -655,7 +655,6 @@ Gitlab/NamespacedClass:
     - 'app/services/metrics_service.rb'
     - 'app/services/note_summary.rb'
     - 'app/services/notification_service.rb'
-    - 'app/services/onboarding_progress_service.rb'
     - 'app/services/post_receive_service.rb'
     - 'app/services/preview_markdown_service.rb'
     - 'app/services/push_event_payload_service.rb'

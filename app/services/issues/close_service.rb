@@ -40,7 +40,7 @@ module Issues
 
         if closed_via.is_a?(MergeRequest)
           store_first_mentioned_in_commit_at(issue, closed_via)
-          OnboardingProgressService.new(project.namespace).execute(action: :issue_auto_closed)
+          Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
         end
 
         delete_milestone_closed_issue_counter_cache(issue.milestone)

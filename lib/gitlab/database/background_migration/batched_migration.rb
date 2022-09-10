@@ -59,11 +59,11 @@ module Gitlab
           state :finalizing, value: 5
 
           event :pause do
-            transition any => :paused
+            transition [:active, :paused] => :paused
           end
 
           event :execute do
-            transition any => :active
+            transition [:active, :paused, :failed] => :active
           end
 
           event :finish do
