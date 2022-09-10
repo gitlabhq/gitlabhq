@@ -13,7 +13,7 @@
         = link_to(project_compare_url(@merge_request.target_project, from: @existing_commits.first[:short_id], to: @existing_commits.last[:short_id])) do
           #{@existing_commits.first[:short_id]}...#{@existing_commits.last[:short_id]}
       = precede '&nbsp;- ' do
-        - commits_text = n_("#%d commit", "#%d commits", @total_existing_commits_count) % @total_existing_commits_count
+        - commits_text = n_("%d commit", "%d commits", @total_existing_commits_count) % @total_existing_commits_count
         = s_('Notify|%{commits_text} from branch `%{target_branch}`') % {commits_text: commits_text, target_branch: @merge_request.target_branch}
 
 - if @total_new_commits_count > 0

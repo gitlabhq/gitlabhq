@@ -72,11 +72,6 @@ msgstr ""
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
-msgid "#%d commit"
-msgid_plural "#%d commits"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "#%{issueIid} (closed)"
 msgstr ""
 
