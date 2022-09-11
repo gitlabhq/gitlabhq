@@ -916,6 +916,74 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  describe 'observability' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:allowed) { be_allowed(:read_observability) }
+    let(:disallowed) { be_disallowed(:read_observability) }
+
+    # rubocop:disable Layout/LineLength
+    where(:feature_enabled, :admin_matcher, :owner_matcher, :maintainer_matcher, :developer_matcher, :reporter_matcher, :guest_matcher, :non_member_matcher, :anonymous_matcher) do
+      false | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
+      true | ref(:allowed) | ref(:allowed) | ref(:allowed) | ref(:allowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      before do
+        stub_feature_flags(observability_group_tab: feature_enabled)
+      end
+
+      context 'admin', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        it { is_expected.to admin_matcher }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to owner_matcher }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to maintainer_matcher }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to developer_matcher }
+      end
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to reporter_matcher }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to guest_matcher }
+      end
+
+      context 'with non member' do
+        let(:current_user) { create(:user) }
+
+        it { is_expected.to non_member_matcher }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to anonymous_matcher }
+      end
+    end
+  end
+
   describe 'dependency proxy' do
     context 'feature disabled' do
       let(:current_user) { owner }

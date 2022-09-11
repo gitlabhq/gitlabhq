@@ -71,6 +71,10 @@ RSpec.shared_examples 'groups routing' do
   it 'routes to the harbor tags controller' do
     expect(get("groups/#{group_path}/-/harbor/repositories/test/artifacts/test/tags")).to route_to('groups/harbor/tags#index', group_id: group_path, repository_id: 'test', artifact_id: 'test')
   end
+
+  it 'routes to the observability controller' do
+    expect(get("groups/#{group_path}/-/observability")).to route_to('groups/observability#index', group_id: group_path)
+  end
 end
 
 RSpec.describe "Groups", "routing" do

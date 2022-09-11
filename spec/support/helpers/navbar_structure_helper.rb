@@ -85,6 +85,16 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_observability_nav
+    insert_after_nav_item(
+      _('Kubernetes'),
+      new_nav_item: {
+        nav_item: _('Observability'),
+        nav_sub_items: []
+      }
+    )
+  end
+
   def insert_infrastructure_google_cloud_nav
     insert_after_sub_nav_item(
       _('Terraform'),

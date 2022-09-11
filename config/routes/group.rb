@@ -121,6 +121,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resource :dependency_proxy, only: [:show, :update]
     resources :email_campaigns, only: :index
 
+    resources :observability, only: :index
+
     namespace :harbor do
       resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do
         resources :artifacts, only: [:index] do
