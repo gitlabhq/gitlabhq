@@ -42,8 +42,8 @@ describe('stage column component', () => {
   const findStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const findStageColumnGroup = () => wrapper.find('[data-testid="stage-column-group"]');
   const findAllStageColumnGroups = () => wrapper.findAll('[data-testid="stage-column-group"]');
-  const findJobItem = () => wrapper.find(JobItem);
-  const findActionComponent = () => wrapper.find(ActionComponent);
+  const findJobItem = () => wrapper.findComponent(JobItem);
+  const findActionComponent = () => wrapper.findComponent(ActionComponent);
 
   const createComponent = ({ method = shallowMount, props = {} } = {}) => {
     wrapper = method(StageColumnComponent, {

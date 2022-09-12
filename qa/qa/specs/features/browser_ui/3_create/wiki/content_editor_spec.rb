@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable do
+  RSpec.describe 'Create', :reliable, quarantine: {
+    type: :investigating,
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373093'
+  } do
     context 'Content Editor' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:page_title) { 'Content Editor Page' }

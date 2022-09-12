@@ -19,7 +19,7 @@ describe('Pipeline New Form', () => {
   let wrapper;
   let mock;
 
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findRefsDropdownItems = () => wrapper.findAll(GlDropdownItem);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 

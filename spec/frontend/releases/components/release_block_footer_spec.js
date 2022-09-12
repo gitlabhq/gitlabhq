@@ -38,16 +38,16 @@ describe('Release block footer', () => {
   });
 
   const commitInfoSection = () => wrapper.find('.js-commit-info');
-  const commitInfoSectionLink = () => commitInfoSection().find(GlLink);
+  const commitInfoSectionLink = () => commitInfoSection().findComponent(GlLink);
   const tagInfoSection = () => wrapper.find('.js-tag-info');
-  const tagInfoSectionLink = () => tagInfoSection().find(GlLink);
+  const tagInfoSectionLink = () => tagInfoSection().findComponent(GlLink);
   const authorDateInfoSection = () => wrapper.find('.js-author-date-info');
 
   describe('with all props provided', () => {
     beforeEach(() => factory());
 
     it('renders the commit icon', () => {
-      const commitIcon = commitInfoSection().find(GlIcon);
+      const commitIcon = commitInfoSection().findComponent(GlIcon);
 
       expect(commitIcon.exists()).toBe(true);
       expect(commitIcon.props('name')).toBe('commit');
@@ -62,14 +62,14 @@ describe('Release block footer', () => {
     });
 
     it('renders the tag icon', () => {
-      const commitIcon = tagInfoSection().find(GlIcon);
+      const commitIcon = tagInfoSection().findComponent(GlIcon);
 
       expect(commitIcon.exists()).toBe(true);
       expect(commitIcon.props('name')).toBe('tag');
     });
 
     it('renders the tag name with a link', () => {
-      const commitLink = tagInfoSection().find(GlLink);
+      const commitLink = tagInfoSection().findComponent(GlLink);
 
       expect(commitLink.exists()).toBe(true);
       expect(commitLink.text()).toBe(release.tagName);
@@ -120,7 +120,7 @@ describe('Release block footer', () => {
     });
 
     it("renders a link to the author's profile", () => {
-      const authorLink = authorDateInfoSection().find(GlLink);
+      const authorLink = authorDateInfoSection().findComponent(GlLink);
 
       expect(authorLink.exists()).toBe(true);
       expect(authorLink.attributes('href')).toBe(release.author.webUrl);

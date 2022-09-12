@@ -1,6 +1,6 @@
 ---
-name: remove_user_attributes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96447
+name: remove_user_attributes_groups
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97520
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372047
 milestone: '15.4'
 type: development

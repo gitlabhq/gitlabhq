@@ -156,6 +156,12 @@ the time limit to resolve all files is 30 seconds.
 - You can override included configuration by having the same job name or global keyword
   in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
   configuration in the `.gitlab-ci.yml` file takes precedence over the included configuration.
+- If you rerun a:
+  - Job, the `include` files are not fetched again. All jobs in a pipeline use the configuration
+    fetched when the pipeline was created. Any changes to the source `include` files
+    do not affect job reruns.
+  - Pipeline, the `include` files are fetched again. If they changed after the last
+    pipeline run, the new pipeline uses the changed configuration.
 
 **Related topics**:
 

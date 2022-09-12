@@ -39,7 +39,7 @@ describe('WikiForm', () => {
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
   const findClassicEditor = () => wrapper.findComponent(MarkdownField);
-  const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const setFormat = (value) => {
     const format = findFormat();

@@ -47,15 +47,16 @@ describe('ProjectsPipelinesChartsApp', () => {
     wrapper.destroy();
   });
 
-  const findGlTabs = () => wrapper.find(GlTabs);
+  const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findAllGlTabs = () => wrapper.findAll(GlTab);
   const findGlTabAtIndex = (index) => findAllGlTabs().at(index);
-  const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
-  const findTimeToRestoreServiceCharts = () => wrapper.find(TimeToRestoreServiceChartsStub);
-  const findChangeFailureRateCharts = () => wrapper.find(ChangeFailureRateChartsStub);
-  const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
-  const findPipelineCharts = () => wrapper.find(PipelineCharts);
-  const findProjectQualitySummary = () => wrapper.find(ProjectQualitySummaryStub);
+  const findLeadTimeCharts = () => wrapper.findComponent(LeadTimeChartsStub);
+  const findTimeToRestoreServiceCharts = () =>
+    wrapper.findComponent(TimeToRestoreServiceChartsStub);
+  const findChangeFailureRateCharts = () => wrapper.findComponent(ChangeFailureRateChartsStub);
+  const findDeploymentFrequencyCharts = () => wrapper.findComponent(DeploymentFrequencyChartsStub);
+  const findPipelineCharts = () => wrapper.findComponent(PipelineCharts);
+  const findProjectQualitySummary = () => wrapper.findComponent(ProjectQualitySummaryStub);
 
   describe('when all charts are available', () => {
     beforeEach(() => {

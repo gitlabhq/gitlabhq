@@ -21,7 +21,7 @@ describe('RepoDropdown component', () => {
     wrapper = null;
   });
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 
   describe('Source Revision', () => {

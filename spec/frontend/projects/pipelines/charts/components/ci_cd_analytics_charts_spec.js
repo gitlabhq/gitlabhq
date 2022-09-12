@@ -81,7 +81,7 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
     it('should select a different chart on change', async () => {
       findSegmentedControl().vm.$emit('input', 1);
 
-      const chart = wrapper.find(CiCdAnalyticsAreaChart);
+      const chart = wrapper.findComponent(CiCdAnalyticsAreaChart);
 
       await nextTick();
 
@@ -92,7 +92,7 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
 
   it('should not display charts if there are no charts', () => {
     wrapper = createWrapper({ charts: [] });
-    expect(wrapper.find(CiCdAnalyticsAreaChart).exists()).toBe(false);
+    expect(wrapper.findComponent(CiCdAnalyticsAreaChart).exists()).toBe(false);
   });
 
   describe('slots', () => {

@@ -65,7 +65,7 @@ export default {
     fetchArtifacts() {
       // refactor tracking based on action once this dropdown supports
       // actions other than artifacts
-      this.track('click_artifacts_dropdown', { label: TRACKING_CATEGORIES.index });
+      this.track('click_artifacts_dropdown', { label: TRACKING_CATEGORIES.table });
 
       this.isLoading = true;
       // Replace the placeholder with the ID of the pipeline we are viewing

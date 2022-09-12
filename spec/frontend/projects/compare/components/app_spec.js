@@ -66,7 +66,7 @@ describe('CompareApp component', () => {
   });
 
   describe('compare button', () => {
-    const findCompareButton = () => wrapper.find(GlButton);
+    const findCompareButton = () => wrapper.findComponent(GlButton);
 
     it('renders button', () => {
       expect(findCompareButton().exists()).toBe(true);

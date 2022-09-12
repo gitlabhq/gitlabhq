@@ -7,6 +7,7 @@ import { nextTick } from 'vue';
 import mockPipelinesResponse from 'test_fixtures/pipelines/pipelines.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -16,7 +17,7 @@ import NavigationControls from '~/pipelines/components/pipelines_list/nav_contro
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
-import { RAW_TEXT_WARNING } from '~/pipelines/constants';
+import { RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/pipelines/constants';
 import Store from '~/pipelines/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
@@ -37,6 +38,7 @@ const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
 describe('Pipelines', () => {
   let wrapper;
   let mock;
+  let trackingSpy;
 
   const paths = {
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
@@ -123,7 +125,7 @@ describe('Pipelines', () => {
     });
 
     it('shows loading state when the app is loading', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('does not display tabs when the first request has not yet been made', () => {
@@ -236,6 +238,8 @@ describe('Pipelines', () => {
                 count: mockPipelinesResponse.count,
               });
 
+            trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
             goToTab('finished');
 
             await waitForPromises();
@@ -255,6 +259,12 @@ describe('Pipelines', () => {
               expect.anything(),
               `${window.location.pathname}?scope=finished&page=1`,
             );
+          });
+
+          it('tracks tab change click', () => {
+            expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_filter_tabs', {
+              label: TRACKING_CATEGORIES.tabs,
+            });
           });
         });
 
@@ -375,7 +385,7 @@ describe('Pipelines', () => {
     const [firstPage, secondPage] = chunk(mockPipelinesResponse.pipelines, mockPageSize);
 
     const goToPage = (page) => {
-      findTablePagination().find(GlPagination).vm.$emit('input', page);
+      findTablePagination().findComponent(GlPagination).vm.$emit('input', page);
     };
 
     beforeEach(async () => {
@@ -583,7 +593,7 @@ describe('Pipelines', () => {
           'This project is not currently set up to run pipelines.',
         );
 
-        expect(findEmptyState().find(GlButton).exists()).toBe(false);
+        expect(findEmptyState().findComponent(GlButton).exists()).toBe(false);
       });
 
       it('does not render tabs or buttons', () => {

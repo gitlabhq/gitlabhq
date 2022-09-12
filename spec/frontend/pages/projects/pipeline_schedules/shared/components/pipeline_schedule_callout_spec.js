@@ -21,7 +21,7 @@ describe('Pipeline Schedule Callout', () => {
   };
 
   const findInnerContentOfCallout = () => wrapper.find('[data-testid="innerContent"]');
-  const findDismissCalloutBtn = () => wrapper.find(GlButton);
+  const findDismissCalloutBtn = () => wrapper.findComponent(GlButton);
 
   describe(`when ${cookieKey} cookie is set`, () => {
     beforeEach(async () => {

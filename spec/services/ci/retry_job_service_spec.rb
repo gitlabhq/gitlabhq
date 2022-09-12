@@ -31,7 +31,7 @@ RSpec.describe Ci::RetryJobService do
 
     let_it_be_with_refind(:job) do
       create(:ci_bridge, :success,
-        pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', stage_id: stage.id
+        pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', ci_stage: stage
       )
     end
 
@@ -43,13 +43,13 @@ RSpec.describe Ci::RetryJobService do
   end
 
   shared_context 'retryable build' do
-    let_it_be_with_refind(:job) { create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id) }
+    let_it_be_with_refind(:job) { create(:ci_build, :success, pipeline: pipeline, ci_stage: stage) }
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let_it_be(:job_to_clone) do
       create(:ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
             :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
-            description: 'my-job', stage: 'test', stage_id: stage.id,
+            description: 'my-job', ci_stage: stage,
             pipeline: pipeline, auto_canceled_by: another_pipeline,
             scheduled_at: 10.seconds.since)
     end
@@ -64,8 +64,7 @@ RSpec.describe Ci::RetryJobService do
     let(:job) { job_to_clone }
 
     before_all do
-      # Make sure that job has both `stage_id` and `stage`
-      job_to_clone.update!(stage: 'test', stage_id: stage.id)
+      job_to_clone.update!(ci_stage: stage)
 
       create(:ci_build_need, build: job_to_clone)
     end
@@ -124,14 +123,16 @@ RSpec.describe Ci::RetryJobService do
     end
 
     context 'when there are subsequent processables that are skipped' do
+      let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, name: 'deploy') }
+
       let!(:subsequent_build) do
         create(:ci_build, :skipped, stage_idx: 2,
                                     pipeline: pipeline,
-                                    stage: 'deploy')
+                                    ci_stage: stage)
       end
 
       let!(:subsequent_bridge) do
-        create(:ci_bridge, :skipped, stage_idx: 2, pipeline: pipeline, stage: 'deploy')
+        create(:ci_bridge, :skipped, stage_idx: 2, pipeline: pipeline, ci_stage: stage)
       end
 
       it 'resumes pipeline processing in the subsequent stage' do
@@ -152,8 +153,8 @@ RSpec.describe Ci::RetryJobService do
 
     context 'when the pipeline has other jobs' do
       let!(:stage2) { create(:ci_stage, project: project, pipeline: pipeline, name: 'deploy') }
-      let!(:build2) { create(:ci_build, pipeline: pipeline, stage_id: stage.id ) }
-      let!(:deploy) { create(:ci_build, pipeline: pipeline, stage_id: stage2.id) }
+      let!(:build2) { create(:ci_build, pipeline: pipeline, ci_stage: stage ) }
+      let!(:deploy) { create(:ci_build, pipeline: pipeline, ci_stage: stage2) }
       let!(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: build2.name) }
 
       context 'when job has a nil scheduling_type' do
@@ -223,7 +224,7 @@ RSpec.describe Ci::RetryJobService do
       context 'when a build with a deployment is retried' do
         let!(:job) do
           create(:ci_build, :with_deployment, :deploy_to_production,
-                  pipeline: pipeline, stage_id: stage.id, project: project)
+                  pipeline: pipeline, ci_stage: stage, project: project)
         end
 
         it 'creates a new deployment' do
@@ -245,7 +246,7 @@ RSpec.describe Ci::RetryJobService do
             environment: environment_name,
             options: { environment: { name: environment_name } },
             pipeline: pipeline,
-            stage_id: stage.id,
+            ci_stage: stage,
             project: project,
             user: other_developer)
         end
@@ -306,22 +307,24 @@ RSpec.describe Ci::RetryJobService do
       it_behaves_like 'retries the job'
 
       context 'when there are subsequent jobs that are skipped' do
+        let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, name: 'deploy') }
+
         let!(:subsequent_build) do
           create(:ci_build, :skipped, stage_idx: 2,
                                       pipeline: pipeline,
-                                      stage: 'deploy')
+                                      stage_id: stage.id)
         end
 
         let!(:subsequent_bridge) do
           create(:ci_bridge, :skipped, stage_idx: 2,
                                        pipeline: pipeline,
-                                       stage: 'deploy')
+                                       stage_id: stage.id)
         end
 
         it 'does not cause an N+1 when updating the job ownership' do
           control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { service.execute(job) }.count
 
-          create_list(:ci_build, 2, :skipped, stage_idx: job.stage_idx + 1, pipeline: pipeline, stage: 'deploy')
+          create_list(:ci_build, 2, :skipped, stage_idx: job.stage_idx + 1, pipeline: pipeline, stage_id: stage.id)
 
           expect { service.execute(job) }.not_to exceed_all_query_limit(control_count)
         end

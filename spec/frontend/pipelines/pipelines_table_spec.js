@@ -181,7 +181,7 @@ describe('Pipelines Table', () => {
         findStatusBadge().vm.$emit('ciStatusBadgeClick');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
-          label: TRACKING_CATEGORIES.index,
+          label: TRACKING_CATEGORIES.table,
         });
       });
 
@@ -189,7 +189,7 @@ describe('Pipelines Table', () => {
         findRetryBtn().vm.$emit('click');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_retry_button', {
-          label: TRACKING_CATEGORIES.index,
+          label: TRACKING_CATEGORIES.table,
         });
       });
 
@@ -197,7 +197,7 @@ describe('Pipelines Table', () => {
         findCancelBtn().vm.$emit('click');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_cancel_button', {
-          label: TRACKING_CATEGORIES.index,
+          label: TRACKING_CATEGORIES.table,
         });
       });
     });

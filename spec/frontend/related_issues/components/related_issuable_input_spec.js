@@ -33,7 +33,7 @@ describe('RelatedIssuableInput', () => {
       it('shows placeholder text', () => {
         const wrapper = shallowMount(RelatedIssuableInput, { propsData });
 
-        expect(wrapper.find({ ref: 'input' }).element.placeholder).toBe(
+        expect(wrapper.findComponent({ ref: 'input' }).element.placeholder).toBe(
           'Paste issue link or <#issue id>',
         );
       });
@@ -54,7 +54,7 @@ describe('RelatedIssuableInput', () => {
           },
         });
 
-        expect(wrapper.find({ ref: 'input' }).element.value).toBe('');
+        expect(wrapper.findComponent({ ref: 'input' }).element.value).toBe('');
       });
 
       it('does not have GfmAutoComplete', () => {
@@ -85,7 +85,7 @@ describe('RelatedIssuableInput', () => {
 
       await nextTick();
 
-      expect(document.activeElement).toBe(wrapper.find({ ref: 'input' }).element);
+      expect(document.activeElement).toBe(wrapper.findComponent({ ref: 'input' }).element);
     });
   });
 
@@ -100,7 +100,7 @@ describe('RelatedIssuableInput', () => {
       const newInputValue = 'filling in things';
       const untouchedRawReferences = newInputValue.trim().split(/\s/);
       const touchedReference = untouchedRawReferences.pop();
-      const input = wrapper.find({ ref: 'input' });
+      const input = wrapper.findComponent({ ref: 'input' });
 
       input.element.value = newInputValue;
       input.element.selectionStart = newInputValue.length;

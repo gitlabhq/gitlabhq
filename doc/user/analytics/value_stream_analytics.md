@@ -113,15 +113,22 @@ To view the lead time for changes for merge requests in your project:
 
 The **Lead Time for Changes** metrics display below the **Filter results** text box.
 
-## View number of successful deployments **(PREMIUM)**
+## View number of successful deployments **(FREE)**
 
-To view deployment metrics, you must have a
+Prerequisites:
+
+- To view deployment metrics, you must have a
 [production environment configured](../../ci/environments/index.md#deployment-tier-of-environments).
 
-Value stream analytics shows the following deployment metrics for your project:
+Value stream analytics shows the following deployment metrics for your project within the specified date range:
 
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.
+
+If you have a GitLab Premium or Ultimate subscription:
+
+- The number of successful deployments is calculated with DORA data.
+- The data is filtered based on environment and environment tier.
 
 To view deployment metrics for your project:
 

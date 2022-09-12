@@ -117,7 +117,7 @@ describe('Pipeline Url Component', () => {
       findPipelineUrlLink().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_pipeline_id', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.table,
       });
     });
 
@@ -127,7 +127,7 @@ describe('Pipeline Url Component', () => {
       findRefName().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_mr_ref', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.table,
       });
     });
 
@@ -137,7 +137,7 @@ describe('Pipeline Url Component', () => {
       findCommitRefName().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_name', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.table,
       });
     });
 
@@ -147,7 +147,7 @@ describe('Pipeline Url Component', () => {
       findCommitTitle(findCommitTitleContainer()).vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_title', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.table,
       });
     });
 
@@ -157,7 +157,7 @@ describe('Pipeline Url Component', () => {
       findCommitShortSha().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_sha', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.table,
       });
     });
   });

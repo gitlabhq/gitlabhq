@@ -79,12 +79,12 @@ describe('releases/components/tag_field_new', () => {
   });
 
   const findTagNameFormGroup = () => wrapper.find('[data-testid="tag-name-field"]');
-  const findTagNameDropdown = () => findTagNameFormGroup().find(RefSelectorStub);
+  const findTagNameDropdown = () => findTagNameFormGroup().findComponent(RefSelectorStub);
 
   const findCreateFromFormGroup = () => wrapper.find('[data-testid="create-from-field"]');
-  const findCreateFromDropdown = () => findCreateFromFormGroup().find(RefSelectorStub);
+  const findCreateFromDropdown = () => findCreateFromFormGroup().findComponent(RefSelectorStub);
 
-  const findCreateNewTagOption = () => wrapper.find(GlDropdownItem);
+  const findCreateNewTagOption = () => wrapper.findComponent(GlDropdownItem);
 
   describe('"Tag name" field', () => {
     describe('rendering and behavior', () => {

@@ -43,7 +43,7 @@ describe('Release block milestone info', () => {
     });
 
     it('renders a progress bar that displays the correct percentage', () => {
-      const progressBar = milestoneProgressBarContainer().find(GlProgressBar);
+      const progressBar = milestoneProgressBarContainer().findComponent(GlProgressBar);
 
       expect(progressBar.exists()).toBe(true);
       expect(progressBar.attributes()).toEqual(
@@ -72,7 +72,7 @@ describe('Release block milestone info', () => {
 
       expect(issuesContainerText).toContain(`Issues ${totalIssueCount}`);
 
-      const badge = issuesContainer().find(GlBadge);
+      const badge = issuesContainer().findComponent(GlBadge);
       expect(badge.text()).toBe(totalIssueCount.toString());
 
       expect(issuesContainerText).toContain('Open: 5 • Closed: 4');
@@ -107,7 +107,7 @@ describe('Release block milestone info', () => {
     });
 
     const clickShowMoreFewerButton = async () => {
-      milestoneListContainer().find(GlButton).trigger('click');
+      milestoneListContainer().findComponent(GlButton).trigger('click');
 
       await nextTick();
     };

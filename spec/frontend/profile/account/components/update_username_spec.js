@@ -44,7 +44,7 @@ describe('UpdateUsername component', () => {
   });
 
   const findElements = () => {
-    const modal = wrapper.find(GlModal);
+    const modal = wrapper.findComponent(GlModal);
 
     return {
       modal,

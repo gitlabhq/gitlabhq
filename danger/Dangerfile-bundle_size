@@ -1,38 +1,7 @@
 # frozen_string_literal: true
 # This file isn't named "Dangerfile" so that it's not imported by default since it's only meant to be run in the `bundle-size-review` job.
 
-analysis_result = "./bundle-size-review/analysis.json"
-markdown_result = "./bundle-size-review/comparison.md"
-
-# Executing the webpack-entry-point-analyser
-# We would like to do that in the CI file directly,
-# but unfortunately the head_commit SHA is not available
-# as a CI variable due to our merge into master simulation
-analyze_cmd = [
-  "webpack-entry-point-analyser",
-  "--from-file ./webpack-report/stats.json",
-  "--json #{analysis_result}",
-  " --sha #{gitlab&.head_commit}"
-].join(" ")
-
-# execute analysis
-`#{analyze_cmd}`
-
-# We are executing the comparison by comparing the start_sha
-# to the current pipeline result. The start_sha is the commit
-# from master that was merged into for the merged pipeline.
-comparison_cmd = [
-  "webpack-compare-reports",
-  "--job #{ENV["CI_JOB_ID"]}",
-  "--to-file #{analysis_result}",
-  "--html ./bundle-size-review/comparison.html",
-  "--markdown #{markdown_result}"
-].join(" ")
-
-# execute comparison
-`#{comparison_cmd}`
-
-comment = `cat #{markdown_result}`
+comment = `cat ./bundle-size-review/comparison.md`
 
 unless comment.strip.empty?
   markdown(<<~MARKDOWN)

@@ -7,9 +7,9 @@ import { tags, mockTagsAfterMap } from '../mock_data';
 describe('Pipeline Branch Name Token', () => {
   let wrapper;
 
-  const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
+  const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
   const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const stubs = {
     GlFilteredSearchToken: {

@@ -1,0 +1,8 @@
+---
+name: ci_partitioning_analyze_queries
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97113
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372840
+milestone: '15.4'
+type: ops
+group: group::pipeline execution
+default_enabled: false

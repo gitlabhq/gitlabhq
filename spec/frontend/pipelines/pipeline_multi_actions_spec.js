@@ -152,7 +152,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
       findDropdown().vm.$emit('show');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_artifacts_dropdown', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.table,
       });
     });
   });

@@ -17,9 +17,9 @@ describe('CI lint warnings', () => {
     });
   };
 
-  const findWarningAlert = () => wrapper.find(GlAlert);
+  const findWarningAlert = () => wrapper.findComponent(GlAlert);
   const findWarnings = () => wrapper.findAll('[data-testid="ci-lint-warning"]');
-  const findWarningMessage = () => trimText(wrapper.find(GlSprintf).text());
+  const findWarningMessage = () => trimText(wrapper.findComponent(GlSprintf).text());
 
   afterEach(() => {
     wrapper.destroy();

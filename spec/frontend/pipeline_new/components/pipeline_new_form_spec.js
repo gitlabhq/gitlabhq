@@ -34,7 +34,7 @@ describe('Pipeline New Form', () => {
   let mock;
   let dummySubmitEvent;
 
-  const findForm = () => wrapper.find(GlForm);
+  const findForm = () => wrapper.findComponent(GlForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
   const findSubmitButton = () => wrapper.find('[data-testid="run_pipeline_button"]');
   const findVariableRows = () => wrapper.findAll('[data-testid="ci-variable-row"]');
@@ -44,9 +44,9 @@ describe('Pipeline New Form', () => {
   const findValueInputs = () => wrapper.findAll('[data-testid="pipeline-form-ci-variable-value"]');
   const findErrorAlert = () => wrapper.find('[data-testid="run-pipeline-error-alert"]');
   const findWarningAlert = () => wrapper.find('[data-testid="run-pipeline-warning-alert"]');
-  const findWarningAlertSummary = () => findWarningAlert().find(GlSprintf);
+  const findWarningAlertSummary = () => findWarningAlert().findComponent(GlSprintf);
   const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCCAlert = () => wrapper.findComponent(CreditCardValidationRequiredAlert);
   const getFormPostParams = () => JSON.parse(mock.history.post[0].data);
 

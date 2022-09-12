@@ -8,6 +8,11 @@ module Types
       accepts ::ProtectedBranch
       authorize :read_protected_branch
 
+      field :merge_access_levels,
+            type: Types::BranchProtections::MergeAccessLevelType.connection_type,
+            null: true,
+            description: 'Details about who can merge when this branch is the source branch.'
+
       field :allow_force_push,
             type: GraphQL::Types::Boolean,
             null: false,

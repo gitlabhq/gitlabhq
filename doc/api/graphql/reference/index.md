@@ -7837,6 +7837,29 @@ The edge type for [`MemberInterface`](#memberinterface).
 | <a id="memberinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="memberinterfaceedgenode"></a>`node` | [`MemberInterface`](#memberinterface) | The item at the end of the edge. |
 
+#### `MergeAccessLevelConnection`
+
+The connection type for [`MergeAccessLevel`](#mergeaccesslevel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergeaccesslevelconnectionedges"></a>`edges` | [`[MergeAccessLevelEdge]`](#mergeaccessleveledge) | A list of edges. |
+| <a id="mergeaccesslevelconnectionnodes"></a>`nodes` | [`[MergeAccessLevel]`](#mergeaccesslevel) | A list of nodes. |
+| <a id="mergeaccesslevelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeAccessLevelEdge`
+
+The edge type for [`MergeAccessLevel`](#mergeaccesslevel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergeaccessleveledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergeaccessleveledgenode"></a>`node` | [`MergeAccessLevel`](#mergeaccesslevel) | The item at the end of the edge. |
+
 #### `MergeRequestAssigneeConnection`
 
 The connection type for [`MergeRequestAssignee`](#mergerequestassignee).
@@ -10083,6 +10106,7 @@ Branch protection details for a branch rule.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="branchprotectionallowforcepush"></a>`allowForcePush` | [`Boolean!`](#boolean) | Toggle force push to the branch for users with write access. |
+| <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when this branch is the source branch. (see [Connections](#connections)) |
 
 ### `BranchRule`
 
@@ -13782,6 +13806,17 @@ Maven metadata.
 | <a id="mavenmetadataid"></a>`id` | [`PackagesMavenMetadatumID!`](#packagesmavenmetadatumid) | ID of the metadatum. |
 | <a id="mavenmetadatapath"></a>`path` | [`String!`](#string) | Path of the Maven package. |
 | <a id="mavenmetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+### `MergeAccessLevel`
+
+Represents the merge access level of a branch protection.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergeaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
+| <a id="mergeaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
 
 ### `MergeRequest`
 

@@ -46564,6 +46564,9 @@ msgstr ""
 msgid "comment"
 msgstr ""
 
+msgid "commented"
+msgstr ""
+
 msgid "commented on %{link_to_project}"
 msgstr ""
 

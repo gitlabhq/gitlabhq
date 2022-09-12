@@ -6,6 +6,7 @@ module Gitlab
       module Chain
         module Config
           class Content
+            # When removing ci_project_pipeline_config_refactoring, this and its subclasses will be removed.
             class Source
               include Gitlab::Utils::StrongMemoize
 

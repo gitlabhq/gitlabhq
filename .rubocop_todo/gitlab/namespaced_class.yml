@@ -404,6 +404,7 @@ Gitlab/NamespacedClass:
     - 'app/policies/project_hook_policy.rb'
     - 'app/policies/prometheus_alert_policy.rb'
     - 'app/policies/protected_branch_policy.rb'
+    - 'app/policies/protected_branch_access_policy.rb'
     - 'app/policies/release_policy.rb'
     - 'app/policies/repository_policy.rb'
     - 'app/policies/resource_label_event_policy.rb'

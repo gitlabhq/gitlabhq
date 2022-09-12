@@ -32,11 +32,11 @@ describe('UploadButton', () => {
   });
 
   it('displays an upload button', () => {
-    expect(wrapper.find(GlButton).exists()).toBe(true);
+    expect(wrapper.findComponent(GlButton).exists()).toBe(true);
   });
 
   it('contains a modal', () => {
-    const modal = wrapper.find(UploadBlobModal);
+    const modal = wrapper.findComponent(UploadBlobModal);
 
     expect(modal.exists()).toBe(true);
     expect(modal.props('modalId')).toBe(MODAL_ID);
@@ -44,7 +44,7 @@ describe('UploadButton', () => {
 
   describe('when clickinig the upload file button', () => {
     beforeEach(() => {
-      wrapper.find(GlButton).vm.$emit('click');
+      wrapper.findComponent(GlButton).vm.$emit('click');
     });
 
     it('opens the modal', () => {

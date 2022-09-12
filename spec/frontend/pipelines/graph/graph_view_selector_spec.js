@@ -11,7 +11,7 @@ describe('the graph view selector component', () => {
   const findStageViewButton = () => findViewTypeSelector().findAllComponents(GlButton).at(0);
   const findLayerViewButton = () => findViewTypeSelector().findAllComponents(GlButton).at(1);
   const findSwitcherLoader = () => wrapper.find('[data-testid="switcher-loading-state"]');
-  const findToggleLoader = () => findDependenciesToggle().find(GlLoadingIcon);
+  const findToggleLoader = () => findDependenciesToggle().findComponent(GlLoadingIcon);
   const findHoverTip = () => wrapper.findComponent(GlAlert);
 
   const defaultProps = {

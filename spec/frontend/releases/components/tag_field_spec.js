@@ -21,8 +21,8 @@ describe('releases/components/tag_field', () => {
     wrapper = shallowMount(TagField, { store });
   };
 
-  const findTagFieldNew = () => wrapper.find(TagFieldNew);
-  const findTagFieldExisting = () => wrapper.find(TagFieldExisting);
+  const findTagFieldNew = () => wrapper.findComponent(TagFieldNew);
+  const findTagFieldExisting = () => wrapper.findComponent(TagFieldExisting);
 
   afterEach(() => {
     wrapper.destroy();

@@ -14,7 +14,7 @@ describe('Pipelines filtered search', () => {
   let wrapper;
   let mock;
 
-  const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
+  const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const getSearchToken = (type) =>
     findFilteredSearch()
       .props('availableTokens')
@@ -191,7 +191,7 @@ describe('Pipelines filtered search', () => {
       findFilteredSearch().vm.$emit('submit', mockSearch);
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_filtered_search', {
-        label: TRACKING_CATEGORIES.index,
+        label: TRACKING_CATEGORIES.search,
       });
     });
   });

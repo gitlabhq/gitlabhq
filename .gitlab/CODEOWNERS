@@ -249,18 +249,56 @@ Dangerfile @gl-quality/eng-prod
 
 ^[Growth Experiments]
 /app/experiments/ @gitlab-org/growth/experiment-devs
+/spec/experiments/ @gitlab-org/growth/experiment-devs
 /app/models/experiment.rb @gitlab-org/growth/experiment-devs
+/spec/models/experiment.rb @gitlab-org/growth/experiment-devs
 /app/models/experiment_subject.rb @gitlab-org/growth/experiment-devs
+/spec/models/experiment_subject.rb @gitlab-org/growth/experiment-devs
 /app/models/experiment_user.rb @gitlab-org/growth/experiment-devs
+/spec/models/experiment_user.rb @gitlab-org/growth/experiment-devs
 /app/workers/experiments/ @gitlab-org/growth/experiment-devs
+/spec/workers/experiments/ @gitlab-org/growth/experiment-devs
+/config/initializers/gitlab_experiment.rb @gitlab-org/growth/experiment-devs
 /config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
 /ee/config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
 /ee/lib/api/experiments.rb @gitlab-org/growth/experiment-devs
-/ee/lib/ee/api/entities/experiment.rb @gitlab-org/growth/experiment-devs
-/lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
-/lib/gitlab/experimentation.rb @gitlab-org/growth/experiment-devs
-/lib/gitlab/experimentation_logger.rb @gitlab-org/growth/experiment-devs
 /ee/spec/requests/api/experiments_spec.rb @gitlab-org/growth/experiment-devs
+/ee/lib/ee/api/entities/experiment.rb @gitlab-org/growth/experiment-devs
+/ee/spec/lib/ee/api/entities/experiment_spec.rb @gitlab-org/growth/experiment-devs
+/lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
+/spec/lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
+/lib/gitlab/experimentation.rb @gitlab-org/growth/experiment-devs
+/spec/lib/gitlab/experimentation_spec.rb @gitlab-org/growth/experiment-devs
+/lib/gitlab/experimentation_logger.rb @gitlab-org/growth/experiment-devs
+
+^[Growth]
+/ee/app/workers/onboarding/ @gitlab-org/growth/engineers
+/ee/spec/workers/onboarding/ @gitlab-org/growth/engineers
+/app/models/onboarding/ @gitlab-org/growth/engineers
+/spec/models/onboarding/ @gitlab-org/growth/engineers
+/app/services/onboarding/ @gitlab-org/growth/engineers
+/spec/services/onboarding/ @gitlab-org/growth/engineers
+/ee/app/controllers/registrations/ @gitlab-org/growth/engineers
+/ee/app/components/namespaces/free_user_cap/ @gitlab-org/growth/engineers
+/ee/spec/components/namespaces/free_user_cap/ @gitlab-org/growth/engineers
+/ee/app/models/namespaces/free_user_cap/ @gitlab-org/growth/engineers
+/ee/spec/models/namespaces/free_user_cap/ @gitlab-org/growth/engineers
+/app/services/users/in_product_marketing_email_records.rb @gitlab-org/growth/engineers
+/spec/services/users/in_product_marketing_email_records_spec.rb @gitlab-org/growth/engineers
+/app/workers/namespaces/in_product_marketing_emails_worker.rb @gitlab-org/growth/engineers
+/spec/workers/namespaces/in_product_marketing_emails_worker_spec.rb @gitlab-org/growth/engineers
+/ee/app/workers/ee/namespaces/in_product_marketing_emails_worker.rb @gitlab-org/growth/engineers
+/ee/spec/workers/ee/namespaces/in_product_marketing_emails_worker_spec.rb @gitlab-org/growth/engineers
+/app/models/users/in_product_marketing_email.rb @gitlab-org/growth/engineers
+/spec/models/users/in_product_marketing_email_spec.rb @gitlab-org/growth/engineers
+/app/services/namespaces/in_product_marketing_emails_service.rb @gitlab-org/growth/engineers
+/spec/services/namespaces/in_product_marketing_emails_service_spec.rb @gitlab-org/growth/engineers
+/ee/app/services/ee/namespaces/in_product_marketing_emails_service.rb @gitlab-org/growth/engineers
+/ee/spec/services/namespaces/in_product_marketing_emails_service_spec.rb @gitlab-org/growth/engineers
+/app/workers/projects/record_target_platforms_worker.rb @gitlab-org/growth/engineers
+/spec/workers/projects/record_target_platforms_worker_spec.rb @gitlab-org/growth/engineers
+/ee/app/controllers/groups/feature_discovery_moments_controller.rb @gitlab-org/growth/engineers
+/ee/spec/requests/groups/feature_discovery_moments_spec.rb @gitlab-org/growth/engineers
 
 ^[Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers

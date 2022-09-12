@@ -38,7 +38,7 @@ describe('RevisionDropdown component', () => {
     axiosMock.restore();
   });
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
 
   it('sets hidden input', () => {
     expect(wrapper.find('input[type="hidden"]').attributes('value')).toBe(

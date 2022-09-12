@@ -111,5 +111,7 @@ export const DEFAULT_FIELDS = [
 ];
 
 export const TRACKING_CATEGORIES = {
-  index: 'pipelines_table_component',
+  table: 'pipelines_table_component',
+  tabs: 'pipelines_filter_tabs',
+  search: 'pipelines_filtered_search',
 };

@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       end
 
       context 'with pipelined commands' do
-        it 'skips requests that have blocking commands' do
+        it 'skips requests that have blocking commands', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373026' do
           expect(instrumentation_class).not_to receive(:instance_observe_duration)
 
           Gitlab::Redis::SharedState.with do |redis|

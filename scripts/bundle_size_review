@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+#
+# # How does this work in general?
+#
+# 1. We run webpack in a production like mode and enable the BundleAnalyzerPlugin
+# 2. The Plugin builds a index.html for human consumption _and_ a stats.json
+# 3. This script creates a smaller analysis.json from the gargantuan stats.json
+# 4. In Merge Requests:
+#    - compare that smaller to analysis.json to the one from the base commit on master
+#    - report the comparison results via danger
+
+source scripts/utils.sh
+
+# For now we only want bundle-size-review to run in CI
+# Maybe we could create a "local mode"
+if [[ -z "${CI:-}" ]]; then
+  echo 'Not running in a CI context, skipping bundle analysis'
+  exit "0"
+fi
+
+# Get the _current_ commit sha
+if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
+  echo 'Not in a merge request, setting COMMIT_SHA to $CI_COMMIT_SHA'
+  COMMIT_SHA="${CI_COMMIT_SHA}"
+else
+  echo 'In a merge request, setting COMMIT_SHA to $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA'
+  COMMIT_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
+fi
+
+# Create output directory
+mkdir -p bundle-size-review
+
+# Running webpack
+export WEBPACK_REPORT="true"
+run_timed_command "yarn run webpack-prod > bundle-size-review/webpack-output.log"
+
+# Copy results from stats plugin
+cp webpack-report/index.html bundle-size-review/bundle-report.html
+
+# Run comparison in danger
+if [[ -z "${DANGER_GITLAB_API_TOKEN:-}" ]]; then
+  echo 'No Danger token available, skipping bundle analysis'
+  exit "0"
+fi
+
+# TODO: Make this a dependency of GitLab itself after a proper release
+yarn global add https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics.git
+
+# Create smaller analysis.json
+run_timed_command "webpack-entry-point-analyser --from-file ./webpack-report/stats.json --json ./bundle-size-review/analysis.json --sha ${COMMIT_SHA}"
+rm -rf webpack-report
+
+if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
+  echo 'Not in a merge request, skipping comparison'
+  exit "0"
+fi
+
+# Run comparison
+run_timed_command "webpack-compare-reports --job ${CI_JOB_ID} --to-file ./bundle-size-review/analysis.json --html ./bundle-size-review/comparison.html --markdown ./bundle-size-review/comparison.md"
+
+# Execute danger
+danger_id=$(echo -n "${DANGER_GITLAB_API_TOKEN}" | md5sum | awk '{print $1}' | cut -c5-10)
+run_timed_command "danger --dangerfile=danger/Dangerfile-bundle_size --fail-on-errors=true --verbose --danger_id=bundle-size-review-${danger_id}"
+
+exit "0"

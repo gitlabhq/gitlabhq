@@ -55,8 +55,17 @@ const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
-const NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
-const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
+let NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
+let NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
+let NO_HASHED_CHUNKS = process.env.NO_HASHED_CHUNKS && process.env.NO_HASHED_CHUNKS !== 'false';
+
+if (WEBPACK_REPORT) {
+  console.log('Webpack report enabled. Running a "slim" production build.');
+  // For our webpack report we need no source maps, compression _or_ hashed file names.
+  NO_SOURCEMAPS = true;
+  NO_COMPRESSION = true;
+  NO_HASHED_CHUNKS = true;
+}
 
 const WEBPACK_OUTPUT_PATH = path.join(ROOT_PATH, 'public/assets/webpack');
 const WEBPACK_PUBLIC_PATH = '/assets/webpack/';
@@ -251,8 +260,10 @@ module.exports = {
   output: {
     path: WEBPACK_OUTPUT_PATH,
     publicPath: WEBPACK_PUBLIC_PATH,
-    filename: IS_PRODUCTION ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
+    filename:
+      IS_PRODUCTION && !NO_HASHED_CHUNKS ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
+    chunkFilename:
+      IS_PRODUCTION && !NO_HASHED_CHUNKS ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
@@ -687,6 +698,8 @@ module.exports = {
         statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
         statsOptions: {
           source: false,
+          errors: false,
+          warnings: false,
         },
       }),
 

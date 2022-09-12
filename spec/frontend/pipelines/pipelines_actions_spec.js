@@ -31,7 +31,7 @@ describe('Pipelines Actions dropdown', () => {
     });
   };
 
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
   const findAllCountdowns = () => wrapper.findAll(GlCountdown);
 
@@ -110,7 +110,7 @@ describe('Pipelines Actions dropdown', () => {
         findDropdown().vm.$emit('shown');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_manual_actions', {
-          label: TRACKING_CATEGORIES.index,
+          label: TRACKING_CATEGORIES.table,
         });
       });
     });

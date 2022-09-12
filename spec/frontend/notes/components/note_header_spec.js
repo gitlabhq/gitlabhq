@@ -49,7 +49,8 @@ describe('NoteHeader component', () => {
       stubs: { GlSprintf, UserNameWithStatus },
       provide: {
         glFeatures: {
-          removeUserAttributes: userAttributes,
+          removeUserAttributesProjects: userAttributes,
+          removeUserAttributesGroups: userAttributes,
         },
       },
     });
@@ -60,7 +61,7 @@ describe('NoteHeader component', () => {
     wrapper = null;
   });
 
-  describe('when removeUserAttributes feature flag is enabled', () => {
+  describe('when removeUserAttributesProjects feature flag is enabled', () => {
     it('does not render busy status', () => {
       createComponent({ author: { ...author, availability: AVAILABILITY_STATUS.BUSY } }, true);
 

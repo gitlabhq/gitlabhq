@@ -81,15 +81,17 @@ describe('Settings Panel', () => {
     });
   };
 
-  const findLFSSettingsRow = () => wrapper.find({ ref: 'git-lfs-settings' });
+  const findLFSSettingsRow = () => wrapper.findComponent({ ref: 'git-lfs-settings' });
   const findLFSSettingsMessage = () => findLFSSettingsRow().find('p');
-  const findLFSFeatureToggle = () => findLFSSettingsRow().find(GlToggle);
-  const findRepositoryFeatureProjectRow = () => wrapper.find({ ref: 'repository-settings' });
+  const findLFSFeatureToggle = () => findLFSSettingsRow().findComponent(GlToggle);
+  const findRepositoryFeatureProjectRow = () =>
+    wrapper.findComponent({ ref: 'repository-settings' });
   const findRepositoryFeatureSetting = () =>
-    findRepositoryFeatureProjectRow().find(ProjectFeatureSetting);
-  const findProjectVisibilitySettings = () => wrapper.find({ ref: 'project-visibility-settings' });
-  const findIssuesSettingsRow = () => wrapper.find({ ref: 'issues-settings' });
-  const findAnalyticsRow = () => wrapper.find({ ref: 'analytics-settings' });
+    findRepositoryFeatureProjectRow().findComponent(ProjectFeatureSetting);
+  const findProjectVisibilitySettings = () =>
+    wrapper.findComponent({ ref: 'project-visibility-settings' });
+  const findIssuesSettingsRow = () => wrapper.findComponent({ ref: 'issues-settings' });
+  const findAnalyticsRow = () => wrapper.findComponent({ ref: 'analytics-settings' });
   const findProjectVisibilityLevelInput = () => wrapper.find('[name="project[visibility_level]"]');
   const findRequestAccessEnabledInput = () =>
     wrapper.find('[name="project[request_access_enabled]"]');
@@ -99,31 +101,33 @@ describe('Settings Panel', () => {
     wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]');
   const findBuildsAccessLevelInput = () =>
     wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]');
-  const findContainerRegistrySettings = () => wrapper.find({ ref: 'container-registry-settings' });
+  const findContainerRegistrySettings = () =>
+    wrapper.findComponent({ ref: 'container-registry-settings' });
   const findContainerRegistryPublicNoteGlSprintfComponent = () =>
     findContainerRegistrySettings().findComponent(GlSprintf);
   const findContainerRegistryAccessLevelInput = () =>
     wrapper.find('[name="project[project_feature_attributes][container_registry_access_level]"]');
-  const findPackageSettings = () => wrapper.find({ ref: 'package-settings' });
+  const findPackageSettings = () => wrapper.findComponent({ ref: 'package-settings' });
   const findPackageAccessLevel = () =>
     wrapper.find('[data-testid="package-registry-access-level"]');
   const findPackageAccessLevels = () =>
     wrapper.find('[name="project[project_feature_attributes][package_registry_access_level]"]');
   const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
-  const findPagesSettings = () => wrapper.find({ ref: 'pages-settings' });
+  const findPagesSettings = () => wrapper.findComponent({ ref: 'pages-settings' });
   const findPagesAccessLevels = () =>
     wrapper.find('[name="project[project_feature_attributes][pages_access_level]"]');
-  const findEmailSettings = () => wrapper.find({ ref: 'email-settings' });
+  const findEmailSettings = () => wrapper.findComponent({ ref: 'email-settings' });
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
   const findWarnAboutPuc = () =>
     wrapper.find(
       'input[name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"]',
     );
-  const findMetricsVisibilitySettings = () => wrapper.find({ ref: 'metrics-visibility-settings' });
+  const findMetricsVisibilitySettings = () =>
+    wrapper.findComponent({ ref: 'metrics-visibility-settings' });
   const findMetricsVisibilityInput = () =>
     findMetricsVisibilitySettings().findComponent(ProjectFeatureSetting);
-  const findOperationsSettings = () => wrapper.find({ ref: 'operations-settings' });
+  const findOperationsSettings = () => wrapper.findComponent({ ref: 'operations-settings' });
   const findOperationsVisibilityInput = () =>
     findOperationsSettings().findComponent(ProjectFeatureSetting);
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);

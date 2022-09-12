@@ -26,10 +26,10 @@ describe('Test reports suite table', () => {
 
   const noCasesMessage = () => wrapper.findByTestId('no-test-cases');
   const artifactsExpiredMessage = () => wrapper.findByTestId('artifacts-expired');
-  const artifactsExpiredEmptyState = () => wrapper.find(GlEmptyState);
+  const artifactsExpiredEmptyState = () => wrapper.findComponent(GlEmptyState);
   const allCaseRows = () => wrapper.findAllByTestId('test-case-row');
   const findCaseRowAtIndex = (index) => wrapper.findAllByTestId('test-case-row').at(index);
-  const findLinkForRow = (row) => row.find(GlLink);
+  const findLinkForRow = (row) => row.findComponent(GlLink);
   const findIconForRow = (row, status) => row.find(`.ci-status-icon-${status}`);
 
   const createComponent = ({ suite = testSuite, perPage = 20, errorMessage } = {}) => {
@@ -113,7 +113,7 @@ describe('Test reports suite table', () => {
       const filePath = `${blobPath}/${relativeFile}`;
       const row = findCaseRowAtIndex(0);
       const fileLink = findLinkForRow(row);
-      const button = row.find(GlButton);
+      const button = row.findComponent(GlButton);
 
       expect(fileLink.attributes('href')).toBe(filePath);
       expect(row.text()).toContain(file);
@@ -134,7 +134,7 @@ describe('Test reports suite table', () => {
     });
 
     it('renders a pagination component', () => {
-      expect(wrapper.find(GlPagination).exists()).toBe(true);
+      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
     });
   });
 

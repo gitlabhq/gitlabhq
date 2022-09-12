@@ -66,7 +66,7 @@ export default {
       eventHub.$emit('retryPipeline', this.pipeline.retry_path);
     },
     trackClick(action) {
-      this.track(action, { label: TRACKING_CATEGORIES.index });
+      this.track(action, { label: TRACKING_CATEGORIES.table });
     },
   },
 };

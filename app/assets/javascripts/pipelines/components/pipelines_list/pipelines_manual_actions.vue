@@ -77,7 +77,7 @@ export default {
       return !action.playable;
     },
     trackClick() {
-      this.track('click_manual_actions', { label: TRACKING_CATEGORIES.index });
+      this.track('click_manual_actions', { label: TRACKING_CATEGORIES.table });
     },
   },
 };

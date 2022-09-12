@@ -7,7 +7,7 @@ import { TEMPLATES } from './mock_data';
 describe('ServiceDeskTemplateDropdown', () => {
   let wrapper;
 
-  const findTemplateDropdown = () => wrapper.find(GlDropdown);
+  const findTemplateDropdown = () => wrapper.findComponent(GlDropdown);
 
   const createComponent = ({ props = {} } = {}) =>
     extendedWrapper(

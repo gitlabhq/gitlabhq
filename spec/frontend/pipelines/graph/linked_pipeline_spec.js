@@ -36,13 +36,13 @@ describe('Linked pipeline', () => {
     type: UPSTREAM,
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
   const findCancelButton = () => wrapper.findByLabelText('Cancel downstream pipeline');
   const findCardTooltip = () => wrapper.findComponent(GlTooltip);
   const findDownstreamPipelineTitle = () => wrapper.findByTestId('downstream-title');
   const findExpandButton = () => wrapper.findByTestId('expand-pipeline-button');
-  const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLinkedPipeline = () => wrapper.findComponent({ ref: 'linkedPipeline' });
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineLabel = () => wrapper.findByTestId('downstream-pipeline-label');
   const findPipelineLink = () => wrapper.findByTestId('pipelineLink');
   const findRetryButton = () => wrapper.findByLabelText('Retry downstream pipeline');
@@ -80,7 +80,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render an svg within the status container', () => {
-      const pipelineStatusElement = wrapper.find(CiStatus);
+      const pipelineStatusElement = wrapper.findComponent(CiStatus);
 
       expect(pipelineStatusElement.find('svg').exists()).toBe(true);
     });
@@ -90,7 +90,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should have a ci-status child component', () => {
-      expect(wrapper.find(CiStatus).exists()).toBe(true);
+      expect(wrapper.findComponent(CiStatus).exists()).toBe(true);
     });
 
     it('should render the pipeline id', () => {

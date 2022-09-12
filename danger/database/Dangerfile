@@ -31,9 +31,8 @@ by removing the ~database label and re-running the [`danger-review` job](#{ENV['
 MSG
 
 DB_MIGRATION_TESTING_REQUIRED_MESSAGE = <<~MSG
-1. If this is not a ~"Community contribution" or from a Fork, kick off the 
-   `db:gitlabcom-database-testing` manual job.
-
+1. Kick off the `db:gitlabcom-database-testing` manual job. This job can also be used before
+   requesting review to test your migrations against production data.
 MSG
 
 DATABASE_APPROVED_LABEL = 'database::approved'

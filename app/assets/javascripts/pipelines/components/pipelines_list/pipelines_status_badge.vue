@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     trackClick() {
-      this.track('click_ci_status_badge', { label: TRACKING_CATEGORIES.index });
+      this.track('click_ci_status_badge', { label: TRACKING_CATEGORIES.table });
     },
   },
 };

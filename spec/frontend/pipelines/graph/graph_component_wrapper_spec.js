@@ -51,11 +51,11 @@ describe('Pipeline graph wrapper', () => {
   const getDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
   const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const getLinksLayer = () => wrapper.findComponent(LinksLayer);
-  const getGraph = () => wrapper.find(PipelineGraph);
+  const getGraph = () => wrapper.findComponent(PipelineGraph);
   const getStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const getAllStageColumnGroupsInColumn = () =>
-    wrapper.find(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
-  const getViewSelector = () => wrapper.find(GraphViewSelector);
+    wrapper.findComponent(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
+  const getViewSelector = () => wrapper.findComponent(GraphViewSelector);
   const getViewSelectorTrip = () => getViewSelector().findComponent(GlAlert);
   const getLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
@@ -408,7 +408,7 @@ describe('Pipeline graph wrapper', () => {
 
       it('reads the view type from localStorage when available', () => {
         const viewSelectorNeedsSegment = wrapper
-          .find(GlButtonGroup)
+          .findComponent(GlButtonGroup)
           .findAllComponents(GlButton)
           .at(1);
         expect(viewSelectorNeedsSegment.classes()).toContain('selected');

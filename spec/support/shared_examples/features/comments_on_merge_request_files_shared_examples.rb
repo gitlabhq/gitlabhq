@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'comment on merge request file' do
   before do
-    stub_feature_flags(remove_user_attributes: false)
+    stub_feature_flags(remove_user_attributes_projects: false)
   end
 
   it 'adds a comment' do

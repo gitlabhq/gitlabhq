@@ -18,6 +18,7 @@
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
+    WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
   script:
     - *yarn-install
@@ -31,7 +32,6 @@ compile-production-assets:
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
-    WEBPACK_REPORT: "true"
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -40,7 +40,7 @@ compile-production-assets:
       # - in `build-assets-image` job to create assets image for packaging systems
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
       - public/assets/
-      - webpack-report/
+      - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
   before_script:
     - !reference [.default-before_script, before_script]
@@ -56,6 +56,7 @@ compile-test-assets:
     paths:
       - public/assets/
       - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
+      - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
 compile-test-assets as-if-foss:
@@ -321,24 +322,20 @@ webpack-dev-server:
 bundle-size-review:
   extends:
     - .default-retry
+    - .assets-compile-cache
     - .frontend:rules:bundle-size-review
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:danger
   stage: test
-  needs: ["compile-production-assets"]
+  needs: []
   script:
-    - source scripts/utils.sh
-    - mkdir -p bundle-size-review
-    - cp webpack-report/index.html bundle-size-review/bundle-report.html
-    - yarn global add https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics.git
-    - |
-      danger_id=$(echo -n ${DANGER_GITLAB_API_TOKEN} | md5sum | awk '{print $1}' | cut -c5-10)
-      run_timed_command "danger --dangerfile=danger/Dangerfile-bundle_size --fail-on-errors=true --verbose --danger_id=bundle-size-review-${danger_id}"
+    - *yarn-install
+    - scripts/bundle_size_review
   artifacts:
     when: always
     name: bundle-size-review
     expire_in: 31d
     paths:
-      - bundle-size-review
+      - bundle-size-review/
 
 .startup-css-check-base:
   extends:

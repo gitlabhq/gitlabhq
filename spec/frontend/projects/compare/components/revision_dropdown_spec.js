@@ -35,8 +35,8 @@ describe('RevisionDropdown component', () => {
     axiosMock.restore();
   });
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   it('sets hidden input', () => {
     createComponent();

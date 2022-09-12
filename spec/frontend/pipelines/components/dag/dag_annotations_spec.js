@@ -11,7 +11,7 @@ describe('The DAG annotations', () => {
   const getAllColorBlocks = () => wrapper.findAll('[data-testid="dag-color-block"]');
   const getTextBlock = () => wrapper.find('[data-testid="dag-note-text"]');
   const getAllTextBlocks = () => wrapper.findAll('[data-testid="dag-note-text"]');
-  const getToggleButton = () => wrapper.find(GlButton);
+  const getToggleButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = {}, method = shallowMount) => {
     if (wrapper?.destroy) {

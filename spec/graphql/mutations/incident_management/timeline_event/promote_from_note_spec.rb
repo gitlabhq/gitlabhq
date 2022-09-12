@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::IncidentManagement::TimelineEvent::PromoteFromNote do
+  include NotesHelper
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
@@ -23,7 +25,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::PromoteFromNote do
       let(:expected_timeline_event) do
         instance_double(
           'IncidentManagement::TimelineEvent',
-          note: comment.note,
+          note: "@#{comment.author.username} [commented](#{noteable_note_url(comment)}): '#{comment.note}'",
           occurred_at: comment.created_at.to_s,
           incident: incident,
           author: current_user,

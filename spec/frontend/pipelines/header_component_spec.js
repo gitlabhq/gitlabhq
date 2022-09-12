@@ -21,12 +21,12 @@ describe('Pipeline details header', () => {
   let glModalDirective;
   let mutate = jest.fn();
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findDeleteModal = () => wrapper.find(GlModal);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findDeleteModal = () => wrapper.findComponent(GlModal);
   const findRetryButton = () => wrapper.find('[data-testid="retryPipeline"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancelPipeline"]');
   const findDeleteButton = () => wrapper.find('[data-testid="deletePipeline"]');
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const defaultProvideOptions = {
     pipelineId: '14',

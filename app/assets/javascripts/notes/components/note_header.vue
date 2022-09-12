@@ -186,27 +186,34 @@ export default {
         :data-username="author.username"
       >
         <span
-          v-if="glFeatures.removeUserAttributes"
+          v-if="glFeatures.removeUserAttributesProjects || glFeatures.removeUserAttributesGroups"
           class="note-header-author-name gl-font-weight-bold"
         >
           {{ authorName }}
         </span>
         <user-name-with-status
-          v-if="!glFeatures.removeUserAttributes"
+          v-else
           :name="authorName"
           :availability="userAvailability(author)"
           container-classes="note-header-author-name gl-font-weight-bold"
         />
       </a>
       <span
-        v-if="authorStatus && !glFeatures.removeUserAttributes"
+        v-if="
+          authorStatus &&
+          !glFeatures.removeUserAttributesProjects &&
+          !glFeatures.removeUserAttributesGroups
+        "
         ref="authorStatus"
         v-safe-html:[$options.safeHtmlConfig]="authorStatus"
         v-on="
           authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
         "
       ></span>
-      <span v-if="!glFeatures.removeUserAttributes" class="text-nowrap author-username">
+      <span
+        v-if="!glFeatures.removeUserAttributesProjects && !glFeatures.removeUserAttributesGroups"
+        class="text-nowrap author-username"
+      >
         <a
           ref="authorUsernameLink"
           class="author-username-link"

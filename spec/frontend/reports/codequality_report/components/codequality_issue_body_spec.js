@@ -8,7 +8,7 @@ describe('code quality issue body issue body', () => {
   let wrapper;
 
   const findSeverityIcon = () => wrapper.findByTestId('codequality-severity-icon');
-  const findGlIcon = () => wrapper.find(GlIcon);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   const codequalityIssue = {
     name:

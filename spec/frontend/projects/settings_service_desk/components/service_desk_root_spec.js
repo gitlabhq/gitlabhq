@@ -26,7 +26,7 @@ describe('ServiceDeskRoot', () => {
     publicProject: false,
   };
 
-  const getAlertText = () => wrapper.find(GlAlert).text();
+  const getAlertText = () => wrapper.findComponent(GlAlert).text();
 
   const createComponent = (customInject = {}) =>
     shallowMount(ServiceDeskRoot, {
@@ -51,7 +51,7 @@ describe('ServiceDeskRoot', () => {
     it('is rendered', () => {
       wrapper = createComponent();
 
-      expect(wrapper.find(ServiceDeskSetting).props()).toEqual({
+      expect(wrapper.findComponent(ServiceDeskSetting).props()).toEqual({
         customEmail: provideData.customEmail,
         customEmailEnabled: provideData.customEmailEnabled,
         incomingEmail: provideData.initialIncomingEmail,
@@ -89,7 +89,7 @@ describe('ServiceDeskRoot', () => {
         beforeEach(async () => {
           wrapper = createComponent();
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('toggle', true);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('toggle', true);
 
           await waitForPromises();
         });
@@ -111,7 +111,7 @@ describe('ServiceDeskRoot', () => {
         beforeEach(async () => {
           wrapper = createComponent();
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('toggle', false);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('toggle', false);
 
           await waitForPromises();
         });
@@ -143,7 +143,7 @@ describe('ServiceDeskRoot', () => {
             projectKey: 'key',
           };
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('save', payload);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('save', payload);
 
           await waitForPromises();
         });
@@ -174,7 +174,7 @@ describe('ServiceDeskRoot', () => {
             projectKey: 'key',
           };
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('save', payload);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('save', payload);
 
           await waitForPromises();
         });

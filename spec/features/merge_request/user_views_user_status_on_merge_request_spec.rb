@@ -9,7 +9,7 @@ RSpec.describe 'Project > Merge request > View user status' do
   end
 
   before do
-    stub_feature_flags(remove_user_attributes: false)
+    stub_feature_flags(remove_user_attributes_projects: false)
   end
 
   subject { visit merge_request_path(merge_request) }

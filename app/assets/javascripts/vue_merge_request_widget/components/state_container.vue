@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-body media">
+  <div class="mr-widget-body media" v-on="$listeners">
     <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
       <slot name="loading">
         <div class="gl-display-flex">

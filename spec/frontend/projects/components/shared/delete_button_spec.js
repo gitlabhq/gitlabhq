@@ -11,7 +11,7 @@ describe('Project remove modal', () => {
   const findFormElement = () => wrapper.find('form');
   const findConfirmButton = () => wrapper.find('.js-modal-action-primary');
   const findAuthenticityTokenInput = () => findFormElement().find('input[name=authenticity_token]');
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findTitle = () => wrapper.find('[data-testid="delete-alert-title"]');
   const findAlertBody = () => wrapper.find('[data-testid="delete-alert-body"]');
 

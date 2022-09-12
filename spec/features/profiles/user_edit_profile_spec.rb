@@ -8,7 +8,7 @@ RSpec.describe 'User edit profile' do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(remove_user_attributes: false)
+    stub_feature_flags(remove_user_attributes_projects: false)
     sign_in(user)
     visit(profile_path)
   end

@@ -879,6 +879,9 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-default-branch-refs
+      changes: *frontend-build-patterns
+      allow_failure: true
     - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-build-patterns
       allow_failure: true

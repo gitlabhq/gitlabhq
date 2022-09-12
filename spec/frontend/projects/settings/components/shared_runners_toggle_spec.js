@@ -27,9 +27,9 @@ describe('projects/settings/components/shared_runners', () => {
     });
   };
 
-  const findErrorAlert = () => wrapper.find(GlAlert);
-  const findSharedRunnersToggle = () => wrapper.find(GlToggle);
-  const findToggleTooltip = () => wrapper.find(GlTooltip);
+  const findErrorAlert = () => wrapper.findComponent(GlAlert);
+  const findSharedRunnersToggle = () => wrapper.findComponent(GlToggle);
+  const findToggleTooltip = () => wrapper.findComponent(GlTooltip);
   const getToggleValue = () => findSharedRunnersToggle().props('value');
   const isToggleLoading = () => findSharedRunnersToggle().props('isLoading');
   const isToggleDisabled = () => findSharedRunnersToggle().props('disabled');

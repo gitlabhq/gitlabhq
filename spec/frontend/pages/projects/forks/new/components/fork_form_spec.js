@@ -362,7 +362,7 @@ describe('ForkForm component', () => {
     const submitForm = async () => {
       fillForm();
       await nextTick();
-      const form = wrapper.find(GlForm);
+      const form = wrapper.findComponent(GlForm);
 
       await form.trigger('submit');
       await nextTick();

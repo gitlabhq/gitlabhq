@@ -44,7 +44,7 @@ describe('Release block assets', () => {
     });
 
     it('renders the accordion as expanded by default', () => {
-      const accordion = wrapper.find(GlCollapse);
+      const accordion = wrapper.findComponent(GlCollapse);
 
       expect(accordion.exists()).toBe(true);
       expect(accordion.isVisible()).toBe(true);

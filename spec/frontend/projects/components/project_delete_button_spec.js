@@ -8,7 +8,7 @@ jest.mock('lodash/uniqueId', () => () => 'fakeUniqueId');
 describe('Project remove modal', () => {
   let wrapper;
 
-  const findSharedDeleteButton = () => wrapper.find(SharedDeleteButton);
+  const findSharedDeleteButton = () => wrapper.findComponent(SharedDeleteButton);
 
   const defaultProps = {
     confirmPhrase: 'foo',

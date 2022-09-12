@@ -6,11 +6,28 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:pipeline) { create(:ci_pipeline) }
-  let_it_be(:build_a) { create(:ci_build, :success, name: 'build-a', stage: 'build', stage_idx: 0, pipeline: pipeline) }
-  let_it_be(:build_b) { create(:ci_build, :failed, name: 'build-b', stage: 'build', stage_idx: 0, pipeline: pipeline) }
-  let_it_be(:test_a) { create(:ci_build, :running, name: 'test-a', stage: 'test', stage_idx: 1, pipeline: pipeline) }
-  let_it_be(:test_b) { create(:ci_build, :pending, name: 'test-b', stage: 'test', stage_idx: 1, pipeline: pipeline) }
-  let_it_be(:deploy) { create(:ci_build, :created, name: 'deploy', stage: 'deploy', stage_idx: 2, pipeline: pipeline) }
+  let_it_be(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+  let_it_be(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
+  let_it_be(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
+  let_it_be(:build_a) do
+    create(:ci_build, :success, name: 'build-a', ci_stage: build_stage, stage_idx: 0, pipeline: pipeline)
+  end
+
+  let_it_be(:build_b) do
+    create(:ci_build, :failed, name: 'build-b', ci_stage: build_stage, stage_idx: 0, pipeline: pipeline)
+  end
+
+  let_it_be(:test_a) do
+    create(:ci_build, :running, name: 'test-a', ci_stage: test_stage, stage_idx: 1, pipeline: pipeline)
+  end
+
+  let_it_be(:test_b) do
+    create(:ci_build, :pending, name: 'test-b', ci_stage: test_stage, stage_idx: 1, pipeline: pipeline)
+  end
+
+  let_it_be(:deploy) do
+    create(:ci_build, :created, name: 'deploy', ci_stage: deploy_stage, stage_idx: 2, pipeline: pipeline)
+  end
 
   let(:collection) { described_class.new(pipeline) }
 

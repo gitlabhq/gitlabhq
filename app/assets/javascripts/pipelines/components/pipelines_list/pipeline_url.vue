@@ -118,7 +118,7 @@ export default {
   },
   methods: {
     trackClick(action) {
-      this.track(action, { label: TRACKING_CATEGORIES.index });
+      this.track(action, { label: TRACKING_CATEGORIES.table });
     },
   },
 };

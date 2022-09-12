@@ -44,7 +44,7 @@ describe('Test reports summary table', () => {
 
   describe('when test reports are supplied', () => {
     beforeEach(() => createComponent());
-    const findErrorIcon = () => wrapper.find({ ref: 'suiteErrorIcon' });
+    const findErrorIcon = () => wrapper.findComponent({ ref: 'suiteErrorIcon' });
 
     it('renders the correct number of rows', () => {
       expect(noSuitesToShow().exists()).toBe(false);
