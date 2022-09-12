@@ -31,8 +31,7 @@ is restricted, `/help` is visible only to signed-in users.
 
 ## Add a help message to the sign-in page
 
-You can add a help message, which is shown on the GitLab sign-in page. The message appears in a new
-section titled **Need Help?**, located below the sign-in page message:
+You can add a help message, which is shown on the GitLab sign-in page. The message appears on the sign-in page:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.

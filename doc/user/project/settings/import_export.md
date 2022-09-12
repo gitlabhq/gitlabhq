@@ -83,7 +83,7 @@ The following items are exported:
 - Group members are exported as project members, as long as the user has the Maintainer role in the
   exported project's group, or is an administrator
 
-The following items are **not** exported:
+Items that are **not** exported include:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Build traces and artifacts

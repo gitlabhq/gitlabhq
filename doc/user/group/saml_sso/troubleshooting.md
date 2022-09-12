@@ -5,9 +5,12 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SAML Troubleshooting **(FREE)**
+# Troubleshooting SAML **(FREE)**
 
-This page contains possible solutions for problems you might encounter when using [SAML SSO for GitLab.com groups](index.md) or the self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
+This page contains possible solutions for problems you might encounter when using:
+
+- [SAML SSO for GitLab.com groups](index.md).
+- The self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
 
 ## SAML debugging tools
 
@@ -22,16 +25,18 @@ Specific attention should be paid to:
 - The presence of a `X509Certificate`, which we require to verify the response signature.
 - The `SubjectConfirmation` and `Conditions`, which can cause errors if misconfigured.
 
-### Generate a SAML Response
+### Generate a SAML response
 
-SAML Responses can be used to preview the attribute names and values sent in the assertions list while attempting to sign in using an identity provider.
+Use SAML responses to preview the attribute names and values sent in the assertions list while attempting to sign in
+using an identity provider.
 
 To generate a SAML Response:
 
 1. Install one of the browser debugging tools previously mentioned.
 1. Open a new browser tab.
 1. Open the SAML tracer console:
-   - Chrome: Right-click on the page, select **Inspect**, then select the **SAML** tab in the opened developer console.
+   - Chrome: On a context menu on the page, select **Inspect**, then select the **SAML** tab in the opened developer
+     console.
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
 1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
 1. Select **Authorize** or attempt to log in. A SAML response is displayed in the tracer console that resembles this
@@ -170,11 +175,11 @@ initiated by the service provider and not only the identity provider.
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account).
 
-To resolve this problem, the user should check they are using the correct GitLab password to log in. They first need to
-[reset their password](https://gitlab.com/users/password/new) if both:
+To resolve this problem, the user should check they are using the correct GitLab password to log in. The user first needs
+to [reset their password](https://gitlab.com/users/password/new) if both:
 
 - The account was provisioned by SCIM.
-- This is the first time the user has logged in the username and password.
+- They are signing in with username and password for the first time.
 
 ## Other user sign in issues
 
@@ -233,7 +238,7 @@ Troubleshooting sections.
 The following are the most likely reasons that a user is blocked when signing in through SAML:
 
 - In the configuration, `gitlab_rails['omniauth_block_auto_created_users'] = true` is set and this is the user's first time signing in.
-- There are [`required_groups`](../../../integration/saml.md#required-groups) configured, but the user is not a member of one.
+- [`required_groups`](../../../integration/saml.md#required-groups) are configured but the user is not a member of one.
 
 ## Google workspace troubleshooting tips
 

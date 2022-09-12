@@ -44,6 +44,7 @@ be imported into the desired group structure.
 - If imported into a parent group, a subgroup inherits the same level of visibility unless otherwise restricted.
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
 sure these users exist before importing the desired groups.
+- Users must set a public email in the source GitLab instance that matches one of their verified emails in the target GitLab instance.
 
 ### Exported contents
 
