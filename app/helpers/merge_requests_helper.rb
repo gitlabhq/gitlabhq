@@ -262,6 +262,7 @@ module MergeRequestsHelper
       iid: @merge_request.iid,
       projectPath: @project.full_path,
       title: markdown_field(@merge_request, :title),
+      isFluidLayout: fluid_layout.to_s,
       tabs: [
         ['show', _('Overview'), project_merge_request_path(@project, @merge_request), @merge_request.related_notes.user.count],
         ['commits', _('Commits'), commits_project_merge_request_path(@project, @merge_request), @commits_count],

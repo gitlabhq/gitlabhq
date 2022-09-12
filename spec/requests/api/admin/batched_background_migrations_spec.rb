@@ -6,6 +6,60 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations do
   let(:admin) { create(:admin) }
   let(:unauthorized_user) { create(:user) }
 
+  describe 'GET /admin/batched_background_migrations/:id' do
+    let!(:migration) { create(:batched_background_migration, :paused) }
+    let(:database) { :main }
+
+    subject(:show_migration) do
+      get api("/admin/batched_background_migrations/#{migration.id}", admin), params: { database: database }
+    end
+
+    it 'fetches the batched background migration' do
+      show_migration
+
+      aggregate_failures "testing response" do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(migration.id)
+        expect(json_response['status']).to eq('paused')
+        expect(json_response['job_class_name']).to eq(migration.job_class_name)
+        expect(json_response['progress']).to be_zero
+      end
+    end
+
+    context 'when the batched background migration does not exist' do
+      let(:params) { { database: database } }
+
+      it 'returns 404' do
+        put api("/admin/batched_background_migrations/#{non_existing_record_id}", admin), params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when multiple database is enabled' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
+      let(:ci_model) { Ci::ApplicationRecord }
+      let(:database) { :ci }
+
+      it 'uses the correct connection' do
+        expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ci_model.connection).and_yield
+
+        show_migration
+      end
+    end
+
+    context 'when authenticated as a non-admin user' do
+      it 'returns 403' do
+        get api("/admin/batched_background_migrations/#{migration.id}", unauthorized_user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe 'GET /admin/batched_background_migrations' do
     let!(:migration) { create(:batched_background_migration) }
 

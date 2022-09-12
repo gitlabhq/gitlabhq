@@ -78,6 +78,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 |------------------------------------------------|-----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
 | .NET Core                                      | [Security Code Scan](https://security-code-scan.github.io)                                                | 11.0                                                                                    |
 | .NET Framework<sup>1</sup>                     | [Security Code Scan](https://security-code-scan.github.io)                                                | 13.0                                                                                    |
+| .NET (all versions, C# only)                   | [Semgrep](https://semgrep.dev)                                                                            | 15.4                                                                                    |
 | Apex (Salesforce)                              | [PMD](https://pmd.github.io/pmd/index.html)                                                               | 12.1                                                                                    |
 | C                                              | [Semgrep](https://semgrep.dev)                                                                            | 14.2                                                                                    |
 | C/C++                                          | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                                               | 10.7                                                                                    |
@@ -108,7 +109,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | TypeScript                                     | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
 | TypeScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
 
-1. .NET 4 support is limited. The analyzer runs in a Linux container and does not have access to Windows-specific libraries or features. We currently plan to [migrate C# coverage to Semgrep-based scanning](https://gitlab.com/gitlab-org/gitlab/-/issues/347258) to make it easier to scan C# projects.
+1. .NET 4 support is limited. The analyzer runs in a Linux container and does not have access to Windows-specific libraries or features. Use the Semgrep-based scanner if you need .NET 4 support.
 1. The SpotBugs-based analyzer supports [Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
 [Grails](https://grails.org/),

@@ -6,6 +6,7 @@ import initMrNotes from '~/mr_notes';
 import store from '~/mr_notes/stores';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import initShow from '../init_merge_request_show';
 import getStateQuery from '../queries/get_state.query.graphql';
 
@@ -21,7 +22,7 @@ requestIdleCallback(() => {
 
   if (el) {
     const { data } = el.dataset;
-    const { iid, projectPath, title, tabs } = JSON.parse(data);
+    const { iid, projectPath, title, tabs, isFluidLayout } = JSON.parse(data);
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -34,6 +35,7 @@ requestIdleCallback(() => {
         projectPath,
         title,
         tabs,
+        isFluidLayout: parseBoolean(isFluidLayout),
       },
       render(h) {
         return h(StickyHeader);

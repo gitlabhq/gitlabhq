@@ -11,6 +11,25 @@ module API
       end
 
       namespace 'admin' do
+        resources 'batched_background_migrations/:id' do
+          desc 'Retrieve a batched background migration'
+          params do
+            optional :database,
+              type: String,
+              values: Gitlab::Database.all_database_names,
+              desc: 'The name of the database',
+              default: 'main'
+            requires :id,
+              type: Integer,
+              desc: 'The batched background migration id'
+          end
+          get do
+            Gitlab::Database::SharedModel.using_connection(base_model.connection) do
+              present_entity(batched_background_migration)
+            end
+          end
+        end
+
         resources 'batched_background_migrations' do
           desc 'Get the list of the batched background migrations'
           params do

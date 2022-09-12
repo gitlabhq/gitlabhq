@@ -27,6 +27,13 @@ associated with a group rather than a project or user.
 
 In self-managed instances, group access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
 
+WARNING:
+The ability to create group access tokens without expiry was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and is planned for removal in GitLab
+16.0. When this ability is removed, existing group access tokens without an expiry are planned to have an expiry added.
+The automatic adding of an expiry occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry
+occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
+
 You can use group access tokens:
 
 - On GitLab SaaS if you have the Premium license tier or higher. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).

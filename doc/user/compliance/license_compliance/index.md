@@ -738,7 +738,7 @@ which enables a designated approver that can approve and then merge a merge requ
 
 These policies can be configured by using the [Managed Licenses API](../../../api/managed_licenses.md).
 
-![Merge request with denied licenses](img/denied_licenses_v13_3.png)
+![Merge request with denied licenses](img/denied_licenses_v15_3.png)
 
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.
@@ -794,6 +794,18 @@ An approval is optional when a license report:
 We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
 
 ## Troubleshooting
+
+### The License Compliance widget is stuck in a loading state
+
+A loading spinner is displayed in the following scenarios:
+
+- While the pipeline is in progress.
+- If the pipeline is complete, but still parsing the results in the background.
+- If the license scanning job is complete, but the pipeline is still running.
+
+The License Compliance widget polls every few seconds for updated results. When the pipeline is complete, the first poll after pipeline completion triggers the parsing of the results. This can take a few seconds depending on the size of the generated report.
+
+The final state is when a successful pipeline run has been completed, parsed, and the licenses displayed in the widget.
 
 ### ASDF_PYTHON_VERSION does not automatically install the version
 

@@ -19,6 +19,13 @@ Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) an
 
 In both cases, you authenticate with a personal access token in place of your password.
 
+WARNING:
+The ability to create personal access tokens without expiry was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and is planned for removal in GitLab
+16.0. When this ability is removed, existing personal access tokens without an expiry are planned to have an expiry added.
+The automatic adding of an expiry occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry
+occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
+
 Personal access tokens are:
 
 - Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.

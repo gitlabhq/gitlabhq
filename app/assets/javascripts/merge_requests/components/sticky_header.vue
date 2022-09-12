@@ -35,6 +35,7 @@ export default {
     projectPath: { default: null },
     title: { default: '' },
     tabs: { default: () => [] },
+    isFluidLayout: { default: false },
   },
   data() {
     return {
@@ -94,6 +95,7 @@ export default {
     >
       <div
         class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5"
+        :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
       >
         <div class="gl-w-full gl-display-flex gl-align-items-center">
           <status-box :initial-state="getNoteableData.state" issuable-type="merge_request" />
@@ -143,7 +145,12 @@ export default {
               :key="tab[0]"
               :class="{ active: activeTab === tab[0] }"
             >
-              <gl-link :href="tab[2]" :data-action="tab[0]" class="gl-outline-0!" @click="visitTab">
+              <gl-link
+                :href="tab[2]"
+                :data-action="tab[0]"
+                class="gl-outline-0! gl-py-4!"
+                @click="visitTab"
+              >
                 {{ tab[1] }}
                 <gl-badge variant="muted" size="sm">
                   <template v-if="index === 0 && discussionCounter !== 0">

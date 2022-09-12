@@ -140,7 +140,7 @@ mattermost['gitlab_user_api_endpoint'] = "http://gitlab.example.com/api/v4/user"
 
 Save the changes and then run `sudo gitlab-ctl reconfigure`. If there are no errors your GitLab and GitLab Mattermost should be configured correctly.
 
-### Specify numeric user and group identifiers
+## Specify numeric user and group identifiers
 
 Omnibus GitLab creates a user and group `mattermost`. You can specify the
 numeric identifiers for these users in `/etc/gitlab/gitlab.rb` as follows:
@@ -152,7 +152,7 @@ mattermost['gid'] = 1234
 
 Run `sudo gitlab-ctl reconfigure` to apply the changes.
 
-### Setting custom environment variables
+## Setting custom environment variables
 
 If necessary you can set custom environment variables to be used by Mattermost
 via `/etc/gitlab/gitlab.rb`. This can be useful if the Mattermost server
@@ -165,7 +165,7 @@ mattermost['env'] = {"HTTP_PROXY" => "my_proxy", "HTTPS_PROXY" => "my_proxy", "N
 
 Run `sudo gitlab-ctl reconfigure` to apply the changes.
 
-### Connecting to the bundled PostgreSQL database
+## Connecting to the bundled PostgreSQL database
 
 If you need to connect to the bundled PostgreSQL database and are using the default Omnibus GitLab database configuration, you can connect as
 the PostgreSQL superuser:
@@ -174,14 +174,14 @@ the PostgreSQL superuser:
 sudo gitlab-psql -d mattermost_production
 ```
 
-### Back up GitLab Mattermost
+## Back up GitLab Mattermost
 
 GitLab Mattermost is not included in the regular [Omnibus GitLab backup](../../raketasks/backup_restore.md) Rake task.
 
 The general Mattermost [backup and disaster recovery](https://docs.mattermost.com/deploy/backup-disaster-recovery.html) documentation can be used as a guide
 on what needs to be backed up.
 
-#### Back up the bundled PostgreSQL database
+### Back up the bundled PostgreSQL database
 
 If you need to back up the bundled PostgreSQL database and are using the default Omnibus GitLab database configuration, you can back up using this command:
 
@@ -189,7 +189,7 @@ If you need to back up the bundled PostgreSQL database and are using the default
 sudo -i -u gitlab-psql -- /opt/gitlab/embedded/bin/pg_dump -h /var/opt/gitlab/postgresql mattermost_production | gzip > mattermost_dbdump_$(date --rfc-3339=date).sql.gz
 ```
 
-#### Back up the `data` directory and `config.json`
+### Back up the `data` directory and `config.json`
 
 Mattermost has a `data` directory and `config.json` file that need to be backed up as well:
 
@@ -197,7 +197,7 @@ Mattermost has a `data` directory and `config.json` file that need to be backed 
 sudo tar -zcvf mattermost_data_$(date --rfc-3339=date).gz -C /var/opt/gitlab/mattermost data config.json
 ```
 
-### Restore GitLab Mattermost
+## Restore GitLab Mattermost
 
 If you have previously [created a backup of GitLab Mattermost](#back-up-gitlab-mattermost), you can run the following commands to restore it:
 
@@ -227,11 +227,11 @@ sudo chown mattermost:mattermost /var/opt/gitlab/mattermost/config.json
 sudo gitlab-ctl start mattermost
 ```
 
-### Mattermost Command Line Tools (CLI)
+## Mattermost Command Line Tools (CLI)
 
 [`mmctl`](https://docs.mattermost.com/manage/mmctl-command-line-tool.html) is a CLI tool for the Mattermost server which is installed locally and uses the Mattermost API, but may also be used remotely. You must configure Mattermost either for local connections or authenticate as an administrator with local login credentials (not through GitLab SSO). The executable is located at `/opt/gitlab/embedded/bin/mmctl`.
 
-#### Use `mmctl` through a local connection
+### Use `mmctl` through a local connection
 
 For local connections, the `mmctl` binary and Mattermost must be run from the same server. To enable the local socket:
 
@@ -269,7 +269,7 @@ wd3g5zpepjgbfjgpdjaas7yj6a: feedbackbot (feedbackbot@localhost)
 There are 4 users on local instance
 ```
 
-#### Use `mmctl` through a remote connection
+### Use `mmctl` through a remote connection
 
 For remote connections or local connections where the socket cannot be used,
 create a non SSO user and give that user admin privileges. Those credentials
