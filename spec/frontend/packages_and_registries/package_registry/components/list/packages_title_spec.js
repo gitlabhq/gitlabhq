@@ -7,8 +7,8 @@ describe('PackageTitle', () => {
   let wrapper;
   let store;
 
-  const findTitleArea = () => wrapper.find(TitleArea);
-  const findMetadataItem = () => wrapper.find(MetadataItem);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
+  const findMetadataItem = () => wrapper.findComponent(MetadataItem);
 
   const mountComponent = (propsData = { helpUrl: 'foo' }) => {
     wrapper = shallowMount(PackageTitle, {

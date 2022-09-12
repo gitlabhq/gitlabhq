@@ -10,7 +10,7 @@ describe('Harbor List Row', () => {
   let wrapper;
   const item = harborImagesList[0];
 
-  const findDetailsLink = () => wrapper.find(RouterLink);
+  const findDetailsLink = () => wrapper.findComponent(RouterLink);
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findArtifactsCount = () => wrapper.find('[data-testid="artifacts-count"]');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
@@ -64,7 +64,7 @@ describe('Harbor List Row', () => {
 
     it('contains a package icon', () => {
       mountComponent();
-      const icon = findArtifactsCount().find(GlIcon);
+      const icon = findArtifactsCount().findComponent(GlIcon);
       expect(icon.exists()).toBe(true);
       expect(icon.props('name')).toBe('package');
     });

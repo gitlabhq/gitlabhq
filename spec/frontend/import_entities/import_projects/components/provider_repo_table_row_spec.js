@@ -74,11 +74,13 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders empty import status', () => {
-      expect(wrapper.find(ImportStatus).props().status).toBe(STATUSES.NONE);
+      expect(wrapper.findComponent(ImportStatus).props().status).toBe(STATUSES.NONE);
     });
 
     it('renders a group namespace select', () => {
-      expect(wrapper.find(ImportGroupDropdown).props().namespaces).toBe(availableNamespaces);
+      expect(wrapper.findComponent(ImportGroupDropdown).props().namespaces).toBe(
+        availableNamespaces,
+      );
     });
 
     it('renders import button', () => {
@@ -127,11 +129,13 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders proper import status', () => {
-      expect(wrapper.find(ImportStatus).props().status).toBe(repo.importedProject.importStatus);
+      expect(wrapper.findComponent(ImportStatus).props().status).toBe(
+        repo.importedProject.importStatus,
+      );
     });
 
     it('does not renders a namespace select', () => {
-      expect(wrapper.find(GlDropdown).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdown).exists()).toBe(false);
     });
 
     it('does not render import button', () => {
@@ -139,7 +143,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('passes stats to import status component', () => {
-      expect(wrapper.find(ImportStatus).props().stats).toBe(FAKE_STATS);
+      expect(wrapper.findComponent(ImportStatus).props().stats).toBe(FAKE_STATS);
     });
   });
 
@@ -165,7 +169,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders badge with error', () => {
-      expect(wrapper.find(GlBadge).text()).toBe('Incompatible project');
+      expect(wrapper.findComponent(GlBadge).text()).toBe('Incompatible project');
     });
   });
 });

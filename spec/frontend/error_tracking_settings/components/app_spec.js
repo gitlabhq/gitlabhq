@@ -76,8 +76,8 @@ describe('error tracking settings app', () => {
 
   describe('section', () => {
     it('renders the form and dropdown', () => {
-      expect(wrapper.find(ErrorTrackingForm).exists()).toBe(true);
-      expect(wrapper.find(ProjectDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(ErrorTrackingForm).exists()).toBe(true);
+      expect(wrapper.findComponent(ProjectDropdown).exists()).toBe(true);
     });
 
     it('renders the Save Changes button', () => {

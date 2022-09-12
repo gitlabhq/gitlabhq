@@ -86,7 +86,7 @@ describe('TriggerFields', () => {
         expect(checkboxes).toHaveLength(2);
 
         checkboxes.wrappers.forEach((checkbox, index) => {
-          const checkBox = checkbox.find(GlFormCheckbox);
+          const checkBox = checkbox.findComponent(GlFormCheckbox);
 
           expect(checkbox.find('label').text()).toBe(expectedResults[index].labelText);
           expect(checkbox.find('[type=hidden]').attributes('name')).toBe(

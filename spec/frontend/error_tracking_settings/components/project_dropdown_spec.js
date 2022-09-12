@@ -42,7 +42,7 @@ describe('error tracking settings project dropdown', () => {
   describe('empty project list', () => {
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBe(true);
-      expect(wrapper.find(GlDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
     });
 
     it('shows helper text', () => {
@@ -57,8 +57,8 @@ describe('error tracking settings project dropdown', () => {
     });
 
     it('does not contain any dropdown items', () => {
-      expect(wrapper.find(GlDropdownItem).exists()).toBe(false);
-      expect(wrapper.find(GlDropdown).props('text')).toBe('No projects available');
+      expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdown).props('text')).toBe('No projects available');
     });
   });
 
@@ -71,11 +71,11 @@ describe('error tracking settings project dropdown', () => {
 
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBe(true);
-      expect(wrapper.find(GlDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
     });
 
     it('contains a number of dropdown items', () => {
-      expect(wrapper.find(GlDropdownItem).exists()).toBe(true);
+      expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
       expect(wrapper.findAll(GlDropdownItem).length).toBe(2);
     });
   });

@@ -227,17 +227,6 @@ export const workItemResponseFactory = ({
   },
 });
 
-export const updateWorkItemWidgetsResponse = {
-  data: {
-    workItemUpdateWidgets: {
-      workItem: {
-        id: 1234,
-      },
-      errors: [],
-    },
-  },
-};
-
 export const projectWorkItemTypesQueryResponse = {
   data: {
     workspace: {

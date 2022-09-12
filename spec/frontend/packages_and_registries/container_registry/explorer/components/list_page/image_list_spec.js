@@ -9,7 +9,7 @@ describe('Image List', () => {
   let wrapper;
 
   const findRow = () => wrapper.findAll(ImageListRow);
-  const findPagination = () => wrapper.find(GlKeysetPagination);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(Component, {

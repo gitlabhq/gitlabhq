@@ -53,6 +53,8 @@
           = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
       .form-group
         = f.gitlab_ui_checkbox_component :suggest_pipeline_enabled, s_('AdminSettings|Enable pipeline suggestion banner'), help_text: s_('AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file.')
+      - if Feature.enabled?(:enforce_runner_token_expires_at)
+        #js-runner-token-expiration-intervals{ data: runner_token_expiration_interval_attributes }
 
     = f.submit _('Save changes'), pajamas_button: true
 

@@ -62,8 +62,8 @@ describe('Sentry Error Stack Trace', () => {
   describe('loading', () => {
     it('should show spinner while loading', () => {
       mountComponent();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.find(Stacktrace).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(Stacktrace).exists()).toBe(false);
     });
   });
 
@@ -74,8 +74,8 @@ describe('Sentry Error Stack Trace', () => {
 
     it('should show stacktrace', () => {
       mountComponent({ stubs: {} });
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(Stacktrace).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(Stacktrace).exists()).toBe(true);
     });
   });
 });

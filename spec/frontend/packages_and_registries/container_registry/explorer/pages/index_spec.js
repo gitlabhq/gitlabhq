@@ -4,7 +4,7 @@ import component from '~/packages_and_registries/container_registry/explorer/pag
 describe('List Page', () => {
   let wrapper;
 
-  const findRouterView = () => wrapper.find({ ref: 'router-view' });
+  const findRouterView = () => wrapper.findComponent({ ref: 'router-view' });
 
   const mountComponent = () => {
     wrapper = shallowMount(component, {

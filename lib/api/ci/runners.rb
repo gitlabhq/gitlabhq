@@ -93,7 +93,7 @@ module API
           params[:active] = !params.delete(:paused) if params.include?(:paused)
           update_service = ::Ci::Runners::UpdateRunnerService.new(runner)
 
-          if update_service.update(declared_params(include_missing: false))
+          if update_service.execute(declared_params(include_missing: false)).success?
             present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
           else
             render_validation_error!(runner)

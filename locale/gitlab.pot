@@ -2766,7 +2766,13 @@ msgstr ""
 msgid "AdminSettings|Git abuse rate limit"
 msgstr ""
 
+msgid "AdminSettings|Group runners expiration"
+msgstr ""
+
 msgid "AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)."
+msgstr ""
+
+msgid "AdminSettings|If no unit is written, it defaults to seconds. For example, these are all equivalent: %{oneDayInSeconds}, %{oneDayInHoursHumanReadable}, or %{oneDayHumanReadable}. Minimum value is two hours. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
@@ -2779,6 +2785,9 @@ msgid "AdminSettings|Import sources"
 msgstr ""
 
 msgid "AdminSettings|Inactive project deletion"
+msgstr ""
+
+msgid "AdminSettings|Instance runners expiration"
 msgstr ""
 
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
@@ -2841,6 +2850,9 @@ msgstr ""
 msgid "AdminSettings|Project export"
 msgstr ""
 
+msgid "AdminSettings|Project runners expiration"
+msgstr ""
+
 msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr ""
 
@@ -2890,6 +2902,15 @@ msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration
 msgstr ""
 
 msgid "AdminSettings|Set limit to 0 to disable it."
+msgstr ""
+
+msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered group runners."
+msgstr ""
+
+msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered instance runners. Authentication tokens are automatically reset at these intervals."
+msgstr ""
+
+msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered project runners."
 msgstr ""
 
 msgid "AdminSettings|Set the initial name and protections for the default branch of new repositories created in the instance."
@@ -16080,9 +16101,6 @@ msgstr ""
 msgid "Failed to load deploy keys."
 msgstr ""
 
-msgid "Failed to load emoji list."
-msgstr ""
-
 msgid "Failed to load error details from Sentry."
 msgstr ""
 
@@ -21926,6 +21944,12 @@ msgid "Is using license seat:"
 msgstr ""
 
 msgid "Is using seat"
+msgstr ""
+
+msgid "IssuableEvents|removed review request for"
+msgstr ""
+
+msgid "IssuableEvents|requested review from"
 msgstr ""
 
 msgid "IssuableStatus|%{wi_type} created %{created_at} by "
@@ -30166,13 +30190,7 @@ msgstr ""
 msgid "Profiles|Add key"
 msgstr ""
 
-msgid "Profiles|Add status emoji"
-msgstr ""
-
 msgid "Profiles|An error occurred while updating your username, please try again."
-msgstr ""
-
-msgid "Profiles|An indicator appears next to your name and avatar."
 msgstr ""
 
 msgid "Profiles|Avatar cropper"
@@ -30185,9 +30203,6 @@ msgid "Profiles|Begins with %{ssh_key_algorithms}."
 msgstr ""
 
 msgid "Profiles|Bio"
-msgstr ""
-
-msgid "Profiles|Busy"
 msgstr ""
 
 msgid "Profiles|Change username"
@@ -30203,9 +30218,6 @@ msgid "Profiles|Choose to show contributions of private projects on your public 
 msgstr ""
 
 msgid "Profiles|City, country"
-msgstr ""
-
-msgid "Profiles|Clear status"
 msgstr ""
 
 msgid "Profiles|Commit email"
@@ -30457,9 +30469,6 @@ msgstr ""
 msgid "Profiles|Website url"
 msgstr ""
 
-msgid "Profiles|What's your status?"
-msgstr ""
-
 msgid "Profiles|Who you represent or work for."
 msgstr ""
 
@@ -30503,9 +30512,6 @@ msgid "Profiles|Your name was automatically set based on your %{provider_label} 
 msgstr ""
 
 msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
-msgstr ""
-
-msgid "Profiles|Your status"
 msgstr ""
 
 msgid "Profiles|https://website.com"
@@ -34124,6 +34130,9 @@ msgstr ""
 msgid "Runners|Never contacted:"
 msgstr ""
 
+msgid "Runners|Never expires"
+msgstr ""
+
 msgid "Runners|New group runners view"
 msgstr ""
 
@@ -34217,6 +34226,12 @@ msgid "Runners|Runner %{name} was deleted"
 msgstr ""
 
 msgid "Runners|Runner assigned to project."
+msgstr ""
+
+msgid "Runners|Runner authentication token expiration"
+msgstr ""
+
+msgid "Runners|Runner authentication tokens will expire based on a set interval. They will automatically rotate once expired."
 msgstr ""
 
 msgid "Runners|Runner cannot be deleted, please contact your administrator"
@@ -34348,6 +34363,9 @@ msgid "Runners|To install Runner in a container follow the instructions describe
 msgstr ""
 
 msgid "Runners|To register them, go to the %{link_start}group's Runners page%{link_end}."
+msgstr ""
+
+msgid "Runners|Token expiry"
 msgstr ""
 
 msgid "Runners|Up to date"

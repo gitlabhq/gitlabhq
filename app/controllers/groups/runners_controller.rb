@@ -8,6 +8,10 @@ class Groups::RunnersController < Groups::ApplicationController
     push_frontend_feature_flag(:runner_list_stacked_layout, @group)
   end
 
+  before_action only: [:show] do
+    push_frontend_feature_flag(:enforce_runner_token_expires_at)
+  end
+
   feature_category :runner
   urgency :low
 
@@ -26,7 +30,7 @@ class Groups::RunnersController < Groups::ApplicationController
   end
 
   def update
-    if Ci::Runners::UpdateRunnerService.new(@runner).update(runner_params)
+    if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
       redirect_to group_runner_path(@group, @runner), notice: _('Runner was successfully updated.')
     else
       render 'edit'

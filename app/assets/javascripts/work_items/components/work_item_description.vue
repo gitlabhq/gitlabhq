@@ -8,7 +8,7 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import workItemQuery from '../graphql/work_item.query.graphql';
-import updateWorkItemWidgetsMutation from '../graphql/update_work_item_widgets.mutation.graphql';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
 
 export default {
@@ -142,9 +142,9 @@ export default {
         this.track('updated_description');
 
         const {
-          data: { workItemUpdateWidgets },
+          data: { workItemUpdate },
         } = await this.$apollo.mutate({
-          mutation: updateWorkItemWidgetsMutation,
+          mutation: updateWorkItemMutation,
           variables: {
             input: {
               id: this.workItem.id,
@@ -155,8 +155,8 @@ export default {
           },
         });
 
-        if (workItemUpdateWidgets.errors?.length) {
-          throw new Error(workItemUpdateWidgets.errors[0]);
+        if (workItemUpdate.errors?.length) {
+          throw new Error(workItemUpdate.errors[0]);
         }
 
         this.isEditing = false;

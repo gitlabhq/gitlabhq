@@ -41,7 +41,7 @@ describe('Highlight Bar', () => {
     }
   });
 
-  const findLink = () => wrapper.find(GlLink);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   describe('empty state', () => {
     beforeEach(() => {

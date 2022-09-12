@@ -7,8 +7,8 @@ describe('Infrastructure Title', () => {
   let wrapper;
   let store;
 
-  const findTitleArea = () => wrapper.find(TitleArea);
-  const findMetadataItem = () => wrapper.find(MetadataItem);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
+  const findMetadataItem = () => wrapper.findComponent(MetadataItem);
 
   const exampleProps = { helpUrl: 'http://example.gitlab.com/help' };
 

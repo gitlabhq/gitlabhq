@@ -70,3 +70,14 @@ export const getPaginationVariables = (pagination, pageSize = 10) => {
   // Get the first N items
   return { first: pageSize };
 };
+
+/**
+ * Turns a server-provided interval integer represented as a string into an
+ * integer that the frontend can use.
+ *
+ * @param {String} interval - String to convert
+ * @returns Parsed integer
+ */
+export const parseInterval = (interval) => {
+  return typeof interval === 'string' ? parseInt(interval, 10) : null;
+};

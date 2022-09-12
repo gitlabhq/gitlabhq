@@ -64,8 +64,7 @@ export default {
     },
   },
   jobClasses: [
-    'gl-py-3',
-    'gl-px-4',
+    'gl-p-3',
     'gl-border-gray-100',
     'gl-border-solid',
     'gl-border-1',

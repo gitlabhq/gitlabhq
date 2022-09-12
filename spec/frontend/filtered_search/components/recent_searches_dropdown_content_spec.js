@@ -6,9 +6,9 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 describe('Recent Searches Dropdown Content', () => {
   let wrapper;
 
-  const findLocalStorageNote = () => wrapper.find({ ref: 'localStorageNote' });
+  const findLocalStorageNote = () => wrapper.findComponent({ ref: 'localStorageNote' });
   const findDropdownItems = () => wrapper.findAll({ ref: 'dropdownItem' });
-  const findDropdownNote = () => wrapper.find({ ref: 'dropdownNote' });
+  const findDropdownNote = () => wrapper.findComponent({ ref: 'dropdownNote' });
 
   const createComponent = (props) => {
     wrapper = shallowMount(RecentSearchesDropdownContent, {
@@ -94,7 +94,7 @@ describe('Recent Searches Dropdown Content', () => {
     });
 
     it('emits requestClearRecentSearches on Clear resent searches button', () => {
-      wrapper.find({ ref: 'clearButton' }).trigger('click');
+      wrapper.findComponent({ ref: 'clearButton' }).trigger('click');
 
       expect(onRequestClearRecentSearchesSpy).toHaveBeenCalled();
     });

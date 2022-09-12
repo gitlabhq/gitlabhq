@@ -21,7 +21,7 @@ describe('CE IssueCardTimeInfo component', () => {
   };
 
   const findMilestone = () => wrapper.find('[data-testid="issuable-milestone"]');
-  const findMilestoneTitle = () => findMilestone().find(GlLink).attributes('title');
+  const findMilestoneTitle = () => findMilestone().findComponent(GlLink).attributes('title');
   const findDueDate = () => wrapper.find('[data-testid="issuable-due-date"]');
 
   const mountComponent = ({
@@ -56,8 +56,8 @@ describe('CE IssueCardTimeInfo component', () => {
       const milestone = findMilestone();
 
       expect(milestone.text()).toBe(issue.milestone.title);
-      expect(milestone.find(GlIcon).props('name')).toBe('clock');
-      expect(milestone.find(GlLink).attributes('href')).toBe(issue.milestone.webPath);
+      expect(milestone.findComponent(GlIcon).props('name')).toBe('clock');
+      expect(milestone.findComponent(GlLink).attributes('href')).toBe(issue.milestone.webPath);
     });
 
     describe.each`
@@ -84,7 +84,7 @@ describe('CE IssueCardTimeInfo component', () => {
 
         expect(dueDate.text()).toBe('Dec 12, 2020');
         expect(dueDate.attributes('title')).toBe('Due date');
-        expect(dueDate.find(GlIcon).props('name')).toBe('calendar');
+        expect(dueDate.findComponent(GlIcon).props('name')).toBe('calendar');
         expect(dueDate.classes()).not.toContain('gl-text-red-500');
       });
     });
@@ -118,6 +118,6 @@ describe('CE IssueCardTimeInfo component', () => {
 
     expect(timeEstimate.text()).toBe(issue.humanTimeEstimate);
     expect(timeEstimate.attributes('title')).toBe('Estimate');
-    expect(timeEstimate.find(GlIcon).props('name')).toBe('timer');
+    expect(timeEstimate.findComponent(GlIcon).props('name')).toBe('timer');
   });
 });

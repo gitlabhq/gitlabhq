@@ -22,8 +22,8 @@ describe('import target cell', () => {
   let wrapper;
   let group;
 
-  const findNameInput = () => wrapper.find(GlFormInput);
-  const findNamespaceDropdown = () => wrapper.find(ImportGroupDropdown);
+  const findNameInput = () => wrapper.findComponent(GlFormInput);
+  const findNamespaceDropdown = () => wrapper.findComponent(ImportGroupDropdown);
 
   const createComponent = (props) => {
     wrapper = shallowMount(ImportTargetCell, {

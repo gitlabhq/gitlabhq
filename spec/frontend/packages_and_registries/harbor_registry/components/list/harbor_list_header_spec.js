@@ -12,9 +12,9 @@ import {
 describe('harbor_list_header', () => {
   let wrapper;
 
-  const findTitleArea = () => wrapper.find(TitleArea);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findCommandsSlot = () => wrapper.find('[data-testid="commands-slot"]');
-  const findImagesMetaDataItem = () => wrapper.find(MetadataItem);
+  const findImagesMetaDataItem = () => wrapper.findComponent(MetadataItem);
 
   const mountComponent = async (propsData, slots) => {
     wrapper = shallowMount(HarborListHeader, {

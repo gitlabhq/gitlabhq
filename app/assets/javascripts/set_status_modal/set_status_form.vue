@@ -9,26 +9,14 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlSprintf,
+  GlFormGroup,
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import * as Emoji from '~/emoji';
-import { __, s__ } from '~/locale';
-import { timeRanges } from '~/vue_shared/constants';
-
-export const AVAILABILITY_STATUS = {
-  BUSY: 'busy',
-  NOT_SET: 'not_set',
-};
-
-const statusTimeRanges = [
-  {
-    label: __('Never'),
-    name: 'never',
-  },
-  ...timeRanges,
-];
+import { s__ } from '~/locale';
+import { TIME_RANGES_WITH_NEVER, AVAILABILITY_STATUS } from './constants';
 
 export default {
   components: {
@@ -40,6 +28,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlSprintf,
+    GlFormGroup,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
   directives: {
@@ -136,7 +125,8 @@ export default {
       this.clearEmoji();
     },
   },
-  statusTimeRanges,
+  TIME_RANGES_WITH_NEVER,
+  AVAILABILITY_STATUS,
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   i18n: {
     statusMessagePlaceholder: s__(`SetStatusModal|What's your status?`),
@@ -153,14 +143,11 @@ export default {
 
 <template>
   <div>
-    <input :value="emoji" class="js-status-emoji-field" type="hidden" name="user[status][emoji]" />
     <gl-form-input-group class="gl-mb-5">
       <gl-form-input
         ref="statusMessageField"
         :value="message"
         :placeholder="$options.i18n.statusMessagePlaceholder"
-        class="js-status-message-field"
-        name="user[status][message]"
         @keyup="setDefaultEmoji"
         @input="$emit('message-input', $event)"
         @keyup.enter.prevent
@@ -216,28 +203,29 @@ export default {
       </template>
     </gl-form-checkbox>
 
-    <div class="form-group">
-      <div class="gl-display-flex gl-align-items-baseline">
-        <span class="gl-mr-3">{{ $options.i18n.clearStatusAfterDropdownLabel }}</span>
-        <gl-dropdown :text="clearStatusAfter.label" data-testid="clear-status-at-dropdown">
-          <gl-dropdown-item
-            v-for="after in $options.statusTimeRanges"
-            :key="after.name"
-            :data-testid="after.name"
-            @click="$emit('clear-status-after-click', after)"
-            >{{ after.label }}</gl-dropdown-item
-          >
-        </gl-dropdown>
-      </div>
-      <p
-        v-if="currentClearStatusAfter.length"
-        class="gl-mt-3 gl-text-gray-400 gl-font-sm"
-        data-testid="clear-status-at-message"
+    <gl-form-group :label="$options.i18n.clearStatusAfterDropdownLabel" class="gl-mb-0">
+      <gl-dropdown
+        block
+        :text="clearStatusAfter.label"
+        data-testid="clear-status-at-dropdown"
+        toggle-class="gl-mb-0 gl-form-input-md"
       >
-        <gl-sprintf :message="$options.i18n.clearStatusAfterMessage">
-          <template #date>{{ currentClearStatusAfter }}</template>
-        </gl-sprintf>
-      </p>
-    </div>
+        <gl-dropdown-item
+          v-for="after in $options.TIME_RANGES_WITH_NEVER"
+          :key="after.name"
+          :data-testid="after.name"
+          @click="$emit('clear-status-after-click', after)"
+          >{{ after.label }}</gl-dropdown-item
+        >
+      </gl-dropdown>
+
+      <template v-if="currentClearStatusAfter.length" #description>
+        <span data-testid="clear-status-at-message">
+          <gl-sprintf :message="$options.i18n.clearStatusAfterMessage">
+            <template #date>{{ currentClearStatusAfter }}</template>
+          </gl-sprintf>
+        </span>
+      </template>
+    </gl-form-group>
   </div>
 </template>

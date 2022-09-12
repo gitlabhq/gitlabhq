@@ -1,7 +1,7 @@
 import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';

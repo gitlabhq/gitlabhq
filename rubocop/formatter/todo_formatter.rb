@@ -6,6 +6,7 @@ require 'yaml'
 
 require_relative '../todo_dir'
 require_relative '../cop_todo'
+require_relative '../formatter/graceful_formatter'
 
 module RuboCop
   module Formatter
@@ -47,6 +48,8 @@ module RuboCop
       def finished(_inspected_files)
         @todos.values.sort_by(&:cop_name).each do |todo|
           todo.previously_disabled = previously_disabled?(todo)
+          todo.grace_period = grace_period?(todo)
+          validate_todo!(todo)
           path = @todo_dir.write(todo.cop_name, todo.to_yaml)
 
           output.puts "Written to #{relative_path(path)}\n"
@@ -79,14 +82,29 @@ module RuboCop
         raise "Multiple configurations found for cops:\n#{list}\n"
       end
 
-      def previously_disabled?(todo)
+      def config_for(todo)
         cop_name = todo.cop_name
 
-        config = @config_old_todo_yml[cop_name] ||
-          @config_inspect_todo_dir[cop_name] || {}
+        @config_old_todo_yml[cop_name] || @config_inspect_todo_dir[cop_name] || {}
+      end
+
+      def previously_disabled?(todo)
+        config = config_for(todo)
         return false if config.empty?
 
         config['Enabled'] == false
+      end
+
+      def grace_period?(todo)
+        config = config_for(todo)
+
+        GracefulFormatter.grace_period?(todo.cop_name, config)
+      end
+
+      def validate_todo!(todo)
+        return unless todo.previously_disabled && todo.grace_period
+
+        raise "#{todo.cop_name}: Cop must be enabled to use `#{GracefulFormatter.grace_period_key_value}`."
       end
 
       def load_config_inspect_todo_dir

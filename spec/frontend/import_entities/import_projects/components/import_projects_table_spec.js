@@ -33,7 +33,7 @@ describe('ImportProjectsTable', () => {
       .findAll(GlButton)
       .filter((w) => w.props().variant === 'confirm')
       .at(0);
-  const findImportAllModal = () => wrapper.find({ ref: 'importAllModal' });
+  const findImportAllModal = () => wrapper.findComponent({ ref: 'importAllModal' });
 
   const importAllFn = jest.fn();
   const importAllModalShowFn = jest.fn();
@@ -89,13 +89,13 @@ describe('ImportProjectsTable', () => {
   it('renders a loading icon while repos are loading', () => {
     createComponent({ state: { isLoadingRepos: true } });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders a loading icon while namespaces are loading', () => {
     createComponent({ state: { isLoadingNamespaces: true } });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders a table with provider repos', () => {
@@ -109,7 +109,7 @@ describe('ImportProjectsTable', () => {
       state: { namespaces: [{ fullPath: 'path' }], repositories },
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     expect(wrapper.find('table').exists()).toBe(true);
     expect(
       wrapper
@@ -170,7 +170,7 @@ describe('ImportProjectsTable', () => {
   it('renders an empty state if there are no repositories available', () => {
     createComponent({ state: { repositories: [] } });
 
-    expect(wrapper.find(ProviderRepoTableRow).exists()).toBe(false);
+    expect(wrapper.findComponent(ProviderRepoTableRow).exists()).toBe(false);
     expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
   });
 
@@ -231,11 +231,11 @@ describe('ImportProjectsTable', () => {
     });
 
     it('renders intersection observer component', () => {
-      expect(wrapper.find(GlIntersectionObserver).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(true);
     });
 
     it('calls fetchRepos when intersection observer appears', async () => {
-      wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+      wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
       await nextTick();
 

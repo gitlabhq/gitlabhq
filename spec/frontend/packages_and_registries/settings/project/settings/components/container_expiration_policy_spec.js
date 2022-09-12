@@ -35,7 +35,7 @@ describe('Container expiration policy project settings', () => {
   const findDescription = () => wrapper.findByTestId('description');
   const findButton = () => wrapper.findByTestId('rules-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findSettingsBlock = () => wrapper.find(SettingsBlock);
+  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMountExtended(component, {
@@ -97,9 +97,9 @@ describe('Container expiration policy project settings', () => {
       it('shows the admin part of the alert message', () => {
         mountComponent({ ...defaultProvidedValues, isAdmin: true });
 
-        const sprintf = findAlert().find(GlSprintf);
+        const sprintf = findAlert().findComponent(GlSprintf);
         expect(sprintf.text()).toBe('administration settings');
-        expect(sprintf.find(GlLink).attributes('href')).toBe(
+        expect(sprintf.findComponent(GlLink).attributes('href')).toBe(
           defaultProvidedValues.adminSettingsPath,
         );
       });

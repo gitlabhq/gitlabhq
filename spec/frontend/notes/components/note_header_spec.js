@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteHeader from '~/notes/components/note_header.vue';
-import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
 Vue.use(Vuex);

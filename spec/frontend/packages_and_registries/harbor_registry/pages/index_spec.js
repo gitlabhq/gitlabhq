@@ -4,7 +4,7 @@ import component from '~/packages_and_registries/harbor_registry/pages/index.vue
 describe('List Page', () => {
   let wrapper;
 
-  const findRouterView = () => wrapper.find({ ref: 'router-view' });
+  const findRouterView = () => wrapper.findComponent({ ref: 'router-view' });
 
   const mountComponent = () => {
     wrapper = shallowMount(component, {

@@ -11,8 +11,8 @@ describe('delete_button', () => {
     tooltipTitle: 'Bar tooltipTitle',
   };
 
-  const findButton = () => wrapper.find(GlButton);
-  const findTooltip = () => wrapper.find(GlTooltip);
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(component, {

@@ -1,24 +1,11 @@
 ---
-stage: Systems
-group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
-description: Install a cloud-native version of GitLab
-type: index
+redirect_to: 'https://docs.gitlab.com/charts/'
+remove_date: '2023-09-09'
 ---
 
-# Cloud-native GitLab **(FREE SELF)**
+This document was moved to [another location](https://docs.gitlab.com/charts/).
 
-A [cloud-native](https://gitlab.com/gitlab-org/build/CNG) version of GitLab is
-available for deployment on Kubernetes, OpenShift, and Kubernetes-compatible
-platforms. The following deployment methods are available:
-
-- [GitLab Helm chart](https://docs.gitlab.com/charts/): A cloud-native version of GitLab
-  and all of its components. Use this installation method if your infrastructure is built
-  on Kubernetes and you're familiar with how it works. This method of deployment has different
-  management, observability, and concepts than traditional deployments.
-- [GitLab Operator](https://docs.gitlab.com/operator/): An installation and management method
-  that follows the
-  [Kubernetes Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/).
-  Use the GitLab Operator to run GitLab in an
-  [OpenShift](../openshift_and_gitlab/index.md) or another Kubernetes-compatible platform.
+<!-- This redirect file can be deleted after <2023-09-09>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -96,9 +96,9 @@ describe('Milestone combobox component', () => {
 
   const findNoResults = () => wrapper.find('[data-testid="milestone-combobox-no-results"]');
 
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   const findProjectMilestonesSection = () =>
     wrapper.find('[data-testid="project-milestones-section"]');

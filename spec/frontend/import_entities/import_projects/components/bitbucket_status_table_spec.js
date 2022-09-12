@@ -33,12 +33,12 @@ describe('BitbucketStatusTable', () => {
 
   it('renders import table component', () => {
     createComponent({ providerTitle: 'Test' });
-    expect(wrapper.find(ImportProjectsTable).exists()).toBe(true);
+    expect(wrapper.findComponent(ImportProjectsTable).exists()).toBe(true);
   });
 
   it('passes alert in incompatible-repos-warning slot', () => {
     createComponent({ providerTitle: 'Test' }, ImportProjectsTableStub);
-    expect(wrapper.find(GlAlert).exists()).toBe(true);
+    expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
   });
 
   it('passes actions slot to import project table component', () => {
@@ -46,14 +46,14 @@ describe('BitbucketStatusTable', () => {
     createComponent({ providerTitle: 'Test' }, ImportProjectsTableStub, {
       actions: actionsSlotContent,
     });
-    expect(wrapper.find(ImportProjectsTable).text()).toBe(actionsSlotContent);
+    expect(wrapper.findComponent(ImportProjectsTable).text()).toBe(actionsSlotContent);
   });
 
   it('dismisses alert when requested', async () => {
     createComponent({ providerTitle: 'Test' }, ImportProjectsTableStub);
-    wrapper.find(GlAlert).vm.$emit('dismiss');
+    wrapper.findComponent(GlAlert).vm.$emit('dismiss');
     await nextTick();
 
-    expect(wrapper.find(GlAlert).exists()).toBe(false);
+    expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
   });
 });

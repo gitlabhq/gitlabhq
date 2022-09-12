@@ -9,6 +9,10 @@ class Admin::RunnersController < Admin::ApplicationController
     push_frontend_feature_flag(:runner_list_stacked_layout_admin)
   end
 
+  before_action only: [:show] do
+    push_frontend_feature_flag(:enforce_runner_token_expires_at)
+  end
+
   feature_category :runner
   urgency :low
 
@@ -23,7 +27,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def update
-    if Ci::Runners::UpdateRunnerService.new(@runner).update(runner_params)
+    if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
       respond_to do |format|
         format.html { redirect_to edit_admin_runner_path(@runner) }
       end
@@ -40,7 +44,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def resume
-    if Ci::Runners::UpdateRunnerService.new(@runner).update(active: true)
+    if Ci::Runners::UpdateRunnerService.new(@runner).execute(active: true).success?
       redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
       redirect_to admin_runners_path, alert: _('Runner was not updated.')
@@ -48,7 +52,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def pause
-    if Ci::Runners::UpdateRunnerService.new(@runner).update(active: false)
+    if Ci::Runners::UpdateRunnerService.new(@runner).execute(active: false).success?
       redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
       redirect_to admin_runners_path, alert: _('Runner was not updated.')

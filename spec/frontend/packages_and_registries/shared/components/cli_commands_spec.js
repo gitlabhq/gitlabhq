@@ -22,7 +22,7 @@ Vue.use(Vuex);
 describe('cli_commands', () => {
   let wrapper;
 
-  const findDropdownButton = () => wrapper.find(GlDropdown);
+  const findDropdownButton = () => wrapper.findComponent(GlDropdown);
   const findCodeInstruction = () => wrapper.findAll(CodeInstruction);
 
   const mountComponent = () => {

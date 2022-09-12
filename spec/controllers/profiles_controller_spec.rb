@@ -82,13 +82,17 @@ RSpec.describe ProfilesController, :request_store do
       expect(ldap_user.location).to eq('City, Country')
     end
 
-    it 'allows setting a user status' do
+    it 'allows setting a user status', :freeze_time do
       sign_in(user)
 
-      put :update, params: { user: { status: { message: 'Working hard!', availability: 'busy' } } }
+      put(
+        :update,
+        params: { user: { status: { message: 'Working hard!', availability: 'busy', clear_status_after: '8_hours' } } }
+      )
 
       expect(user.reload.status.message).to eq('Working hard!')
       expect(user.reload.status.availability).to eq('busy')
+      expect(user.reload.status.clear_status_after).to eq(8.hours.from_now)
       expect(response).to have_gitlab_http_status(:found)
     end
 

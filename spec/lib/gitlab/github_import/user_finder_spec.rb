@@ -67,6 +67,18 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
         it_behaves_like 'user ID finder', :assignee
       end
+
+      context 'when the author_key parameter is :requested_reviewer' do
+        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', requested_reviewer: user) }
+
+        it_behaves_like 'user ID finder', :requested_reviewer
+      end
+
+      context 'when the author_key parameter is :review_requester' do
+        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', review_requester: user) }
+
+        it_behaves_like 'user ID finder', :review_requester
+      end
     end
   end
 

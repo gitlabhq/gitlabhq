@@ -17,8 +17,8 @@ describe('Package Files', () => {
   const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"]');
   const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"]');
   const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"]');
-  const findFirstRowFileIcon = () => findFirstRow().find(FileIcon);
-  const findFirstRowCreatedAt = () => findFirstRow().find(TimeAgoTooltip);
+  const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
+  const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
   const findFirstActionMenu = () => findFirstRow().findComponent(GlDropdown);
   const findActionMenuDelete = () => findFirstActionMenu().find('[data-testid="delete-file"]');
   const findFirstToggleDetailsButton = () => findFirstRow().findComponent(GlButton);

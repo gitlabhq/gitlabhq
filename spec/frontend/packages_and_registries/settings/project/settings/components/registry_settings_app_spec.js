@@ -6,8 +6,8 @@ import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/co
 describe('Registry Settings app', () => {
   let wrapper;
 
-  const findContainerExpirationPolicy = () => wrapper.find(ContainerExpirationPolicy);
-  const findPackagesCleanupPolicy = () => wrapper.find(PackagesCleanupPolicy);
+  const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
+  const findPackagesCleanupPolicy = () => wrapper.findComponent(PackagesCleanupPolicy);
 
   afterEach(() => {
     wrapper.destroy();

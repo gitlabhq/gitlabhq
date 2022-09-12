@@ -6,7 +6,7 @@ import { PACKAGE_TYPES } from '~/packages_and_registries/package_registry/consta
 describe('packages_filter', () => {
   let wrapper;
 
-  const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
+  const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
   const findFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
 
   const mountComponent = ({ attrs, listeners } = {}) => {

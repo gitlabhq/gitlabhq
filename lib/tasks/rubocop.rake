@@ -6,6 +6,19 @@ unless Rails.env.production?
   RuboCop::RakeTask.new
 
   namespace :rubocop do
+    namespace :check do
+      desc 'Run RuboCop check gracefully'
+      task :graceful do |_task, args|
+        require_relative '../../rubocop/check_graceful_task'
+
+        # Don't reveal TODOs in this run.
+        ENV.delete('REVEAL_RUBOCOP_TODO')
+
+        result = RuboCop::CheckGracefulTask.new($stdout).run(args.extras)
+        exit result if result.nonzero?
+      end
+    end
+
     namespace :todo do
       desc 'Generate RuboCop todos'
       task :generate do |_task, args|

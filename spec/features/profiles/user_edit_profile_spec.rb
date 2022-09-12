@@ -180,7 +180,7 @@ RSpec.describe 'User edit profile' do
       end
 
       it 'adds emoji to user status' do
-        emoji = 'biohazard'
+        emoji = 'basketball'
         select_emoji(emoji)
         submit_settings
 
@@ -193,7 +193,7 @@ RSpec.describe 'User edit profile' do
 
       it 'adds message to user status' do
         message = 'I have something to say'
-        fill_in 'js-status-message-field', with: message
+        fill_in s_("SetStatusModal|What's your status?"), with: message
         submit_settings
 
         visit_user
@@ -208,7 +208,7 @@ RSpec.describe 'User edit profile' do
         emoji = '8ball'
         message = 'Playing outside'
         select_emoji(emoji)
-        fill_in 'js-status-message-field', with: message
+        fill_in s_("SetStatusModal|What's your status?"), with: message
         submit_settings
 
         visit_user
@@ -230,7 +230,7 @@ RSpec.describe 'User edit profile' do
         end
 
         visit(profile_path)
-        click_button 'js-clear-user-status-button'
+        click_button s_('SetStatusModal|Clear status')
         submit_settings
 
         visit_user
@@ -240,9 +240,9 @@ RSpec.describe 'User edit profile' do
 
       it 'displays a default emoji if only message is entered' do
         message = 'a status without emoji'
-        fill_in 'js-status-message-field', with: message
+        fill_in s_("SetStatusModal|What's your status?"), with: message
 
-        within('.js-toggle-emoji-menu') do
+        within('.emoji-menu-toggle-button') do
           expect(page).to have_emoji('speech_balloon')
         end
       end
@@ -406,7 +406,7 @@ RSpec.describe 'User edit profile' do
       it 'adds message to user status' do
         message = 'I have something to say'
         open_user_status_modal
-        find('.js-status-message-field').native.send_keys(message)
+        find_field(s_("SetStatusModal|What's your status?")).native.send_keys(message)
         set_user_status_in_modal
 
         visit_user
@@ -422,7 +422,7 @@ RSpec.describe 'User edit profile' do
         message = 'Playing outside'
         open_user_status_modal
         select_emoji(emoji, true)
-        find('.js-status-message-field').native.send_keys(message)
+        find_field(s_("SetStatusModal|What's your status?")).native.send_keys(message)
         set_user_status_in_modal
 
         visit_user
@@ -446,7 +446,7 @@ RSpec.describe 'User edit profile' do
 
         open_edit_status_modal
 
-        find('.js-clear-user-status-button').click
+        click_button s_('SetStatusModal|Clear status')
         set_user_status_in_modal
 
         visit_user
@@ -491,7 +491,7 @@ RSpec.describe 'User edit profile' do
       it 'displays a default emoji if only message is entered' do
         message = 'a status without emoji'
         open_user_status_modal
-        find('.js-status-message-field').native.send_keys(message)
+        find_field(s_("SetStatusModal|What's your status?")).native.send_keys(message)
 
         expect(page).to have_emoji('speech_balloon')
       end

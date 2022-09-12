@@ -117,9 +117,9 @@ describe('Cleanup image tags project settings', () => {
       it('shows the admin part of the alert message', () => {
         mountComponent({ ...defaultProvidedValues, isAdmin: true });
 
-        const sprintf = findAlert().find(GlSprintf);
+        const sprintf = findAlert().findComponent(GlSprintf);
         expect(sprintf.text()).toBe('administration settings');
-        expect(sprintf.find(GlLink).attributes('href')).toBe(
+        expect(sprintf.findComponent(GlLink).attributes('href')).toBe(
           defaultProvidedValues.adminSettingsPath,
         );
       });

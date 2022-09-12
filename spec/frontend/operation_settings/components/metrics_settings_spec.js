@@ -63,7 +63,7 @@ describe('operation settings external dashboard component', () => {
   describe('expand/collapse button', () => {
     it('renders as an expand button by default', () => {
       mountComponent();
-      const button = wrapper.find(GlButton);
+      const button = wrapper.findComponent(GlButton);
 
       expect(button.text()).toBe('Expand');
     });
@@ -82,7 +82,7 @@ describe('operation settings external dashboard component', () => {
     });
 
     it('renders help page link', () => {
-      const link = subHeader.find(GlLink);
+      const link = subHeader.findComponent(GlLink);
 
       expect(link.text()).toBe('Learn more.');
       expect(link.attributes().href).toBe(helpPage);
@@ -96,7 +96,7 @@ describe('operation settings external dashboard component', () => {
 
         beforeEach(() => {
           mountComponent(false);
-          formGroup = wrapper.find(DashboardTimezone).find(GlFormGroup);
+          formGroup = wrapper.findComponent(DashboardTimezone).findComponent(GlFormGroup);
         });
 
         it('uses label text', () => {
@@ -117,7 +117,7 @@ describe('operation settings external dashboard component', () => {
 
         beforeEach(() => {
           mountComponent();
-          select = wrapper.find(DashboardTimezone).find(GlFormSelect);
+          select = wrapper.findComponent(DashboardTimezone).findComponent(GlFormSelect);
         });
 
         it('defaults to externalDashboardUrl', () => {
@@ -132,7 +132,7 @@ describe('operation settings external dashboard component', () => {
 
         beforeEach(() => {
           mountComponent(false);
-          formGroup = wrapper.find(ExternalDashboard).find(GlFormGroup);
+          formGroup = wrapper.findComponent(ExternalDashboard).findComponent(GlFormGroup);
         });
 
         it('uses label text', () => {
@@ -153,7 +153,7 @@ describe('operation settings external dashboard component', () => {
 
         beforeEach(() => {
           mountComponent();
-          input = wrapper.find(ExternalDashboard).find(GlFormInput);
+          input = wrapper.findComponent(ExternalDashboard).findComponent(GlFormInput);
         });
 
         it('defaults to externalDashboardUrl', () => {
@@ -167,7 +167,7 @@ describe('operation settings external dashboard component', () => {
     });
 
     describe('submit button', () => {
-      const findSubmitButton = () => wrapper.find('.settings-content form').find(GlButton);
+      const findSubmitButton = () => wrapper.find('.settings-content form').findComponent(GlButton);
 
       const endpointRequest = [
         operationsSettingsEndpoint,

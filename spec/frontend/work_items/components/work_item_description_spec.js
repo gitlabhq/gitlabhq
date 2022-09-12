@@ -10,9 +10,9 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
-import updateWorkItemWidgetsMutation from '~/work_items/graphql/update_work_item_widgets.mutation.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
-  updateWorkItemWidgetsResponse,
+  updateWorkItemMutationResponse,
   workItemResponseFactory,
   workItemQueryResponse,
 } from '../mock_data';
@@ -31,7 +31,7 @@ describe('WorkItemDescription', () => {
 
   Vue.use(VueApollo);
 
-  const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemWidgetsResponse);
+  const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
   const findEditButton = () => wrapper.find('[data-testid="edit-description"]');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
@@ -53,7 +53,7 @@ describe('WorkItemDescription', () => {
     wrapper = shallowMount(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemQuery, workItemResponseHandler],
-        [updateWorkItemWidgetsMutation, mutationHandler],
+        [updateWorkItemMutation, mutationHandler],
       ]),
       propsData: {
         workItemId: id,
@@ -173,7 +173,7 @@ describe('WorkItemDescription', () => {
         isEditing: true,
         mutationHandler: jest.fn().mockResolvedValue({
           data: {
-            workItemUpdateWidgets: {
+            workItemUpdate: {
               workItem: {},
               errors: [error],
             },

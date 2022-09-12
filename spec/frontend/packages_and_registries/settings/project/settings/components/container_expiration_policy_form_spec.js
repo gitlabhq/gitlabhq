@@ -36,7 +36,7 @@ describe('Container Expiration Policy Settings Form', () => {
     label: 'docker_container_retention_and_expiration_policies',
   };
 
-  const findForm = () => wrapper.find({ ref: 'form-element' });
+  const findForm = () => wrapper.findComponent({ ref: 'form-element' });
 
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"');
   const findSaveButton = () => wrapper.find('[data-testid="save-button"');

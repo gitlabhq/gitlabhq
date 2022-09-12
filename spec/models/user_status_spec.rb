@@ -18,6 +18,14 @@ RSpec.describe UserStatus do
     expect { status.user.destroy! }.to change { described_class.count }.from(1).to(0)
   end
 
+  describe '#clear_status_after' do
+    it 'is an alias of #clear_status_at', :freeze_time do
+      status = build(:user_status, clear_status_at: 8.hours.from_now)
+
+      expect(status.clear_status_after).to be_like_time(8.hours.from_now)
+    end
+  end
+
   describe '#clear_status_after=' do
     it 'sets clear_status_at' do
       status = build(:user_status)

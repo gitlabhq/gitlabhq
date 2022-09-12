@@ -17,6 +17,7 @@ fragment RunnerDetailsShared on CiRunner {
   createdAt
   status(legacyMode: null)
   contactedAt
+  tokenExpiresAt
   version
   editAdminUrl
   userPermissions {

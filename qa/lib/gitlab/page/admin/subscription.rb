@@ -10,8 +10,8 @@ module Gitlab
         text_field :activation_code
         button :activate
         label :terms_of_services, text: /I agree that/
-        link :remove_license, 'data-testid': 'license-remove-action'
-        button :confirm_ok_button
+        button :remove_license
+        button :confirm_remove_license
         p :plan
         p :started
         p :name
@@ -28,6 +28,11 @@ module Gitlab
 
         def accept_terms
           terms_of_services_element.click # workaround for hidden checkbox
+        end
+
+        def remove_license_file
+          remove_license
+          confirm_remove_license
         end
 
         # Checks if a subscription record exists in subscription history table

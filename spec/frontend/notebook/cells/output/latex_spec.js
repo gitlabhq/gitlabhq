@@ -27,7 +27,7 @@ describe('LaTeX output cell', () => {
     ${1}  | ${false}
   `('sets `Prompt.show-output` to $expectation when index is $index', ({ index, expectation }) => {
     const wrapper = createComponent(inlineLatex, index);
-    const prompt = wrapper.find(Prompt);
+    const prompt = wrapper.findComponent(Prompt);
 
     expect(prompt.props().count).toEqual(count);
     expect(prompt.props().showOutput).toEqual(expectation);

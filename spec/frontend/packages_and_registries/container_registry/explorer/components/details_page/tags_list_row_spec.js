@@ -359,7 +359,7 @@ describe('tags list row', () => {
             mountComponent();
             await nextTick();
 
-            expect(finderFunction().find(ClipboardButton).exists()).toBe(clipboard);
+            expect(finderFunction().findComponent(ClipboardButton).exists()).toBe(clipboard);
           });
 
           it('is disabled when the component is disabled', async () => {

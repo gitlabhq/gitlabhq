@@ -19,10 +19,13 @@ import { createWrapper, ErrorWrapper } from '@vue/test-utils';
  * @returns Wrapper
  */
 export const findDd = (dtLabel, wrapper) => {
-  const dt = wrapper.findByText(dtLabel).element;
-  const dd = dt.nextElementSibling;
-  if (dt.tagName === 'DT' && dd.tagName === 'DD') {
-    return createWrapper(dd, {});
+  const dtw = wrapper.findByText(dtLabel);
+  if (dtw.exists()) {
+    const dt = dtw.element;
+    const dd = dt.nextElementSibling;
+    if (dt.tagName === 'DT' && dd.tagName === 'DD') {
+      return createWrapper(dd, {});
+    }
   }
-  return ErrorWrapper(dtLabel);
+  return new ErrorWrapper(dtLabel);
 };

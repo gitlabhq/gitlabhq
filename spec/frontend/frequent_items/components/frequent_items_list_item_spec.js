@@ -16,10 +16,10 @@ describe('FrequentItemsListItemComponent', () => {
   let trackingSpy;
   let store;
 
-  const findTitle = () => wrapper.find({ ref: 'frequentItemsItemTitle' });
+  const findTitle = () => wrapper.findComponent({ ref: 'frequentItemsItemTitle' });
   const findAvatar = () => wrapper.findComponent(ProjectAvatar);
   const findAllTitles = () => wrapper.findAll({ ref: 'frequentItemsItemTitle' });
-  const findNamespace = () => wrapper.find({ ref: 'frequentItemsItemNamespace' });
+  const findNamespace = () => wrapper.findComponent({ ref: 'frequentItemsItemNamespace' });
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
   const findAllNamespace = () => wrapper.findAll({ ref: 'frequentItemsItemNamespace' });
   const findAllAvatars = () => wrapper.findAllComponents(ProjectAvatar);

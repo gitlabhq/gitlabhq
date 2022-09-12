@@ -58,7 +58,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
     it('displays the commit duration chart', () => {
       const chart = wrapper.findComponent(GlColumnChart);
 
-      expect(chart.exists()).toBeTruthy();
+      expect(chart.exists()).toBe(true);
       expect(chart.props('yAxisTitle')).toBe('Minutes');
       expect(chart.props('xAxisTitle')).toBe('Commit');
       expect(chart.props('bars')).toBe(wrapper.vm.timesChartTransformedData);

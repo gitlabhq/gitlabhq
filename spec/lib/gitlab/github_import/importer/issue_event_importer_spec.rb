@@ -112,6 +112,20 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::ChangedAssignee
     end
 
+    context "when it's review_requested issue event" do
+      let(:event_name) { 'review_requested' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedReviewer
+    end
+
+    context "when it's review_request_removed issue event" do
+      let(:event_name) { 'review_request_removed' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedReviewer
+    end
+
     context "when it's unknown issue event" do
       let(:event_name) { 'fake' }
 

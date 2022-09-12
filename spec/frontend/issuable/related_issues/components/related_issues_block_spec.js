@@ -153,7 +153,7 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it('sets `autoCompleteEpics` to false for add-issuable-form', () => {
-      expect(wrapper.find(AddIssuableForm).props('autoCompleteEpics')).toBe(false);
+      expect(wrapper.findComponent(AddIssuableForm).props('autoCompleteEpics')).toBe(false);
     });
   });
 
@@ -227,7 +227,7 @@ describe('RelatedIssuesBlock', () => {
           },
         });
 
-        const iconComponent = wrapper.find(GlIcon);
+        const iconComponent = wrapper.findComponent(GlIcon);
         expect(iconComponent.exists()).toBe(true);
         expect(iconComponent.props('name')).toBe(icon);
       });

@@ -29,6 +29,10 @@ class UserStatus < ApplicationRecord
 
   cache_markdown_field :message, pipeline: :emoji
 
+  def clear_status_after
+    clear_status_at
+  end
+
   def clear_status_after=(value)
     self.clear_status_at = CLEAR_STATUS_QUICK_OPTIONS[value]&.from_now
   end

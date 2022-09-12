@@ -40,12 +40,12 @@ describe('NotificationsDropdown', () => {
     });
   }
 
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   const findAllNotificationsDropdownItems = () => wrapper.findAll(NotificationsDropdownItem);
   const findDropdownItemAt = (index) =>
-    findAllNotificationsDropdownItems().at(index).find(GlDropdownItem);
-  const findNotificationsModal = () => wrapper.find(CustomNotificationsModal);
+    findAllNotificationsDropdownItems().at(index).findComponent(GlDropdownItem);
+  const findNotificationsModal = () => wrapper.findComponent(CustomNotificationsModal);
 
   const clickDropdownItemAt = async (index) => {
     const dropdownItem = findDropdownItemAt(index);

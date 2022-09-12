@@ -105,7 +105,7 @@ describe('Issue title suggestions item component', () => {
       const count = wrapper.findAll('.suggestion-counts span').at(0);
 
       expect(count.text()).toContain('1');
-      expect(count.find(GlIcon).props('name')).toBe('thumb-up');
+      expect(count.findComponent(GlIcon).props('name')).toBe('thumb-up');
     });
 
     it('renders notes count', () => {
@@ -114,7 +114,7 @@ describe('Issue title suggestions item component', () => {
       const count = wrapper.findAll('.suggestion-counts span').at(1);
 
       expect(count.text()).toContain('2');
-      expect(count.find(GlIcon).props('name')).toBe('comment');
+      expect(count.findComponent(GlIcon).props('name')).toBe('comment');
     });
   });
 

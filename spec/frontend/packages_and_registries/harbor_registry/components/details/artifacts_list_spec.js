@@ -9,9 +9,9 @@ import { defaultConfig, harborArtifactsList } from '../../mock_data';
 describe('Harbor artifacts list', () => {
   let wrapper;
 
-  const findTagsLoader = () => wrapper.find(TagsLoader);
-  const findGlEmptyState = () => wrapper.find(GlEmptyState);
-  const findRegistryList = () => wrapper.find(RegistryList);
+  const findTagsLoader = () => wrapper.findComponent(TagsLoader);
+  const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findRegistryList = () => wrapper.findComponent(RegistryList);
   const findArtifactsListRow = () => wrapper.findAllComponents(ArtifactsListRow);
 
   const mountComponent = ({ propsData, config = defaultConfig }) => {

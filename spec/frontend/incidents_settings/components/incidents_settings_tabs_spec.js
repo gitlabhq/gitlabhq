@@ -20,8 +20,8 @@ describe('IncidentsSettingTabs', () => {
     }
   });
 
-  const findToggleButton = () => wrapper.find({ ref: 'toggleBtn' });
-  const findSectionHeader = () => wrapper.find({ ref: 'sectionHeader' });
+  const findToggleButton = () => wrapper.findComponent({ ref: 'toggleBtn' });
+  const findSectionHeader = () => wrapper.findComponent({ ref: 'sectionHeader' });
 
   const findIntegrationTabs = () => wrapper.findAll(GlTab);
   it('renders header text', () => {

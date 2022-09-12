@@ -99,7 +99,8 @@ artifacts:
       path: coverage/cobertura-coverage.xml
 ```
 
-The collected coverage report is uploaded to GitLab as an artifact.
+The collected coverage report is uploaded to GitLab as an artifact. You can use
+only one report per job.
 
 GitLab can display the results of coverage report in the merge request
 [diff annotations](../testing/test_coverage_visualization.md).

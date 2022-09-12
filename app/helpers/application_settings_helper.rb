@@ -450,6 +450,14 @@ module ApplicationSettingsHelper
     end
   end
 
+  def runner_token_expiration_interval_attributes
+    {
+      instance_runner_token_expiration_interval: @application_setting.runner_token_expiration_interval,
+      group_runner_token_expiration_interval: @application_setting.group_runner_token_expiration_interval,
+      project_runner_token_expiration_interval: @application_setting.project_runner_token_expiration_interval
+    }
+  end
+
   def external_authorization_service_attributes
     [
       :external_auth_client_cert,

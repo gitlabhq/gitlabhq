@@ -5,7 +5,7 @@ import PackageIconAndName from '~/packages_and_registries/shared/components/pack
 describe('PackageIconAndName', () => {
   let wrapper;
 
-  const findIcon = () => wrapper.find(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
   const mountComponent = () => {
     wrapper = shallowMount(PackageIconAndName, {

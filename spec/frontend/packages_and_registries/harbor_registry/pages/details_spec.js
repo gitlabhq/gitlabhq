@@ -24,10 +24,10 @@ jest.mock('~/rest_api', () => ({
 describe('Harbor Details Page', () => {
   let wrapper;
 
-  const findTagsLoader = () => wrapper.find(TagsLoader);
-  const findArtifactsList = () => wrapper.find(ArtifactsList);
-  const findDetailsHeader = () => wrapper.find(DetailsHeader);
-  const findPersistedSearch = () => wrapper.find(PersistedSearch);
+  const findTagsLoader = () => wrapper.findComponent(TagsLoader);
+  const findArtifactsList = () => wrapper.findComponent(ArtifactsList);
+  const findDetailsHeader = () => wrapper.findComponent(DetailsHeader);
+  const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
 
   const waitForHarborDetailRequest = async () => {
     await waitForPromises();

@@ -45,6 +45,8 @@ module Gitlab
             Gitlab::GithubImport::Importer::Events::CrossReferenced
           when 'assigned', 'unassigned'
             Gitlab::GithubImport::Importer::Events::ChangedAssignee
+          when 'review_requested', 'review_request_removed'
+            Gitlab::GithubImport::Importer::Events::ChangedReviewer
           end
         end
       end

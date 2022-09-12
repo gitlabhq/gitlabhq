@@ -176,6 +176,98 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
       end
     end
 
+    context 'with grace period' do
+      let(:yaml) do
+        <<~YAML
+          ---
+          B/TooManyOffenses:
+            Details: grace period
+            Exclude:
+              - 'x.rb'
+        YAML
+      end
+
+      shared_examples 'keeps grace period' do
+        it 'keeps Details: grace period' do
+          run_formatter
+
+          expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
+            ---
+            B/TooManyOffenses:
+              Details: grace period
+              Exclude:
+                - 'a.rb'
+                - 'c.rb'
+          YAML
+        end
+      end
+
+      context 'in rubocop_todo/' do
+        before do
+          todo_dir.write('B/TooManyOffenses', yaml)
+          todo_dir.inspect_all
+        end
+
+        it_behaves_like 'keeps grace period'
+      end
+
+      context 'in rubocop_todo.yml' do
+        before do
+          File.write('.rubocop_todo.yml', yaml)
+        end
+
+        it_behaves_like 'keeps grace period'
+      end
+
+      context 'with invalid details value' do
+        let(:yaml) do
+          <<~YAML
+            ---
+            B/TooManyOffenses:
+              Details: something unknown
+              Exclude:
+                - 'x.rb'
+          YAML
+        end
+
+        it 'ignores the details and warns' do
+          File.write('.rubocop_todo.yml', yaml)
+
+          expect { run_formatter }
+            .to output(%r{B/TooManyOffenses: Unhandled value "something unknown" for `Details` key.})
+            .to_stderr
+
+          expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
+            ---
+            B/TooManyOffenses:
+              Exclude:
+                - 'a.rb'
+                - 'c.rb'
+          YAML
+        end
+      end
+
+      context 'and previously disabled' do
+        let(:yaml) do
+          <<~YAML
+            ---
+            B/TooManyOffenses:
+              Enabled: false
+              Details: grace period
+              Exclude:
+                - 'x.rb'
+          YAML
+        end
+
+        it 'raises an exception' do
+          File.write('.rubocop_todo.yml', yaml)
+
+          expect { run_formatter }
+            .to raise_error(RuntimeError, 'B/TooManyOffenses: Cop must be enabled to use `Details: grace period`.')
+        end
+      end
+    end
+
     context 'with cop configuration in both .rubocop_todo/ and .rubocop_todo.yml' do
       before do
         todo_dir.write('B/TooManyOffenses', <<~YAML)

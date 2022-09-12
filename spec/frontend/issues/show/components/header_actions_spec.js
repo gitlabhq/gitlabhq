@@ -65,7 +65,7 @@ describe('HeaderActions component', () => {
     },
   };
 
-  const findToggleIssueStateButton = () => wrapper.find(GlButton);
+  const findToggleIssueStateButton = () => wrapper.findComponent(GlButton);
 
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
   const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
@@ -73,7 +73,7 @@ describe('HeaderActions component', () => {
   const findMobileDropdownItems = () => findMobileDropdown().findAll(GlDropdownItem);
   const findDesktopDropdownItems = () => findDesktopDropdown().findAll(GlDropdownItem);
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
 
   const findModalLinkAt = (index) => findModal().findAll(GlLink).at(index);
 

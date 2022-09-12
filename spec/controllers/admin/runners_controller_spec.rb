@@ -74,7 +74,7 @@ RSpec.describe Admin::RunnersController do
     context 'with update succeeding' do
       before do
         expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
-          expect(service).to receive(:update).with(anything).and_call_original
+          expect(service).to receive(:execute).with(anything).and_call_original
         end
       end
 
@@ -91,7 +91,7 @@ RSpec.describe Admin::RunnersController do
     context 'with update failing' do
       before do
         expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
-          expect(service).to receive(:update).with(anything).and_return(false)
+          expect(service).to receive(:execute).with(anything).and_return(ServiceResponse.error(message: 'failure'))
         end
       end
 

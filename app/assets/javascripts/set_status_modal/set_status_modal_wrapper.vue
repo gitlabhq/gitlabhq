@@ -3,27 +3,14 @@ import { GlToast, GlTooltipDirective, GlSafeHtmlDirective, GlModal } from '@gitl
 import Vue from 'vue';
 import createFlash from '~/flash';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
-import { timeRanges } from '~/vue_shared/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isUserBusy } from './utils';
+import { NEVER_TIME_RANGE, AVAILABILITY_STATUS } from './constants';
 import SetStatusForm from './set_status_form.vue';
 
-export const AVAILABILITY_STATUS = {
-  BUSY: 'busy',
-  NOT_SET: 'not_set',
-};
-
 Vue.use(GlToast);
-
-const statusTimeRanges = [
-  {
-    label: __('Never'),
-    name: 'never',
-  },
-  ...timeRanges,
-];
 
 export default {
   components: {
@@ -67,7 +54,7 @@ export default {
       message: this.currentMessage,
       modalId: 'set-user-status-modal',
       availability: isUserBusy(this.currentAvailability),
-      clearStatusAfter: statusTimeRanges[0],
+      clearStatusAfter: NEVER_TIME_RANGE,
     };
   },
   mounted() {
@@ -91,7 +78,7 @@ export default {
         message,
         availability: availability ? AVAILABILITY_STATUS.BUSY : AVAILABILITY_STATUS.NOT_SET,
         clearStatusAfter:
-          clearStatusAfter.label === statusTimeRanges[0].label ? null : clearStatusAfter.shortcut,
+          clearStatusAfter.label === NEVER_TIME_RANGE.label ? null : clearStatusAfter.shortcut,
       })
         .then(this.onUpdateSuccess)
         .catch(this.onUpdateFail);
@@ -123,7 +110,6 @@ export default {
       this.availability = value;
     },
   },
-  statusTimeRanges,
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   actionPrimary: { text: s__('SetStatusModal|Set status') },
   actionSecondary: { text: s__('SetStatusModal|Remove status') },

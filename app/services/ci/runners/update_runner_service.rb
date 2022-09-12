@@ -9,11 +9,14 @@ module Ci
         @runner = runner
       end
 
-      def update(params)
+      def execute(params)
         params[:active] = !params.delete(:paused) if params.include?(:paused)
 
-        runner.update(params).tap do |updated|
-          runner.tick_runner_queue if updated
+        if runner.update(params)
+          runner.tick_runner_queue
+          ServiceResponse.success
+        else
+          ServiceResponse.error(message: runner.errors.full_messages)
         end
       end
     end

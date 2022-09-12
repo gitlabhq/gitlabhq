@@ -36,8 +36,8 @@ describe('Package History', () => {
   });
 
   const findHistoryElement = (testId) => wrapper.find(`[data-testid="${testId}"]`);
-  const findElementLink = (container) => container.find(GlLink);
-  const findElementTimeAgo = (container) => container.find(TimeAgoTooltip);
+  const findElementLink = (container) => container.findComponent(GlLink);
+  const findElementTimeAgo = (container) => container.findComponent(TimeAgoTooltip);
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findTimeline = () => wrapper.find('[data-testid="timeline"]');
 

@@ -17,7 +17,7 @@ jest.mock('~/lib/utils/datetime_utility', () => ({
 describe('registry_header', () => {
   let wrapper;
 
-  const findTitleArea = () => wrapper.find(TitleArea);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findCommandsSlot = () => wrapper.find('[data-testid="commands-slot"]');
   const findImagesCountSubHeader = () => wrapper.find('[data-testid="images-count"]');
   const findExpirationPolicySubHeader = () => wrapper.find('[data-testid="expiration-policy"]');

@@ -14,8 +14,8 @@ describe('ExpirationDropdown', () => {
     ],
   };
 
-  const findFormSelect = () => wrapper.find(GlFormSelect);
-  const findFormGroup = () => wrapper.find(GlFormGroup);
+  const findFormSelect = () => wrapper.findComponent(GlFormSelect);
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findDescription = () => wrapper.find('[data-testid="description"]');
   const findOptions = () => wrapper.findAll('[data-testid="option"]');
 
