@@ -1514,7 +1514,9 @@ Press <kbd>Enter</kbd> to go to the next page.
 
 ### Tables
 
-Tables are not part of the core Markdown spec, but they are part of GitLab Flavored Markdown.
+Tables are not part of the core Markdown specification, but are part of GitLab Flavored Markdown.
+
+#### Markdown
 
 1. The first line contains the headers, separated by "pipes" (`|`).
 1. The second line separates the headers from the cells.
@@ -1590,12 +1592,12 @@ but they do not render properly on `docs.gitlab.com`:
 | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
 ```
 
-#### Copy from spreadsheet and paste in Markdown
+##### Copy and paste from a spreadsheet
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
-Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy-and-paste
+Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy and paste
 from a spreadsheet. For example, suppose you have the
 following spreadsheet:
 
@@ -1605,6 +1607,247 @@ Select the cells and copy them to your clipboard. Open a GitLab Markdown
 entry and paste the spreadsheet:
 
 ![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
+
+#### JSON
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+
+To render tables with JSON code blocks, use the following syntax:
+
+````markdown
+```json:table
+{}
+```
+````
+
+The `items` attribute is a list of objects representing the data points.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+````
+
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+
+To specify the table labels, use the `fields` attribute.
+
+````markdown
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+````
+
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+
+Not all elements of `items` must have corresponding values in `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+````
+
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+
+When `fields` is not explicitly specified, the labels are picked from the first element of `items`.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+````
+
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+
+You can specify custom labels for `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+````
+
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+
+You can enable sorting for individual elements of `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA", "sortable": true},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+````
+
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA", "sortable": true},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+
+You can use the `filter` attribute to render a table with content filtered dynamically by user input.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ],
+    "filter" : true
+}
+```
+````
+
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ],
+    "filter" : true
+}
+```
+
+By default, every JSON table has the caption `Generated with JSON data`.
+You can override this caption by specifying the `caption` attribute.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+    "caption" : "Custom caption"
+}
+```
+````
+
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+    "caption" : "Custom caption"
+}
+```
+
+If JSON is invalid, an error occurs.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+}
+```
+````
+
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+}
+```
 
 ## References
 

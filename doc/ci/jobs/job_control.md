@@ -578,6 +578,8 @@ To run a manual job, you must have permission to merge to the assigned branch:
    or deployment view.
 1. Next to the manual job, select **Play** (**{play}**).
 
+You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
+
 ### Protect manual jobs **(PREMIUM)**
 
 Use [protected environments](../environments/protected_environments.md)

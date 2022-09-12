@@ -17759,7 +17759,10 @@ CREATE TABLE ml_candidates (
     updated_at timestamp with time zone NOT NULL,
     iid uuid NOT NULL,
     experiment_id bigint NOT NULL,
-    user_id bigint
+    user_id bigint,
+    start_time bigint,
+    end_time bigint,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE ml_candidates_id_seq

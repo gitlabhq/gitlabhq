@@ -4,8 +4,7 @@ require 'spec_helper'
 
 RSpec.describe JiraConnectHelper do
   describe '#jira_connect_app_data' do
-    let_it_be(:installation) { create(:jira_connect_installation) }
-    let_it_be(:subscription) { create(:jira_connect_subscription, installation: installation) }
+    let_it_be(:subscription) { create(:jira_connect_subscription) }
 
     let(:user) { create(:user) }
     let(:client_id) { '123' }
@@ -14,12 +13,11 @@ RSpec.describe JiraConnectHelper do
       stub_application_setting(jira_connect_application_key: client_id)
     end
 
-    subject { helper.jira_connect_app_data([subscription], installation) }
+    subject { helper.jira_connect_app_data([subscription]) }
 
     context 'user is not logged in' do
       before do
         allow(view).to receive(:current_user).and_return(nil)
-        allow(Gitlab).to receive_message_chain('config.gitlab.host') { 'http://test.host' }
       end
 
       it 'includes Jira Connect app attributes' do
@@ -38,7 +36,7 @@ RSpec.describe JiraConnectHelper do
       end
 
       context 'with oauth_metadata' do
-        let(:oauth_metadata) { helper.jira_connect_app_data([subscription], installation)[:oauth_metadata] }
+        let(:oauth_metadata) { helper.jira_connect_app_data([subscription])[:oauth_metadata] }
 
         subject(:parsed_oauth_metadata) { Gitlab::Json.parse(oauth_metadata).deep_symbolize_keys }
 
@@ -74,30 +72,6 @@ RSpec.describe JiraConnectHelper do
 
           it 'does not assign oauth_metadata' do
             expect(oauth_metadata).to be_nil
-          end
-        end
-
-        context 'with self-managed instance' do
-          let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://gitlab.example.com') }
-
-          it 'points urls to the self-managed instance' do
-            expect(parsed_oauth_metadata).to include(
-              oauth_authorize_url: start_with('https://gitlab.example.com/oauth/authorize?'),
-              oauth_token_url: 'https://gitlab.example.com/oauth/token'
-            )
-          end
-
-          context 'and jira_connect_oauth_self_managed feature is disabled' do
-            before do
-              stub_feature_flags(jira_connect_oauth_self_managed: false)
-            end
-
-            it 'does not point urls to the self-managed instance' do
-              expect(parsed_oauth_metadata).not_to include(
-                oauth_authorize_url: start_with('https://gitlab.example.com/oauth/authorize?'),
-                oauth_token_url: 'https://gitlab.example.com/oauth/token'
-              )
-            end
           end
         end
       end

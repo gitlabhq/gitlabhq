@@ -13,7 +13,7 @@ RSpec.describe Gitlab::ImportExport::LegacyRelationTreeSaver do
     it 'uses FastHashSerializer' do
       expect(Gitlab::ImportExport::FastHashSerializer)
         .to receive(:new)
-        .with(exportable, tree, batch_size: Gitlab::ImportExport::Json::StreamingSerializer::BATCH_SIZE)
+        .with(exportable, tree)
         .and_return(serializer)
 
       expect(serializer).to receive(:execute)

@@ -4,7 +4,7 @@ module API
   module Entities
     module Ml
       module Mlflow
-        class GetExperiment < Grape::Entity
+        class Experiment < Grape::Entity
           expose :experiment do
             expose :experiment_id
             expose :name

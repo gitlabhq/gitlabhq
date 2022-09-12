@@ -55,7 +55,8 @@ class RemoveDuplicateProjectAuthorizations < ActiveRecord::Migration[6.1]
   end
 
   def batch(&block)
-    order = Gitlab::Pagination::Keyset::Order.build([
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'user_id',
           order_expression: ProjectAuthorization.arel_table[:user_id].asc,

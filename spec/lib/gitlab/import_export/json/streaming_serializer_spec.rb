@@ -212,12 +212,6 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
     end
   end
 
-  describe '.batch_size' do
-    it 'returns default batch size' do
-      expect(described_class.batch_size(exportable)).to eq(described_class::BATCH_SIZE)
-    end
-  end
-
   describe '#serialize_relation' do
     context 'when record is a merge request' do
       let(:json_writer) do

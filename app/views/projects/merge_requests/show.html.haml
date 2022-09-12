@@ -39,7 +39,7 @@
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
                 = gl_badge_tag @number_of_pipelines, { size: :sm }, { class: 'js-pipelines-mr-count' }
-          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
+          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }

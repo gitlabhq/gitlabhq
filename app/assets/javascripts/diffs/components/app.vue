@@ -331,6 +331,8 @@ export default {
       mrReviews: this.rehydratedMrReviews,
     });
 
+    this.interfaceWithDOM();
+
     if (this.endpointCodequality) {
       this.setCodequalityEndpoint(this.endpointCodequality);
     }
@@ -445,6 +447,16 @@ export default {
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
+    interfaceWithDOM() {
+      this.diffsTab = document.querySelector('.js-diffs-tab');
+    },
+    updateChangesTabCount() {
+      const badge = this.diffsTab.querySelector('.gl-badge');
+
+      if (this.diffsTab && badge) {
+        badge.textContent = this.diffFilesLength;
+      }
+    },
     navigateToDiffFileNumber(number) {
       this.navigateToDiffFileIndex(number - 1);
     },
@@ -461,7 +473,11 @@ export default {
       this.fetchDiffFilesMeta()
         .then(({ real_size }) => {
           this.diffFilesLength = parseInt(real_size, 10);
-          if (toggleTree) this.setTreeDisplay();
+          if (toggleTree) {
+            this.setTreeDisplay();
+          }
+
+          this.updateChangesTabCount();
         })
         .catch(() => {
           createFlash({

@@ -6,8 +6,13 @@ module API
   # MLFlow integration API, replicating the Rest API https://www.mlflow.org/docs/latest/rest-api.html#rest-api
   module Ml
     class Mlflow < ::API::Base
+      include APIGuard
+
       # The first part of the url is the namespace, the second part of the URL is what the MLFlow client calls
       MLFLOW_API_PREFIX = ':id/ml/mflow/api/2.0/mlflow/'
+
+      allow_access_with_scope :api
+      allow_access_with_scope :read_api, if: -> (request) { request.get? || request.head? }
 
       before do
         authenticate!
@@ -39,7 +44,7 @@ module API
         namespace MLFLOW_API_PREFIX do
           resource :experiments do
             desc 'Fetch experiment by experiment_id' do
-              success Entities::Ml::Mlflow::GetExperiment
+              success Entities::Ml::Mlflow::Experiment
               detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#get-experiment'
             end
             params do
@@ -50,11 +55,11 @@ module API
 
               resource_not_found! unless experiment
 
-              present experiment, with: Entities::Ml::Mlflow::GetExperiment
+              present experiment, with: Entities::Ml::Mlflow::Experiment
             end
 
             desc 'Fetch experiment by experiment_name' do
-              success Entities::Ml::Mlflow::GetExperiment
+              success Entities::Ml::Mlflow::Experiment
               detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#get-experiment-by-name'
             end
             params do
@@ -65,7 +70,7 @@ module API
 
               resource_not_found! unless experiment
 
-              present experiment, with: Entities::Ml::Mlflow::GetExperiment
+              present experiment, with: Entities::Ml::Mlflow::Experiment
             end
 
             desc 'Create experiment' do
@@ -85,6 +90,78 @@ module API
                                                     project: user_project)
 
               present experiment, with: Entities::Ml::Mlflow::NewExperiment
+            end
+          end
+
+          resource :runs do
+            desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
+              success Entities::Ml::Mlflow::Run
+              detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#get-run'
+            end
+            params do
+              optional :run_id, type: String, desc: 'UUID of the candidate.'
+              optional :run_uuid, type: String, desc: 'This parameter is ignored'
+            end
+            get 'get', urgency: :low do
+              candidate = ::Ml::Candidate.with_project_id_and_iid(user_project.id, params[:run_id])
+
+              resource_not_found! unless candidate
+
+              present candidate, with: Entities::Ml::Mlflow::Run
+            end
+
+            desc 'Creates a Run.' do
+              success Entities::Ml::Mlflow::Run
+              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#create-run',
+                       'MLFlow Runs map to GitLab Candidates']
+            end
+            params do
+              requires :experiment_id, type: Integer,
+                                       desc: 'Id for the experiment, relative to the project'
+              optional :start_time, type: Integer,
+                                    desc: 'Unix timestamp in milliseconds of when the run started.',
+                                    default: 0
+              optional :user_id, type: String, desc: 'This will be ignored'
+              optional :tags, type: Array, desc: 'This will be ignored'
+            end
+            post 'create', urgency: :low do
+              experiment = ::Ml::Experiment.by_project_id_and_iid(user_project.id, params[:experiment_id].to_i)
+
+              resource_not_found! unless experiment
+
+              candidate = ::Ml::Candidate.create!(
+                experiment: experiment,
+                user: current_user,
+                start_time: params[:start_time] || 0
+              )
+
+              present candidate, with: Entities::Ml::Mlflow::Run
+            end
+
+            desc 'Updates a Run.' do
+              success Entities::Ml::Mlflow::UpdateRun
+              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run',
+                       'MLFlow Runs map to GitLab Candidates']
+            end
+            params do
+              optional :run_id, type: String, desc: 'UUID of the candidate.'
+              optional :status, type: String,
+                                values: ::Ml::Candidate.statuses.keys.map(&:upcase),
+                                desc: "Status of the run. Accepts: " \
+                                      "#{::Ml::Candidate.statuses.keys.map(&:upcase)}."
+              optional :end_time, type: Integer, desc: 'Ending time of the run'
+            end
+            post 'update', urgency: :low do
+              candidate = ::Ml::Candidate.with_project_id_and_iid(user_project.id, params[:run_id])
+
+              resource_not_found! unless candidate
+
+              candidate.status = params[:status].downcase if params[:status]
+              candidate.end_time = params[:end_time] if params[:end_time]
+
+              candidate.save if candidate.valid?
+
+              present candidate, with: Entities::Ml::Mlflow::UpdateRun
             end
           end
         end

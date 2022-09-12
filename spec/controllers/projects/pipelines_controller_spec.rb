@@ -270,9 +270,13 @@ RSpec.describe Projects::PipelinesController do
                                             user: user,
                                             merge_request: merge_request)
 
-      create_build(pipeline, 'build', 1, 'build', user)
-      create_build(pipeline, 'test', 2, 'test', user)
-      create_build(pipeline, 'deploy', 3, 'deploy', user)
+      build_stage = create(:ci_stage, name: 'build', pipeline: pipeline)
+      test_stage = create(:ci_stage, name: 'test', pipeline: pipeline)
+      deploy_stage = create(:ci_stage, name: 'deploy', pipeline: pipeline)
+
+      create_build(pipeline, build_stage, 1, 'build', user)
+      create_build(pipeline, test_stage, 2, 'test', user)
+      create_build(pipeline, deploy_stage, 3, 'deploy', user)
 
       pipeline
     end
@@ -284,7 +288,7 @@ RSpec.describe Projects::PipelinesController do
         :artifacts,
         artifacts_expire_at: 2.days.from_now,
         pipeline: pipeline,
-        stage: stage,
+        ci_stage: stage,
         stage_idx: stage_idx,
         name: name,
         status: status,
@@ -327,21 +331,24 @@ RSpec.describe Projects::PipelinesController do
       render_views
 
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+      let_it_be(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
+      let_it_be(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
 
       def create_build_with_artifacts(stage, stage_idx, name, status)
-        create(:ci_build, :artifacts, :tags, status, user: user, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+        create(:ci_build, :artifacts, :tags, status, user: user, pipeline: pipeline, ci_stage: stage, stage_idx: stage_idx, name: name)
       end
 
       def create_bridge(stage, stage_idx, name, status)
-        create(:ci_bridge, status, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+        create(:ci_bridge, status, pipeline: pipeline, ci_stage: stage, stage_idx: stage_idx, name: name)
       end
 
       before do
-        create_build_with_artifacts('build', 0, 'job1', :failed)
-        create_build_with_artifacts('build', 0, 'job2', :running)
-        create_build_with_artifacts('build', 0, 'job3', :pending)
-        create_bridge('deploy', 1, 'deploy-a', :failed)
-        create_bridge('deploy', 1, 'deploy-b', :created)
+        create_build_with_artifacts(build_stage, 0, 'job1', :failed)
+        create_build_with_artifacts(build_stage, 0, 'job2', :running)
+        create_build_with_artifacts(build_stage, 0, 'job3', :pending)
+        create_bridge(deploy_stage, 1, 'deploy-a', :failed)
+        create_bridge(deploy_stage, 1, 'deploy-b', :created)
       end
 
       it 'avoids N+1 database queries', :request_store, :use_sql_query_cache do
@@ -354,11 +361,11 @@ RSpec.describe Projects::PipelinesController do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        create_build_with_artifacts('build', 0, 'job4', :failed)
-        create_build_with_artifacts('build', 0, 'job5', :running)
-        create_build_with_artifacts('build', 0, 'job6', :pending)
-        create_bridge('deploy', 1, 'deploy-c', :failed)
-        create_bridge('deploy', 1, 'deploy-d', :created)
+        create_build_with_artifacts(build_stage, 0, 'job4', :failed)
+        create_build_with_artifacts(build_stage, 0, 'job5', :running)
+        create_build_with_artifacts(build_stage, 0, 'job6', :pending)
+        create_bridge(deploy_stage, 1, 'deploy-c', :failed)
+        create_bridge(deploy_stage, 1, 'deploy-d', :created)
 
         expect do
           get_pipeline_html
@@ -402,11 +409,16 @@ RSpec.describe Projects::PipelinesController do
                                    sha: project.commit.id)
       end
 
+      let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+      let(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
+      let(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
+      let(:post_deploy_stage) { create(:ci_stage, name: 'post deploy', pipeline: pipeline) }
+
       before do
-        create_build('build', 0, 'build')
-        create_build('test', 1, 'rspec 0')
-        create_build('deploy', 2, 'production')
-        create_build('post deploy', 3, 'pages 0')
+        create_build(build_stage, 0, 'build')
+        create_build(test_stage, 1, 'rspec 0')
+        create_build(deploy_stage, 2, 'production')
+        create_build(post_deploy_stage, 3, 'pages 0')
       end
 
       it 'does not perform N + 1 queries' do
@@ -612,7 +624,9 @@ RSpec.describe Projects::PipelinesController do
 
       def create_pipeline(project)
         create(:ci_empty_pipeline, project: project).tap do |pipeline|
-          create(:ci_build, pipeline: pipeline, stage: 'test', name: 'rspec')
+          create(:ci_build, pipeline: pipeline,
+                            ci_stage: create(:ci_stage, name: 'test', pipeline: pipeline),
+                            name: 'rspec')
         end
       end
 
@@ -642,7 +656,7 @@ RSpec.describe Projects::PipelinesController do
     end
 
     def create_build(stage, stage_idx, name)
-      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+      create(:ci_build, pipeline: pipeline, ci_stage: stage, stage_idx: stage_idx, name: name)
     end
   end
 
@@ -654,10 +668,12 @@ RSpec.describe Projects::PipelinesController do
 
   describe 'GET dag.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+    let(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
 
     before do
-      create_build('build', 1, 'build')
-      create_build('test', 2, 'test', scheduling_type: 'dag').tap do |job|
+      create_build(build_stage, 1, 'build')
+      create_build(test_stage, 2, 'test', scheduling_type: 'dag').tap do |job|
         create(:ci_build_need, build: job, name: 'build')
       end
     end
@@ -681,7 +697,7 @@ RSpec.describe Projects::PipelinesController do
     end
 
     def create_build(stage, stage_idx, name, params = {})
-      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, **params)
+      create(:ci_build, pipeline: pipeline, ci_stage: stage, stage_idx: stage_idx, name: name, **params)
     end
   end
 
@@ -730,11 +746,12 @@ RSpec.describe Projects::PipelinesController do
 
   describe 'GET stages.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
 
     context 'when accessing existing stage' do
       before do
-        create(:ci_build, :retried, :failed, pipeline: pipeline, stage: 'build')
-        create(:ci_build, pipeline: pipeline, stage: 'build')
+        create(:ci_build, :retried, :failed, pipeline: pipeline, ci_stage: build_stage)
+        create(:ci_build, pipeline: pipeline, ci_stage: build_stage)
       end
 
       context 'without retried' do

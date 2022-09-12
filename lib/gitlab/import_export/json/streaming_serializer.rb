@@ -6,11 +6,7 @@ module Gitlab
       class StreamingSerializer
         include Gitlab::ImportExport::CommandLineUtil
 
-        BATCH_SIZE = 2
-
-        def self.batch_size(exportable)
-          BATCH_SIZE
-        end
+        BATCH_SIZE = 100
 
         class Raw < String
           def to_json(*_args)
@@ -88,7 +84,7 @@ module Gitlab
         end
 
         def batch(relation, key)
-          opts = { of: batch_size }
+          opts = { of: BATCH_SIZE }
           order_by = reorders(relation, key)
 
           # we need to sort issues by non primary key column(relative_position)
@@ -136,10 +132,6 @@ module Gitlab
 
         def preloads
           relations_schema[:preload]
-        end
-
-        def batch_size
-          @batch_size ||= self.class.batch_size(@exportable)
         end
 
         def reorders(relation, key)

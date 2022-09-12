@@ -14,9 +14,18 @@ RSpec.describe API::Ml::Mlflow do
     create(:ml_experiments, user: project.creator, project: project)
   end
 
+  let_it_be(:candidate) do
+    create(:ml_candidates, user: experiment.user, start_time: 1234, experiment: experiment)
+  end
+
+  let_it_be(:another_candidate) do
+    create(:ml_candidates,
+           experiment: create(:ml_experiments, project: create(:project)))
+  end
+
   let(:current_user) { developer }
   let(:ff_value) { true }
-  let(:scopes) { %w[api] }
+  let(:scopes) { %w[read_api api] }
   let(:headers) do
     { 'Authorization' => "Bearer #{create(:personal_access_token, scopes: scopes, user: current_user).token}" }
   end
@@ -43,6 +52,22 @@ RSpec.describe API::Ml::Mlflow do
       expect(response).to have_gitlab_http_status(:not_found)
 
       expect(json_response).to include({ "error_code" => 'RESOURCE_DOES_NOT_EXIST' })
+    end
+  end
+
+  shared_examples 'Requires api scope' do
+    context 'when user has access but token has wrong scope' do
+      let(:scopes) { %w[read_api] }
+
+      it { expect(response).to have_gitlab_http_status(:forbidden) }
+    end
+  end
+
+  shared_examples 'Requires read_api scope' do
+    context 'when user has access but token has wrong scope' do
+      let(:scopes) { %w[read_user] }
+
+      it { expect(response).to have_gitlab_http_status(:forbidden) }
     end
   end
 
@@ -109,6 +134,7 @@ RSpec.describe API::Ml::Mlflow do
       end
 
       it_behaves_like 'shared error cases'
+      it_behaves_like 'Requires read_api scope'
     end
   end
 
@@ -145,6 +171,7 @@ RSpec.describe API::Ml::Mlflow do
       end
 
       it_behaves_like 'shared error cases'
+      it_behaves_like 'Requires read_api scope'
     end
   end
 
@@ -183,6 +210,157 @@ RSpec.describe API::Ml::Mlflow do
 
         it_behaves_like 'Not Found', '404 Project Not Found'
       end
+
+      it_behaves_like 'shared error cases'
+      it_behaves_like 'Requires api scope'
+    end
+  end
+
+  describe 'Runs' do
+    describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/create' do
+      let(:route) do
+        "/projects/#{project.id}/ml/mflow/api/2.0/mlflow/runs/create"
+      end
+
+      let(:params) { { experiment_id: experiment.iid.to_s, start_time: Time.now.to_i } }
+      let(:request) { post api(route), params: params, headers: headers }
+
+      it 'creates the run' do
+        expected_properties = {
+          'experiment_id' => params[:experiment_id],
+          'user_id' => current_user.id.to_s,
+          'start_time' => params[:start_time],
+          'artifact_uri' => 'not_implemented',
+          'status' => "RUNNING",
+          'lifecycle_stage' => "active"
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('ml/run')
+        expect(json_response['run']).to include('info' => hash_including(**expected_properties), 'data' => {})
+      end
+
+      describe 'Error States' do
+        context 'when experiment id is not passed' do
+          let(:params) { {} }
+
+          it_behaves_like 'Bad Request'
+        end
+
+        context 'when experiment id does not exist' do
+          let(:params) { { experiment_id: non_existing_record_iid.to_s } }
+
+          it_behaves_like 'Not Found - Resource Does Not Exist'
+        end
+
+        it_behaves_like 'shared error cases'
+        it_behaves_like 'Requires api scope'
+      end
+    end
+
+    describe 'GET /projects/:id/ml/mflow/api/2.0/mlflow/runs/get' do
+      let_it_be(:route) do
+        "/projects/#{project.id}/ml/mflow/api/2.0/mlflow/runs/get"
+      end
+
+      let_it_be(:candidate) { create(:ml_candidates, user: experiment.user, start_time: 1234, experiment: experiment) }
+
+      let(:params) { { 'run_id' => candidate.iid } }
+
+      it 'gets the run' do
+        expected_properties = {
+          'experiment_id' => candidate.experiment.iid.to_s,
+          'user_id' => candidate.user.id.to_s,
+          'start_time' => candidate.start_time,
+          'artifact_uri' => 'not_implemented',
+          'status' => "RUNNING",
+          'lifecycle_stage' => "active"
+        }
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('ml/run')
+        expect(json_response['run']).to include('info' => hash_including(**expected_properties), 'data' => {})
+      end
+
+      describe 'Error States' do
+        context 'when run id is not passed' do
+          let(:params) { {} }
+
+          it_behaves_like 'Not Found - Resource Does Not Exist'
+        end
+
+        context 'when run id does not exist' do
+          let(:params) { { run_id: non_existing_record_iid.to_s } }
+
+          it_behaves_like 'Not Found - Resource Does Not Exist'
+        end
+
+        context 'when run id exists but does not belong to project' do
+          let(:params) { { run_id: another_candidate.iid.to_s } }
+
+          it_behaves_like 'Not Found - Resource Does Not Exist'
+        end
+
+        it_behaves_like 'shared error cases'
+        it_behaves_like 'Requires read_api scope'
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/update' do
+    let(:route) { "/projects/#{project.id}/ml/mflow/api/2.0/mlflow/runs/update" }
+    let(:params) { { run_id: candidate.iid.to_s, status: 'FAILED', end_time: Time.now.to_i } }
+    let(:request) { post api(route), params: params, headers: headers }
+
+    it 'updates the run' do
+      expected_properties = {
+        'experiment_id' => candidate.experiment.iid.to_s,
+        'user_id' => candidate.user.id.to_s,
+        'start_time' => candidate.start_time,
+        'end_time' => params[:end_time],
+        'artifact_uri' => 'not_implemented',
+        'status' => 'FAILED',
+        'lifecycle_stage' => 'active'
+      }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to match_response_schema('ml/update_run')
+      expect(json_response).to include('run_info' => hash_including(**expected_properties))
+    end
+
+    describe 'Error States' do
+      context 'when run id is not passed' do
+        let(:params) { {} }
+
+        it_behaves_like 'Not Found - Resource Does Not Exist'
+      end
+
+      context 'when run id does not exist' do
+        let(:params) { { run_id: non_existing_record_iid.to_s } }
+
+        it_behaves_like 'Not Found - Resource Does Not Exist'
+      end
+
+      context 'when run id exists but does not belong to project' do
+        let(:params) { { run_id: another_candidate.iid.to_s } }
+
+        it_behaves_like 'Not Found - Resource Does Not Exist'
+      end
+
+      context 'when run id exists but status in invalid' do
+        let(:params) { { run_id: candidate.iid.to_s, status: 'YOLO', end_time: Time.now.to_i } }
+
+        it_behaves_like 'Bad Request'
+      end
+
+      context 'when run id exists but end_time is invalid' do
+        let(:params) { { run_id: candidate.iid.to_s, status: 'FAILED', end_time: 's' } }
+
+        it_behaves_like 'Bad Request'
+      end
+
+      it_behaves_like 'shared error cases'
+      it_behaves_like 'Requires api scope'
     end
   end
 end

@@ -43,4 +43,4 @@ notify-pipeline-failure:
   variables:
     NOTIFY_CHANNEL: "${NOTIFY_PIPELINE_FAILURE_CHANNEL}"
   script:
-    - scripts/slack ${NOTIFY_CHANNEL} "❌ `${CI_COMMIT_REF_NAME}` pipeline failed! See ${CI_PIPELINE_URL}" ci_failing "notify-pipeline-failure"
+    - scripts/slack ${NOTIFY_CHANNEL} "❌ \`${CI_COMMIT_REF_NAME}\` pipeline failed! See ${CI_PIPELINE_URL}" ci_failing "notify-pipeline-failure"
