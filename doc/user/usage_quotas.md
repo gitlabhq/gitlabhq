@@ -57,8 +57,8 @@ you must purchase additional storage. For more details, see [Excess storage usag
 
 Prerequisites:
 
-- To view storage usage for a project, you must be a project Maintainer or namespace Owner.
-- To view storage usage for a namespace, you must be the namespace Owner.
+- To view storage usage for a project, you must have at least the Maintainer role for the project or Owner role for the namespace.
+- To view storage usage for a namespace, you must have the Owner role for the namespace.
 
 1. Go to your project or namespace:
    - For a project, on the top bar, select **Menu > Projects** and find your project.

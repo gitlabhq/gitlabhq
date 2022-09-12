@@ -8418,6 +8418,29 @@ The edge type for [`ProjectMember`](#projectmember).
 | <a id="projectmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectmemberedgenode"></a>`node` | [`ProjectMember`](#projectmember) | The item at the end of the edge. |
 
+#### `PushAccessLevelConnection`
+
+The connection type for [`PushAccessLevel`](#pushaccesslevel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pushaccesslevelconnectionedges"></a>`edges` | [`[PushAccessLevelEdge]`](#pushaccessleveledge) | A list of edges. |
+| <a id="pushaccesslevelconnectionnodes"></a>`nodes` | [`[PushAccessLevel]`](#pushaccesslevel) | A list of nodes. |
+| <a id="pushaccesslevelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PushAccessLevelEdge`
+
+The edge type for [`PushAccessLevel`](#pushaccesslevel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pushaccessleveledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pushaccessleveledgenode"></a>`node` | [`PushAccessLevel`](#pushaccesslevel) | The item at the end of the edge. |
+
 #### `ReleaseAssetLinkConnection`
 
 The connection type for [`ReleaseAssetLink`](#releaseassetlink).
@@ -10107,6 +10130,7 @@ Branch protection details for a branch rule.
 | ---- | ---- | ----------- |
 | <a id="branchprotectionallowforcepush"></a>`allowForcePush` | [`Boolean!`](#boolean) | Toggle force push to the branch for users with write access. |
 | <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when this branch is the source branch. (see [Connections](#connections)) |
+| <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when this branch is the source branch. (see [Connections](#connections)) |
 
 ### `BranchRule`
 
@@ -17108,6 +17132,17 @@ The alert condition for Prometheus.
 | ---- | ---- | ----------- |
 | <a id="prometheusalerthumanizedtext"></a>`humanizedText` | [`String!`](#string) | Human-readable text of the alert condition. |
 | <a id="prometheusalertid"></a>`id` | [`ID!`](#id) | ID of the alert condition. |
+
+### `PushAccessLevel`
+
+Represents the push access level of a branch protection.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pushaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
+| <a id="pushaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
 
 ### `PushRules`
 
