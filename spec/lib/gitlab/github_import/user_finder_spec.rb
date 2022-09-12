@@ -67,12 +67,6 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
         it_behaves_like 'user ID finder', :assignee
       end
-
-      context 'when the author_key parameter is :assigner' do
-        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', assigner: user) }
-
-        it_behaves_like 'user ID finder', :assigner
-      end
     end
   end
 

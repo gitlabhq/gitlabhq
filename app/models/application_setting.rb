@@ -217,6 +217,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0,
                             less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
 
+  validates :max_pages_custom_domains_per_project,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :jobs_per_stage_page_size,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }

@@ -738,6 +738,19 @@ To set the maximum size of GitLab Pages site in a project, overriding the inheri
 1. Enter a value under **Maximum size of pages** in MB.
 1. Select **Save changes**.
 
+## Set maximum number of GitLab Pages custom domains for a project
+
+Prerequisite:
+
+- You must be an administrator of a self-managed GitLab instance.
+
+To set the maximum number of GitLab Pages custom domains for a project:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Preferences**, and expand **Pages**.
+1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
+1. Select **Save changes**.
+
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on

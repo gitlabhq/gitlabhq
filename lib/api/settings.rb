@@ -98,6 +98,7 @@ module API
       optional :max_export_size, type: Integer, desc: 'Maximum export size in MB'
       optional :max_import_size, type: Integer, desc: 'Maximum import size in MB'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
+      optional :max_pages_custom_domains_per_project, type: Integer, desc: 'Maximum number of GitLab Pages custom domains per project'
       optional :metrics_method_call_threshold, type: Integer, desc: 'A method call is only tracked when it takes longer to complete than the given amount of milliseconds.'
       optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       optional :password_authentication_enabled_for_web, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface'

@@ -2802,6 +2802,9 @@ msgstr ""
 msgid "AdminSettings|Maximum number of active pipelines per project"
 msgstr ""
 
+msgid "AdminSettings|Maximum number of custom domains per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum number of jobs in a single pipeline"
 msgstr ""
 
@@ -2890,6 +2893,9 @@ msgid "AdminSettings|Set limit to 0 to disable it."
 msgstr ""
 
 msgid "AdminSettings|Set the initial name and protections for the default branch of new repositories created in the instance."
+msgstr ""
+
+msgid "AdminSettings|Set the maximum number of GitLab Pages custom domains per project (0 for unlimited). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}"
@@ -40655,6 +40661,9 @@ msgid "This project manages its dependencies using %{strong_start}%{manager_name
 msgstr ""
 
 msgid "This project path either does not exist or you do not have access."
+msgstr ""
+
+msgid "This project reached the limit of custom domains. (Max %d)"
 msgstr ""
 
 msgid "This project will be deleted on %{date}"

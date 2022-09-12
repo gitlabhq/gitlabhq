@@ -7,22 +7,22 @@ module Gitlab
         class ChangedAssignee < BaseImporter
           def execute(issue_event)
             assignee_id = author_id(issue_event, author_key: :assignee)
-            assigner_id = author_id(issue_event, author_key: :assigner)
+            author_id = author_id(issue_event, author_key: :actor)
 
-            note_body = parse_body(issue_event, assigner_id, assignee_id)
+            note_body = parse_body(issue_event, assignee_id)
 
-            create_note(issue_event, note_body, assigner_id)
+            create_note(issue_event, note_body, author_id)
           end
 
           private
 
-          def create_note(issue_event, note_body, assigner_id)
+          def create_note(issue_event, note_body, author_id)
             Note.create!(
               system: true,
               noteable_type: issuable_type(issue_event),
               noteable_id: issuable_db_id(issue_event),
               project: project,
-              author_id: assigner_id,
+              author_id: author_id,
               note: note_body,
               system_note_metadata: SystemNoteMetadata.new(
                 {
@@ -36,12 +36,14 @@ module Gitlab
             )
           end
 
-          def parse_body(issue_event, assigner_id, assignee_id)
+          def parse_body(issue_event, assignee_id)
+            assignee = User.find(assignee_id).to_reference
+
             Gitlab::I18n.with_default_locale do
               if issue_event.event == "unassigned"
-                "unassigned #{User.find(assigner_id).to_reference}"
+                "unassigned #{assignee}"
               else
-                "assigned to #{User.find(assignee_id).to_reference}"
+                "assigned to #{assignee}"
               end
             end
           end

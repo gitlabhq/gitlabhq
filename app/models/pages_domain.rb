@@ -33,6 +33,7 @@ class PagesDomain < ApplicationRecord
   validate :validate_pages_domain
   validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
   validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? }
+  validate :validate_custom_domain_count_per_project, on: :create
 
   default_value_for(:auto_ssl_enabled, allows_nil: false) { ::Gitlab::LetsEncrypt.enabled? }
   default_value_for :scope, allows_nil: false, value: :project
@@ -222,6 +223,16 @@ class PagesDomain < ApplicationRecord
 
   def clear_auto_ssl_failure
     self.auto_ssl_failed = false
+  end
+
+  def validate_custom_domain_count_per_project
+    return unless project
+
+    unless project.can_create_custom_domains?
+      self.errors.add(
+        :base,
+        _("This project reached the limit of custom domains. (Max %d)") % Gitlab::CurrentSettings.max_pages_custom_domains_per_project)
+    end
   end
 
   private

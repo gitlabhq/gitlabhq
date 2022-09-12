@@ -116,10 +116,18 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_presence_of(:max_yaml_depth) }
     it { is_expected.to validate_numericality_of(:max_yaml_depth).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
+    it { is_expected.to validate_presence_of(:max_pages_custom_domains_per_project) }
 
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
+    end
+
+    it 'ensures max_pages_custom_domains_per_project is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
+      is_expected
+        .to validate_numericality_of(:max_pages_custom_domains_per_project)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
     end
 
     it { is_expected.to validate_presence_of(:jobs_per_stage_page_size) }

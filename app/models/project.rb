@@ -3036,6 +3036,12 @@ class Project < ApplicationRecord
     deployments.where(id: deployment_id).fast_destroy_all
   end
 
+  def can_create_custom_domains?
+    return true if Gitlab::CurrentSettings.max_pages_custom_domains_per_project == 0
+
+    pages_domains.count < Gitlab::CurrentSettings.max_pages_custom_domains_per_project
+  end
+
   private
 
   # overridden in EE

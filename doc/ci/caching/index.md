@@ -84,7 +84,8 @@ test-job:
       paths:
         - .yarn-cache/
   script:
-    - bundle install --path=vendor
+    - bundle config set --local path 'vendor/ruby'
+    - bundle install
     - yarn install --cache-folder .yarn-cache
     - echo Run tests...
 ```
@@ -353,7 +354,8 @@ cache:
 
 before_script:
   - ruby -v                                        # Print out ruby version for debugging
-  - bundle install -j $(nproc) --path vendor/ruby  # Install dependencies into ./vendor/ruby
+  - bundle config set --local path 'vendor/ruby'   # The location to install the specified gems to
+  - bundle install -j $(nproc)                     # Install dependencies into ./vendor/ruby
 
 rspec:
   script:
@@ -379,14 +381,16 @@ cache:
 test_job:
   stage: test
   before_script:
-    - bundle install --without production --path vendor/ruby
+    - bundle config set --local path 'vendor/ruby'
+    - bundle install --without production
   script:
     - bundle exec rspec
 
 deploy_job:
   stage: production
   before_script:
-    - bundle install --without test --path vendor/ruby
+    - bundle config set --local path 'vendor/ruby'   # The location to install the specified gems to
+    - bundle install --without test
   script:
     - bundle exec deploy
 ```

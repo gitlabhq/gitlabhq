@@ -8337,6 +8337,25 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#can_create_custom_domains?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:pages_domain) { create(:pages_domain, project: project) }
+
+    subject { project.can_create_custom_domains? }
+
+    context 'when max custom domain setting is set to 0' do
+      it { is_expected.to be true }
+    end
+
+    context 'when max custom domain setting is not set to 0' do
+      before do
+        Gitlab::CurrentSettings.update!(max_pages_custom_domains_per_project: 1)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   private
 
   def finish_job(export_job)

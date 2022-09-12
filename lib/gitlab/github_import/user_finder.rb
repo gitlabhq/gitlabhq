@@ -45,8 +45,6 @@ module Gitlab
                       object&.actor
                     when :assignee
                       object&.assignee
-                    when :assigner
-                      object&.assigner
                     else
                       object&.author
                     end

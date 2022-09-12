@@ -22,6 +22,13 @@
         - pages_link_url = help_page_path('administration/pages/index', anchor: 'set-maximum-size-of-gitlab-pages-site-in-a-project')
         - pages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pages_link_url }
         = s_('AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}').html_safe % { link_start: pages_link_start, link_end: '</a>'.html_safe }
+    .form-group
+      = f.label :max_pages_custom_domains_per_project, s_('AdminSettings|Maximum number of custom domains per project'), class: 'label-bold'
+      = f.number_field :max_pages_custom_domains_per_project, class: 'form-control gl-form-input'
+      .form-text.text-muted
+        - pages_link_url = help_page_path('administration/pages/index', anchor: 'set-maximum-number-of-gitlab-pages-custom-domains-for-a-project')
+        - pages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pages_link_url }
+        = s_('AdminSettings|Set the maximum number of GitLab Pages custom domains per project (0 for unlimited). %{link_start}Learn more.%{link_end}').html_safe % { link_start: pages_link_start, link_end: '</a>'.html_safe }
     %h5
       = s_("AdminSettings|Configure Let's Encrypt")
     %p

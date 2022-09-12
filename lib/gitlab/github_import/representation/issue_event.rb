@@ -10,7 +10,7 @@ module Gitlab
         attr_reader :attributes
 
         expose_attribute :id, :actor, :event, :commit_id, :label_title, :old_title, :new_title,
-                         :milestone_title, :issue, :source, :assignee, :assigner, :created_at
+                         :milestone_title, :issue, :source, :assignee, :created_at
 
         # attributes - A Hash containing the event details. The keys of this
         #              Hash (and any nested hashes) must be symbols.
@@ -47,7 +47,6 @@ module Gitlab
               issue: event.issue&.to_h&.symbolize_keys,
               source: event.source,
               assignee: user_representation(event.assignee),
-              assigner: user_representation(event.assigner),
               created_at: event.created_at
             )
           end
@@ -57,7 +56,6 @@ module Gitlab
             hash = Representation.symbolize_hash(raw_hash)
             hash[:actor] = user_representation(hash[:actor], source: :hash)
             hash[:assignee] = user_representation(hash[:assignee], source: :hash)
-            hash[:assigner] = user_representation(hash[:assigner], source: :hash)
 
             new(hash)
           end
