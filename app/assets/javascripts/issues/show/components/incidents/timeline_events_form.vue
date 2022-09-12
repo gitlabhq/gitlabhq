@@ -15,6 +15,7 @@ export default {
     'task-list',
     'collapsible-section',
     'table',
+    'attach-file',
     'full-screen',
   ],
   components: {

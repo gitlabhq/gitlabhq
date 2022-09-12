@@ -19,7 +19,7 @@ module Enums
           unmet_prerequisites: 10,
           scheduler_failure: 11,
           data_integrity_failure: 12,
-          forward_deployment_failure: 13,
+          forward_deployment_failure: 13, # Deprecated in favor of failed_outdated_deployment_job.
           user_blocked: 14,
           project_deleted: 15,
           ci_quota_exceeded: 16,
@@ -29,6 +29,7 @@ module Enums
           builds_disabled: 20,
           environment_creation_failure: 21,
           deployment_rejected: 22,
+          failed_outdated_deployment_job: 23,
           protected_environment_failure: 1_000,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,

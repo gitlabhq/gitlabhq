@@ -569,6 +569,51 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#prevent_rollback_deployment?' do
+    subject { build.prevent_rollback_deployment? }
+
+    let(:build) { create(:ci_build, :created, :with_deployment, project: project, environment: 'production') }
+
+    context 'when build has no environment' do
+      let(:build) { create(:ci_build, :created, project: project, environment: nil) }
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when project has forward deployment disabled' do
+      before do
+        project.ci_cd_settings.update!(forward_deployment_enabled: false)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when deployment cannot rollback' do
+      before do
+        expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when prevent_outdated_deployment_jobs FF is disabled' do
+      before do
+        stub_feature_flags(prevent_outdated_deployment_jobs: false)
+        expect(build.deployment).not_to receive(:rollback?)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when build can prevent rollback deployment' do
+      before do
+        expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
+      end
+
+      it { expect(subject).to be_truthy }
+    end
+  end
+
   describe '#schedulable?' do
     subject { build.schedulable? }
 
@@ -1816,49 +1861,6 @@ RSpec.describe Ci::Build do
             it { is_expected.to be_truthy }
           end
         end
-      end
-    end
-  end
-
-  describe '#erase_erasable_artifacts!' do
-    let!(:build) { create(:ci_build, :success) }
-
-    subject { build.erase_erasable_artifacts! }
-
-    before do
-      Ci::JobArtifact.file_types.keys.each do |file_type|
-        create(:ci_job_artifact, job: build, file_type: file_type, file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[file_type.to_sym])
-      end
-    end
-
-    it "erases erasable artifacts" do
-      subject
-
-      expect(build.job_artifacts.erasable).to be_empty
-    end
-
-    it "keeps non erasable artifacts" do
-      subject
-
-      Ci::JobArtifact::NON_ERASABLE_FILE_TYPES.each do |file_type|
-        expect(build.send("job_artifacts_#{file_type}")).not_to be_nil
-      end
-    end
-
-    context 'when the project is undergoing stats refresh' do
-      before do
-        allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
-      end
-
-      it 'logs and continues with deleting the artifacts' do
-        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
-          method: 'Ci::Build#erase_erasable_artifacts!',
-          project_id: build.project.id
-        )
-
-        subject
-
-        expect(build.job_artifacts.erasable).to be_empty
       end
     end
   end

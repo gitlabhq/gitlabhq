@@ -432,9 +432,13 @@ class Environment < ApplicationRecord
     return unless value
 
     parser = ::Gitlab::Ci::Build::DurationParser.new(value)
-    return if parser.seconds_from_now.nil?
+
+    return if parser.seconds_from_now.nil? && auto_stop_at.nil?
 
     self.auto_stop_at = parser.seconds_from_now
+  rescue ChronicDuration::DurationParseError => ex
+    Gitlab::ErrorTracking.track_exception(ex, project_id: self.project_id, environment_id: self.id)
+    raise ex
   end
 
   def rollout_status

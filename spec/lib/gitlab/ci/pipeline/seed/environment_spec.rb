@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
   let_it_be(:project) { create(:project) }
 
-  let(:job) { build(:ci_build, project: project) }
+  let!(:pipeline) { create(:ci_pipeline, project: project) }
+
+  let(:job) { build(:ci_build, project: project, pipeline: pipeline) }
   let(:seed) { described_class.new(job) }
   let(:attributes) { {} }
 
@@ -82,6 +84,28 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
                 auto_stop_in: environment_auto_stop_in
               }
             }
+          }
+        end
+
+        it_behaves_like 'returning a correct environment'
+      end
+
+      context 'and job environment has an auto_stop_in variable attribute' do
+        let(:environment_auto_stop_in) { '10 minutes' }
+        let(:expected_auto_stop_in) { '10 minutes' }
+
+        let(:attributes) do
+          {
+            environment: environment_name,
+            options: {
+              environment: {
+                name: environment_name,
+                auto_stop_in: '$TTL'
+              }
+            },
+            yaml_variables: [
+              { key: "TTL", value: environment_auto_stop_in, public: true }
+            ]
           }
         end
 

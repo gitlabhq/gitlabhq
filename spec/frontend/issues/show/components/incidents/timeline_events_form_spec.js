@@ -4,6 +4,7 @@ import { GlDatepicker } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsForm from '~/issues/show/components/incidents/timeline_events_form.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { timelineFormI18n } from '~/issues/show/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { useFakeDate } from 'helpers/fake_date';
@@ -35,6 +36,7 @@ describe('Timeline events form', () => {
     wrapper.destroy();
   });
 
+  const findMarkdownField = () => wrapper.findComponent(MarkdownField);
   const findSubmitButton = () => wrapper.findByText(timelineFormI18n.save);
   const findSubmitAndAddButton = () => wrapper.findByText(timelineFormI18n.saveAndAdd);
   const findCancelButton = () => wrapper.findByText(timelineFormI18n.cancel);
@@ -59,6 +61,22 @@ describe('Timeline events form', () => {
     findCancelButton().trigger('click');
     await waitForPromises();
   };
+
+  it('renders markdown-field component with correct list of toolbar items', () => {
+    mountComponent({ mountMethod: mountExtended });
+
+    expect(findMarkdownField().props('restrictedToolBarItems')).toEqual([
+      'quote',
+      'strikethrough',
+      'bullet-list',
+      'numbered-list',
+      'task-list',
+      'collapsible-section',
+      'table',
+      'attach-file',
+      'full-screen',
+    ]);
+  });
 
   describe('form button behaviour', () => {
     beforeEach(() => {

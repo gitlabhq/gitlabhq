@@ -261,6 +261,7 @@ semgrep-sast:
         - '**/*.c'
         - '**/*.go'
         - '**/*.java'
+        - '**/*.cs'
 
 sobelow-sast:
   extends: .sast-analyzer

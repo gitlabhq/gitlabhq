@@ -488,6 +488,7 @@ RSpec/ExpectChange:
     - 'spec/services/ci/create_downstream_pipeline_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
     - 'spec/services/ci/destroy_pipeline_service_spec.rb'
+    - 'spec/services/ci/job_artifacts/delete_service_spec.rb'
     - 'spec/services/ci/job_artifacts/update_unknown_locked_status_service_spec.rb'
     - 'spec/services/ci/play_build_service_spec.rb'
     - 'spec/services/ci/process_build_service_spec.rb'

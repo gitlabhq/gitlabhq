@@ -39,7 +39,8 @@ module Gitlab
             builds_disabled: 'project builds are disabled',
             environment_creation_failure: 'environment creation failure',
             deployment_rejected: 'deployment rejected',
-            ip_restriction_failure: 'IP address restriction failure'
+            ip_restriction_failure: 'IP address restriction failure',
+            failed_outdated_deployment_job: 'failed outdated deployment job'
           }.freeze
 
           private_constant :REASONS

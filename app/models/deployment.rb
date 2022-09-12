@@ -18,7 +18,7 @@ class Deployment < ApplicationRecord
   belongs_to :environment, optional: false
   belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
   belongs_to :user
-  belongs_to :deployable, polymorphic: true, optional: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :deployable, polymorphic: true, optional: true, inverse_of: :deployment # rubocop:disable Cop/PolymorphicAssociations
   has_many :deployment_merge_requests
 
   has_many :merge_requests,
@@ -314,6 +314,16 @@ class Deployment < ApplicationRecord
     return false unless sha
 
     project.repository.ancestor?(ancestor_sha, sha)
+  end
+
+  def older_than_last_successful_deployment?
+    last_deployment_id = environment.last_deployment&.id
+
+    return false unless last_deployment_id.present?
+
+    return false if self.id == last_deployment_id
+
+    self.id < last_deployment_id
   end
 
   def update_merge_request_metrics!

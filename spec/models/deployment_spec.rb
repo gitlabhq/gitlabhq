@@ -364,6 +364,31 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '#older_than_last_successful_deployment?' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:environment) { create(:environment, project: project) }
+
+    subject { deployment.older_than_last_successful_deployment? }
+
+    context 'when deployment is current deployment' do
+      let(:deployment) { create(:deployment, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when deployment is behind current deployment' do
+      let!(:deployment) do
+        create(:deployment, :success, project: project, environment: environment, finished_at: 1.year.ago)
+      end
+
+      let!(:last_deployment) do
+        create(:deployment, :success, project: project, environment: environment)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#success?' do
     subject { deployment.success? }
 

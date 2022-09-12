@@ -87,3 +87,5 @@ export const WORK_ITEMS_TYPE_MAP = {
     name: s__('WorkItem|Requirements'),
   },
 };
+
+export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;

@@ -1,5 +1,6 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
+import { concatPagination } from '@apollo/client/utilities';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
@@ -13,6 +14,13 @@ export const temporaryConfig = {
       LocalWorkItemWidget: ['LocalWorkItemLabels'],
     },
     typePolicies: {
+      Project: {
+        fields: {
+          projectMembers: {
+            keyArgs: ['fullPath', 'search', 'relations', 'first'],
+          },
+        },
+      },
       WorkItem: {
         fields: {
           mockWidgets: {
@@ -34,6 +42,11 @@ export const temporaryConfig = {
               return incoming;
             },
           },
+        },
+      },
+      MemberInterfaceConnection: {
+        fields: {
+          nodes: concatPagination(),
         },
       },
     },

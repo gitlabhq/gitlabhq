@@ -34,11 +34,13 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     builds_disabled: 'The CI/CD is disabled for this project',
     environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.',
     deployment_rejected: 'This deployment job was rejected.',
-    ip_restriction_failure: "This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range."
+    ip_restriction_failure: "This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range.",
+    failed_outdated_deployment_job: 'The deployment job is older than the latest deployment, and therefore failed.'
   }.freeze
 
   TROUBLESHOOTING_DOC = {
-    environment_creation_failure: { path: 'ci/environments/index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' }
+    environment_creation_failure: { path: 'ci/environments/index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' },
+    failed_outdated_deployment_job: { path: 'ci/environments/deployment_safety', anchor: 'skip-outdated-deployment-jobs' }
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

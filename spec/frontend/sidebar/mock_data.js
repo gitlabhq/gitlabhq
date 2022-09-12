@@ -497,6 +497,11 @@ export const searchResponse = {
             user: mockUser2,
           },
         ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+          startCursor: null,
+        },
       },
     },
   },
@@ -559,6 +564,11 @@ export const projectMembersResponse = {
             },
           },
         ],
+        pageInfo: {
+          hasNextPage: false,
+          startCursor: null,
+          endCursor: null,
+        },
       },
     },
   },

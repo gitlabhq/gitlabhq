@@ -183,6 +183,10 @@ module Ci
       false
     end
 
+    def prevent_rollback_deployment?
+      false
+    end
+
     def expanded_environment_name
     end
 

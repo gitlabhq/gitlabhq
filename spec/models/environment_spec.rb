@@ -1583,7 +1583,34 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
             expect(environment.auto_stop_in).to eq(expected_result)
           else
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(expected_result),
+              project_id: environment.project_id,
+              environment_id: environment.id
+            )
+
             expect { subject }.to raise_error(expected_result)
+          end
+        end
+      end
+    end
+
+    context 'resets earlier value' do
+      let(:environment) { create(:environment, auto_stop_at: 1.day.since.round) }
+
+      where(:value, :expected_result) do
+        '2 days'   | 2.days.to_i
+        '1 week'   | 1.week.to_i
+        '2h20min'  | 2.hours.to_i + 20.minutes.to_i
+        ''         | nil
+        'never'    | nil
+      end
+      with_them do
+        it 'assigns new value' do
+          freeze_time do
+            subject
+
+            expect(environment.auto_stop_in).to eq(expected_result)
           end
         end
       end

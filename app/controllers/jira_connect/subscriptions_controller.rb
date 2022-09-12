@@ -64,10 +64,12 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   private
 
   def allow_self_managed_content_security_policy
+    return unless Feature.enabled?(:jira_connect_oauth_self_managed)
+
     return unless current_jira_installation.instance_url?
 
     request.content_security_policy.directives['connect-src'] ||= []
-    request.content_security_policy.directives['connect-src'] << Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/oauth_application_id')
+    request.content_security_policy.directives['connect-src'].concat(allowed_instance_connect_src)
   end
 
   def create_service
@@ -76,5 +78,12 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
   def allow_rendering_in_iframe
     response.headers.delete('X-Frame-Options')
+  end
+
+  def allowed_instance_connect_src
+    [
+      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/'),
+      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/api/')
+    ]
   end
 end

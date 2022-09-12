@@ -34,7 +34,7 @@ module Ci
 
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
-    has_one :deployment, as: :deployable, class_name: 'Deployment'
+    has_one :deployment, as: :deployable, class_name: 'Deployment', inverse_of: :deployable
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
@@ -443,6 +443,15 @@ module Ci
       manual? && starts_environment? && deployment&.blocked?
     end
 
+    def prevent_rollback_deployment?
+      strong_memoize(:prevent_rollback_deployment) do
+        Feature.enabled?(:prevent_outdated_deployment_jobs, project) &&
+          starts_environment? &&
+          project.ci_forward_deployment_enabled? &&
+          deployment&.older_than_last_successful_deployment?
+      end
+    end
+
     def schedulable?
       self.when == 'delayed' && options[:start_in].present?
     end
@@ -796,21 +805,6 @@ module Ci
 
         metadata.to_entry
       end
-    end
-
-    def erase_erasable_artifacts!
-      if project.refreshing_build_artifacts_size?
-        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
-          method: 'Ci::Build#erase_erasable_artifacts!',
-          project_id: project_id
-        )
-      end
-
-      destroyed_artifacts = job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
-
-      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase_erasable_artifacts!')
-
-      destroyed_artifacts
     end
 
     def erasable?

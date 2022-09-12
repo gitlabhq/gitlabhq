@@ -9,7 +9,8 @@ RSpec.shared_examples 'avoid N+1 on environments serialization' do
     create_environment_with_associations(project)
 
     # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/363317
-    relax_count = 1
+    # See also: https://gitlab.com/gitlab-org/gitlab/-/issues/373151
+    relax_count = 4
 
     expect { serialize(grouping: true) }.not_to exceed_query_limit(control.count + relax_count)
   end
@@ -23,7 +24,8 @@ RSpec.shared_examples 'avoid N+1 on environments serialization' do
     create_environment_with_associations(project)
 
     # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/363317
-    relax_count = 1
+    # See also: https://gitlab.com/gitlab-org/gitlab/-/issues/373151
+    relax_count = 5
 
     expect { serialize(grouping: false) }.not_to exceed_query_limit(control.count + relax_count)
   end

@@ -40291,6 +40291,9 @@ msgstr ""
 msgid "This deployment is not waiting for approvals."
 msgstr ""
 
+msgid "This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run."
+msgstr ""
+
 msgid "This deployment job does not run automatically and must be started manually, but you do not have access to this job's protected environment. The job can only be started by a project member allowed to deploy to the environment."
 msgstr ""
 

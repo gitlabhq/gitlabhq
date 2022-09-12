@@ -8,6 +8,7 @@ import {
   GlButton,
   GlDropdownItem,
   GlDropdownDivider,
+  GlIntersectionObserver,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -19,7 +20,7 @@ import Tracking from '~/tracking';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW, DEFAULT_PAGE_SIZE_ASSIGNEES } from '../constants';
 
 function isTokenSelectorElement(el) {
   return (
@@ -50,6 +51,7 @@ export default {
     InviteMembersTrigger,
     GlDropdownItem,
     GlDropdownDivider,
+    GlIntersectionObserver,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -90,12 +92,15 @@ export default {
       searchStarted: false,
       localAssignees: this.assignees.map(addClass),
       searchKey: '',
-      searchUsers: [],
+      users: {
+        nodes: [],
+      },
       currentUser: null,
+      isLoadingMore: false,
     };
   },
   apollo: {
-    searchUsers: {
+    users: {
       query() {
         return userSearchQuery;
       },
@@ -103,13 +108,14 @@ export default {
         return {
           fullPath: this.fullPath,
           search: this.searchKey,
+          first: DEFAULT_PAGE_SIZE_ASSIGNEES,
         };
       },
       skip() {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.users?.nodes.map((node) => addClass({ ...node, ...node.user }));
+        return data.workspace?.users;
       },
       error() {
         this.$emit('error', i18n.fetchError);
@@ -120,6 +126,12 @@ export default {
     },
   },
   computed: {
+    searchUsers() {
+      return this.users.nodes.map((node) => addClass({ ...node, ...node.user }));
+    },
+    pageInfo() {
+      return this.users.pageInfo;
+    },
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -134,7 +146,7 @@ export default {
       return !this.isEditing ? 'gl-shadow-none!' : '';
     },
     isLoadingUsers() {
-      return this.$apollo.queries.searchUsers.loading;
+      return this.$apollo.queries.users.loading;
     },
     assigneeText() {
       return n__('WorkItem|Assignee', 'WorkItem|Assignees', this.localAssignees.length);
@@ -161,6 +173,12 @@ export default {
     },
     assigneeIds() {
       return this.localAssignees.map(({ id }) => id);
+    },
+    hasNextPage() {
+      return this.pageInfo?.hasNextPage;
+    },
+    showIntersectionSkeletonLoader() {
+      return this.isLoadingMore && this.dropdownItems.length;
     },
   },
   watch: {
@@ -224,6 +242,16 @@ export default {
       this.isEditing = true;
       this.searchStarted = true;
     },
+    async fetchMoreAssignees() {
+      this.isLoadingMore = true;
+      await this.$apollo.queries.users.fetchMore({
+        variables: {
+          after: this.pageInfo.endCursor,
+          first: DEFAULT_PAGE_SIZE_ASSIGNEES,
+        },
+      });
+      this.isLoadingMore = false;
+    },
     async focusTokenSelector() {
       this.handleFocus();
       await this.$nextTick();
@@ -278,7 +306,7 @@ export default {
       :container-class="containerClass"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"
       :dropdown-items="dropdownItems"
-      :loading="isLoadingUsers"
+      :loading="isLoadingUsers && !isLoadingMore"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
       class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2"
@@ -329,17 +357,32 @@ export default {
           <rect width="280" height="20" x="10" y="130" rx="4" />
         </gl-skeleton-loader>
       </template>
-      <template v-if="canInviteMembers" #dropdown-footer>
-        <gl-dropdown-divider />
-        <gl-dropdown-item @click="closeDropdown">
-          <invite-members-trigger
-            :display-text="__('Invite members')"
-            trigger-element="side-nav"
-            icon="plus"
-            trigger-source="work-item-assignees-dropdown"
-            classes="gl-display-block gl-text-body! gl-hover-text-decoration-none gl-pb-2"
-          />
-        </gl-dropdown-item>
+      <template #dropdown-footer>
+        <gl-intersection-observer
+          v-if="hasNextPage && !isLoadingUsers"
+          @appear="fetchMoreAssignees"
+        />
+        <gl-skeleton-loader
+          v-if="showIntersectionSkeletonLoader"
+          :height="100"
+          data-testid="next-page-loading"
+          class="gl-text-center gl-py-3"
+        >
+          <rect width="380" height="20" x="10" y="15" rx="4" />
+          <rect width="280" height="20" x="10" y="50" rx="4" />
+        </gl-skeleton-loader>
+        <div v-if="canInviteMembers">
+          <gl-dropdown-divider />
+          <gl-dropdown-item @click="closeDropdown">
+            <invite-members-trigger
+              :display-text="__('Invite members')"
+              trigger-element="side-nav"
+              icon="plus"
+              trigger-source="work-item-assignees-dropdown"
+              classes="gl-display-block gl-text-body! gl-hover-text-decoration-none gl-pb-2"
+            />
+          </gl-dropdown-item>
+        </div>
       </template>
     </gl-token-selector>
   </div>

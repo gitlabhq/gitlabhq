@@ -7,6 +7,8 @@ module Gitlab
         class Environment < Seed::Base
           attr_reader :job
 
+          delegate :simple_variables, to: :job
+
           def initialize(job)
             @job = job
           end
@@ -14,7 +16,7 @@ module Gitlab
           def to_resource
             environments.safe_find_or_create_by(name: expanded_environment_name) do |environment|
               # Initialize the attributes at creation
-              environment.auto_stop_in = auto_stop_in
+              environment.auto_stop_in = expanded_auto_stop_in
               environment.tier = deployment_tier
             end
           end
@@ -35,6 +37,12 @@ module Gitlab
 
           def expanded_environment_name
             job.expanded_environment_name
+          end
+
+          def expanded_auto_stop_in
+            return unless auto_stop_in
+
+            ExpandVariables.expand(auto_stop_in, -> { simple_variables.sort_and_expand_all })
           end
         end
       end
