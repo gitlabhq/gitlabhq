@@ -1,8 +1,0 @@
----
-name: group_ip_restrictions_allow_global
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87579
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362603
-milestone: '15.1'
-type: development
-group: group::source code
-default_enabled: false

@@ -625,6 +625,10 @@ class ApplicationSetting < ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
             numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
+  validates :cube_api_base_url,
+            addressable_url: { allow_localhost: true, allow_local_network: false },
+            allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -662,6 +666,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :database_grafana_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :cube_api_key, encryption_options_base_32_aes_256_gcm
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }

@@ -59,6 +59,8 @@ import {
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+
 jest.mock('@sentry/browser');
 jest.mock('~/flash');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -429,8 +431,9 @@ describe('CE IssuesListApp component', () => {
           });
         });
 
-        it('is not set from url params', () => {
-          expect(findIssuableList().props('initialFilterValue')).toEqual([]);
+        it('is set from url params and removes search terms', () => {
+          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
+          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
@@ -1006,8 +1009,9 @@ describe('CE IssuesListApp component', () => {
           findIssuableList().vm.$emit('filter', filteredTokens);
         });
 
-        it('does not update url params', () => {
-          expect(router.push).not.toHaveBeenCalled();
+        it('removes search terms', () => {
+          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
+          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {

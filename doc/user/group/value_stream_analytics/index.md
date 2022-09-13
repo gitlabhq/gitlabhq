@@ -349,13 +349,19 @@ The chart shows data for the last 500 workflow items.
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 
-## Tasks by type chart
+## View tasks by type
 
-This chart shows a cumulative count of issues and merge requests per day.
+The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
 
-This chart uses the global page filters for displaying data based on the selected
-group, projects, and time frame. The chart defaults to showing counts for issues but can be
-toggled to show data for merge requests and further refined for specific group-level labels.
+The chart uses the global page filters to display data based on the selected
+group, projects, and time frame.
 
-By default the top group-level labels (max. 10) are pre-selected, with the ability to
-select up to a total of 15 labels.
+To view tasks by type:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
+1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list
+   and select **Issues** or **Merge Requests**.
+1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
+   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
