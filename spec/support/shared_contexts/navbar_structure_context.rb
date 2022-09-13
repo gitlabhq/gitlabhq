@@ -140,7 +140,8 @@ RSpec.shared_context 'group navbar structure' do
         _('Repository'),
         _('CI/CD'),
         _('Applications'),
-        _('Packages and registries')
+        _('Packages and registries'),
+        _('Domain Verification')
       ]
     }
   end

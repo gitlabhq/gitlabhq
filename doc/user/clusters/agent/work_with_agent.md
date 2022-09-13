@@ -59,7 +59,6 @@ To debug the cluster-side component (`agentk`) of the agent, set the log
 level according to the available options:
 
 - `error`
-- `warning`
 - `info`
 - `debug`
 

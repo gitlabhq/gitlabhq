@@ -21,6 +21,15 @@ RSpec.describe PagesDomain do
     end
   end
 
+  describe '.verified' do
+    let!(:verified) { create(:pages_domain) }
+    let!(:unverified) { create(:pages_domain, :unverified) }
+
+    it 'finds verified' do
+      expect(described_class.verified).to match_array(verified)
+    end
+  end
+
   describe 'validate domain' do
     subject(:pages_domain) { build(:pages_domain, domain: domain) }
 

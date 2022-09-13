@@ -7,7 +7,6 @@ module MergeRequestReviewerState
     enum state: {
       unreviewed: 0,
       reviewed: 1
-      # 2 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
     }
 
     validates :state,

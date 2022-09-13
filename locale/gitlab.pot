@@ -13980,6 +13980,18 @@ msgstr ""
 msgid "Domain Name"
 msgstr ""
 
+msgid "Domain Verification"
+msgstr ""
+
+msgid "DomainVerification|How do I configure a domain?"
+msgstr ""
+
+msgid "DomainVerification|No domains configured. Create a domain in a project in this group hierarchy."
+msgstr ""
+
+msgid "DomainVerification|The following domains are configured for projects in this group. Users with email addresses that match a verified domain do not need to confirm their account."
+msgstr ""
+
 msgid "Don't have a group?"
 msgstr ""
 
@@ -37394,6 +37406,9 @@ msgstr ""
 msgid "SortOptions|Last created"
 msgstr ""
 
+msgid "SortOptions|Latest version"
+msgstr ""
+
 msgid "SortOptions|Least popular"
 msgstr ""
 
@@ -37452,6 +37467,9 @@ msgid "SortOptions|Oldest starred"
 msgstr ""
 
 msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Oldest version"
 msgstr ""
 
 msgid "SortOptions|Popularity"

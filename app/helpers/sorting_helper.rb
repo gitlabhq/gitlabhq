@@ -157,7 +157,9 @@ module SortingHelper
     {
       sort_value_name => sort_title_name,
       sort_value_oldest_updated => sort_title_oldest_updated,
-      sort_value_recently_updated => sort_title_recently_updated
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_version_desc => sort_title_version_desc,
+      sort_value_version_asc => sort_title_version_asc
     }
   end
 

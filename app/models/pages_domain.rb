@@ -58,6 +58,7 @@ class PagesDomain < ApplicationRecord
 
     where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
   end
+  scope :verified, -> { where.not(verified_at: nil) }
 
   scope :need_auto_ssl_renewal, -> do
     enabled_and_not_failed = where(auto_ssl_enabled: true, auto_ssl_failed: false)

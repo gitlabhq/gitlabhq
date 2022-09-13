@@ -16,3 +16,5 @@ module Users
     end
   end
 end
+
+Users::AuthorizedBuildService.prepend_mod_with('Users::AuthorizedBuildService')
