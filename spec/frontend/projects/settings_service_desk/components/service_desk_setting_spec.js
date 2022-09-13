@@ -15,6 +15,7 @@ describe('ServiceDeskSetting', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTemplateDropdown = () => wrapper.findComponent(GlDropdown);
   const findToggle = () => wrapper.findComponent(GlToggle);
+  const findSuffixFormGroup = () => wrapper.findByTestId('suffix-form-group');
 
   const createComponent = ({ props = {} } = {}) =>
     extendedWrapper(
@@ -51,6 +52,32 @@ describe('ServiceDeskSetting', () => {
           expect(findLoadingIcon().exists()).toBe(true);
           expect(findIncomingEmail().exists()).toBe(false);
         });
+
+        it('should display help text', () => {
+          expect(findSuffixFormGroup().text()).toContain(
+            'To add a custom suffix, set up a Service Desk email address',
+          );
+          expect(findSuffixFormGroup().text()).not.toContain(
+            'Add a suffix to Service Desk email address',
+          );
+        });
+      });
+    });
+
+    describe('when customEmailEnabled', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          props: { customEmailEnabled: true },
+        });
+      });
+
+      it('should not display help text', () => {
+        expect(findSuffixFormGroup().text()).not.toContain(
+          'To add a custom suffix, set up a Service Desk email address',
+        );
+        expect(findSuffixFormGroup().text()).toContain(
+          'Add a suffix to Service Desk email address',
+        );
       });
     });
 

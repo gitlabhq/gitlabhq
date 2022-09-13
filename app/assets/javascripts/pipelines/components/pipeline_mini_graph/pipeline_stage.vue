@@ -77,6 +77,10 @@ export default {
       this.isDropdownOpen = true;
       this.isLoading = true;
       this.fetchJobs();
+
+      // used for tracking and is separate from event hub
+      // to avoid complexity with mixin
+      this.$emit('miniGraphStageClick');
     },
     fetchJobs() {
       axios

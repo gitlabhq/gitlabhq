@@ -13,10 +13,15 @@ RSpec.describe Ci::BuildDependencies do
                          status: 'success')
   end
 
-  let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, stage: 'build') }
-  let!(:rspec_test) { create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }
-  let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
-  let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
+  let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+  let(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
+  let(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
+  let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, ci_stage: build_stage) }
+  let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, ci_stage: test_stage) }
+  let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, ci_stage: deploy_stage) }
+  let!(:rspec_test) do
+    create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage_idx: 1, ci_stage: test_stage)
+  end
 
   context 'for local dependencies' do
     subject { described_class.new(job).all }
@@ -63,7 +68,7 @@ RSpec.describe Ci::BuildDependencies do
             name: 'dag_job',
             scheduling_type: :dag,
             stage_idx: 2,
-            stage: 'deploy'
+            ci_stage: deploy_stage
           )
         end
 
@@ -87,7 +92,7 @@ RSpec.describe Ci::BuildDependencies do
           name: 'final',
           scheduling_type: scheduling_type,
           stage_idx: 3,
-          stage: 'deploy',
+          ci_stage: deploy_stage,
           options: { dependencies: dependencies }
         )
       end
@@ -218,12 +223,12 @@ RSpec.describe Ci::BuildDependencies do
             cross_pipeline_limit.times do |index|
               create(:ci_build, :success,
                 pipeline: parent_pipeline, name: "dependency-#{index}",
-                stage_idx: 1, stage: 'build', user: user
+                stage_idx: 1, ci_stage: build_stage, user: user
               )
 
               create(:ci_build, :success,
                 pipeline: sibling_pipeline, name: "dependency-#{index}",
-                stage_idx: 1, stage: 'build', user: user
+                stage_idx: 1, ci_stage: build_stage, user: user
               )
             end
           end
@@ -355,7 +360,7 @@ RSpec.describe Ci::BuildDependencies do
 
   describe '#all' do
     let!(:job) do
-      create(:ci_build, pipeline: pipeline, name: 'deploy', stage_idx: 3, stage: 'deploy')
+      create(:ci_build, pipeline: pipeline, name: 'deploy', stage_idx: 3, ci_stage: deploy_stage)
     end
 
     let(:dependencies) { described_class.new(job) }

@@ -913,8 +913,29 @@ module Gitlab
         true
       end
 
+      # Creates a commit
+      #
+      # @param [User] user The committer of the commit.
+      # @param [String] branch_name: The name of the branch to be created/updated.
+      # @param [String] message: The commit message.
+      # @param [Array<Hash>] actions: An array of files to be added/updated/removed.
+      # @option actions: [Symbol] :action One of :create, :create_dir, :update, :move, :delete, :chmod
+      # @option actions: [String] :file_path The path of the file or directory being added/updated/removed.
+      # @option actions: [String] :previous_path The path of the file being moved. Only used for the :move action.
+      # @option actions: [String,IO] :content The file content for :create or :update
+      # @option actions: [String] :encoding One of text, base64
+      # @option actions: [Boolean] :execute_filemode True sets the executable filemode on the file.
+      # @option actions: [Boolean] :infer_content True uses the existing file contents instead of using content on move.
+      # @param [String] author_email: The authors email, if unspecified the committers email is used.
+      # @param [String] author_name: The authors name, if unspecified the committers name is used.
+      # @param [String] start_branch_name: The name of the branch to be used as the parent of the commit. Only used if start_sha: is unspecified.
+      # @param [String] start_sha: The sha to be used as the parent of the commit.
+      # @param [Gitlab::Git::Repository] start_repository: The repository that contains the start branch or sha. Defaults to use this repository.
+      # @param [Boolean] force: Force update the branch.
+      # @return [Gitlab::Git::OperationService::BranchUpdate]
+      #
       # rubocop:disable Metrics/ParameterLists
-      def multi_action(
+      def commit_files(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_sha: nil, start_repository: nil,

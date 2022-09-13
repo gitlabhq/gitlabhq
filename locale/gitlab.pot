@@ -14478,9 +14478,6 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
-msgid "Emails sent from Service Desk have this name."
-msgstr ""
-
 msgid "Emails sent to %{email} are also supported."
 msgstr ""
 
@@ -25961,6 +25958,9 @@ msgid "Name is already taken."
 msgstr ""
 
 msgid "Name new label"
+msgstr ""
+
+msgid "Name to be used as the sender for emails from Service Desk."
 msgstr ""
 
 msgid "Name:"
@@ -41139,6 +41139,9 @@ msgid "To activate your trial, we need additional details from you."
 msgstr ""
 
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "To add display name, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "To add the entry manually, provide the following details to the application on your phone."

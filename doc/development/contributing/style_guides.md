@@ -146,12 +146,19 @@ reduces the aforementioned [bike-shedding](https://en.wiktionary.org/wiki/bikesh
 
 To that end, we encourage creation of new RuboCop rules in the codebase.
 
-We currently maintain Cops across several Ruby code bases, and not all of them are
+We maintain Cops across several Ruby code bases, and not all of them are
 specific to the GitLab application.
 When creating a new cop that could be applied to multiple applications, we encourage you
 to add it to our [GitLab Styles](https://gitlab.com/gitlab-org/gitlab-styles) gem.
 If the Cop targets rules that only apply to the main GitLab application,
 it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
+
+#### RuboCop node pattern
+
+When creating [node patterns](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to match
+Ruby's AST, you can use [`scripts/rubocop-parse`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/rubocop-parse)
+to display the AST of a Ruby expression, in order to help you create the matcher.
+See also [!97024](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97024).
 
 ### Resolving RuboCop exceptions
 

@@ -265,4 +265,16 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
       it { is_expected.to eq(result) }
     end
   end
+
+  describe 'callbacks' do
+    context 'when destroyed' do
+      it 'enqueues a Namespaces::ScheduleAggregationWorker' do
+        refresh = create(:project_build_artifacts_size_refresh)
+
+        expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async).with(refresh.project.namespace_id)
+
+        refresh.destroy!
+      end
+    end
+  end
 end

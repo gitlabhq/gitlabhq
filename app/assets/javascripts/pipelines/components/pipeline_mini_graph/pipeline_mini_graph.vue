@@ -85,6 +85,7 @@ export default {
       :stages-class="stagesClass"
       data-testid="pipeline-stages"
       @pipelineActionRequestComplete="onPipelineActionRequestComplete"
+      @miniGraphStageClick="$emit('miniGraphStageClick')"
     />
     <gl-icon
       v-if="hasDownstreamPipelines"

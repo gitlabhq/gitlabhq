@@ -1,8 +1,10 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import Tracking from '~/tracking';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import eventHub from '../../event_hub';
+import { TRACKING_CATEGORIES } from '../../constants';
 import PipelineOperations from './pipeline_operations.vue';
 import PipelineStopModal from './pipeline_stop_modal.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
@@ -68,6 +70,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     pipelines: {
       type: Array,
@@ -124,6 +127,9 @@ export default {
     onPipelineActionRequestComplete() {
       eventHub.$emit('refreshPipelinesTable');
     },
+    trackPipelineMiniGraph() {
+      this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
+    },
   },
   TBODY_TR_ATTR: {
     'data-testid': 'pipeline-table-row',
@@ -174,6 +180,7 @@ export default {
           :update-dropdown="updateGraphDropdown"
           :upstream-pipeline="item.triggered_by"
           @pipelineActionRequestComplete="onPipelineActionRequestComplete"
+          @miniGraphStageClick="trackPipelineMiniGraph"
         />
       </template>
 

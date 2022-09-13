@@ -35,6 +35,11 @@ WARNING:
 The backup command requires [additional parameters](backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
+WARNING:
+The backup command doesn't verify if another backup is already running, as described in 
+[issue 362593](https://gitlab.com/gitlab-org/gitlab/-/issues/362593). We strongly recommend
+you make sure that all backups are complete before starting a new one.
+
 Depending on your version of GitLab, use the following command if you installed
 GitLab using the Omnibus package:
 

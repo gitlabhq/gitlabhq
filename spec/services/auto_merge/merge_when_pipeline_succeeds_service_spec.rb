@@ -217,18 +217,20 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
       let(:sha) { project.commit(ref).id }
 
+      let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+
       let(:pipeline) do
         create(:ci_empty_pipeline, ref: ref, sha: sha, project: project)
       end
 
       let!(:build) do
         create(:ci_build, :created, pipeline: pipeline, ref: ref,
-                                    name: 'build', stage: 'build')
+                                    name: 'build', ci_stage: build_stage )
       end
 
       let!(:test) do
         create(:ci_build, :created, pipeline: pipeline, ref: ref,
-                                    name: 'test', stage: 'test')
+                                    name: 'test')
       end
 
       before do

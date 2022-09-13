@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Git::Tree do
         let(:subdir_file) { entries.first }
         # rubocop: enable Rails/FindBy
         let!(:sha) do
-          repository.multi_action(
+          repository.commit_files(
             user,
             branch_name: 'HEAD',
             message: "Create #{filename}",

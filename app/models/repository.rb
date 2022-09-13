@@ -796,7 +796,7 @@ class Repository
   def create_dir(user, path, **options)
     options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def create_file(user, path, content, **options)
@@ -808,7 +808,7 @@ class Repository
       options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
     end
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def update_file(user, path, content, **options)
@@ -823,13 +823,13 @@ class Repository
       options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
     end
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def delete_file(user, path, **options)
     options[:actions] = [{ action: :delete, file_path: path }]
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def with_cache_hooks
@@ -843,14 +843,14 @@ class Repository
     result.newrev
   end
 
-  def multi_action(user, **options)
+  def commit_files(user, **options)
     start_project = options.delete(:start_project)
 
     if start_project
       options[:start_repository] = start_project.repository.raw_repository
     end
 
-    with_cache_hooks { raw.multi_action(user, **options) }
+    with_cache_hooks { raw.commit_files(user, **options) }
   end
 
   def merge(user, source_sha, merge_request, message)

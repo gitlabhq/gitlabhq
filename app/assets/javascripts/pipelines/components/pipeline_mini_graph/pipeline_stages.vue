@@ -48,6 +48,7 @@ export default {
         :update-dropdown="updateDropdown"
         :is-merge-train="isMergeTrain"
         @pipelineActionRequestComplete="onPipelineActionRequestComplete"
+        @miniGraphStageClick="$emit('miniGraphStageClick')"
       />
     </div>
   </div>

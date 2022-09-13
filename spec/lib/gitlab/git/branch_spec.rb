@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Git::Branch do
   end
 
   def create_commit
-    repository.multi_action(
+    repository.commit_files(
       user,
       branch_name: 'HEAD',
       message: 'commit message',

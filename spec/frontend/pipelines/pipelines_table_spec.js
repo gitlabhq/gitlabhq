@@ -200,6 +200,14 @@ describe('Pipelines Table', () => {
           label: TRACKING_CATEGORIES.table,
         });
       });
+
+      it('tracks pipeline mini graph stage click', () => {
+        findPipelineMiniGraph().vm.$emit('miniGraphStageClick');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
+          label: TRACKING_CATEGORIES.table,
+        });
+      });
     });
   });
 });

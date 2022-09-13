@@ -139,6 +139,12 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
 
         expect(page).to have_current_path(edit_project_hook_path(project, hook), ignore_query: true)
       end
+
+      it 'does not show search settings on the hook log details' do
+        visit project_hook_hook_log_path(project, hook, hook_log)
+
+        expect(page).not_to have_field(placeholder: 'Search settings', disabled: true)
+      end
     end
   end
 end

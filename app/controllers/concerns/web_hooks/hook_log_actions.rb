@@ -16,6 +16,7 @@ module WebHooks
     end
 
     def show
+      hide_search_settings
     end
 
     def retry
@@ -34,6 +35,10 @@ module WebHooks
     def execute_hook
       result = hook.execute(hook_log.request_data, hook_log.trigger)
       set_hook_execution_notice(result)
+    end
+
+    def hide_search_settings
+      @hide_search_settings ||= true
     end
   end
 end

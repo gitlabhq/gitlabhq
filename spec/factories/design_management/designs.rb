@@ -109,7 +109,7 @@ FactoryBot.define do
         repository = project.design_repository
 
         commit_version = ->(action) do
-          repository.multi_action(
+          repository.commit_files(
             evaluator.author,
             branch_name: 'master',
             message: "#{action.action} for #{design.filename}",

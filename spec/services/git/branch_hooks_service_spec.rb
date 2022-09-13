@@ -596,7 +596,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
         end
       end
 
-      project.repository.multi_action(
+      project.repository.commit_files(
         user, message: 'message', branch_name: branch, actions: actions
       )
     end

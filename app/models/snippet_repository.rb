@@ -31,7 +31,7 @@ class SnippetRepository < ApplicationRecord
 
     options[:actions] = transform_file_entries(files)
 
-    capture_git_error { repository.multi_action(user, **options) }
+    capture_git_error { repository.commit_files(user, **options) }
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end

@@ -38,7 +38,7 @@ module Files
     end
 
     def commit_actions!(actions)
-      repository.multi_action(
+      repository.commit_files(
         current_user,
         message: @commit_message,
         branch_name: @branch_name,

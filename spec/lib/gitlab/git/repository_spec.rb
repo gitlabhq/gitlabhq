@@ -309,7 +309,7 @@ RSpec.describe Gitlab::Git::Repository do
           repository.create_branch('right-branch')
 
           left.times do |i|
-            repository.multi_action(
+            repository.commit_files(
               user,
               branch_name: 'left-branch',
               message: 'some more content for a',
@@ -322,7 +322,7 @@ RSpec.describe Gitlab::Git::Repository do
           end
 
           right.times do |i|
-            repository.multi_action(
+            repository.commit_files(
               user,
               branch_name: 'right-branch',
               message: 'some more content for b',
@@ -367,7 +367,7 @@ RSpec.describe Gitlab::Git::Repository do
           repository.create_branch('right-branch')
 
           left.times do |i|
-            repository.multi_action(
+            repository.commit_files(
               user,
               branch_name: 'left-branch',
               message: 'some more content for a',
@@ -380,7 +380,7 @@ RSpec.describe Gitlab::Git::Repository do
           end
 
           right.times do |i|
-            repository.multi_action(
+            repository.commit_files(
               user,
               branch_name: 'right-branch',
               message: 'some more content for b',
@@ -518,7 +518,7 @@ RSpec.describe Gitlab::Git::Repository do
 
     before do
       repository.create_branch(ref)
-      repository.multi_action(
+      repository.commit_files(
         user,
         branch_name: ref,
         message: 'committing something',
@@ -528,7 +528,7 @@ RSpec.describe Gitlab::Git::Repository do
           content: content
         }]
       )
-      repository.multi_action(
+      repository.commit_files(
         user,
         branch_name: ref,
         message: 'committing something',
@@ -605,7 +605,7 @@ RSpec.describe Gitlab::Git::Repository do
       let(:query) { 'file with space.md' }
 
       before do
-        mutable_repository.multi_action(
+        mutable_repository.commit_files(
           user,
           actions: [{ action: :create, file_path: "file with space.md", content: "Test content" }],
           branch_name: ref, message: "Test"
@@ -622,7 +622,7 @@ RSpec.describe Gitlab::Git::Repository do
       let(:query) { file_name }
 
       before do
-        mutable_repository.multi_action(
+        mutable_repository.commit_files(
           user,
           actions: [{ action: :create, file_path: file_name, content: "Test content" }],
           branch_name: ref, message: "Test"
@@ -690,7 +690,7 @@ RSpec.describe Gitlab::Git::Repository do
 
       before do
         # Add new commits so that there's a renamed file in the commit history
-        @commit_with_old_name_id = repository.multi_action(
+        @commit_with_old_name_id = repository.commit_files(
           user,
           branch_name: repository.root_ref,
           message: 'Update CHANGELOG',
@@ -700,7 +700,7 @@ RSpec.describe Gitlab::Git::Repository do
             content: 'CHANGELOG'
           }]
         ).newrev
-        @rename_commit_id = repository.multi_action(
+        @rename_commit_id = repository.commit_files(
           user,
           branch_name: repository.root_ref,
           message: 'Move CHANGELOG to encoding/',
@@ -711,7 +711,7 @@ RSpec.describe Gitlab::Git::Repository do
             content: 'CHANGELOG'
           }]
         ).newrev
-        @commit_with_new_name_id = repository.multi_action(
+        @commit_with_new_name_id = repository.commit_files(
           user,
           branch_name: repository.root_ref,
           message: 'Edit encoding/CHANGELOG',
@@ -1005,7 +1005,7 @@ RSpec.describe Gitlab::Git::Repository do
     let(:commit) { create_commit('nested/new-blob.txt' => 'This is a new blob') }
 
     def create_commit(blobs)
-      commit_result = repository.multi_action(
+      commit_result = repository.commit_files(
         user,
         branch_name: 'a-new-branch',
         message: 'Add a file',
@@ -1154,7 +1154,7 @@ RSpec.describe Gitlab::Git::Repository do
   describe '#new_commits' do
     let(:repository) { mutable_repository }
     let(:new_commit) do
-      commit_result = repository.multi_action(
+      commit_result = repository.commit_files(
         user,
         branch_name: 'a-new-branch',
         message: 'Message',
@@ -1793,7 +1793,7 @@ RSpec.describe Gitlab::Git::Repository do
         let(:source_branch) { 'new-branch-for-fetch-source-branch' }
 
         let!(:new_oid) do
-          source_repository.multi_action(
+          source_repository.commit_files(
             user,
             branch_name: source_branch,
             message: 'Add a file',
@@ -2241,7 +2241,7 @@ RSpec.describe Gitlab::Git::Repository do
 
       context 'when the diff contains a rename' do
         let(:end_sha) do
-          repository.multi_action(
+          repository.commit_files(
             user,
             branch_name: repository.root_ref,
             message: 'Move CHANGELOG to encoding/',
@@ -2324,7 +2324,7 @@ RSpec.describe Gitlab::Git::Repository do
 
     it 'can still access objects in the object pool' do
       object_pool.link(repository)
-      new_commit_id = object_pool.repository.multi_action(
+      new_commit_id = object_pool.repository.commit_files(
         project.owner,
         branch_name: object_pool.repository.root_ref,
         message: 'Add a file',
