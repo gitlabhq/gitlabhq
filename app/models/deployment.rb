@@ -59,6 +59,7 @@ class Deployment < ApplicationRecord
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
 
   scope :ordered, -> { order(finished_at: :desc) }
+  scope :ordered_as_upcoming, -> { order(id: :desc) }
 
   VISIBLE_STATUSES = %i[running success failed canceled blocked].freeze
   FINISHED_STATUSES = %i[success failed canceled].freeze

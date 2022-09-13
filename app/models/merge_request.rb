@@ -1198,7 +1198,7 @@ class MergeRequest < ApplicationRecord
                                                skip_ci_check: skip_ci_check,
                                                skip_discussions_check: skip_discussions_check
                                              })
-    additional_checks.execute.success?
+    additional_checks.success?
   end
 
   def ff_merge_possible?

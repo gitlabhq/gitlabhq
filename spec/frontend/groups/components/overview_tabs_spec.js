@@ -6,12 +6,15 @@ import OverviewTabs from '~/groups/components/overview_tabs.vue';
 import GroupsApp from '~/groups/components/app.vue';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
+import { createRouter } from '~/groups/init_overview_tabs';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,
   ACTIVE_TAB_ARCHIVED,
 } from '~/groups/constants';
 import axios from '~/lib/utils/axios_utils';
+
+const router = createRouter();
 
 describe('OverviewTabs', () => {
   let wrapper;
@@ -22,11 +25,19 @@ describe('OverviewTabs', () => {
     archived: '/groups/foobar/-/children.json?archived=only',
   };
 
-  const createComponent = async () => {
+  const routerMock = {
+    push: jest.fn(),
+  };
+
+  const createComponent = async ({
+    route = { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, params: { group: 'foo/bar/baz' } },
+  } = {}) => {
     wrapper = mountExtended(OverviewTabs, {
+      router,
       provide: {
         endpoints,
       },
+      mocks: { $route: route, $router: routerMock },
     });
 
     await nextTick();
@@ -34,6 +45,7 @@ describe('OverviewTabs', () => {
 
   const findTabPanels = () => wrapper.findAllComponents(GlTab);
   const findTab = (name) => wrapper.findByRole('tab', { name });
+  const findSelectedTab = () => wrapper.findByRole('tab', { selected: true });
 
   afterEach(() => {
     wrapper.destroy();
@@ -42,15 +54,15 @@ describe('OverviewTabs', () => {
   beforeEach(async () => {
     // eslint-disable-next-line no-new
     new AxiosMockAdapter(axios);
-
-    await createComponent();
   });
 
   it('renders `Subgroups and projects` tab with `GroupsApp` component', async () => {
+    await createComponent();
+
     const tabPanel = findTabPanels().at(0);
 
     expect(tabPanel.vm.$attrs).toMatchObject({
-      title: OverviewTabs.i18n.subgroupsAndProjects,
+      title: OverviewTabs.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
       lazy: false,
     });
     expect(tabPanel.findComponent(GroupsApp).props()).toMatchObject({
@@ -63,14 +75,16 @@ describe('OverviewTabs', () => {
   });
 
   it('renders `Shared projects` tab and renders `GroupsApp` component after clicking tab', async () => {
+    await createComponent();
+
     const tabPanel = findTabPanels().at(1);
 
     expect(tabPanel.vm.$attrs).toMatchObject({
-      title: OverviewTabs.i18n.sharedProjects,
+      title: OverviewTabs.i18n[ACTIVE_TAB_SHARED],
       lazy: true,
     });
 
-    await findTab(OverviewTabs.i18n.sharedProjects).trigger('click');
+    await findTab(OverviewTabs.i18n[ACTIVE_TAB_SHARED]).trigger('click');
 
     expect(tabPanel.findComponent(GroupsApp).props()).toMatchObject({
       action: ACTIVE_TAB_SHARED,
@@ -84,14 +98,16 @@ describe('OverviewTabs', () => {
   });
 
   it('renders `Archived projects` tab and renders `GroupsApp` component after clicking tab', async () => {
+    await createComponent();
+
     const tabPanel = findTabPanels().at(2);
 
     expect(tabPanel.vm.$attrs).toMatchObject({
-      title: OverviewTabs.i18n.archivedProjects,
+      title: OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED],
       lazy: true,
     });
 
-    await findTab(OverviewTabs.i18n.archivedProjects).trigger('click');
+    await findTab(OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED]).trigger('click');
 
     expect(tabPanel.findComponent(GroupsApp).props()).toMatchObject({
       action: ACTIVE_TAB_ARCHIVED,
@@ -102,5 +118,70 @@ describe('OverviewTabs', () => {
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);
+  });
+
+  describe.each([
+    [
+      { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, params: { group: 'foo/bar/baz' } },
+      OverviewTabs.i18n[ACTIVE_TAB_SHARED],
+      {
+        name: ACTIVE_TAB_SHARED,
+        params: { group: ['foo', 'bar', 'baz'] },
+      },
+    ],
+    [
+      { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, params: { group: ['foo', 'bar', 'baz'] } },
+      OverviewTabs.i18n[ACTIVE_TAB_SHARED],
+      {
+        name: ACTIVE_TAB_SHARED,
+        params: { group: ['foo', 'bar', 'baz'] },
+      },
+    ],
+    [
+      { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, params: { group: 'foo' } },
+      OverviewTabs.i18n[ACTIVE_TAB_SHARED],
+      {
+        name: ACTIVE_TAB_SHARED,
+        params: { group: ['foo'] },
+      },
+    ],
+    [
+      { name: ACTIVE_TAB_SHARED, params: { group: 'foo/bar' } },
+      OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED],
+      {
+        name: ACTIVE_TAB_ARCHIVED,
+        params: { group: ['foo', 'bar'] },
+      },
+    ],
+    [
+      { name: ACTIVE_TAB_SHARED, params: { group: 'foo/bar' } },
+      OverviewTabs.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
+      {
+        name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
+        params: { group: ['foo', 'bar'] },
+      },
+    ],
+    [
+      { name: ACTIVE_TAB_ARCHIVED, params: { group: ['foo'] } },
+      OverviewTabs.i18n[ACTIVE_TAB_SHARED],
+      {
+        name: ACTIVE_TAB_SHARED,
+        params: { group: ['foo'] },
+      },
+    ],
+  ])('when current route is %j', (currentRoute, tabToClick, expectedRoute) => {
+    beforeEach(async () => {
+      await createComponent({ route: currentRoute });
+    });
+
+    it(`sets ${OverviewTabs.i18n[currentRoute.name]} as active tab`, () => {
+      expect(findSelectedTab().text()).toBe(OverviewTabs.i18n[currentRoute.name]);
+    });
+
+    it(`pushes expected route when ${tabToClick} tab is clicked`, async () => {
+      await findTab(tabToClick).trigger('click');
+
+      expect(routerMock.push).toHaveBeenCalledWith(expectedRoute);
+    });
   });
 });

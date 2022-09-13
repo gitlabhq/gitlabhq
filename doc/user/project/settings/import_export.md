@@ -70,6 +70,9 @@ The following items are exported:
   - Merge request diffs
   - Merge request comments
   - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Merge request multiple assignees ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request reviewers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request approvers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
 - Labels
 - Milestones
 - Snippets
@@ -92,7 +95,7 @@ Items that are **not** exported include:
 - Pipeline triggers
 - Webhooks
 - Any encrypted tokens
-- Merge Request Approvers and [the number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
+- [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 - Secure Files

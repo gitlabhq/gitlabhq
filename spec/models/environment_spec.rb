@@ -948,6 +948,26 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe 'Last deployment relations' do
+    Deployment::FINISHED_STATUSES.each do |status|
+      it "returns the last #{status} deployment" do
+        create(:deployment, status.to_sym, environment: environment, finished_at: 1.day.ago)
+        expected = create(:deployment, status.to_sym, environment: environment, finished_at: Time.current)
+
+        expect(environment.public_send(:"last_#{status}_deployment")).to eq(expected)
+      end
+    end
+
+    Deployment::UPCOMING_STATUSES.each do |status|
+      it "returns the last #{status} deployment" do
+        create(:deployment, status.to_sym, environment: environment)
+        expected = create(:deployment, status.to_sym, environment: environment)
+
+        expect(environment.public_send(:"last_#{status}_deployment")).to eq(expected)
+      end
+    end
+  end
+
   describe '#last_deployable' do
     subject { environment.last_deployable }
 

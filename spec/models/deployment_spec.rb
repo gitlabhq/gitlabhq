@@ -563,6 +563,16 @@ RSpec.describe Deployment do
       end
     end
 
+    describe '.ordered_as_upcoming' do
+      let!(:deployment1) { create(:deployment, status: :running) }
+      let!(:deployment2) { create(:deployment, status: :blocked) }
+      let!(:deployment3) { create(:deployment, status: :created) }
+
+      it 'sorts by ID DESC' do
+        expect(described_class.ordered_as_upcoming).to eq([deployment3, deployment2, deployment1])
+      end
+    end
+
     describe 'visible' do
       subject { described_class.visible }
 

@@ -349,3 +349,9 @@
     }
   }
 }
+
+.gl-md-flex-wrap-nowrap.gl-md-flex-wrap-nowrap {
+  @include gl-media-breakpoint-up(md) {
+    @include gl-flex-wrap-nowrap;
+  }
+}

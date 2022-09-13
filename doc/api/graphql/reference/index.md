@@ -11692,6 +11692,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="environmentdeploymentsorderby"></a>`orderBy` | [`DeploymentsOrderByInput`](#deploymentsorderbyinput) | Order by a specified field. |
 | <a id="environmentdeploymentsstatuses"></a>`statuses` | [`[DeploymentStatus!]`](#deploymentstatus) | Statuses of the deployments. |
 
+##### `Environment.lastDeployment`
+
+Last deployment of the environment.
+
+Returns [`Deployment`](#deployment).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="environmentlastdeploymentstatus"></a>`status` | [`DeploymentStatus!`](#deploymentstatus) | Status of the Deployment. |
+
 ##### `Environment.metricsDashboard`
 
 Metrics dashboard schema for the environment.

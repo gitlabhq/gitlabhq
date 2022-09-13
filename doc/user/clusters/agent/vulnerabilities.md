@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Operational Container Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive will be removed in GitLab 16.0.
 
 To view cluster vulnerabilities, you can view the [vulnerability report](../../application_security/vulnerabilities/index.md).
 You can also configure your agent so the vulnerabilities are displayed with other agent information in GitLab.
@@ -19,12 +20,12 @@ to scan container images in your cluster for security vulnerabilities.
 NOTE:
 In GitLab 15.0 and later, you do not need to install Starboard operator in the Kubernetes cluster.
 
-To begin scanning all resources in your cluster, add a `starboard`
+To begin scanning all resources in your cluster, add a `container_scanning`
 configuration block to your agent configuration with a `cadence` field
 containing a CRON expression for when the scans will be run.
 
 ```yaml
-starboard:
+container_scanning:
   cadence: '0 0 * * *' # Daily at 00:00 (Kubernetes cluster time)
 ```
 
@@ -42,7 +43,7 @@ if you would like to scan only the `development`, `staging`, and `production`
 namespaces, you can use this configuration:
 
 ```yaml
-starboard:
+container_scanning:
   cadence: '0 0 * * *'
   vulnerability_report:
     namespaces:

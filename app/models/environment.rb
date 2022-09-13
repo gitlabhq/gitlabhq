@@ -30,6 +30,16 @@ class Environment < ApplicationRecord
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
 
+  Deployment::FINISHED_STATUSES.each do |status|
+    has_one :"last_#{status}_deployment", -> { where(status: status).ordered },
+            class_name: 'Deployment', inverse_of: :environment
+  end
+
+  Deployment::UPCOMING_STATUSES.each do |status|
+    has_one :"last_#{status}_deployment", -> { where(status: status).ordered_as_upcoming },
+            class_name: 'Deployment', inverse_of: :environment
+  end
+
   has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 

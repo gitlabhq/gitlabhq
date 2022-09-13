@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import { GlToast } from '@gitlab/ui';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import GroupFolder from './components/group_folder.vue';
@@ -10,6 +11,22 @@ import {
 } from './constants';
 import OverviewTabs from './components/overview_tabs.vue';
 
+export const createRouter = () => {
+  const routes = [
+    { name: ACTIVE_TAB_SHARED, path: '/groups/:group*/-/shared' },
+    { name: ACTIVE_TAB_ARCHIVED, path: '/groups/:group*/-/archived' },
+    { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, path: '/:group*' },
+  ];
+
+  const router = new VueRouter({
+    routes,
+    mode: 'history',
+    base: '/',
+  });
+
+  return router;
+};
+
 export const initGroupOverviewTabs = () => {
   const el = document.getElementById('js-group-overview-tabs');
 
@@ -18,6 +35,9 @@ export const initGroupOverviewTabs = () => {
   Vue.component('GroupFolder', GroupFolder);
   Vue.component('GroupItem', GroupItem);
   Vue.use(GlToast);
+  Vue.use(VueRouter);
+
+  const router = createRouter();
 
   const {
     newSubgroupPath,
@@ -35,6 +55,7 @@ export const initGroupOverviewTabs = () => {
 
   return new Vue({
     el,
+    router,
     provide: {
       newSubgroupPath,
       newProjectPath,

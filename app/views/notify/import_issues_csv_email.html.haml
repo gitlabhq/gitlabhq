@@ -1,18 +1,18 @@
 - text_style = 'font-size:16px; text-align:center;  line-height:30px;'
 
 %p{ style: text_style }
-  Your CSV import for project
-  %a{ href: project_url(@project), style: "color:#3777b0; text-decoration:none;" }
-    = @project.full_name
-  has been completed.
+  - project_link = link_to(@project.full_name, project_url(@project), style: "color:#3777b0; text-decoration:none;")
+  = s_('Notify|Your CSV import for project %{project_link} has been completed.').html_safe % { project_link: project_link }
 
 %p{ style: text_style }
-  #{pluralize(@results[:success], 'issue')} imported.
+  - issues = n_('%d issue', '%d issues', @results[:success]) % @results[:success]
+  = s_('Notify|%{issues} imported.') % { issues: issues }
 
 - if @results[:error_lines].present?
   %p{ style: text_style }
-    Errors found on line #{'number'.pluralize(@results[:error_lines].size)}: #{@results[:error_lines].join(', ')}. Please check if these lines have an issue title.
+    = s_('Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please check if these lines have an issue title.') % { singular_or_plural_line: n_('line', 'lines', @results[:error_lines].size),
+      error_lines: @results[:error_lines].join(', ') }
 
 - if @results[:parse_error]
   %p{ style: text_style }
-    Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.
+    = s_('Notify|Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.')

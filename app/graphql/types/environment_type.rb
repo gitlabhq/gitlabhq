@@ -63,6 +63,11 @@ module Types
           resolver: Resolvers::DeploymentsResolver,
           complexity: 150
 
+    field :last_deployment,
+          Types::DeploymentType,
+          description: 'Last deployment of the environment.',
+          resolver: Resolvers::Environments::LastDeploymentResolver
+
     def tier
       object.tier.to_sym
     end

@@ -2,11 +2,9 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Blob, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-  let(:rugged) do
-    Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
-  end
+RSpec.describe Gitlab::Git::Blob do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
 
   describe 'initialize' do
     let(:blob) { Gitlab::Git::Blob.new(name: 'test') }
@@ -44,7 +42,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
 
   shared_examples '.find' do
     context 'nil path' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], nil) }
 
       it { expect(blob).to eq(nil) }
     end
@@ -56,30 +54,30 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     end
 
     context 'blank path' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, '') }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], '') }
 
       it { expect(blob).to eq(nil) }
     end
 
     context 'file in subdir' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "files/ruby/popen.rb") }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
       it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
       it { expect(blob.path).to eq("files/ruby/popen.rb") }
-      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+      it { expect(blob.commit_id).to eq(TestEnv::BRANCH_SHA['master']) }
       it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
       it { expect(blob.size).to eq(669) }
       it { expect(blob.mode).to eq("100644") }
     end
 
     context 'file in root' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, ".gitignore") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], ".gitignore") }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
       it { expect(blob.name).to eq(".gitignore") }
       it { expect(blob.path).to eq(".gitignore") }
-      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+      it { expect(blob.commit_id).to eq(TestEnv::BRANCH_SHA['master']) }
       it { expect(blob.data[0..10]).to eq("*.rbc\n*.sas") }
       it { expect(blob.size).to eq(241) }
       it { expect(blob.mode).to eq("100644") }
@@ -87,25 +85,25 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     end
 
     context 'file in root with leading slash' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "/.gitignore") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "/.gitignore") }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
       it { expect(blob.name).to eq(".gitignore") }
       it { expect(blob.path).to eq(".gitignore") }
-      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+      it { expect(blob.commit_id).to eq(TestEnv::BRANCH_SHA['master']) }
       it { expect(blob.data[0..10]).to eq("*.rbc\n*.sas") }
       it { expect(blob.size).to eq(241) }
       it { expect(blob.mode).to eq("100644") }
     end
 
     context 'non-exist file' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "missing.rb") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "missing.rb") }
 
       it { expect(blob).to be_nil }
     end
 
     context 'six submodule' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, 'six') }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], 'six') }
 
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
       it { expect(blob.data).to eq('') }
@@ -121,7 +119,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     end
 
     context 'large file' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg') }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], 'files/images/6049019_460s.jpg') }
       let(:blob_size) { 111803 }
       let(:stub_limit) { 1000 }
 
@@ -159,10 +157,10 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
   describe '.find with Rugged enabled', :enable_rugged do
     it 'calls out to the Rugged implementation' do
       allow_next_instance_of(Rugged) do |instance|
-        allow(instance).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+        allow(instance).to receive(:rev_parse).with(TestEnv::BRANCH_SHA['master']).and_call_original
       end
 
-      described_class.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg')
+      described_class.find(repository, TestEnv::BRANCH_SHA['master'], 'files/images/6049019_460s.jpg')
     end
 
     it_behaves_like '.find'
@@ -177,40 +175,13 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     it { expect(raw_blob.size).to eq(669) }
     it { expect(raw_blob.truncated?).to be_falsey }
     it { expect(bad_blob).to be_nil }
-
-    context 'large file' do
-      it 'limits the size of a large file' do
-        blob_size = Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE + 1
-        buffer = Array.new(blob_size, 0)
-        rugged_blob = Rugged::Blob.from_buffer(rugged, buffer.join(''))
-        blob = Gitlab::Git::Blob.raw(repository, rugged_blob)
-
-        expect(blob.size).to eq(blob_size)
-        expect(blob.loaded_size).to eq(Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
-        expect(blob.data.length).to eq(Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
-        expect(blob.truncated?).to be_truthy
-
-        blob.load_all_data!(repository)
-        expect(blob.loaded_size).to eq(blob_size)
-      end
-    end
-
-    context 'when sha references a tree' do
-      it 'returns nil' do
-        tree = rugged.rev_parse('master^{tree}')
-
-        blob = Gitlab::Git::Blob.raw(repository, tree.oid)
-
-        expect(blob).to be_nil
-      end
-    end
   end
 
   describe '.batch' do
     let(:blob_references) do
       [
-        [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
-        [SeedRepo::Commit::ID, 'six']
+        [TestEnv::BRANCH_SHA['master'], "files/ruby/popen.rb"],
+        [TestEnv::BRANCH_SHA['master'], 'six']
       ]
     end
 
@@ -224,7 +195,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
       it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
       it { expect(blob.path).to eq("files/ruby/popen.rb") }
-      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+      it { expect(blob.commit_id).to eq(TestEnv::BRANCH_SHA['master']) }
       it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
       it { expect(blob.size).to eq(669) }
       it { expect(blob.mode).to eq("100644") }
@@ -273,21 +244,21 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     context 'when large number of blobs requested' do
       let(:first_batch) do
         [
-          [SeedRepo::Commit::ID, 'files/ruby/popen.rb'],
-          [SeedRepo::Commit::ID, 'six']
+          [TestEnv::BRANCH_SHA['master'], 'files/ruby/popen.rb'],
+          [TestEnv::BRANCH_SHA['master'], 'six']
         ]
       end
 
       let(:second_batch) do
         [
-          [SeedRepo::Commit::ID, 'some'],
-          [SeedRepo::Commit::ID, 'other']
+          [TestEnv::BRANCH_SHA['master'], 'some'],
+          [TestEnv::BRANCH_SHA['master'], 'other']
         ]
       end
 
       let(:third_batch) do
         [
-          [SeedRepo::Commit::ID, 'files']
+          [TestEnv::BRANCH_SHA['master'], 'files']
         ]
       end
 
@@ -315,8 +286,8 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
   describe '.batch_metadata' do
     let(:blob_references) do
       [
-        [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
-        [SeedRepo::Commit::ID, 'six']
+        [TestEnv::BRANCH_SHA['master'], "files/ruby/popen.rb"],
+        [TestEnv::BRANCH_SHA['master'], 'six']
       ]
     end
 
@@ -333,8 +304,6 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
   end
 
   describe '.batch_lfs_pointers' do
-    let(:tree_object) { rugged.rev_parse('master^{tree}') }
-
     let(:non_lfs_blob) do
       Gitlab::Git::Blob.find(
         repository,
@@ -346,8 +315,8 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     let(:lfs_blob) do
       Gitlab::Git::Blob.find(
         repository,
-        '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-        'files/lfs/image.jpg'
+        TestEnv::BRANCH_SHA['master'],
+        'files/lfs/lfs_object.iso'
       )
     end
 
@@ -374,12 +343,6 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
       expect(blobs_2).to eq([])
     end
 
-    it 'silently ignores tree objects' do
-      blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
-
-      expect(blobs).to eq([])
-    end
-
     it 'silently ignores non lfs objects' do
       blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
 
@@ -398,7 +361,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
 
   describe 'encoding', :aggregate_failures do
     context 'file with russian text' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "encoding/russian.rb") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/russian.rb") }
 
       it 'has the correct blob attributes' do
         expect(blob.name).to eq("russian.rb")
@@ -412,7 +375,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     end
 
     context 'file with Japanese text' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "encoding/テスト.txt") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/テスト.txt") }
 
       it 'has the correct blob attributes' do
         expect(blob.name).to eq("テスト.txt")
@@ -424,12 +387,12 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     end
 
     context 'file with ISO-8859 text' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::LastCommit::ID, "encoding/iso8859.txt") }
+      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/iso8859.txt") }
 
       it 'has the correct blob attributes' do
         expect(blob.name).to eq("iso8859.txt")
-        expect(blob.loaded_size).to eq(4)
-        expect(blob.size).to eq(4)
+        expect(blob.loaded_size).to eq(3)
+        expect(blob.size).to eq(3)
         expect(blob.mode).to eq("100644")
         expect(blob.truncated?).to be_falsey
       end
@@ -441,7 +404,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
       let(:blob) do
         Gitlab::Git::Blob.find(
           repository,
-          'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6',
+          TestEnv::BRANCH_SHA['master'],
           'files/ruby/regex.rb'
         )
       end
@@ -456,14 +419,14 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
       let(:blob) do
         Gitlab::Git::Blob.find(
           repository,
-          'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6',
+          TestEnv::BRANCH_SHA['with-executables'],
           'files/executables/ls'
         )
       end
 
       it { expect(blob.name).to eq('ls') }
       it { expect(blob.path).to eq('files/executables/ls') }
-      it { expect(blob.size).to eq(110080) }
+      it { expect(blob.size).to eq(23) }
       it { expect(blob.mode).to eq("100755") }
     end
 
@@ -471,29 +434,14 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
       let(:blob) do
         Gitlab::Git::Blob.find(
           repository,
-          'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6',
-          'files/links/ruby-style-guide.md'
+          '88ce9520c07b7067f589b7f83a30b6250883115c',
+          'symlink'
         )
       end
 
-      it { expect(blob.name).to eq('ruby-style-guide.md') }
-      it { expect(blob.path).to eq('files/links/ruby-style-guide.md') }
-      it { expect(blob.size).to eq(31) }
-      it { expect(blob.mode).to eq("120000") }
-    end
-
-    context 'file symlink to binary' do
-      let(:blob) do
-        Gitlab::Git::Blob.find(
-          repository,
-          'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6',
-          'files/links/touch'
-        )
-      end
-
-      it { expect(blob.name).to eq('touch') }
-      it { expect(blob.path).to eq('files/links/touch') }
-      it { expect(blob.size).to eq(20) }
+      it { expect(blob.name).to eq('symlink') }
+      it { expect(blob.path).to eq('symlink') }
+      it { expect(blob.size).to eq(6) }
       it { expect(blob.mode).to eq("120000") }
     end
   end
@@ -503,78 +451,19 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
       let(:blob) do
         Gitlab::Git::Blob.find(
           repository,
-          '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-          'files/lfs/image.jpg'
+          TestEnv::BRANCH_SHA['png-lfs'],
+          'files/images/emoji.png'
         )
       end
 
       it { expect(blob.lfs_pointer?).to eq(true) }
-      it { expect(blob.lfs_oid).to eq("4206f951d2691c78aac4c0ce9f2b23580b2c92cdcc4336e1028742c0274938e0") }
-      it { expect(blob.lfs_size).to eq(19548) }
-      it { expect(blob.id).to eq("f4d76af13003d1106be7ac8c5a2a3d37ddf32c2a") }
-      it { expect(blob.name).to eq("image.jpg") }
-      it { expect(blob.path).to eq("files/lfs/image.jpg") }
-      it { expect(blob.size).to eq(130) }
+      it { expect(blob.lfs_oid).to eq("96f74c6fe7a2979eefb9ec74a5dfc6888fb25543cf99b77586b79afea1da6f97") }
+      it { expect(blob.lfs_size).to eq(1219696) }
+      it { expect(blob.id).to eq("ff0ab3afd1616ff78d0331865d922df103b64cf0") }
+      it { expect(blob.name).to eq("emoji.png") }
+      it { expect(blob.path).to eq("files/images/emoji.png") }
+      it { expect(blob.size).to eq(132) }
       it { expect(blob.mode).to eq("100644") }
-    end
-
-    describe 'file an invalid lfs pointer' do
-      context 'with correct version header but incorrect size and oid' do
-        let(:blob) do
-          Gitlab::Git::Blob.find(
-            repository,
-            '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-            'files/lfs/archive-invalid.tar'
-          )
-        end
-
-        it { expect(blob.lfs_pointer?).to eq(false) }
-        it { expect(blob.lfs_oid).to eq(nil) }
-        it { expect(blob.lfs_size).to eq(nil) }
-        it { expect(blob.id).to eq("f8a898db217a5a85ed8b3d25b34c1df1d1094c46") }
-        it { expect(blob.name).to eq("archive-invalid.tar") }
-        it { expect(blob.path).to eq("files/lfs/archive-invalid.tar") }
-        it { expect(blob.size).to eq(43) }
-        it { expect(blob.mode).to eq("100644") }
-      end
-
-      context 'with correct version header and size but incorrect size and oid' do
-        let(:blob) do
-          Gitlab::Git::Blob.find(
-            repository,
-            '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-            'files/lfs/picture-invalid.png'
-          )
-        end
-
-        it { expect(blob.lfs_pointer?).to eq(false) }
-        it { expect(blob.lfs_oid).to eq(nil) }
-        it { expect(blob.lfs_size).to eq(1575078) }
-        it { expect(blob.id).to eq("5ae35296e1f95c1ef9feda1241477ed29a448572") }
-        it { expect(blob.name).to eq("picture-invalid.png") }
-        it { expect(blob.path).to eq("files/lfs/picture-invalid.png") }
-        it { expect(blob.size).to eq(57) }
-        it { expect(blob.mode).to eq("100644") }
-      end
-
-      context 'with correct version header and size but invalid size and oid' do
-        let(:blob) do
-          Gitlab::Git::Blob.find(
-            repository,
-            '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-            'files/lfs/file-invalid.zip'
-          )
-        end
-
-        it { expect(blob.lfs_pointer?).to eq(false) }
-        it { expect(blob.lfs_oid).to eq(nil) }
-        it { expect(blob.lfs_size).to eq(nil) }
-        it { expect(blob.id).to eq("d831981bd876732b85a1bcc6cc01210c9f36248f") }
-        it { expect(blob.name).to eq("file-invalid.zip") }
-        it { expect(blob.path).to eq("files/lfs/file-invalid.zip") }
-        it { expect(blob.size).to eq(60) }
-        it { expect(blob.mode).to eq("100644") }
-      end
     end
   end
 

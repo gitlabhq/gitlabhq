@@ -87,6 +87,20 @@ default is applied:
 - On GitLab self-managed instances when they are upgraded to 16.0.
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Starboard directive in the config for the GitLab Agent for Kubernetes
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab Agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

@@ -26976,6 +26976,9 @@ msgstr ""
 msgid "Notify|%{invited_user} has %{highlight_start}declined%{highlight_end} your invitation to join the %{target_link} %{target_name}."
 msgstr ""
 
+msgid "Notify|%{issues} imported."
+msgstr ""
+
 msgid "Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}."
 msgstr ""
 
@@ -27013,6 +27016,12 @@ msgid "Notify|CI/CD project settings"
 msgstr ""
 
 msgid "Notify|Don't want to receive updates from GitLab administrators?"
+msgstr ""
+
+msgid "Notify|Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values."
+msgstr ""
+
+msgid "Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please check if these lines have an issue title."
 msgstr ""
 
 msgid "Notify|Fingerprint: %{fingerprint}"
@@ -27088,6 +27097,9 @@ msgid "Notify|You have been mentioned in an issue."
 msgstr ""
 
 msgid "Notify|You have been mentioned in merge request %{mr_link}"
+msgstr ""
+
+msgid "Notify|Your CSV import for project %{project_link} has been completed."
 msgstr ""
 
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."
@@ -47043,6 +47055,11 @@ msgstr ""
 
 msgid "limit of %{project_limit} reached"
 msgstr ""
+
+msgid "line"
+msgid_plural "lines"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "load it anyway"
 msgstr ""

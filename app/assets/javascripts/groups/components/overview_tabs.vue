@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
+import { isString } from 'lodash';
 import { __ } from '~/locale';
 import GroupsStore from '../store/groups_store';
 import GroupsService from '../service/groups_service';
@@ -17,7 +18,7 @@ export default {
     return {
       tabs: [
         {
-          title: this.$options.i18n.subgroupsAndProjects,
+          title: this.$options.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
           key: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
           renderEmptyState: true,
           lazy: false,
@@ -25,7 +26,7 @@ export default {
           store: new GroupsStore({ showSchemaMarkup: true }),
         },
         {
-          title: this.$options.i18n.sharedProjects,
+          title: this.$options.i18n[ACTIVE_TAB_SHARED],
           key: ACTIVE_TAB_SHARED,
           renderEmptyState: false,
           lazy: true,
@@ -33,7 +34,7 @@ export default {
           store: new GroupsStore(),
         },
         {
-          title: this.$options.i18n.archivedProjects,
+          title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
           key: ACTIVE_TAB_ARCHIVED,
           renderEmptyState: false,
           lazy: true,
@@ -44,18 +45,40 @@ export default {
       activeTabIndex: 0,
     };
   },
+  mounted() {
+    const activeTabIndex = this.tabs.findIndex((tab) => tab.key === this.$route.name);
+
+    if (activeTabIndex === -1) {
+      return;
+    }
+
+    this.activeTabIndex = activeTabIndex;
+  },
   methods: {
     handleTabInput(tabIndex) {
+      if (tabIndex === this.activeTabIndex) {
+        return;
+      }
+
       this.activeTabIndex = tabIndex;
 
       const tab = this.tabs[tabIndex];
       tab.lazy = false;
+
+      // Vue router will convert `/` to `%2F` if you pass a string as a param
+      // If you pass an array as a param it will concatenate them with a `/`
+      // This makes sure we are always passing an array for the group param
+      const groupParam = isString(this.$route.params.group)
+        ? this.$route.params.group.split('/')
+        : this.$route.params.group;
+
+      this.$router.push({ name: tab.key, params: { group: groupParam } });
     },
   },
   i18n: {
-    subgroupsAndProjects: __('Subgroups and projects'),
-    sharedProjects: __('Shared projects'),
-    archivedProjects: __('Archived projects'),
+    [ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]: __('Subgroups and projects'),
+    [ACTIVE_TAB_SHARED]: __('Shared projects'),
+    [ACTIVE_TAB_ARCHIVED]: __('Archived projects'),
   },
 };
 </script>
