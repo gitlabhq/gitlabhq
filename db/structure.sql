@@ -28609,7 +28609,7 @@ CREATE INDEX index_environments_on_project_id_and_tier ON environments USING btr
 
 CREATE INDEX index_environments_on_project_id_state_environment_type ON environments USING btree (project_id, state, environment_type);
 
-CREATE INDEX index_environments_on_project_name_varchar_pattern_ops ON environments USING btree (project_id, lower((name)::text) varchar_pattern_ops);
+CREATE INDEX index_environments_on_project_name_varchar_pattern_ops_state ON environments USING btree (project_id, lower((name)::text) varchar_pattern_ops, state);
 
 CREATE INDEX index_environments_on_state_and_auto_delete_at ON environments USING btree (auto_delete_at) WHERE ((auto_delete_at IS NOT NULL) AND ((state)::text = 'stopped'::text));
 

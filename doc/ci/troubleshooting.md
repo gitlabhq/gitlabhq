@@ -40,15 +40,26 @@ is at:
 https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json.
 ```
 
-The schema rules for custom YAML tags like `!reference` will not work until the
-custom tags are set in the editor settings. For example, in VS Code, you can set
-`vscode-yaml` to parse `customTags`:
+The schema rules for custom YAML tags like `!reference` are treated as invalid by your editor until the custom tags are
+set in your editor settings. For example:
 
-```json
-"yaml.customTags": [
-   "!reference sequence"
-]
-```
+- In VS Code, you can set `vscode-yaml` to parse `customTags` in your `settings.json` file:
+
+  ```json
+  "yaml.customTags": [
+     "!reference sequence"
+  ]
+  ```
+
+- In Sublime Text, if you are using the `LSP-yaml` package, you can set `customTags` in your `LSP-yaml` user settings:
+
+  ```json
+  {
+    "settings": {
+      "yaml.customTags": ["!reference sequence"]
+    }
+  }
+  ```
 
 To see the full list of custom tags covered by the CI/CD schema, check the
 latest version of the schema, linked above.

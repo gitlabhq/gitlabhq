@@ -49,6 +49,10 @@ export default {
     ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
     requirementsLabel: s__('ProjectSettings|Requirements'),
+    releasesLabel: s__('ProjectSettings|Releases'),
+    releasesHelpText: s__(
+      'ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release.',
+    ),
     securityAndComplianceLabel: s__('ProjectSettings|Security & Compliance'),
     snippetsLabel: s__('ProjectSettings|Snippets'),
     wikiLabel: s__('ProjectSettings|Wiki'),
@@ -145,6 +149,11 @@ export default {
       required: false,
       default: '',
     },
+    releasesHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     lfsHelpPath: {
       type: String,
       required: false,
@@ -229,6 +238,7 @@ export default {
       operationsAccessLevel: featureAccessLevel.EVERYONE,
       environmentsAccessLevel: featureAccessLevel.EVERYONE,
       featureFlagsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+      releasesAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
       warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
@@ -408,6 +418,10 @@ export default {
         this.featureFlagsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.featureFlagsAccessLevel,
+        );
+        this.releasesAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.releasesAccessLevel,
         );
         this.containerRegistryAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -919,6 +933,19 @@ export default {
             :label="$options.i18n.featureFlagsLabel"
             :options="featureAccessLevelOptions"
             name="project[project_feature_attributes][feature_flags_access_level]"
+          />
+        </project-setting-row>
+        <project-setting-row
+          ref="releases-settings"
+          :label="$options.i18n.releasesLabel"
+          :help-text="$options.i18n.releasesHelpText"
+          :help-path="releasesHelpPath"
+        >
+          <project-feature-setting
+            v-model="releasesAccessLevel"
+            :label="$options.i18n.releasesLabel"
+            :options="featureAccessLevelOptions"
+            name="project[project_feature_attributes][releases_access_level]"
           />
         </project-setting-row>
       </template>

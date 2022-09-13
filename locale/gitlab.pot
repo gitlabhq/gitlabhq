@@ -31015,6 +31015,9 @@ msgstr ""
 msgid "ProjectSettings|Choose your merge method, options, checks, and squash options."
 msgstr ""
 
+msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
+msgstr ""
+
 msgid "ProjectSettings|Configure your project resources and monitor their health."
 msgstr ""
 
@@ -31208,6 +31211,9 @@ msgid "ProjectSettings|Project visibility"
 msgstr ""
 
 msgid "ProjectSettings|Public"
+msgstr ""
+
+msgid "ProjectSettings|Releases"
 msgstr ""
 
 msgid "ProjectSettings|Repository"

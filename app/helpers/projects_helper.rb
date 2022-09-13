@@ -392,7 +392,8 @@ module ProjectsHelper
       issuesHelpPath: help_page_path('user/project/issues/index'),
       membersPagePath: project_project_members_path(project),
       environmentsHelpPath: help_page_path('ci/environments/index'),
-      featureFlagsHelpPath: help_page_path('operations/feature_flags')
+      featureFlagsHelpPath: help_page_path('operations/feature_flags'),
+      releasesHelpPath: help_page_path('user/project/releases/index')
     }
   end
 
