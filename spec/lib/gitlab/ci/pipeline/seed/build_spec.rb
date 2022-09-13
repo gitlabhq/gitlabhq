@@ -104,8 +104,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it do
         is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1' },
-                                                { key: 'VAR2', value: 'var 2' },
-                                                { key: 'VAR3', value: 'var 3' }])
+                                                { key: 'VAR3', value: 'var 3' },
+                                                { key: 'VAR2', value: 'var 2' }])
       end
     end
 

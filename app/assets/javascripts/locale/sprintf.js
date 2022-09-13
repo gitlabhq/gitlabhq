@@ -14,6 +14,8 @@ import { escape } from 'lodash';
 export default (input, parameters, escapeParameters = true) => {
   let output = input;
 
+  output = output.replace(/%+/g, '%');
+
   if (parameters) {
     const mappedParameters = new Map(Object.entries(parameters));
 

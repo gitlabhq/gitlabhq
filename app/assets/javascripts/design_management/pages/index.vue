@@ -135,7 +135,7 @@ export default {
     designDropzoneWrapperClass() {
       return this.isDesignListEmpty
         ? 'col-12'
-        : 'gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3';
+        : 'gl-flex-direction-column col-md-6 col-lg-3 gl-mt-5';
     },
   },
   mounted() {
@@ -364,15 +364,15 @@ export default {
       data-testid="design-toolbar-wrapper"
     >
       <div
-        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap"
+        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap gl-gap-3"
       >
-        <div class="gl-display-flex gl-align-items-center gl-my-2">
+        <div class="gl-display-flex gl-align-items-center">
           <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
           <design-version-dropdown />
         </div>
         <div
           v-show="hasDesigns"
-          class="gl-display-flex gl-align-items-center gl-my-2"
+          class="gl-display-flex gl-align-items-center"
           data-testid="design-selector-toolbar"
         >
           <gl-button
@@ -413,7 +413,7 @@ export default {
         </div>
       </div>
     </header>
-    <div class="gl-mt-6">
+    <div>
       <gl-loading-icon v-if="isLoading" size="lg" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ __('An error occurred while loading designs. Please try again.') }}
@@ -449,7 +449,7 @@ export default {
         <li
           v-for="design in designs"
           :key="design.id"
-          class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
+          class="col-md-6 col-lg-3 gl-mt-5 gl-bg-transparent gl-shadow-none js-design-tile"
         >
           <design-dropzone
             :display-as-card="hasDesigns"

@@ -254,7 +254,7 @@ describe('Design management index page', () => {
         'gl-flex-direction-column',
         'col-md-6',
         'col-lg-3',
-        'gl-mb-3',
+        'gl-mt-5',
       ]);
     });
   });

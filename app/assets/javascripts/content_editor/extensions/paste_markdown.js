@@ -3,13 +3,7 @@ import { Plugin, PluginKey } from 'prosemirror-state';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/flash';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
-import {
-  ALERT_EVENT,
-  LOADING_CONTENT_EVENT,
-  LOADING_SUCCESS_EVENT,
-  LOADING_ERROR_EVENT,
-  EXTENSION_PRIORITY_HIGHEST,
-} from '../constants';
+import { ALERT_EVENT, EXTENSION_PRIORITY_HIGHEST } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';
 import Diagram from './diagram';
 import Frontmatter from './frontmatter';
@@ -34,10 +28,8 @@ export default Extension.create({
         const { renderMarkdown, eventHub } = options;
         const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-        eventHub.$emit(LOADING_CONTENT_EVENT);
-
         deserializer
-          .deserialize({ schema: editor.schema, content: markdown })
+          .deserialize({ schema: editor.schema, markdown })
           .then(({ document }) => {
             if (!document) {
               return;
@@ -48,14 +40,12 @@ export default Extension.create({
 
             tr.replaceWith(selection.from - 1, selection.to, document.content);
             view.dispatch(tr);
-            eventHub.$emit(LOADING_SUCCESS_EVENT);
           })
           .catch(() => {
             eventHub.$emit(ALERT_EVENT, {
               message: __('An error occurred while pasting text in the editor. Please try again.'),
               variant: VARIANT_DANGER,
             });
-            eventHub.$emit(LOADING_ERROR_EVENT);
           });
 
         return true;

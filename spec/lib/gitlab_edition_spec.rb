@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'rspec-parameterized'
 
 RSpec.describe GitlabEdition do
   def remove_instance_variable(ivar)
@@ -27,7 +28,57 @@ RSpec.describe GitlabEdition do
     end
   end
 
-  describe 'extensions' do
+  describe '.path_glob' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:root) { described_class.root.to_s }
+
+    subject { described_class.path_glob(path) }
+
+    before do
+      allow(described_class).to receive(:jh?).and_return(jh)
+      allow(described_class).to receive(:ee?).and_return(ee)
+    end
+
+    where(:ee, :jh, :path, :expected) do
+      false | false | nil          | ''
+      true  | false | nil          | '{,ee/}'
+      true  | true  | nil          | '{,ee/,jh/}'
+      false | true  | nil          | '{,ee/,jh/}'
+      false | false | 'app/models' | 'app/models'
+      true  | false | 'app/models' | '{,ee/}app/models'
+      true  | true  | 'app/models' | '{,ee/,jh/}app/models'
+      false | true  | 'app/models' | '{,ee/,jh/}app/models'
+    end
+
+    with_them do
+      it { is_expected.to eq("#{root}/#{expected}") }
+    end
+  end
+
+  describe '.extension_path_prefixes' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.extension_path_prefixes }
+
+    before do
+      allow(described_class).to receive(:jh?).and_return(jh)
+      allow(described_class).to receive(:ee?).and_return(ee)
+    end
+
+    where(:ee, :jh, :expected) do
+      false | false | ''
+      true  | false | '{,ee/}'
+      true  | true  | '{,ee/,jh/}'
+      false | true  | '{,ee/,jh/}'
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '.extensions' do
     context 'when .jh? is true' do
       before do
         allow(described_class).to receive(:jh?).and_return(true)

@@ -8,6 +8,8 @@ RSpec.describe Ci::JobArtifact do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:job) }
+    it { is_expected.to validate_presence_of(:job) }
+    it { is_expected.to validate_presence_of(:partition_id) }
   end
 
   it { is_expected.to respond_to(:file) }
@@ -756,6 +758,28 @@ RSpec.describe Ci::JobArtifact do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
       let!(:model) { create(:ci_job_artifact, project: parent) }
+    end
+  end
+
+  context 'with partition_id' do
+    let(:job) { build(:ci_build, partition_id: 123) }
+    let(:artifact) { build(:ci_job_artifact, job: job, partition_id: nil) }
+
+    it 'copies the partition_id from job' do
+      expect { artifact.valid? }.to change(artifact, :partition_id).from(nil).to(123)
+    end
+
+    context 'when the job is missing' do
+      let(:artifact) do
+        build(:ci_job_artifact,
+          project: build_stubbed(:project),
+          job: nil,
+          partition_id: nil)
+      end
+
+      it 'does not change the partition_id value' do
+        expect { artifact.valid? }.not_to change(artifact, :partition_id)
+      end
     end
   end
 end

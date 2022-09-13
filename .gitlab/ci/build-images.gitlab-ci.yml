@@ -19,14 +19,19 @@ build-qa-image:
     QA_IMAGE_BRANCH: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}
   script:
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
+      # Auto-deploy tag format uses first 12 letters of commit SHA. Tag with
+      # that reference also
+    - export QA_IMAGE_FOR_AUTO_DEPLOY="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA:0:11}"
     - echo $QA_IMAGE
     - echo $QA_IMAGE_BRANCH
+    - echo $QA_IMAGE_FOR_AUTO_DEPLOY
     - |
       /kaniko/executor \
         --context=${CI_PROJECT_DIR} \
         --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile \
         --destination=${QA_IMAGE} \
         --destination=${QA_IMAGE_BRANCH} \
+        --destination=${QA_IMAGE_FOR_AUTO_DEPLOY} \
         --build-arg=CHROME_VERSION=${CHROME_VERSION} \
         --build-arg=DOCKER_VERSION=${DOCKER_VERSION} \
         --build-arg=QA_BUILD_TARGET=${QA_BUILD_TARGET:-qa} \

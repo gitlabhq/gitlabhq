@@ -17,8 +17,8 @@ import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import getRefMixin from '../../mixins/get_ref';
-import blobInfoQuery from '../../queries/blob_info.query.graphql';
 import commitQuery from '../../queries/commit.query.graphql';
 
 export default {

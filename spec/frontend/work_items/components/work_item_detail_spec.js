@@ -142,6 +142,10 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemState().exists()).toBe(true);
       expect(findWorkItemTitle().exists()).toBe(true);
     });
+
+    it('updates the document title', () => {
+      expect(document.title).toEqual('Updated title · Task · test-project-path');
+    });
   });
 
   describe('close button', () => {

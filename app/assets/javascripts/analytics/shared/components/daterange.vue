@@ -83,7 +83,7 @@ export default {
   >
     <gl-daterange-picker
       v-model="dateRange"
-      class="d-flex flex-column flex-lg-row"
+      class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row"
       :default-start-date="startDate"
       :default-end-date="endDate"
       :default-min-date="minDate"
@@ -93,7 +93,7 @@ export default {
       :tooltip="maxDateRangeTooltip"
       theme="animate-picker"
       start-picker-class="js-daterange-picker-from gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-lg-align-items-center gl-lg-mr-3 gl-mb-2 gl-lg-mb-0"
-      end-picker-class="js-daterange-picker-to d-flex flex-column flex-lg-row align-items-lg-center gl-mb-2 gl-lg-mb-0"
+      end-picker-class="js-daterange-picker-to gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-lg-align-items-center gl-mb-2 gl-lg-mb-0"
       label-class="gl-mb-2 gl-lg-mb-0"
     >
       <gl-sprintf :message="n__('1 day selected', '%d days selected', numberOfDays)">

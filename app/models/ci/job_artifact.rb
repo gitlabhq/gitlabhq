@@ -2,6 +2,7 @@
 
 module Ci
   class JobArtifact < Ci::ApplicationRecord
+    include Ci::Partitionable
     include IgnorableColumns
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
@@ -134,14 +135,16 @@ module Ci
 
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
+    before_save :set_size, if: :file_changed?
     after_save :store_file_in_transaction!, unless: :store_after_commit?
     after_commit :store_file_after_transaction!, on: [:create, :update], if: :store_after_commit?
 
+    validates :job, presence: true
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
-    before_save :set_size, if: :file_changed?
 
     update_project_statistics project_statistics_name: :build_artifacts_size
+    partitionable scope: :job
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }

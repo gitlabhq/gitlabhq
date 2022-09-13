@@ -1620,6 +1620,15 @@ To render tables with JSON code blocks, use the following syntax:
 ```
 ````
 
+Watch the following video walkthrough of this feature:
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=12yWKw1AdKY">Demo: JSON Tables in Markdown</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
 The `items` attribute is a list of objects representing the data points.
 
 ````markdown
@@ -1631,14 +1640,6 @@ The `items` attribute is a list of objects representing the data points.
 }
 ```
 ````
-
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ]
-}
-```
 
 To specify the table labels, use the `fields` attribute.
 
@@ -1652,15 +1653,6 @@ To specify the table labels, use the `fields` attribute.
 }
 ```
 ````
-
-```json:table
-{
-    "fields" : ["a", "b", "c"],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ]
-}
-```
 
 Not all elements of `items` must have corresponding values in `fields`.
 
@@ -1676,16 +1668,6 @@ Not all elements of `items` must have corresponding values in `fields`.
 ```
 ````
 
-```json:table
-{
-    "fields" : ["a", "b", "c"],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "c": "233"}
-    ]
-}
-```
-
 When `fields` is not explicitly specified, the labels are picked from the first element of `items`.
 
 ````markdown
@@ -1698,15 +1680,6 @@ When `fields` is not explicitly specified, the labels are picked from the first 
 }
 ```
 ````
-
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "c": "233"}
-    ]
-}
-```
 
 You can specify custom labels for `fields`.
 
@@ -1726,20 +1699,6 @@ You can specify custom labels for `fields`.
 ```
 ````
 
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA"},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "b": "222", "c": "233"}
-    ]
-}
-```
-
 You can enable sorting for individual elements of `fields`.
 
 ````markdown
@@ -1757,20 +1716,6 @@ You can enable sorting for individual elements of `fields`.
 }
 ```
 ````
-
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA", "sortable": true},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "b": "222", "c": "233"}
-    ]
-}
-```
 
 You can use the `filter` attribute to render a table with content filtered dynamically by user input.
 
@@ -1791,21 +1736,6 @@ You can use the `filter` attribute to render a table with content filtered dynam
 ```
 ````
 
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA"},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "b": "222", "c": "233"}
-    ],
-    "filter" : true
-}
-```
-
 By default, every JSON table has the caption `Generated with JSON data`.
 You can override this caption by specifying the `caption` attribute.
 
@@ -1820,15 +1750,6 @@ You can override this caption by specifying the `caption` attribute.
 ```
 ````
 
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ],
-    "caption" : "Custom caption"
-}
-```
-
 If JSON is invalid, an error occurs.
 
 ````markdown
@@ -1840,14 +1761,6 @@ If JSON is invalid, an error occurs.
 }
 ```
 ````
-
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ],
-}
-```
 
 ## References
 

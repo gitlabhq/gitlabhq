@@ -69,3 +69,9 @@ mapping:
   - source: lib/gitlab/usage_data_counters/known_events/.+\.yml
     test: spec/lib/gitlab/usage_data_spec.rb
 
+  # Mailer previews
+  - source: (ee/)?app/mailers/previews/.+\.rb
+    test: spec/mailers/previews_spec.rb
+  - source: ee/app/mailers/ee/preview/.+\.rb
+    test: spec/mailers/previews_spec.rb
+

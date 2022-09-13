@@ -378,51 +378,19 @@ db:migrate:reset single-db:
     - .single-db
     - .rails:rules:single-db
 
-db:migrate-from-previous-major-version:
-  extends: .db-job-base
-  variables:
-    USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
-    PROJECT_TO_CHECKOUT: "gitlab-foss"
-    TAG_TO_CHECKOUT: "v14.10.2"
-  before_script:
-    - !reference [.default-before_script, before_script]
-    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
-    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
-    - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
-    - git checkout -f FETCH_HEAD
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true ENABLE_BOOTSNAP=false bash scripts/prepare_build.sh
-    - run_timed_command "ENABLE_BOOTSNAP=false bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
-    - git checkout -f $CI_COMMIT_SHA
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
-  script:
-    - run_timed_command "scripts/db_tasks db:migrate"
-
-db:migrate-from-previous-major-version-single-db:
-  extends:
-    - db:migrate-from-previous-major-version
-    - .single-db
-    - .rails:rules:single-db
-
-.db:check-schema-base:
-  extends:
-    - .rails:rules:ee-mr-and-default-branch-only
-  variables:
-    TAG_TO_CHECKOUT: "v14.7.0"  # this version updated grpc to 1.42.0, which supports Ruby 2 & 3
-  script:
-    - run_timed_command "scripts/db_tasks db:migrate"
-    - scripts/schema_changed.sh
-    - scripts/validate_migration_timestamps
-
 db:check-schema:
   extends:
-    - db:migrate-from-previous-major-version
-    - .db:check-schema-base
+    - .db-job-base
+    - .rails:rules:ee-mr-and-default-branch-only
+  script:
+    - run_timed_command "bundle exec rake db:drop db:create"
+    - run_timed_command "scripts/db_tasks db:migrate"
 
 db:check-schema-single-db:
   extends:
-    - db:migrate-from-previous-major-version-single-db
-    - .db:check-schema-base
+    - db:check-schema
+    - .single-db
+    - .rails:rules:single-db
 
 db:check-migrations:
   extends:

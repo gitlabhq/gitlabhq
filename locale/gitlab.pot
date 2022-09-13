@@ -25681,6 +25681,9 @@ msgstr ""
 msgid "Milestones|Use milestones to track issues and merge requests over a fixed period of time"
 msgstr ""
 
+msgid "Milestone|%{percentage}%{percent} complete"
+msgstr ""
+
 msgid "Min Value"
 msgstr ""
 
@@ -34612,9 +34615,6 @@ msgid "Saving project."
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{ifLabelStart}if%{ifLabelEnd} %{rules} actions for the %{scopes} %{branches}"
-msgstr ""
-
-msgid "ScanExecutionPolicy|%{ifLabelStart}if%{ifLabelEnd} %{rules} for the %{branches} branch(es)"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"

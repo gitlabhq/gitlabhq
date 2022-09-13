@@ -1,5 +1,3 @@
-#import "ee_else_ce/repository/queries/path_locks.fragment.graphql"
-
 query getBlobInfo(
   $projectPath: ID!
   $filePath: String!
@@ -7,17 +5,15 @@ query getBlobInfo(
   $shouldFetchRawText: Boolean!
 ) {
   project(fullPath: $projectPath) {
-    userPermissions {
-      pushCode
-      downloadCode
-      createMergeRequestIn
-      forkProject
-    }
-    ...ProjectPathLocksFragment
+    __typename
+    id
     repository {
+      __typename
       empty
       blobs(paths: [$filePath], ref: $ref) {
+        __typename
         nodes {
+          __typename
           id
           webPath
           name

@@ -7,6 +7,21 @@ module GitlabEdition
     Pathname.new(File.expand_path('..', __dir__))
   end
 
+  def self.path_glob(path)
+    "#{root}/#{extension_path_prefixes}#{path}"
+  end
+
+  def self.extension_path_prefixes
+    path_prefixes = extensions
+    return '' if path_prefixes.empty?
+
+    path_prefixes.map! { "#{_1}/" }
+    path_prefixes.unshift ''
+
+    # For example `{,ee/,jh/}`
+    "{#{path_prefixes.join(',')}}"
+  end
+
   def self.extensions
     if jh?
       %w[ee jh]

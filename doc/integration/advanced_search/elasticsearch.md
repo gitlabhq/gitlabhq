@@ -166,7 +166,7 @@ may need to set the `production -> elasticsearch -> indexer_path` setting in you
 ### View indexing errors
 
 Errors from the [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer) are reported in
-the [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
+the [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file and the [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
 These errors may occur when indexing Git repository data.
 
 ## Enable Advanced Search

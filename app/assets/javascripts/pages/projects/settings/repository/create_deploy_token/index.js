@@ -1,3 +1,1 @@
-import initForm from '../form';
-
-initForm();
+import '../show/index';

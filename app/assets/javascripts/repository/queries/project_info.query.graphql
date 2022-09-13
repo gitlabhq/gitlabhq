@@ -1,0 +1,14 @@
+#import "ee_else_ce/repository/queries/path_locks.fragment.graphql"
+
+query getProjectInfo($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    userPermissions {
+      pushCode
+      downloadCode
+      createMergeRequestIn
+      forkProject
+    }
+    ...ProjectPathLocksFragment
+  }
+}

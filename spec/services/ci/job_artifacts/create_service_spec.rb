@@ -181,6 +181,18 @@ RSpec.describe Ci::JobArtifacts::CreateService do
       end
     end
 
+    context 'with job partitioning' do
+      let(:job) { create(:ci_build, project: project, partition_id: 123) }
+
+      it 'sets partition_id on artifacts' do
+        expect { subject }.to change { Ci::JobArtifact.count }
+
+        artifacts_partitions = job.job_artifacts.map(&:partition_id).uniq
+
+        expect(artifacts_partitions).to eq([123])
+      end
+    end
+
     shared_examples 'rescues object storage error' do |klass, message, expected_message|
       it "handles #{klass}" do
         allow_next_instance_of(JobArtifactUploader) do |uploader|

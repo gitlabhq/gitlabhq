@@ -63,7 +63,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   # Don't make a mess when bootstrapping a development environment
   config.action_mailer.perform_deliveries = (ENV['BOOTSTRAP'] != '1')
-  config.action_mailer.preview_path = "#{Rails.root}{/ee,}/app/mailers/previews"
+  config.action_mailer.preview_path = GitlabEdition.path_glob('app/mailers/previews')
 
   config.eager_load = false
 

@@ -9909,6 +9909,7 @@ Represents an epic on an issue board.
 | <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="boardepiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
+| <a id="boardepicdefaultprojectforissuecreation"></a>`defaultProjectForIssueCreation` | [`Project`](#project) | Default Project for issue creation. Based on the project the user created the last issue in. |
 | <a id="boardepicdescendantcounts"></a>`descendantCounts` | [`EpicDescendantCount`](#epicdescendantcount) | Number of open and closed descendant epics and issues. |
 | <a id="boardepicdescendantweightsum"></a>`descendantWeightSum` | [`EpicDescendantWeights`](#epicdescendantweights) | Total weight of open and closed issues in the epic and its descendants. |
 | <a id="boardepicdescription"></a>`description` | [`String`](#string) | Description of the epic. |
@@ -11734,6 +11735,7 @@ Represents an epic.
 | <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="epiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
+| <a id="epicdefaultprojectforissuecreation"></a>`defaultProjectForIssueCreation` | [`Project`](#project) | Default Project for issue creation. Based on the project the user created the last issue in. |
 | <a id="epicdescendantcounts"></a>`descendantCounts` | [`EpicDescendantCount`](#epicdescendantcount) | Number of open and closed descendant epics and issues. |
 | <a id="epicdescendantweightsum"></a>`descendantWeightSum` | [`EpicDescendantWeights`](#epicdescendantweights) | Total weight of open and closed issues in the epic and its descendants. |
 | <a id="epicdescription"></a>`description` | [`String`](#string) | Description of the epic. |

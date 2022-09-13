@@ -97,6 +97,15 @@ export default {
       error() {
         this.error = this.$options.i18n.fetchError;
       },
+      result() {
+        if (!this.isModal) {
+          const path = this.workItem.project?.fullPath
+            ? ` · ${this.workItem.project.fullPath}`
+            : '';
+
+          document.title = `${this.workItem.title} · ${this.workItem?.workItemType?.name}${path}`;
+        }
+      },
       subscribeToMore: {
         document: workItemTitleSubscription,
         variables() {

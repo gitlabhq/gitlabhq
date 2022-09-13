@@ -1,0 +1,244 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml
+
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/
+#
+# Configure dependency scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html#available-variables
+
+variables:
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  DS_EXCLUDED_ANALYZERS: ""
+  DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  DS_MAJOR_VERSION: 3
+
+dependency_scanning:
+  stage: test
+  script:
+    - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
+    - exit 1
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+  dependencies: []
+  rules:
+    - when: never
+
+.ds-analyzer:
+  extends: dependency_scanning
+  allow_failure: true
+  variables:
+    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
+    # override the analyzer image with a custom value. This may be subject to change or
+    # breakage across GitLab releases.
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/$DS_ANALYZER_NAME:$DS_MAJOR_VERSION"
+    # DS_ANALYZER_NAME is an undocumented variable used in job definitions
+    # to inject the analyzer name in the image name.
+    DS_ANALYZER_NAME: ""
+  image:
+    name: "$DS_ANALYZER_IMAGE$DS_IMAGE_SUFFIX"
+  # `rules` must be overridden explicitly by each child job
+  # see https://gitlab.com/gitlab-org/gitlab/-/issues/218444
+  script:
+    - /analyzer run
+
+.cyclonedx-reports:
+  artifacts:
+    paths:
+      - "**/gl-sbom-*.cdx.json"
+
+.gemnasium-shared-rule:
+  exists:
+    - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+    - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+    - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+    - '{go.sum,*/go.sum,*/*/go.sum}'
+    - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+    - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+    - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+    - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+    - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+
+gemnasium-dependency_scanning:
+  extends:
+    - .ds-analyzer
+    - .cyclonedx-reports
+  variables:
+    DS_ANALYZER_NAME: "gemnasium"
+    GEMNASIUM_LIBRARY_SCAN_ENABLED: "true"
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/
+      when: never
+
+      # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: "false"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-shared-rule, exists]
+
+      # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+      # Add the job to branch pipelines.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: "false"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-shared-rule, exists]
+
+.gemnasium-maven-shared-rule:
+  exists:
+    - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+    - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
+    - '{build.sbt,*/build.sbt,*/*/build.sbt}'
+    - '{pom.xml,*/pom.xml,*/*/pom.xml}'
+
+gemnasium-maven-dependency_scanning:
+  extends:
+    - .ds-analyzer
+    - .cyclonedx-reports
+  variables:
+    DS_ANALYZER_NAME: "gemnasium-maven"
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-maven/
+      when: never
+
+    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: "false"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+
+      # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+      # Add the job to branch pipelines.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+
+.gemnasium-python-shared-rule:
+  exists:
+    - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+    - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+    - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+    - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+    - '{setup.py,*/setup.py,*/*/setup.py}'
+    - '{poetry.lock,*/poetry.lock,*/*/poetry.lock}'
+
+gemnasium-python-dependency_scanning:
+  extends:
+    - .ds-analyzer
+    - .cyclonedx-reports
+  variables:
+    DS_ANALYZER_NAME: "gemnasium-python"
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/
+      when: never
+
+    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+    # Support passing of $PIP_REQUIREMENTS_FILE
+    #   See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $PIP_REQUIREMENTS_FILE &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $PIP_REQUIREMENTS_FILE
+
+    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # Add the job to branch pipelines.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+    # Support passing of $PIP_REQUIREMENTS_FILE
+    # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $PIP_REQUIREMENTS_FILE &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $PIP_REQUIREMENTS_FILE
+
+bundler-audit-dependency_scanning:
+  extends: .ds-analyzer
+  variables:
+    DS_ANALYZER_NAME: "bundler-audit"
+    DS_MAJOR_VERSION: 2
+  script:
+    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/347491"
+    - exit 1
+  rules:
+    - when: never
+
+retire-js-dependency_scanning:
+  extends: .ds-analyzer
+  variables:
+    DS_ANALYZER_NAME: "retire.js"
+    DS_MAJOR_VERSION: 2
+  script:
+    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/289830"
+    - exit 1
+  rules:
+    - when: never

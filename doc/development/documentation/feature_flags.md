@@ -24,7 +24,8 @@ When you document feature flags, you must:
 
 ## Add version history text
 
-When the state of a flag changes (for example, disabled by default to enabled by default), add the change to the version history.
+When the state of a flag changes (for example, disabled by default to enabled by default), add the change to the
+[version history](versions.md#add-a-version-history-item).
 
 Possible version history entries are:
 

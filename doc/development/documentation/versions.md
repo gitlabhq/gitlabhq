@@ -69,6 +69,11 @@ If a feature is moved to another subscription tier, use `moved`:
 > - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
 ```
 
+#### Features introduced behind feature flags
+
+When features are introduced behind feature flags, you must add details about the feature flag to the documentation.
+For more information, see [Document features deployed behind feature flags](feature_flags.md).
+
 ### Inline version text
 
 If you're adding content to an existing topic, you can add version information

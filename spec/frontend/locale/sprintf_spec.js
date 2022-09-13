@@ -63,12 +63,26 @@ describe('locale', () => {
     it('does not escape parameters for escapeParameters = false', () => {
       const input = 'contains %{safeContent}';
       const parameters = {
-        safeContent: '<strong>bold attempt</strong>',
+        safeContent: '15',
       };
 
       const output = sprintf(input, parameters, false);
 
-      expect(output).toBe('contains <strong>bold attempt</strong>');
+      expect(output).toBe('contains 15');
+    });
+
+    describe('replaces duplicated % in input', () => {
+      it('removes duplicated percentage signs', () => {
+        const input = 'contains duplicated %{safeContent}%%';
+
+        const parameters = {
+          safeContent: '15',
+        };
+
+        const output = sprintf(input, parameters, false);
+
+        expect(output).toBe('contains duplicated 15%');
+      });
     });
   });
 });

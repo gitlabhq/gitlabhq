@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Trace::Archive do
   context 'with transactional fixtures' do
-    let_it_be(:job) { create(:ci_build, :success, :trace_live) }
+    let_it_be_with_reload(:job) { create(:ci_build, :success, :trace_live) }
     let_it_be_with_reload(:trace_metadata) { create(:ci_build_trace_metadata, build: job) }
     let_it_be(:src_checksum) do
       job.trace.read { |stream| Digest::MD5.hexdigest(stream.raw) }

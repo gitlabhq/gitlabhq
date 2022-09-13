@@ -65,7 +65,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def new_mention_in_merge_request_email
-    Notify.new_mention_in_merge_request_email(user.id, issue.id, user.id).message
+    Notify.new_mention_in_merge_request_email(user.id, merge_request.id, user.id).message
   end
 
   def closed_issue_email
@@ -101,7 +101,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def closed_merge_request_email
-    Notify.closed_merge_request_email(user.id, issue.id, user.id).message
+    Notify.closed_merge_request_email(user.id, merge_request.id, user.id).message
   end
 
   def merge_request_status_email
@@ -209,14 +209,6 @@ class NotifyPreview < ActionMailer::Preview
     Notify.inactive_project_deletion_warning_email(project, user, '2022-04-22').message
   end
 
-  def user_auto_banned_instance_email
-    ::Notify.user_auto_banned_email(user.id, user.id, max_project_downloads: 5, within_seconds: 600).message
-  end
-
-  def user_auto_banned_namespace_email
-    ::Notify.user_auto_banned_email(user.id, user.id, max_project_downloads: 5, within_seconds: 600, group: group).message
-  end
-
   def verification_instructions_email
     Notify.verification_instructions_email(user.id, token: '123456', expires_in: 60).message
   end
@@ -224,7 +216,7 @@ class NotifyPreview < ActionMailer::Preview
   private
 
   def project
-    @project ||= Project.find_by_full_path('gitlab-org/gitlab-test')
+    @project ||= Project.first
   end
 
   def issue

@@ -27,6 +27,10 @@ describe('content_editor', () => {
     await nextTick();
   };
 
+  const mockRenderMarkdownResponse = (response) => {
+    renderMarkdown.mockImplementation((markdown) => (markdown ? response : null));
+  };
+
   beforeEach(() => {
     renderMarkdown = jest.fn();
   });
@@ -34,7 +38,7 @@ describe('content_editor', () => {
   describe('when loading initial content', () => {
     describe('when the initial content is empty', () => {
       it('still hides the loading indicator', async () => {
-        renderMarkdown.mockResolvedValue('');
+        mockRenderMarkdownResponse('');
 
         buildWrapper();
 
@@ -47,9 +51,11 @@ describe('content_editor', () => {
     describe('when the initial content is not empty', () => {
       const initialContent = '<p><strong>bold text</strong></p>';
       beforeEach(async () => {
-        renderMarkdown.mockResolvedValue(initialContent);
+        mockRenderMarkdownResponse(initialContent);
 
-        buildWrapper();
+        buildWrapper({
+          markdown: '**bold text**',
+        });
 
         await waitUntilContentIsLoaded();
       });
@@ -128,5 +134,39 @@ This reference tag is a mix of letters and numbers [^footnote].
 
     expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 1');
     expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 2');
+  });
+
+  describe('when pasting content', () => {
+    const buildClipboardData = (data = {}) => ({
+      clipboardData: {
+        getData(mimeType) {
+          return data[mimeType];
+        },
+        types: Object.keys(data),
+      },
+    });
+
+    describe('when the clipboard does not contain text/html data', () => {
+      it('processes the clipboard content as markdown', async () => {
+        const processedMarkdown = '<strong>bold text</strong>';
+
+        buildWrapper();
+
+        await waitUntilContentIsLoaded();
+
+        mockRenderMarkdownResponse(processedMarkdown);
+
+        wrapper.find('[contenteditable]').trigger(
+          'paste',
+          buildClipboardData({
+            'text/plain': '**bold text**',
+          }),
+        );
+
+        await waitUntilContentIsLoaded();
+
+        expect(wrapper.find('[contenteditable]').html()).toContain(processedMarkdown);
+      });
+    });
   });
 });
