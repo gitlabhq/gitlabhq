@@ -10,6 +10,7 @@ module Projects
       @blob = blob
       @commit = commit
       @page = extract_page(params)
+      @pagination_enabled = pagination_state(params)
     end
 
     attr_reader :page
@@ -19,7 +20,7 @@ module Projects
     end
 
     def pagination
-      return unless pagination_enabled?
+      return unless pagination_enabled
 
       Kaminari.paginate_array([], total_count: blob_lines_count, limit: per_page)
         .tap { |pagination| pagination.max_paginates_per(per_page) }
@@ -28,10 +29,10 @@ module Projects
 
     private
 
-    attr_reader :blob, :commit
+    attr_reader :blob, :commit, :pagination_enabled
 
     def blame_range
-      return unless pagination_enabled?
+      return unless pagination_enabled
 
       first_line = (page - 1) * per_page + 1
       last_line = (first_line + per_page).to_i - 1
@@ -51,16 +52,18 @@ module Projects
       PER_PAGE
     end
 
+    def pagination_state(params)
+      return false if Gitlab::Utils.to_boolean(params[:no_pagination], default: false)
+
+      Feature.enabled?(:blame_page_pagination, commit.project)
+    end
+
     def overlimit?(page)
       page * per_page >= blob_lines_count + per_page
     end
 
     def blob_lines_count
       @blob_lines_count ||= blob.data.lines.count
-    end
-
-    def pagination_enabled?
-      Feature.enabled?(:blame_page_pagination, commit.project)
     end
   end
 end

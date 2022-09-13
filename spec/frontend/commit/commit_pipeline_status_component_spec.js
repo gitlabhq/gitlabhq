@@ -37,9 +37,9 @@ describe('Commit pipeline status component', () => {
     });
   };
 
-  const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findLink = () => wrapper.find('a');
-  const findCiIcon = () => findLink().find(CiIcon);
+  const findCiIcon = () => findLink().findComponent(CiIcon);
 
   afterEach(() => {
     wrapper.destroy();

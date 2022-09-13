@@ -23,12 +23,14 @@ describe('~/access_tokens/components/new_access_token_app', () => {
   };
 
   const triggerSuccess = async (newToken = 'new token') => {
-    wrapper.find(DomElementListener).vm.$emit(EVENT_SUCCESS, { detail: [{ new_token: newToken }] });
+    wrapper
+      .findComponent(DomElementListener)
+      .vm.$emit(EVENT_SUCCESS, { detail: [{ new_token: newToken }] });
     await nextTick();
   };
 
   const triggerError = async (errors = ['1', '2']) => {
-    wrapper.find(DomElementListener).vm.$emit(EVENT_ERROR, { detail: [{ errors }] });
+    wrapper.findComponent(DomElementListener).vm.$emit(EVENT_ERROR, { detail: [{ errors }] });
     await nextTick();
   };
 

@@ -50,9 +50,9 @@ describe('UsageTrendsCountChart', () => {
     wrapper = null;
   });
 
-  const findLoader = () => wrapper.find(ChartSkeletonLoader);
-  const findChart = () => wrapper.find(GlLineChart);
-  const findAlert = () => wrapper.find(GlAlert);
+  const findLoader = () => wrapper.findComponent(ChartSkeletonLoader);
+  const findChart = () => wrapper.findComponent(GlLineChart);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('while loading', () => {
     beforeEach(() => {

@@ -30,7 +30,7 @@ const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 Vue.use(Vuex);
 
 function getCollapsedFilesWarning(wrapper) {
-  return wrapper.find(CollapsedFilesWarning);
+  return wrapper.findComponent(CollapsedFilesWarning);
 }
 
 describe('diffs/components/app', () => {
@@ -167,7 +167,7 @@ describe('diffs/components/app', () => {
       state.diffs.isLoading = true;
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays loading icon on batch loading', () => {
@@ -175,13 +175,13 @@ describe('diffs/components/app', () => {
       state.diffs.batchLoadingState = 'loading';
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays diffs container when not loading', () => {
     createComponent();
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     expect(wrapper.find('#diffs').exists()).toBe(true);
   });
 
@@ -263,7 +263,7 @@ describe('diffs/components/app', () => {
     it('renders empty state when no diff files exist', () => {
       createComponent();
 
-      expect(wrapper.find(NoChanges).exists()).toBe(true);
+      expect(wrapper.findComponent(NoChanges).exists()).toBe(true);
     });
 
     it('does not render empty state when diff files exist', () => {
@@ -273,7 +273,7 @@ describe('diffs/components/app', () => {
         });
       });
 
-      expect(wrapper.find(NoChanges).exists()).toBe(false);
+      expect(wrapper.findComponent(NoChanges).exists()).toBe(false);
       expect(wrapper.findAll(DiffFile).length).toBe(1);
     });
   });
@@ -487,8 +487,8 @@ describe('diffs/components/app', () => {
         state.diffs.mergeRequestDiff = mergeRequestDiff;
       });
 
-      expect(wrapper.find(CompareVersions).exists()).toBe(true);
-      expect(wrapper.find(CompareVersions).props()).toEqual(
+      expect(wrapper.findComponent(CompareVersions).exists()).toBe(true);
+      expect(wrapper.findComponent(CompareVersions).props()).toEqual(
         expect.objectContaining({
           diffFilesCountText: null,
         }),
@@ -506,8 +506,8 @@ describe('diffs/components/app', () => {
             state.diffs.size = 1;
           });
 
-          expect(wrapper.find(HiddenFilesWarning).exists()).toBe(true);
-          expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
+          expect(wrapper.findComponent(HiddenFilesWarning).exists()).toBe(true);
+          expect(wrapper.findComponent(HiddenFilesWarning).props()).toEqual(
             expect.objectContaining({
               total: '5',
               plainDiffPath: 'plain diff path',
@@ -547,7 +547,7 @@ describe('diffs/components/app', () => {
         };
       });
 
-      expect(wrapper.find(CommitWidget).exists()).toBe(true);
+      expect(wrapper.findComponent(CommitWidget).exists()).toBe(true);
     });
 
     it('should display diff file if there are diff files', () => {
@@ -555,13 +555,13 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
 
-      expect(wrapper.find(DiffFile).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffFile).exists()).toBe(true);
     });
 
     it("doesn't render tree list when no changes exist", () => {
       createComponent();
 
-      expect(wrapper.find(TreeList).exists()).toBe(false);
+      expect(wrapper.findComponent(TreeList).exists()).toBe(false);
     });
 
     it('should render tree list', () => {
@@ -569,7 +569,7 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
       });
 
-      expect(wrapper.find(TreeList).exists()).toBe(true);
+      expect(wrapper.findComponent(TreeList).exists()).toBe(true);
     });
   });
 
@@ -641,7 +641,7 @@ describe('diffs/components/app', () => {
 
     describe('pagination', () => {
       const fileByFileNav = () => wrapper.find('[data-testid="file-by-file-navigation"]');
-      const paginator = () => fileByFileNav().find(GlPagination);
+      const paginator = () => fileByFileNav().findComponent(GlPagination);
 
       it('sets previous button as disabled', async () => {
         createComponent({ fileByFileUserPreference: true }, ({ state }) => {

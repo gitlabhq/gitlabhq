@@ -28,8 +28,8 @@ describe('AlertManagementList', () => {
 
   describe('Alert List Wrapper', () => {
     it('should show the empty state when alerts are not enabled', () => {
-      expect(wrapper.find(AlertManagementEmptyState).exists()).toBe(true);
-      expect(wrapper.find(AlertManagementTable).exists()).toBe(false);
+      expect(wrapper.findComponent(AlertManagementEmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(AlertManagementTable).exists()).toBe(false);
     });
 
     it('should show the alerts table when alerts are enabled', () => {
@@ -39,8 +39,8 @@ describe('AlertManagementList', () => {
         },
       });
 
-      expect(wrapper.find(AlertManagementEmptyState).exists()).toBe(false);
-      expect(wrapper.find(AlertManagementTable).exists()).toBe(true);
+      expect(wrapper.findComponent(AlertManagementEmptyState).exists()).toBe(false);
+      expect(wrapper.findComponent(AlertManagementTable).exists()).toBe(true);
     });
   });
 });

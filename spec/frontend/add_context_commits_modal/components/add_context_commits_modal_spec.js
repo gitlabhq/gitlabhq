@@ -48,8 +48,8 @@ describe('AddContextCommitsModal', () => {
     return wrapper;
   };
 
-  const findModal = () => wrapper.find(GlModal);
-  const findSearch = () => wrapper.find(GlSearchBoxByType);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -107,7 +107,7 @@ describe('AddContextCommitsModal', () => {
 
     it('a disabled ok button in first tab, when row is selected in second tab', () => {
       createWrapper({ selectedContextCommits: [commit] });
-      expect(wrapper.find(GlModal).attributes('ok-disabled')).toBe('true');
+      expect(wrapper.findComponent(GlModal).attributes('ok-disabled')).toBe('true');
     });
   });
 

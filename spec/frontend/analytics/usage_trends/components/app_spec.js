@@ -21,7 +21,7 @@ describe('UsageTrendsApp', () => {
   });
 
   it('displays the usage counts component', () => {
-    expect(wrapper.find(UsageCounts).exists()).toBe(true);
+    expect(wrapper.findComponent(UsageCounts).exists()).toBe(true);
   });
 
   ['Total projects & groups', 'Pipelines', 'Issues & merge requests'].forEach((usage) => {
@@ -35,6 +35,6 @@ describe('UsageTrendsApp', () => {
   });
 
   it('displays the users chart component', () => {
-    expect(wrapper.find(UsersChart).exists()).toBe(true);
+    expect(wrapper.findComponent(UsersChart).exists()).toBe(true);
   });
 });

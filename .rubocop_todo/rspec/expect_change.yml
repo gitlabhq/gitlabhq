@@ -428,6 +428,7 @@ RSpec/ExpectChange:
     - 'spec/models/project_auto_devops_spec.rb'
     - 'spec/models/project_import_state_spec.rb'
     - 'spec/models/project_spec.rb'
+    - 'spec/models/project_statistics_spec.rb'
     - 'spec/models/projects/build_artifacts_size_refresh_spec.rb'
     - 'spec/models/projects/ci_feature_usage_spec.rb'
     - 'spec/models/release_spec.rb'

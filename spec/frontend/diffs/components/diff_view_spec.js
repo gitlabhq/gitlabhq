@@ -89,7 +89,7 @@ describe('DiffView', () => {
         inline: type === 'inline',
       });
       expect(wrapper.findAll(DiffCommentCell).length).toBe(total);
-      expect(wrapper.find(container).find(DiffCommentCell).exists()).toBe(true);
+      expect(wrapper.find(container).findComponent(DiffCommentCell).exists()).toBe(true);
     },
   );
 
@@ -97,7 +97,7 @@ describe('DiffView', () => {
     const wrapper = createWrapper({
       diffLines: [{ renderCommentRow: true, left: { lineDraft: { isDraft: true } } }],
     });
-    expect(wrapper.find(DraftNote).exists()).toBe(true);
+    expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
   });
 
   describe('drag operations', () => {

@@ -32,9 +32,9 @@ describe('DiffDiscussions', () => {
     it('should have notes list', () => {
       createComponent();
 
-      expect(wrapper.find(NoteableDiscussion).exists()).toBe(true);
-      expect(wrapper.find(DiscussionNotes).exists()).toBe(true);
-      expect(wrapper.find(DiscussionNotes).findAll(TimelineEntryItem).length).toBe(
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
+      expect(wrapper.findComponent(DiscussionNotes).exists()).toBe(true);
+      expect(wrapper.findComponent(DiscussionNotes).findAll(TimelineEntryItem).length).toBe(
         discussionsMockData.notes.length,
       );
     });
@@ -48,7 +48,7 @@ describe('DiffDiscussions', () => {
       const diffNotesToggle = findDiffNotesToggle();
 
       expect(diffNotesToggle.exists()).toBe(true);
-      expect(diffNotesToggle.find(GlIcon).exists()).toBe(true);
+      expect(diffNotesToggle.findComponent(GlIcon).exists()).toBe(true);
       expect(diffNotesToggle.classes('diff-notes-collapse')).toBe(true);
     });
 
@@ -80,12 +80,12 @@ describe('DiffDiscussions', () => {
       discussions[0].expanded = false;
       createComponent({ discussions, shouldCollapseDiscussions: true });
 
-      expect(wrapper.find(NoteableDiscussion).isVisible()).toBe(false);
+      expect(wrapper.findComponent(NoteableDiscussion).isVisible()).toBe(false);
     });
 
     it('renders badge on avatar', () => {
       createComponent({ renderAvatarBadge: true });
-      const noteableDiscussion = wrapper.find(NoteableDiscussion);
+      const noteableDiscussion = wrapper.findComponent(NoteableDiscussion);
 
       expect(noteableDiscussion.find('.design-note-pin').exists()).toBe(true);
       expect(noteableDiscussion.find('.design-note-pin').text().trim()).toBe('1');

@@ -20,6 +20,17 @@ See also [guidelines for reusing abstractions](../reusing_abstractions.md).
 
 Everything listed here can be [reopened for discussion](https://about.gitlab.com/handbook/values/#disagree-commit-and-disagree).
 
+## String literals quoting
+
+Due to the sheer amount of work to rectify, we do not care whether string
+literals are single, or double quoted.
+
+Previous discussions include:
+
+- <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44234>
+- <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36076>
+- <https://gitlab.com/gitlab-org/gitlab/-/issues/198046>
+
 ## Instance variable access using `attr_reader`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52351) in GitLab 14.1.

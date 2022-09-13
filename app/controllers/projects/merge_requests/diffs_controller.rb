@@ -64,20 +64,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
 
-    if diff_options_hash[:paths].blank?
-      if Feature.enabled?(:remove_caching_diff_batches, @merge_request.project)
-        render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
-      else
-        render_cached(
-          diffs,
-          with: PaginatedDiffSerializer.new(current_user: current_user),
-          cache_context: -> (_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
-          **options
-        )
-      end
-    else
-      render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
-    end
+    render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
   end
   # rubocop: enable Metrics/AbcSize
 

@@ -33,55 +33,132 @@ RSpec.describe Packages::Policies::ProjectPolicy do
     end
   end
 
-  describe 'read_package' do
+  describe 'read_package', :enable_admin_mode do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:project, :package_registry_access_level, :current_user, :expect_to_be_allowed) do
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:anonymous)  | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:non_member) | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:guest)      | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:reporter)   | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:developer)  | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:maintainer) | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:owner)      | false
+      ref(:private_project)  | ProjectFeature::DISABLED | ref(:admin)      | false
+
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:anonymous)  | false
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:non_member) | false
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:guest)      | false
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:reporter)   | true
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:developer)  | true
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:maintainer) | true
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:owner)      | true
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:admin)      | true
+
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:anonymous)  | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:non_member) | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:guest)      | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:reporter)   | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:developer)  | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:maintainer) | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:owner)      | true
+      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:admin)      | true
+
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:anonymous)  | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:non_member) | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:guest)      | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:reporter)   | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:developer)  | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:maintainer) | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:owner)      | false
+      ref(:internal_project) | ProjectFeature::DISABLED | ref(:admin)      | false
+
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:anonymous)  | false
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:non_member) | true
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:guest)      | true
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:reporter)   | true
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:developer)  | true
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:maintainer) | true
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:owner)      | true
+      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:admin)      | true
+
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:anonymous)  | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:non_member) | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:guest)      | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:reporter)   | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:developer)  | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:maintainer) | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:owner)      | true
+      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:admin)      | true
+
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:anonymous)  | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:non_member) | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:guest)      | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:reporter)   | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:developer)  | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:maintainer) | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:owner)      | false
+      ref(:public_project)   | ProjectFeature::DISABLED | ref(:admin)      | false
+
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:anonymous)  | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:non_member) | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:guest)      | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:reporter)   | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:developer)  | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:maintainer) | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:owner)      | true
+      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:admin)      | true
+    end
+
+    with_them do
+      it do
+        project.project_feature.update!(package_registry_access_level: package_registry_access_level)
+
+        if expect_to_be_allowed
+          is_expected.to be_allowed(:read_package)
+        else
+          is_expected.to be_disallowed(:read_package)
+        end
+      end
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(package_registry_access_level: false)
+      end
+
+      where(:project, :current_user, :expect_to_be_allowed) do
+        ref(:private_project)  | ref(:anonymous)  | false
+        ref(:private_project)  | ref(:non_member) | false
+        ref(:private_project)  | ref(:guest)      | false
+        ref(:internal_project) | ref(:anonymous)  | false
+        ref(:public_project)   | ref(:admin)      | true
+        ref(:public_project)   | ref(:owner)      | true
+        ref(:public_project)   | ref(:maintainer) | true
+        ref(:public_project)   | ref(:developer)  | true
+        ref(:public_project)   | ref(:reporter)   | true
+        ref(:public_project)   | ref(:guest)      | true
+        ref(:public_project)   | ref(:non_member) | true
+        ref(:public_project)   | ref(:anonymous)  | true
+      end
+
+      with_them do
+        it do
+          project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+
+          if expect_to_be_allowed
+            is_expected.to be_allowed(:read_package)
+          else
+            is_expected.to be_disallowed(:read_package)
+          end
+        end
+      end
+    end
+
     context 'with admin' do
       let(:current_user) { admin }
 
-      it { is_expected.to be_allowed(:read_package) }
-
       it_behaves_like 'package access with repository disabled'
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with developer' do
-      let(:current_user) { developer }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with non member' do
-      let(:current_user) { non_member }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with anonymous' do
-      let(:current_user) { anonymous }
-
-      it { is_expected.to be_allowed(:read_package) }
     end
   end
 end

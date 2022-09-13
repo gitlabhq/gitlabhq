@@ -30,7 +30,7 @@ describe('MetricPopover', () => {
   const findAllMetricLinks = () => wrapper.findAll('[data-testid="metric-link"]');
   const findMetricDescription = () => wrapper.findByTestId('metric-description');
   const findMetricDocsLink = () => wrapper.findByTestId('metric-docs-link');
-  const findMetricDocsLinkIcon = () => findMetricDocsLink().find(GlIcon);
+  const findMetricDocsLinkIcon = () => findMetricDocsLink().findComponent(GlIcon);
 
   afterEach(() => {
     wrapper.destroy();
@@ -83,7 +83,9 @@ describe('MetricPopover', () => {
             const allLinkContainers = findAllMetricLinks();
 
             expect(allLinkContainers.at(idx).text()).toContain(link.name);
-            expect(allLinkContainers.at(idx).find(GlLink).attributes('href')).toBe(link.url);
+            expect(allLinkContainers.at(idx).findComponent(GlLink).attributes('href')).toBe(
+              link.url,
+            );
           });
         });
 

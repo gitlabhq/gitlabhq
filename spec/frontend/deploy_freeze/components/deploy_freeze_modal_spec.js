@@ -42,7 +42,7 @@ describe('Deploy freeze modal', () => {
 
     wrapper.find('#deploy-freeze-start').trigger('input');
     wrapper.find('#deploy-freeze-end').trigger('input');
-    wrapper.find(TimezoneDropdown).trigger('input');
+    wrapper.findComponent(TimezoneDropdown).trigger('input');
   };
 
   afterEach(() => {

@@ -63,14 +63,14 @@ describe('AlertsSettingsWrapper', () => {
 
   const findLoader = () => wrapper.findComponent(IntegrationsList).findComponent(GlLoadingIcon);
   const findIntegrationsList = () => wrapper.findComponent(IntegrationsList);
-  const findIntegrations = () => wrapper.find(IntegrationsList).findAll('table tbody tr');
+  const findIntegrations = () => wrapper.findComponent(IntegrationsList).findAll('table tbody tr');
   const findAddIntegrationBtn = () => wrapper.findByTestId('add-integration-btn');
   const findAlertsSettingsForm = () => wrapper.findComponent(AlertsSettingsForm);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   function destroyHttpIntegration(localWrapper) {
     localWrapper
-      .find(IntegrationsList)
+      .findComponent(IntegrationsList)
       .vm.$emit('delete-integration', { id: integrationToDestroy.id });
   }
 
@@ -189,7 +189,7 @@ describe('AlertsSettingsWrapper', () => {
         data: { integrations: [] },
         loading: true,
       });
-      expect(wrapper.find(IntegrationsList).exists()).toBe(true);
+      expect(wrapper.findComponent(IntegrationsList).exists()).toBe(true);
       expect(findLoader().exists()).toBe(true);
     });
   });

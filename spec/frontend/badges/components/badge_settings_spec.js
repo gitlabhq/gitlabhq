@@ -42,7 +42,7 @@ describe('BadgeSettings component', () => {
     button.vm.$emit('click');
     await nextTick();
 
-    const modal = wrapper.find(GlModal);
+    const modal = wrapper.findComponent(GlModal);
     expect(modal.isVisible()).toBe(true);
   });
 
@@ -51,7 +51,7 @@ describe('BadgeSettings component', () => {
   });
 
   it('displays badge list', () => {
-    expect(wrapper.find(BadgeList).isVisible()).toBe(true);
+    expect(wrapper.findComponent(BadgeList).isVisible()).toBe(true);
   });
 
   describe('when editing', () => {
@@ -64,7 +64,7 @@ describe('BadgeSettings component', () => {
     });
 
     it('displays no badge list', () => {
-      expect(wrapper.find(BadgeList).isVisible()).toBe(false);
+      expect(wrapper.findComponent(BadgeList).isVisible()).toBe(false);
     });
   });
 });

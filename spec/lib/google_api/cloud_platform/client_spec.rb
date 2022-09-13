@@ -306,7 +306,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
                                                                  .with({ 'role': 'roles/storage.admin', 'members': ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/cloudsql.admin', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ 'role': 'roles/cloudsql.client', 'members': ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
                                                                  .with({ 'role': 'roles/browser', 'members': ["serviceAccount:#{mock_email}"] })

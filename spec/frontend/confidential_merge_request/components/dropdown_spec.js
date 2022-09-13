@@ -36,12 +36,12 @@ describe('Confidential merge request project dropdown component', () => {
   it('shows lock icon', () => {
     factory();
 
-    expect(vm.find(GlDropdown).props('icon')).toBe('lock');
+    expect(vm.findComponent(GlDropdown).props('icon')).toBe('lock');
   });
 
   it('has dropdown text', () => {
     factory();
 
-    expect(vm.find(GlDropdown).props('text')).toBe('Select private project');
+    expect(vm.findComponent(GlDropdown).props('text')).toBe('Select private project');
   });
 });

@@ -61,7 +61,7 @@ describe('Batch comments draft note component', () => {
     createComponent();
     expect(wrapper.findComponent(GlBadge).exists()).toBe(true);
 
-    const note = wrapper.find(NoteableNote);
+    const note = wrapper.findComponent(NoteableNote);
 
     expect(note.exists()).toBe(true);
     expect(note.props().note).toEqual(draft);
@@ -122,7 +122,7 @@ describe('Batch comments draft note component', () => {
   describe('update', () => {
     it('dispatches updateDraft', async () => {
       createComponent();
-      const note = wrapper.find(NoteableNote);
+      const note = wrapper.findComponent(NoteableNote);
 
       note.vm.$emit('handleEdit');
 
@@ -147,7 +147,7 @@ describe('Batch comments draft note component', () => {
       createComponent();
       jest.spyOn(window, 'confirm').mockImplementation(() => true);
 
-      const note = wrapper.find(NoteableNote);
+      const note = wrapper.findComponent(NoteableNote);
 
       note.vm.$emit('handleDeleteNote', draft);
 

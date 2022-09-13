@@ -29531,6 +29531,8 @@ CREATE INDEX index_on_projects_path ON projects USING btree (path);
 
 CREATE INDEX index_on_routes_lower_path ON routes USING btree (lower((path)::text));
 
+CREATE INDEX index_on_todos_user_project_target_and_state ON todos USING btree (user_id, project_id, target_type, target_id, id) WHERE ((state)::text = 'pending'::text);
+
 CREATE INDEX index_on_users_lower_email ON users USING btree (lower((email)::text));
 
 CREATE INDEX index_on_users_lower_username ON users USING btree (lower((username)::text));

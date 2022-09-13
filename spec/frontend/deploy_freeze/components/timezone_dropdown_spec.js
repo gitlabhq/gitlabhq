@@ -96,7 +96,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(wrapper.find(GlDropdown).vm.text).toBe('Alaska');
+      expect(wrapper.findComponent(GlDropdown).vm.text).toBe('Alaska');
     });
   });
 });

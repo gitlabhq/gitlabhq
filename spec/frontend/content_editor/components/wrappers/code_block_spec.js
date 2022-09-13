@@ -104,7 +104,7 @@ describe('content/components/wrappers/code_block', () => {
     it('does not render a preview if showPreview: false', async () => {
       createWrapper({ language: 'plantuml', isDiagram: true, showPreview: false });
 
-      expect(wrapper.find({ ref: 'diagramContainer' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'diagramContainer' }).exists()).toBe(false);
     });
 
     it('does not update preview when diagram is not active', async () => {
@@ -134,7 +134,7 @@ describe('content/components/wrappers/code_block', () => {
       await nextTick();
 
       expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
-      expect(wrapper.find(SandboxedMermaid).exists()).toBe(false);
+      expect(wrapper.findComponent(SandboxedMermaid).exists()).toBe(false);
     });
 
     it('renders an iframe with preview for a mermaid diagram', async () => {
@@ -143,7 +143,7 @@ describe('content/components/wrappers/code_block', () => {
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
       await nextTick();
 
-      expect(wrapper.find(SandboxedMermaid).props('source')).toBe('');
+      expect(wrapper.findComponent(SandboxedMermaid).props('source')).toBe('');
       expect(wrapper.find('img').exists()).toBe(false);
     });
   });

@@ -58,9 +58,9 @@ describe('Ci variable modal', () => {
     });
   };
 
-  const findCiEnvironmentsDropdown = () => wrapper.find(CiEnvironmentsDropdown);
+  const findCiEnvironmentsDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
   const findReferenceWarning = () => wrapper.findByTestId('contains-variable-reference');
-  const findModal = () => wrapper.find(ModalStub);
+  const findModal = () => wrapper.findComponent(ModalStub);
   const findAWSTip = () => wrapper.findByTestId('aws-guidance-tip');
   const findAddorUpdateButton = () => wrapper.findByTestId('ciUpdateOrAddVariableBtn');
   const deleteVariableButton = () =>
@@ -72,7 +72,8 @@ describe('Ci variable modal', () => {
   const findMaskedVariableCheckbox = () => wrapper.findByTestId('ci-variable-masked-checkbox');
   const findValueField = () => wrapper.find('#ci-variable-value');
   const findEnvScopeLink = () => wrapper.findByTestId('environment-scope-link');
-  const findEnvScopeInput = () => wrapper.findByTestId('environment-scope').find(GlFormInput);
+  const findEnvScopeInput = () =>
+    wrapper.findByTestId('environment-scope').findComponent(GlFormInput);
   const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
 
   afterEach(() => {

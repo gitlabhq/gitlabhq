@@ -67,7 +67,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_JOB_JWT`                             | 12.10  | all    | A RS256 JSON web token to authenticate with third party systems that support JWT authentication, for example [HashiCorp's Vault](../secrets/index.md). |
 | `CI_JOB_JWT_V1`                          | 14.6   | all    | The same value as `CI_JOB_JWT`. |
 | `CI_JOB_JWT_V2`                          | 14.6   | all    | [**alpha:**](../../policy/alpha-beta-support.md#alpha-features) A newly formatted RS256 JSON web token to increase compatibility. Similar to `CI_JOB_JWT`, except the issuer (`iss`) claim is changed from `gitlab.com` to `https://gitlab.com`, `sub` has changed from `job_id` to a string that contains the project path, and an `aud` claim is added. Format is subject to change. Be aware, the `aud` field is a constant value. Trusting JWTs in multiple relying parties can lead to [one RP sending a JWT to another one and acting maliciously as a job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72555#note_769112331).  |
-| `CI_JOB_MANUAL`                          | 8.12   | all    | `true` if a job was started manually. |
+| `CI_JOB_MANUAL`                          | 8.12   | all    | Only available if the job was started manually. `true` when available. |
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
 | `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/index.md#after_script). Can be `success`, `failed`, or `canceled`. |

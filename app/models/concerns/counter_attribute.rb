@@ -65,6 +65,10 @@ module CounterAttribute
     def counter_attribute_after_flush(&callback)
       after_flush_callbacks << callback
     end
+
+    def counter_attribute_enabled?(attribute)
+      counter_attributes.include?(attribute)
+    end
   end
 
   # This method must only be called by FlushCounterIncrementsWorker
@@ -157,7 +161,7 @@ module CounterAttribute
   end
 
   def counter_attribute_enabled?(attribute)
-    self.class.counter_attributes.include?(attribute)
+    self.class.counter_attribute_enabled?(attribute)
   end
 
   private

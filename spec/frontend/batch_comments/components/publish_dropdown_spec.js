@@ -34,6 +34,6 @@ describe('Batch comments publish dropdown component', () => {
   it('renders draft count in dropdown title', () => {
     createComponent();
 
-    expect(wrapper.find(GlDropdown).props('headerText')).toEqual('2 pending comments');
+    expect(wrapper.findComponent(GlDropdown).props('headerText')).toEqual('2 pending comments');
   });
 });

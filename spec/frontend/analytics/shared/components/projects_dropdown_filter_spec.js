@@ -79,7 +79,7 @@ describe('ProjectsDropdownFilter component', () => {
   const findClearAllButton = () => wrapper.findByText('Clear all');
   const findSelectedProjectsLabel = () => wrapper.findComponent(GlTruncate);
 
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   const findDropdownItems = () =>
     findDropdown()

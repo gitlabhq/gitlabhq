@@ -1,9 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 const yaml = require('js-yaml');
 
+const { evaluateModuleFromSource } = require('../helpers/evaluate_module_from_source');
+
 const PLUGIN_NAME = 'GraphqlKnownOperationsPlugin';
 const GRAPHQL_PATH_REGEX = /(query|mutation)\.graphql$/;
-const OPERATION_NAME_SOURCE_REGEX = /^\s*module\.exports.*oneQuery.*"(\w+)"/gm;
 
 /**
  * Returns whether a given webpack module is a "graphql" module
@@ -26,9 +27,19 @@ const getOperationNames = (module) => {
     return [];
   }
 
-  const matches = originalSource.source().toString().matchAll(OPERATION_NAME_SOURCE_REGEX);
+  const { exports: moduleExports } = evaluateModuleFromSource(originalSource.source().toString(), {
+    // what: stub require(...) when evaluating the graphql module
+    // why: require(...) is used to fetch fragments. We only need operation metadata, so it's fine to stub these out.
+    require: () => ({ definitions: [] }),
+  });
 
-  return Array.from(matches).map((match) => match[1]);
+  const names = moduleExports.definitions
+    .filter((x) => ['query', 'mutation'].includes(x.operation))
+    .map((x) => x.name?.value)
+    // why: It's possible for operations to not have a name. That violates our eslint rule, but either way, let's ignore those here.
+    .filter(Boolean);
+
+  return names;
 };
 
 const createFileContents = (knownOperations) => {
@@ -60,7 +71,7 @@ const onSucceedModule = ({ module, knownOperations }) => {
     return;
   }
 
-  getOperationNames(module).forEach((x) => knownOperations.add(x));
+  getOperationNames(module).forEach((name) => knownOperations.add(name));
 };
 
 const onCompilerEmit = ({ compilation, knownOperations, filename }) => {

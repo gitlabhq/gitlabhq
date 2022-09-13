@@ -66,7 +66,7 @@ The generated service account has the following roles:
 - `roles/cloudbuild.builds.builder`
 - `roles/run.admin`
 - `roles/storage.admin`
-- `roles/cloudsql.admin`
+- `roles/cloudsql.client`
 - `roles/browser`
 
 You can enhance security by storing CI variables in secret managers. Learn more about [secret management with GitLab](../ci/secrets/index.md).

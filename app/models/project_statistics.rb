@@ -11,9 +11,10 @@ class ProjectStatistics < ApplicationRecord
   default_value_for :snippets_size, 0
 
   counter_attribute :build_artifacts_size
-  counter_attribute :storage_size
 
   counter_attribute_after_flush do |project_statistic|
+    project_statistic.refresh_storage_size!
+
     Namespaces::ScheduleAggregationWorker.perform_async(project_statistic.namespace_id)
   end
 
@@ -21,7 +22,6 @@ class ProjectStatistics < ApplicationRecord
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size, :container_registry_size].freeze
   INCREMENTABLE_COLUMNS = {
-    build_artifacts_size: %i[storage_size],
     packages_size: %i[storage_size],
     pipeline_artifacts_size: %i[storage_size],
     snippets_size: %i[storage_size]
@@ -109,21 +109,25 @@ class ProjectStatistics < ApplicationRecord
     self.storage_size = storage_size
   end
 
-  # Since this incremental update method does not call update_storage_size above,
-  # we have to update the storage_size here as additional column.
-  # Additional columns are updated depending on key => [columns], which allows
-  # to update statistics which are and also those which aren't included in storage_size
-  # or any other additional summary column in the future.
+  def refresh_storage_size!
+    update_storage_size
+    save!
+  end
+
+  # Since this incremental update method does not call update_storage_size above through before_save,
+  # we have to update the storage_size separately.
+  #
+  # For counter attributes, storage_size will be refreshed after the counter is flushed,
+  # through counter_attribute_after_flush
+  #
+  # For non-counter attributes, storage_size is updated depending on key => [columns] in INCREMENTABLE_COLUMNS
   def self.increment_statistic(project, key, amount)
-    raise ArgumentError, "Cannot increment attribute: #{key}" unless INCREMENTABLE_COLUMNS.key?(key)
+    raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
     return if amount == 0
 
     project.statistics.try do |project_statistics|
-      if project_statistics.counter_attribute_enabled?(key)
-        statistics_to_increment = [key] + INCREMENTABLE_COLUMNS[key].to_a
-        statistics_to_increment.each do |statistic|
-          project_statistics.delayed_increment_counter(statistic, amount)
-        end
+      if counter_attribute_enabled?(key)
+        project_statistics.delayed_increment_counter(key, amount)
       else
         legacy_increment_statistic(project, key, amount)
       end
@@ -147,6 +151,10 @@ class ProjectStatistics < ApplicationRecord
     end
 
     update_all(updates.join(', '))
+  end
+
+  def self.incrementable_attribute?(key)
+    INCREMENTABLE_COLUMNS.key?(key) || counter_attribute_enabled?(key)
   end
 
   private

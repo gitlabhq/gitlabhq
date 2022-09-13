@@ -11,6 +11,7 @@ class FlushCounterIncrementsWorker
   data_consistency :always
 
   sidekiq_options retry: 3
+  loggable_arguments 0, 2
 
   # The increments in `ProjectStatistics` are owned by several teams depending
   # on the counter

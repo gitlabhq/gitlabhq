@@ -471,6 +471,21 @@ RSpec.describe Projects::MergeRequests::DraftsController do
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to have_received(:track_submit_review_approve).with(user: user)
         end
+
+        context 'when merge request is already approved by user' do
+          before do
+            create(:approval, merge_request: merge_request, user: user)
+          end
+
+          it 'does return 200' do
+            post :publish, params: params.merge!(approve: true)
+
+            expect(response).to have_gitlab_http_status(:ok)
+
+            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+              .to have_received(:track_submit_review_approve).with(user: user)
+          end
+        end
       end
     end
   end

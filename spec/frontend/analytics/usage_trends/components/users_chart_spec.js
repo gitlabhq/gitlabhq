@@ -47,9 +47,9 @@ describe('UsersChart', () => {
     wrapper = null;
   });
 
-  const findLoader = () => wrapper.find(ChartSkeletonLoader);
-  const findAlert = () => wrapper.find(GlAlert);
-  const findChart = () => wrapper.find(GlAreaChart);
+  const findLoader = () => wrapper.findComponent(ChartSkeletonLoader);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findChart = () => wrapper.findComponent(GlAreaChart);
 
   describe('while loading', () => {
     beforeEach(() => {

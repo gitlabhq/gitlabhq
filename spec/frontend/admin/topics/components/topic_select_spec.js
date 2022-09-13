@@ -77,8 +77,8 @@ describe('TopicSelect', () => {
 
     const dropdownItems = findAllDropdownItems();
 
-    expect(dropdownItems.at(0).find(GlAvatarLabeled).props('label')).toBe('Topic 1');
-    expect(dropdownItems.at(1).find(GlAvatarLabeled).props('label')).toBe('GitLab');
+    expect(dropdownItems.at(0).findComponent(GlAvatarLabeled).props('label')).toBe('Topic 1');
+    expect(dropdownItems.at(1).findComponent(GlAvatarLabeled).props('label')).toBe('GitLab');
   });
 
   it('emits `click` event when topic selected', () => {

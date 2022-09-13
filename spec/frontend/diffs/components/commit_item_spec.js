@@ -27,7 +27,7 @@ describe('diffs/components/commit_item', () => {
   const getAvatarElement = () => wrapper.find('.user-avatar-link');
   const getCommitterElement = () => wrapper.find('.committer');
   const getCommitActionsElement = () => wrapper.find('.commit-actions');
-  const getCommitPipelineStatus = () => wrapper.find(CommitPipelineStatus);
+  const getCommitPipelineStatus = () => wrapper.findComponent(CommitPipelineStatus);
 
   const mountComponent = (propsData) => {
     wrapper = mount(Component, {

@@ -79,4 +79,14 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
       end
     end
   end
+
+  describe '.counter_attribute_enabled?' do
+    it 'is true when counter attribute is defined' do
+      expect(CounterAttributeModel.counter_attribute_enabled?(:build_artifacts_size)).to be_truthy
+    end
+
+    it 'is false when counter attribute is not defined' do
+      expect(CounterAttributeModel.counter_attribute_enabled?(:nope)).to be_falsey
+    end
+  end
 end

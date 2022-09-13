@@ -64,7 +64,7 @@ describe('DiffDiscussionReply', () => {
         hasForm: false,
       });
 
-      expect(wrapper.find(ReplyPlaceholder).exists()).toBe(true);
+      expect(wrapper.findComponent(ReplyPlaceholder).exists()).toBe(true);
     });
   });
 
@@ -83,6 +83,6 @@ describe('DiffDiscussionReply', () => {
       hasForm: false,
     });
 
-    expect(wrapper.find(NoteSignedOutWidget).exists()).toBe(true);
+    expect(wrapper.findComponent(NoteSignedOutWidget).exists()).toBe(true);
   });
 });

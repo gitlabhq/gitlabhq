@@ -62,7 +62,7 @@ describe.each`
     };
 
     const selectFile = async (file) => {
-      const input = wrapper.find({ ref: 'fileSelector' });
+      const input = wrapper.findComponent({ ref: 'fileSelector' });
 
       // override the property definition because `input.files` isn't directly modifyable
       Object.defineProperty(input.element, 'files', { value: [file], writable: true });

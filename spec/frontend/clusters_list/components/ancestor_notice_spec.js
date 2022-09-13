@@ -46,7 +46,7 @@ describe('ClustersAncestorNotice', () => {
     });
 
     it('displays link', () => {
-      expect(wrapper.find(GlLink).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLink).exists()).toBe(true);
     });
   });
 });

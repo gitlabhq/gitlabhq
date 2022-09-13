@@ -40,8 +40,8 @@ describe('Ci variable modal', () => {
     });
   };
 
-  const findCiEnvironmentsDropdown = () => wrapper.find(CiEnvironmentsDropdown);
-  const findModal = () => wrapper.find(ModalStub);
+  const findCiEnvironmentsDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
+  const findModal = () => wrapper.findComponent(ModalStub);
   const findAddorUpdateButton = () => findModal().find('[data-testid="ciUpdateOrAddVariableBtn"]');
   const deleteVariableButton = () =>
     findModal()
@@ -213,7 +213,7 @@ describe('Ci variable modal', () => {
 
           const environmentScopeInput = wrapper
             .find('[data-testid="environment-scope"]')
-            .find(GlFormInput);
+            .findComponent(GlFormInput);
           expect(findCiEnvironmentsDropdown().exists()).toBe(false);
           expect(environmentScopeInput.attributes('readonly')).toBe('readonly');
         });

@@ -712,9 +712,6 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['free_user_cap_data_remediation'] ||= Settingslogic.new({})
-  Settings.cron_jobs['free_user_cap_data_remediation']['cron'] ||= '17 6,10,14,18 * * *'
-  Settings.cron_jobs['free_user_cap_data_remediation']['job_class'] = 'Namespaces::FreeUserCap::RemediationWorker'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'

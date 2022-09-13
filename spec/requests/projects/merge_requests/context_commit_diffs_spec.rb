@@ -63,21 +63,13 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       let(:collection) { Gitlab::Diff::FileCollection::Compare }
       let(:expected_options) { collection_arguments }
 
-      before do
-        stub_feature_flags(remove_caching_diff_batches: true)
-      end
-
       it_behaves_like 'serializes diffs with expected arguments'
     end
 
     context 'with caching', :use_clean_rails_memory_store_caching do
-      subject { go(page: 0, per_page: 5) }
-
-      before do
-        stub_feature_flags(remove_caching_diff_batches: false)
-      end
-
       context 'when the request has not been cached' do
+        subject { go(headers: { 'If-None-Match' => '' }, page: 0, per_page: 5) }
+
         it_behaves_like 'serializes diffs with expected arguments' do
           let(:collection) { Gitlab::Diff::FileCollection::Compare }
           let(:expected_options) { collection_arguments }
@@ -85,26 +77,18 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       end
 
       context 'when the request has already been cached' do
+        subject { go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5) }
+
         before do
           go(page: 0, per_page: 5)
         end
 
         it 'does not serialize diffs' do
-          expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-            expect(instance).not_to receive(:represent)
-          end
+          expect(PaginatedDiffSerializer).not_to receive(:new)
 
-          subject
-        end
+          go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
 
-        context 'when using ETags' do
-          it 'does not serialize diffs' do
-            expect(PaginatedDiffSerializer).not_to receive(:new)
-
-            go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
-
-            expect(response).to have_gitlab_http_status(:not_modified)
-          end
+          expect(response).to have_gitlab_http_status(:not_modified)
         end
 
         context 'with the different user' do

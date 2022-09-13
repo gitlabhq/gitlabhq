@@ -18,7 +18,7 @@ describe('Activity Chart Bundle', () => {
     wrapper = null;
   });
 
-  const findChart = () => wrapper.find(GlColumnChart);
+  const findChart = () => wrapper.findComponent(GlColumnChart);
   const findNoData = () => wrapper.find('[data-testid="noActivityChartData"]');
 
   describe('Activity Chart', () => {

@@ -406,9 +406,9 @@ RSpec.describe Notes::CreateService do
                   expect(issuable.draft?).to eq(can_use_quick_action)
                 }
               ),
-              # Remove draft status
+              # Remove draft (set ready) status
               QuickAction.new(
-                action_text: "/draft",
+                action_text: "/ready",
                 before_action: -> {
                   issuable.reload.update!(title: "Draft: title")
                 },

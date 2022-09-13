@@ -55,6 +55,18 @@ RSpec.describe API::Tags do
 
         expect(json_response.map { |tag| tag['name'] }).to eq(ordered_by_name)
       end
+
+      it 'sorts by version in ascending order when requested' do
+        repository = project.repository
+        repository.add_tag(user, 'v1.2.0', repository.commit.id)
+        repository.add_tag(user, 'v1.10.0', repository.commit.id)
+
+        get api("#{route}?order_by=version&sort=asc", current_user)
+
+        ordered_by_version = VersionSorter.sort(project.repository.tags.map { |tag| tag.name })
+
+        expect(json_response.map { |tag| tag['name'] }).to eq(ordered_by_version)
+      end
     end
 
     context 'searching' do

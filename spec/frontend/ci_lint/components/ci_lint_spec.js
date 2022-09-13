@@ -36,9 +36,9 @@ describe('CI Lint', () => {
     });
   };
 
-  const findEditor = () => wrapper.find(SourceEditor);
-  const findAlert = () => wrapper.find(GlAlert);
-  const findCiLintResults = () => wrapper.find(CiLintResults);
+  const findEditor = () => wrapper.findComponent(SourceEditor);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findCiLintResults = () => wrapper.findComponent(CiLintResults);
   const findValidateBtn = () => wrapper.find('[data-testid="ci-lint-validate"]');
   const findClearBtn = () => wrapper.find('[data-testid="ci-lint-clear"]');
 

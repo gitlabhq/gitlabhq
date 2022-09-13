@@ -16,13 +16,13 @@ describe('TriggersList', () => {
     });
   };
 
-  const findTable = () => wrapper.find(GlTable);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findHeaderAt = (i) => wrapper.findAll('thead th').at(i);
   const findRows = () => wrapper.findAll('tbody tr');
   const findRowAt = (i) => findRows().at(i);
   const findCell = (i, col) => findRowAt(i).findAll('td').at(col);
-  const findClipboardBtn = (i) => findCell(i, 0).find(ClipboardButton);
-  const findInvalidBadge = (i) => findCell(i, 0).find(GlBadge);
+  const findClipboardBtn = (i) => findCell(i, 0).findComponent(ClipboardButton);
+  const findInvalidBadge = (i) => findCell(i, 0).findComponent(GlBadge);
   const findEditBtn = (i) => findRowAt(i).find('[data-testid="edit-btn"]');
   const findRevokeBtn = (i) => findRowAt(i).find('[data-testid="trigger_revoke_button"]');
 
@@ -65,7 +65,7 @@ describe('TriggersList', () => {
   it('displays a time ago label when last used', () => {
     expect(findCell(0, 3).text()).toBe('Never');
 
-    expect(findCell(1, 3).find(TimeAgoTooltip).props('time')).toBe(triggers[1].lastUsed);
+    expect(findCell(1, 3).findComponent(TimeAgoTooltip).props('time')).toBe(triggers[1].lastUsed);
   });
 
   it('displays actions in a rows', () => {

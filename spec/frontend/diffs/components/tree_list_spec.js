@@ -175,7 +175,7 @@ describe('Diffs tree list component', () => {
       await nextTick();
       // Have to use $attrs['viewed-files'] because we are passing down an object
       // and attributes('') stringifies values (e.g. [object])...
-      expect(wrapper.find(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
+      expect(wrapper.findComponent(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
     });
   });
 });

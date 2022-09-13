@@ -82,7 +82,7 @@ describe('DiffLineNoteForm', () => {
   });
 
   it('shows note form', () => {
-    expect(wrapper.find(NoteForm).exists()).toBe(true);
+    expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
   });
 
   it('passes the provided range of lines to comment form', () => {

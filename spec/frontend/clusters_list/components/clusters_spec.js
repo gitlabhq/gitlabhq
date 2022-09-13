@@ -142,7 +142,7 @@ describe('Clusters', () => {
       ({ lineNumber, result }) => {
         const statuses = findStatuses();
         const status = statuses.at(lineNumber);
-        expect(status.find(GlLoadingIcon).exists()).toBe(result);
+        expect(status.findComponent(GlLoadingIcon).exists()).toBe(result);
       },
     );
   });

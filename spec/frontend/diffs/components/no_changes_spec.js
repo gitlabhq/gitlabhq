@@ -56,7 +56,7 @@ describe('Diff no changes empty state', () => {
     it('Show create commit button', () => {
       createComponent();
 
-      expect(wrapper.find(GlButton).exists()).toBe(true);
+      expect(wrapper.findComponent(GlButton).exists()).toBe(true);
     });
 
     it.each`

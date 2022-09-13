@@ -100,7 +100,7 @@ function createComponent({ file, first = false, last = false, options = {}, prop
   };
 }
 
-const findDiffHeader = (wrapper) => wrapper.find(DiffFileHeaderComponent);
+const findDiffHeader = (wrapper) => wrapper.findComponent(DiffFileHeaderComponent);
 const findDiffContentArea = (wrapper) => wrapper.find('[data-testid="content-area"]');
 const findLoader = (wrapper) => wrapper.find('[data-testid="loader-icon"]');
 const findToggleButton = (wrapper) => wrapper.find('[data-testid="expand-button"]');
@@ -209,14 +209,14 @@ describe('DiffFile', () => {
 
       expect(el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
       expect(el.querySelector('.js-file-title')).toBeDefined();
-      expect(wrapper.find(DiffFileHeaderComponent).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffFileHeaderComponent).exists()).toBe(true);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
 
       markFileToBeRendered(store);
 
       await nextTick();
 
-      expect(wrapper.find(DiffContentComponent).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffContentComponent).exists()).toBe(true);
     });
   });
 
@@ -320,7 +320,7 @@ describe('DiffFile', () => {
       });
 
       it('should have the file content', async () => {
-        expect(wrapper.find(DiffContentComponent).exists()).toBe(true);
+        expect(wrapper.findComponent(DiffContentComponent).exists()).toBe(true);
       });
 
       it('should style the component so that it `.has-body` for layout purposes', () => {
@@ -473,8 +473,8 @@ describe('DiffFile', () => {
           await nextTick();
 
           expect(wrapper.classes('has-body')).toBe(true);
-          expect(wrapper.find(DiffContentComponent).exists()).toBe(true);
-          expect(wrapper.find(DiffContentComponent).isVisible()).toBe(true);
+          expect(wrapper.findComponent(DiffContentComponent).exists()).toBe(true);
+          expect(wrapper.findComponent(DiffContentComponent).isVisible()).toBe(true);
         },
       );
     });

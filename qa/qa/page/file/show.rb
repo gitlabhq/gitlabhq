@@ -14,11 +14,6 @@ module QA
           element :lock_button
         end
 
-        view 'app/helpers/blob_helper.rb' do
-          element :edit_button, "_('Edit')" # rubocop:disable QA/ElementWithPattern
-          element :delete_button, '_("Delete")' # rubocop:disable QA/ElementWithPattern
-        end
-
         view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
           element :edit_button
         end

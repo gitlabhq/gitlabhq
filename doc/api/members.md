@@ -329,7 +329,6 @@ GET /groups/:id/billable_members
 | `id`                          | integer/string  | yes       | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `search`                      | string          | no        | A query string to search for group members by name, username, or public email.                                |
 | `sort`                        | string          | no        | A query string containing parameters that specify the sort attribute and order. See supported values below.   |
-| `include_awaiting_members`    | boolean         | no        | Determines if awaiting members are included.                                                                  |
 
 The supported values for the `sort` attribute are:
 

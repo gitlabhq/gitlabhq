@@ -39,7 +39,7 @@ describe('LockPopovers', () => {
     wrapper = mountExtended(LockPopovers);
   };
 
-  const findPopover = () => extendedWrapper(wrapper.find(GlPopover));
+  const findPopover = () => extendedWrapper(wrapper.findComponent(GlPopover));
   const findByTextInPopover = (text, options) =>
     findPopover().findByText((_, element) => element.textContent === text, options);
 

@@ -60,222 +60,147 @@ RSpec.describe 'Merge Requests Diffs' do
       let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
       let(:expected_options) { collection_arguments(total_pages: 20) }
 
-      before do
-        stub_feature_flags(remove_caching_diff_batches: true)
-      end
-
       it_behaves_like 'serializes diffs with expected arguments'
     end
 
     context 'with caching', :use_clean_rails_memory_store_caching do
       subject { go(headers: headers, page: 0, per_page: 5) }
 
-      let(:headers) { {} }
+      let(:headers) { { 'If-None-Match' => response.etag } }
 
       before do
-        stub_feature_flags(remove_caching_diff_batches: false)
+        go(page: 0, per_page: 5)
       end
 
-      context 'when the request has not been cached' do
+      it 'does not serialize diffs' do
+        expect(PaginatedDiffSerializer).not_to receive(:new)
+
+        go(headers: headers, page: 0, per_page: 5)
+
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+
+      context 'with the different user' do
+        let(:another_user) { create(:user) }
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20) }
+
+        before do
+          project.add_maintainer(another_user)
+          sign_in(another_user)
+        end
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+
+      context 'with a new unfoldable diff position' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20) }
+
+        let(:unfoldable_position) do
+          create(:diff_position)
+        end
+
+        before do
+          expect_next_instance_of(Gitlab::Diff::PositionCollection) do |instance|
+            expect(instance)
+              .to receive(:unfoldable)
+              .and_return([unfoldable_position])
+          end
+        end
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+
+      context 'with disabled display_merge_conflicts_in_diff feature' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20).merge(allow_tree_conflicts: false) }
+
+        before do
+          stub_feature_flags(display_merge_conflicts_in_diff: false)
+        end
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+
+      context 'with diff_head option' do
+        subject { go(page: 0, per_page: 5, diff_head: true) }
+
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_ref_head_diff: true) }
+
+        before do
+          merge_request.create_merge_head_diff!
+        end
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+
+      context 'with the different pagination option' do
+        subject { go(page: 5, per_page: 5) }
+
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
         let(:expected_options) { collection_arguments(total_pages: 20) }
 
         it_behaves_like 'serializes diffs with expected arguments'
       end
 
-      context 'when the request has already been cached' do
-        before do
-          go(page: 0, per_page: 5)
-        end
+      context 'with the different diff_view' do
+        subject { go(page: 0, per_page: 5, view: :parallel) }
+
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20).merge(diff_view: :parallel) }
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+
+      context 'with the different expanded option' do
+        subject { go(page: 0, per_page: 5, expanded: true ) }
+
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20) }
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+
+      context 'with the different ignore_whitespace_change option' do
+        subject { go(page: 0, per_page: 5, w: 1) }
+
+        let(:collection) { Gitlab::Diff::FileCollection::Compare }
+        let(:expected_options) { collection_arguments(total_pages: 20) }
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
+    end
+
+    context 'when the paths is given' do
+      subject { go(headers: headers, page: 0, per_page: 5, paths: %w[README CHANGELOG]) }
+
+      before do
+        go(page: 0, per_page: 5, paths: %w[README CHANGELOG])
+      end
+
+      context 'when using ETag caching' do
+        let(:headers) { { 'If-None-Match' => response.etag } }
 
         it 'does not serialize diffs' do
-          expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-            expect(instance).not_to receive(:represent)
-          end
+          expect(PaginatedDiffSerializer).not_to receive(:new)
 
           subject
-        end
 
-        context 'when using ETags' do
-          let(:headers) { { 'If-None-Match' => response.etag } }
-
-          it 'does not serialize diffs' do
-            expect(PaginatedDiffSerializer).not_to receive(:new)
-
-            go(headers: headers, page: 0, per_page: 5)
-
-            expect(response).to have_gitlab_http_status(:not_modified)
-          end
-        end
-
-        context 'with the different user' do
-          let(:another_user) { create(:user) }
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20) }
-
-          before do
-            project.add_maintainer(another_user)
-            sign_in(another_user)
-          end
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with a new unfoldable diff position' do
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20) }
-
-          let(:unfoldable_position) do
-            create(:diff_position)
-          end
-
-          before do
-            expect_next_instance_of(Gitlab::Diff::PositionCollection) do |instance|
-              expect(instance)
-                .to receive(:unfoldable)
-                .and_return([unfoldable_position])
-            end
-          end
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with disabled display_merge_conflicts_in_diff feature' do
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20).merge(allow_tree_conflicts: false) }
-
-          before do
-            stub_feature_flags(display_merge_conflicts_in_diff: false)
-          end
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with diff_head option' do
-          subject { go(page: 0, per_page: 5, diff_head: true) }
-
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_ref_head_diff: true) }
-
-          before do
-            merge_request.create_merge_head_diff!
-          end
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with the different pagination option' do
-          subject { go(page: 5, per_page: 5) }
-
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20) }
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with the different diff_view' do
-          subject { go(page: 0, per_page: 5, view: :parallel) }
-
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20).merge(diff_view: :parallel) }
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with the different expanded option' do
-          subject { go(page: 0, per_page: 5, expanded: true ) }
-
-          let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-          let(:expected_options) { collection_arguments(total_pages: 20) }
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
-        end
-
-        context 'with the different ignore_whitespace_change option' do
-          subject { go(page: 0, per_page: 5, w: 1) }
-
-          let(:collection) { Gitlab::Diff::FileCollection::Compare }
-          let(:expected_options) { collection_arguments(total_pages: 20) }
-
-          it_behaves_like 'serializes diffs with expected arguments'
-
-          context 'when using ETag caching' do
-            it_behaves_like 'serializes diffs with expected arguments' do
-              let(:headers) { { 'If-None-Match' => response.etag } }
-            end
-          end
+          expect(response).to have_gitlab_http_status(:not_modified)
         end
       end
 
-      context 'when the paths is given' do
-        subject { go(headers: headers, page: 0, per_page: 5, paths: %w[README CHANGELOG]) }
+      context 'when not using ETag caching' do
+        let(:headers) { {} }
 
-        before do
-          go(page: 0, per_page: 5, paths: %w[README CHANGELOG])
-        end
+        it 'does not use cache' do
+          expect(Rails.cache).not_to receive(:fetch).with(/cache:gitlab:PaginatedDiffSerializer/).and_call_original
 
-        context 'when using ETag caching' do
-          let(:headers) { { 'If-None-Match' => response.etag } }
+          subject
 
-          it 'does not serialize diffs' do
-            expect(PaginatedDiffSerializer).not_to receive(:new)
-
-            subject
-
-            expect(response).to have_gitlab_http_status(:not_modified)
-          end
-        end
-
-        context 'when not using ETag caching' do
-          it 'does not use cache' do
-            expect(Rails.cache).not_to receive(:fetch).with(/cache:gitlab:PaginatedDiffSerializer/).and_call_original
-
-            subject
-
-            expect(response).to have_gitlab_http_status(:success)
-          end
+          expect(response).to have_gitlab_http_status(:success)
         end
       end
     end

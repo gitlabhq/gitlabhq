@@ -172,8 +172,8 @@ describe('AlertManagementTable', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlTable).exists()).toBe(true);
-      expect(findAlertsTable().find(GlIcon).classes('icon-critical')).toBe(true);
+      expect(wrapper.findComponent(GlTable).exists()).toBe(true);
+      expect(findAlertsTable().findComponent(GlIcon).classes('icon-critical')).toBe(true);
     });
 
     it('renders severity text', () => {
@@ -200,7 +200,7 @@ describe('AlertManagementTable', () => {
         loading: false,
       });
 
-      const avatar = findAssignees().at(1).find(GlAvatar);
+      const avatar = findAssignees().at(1).findComponent(GlAvatar);
       const { src, label } = avatar.attributes();
       const { name, avatarUrl } = mockAlerts[1].assignees.nodes[0];
 

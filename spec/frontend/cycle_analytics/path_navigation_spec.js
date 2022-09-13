@@ -56,7 +56,9 @@ describe('Project PathNavigation', () => {
 
   describe('displays correctly', () => {
     it('has the correct props', () => {
-      expect(wrapper.find(GlPath).props('items')).toMatchObject(transformedProjectStagePathData);
+      expect(wrapper.findComponent(GlPath).props('items')).toMatchObject(
+        transformedProjectStagePathData,
+      );
     });
 
     it('contains all the expected stages', () => {
@@ -69,11 +71,11 @@ describe('Project PathNavigation', () => {
     describe('loading', () => {
       describe('is false', () => {
         it('displays the gl-path component', () => {
-          expect(wrapper.find(GlPath).exists()).toBe(true);
+          expect(wrapper.findComponent(GlPath).exists()).toBe(true);
         });
 
         it('hides the gl-skeleton-loading component', () => {
-          expect(wrapper.find(GlSkeletonLoader).exists()).toBe(false);
+          expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(false);
         });
 
         it('renders each stage', () => {
@@ -112,11 +114,11 @@ describe('Project PathNavigation', () => {
         });
 
         it('hides the gl-path component', () => {
-          expect(wrapper.find(GlPath).exists()).toBe(false);
+          expect(wrapper.findComponent(GlPath).exists()).toBe(false);
         });
 
         it('displays the gl-skeleton-loading component', () => {
-          expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+          expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
         });
       });
     });
