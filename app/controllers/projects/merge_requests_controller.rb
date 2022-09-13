@@ -220,7 +220,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def context_commits
     # Get commits from repository
     # or from cache if already merged
-    commits = ContextCommitsFinder.new(project, @merge_request, { search: params[:search], limit: params[:limit], offset: params[:offset] }).execute
+    commits = ContextCommitsFinder.new(project, @merge_request, {
+                                         search: params[:search],
+                                         author: params[:author],
+                                         committed_before: convert_date_to_epoch(params[:committed_before]),
+                                         committed_after: convert_date_to_epoch(params[:committed_after]),
+                                         limit: params[:limit]
+                                       }).execute
     render json: CommitEntity.represent(commits, { type: :full, request: merge_request })
   end
 
@@ -552,6 +558,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     params = request.query_parameters.merge(view: 'inline', diff_head: true)
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
+  end
+
+  def convert_date_to_epoch(date)
+    Date.strptime(date, "%Y-%m-%d")&.to_time&.to_i if date
+  rescue Date::Error, TypeError
   end
 end
 

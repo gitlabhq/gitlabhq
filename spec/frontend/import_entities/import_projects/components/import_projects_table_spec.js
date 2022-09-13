@@ -30,7 +30,7 @@ describe('ImportProjectsTable', () => {
 
   const findImportAllButton = () =>
     wrapper
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .filter((w) => w.props().variant === 'confirm')
       .at(0);
   const findImportAllModal = () => wrapper.findComponent({ ref: 'importAllModal' });
@@ -118,7 +118,7 @@ describe('ImportProjectsTable', () => {
         .exists(),
     ).toBe(true);
 
-    expect(wrapper.findAll(ProviderRepoTableRow)).toHaveLength(repositories.length);
+    expect(wrapper.findAllComponents(ProviderRepoTableRow)).toHaveLength(repositories.length);
   });
 
   it.each`

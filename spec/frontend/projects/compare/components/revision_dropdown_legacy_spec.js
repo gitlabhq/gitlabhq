@@ -99,7 +99,7 @@ describe('RevisionDropdown component', () => {
     });
 
     it('emits a "selectRevision" event when a revision is selected', async () => {
-      const findGlDropdownItems = () => wrapper.findAll(GlDropdownItem);
+      const findGlDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
       const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details

@@ -46,6 +46,6 @@ describe('ReviewTabContainer', () => {
 
   it('renders all passed commits as list', () => {
     createWrapper({ commits: [commit] });
-    expect(wrapper.findAll(CommitItem).length).toBe(1);
+    expect(wrapper.findAllComponents(CommitItem).length).toBe(1);
   });
 });

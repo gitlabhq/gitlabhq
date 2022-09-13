@@ -44,12 +44,12 @@ describe('Incidents List', () => {
   const findTableRows = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
-  const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
+  const findTimeAgo = () => wrapper.findAllComponents(TimeAgoTooltip);
   const findAssignees = () => wrapper.findAll('[data-testid="incident-assignees"]');
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findSeverity = () => wrapper.findAll(SeverityToken);
+  const findSeverity = () => wrapper.findAllComponents(SeverityToken);
   const findEscalationStatus = () => wrapper.findAll('[data-testid="incident-escalation-status"]');
   const findIncidentLink = () => wrapper.findByTestId('incident-link');
 

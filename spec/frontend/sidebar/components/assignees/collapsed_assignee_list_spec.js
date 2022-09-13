@@ -23,7 +23,7 @@ describe('CollapsedAssigneeList component', () => {
 
   const findNoUsersIcon = () => wrapper.find(GlIcon);
   const findAvatarCounter = () => wrapper.find('.avatar-counter');
-  const findAssignees = () => wrapper.findAll(CollapsedAssignee);
+  const findAssignees = () => wrapper.findAllComponents(CollapsedAssignee);
   const getTooltipTitle = () => wrapper.attributes('title');
 
   afterEach(() => {

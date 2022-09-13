@@ -32,8 +32,8 @@ describe('Pipelines Actions dropdown', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findAllCountdowns = () => wrapper.findAll(GlCountdown);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findAllCountdowns = () => wrapper.findAllComponents(GlCountdown);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);

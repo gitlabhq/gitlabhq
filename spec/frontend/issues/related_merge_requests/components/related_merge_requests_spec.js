@@ -65,9 +65,9 @@ describe('RelatedMergeRequests', () => {
   describe('template', () => {
     it('should render related merge request items', () => {
       expect(wrapper.find('[data-testid="count"]').text()).toBe('2');
-      expect(wrapper.findAll(RelatedIssuableItem)).toHaveLength(2);
+      expect(wrapper.findAllComponents(RelatedIssuableItem)).toHaveLength(2);
 
-      const props = wrapper.findAll(RelatedIssuableItem).at(1).props();
+      const props = wrapper.findAllComponents(RelatedIssuableItem).at(1).props();
       const data = mockData[1];
 
       expect(props.idKey).toEqual(data.id);

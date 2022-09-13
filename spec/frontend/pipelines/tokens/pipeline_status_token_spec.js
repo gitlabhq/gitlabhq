@@ -7,8 +7,9 @@ describe('Pipeline Status Token', () => {
   let wrapper;
 
   const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
-  const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
-  const findAllGlIcons = () => wrapper.findAll(GlIcon);
+  const findAllFilteredSearchSuggestions = () =>
+    wrapper.findAllComponents(GlFilteredSearchSuggestion);
+  const findAllGlIcons = () => wrapper.findAllComponents(GlIcon);
 
   const defaultProps = {
     config: {

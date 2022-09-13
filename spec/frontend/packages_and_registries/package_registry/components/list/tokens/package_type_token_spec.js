@@ -7,7 +7,7 @@ describe('packages_filter', () => {
   let wrapper;
 
   const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
-  const findFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
+  const findFilteredSearchSuggestions = () => wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
   const mountComponent = ({ attrs, listeners } = {}) => {
     wrapper = shallowMount(component, {

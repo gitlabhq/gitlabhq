@@ -251,13 +251,22 @@ module Gitlab
         consume_commits_response(response)
       end
 
-      def list_commits(revisions, reverse: false, pagination_params: nil)
+      def list_commits(revisions, params = {})
         request = Gitaly::ListCommitsRequest.new(
           repository: @gitaly_repo,
           revisions: Array.wrap(revisions),
-          reverse: reverse,
-          pagination_params: pagination_params
+          reverse: !!params[:reverse],
+          ignore_case: params[:ignore_case],
+          pagination_params: params[:pagination_params]
         )
+
+        if params[:commit_message_patterns]
+          request.commit_message_patterns += Array.wrap(params[:commit_message_patterns])
+        end
+
+        request.author = encode_binary(params[:author]) if params[:author]
+        request.before = GitalyClient.timestamp(params[:before]) if params[:before]
+        request.after = GitalyClient.timestamp(params[:after]) if params[:after]
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)

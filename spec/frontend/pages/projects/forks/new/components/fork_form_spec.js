@@ -200,7 +200,7 @@ describe('ForkForm component', () => {
     it('displays the correct description', () => {
       createComponent();
 
-      const formRadios = wrapper.findAll(GlFormRadio);
+      const formRadios = wrapper.findAllComponents(GlFormRadio);
 
       Object.keys(PROJECT_VISIBILITY_TYPE).forEach((visibilityType, index) => {
         expect(formRadios.at(index).text()).toBe(PROJECT_VISIBILITY_TYPE[visibilityType]);
@@ -210,7 +210,7 @@ describe('ForkForm component', () => {
     it('displays all 3 visibility levels', () => {
       createComponent();
 
-      expect(wrapper.findAll(GlFormRadio)).toHaveLength(3);
+      expect(wrapper.findAllComponents(GlFormRadio)).toHaveLength(3);
     });
 
     describe('when the namespace is changed', () => {

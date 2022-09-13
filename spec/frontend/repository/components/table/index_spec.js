@@ -115,7 +115,7 @@ describe('Repository table component', () => {
       commits: MOCK_COMMITS,
     });
 
-    const rows = vm.findAll(TableRow);
+    const rows = vm.findAllComponents(TableRow);
 
     expect(rows.length).toEqual(3);
     expect(rows.at(2).attributes().mode).toEqual('120000');

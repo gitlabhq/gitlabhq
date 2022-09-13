@@ -59,7 +59,7 @@ describe('IncidentTimelineEventList', () => {
   };
 
   const findTimelineEventGroups = () => wrapper.findAllByTestId('timeline-group');
-  const findItems = (base = wrapper) => base.findAll(IncidentTimelineEventItem);
+  const findItems = (base = wrapper) => base.findAllComponents(IncidentTimelineEventItem);
   const findFirstTimelineEventGroup = () => findTimelineEventGroups().at(0);
   const findSecondTimelineEventGroup = () => findTimelineEventGroups().at(1);
   const findDates = () => wrapper.findAllByTestId('event-date');

@@ -31,7 +31,7 @@ describe('popovers/components/popovers.vue', () => {
     return target;
   };
 
-  const allPopovers = () => wrapper.findAll(GlPopover);
+  const allPopovers = () => wrapper.findAllComponents(GlPopover);
 
   afterEach(() => {
     wrapper.destroy();
@@ -52,7 +52,7 @@ describe('popovers/components/popovers.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.findAll(GlPopover)).toHaveLength(1);
+      expect(wrapper.findAllComponents(GlPopover)).toHaveLength(1);
     });
 
     describe('supports HTML content', () => {

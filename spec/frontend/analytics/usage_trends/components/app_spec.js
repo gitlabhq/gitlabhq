@@ -27,7 +27,7 @@ describe('UsageTrendsApp', () => {
   ['Total projects & groups', 'Pipelines', 'Issues & merge requests'].forEach((usage) => {
     it(`displays the ${usage} chart`, () => {
       const chartTitles = wrapper
-        .findAll(UsageTrendsCountChart)
+        .findAllComponents(UsageTrendsCountChart)
         .wrappers.map((chartComponent) => chartComponent.props('chartTitle'));
 
       expect(chartTitles).toContain(usage);

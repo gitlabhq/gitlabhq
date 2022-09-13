@@ -1186,6 +1186,25 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe '#owner_project' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+
+    subject(:owner_project) { project_runner.owner_project }
+
+    context 'with project1 as first project associated with runner' do
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+
+      it { is_expected.to eq project1 }
+    end
+
+    context 'with project2 as first project associated with runner' do
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project2, project1]) }
+
+      it { is_expected.to eq project2 }
+    end
+  end
+
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
       project1 = create(:project)

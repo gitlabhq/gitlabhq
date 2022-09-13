@@ -34,9 +34,9 @@ describe('DiffDiscussions', () => {
 
       expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
       expect(wrapper.findComponent(DiscussionNotes).exists()).toBe(true);
-      expect(wrapper.findComponent(DiscussionNotes).findAll(TimelineEntryItem).length).toBe(
-        discussionsMockData.notes.length,
-      );
+      expect(
+        wrapper.findComponent(DiscussionNotes).findAllComponents(TimelineEntryItem).length,
+      ).toBe(discussionsMockData.notes.length);
     });
   });
 

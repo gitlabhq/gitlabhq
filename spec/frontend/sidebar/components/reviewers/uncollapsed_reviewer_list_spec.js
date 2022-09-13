@@ -52,7 +52,7 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('only has one user', () => {
-      expect(wrapper.findAll(ReviewerAvatarLink).length).toBe(1);
+      expect(wrapper.findAllComponents(ReviewerAvatarLink).length).toBe(1);
     });
 
     it('shows one user with avatar, and author name', () => {
@@ -96,7 +96,7 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('has both users', () => {
-      expect(wrapper.findAll(ReviewerAvatarLink).length).toBe(2);
+      expect(wrapper.findAllComponents(ReviewerAvatarLink).length).toBe(2);
     });
 
     it('shows both users with avatar, and author name', () => {

@@ -51,6 +51,30 @@ RSpec.describe ::Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService do
               end
             end
 
+            context 'when ci_update_unlocked_pipeline_artifacts feature flag is enabled' do
+              it "artifact has pipeline's locked status" do
+                subject
+
+                artifact = Ci::PipelineArtifact.first
+
+                expect(artifact.locked).to eq(head_pipeline.locked)
+              end
+            end
+
+            context 'when ci_update_unlocked_pipeline_artifacts is disabled' do
+              before do
+                stub_feature_flags(ci_update_unlocked_pipeline_artifacts: false)
+              end
+
+              it 'artifact has unknown locked status' do
+                subject
+
+                artifact = Ci::PipelineArtifact.first
+
+                expect(artifact.locked).to eq('unknown')
+              end
+            end
+
             it 'does not persist the same artifact twice' do
               2.times { described_class.new(head_pipeline).execute }
 

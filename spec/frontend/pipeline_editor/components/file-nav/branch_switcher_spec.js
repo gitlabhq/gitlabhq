@@ -119,7 +119,7 @@ describe('Pipeline editor branch switcher', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);

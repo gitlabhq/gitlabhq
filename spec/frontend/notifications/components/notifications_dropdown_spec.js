@@ -42,7 +42,8 @@ describe('NotificationsDropdown', () => {
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
-  const findAllNotificationsDropdownItems = () => wrapper.findAll(NotificationsDropdownItem);
+  const findAllNotificationsDropdownItems = () =>
+    wrapper.findAllComponents(NotificationsDropdownItem);
   const findDropdownItemAt = (index) =>
     findAllNotificationsDropdownItems().at(index).findComponent(GlDropdownItem);
   const findNotificationsModal = () => wrapper.findComponent(CustomNotificationsModal);

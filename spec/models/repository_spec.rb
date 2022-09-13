@@ -545,6 +545,54 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#list_commits_by' do
+    it 'returns commits with messages containing a given string' do
+      commit_ids = repository.list_commits_by('test text', 'master').map(&:id)
+
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        '498214de67004b1da3d820901307bed2a68a8ef6'
+      )
+      expect(commit_ids).not_to include('c84ff944ff4529a70788a5e9003c2b7feae29047')
+    end
+
+    it 'is case insensitive' do
+      commit_ids = repository.list_commits_by('TEST TEXT', 'master').map(&:id)
+
+      expect(commit_ids).to include('b83d6e391c22777fca1ed3012fce84f633d7fed0')
+    end
+
+    it 'returns commits based in before filter' do
+      commit_ids = repository.list_commits_by('test text', 'master', before: 1474828200).map(&:id)
+      expect(commit_ids).to include(
+        '498214de67004b1da3d820901307bed2a68a8ef6'
+      )
+      expect(commit_ids).not_to include('b83d6e391c22777fca1ed3012fce84f633d7fed0')
+    end
+
+    it 'returns commits based in after filter' do
+      commit_ids = repository.list_commits_by('test text', 'master', after: 1474828200).map(&:id)
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      )
+      expect(commit_ids).not_to include('498214de67004b1da3d820901307bed2a68a8ef6')
+    end
+
+    it 'returns commits based in author filter' do
+      commit_ids = repository.list_commits_by('test text', 'master', author: 'Job van der Voort').map(&:id)
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      )
+      expect(commit_ids).not_to include('498214de67004b1da3d820901307bed2a68a8ef6')
+    end
+
+    describe 'when storage is broken', :broken_storage do
+      it 'raises a storage error' do
+        expect_to_raise_storage_error { broken_repository.list_commits_by('s') }
+      end
+    end
+  end
+
   describe '#blob_at' do
     context 'blank sha' do
       subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }

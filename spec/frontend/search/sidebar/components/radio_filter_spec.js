@@ -44,7 +44,7 @@ describe('RadioFilter', () => {
   });
 
   const findGlRadioButtonGroup = () => wrapper.find(GlFormRadioGroup);
-  const findGlRadioButtons = () => findGlRadioButtonGroup().findAll(GlFormRadio);
+  const findGlRadioButtons = () => findGlRadioButtonGroup().findAllComponents(GlFormRadio);
   const findGlRadioButtonsText = () => findGlRadioButtons().wrappers.map((w) => w.text());
 
   describe('template', () => {

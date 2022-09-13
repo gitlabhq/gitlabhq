@@ -1056,6 +1056,24 @@ module Gitlab
         end
       end
 
+      def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
+        params = {
+          author: author,
+          ignore_case: true,
+          commit_message_patterns: query,
+          before: before,
+          after: after,
+          reverse: false,
+          pagination_params: { limit: limit }
+        }
+
+        wrapped_gitaly_errors do
+          gitaly_commit_client
+            .list_commits([ref], params)
+            .map { |c| commit(c) }
+        end
+      end
+
       def list_last_commits_for_tree(sha, path, offset: 0, limit: 25, literal_pathspec: false)
         wrapped_gitaly_errors do
           gitaly_commit_client.list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)

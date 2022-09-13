@@ -27,7 +27,7 @@ describe('IssueAssigneesComponent', () => {
   });
 
   const findTooltipText = () => wrapper.find('.js-assignee-tooltip').text();
-  const findAvatars = () => wrapper.findAll(UserAvatarLink);
+  const findAvatars = () => wrapper.findAllComponents(UserAvatarLink);
   const findOverflowCounter = () => wrapper.find('.avatar-counter');
 
   it('returns default data props', () => {

@@ -67,7 +67,7 @@ describe('Grouped Issues List', () => {
         propsData: { [`${issueName}Issues`]: issues },
       });
 
-      expect(wrapper.findAll(ReportItem)).toHaveLength(issues.length);
+      expect(wrapper.findAllComponents(ReportItem)).toHaveLength(issues.length);
     });
 
     it('renders a report item with the correct props', () => {

@@ -70,12 +70,12 @@ describe('HeaderActions component', () => {
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
   const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
   const findDesktopDropdown = () => findDropdownBy('desktop-dropdown');
-  const findMobileDropdownItems = () => findMobileDropdown().findAll(GlDropdownItem);
-  const findDesktopDropdownItems = () => findDesktopDropdown().findAll(GlDropdownItem);
+  const findMobileDropdownItems = () => findMobileDropdown().findAllComponents(GlDropdownItem);
+  const findDesktopDropdownItems = () => findDesktopDropdown().findAllComponents(GlDropdownItem);
 
   const findModal = () => wrapper.findComponent(GlModal);
 
-  const findModalLinkAt = (index) => findModal().findAll(GlLink).at(index);
+  const findModalLinkAt = (index) => findModal().findAllComponents(GlLink).at(index);
 
   const mountComponent = ({
     props = {},

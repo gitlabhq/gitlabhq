@@ -57,7 +57,7 @@ describe('CustomNotificationsModal', () => {
   }
 
   const findModalBodyDescription = () => wrapper.findComponent(GlSprintf);
-  const findAllCheckboxes = () => wrapper.findAll(GlFormCheckbox);
+  const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findCheckboxAt = (index) => findAllCheckboxes().at(index);
 
   beforeEach(() => {

@@ -88,7 +88,7 @@ describe('DiffView', () => {
         diffLines: [{ renderCommentRow: true, ...sides }],
         inline: type === 'inline',
       });
-      expect(wrapper.findAll(DiffCommentCell).length).toBe(total);
+      expect(wrapper.findAllComponents(DiffCommentCell).length).toBe(total);
       expect(wrapper.find(container).findComponent(DiffCommentCell).exists()).toBe(true);
     },
   );

@@ -7,7 +7,7 @@ import { harborImagesList } from '../../mock_data';
 describe('Harbor List', () => {
   let wrapper;
 
-  const findHarborListRow = () => wrapper.findAll(HarborListRow);
+  const findHarborListRow = () => wrapper.findAllComponents(HarborListRow);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(HarborList, {

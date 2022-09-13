@@ -4967,6 +4967,56 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#self_and_downstreams' do
+    subject(:self_and_downstreams) { pipeline.self_and_downstreams }
+
+    let(:pipeline) { create(:ci_pipeline, :created) }
+
+    context 'when pipeline is not child nor parent' do
+      it 'returns just the pipeline itself' do
+        expect(self_and_downstreams).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is child' do
+      let(:parent)    { create(:ci_pipeline) }
+      let!(:pipeline) { create(:ci_pipeline, child_of: parent) }
+
+      it 'returns self and no ancestors' do
+        expect(self_and_downstreams).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is parent' do
+      let(:child) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns self and child' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, child)
+      end
+    end
+
+    context 'when pipeline is a grandparent pipeline' do
+      let(:child)      { create(:ci_pipeline, child_of: pipeline) }
+      let(:grandchild) { create(:ci_pipeline, child_of: child) }
+
+      it 'returns self, child, and grandchild' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, child, grandchild)
+      end
+    end
+
+    context 'when pipeline is a triggered pipeline from a different project' do
+      let(:downstream) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'returns self and cross-project downstream' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, downstream)
+      end
+    end
+  end
+
   describe '#self_and_project_ancestors' do
     subject(:self_and_project_ancestors) { pipeline.self_and_project_ancestors }
 
@@ -4996,6 +5046,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'returns only self' do
         expect(self_and_project_ancestors).to contain_exactly(pipeline)
+      end
+    end
+  end
+
+  describe '#complete_hierarchy_count' do
+    context 'with a combination of ancestor, descendant and sibling pipelines' do
+      let!(:pipeline)            { create(:ci_pipeline) }
+      let!(:child_pipeline)      { create(:ci_pipeline, child_of: pipeline) }
+      let!(:sibling_pipeline)    { create(:ci_pipeline, child_of: pipeline) }
+      let!(:grandchild_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
+
+      it 'counts the whole tree' do
+        expect(sibling_pipeline.complete_hierarchy_count).to eq(4)
       end
     end
   end

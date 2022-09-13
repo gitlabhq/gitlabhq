@@ -50,7 +50,7 @@ describe('GroupsList', () => {
 
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAllItems = () => wrapper.findAll(GroupsListItem);
+  const findAllItems = () => wrapper.findAllComponents(GroupsListItem);
   const findFirstItem = () => findAllItems().at(0);
   const findSecondItem = () => findAllItems().at(1);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);

@@ -45,7 +45,7 @@ describe('Ci variable modal', () => {
   const findAddorUpdateButton = () => findModal().find('[data-testid="ciUpdateOrAddVariableBtn"]');
   const deleteVariableButton = () =>
     findModal()
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .wrappers.find((button) => button.props('variant') === 'danger');
 
   afterEach(() => {

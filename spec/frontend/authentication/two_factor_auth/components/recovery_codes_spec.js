@@ -35,7 +35,9 @@ describe('RecoveryCodes', () => {
   const findRecoveryCodes = () => wrapper.findByTestId('recovery-codes');
   const findCopyButton = () => wrapper.findComponent(ClipboardButton);
   const findButtonByText = (text) =>
-    wrapper.findAll(GlButton).wrappers.find((buttonWrapper) => buttonWrapper.text() === text);
+    wrapper
+      .findAllComponents(GlButton)
+      .wrappers.find((buttonWrapper) => buttonWrapper.text() === text);
   const findDownloadButton = () => findButtonByText('Download codes');
   const findPrintButton = () => findButtonByText('Print codes');
   const findProceedButton = () => findButtonByText('Proceed');

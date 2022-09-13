@@ -111,7 +111,7 @@ const createComponent = (
 };
 
 const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
-const findCommitEditElements = () => wrapper.findAll(CommitEdit);
+const findCommitEditElements = () => wrapper.findAllComponents(CommitEdit);
 const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
 const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
 const findTipLink = () => wrapper.find(GlSprintf);

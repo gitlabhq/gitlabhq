@@ -29,9 +29,27 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder do
     end
   end
 
+  let_it_be(:shared_with_group_where_direct_owner_as_guest) { create(:group) }
+  let_it_be(:shared_with_group_where_direct_owner_as_owner) { create(:group) }
+  let_it_be(:subgroup_of_shared_with_group_where_direct_owner_as_owner) do
+    create(:group, parent: shared_with_group_where_direct_owner_as_owner)
+  end
+
   let(:params) { {} }
 
   describe '#execute' do
+    before_all do
+      create(:group_group_link, :owner,
+             shared_with_group: group_where_user_has_owner_access,
+             shared_group: shared_with_group_where_direct_owner_as_owner
+      )
+
+      create(:group_group_link, :guest,
+             shared_with_group: group_where_user_has_owner_access,
+             shared_group: shared_with_group_where_direct_owner_as_guest
+      )
+    end
+
     let(:group_to_be_transferred) { parent_group }
 
     subject(:result) do
@@ -69,6 +87,10 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder do
         expect(result).not_to include(group_where_user_has_developer_access)
       end
 
+      it 'excludes the groups arising from group shares where the user does not have OWNER access' do
+        expect(result).not_to include(shared_with_group_where_direct_owner_as_guest)
+      end
+
       it 'includes ancestors, except immediate parent of the group to be transferred' do
         expect(result).to include(great_grandparent_group)
       end
@@ -81,11 +103,31 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder do
         expect(result).to include(subgroup_of_group_where_user_has_owner_access)
       end
 
+      it 'includes the groups where the user has OWNER access through group shares' do
+        expect(result).to include(
+          shared_with_group_where_direct_owner_as_owner,
+          subgroup_of_shared_with_group_where_direct_owner_as_owner
+        )
+      end
+
       context 'on searching with a specific term' do
         let(:params) { { search: 'great grandparent group' } }
 
         it 'includes only the groups where the term matches the group name or path' do
           expect(result).to contain_exactly(great_grandparent_group)
+        end
+      end
+
+      context 'when the feature flag `include_groups_from_group_shares_in_group_transfer_locations` is turned off' do
+        before do
+          stub_feature_flags(include_groups_from_group_shares_in_group_transfer_locations: false)
+        end
+
+        it 'excludes the groups where the user has OWNER access through group shares' do
+          expect(result).not_to include(
+            shared_with_group_where_direct_owner_as_owner,
+            subgroup_of_shared_with_group_where_direct_owner_as_owner
+          )
         end
       end
     end

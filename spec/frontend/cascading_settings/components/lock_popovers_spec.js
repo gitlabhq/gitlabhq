@@ -143,7 +143,7 @@ describe('LockPopovers', () => {
     });
 
     it('mounts multiple popovers', () => {
-      const popovers = wrapper.findAll(GlPopover).wrappers;
+      const popovers = wrapper.findAllComponents(GlPopover).wrappers;
 
       expectCorrectPopoverTarget(popoverMountEl1, popovers[0]);
       expectCorrectPopoverTarget(popoverMountEl2, popovers[1]);

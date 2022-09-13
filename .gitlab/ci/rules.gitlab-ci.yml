@@ -1801,6 +1801,10 @@
       when: never
     - <<: *if-default-branch-or-tag
       changes: *code-backstage-qa-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: [".gitlab/ci/setup.gitlab-ci.yml"]
+      when: manual
+      allow_failure: true
 
 .setup:rules:dont-interrupt-me:
   rules:

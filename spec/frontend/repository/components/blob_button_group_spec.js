@@ -66,12 +66,12 @@ describe('BlobButtonGroup component', () => {
     });
 
     it('renders both the replace and delete button', () => {
-      expect(wrapper.findAll(GlButton)).toHaveLength(2);
+      expect(wrapper.findAllComponents(GlButton)).toHaveLength(2);
     });
 
     it('renders the buttons in the correct order', () => {
-      expect(wrapper.findAll(GlButton).at(0).text()).toBe('Replace');
-      expect(wrapper.findAll(GlButton).at(1).text()).toBe('Delete');
+      expect(wrapper.findAllComponents(GlButton).at(0).text()).toBe('Replace');
+      expect(wrapper.findAllComponents(GlButton).at(1).text()).toBe('Delete');
     });
 
     it('triggers the UploadBlobModal from the replace button', () => {

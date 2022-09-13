@@ -34,7 +34,7 @@ describe('CompareDropdownLayout', () => {
     findListItems().wrappers.map((listItem) => ({
       href: listItem.find('a').attributes('href'),
       text: trimText(listItem.text()),
-      createdAt: listItem.findAll(TimeAgo).wrappers[0]?.props('time'),
+      createdAt: listItem.findAllComponents(TimeAgo).wrappers[0]?.props('time'),
       isActive: listItem.classes().includes('is-active'),
     }));
 

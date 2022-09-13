@@ -348,6 +348,12 @@ module Ci
       end
     end
 
+    def owner_project
+      return unless project_type?
+
+      runner_projects.order(:id).first.project
+    end
+
     def belongs_to_one_project?
       runner_projects.count == 1
     end

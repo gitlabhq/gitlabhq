@@ -38,7 +38,7 @@ describe('Linked Pipelines Column', () => {
 
   let wrapper;
   const findLinkedColumnTitle = () => wrapper.find('[data-testid="linked-column-title"]');
-  const findLinkedPipelineElements = () => wrapper.findAll(LinkedPipeline);
+  const findLinkedPipelineElements = () => wrapper.findAllComponents(LinkedPipeline);
   const findPipelineGraph = () => wrapper.findComponent(PipelineGraph);
   const findExpandButton = () => wrapper.find('[data-testid="expand-pipeline-button"]');
 

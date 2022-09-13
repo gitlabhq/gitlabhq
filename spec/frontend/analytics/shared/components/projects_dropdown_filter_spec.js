@@ -83,7 +83,7 @@ describe('ProjectsDropdownFilter component', () => {
 
   const findDropdownItems = () =>
     findDropdown()
-      .findAll(GlDropdownItem)
+      .findAllComponents(GlDropdownItem)
       .filter((w) => w.text() !== 'No matching results');
 
   const findDropdownAtIndex = (index) => findDropdownItems().at(index);
@@ -106,7 +106,7 @@ describe('ProjectsDropdownFilter component', () => {
   };
 
   // NOTE: Selected items are now visually separated from unselected items
-  const findSelectedDropdownItems = () => findHighlightedItems().findAll(GlDropdownItem);
+  const findSelectedDropdownItems = () => findHighlightedItems().findAllComponents(GlDropdownItem);
 
   const findSelectedDropdownAtIndex = (index) => findSelectedDropdownItems().at(index);
   const findSelectedButtonIdentIconAtIndex = (index) =>

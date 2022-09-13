@@ -23,7 +23,7 @@ describe('IncidentsSettingTabs', () => {
   const findToggleButton = () => wrapper.findComponent({ ref: 'toggleBtn' });
   const findSectionHeader = () => wrapper.findComponent({ ref: 'sectionHeader' });
 
-  const findIntegrationTabs = () => wrapper.findAll(GlTab);
+  const findIntegrationTabs = () => wrapper.findAllComponents(GlTab);
   it('renders header text', () => {
     expect(findSectionHeader().text()).toBe('Incidents');
   });

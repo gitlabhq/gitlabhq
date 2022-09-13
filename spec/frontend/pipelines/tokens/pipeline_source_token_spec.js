@@ -8,7 +8,8 @@ describe('Pipeline Source Token', () => {
   let wrapper;
 
   const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
-  const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
+  const findAllFilteredSearchSuggestions = () =>
+    wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
   const defaultProps = {
     config: {

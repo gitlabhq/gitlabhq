@@ -65,7 +65,7 @@ describe('Ci variable modal', () => {
   const findAddorUpdateButton = () => wrapper.findByTestId('ciUpdateOrAddVariableBtn');
   const deleteVariableButton = () =>
     findModal()
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .wrappers.find((button) => button.props('variant') === 'danger');
   const findProtectedVariableCheckbox = () =>
     wrapper.findByTestId('ci-variable-protected-checkbox');

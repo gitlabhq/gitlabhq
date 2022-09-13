@@ -58,7 +58,7 @@ describe('~/pipeline_editor/components/ui/editor_tab.vue', () => {
 
   const findSlotComponent = () => wrapper.findComponent(MockSourceEditor);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findBadges = () => wrapper.findAll(GlBadge);
+  const findBadges = () => wrapper.findAllComponents(GlBadge);
 
   beforeEach(() => {
     mockChildMounted = jest.fn();

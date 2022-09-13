@@ -30,8 +30,8 @@ describe('Deploy freeze timezone dropdown', () => {
     wrapper.setData({ searchTerm });
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findDropdownItemByIndex = (index) => wrapper.findAll(GlDropdownItem).at(index);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdownItemByIndex = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
 
   afterEach(() => {
     wrapper.destroy();

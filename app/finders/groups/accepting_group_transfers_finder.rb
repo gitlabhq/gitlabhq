@@ -2,6 +2,8 @@
 
 module Groups
   class AcceptingGroupTransfersFinder < Base
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(current_user, group_to_be_transferred, params = {})
       @current_user = current_user
       @group_to_be_transferred = group_to_be_transferred
@@ -11,7 +13,12 @@ module Groups
     def execute
       return Group.none unless can_transfer_group?
 
-      items = find_groups
+      items = if Feature.enabled?(:include_groups_from_group_shares_in_group_transfer_locations)
+                find_all_groups
+              else
+                find_groups
+              end
+
       items = by_search(items)
 
       sort(items)
@@ -29,11 +36,30 @@ module Groups
       ).execute.without_order
     end
 
-    def exclude_groups
-      exclude_groups = group_to_be_transferred.self_and_descendants.pluck_primary_key
-      exclude_groups << group_to_be_transferred.parent_id if group_to_be_transferred.parent_id
+    def find_all_groups
+      ::Namespace.from_union(
+        [
+          find_groups,
+          groups_originating_from_group_shares_with_owner_access
+        ]
+      )
+    end
 
-      exclude_groups
+    def groups_originating_from_group_shares_with_owner_access
+      GroupGroupLink
+        .with_owner_access
+        .groups_accessible_via(
+          current_user.owned_groups.select(:id)
+        ).id_not_in(exclude_groups)
+    end
+
+    def exclude_groups
+      strong_memoize(:exclude_groups) do
+        exclude_groups = group_to_be_transferred.self_and_descendants.pluck_primary_key
+        exclude_groups << group_to_be_transferred.parent_id if group_to_be_transferred.parent_id
+
+        exclude_groups
+      end
     end
 
     def can_transfer_group?

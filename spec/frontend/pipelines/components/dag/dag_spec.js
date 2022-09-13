@@ -19,7 +19,7 @@ import {
 describe('Pipeline DAG graph wrapper', () => {
   let wrapper;
   const getAlert = () => wrapper.findComponent(GlAlert);
-  const getAllAlerts = () => wrapper.findAll(GlAlert);
+  const getAllAlerts = () => wrapper.findAllComponents(GlAlert);
   const getGraph = () => wrapper.findComponent(DagGraph);
   const getNotes = () => wrapper.findComponent(DagAnnotations);
   const getErrorText = (type) => wrapper.vm.$options.errorTexts[type];

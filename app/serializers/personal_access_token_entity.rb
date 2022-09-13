@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop: disable Gitlab/NamespacedClass
-class PersonalAccessTokenEntity < API::Entities::PersonalAccessToken
+class PersonalAccessTokenEntity < AccessTokenEntityBase
   include Gitlab::Routing
 
   expose :revoke_path do |token, options|

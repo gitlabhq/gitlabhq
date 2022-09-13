@@ -61,7 +61,7 @@ describe('Incident Tabs component', () => {
     );
   };
 
-  const findTabs = () => wrapper.findAll(GlTab);
+  const findTabs = () => wrapper.findAllComponents(GlTab);
   const findSummaryTab = () => findTabs().at(0);
   const findAlertDetailsTab = () => wrapper.find('[data-testid="alert-details-tab"]');
   const findAlertDetailsComponent = () => wrapper.findComponent(AlertDetailsTable);

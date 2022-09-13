@@ -43942,9 +43942,6 @@ msgstr ""
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
 msgstr ""
 
-msgid "Vulnerability|Learn more about this vulnerability and the best way to resolve it."
-msgstr ""
-
 msgid "Vulnerability|Links"
 msgstr ""
 

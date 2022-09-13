@@ -48,7 +48,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   });
 
   const findGlTabs = () => wrapper.findComponent(GlTabs);
-  const findAllGlTabs = () => wrapper.findAll(GlTab);
+  const findAllGlTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabAtIndex = (index) => findAllGlTabs().at(index);
   const findLeadTimeCharts = () => wrapper.findComponent(LeadTimeChartsStub);
   const findTimeToRestoreServiceCharts = () =>

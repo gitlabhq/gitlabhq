@@ -23,7 +23,7 @@ describe('cli_commands', () => {
   let wrapper;
 
   const findDropdownButton = () => wrapper.findComponent(GlDropdown);
-  const findCodeInstruction = () => wrapper.findAll(CodeInstruction);
+  const findCodeInstruction = () => wrapper.findAllComponents(CodeInstruction);
 
   const mountComponent = () => {
     wrapper = mount(QuickstartDropdown, {

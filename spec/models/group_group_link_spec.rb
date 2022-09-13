@@ -44,6 +44,17 @@ RSpec.describe GroupGroupLink do
       end
     end
 
+    describe '.with_owner_access' do
+      let_it_be(:group_group_link_maintainer) { create :group_group_link, :maintainer }
+      let_it_be(:group_group_link_owner) { create :group_group_link, :owner }
+      let_it_be(:group_group_link_reporter) { create :group_group_link, :reporter }
+      let_it_be(:group_group_link_guest) { create :group_group_link, :guest }
+
+      it 'returns all records which have OWNER access' do
+        expect(described_class.with_owner_access).to match_array([group_group_link_owner])
+      end
+    end
+
     context 'for access via group shares' do
       let_it_be(:shared_with_group_1) { create(:group) }
       let_it_be(:shared_with_group_2) { create(:group) }

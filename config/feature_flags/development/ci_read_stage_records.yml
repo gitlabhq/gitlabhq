@@ -1,8 +1,0 @@
----
-name: ci_read_stage_records
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94941
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371486
-milestone: '15.4'
-type: development
-group: group::pipeline execution
-default_enabled: false

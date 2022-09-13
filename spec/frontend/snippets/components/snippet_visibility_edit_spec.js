@@ -38,7 +38,7 @@ describe('Snippet Visibility Edit component', () => {
   }
 
   const findLink = () => wrapper.find('label').find(GlLink);
-  const findRadios = () => wrapper.find(GlFormRadioGroup).findAll(GlFormRadio);
+  const findRadios = () => wrapper.find(GlFormRadioGroup).findAllComponents(GlFormRadio);
   const findRadiosData = () =>
     findRadios().wrappers.map((x) => {
       return {

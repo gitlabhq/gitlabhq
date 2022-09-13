@@ -5,10 +5,10 @@ import SidebarInheritDate from '~/sidebar/components/date/sidebar_inherit_date.v
 
 describe('SidebarInheritDate', () => {
   let wrapper;
-  const findFixedFormattedDate = () => wrapper.findAll(SidebarFormattedDate).at(0);
-  const findInheritFormattedDate = () => wrapper.findAll(SidebarFormattedDate).at(1);
-  const findFixedRadio = () => wrapper.findAll(GlFormRadio).at(0);
-  const findInheritRadio = () => wrapper.findAll(GlFormRadio).at(1);
+  const findFixedFormattedDate = () => wrapper.findAllComponents(SidebarFormattedDate).at(0);
+  const findInheritFormattedDate = () => wrapper.findAllComponents(SidebarFormattedDate).at(1);
+  const findFixedRadio = () => wrapper.findAllComponents(GlFormRadio).at(0);
+  const findInheritRadio = () => wrapper.findAllComponents(GlFormRadio).at(1);
 
   const createComponent = ({ dueDateIsFixed = false } = {}) => {
     wrapper = shallowMount(SidebarInheritDate, {
@@ -36,8 +36,8 @@ describe('SidebarInheritDate', () => {
   });
 
   it('displays formatted fixed and inherited dates with radio buttons', () => {
-    expect(wrapper.findAll(SidebarFormattedDate)).toHaveLength(2);
-    expect(wrapper.findAll(GlFormRadio)).toHaveLength(2);
+    expect(wrapper.findAllComponents(SidebarFormattedDate)).toHaveLength(2);
+    expect(wrapper.findAllComponents(GlFormRadio)).toHaveLength(2);
     expect(findFixedFormattedDate().props('formattedDate')).toBe('Apr 15, 2021');
     expect(findInheritFormattedDate().props('formattedDate')).toBe('May 15, 2021');
     expect(findFixedRadio().text()).toBe('Fixed:');

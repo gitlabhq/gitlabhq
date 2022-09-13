@@ -147,6 +147,18 @@ Do not use **and so on**. Instead, be more specific. For details, see
 
 Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
 
+## as
+
+Do not use **as** to mean **because**.
+
+Use:
+
+- Because none of the endpoints return an ID...
+
+Instead of:
+
+- As none of the endpoints return an ID...
+
 ## associate
 
 Do not use **associate** when describing adding issues to epics, or users to issues, merge requests,
@@ -618,6 +630,10 @@ Instead of:
 
   - Buy a license.
   - Purchase a license.
+
+## limitations
+
+Do not use **limitations**. Use **known issues** instead.
 
 ## log in, log on
 

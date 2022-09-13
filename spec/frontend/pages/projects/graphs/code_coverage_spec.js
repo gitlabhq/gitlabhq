@@ -22,7 +22,7 @@ describe('Code Coverage', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAreaChart = () => wrapper.findComponent(GlAreaChart);
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownItem = () => findAllDropdownItems().at(0);
   const findSecondDropdownItem = () => findAllDropdownItems().at(1);
   const findDownloadButton = () => wrapper.find('[data-testid="download-button"]');

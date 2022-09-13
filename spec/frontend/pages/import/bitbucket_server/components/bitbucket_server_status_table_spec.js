@@ -14,7 +14,7 @@ describe('BitbucketServerStatusTable', () => {
 
   const findReconfigureButton = () =>
     wrapper
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .filter((w) => w.props().variant === 'info')
       .at(0);
 

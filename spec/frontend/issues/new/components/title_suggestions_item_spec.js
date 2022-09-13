@@ -20,7 +20,7 @@ describe('Issue title suggestions item component', () => {
   }
 
   const findLink = () => wrapper.findComponent(GlLink);
-  const findAuthorLink = () => wrapper.findAll(GlLink).at(1);
+  const findAuthorLink = () => wrapper.findAllComponents(GlLink).at(1);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findUserAvatar = () => wrapper.findComponent(UserAvatarImage);

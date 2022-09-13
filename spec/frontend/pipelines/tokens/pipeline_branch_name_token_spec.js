@@ -10,7 +10,8 @@ describe('Pipeline Branch Name Token', () => {
   let wrapper;
 
   const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
-  const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
+  const findAllFilteredSearchSuggestions = () =>
+    wrapper.findAllComponents(GlFilteredSearchSuggestion);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const getBranchSuggestions = () =>
     findAllFilteredSearchSuggestions().wrappers.map((w) => w.text());

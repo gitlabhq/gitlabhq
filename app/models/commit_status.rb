@@ -319,11 +319,7 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   def stage_name
-    if Feature.enabled?(:ci_read_stage_records, project)
-      ci_stage&.name
-    else
-      stage
-    end
+    ci_stage&.name
   end
 
   private

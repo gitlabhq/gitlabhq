@@ -977,6 +977,11 @@ module Ci
     end
 
     # With multi-project and parent-child pipelines
+    def self_and_downstreams
+      object_hierarchy.base_and_descendants
+    end
+
+    # With multi-project and parent-child pipelines
     def upstream_and_all_downstreams
       object_hierarchy.all_objects
     end
@@ -1012,7 +1017,12 @@ module Ci
     # Follow the upstream pipeline relationships, regardless of multi-project or
     # parent-child, and return the top-level ancestor.
     def upstream_root
-      object_hierarchy.base_and_ancestors(hierarchy_order: :desc).first
+      @upstream_root ||= object_hierarchy.base_and_ancestors(hierarchy_order: :desc).first
+    end
+
+    # Applies to all parent-child and multi-project pipelines
+    def complete_hierarchy_count
+      upstream_root.self_and_downstreams.count
     end
 
     def bridge_triggered?

@@ -144,7 +144,7 @@ describe('RevisionDropdown component', () => {
     wrapper.vm.branches = ['some-branch'];
     await nextTick();
 
-    findGlDropdown().findAll(GlDropdownItem).at(0).vm.$emit('click');
+    findGlDropdown().findAllComponents(GlDropdownItem).at(0).vm.$emit('click');
 
     expect(wrapper.emitted('selectRevision')[0][0]).toEqual({
       direction: 'to',

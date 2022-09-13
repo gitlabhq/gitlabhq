@@ -274,7 +274,7 @@ describe('diffs/components/app', () => {
       });
 
       expect(wrapper.findComponent(NoChanges).exists()).toBe(false);
-      expect(wrapper.findAll(DiffFile).length).toBe(1);
+      expect(wrapper.findAllComponents(DiffFile).length).toBe(1);
     });
   });
 
@@ -636,7 +636,7 @@ describe('diffs/components/app', () => {
 
       await nextTick();
 
-      expect(wrapper.findAll(DiffFile).length).toBe(1);
+      expect(wrapper.findAllComponents(DiffFile).length).toBe(1);
     });
 
     describe('pagination', () => {

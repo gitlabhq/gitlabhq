@@ -76,7 +76,7 @@ describe('error tracking settings project dropdown', () => {
 
     it('contains a number of dropdown items', () => {
       expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
-      expect(wrapper.findAll(GlDropdownItem).length).toBe(2);
+      expect(wrapper.findAllComponents(GlDropdownItem).length).toBe(2);
     });
   });
 

@@ -288,7 +288,7 @@ describe('JiraImportForm', () => {
       });
 
       it('updates the user list', () => {
-        expect(getUserDropdown().findAll(GlDropdownItem)).toHaveLength(1);
+        expect(getUserDropdown().findAllComponents(GlDropdownItem)).toHaveLength(1);
         expect(getUserDropdown().findComponent(GlDropdownItem).text()).toContain(
           'fchopin (Frederic Chopin)',
         );

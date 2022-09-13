@@ -9,7 +9,8 @@ describe('Pipeline Trigger Author Token', () => {
   let wrapper;
 
   const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
-  const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
+  const findAllFilteredSearchSuggestions = () =>
+    wrapper.findAllComponents(GlFilteredSearchSuggestion);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const defaultProps = {

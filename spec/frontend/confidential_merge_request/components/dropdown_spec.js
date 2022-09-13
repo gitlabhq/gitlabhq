@@ -30,7 +30,7 @@ describe('Confidential merge request project dropdown component', () => {
       },
     ]);
 
-    expect(vm.findAll(GlDropdownItem).length).toBe(2);
+    expect(vm.findAllComponents(GlDropdownItem).length).toBe(2);
   });
 
   it('shows lock icon', () => {

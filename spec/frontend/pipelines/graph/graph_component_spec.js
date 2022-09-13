@@ -15,9 +15,9 @@ import {
 describe('graph component', () => {
   let wrapper;
 
-  const findLinkedColumns = () => wrapper.findAll(LinkedPipelinesColumn);
+  const findLinkedColumns = () => wrapper.findAllComponents(LinkedPipelinesColumn);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
-  const findStageColumns = () => wrapper.findAll(StageColumnComponent);
+  const findStageColumns = () => wrapper.findAllComponents(StageColumnComponent);
   const findStageNameInJob = () => wrapper.find('[data-testid="stage-name-in-job"]');
 
   const defaultProps = {

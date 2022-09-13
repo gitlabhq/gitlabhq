@@ -5,7 +5,7 @@ import { GlSkeletonLoader } from '../../stubs';
 describe('TagsLoader component', () => {
   let wrapper;
 
-  const findGlSkeletonLoaders = () => wrapper.findAll(GlSkeletonLoader);
+  const findGlSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
 
   const mountComponent = () => {
     wrapper = shallowMount(component, {

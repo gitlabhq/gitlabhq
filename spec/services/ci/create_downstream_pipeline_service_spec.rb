@@ -819,5 +819,19 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         end
       end
     end
+
+    context 'when a downstream pipeline has sibling pipelines' do
+      it_behaves_like 'logs downstream pipeline creation' do
+        let(:expected_root_pipeline) { upstream_pipeline }
+        let(:expected_downstream_relationship) { :multi_project }
+
+        # New downstream, plus upstream, plus two children of upstream created below
+        let(:expected_hierarchy_size) { 4 }
+
+        before do
+          create_list(:ci_pipeline, 2, child_of: upstream_pipeline)
+        end
+      end
+    end
   end
 end

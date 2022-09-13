@@ -42,7 +42,7 @@ describe('UncollapsedAssigneeList component', () => {
     });
 
     it('only has one user', () => {
-      expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(1);
+      expect(wrapper.findAllComponents(AssigneeAvatarLink).length).toBe(1);
     });
 
     it('calls the AssigneeAvatarLink with the proper props', () => {
@@ -79,7 +79,7 @@ describe('UncollapsedAssigneeList component', () => {
       });
 
       it('shows truncated users', () => {
-        expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT);
+        expect(wrapper.findAllComponents(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT);
       });
 
       describe('when more button is clicked', () => {
@@ -94,7 +94,9 @@ describe('UncollapsedAssigneeList component', () => {
         });
 
         it('shows all users', () => {
-          expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT + 1);
+          expect(wrapper.findAllComponents(AssigneeAvatarLink).length).toBe(
+            DEFAULT_RENDER_COUNT + 1,
+          );
         });
       });
     });

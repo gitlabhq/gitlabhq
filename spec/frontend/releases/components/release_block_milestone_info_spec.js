@@ -58,7 +58,7 @@ describe('Release block milestone info', () => {
       expect(milestoneListContainer().text()).toMatchInterpolatedText('Milestones 12.3 • 12.4');
 
       milestones.forEach((m, i) => {
-        const milestoneLink = milestoneListContainer().findAll(GlLink).at(i);
+        const milestoneLink = milestoneListContainer().findAllComponents(GlLink).at(i);
 
         expect(milestoneLink.text()).toBe(m.title);
         expect(milestoneLink.attributes('href')).toBe(m.webUrl);

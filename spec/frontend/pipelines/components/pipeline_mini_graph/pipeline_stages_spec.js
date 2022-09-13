@@ -8,7 +8,7 @@ const mockStages = pipelines[0].details.stages;
 describe('Pipeline Stages', () => {
   let wrapper;
 
-  const findPipelineStages = () => wrapper.findAll(PipelineStage);
+  const findPipelineStages = () => wrapper.findAllComponents(PipelineStage);
   const findPipelineStagesAt = (i) => findPipelineStages().at(i);
 
   const createComponent = (props = {}) => {

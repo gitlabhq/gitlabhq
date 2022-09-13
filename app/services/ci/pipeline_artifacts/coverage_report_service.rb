@@ -27,12 +27,18 @@ module Ci
       end
 
       def pipeline_artifact_params
-        {
+        attributes = {
           pipeline: pipeline,
           file_type: :code_coverage,
           file: carrierwave_file,
           size: carrierwave_file['tempfile'].size
         }
+
+        if ::Feature.enabled?(:ci_update_unlocked_pipeline_artifacts, pipeline.project)
+          attributes[:locked] = pipeline.locked
+        end
+
+        attributes
       end
 
       def carrierwave_file

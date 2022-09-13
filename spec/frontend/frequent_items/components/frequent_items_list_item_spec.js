@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
@@ -16,18 +16,18 @@ describe('FrequentItemsListItemComponent', () => {
   let trackingSpy;
   let store;
 
-  const findTitle = () => wrapper.findComponent({ ref: 'frequentItemsItemTitle' });
+  const findTitle = () => wrapper.findByTestId('frequent-items-item-title');
   const findAvatar = () => wrapper.findComponent(ProjectAvatar);
-  const findAllTitles = () => wrapper.findAll({ ref: 'frequentItemsItemTitle' });
-  const findNamespace = () => wrapper.findComponent({ ref: 'frequentItemsItemNamespace' });
+  const findAllTitles = () => wrapper.findAllByTestId('frequent-items-item-title');
+  const findNamespace = () => wrapper.findByTestId('frequent-items-item-namespace');
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
-  const findAllNamespace = () => wrapper.findAll({ ref: 'frequentItemsItemNamespace' });
+  const findAllNamespace = () => wrapper.findAllByTestId('frequent-items-item-namespace');
   const findAllAvatars = () => wrapper.findAllComponents(ProjectAvatar);
   const findAllMetadataContainers = () =>
-    wrapper.findAll({ ref: 'frequentItemsItemMetadataContainer' });
+    wrapper.findAllByTestId('frequent-items-item-metadata-container');
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(frequentItemsListItemComponent, {
+    wrapper = shallowMountExtended(frequentItemsListItemComponent, {
       store,
       propsData: {
         itemId: mockProject.id,

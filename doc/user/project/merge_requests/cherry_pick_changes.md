@@ -20,6 +20,32 @@ NOTE:
 Support for tracking commits cherry-picked from the command line
 is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/202215).
 
+## Cherry-pick example
+
+In this example of cherry-picking, a Git repository has two branches: `develop` and `main`.
+
+```mermaid
+gitGraph
+ commit id: "A"
+ branch develop
+ commit id:"B"
+ checkout main
+ commit id:"C"
+ checkout develop
+ commit id:"D"
+ checkout main
+ commit id:"E"
+ cherry-pick id:"B"
+ commit id:"G"
+ checkout develop
+ commit id:"H"
+```
+
+The example shows a cherry-pick of commit `B` from the `develop` branch, which is added
+after commit `E` in the `main` branch.
+
+Commit `G` is added after the cherry-pick.
+
 ## Cherry-pick all changes from a merge request
 
 After a merge request is merged, you can cherry-pick all changes introduced

@@ -2060,6 +2060,7 @@ RSpec.describe API::Groups do
       let_it_be(:maintainer_group) { create(:group, name: 'maintainer group', path: 'maintainer-group') }
       let_it_be(:owner_group_1) { create(:group, name: 'owner group', path: 'owner-group') }
       let_it_be(:owner_group_2) { create(:group, name: 'gitlab group', path: 'gitlab-group') }
+      let_it_be(:shared_with_group_where_direct_owner_as_owner) { create(:group) }
 
       before do
         source_group.add_owner(user)
@@ -2067,6 +2068,10 @@ RSpec.describe API::Groups do
         maintainer_group.add_maintainer(user)
         owner_group_1.add_owner(user)
         owner_group_2.add_owner(user)
+        create(:group_group_link, :owner,
+               shared_with_group: owner_group_1,
+               shared_group: shared_with_group_where_direct_owner_as_owner
+        )
       end
 
       it 'returns 200' do
@@ -2079,7 +2084,11 @@ RSpec.describe API::Groups do
       it 'only includes groups where the user has permissions to transfer a group to' do
         request
 
-        expect(group_ids_from_response).to contain_exactly(owner_group_1.id, owner_group_2.id)
+        expect(group_ids_from_response).to contain_exactly(
+          owner_group_1.id,
+          owner_group_2.id,
+          shared_with_group_where_direct_owner_as_owner.id
+        )
       end
 
       context 'with search' do

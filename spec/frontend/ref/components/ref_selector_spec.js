@@ -98,15 +98,15 @@ describe('Ref selector component', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   const findBranchesSection = () => wrapper.find('[data-testid="branches-section"]');
-  const findBranchDropdownItems = () => findBranchesSection().findAll(GlDropdownItem);
+  const findBranchDropdownItems = () => findBranchesSection().findAllComponents(GlDropdownItem);
   const findFirstBranchDropdownItem = () => findBranchDropdownItems().at(0);
 
   const findTagsSection = () => wrapper.find('[data-testid="tags-section"]');
-  const findTagDropdownItems = () => findTagsSection().findAll(GlDropdownItem);
+  const findTagDropdownItems = () => findTagsSection().findAllComponents(GlDropdownItem);
   const findFirstTagDropdownItem = () => findTagDropdownItems().at(0);
 
   const findCommitsSection = () => wrapper.find('[data-testid="commits-section"]');
-  const findCommitDropdownItems = () => findCommitsSection().findAll(GlDropdownItem);
+  const findCommitDropdownItems = () => findCommitsSection().findAllComponents(GlDropdownItem);
   const findFirstCommitDropdownItem = () => findCommitDropdownItems().at(0);
 
   //

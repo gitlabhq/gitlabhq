@@ -227,6 +227,19 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
         expect(subject.size).to eq(size)
         expect(subject.file_format).to eq(Ci::PipelineArtifact::REPORT_TYPES[file_type].to_s)
         expect(subject.expire_at).to eq(Ci::PipelineArtifact::EXPIRATION_DATE.from_now)
+        expect(subject.locked).to eq('unknown')
+      end
+
+      it "creates a new pipeline artifact with pipeline's locked state" do
+        artifact = Ci::PipelineArtifact.create_or_replace_for_pipeline!(
+          pipeline: pipeline,
+          file_type: file_type,
+          file: file,
+          size: size,
+          locked: pipeline.locked
+        )
+
+        expect(artifact.locked).to eq(pipeline.locked)
       end
     end
 

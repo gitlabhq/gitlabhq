@@ -297,6 +297,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   describe '#list_commits' do
     let(:revisions) { 'master' }
     let(:reverse) { false }
+    let(:author) { nil }
+    let(:ignore_case) { nil }
+    let(:commit_message_patterns) { nil }
+    let(:before) { nil }
+    let(:after) { nil }
     let(:pagination_params) { nil }
 
     shared_examples 'a ListCommits request' do
@@ -309,13 +314,18 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
           expected_request = gitaly_request_with_params(
             Array.wrap(revisions),
             reverse: reverse,
+            author: author,
+            ignore_case: ignore_case,
+            commit_message_patterns: commit_message_patterns,
+            before: before,
+            after: after,
             pagination_params: pagination_params
           )
 
           expect(service).to receive(:list_commits).with(expected_request, kind_of(Hash)).and_return([])
         end
 
-        client.list_commits(revisions, reverse: reverse, pagination_params: pagination_params)
+        client.list_commits(revisions, { reverse: reverse, author: author, ignore_case: ignore_case, commit_message_patterns: commit_message_patterns, before: before, after: after, pagination_params: pagination_params })
       end
     end
 
@@ -333,7 +343,12 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       it_behaves_like 'a ListCommits request'
     end
 
-    context 'with pagination params' do
+    context 'with commit message, author, before and after' do
+      let(:author) { "Dmitriy" }
+      let(:before) { 1474828200 }
+      let(:after) { 1474828200 }
+      let(:commit_message_patterns) { "Initial commit" }
+      let(:ignore_case) { true }
       let(:pagination_params) { { limit: 1, page_token: 'foo' } }
 
       it_behaves_like 'a ListCommits request'
