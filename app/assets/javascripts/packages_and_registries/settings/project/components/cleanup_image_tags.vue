@@ -70,11 +70,6 @@ export default {
       return !isEqual(this.containerExpirationPolicy, this.workingCopy);
     },
   },
-  methods: {
-    restoreOriginal() {
-      this.workingCopy = { ...this.containerExpirationPolicy };
-    },
-  },
 };
 </script>
 
@@ -93,7 +88,6 @@ export default {
       v-model="workingCopy"
       :is-loading="$apollo.queries.containerExpirationPolicy.loading"
       :is-edited="isEdited"
-      @reset="restoreOriginal"
     />
     <template v-else>
       <gl-alert

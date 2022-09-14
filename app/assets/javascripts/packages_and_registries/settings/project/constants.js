@@ -9,6 +9,7 @@ export const CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION = s__(
 );
 export const CONTAINER_CLEANUP_POLICY_EDIT_RULES = s__('ContainerRegistry|Edit cleanup rules');
 export const CONTAINER_CLEANUP_POLICY_SET_RULES = s__('ContainerRegistry|Set cleanup rules');
+export const SHOW_SETUP_SUCCESS_ALERT = 'showSetupSuccessAlert';
 
 export const SET_CLEANUP_POLICY_BUTTON = __('Save changes');
 export const UNAVAILABLE_FEATURE_TITLE = s__(

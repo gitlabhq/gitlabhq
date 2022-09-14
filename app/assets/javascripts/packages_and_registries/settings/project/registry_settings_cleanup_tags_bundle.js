@@ -18,6 +18,7 @@ export default () => {
     enableHistoricEntries,
     projectPath,
     adminSettingsPath,
+    projectSettingsPath,
     tagsRegexHelpPagePath,
     helpPagePath,
   } = el.dataset;
@@ -29,6 +30,7 @@ export default () => {
       enableHistoricEntries: parseBoolean(enableHistoricEntries),
       projectPath,
       adminSettingsPath,
+      projectSettingsPath,
       tagsRegexHelpPagePath,
       helpPagePath,
     },

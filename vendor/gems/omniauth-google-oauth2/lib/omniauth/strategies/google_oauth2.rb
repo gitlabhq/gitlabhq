@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'jwt'
+require 'oauth2'
 require 'omniauth/strategies/oauth2'
 require 'uri'
 
@@ -13,6 +14,7 @@ module OmniAuth
       BASE_SCOPES = %w[profile email openid].freeze
       DEFAULT_SCOPE = 'email,profile'
       USER_INFO_URL = 'https://www.googleapis.com/oauth2/v3/userinfo'
+      IMAGE_SIZE_REGEXP = /(s\d+(-c)?)|(w\d+-h\d+(-c)?)|(w\d+(-c)?)|(h\d+(-c)?)|c/
 
       option :name, 'google_oauth2'
       option :skip_friends, true
@@ -47,6 +49,8 @@ module OmniAuth
         prune!(
           name: raw_info['name'],
           email: verified_email,
+          unverified_email: raw_info['email'],
+          email_verified: raw_info['email_verified'],
           first_name: raw_info['given_name'],
           last_name: raw_info['family_name'],
           image: image_url,
@@ -54,6 +58,11 @@ module OmniAuth
             google: raw_info['profile']
           }
         )
+      end
+
+      credentials do
+        # Tokens and expiration will be used from OAuth2 strategy credentials block
+        prune!({ 'scope' => token_info(access_token.token)['scope'] })
       end
 
       extra do
@@ -72,7 +81,7 @@ module OmniAuth
                                       verify_sub: false,
                                       verify_expiration: true,
                                       verify_not_before: true,
-                                      verify_iat: true,
+                                      verify_iat: false,
                                       verify_jti: false,
                                       leeway: options[:jwt_leeway])
 
@@ -92,29 +101,49 @@ module OmniAuth
         verify_hd(access_token)
         access_token
       end
+
       alias build_access_token custom_build_access_token
 
       private
 
       def callback_url
-        options[:redirect_uri] || (full_host + script_name + callback_path)
+        options[:redirect_uri] || (full_host + callback_path)
       end
 
       def get_access_token(request)
-        if request.xhr? && request.params['code']
-          verifier = request.params['code']
-          redirect_uri = request.params['redirect_uri'] || 'postmessage'
-          client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
-        elsif request.params['code'] && request.params['redirect_uri']
-          verifier = request.params['code']
-          redirect_uri = request.params['redirect_uri']
-          client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
-        elsif verify_token(request.params['access_token'])
+        verifier = request.params['code']
+        redirect_uri = request.params['redirect_uri']
+        access_token = request.params['access_token']
+        if verifier && request.xhr?
+          client_get_token(verifier, redirect_uri || 'postmessage')
+        elsif verifier
+          client_get_token(verifier, redirect_uri || callback_url)
+        elsif access_token && verify_token(access_token)
           ::OAuth2::AccessToken.from_hash(client, request.params.dup)
-        else
-          verifier = request.params['code']
-          client.auth_code.get_token(verifier, get_token_options(callback_url), deep_symbolize(options.auth_token_params))
+        elsif request.content_type =~ /json/i
+          begin
+            body = JSON.parse(request.body.read)
+            request.body.rewind # rewind request body for downstream middlewares
+            verifier = body && body['code']
+            access_token = body && body['access_token']
+            redirect_uri ||= body && body['redirect_uri']
+            if verifier
+              client_get_token(verifier, redirect_uri || 'postmessage')
+            elsif verify_token(access_token)
+              ::OAuth2::AccessToken.from_hash(client, body.dup)
+            end
+          rescue JSON::ParserError => e
+            warn "[omniauth google-oauth2] JSON parse error=#{e}"
+          end
         end
+      end
+
+      def client_get_token(verifier, redirect_uri)
+        client.auth_code.get_token(verifier, get_token_options(redirect_uri), get_token_params)
+      end
+
+      def get_token_params
+        deep_symbolize(options.auth_token_params || {})
       end
 
       def get_scope(params)
@@ -124,7 +153,11 @@ module OmniAuth
         scope_list.join(' ')
       end
 
-      def get_token_options(redirect_uri)
+      def verified_email
+        raw_info['email_verified'] ? raw_info['email'] : nil
+      end
+
+      def get_token_options(redirect_uri = '')
         { redirect_uri: redirect_uri }.merge(token_params.to_hash(symbolize_keys: true))
       end
 
@@ -133,10 +166,6 @@ module OmniAuth
           prune!(v) if v.is_a?(Hash)
           v.nil? || (v.respond_to?(:empty?) && v.empty?)
         end
-      end
-
-      def verified_email
-        raw_info['email_verified'] ? raw_info['email'] : nil
       end
 
       def image_url
@@ -149,6 +178,10 @@ module OmniAuth
         if path_index && image_size_opts_passed?
           u.path.insert(path_index, image_params)
           u.path = u.path.gsub('//', '/')
+
+          # Check if the image is already sized!
+          split_path = u.path.split('/')
+          u.path = u.path.sub("/#{split_path[-3]}", '') if split_path[-3] =~ IMAGE_SIZE_REGEXP
         end
 
         u.query = strip_unnecessary_query_parameters(u.query)
@@ -187,12 +220,21 @@ module OmniAuth
         URI.encode_www_form(stripped_params)
       end
 
+      def token_info(access_token)
+        return nil unless access_token
+
+        @token_info ||= Hash.new do |h, k|
+          h[k] = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo', params: { access_token: access_token }).parsed
+        end
+
+        @token_info[access_token]
+      end
+
       def verify_token(access_token)
         return false unless access_token
 
-        raw_response = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo',
-                                      params: { access_token: access_token }).parsed
-        raw_response['aud'] == options.client_id || options.authorized_client_ids.include?(raw_response['aud'])
+        token_info = token_info(access_token)
+        token_info['aud'] == options.client_id || options.authorized_client_ids.include?(token_info['aud'])
       end
 
       def verify_hd(access_token)

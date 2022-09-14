@@ -14,6 +14,7 @@ import { MAX_LIST_COUNT, TOKEN_STATUS_ACTIVE } from '../constants';
 import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.graphql';
 import TokenTable from './token_table.vue';
 import ActivityEvents from './activity_events_list.vue';
+import IntegrationStatus from './integration_status.vue';
 
 export default {
   i18n: {
@@ -51,6 +52,7 @@ export default {
     TimeAgoTooltip,
     TokenTable,
     ActivityEvents,
+    IntegrationStatus,
   },
   inject: ['agentName', 'projectPath'],
   data() {
@@ -105,11 +107,11 @@ export default {
 
 <template>
   <section>
-    <h2>{{ agentName }}</h2>
+    <h1>{{ agentName }}</h1>
 
     <gl-loading-icon v-if="isLoading && clusterAgent == null" size="lg" class="gl-m-3" />
 
-    <div v-else-if="clusterAgent">
+    <template v-else-if="clusterAgent">
       <p data-testid="cluster-agent-create-info">
         <gl-sprintf :message="$options.i18n.installedInfo">
           <template #name>
@@ -122,7 +124,16 @@ export default {
         </gl-sprintf>
       </p>
 
-      <gl-tabs sync-active-tab-with-query-params lazy>
+      <integration-status
+        :tokens="tokens"
+        class="gl-py-5 gl-border-t-1 gl-border-t-solid gl-border-t-gray-100"
+      />
+
+      <gl-tabs
+        sync-active-tab-with-query-params
+        lazy
+        class="gl-border-t-1 gl-border-t-solid gl-border-t-gray-100"
+      >
         <gl-tab :title="$options.i18n.activity" query-param-value="activity">
           <activity-events :agent-name="agentName" :project-path="projectPath" />
         </gl-tab>
@@ -151,7 +162,7 @@ export default {
           </div>
         </gl-tab>
       </gl-tabs>
-    </div>
+    </template>
 
     <gl-alert v-else variant="danger" :dismissible="false">
       {{ $options.i18n.loadingError }}

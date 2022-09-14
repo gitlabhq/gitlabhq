@@ -8731,6 +8731,9 @@ msgstr ""
 msgid "ClusterAgents|Are you sure you want to revoke this token? You cannot undo this action."
 msgstr ""
 
+msgid "ClusterAgents|CI/CD workflow with restricted access"
+msgstr ""
+
 msgid "ClusterAgents|Certificate"
 msgstr ""
 
@@ -8830,6 +8833,9 @@ msgstr ""
 msgid "ClusterAgents|Install using Helm (recommended)"
 msgstr ""
 
+msgid "ClusterAgents|Integration Status"
+msgstr ""
+
 msgid "ClusterAgents|Last connected %{timeAgo}."
 msgstr ""
 
@@ -8856,6 +8862,9 @@ msgid_plural "ClusterAgents|No activity occurred in the past %d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ClusterAgents|No agent access token"
+msgstr ""
+
 msgid "ClusterAgents|No agents"
 msgstr ""
 
@@ -8863,6 +8872,9 @@ msgid "ClusterAgents|No clusters connected through cluster certificates"
 msgstr ""
 
 msgid "ClusterAgents|Not connected"
+msgstr ""
+
+msgid "ClusterAgents|Premium"
 msgstr ""
 
 msgid "ClusterAgents|Recommended"
@@ -8929,6 +8941,9 @@ msgid "ClusterAgents|Token revoked by %{userName}"
 msgstr ""
 
 msgid "ClusterAgents|Unknown user"
+msgstr ""
+
+msgid "ClusterAgents|Valid access token"
 msgstr ""
 
 msgid "ClusterAgents|View all %{number} agents"

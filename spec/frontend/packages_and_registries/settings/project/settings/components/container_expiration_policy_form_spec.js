@@ -2,13 +2,11 @@ import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlCard, GlLoadingIcon } from 'jest/packages_and_registries/shared/stubs';
 import component from '~/packages_and_registries/settings/project/components/container_expiration_policy_form.vue';
-import {
-  UPDATE_SETTINGS_ERROR_MESSAGE,
-  UPDATE_SETTINGS_SUCCESS_MESSAGE,
-} from '~/packages_and_registries/settings/project/constants';
+import { UPDATE_SETTINGS_ERROR_MESSAGE } from '~/packages_and_registries/settings/project/constants';
 import updateContainerExpirationPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_expiration_policy.mutation.graphql';
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import Tracking from '~/tracking';
@@ -20,6 +18,7 @@ describe('Container Expiration Policy Settings Form', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
+    projectSettingsPath: 'settings-path',
   };
 
   const {
@@ -36,7 +35,7 @@ describe('Container Expiration Policy Settings Form', () => {
     label: 'docker_container_retention_and_expiration_policies',
   };
 
-  const findForm = () => wrapper.findComponent({ ref: 'form-element' });
+  const findForm = () => wrapper.find('form');
 
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"');
   const findSaveButton = () => wrapper.find('[data-testid="save-button"');
@@ -208,7 +207,9 @@ describe('Container Expiration Policy Settings Form', () => {
       });
 
       it('validation event updates buttons disabled state', async () => {
-        mountComponent();
+        mountComponent({
+          props: { ...defaultProps, isEdited: true },
+        });
 
         expect(findSaveButton().props('disabled')).toBe(false);
 
@@ -229,52 +230,22 @@ describe('Container Expiration Policy Settings Form', () => {
   });
 
   describe('form', () => {
-    describe('form reset event', () => {
-      it('calls the appropriate function', () => {
-        mountComponent();
+    describe('form submit event', () => {
+      useMockLocationHelper();
 
-        findForm().trigger('reset');
-
-        expect(wrapper.emitted('reset')).toEqual([[]]);
-      });
-
-      it('tracks the reset event', () => {
-        mountComponent();
-
-        findForm().trigger('reset');
-
-        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'reset_form', trackingPayload);
-      });
-
-      it('resets the errors objects', async () => {
-        mountComponent({
-          data: { apiErrors: { nameRegex: 'bar' }, localErrors: { nameRegexKeep: false } },
-        });
-
-        findForm().trigger('reset');
-
-        await nextTick();
-
-        expect(findKeepRegexInput().props('error')).toBe('');
-        expect(findRemoveRegexInput().props('error')).toBe('');
-        expect(findSaveButton().props('disabled')).toBe(false);
-      });
-    });
-
-    describe('form submit event ', () => {
       it('save has type submit', () => {
         mountComponent();
 
         expect(findSaveButton().attributes('type')).toBe('submit');
       });
 
-      it('dispatches the correct apollo mutation', () => {
+      it('dispatches the correct apollo mutation', async () => {
         const mutationResolver = jest.fn().mockResolvedValue(expirationPolicyMutationPayload());
         mountComponentWithApollo({
           mutationResolver,
         });
 
-        findForm().trigger('submit');
+        await submitForm();
 
         expect(mutationResolver).toHaveBeenCalled();
       });
@@ -286,9 +257,7 @@ describe('Container Expiration Policy Settings Form', () => {
           queryPayload: expirationPolicyPayload({ keepN: null, cadence: null, olderThan: null }),
         });
 
-        await waitForPromises();
-
-        findForm().trigger('submit');
+        await submitForm();
 
         expect(mutationResolver).toHaveBeenCalledWith({
           input: {
@@ -303,24 +272,26 @@ describe('Container Expiration Policy Settings Form', () => {
         });
       });
 
-      it('tracks the submit event', () => {
-        mountComponentWithApollo({
-          mutationResolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
-        });
-
-        findForm().trigger('submit');
-
-        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'submit_form', trackingPayload);
-      });
-
-      it('show a success toast when submit succeed', async () => {
+      it('tracks the submit event', async () => {
         mountComponentWithApollo({
           mutationResolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
         });
 
         await submitForm();
 
-        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'submit_form', trackingPayload);
+      });
+
+      it('redirects to package and registry project settings page when submitted successfully', async () => {
+        mountComponentWithApollo({
+          mutationResolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+        });
+
+        await submitForm();
+
+        expect(window.location.href.endsWith('settings-path?showSetupSuccessAlert=true')).toBe(
+          true,
+        );
       });
 
       describe('when submit fails', () => {
@@ -348,6 +319,7 @@ describe('Container Expiration Policy Settings Form', () => {
             await submitForm();
 
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE);
+            expect(window.location.href).toBeUndefined();
           });
 
           it('parses the error messages', async () => {
@@ -375,24 +347,24 @@ describe('Container Expiration Policy Settings Form', () => {
 
   describe('form actions', () => {
     describe('cancel button', () => {
-      it('has type reset', () => {
+      it('links to project package and registry settings path', () => {
         mountComponent();
 
-        expect(findCancelButton().attributes('type')).toBe('reset');
+        expect(findCancelButton().attributes('href')).toBe(
+          defaultProvidedValues.projectSettingsPath,
+        );
       });
 
       it.each`
-        isLoading | isEdited | mutationLoading
-        ${true}   | ${true}  | ${true}
-        ${false}  | ${true}  | ${true}
-        ${false}  | ${false} | ${true}
-        ${true}   | ${false} | ${false}
-        ${false}  | ${false} | ${false}
+        isLoading | mutationLoading
+        ${true}   | ${true}
+        ${false}  | ${true}
+        ${true}   | ${false}
       `(
-        'when isLoading is $isLoading, isEdited is $isEdited and mutationLoading is $mutationLoading is disabled',
-        ({ isEdited, isLoading, mutationLoading }) => {
+        'is disabled when isLoading is $isLoading and mutationLoading is $mutationLoading',
+        ({ isLoading, mutationLoading }) => {
           mountComponent({
-            props: { ...defaultProps, isEdited, isLoading },
+            props: { ...defaultProps, isLoading },
             data: { mutationLoading },
           });
 
@@ -409,18 +381,19 @@ describe('Container Expiration Policy Settings Form', () => {
       });
 
       it.each`
-        isLoading | localErrors       | mutationLoading
-        ${true}   | ${{}}             | ${true}
-        ${true}   | ${{}}             | ${false}
-        ${false}  | ${{}}             | ${true}
-        ${false}  | ${{ foo: false }} | ${true}
-        ${true}   | ${{ foo: false }} | ${false}
-        ${false}  | ${{ foo: false }} | ${false}
+        isLoading | isEdited | localErrors       | mutationLoading
+        ${true}   | ${false} | ${{}}             | ${true}
+        ${true}   | ${false} | ${{}}             | ${false}
+        ${false}  | ${false} | ${{}}             | ${true}
+        ${false}  | ${false} | ${{}}             | ${false}
+        ${false}  | ${false} | ${{ foo: false }} | ${true}
+        ${true}   | ${false} | ${{ foo: false }} | ${false}
+        ${false}  | ${false} | ${{ foo: false }} | ${false}
       `(
-        'when isLoading is $isLoading, localErrors is $localErrors and mutationLoading is $mutationLoading is disabled',
-        ({ localErrors, isLoading, mutationLoading }) => {
+        'is disabled when isLoading is $isLoading, isEdited is $isEdited, localErrors is $localErrors and mutationLoading is $mutationLoading',
+        ({ localErrors, isEdited, isLoading, mutationLoading }) => {
           mountComponent({
-            props: { ...defaultProps, isLoading },
+            props: { ...defaultProps, isEdited, isLoading },
             data: { mutationLoading, localErrors },
           });
 

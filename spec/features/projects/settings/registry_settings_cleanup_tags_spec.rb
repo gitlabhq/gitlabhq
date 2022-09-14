@@ -20,6 +20,14 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
   end
 
   context 'as owner', :js do
+    it 'shows active tab on sidebar' do
+      subject
+
+      expect(find('.sidebar-top-level-items > li.active')).to have_content('Settings')
+      expect(find('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)'))
+        .to have_content('Packages and registries')
+    end
+
     it 'shows available section' do
       subject
 
@@ -44,7 +52,8 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
         submit_button.click
       end
 
-      expect(find('.gl-toast')).to have_content('Cleanup policy successfully saved.')
+      expect(page).to have_current_path(project_settings_packages_and_registries_path(project))
+      expect(find('.gl-alert-body')).to have_content('Cleanup policy successfully saved.')
     end
 
     it 'does not save cleanup policy submit form with invalid regex' do

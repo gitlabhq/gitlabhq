@@ -3,7 +3,7 @@ PATH
   specs:
     omniauth-azure-oauth2 (0.0.10)
       jwt (>= 1.0, < 3.0)
-      omniauth (~> 1.0, < 3)
+      omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.4)
 
 GEM
@@ -19,16 +19,17 @@ GEM
     multi_xml (0.6.0)
     mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
-    oauth2 (2.0.6)
+    oauth2 (2.0.3)
       faraday (>= 0.17.3, < 3.0)
       jwt (>= 1.0, < 3.0)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
       rash_alt (>= 0.4, < 1)
-      version_gem (~> 1.1)
-    omniauth (1.9.1)
+      version_gem (~> 1.0)
+    omniauth (2.1.0)
       hashie (>= 3.4.6)
-      rack (>= 1.6.2, < 3)
+      rack (>= 2.2.3)
+      rack-protection
     omniauth-oauth2 (1.7.3)
       oauth2 (>= 1.4, < 3)
       omniauth (>= 1.9, < 3)
@@ -70,4 +71,4 @@ DEPENDENCIES
   sinatra
 
 BUNDLED WITH
-   2.3.20
+   2.3.21

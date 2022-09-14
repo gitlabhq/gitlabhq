@@ -1,10 +1,11 @@
 PATH
   remote: .
   specs:
-    omniauth-google-oauth2 (0.6.0)
+    omniauth-google-oauth2 (1.0.1)
       jwt (>= 2.0)
-      omniauth (>= 1.9, < 3)
-      omniauth-oauth2 (>= 1.5)
+      oauth2 (~> 2.0)
+      omniauth (~> 2.0)
+      omniauth-oauth2 (~> 1.7.1)
 
 GEM
   remote: https://rubygems.org/
@@ -25,9 +26,10 @@ GEM
       rack (>= 1.2, < 3)
       rash_alt (>= 0.4, < 1)
       version_gem (~> 1.0)
-    omniauth (1.9.2)
+    omniauth (2.1.0)
       hashie (>= 3.4.6)
-      rack (>= 1.6.2, < 3)
+      rack (>= 2.2.3)
+      rack-protection
     omniauth-oauth2 (1.7.3)
       oauth2 (>= 1.4, < 3)
       omniauth (>= 1.9, < 3)
@@ -35,6 +37,8 @@ GEM
     parser (3.1.2.0)
       ast (~> 2.4.1)
     rack (2.2.4)
+    rack-protection (2.2.2)
+      rack
     rainbow (3.1.1)
     rake (12.3.3)
     rash_alt (0.4.12)

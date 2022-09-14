@@ -46,8 +46,6 @@ class Project < ApplicationRecord
 
   extend Gitlab::ConfigHelper
 
-  ignore_columns :container_registry_enabled, remove_after: '2021-09-22', remove_with: '14.4'
-
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
 

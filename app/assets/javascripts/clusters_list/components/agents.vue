@@ -3,13 +3,9 @@ import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlBanner } from '@gitlab/ui
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import {
-  MAX_LIST_COUNT,
-  ACTIVE_CONNECTION_TIME,
-  AGENT_FEEDBACK_ISSUE,
-  AGENT_FEEDBACK_KEY,
-} from '../constants';
+import { MAX_LIST_COUNT, AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY } from '../constants';
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
+import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
 import AgentTable from './agent_table.vue';
 
@@ -88,8 +84,8 @@ export default {
       if (list) {
         list = list.map((agent) => {
           const configFolder = this.folderList[agent.name];
-          const lastContact = this.getLastContact(agent);
-          const status = this.getStatus(lastContact);
+          const lastContact = getAgentLastContact(agent?.tokens?.nodes);
+          const status = getAgentStatus(lastContact);
           return { ...agent, configFolder, lastContact, status };
         });
       }
@@ -140,28 +136,6 @@ export default {
           this.folderList[folder.name] = folder;
         });
       }
-    },
-    getLastContact(agent) {
-      const tokens = agent?.tokens?.nodes;
-      let lastContact = null;
-      if (tokens?.length) {
-        tokens.forEach((token) => {
-          const lastContactToDate = new Date(token.lastUsedAt).getTime();
-          if (lastContactToDate > lastContact) {
-            lastContact = lastContactToDate;
-          }
-        });
-      }
-      return lastContact;
-    },
-    getStatus(lastContact) {
-      if (lastContact) {
-        const now = new Date().getTime();
-        const diff = now - lastContact;
-
-        return diff > ACTIVE_CONNECTION_TIME ? 'inactive' : 'active';
-      }
-      return 'unused';
     },
     emitAgentsLoaded() {
       const count = this.agents?.project?.clusterAgents?.count;

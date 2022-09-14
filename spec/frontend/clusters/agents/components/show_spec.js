@@ -6,6 +6,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ClusterAgentShow from '~/clusters/agents/components/show.vue';
 import TokenTable from '~/clusters/agents/components/token_table.vue';
 import ActivityEvents from '~/clusters/agents/components/activity_events_list.vue';
+import IntegrationStatus from '~/clusters/agents/components/integration_status.vue';
 import getAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -76,6 +77,7 @@ describe('ClusterAgentShow', () => {
   const findTokenCount = () => wrapper.findByTestId('cluster-agent-token-count').text();
   const findEESecurityTabSlot = () => wrapper.findByTestId('ee-security-tab');
   const findActivity = () => wrapper.findComponent(ActivityEvents);
+  const findIntegrationStatus = () => wrapper.findComponent(IntegrationStatus);
 
   afterEach(() => {
     wrapper.destroy();
@@ -105,6 +107,10 @@ describe('ClusterAgentShow', () => {
 
     it('displays agent create information', () => {
       expect(findCreatedText()).toMatchInterpolatedText('Created by user-1 2 days ago');
+    });
+
+    it('displays agent integration status section', () => {
+      expect(findIntegrationStatus().exists()).toBe(true);
     });
 
     it('displays token count', () => {
