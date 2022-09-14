@@ -29,7 +29,7 @@ provide the build commands, and creates the necessary boilerplate for you.
 
 To build your YAML file from the GitLab UI:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Pages** to display the friendly
    interface **Get Started With Pages**.
 1. If your framework's build process does not need one of the provided build

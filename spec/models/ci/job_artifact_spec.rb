@@ -761,7 +761,7 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  context 'with partition_id' do
+  describe 'partitioning' do
     let(:job) { build(:ci_build, partition_id: 123) }
     let(:artifact) { build(:ci_job_artifact, job: job, partition_id: nil) }
 

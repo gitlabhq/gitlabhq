@@ -478,6 +478,26 @@ RSpec.describe API::CommitStatuses do
               .to include 'has already been taken'
         end
       end
+
+      context 'with partitions' do
+        let(:current_partition_id) { 123 }
+
+        before do
+          allow(Ci::Pipeline)
+            .to receive(:current_partition_value) { current_partition_id }
+        end
+
+        it 'creates records in the current partition' do
+          expect { post api(post_url, developer), params: { state: 'running' } }
+            .to change(CommitStatus, :count).by(1)
+            .and change(Ci::Pipeline, :count).by(1)
+
+          status = CommitStatus.find(json_response['id'])
+
+          expect(status.partition_id).to eq(current_partition_id)
+          expect(status.pipeline.partition_id).to eq(current_partition_id)
+        end
+      end
     end
 
     context 'reporter user' do

@@ -26,6 +26,8 @@ module Types
       field :pypi_setup_url, GraphQL::Types::String, null: true, description: 'Url of the PyPi project setup endpoint.'
       field :pypi_url, GraphQL::Types::String, null: true, description: 'Url of the PyPi project endpoint.'
 
+      field :last_downloaded_at, Types::TimeType, null: true, description: 'Last time that a file of this package was downloaded.'
+
       def versions
         object.versions
       end

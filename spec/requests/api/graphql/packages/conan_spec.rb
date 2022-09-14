@@ -5,7 +5,7 @@ RSpec.describe 'conan package details' do
   include GraphqlHelpers
   include_context 'package details setup'
 
-  let_it_be(:package) { create(:conan_package, project: project) }
+  let_it_be(:package) { create(:conan_package, :last_downloaded_at, project: project) }
 
   let(:metadata) { query_graphql_fragment('ConanMetadata') }
   let(:package_files_metadata) { query_graphql_fragment('ConanFileMetadata') }

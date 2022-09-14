@@ -28,7 +28,7 @@ Prerequisite:
 
 To enable import and export for a group:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
@@ -79,7 +79,7 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. In the **Advanced** section, select **Export Group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)

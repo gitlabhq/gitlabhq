@@ -35,7 +35,7 @@ Start by [importing the example project by URL](../../../project/import/repo_by_
 
 To import the project:
 
-1. On the top bar, select **Menu > Create new project**.
+1. On the top bar, select **Main menu > Create new project**.
 1. Select **Import project**.
 1. Select **Repository by URL**.
 1. For the **Git repository URL**, enter `https://gitlab.com/civocloud/gitlab-terraform-civo.git`.

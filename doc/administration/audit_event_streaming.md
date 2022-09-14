@@ -39,7 +39,7 @@ Streaming destinations receive **all** audit event data, which could include sen
 
 Users with the Owner role for a group can add streaming destinations for it:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** to show the section for adding destinations.
@@ -161,7 +161,7 @@ Users with the Owner role for a group can update streaming destinations.
 
 To update a streaming destinations custom HTTP headers:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**).
@@ -279,7 +279,7 @@ the destination's value when [listing streaming destinations](#list-streaming-de
 
 Users with the Owner role for a group can list streaming destinations and see the verification tokens:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.

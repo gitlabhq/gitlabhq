@@ -5484,4 +5484,36 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
   end
+
+  describe 'partitioning' do
+    let(:pipeline) { build(:ci_pipeline) }
+
+    before do
+      allow(described_class).to receive(:current_partition_value) { 123 }
+    end
+
+    it 'sets partition_id to the current partition value' do
+      expect { pipeline.valid? }.to change(pipeline, :partition_id).to(123)
+    end
+
+    context 'when it is already set' do
+      let(:pipeline) { build(:ci_pipeline, partition_id: 125) }
+
+      it 'does not change the partition_id value' do
+        expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
+      end
+    end
+
+    context 'without current partition value' do
+      before do
+        allow(described_class).to receive(:current_partition_value) {}
+      end
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
+      end
+    end
+  end
 end

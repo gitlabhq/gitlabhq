@@ -6,8 +6,8 @@ RSpec.describe 'package details' do
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be_with_reload(:composer_package) { create(:composer_package, :last_downloaded_at, project: project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:composer_package) { create(:composer_package, project: project) }
   let_it_be(:composer_json) { { name: 'name', type: 'type', license: 'license', version: 1 } }
   let_it_be(:composer_metadatum) do
     # we are forced to manually create the metadatum, without using the factory to force the sha to be a string
@@ -57,6 +57,17 @@ RSpec.describe 'package details' do
 
     it_behaves_like 'a working graphql query' do
       before do
+        subject
+      end
+
+      it 'matches the JSON schema' do
+        expect(package_details).to match_schema('graphql/packages/package_details')
+      end
+    end
+
+    context 'with package without last_downloaded_at' do
+      before do
+        composer_package.update!(last_downloaded_at: nil)
         subject
       end
 

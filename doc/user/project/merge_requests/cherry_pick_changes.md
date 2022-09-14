@@ -23,6 +23,7 @@ is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/202215)
 ## Cherry-pick example
 
 In this example of cherry-picking, a Git repository has two branches: `develop` and `main`.
+This example shows a cherry-picked commit from one branch being added to another:
 
 ```mermaid
 gitGraph
@@ -41,7 +42,7 @@ gitGraph
  commit id:"H"
 ```
 
-The example shows a cherry-pick of commit `B` from the `develop` branch, which is added
+In this example, a cherry-pick of commit `B` from the `develop` branch is added
 after commit `E` in the `main` branch.
 
 Commit `G` is added after the cherry-pick.

@@ -51,7 +51,7 @@ requirements or needs additional oversight. The label can optionally apply
 
 Group owners can create, edit, and delete compliance frameworks:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 

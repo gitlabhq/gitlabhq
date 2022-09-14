@@ -167,6 +167,7 @@ RSpec.shared_examples 'PyPI package download' do |user_type, status, add_member 
 
     it_behaves_like 'returning response status', status
     it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+    it_behaves_like 'bumping the package last downloaded at field'
   end
 end
 

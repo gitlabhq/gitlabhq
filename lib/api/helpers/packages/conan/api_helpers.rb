@@ -173,7 +173,7 @@ module API
 
             track_package_event('pull_package', :conan, category: 'API::ConanPackages', user: current_user, project: project, namespace: project.namespace) if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
 
-            present_carrierwave_file!(package_file.file)
+            present_package_file!(package_file)
           end
 
           def find_or_create_package

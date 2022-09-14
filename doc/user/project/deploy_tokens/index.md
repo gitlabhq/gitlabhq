@@ -31,7 +31,7 @@ You can create as many deploy tokens as you need from the settings of your
 project. Alternatively, you can also create [group-scoped deploy tokens](#group-deploy-token).
 
 1. Sign in to your GitLab account.
-1. On the top bar, select **Menu > Projects** or **Menu > Groups** to find your project or group.
+1. On the top bar, select **Main menu > Projects** or **Main menu > Groups** to find your project or group.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy tokens**.
 1. Choose a name, and optionally, an expiration date and username for the token.
@@ -51,7 +51,7 @@ Deploy tokens expire at midnight UTC on the date you define.
 
 To revoke a deploy token:
 
-1. On the top bar, select **Menu > Projects** or **Menu > Groups** to find your project or group.
+1. On the top bar, select **Main menu > Projects** or **Main menu > Groups** to find your project or group.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy tokens**.
 1. In the **Active Deploy Tokens** section, by the token you want to revoke, select **Revoke**.

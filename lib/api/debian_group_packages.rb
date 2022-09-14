@@ -48,7 +48,7 @@ module API
 
         route_setting :authentication, authenticate_non_public: true
         get 'pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name', requirements: PACKAGE_FILE_REQUIREMENTS do
-          present_package_file!
+          present_distribution_package_file!
         end
       end
     end

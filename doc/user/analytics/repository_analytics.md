@@ -30,7 +30,7 @@ Commits in a project's [wiki](../project/wiki/index.md#track-wiki-events) are no
 
 To review repository analytics for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Repository**.
 
 ## How repository analytics chart data is updated

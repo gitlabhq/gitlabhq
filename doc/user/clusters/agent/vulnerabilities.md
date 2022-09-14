@@ -60,7 +60,7 @@ Prerequisite:
 
 To view vulnerability information in GitLab:
 
-1. On the top bar, select **Menu > Projects** and find the project that contains the agent configuration file.
+1. On the top bar, select **Main menu > Projects** and find the project that contains the agent configuration file.
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.

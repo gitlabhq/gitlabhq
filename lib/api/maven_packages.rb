@@ -76,7 +76,10 @@ module API
         format == 'jar'
       end
 
-      def present_carrierwave_file_with_head_support!(file, supports_direct_download: true)
+      def present_carrierwave_file_with_head_support!(package_file, supports_direct_download: true)
+        package_file.package.touch_last_downloaded_at
+        file = package_file.file
+
         if head_request_on_aws_file?(file, supports_direct_download) && !file.file_storage?
           return redirect(signed_head_url(file))
         end
@@ -148,7 +151,7 @@ module API
         package_file.file_sha1
       else
         track_package_event('pull_package', :maven, project: project, namespace: project.namespace) if jar_file?(format)
-        present_carrierwave_file_with_head_support!(package_file.file)
+        present_carrierwave_file_with_head_support!(package_file)
       end
     end
 
@@ -189,7 +192,7 @@ module API
         else
           track_package_event('pull_package', :maven, project: package.project, namespace: package.project.namespace) if jar_file?(format)
 
-          present_carrierwave_file_with_head_support!(package_file.file)
+          present_carrierwave_file_with_head_support!(package_file)
         end
       end
     end
@@ -227,7 +230,7 @@ module API
         else
           track_package_event('pull_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
 
-          present_carrierwave_file_with_head_support!(package_file.file)
+          present_carrierwave_file_with_head_support!(package_file)
         end
       end
 

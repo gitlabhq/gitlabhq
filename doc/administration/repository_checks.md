@@ -20,7 +20,7 @@ committed to a repository. GitLab administrators can:
 
 To check a project's repository using GitLab UI:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Projects**.
 1. Select the project to check.
 1. In the **Repository check** section, select **Trigger repository check**.
@@ -81,7 +81,7 @@ If a repository check fails, locate the error in the [`repocheck.log` file](logs
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.
 1. Select **Clear all repository checks**.

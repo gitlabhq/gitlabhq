@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CommitStatus < Ci::ApplicationRecord
+  include Ci::Partitionable
   include Ci::HasStatus
   include Importable
   include AfterCommitQueue
@@ -11,6 +12,7 @@ class CommitStatus < Ci::ApplicationRecord
   include IgnorableColumns
 
   self.table_name = 'ci_builds'
+  partitionable scope: :pipeline
   ignore_column :trace, remove_with: '15.6', remove_after: '2022-10-22'
 
   belongs_to :user

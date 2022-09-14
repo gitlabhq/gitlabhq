@@ -35,9 +35,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
   before do
     stub_ci_pipeline_yaml_file(config)
-    stub_const(
-      'Gitlab::Ci::Pipeline::Chain::AssignPartition::DEFAULT_PARTITION_ID',
-      current_partition_id)
+    allow(Ci::Pipeline).to receive(:current_partition_value) { current_partition_id }
   end
 
   it 'assigns partition_id to pipeline' do

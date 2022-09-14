@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
 import axios from '~/lib/utils/axios_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
 import refQuery from './queries/ref.query.graphql';
@@ -16,7 +17,7 @@ function setNextOffset(offset) {
 }
 
 export function resolveCommit(commits, path, { resolve, entry }) {
-  const commit = commits.find((c) => c.filePath === `${path}/${entry.name}`);
+  const commit = commits.find((c) => c.filePath === joinPaths(path, entry.name));
 
   if (commit) {
     resolve(commit);

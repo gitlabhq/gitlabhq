@@ -38,6 +38,7 @@ const MOCK_BLOBS = [
 const MOCK_COMMITS = [
   {
     fileName: 'blob.md',
+    filePath: 'test_dir/blob.md',
     type: 'blob',
     commit: {
       message: 'Updated blob.md',
@@ -45,6 +46,7 @@ const MOCK_COMMITS = [
   },
   {
     fileName: 'blob2.md',
+    filePath: 'test_dir/blob2.md',
     type: 'blob',
     commit: {
       message: 'Updated blob2.md',
@@ -52,9 +54,18 @@ const MOCK_COMMITS = [
   },
   {
     fileName: 'blob3.md',
+    filePath: 'test_dir/blob3.md',
     type: 'blob',
     commit: {
       message: 'Updated blob3.md',
+    },
+  },
+  {
+    fileName: 'root_blob.md',
+    filePath: '/root_blob.md',
+    type: 'blob',
+    commit: {
+      message: 'Updated root_blob.md',
     },
   },
 ];
@@ -76,6 +87,8 @@ function factory({ path, isLoading = false, hasMore = true, entries = {}, commit
     },
   });
 }
+
+const findTableRows = () => vm.findAllComponents(TableRow);
 
 describe('Repository table component', () => {
   afterEach(() => {
@@ -108,19 +121,41 @@ describe('Repository table component', () => {
 
   it('renders table rows', () => {
     factory({
-      path: '/',
+      path: 'test_dir',
       entries: {
         blobs: MOCK_BLOBS,
       },
       commits: MOCK_COMMITS,
     });
 
-    const rows = vm.findAllComponents(TableRow);
+    const rows = findTableRows();
 
     expect(rows.length).toEqual(3);
     expect(rows.at(2).attributes().mode).toEqual('120000');
     expect(rows.at(2).props().rowNumber).toBe(2);
     expect(rows.at(2).props().commitInfo).toEqual(MOCK_COMMITS[2]);
+  });
+
+  it('renders correct commit info for blobs in the root', () => {
+    factory({
+      path: '/',
+      entries: {
+        blobs: [
+          {
+            id: '126abc',
+            sha: '126abc',
+            flatPath: 'root_blob.md',
+            name: 'root_blob.md',
+            type: 'blob',
+            webUrl: 'http://test.com',
+            mode: '120000',
+          },
+        ],
+      },
+      commits: MOCK_COMMITS,
+    });
+
+    expect(findTableRows().at(0).props().commitInfo).toEqual(MOCK_COMMITS[3]);
   });
 
   describe('Show more button', () => {

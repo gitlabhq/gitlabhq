@@ -55,7 +55,7 @@ configured for personal access tokens.
 
 To create a project access token:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Optional. Enter an expiry date for the token. The token expires on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
@@ -70,7 +70,7 @@ A project access token is displayed. Save the project access token somewhere saf
 
 To revoke a project access token:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Next to the project access token to revoke, select **Revoke**.
 
@@ -93,7 +93,7 @@ The scope determines the actions you can perform when you authenticate with a pr
 
 To enable or disable project access token creation for all projects in a top-level group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Allow project and group access token creation**.

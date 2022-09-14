@@ -631,6 +631,7 @@ RSpec.shared_examples 'a public project with packages' do
   end
 
   it_behaves_like 'allows download with no token'
+  it_behaves_like 'bumping the package last downloaded at field'
 
   it 'returns the file' do
     subject
@@ -647,6 +648,7 @@ RSpec.shared_examples 'an internal project with packages' do
   end
 
   it_behaves_like 'denies download with no token'
+  it_behaves_like 'bumping the package last downloaded at field'
 
   it 'returns the file' do
     subject
@@ -662,6 +664,7 @@ RSpec.shared_examples 'a private project with packages' do
   end
 
   it_behaves_like 'denies download with no token'
+  it_behaves_like 'bumping the package last downloaded at field'
 
   it 'returns the file' do
     subject

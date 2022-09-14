@@ -15,7 +15,7 @@ prior.
 
 To access the chart:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Issue**.
 
 Hover over each bar to see the total number of issues.

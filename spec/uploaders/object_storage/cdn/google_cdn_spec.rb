@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::CDN::GoogleCDN, :use_clean_rails_memory_store_caching do
+RSpec.describe ObjectStorage::CDN::GoogleCDN,
+  :use_clean_rails_memory_store_caching, :use_clean_rails_redis_caching, :sidekiq_inline do
   include StubRequests
 
   let(:key) { SecureRandom.hex }
@@ -15,7 +16,7 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN, :use_clean_rails_memory_store_cach
   subject { described_class.new(options) }
 
   before do
-    WebMock.stub_request(:get, described_class::GOOGLE_IP_RANGES_URL)
+    WebMock.stub_request(:get, GoogleCloud::FetchGoogleIpListService::GOOGLE_IP_RANGES_URL)
       .to_return(status: 200, body: google_cloud_ips, headers: headers)
   end
 
@@ -33,12 +34,6 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN, :use_clean_rails_memory_store_cach
 
     with_them do
       it { expect(subject.use_cdn?(ip_address)).to eq(expected) }
-    end
-
-    it 'caches the value' do
-      expect(subject.use_cdn?(public_ip)).to be true
-      expect(Rails.cache.fetch(described_class::GOOGLE_CDN_LIST_KEY)).to be_present
-      expect(Gitlab::ProcessMemoryCache.cache_backend.fetch(described_class::GOOGLE_CDN_LIST_KEY)).to be_present
     end
 
     context 'when the key name is missing' do
@@ -72,43 +67,6 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN, :use_clean_rails_memory_store_cach
       it 'returns false' do
         expect(subject.use_cdn?(public_ip)).to be false
       end
-    end
-
-    shared_examples 'IP range retrieval failure' do
-      it 'does not cache the result and logs an error' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
-        expect(subject.use_cdn?(public_ip)).to be false
-        expect(Rails.cache.fetch(described_class::GOOGLE_CDN_LIST_KEY)).to be_nil
-        expect(Gitlab::ProcessMemoryCache.cache_backend.fetch(described_class::GOOGLE_CDN_LIST_KEY)).to be_nil
-      end
-    end
-
-    context 'when the URL returns a 404' do
-      before do
-        WebMock.stub_request(:get, described_class::GOOGLE_IP_RANGES_URL).to_return(status: 404)
-      end
-
-      it_behaves_like 'IP range retrieval failure'
-    end
-
-    context 'when the URL returns too large of a payload' do
-      before do
-        stub_const("#{described_class}::RESPONSE_BODY_LIMIT", 300)
-      end
-
-      it_behaves_like 'IP range retrieval failure'
-    end
-
-    context 'when the URL returns HTML' do
-      let(:headers) { { 'Content-Type' => 'text/html' } }
-
-      it_behaves_like 'IP range retrieval failure'
-    end
-
-    context 'when the URL returns empty results' do
-      let(:google_cloud_ips) { '{}' }
-
-      it_behaves_like 'IP range retrieval failure'
     end
   end
 

@@ -2,6 +2,7 @@
 import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __ } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';
@@ -108,7 +109,9 @@ export default {
         return {};
       }
 
-      return this.commits.find((commitEntry) => commitEntry.fileName === fileName);
+      return this.commits.find(
+        (commitEntry) => commitEntry.filePath === joinPaths(this.path, fileName),
+      );
     },
   },
 };

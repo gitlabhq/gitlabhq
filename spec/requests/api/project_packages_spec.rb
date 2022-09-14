@@ -6,7 +6,7 @@ RSpec.describe API::ProjectPackages do
   let_it_be(:project) { create(:project, :public) }
 
   let(:user) { create(:user) }
-  let!(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
+  let!(:package1) { create(:npm_package, :last_downloaded_at, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
   let(:package_url) { "/projects/#{project.id}/packages/#{package1.id}" }
   let!(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
   let!(:another_package) { create(:npm_package) }
@@ -271,6 +271,17 @@ RSpec.describe API::ProjectPackages do
           it_behaves_like 'returns package', :project, :reporter
           it_behaves_like 'returns package', :project, :no_type
           it_behaves_like 'returns package', :project, :guest
+        end
+
+        context 'with a package without last_downloaded_at' do
+          let(:package_url) { "/projects/#{project.id}/packages/#{package2.id}" }
+
+          it 'returns 200 and the package information' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema(single_package_schema)
+          end
         end
       end
 

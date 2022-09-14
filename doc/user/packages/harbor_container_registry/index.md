@@ -12,7 +12,7 @@ You can integrate the [Harbor container registry](../../../user/project/integrat
 
 You can view the Harbor Registry for a project or group.
 
-1. On the top bar, select **Menu > Projects/Groups**.
+1. On the top bar, select **Main menu > Projects/Groups**.
 1. Go to the project or group that you are interested in.
 1. On the left sidebar, select **Packages and registries > Harbor Registry**.
 

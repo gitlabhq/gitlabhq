@@ -55,7 +55,7 @@ configured for personal access tokens.
 
 To create a group access token:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
@@ -112,7 +112,7 @@ or API. However, administrators can use a workaround:
 
 To revoke a group access token:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Next to the group access token to revoke, select **Revoke**.
 
@@ -146,7 +146,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 
 To enable or disable group access token creation for all sub-groups in a top-level group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.

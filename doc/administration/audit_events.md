@@ -309,7 +309,7 @@ audit events.
 
 To export the audit events to CSV:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. Select the available search [filters](#search).
 1. Select **Export as CSV**.

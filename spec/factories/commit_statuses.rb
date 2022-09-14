@@ -56,7 +56,7 @@ FactoryBot.define do
     end
 
     after(:build) do |build, evaluator|
-      build.project = build.pipeline.project
+      build.project ||= build.pipeline.project
     end
   end
 end

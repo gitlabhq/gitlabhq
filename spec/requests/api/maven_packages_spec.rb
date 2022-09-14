@@ -244,6 +244,7 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
+        it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
         it_behaves_like 'file download in FIPS mode'
 
@@ -275,7 +276,7 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
-
+        it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
 
         it 'denies download when no private token' do
@@ -285,7 +286,6 @@ RSpec.describe API::MavenPackages do
         end
 
         it_behaves_like 'downloads with a job token'
-
         it_behaves_like 'downloads with a deploy token'
 
         context 'with a non existing maven path' do
@@ -307,7 +307,7 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
-
+        it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
 
         it 'denies download when not enough permissions' do
@@ -327,7 +327,6 @@ RSpec.describe API::MavenPackages do
         end
 
         it_behaves_like 'downloads with a job token'
-
         it_behaves_like 'downloads with a deploy token'
 
         it 'does not allow download by a unauthorized deploy token with same id as a user with access' do
@@ -414,6 +413,7 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
+        it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
         it_behaves_like 'file download in FIPS mode'
 
@@ -445,7 +445,7 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
-
+        it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
 
         it 'denies download when no private token' do
@@ -455,7 +455,6 @@ RSpec.describe API::MavenPackages do
         end
 
         it_behaves_like 'downloads with a job token'
-
         it_behaves_like 'downloads with a deploy token'
 
         context 'with a non existing maven path' do
@@ -477,7 +476,7 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
-
+        it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
 
         it 'denies download when not enough permissions' do
@@ -495,7 +494,6 @@ RSpec.describe API::MavenPackages do
         end
 
         it_behaves_like 'downloads with a job token'
-
         it_behaves_like 'downloads with a deploy token'
 
         context 'with a non existing maven path' do
@@ -676,7 +674,7 @@ RSpec.describe API::MavenPackages do
       subject { download_file_with_token(file_name: package_file.file_name) }
 
       it_behaves_like 'tracking the file download event'
-
+      it_behaves_like 'bumping the package last downloaded at field'
       it_behaves_like 'successfully returning the file'
 
       it 'denies download when not enough permissions' do
@@ -694,7 +692,6 @@ RSpec.describe API::MavenPackages do
       end
 
       it_behaves_like 'downloads with a job token'
-
       it_behaves_like 'downloads with a deploy token'
 
       context 'with a non existing maven path' do

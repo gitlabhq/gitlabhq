@@ -54,7 +54,7 @@ For example:
 
 To view the deploy keys available to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy keys**.
 
@@ -72,7 +72,7 @@ Prerequisites:
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Complete the fields.
@@ -92,7 +92,7 @@ Prerequisites:
 
 To create a public deploy key:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Deploy Keys**.
 1. Select **New deploy key**.
 1. Complete the fields.
@@ -109,7 +109,7 @@ Prerequisites:
 
 To grant a public deploy key access to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Publicly accessible deploy keys**.
@@ -129,7 +129,7 @@ Prerequisites:
 
 To disable a deploy key:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** (**{cancel}**).

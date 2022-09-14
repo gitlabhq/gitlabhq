@@ -15,7 +15,7 @@ prior.
 
 To access the chart:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Issue Analytics**.
 
 Hover over each bar to see the total number of issues.

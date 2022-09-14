@@ -79,7 +79,7 @@ Administrators can look up a project's hashed path from its name or ID using:
 
 To look up a project's hash path in the Admin Area:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Projects** and select the project.
 
 The **Gitaly relative path** is displayed there and looks similar to:

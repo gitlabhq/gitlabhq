@@ -97,7 +97,7 @@ Prerequisite:
 
 To do this:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Tags**.
 1. Next to the tag you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.

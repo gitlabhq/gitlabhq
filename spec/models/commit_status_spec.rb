@@ -1018,4 +1018,37 @@ RSpec.describe CommitStatus do
       it { is_expected.to be_nil }
     end
   end
+
+  describe 'partitioning' do
+    context 'with pipeline' do
+      let(:pipeline) { build(:ci_pipeline, partition_id: 123) }
+      let(:status) { build(:commit_status, pipeline: pipeline) }
+
+      it 'copies the partition_id from pipeline' do
+        expect { status.valid? }.to change(status, :partition_id).to(123)
+      end
+
+      context 'when it is already set' do
+        let(:status) { build(:commit_status, pipeline: pipeline, partition_id: 125) }
+
+        it 'does not change the partition_id value' do
+          expect { status.valid? }.not_to change(status, :partition_id)
+        end
+      end
+    end
+
+    context 'without pipeline' do
+      subject(:status) do
+        build(:commit_status,
+          project: build_stubbed(:project),
+          pipeline: nil)
+      end
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { status.valid? }.not_to change(status, :partition_id)
+      end
+    end
+  end
 end

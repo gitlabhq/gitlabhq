@@ -765,7 +765,7 @@ license.
 
 You can enable `License-Check` one of two ways:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** or **Edit**.

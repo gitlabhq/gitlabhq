@@ -93,7 +93,7 @@
                               %tr{ style: 'width:100%;' }
                                 %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;text-align:center;" }
                                   %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:-4px;", alt: "Merge request icon" }
-                                  = merge_request_approved_description(@merge_request, @approved_by)
+                                  = s_('Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{reviewer_highlight}was approved by%{highlight_end} %{reviewer_avatar} %{reviewer_link}').html_safe % merge_request_hash_param(@merge_request, @approved_by)
                         %tr.spacer
                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                             &nbsp;

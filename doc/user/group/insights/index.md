@@ -19,7 +19,7 @@ requests to be merged, and much more.
 
 To access your group's Insights:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Insights**.
 
 ## Configure your Insights
@@ -29,7 +29,7 @@ If you want to customize it:
 
 1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md)
 in a project that belongs to your group.
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Insights**.
 1. Select the project that contains your `.gitlab/insights.yml` configuration file.

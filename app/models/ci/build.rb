@@ -11,7 +11,7 @@ module Ci
     include Presentable
     include Importable
     include Ci::HasRef
-    include HasDeploymentName
+    include Ci::TrackEnvironmentUsage
 
     extend ::Gitlab::Utils::Override
 
@@ -1097,18 +1097,6 @@ module Ci
         .dig(:allow_failure_criteria, :exit_codes)
         .to_a
         .include?(exit_code)
-    end
-
-    def track_deployment_usage
-      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
-    end
-
-    def track_verify_usage
-      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_verify_environment_job', user_id) if user_id.present? && count_user_verification?
-    end
-
-    def count_user_verification?
-      has_environment? && environment_action == 'verify'
     end
 
     def each_report(report_types)

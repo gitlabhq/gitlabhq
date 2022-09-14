@@ -193,7 +193,7 @@ module API
             )
 
             # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
-            present_carrierwave_file!(package_file.file, supports_direct_download: false)
+            present_package_file!(package_file, supports_direct_download: false)
           end
         end
       end

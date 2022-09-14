@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can import your existing repositories by providing the Git URL:
 
-1. On the top bar, select **Menu > Create new project**.
+1. On the top bar, select **Main menu > Create new project**.
 1. Select the **Import project** tab.
 1. Select **Repository by URL**.
 1. Enter a **Git repository URL**.

@@ -53,6 +53,11 @@ module API
         category = args.delete(:category) || self.options[:for].name
         ::Gitlab::Tracking.event(category, event_name.to_s, **args)
       end
+
+      def present_package_file!(package_file, supports_direct_download: true)
+        package_file.package.touch_last_downloaded_at
+        present_carrierwave_file!(package_file.file, supports_direct_download: supports_direct_download)
+      end
     end
   end
 end

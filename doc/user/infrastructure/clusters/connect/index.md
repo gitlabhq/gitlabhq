@@ -34,17 +34,17 @@ your cluster's level.
 
 **Project-level clusters:**
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 
 **Group-level clusters:**
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Kubernetes**.
 
 **Instance-level clusters:**
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Kubernetes**.
 
 ## Security implications for clusters connected with certificates

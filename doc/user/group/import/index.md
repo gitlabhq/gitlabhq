@@ -183,7 +183,7 @@ path. This causes a `404 Group Not Found` error. To solve this, the source group
 
 - The GitLab UI:
 
-  1. On the top bar, select **Menu > Groups** and find your group.
+  1. On the top bar, select **Main menu > Groups** and find your group.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Advanced**.
   1. Under **Change group URL**, change the group URL to include non-numeric characters.

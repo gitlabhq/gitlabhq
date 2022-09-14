@@ -23,9 +23,15 @@ GitLab provides two types of snippets:
 
 - **Personal snippets**: Created independent of any project.
   You can set a [visibility level](public_access.md)
-  for your snippet: public, internal, or private.
+  for your snippet: public or private.
 - **Project snippets**: Always related to a specific project.
   Project snippets can be visible publicly, or to only project members.
+
+NOTE:
+From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
+and snippets on GitLab.com. Existing snippets using the `Internal`
+visibility setting keep this setting. You can read more about the change in the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ## Create snippets
 
@@ -61,10 +67,10 @@ In GitLab versions 13.0 and later, snippets are [versioned by default](#versione
 To discover all snippets visible to you in GitLab, you can:
 
 - **View all snippets visible to you**: On the top bar of your GitLab
-  instance, select **Menu > Snippets** to view your snippets dashboard.
+  instance, select **Main menu > Snippets** to view your snippets dashboard.
 - **Visit [GitLab snippets](https://gitlab.com/dashboard/snippets)** for your snippets on GitLab.com.
 - **Explore all public snippets**: On the top bar of your GitLab
-  instance, select **Menu > Snippets** and select **Explore snippets** to view
+  instance, select **Main menu > Snippets** and select **Explore snippets** to view
   [all public snippets](https://gitlab.com/explore/snippets).
 - **View a project's snippets**: In your project,
   go to **Snippets**.
@@ -219,7 +225,7 @@ Prerequisites:
 
 To do this task:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Snippets**.
 1. Select the snippet you want to report as spam.
 1. Select **Submit as spam**.

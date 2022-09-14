@@ -32,7 +32,7 @@ View pipeline duration history:
 
 To view CI/CD analytics:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 
 ## View deployment frequency chart **(ULTIMATE)**
@@ -50,7 +50,7 @@ The deployment frequency chart is available for groups and projects.
 
 To view the deployment frequency chart:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 1. Select the **Deployment frequency** tab.
 
@@ -72,7 +72,7 @@ merge requests to be deployed to a production environment. This chart is availab
 
 To view the lead time for changes chart:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 1. Select the **Lead time** tab.
 
@@ -88,7 +88,7 @@ Time to restore service is one of the four [DORA metrics](index.md#devops-resear
 
 To view the time to restore service chart:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 1. Select the **Time to restore service** tab.
 
@@ -104,6 +104,6 @@ Change failure rate is one of the four [DORA metrics](index.md#devops-research-a
 
 To view the change failure rate chart:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 1. Select the **Change failure rate** tab.

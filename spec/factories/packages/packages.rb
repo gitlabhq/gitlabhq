@@ -24,6 +24,10 @@ FactoryBot.define do
       status { :pending_destruction }
     end
 
+    trait :last_downloaded_at do
+      last_downloaded_at { 2.days.ago }
+    end
+
     factory :maven_package do
       maven_metadatum
 

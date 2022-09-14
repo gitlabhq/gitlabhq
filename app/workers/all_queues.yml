@@ -2433,6 +2433,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: google_cloud_fetch_google_ip_list
+  :worker_name: GoogleCloud::FetchGoogleIpListWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: group_destroy
   :worker_name: GroupDestroyWorker
   :feature_category: :subgroups

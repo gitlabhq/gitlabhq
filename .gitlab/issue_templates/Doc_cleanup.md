@@ -7,18 +7,27 @@
 * feature development should use the Feature Request template.
 -->
 
-If you are a community contributor:
+If you are a community contributor, **do not work on the issue if it is not assigned to you yet**.
 
-1. To work on an issue, type `@gl-docsteam I would like to work on this issue.`
-   in a comment. A technical writer
-   will assign the issue to you. Do not work on the issue before it is assigned to you.
-   If someone has already chosen the issue, pick another or view docs [in the docs directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
+Additionally, please review these points before working on this issue:
+
+1. If you would like to work on the issue, type `@gl-docsteam I would like to work on this issue.`
+   in a comment. A technical writer will assign the issue to you. If someone has already chosen this issue,
+   pick another issue, or view docs [in the docs directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
    and open a merge request for any page you feel can be improved.
-1. Create a merge request for the issue. If this is for a Hackathon, do not create the merge request
-   before the Hackathon has started or it will not be counted towards the Hackathon. If you were not
-   assigned the issue, do not create a merge request. It will not be accepted.
-1. Copy the link to this issue and add it to the merge request's description, which will link
-   the merge request and the issue together.
+1. Carefully review the [merge request guidelines for contributors](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#merge-request-guidelines-for-contributors).
+1. Carefully review the [commit message guidelines](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines).
+1. Create a merge request for the issue:
+   - If you were not assigned the issue, do not create a merge request. It will not be accepted.
+   - If this is for a Hackathon, do not create the merge request before the Hackathon has started
+     or it will not be counted towards the Hackathon.
+   - Unless otherwise stated below, we expect one merge request per issue, so combine
+     all changes together. If there is too much work for you to handle in one merge request,
+     you can create more, but try to keep the number of merge requests as small as possible.
+   - Select the **Documentation** merge request description template, and fill it out
+     with the details of your work.
+   - Copy the link to this issue and add it to the merge request's description,
+     which links the merge request and the issue together.
 1. After your merge request is accepted and merged, close this issue.
 
 If you notice things you'd like to fix that are not part of the issue, open separate merge requests for those issues.
@@ -37,6 +46,9 @@ Thank you again for contributing to the GitLab documentation!
 * several moderate changes on one page, a few intermediate changes across five pages, or several very small
 * changes for up to 10 pages. Larger items should be broken out into other issues to better distribute
 * the opportunities for contributors.
+*
+* If you expect the work to take more than one MR to resolve, explain approximately
+* how many MRs you expect to receive for the issue.
 -->
 
 ## Additional information

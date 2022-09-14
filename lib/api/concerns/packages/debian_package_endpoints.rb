@@ -35,12 +35,12 @@ module API
               ::Packages::Debian::DistributionsFinder.new(container, codename_or_suite: params[:distribution]).execute.last!
             end
 
-            def present_package_file!
+            def present_distribution_package_file!
               not_found! unless params[:package_name].start_with?(params[:letter])
 
               package_file = distribution_from!(user_project).package_files.with_file_name(params[:file_name]).last!
 
-              present_carrierwave_file!(package_file.file)
+              present_package_file!(package_file)
             end
 
             def present_index_file!(file_type)

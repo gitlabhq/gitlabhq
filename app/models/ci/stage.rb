@@ -2,10 +2,13 @@
 
 module Ci
   class Stage < Ci::ApplicationRecord
+    include Ci::Partitionable
     include Importable
     include Ci::HasStatus
     include Gitlab::OptimisticLocking
     include Presentable
+
+    partitionable scope: :pipeline
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 

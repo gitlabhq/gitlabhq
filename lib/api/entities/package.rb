@@ -39,6 +39,7 @@ module API
       end
 
       expose :created_at
+      expose :last_downloaded_at
       expose :project_id, if: ->(_, opts) { opts[:group] }
       expose :project_path, if: ->(obj, opts) { opts[:group] && Ability.allowed?(opts[:user], :read_project, obj.project) }
       expose :tags

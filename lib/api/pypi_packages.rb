@@ -120,7 +120,7 @@ module API
 
           track_package_event('pull_package', :pypi)
 
-          present_carrierwave_file!(package_file.file, supports_direct_download: true)
+          present_package_file!(package_file, supports_direct_download: true)
         end
 
         desc 'The PyPi Simple Group Index Endpoint' do
@@ -180,7 +180,7 @@ module API
 
           track_package_event('pull_package', :pypi, project: project, namespace: project.namespace)
 
-          present_carrierwave_file!(package_file.file, supports_direct_download: true)
+          present_package_file!(package_file, supports_direct_download: true)
         end
 
         desc 'The PyPi Simple Project Index Endpoint' do

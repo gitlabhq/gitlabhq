@@ -203,6 +203,8 @@
   - 1
 - - google_cloud_create_cloudsql_instance
   - 1
+- - google_cloud_fetch_google_ip_list
+  - 1
 - - group_destroy
   - 1
 - - group_export

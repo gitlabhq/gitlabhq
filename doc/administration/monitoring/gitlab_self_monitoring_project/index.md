@@ -38,12 +38,12 @@ This project can be used to:
 
 ## Create the self monitoring project
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Self monitoring**.
 1. Toggle **Self monitoring** on.
 1. After your GitLab instance creates the project, GitLab displays a link to the
    project in the text above the **Self monitoring** toggle. You can also find it
-   from the top bar by selecting **Menu > Project**, then selecting **Your projects**.
+   from the top bar by selecting **Main menu > Project**, then selecting **Your projects**.
 
 ## Delete the self monitoring project
 
@@ -51,7 +51,7 @@ WARNING:
 Deleting the self monitoring project removes any changes made to the project. If
 you create the project again, it's created in its default state.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, go to **Settings > Metrics and profiling** and expand **Self monitoring**.
 1. Toggle **Self monitoring** off.
 1. In the confirmation dialog that opens, select **Delete self monitoring project**.

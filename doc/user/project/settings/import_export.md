@@ -43,7 +43,7 @@ Prerequisites:
 
 To export a project and its data, follow these steps:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Export project**.

@@ -150,7 +150,7 @@ The templates are inherited. For example, in a project, you can also access temp
 
 To use a custom description template with Service Desk:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. [Create a description template](description_templates.md#create-an-issue-template).
 1. On the left sidebar, select **Settings > General > Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
@@ -164,7 +164,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General > Service Desk**.
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.

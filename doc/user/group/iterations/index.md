@@ -32,7 +32,7 @@ In GitLab, iterations are similar to milestones, with a few differences:
 
 To view the iterations list:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Issues > Iterations**.
 
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
@@ -61,7 +61,7 @@ Prerequisites:
 
 To create an iteration:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **New iteration**.
 1. Enter the title, a description (optional), a start date, and a due date.
@@ -169,7 +169,7 @@ and get a more accurate understanding of scope attributable to each label.
 
 To group issues by label:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. In the **Group by** dropdown, select **Label**.
 1. Select the **Filter by label** dropdown.
@@ -198,7 +198,7 @@ Prerequisites:
 
 To create an iteration cadence:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
@@ -220,7 +220,7 @@ Prerequisites:
 
 To edit an iteration cadence:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **Edit iteration cadence**.
 
@@ -234,7 +234,7 @@ doesn't delete the eight existing upcoming iterations.
 
 #### Turn on automatic scheduling for manual iterations cadence
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select the three-dot menu (**{ellipsis_v}**) > **Edit cadence** for the cadence for which you want to enable automatic scheduling.
 1. Check the **Enable automatic scheduling** checkbox.
@@ -285,7 +285,7 @@ Deleting an iteration cadence also deletes all iterations within that cadence.
 
 To delete an iteration cadence:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select the three-dot menu (**{ellipsis_v}**) > **Delete cadence** for the cadence you want to delete.
 1. Select **Delete cadence**.

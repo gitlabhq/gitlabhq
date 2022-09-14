@@ -55,6 +55,8 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
         statuses.each do |status|
           if event == 'play'
             status.play(user)
+          elsif event == 'retry'
+            ::Ci::RetryJobService.new(project, user).execute(status)
           else
             status.public_send("#{event}!")
           end

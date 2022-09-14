@@ -62,7 +62,7 @@ Authorization configuration can take one or two minutes to propagate.
 
 To authorize the agent to access the GitLab project where you keep Kubernetes manifests:
 
-1. On the top bar, select **Menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the top bar, select **Main menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
 1. For the `id`, add the path:
 
@@ -85,7 +85,7 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 To authorize the agent to access all of the GitLab projects in a group or subgroup:
 
-1. On the top bar, select **Menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the top bar, select **Main menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `groups` attribute.
 1. For the `id`, add the path:
 

@@ -333,6 +333,12 @@ class Packages::Package < ApplicationRecord
     name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
   end
 
+  def touch_last_downloaded_at
+    ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+      update_column(:last_downloaded_at, Time.zone.now)
+    end
+  end
+
   private
 
   def composer_tag_version?

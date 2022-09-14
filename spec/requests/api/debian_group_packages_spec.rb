@@ -49,10 +49,10 @@ RSpec.describe API::DebianGroupPackages do
     end
 
     describe 'GET groups/:id/-/packages/debian/pool/:codename/:project_id/:letter/:package_name/:package_version/:file_name' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:url) { "/groups/#{container.id}/-/packages/debian/pool/#{package.debian_distribution.codename}/#{project.id}/#{letter}/#{package.name}/#{package.version}/#{file_name}" }
       let(:file_name) { params[:file_name] }
-
-      using RSpec::Parameterized::TableSyntax
 
       where(:file_name, :success_body) do
         'sample_1.2.3~alpha2.tar.xz'          | /^.7zXZ/
@@ -65,6 +65,12 @@ RSpec.describe API::DebianGroupPackages do
 
       with_them do
         it_behaves_like 'Debian packages read endpoint', 'GET', :success, params[:success_body]
+
+        context 'for bumping last downloaded at' do
+          include_context 'Debian repository access', :public, :developer, :basic do
+            it_behaves_like 'bumping the package last downloaded at field'
+          end
+        end
       end
     end
   end

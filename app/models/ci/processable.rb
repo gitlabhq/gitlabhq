@@ -3,6 +3,7 @@
 module Ci
   class Processable < ::CommitStatus
     include Gitlab::Utils::StrongMemoize
+    include FromUnion
     extend ::Gitlab::Utils::Override
 
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable

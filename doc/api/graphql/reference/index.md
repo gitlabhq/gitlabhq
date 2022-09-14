@@ -13934,6 +13934,7 @@ Represents the merge access level of a branch protection.
 | <a id="mergerequestsquashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if squash on merge is enabled. |
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequestsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to this merge request. |
+| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in 15.4. This feature is in Alpha. It can be changed or removed at any time. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
 | <a id="mergerequesttargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mergerequesttargetbranchexists"></a>`targetBranchExists` | [`Boolean!`](#boolean) | Indicates if the target branch of the merge request exists. |
 | <a id="mergerequesttargetproject"></a>`targetProject` | [`Project!`](#project) | Target project of the merge request. |
@@ -15414,6 +15415,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagedetailstypedependencylinks"></a>`dependencyLinks` | [`PackageDependencyLinkConnection`](#packagedependencylinkconnection) | Dependency link. (see [Connections](#connections)) |
 | <a id="packagedetailstypeid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
+| <a id="packagedetailstypelastdownloadedat"></a>`lastDownloadedAt` | [`Time`](#time) | Last time that a file of this package was downloaded. |
 | <a id="packagedetailstypemavenurl"></a>`mavenUrl` | [`String`](#string) | Url of the Maven project endpoint. |
 | <a id="packagedetailstypemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagedetailstypename"></a>`name` | [`String!`](#string) | Name of the package. |
@@ -18043,6 +18045,18 @@ Represents an entry from the future subscriptions.
 | <a id="subscriptionfutureentrystartsat"></a>`startsAt` | [`Date`](#date) | Date when the license started. |
 | <a id="subscriptionfutureentrytype"></a>`type` | [`String!`](#string) | Type of license the subscription will yield. |
 | <a id="subscriptionfutureentryusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid user seats. |
+
+### `SuggestedReviewersType`
+
+Represents a Suggested Reviewers result set.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="suggestedreviewerstypereviewers"></a>`reviewers` | [`[String!]!`](#string) | List of reviewers. |
+| <a id="suggestedreviewerstypetopn"></a>`topN` | [`Int`](#int) | Number of reviewers returned. |
+| <a id="suggestedreviewerstypeversion"></a>`version` | [`String`](#string) | Suggested reviewer version. |
 
 ### `TaskCompletionStatus`
 

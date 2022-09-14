@@ -11,6 +11,7 @@ module Projects
       def download
         package_file = project.package_files.find(params[:id])
 
+        package_file.package.touch_last_downloaded_at
         send_upload(package_file.file, attachment: package_file.file_name)
       end
     end

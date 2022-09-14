@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition do
 
   describe '#perform!' do
     before do
-      stub_const("#{described_class}::DEFAULT_PARTITION_ID", current_partition_id)
+      allow(Ci::Pipeline).to receive(:current_partition_value) { current_partition_id }
     end
 
     subject { step.perform! }

@@ -18899,7 +18899,8 @@ CREATE TABLE packages_packages (
     version character varying,
     package_type smallint NOT NULL,
     creator_id integer,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    last_downloaded_at timestamp with time zone
 );
 
 CREATE SEQUENCE packages_packages_id_seq

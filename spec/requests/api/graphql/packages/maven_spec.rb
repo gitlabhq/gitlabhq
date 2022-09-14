@@ -5,7 +5,7 @@ RSpec.describe 'maven package details' do
   include GraphqlHelpers
   include_context 'package details setup'
 
-  let_it_be(:package) { create(:maven_package, project: project) }
+  let_it_be(:package) { create(:maven_package, :last_downloaded_at, project: project) }
 
   let(:metadata) { query_graphql_fragment('MavenMetadata') }
 
@@ -31,7 +31,9 @@ RSpec.describe 'maven package details' do
 
   context 'a versionless maven package' do
     let_it_be(:maven_metadatum) { create(:maven_metadatum, app_version: nil) }
-    let_it_be(:package) { create(:maven_package, project: project, version: nil, maven_metadatum: maven_metadatum) }
+    let_it_be(:package) do
+      create(:maven_package, :last_downloaded_at, project: project, version: nil, maven_metadatum: maven_metadatum)
+    end
 
     subject { post_graphql(query, current_user: user) }
 

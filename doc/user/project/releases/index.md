@@ -75,7 +75,7 @@ Prerequisites:
 
 To create a release in the Releases page:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
@@ -97,7 +97,7 @@ To create a release in the Tags page, add release notes to either an existing or
 
 To add release notes to a new Git tag:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Tags**.
 1. Select **New tag**.
 1. Optional. Enter a tag message in the **Message** text box.
@@ -107,7 +107,7 @@ To add release notes to a new Git tag:
 
 To edit release notes of an existing Git tag:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Tags**.
 1. Select **Edit release notes** (**{pencil}**).
 1. In the **Release notes** text box, enter the release's description.
@@ -233,7 +233,7 @@ Prerequisites:
 
 To delete a release in the UI:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases**.
 1. In the top-right corner of the release you want to delete, select **Edit this release** (**{pencil}**).
 1. On the **Edit Release** page, select **Delete**.

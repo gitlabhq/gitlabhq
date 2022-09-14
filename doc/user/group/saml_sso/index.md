@@ -24,7 +24,7 @@ If required, you can find [a glossary of common terms](../../../integration/saml
 ## Configure your identity provider
 
 1. Find the information in GitLab required for configuration:
-   1. On the top bar, select **Menu > Groups** and find your group.
+   1. On the top bar, select **Main menu > Groups** and find your group.
    1. On the left sidebar, select **Settings > SAML SSO**.
    1. Note the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign-on URL**.
 1. Configure your SAML identity provider app using the noted details.
@@ -79,7 +79,7 @@ You can configure the following attributes with GitLab.com Group SAML:
 
 GitLab provides metadata XML that can be used to configure your identity provider.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
@@ -88,7 +88,7 @@ GitLab provides metadata XML that can be used to configure your identity provide
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > SAML SSO**.
 1. Find the SSO URL from your identity provider and enter it the **Identity provider single sign-on URL** field.
 1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.

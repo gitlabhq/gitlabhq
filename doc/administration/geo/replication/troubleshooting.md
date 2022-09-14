@@ -26,7 +26,7 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** site:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Geo > Sites**.
 
 We perform the following health checks on each **secondary** site
@@ -275,7 +275,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the **Menu > Admin > Geo > Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the **Main menu > Admin > Geo > Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
   when adding the secondary site in the Admin Area of the **primary** site.
   In GitLab 12.3 and earlier, edit the secondary site in the Admin Area of the **primary**
@@ -668,7 +668,7 @@ to start again from scratch, there are a few steps that can help you:
 
 ### Design repository failures on mirrored projects and project imports
 
-On the top bar, under **Menu > Admin > Geo > Sites**,
+On the top bar, under **Main menu > Admin > Geo > Sites**,
 if the Design repositories progress bar shows
 `Synced` and `Failed` greater than 100%, and negative `Queued`, the instance
 is likely affected by
@@ -1004,7 +1004,7 @@ site's URL matches its external URL.
 
 On the **primary** site:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`

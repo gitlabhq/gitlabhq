@@ -2,6 +2,7 @@
 
 module Ci
   class Pipeline < Ci::ApplicationRecord
+    include Ci::Partitionable
     include Ci::HasStatus
     include Importable
     include AfterCommitQueue
@@ -31,7 +32,7 @@ module Ci
 
     sha_attribute :source_sha
     sha_attribute :target_sha
-
+    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
     # is used for storing the processed metadata for linting purposes.
@@ -480,6 +481,10 @@ module Ci
 
     def self.auto_devops_pipelines_completed_total
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
+    end
+
+    def self.current_partition_value
+      100
     end
 
     def uses_needs?

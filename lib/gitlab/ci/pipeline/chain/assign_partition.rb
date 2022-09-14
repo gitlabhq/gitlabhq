@@ -7,8 +7,6 @@ module Gitlab
         class AssignPartition < Chain::Base
           include Chain::Helpers
 
-          DEFAULT_PARTITION_ID = 100
-
           def perform!
             @pipeline.partition_id = find_partition_id
           end
@@ -21,7 +19,7 @@ module Gitlab
 
           # TODO handle parent-child pipelines
           def find_partition_id
-            DEFAULT_PARTITION_ID
+            ::Ci::Pipeline.current_partition_value
           end
         end
       end

@@ -28,7 +28,7 @@ You must have at least the Reporter role to view merge request analytics.
 
 To view merge request analytics:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**.
 
 ## View the number of merge requests in a date range
@@ -38,7 +38,7 @@ To view merge request analytics:
 
 To view the number of merge requests merged during a specific date range:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**.
 1. Optional. Filter results:
    1. Select the filter bar.
@@ -63,6 +63,6 @@ created and when it's merged. Closed and un-merged merge requests are not includ
 
 To view **Mean time to merge**:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**. The **Mean time to merge** number
 is shown on the dashboard.

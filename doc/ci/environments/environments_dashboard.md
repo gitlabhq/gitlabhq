@@ -21,7 +21,7 @@ diagnose if there is a block at a particular point, or if there's
 a more systemic problem you need to investigate.
 
 You can access the dashboard on the top bar by selecting
-**Menu > Environments**.
+**Main menu > Environments**.
 
 ![Environments Dashboard with projects](img/environments_dashboard_v12_5.png)
 

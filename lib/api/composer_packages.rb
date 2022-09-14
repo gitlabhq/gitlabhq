@@ -150,17 +150,18 @@ module API
         get 'archives/*package_name', urgency: :default do
           authorize_read_package!(authorized_user_project)
 
-          metadata = authorized_user_project
+          package = authorized_user_project
             .packages
             .composer
             .with_name(params[:package_name])
             .with_composer_target(params[:sha])
             .first
-            &.composer_metadatum
+          metadata = package&.composer_metadatum
 
           not_found! unless metadata
 
           track_package_event('pull_package', :composer, project: authorized_user_project, namespace: authorized_user_project.namespace)
+          package.touch_last_downloaded_at
 
           send_git_archive authorized_user_project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
         end
