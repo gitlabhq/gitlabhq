@@ -31,7 +31,7 @@ counted as web traffic.
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
 1. Select **Enable unauthenticated API request rate limit**.
 
@@ -44,7 +44,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
 1. Select **Enable unauthenticated web request rate limit**.
 
@@ -57,7 +57,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
 1. Select **Enable authenticated API request rate limit**.
 
@@ -70,7 +70,7 @@ To enable the authenticated API request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
 1. Select **Enable authenticated web request rate limit**.
 
@@ -88,7 +88,7 @@ plain-text body, which by default is `Retry later`.
 
 To use a custom response:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
 1. In the **Plain-text response to send to clients that hit a rate limit** text box,
    add the plain-text response message.

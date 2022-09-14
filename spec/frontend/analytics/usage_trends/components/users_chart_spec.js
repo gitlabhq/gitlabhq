@@ -139,7 +139,7 @@ describe('UsersChart', () => {
       });
 
       it('requests data twice', () => {
-        expect(queryHandler).toBeCalledTimes(2);
+        expect(queryHandler).toHaveBeenCalledTimes(2);
       });
 
       it('calls fetchMore', () => {

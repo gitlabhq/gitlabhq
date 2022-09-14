@@ -248,7 +248,7 @@ describe('Source Editor Instance', () => {
           const useExtension = () => {
             seInstance.use(extensions);
           };
-          expect(useExtension).toThrowError(thrownError);
+          expect(useExtension).toThrow(thrownError);
         },
       );
 
@@ -336,7 +336,7 @@ describe('Source Editor Instance', () => {
           const unuse = () => {
             seInstance.unuse(unuseExtension);
           };
-          expect(unuse).toThrowError(thrownError);
+          expect(unuse).toThrow(thrownError);
         },
       );
 

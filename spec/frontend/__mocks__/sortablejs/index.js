@@ -1,4 +1,4 @@
-const Sortablejs = jest.genMockFromModule('sortablejs');
+const Sortablejs = jest.createMockFromModule('sortablejs');
 
 export default Sortablejs;
 export const Sortable = Sortablejs;

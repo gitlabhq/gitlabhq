@@ -149,7 +149,7 @@ describe('UpdateUsername component', () => {
 
       await expect(wrapper.vm.onConfirm()).rejects.toThrow();
 
-      expect(createFlash).toBeCalledWith({
+      expect(createFlash).toHaveBeenCalledWith({
         message: 'Invalid username',
       });
     });
@@ -161,7 +161,7 @@ describe('UpdateUsername component', () => {
 
       await expect(wrapper.vm.onConfirm()).rejects.toThrow();
 
-      expect(createFlash).toBeCalledWith({
+      expect(createFlash).toHaveBeenCalledWith({
         message: 'An error occurred while updating your username, please try again.',
       });
     });

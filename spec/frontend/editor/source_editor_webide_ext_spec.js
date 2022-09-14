@@ -30,7 +30,7 @@ describe('Source Editor Web IDE Extension', () => {
         const sideBySideSpy = jest.spyOn(instance, 'updateOptions');
         instance.use({ definition: EditorWebIdeExtension });
 
-        expect(sideBySideSpy).toBeCalledWith({ renderSideBySide });
+        expect(sideBySideSpy).toHaveBeenCalledWith({ renderSideBySide });
       },
     );
 
@@ -45,11 +45,11 @@ describe('Source Editor Web IDE Extension', () => {
       const sideBySideSpy = jest.spyOn(instance, 'updateOptions');
       await emitter.fire();
 
-      expect(sideBySideSpy).toBeCalledWith({ renderSideBySide: true });
+      expect(sideBySideSpy).toHaveBeenCalledWith({ renderSideBySide: true });
 
       editorEl.style.width = '0px';
       await emitter.fire();
-      expect(sideBySideSpy).toBeCalledWith({ renderSideBySide: false });
+      expect(sideBySideSpy).toHaveBeenCalledWith({ renderSideBySide: false });
     });
   });
 });

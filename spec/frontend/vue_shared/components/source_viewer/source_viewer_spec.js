@@ -156,7 +156,7 @@ describe('Source Viewer component', () => {
 
   it('emits showBlobInteractionZones on the eventHub when chunk appears', () => {
     findChunks().at(0).vm.$emit('appear');
-    expect(eventHub.$emit).toBeCalledWith('showBlobInteractionZones', path);
+    expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', path);
   });
 
   describe('LineHighlighter', () => {

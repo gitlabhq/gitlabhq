@@ -128,7 +128,7 @@ describe('~/lib/utils/vuex_module_mappers', () => {
 
   describe('with non-string object value', () => {
     it('throws helpful error', () => {
-      expect(() => mapVuexModuleActions((vm) => vm.bogus, { foo: () => {} })).toThrowError(
+      expect(() => mapVuexModuleActions((vm) => vm.bogus, { foo: () => {} })).toThrow(
         REQUIRE_STRING_ERROR_MESSAGE,
       );
     });

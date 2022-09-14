@@ -397,7 +397,7 @@ default.
 
 While `WHERE IN` and `WHERE EXISTS` can be used to produce the same data it is
 recommended to use `WHERE EXISTS` whenever possible. While in many cases
-PostgreSQL can optimise `WHERE IN` quite well there are also many cases where
+PostgreSQL can optimize `WHERE IN` quite well there are also many cases where
 `WHERE EXISTS` performs (much) better.
 
 In Rails you have to use this by creating SQL fragments:

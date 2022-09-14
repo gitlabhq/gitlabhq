@@ -25,6 +25,10 @@ review for the pipeline, focusing on the additional access. You can use the [sof
 as a starting point, and for more information about supply chain attacks, see
 [How a DevOps Platform helps protect against supply chain attacks](https://about.gitlab.com/blog/2021/04/28/devops-platform-supply-chain-attacks/).
 
+The `CI_JOB_JWT_V2` variable is available for testing, but the full feature is planned
+to be generally available when [issue 360657](https://gitlab.com/gitlab-org/gitlab/-/issues/360657)
+is complete.
+
 ## Use cases
 
 - Removes the need to store secrets in your GitLab group or project. Temporary credentials can be retrieved from your cloud provider through OIDC.

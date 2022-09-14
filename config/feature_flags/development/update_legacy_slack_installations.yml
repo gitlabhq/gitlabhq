@@ -1,8 +1,0 @@
----
-name: update_legacy_slack_installations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96208
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371810
-milestone: '15.4'
-type: development
-group: group::integrations
-default_enabled: false

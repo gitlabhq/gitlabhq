@@ -23,7 +23,7 @@ The extensive usage of feature flags poses a few challenges
 - Each feature flag that we add to codebase is a ~"technical debt" as it adds a
   matrix of configurations.
 - Testing each combination of feature flags is close to impossible, so we
-  instead try to optimise our testing of feature flags to the most common
+  instead try to optimize our testing of feature flags to the most common
   scenarios.
 - There's a growing challenge of maintaining a growing number of feature flags.
   We sometimes forget how our feature flags are configured or why we haven't

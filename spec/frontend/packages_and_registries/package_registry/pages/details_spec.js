@@ -328,8 +328,8 @@ describe('PackagesApp', () => {
 
         findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
-        expect(showDeletePackageSpy).not.toBeCalled();
-        expect(showDeleteFileSpy).toBeCalled();
+        expect(showDeletePackageSpy).not.toHaveBeenCalled();
+        expect(showDeleteFileSpy).toHaveBeenCalled();
       });
 
       it('when its the only file opens delete package confirmation modal', async () => {
@@ -357,8 +357,8 @@ describe('PackagesApp', () => {
 
         findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
-        expect(showDeletePackageSpy).toBeCalled();
-        expect(showDeleteFileSpy).not.toBeCalled();
+        expect(showDeletePackageSpy).toHaveBeenCalled();
+        expect(showDeleteFileSpy).not.toHaveBeenCalled();
       });
 
       it('confirming on the modal sets the loading state', async () => {
@@ -443,7 +443,7 @@ describe('PackagesApp', () => {
 
         findPackageFiles().vm.$emit('delete-files', packageFiles());
 
-        expect(showDeleteFilesSpy).toBeCalled();
+        expect(showDeleteFilesSpy).toHaveBeenCalled();
       });
 
       it('confirming on the modal sets the loading state', async () => {
@@ -532,7 +532,7 @@ describe('PackagesApp', () => {
 
         findPackageFiles().vm.$emit('delete-files', packageFiles());
 
-        expect(showDeletePackageSpy).toBeCalled();
+        expect(showDeletePackageSpy).toHaveBeenCalled();
       });
     });
   });

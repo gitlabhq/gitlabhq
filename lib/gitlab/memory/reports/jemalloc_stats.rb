@@ -18,12 +18,19 @@ module Gitlab
 
         def initialize(reports_path:)
           @reports_path = reports_path
+
+          # Store report in tmp subdir while it is still streaming.
+          # This will clearly separate finished reports from the files we are still writing to.
+          @tmp_dir = File.join(@reports_path, 'tmp')
+          FileUtils.mkdir_p(@tmp_dir)
         end
 
         def run
           return unless active?
 
-          Gitlab::Memory::Jemalloc.dump_stats(path: reports_path, filename_label: worker_id).tap { cleanup }
+          Gitlab::Memory::Jemalloc.dump_stats(path: reports_path, tmp_dir: @tmp_dir, filename_label: worker_id).tap do
+            cleanup
+          end
         end
 
         def active?

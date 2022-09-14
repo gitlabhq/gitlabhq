@@ -61,7 +61,7 @@ describe('UsageTrendsCountChart', () => {
     });
 
     it('requests data', () => {
-      expect(queryHandler).toBeCalledTimes(1);
+      expect(queryHandler).toHaveBeenCalledTimes(1);
     });
 
     it('displays the skeleton loader', () => {
@@ -105,7 +105,7 @@ describe('UsageTrendsCountChart', () => {
     });
 
     it('requests data', () => {
-      expect(queryHandler).toBeCalledTimes(1);
+      expect(queryHandler).toHaveBeenCalledTimes(1);
     });
 
     it('hides the skeleton loader', () => {
@@ -141,7 +141,7 @@ describe('UsageTrendsCountChart', () => {
       });
 
       it('requests data twice', () => {
-        expect(queryHandler).toBeCalledTimes(2);
+        expect(queryHandler).toHaveBeenCalledTimes(2);
       });
 
       it('passes the data to the line chart', () => {

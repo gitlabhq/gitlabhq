@@ -24,7 +24,7 @@ describe('Header Search EventListener', () => {
     const addEventListenerSpy = jest.spyOn(searchInputBox, 'addEventListener');
     initHeaderSearch();
 
-    expect(addEventListenerSpy).toBeCalledTimes(2);
+    expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
   });
 
   it('removes event listener ', async () => {
@@ -39,7 +39,7 @@ describe('Header Search EventListener', () => {
       [cleanEventListeners],
     );
 
-    expect(removeEventListenerSpy).toBeCalledTimes(2);
+    expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
   });
 
   it('attaches new vue dropdown  when feature flag is enabled', async () => {
@@ -53,7 +53,7 @@ describe('Header Search EventListener', () => {
       () => {},
     );
 
-    expect(mockVueApp).toBeCalled();
+    expect(mockVueApp).toHaveBeenCalled();
   });
 
   it('attaches old vue dropdown when feature flag is disabled', async () => {
@@ -69,6 +69,6 @@ describe('Header Search EventListener', () => {
       () => {},
     );
 
-    expect(mockLegacyApp).toBeCalled();
+    expect(mockLegacyApp).toHaveBeenCalled();
   });
 });

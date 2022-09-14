@@ -3,14 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Memory::Reports::JemallocStats do
-  let(:reports_dir) { '/empty-dir' }
-  let(:jemalloc_stats) { described_class.new(reports_path: reports_dir) }
+  let_it_be(:outdir) { Dir.mktmpdir }
+
+  let(:jemalloc_stats) { described_class.new(reports_path: outdir) }
+
+  after do
+    FileUtils.rm_f(outdir)
+  end
 
   describe '.run' do
     context 'when :report_jemalloc_stats ops FF is enabled' do
       let(:worker_id) { 'puma_1' }
       let(:report_name) { 'report.json' }
-      let(:report_path) { File.join(reports_dir, report_name) }
+      let(:report_path) { File.join(outdir, report_name) }
 
       before do
         allow(Prometheus::PidProvider).to receive(:worker_id).and_return(worker_id)
@@ -18,23 +23,21 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
 
       it 'invokes Jemalloc.dump_stats and returns file path' do
         expect(Gitlab::Memory::Jemalloc)
-          .to receive(:dump_stats).with(path: reports_dir, filename_label: worker_id).and_return(report_path)
+          .to receive(:dump_stats)
+          .with(path: outdir,
+                tmp_dir: File.join(outdir, '/tmp'),
+                filename_label: worker_id)
+          .and_return(report_path)
 
         expect(jemalloc_stats.run).to eq(report_path)
       end
 
       describe 'reports cleanup' do
-        let_it_be(:outdir) { Dir.mktmpdir }
-
         let(:jemalloc_stats) { described_class.new(reports_path: outdir) }
 
         before do
           stub_env('GITLAB_DIAGNOSTIC_REPORTS_JEMALLOC_MAX_REPORTS_STORED', 3)
           allow(Gitlab::Memory::Jemalloc).to receive(:dump_stats)
-        end
-
-        after do
-          FileUtils.rm_f(outdir)
         end
 
         context 'when number of reports exceeds `max_reports_stored`' do

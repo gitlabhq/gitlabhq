@@ -201,7 +201,7 @@ describe('PersistentUserCallout', () => {
 
       await waitForPromises();
 
-      expect(window.location.assign).toBeCalledWith(href);
+      expect(window.location.assign).toHaveBeenCalledWith(href);
       expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
       expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
     });

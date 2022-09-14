@@ -75,7 +75,7 @@ describe('AddContextCommitsModal', () => {
     it('when user starts entering text in search box, it calls action "searchCommits" after waiting for 500s', () => {
       const searchText = 'abcd';
       findSearch().vm.$emit('input', searchText);
-      expect(searchCommits).not.toBeCalled();
+      expect(searchCommits).not.toHaveBeenCalled();
       jest.advanceTimersByTime(500);
       expect(searchCommits).toHaveBeenCalledWith(expect.anything(), searchText);
     });

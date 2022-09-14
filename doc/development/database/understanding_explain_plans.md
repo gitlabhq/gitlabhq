@@ -295,9 +295,9 @@ because the previous node produced 36 rows.
 This means that nested loops can quickly slow the query down if the various
 child nodes keep producing many rows.
 
-## Optimising queries
+## Optimizing queries
 
-With that out of the way, let's see how we can optimise a query. Let's use the
+With that out of the way, let's see how we can optimize a query. Let's use the
 following query as an example:
 
 ```sql
@@ -453,7 +453,7 @@ this works is that now PostgreSQL no longer needs to apply a `Filter`, as the
 index only contains `twitter` values that are not empty.
 
 Keep in mind that you shouldn't just add partial indexes every time you want to
-optimise a query. Every index has to be updated for every write, and they may
+optimize a query. Every index has to be updated for every write, and they may
 require quite a bit of space, depending on the amount of indexed data. As a
 result, first check if there are any existing indexes you may be able to reuse.
 If there aren't any, check if you can perhaps slightly change an existing one to
@@ -471,10 +471,10 @@ buffer numbers. [Database Lab Engine](#database-lab-engine) guarantees that the 
 identical to production (and overall number of buffers is the same as on production),
 but difference in cache state and I/O speed may lead to different timings.
 
-## Queries that can't be optimised
+## Queries that can't be optimized
 
-Now that we have seen how to optimise a query, let's look at another query that
-we might not be able to optimise:
+Now that we have seen how to optimize a query, let's look at another query that
+we might not be able to optimize:
 
 ```sql
 EXPLAIN (ANALYZE, BUFFERS)
@@ -546,7 +546,7 @@ improve this query, other than _not_ running it at all.
 What is important here is that while some may recommend to straight up add an
 index the moment you see a sequential scan, it is _much more important_ to first
 understand what your query does, how much data it retrieves, and so on. After
-all, you can not optimise something you do not understand.
+all, you can not optimize something you do not understand.
 
 ### Cardinality and selectivity
 
@@ -567,7 +567,7 @@ using an index is not worth it, because it would produce almost no unique rows.
 
 ## Rewriting queries
 
-So the above query can't really be optimised as-is, or at least not much. But
+So the above query can't really be optimized as-is, or at least not much. But
 what if we slightly change the purpose of it? What if instead of retrieving all
 projects with `visibility_level` 0 or 20, we retrieve those that a user
 interacted with somehow?

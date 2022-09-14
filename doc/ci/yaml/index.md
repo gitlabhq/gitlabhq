@@ -1640,6 +1640,7 @@ these are all equivalent:
 - `168 hours`
 - `7 days`
 - `one week`
+- `never`
 
 **Example of `environment:auto_stop_in`**:
 

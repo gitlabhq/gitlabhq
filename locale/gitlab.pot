@@ -37061,6 +37061,39 @@ msgstr ""
 msgid "SlackService|Perform common operations in this project by entering slash commands in Slack."
 msgstr ""
 
+msgid "Slack|%{asterisk}Step 1.%{asterisk} Connect your GitLab account to get started."
+msgstr ""
+
+msgid "Slack|%{asterisk}Step 2.%{asterisk} Try it out!"
+msgstr ""
+
+msgid "Slack|%{emoji}Connected to GitLab account %{account}"
+msgstr ""
+
+msgid "Slack|%{emoji}Welcome to GitLab for Slack!"
+msgstr ""
+
+msgid "Slack|Connect your GitLab account"
+msgstr ""
+
+msgid "Slack|Create a new issue"
+msgstr ""
+
+msgid "Slack|Create new issues from Slack: %{command}"
+msgstr ""
+
+msgid "Slack|Run a CI/CD job"
+msgstr ""
+
+msgid "Slack|See a list of available commands: %{command})"
+msgstr ""
+
+msgid "Slack|Streamline your GitLab deployments with ChatOps. Once you've configured your %{startMarkup}CI/CD pipelines%{endMarkup}, try: %{command}"
+msgstr ""
+
+msgid "Slack|View and control GitLab content while you're working in Slack. Type the command as a message in your chat client to activate it. %{startMarkup}Learn more%{endMarkup}."
+msgstr ""
+
 msgid "Slice multiplier"
 msgstr ""
 

@@ -357,13 +357,9 @@ variables:
 #### Import API specification from a file
 
 If your API specification file is in your repository, you can provide its filename as the target.
-The API specification file must be in the `/zap/wrk` directory.
 
 ```yaml
 dast:
-  before_script:
-    - mkdir -p /zap/wrk
-    - cp api-specification.yml /zap/wrk/api-specification.yml
   variables:
     GIT_STRATEGY: fetch
     DAST_API_SPECIFICATION: api-specification.yml

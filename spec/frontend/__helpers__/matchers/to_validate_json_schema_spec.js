@@ -38,7 +38,7 @@ describe('custom matcher toValidateJsonSchema', () => {
     });
 
     it('throws if not matching', () => {
-      expect(() => expect(null).toValidateJsonSchema(schema)).toThrowError(
+      expect(() => expect(null).toValidateJsonSchema(schema)).toThrow(
         `Expected the given data to pass the schema validation, but found that it was considered invalid. Errors:
 Error with item : must be object`,
       );
@@ -57,7 +57,7 @@ Error with item : must be object`,
     });
 
     it('throws if matching', () => {
-      expect(() => expect({ fruit: 'apple' }).not.toValidateJsonSchema(schema)).toThrowError(
+      expect(() => expect({ fruit: 'apple' }).not.toValidateJsonSchema(schema)).toThrow(
         'Expected the given data not to pass the schema validation, but found that it was considered valid.',
       );
     });

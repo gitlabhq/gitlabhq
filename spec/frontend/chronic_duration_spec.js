@@ -86,7 +86,7 @@ describe('parseChronicDuration', () => {
 
     describe('when .raiseExceptions set to true', () => {
       it('raises with DurationParseError', () => {
-        expect(() => parseChronicDuration('23 gobblygoos', { raiseExceptions: true })).toThrowError(
+        expect(() => parseChronicDuration('23 gobblygoos', { raiseExceptions: true })).toThrow(
           DurationParseError,
         );
       });

@@ -16,7 +16,7 @@ describe('Editor Extension', () => {
     'throws when definition = $definition and setupOptions = $setupOptions',
     ({ definition, setupOptions }) => {
       const constructExtension = () => new EditorExtension({ definition, setupOptions });
-      expect(constructExtension).toThrowError(EDITOR_EXTENSION_DEFINITION_ERROR);
+      expect(constructExtension).toThrow(EDITOR_EXTENSION_DEFINITION_ERROR);
     },
   );
 

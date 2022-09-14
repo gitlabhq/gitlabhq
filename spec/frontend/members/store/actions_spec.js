@@ -69,7 +69,7 @@ describe('Vuex members actions', () => {
                 payload: { error },
               },
             ]),
-          ).rejects.toThrowError(error);
+          ).rejects.toThrow(error);
         });
       });
     });
@@ -122,7 +122,7 @@ describe('Vuex members actions', () => {
                 payload: { error },
               },
             ]),
-          ).rejects.toThrowError(error);
+          ).rejects.toThrow(error);
         });
       });
     });

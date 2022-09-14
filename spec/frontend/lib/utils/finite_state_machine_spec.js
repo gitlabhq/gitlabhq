@@ -50,13 +50,13 @@ describe('Finite State Machine', () => {
     });
 
     it('throws an error if the machine definition is invalid', () => {
-      expect(() => machine(badDefinition)).toThrowError(
+      expect(() => machine(badDefinition)).toThrow(
         'A state machine must have an initial state (`.initial`) and a dictionary of possible states (`.states`)',
       );
     });
 
     it('throws an error if the initial state is invalid', () => {
-      expect(() => machine(unstartableDefinition)).toThrowError(
+      expect(() => machine(unstartableDefinition)).toThrow(
         `Cannot initialize the state machine to state '${STATE_IMPOSSIBLE}'. Is that one of the machine's defined states?`,
       );
     });

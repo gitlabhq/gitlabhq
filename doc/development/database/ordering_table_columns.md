@@ -117,7 +117,7 @@ divided into fixed size chunks as follows:
 This means that excluding the variable sized data and tuple header, we need at
 least 8 * 6 = 48 bytes per row.
 
-We can optimise this by using the following column order instead:
+We can optimize this by using the following column order instead:
 
 | Column        | Type                        | Size     |
 |:--------------|:----------------------------|:---------|
