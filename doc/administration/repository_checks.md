@@ -32,7 +32,7 @@ project page in the Admin Area. If the checks fail, see [what to do](#what-to-do
 
 Instead of checking repositories manually, GitLab can be configured to run the checks periodically:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.
 1. Enable **Enable repository checks**.

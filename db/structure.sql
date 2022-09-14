@@ -17849,7 +17849,8 @@ CREATE TABLE namespace_details (
     updated_at timestamp with time zone,
     cached_markdown_version integer,
     description text,
-    description_html text
+    description_html text,
+    free_user_cap_over_limt_notified_at timestamp with time zone
 );
 
 CREATE TABLE namespace_limits (

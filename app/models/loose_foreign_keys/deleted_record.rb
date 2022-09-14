@@ -12,7 +12,7 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
                              next_partition_if: -> (active_partition) do
                                                   oldest_record_in_partition = LooseForeignKeys::DeletedRecord
                                                     .select(:id, :created_at)
-                                                    .for_partition(active_partition)
+                                                    .for_partition(active_partition.value)
                                                     .order(:id)
                                                     .limit(1)
                                                     .take
@@ -22,7 +22,7 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
                                                 end,
                              detach_partition_if: -> (partition) do
                                                     !LooseForeignKeys::DeletedRecord
-                                                      .for_partition(partition)
+                                                      .for_partition(partition.value)
                                                       .status_pending
                                                       .exists?
                                                   end

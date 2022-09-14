@@ -77,6 +77,63 @@ The complexity score of a query [can itself be queried for](../api/graphql/getti
 
 Requests time out at 30 seconds.
 
+### Limit maximum field call count
+
+In some cases, you want to prevent the evaluation of a specific field on multiple parent nodes
+because it results in an N+1 query problem and there is no optimal solution. This should be
+considered an option of last resort, to be used only when methods such as
+[lookahead to preload associations](#look-ahead), or [using batching](graphql_guide/batchloader.md)
+have been considered.
+
+For example:
+
+```graphql
+# This usage is expected.
+query {
+  project {
+    environments
+  }
+}
+
+# This usage is NOT expected.
+# It results in N+1 query problem. EnvironmentsResolver can't use GraphQL batch loader in favor of GraphQL pagination.
+query {
+  projects {
+    nodes {
+      environments
+    }
+  }
+}
+```
+
+To prevent this, you can use the `Gitlab::Graphql::Limit::FieldCallCount` extension on the field:
+
+```ruby
+# This allows maximum 1 call to the `environments` field. If the field is evaluated on more than one node,
+# it raises an error.
+field :environments do
+        extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+      end
+```
+
+or you can apply the extension in a resolver class:
+
+```ruby
+module Resolvers
+  class EnvironmentsResolver < BaseResolver
+    extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+    # ...
+  end
+end
+```
+
+When you add this limit, make sure that the affected field's `description` is also updated accordingly. For example,
+
+```ruby
+field :environments,
+      description: 'Environments of the project. This field can only be resolved for one project in any single request.'
+```
+
 ## Breaking changes
 
 The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) which means

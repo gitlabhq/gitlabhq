@@ -39,7 +39,7 @@ Prerequisite:
 
 To configure authentication settings for all media files:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll to **Project visibility** and select **Require authentication to view media files**.

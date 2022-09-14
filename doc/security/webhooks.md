@@ -42,7 +42,7 @@ To prevent exploitation of insecure internal web services, all webhook requests 
 
 To allow access to these addresses:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from web hooks and services** checkbox.
@@ -52,7 +52,7 @@ To allow access to these addresses:
 [System hooks](../administration/system_hooks.md) are permitted to make requests to local network by default because
 they are set up by administrators. To prevent system hook requests to the local network:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
@@ -64,7 +64,7 @@ they are set up by administrators. To prevent system hook requests to the local 
 You can allow certain domains and IP addresses to be accessible to both system hooks and webhooks, even when local
 requests are forbidden. To add these domains to the allowlist:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests** and add entries.
 

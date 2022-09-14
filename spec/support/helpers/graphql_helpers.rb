@@ -130,11 +130,12 @@ module GraphqlHelpers
     current_user: :not_given,     # The current user (specified explicitly, overrides ctx[:current_user])
     schema: GitlabSchema,         # A specific schema instance
     object_type: described_class, # The `BaseObject` type this field belongs to
-    arg_style: :internal_prepared # Args are in internal format, but should use more rigorous processing
+    arg_style: :internal_prepared, # Args are in internal format, but should use more rigorous processing
+    query: nil                     # Query to evaluate the field
   )
     field = to_base_field(field, object_type)
     ctx[:current_user] = current_user unless current_user == :not_given
-    query = GraphQL::Query.new(schema, context: ctx.to_h)
+    query ||= GraphQL::Query.new(schema, context: ctx.to_h)
     extras[:lookahead] = negative_lookahead if extras[:lookahead] == :not_given && field.extras.include?(:lookahead)
     query_ctx = query.context
 

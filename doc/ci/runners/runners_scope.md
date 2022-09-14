@@ -51,7 +51,7 @@ For existing projects, an administrator must
 
 To enable shared runners for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Enable shared runners for this project** toggle.
@@ -60,7 +60,7 @@ To enable shared runners for a project:
 
 To enable shared runners for a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Enable shared runners for this group** toggle.
@@ -73,7 +73,7 @@ or group.
 
 To disable shared runners for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. In the **Shared runners** area, turn off the **Enable shared runners for this project** toggle.
@@ -87,7 +87,7 @@ Shared runners are automatically disabled for a project:
 
 To disable shared runners for a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. Turn off the **Enable shared runners for this group** toggle.
@@ -170,7 +170,7 @@ You must have the Owner role for the group.
 To create a group runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **CI/CD > Runners**.
 1. Note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/).
@@ -183,7 +183,7 @@ You can view and manage all runners for a group, its subgroups, and projects.
 You can do this for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **CI/CD > Runners**.
 
 From this page, you can edit, pause, and remove runners from the group, its subgroups, and projects.
@@ -193,7 +193,7 @@ From this page, you can edit, pause, and remove runners from the group, its subg
 You can pause or remove a group runner for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **CI/CD > Runners**.
 1. Select **Pause** or **Remove runner**.
    - If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
@@ -229,7 +229,7 @@ Prerequisite:
 To create a specific runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
-1. On the top bar, select **Menu > Projects** and find the project where you want to use the runner.
+1. On the top bar, select **Main menu > Projects** and find the project where you want to use the runner.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. In the **Specific runners** section, note the URL and token.
@@ -250,7 +250,7 @@ You must have at least the Maintainer role for:
 
 To enable a specific runner for a project:
 
-1. On the top bar, select **Menu > Projects** and find the project where you want to enable the runner.
+1. On the top bar, select **Main menu > Projects** and find the project where you want to enable the runner.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. In the **Specific runners** area, by the runner you want, select **Enable for this project**.
@@ -269,7 +269,7 @@ but can also be changed later.
 
 To lock or unlock a specific runner:
 
-1. On the top bar, select **Menu > Projects** and find the project where you want to enable the runner.
+1. On the top bar, select **Main menu > Projects** and find the project where you want to enable the runner.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. Find the specific runner you want to lock or unlock. Make sure it's enabled. You cannot lock shared or group runners.

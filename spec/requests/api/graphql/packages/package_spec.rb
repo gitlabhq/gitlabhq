@@ -97,7 +97,7 @@ RSpec.describe 'package details' do
 
         expect(graphql_data_at(:a, :name)).to eq(composer_package.name)
 
-        expect_graphql_errors_to_include [/Package details can be requested only for one package at a time/]
+        expect_graphql_errors_to_include [/"package" field can be requested only for 1 Query\(s\) at a time./]
         expect(graphql_data_at(:b)).to be(nil)
       end
     end

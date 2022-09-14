@@ -105,7 +105,7 @@ RSpec.describe PersonalAccessToken do
       end
     end
 
-    describe '.last_used_before' do
+    describe '.last_used_before_or_unused' do
       let(:last_used_at) { 1.month.ago.beginning_of_hour }
       let!(:unused_token)  { create(:personal_access_token) }
       let!(:used_token) do
@@ -135,7 +135,7 @@ RSpec.describe PersonalAccessToken do
         )
       end
 
-      subject { described_class.last_used_before(last_used_at) }
+      subject { described_class.last_used_before_or_unused(last_used_at) }
 
       it { is_expected.to contain_exactly(old_unused_token, old_formerly_used_token) }
     end

@@ -95,7 +95,7 @@ The job token scope is only for controlling access to private projects.
 
 ### Configure the job token scope limit
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Limit CI_JOB_TOKEN access** to enabled.

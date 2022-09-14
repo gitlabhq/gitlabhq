@@ -117,7 +117,7 @@ Users with the Owner role for a group can list streaming destinations.
 
 To list the streaming destinations:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**) to see all the custom HTTP headers.
@@ -215,14 +215,14 @@ When the last destination is successfully deleted, streaming is disabled for the
 
 To delete a streaming destination:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, select **Delete** (**{remove}**).
 
 To delete only the custom HTTP headers for a streaming destination:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, **Edit** (**{pencil}**).

@@ -31,7 +31,7 @@ You can also [revoke](#revoke-a-users-personal-access-token) and [delete](#delet
 
 To access the Credentials inventory:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Credentials**.
 
 ## Revoke a user's personal access token

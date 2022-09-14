@@ -76,7 +76,7 @@ Prerequisite:
 
 To use the Review Apps template:
 
-1. On the top bar, select **Menu > Projects** and find the project you want to create a Review App job for.
+1. On the top bar, select **Main menu > Projects** and find the project you want to create a Review App job for.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select **Enable Review Apps**.
 1. Copy the provided code snippet and paste it into your

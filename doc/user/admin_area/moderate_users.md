@@ -40,7 +40,7 @@ sign in.
 
 To view user sign ups pending approval:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 
@@ -50,7 +50,7 @@ A user sign up pending approval can be approved or rejected from the Admin Area.
 
 To approve or reject a user sign up:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 1. Optional. Select a user.
@@ -75,7 +75,7 @@ administrators can choose to block the user.
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
 by removing them in LDAP, or directly from the Admin Area. To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
@@ -98,7 +98,7 @@ Users can also be blocked using the [GitLab API](../../api/users.md#block-user).
 
 A blocked user can be unblocked from the Admin Area. To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Blocked** tab.
 1. Optional. Select a user.
@@ -114,7 +114,7 @@ Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-us
 The unblock option may be unavailable for LDAP users. To enable the unblock option,
 the LDAP identity first needs to be deleted:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Blocked** tab.
 1. Select a user.
@@ -153,7 +153,7 @@ Users are notified about account deactivation if
 
 A user can be deactivated from the Admin Area. To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
@@ -179,7 +179,7 @@ Administrators can enable automatic deactivation of users who either:
 
 To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Under **Dormant users**, check **Deactivate dormant users after 90 days of inactivity**.
@@ -198,7 +198,7 @@ A deactivated user can be activated from the Admin Area.
 
 To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Deactivated** tab.
 1. Optional. Select a user.
@@ -231,7 +231,7 @@ To block a user and hide their contributions, administrators can ban the user.
 
 Users can be banned using the Admin Area. To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
@@ -243,7 +243,7 @@ The banned user does not consume a [seat](../../subscriptions/self_managed/index
 
 A banned user can be unbanned using the Admin Area. To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
 1. Optional. Select a user.
@@ -257,7 +257,7 @@ The user's state is set to active and they consume a
 
 Use the Admin Area to delete users.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
 1. Optional. Select a user.
@@ -271,7 +271,7 @@ You can only delete a user if there are inherited or direct owners of a group. Y
 
 You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
 1. Optional. Select a user.

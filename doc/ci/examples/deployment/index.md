@@ -121,7 +121,7 @@ We also use two secure variables:
 
 To store API keys as secure variables:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
 

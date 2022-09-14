@@ -47,7 +47,7 @@ Clicking an individual job shows you its job log, and allows you to:
 
 To view the full list of jobs that ran in a project:
 
-1. On the top bar, select **Menu > Projects** and find the project.
+1. On the top bar, select **Main menu > Projects** and find the project.
 1. On the left sidebar, select **CI/CD > Jobs**.
 
 You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline).

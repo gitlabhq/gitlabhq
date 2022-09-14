@@ -209,7 +209,7 @@ Instance events do not include group or project audit events.
 
 To view the server-wide audit events:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 
 The following user actions are recorded:

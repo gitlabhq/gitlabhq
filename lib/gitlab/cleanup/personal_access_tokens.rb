@@ -61,7 +61,7 @@ module Gitlab
           PersonalAccessToken
             .active
             .owner_is_human
-            .last_used_before(cut_off_date)
+            .last_used_before_or_unused(cut_off_date)
             .for_users(group.users)
         end
       end

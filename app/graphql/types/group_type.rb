@@ -134,7 +134,7 @@ module Types
           description: 'Number of container repositories in the group.'
 
     field :packages,
-          description: 'Packages of the group.',
+          description: 'Packages of the group. This field can only be resolved for one group in any single request.',
           resolver: Resolvers::GroupPackagesResolver
 
     field :dependency_proxy_setting,

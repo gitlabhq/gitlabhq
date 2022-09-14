@@ -49,7 +49,7 @@ Prerequisite:
 
 To change the default quota that applies to all namespaces:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Quota of CI/CD minutes** box, enter the maximum number of CI/CD minutes.
@@ -70,7 +70,7 @@ Prerequisite:
 
 To set a quota of CI/CD minutes for a namespace:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Quota of CI/CD minutes** box, enter the maximum number of CI/CD minutes.
@@ -95,7 +95,7 @@ Prerequisite:
 
 To view CI/CD minutes being used for your group:
 
-1. On the top bar, select **Menu > Groups** and find your group. The group must not be a subgroup.
+1. On the top bar, select **Main menu > Groups** and find your group. The group must not be a subgroup.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Pipelines** tab.
 
@@ -148,7 +148,7 @@ You can purchase additional CI/CD minutes for your group.
 You cannot transfer purchased CI/CD minutes from one group to another,
 so be sure to select the correct group.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional minutes**.

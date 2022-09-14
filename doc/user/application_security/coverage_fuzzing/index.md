@@ -53,7 +53,7 @@ You can use the following fuzzing engines to test the specified languages.
 
 To confirm the status of coverage-guided fuzz testing:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Coverage Fuzzing** section the status is:
    - **Not configured**
@@ -174,7 +174,7 @@ artifacts files you can download from the CI/CD pipeline.
 
 To view details of the corpus registry:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
@@ -202,7 +202,7 @@ provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every p
 
 To upload an existing corpus file:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 1. Select **New corpus**.

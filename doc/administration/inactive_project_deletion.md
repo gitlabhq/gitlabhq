@@ -60,7 +60,7 @@ You can use the [Application settings API](../api/settings.md#change-application
 
 To configure inactive projects with the GitLab UI:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Inactive project deletion** section, configure the necessary options.

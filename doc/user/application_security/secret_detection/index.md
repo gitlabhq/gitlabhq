@@ -112,7 +112,7 @@ error may occur.
 
 To enable Secret Detection using a merge request:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
 1. Review and merge the merge request.

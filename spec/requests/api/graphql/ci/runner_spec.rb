@@ -429,6 +429,8 @@ RSpec.describe 'Query.runner(id)' do
           'jobs' => nil, # returning jobs not allowed for more than 1 runner (see RunnerJobsResolver)
           'projectCount' => nil,
           'projects' => nil)
+
+        expect_graphql_errors_to_include [/"jobs" field can be requested only for 1 CiRunner\(s\) at a time./]
       end
     end
   end

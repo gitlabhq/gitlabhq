@@ -280,7 +280,7 @@ Returns [`Namespace`](#namespace).
 
 ### `Query.package`
 
-Find a package.
+Find a package. This field can only be resolved for one query in any single request.
 
 Returns [`PackageDetailsType`](#packagedetailstype).
 
@@ -10480,7 +10480,7 @@ CI/CD variables for a project.
 
 ##### `CiRunner.jobs`
 
-Jobs assigned to the runner.
+Jobs assigned to the runner. This field can only be resolved for one runner in any single request.
 
 Returns [`CiJobConnection`](#cijobconnection).
 
@@ -11678,7 +11678,7 @@ Describes where code is deployed for a project.
 
 ##### `Environment.deployments`
 
-Deployments of the environment.
+Deployments of the environment. This field can only be resolved for one project in any single request.
 
 Returns [`DeploymentConnection`](#deploymentconnection).
 
@@ -13016,7 +13016,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.packages`
 
-Packages of the group.
+Packages of the group. This field can only be resolved for one group in any single request.
 
 Returns [`PackageConnection`](#packageconnection).
 

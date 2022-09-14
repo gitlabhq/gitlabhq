@@ -95,7 +95,7 @@ As part of publishing a package, semantic-release increases the version number i
 1. Under **select scopes**, select the **api** checkbox.
 1. Select **Create project access token**.
 1. Copy the value.
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable**.

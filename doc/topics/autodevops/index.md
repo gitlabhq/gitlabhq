@@ -126,7 +126,7 @@ Prerequisites:
 
 To enable Auto DevOps for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -156,7 +156,7 @@ Prerequisites:
 
 To enable Auto DevOps for a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -168,7 +168,7 @@ clear the **Default to Auto DevOps pipeline** checkbox.
 After enabling Auto DevOps at the group level, you can trigger the
 Auto DevOps pipeline for any project that belongs to that group:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
 1. On the left sidebar, select **CI/CD > Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **Run pipeline**.
@@ -189,7 +189,7 @@ Prerequisites:
 
 To enable Auto DevOps for your instance:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.

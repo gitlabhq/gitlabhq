@@ -887,7 +887,7 @@ To be consistent, use these templates when you write navigation steps in a task 
 To open project settings:
 
 ```markdown
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -895,7 +895,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -903,7 +903,7 @@ To open group settings:
 To open the Admin Area:
 
 ```markdown
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 ```
 
 To select your avatar:
@@ -950,7 +950,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.

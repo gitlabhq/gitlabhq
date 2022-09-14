@@ -280,7 +280,7 @@ page.
 You can enable or configure DAST settings using the UI. The generated settings are formatted so they
 can be conveniently pasted into the `.gitlab-ci.yml` file.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Enable DAST** or
    **Configure DAST**.
@@ -1075,7 +1075,7 @@ The on-demand DAST scan runs and the project's dashboard shows the results.
 
 To run a saved on-demand scan:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
@@ -1094,7 +1094,7 @@ The on-demand DAST scan runs, and the project's dashboard shows the results.
 
 To schedule a scan:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** text boxes.
@@ -1242,7 +1242,7 @@ Validating a site is required to run an active scan.
 
 To validate a site profile:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -1279,7 +1279,7 @@ page.
 
 To retry a site profile's failed validation:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.

@@ -32,19 +32,9 @@ A Pod is a set of infrastructure components that contains multiple workspaces th
 - A failing Pod does not lead to failure of other Pods
 - Noisy neighbor effects are limited to within a Pod
 - Pods are not visible to organizations; it is an implementation detail
+- Pods may be located in different geographical regions (for example, EU, US, JP, UK)
 
 Discouraged synonyms: GitLab instance, cluster, shard
-
-### Organization
-
-An [Organization](../../../topics/set_up_organization.md) is an entity representing a billable account or customer. GitLab has no internal object representing an organization. Instead, organizations map to a single workspace.
-
-Discouraged synonyms: Customers, Accounts, Billable entity
-
-#### Organization properties
-
-- Organizations are located on a single Pod
-- Organizations can create only one workspace
 
 ### Workspace
 
@@ -76,6 +66,16 @@ Discouraged synonyms: Root-level namespace
 #### Top-level namespace properties
 
 Same as workspaces.
+
+### Users
+
+Users are available globally and not restricted to a single Pod. Users can create multiple workspaces and they may be members of several workspaces and contribute to them. Because users' activity is not limited to an individual Pod, their activity needs to be aggregated across Pods to reflect all their contributions (for example TODOs). This means, the Pods architecture may need to provide a central dashboard.
+
+#### User properties
+
+- Users are shared globally across all Pods
+- Users can create multiple workspaces
+- Users can be a member of multiple workspaces
 
 ## Goals
 

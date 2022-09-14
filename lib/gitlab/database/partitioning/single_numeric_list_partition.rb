@@ -29,17 +29,21 @@ module Gitlab
           @partition_name || "#{table}_#{value}"
         end
 
+        def data_size
+          execute("SELECT pg_table_size(#{quote(full_partition_name)})").first['pg_table_size']
+        end
+
         def to_sql
           <<~SQL
             CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{conn.quote_table_name(table)}
-            FOR VALUES IN (#{conn.quote(value)})
+            PARTITION OF #{quote_table_name(table)}
+            FOR VALUES IN (#{quote(value)})
           SQL
         end
 
         def to_detach_sql
           <<~SQL
-            ALTER TABLE #{conn.quote_table_name(table)}
+            ALTER TABLE #{quote_table_name(table)}
             DETACH PARTITION #{fully_qualified_partition}
           SQL
         end
@@ -63,8 +67,14 @@ module Gitlab
 
         private
 
+        delegate :execute, :quote, :quote_table_name, to: :conn, private: true
+
+        def full_partition_name
+          "%s.%s" % [Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA, partition_name]
+        end
+
         def fully_qualified_partition
-          "%s.%s" % [conn.quote_table_name(Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA), conn.quote_table_name(partition_name)]
+          quote_table_name(full_partition_name)
         end
 
         def conn

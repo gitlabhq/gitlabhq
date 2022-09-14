@@ -16,7 +16,7 @@ the [project limits for existing users](#projects-limit-for-a-user).
 
 To configure the maximum number of projects in personal namespaces for new users:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease that **Default projects limit** value.
 
@@ -28,7 +28,7 @@ in their users personal namespace. However, projects can still be created in a g
 You can edit a specific user, and change the maximum number of projects this user
 can create in their personal namespace:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview** > **Users**.
 1. From the list of users, select a user.
 1. Select **Edit**.
@@ -39,7 +39,7 @@ can create in their personal namespace:
 The maximum file size for attachments in GitLab comments and replies is 10 MB.
 To change the maximum attachment size:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum attachment size (MB)**.
 
@@ -53,7 +53,7 @@ For GitLab.com repository size limits, read [accounts and limit settings](../../
 
 You can change the maximum push size for your instance:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum push size (MB)**.
 
@@ -72,7 +72,7 @@ Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a reposito
 
 To modify the maximum file size for exports in GitLab:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum export size (MB)**.
 
@@ -82,7 +82,7 @@ To modify the maximum file size for exports in GitLab:
 
 To modify the maximum file size for imports in GitLab:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum import size (MB)**.
 
@@ -108,7 +108,7 @@ The default prefix is `glpat-` but administrators can change it.
 
 To change the default global prefix:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Personal Access Token prefix** field.
@@ -154,7 +154,7 @@ These settings can be found in:
   1. Fill in the **Repository size limit (MB)** field in the **Naming, visibility** section.
   1. Select **Save changes**.
 - GitLab global settings:
-  1. On the top bar, select **Menu > Admin**.
+  1. On the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand the **Account and limit** section.
   1. Fill in the **Size limit per repository (MB)** field.
@@ -182,7 +182,7 @@ GitLab administrators can choose to customize the session duration (in minutes) 
 
 To set a limit on how long these sessions are valid:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
@@ -209,7 +209,7 @@ there are no restrictions.
 
 To set a lifetime on how long SSH keys are valid:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Maximum allowable lifetime for SSH keys (days)** field.
@@ -245,7 +245,7 @@ there are no restrictions.
 
 To set a lifetime on how long access tokens are valid:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Maximum allowable lifetime for access tokens (days)** field.
@@ -279,7 +279,7 @@ To maintain integrity of user details in [Audit Events](../../../administration/
 
 To do this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Select the **Prevent users from changing their profile name** checkbox.
 

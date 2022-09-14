@@ -27,7 +27,7 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 To add a pipeline schedule:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Schedules**.
 1. Select **New schedule** and fill in the form.
    - **Interval Pattern**: Select one of the preconfigured intervals, or enter a custom
@@ -45,7 +45,7 @@ To add a pipeline schedule:
 
 The owner of a pipeline schedule can edit it:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. In the left sidebar, select **CI/CD > Schedules**.
 1. Next to the schedule, select **Edit** (**{pencil}**) and fill in the form.
 
@@ -58,7 +58,7 @@ of the schedule.
 To trigger a pipeline schedule manually, so that it runs immediately instead of
 the next scheduled time:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Schedules**.
 1. On the right of the list, for
    the pipeline you want to run, select **Play** (**{play}**).
@@ -74,7 +74,7 @@ including [protected environments](../environments/protected_environments.md) an
 
 To take ownership of a pipeline created by a different user:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Schedules**.
 1. On the right of the list, for
    the pipeline you want to become owner of, select **Take ownership**.

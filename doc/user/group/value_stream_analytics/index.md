@@ -35,7 +35,7 @@ Prerequisite:
 
 To view value stream analytics for your group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -73,7 +73,7 @@ To view deployment metrics, you must have a
 
 To view the DORA metrics and key metrics:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -154,7 +154,7 @@ Value stream analytics shows the median time spent by issues or merge requests i
 
 To view the median time spent in each stage by a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -251,7 +251,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 When you create a value stream, you can use GitLab default stages and hide or re-order them to customize. You can also
 create custom stages in addition to those provided in the default template.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. Select **Create new Value Stream**.
 1. Enter a name for the value stream.
@@ -275,7 +275,7 @@ If you have recently upgraded to GitLab Premium, it can take up to 30 minutes fo
 
 When you create a value stream, you can create and add custom stages that align with your own development workflows.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. Select **Create value stream**.
 1. For each stage:
@@ -301,7 +301,7 @@ time from a staging environment to production, you could use the following label
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. In the top right, select the dropdown list, and select a value stream.
 1. Next to the value stream dropdown list, select **Edit**.
@@ -320,7 +320,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 
 To delete a custom value stream:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. In the top right, select the dropdown list and then select the value stream you would like to delete.
 1. Select **Delete (name of value stream)**.
@@ -336,7 +336,7 @@ To delete a custom value stream:
 The **Total time chart** shows the average number of days it takes for development cycles to complete.
 The chart shows data for the last 500 workflow items.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Above the **Filter results** box, select a stage:
    - To view a summary of the cycle time for all stages, select **Overview**.
@@ -358,7 +358,7 @@ group, projects, and time frame.
 
 To view tasks by type:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
 1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list

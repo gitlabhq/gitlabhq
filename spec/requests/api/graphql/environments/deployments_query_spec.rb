@@ -238,8 +238,9 @@ RSpec.describe 'Environments Deployments query' do
         )
       end
 
-      it 'returnes an error for preventing N+1 queries' do
-        expect(subject['errors'][0]['message']).to include('exceeds max complexity')
+      it 'returns an error for preventing N+1 queries' do
+        expect(subject['errors'][0]['message'])
+          .to include('"deployments" field can be requested only for 1 Environment(s) at a time.')
       end
     end
 

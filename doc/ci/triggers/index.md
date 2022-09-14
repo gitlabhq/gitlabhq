@@ -26,7 +26,7 @@ Prerequisite:
 
 To create a trigger token:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Pipeline triggers**.
 1. Enter a description and select **Add trigger**.
@@ -153,7 +153,7 @@ users with the Owner and Maintainer role can view the values.
 
 To revoke a trigger token:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Pipeline triggers**.
 1. To the left of the trigger token you want to revoke, select **Revoke** (**{remove}**).

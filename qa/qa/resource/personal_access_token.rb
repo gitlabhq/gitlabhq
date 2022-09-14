@@ -44,14 +44,14 @@ module QA
       def api_get_path
         "/personal_access_tokens/#{id}"
       rescue NoValueError
-        user_id = user.respond_to?(:id) ? user.id : Resource::User.build(user).reload!.id
+        user.reload! unless user.id
 
         api_client = Runtime::API::Client.new(:gitlab,
           is_new_session: false,
           user: user,
           personal_access_token: self.token)
         request_url = Runtime::API::Request.new(api_client,
-          "/personal_access_tokens?user_id=#{user_id}",
+          "/personal_access_tokens?user_id=#{user.id}",
           per_page: '100').url
 
         token = auto_paginated_response(request_url).find { |t| t[:name] == name }

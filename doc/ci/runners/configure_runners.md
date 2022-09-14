@@ -151,7 +151,7 @@ different places.
 To view the IP address of a shared runner you must have administrator access to
 the GitLab instance. To determine this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
@@ -859,7 +859,7 @@ You can clean up group runners that have been inactive for more than three month
 
 Group runners are those that were created at the group level.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Enable stale runner cleanup** toggle.
@@ -903,8 +903,8 @@ The version of GitLab Runner used by your runners should be
 To determine which runners need to be upgraded:
 
 1. View the list of runners:
-   - For a group, on the top bar, select **Menu > Groups** and on the left sidebar, select **CI/CD > Runners**.
-   - For the instance, select **Menu > Admin** and on the left sidebar, select **Runners**.
+   - For a group, on the top bar, select **Main menu > Groups**, find your group, and on the left sidebar select **CI/CD > Runners**.
+   - For the instance, select **Main menu > Admin** and on the left sidebar, select **Runners**.
 
 1. Above the list of runners, view the status:
    - **Outdated - recommended**: The runner does not have the latest `PATCH` version, which may make it vulnerable
@@ -945,7 +945,7 @@ Prerequisites:
 
 To automatically rotate runner authentication tokens:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.

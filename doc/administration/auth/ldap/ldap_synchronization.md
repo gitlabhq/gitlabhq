@@ -194,7 +194,7 @@ When enabled, the following applies:
 To enable it, you must:
 
 1. [Configure LDAP](index.md#configure-ldap).
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.

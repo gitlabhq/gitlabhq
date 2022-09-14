@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
     end
 
     context 'when some partitions are true for detach_partition_if' do
-      let(:detach_partition_if) { ->(p) { p != 5 } }
+      let(:detach_partition_if) { ->(p) { p.value != 5 } }
 
       it 'is the leading set of partitions before that value' do
         # should not contain partition 2 since it's the default value for the partition column

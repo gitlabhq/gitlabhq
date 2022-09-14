@@ -83,7 +83,7 @@ Instead of:
 
 ## Admin Area
 
-Use title case **Admin Area** to refer to the area of the UI that you access when you select **Menu > Admin**.
+Use title case **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## agent
@@ -434,7 +434,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you need to refer to all
 of the fields at once. For example:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.

@@ -81,7 +81,7 @@ To enable merge trains for your project:
 1. If you are on a self-managed GitLab instance, ensure the [feature flag](#merge-trains-feature-flag) is set correctly.
 1. [Configure your CI/CD configuration file](merge_request_pipelines.md#prerequisites)
    so that the pipeline or individual jobs run for merge requests.
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge method** section, verify that **Merge commit** is selected.
 1. In the **Merge options** section, select **Enable merged results pipelines** (if not already selected) and **Enable merge trains**.

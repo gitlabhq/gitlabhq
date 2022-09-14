@@ -239,7 +239,7 @@ You can define instance variables via the UI or [API](../../api/instance_level_c
 
 To add an instance variable:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD** and expand the **Variables** section.
 1. Select the **Add variable** button, and fill in the details:
 

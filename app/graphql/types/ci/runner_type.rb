@@ -52,7 +52,7 @@ module Types
       field :job_count, GraphQL::Types::Int, null: true,
                                              description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
       field :jobs, ::Types::Ci::JobType.connection_type, null: true,
-                                                         description: 'Jobs assigned to the runner.',
+                                                         description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
                                                          authorize: :read_builds,
                                                          resolver: ::Resolvers::Ci::RunnerJobsResolver
       field :locked, GraphQL::Types::Boolean, null: true,

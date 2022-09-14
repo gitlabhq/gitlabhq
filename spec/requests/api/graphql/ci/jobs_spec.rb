@@ -335,4 +335,35 @@ RSpec.describe 'Query.project.pipeline' do
       end
     end
   end
+
+  context 'when querying jobs for multiple projects' do
+    let(:query) do
+      %(
+        query {
+          projects {
+            nodes {
+              jobs {
+                nodes {
+                  name
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      create_list(:project, 2).each do |project|
+        project.add_developer(user)
+        create(:ci_build, project: project)
+      end
+    end
+
+    it 'returns an error' do
+      post_graphql(query, current_user: user)
+
+      expect_graphql_errors_to_include [/"jobs" field can be requested only for 1 Project\(s\) at a time./]
+    end
+  end
 end
