@@ -1,3 +1,4 @@
+@import 'framework/variables';
 /* Login Page */
 .login-page {
   .container {
@@ -125,6 +126,18 @@
   }
 
   .new-session-tabs {
+    &.nav-links-unboxed {
+      border-color: transparent;
+      box-shadow: none;
+
+      .nav-item {
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 1px solid $gray-100;
+        background-color: transparent;
+      }
+    }
+
     display: flex;
     box-shadow: 0 0 0 1px $border-color;
     border-top-right-radius: $border-radius-default;

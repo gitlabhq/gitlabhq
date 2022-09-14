@@ -84,14 +84,14 @@ export default {
     },
   },
   i18n: {
-    deleteFile: __('Delete file'),
+    deleteFile: __('Delete asset'),
   },
 };
 </script>
 
 <template>
   <div>
-    <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
+    <h3 class="gl-font-lg gl-mt-5">{{ __('Assets') }}</h3>
     <gl-table
       :fields="filesTableHeaderFields"
       :items="filesTableRows"

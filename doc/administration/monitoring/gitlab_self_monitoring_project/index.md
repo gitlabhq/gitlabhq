@@ -43,7 +43,7 @@ This project can be used to:
 1. Toggle **Self monitoring** on.
 1. After your GitLab instance creates the project, GitLab displays a link to the
    project in the text above the **Self monitoring** toggle. You can also find it
-   from the top bar by selecting **Main menu > Project**, then selecting **Your projects**.
+   from the top bar by selecting **Main menu > Projects**.
 
 ## Delete the self monitoring project
 

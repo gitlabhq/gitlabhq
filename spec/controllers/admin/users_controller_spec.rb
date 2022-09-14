@@ -73,51 +73,120 @@ RSpec.describe Admin::UsersController do
       project.add_developer(user)
     end
 
-    it 'deletes user and ghosts their contributions' do
-      delete :destroy, params: { id: user.username }, format: :json
+    context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+      it 'initiates user removal' do
+        delete :destroy, params: { id: user.username }, format: :json
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(User.exists?(user.id)).to be_falsy
-      expect(issue.reload.author).to be_ghost
-    end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(
+          Users::GhostUserMigration.where(user: user,
+                                          initiator_user: admin,
+                                          hard_delete: false)
+        ).to be_exists
+      end
 
-    it 'deletes the user and their contributions when hard delete is specified' do
-      delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
+      it 'initiates user removal and passes hard delete option' do
+        delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(User.exists?(user.id)).to be_falsy
-      expect(Issue.exists?(issue.id)).to be_falsy
-    end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(
+          Users::GhostUserMigration.where(user: user,
+                                          initiator_user: admin,
+                                          hard_delete: true)
+        ).to be_exists
+      end
 
-    context 'prerequisites for account deletion' do
-      context 'solo-owned groups' do
-        let(:group) { create(:group) }
+      context 'prerequisites for account deletion' do
+        context 'solo-owned groups' do
+          let(:group) { create(:group) }
 
-        context 'if the user is the sole owner of at least one group' do
-          before do
-            create(:group_member, :owner, group: group, user: user)
-          end
+          context 'if the user is the sole owner of at least one group' do
+            before do
+              create(:group_member, :owner, group: group, user: user)
+            end
 
-          context 'soft-delete' do
-            it 'fails' do
-              delete :destroy, params: { id: user.username }
+            context 'soft-delete' do
+              it 'fails' do
+                delete :destroy, params: { id: user.username }
 
-              message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
+                message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
 
-              expect(flash[:alert]).to eq(message)
-              expect(response).to have_gitlab_http_status(:see_other)
-              expect(response).to redirect_to admin_user_path(user)
-              expect(User.exists?(user.id)).to be_truthy
+                expect(flash[:alert]).to eq(message)
+                expect(response).to have_gitlab_http_status(:see_other)
+                expect(response).to redirect_to admin_user_path(user)
+                expect(Users::GhostUserMigration).not_to exist
+              end
+            end
+
+            context 'hard-delete' do
+              it 'succeeds' do
+                delete :destroy, params: { id: user.username, hard_delete: true }
+
+                expect(response).to redirect_to(admin_users_path)
+                expect(flash[:notice]).to eq(_('The user is being deleted.'))
+                expect(
+                  Users::GhostUserMigration.where(user: user,
+                                                  initiator_user: admin,
+                                                  hard_delete: true)
+                ).to be_exists
+              end
             end
           end
+        end
+      end
+    end
 
-          context 'hard-delete' do
-            it 'succeeds' do
-              delete :destroy, params: { id: user.username, hard_delete: true }
+    context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+      before do
+        stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+      end
 
-              expect(response).to redirect_to(admin_users_path)
-              expect(flash[:notice]).to eq(_('The user is being deleted.'))
-              expect(User.exists?(user.id)).to be_falsy
+      it 'deletes user and ghosts their contributions' do
+        delete :destroy, params: { id: user.username }, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(User.exists?(user.id)).to be_falsy
+        expect(issue.reload.author).to be_ghost
+      end
+
+      it 'deletes the user and their contributions when hard delete is specified' do
+        delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(User.exists?(user.id)).to be_falsy
+        expect(Issue.exists?(issue.id)).to be_falsy
+      end
+
+      context 'prerequisites for account deletion' do
+        context 'solo-owned groups' do
+          let(:group) { create(:group) }
+
+          context 'if the user is the sole owner of at least one group' do
+            before do
+              create(:group_member, :owner, group: group, user: user)
+            end
+
+            context 'soft-delete' do
+              it 'fails' do
+                delete :destroy, params: { id: user.username }
+
+                message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
+
+                expect(flash[:alert]).to eq(message)
+                expect(response).to have_gitlab_http_status(:see_other)
+                expect(response).to redirect_to admin_user_path(user)
+                expect(User.exists?(user.id)).to be_truthy
+              end
+            end
+
+            context 'hard-delete' do
+              it 'succeeds' do
+                delete :destroy, params: { id: user.username, hard_delete: true }
+
+                expect(response).to redirect_to(admin_users_path)
+                expect(flash[:notice]).to eq(_('The user is being deleted.'))
+                expect(User.exists?(user.id)).to be_falsy
+              end
             end
           end
         end
@@ -131,10 +200,27 @@ RSpec.describe Admin::UsersController do
     context 'when rejecting a pending user' do
       let(:user) { create(:user, :blocked_pending_approval) }
 
-      it 'hard deletes the user', :sidekiq_inline do
-        subject
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it 'initiates user removal', :sidekiq_inline do
+          subject
 
-        expect(User.exists?(user.id)).to be_falsy
+          expect(
+            Users::GhostUserMigration.where(user: user,
+                                            initiator_user: admin)
+          ).to be_exists
+        end
+      end
+
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+        end
+
+        it 'hard deletes the user', :sidekiq_inline do
+          subject
+
+          expect(User.exists?(user.id)).to be_falsy
+        end
       end
 
       it 'displays the rejection message' do

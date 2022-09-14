@@ -37,26 +37,56 @@ RSpec.describe 'Admin mode for workers', :request_store do
         gitlab_enable_admin_mode_sign_in(user)
       end
 
-      it 'can delete user', :js do
-        visit admin_user_path(user_to_delete)
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it 'can delete user', :js do
+          visit admin_user_path(user_to_delete)
 
-        click_action_in_user_dropdown(user_to_delete.id, 'Delete user')
+          click_action_in_user_dropdown(user_to_delete.id, 'Delete user')
 
-        page.within '.modal-dialog' do
-          find("input[name='username']").send_keys(user_to_delete.name)
-          click_button 'Delete user'
+          page.within '.modal-dialog' do
+            find("input[name='username']").send_keys(user_to_delete.name)
+            click_button 'Delete user'
 
-          wait_for_requests
+            wait_for_requests
+          end
+
+          expect(page).to have_content('The user is being deleted.')
+
+          # Perform jobs while logged out so that admin mode is only enabled in job metadata
+          execute_jobs_signed_out(user)
+
+          visit admin_user_path(user_to_delete)
+
+          expect(find('h1.page-title')).to have_content('(Blocked)')
+        end
+      end
+
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
         end
 
-        expect(page).to have_content('The user is being deleted.')
+        it 'can delete user', :js do
+          visit admin_user_path(user_to_delete)
 
-        # Perform jobs while logged out so that admin mode is only enabled in job metadata
-        execute_jobs_signed_out(user)
+          click_action_in_user_dropdown(user_to_delete.id, 'Delete user')
 
-        visit admin_user_path(user_to_delete)
+          page.within '.modal-dialog' do
+            find("input[name='username']").send_keys(user_to_delete.name)
+            click_button 'Delete user'
 
-        expect(page).to have_title('Not Found')
+            wait_for_requests
+          end
+
+          expect(page).to have_content('The user is being deleted.')
+
+          # Perform jobs while logged out so that admin mode is only enabled in job metadata
+          execute_jobs_signed_out(user)
+
+          visit admin_user_path(user_to_delete)
+
+          expect(page).to have_title('Not Found')
+        end
       end
     end
   end

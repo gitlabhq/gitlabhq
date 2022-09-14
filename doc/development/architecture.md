@@ -626,7 +626,7 @@ Mattermost is an open source, private cloud, Slack-alternative from <https://mat
 - Layer: Core Service (Data)
 - GitLab.com: [Storage Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#storage-architecture)
 
-MinIO is an object storage server released under Apache License v2.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups, and container / VM images. Size of an object can range from a few KBs to a maximum of 5TB.
+MinIO is an object storage server released under the GNU AGPL v3.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups, and container / VM images. Size of an object can range from a few KBs to a maximum of 5TB.
 
 #### NGINX
 

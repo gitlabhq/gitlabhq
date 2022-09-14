@@ -35,17 +35,38 @@ RSpec.describe Groups::DestroyService do
       it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
     end
 
-    context 'bot tokens', :sidekiq_might_not_need_inline do
-      it 'removes group bot', :aggregate_failures do
-        bot = create(:user, :project_bot)
-        group.add_developer(bot)
-        token = create(:personal_access_token, user: bot)
+    context 'bot tokens', :sidekiq_inline do
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it 'initiates group bot removal', :aggregate_failures do
+          bot = create(:user, :project_bot)
+          group.add_developer(bot)
+          create(:personal_access_token, user: bot)
 
-        destroy_group(group, user, async)
+          destroy_group(group, user, async)
 
-        expect(PersonalAccessToken.find_by(id: token.id)).to be_nil
-        expect(User.find_by(id: bot.id)).to be_nil
-        expect(User.find_by(id: user.id)).not_to be_nil
+          expect(
+            Users::GhostUserMigration.where(user: bot,
+                                            initiator_user: user)
+          ).to be_exists
+        end
+      end
+
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+        end
+
+        it 'removes group bot', :aggregate_failures do
+          bot = create(:user, :project_bot)
+          group.add_developer(bot)
+          token = create(:personal_access_token, user: bot)
+
+          destroy_group(group, user, async)
+
+          expect(PersonalAccessToken.find_by(id: token.id)).to be_nil
+          expect(User.find_by(id: bot.id)).to be_nil
+          expect(User.find_by(id: user.id)).not_to be_nil
+        end
       end
     end
 

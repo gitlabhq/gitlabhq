@@ -119,7 +119,9 @@ rubocop:
     - .static-analysis-base
     - .rubocop-job-cache
     - .static-analysis:rules:rubocop
-  needs: ["detect-tests"]
+  needs:
+    - job: detect-tests
+      optional: true
   script:
     - |
       # For non-merge request, or when RUN_ALL_RUBOCOP is 'true', run all RuboCop rules

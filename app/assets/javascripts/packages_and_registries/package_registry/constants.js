@@ -79,10 +79,10 @@ export const TRACKING_LABEL_PACKAGE_HISTORY = 'package_history';
 
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
-  'PackageRegistry|Something went wrong while deleting the package file.',
+  'PackageRegistry|Something went wrong while deleting the package asset.',
 );
 export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
-  'PackageRegistry|Package file deleted successfully',
+  'PackageRegistry|Package asset deleted successfully',
 );
 export const DELETE_PACKAGE_FILES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package assets.',

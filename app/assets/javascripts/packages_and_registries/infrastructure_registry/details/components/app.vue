@@ -114,7 +114,7 @@ export default {
     deleteModalContent: s__(
       `PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?`,
     ),
-    deleteFileModalTitle: s__(`PackageRegistry|Delete Package File`),
+    deleteFileModalTitle: s__(`PackageRegistry|Delete package asset`),
     deleteFileModalContent: s__(
       `PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?`,
     ),

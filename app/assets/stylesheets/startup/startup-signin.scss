@@ -870,6 +870,16 @@ svg {
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
 }
+.login-page .new-session-tabs.nav-links-unboxed {
+  border-color: transparent;
+  box-shadow: none;
+}
+.login-page .new-session-tabs.nav-links-unboxed .nav-item {
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px solid #dbdbdb;
+  background-color: transparent;
+}
 .login-page .new-session-tabs.custom-provider-tabs {
   flex-wrap: wrap;
 }

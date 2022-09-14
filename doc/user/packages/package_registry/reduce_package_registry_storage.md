@@ -7,12 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Reduce Package Registry Storage **(FREE)**
 
 Without cleanup, package registries become large over time. When a large number of packages and
-their files are added:
+their assets are added:
 
 - Fetching the list of packages becomes slower.
 - They take up a large amount of storage space on the server, impacting your [storage usage quota](../../usage_quotas.md).
 
-We recommend deleting unnecessary packages and files. This page offers examples of how to do so.
+We recommend deleting unnecessary packages and assets. This page offers examples of how to do so.
 
 ## Check Package Registry Storage Use
 
@@ -35,28 +35,28 @@ To delete a package in the UI, from your group or project:
 
 The package is permanently deleted.
 
-## Delete files associated with a package
+## Delete assets associated with a package
 
-To delete package files, you must have suitable [permissions](../../permissions.md).
+To delete package assets, you must have suitable [permissions](../../permissions.md).
 
 You can delete packages by using [the API](../../../api/packages.md#delete-a-package-file) or the UI.
 
-To delete package files in the UI, from your group or project:
+To delete package assets in the UI, from your group or project:
 
 1. Go to **Packages and registries > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Select the package to view additional details.
-1. Find the name of the file you would like to delete.
-1. Expand the ellipsis and select **Delete file**.
+1. Find the name of the assets you would like to delete.
+1. Expand the ellipsis and select **Delete asset**.
 
-The package files are permanently deleted.
+The package assets are permanently deleted.
 
 ## Cleanup policy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
 
 Depending on the number of packages to remove, the process of manually deleting the packages can take a long time to finish.
-A cleanup policy defines a set of rules that, applied to a project, defines which package files you can automatically delete.
+A cleanup policy defines a set of rules that, applied to a project, defines which package assets you can automatically delete.
 
 ### Enable the cleanup policy
 
@@ -73,7 +73,7 @@ To access these project settings, you must be at least a maintainer on the relat
 
 - `Number of duplicated assets to keep`. The number of duplicated assets to keep. Some package formats allow you
   to upload more than one copy of an asset. You can limit the number of duplicated assets to keep and automatically
-  delete the oldest files once the limit is reached.
+  delete the oldest assets once the limit is reached.
 
 ### Set cleanup limits to conserve resources
 

@@ -23,6 +23,11 @@ module Users
     # `hard_delete: true` implies `delete_solo_owned_groups: true`.  To perform
     # a hard deletion without destroying solo-owned groups, pass
     # `delete_solo_owned_groups: false, hard_delete: true` in +options+.
+    #
+    # To make the service asynchronous, a new behaviour is being introduced
+    # behind the user_destroy_with_limited_execution_time_worker feature flag.
+    # Migrating the associated user records, and post-migration cleanup is
+    # handled by the Users::MigrateRecordsToGhostUserWorker cron worker.
     def execute(user, options = {})
       delete_solo_owned_groups = options.fetch(:delete_solo_owned_groups, options[:hard_delete])
 
@@ -56,24 +61,32 @@ module Users
 
       yield(user) if block_given?
 
-      MigrateToGhostUserService.new(user).execute(hard_delete: options[:hard_delete])
+      hard_delete = options.fetch(:hard_delete, false)
 
-      skip_authorization = options.fetch(:hard_delete, false)
-      response = Snippets::BulkDestroyService.new(current_user, user.snippets)
-                                             .execute(skip_authorization: skip_authorization)
-      raise DestroyError, response.message if response.error?
+      if Feature.enabled?(:user_destroy_with_limited_execution_time_worker)
+        Users::GhostUserMigration.create!(user: user,
+                                          initiator_user: current_user,
+                                          hard_delete: hard_delete)
 
-      # Rails attempts to load all related records into memory before
-      # destroying: https://github.com/rails/rails/issues/22510
-      # This ensures we delete records in batches.
-      user.destroy_dependent_associations_in_batches(exclude: [:snippets])
-      user.nullify_dependent_associations_in_batches
+      else
+        MigrateToGhostUserService.new(user).execute(hard_delete: options[:hard_delete])
 
-      # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
-      user_data = user.destroy
-      namespace.destroy
+        response = Snippets::BulkDestroyService.new(current_user, user.snippets)
+                                               .execute(skip_authorization: hard_delete)
+        raise DestroyError, response.message if response.error?
 
-      user_data
+        # Rails attempts to load all related records into memory before
+        # destroying: https://github.com/rails/rails/issues/22510
+        # This ensures we delete records in batches.
+        user.destroy_dependent_associations_in_batches(exclude: [:snippets])
+        user.nullify_dependent_associations_in_batches
+
+        # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
+        user_data = user.destroy
+        namespace.destroy
+
+        user_data
+      end
     end
   end
 end

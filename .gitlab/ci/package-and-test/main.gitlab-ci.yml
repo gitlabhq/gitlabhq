@@ -1,5 +1,8 @@
 # E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
 
+default:
+  interruptible: true
+
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml

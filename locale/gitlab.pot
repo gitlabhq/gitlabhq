@@ -4248,9 +4248,6 @@ msgstr ""
 msgid "An error occurred while loading all the files."
 msgstr ""
 
-msgid "An error occurred while loading branch rules. Please try again."
-msgstr ""
-
 msgid "An error occurred while loading chart data"
 msgstr ""
 
@@ -12568,6 +12565,9 @@ msgid "Delete account"
 msgstr ""
 
 msgid "Delete artifacts"
+msgstr ""
+
+msgid "Delete asset"
 msgstr ""
 
 msgid "Delete audio"
@@ -28224,13 +28224,13 @@ msgid_plural "PackageRegistry|Delete %d assets"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "PackageRegistry|Delete Package File"
-msgstr ""
-
 msgid "PackageRegistry|Delete Package Version"
 msgstr ""
 
 msgid "PackageRegistry|Delete package"
+msgstr ""
+
+msgid "PackageRegistry|Delete package asset"
 msgstr ""
 
 msgid "PackageRegistry|Delete selected"
@@ -28332,13 +28332,13 @@ msgstr ""
 msgid "PackageRegistry|Package Registry"
 msgstr ""
 
+msgid "PackageRegistry|Package asset deleted successfully"
+msgstr ""
+
 msgid "PackageRegistry|Package assets deleted successfully"
 msgstr ""
 
 msgid "PackageRegistry|Package deleted successfully"
-msgstr ""
-
-msgid "PackageRegistry|Package file deleted successfully"
 msgstr ""
 
 msgid "PackageRegistry|Package formats"
@@ -28403,10 +28403,10 @@ msgstr ""
 msgid "PackageRegistry|Show Yarn commands"
 msgstr ""
 
-msgid "PackageRegistry|Something went wrong while deleting the package assets."
+msgid "PackageRegistry|Something went wrong while deleting the package asset."
 msgstr ""
 
-msgid "PackageRegistry|Something went wrong while deleting the package file."
+msgid "PackageRegistry|Something went wrong while deleting the package assets."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while deleting the package."
@@ -32071,6 +32071,9 @@ msgstr ""
 msgid "ProtectedBranch|Allowed to push:"
 msgstr ""
 
+msgid "ProtectedBranch|An error occurred while loading branch rules. Please try again."
+msgstr ""
+
 msgid "ProtectedBranch|Branch"
 msgstr ""
 
@@ -32105,6 +32108,9 @@ msgid "ProtectedBranch|Protected branch (%{protected_branches_count})"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branches"
+msgstr ""
+
+msgid "ProtectedBranch|Protected branches, merge request approvals, and status checks will appear here once configured."
 msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."

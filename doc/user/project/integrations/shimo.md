@@ -16,7 +16,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the Shimo Workspace integration for your group or project:
 
-1. On the top bar, select **Menu** and find your group or project.
+1. On the top bar, select **Main menu** and find your group or project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. In **Add an integration**, select **Shimo Workspace**.
 1. In **Enable integration**, ensure the **Active** checkbox is selected.
@@ -29,6 +29,6 @@ On the left sidebar, **Shimo** now appears instead of **Wiki**.
 
 To view the Shimo Workspace from your group or project:
 
-1. On the top bar, select **Menu** and find your group or project.
+1. On the top bar, select **Main menu** and find your group or project.
 1. On the left sidebar, select **Shimo**.
 1. On the **Shimo Workspace** page, select **Go to Shimo Workspace**.

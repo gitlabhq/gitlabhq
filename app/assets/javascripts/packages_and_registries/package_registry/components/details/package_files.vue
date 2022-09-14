@@ -139,7 +139,7 @@ export default {
     },
   },
   i18n: {
-    deleteFile: __('Delete file'),
+    deleteFile: __('Delete asset'),
     deleteSelected: s__('PackageRegistry|Delete selected'),
     moreActionsText: __('More actions'),
   },
@@ -149,7 +149,7 @@ export default {
 <template>
   <div class="gl-pt-6">
     <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-      <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
+      <h3 class="gl-font-lg gl-mt-5">{{ __('Assets') }}</h3>
       <gl-button
         v-if="canDelete"
         :disabled="isLoading || !areFilesSelected"

@@ -68,8 +68,12 @@ RSpec.describe 'Issue Detail', :js do
   end
 
   context 'when edited by a user who is later deleted' do
+    let(:user_to_be_deleted)     { create(:user) }
+
     before do
-      sign_in(user)
+      project.add_developer(user_to_be_deleted)
+
+      sign_in(user_to_be_deleted)
       visit project_issue_path(project, issue)
       wait_for_requests
 
@@ -78,8 +82,9 @@ RSpec.describe 'Issue Detail', :js do
       click_button 'Save changes'
       wait_for_requests
 
-      Users::DestroyService.new(user).execute(user)
+      Users::DestroyService.new(user_to_be_deleted).execute(user_to_be_deleted)
 
+      sign_in(user)
       visit project_issue_path(project, issue)
     end
 

@@ -2502,14 +2502,32 @@ RSpec.describe API::Users do
   describe "DELETE /users/:id" do
     let_it_be(:issue) { create(:issue, author: user) }
 
-    it "deletes user", :sidekiq_inline do
-      namespace_id = user.namespace.id
+    context 'user deletion' do
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it "deletes user", :sidekiq_inline do
+          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
-      perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(Users::GhostUserMigration.where(user: user,
+                                                 initiator_user: admin)).to be_exists
+        end
+      end
 
-      expect(response).to have_gitlab_http_status(:no_content)
-      expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
-      expect { Namespace.find(namespace_id) }.to raise_error ActiveRecord::RecordNotFound
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+        end
+
+        it "deletes user", :sidekiq_inline do
+          namespace_id = user.namespace.id
+
+          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+          expect { Namespace.find(namespace_id) }.to raise_error ActiveRecord::RecordNotFound
+        end
+      end
     end
 
     context "sole owner of a group" do
@@ -2573,22 +2591,55 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    context "hard delete disabled" do
-      it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
-        perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+    context 'hard delete' do
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        context "hard delete disabled" do
+          it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(issue.reload).to be_persisted
-        expect(issue.author.ghost?).to be_truthy
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(issue.reload).to be_persisted
+            expect(Users::GhostUserMigration.where(user: user,
+                                                   initiator_user: admin,
+                                                   hard_delete: false)).to be_exists
+          end
+        end
+
+        context "hard delete enabled" do
+          it "removes contributions", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(Users::GhostUserMigration.where(user: user,
+                                                   initiator_user: admin,
+                                                   hard_delete: true)).to be_exists
+          end
+        end
       end
-    end
 
-    context "hard delete enabled" do
-      it "removes contributions", :sidekiq_might_not_need_inline do
-        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+        end
 
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(Issue.exists?(issue.id)).to be_falsy
+        context "hard delete disabled" do
+          it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(issue.reload).to be_persisted
+            expect(issue.author.ghost?).to be_truthy
+          end
+        end
+
+        context "hard delete enabled" do
+          it "removes contributions", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(Issue.exists?(issue.id)).to be_falsy
+          end
+        end
       end
     end
   end

@@ -61,7 +61,7 @@ When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific title
 to be used as your wiki's home page. To create it:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -79,7 +79,7 @@ to be used as your wiki's home page. To create it:
 
 Users with at least the Developer role can create new wiki pages:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -142,7 +142,7 @@ may not be able to check out the wiki locally afterward.
 
 You need at least the Developer role to edit a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -161,7 +161,7 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 You need at least the Developer role to delete a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -174,7 +174,7 @@ You need at least the Developer role to delete a wiki page:
 
 You need at least the Developer role to move a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -200,7 +200,7 @@ The history page shows:
 
 To view the changes for a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -213,7 +213,7 @@ To view the changes for a wiki page:
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -246,7 +246,7 @@ You need at least the Developer role to customize the wiki
 navigation sidebar. This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.

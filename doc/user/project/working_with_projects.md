@@ -333,7 +333,7 @@ To view the activity of a project:
 
 You can search through your projects.
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
 1. In **Search your projects**, type the project name.
 
 GitLab filters as you type.

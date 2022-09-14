@@ -27,13 +27,34 @@ RSpec.describe Admin::SpamLogsController do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it 'removes user and their spam logs when removing the user', :sidekiq_might_not_need_inline do
-      delete :destroy, params: { id: first_spam.id, remove_user: true }
+    context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+      it 'initiates user removal', :sidekiq_inline do
+        expect do
+          delete :destroy, params: { id: first_spam.id, remove_user: true }
+        end.not_to change { SpamLog.count }
 
-      expect(flash[:notice]).to eq "User #{user.username} was successfully removed."
-      expect(response).to have_gitlab_http_status(:found)
-      expect(SpamLog.count).to eq(0)
-      expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(response).to have_gitlab_http_status(:found)
+        expect(
+          Users::GhostUserMigration.where(user: user,
+                                          initiator_user: admin)
+        ).to be_exists
+        expect(flash[:notice]).to eq("User #{user.username} was successfully removed.")
+      end
+    end
+
+    context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+      before do
+        stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+      end
+
+      it 'removes user and their spam logs when removing the user', :sidekiq_inline do
+        delete :destroy, params: { id: first_spam.id, remove_user: true }
+
+        expect(flash[:notice]).to eq "User #{user.username} was successfully removed."
+        expect(response).to have_gitlab_http_status(:found)
+        expect(SpamLog.count).to eq(0)
+        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 
