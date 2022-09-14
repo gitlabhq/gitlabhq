@@ -83,19 +83,36 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
         .with({ source: 'push' }, 0)
     end
 
-    it 'records active jobs by pipeline plan in a histogram' do
-      allow(command.metrics)
-        .to receive(:active_jobs_histogram)
-        .and_return(histogram)
+    describe 'active jobs by pipeline plan histogram' do
+      before do
+        allow(command.metrics)
+          .to receive(:active_jobs_histogram)
+          .and_return(histogram)
 
-      pipeline = create(:ci_pipeline, project: project, status: :running)
-      create(:ci_build, :finished, project: project, pipeline: pipeline)
-      create(:ci_build, :failed, project: project, pipeline: pipeline)
-      create(:ci_build, :running, project: project, pipeline: pipeline)
-      subject.build!
+        pipeline = create(:ci_pipeline, :running, project: project)
+        create_list(:ci_build, 3, pipeline: pipeline)
+        create(:ci_bridge, pipeline: pipeline)
+      end
 
-      expect(histogram).to have_received(:observe)
-        .with(hash_including(plan: project.actual_plan_name), 3)
+      it 'counts all the active jobs' do
+        subject.build!
+
+        expect(histogram).to have_received(:observe)
+          .with(hash_including(plan: project.actual_plan_name), 4)
+      end
+
+      context 'when feature flag ci_limit_active_jobs_early is disabled' do
+        before do
+          stub_feature_flags(ci_limit_active_jobs_early: false)
+        end
+
+        it 'counts all the active builds' do
+          subject.build!
+
+          expect(histogram).to have_received(:observe)
+            .with(hash_including(plan: project.actual_plan_name), 3)
+        end
+      end
     end
   end
 end

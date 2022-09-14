@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   find('[data-testid="the_selector"]')
       #   find('#selector')
-      class SelectorUsage < RuboCop::Cop::Cop
+      class SelectorUsage < RuboCop::Cop::Base
         include QAHelpers
         include CodeReuseHelpers
 

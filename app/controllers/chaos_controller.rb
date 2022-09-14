@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/ApplicationController
 class ChaosController < ActionController::Base
   before_action :validate_chaos_secret, unless: :development_or_test?
 
@@ -93,3 +94,4 @@ class ChaosController < ActionController::Base
     Rails.env.development? || Rails.env.test?
   end
 end
+# rubocop:enable Rails/ApplicationController

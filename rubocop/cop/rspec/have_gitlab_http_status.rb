@@ -22,7 +22,9 @@ module RuboCop
       # expect(response).to have_gitlab_http_status(:ok)
       # expect(response).not_to have_gitlab_http_status(:ok)
       #
-      class HaveGitlabHttpStatus < RuboCop::Cop::Cop
+      class HaveGitlabHttpStatus < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         CODE_TO_SYMBOL = Rack::Utils::SYMBOL_TO_STATUS_CODE.invert
 
         MSG_MATCHER_NAME =
@@ -66,13 +68,6 @@ module RuboCop
           offense_for_matcher(node) || offense_for_response_status(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            replacement = replace_matcher(node) || replace_response_status(node)
-            corrector.replace(node.source_range, replacement)
-          end
-        end
-
         private
 
         def offense_for_matcher(node)
@@ -85,13 +80,20 @@ module RuboCop
 
           return if offenses.empty?
 
-          add_offense(node, message: message_for(*offenses))
+          add_offense(node, message: message_for(*offenses), &corrector(node))
         end
 
         def offense_for_response_status(node)
           return unless response_status_eq?(node)
 
-          add_offense(node, message: message_for(MSG_RESPONSE_STATUS))
+          add_offense(node, message: message_for(MSG_RESPONSE_STATUS), &corrector(node))
+        end
+
+        def corrector(node)
+          lambda do |corrector|
+            replacement = replace_matcher(node) || replace_response_status(node)
+            corrector.replace(node.source_range, replacement)
+          end
         end
 
         def replace_matcher(node)

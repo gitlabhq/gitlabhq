@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module API
-      class GrapeArrayMissingCoerce < RuboCop::Cop::Cop
+      class GrapeArrayMissingCoerce < RuboCop::Cop::Base
         # This cop checks that Grape API parameters using an Array type
         # implement a coerce_with method:
         #

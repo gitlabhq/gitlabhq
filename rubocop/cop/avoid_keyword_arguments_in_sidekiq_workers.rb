@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Cop that blacklists keyword arguments usage in Sidekiq workers
-    class AvoidKeywordArgumentsInSidekiqWorkers < RuboCop::Cop::Cop
+    class AvoidKeywordArgumentsInSidekiqWorkers < RuboCop::Cop::Base
       MSG = "Do not use keyword arguments in Sidekiq workers. " \
         "For details, check https://github.com/mperham/sidekiq/issues/2372"
       OBSERVED_METHOD = :perform
@@ -13,7 +13,7 @@ module RuboCop
 
         node.arguments.each do |argument|
           if argument.type == :kwarg || argument.type == :kwoptarg
-            add_offense(node, location: :expression)
+            add_offense(node)
           end
         end
       end

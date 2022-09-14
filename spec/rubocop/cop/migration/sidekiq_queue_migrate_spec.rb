@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/sidekiq_queue_migrate'
 
 RSpec.describe RuboCop::Cop::Migration::SidekiqQueueMigrate do
-  subject(:cop) { described_class.new }
-
   def source(meth = 'change')
     "def #{meth}; sidekiq_queue_migrate 'queue', to: 'new_queue'; end"
   end

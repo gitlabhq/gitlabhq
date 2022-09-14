@@ -466,6 +466,48 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.jobs_count_in_alive_pipelines' do
+    before do
+      ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
+        alive_pipeline = create(:ci_pipeline, status: status, project: project)
+        create(:ci_build, pipeline: alive_pipeline)
+        create(:ci_bridge, pipeline: alive_pipeline)
+      end
+
+      completed_pipeline = create(:ci_pipeline, :success, project: project)
+      create(:ci_build, pipeline: completed_pipeline)
+
+      old_pipeline = create(:ci_pipeline, :running, project: project, created_at: 2.days.ago)
+      create(:ci_build, pipeline: old_pipeline)
+    end
+
+    it 'includes all jobs in alive pipelines created in the last 24 hours' do
+      expect(described_class.jobs_count_in_alive_pipelines)
+        .to eq(::Ci::HasStatus::ALIVE_STATUSES.count * 2)
+    end
+  end
+
+  describe '.builds_count_in_alive_pipelines' do
+    before do
+      ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
+        alive_pipeline = create(:ci_pipeline, status: status, project: project)
+        create(:ci_build, pipeline: alive_pipeline)
+        create(:ci_bridge, pipeline: alive_pipeline)
+      end
+
+      completed_pipeline = create(:ci_pipeline, :success, project: project)
+      create(:ci_build, pipeline: completed_pipeline)
+
+      old_pipeline = create(:ci_pipeline, :running, project: project, created_at: 2.days.ago)
+      create(:ci_build, pipeline: old_pipeline)
+    end
+
+    it 'includes all builds in alive pipelines created in the last 24 hours' do
+      expect(described_class.builds_count_in_alive_pipelines)
+        .to eq(::Ci::HasStatus::ALIVE_STATUSES.count)
+    end
+  end
+
   describe '#merge_request?' do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be_with_reload(:pipeline) do

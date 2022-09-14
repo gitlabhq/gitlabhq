@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that checks if a spec file exists for any migration using
       # `update_column_in_batches`.
-      class UpdateColumnInBatches < RuboCop::Cop::Cop
+      class UpdateColumnInBatches < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'Migration running `update_column_in_batches` must have a spec file at' \
@@ -19,9 +19,9 @@ module RuboCop
 
           spec_path = spec_filename(node)
 
-          unless File.exist?(File.expand_path(spec_path, rails_root))
-            add_offense(node, location: :expression, message: format(MSG, spec_path))
-          end
+          return if File.exist?(File.expand_path(spec_path, rails_root))
+
+          add_offense(node, message: format(MSG, spec_path))
         end
 
         private

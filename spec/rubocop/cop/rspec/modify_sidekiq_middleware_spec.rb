@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/modify_sidekiq_middleware'
 
 RSpec.describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware do
-  subject(:cop) { described_class.new }
-
   it 'registers an offense and corrects', :aggregate_failures do
     expect_offense(<<~CODE)
       Sidekiq::Testing.server_middleware do |chain|

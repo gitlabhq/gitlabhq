@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Cop that rejects the usage of `User#admin?`
-    class UserAdmin < RuboCop::Cop::Cop
+    class UserAdmin < RuboCop::Cop::Base
       MSG = 'Direct calls to `User#admin?` to determine admin status should be ' \
         'avoided as they will not take into account the policies framework ' \
         'and will ignore Admin Mode if enabled. Please use a policy check ' \
@@ -26,7 +26,7 @@ module RuboCop
       def on_handler(node)
         return unless admin_call?(node)
 
-        add_offense(node, location: :selector)
+        add_offense(node.loc.selector)
       end
     end
   end

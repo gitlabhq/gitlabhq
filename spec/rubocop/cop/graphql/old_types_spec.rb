@@ -7,8 +7,6 @@ require_relative '../../../../rubocop/cop/graphql/old_types'
 RSpec.describe RuboCop::Cop::Graphql::OldTypes do
   using RSpec::Parameterized::TableSyntax
 
-  subject(:cop) { described_class.new }
-
   where(:old_type, :message) do
     'GraphQL::ID_TYPE'        | 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'
     'GraphQL::INT_TYPE'       | 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'

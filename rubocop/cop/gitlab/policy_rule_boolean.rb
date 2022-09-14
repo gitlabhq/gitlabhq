@@ -22,7 +22,7 @@ module RuboCop
       # # good
       # rule { conducts_electricity & can?(:magnetize) }.enable :motor
       # rule { ~conducts_electricity & batteries }.enable :motor
-      class PolicyRuleBoolean < RuboCop::Cop::Cop
+      class PolicyRuleBoolean < RuboCop::Cop::Base
         def_node_search :has_and_operator?, <<~PATTERN
           (and ...)
         PATTERN

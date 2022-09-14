@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/factories_in_migration_specs'
 
 RSpec.describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do
-  subject(:cop) { described_class.new }
-
   shared_examples 'an offensive factory call' do |namespace|
     %i[build build_list create create_list attributes_for].each do |forbidden_method|
       namespaced_forbidden_method = "#{namespace}#{forbidden_method}(:user)"

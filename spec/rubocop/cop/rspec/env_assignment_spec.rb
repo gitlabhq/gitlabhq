@@ -10,8 +10,6 @@ RSpec.describe RuboCop::Cop::RSpec::EnvAssignment do
 
   let(:source_file) { 'spec/foo_spec.rb' }
 
-  subject(:cop) { described_class.new }
-
   shared_examples 'an offensive and correction ENV#[]= call' do |content, autocorrected_content|
     it "registers an offense for `#{content}` and corrects", :aggregate_failures do
       expect_offense(<<~CODE)

@@ -9,7 +9,7 @@ module RuboCop
       #
       # The files set in `tmp/feature_flags/*.used` can then be used for verification purpose.
       #
-      class MarkUsedFeatureFlags < RuboCop::Cop::Cop
+      class MarkUsedFeatureFlags < RuboCop::Cop::Base
         include RuboCop::CodeReuseHelpers
 
         FEATURE_METHODS = %i[enabled? disabled?].freeze

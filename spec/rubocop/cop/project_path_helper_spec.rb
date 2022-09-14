@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/project_path_helper'
 
 RSpec.describe RuboCop::Cop::ProjectPathHelper do
-  subject(:cop) { described_class.new }
-
   context "when using namespace_project with the project's namespace" do
     let(:source) { 'edit_namespace_project_issue_path(@issue.project.namespace, @issue.project, @issue)' }
     let(:correct_source) { 'edit_project_issue_path(@issue.project, @issue)' }

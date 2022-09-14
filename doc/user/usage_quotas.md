@@ -61,7 +61,7 @@ Prerequisites:
 - To view storage usage for a namespace, you must have the Owner role for the namespace.
 
 1. Go to your project or namespace:
-   - For a project, on the top bar, select **Menu > Projects** and find your project.
+   - For a project, on the top bar, select **Main menu > Projects > View all projects** and find your project.
    - For a namespace, enter the URL in your browser's toolbar.
 1. From the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Storage** tab.

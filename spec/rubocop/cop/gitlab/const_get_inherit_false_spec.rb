@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/const_get_inherit_false'
 
 RSpec.describe RuboCop::Cop::Gitlab::ConstGetInheritFalse do
-  subject(:cop) { described_class.new }
-
   context 'Object.const_get' do
     it 'registers an offense with no 2nd argument and corrects' do
       expect_offense(<<~PATTERN)

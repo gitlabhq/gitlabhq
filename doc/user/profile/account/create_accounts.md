@@ -33,7 +33,7 @@ Prerequisites:
 
 To create a user manually:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users** (`/admin/users`).
 1. Select **New user**.
 1. Complete the fields.

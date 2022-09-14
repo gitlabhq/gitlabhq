@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/finder_with_find_by'
 
 RSpec.describe RuboCop::Cop::Gitlab::FinderWithFindBy do
-  subject(:cop) { described_class.new }
-
   context 'when calling execute.find' do
     it 'registers an offense and corrects' do
       expect_offense(<<~CODE)

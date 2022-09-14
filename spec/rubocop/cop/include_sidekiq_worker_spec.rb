@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/include_sidekiq_worker'
 
 RSpec.describe RuboCop::Cop::IncludeSidekiqWorker do
-  subject(:cop) { described_class.new }
-
   context 'when `Sidekiq::Worker` is included' do
     it 'registers an offense and corrects', :aggregate_failures do
       expect_offense(<<~CODE)

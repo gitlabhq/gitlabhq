@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/union'
 
 RSpec.describe RuboCop::Cop::Gitlab::Union do
-  subject(:cop) { described_class.new }
-
   it 'flags the use of Gitlab::SQL::Union.new' do
     expect_offense(<<~SOURCE)
     Gitlab::SQL::Union.new([foo])

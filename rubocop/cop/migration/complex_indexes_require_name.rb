@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class ComplexIndexesRequireName < RuboCop::Cop::Cop
+      class ComplexIndexesRequireName < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'indexes added with custom options must be explicitly named'
@@ -32,7 +32,7 @@ module RuboCop
           node.each_descendant(:send) do |send_node|
             next unless create_table_with_index_offense?(send_node) || add_index_offense?(send_node)
 
-            add_offense(send_node, location: :selector)
+            add_offense(send_node.loc.selector)
           end
         end
 

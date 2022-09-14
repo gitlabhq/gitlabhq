@@ -14,4 +14,7 @@ RSpec.configure do |config|
   config.define_derived_metadata(file_path: %r{spec/rubocop}) do |metadata|
     metadata[:type] = :rubocop
   end
+
+  # Include config shared context for all cop specs.
+  config.include_context 'config', type: :rubocop
 end

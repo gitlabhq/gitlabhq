@@ -19,7 +19,7 @@ Group push rules allow group maintainers to set
 
 In GitLab 15.4 and later, to configure push rules for a group:
 
-1. On the left sidebar, select Push rules. 
+1. On the left sidebar, select **Push rules**.
 1. Select the settings you want.
 1. Select **Save Push Rules**.
 
@@ -50,7 +50,8 @@ configured by an administrator.
 
 To change the permitted Git access protocols for a group:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
@@ -90,7 +91,8 @@ You should consider some security implications before configuring IP address res
 
 To restrict group access by IP address:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
@@ -109,7 +111,8 @@ You can prevent users with email addresses in specific domains from being added 
 
 To restrict group access by domain:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
 1. Select **Save changes**.
@@ -152,7 +155,7 @@ If you prevent group sharing outside the hierarchy for the **Animals** group:
 
 To prevent sharing outside of the group's hierarchy:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
@@ -166,7 +169,8 @@ to enable tighter control over project access.
 
 To prevent a project from being shared with other groups:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
@@ -179,7 +183,7 @@ added to a project lose access when the setting is enabled.
 As a group owner, you can prevent non-members from requesting access to
 your group.
 
-1. On the top bar, select **Menu > Groups**.
+1. On the top bar, **Main menu > Groups > View all groups** and find your group.
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
@@ -201,7 +205,8 @@ If even one is set to `true`, then the group does not allow outside forks.
 
 To prevent projects from being forked outside the group:
 
-1. Go to the top-level group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
@@ -222,8 +227,8 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 
 To prevent members from being added to projects in a group:
 
-1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions and group features** section.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
 1. Select **Save changes**.
 
@@ -269,7 +274,8 @@ To create group links via filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. Go to your group's **Group information > Members** page.
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Group information > Members**.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
 1. Select **Edit permissions** in the modal.
 

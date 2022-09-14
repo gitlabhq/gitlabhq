@@ -6,7 +6,7 @@ module RuboCop
     module Migration
       # add_reference can only be used with newly created tables.
       # Additionally, the cop here checks that we create an index for the foreign key, too.
-      class AddReference < RuboCop::Cop::Cop
+      class AddReference < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`add_reference` requires downtime for existing tables, use `add_concurrent_foreign_key` instead. When used for new tables, `index: true` or `index: { options... } is required.`'
@@ -28,12 +28,12 @@ module RuboCop
             # Using "add_reference" is fine for newly created tables as there's no
             # data in these tables yet.
             if existing_table?(new_tables, first_arg)
-              add_offense(send_node, location: :selector)
+              add_offense(send_node.loc.selector)
             end
 
             # We require an index on the foreign key column.
             if index_missing?(node)
-              add_offense(send_node, location: :selector)
+              add_offense(send_node.loc.selector)
             end
           end
         end

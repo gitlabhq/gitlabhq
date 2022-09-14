@@ -31,7 +31,7 @@ with sibling pages listed in alphabetical order. To view a list of all pages, se
 
 To access a project wiki:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. To display the wiki, either:
    - On the left sidebar, select **Wiki**.
    - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
@@ -284,7 +284,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 
 To add a link to an external wiki from a project's left sidebar:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
@@ -300,7 +300,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 
 To hide the link to an external wiki:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. In the **Enable integration** section, clear the **Active** checkbox.
@@ -310,7 +310,7 @@ To hide the link to an external wiki:
 
 To disable a project's internal wiki:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Go to your project and select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find **Wiki** and toggle it off (in gray).

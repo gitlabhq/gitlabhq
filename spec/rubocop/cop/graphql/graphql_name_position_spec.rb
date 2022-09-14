@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/graphql_name_position'
 
 RSpec.describe RuboCop::Cop::Graphql::GraphqlNamePosition do
-  subject(:cop) { described_class.new }
-
   it 'adds an offense when graphql_name is not on the first line' do
     expect_offense(<<~TYPE)
       module Types

@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/idempotent_worker'
 
 RSpec.describe RuboCop::Cop::Scalability::IdempotentWorker do
-  subject(:cop) { described_class.new }
-
   before do
     allow(cop)
       .to receive(:in_worker?)

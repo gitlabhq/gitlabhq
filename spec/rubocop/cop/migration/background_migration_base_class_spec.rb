@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/background_migration_base_class'
 
 RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationBaseClass do
-  subject(:cop) { described_class.new }
-
   context 'when the migration class inherits from BatchedMigrationJob' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)

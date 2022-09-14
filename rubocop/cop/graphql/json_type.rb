@@ -18,7 +18,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class JSONType < RuboCop::Cop::Cop
+      class JSONType < RuboCop::Cop::Base
         MSG = 'Avoid using GraphQL::Types::JSON. See: ' \
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#json'
 
@@ -32,7 +32,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, location: :expression) if has_json_type?(node)
+          add_offense(node) if has_json_type?(node)
         end
       end
     end

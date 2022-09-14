@@ -5,7 +5,7 @@ module RuboCop
     module Gitlab
       # Cop that disallows the use of `Gitlab::SQL::Union`, in favour of using
       # the `FromUnion` module.
-      class Union < RuboCop::Cop::Cop
+      class Union < RuboCop::Cop::Base
         MSG = 'Use the `FromUnion` concern, instead of using `Gitlab::SQL::Union` directly'
 
         def_node_matcher :raw_union?, <<~PATTERN
@@ -15,7 +15,7 @@ module RuboCop
         def on_send(node)
           return unless raw_union?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

@@ -120,7 +120,7 @@ Prerequisite:
 
 To view the logs for an alert:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > Alerts**.
 1. Select the alert you want to view.
 1. Below the title of the alert, select the **Metrics** tab.
@@ -198,7 +198,7 @@ To assign an alert:
 
 1. Display the list of current alerts:
 
-   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the top bar, select **Main menu > Projects** and find your project.
    1. On the left sidebar, select **Monitor > Alerts**.
 
 1. Select your desired alert to display its details.
@@ -226,7 +226,7 @@ add a to-do item:
 
 1. Display the list of current alerts:
 
-   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the top bar, select **Main menu > Projects** and find your project.
    1. On the left sidebar, select **Monitor > Alerts**.
 
 1. Select your desired alert to display its **Alert Management Details View**.

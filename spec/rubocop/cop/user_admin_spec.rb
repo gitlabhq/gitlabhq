@@ -6,8 +6,6 @@ require 'rubocop'
 require_relative '../../../rubocop/cop/user_admin'
 
 RSpec.describe RuboCop::Cop::UserAdmin do
-  subject(:cop) { described_class.new }
-
   it 'flags a method call' do
     expect_offense(<<~SOURCE)
       user.admin?

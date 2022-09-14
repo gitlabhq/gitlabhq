@@ -12,7 +12,9 @@ module RuboCop
       #
       #   # good
       #   HTTParty.get(url, basic_auth: { username: 'foo' })
-      class HTTPartyBasicAuth < RuboCop::Cop::Cop
+      class HTTPartyBasicAuth < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MESSAGE = "`basic_auth: { user: ... }` does not work - replace `user:` with `username:`"
 
         RESTRICT_ON_SEND = %i(get put post delete).freeze
@@ -35,12 +37,8 @@ module RuboCop
         def on_send(node)
           return unless m = httparty_basic_auth?(node)
 
-          add_offense(m, location: :expression, message: MESSAGE)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, 'username')
+          add_offense(m, message: MESSAGE) do |corrector|
+            corrector.replace(m, 'username')
           end
         end
       end

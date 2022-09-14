@@ -2,7 +2,9 @@
 
 module RuboCop
   module Cop
-    class ProjectPathHelper < RuboCop::Cop::Cop
+    class ProjectPathHelper < RuboCop::Cop::Base
+      extend RuboCop::Cop::AutoCorrector
+
       MSG = 'Use short project path helpers without explicitly passing the namespace: ' \
         '`foo_project_bar_path(project, bar)` instead of ' \
         '`foo_namespace_project_bar_path(project.namespace, project, bar)`.'
@@ -19,18 +21,14 @@ module RuboCop
         return unless method_name(namespace_expr) == :namespace
         return unless receiver(namespace_expr) == project_expr
 
-        add_offense(node, location: :selector)
-      end
+        add_offense(node.loc.selector) do |corrector|
+          helper_name = method_name(node).to_s.sub('namespace_project', 'project')
 
-      def autocorrect(node)
-        helper_name = method_name(node).to_s.sub('namespace_project', 'project')
+          arguments = arguments(node)
+          arguments.shift # Remove namespace argument
 
-        arguments = arguments(node)
-        arguments.shift # Remove namespace argument
+          replacement = "#{helper_name}(#{arguments.map(&:source).join(', ')})"
 
-        replacement = "#{helper_name}(#{arguments.map(&:source).join(', ')})"
-
-        lambda do |corrector|
           corrector.replace(node.source_range, replacement)
         end
       end

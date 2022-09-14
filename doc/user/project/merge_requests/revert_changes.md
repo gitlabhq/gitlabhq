@@ -30,7 +30,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests** and identify your merge request.
 1. Scroll to the merge request reports area, and find the report showing when the
    merge request was merged.
@@ -55,7 +55,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. If you know the merge request that contains the commit:
    1. On the left sidebar, select **Merge requests** and identify your merge request.
    1. Select **Commits**, then select the title of the commit you want to revert. GitLab displays the contents of the commit.

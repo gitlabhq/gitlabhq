@@ -33,7 +33,7 @@ Prerequisites:
 
 To create an issue:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Either:
 
    - On the left sidebar, select **Issues**, and then, in the top right corner, select **New issue**.
@@ -56,7 +56,7 @@ Prerequisites:
 
 To create an issue from a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
 1. In the top right corner, select **Select project to create issue**.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
@@ -103,7 +103,7 @@ Prerequisites:
 
 To create an issue from a project issue board:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Issues > Boards**.
 1. At the top of a board list, select **New issue** (**{plus-square}**).
 1. Enter the issue's title.
@@ -111,7 +111,7 @@ To create an issue from a project issue board:
 
 To create an issue from a group issue board:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Select **Issues > Boards**.
 1. At the top of a board list, select **New issue** (**{plus-square}**).
 1. Enter the issue's title.
@@ -138,7 +138,7 @@ Prerequisites:
 
 To email an issue to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Issues**.
 1. At the bottom of the page, select **Email a new issue to this project**.
 1. To copy the email address, select **Copy** (**{copy-to-clipboard}**).
@@ -271,7 +271,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
 1. Select **Edit issues**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -304,7 +304,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
 1. Select **Edit issues**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -470,7 +470,7 @@ Prerequisites:
 
 To disable automatic issue closing:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Default branch**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
@@ -598,7 +598,7 @@ GitLab displays the results on-screen, but you can also
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues > List**.
 1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
 

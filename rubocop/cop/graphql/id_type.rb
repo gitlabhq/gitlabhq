@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class IDType < RuboCop::Cop::Cop
+      class IDType < RuboCop::Cop::Base
         MSG = 'Do not use GraphQL::Types::ID, use a specific GlobalIDType instead'
 
         WHITELISTED_ARGUMENTS = %i[iid full_path project_path group_path target_project_path namespace_path].freeze

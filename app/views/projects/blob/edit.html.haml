@@ -2,6 +2,7 @@
 - page_title _("Edit"), @blob.path, @ref
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
+- add_page_specific_style 'page_bundles/editor'
 
 - if @conflict
   = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },

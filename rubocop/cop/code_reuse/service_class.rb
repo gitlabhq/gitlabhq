@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module CodeReuse
       # Cop that enforces various code reuse rules for Service classes.
-      class ServiceClass < RuboCop::Cop::Cop
+      class ServiceClass < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         IN_FINDER = 'Service classes can not be used in a Finder.'

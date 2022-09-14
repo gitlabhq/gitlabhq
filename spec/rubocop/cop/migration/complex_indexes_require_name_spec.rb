@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/complex_indexes_require_name'
 
 RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
-  subject(:cop) { described_class.new }
-
   context 'when in migration' do
     let(:msg) { 'indexes added with custom options must be explicitly named' }
 

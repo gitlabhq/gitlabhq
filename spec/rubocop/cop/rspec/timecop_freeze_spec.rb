@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/timecop_freeze'
 
 RSpec.describe RuboCop::Cop::RSpec::TimecopFreeze do
-  subject(:cop) { described_class.new }
-
   context 'when calling Timecop.freeze' do
     it 'registers an offense and corrects', :aggregate_failures do
       expect_offense(<<~CODE)

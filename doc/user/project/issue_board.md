@@ -618,6 +618,40 @@ into a different list. Learn about possible effects in [Dragging issues between 
 To move a list, select its top bar, and drag it horizontally.
 You can't move the **Open** and **Closed** lists, but you can hide them when editing an issue board.
 
+#### Move an issue to the start of the list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+
+You can move issues to the top of the list with a menu shortcut.
+
+Your issue is moved to the top of the list even if other issues are hidden by a filter.
+
+Prerequisites:
+
+- You must at least have the Reporter role for the project.
+
+To move an issue to the start of the list:
+
+1. In an issue board, hover over the card of the issue you want to move.
+1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to start of list**.
+
+#### Move an issue to the end of the list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+
+You can move issues to the bottom of the list with a menu shortcut.
+
+Your issue is moved to the bottom of the list even if other issues are hidden by a filter.
+
+Prerequisites:
+
+- You must at least have the Reporter role for the project.
+
+To move an issue to the end of the list:
+
+1. In an issue board, hover over the card of the issue you want to move.
+1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to end of list**.
+
 #### Dragging issues between lists
 
 To move an issue to another list, select the issue card and drag it onto that list.

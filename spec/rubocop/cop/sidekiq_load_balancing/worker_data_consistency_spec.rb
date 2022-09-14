@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/sidekiq_load_balancing/worker_data_consistency'
 
 RSpec.describe RuboCop::Cop::SidekiqLoadBalancing::WorkerDataConsistency do
-  subject(:cop) { described_class.new }
-
   before do
     allow(cop)
       .to receive(:in_worker?)

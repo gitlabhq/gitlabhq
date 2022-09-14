@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that checks if datetime data type is added with timezone information.
-      class Datetime < RuboCop::Cop::Cop
+      class Datetime < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'Do not use the `%s` data type, use `datetime_with_timezone` instead'
@@ -19,7 +19,7 @@ module RuboCop
             method_name = send_node.children[1]
 
             if method_name == :datetime || method_name == :timestamp
-              add_offense(send_node, location: :selector, message: format(MSG, method_name))
+              add_offense(send_node.loc.selector, message: format(MSG, method_name))
             end
           end
         end
@@ -34,7 +34,7 @@ module RuboCop
             last_argument = descendant.children.last
 
             if last_argument == :datetime || last_argument == :timestamp
-              add_offense(node, location: :expression, message: format(MSG, last_argument))
+              add_offense(node, message: format(MSG, last_argument))
             end
           end
         end

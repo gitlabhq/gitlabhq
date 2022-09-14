@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/gid_expected_type'
 
 RSpec.describe RuboCop::Cop::Graphql::GIDExpectedType do
-  subject(:cop) { described_class.new }
-
   it 'adds an offense when there is no expected_type parameter' do
     expect_offense(<<~TYPE)
       GitlabSchema.object_from_id(received_id)

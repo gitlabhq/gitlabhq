@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     # Checks for a project routes outside '/-/' scope.
     # For more information see: https://gitlab.com/gitlab-org/gitlab/issues/29572
-    class PutProjectRoutesUnderScope < RuboCop::Cop::Cop
+    class PutProjectRoutesUnderScope < RuboCop::Cop::Base
       include RoutesUnderScope
 
       MSG = 'Put new project routes under /-/ scope'

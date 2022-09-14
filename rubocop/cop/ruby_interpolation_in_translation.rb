@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    class RubyInterpolationInTranslation < RuboCop::Cop::Cop
+    class RubyInterpolationInTranslation < RuboCop::Cop::Base
       MSG = "Don't use ruby interpolation \#{} inside translated strings, instead use \%{}"
 
       TRANSLATION_METHODS = ':_ :s_ :N_ :n_'

@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/avoid_feature_category_not_owned'
 
 RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
-  subject(:cop) { described_class.new }
-
   shared_examples 'defining feature category on a class' do
     it 'flags a method call on a class' do
       expect_offense(<<~SOURCE)
@@ -31,7 +29,7 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
 
   context 'in controllers' do
     before do
-      allow(subject).to receive(:in_controller?).and_return(true)
+      allow(cop).to receive(:in_controller?).and_return(true)
     end
 
     it_behaves_like 'defining feature category on a class'
@@ -39,7 +37,7 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
 
   context 'in workers' do
     before do
-      allow(subject).to receive(:in_worker?).and_return(true)
+      allow(cop).to receive(:in_worker?).and_return(true)
     end
 
     it_behaves_like 'defining feature category on a class'
@@ -47,7 +45,7 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
 
   context 'for grape endpoints' do
     before do
-      allow(subject).to receive(:in_api?).and_return(true)
+      allow(cop).to receive(:in_api?).and_return(true)
     end
 
     it_behaves_like 'defining feature category on a class'

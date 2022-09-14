@@ -14,8 +14,6 @@ RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass do
                         })
   end
 
-  subject(:cop) { described_class.new(config) }
-
   context 'with class definition' do
     context 'when inheriting from allowed superclass' do
       it 'does not register an offense' do

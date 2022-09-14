@@ -36,7 +36,7 @@ you must enable CRM features for the subgroup.
 
 To enable customer relations management in a group or subgroup:
 
-1. On the top bar, select **Menu > Groups** and find your group or subgroup.
+1. On the top bar, select **Main menu > Groups** and find your group or subgroup.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Customer relations is enabled**.
@@ -48,7 +48,7 @@ To enable customer relations management in a group or subgroup:
 
 To view a group's contacts:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
 
 ![Contacts list](crm_contacts_v14_10.png)
@@ -57,7 +57,7 @@ To view a group's contacts:
 
 To create a contact:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
 1. Select **New contact**.
 1. Complete all required fields.
@@ -70,7 +70,7 @@ contacts using the GraphQL API.
 
 To edit an existing contact:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
 1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
 1. Edit the required fields.
@@ -85,7 +85,7 @@ contacts using the GraphQL API.
 
 To view a group's organizations:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Organizations**.
 
 ![Organizations list](crm_organizations_v14_10.png)
@@ -94,7 +94,7 @@ To view a group's organizations:
 
 To create an organization:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Organizations**.
 1. Select **New organization**.
 1. Complete all required fields.
@@ -107,7 +107,7 @@ organizations using the GraphQL API.
 
 To edit an existing organization:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Organizations**.
 1. Next to the organization you wish to edit, select **Edit** (**{pencil}**).
 1. Edit the required fields.
@@ -125,7 +125,7 @@ issues are linked to contacts matching the email addresses in the sender and CC 
 
 To view a contact's issues, select a contact from the issue sidebar, or:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
 1. Next to the contact whose issues you wish to view, select **View issues** (**{issues}**).
 
@@ -133,7 +133,7 @@ To view a contact's issues, select a contact from the issue sidebar, or:
 
 To view an organization's issues:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Organizations**.
 1. Next to the organization whose issues you wish to view, select **View issues** (**{issues}**).
 

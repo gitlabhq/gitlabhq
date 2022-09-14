@@ -12,7 +12,7 @@ module RuboCop
       #   # bad because pipeline_id points to a large table
       #   distinct_count(Ci::Build, :commit_id)
       #
-      class DistinctCountByLargeForeignKey < RuboCop::Cop::Cop
+      class DistinctCountByLargeForeignKey < RuboCop::Cop::Base
         MSG = 'Avoid doing `%s` on foreign keys for large tables having above 100 million rows.'
 
         def_node_matcher :distinct_count?, <<-PATTERN
@@ -25,7 +25,7 @@ module RuboCop
             next if batch_set_to_false?(method_arguments[2])
             next if allowed_foreign_key?(method_arguments[1])
 
-            add_offense(node, location: :selector, message: format(MSG, method_name))
+            add_offense(node.loc.selector, message: format(MSG, method_name))
           end
         end
 

@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/refer_to_index_by_name'
 
 RSpec.describe RuboCop::Cop::Migration::ReferToIndexByName do
-  subject(:cop) { described_class.new }
-
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

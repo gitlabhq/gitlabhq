@@ -20,7 +20,7 @@ module RuboCop
       # Feature.enable_percentage_of_time(:x, 100)
       # Feature.remove(:x)
       #
-      class AvoidFeatureGet < RuboCop::Cop::Cop
+      class AvoidFeatureGet < RuboCop::Cop::Base
         MSG = 'Use `stub_feature_flags` method instead of `Feature.get`. ' \
           'See doc/development/feature_flags/index.md#feature-flags-in-tests for more information.'
 
@@ -31,7 +31,7 @@ module RuboCop
         def on_send(node)
           return unless feature_get?(node)
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
       end
     end

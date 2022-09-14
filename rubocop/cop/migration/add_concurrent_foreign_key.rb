@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that checks if `add_concurrent_foreign_key` is used instead of
       # `add_foreign_key`.
-      class AddConcurrentForeignKey < RuboCop::Cop::Cop
+      class AddConcurrentForeignKey < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`add_foreign_key` requires downtime, use `add_concurrent_foreign_key` instead'
@@ -29,7 +29,7 @@ module RuboCop
           return if in_with_lock_retries?(node)
           return if not_valid_fk?(node)
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
 
         def method_name(node)

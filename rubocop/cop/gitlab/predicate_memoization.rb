@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Gitlab
-      class PredicateMemoization < RuboCop::Cop::Cop
+      class PredicateMemoization < RuboCop::Cop::Base
         MSG = <<~EOL
           Avoid using `@value ||= query` inside predicate methods in order to
           properly memoize `false` or `nil` values.

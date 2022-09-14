@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/performance/active_record_subtransactions'
 
 RSpec.describe RuboCop::Cop::Performance::ActiveRecordSubtransactions do
-  subject(:cop) { described_class.new }
-
   let(:message) { described_class::MSG }
 
   context 'when calling #transaction with only requires_new: true' do

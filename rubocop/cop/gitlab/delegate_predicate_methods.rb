@@ -21,7 +21,7 @@ module RuboCop
       #   def is_foo?
       #     !!bar&.is_foo?
       #   end
-      class DelegatePredicateMethods < RuboCop::Cop::Cop
+      class DelegatePredicateMethods < RuboCop::Cop::Base
         MSG = "Using `delegate` with `allow_nil` on the following predicate methods is discouraged: %s."
         RESTRICT_ON_SEND = %i[delegate].freeze
         def_node_matcher :predicate_allow_nil_option, <<~PATTERN

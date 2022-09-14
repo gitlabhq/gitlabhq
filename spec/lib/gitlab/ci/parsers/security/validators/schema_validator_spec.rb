@@ -19,17 +19,36 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
     }
   end
 
+  let(:report_data) do
+    {
+      'scan' => {
+        'analyzer' => {
+          'id' => 'my-dast-analyzer',
+          'name' => 'My DAST analyzer',
+          'version' => '0.1.0',
+          'vendor' => { 'name' => 'A DAST analyzer' }
+        },
+        'end_time' => '2020-01-28T03:26:02',
+        'scanned_resources' => [],
+        'scanner' => {
+          'id' => 'my-dast-scanner',
+          'name' => 'My DAST scanner',
+          'version' => '0.2.0',
+          'vendor' => { 'name' => 'A DAST scanner' }
+        },
+        'start_time' => '2020-01-28T03:26:01',
+        'status' => 'success',
+        'type' => 'dast'
+      },
+      'version' => report_version,
+      'vulnerabilities' => []
+    }
+  end
+
   let(:validator) { described_class.new(report_type, report_data, report_version, project: project, scanner: scanner) }
 
   shared_examples 'report is valid' do
     context 'and the report is valid' do
-      let(:report_data) do
-        {
-          'version' => report_version,
-          'vulnerabilities' => []
-        }
-      end
-
       it { is_expected.to be_truthy }
     end
   end
@@ -245,13 +264,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
   shared_examples 'report is valid with no error' do
     context 'and the report is valid' do
-      let(:report_data) do
-        {
-          'version' => report_version,
-          'vulnerabilities' => []
-        }
-      end
-
       it { is_expected.to be_empty }
     end
   end
@@ -278,7 +290,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
         let(:expected_errors) do
           [
-            'root is missing required keys: vulnerabilities'
+            'root is missing required keys: scan, vulnerabilities'
           ]
         end
 

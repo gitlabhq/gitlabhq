@@ -51,7 +51,7 @@ module RuboCop
     #   end
     # end
     #
-    class StaticTranslationDefinition < RuboCop::Cop::Cop
+    class StaticTranslationDefinition < RuboCop::Cop::Base
       MSG = <<~TEXT.tr("\n", ' ')
         Translation is defined in static scope.
         Keep translations dynamic. See https://docs.gitlab.com/ee/development/i18n/externalization.html#keep-translations-dynamic

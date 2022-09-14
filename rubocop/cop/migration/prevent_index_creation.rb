@@ -5,7 +5,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that checks if new indexes are introduced to forbidden tables.
-      class PreventIndexCreation < RuboCop::Cop::Cop
+      class PreventIndexCreation < RuboCop::Cop::Base
         include MigrationHelpers
 
         FORBIDDEN_TABLES = %i[ci_builds].freeze
@@ -41,7 +41,7 @@ module RuboCop
           return unless in_migration?(node)
 
           node.each_descendant(:send) do |send_node|
-            add_offense(send_node, location: :selector) if offense?(send_node)
+            add_offense(send_node.loc.selector) if offense?(send_node)
           end
         end
 

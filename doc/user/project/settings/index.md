@@ -13,7 +13,7 @@ Use the **Settings** page to manage the configuration options in your [project](
 
 You must have at least the Maintainer role to view project settings.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. To display all settings in a section, select **Expand**.
 1. Optional. Use the search box to find a setting.
@@ -23,7 +23,7 @@ You must have at least the Maintainer role to view project settings.
 Use the project general settings to edit your project details.
 
 1. Sign in to GitLab with at least the Maintainer role.
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. In the **Project name** text box, enter your project name.
 1. In the **Project description** text box, enter your project description.
@@ -35,7 +35,7 @@ Use topics to categorize projects and find similar new projects.
 
 To assign topics to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings** > **General**.
 1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
 1. Select **Save changes**.
@@ -226,7 +226,7 @@ This alternative ensures the compliance pipeline does not re-start the parent pi
 
 To configure visibility, features, and permissions for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. To change the project visibility, select the dropdown list. If you select to **Public**, you limit access to some features to **Only Project Members**.
@@ -286,7 +286,7 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 
 To disable the CVE identifier request option in issues in your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
@@ -298,7 +298,7 @@ Prerequisites:
 
 - You must be an Owner of the project to disable email notifications related to the project.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear the **Disable email notifications** checkbox.
@@ -339,7 +339,7 @@ other features are read-only. Archived projects are also hidden from project lis
 
 To archive a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive project**.
@@ -355,7 +355,7 @@ Prerequisites:
 - To unarchive a project, you must be an administrator or a project Owner.
 
 1. Find the archived project.
-   1. On the top bar, select **Menu > Project**.
+   1. On the top bar, select **Main menu > Projects > View all projects**.
    1. Select **Explore projects**.
    1. In the **Sort projects** dropdown list, select **Show archived projects**.
    1. In the **Filter by name** field, enter the project name.
@@ -380,7 +380,7 @@ When you change the repository path, users may experience issues if they push to
 
 To rename a repository:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Change path** text box, edit the path.
@@ -402,7 +402,7 @@ Prerequisites:
 
 To transfer a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
@@ -433,7 +433,7 @@ Prerequisite:
 
 To delete a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Delete project" section, select **Delete project**.
@@ -472,7 +472,7 @@ Prerequisites:
 
 To immediately delete a project marked for deletion:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Permanently delete project" section, select **Delete project**.
@@ -504,7 +504,7 @@ To restore the fork relationship, [use the API](../../../api/projects.md#create-
 
 To remove a fork relationship:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.

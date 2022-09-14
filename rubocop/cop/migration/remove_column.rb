@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that checks if remove_column is used in a regular (not
       # post-deployment) migration.
-      class RemoveColumn < RuboCop::Cop::Cop
+      class RemoveColumn < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`remove_column` must only be used in post-deployment migrations'
@@ -22,7 +22,7 @@ module RuboCop
             send_method = send_node.children[1]
 
             if send_method == :remove_column
-              add_offense(send_node, location: :selector)
+              add_offense(send_node.loc.selector)
             end
           end
         end

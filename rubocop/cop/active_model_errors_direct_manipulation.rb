@@ -6,7 +6,7 @@ module RuboCop
     # in preparation to upgrade to Rails 6.1
     #
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/225874
-    class ActiveModelErrorsDirectManipulation < RuboCop::Cop::Cop
+    class ActiveModelErrorsDirectManipulation < RuboCop::Cop::Base
       MSG = 'Avoid manipulating errors hash directly. For more details check https://gitlab.com/gitlab-org/gitlab/-/issues/225874'
 
       MANIPULATIVE_METHODS = ":<< :append :clear :collect! :compact! :concat :delete :delete_at :delete_if :drop :drop_while :fill :filter! :keep_if :flatten! :insert :map! :pop :prepend :push :reject! :replace :reverse! :rotate! :select! :shift :shuffle! :slice! :sort! :sort_by! :uniq! :unshift"
@@ -50,10 +50,10 @@ module RuboCop
       PATTERN
 
       def on_send(node)
-        add_offense(node, location: :expression) if active_model_errors_root_assignment?(node)
-        add_offense(node, location: :expression) if active_model_errors_root_manipulation?(node)
-        add_offense(node, location: :expression) if active_model_errors_manipulation?(node)
-        add_offense(node, location: :expression) if active_model_errors_assignment?(node)
+        add_offense(node) if active_model_errors_root_assignment?(node)
+        add_offense(node) if active_model_errors_root_manipulation?(node)
+        add_offense(node) if active_model_errors_manipulation?(node)
+        add_offense(node) if active_model_errors_assignment?(node)
       end
     end
   end

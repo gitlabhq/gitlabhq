@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module RSpec
-      class WebMockEnable < RuboCop::Cop::Cop
+      class WebMockEnable < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         # This cop checks for `WebMock.disable_net_connect!` usage in specs and
         # replaces it with `webmock_enable!`
         #
@@ -24,13 +26,9 @@ module RuboCop
 
         def on_send(node)
           if webmock_disable_net_connect?(node)
-            add_offense(node, location: :expression, message: MESSAGE)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, 'webmock_enable!')
+            add_offense(node, message: MESSAGE) do |corrector|
+              corrector.replace(node, 'webmock_enable!')
+            end
           end
         end
       end

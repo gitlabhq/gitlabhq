@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that checks if indexes are removed in a concurrent manner.
-      class RemoveIndex < RuboCop::Cop::Cop
+      class RemoveIndex < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`remove_index` requires downtime, use `remove_concurrent_index` instead'
@@ -15,7 +15,7 @@ module RuboCop
           return unless in_migration?(node)
 
           node.each_descendant(:send) do |send_node|
-            add_offense(send_node, location: :selector) if method_name(send_node) == :remove_index
+            add_offense(send_node.loc.selector) if method_name(send_node) == :remove_index
           end
         end
 

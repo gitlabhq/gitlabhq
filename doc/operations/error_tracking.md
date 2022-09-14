@@ -46,7 +46,7 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
    Make sure to give the token at least the following scopes: `project:read`, `event:read`, and
    `event:write` (for resolving events).
 1. In GitLab, enable error tracking:
-   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the top bar, select **Main menu > Projects** and find your project.
    1. On the left sidebar, select **Monitor > Error Tracking**.
    1. Select **Enable error tracking**.
 1. In GitLab, ensure error tracking is active.

@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/background_migration_record'
 
 RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationRecord do
-  subject(:cop) { described_class.new }
-
   context 'outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~SOURCE)

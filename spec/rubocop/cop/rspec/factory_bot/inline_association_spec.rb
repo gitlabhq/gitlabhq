@@ -6,8 +6,6 @@ require 'rspec-parameterized'
 require_relative '../../../../../rubocop/cop/rspec/factory_bot/inline_association'
 
 RSpec.describe RuboCop::Cop::RSpec::FactoryBot::InlineAssociation do
-  subject(:cop) { described_class.new }
-
   shared_examples 'offense' do |code_snippet, autocorrected|
     # We allow `create` or `FactoryBot.create` or `::FactoryBot.create`
     let(:type) { code_snippet[/^(?:::)?(?:FactoryBot\.)?(\w+)/, 1] }

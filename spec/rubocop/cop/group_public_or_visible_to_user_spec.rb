@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::GroupPublicOrVisibleToUser do
     "Please ensure that you are not using it on its own and that the amount of rows being filtered is reasonable."
   end
 
-  subject(:cop) { described_class.new }
-
   it 'flags the use of Group.public_or_visible_to_user with a constant receiver' do
     expect_offense(<<~CODE)
       Group.public_or_visible_to_user

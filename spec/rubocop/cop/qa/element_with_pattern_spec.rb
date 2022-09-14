@@ -7,8 +7,6 @@ require_relative '../../../../rubocop/cop/qa/element_with_pattern'
 RSpec.describe RuboCop::Cop::QA::ElementWithPattern do
   let(:source_file) { 'qa/page.rb' }
 
-  subject(:cop) { described_class.new }
-
   context 'in a QA file' do
     before do
       allow(cop).to receive(:in_qa_file?).and_return(true)

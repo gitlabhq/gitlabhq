@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Gitlab
-      class Json < RuboCop::Cop::Cop
+      class Json < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MSG = <<~EOL
           Avoid calling `JSON` directly. Instead, use the `Gitlab::Json`
           wrapper. This allows us to alter the JSON parser being used.
@@ -14,19 +16,13 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node) if json_node?(node)
-        end
+          return unless json_node?(node)
 
-        def autocorrect(node)
-          autocorrect_json_node(node)
-        end
+          add_offense(node) do |corrector|
+            _, method_name, *arg_nodes = *node
 
-        def autocorrect_json_node(node)
-          _, method_name, *arg_nodes = *node
+            replacement = "Gitlab::Json.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
 
-          replacement = "Gitlab::Json.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
-
-          lambda do |corrector|
             corrector.replace(node.source_range, replacement)
           end
         end

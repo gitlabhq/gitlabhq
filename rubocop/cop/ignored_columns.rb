@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Cop that blacklists the usage of `ActiveRecord::Base.ignored_columns=` directly
-    class IgnoredColumns < RuboCop::Cop::Cop
+    class IgnoredColumns < RuboCop::Cop::Base
       USE_CONCERN_MSG = 'Use `IgnoredColumns` concern instead of adding to `self.ignored_columns`.'
       WRONG_MODEL_MSG = 'If the model exists in CE and EE, the column has to be ignored ' \
         'in the CE model. If the model only exists in EE, then it has to be added there.'
@@ -22,11 +22,11 @@ module RuboCop
 
       def on_send(node)
         if ignored_columns?(node)
-          add_offense(node, location: :expression, message: USE_CONCERN_MSG)
+          add_offense(node, message: USE_CONCERN_MSG)
         end
 
         if using_ignore?(node) && used_in_wrong_model?
-          add_offense(node, location: :expression, message: WRONG_MODEL_MSG)
+          add_offense(node, message: WRONG_MODEL_MSG)
         end
       end
 

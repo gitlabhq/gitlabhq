@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Database
       # Cop that checks if 'disable_referential_integrity' method is called.
-      class DisableReferentialIntegrity < RuboCop::Cop::Cop
+      class DisableReferentialIntegrity < RuboCop::Cop::Base
         MSG = <<~TEXT
         Do not use `disable_referential_integrity`, disable triggers in a safe
         transaction instead. Follow the format:

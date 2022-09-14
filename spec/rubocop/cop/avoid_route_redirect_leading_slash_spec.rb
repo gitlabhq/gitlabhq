@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_route_redirect_leading_slash'
 
 RSpec.describe RuboCop::Cop::AvoidRouteRedirectLeadingSlash do
-  subject(:cop) { described_class.new }
-
   before do
     allow(cop).to receive(:in_routes?).and_return(true)
   end

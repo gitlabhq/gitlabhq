@@ -163,7 +163,7 @@ module RuboCop
       each_send_node(node) do |send_node|
         next unless send_receiver_name_ends_with?(send_node, suffix)
 
-        add_offense(send_node, location: :expression, message: message)
+        add_offense(send_node, message: message)
       end
     end
 

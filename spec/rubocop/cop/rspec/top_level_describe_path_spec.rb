@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/top_level_describe_path'
 
 RSpec.describe RuboCop::Cop::RSpec::TopLevelDescribePath do
-  subject(:cop) { described_class.new }
-
   context 'when the file ends in _spec.rb' do
     it 'registers no offenses' do
       expect_no_offenses(<<~SOURCE, 'spec/foo_spec.rb')

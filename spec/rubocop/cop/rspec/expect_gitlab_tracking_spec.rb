@@ -6,8 +6,6 @@ require_relative '../../../../rubocop/cop/rspec/expect_gitlab_tracking'
 RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking do
   let(:source_file) { 'spec/foo_spec.rb' }
 
-  subject(:cop) { described_class.new }
-
   good_samples = [
     'expect_snowplow_event(category: nil, action: nil)',
     'expect_snowplow_event(category: "EventCategory", action: "event_action")',

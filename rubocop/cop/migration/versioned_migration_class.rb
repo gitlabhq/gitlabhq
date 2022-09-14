@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class VersionedMigrationClass < RuboCop::Cop::Cop
+      class VersionedMigrationClass < RuboCop::Cop::Base
         include MigrationHelpers
 
         ENFORCED_SINCE = 2021_09_02_00_00_00
@@ -26,13 +26,13 @@ module RuboCop
           return unless relevant_migration?(node)
           return unless activerecord_migration_class?(node)
 
-          add_offense(node, location: :expression, message: MSG_INHERIT)
+          add_offense(node, message: MSG_INHERIT)
         end
 
         def on_send(node)
           return unless relevant_migration?(node)
 
-          add_offense(node, location: :expression, message: MSG_INCLUDE) if includes_helpers?(node)
+          add_offense(node, message: MSG_INCLUDE) if includes_helpers?(node)
         end
 
         private

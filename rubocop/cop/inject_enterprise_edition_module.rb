@@ -4,7 +4,9 @@ module RuboCop
   module Cop
     # Cop that blacklists the injecting of extension specific modules before any lines which are not already injecting another module.
     # It allows multiple module injections as long as they're all at the end.
-    class InjectEnterpriseEditionModule < RuboCop::Cop::Cop
+    class InjectEnterpriseEditionModule < RuboCop::Cop::Base
+      extend RuboCop::Cop::AutoCorrector
+
       INVALID_LINE = 'Injecting extension modules must be done on the last line of this file' \
           ', outside of any class or module definitions'
 
@@ -34,7 +36,7 @@ module RuboCop
         return unless check_method?(node)
 
         if DISALLOW_METHODS.include?(node.children[1])
-          add_offense(node, message: DISALLOWED_METHOD)
+          add_offense(node, message: DISALLOWED_METHOD, &corrector(node))
         else
           verify_line_number(node)
           verify_argument_type(node)
@@ -52,7 +54,7 @@ module RuboCop
         if allowed_line
           ignore_node(node)
         elsif line < last_line
-          add_offense(node, message: INVALID_LINE)
+          add_offense(node, message: INVALID_LINE, &corrector(node))
         end
       end
 
@@ -61,7 +63,7 @@ module RuboCop
 
         return if argument.str_type?
 
-        add_offense(argument, message: INVALID_ARGUMENT)
+        add_offense(argument, message: INVALID_ARGUMENT, &corrector(argument))
       end
 
       def check_method?(node)
@@ -74,10 +76,12 @@ module RuboCop
         end
       end
 
+      private
+
       # Automatically correcting these offenses is not always possible, as
       # sometimes code needs to be refactored to make this work. As such, we
       # only allow developers to easily blacklist existing offenses.
-      def autocorrect(node)
+      def corrector(node)
         lambda do |corrector|
           corrector.insert_after(
             node.source_range,

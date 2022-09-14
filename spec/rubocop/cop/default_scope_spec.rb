@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/default_scope'
 
 RSpec.describe RuboCop::Cop::DefaultScope do
-  subject(:cop) { described_class.new }
-
   it 'does not flag the use of default_scope with a send receiver' do
     expect_no_offenses('foo.default_scope')
   end

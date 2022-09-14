@@ -10,8 +10,6 @@ RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
     "https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions"
   end
 
-  subject(:cop) { described_class.new }
-
   it 'adds an offense with a required parameter' do
     expect_offense(<<~TYPE)
       class SomeAPI < Grape::API::Instance

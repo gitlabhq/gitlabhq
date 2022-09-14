@@ -59,10 +59,8 @@ module OmniAuth
         super.merge(resource: azure_resource || options.resource)
       end
 
-      # for compatibility with OmniAuth 2.0
-      # see https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/pull/6
       def callback_url
-        full_host + callback_path
+        full_host + script_name + callback_path
       end
 
       def raw_info

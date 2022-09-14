@@ -342,7 +342,7 @@ RSpec.describe RuboCop::CodeReuseHelpers do
 
       expect(cop)
         .to receive(:add_offense)
-        .with(send_node, location: :expression, message: 'oops')
+        .with(send_node, message: 'oops')
 
       cop.disallow_send_to(def_node, 'Finder', 'oops')
     end

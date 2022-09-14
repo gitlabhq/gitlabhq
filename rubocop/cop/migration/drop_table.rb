@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that checks if `drop_table` is called in deployment migrations.
       # Calling it in deployment migrations can cause downtimes as there still may be code using the target tables.
-      class DropTable < RuboCop::Cop::Cop
+      class DropTable < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = <<-MESSAGE.delete("\n").squeeze
@@ -22,7 +22,7 @@ module RuboCop
           node.each_descendant(:send) do |send_node|
             next unless offensible?(send_node)
 
-            add_offense(send_node, location: :selector)
+            add_offense(send_node.loc.selector)
           end
         end
 

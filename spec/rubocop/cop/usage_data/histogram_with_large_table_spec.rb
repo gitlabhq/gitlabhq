@@ -14,8 +14,6 @@ RSpec.describe RuboCop::Cop::UsageData::HistogramWithLargeTable do
                         })
   end
 
-  subject(:cop) { described_class.new(config) }
-
   context 'with large tables' do
     context 'with one-level constants' do
       context 'when calling histogram(Issue)' do

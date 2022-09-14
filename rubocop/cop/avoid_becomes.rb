@@ -9,7 +9,7 @@ module RuboCop
     # problems, even when a developer eager loaded all necessary associations.
     #
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/23182 for more information.
-    class AvoidBecomes < RuboCop::Cop::Cop
+    class AvoidBecomes < RuboCop::Cop::Base
       MSG = 'Avoid the use of becomes(SomeConstant), as this creates a ' \
         'new object and throws away any eager loaded associations. ' \
         'When creating URLs in views, just use the path helpers directly. ' \
@@ -23,7 +23,7 @@ module RuboCop
       PATTERN
 
       def on_send(node)
-        add_offense(node, location: :expression) if becomes?(node)
+        add_offense(node) if becomes?(node)
       end
     end
   end

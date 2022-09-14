@@ -3,7 +3,6 @@
 require 'spec_helper'
 require 'json'
 require 'omniauth-google-oauth2'
-require 'stringio'
 
 describe OmniAuth::Strategies::GoogleOauth2 do
   let(:request) { double('Request', params: {}, cookies: {}, env: {}) }
@@ -178,8 +177,8 @@ describe OmniAuth::Strategies::GoogleOauth2 do
 
     describe 'scope' do
       it 'should expand scope shortcuts' do
-        @options = { scope: 'calendar' }
-        expect(subject.authorize_params['scope']).to eq('https://www.googleapis.com/auth/calendar')
+        @options = { scope: 'plus.me' }
+        expect(subject.authorize_params['scope']).to eq('https://www.googleapis.com/auth/plus.me')
       end
 
       it 'should leave base scopes as is' do
@@ -289,92 +288,14 @@ describe OmniAuth::Strategies::GoogleOauth2 do
     end
   end
 
-  describe '#callback_url' do
-    let(:base_url) { 'https://example.com' }
-
+  describe '#callback_path' do
     it 'has the correct default callback path' do
-      allow(subject).to receive(:full_host) { base_url }
-      allow(subject).to receive(:script_name) { '' }
-      expect(subject.send(:callback_url)).to eq(base_url + '/auth/google_oauth2/callback')
-    end
-
-    it 'should set the callback path with script_name if present' do
-      allow(subject).to receive(:full_host) { base_url }
-      allow(subject).to receive(:script_name) { '/v1' }
-      expect(subject.send(:callback_url)).to eq(base_url + '/v1/auth/google_oauth2/callback')
+      expect(subject.callback_path).to eq('/auth/google_oauth2/callback')
     end
 
     it 'should set the callback_path parameter if present' do
       @options = { callback_path: '/auth/foo/callback' }
-      allow(subject).to receive(:full_host) { base_url }
-      allow(subject).to receive(:script_name) { '' }
-      expect(subject.send(:callback_url)).to eq(base_url + '/auth/foo/callback')
-    end
-  end
-
-  describe '#info' do
-    let(:client) do
-      OAuth2::Client.new('abc', 'def') do |builder|
-        builder.request :url_encoded
-        builder.adapter :test do |stub|
-          stub.get('/oauth2/v3/userinfo') { [200, { 'content-type' => 'application/json' }, response_hash.to_json] }
-        end
-      end
-    end
-    let(:access_token) { OAuth2::AccessToken.from_hash(client, {}) }
-    before { allow(subject).to receive(:access_token).and_return(access_token) }
-
-    context 'with verified email' do
-      let(:response_hash) do
-        { email: 'something@domain.invalid', email_verified: true }
-      end
-
-      it 'should return equal email and unverified_email' do
-        expect(subject.info[:email]).to eq('something@domain.invalid')
-        expect(subject.info[:unverified_email]).to eq('something@domain.invalid')
-      end
-    end
-
-    context 'with unverified email' do
-      let(:response_hash) do
-        { email: 'something@domain.invalid', email_verified: false }
-      end
-
-      it 'should return nil email, and correct unverified email' do
-        expect(subject.info[:email]).to eq(nil)
-        expect(subject.info[:unverified_email]).to eq('something@domain.invalid')
-      end
-    end
-  end
-
-  describe '#credentials' do
-    let(:client) { OAuth2::Client.new('abc', 'def') }
-    let(:access_token) { OAuth2::AccessToken.from_hash(client, access_token: 'valid_access_token', expires_at: 123_456_789, refresh_token: 'valid_refresh_token') }
-    before(:each) do
-      allow(subject).to receive(:access_token).and_return(access_token)
-      subject.options.client_options[:connection_build] = proc do |builder|
-        builder.request :url_encoded
-        builder.adapter :test do |stub|
-          stub.get('/oauth2/v3/tokeninfo?access_token=valid_access_token') do
-            [200, { 'Content-Type' => 'application/json; charset=UTF-8' }, JSON.dump(
-              aud: '000000000000.apps.googleusercontent.com',
-              sub: '123456789',
-              scope: 'profile email'
-            )]
-          end
-        end
-      end
-    end
-
-    it 'should return access token and (optionally) refresh token' do
-      expect(subject.credentials.to_h).to \
-        match(hash_including(
-                'token' => 'valid_access_token',
-                'refresh_token' => 'valid_refresh_token',
-                'scope' => 'profile email',
-                'expires_at' => 123_456_789,
-                'expires' => true
-              ))
+      expect(subject.callback_path).to eq('/auth/foo/callback')
     end
   end
 
@@ -392,7 +313,7 @@ describe OmniAuth::Strategies::GoogleOauth2 do
     before { allow(subject).to receive(:access_token).and_return(access_token) }
 
     describe 'id_token' do
-      shared_examples 'id_token issued by valid issuer' do |issuer|
+      shared_examples 'id_token issued by valid issuer' do |issuer| # rubocop:disable Metrics/BlockLength
         context 'when the id_token is passed into the access token' do
           let(:token_info) do
             {
@@ -505,12 +426,6 @@ describe OmniAuth::Strategies::GoogleOauth2 do
         expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/s50/photo.jpg')
       end
 
-      it 'should return the image with size specified in the `image_size` option when sizing is in the picture' do
-        @options = { image_size: 50 }
-        allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh4.googleusercontent.com/url/s96-c/photo.jpg' } }
-        expect(subject.info[:image]).to eq('https://lh4.googleusercontent.com/url/s50/photo.jpg')
-      end
-
       it 'should handle a picture with too many slashes correctly' do
         @options = { image_size: 50 }
         allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url//photo.jpg' } }
@@ -541,21 +456,9 @@ describe OmniAuth::Strategies::GoogleOauth2 do
         expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/w50-h40/photo.jpg')
       end
 
-      it 'should return the image with width and height specified in the `image_size` option when sizing is in the picture' do
-        @options = { image_size: { width: 50, height: 40 } }
-        allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url/w100-h80-c/photo.jpg' } }
-        expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/w50-h40/photo.jpg')
-      end
-
       it 'should return square image when `image_aspect_ratio` is specified' do
         @options = { image_aspect_ratio: 'square' }
         allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url/photo.jpg' } }
-        expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/c/photo.jpg')
-      end
-
-      it 'should return square image when `image_aspect_ratio` is specified and sizing is in the picture' do
-        @options = { image_aspect_ratio: 'square' }
-        allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url/c/photo.jpg' } }
         expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/c/photo.jpg')
       end
 
@@ -565,21 +468,9 @@ describe OmniAuth::Strategies::GoogleOauth2 do
         expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/s50-c/photo.jpg')
       end
 
-      it 'should return square sized image when `image_aspect_ratio` and `image_size` is set and sizing is in the picture' do
-        @options = { image_aspect_ratio: 'square', image_size: 50 }
-        allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url/s90/photo.jpg' } }
-        expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/s50-c/photo.jpg')
-      end
-
       it 'should return square sized image when `image_aspect_ratio` and `image_size` has height and width' do
         @options = { image_aspect_ratio: 'square', image_size: { width: 50, height: 40 } }
         allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url/photo.jpg' } }
-        expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/w50-h40-c/photo.jpg')
-      end
-
-      it 'should return square sized image when `image_aspect_ratio` and `image_size` has height and width and sizing is in the picture' do
-        @options = { image_aspect_ratio: 'square', image_size: { width: 50, height: 40 } }
-        allow(subject).to receive(:raw_info) { { 'picture' => 'https://lh3.googleusercontent.com/url/w100-h80/photo.jpg' } }
         expect(subject.info[:image]).to eq('https://lh3.googleusercontent.com/url/w50-h40-c/photo.jpg')
       end
 
@@ -656,58 +547,9 @@ describe OmniAuth::Strategies::GoogleOauth2 do
       expect(token.client).to eq(:client)
     end
 
-    it 'reads the code from a json request body' do
-      body = StringIO.new(%({"code":"json_access_token"}))
-      client = double(:client)
-      auth_code = double(:auth_code)
-
-      allow(request).to receive(:xhr?).and_return(false)
-      allow(request).to receive(:content_type).and_return('application/json')
-      allow(request).to receive(:body).and_return(body)
-      allow(client).to receive(:auth_code).and_return(auth_code)
-      expect(subject).to receive(:client).and_return(client)
-
-      expect(auth_code).to receive(:get_token).with('json_access_token', { redirect_uri: 'postmessage' }, {})
-
-      subject.build_access_token
-    end
-
-    it 'reads the redirect uri from a json request body' do
-      body = StringIO.new(%({"code":"json_access_token", "redirect_uri":"sample"}))
-      client = double(:client)
-      auth_code = double(:auth_code)
-
-      allow(request).to receive(:xhr?).and_return(false)
-      allow(request).to receive(:content_type).and_return('application/json')
-      allow(request).to receive(:body).and_return(body)
-      allow(client).to receive(:auth_code).and_return(auth_code)
-      expect(subject).to receive(:client).and_return(client)
-
-      expect(auth_code).to receive(:get_token).with('json_access_token', { redirect_uri: 'sample' }, {})
-
-      subject.build_access_token
-    end
-
-    it 'reads the access token from a json request body' do
-      body = StringIO.new(%({"access_token":"valid_access_token"}))
-
-      allow(request).to receive(:xhr?).and_return(false)
-      allow(request).to receive(:content_type).and_return('application/json')
-      allow(request).to receive(:body).and_return(body)
-      expect(subject).to receive(:client).and_return(:client)
-
-      expect(subject).to receive(:verify_token).with('valid_access_token').and_return true
-
-      token = subject.build_access_token
-      expect(token).to be_instance_of(::OAuth2::AccessToken)
-      expect(token.token).to eq('valid_access_token')
-      expect(token.client).to eq(:client)
-    end
-
     it 'should use callback_url without query_string if this is not an AJAX request' do
       allow(request).to receive(:xhr?).and_return(false)
       allow(request).to receive(:params).and_return('code' => 'valid_code')
-      allow(request).to receive(:content_type).and_return('application/x-www-form-urlencoded')
 
       client = double(:client)
       auth_code = double(:auth_code)

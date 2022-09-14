@@ -10,10 +10,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   #
   provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], scope: 'email,profile'
 
-  # Custom redirect_uri
-  #
-  # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], scope: 'email,profile', redirect_uri: 'https://localhost:3000/redirect'
-
   # Manual setup for offline access with a refresh token.
   #
   # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], access_type: 'offline'

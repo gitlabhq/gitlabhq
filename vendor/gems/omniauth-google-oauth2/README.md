@@ -1,4 +1,5 @@
 [![Gem Version](https://badge.fury.io/rb/omniauth-google-oauth2.svg)](https://badge.fury.io/rb/omniauth-google-oauth2)
+[![Build Status](https://travis-ci.org/zquestz/omniauth-google-oauth2.svg)](https://travis-ci.org/zquestz/omniauth-google-oauth2)
 
 # OmniAuth Google OAuth2 Strategy
 
@@ -33,7 +34,6 @@ Here's an example for adding the middleware to a Rails app in `config/initialize
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET']
 end
-OmniAuth.config.allowed_request_methods = %i[get]
 ```
 
 You can now access the OmniAuth Google OAuth2 URL: `/auth/google_oauth2`
@@ -54,10 +54,10 @@ You can configure several options, which you pass in to the `provider` method vi
 
 * `prompt`: A space-delimited list of string values that determines whether the user is re-prompted for authentication and/or consent. Possible values are:
   * `none`: No authentication or consent pages will be displayed; it will return an error if the user is not already authenticated and has not pre-configured consent for the requested scopes. This can be used as a method to check for existing authentication and/or consent.
-  * `consent`: The user will always be prompted for consent, even if they have previously allowed access a given set of scopes.
+  * `consent`: The user will always be prompted for consent, even if he has previously allowed access a given set of scopes.
   * `select_account`: The user will always be prompted to select a user account. This allows a user who has multiple current account sessions to select one amongst them.
 
-  If no value is specified, the user only sees the authentication page if they are not logged in and only sees the consent page the first time they authorize a given set of scopes.
+  If no value is specified, the user only sees the authentication page if he is not logged in and only sees the consent page the first time he authorizes a given set of scopes.
 
 * `image_aspect_ratio`: The shape of the user's profile picture. Possible values are:
   * `original`: Picture maintains its original aspect ratio.
@@ -73,7 +73,7 @@ You can configure several options, which you pass in to the `provider` method vi
 
 * `hd`: (Optional) Limit sign-in to a particular Google Apps hosted domain. This can be simply string `'domain.com'` or an array `%w(domain.com domain.co)`. More information at: https://developers.google.com/accounts/docs/OpenIDConnect#hd-param
 
-* `jwt_leeway`: Number of seconds passed to the JWT library as leeway. Defaults to 60 seconds. Note this only works if you use jwt 2.1, as the leeway option was removed in later versions.
+* `jwt_leeway`: Number of seconds passed to the JWT library as leeway. Defaults to 60 seconds.
 
 * `skip_jwt`: Skip JWT processing. This is for users who are seeing JWT decoding errors with the `iat` field. Always try adjusting the leeway before disabling JWT processing.
 
@@ -81,11 +81,9 @@ You can configure several options, which you pass in to the `provider` method vi
 
 * `include_granted_scopes`: If this is provided with the value true, and the authorization request is granted, the authorization will include any previous authorizations granted to this user/application combination for other scopes. See Google's [Incremental Authorization](https://developers.google.com/accounts/docs/OAuth2WebServer#incrementalAuth) for additional details.
 
-* `openid_realm`: Set the OpenID realm value, to allow upgrading from OpenID based authentication to OAuth 2 based authentication. When this is set correctly an `openid_id` value will be set in `['extra']['id_info']` in the authentication hash with the value of the user's OpenID ID URL.
+* `openid_realm`: Set the OpenID realm value, to allow upgrading from OpenID based authentication to OAuth 2 based authentication. When this is set correctly an `openid_id` value will be set in `[:extra][:id_info]` in the authentication hash with the value of the user's OpenID ID URL.
 
-* `provider_ignores_state`: You will need to set this to `true` when using the `One-time Code Flow` below. In this flow there is no server side redirect that would set the state.
-
-Here's an example of a possible configuration where the strategy name is changed, the user is asked for extra permissions, the user is always prompted to select their account when logging in and the user's profile picture is returned as a thumbnail:
+Here's an example of a possible configuration where the strategy name is changed, the user is asked for extra permissions, the user is always prompted to select his account when logging in and the user's profile picture is returned as a thumbnail:
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
@@ -178,8 +176,6 @@ devise :omniauthable, omniauth_providers: [:google_oauth2]
 Then make sure your callbacks controller is setup.
 
 ```ruby
-# app/controllers/users/omniauth_callbacks_controller.rb:
-
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def google_oauth2
       # You need to implement the method below in your model (e.g. app/models/user.rb)
@@ -189,7 +185,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         flash[:notice] = I18n.t 'devise.omniauth_callbacks.success', kind: 'Google'
         sign_in_and_redirect @user, event: :authentication
       else
-        session['devise.google_data'] = request.env['omniauth.auth'].except('extra') # Removing extra as it can overflow some session stores
+        session['devise.google_data'] = request.env['omniauth.auth'].except(:extra) # Removing extra as it can overflow some session stores
         redirect_to new_user_registration_url, alert: @user.errors.full_messages.join("\n")
       end
   end
@@ -217,10 +213,6 @@ end
 For your views you can login using:
 
 ```erb
-<%# omniauth-google-oauth2 1.0.x uses OmniAuth 2 and requires using HTTP Post to initiate authentication: %>
-<%= link_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path, method: :post %>
-
-<%# omniauth-google-oauth2 prior 1.0.0: %>
 <%= link_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path %>
 
 <%# Devise prior 4.1.0: %>
@@ -231,7 +223,7 @@ An overview is available at https://github.com/plataformatec/devise/wiki/OmniAut
 
 ### One-time Code Flow (Hybrid Authentication)
 
-Google describes the One-time Code Flow [here](https://developers.google.com/identity/sign-in/web/server-side-flow).  This hybrid authentication flow has significant functional and security advantages over a pure server-side or pure client-side flow.  The following steps occur in this flow:
+Google describes the One-time Code Flow [here](https://developers.google.com/+/web/signin/server-side-flow).  This hybrid authentication flow has significant functional and security advantages over a pure server-side or pure client-side flow.  The following steps occur in this flow:
 
 1. The client (web browser) authenticates the user directly via Google's JS API.  During this process assorted modals may be rendered by Google.
 2. On successful authentication, Google returns a one-time use code, which requires the Google client secret (which is only available server-side).
@@ -240,7 +232,7 @@ Google describes the One-time Code Flow [here](https://developers.google.com/ide
 
 This flow is immune to replay attacks, and conveys no useful information to a man in the middle.
 
-The omniauth-google-oauth2 gem supports this mode of operation when `provider_ignores_state` is set to `true`.  Implementors simply need to add the appropriate JavaScript to their web page, and they can take advantage of this flow.  An example JavaScript snippet follows.
+The omniauth-google-oauth2 gem supports this mode of operation out of the box.  Implementors simply need to add the appropriate JavaScript to their web page, and they can take advantage of this flow.  An example JavaScript snippet follows.
 
 ```javascript
 // Basic hybrid auth example following the pattern at:
@@ -255,7 +247,7 @@ function init() {
     // Ready.
     $('.google-login-button').click(function(e) {
       e.preventDefault();
-
+      
       gapi.auth2.authorize({
         client_id: 'YOUR_CLIENT_ID',
         cookie_policy: 'single_host_origin',
@@ -268,7 +260,7 @@ function init() {
             success: function(data) {
               // response from server
             }
-          });
+          });        
         } else {
           // google authentication failed
         }
@@ -287,66 +279,6 @@ In that case, ensure to send an additional parameter `redirect_uri=` (empty stri
 #### Note about CORS
 
 If you're making POST requests to `/auth/google_oauth2/callback` from another domain, then you need to make sure `'X-Requested-With': 'XMLHttpRequest'` header is included with your request, otherwise your server might respond with `OAuth2::Error, : Invalid Value` error.
-
-#### Getting around the `redirect_uri_mismatch` error (See [Issue #365](https://github.com/zquestz/omniauth-google-oauth2/issues/365))
-
-If you are struggling with a persistent `redirect_uri_mismatch`, you can instead pass the `access_token` from [`getAuthResponse`](https://developers.google.com/identity/sign-in/web/reference#googleusergetauthresponseincludeauthorizationdata) directly to the `auth/google_oauth2/callback` endpoint, like so:
-
-```javascript
-// Initialize the GoogleAuth object
-let googleAuth;
-gapi.load('client:auth2', async () => {
-  await gapi.client.init({ scope: '...', client_id: '...' });
-  googleAuth = gapi.auth2.getAuthInstance();
-});
-
-// Call this when the Google Sign In button is clicked
-async function signInGoogle() {
-  const googleUser = await googleAuth.signIn(); // wait for the user to authorize through the modal
-  const { access_token } = googleUser.getAuthResponse();
-
-  const data = new FormData();
-  data.append('access_token', access_token);
-
-  const response = await api.post('/auth/google_oauth2/callback', data)
-  console.log(response);
-}
-```
-
-#### Using Axios
-If you're making a GET resquests from another domain using `access_token`.
-```
-axios
-  .get(
-    'url(path to your callback}',
-    { params: { access_token: 'token' } },
-    headers....
-    )
-```
-
-If you're making a POST resquests from another domain using `access_token`.
-```
-axios
-  .post(
-    'url(path to your callback}',
-    { access_token: 'token' },
-    headers....
-    )
-
---OR--
-
-axios
-  .post(
-    'url(path to your callback}',
-    null,
-      {
-        params: {
-          access_token: 'token'
-        },
-        headers....
-      }
-    )
-```
 
 ## Fixing Protocol Mismatch for `redirect_uri` in Rails
 

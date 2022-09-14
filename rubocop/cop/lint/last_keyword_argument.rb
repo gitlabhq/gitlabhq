@@ -9,7 +9,9 @@ module RuboCop
       # 1. Running specs with RECORD_DEPRECATIONS=1
       # 1. Downloading the complete set of deprecations/ files from a CI
       # pipeline (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47720)
-      class LastKeywordArgument < Cop
+      class LastKeywordArgument < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MSG = 'Using the last argument as keyword parameters is deprecated'
 
         DEPRECATIONS_GLOB = File.expand_path('../../../deprecations/**/*.yml', __dir__)
@@ -26,11 +28,7 @@ module RuboCop
           # parser thinks `a: :b, c: :d` is hash type, it's actually kwargs
           return if arg.hash_type? && !arg.source.match(/\A{/)
 
-          add_offense(arg)
-        end
-
-        def autocorrect(arg)
-          lambda do |corrector|
+          add_offense(arg) do |corrector|
             if arg.hash_type?
               kwarg = arg.source.sub(/\A{\s*/, '').sub(/\s*}\z/, '')
               corrector.replace(arg, kwarg)

@@ -193,10 +193,10 @@ you can sign individual commits manually, or configure Git to default to signed 
 You can review commits for a merge request, or for an entire project:
 
 1. To review commits for a project:
-   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the top bar, select **Main menu > Projects** and find your project.
    1. On the left sidebar, select **Repository > Commits**.
 1. To review commits for a merge request:
-   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the top bar, select **Main menu > Projects** and find your project.
    1. On the left sidebar, select **Merge requests**, then select your merge request.
    1. Select **Commits**.
 1. Identify the commit you want to review. Signed commits show either a **Verified**

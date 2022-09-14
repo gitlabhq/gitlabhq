@@ -6,8 +6,6 @@ require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/feature_available_usage'
 
 RSpec.describe RuboCop::Cop::Gitlab::FeatureAvailableUsage do
-  subject(:cop) { described_class.new }
-
   context 'no arguments given' do
     it 'does not flag the use of Gitlab::Sourcegraph.feature_available? with no arguments' do
       expect_no_offenses('Gitlab::Sourcegraph.feature_available?')

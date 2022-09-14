@@ -23,7 +23,7 @@ module RuboCop
       #   end
       # end
       #
-      class WorkerDataConsistency < RuboCop::Cop::Cop
+      class WorkerDataConsistency < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         HELP_LINK = 'https://docs.gitlab.com/ee/development/sidekiq_style_guide.html#job-data-consistency-strategies'
@@ -57,7 +57,7 @@ module RuboCop
           return unless in_worker?(node) && application_worker?(node)
           return if data_consistency_defined?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

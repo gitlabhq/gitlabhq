@@ -33,7 +33,7 @@ module RuboCop
       #       uploaded_file = declared_params[:file]
       #     end
       #   end
-      class AvoidUploadedFileFromParams < RuboCop::Cop::Cop
+      class AvoidUploadedFileFromParams < RuboCop::Cop::Base
         MSG = 'Use the `UploadedFile` set by `multipart.rb` instead of calling `UploadedFile.from_params` directly. See https://docs.gitlab.com/ee/development/uploads/working_with_uploads.html'
 
         def_node_matcher :calling_uploaded_file_from_params?, <<~PATTERN
@@ -43,7 +43,7 @@ module RuboCop
         def on_send(node)
           return unless calling_uploaded_file_from_params?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

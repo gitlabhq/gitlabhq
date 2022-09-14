@@ -140,8 +140,8 @@ If you have set a prefix, you can use a workaround to revert to background uploa
     gitlab_rails['env'] = { 'GITLAB_LEGACY_BACKGROUND_UPLOADS' => 'artifacts,external_diffs,lfs,uploads,packages,dependency_proxy,terraform_state,pages' }
     ```
 
-Prefixes will be supported officially in [GitLab 15.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91307).
-This workaround will be dropped, so we encourage migrating to consolidated object storage.
+Support for prefixes was restored in GitLab 15.2 via [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91307).
+Support for setting `GITLAB_LEGACY_BACKGROUND_UPLOADS` will be removed in GitLab 15.4.
 
 ### Container Network and Host Security
 

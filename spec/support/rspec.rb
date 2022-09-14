@@ -11,6 +11,9 @@ require_relative "helpers/fast_rails_root"
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
 RSpec.configure do |config|
+  # Re-run failures locally with `--only-failures`
+  config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
+
   config.mock_with :rspec do |mocks|
     mocks.verify_doubled_constant_names = true
   end

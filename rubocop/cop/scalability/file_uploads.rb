@@ -25,7 +25,7 @@ module RuboCop
       #     optional :file, type: ::API::Validations::Types::WorkhorseFile
       #   end
       #
-      class FileUploads < RuboCop::Cop::Cop
+      class FileUploads < RuboCop::Cop::Base
         MSG = 'Do not upload files without workhorse acceleration. Please refer to https://docs.gitlab.com/ee/development/uploads.html'
 
         def_node_search :file_type_params?, <<~PATTERN
@@ -43,7 +43,7 @@ module RuboCop
         def on_send(node)
           return unless be_file_param_usage?(node)
 
-          add_offense(find_file_param(node), location: :expression)
+          add_offense(find_file_param(node))
         end
 
         private

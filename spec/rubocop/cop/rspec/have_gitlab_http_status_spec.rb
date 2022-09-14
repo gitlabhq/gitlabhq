@@ -10,8 +10,6 @@ RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
 
   let(:source_file) { 'spec/foo_spec.rb' }
 
-  subject(:cop) { described_class.new }
-
   shared_examples 'offense' do |bad, good|
     it 'registers an offense', :aggregate_failures do
       expect_offense(<<~CODE, node: bad)

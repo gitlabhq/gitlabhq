@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class BackgroundMigrations < RuboCop::Cop::Cop
+      class BackgroundMigrations < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'Background migrations are deprecated. Please use a Batched Background Migration instead.'\
@@ -20,7 +20,7 @@ module RuboCop
             migrate_in
           )
 
-          add_offense(node, location: :selector) if disabled_methods.include? name
+          add_offense(node.loc.selector) if disabled_methods.include? name
         end
       end
     end

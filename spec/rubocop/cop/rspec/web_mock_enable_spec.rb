@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/web_mock_enable'
 
 RSpec.describe RuboCop::Cop::RSpec::WebMockEnable do
-  subject(:cop) { described_class.new }
-
   context 'when calling WebMock.disable_net_connect!' do
     it 'registers an offence and autocorrects it' do
       expect_offense(<<~RUBY)

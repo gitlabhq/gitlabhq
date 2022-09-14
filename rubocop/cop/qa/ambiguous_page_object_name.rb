@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   Page::Object.perform do |object| do ...
       #   Page::Another.perform { |another| ... }
-      class AmbiguousPageObjectName < RuboCop::Cop::Cop
+      class AmbiguousPageObjectName < RuboCop::Cop::Base
         include QAHelpers
 
         MESSAGE = "Don't use 'page' as a name for a Page Object. Use `%s` instead."

@@ -10,8 +10,6 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     %w[a_feature_flag foo_hello foo_world baz_experiment_percentage bar_baz]
   end
 
-  subject(:cop) { described_class.new }
-
   before do
     allow(cop).to receive(:defined_feature_flags).and_return(defined_feature_flags)
     allow(cop).to receive(:usage_data_counters_known_event_feature_flags).and_return([])

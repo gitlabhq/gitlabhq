@@ -5,7 +5,7 @@ module RuboCop
     module Performance
       # Cop that disallows certain methods that rely on subtransactions in their implementation.
       # Companion to Performance/ActiveRecordSubtransactions, which bans direct usage of subtransactions.
-      class ActiveRecordSubtransactionMethods < RuboCop::Cop::Cop
+      class ActiveRecordSubtransactionMethods < RuboCop::Cop::Base
         MSG = 'Methods that rely on subtransactions should not be used. ' \
           'For more information see: https://gitlab.com/gitlab-org/gitlab/-/issues/338346'
 
@@ -21,7 +21,7 @@ module RuboCop
         def on_send(node)
           return unless DISALLOWED_METHODS.include?(node.method_name)
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
       end
     end

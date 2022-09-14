@@ -13,7 +13,9 @@ module RuboCop
     #   root to: redirect('-/autocomplete/users')
     #
 
-    class AvoidRouteRedirectLeadingSlash < RuboCop::Cop::Cop
+    class AvoidRouteRedirectLeadingSlash < RuboCop::Cop::Base
+      extend RuboCop::Cop::AutoCorrector
+
       MSG = 'Do not use a leading "/" in route redirects'
 
       def_node_matcher :leading_slash_in_redirect?, <<~PATTERN
@@ -24,7 +26,9 @@ module RuboCop
         return unless in_routes?(node)
         return unless leading_slash_in_redirect?(node)
 
-        add_offense(node)
+        add_offense(node) do |corrector|
+          corrector.replace(node.loc.expression, remove_leading_slash(node))
+        end
       end
 
       def has_leading_slash?(str)
@@ -36,12 +40,6 @@ module RuboCop
         dirname = File.dirname(path)
         filename = File.basename(path)
         dirname.end_with?('config/routes') || filename.end_with?('routes.rb')
-      end
-
-      def autocorrect(node)
-        lambda do |corrector|
-          corrector.replace(node.loc.expression, remove_leading_slash(node))
-        end
       end
 
       def remove_leading_slash(node)

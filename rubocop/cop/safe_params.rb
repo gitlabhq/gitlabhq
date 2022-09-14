@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    class SafeParams < RuboCop::Cop::Cop
+    class SafeParams < RuboCop::Cop::Base
       MSG = 'Use `safe_params` instead of `params` in url_for.'
 
       METHOD_NAME_PATTERN = :url_for
@@ -11,7 +11,7 @@ module RuboCop
       def on_send(node)
         return unless method_name(node) == METHOD_NAME_PATTERN
 
-        add_offense(node, location: :expression) unless safe_params?(node)
+        add_offense(node) unless safe_params?(node)
       end
 
       private

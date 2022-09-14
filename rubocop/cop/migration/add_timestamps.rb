@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that checks if 'add_timestamps' method is called with timezone information.
-      class AddTimestamps < RuboCop::Cop::Cop
+      class AddTimestamps < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'Do not use `add_timestamps`, use `add_timestamps_with_timezone` instead'
@@ -15,7 +15,7 @@ module RuboCop
         def on_send(node)
           return unless in_migration?(node)
 
-          add_offense(node, location: :selector) if method_name(node) == :add_timestamps
+          add_offense(node.loc.selector) if method_name(node) == :add_timestamps
         end
 
         def method_name(node)

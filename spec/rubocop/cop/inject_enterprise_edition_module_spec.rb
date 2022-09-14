@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/inject_enterprise_edition_module'
 
 RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule do
-  subject(:cop) { described_class.new }
-
   it 'flags the use of `prepend_mod_with` in the middle of a file' do
     expect_offense(<<~SOURCE)
     class Foo

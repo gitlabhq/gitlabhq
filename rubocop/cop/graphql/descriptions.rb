@@ -42,7 +42,9 @@
 module RuboCop
   module Cop
     module Graphql
-      class Descriptions < RuboCop::Cop::Cop
+      class Descriptions < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MSG_STYLE_GUIDE_LINK = 'See the description style guide: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide'
         MSG_NO_DESCRIPTION = "Please add a `description` property. #{MSG_STYLE_GUIDE_LINK}"
         MSG_NO_PERIOD = "`description` strings must end with a `.`. #{MSG_STYLE_GUIDE_LINK}"
@@ -74,15 +76,17 @@ module RuboCop
 
           description = locate_description(node)
 
-          return add_offense(node, location: :expression, message: MSG_NO_DESCRIPTION) unless description
+          message = if description.nil?
+                      MSG_NO_DESCRIPTION
+                    elsif no_period?(description)
+                      MSG_NO_PERIOD
+                    elsif bad_start?(description)
+                      MSG_BAD_START
+                    end
 
-          add_offense(node, location: :expression, message: MSG_NO_PERIOD) if no_period?(description)
-          add_offense(node, location: :expression, message: MSG_BAD_START) if bad_start?(description)
-        end
+          return unless message
 
-        # Autocorrect missing periods at end of description.
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: message) do |corrector|
             description = locate_description(node)
             next unless description
 

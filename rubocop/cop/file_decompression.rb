@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Check for symlinks when extracting files to avoid arbitrary file reading.
-    class FileDecompression < RuboCop::Cop::Cop
+    class FileDecompression < RuboCop::Cop::Base
       MSG = <<~EOF
       While extracting files check for symlink to avoid arbitrary file reading.
       https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6132
@@ -29,7 +29,7 @@ module RuboCop
 
       def on_send(node)
         system?(node) do |match|
-          add_offense(node, location: :expression, message: MSG) if forbidden_command?(match)
+          add_offense(node, message: MSG) if forbidden_command?(match)
         end
       end
 

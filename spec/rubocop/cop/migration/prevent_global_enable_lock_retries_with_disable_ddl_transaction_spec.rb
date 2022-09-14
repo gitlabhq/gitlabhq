@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction'
 
 RSpec.describe RuboCop::Cop::Migration::PreventGlobalEnableLockRetriesWithDisableDdlTransaction do
-  subject(:cop) { described_class.new }
-
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

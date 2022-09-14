@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class CreateTableWithForeignKeys < RuboCop::Cop::Cop
+      class CreateTableWithForeignKeys < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'Creating a table with more than one foreign key at once violates our migration style guide. ' \

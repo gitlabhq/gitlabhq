@@ -135,7 +135,7 @@ RSpec.describe Mutations::Releases::Create do
           it 'has an access error' do
             subject
 
-            expect(resolve).to include(errors: ['Access Denied'])
+            expect(resolve).to include(errors: ['You are not allowed to create this tag as it is protected.'])
           end
         end
       end

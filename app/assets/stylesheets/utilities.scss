@@ -383,3 +383,13 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 .gl-flex-flow-row-wrap {
   flex-flow: row wrap;
 }
+
+/*
+ * The below style will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1963
+ */
+.gl-gap-y-3 {
+  > * + * {
+    margin-top: $gl-spacing-scale-3;
+  }
+}

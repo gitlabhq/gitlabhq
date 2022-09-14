@@ -38,7 +38,7 @@ module RuboCop
         def on_send(node)
           return unless rails_logger_log?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

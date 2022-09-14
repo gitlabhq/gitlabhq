@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/active_model_errors_direct_manipulation'
 
 RSpec.describe RuboCop::Cop::ActiveModelErrorsDirectManipulation do
-  subject(:cop) { described_class.new }
-
   context 'when modifying errors' do
     it 'registers an offense' do
       expect_offense(<<~PATTERN)

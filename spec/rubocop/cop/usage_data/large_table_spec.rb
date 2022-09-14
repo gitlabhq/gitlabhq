@@ -18,8 +18,6 @@ RSpec.describe RuboCop::Cop::UsageData::LargeTable do
                         })
   end
 
-  subject(:cop) { described_class.new(config) }
-
   context 'when in usage_data files' do
     before do
       allow(cop).to receive(:usage_data_files?).and_return(true)

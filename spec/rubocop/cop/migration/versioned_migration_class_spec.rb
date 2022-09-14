@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/versioned_migration_class'
 
 RSpec.describe RuboCop::Cop::Migration::VersionedMigrationClass do
-  subject(:cop) { described_class.new }
-
   let(:migration) do
     <<~SOURCE
       class TestMigration < Gitlab::Database::Migration[1.0]

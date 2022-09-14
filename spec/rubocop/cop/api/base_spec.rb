@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/api/base'
 
 RSpec.describe RuboCop::Cop::API::Base do
-  subject(:cop) { described_class.new }
-
   let(:corrected) do
     <<~CORRECTED
       class SomeAPI < ::API::Base

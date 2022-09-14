@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/authorize_types'
 
 RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
-  subject(:cop) { described_class.new }
-
   it 'adds an offense when there is no authorize call' do
     expect_offense(<<~TYPE)
       module Types

@@ -13,7 +13,9 @@ module RuboCop
       #   # good
       #   travel_to(1.day.ago) { create(:issue) }
       #
-      class TimecopTravel < RuboCop::Cop::Cop
+      class TimecopTravel < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         include MatchRange
         MESSAGE = 'Do not use `Timecop.travel`, use `travel_to` instead. ' \
                   'See https://gitlab.com/gitlab-org/gitlab/-/issues/214432 for more info.'
@@ -25,11 +27,7 @@ module RuboCop
         def on_send(node)
           return unless timecop_travel?(node)
 
-          add_offense(node, location: :expression, message: MESSAGE)
-        end
-
-        def autocorrect(node)
-          -> (corrector) do
+          add_offense(node, message: MESSAGE) do |corrector|
             each_match_range(node.source_range, /^(Timecop\.travel)/) do |match_range|
               corrector.replace(match_range, 'travel_to')
             end

@@ -111,7 +111,7 @@ the README file with information, it's included on your profile page.
 
 To create a new project and add its README to your profile:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Main menu > Projects**.
 1. Select **Create new project**.
 1. Select **Create blank project**.
 1. Enter the project details:
@@ -421,7 +421,7 @@ When you sign in to the main GitLab application, a `_gitlab_session` cookie is
 set. When you close your browser, the cookie is cleared client-side
 and it expires after a set duration. GitLab administrators can determine the duration:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
 

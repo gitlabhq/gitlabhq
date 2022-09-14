@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class ReferToIndexByName < RuboCop::Cop::Cop
+      class ReferToIndexByName < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'migration methods that refer to existing indexes must do so by name'
@@ -32,7 +32,7 @@ module RuboCop
           node.each_descendant(:send) do |send_node|
             next unless index_exists_offense?(send_node) || removing_index_offense?(send_node)
 
-            add_offense(send_node, location: :selector)
+            add_offense(send_node.loc.selector)
           end
         end
 

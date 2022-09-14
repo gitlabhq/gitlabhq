@@ -8,8 +8,6 @@ RSpec.describe RuboCop::Cop::Graphql::JSONType do
     'Avoid using GraphQL::Types::JSON. See: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#json'
   end
 
-  subject(:cop) { described_class.new }
-
   context 'fields' do
     it 'adds an offense when GraphQL::Types::JSON is used' do
       expect_offense(<<~RUBY)

@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/ban_catch_throw'
 
 RSpec.describe RuboCop::Cop::BanCatchThrow do
-  subject(:cop) { described_class.new }
-
   it 'registers an offense when `catch` or `throw` are used' do
     expect_offense(<<~CODE)
       catch(:foo) {

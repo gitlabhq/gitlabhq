@@ -28,7 +28,7 @@ Prerequisite:
 
 To access Product Analytics:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > Product Analytics**.
 
 The Product Analytics interface contains:

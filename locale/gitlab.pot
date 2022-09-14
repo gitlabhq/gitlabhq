@@ -27054,10 +27054,16 @@ msgstr ""
 msgid "Notify|%{paragraph_start}Hi %{name}!%{paragraph_end} %{paragraph_start}A new public key was added to your account:%{paragraph_end} %{paragraph_start}title: %{key_title}%{paragraph_end} %{paragraph_start}If this key was added in error, you can remove it under %{removal_link}%{paragraph_end}"
 msgstr ""
 
+msgid "Notify|%{update_at_start} Last update at %{update_at_mid} %{last_update_at} %{update_at_end}"
+msgstr ""
+
 msgid "Notify|%{updated_by_user_name} pushed new commits to merge request %{mr_link}"
 msgstr ""
 
 msgid "Notify|A new GPG key was added to your account:"
+msgstr ""
+
+msgid "Notify|A remote mirror update has failed."
 msgstr ""
 
 msgid "Notify|All discussions on merge request %{mr_link} were resolved by %{name}"
@@ -27111,6 +27117,9 @@ msgstr ""
 msgid "Notify|Learn more about Auto DevOps"
 msgstr ""
 
+msgid "Notify|Logs may contain sensitive data. Please consider before forwarding this email."
+msgstr ""
+
 msgid "Notify|Merge request %{merge_request} can no longer be merged due to conflict."
 msgstr ""
 
@@ -27145,6 +27154,9 @@ msgid "Notify|New issue: %{project_issue_url}"
 msgstr ""
 
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
+msgstr ""
+
+msgid "Notify|Remote mirror"
 msgstr ""
 
 msgid "Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}."
@@ -44092,6 +44104,9 @@ msgstr ""
 msgid "Vulnerability|Project"
 msgstr ""
 
+msgid "Vulnerability|Project:"
+msgstr ""
+
 msgid "Vulnerability|Remove identifier row"
 msgstr ""
 
@@ -44117,6 +44132,9 @@ msgid "Vulnerability|Set the status of the vulnerability finding based on the in
 msgstr ""
 
 msgid "Vulnerability|Severity"
+msgstr ""
+
+msgid "Vulnerability|Severity:"
 msgstr ""
 
 msgid "Vulnerability|Status"

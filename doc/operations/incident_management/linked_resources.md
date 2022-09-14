@@ -29,7 +29,7 @@ Linked resources for an incident are listed under the **Summary** tab.
 
 To view the linked resources of an incident:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > Incidents**.
 1. Select an incident.
 
@@ -43,7 +43,7 @@ Prerequisites:
 
 To add a linked resource:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > Incidents**.
 1. Select an incident.
 1. In the **Linked resources** section, select the plus icon (**{plus-square}**).
@@ -76,7 +76,7 @@ Prerequisites:
 
 To remove a linked resource:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > Incidents**.
 1. Select an incident.
 1. In the **Linked resources** section, select **Remove** (**{close}**).

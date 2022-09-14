@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module CodeReuse
       # Cop that enforces various code reuse rules for Serializer classes.
-      class Serializer < RuboCop::Cop::Cop
+      class Serializer < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         IN_SERVICE = 'Serializers can not be used in a Service class.'

@@ -51,7 +51,7 @@ Commit `G` is added after the cherry-pick.
 After a merge request is merged, you can cherry-pick all changes introduced
 by the merge request:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**, and find your merge request.
 1. Scroll to the merge request reports section, and find the **Merged by** report.
 1. In the top right, select **Cherry-pick**:
@@ -69,7 +69,7 @@ You can cherry-pick a single commit from multiple locations in your GitLab proje
 
 To cherry-pick a commit from the list of all commits for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Commits**.
 1. Select the title of the commit you want to cherry-pick.
 1. In the modal window, select the project and branch to cherry-pick into.
@@ -82,7 +82,7 @@ You can cherry-pick commits from any merge request in your project, regardless o
 whether the merge request is open or closed. To cherry-pick a commit from the
 list of commits included in a merge request:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**, and find your merge request.
 1. In the merge request's secondary menu, select **Commits** to display the commit details page.
 1. Select the title of the commit you want to cherry-pick.
@@ -96,7 +96,7 @@ list of commits included in a merge request:
 You can cherry-pick from the list of previous commits affecting an individual file
 when you view that file in your project's Git repository:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Files** and go to the file
    changed by the commit.
 1. Select **History**, then select the title of the commit you want to cherry-pick.

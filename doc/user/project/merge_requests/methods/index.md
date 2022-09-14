@@ -12,7 +12,7 @@ merge requests are merged into an existing branch.
 
 ## Configure a project's merge method
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge method** section, select your desired merge method.
 1. Select **Save changes**.

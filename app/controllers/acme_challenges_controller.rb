@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/ApplicationController
 class AcmeChallengesController < ActionController::Base
   def show
     if acme_order
@@ -15,3 +16,4 @@ class AcmeChallengesController < ActionController::Base
     @acme_order ||= PagesDomainAcmeOrder.find_by_domain_and_token(params[:domain], params[:token])
   end
 end
+# rubocop:enable Rails/ApplicationController

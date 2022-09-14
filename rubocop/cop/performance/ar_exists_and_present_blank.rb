@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Performance
-      class ARExistsAndPresentBlank < RuboCop::Cop::Cop
+      class ARExistsAndPresentBlank < RuboCop::Cop::Base
         def message_present(ivar)
           "Avoid `#{ivar}.present?`, because it will generate database query 'Select TABLE.*' which is expensive. "\
           "Suggest to use `#{ivar}.any?` to replace `#{ivar}.present?`"
@@ -46,8 +46,8 @@ module RuboCop
               ivar_exists = exists_match(n)
               next unless ivar_exists
 
-              add_offense(node, location: :expression, message: message_present(ivar_exists)) if ivar_exists == ivar_present
-              add_offense(node, location: :expression, message: message_blank(ivar_exists)) if ivar_exists == ivar_blank
+              add_offense(node, message: message_present(ivar_exists)) if ivar_exists == ivar_present
+              add_offense(node, message: message_blank(ivar_exists)) if ivar_exists == ivar_blank
             end
           end
         end

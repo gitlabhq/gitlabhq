@@ -14,7 +14,7 @@ module RuboCop
       #
       # # good
       #   track_event :show, name: 'g_analytics_valuestream', destinations: [:redis_hll]
-      class DeprecateTrackRedisHLLEvent < RuboCop::Cop::Cop
+      class DeprecateTrackRedisHLLEvent < RuboCop::Cop::Base
         MSG = '`track_redis_hll_event` is deprecated. Use `track_event` helper instead. ' \
               'See https://docs.gitlab.com/ee/development/service_ping/implement.html#add-new-events'
 
@@ -25,7 +25,7 @@ module RuboCop
         def on_send(node)
           return unless track_redis_hll_event_used?(node)
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
       end
     end

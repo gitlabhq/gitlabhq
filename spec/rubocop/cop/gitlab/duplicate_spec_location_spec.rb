@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/duplicate_spec_location'
 
 RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation do
-  subject(:cop) { described_class.new }
-
   let(:rails_root) { '../../../../' }
 
   def full_path(path)

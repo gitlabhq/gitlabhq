@@ -125,9 +125,6 @@ RSpec.configure do |config|
     end
   end
 
-  # Re-run failures locally with `--only-failures`
-  config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
-
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
 

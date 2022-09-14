@@ -6,8 +6,6 @@ require_relative '../../../../rubocop/cop/rspec/be_success_matcher'
 RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher do
   let(:source_file) { 'spec/foo_spec.rb' }
 
-  subject(:cop) { described_class.new }
-
   shared_examples 'cop' do |good:, bad:|
     context "using #{bad} call" do
       it 'registers an offense and corrects', :aggregate_failures do

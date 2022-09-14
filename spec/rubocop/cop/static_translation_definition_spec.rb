@@ -11,8 +11,6 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
 
   let(:msg) { described_class::MSG }
 
-  subject(:cop) { described_class.new }
-
   shared_examples 'offense' do |code|
     it 'registers an offense' do
       expect_offense(code)

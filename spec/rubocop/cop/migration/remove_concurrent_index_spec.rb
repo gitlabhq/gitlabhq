@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/remove_concurrent_index'
 
 RSpec.describe RuboCop::Cop::Migration::RemoveConcurrentIndex do
-  subject(:cop) { described_class.new }
-
   context 'in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

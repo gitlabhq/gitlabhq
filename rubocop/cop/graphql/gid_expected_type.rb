@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class GIDExpectedType < RuboCop::Cop::Cop
+      class GIDExpectedType < RuboCop::Cop::Base
         MSG = 'Add an expected_type parameter to #object_from_id calls if possible.'
 
         def_node_search :id_from_object?, <<~PATTERN

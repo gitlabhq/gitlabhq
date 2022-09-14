@@ -4,11 +4,9 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/performance/ar_count_each'
 
 RSpec.describe RuboCop::Cop::Performance::ARCountEach do
-  subject(:cop) { described_class.new }
-
   context 'when it is not haml file' do
     it 'does not flag it as an offense' do
-      expect(subject).to receive(:in_haml_file?).with(anything).at_least(:once).and_return(false)
+      expect(cop).to receive(:in_haml_file?).with(anything).at_least(:once).and_return(false)
 
       expect_no_offenses <<~SOURCE
         show(@users.count)
@@ -19,7 +17,7 @@ RSpec.describe RuboCop::Cop::Performance::ARCountEach do
 
   context 'when it is haml file' do
     before do
-      expect(subject).to receive(:in_haml_file?).with(anything).at_least(:once).and_return(true)
+      expect(cop).to receive(:in_haml_file?).with(anything).at_least(:once).and_return(true)
     end
 
     context 'when the same object uses count and each' do

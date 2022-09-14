@@ -11,17 +11,6 @@ if Gitlab::Auth::Ldap::Config.enabled?
   end
 end
 
-module OmniAuth
-  module Strategies
-    class AzureActivedirectoryV2
-      # override until https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/pull/6 is merged
-      def callback_url
-        full_host + callback_path
-      end
-    end
-  end
-end
-
 OmniAuth.config.full_host = Gitlab::OmniauthInitializer.full_host
 
 OmniAuth.config.allowed_request_methods = [:post]

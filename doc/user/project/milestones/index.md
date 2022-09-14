@@ -37,8 +37,8 @@ For information about project and group milestones API, see:
 
 To view the milestone list:
 
-1. On the top bar, select **Menu > Projects** and find your project or
-   **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or
+   **Main menu > Groups** and find your group.
 1. Select **Issues > Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
@@ -66,7 +66,7 @@ Improving this experience is tracked in issue [339009](https://gitlab.com/gitlab
 You can view all the milestones you have access to in the entire GitLab namespace.
 You might not see some milestones because they're in projects or groups you're not a member of.
 
-To do so, on the top bar select **Menu > Milestones**.
+To do so, on the top bar select **Main menu > Milestones**.
 
 ### View milestone details
 
@@ -119,7 +119,7 @@ Prerequisites:
 
 To create a milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
@@ -138,7 +138,7 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. Select a milestone's title.
 1. Select **Edit**.
 1. Edit the title, start date, due date, or description.
@@ -154,7 +154,7 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. Select a milestone's title.
 1. Select **Delete**.
 1. Select **Delete milestone**.
@@ -179,7 +179,7 @@ Prerequisites:
 
 To promote a project milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Either:
    - Select **Promote to Group Milestone** (**{level-up}**).
    - Select the milestone title, and then select **Promote**.

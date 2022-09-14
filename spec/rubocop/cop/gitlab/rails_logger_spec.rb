@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/rails_logger'
 
 RSpec.describe RuboCop::Cop::Gitlab::RailsLogger do
-  subject(:cop) { described_class.new }
-
   described_class::LOG_METHODS.each do |method|
     it "flags the use of Rails.logger.#{method} with a constant receiver" do
       node = "Rails.logger.#{method}('some error')"

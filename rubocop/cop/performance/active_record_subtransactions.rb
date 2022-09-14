@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Performance
-      class ActiveRecordSubtransactions < RuboCop::Cop::Cop
+      class ActiveRecordSubtransactions < RuboCop::Cop::Base
         MSG = 'Subtransactions should not be used. ' \
           'For more information see: https://gitlab.com/gitlab-org/gitlab/-/issues/338346'
 

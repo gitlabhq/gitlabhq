@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/sidekiq_options_queue'
 
 RSpec.describe RuboCop::Cop::SidekiqOptionsQueue do
-  subject(:cop) { described_class.new }
-
   it 'registers an offense when `sidekiq_options` is used with the `queue` option' do
     expect_offense(<<~CODE)
       sidekiq_options queue: "some_queue"

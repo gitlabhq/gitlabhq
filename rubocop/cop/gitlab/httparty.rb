@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Gitlab
-      class HTTParty < RuboCop::Cop::Cop
+      class HTTParty < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MSG_SEND = <<~EOL
           Avoid calling `HTTParty` directly. Instead, use the Gitlab::HTTP
           wrapper. To allow request to localhost or the private network set
@@ -25,31 +27,18 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, location: :expression, message: MSG_SEND) if httparty_node?(node)
-          add_offense(node, location: :expression, message: MSG_INCLUDE) if includes_httparty?(node)
-        end
+          if httparty_node?(node)
+            add_offense(node, message: MSG_SEND) do |corrector|
+              _, method_name, *arg_nodes = *node
 
-        def autocorrect(node)
-          if includes_httparty?(node)
-            autocorrect_includes_httparty(node)
-          else
-            autocorrect_httparty_node(node)
-          end
-        end
+              replacement = "Gitlab::HTTP.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
 
-        def autocorrect_includes_httparty(node)
-          lambda do |corrector|
-            corrector.remove(node.source_range)
-          end
-        end
-
-        def autocorrect_httparty_node(node)
-          _, method_name, *arg_nodes = *node
-
-          replacement = "Gitlab::HTTP.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
-
-          lambda do |corrector|
-            corrector.replace(node.source_range, replacement)
+              corrector.replace(node.source_range, replacement)
+            end
+          elsif includes_httparty?(node)
+            add_offense(node, message: MSG_INCLUDE) do |corrector|
+              corrector.remove(node.source_range)
+            end
           end
         end
       end

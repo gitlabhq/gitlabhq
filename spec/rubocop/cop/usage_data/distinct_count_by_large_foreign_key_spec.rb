@@ -13,8 +13,6 @@ RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
                         })
   end
 
-  subject(:cop) { described_class.new(config) }
-
   context 'when counting by disallowed key' do
     it 'registers an offense' do
       expect_offense(<<~CODE)

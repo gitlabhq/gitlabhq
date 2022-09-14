@@ -26,7 +26,8 @@ module RuboCop
     #     end
     #   end
     #
-    class PreferClassMethodsOverModule < RuboCop::Cop::Cop
+    class PreferClassMethodsOverModule < RuboCop::Cop::Base
+      extend RuboCop::Cop::AutoCorrector
       include RangeHelp
 
       MSG = 'Do not use module ClassMethods, use class_methods block instead.'
@@ -36,16 +37,19 @@ module RuboCop
       PATTERN
 
       def on_module(node)
-        add_offense(node) if node.defined_module_name == 'ClassMethods' && module_extends_activesupport_concern?(node)
-      end
+        return unless class_methods_module_in_activesupport_concern?(node)
 
-      def autocorrect(node)
-        lambda do |corrector|
+        add_offense(node) do |corrector|
           corrector.replace(module_range(node), 'class_methods do')
         end
       end
 
       private
+
+      def class_methods_module_in_activesupport_concern?(node)
+        node.defined_module_name == 'ClassMethods' &&
+          module_extends_activesupport_concern?(node)
+      end
 
       def module_extends_activesupport_concern?(node)
         container_module = container_module_of(node)

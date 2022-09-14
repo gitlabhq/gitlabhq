@@ -20,7 +20,7 @@ module RuboCop
       #   # good
       #
       #   run_cheap_queries_with_each_batch
-      class RescueQueryCanceled < RuboCop::Cop::Cop
+      class RescueQueryCanceled < RuboCop::Cop::Base
         MSG = <<~EOF
           Avoid rescuing the `ActiveRecord::QueryCanceled` class.
 

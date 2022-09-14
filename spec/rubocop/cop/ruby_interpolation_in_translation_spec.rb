@@ -9,8 +9,6 @@ require_relative '../../../rubocop/cop/ruby_interpolation_in_translation'
 RSpec.describe RuboCop::Cop::RubyInterpolationInTranslation do
   let(:msg) { "Don't use ruby interpolation \#{} inside translated strings, instead use %{}" }
 
-  subject(:cop) { described_class.new }
-
   it 'does not add an offense for a regular messages' do
     expect_no_offenses('_("Hello world")')
   end

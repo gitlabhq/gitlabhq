@@ -11,22 +11,9 @@ code are saved in projects, and most features are in the scope of projects.
 
 ## View projects
 
-To explore projects:
+To view projects, on the top bar, select **Main menu > Projects > View all projects**.
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Explore projects**.
-
-The **Projects** page shows a list of projects, sorted by last updated date.
-
-- To view projects with the most [stars](#star-a-project), select **Most stars**.
-- To view projects with the largest number of comments in the past month, select **Trending**.
-
-NOTE:
-The **Explore projects** tab is visible to unauthenticated users unless the
-[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted. Then the tab is visible only to signed-in users.
-
-### Who can view the **Projects** page
+### Who can view the Projects page
 
 When you select a project, the project landing page shows the project contents.
 
@@ -53,11 +40,16 @@ visit the `/projects/:id` URL in your browser or other tool accessing the projec
 
 To explore project topics:
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Explore topics**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. Select the **Explore topics** tab.
+1. To view projects associated with a topic, select a topic.
 
-The **Projects** page shows list of topics sorted by the number of associated projects.
-To view projects associated with a topic, select a topic from the list.
+The **Explore topics** tab shows a list of topics sorted by the number of associated projects.
+
+NOTE:
+The **Explore projects** tab is visible to unauthenticated users unless the
+[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
+is restricted. Then the tab is visible only to signed-in users.
 
 You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 
@@ -68,8 +60,9 @@ If you're an instance administrator, you can administer all project topics from 
 
 To create a project in GitLab:
 
-1. On the top bar, select **Menu > Project > Create new project**.
-1. On the **Create new project** page, choose if you want to:
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
+1. On the **Create new project** page, select an option:
    - Create a [blank project](#create-a-blank-project).
    - Create a project from a:
       - [built-in template](#create-a-project-from-a-built-in-template).
@@ -88,7 +81,8 @@ To create a project in GitLab:
 
 To create a blank project:
 
-1. On the top bar, select **Menu > Projects > Create new project**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. You cannot use special characters at
@@ -119,7 +113,8 @@ Anyone can [contribute a built-in template](../../development/project_templates.
 
 To create a project from a built-in template:
 
-1. On the top bar, select **Menu > Projects > Create new project**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. From the list of templates:
@@ -145,7 +140,8 @@ Custom project templates are available at:
 - The [instance-level](../../user/admin_area/custom_project_templates.md)
 - The [group-level](../../user/group/custom_project_templates.md)
 
-1. On the top bar, select **Menu > Projects > Create new project**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
 1. From the list of templates:
@@ -171,7 +167,8 @@ HIPAA Audit Protocol published by the U.S Department of Health and Human Service
 
 To create a project from the HIPAA Audit Protocol template:
 
-1. On the top bar, select **Menu > Projects > Create new project**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. Locate the **HIPAA Audit Protocol** template:
@@ -210,8 +207,7 @@ Prerequisites:
   [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
-  1. On the top bar, select **Menu > Projects**.
-  1. Select **Groups**.
+  1. On the top bar, select **Main menu > Groups > View all groups**.
   1. Select a group.
   1. Confirm that **New project** is visible in the upper right
      corner. Contact your GitLab
@@ -258,15 +254,14 @@ You can add a star to projects you use frequently to make them easier to find.
 
 To add a star to a project:
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Your projects** or **Explore projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
 1. Select a project.
 1. In the upper right corner of the page, select **Star**.
 
 ## View starred projects
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Starred projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. Select the **Starred projects** tab.
 1. GitLab displays information about your starred projects, including:
 
    - Project description, including name, description, and icon.
@@ -284,7 +279,7 @@ called `my-project` under your username, the project is created at `https://gitl
 
 To view your personal projects:
 
-1. On the top bar, select **Menu > Projects > Your Projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
 1. Under **Your projects**, select **Personal**.
 
 ## Delete a project
@@ -294,8 +289,7 @@ you can [enable delayed project removal](../group/manage.md#enable-delayed-proje
 
 To delete a project:
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Your projects** or **Explore projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
 1. Select a project.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
@@ -315,7 +309,7 @@ projects within that group are not deleted immediately, but only after a delay.
 
 To view a list of all projects that are pending deletion:
 
-1. On the top bar, select **Menu > Projects > Explore projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
 1. Based on your GitLab version:
    - GitLab 14.6 and later: select the **Pending deletion** tab.
    - GitLab 14.5 and earlier: select the **Deleted projects** tab.
@@ -330,8 +324,7 @@ Each project in the list shows:
 
 To view the activity of a project:
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Your projects** or **Explore projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
 1. Select a project.
 1. On the left sidebar, select **Project information > Activity**.
 1. Select a tab to view the type of project activity.
@@ -366,8 +359,7 @@ member and cannot contribute.
 
 To leave a project:
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Your projects** or **Explore projects**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
 1. Select a project.
 1. Select **Leave project**. The **Leave project** option only displays
 on the project dashboard when a project is part of a group under a

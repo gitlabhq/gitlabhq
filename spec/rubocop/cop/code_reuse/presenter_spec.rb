@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/code_reuse/presenter'
 
 RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
-  subject(:cop) { described_class.new }
-
   it 'flags the use of a Presenter in a Service class' do
     allow(cop)
       .to receive(:in_service_class?)

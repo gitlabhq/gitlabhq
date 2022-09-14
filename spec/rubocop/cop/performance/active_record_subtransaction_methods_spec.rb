@@ -6,8 +6,6 @@ require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/performance/active_record_subtransaction_methods'
 
 RSpec.describe RuboCop::Cop::Performance::ActiveRecordSubtransactionMethods do
-  subject(:cop) { described_class.new }
-
   let(:message) { described_class::MSG }
 
   shared_examples 'a method that uses a subtransaction' do |method_name|

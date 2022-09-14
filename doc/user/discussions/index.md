@@ -91,7 +91,7 @@ For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes
 
 You can add comments and threads to a particular commit.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Commits**.
 1. Below the commits, in the **Comment** field, enter a comment.
 1. Select **Comment** or select the down arrow (**{chevron-down}**) to select **Start thread**.
@@ -339,7 +339,7 @@ You can prevent merge requests from being merged until all threads are
 resolved. When this setting is enabled, the **Unresolved threads** counter in a merge request
 is shown in orange when at least one thread remains unresolved.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
@@ -349,7 +349,7 @@ is shown in orange when at least one thread remains unresolved.
 You can set merge requests to automatically resolve threads when lines are modified
 with a new push.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge options** section, select
    **Automatically resolve merge request diff threads when they become outdated**.

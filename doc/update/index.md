@@ -147,7 +147,7 @@ Some installations [may need to run GitLab 14.0 for at least a day](#1400) to co
 
 To check the status of batched background migrations:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Migrations**.
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)

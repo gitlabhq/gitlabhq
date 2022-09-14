@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module CodeReuse
       # Cop that enforces various code reuse rules for workers.
-      class Worker < RuboCop::Cop::Cop
+      class Worker < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         IN_CONTROLLER = 'Workers can not be used in a controller.'
