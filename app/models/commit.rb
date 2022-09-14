@@ -133,6 +133,22 @@ class Commit
     def parent_class
       ::Project
     end
+
+    def build_from_sidekiq_hash(project, hash)
+      hash = hash.dup
+      date_suffix = '_date'
+
+      # When processing Sidekiq payloads various timestamps are stored as Strings.
+      # Commit in turn expects Time-like instances upon input, so we have to
+      # manually parse these values.
+      hash.each do |key, value|
+        if key.to_s.end_with?(date_suffix) && value.is_a?(String)
+          hash[key] = Time.zone.parse(value)
+        end
+      end
+
+      from_hash(hash, project)
+    end
   end
 
   attr_accessor :raw

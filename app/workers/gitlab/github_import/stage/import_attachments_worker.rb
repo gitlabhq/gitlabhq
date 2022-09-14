@@ -42,7 +42,11 @@ module Gitlab
         end
 
         def move_to_next_stage(project, waiters = {})
-          AdvanceStageWorker.perform_async(project.id, waiters, :lfs_objects)
+          AdvanceStageWorker.perform_async(
+            project.id,
+            waiters,
+            :protected_branches
+          )
         end
 
         def feature_disabled?(project)

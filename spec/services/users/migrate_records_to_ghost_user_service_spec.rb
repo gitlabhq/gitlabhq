@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Users::MigrateRecordsToGhostUserService do
   let!(:user) { create(:user) }
-  let(:service) { described_class.new(user, admin) }
+  let(:service) { described_class.new(user, admin, execution_tracker) }
+  let(:execution_tracker) { instance_double(::Gitlab::Utils::ExecutionTracker, over_limit?: false) }
 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:project) { create(:project, :repository) }

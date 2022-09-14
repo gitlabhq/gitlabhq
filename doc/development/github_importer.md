@@ -137,7 +137,16 @@ Each job:
 1. Downloads the attachment.
 1. Replaces the old link with a newly-generated link to GitLab.
 
-### 11. Stage::FinishImportWorker
+### 11. Stage::ImportProtectedBranchesWorker
+
+This worker imports protected branch rules.
+For every rule that exists on GitHub, we schedule a job of
+`Gitlab::GithubImport::ImportProtectedBranchWorker`.
+
+Each job compares the branch protection rules from GitHub and GitLab and applies
+the strictest of the rules to the branches in GitLab.
+
+### 12. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.

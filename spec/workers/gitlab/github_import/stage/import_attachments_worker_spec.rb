@@ -29,7 +29,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :lfs_objects)
+        .with(project.id, { '123' => 2 }, :protected_branches)
 
       worker.import(client, project)
     end
@@ -39,7 +39,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
 
       it 'skips release attachments import and calls next stage' do
         expect(Gitlab::GithubImport::Importer::ReleasesAttachmentsImporter).not_to receive(:new)
-        expect(Gitlab::GithubImport::AdvanceStageWorker).to receive(:perform_async).with(project.id, {}, :lfs_objects)
+        expect(Gitlab::GithubImport::AdvanceStageWorker)
+          .to receive(:perform_async).with(project.id, {}, :protected_branches)
 
         worker.import(client, project)
       end

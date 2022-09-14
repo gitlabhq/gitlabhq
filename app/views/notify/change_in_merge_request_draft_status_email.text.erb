@@ -1,1 +1,5 @@
-<%= "#{sanitize_name(@updated_by_user.name)} changed the draft status of merge request #{@merge_request.to_reference}" %>
+<% if @merge_request.draft? %>
+<%= _("#{sanitize_name(@updated_by_user.name)} marked merge request #{@merge_request.to_reference} as draft") %>
+<% else %>
+<%= _("#{sanitize_name(@updated_by_user.name)} marked merge request #{@merge_request.to_reference} as ready") %>
+<% end %>

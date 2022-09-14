@@ -285,7 +285,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
         author_email: commit_author.email
       )
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+      allow(Commit).to receive(:build_from_sidekiq_hash)
         .and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
@@ -348,7 +348,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
         committed_date: commit_time
       )
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+      allow(Commit).to receive(:build_from_sidekiq_hash)
         .and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
@@ -387,7 +387,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
       allow(project.repository).to receive(:commits_between)
         .and_return([closing_commit])
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+      allow(Commit).to receive(:build_from_sidekiq_hash)
         .and_return(closing_commit)
 
       project.add_maintainer(commit_author)

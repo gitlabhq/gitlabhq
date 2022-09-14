@@ -14,9 +14,10 @@ module Users
 
     attr_reader :ghost_user, :user, :initiator_user, :hard_delete
 
-    def initialize(user, initiator_user)
+    def initialize(user, initiator_user, execution_tracker)
       @user = user
       @initiator_user = initiator_user
+      @execution_tracker = execution_tracker
       @ghost_user = User.ghost
     end
 
@@ -28,6 +29,8 @@ module Users
     end
 
     private
+
+    attr_reader :execution_tracker
 
     def migrate_records
       return if hard_delete
@@ -98,6 +101,7 @@ module Users
       loop do
         update_count = base_scope.where(column => user.id).limit(batch_size).update_all(column => ghost_user.id)
         break if update_count == 0
+        raise Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError if execution_tracker.over_limit?
       end
     end
     # rubocop:enable CodeReuse/ActiveRecord

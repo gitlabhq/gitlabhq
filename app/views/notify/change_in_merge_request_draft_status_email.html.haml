@@ -1,2 +1,6 @@
-%p= html_escape(_('%{username} changed the draft status of merge request %{mr_link}')) % { username: link_to(@updated_by_user.name, user_url(@updated_by_user)),
-    mr_link: merge_request_reference_link(@merge_request) }
+- if @merge_request.draft?
+  %p= html_escape(_('%{username} marked merge request %{mr_link} as draft')) % { username: link_to(@updated_by_user.name, user_url(@updated_by_user)),
+      mr_link: merge_request_reference_link(@merge_request) }
+- else
+  %p= html_escape(_('%{username} marked merge request %{mr_link} as ready')) % { username: link_to(@updated_by_user.name, user_url(@updated_by_user)),
+      mr_link: merge_request_reference_link(@merge_request) }

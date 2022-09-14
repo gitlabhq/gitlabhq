@@ -68,7 +68,7 @@ merge requests to be deployed to a production environment. This chart is availab
 - For time periods in which no merge requests were deployed, the charts render a
   red, dashed line.
 
-  lead time for changes is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
+  Lead time for changes is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
 
 To view the lead time for changes chart:
 

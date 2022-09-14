@@ -24,6 +24,8 @@ Sidekiq::Testing.inline! do
         # the `after_commit` queue to ensure the job is run now.
         fork_project.send(:_run_after_commit_queue)
         fork_project.import_state.send(:_run_after_commit_queue)
+        # We should also force-run the project authorizations refresh job for the created project.
+        AuthorizedProjectUpdate::ProjectRecalculateService.new(fork_project).execute
 
         # Expire repository cache after import to ensure
         # valid_repo? call below returns a correct answer

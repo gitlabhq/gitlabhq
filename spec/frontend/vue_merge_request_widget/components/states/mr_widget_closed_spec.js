@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import closedComponent from '~/vue_merge_request_widget/components/states/mr_widget_closed.vue';
 import MrWidgetAuthorTime from '~/vue_merge_request_widget/components/mr_widget_author_time.vue';
-import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 
 const MOCK_DATA = {
   metrics: {
@@ -38,8 +38,8 @@ describe('MRWidgetClosed', () => {
   });
 
   it('renders closed icon', () => {
-    expect(wrapper.findComponent(StatusIcon).exists()).toBe(true);
-    expect(wrapper.findComponent(StatusIcon).props().status).toBe('closed');
+    expect(wrapper.findComponent(StateContainer).exists()).toBe(true);
+    expect(wrapper.findComponent(StateContainer).props().status).toBe('closed');
   });
 
   it('renders mr widget author time', () => {

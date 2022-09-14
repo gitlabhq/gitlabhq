@@ -41,7 +41,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         <input type="text" id="expires_at" value="2022-01-01"/>
         <input type="text" value='1'/>
         <input type="checkbox" checked/>
-        <input type="submit"/>
+        <input type="submit" value="Create"/>
       </form>`,
     );
 
@@ -102,15 +102,29 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       });
     });
 
-    it('should reset all input fields except the date', async () => {
-      expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
-      expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('1');
-      expect(document.querySelector('input[type=checkbox]').checked).toBe(true);
-      await triggerSuccess();
+    describe('when resetting the form', () => {
+      it('should reset selectively some input fields', async () => {
+        expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('1');
+        expect(document.querySelector('input[type=checkbox]').checked).toBe(true);
+        await triggerSuccess();
 
-      expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
-      expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('');
-      expect(document.querySelector('input[type=checkbox]').checked).toBe(false);
+        expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('');
+        expect(document.querySelector('input[type=checkbox]').checked).toBe(false);
+      });
+
+      it('should not reset the date field', async () => {
+        expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
+        await triggerSuccess();
+
+        expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
+      });
+
+      it('should not reset the submit button value', async () => {
+        expect(document.querySelector('input[type=submit]').value).toBe('Create');
+        await triggerSuccess();
+
+        expect(document.querySelector('input[type=submit]').value).toBe('Create');
+      });
     });
   });
 

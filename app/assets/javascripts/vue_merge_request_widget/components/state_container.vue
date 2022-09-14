@@ -38,11 +38,18 @@ export default {
     expandDetailsTooltip: __('Expand merge details'),
     collapseDetailsTooltip: __('Collapse merge details'),
   },
+  computed: {
+    wrapperClasses() {
+      if (this.status === 'merged') return 'gl-bg-blue-50';
+      if (this.status === 'closed') return 'gl-bg-red-50';
+      return null;
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="mr-widget-body media" v-on="$listeners">
+  <div class="mr-widget-body media" :class="wrapperClasses" v-on="$listeners">
     <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
       <slot name="loading">
         <div class="gl-display-flex">

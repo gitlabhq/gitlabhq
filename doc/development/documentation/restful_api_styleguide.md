@@ -59,12 +59,12 @@ METHOD /endpoint
 
 Supported attributes:
 
-| Attribute                | Type     | Required               | Description           |
-|:-------------------------|:---------|:-----------------------|:----------------------|
-| `attribute`              | datatype | **{check-circle}** Yes | Detailed description. |
-| `attribute` **(<tier>)** | datatype | **{dotted-circle}** No | Detailed description. |
-| `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
-| `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
+| Attribute                | Type     | Required | Description           |
+|:-------------------------|:---------|:---------|:----------------------|
+| `attribute`              | datatype | Yes      | Detailed description. |
+| `attribute` **(<tier>)** | datatype | No       | Detailed description. |
+| `attribute`              | datatype | No       | Detailed description. |
+| `attribute`              | datatype | No       | Detailed description. |
 
 If successful, returns [`<status_code>`](../../api/index.md#status-codes) and the following
 response attributes:
@@ -123,9 +123,9 @@ To deprecate an attribute:
 1. Add inline deprecation text to the description.
 
    ```markdown
-   | Attribute     | Type   | Required               | Description                                  |
-   |:--------------|:-------|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
-   | `widget_name` | string | **{dotted-circle}** No | [Deprecated](<link-to-issue>) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
+   | Attribute     | Type   | Required | Description                                  |
+   |:--------------|:-------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
+   | `widget_name` | string | No       | [Deprecated](<link-to-issue>) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
    ```
 
 To widely announce a deprecation, or if it's a breaking change,
@@ -139,20 +139,20 @@ always be in code blocks using backticks (`` ` ``).
 Sort the table by required attributes first, then alphabetically.
 
 ```markdown
-| Attribute                    | Type          | Required               | Description                                         |
-|:-----------------------------|:--------------|:-----------------------|:----------------------------------------------------|
-| `title`                      | string        | **{check-circle}** Yes | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.            |
-| `confidential`               | boolean       | **{dotted-circle}** No | Sets the issue to confidential. Default is `false`. |
+| Attribute                    | Type          | Required | Description                                         |
+|:-----------------------------|:--------------|:---------|:----------------------------------------------------|
+| `title`                      | string        | Yes      | Title of the issue.                                 |
+| `assignee_ids` **(PREMIUM)** | integer array | No       | IDs of the users to assign the issue to.            |
+| `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 ```
 
 Rendered example:
 
-| Attribute                    | Type          | Required               | Description                                         |
-|:-----------------------------|:--------------|:-----------------------|:----------------------------------------------------|
-| `title`                      | string        | **{check-circle}** Yes | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.            |
-| `confidential`               | boolean       | **{dotted-circle}** No | Sets the issue to confidential. Default is `false`. |
+| Attribute                    | Type          | Required | Description                                         |
+|:-----------------------------|:--------------|:---------|:----------------------------------------------------|
+| `title`                      | string        | Yes      | Title of the issue.                                 |
+| `assignee_ids` **(PREMIUM)** | integer array | No       | IDs of the users to assign the issue to.            |
+| `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
 

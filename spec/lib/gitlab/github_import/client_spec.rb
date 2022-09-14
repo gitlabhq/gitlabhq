@@ -98,6 +98,30 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#branches' do
+    it 'returns the branches' do
+      client = described_class.new('foo')
+
+      expect(client)
+        .to receive(:each_object)
+          .with(:branches, 'foo/bar')
+
+      client.branches('foo/bar')
+    end
+  end
+
+  describe '#branch_protection' do
+    it 'returns the protection details for the given branch' do
+      client = described_class.new('foo')
+
+      expect(client.octokit)
+        .to receive(:branch_protection).with('org/repo', 'bar')
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.branch_protection('org/repo', 'bar')
+    end
+  end
+
   describe '#each_page' do
     let(:client) { described_class.new('foo') }
     let(:object1) { double(:object1) }

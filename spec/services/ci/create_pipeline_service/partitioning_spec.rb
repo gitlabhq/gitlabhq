@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :aggregate_failures do
@@ -67,6 +68,34 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
     expect(metadata.partition_id).to eq(current_partition_id)
     expect(metadata.expanded_environment_name).to eq('review/deploy')
+  end
+
+  context 'with pipeline variables' do
+    let(:variables_attributes) do
+      [
+        { key: 'SOME_VARIABLE', secret_value: 'SOME_VAL' },
+        { key: 'OTHER_VARIABLE', secret_value: 'OTHER_VAL' }
+      ]
+    end
+
+    let(:service) do
+      described_class.new(
+        project,
+        user,
+        { ref: 'master', variables_attributes: variables_attributes })
+    end
+
+    it 'assigns partition_id to pipeline' do
+      expect(pipeline).to be_created_successfully
+      expect(pipeline.partition_id).to eq(current_partition_id)
+    end
+
+    it 'assigns partition_id to variables' do
+      variables_partition_ids = pipeline.variables.map(&:partition_id).uniq
+
+      expect(pipeline.variables.size).to eq(2)
+      expect(variables_partition_ids).to eq([current_partition_id])
+    end
   end
 
   def find_metadata(name)

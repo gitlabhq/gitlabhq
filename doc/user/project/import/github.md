@@ -171,6 +171,7 @@ The following items of a project are imported:
 
 - Repository description.
 - Git repository data.
+- Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
 - Issues.
 - Pull requests.
 - Wiki pages.

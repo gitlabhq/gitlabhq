@@ -1,16 +1,14 @@
 <script>
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
-import StatusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetClosed',
   components: {
     MrWidgetAuthorTime,
-    StatusIcon,
+    StateContainer,
   },
   props: {
-    /* TODO: This is providing all store and service down when it
-      only needs metrics and targetBranch */
     mr: {
       type: Object,
       required: true,
@@ -19,15 +17,12 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <status-icon status="closed" />
-    <div class="media-body">
-      <mr-widget-author-time
-        :action-text="s__('mrWidget|Closed by')"
-        :author="mr.metrics.closedBy"
-        :date-title="mr.metrics.closedAt"
-        :date-readable="mr.metrics.readableClosedAt"
-      />
-    </div>
-  </div>
+  <state-container :mr="mr" status="closed">
+    <mr-widget-author-time
+      :action-text="s__('mrWidget|Closed by')"
+      :author="mr.metrics.closedBy"
+      :date-title="mr.metrics.closedAt"
+      :date-readable="mr.metrics.readableClosedAt"
+    />
+  </state-container>
 </template>

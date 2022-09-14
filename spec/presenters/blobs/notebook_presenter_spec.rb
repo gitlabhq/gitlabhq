@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Blobs::NotebookPresenter do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:repository) { project.repository }
-  let(:blob) { repository.blob_at('HEAD', 'files/ruby/regex.rb') }
-  let(:user) { project.first_owner }
-  let(:git_blob) { blob.__getobj__ }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository }
+  let_it_be(:blob) { repository.blob_at('HEAD', 'files/ruby/regex.rb') }
+  let_it_be(:user) { project.first_owner }
+  let_it_be(:git_blob) { blob.__getobj__ }
 
   subject(:presenter) { described_class.new(blob, current_user: user) }
 

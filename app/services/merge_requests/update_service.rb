@@ -179,18 +179,16 @@ module MergeRequests
       old_title_draft = MergeRequest.draft?(old_title)
       new_title_draft = MergeRequest.draft?(new_title)
 
+      # notify the draft status changed. Added/removed message is handled in the
+      # email template itself, see `change_in_merge_request_draft_status_email` template.
+      notify_draft_status_changed(merge_request) if old_title_draft || new_title_draft
+
       if !old_title_draft && new_title_draft
         # Marked as Draft
-        #
-        merge_request_activity_counter
-          .track_marked_as_draft_action(user: current_user)
+        merge_request_activity_counter.track_marked_as_draft_action(user: current_user)
       elsif old_title_draft && !new_title_draft
         # Unmarked as Draft
-        #
-        notify_draft_status_changed(merge_request)
-
-        merge_request_activity_counter
-          .track_unmarked_as_draft_action(user: current_user)
+        merge_request_activity_counter.track_unmarked_as_draft_action(user: current_user)
       end
     end
 

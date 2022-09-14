@@ -34,7 +34,7 @@ class ProcessCommitWorker
 
     return unless user
 
-    commit = build_commit(project, commit_hash)
+    commit = Commit.build_from_sidekiq_hash(project, commit_hash)
     author = commit.author || user
 
     process_commit_message(project, commit, user, author, default)
@@ -51,12 +51,22 @@ class ProcessCommitWorker
   end
 
   def close_issues(project, user, author, commit, issues)
-    # We don't want to run permission related queries for every single issue,
-    # therefore we use IssueCollection here and skip the authorization check in
-    # Issues::CloseService#execute.
-    IssueCollection.new(issues).updatable_by_user(user).each do |issue|
-      Issues::CloseService.new(project: project, current_user: author)
-        .close_issue(issue, closed_via: commit)
+    if Feature.enabled?(:process_issue_closure_in_background, project)
+      Issues::CloseWorker.bulk_perform_async_with_contexts(
+        issues,
+        arguments_proc: -> (issue) {
+          [project.id, issue.id, issue.class.to_s, { closed_by: author.id, commit_hash: commit.to_hash }]
+        },
+        context_proc: -> (issue) { { project: project } }
+      )
+    else
+      # We don't want to run permission related queries for every single issue,
+      # therefore we use IssueCollection here and skip the authorization check in
+      # Issues::CloseService#execute.
+      IssueCollection.new(issues).updatable_by_user(user).each do |issue|
+        Issues::CloseService.new(project: project, current_user: author)
+          .close_issue(issue, closed_via: commit)
+      end
     end
   end
 
@@ -74,20 +84,5 @@ class ProcessCommitWorker
     Issue::Metrics.for_issues(mentioned_issues)
       .with_first_mention_not_earlier_than(commit.committed_date)
       .update_all(first_mentioned_in_commit_at: commit.committed_date)
-  end
-
-  def build_commit(project, hash)
-    date_suffix = '_date'
-
-    # When processing Sidekiq payloads various timestamps are stored as Strings.
-    # Commit in turn expects Time-like instances upon input, so we have to
-    # manually parse these values.
-    hash.each do |key, value|
-      if key.to_s.end_with?(date_suffix) && value.is_a?(String)
-        hash[key] = Time.zone.parse(value)
-      end
-    end
-
-    Commit.from_hash(hash, project)
   end
 end

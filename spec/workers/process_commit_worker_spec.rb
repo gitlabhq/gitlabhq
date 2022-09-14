@@ -115,25 +115,37 @@ RSpec.describe ProcessCommitWorker do
   end
 
   describe '#close_issues' do
-    context 'when the user can update the issues' do
-      it 'closes the issues' do
+    it 'creates Issue::CloseWorker jobs' do
+      expect do
         worker.close_issues(project, user, user, commit, [issue])
-
-        issue.reload
-
-        expect(issue.closed?).to eq(true)
-      end
+      end.to change(Issues::CloseWorker.jobs, :size).by(1)
     end
 
-    context 'when the user can not update the issues' do
-      it 'does not close the issues' do
-        other_user = create(:user)
+    context 'when process_issue_closure_in_background flag is disabled' do
+      before do
+        stub_feature_flags(process_issue_closure_in_background: false)
+      end
 
-        worker.close_issues(project, other_user, other_user, commit, [issue])
+      context 'when the user can update the issues' do
+        it 'closes the issues' do
+          worker.close_issues(project, user, user, commit, [issue])
 
-        issue.reload
+          issue.reload
 
-        expect(issue.closed?).to eq(false)
+          expect(issue.closed?).to eq(true)
+        end
+      end
+
+      context 'when the user can not update the issues' do
+        it 'does not close the issues' do
+          other_user = create(:user)
+
+          worker.close_issues(project, other_user, other_user, commit, [issue])
+
+          issue.reload
+
+          expect(issue.closed?).to eq(false)
+        end
       end
     end
   end
@@ -187,22 +199,6 @@ RSpec.describe ProcessCommitWorker do
         expect { worker.update_issue_metrics(commit, user) }
           .not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
       end
-    end
-  end
-
-  describe '#build_commit' do
-    it 'returns a Commit' do
-      commit = worker.build_commit(project, id: '123')
-
-      expect(commit).to be_an_instance_of(Commit)
-    end
-
-    it 'parses date strings into Time instances' do
-      commit = worker.build_commit(project,
-                                   id: '123',
-                                   authored_date: Time.current.to_s)
-
-      expect(commit.authored_date).to be_a_kind_of(Time)
     end
   end
 end

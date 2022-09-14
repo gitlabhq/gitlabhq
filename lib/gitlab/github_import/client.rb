@@ -99,6 +99,14 @@ module Gitlab
         each_object(:releases, *args)
       end
 
+      def branches(*args)
+        each_object(:branches, *args)
+      end
+
+      def branch_protection(repo_name, branch_name)
+        with_rate_limit { octokit.branch_protection(repo_name, branch_name) }
+      end
+
       # Fetches data from the GitHub API and yields a Page object for every page
       # of data, without loading all of them into memory.
       #

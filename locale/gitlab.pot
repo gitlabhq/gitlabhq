@@ -1153,10 +1153,13 @@ msgstr ""
 msgid "%{user_name} profile page"
 msgstr ""
 
-msgid "%{username} changed the draft status of merge request %{mr_link}"
+msgid "%{username} has asked for a GitLab account on your instance %{host}:"
 msgstr ""
 
-msgid "%{username} has asked for a GitLab account on your instance %{host}:"
+msgid "%{username} marked merge request %{mr_link} as draft"
+msgstr ""
+
+msgid "%{username} marked merge request %{mr_link} as ready"
 msgstr ""
 
 msgid "%{username}'s avatar"

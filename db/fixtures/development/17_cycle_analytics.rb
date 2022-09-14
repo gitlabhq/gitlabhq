@@ -154,6 +154,8 @@ class Gitlab::Seeder::CycleAnalytics
 
       @developers << user
     end
+
+    AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
   end
 
   def create_new_vsm_project

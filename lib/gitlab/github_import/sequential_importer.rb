@@ -16,6 +16,7 @@ module Gitlab
       ].freeze
 
       PARALLEL_IMPORTERS = [
+        Importer::ProtectedBranchesImporter,
         Importer::PullRequestsImporter,
         Importer::IssuesImporter,
         Importer::DiffNotesImporter,

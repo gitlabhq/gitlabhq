@@ -150,4 +150,18 @@ RSpec.describe Settings do
       expect(Settings.encrypted('tmp/tests/test.enc').read).to be_empty
     end
   end
+
+  describe '.build_sidekiq_routing_rules' do
+    [
+      [nil, [['*', 'default']]],
+      [[], [['*', 'default']]],
+      [[['name=foobar', 'foobar']], [['name=foobar', 'foobar']]]
+    ].each do |input_rules, output_rules|
+      context "Given input routing_rules #{input_rules}" do
+        it "returns output routing_rules #{output_rules}" do
+          expect(described_class.send(:build_sidekiq_routing_rules, input_rules)).to eq(output_rules)
+        end
+      end
+    end
+  end
 end

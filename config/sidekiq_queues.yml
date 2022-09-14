@@ -261,6 +261,8 @@
   - 1
 - - issuables_clear_groups_issue_counter
   - 1
+- - issues_close
+  - 2
 - - issues_placement
   - 2
 - - issues_rebalancing

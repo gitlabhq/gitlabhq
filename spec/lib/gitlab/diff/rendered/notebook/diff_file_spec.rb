@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:commit) { project.commit("5d6ed1503801ca9dc28e95eeb85a7cf863527aee") }
   let(:diffs) { commit.raw_diffs.to_a }
   let(:diff) { diffs.first }

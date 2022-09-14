@@ -786,6 +786,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:users_migrate_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
+  :feature_category: :users
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:x509_issuer_crl_check
   :worker_name: X509IssuerCrlCheckWorker
   :feature_category: :source_code_management
@@ -1056,6 +1065,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: github_importer:github_import_import_protected_branch
+  :worker_name: Gitlab::GithubImport::ImportProtectedBranchWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: github_importer:github_import_import_pull_request
   :worker_name: Gitlab::GithubImport::ImportPullRequestWorker
   :feature_category: :importers
@@ -1157,6 +1175,15 @@
   :tags: []
 - :name: github_importer:github_import_stage_import_notes
   :worker_name: Gitlab::GithubImport::Stage::ImportNotesWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: github_importer:github_import_stage_import_protected_branches
+  :worker_name: Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
@@ -2530,6 +2557,15 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: issues_close
+  :worker_name: Issues::CloseWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 2
   :idempotent: true
   :tags: []
 - :name: issues_placement

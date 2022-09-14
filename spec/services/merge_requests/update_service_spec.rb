@@ -844,7 +844,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             @merge_request = described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
           end
 
-          should_not_email(subscriber)
+          should_email(subscriber)
           should_not_email(non_subscriber)
         end
 
