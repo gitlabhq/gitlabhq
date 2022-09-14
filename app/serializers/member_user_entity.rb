@@ -16,6 +16,10 @@ class MemberUserEntity < UserEntity
     user.blocked?
   end
 
+  expose :is_bot do |user|
+    user.bot?
+  end
+
   expose :two_factor_enabled, if: -> (user) { current_user_can_manage_members? || current_user?(user) } do |user|
     user.two_factor_enabled?
   end

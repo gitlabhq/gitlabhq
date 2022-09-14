@@ -138,7 +138,9 @@ RSpec.describe API::UsageData do
 
       context 'with correct params' do
         it 'returns status ok' do
-          expect(Gitlab::Redis::HLL).to receive(:add)
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track).with(anything, known_event, anything)
+          # allow other events to also get triggered
+          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track)
 
           post api(endpoint, user), params: { event: known_event }
 

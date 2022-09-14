@@ -200,12 +200,8 @@ $tabs-holder-z-index: 250;
   background-color: var(--gray-50, $gray-50);
 }
 
-.mr-conflict-loader {
-  max-width: 334px;
-
-  > svg {
-    vertical-align: middle;
-  }
+.mr-widget-body-loading svg {
+  vertical-align: middle;
 }
 
 .mr-info-list {

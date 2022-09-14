@@ -5280,7 +5280,6 @@ Layout/LineLength:
     - 'spec/models/ci/instance_variable_spec.rb'
     - 'spec/models/ci/job_artifact_spec.rb'
     - 'spec/models/ci/job_token/scope_spec.rb'
-    - 'spec/models/ci/namespace_mirror_spec.rb'
     - 'spec/models/ci/pipeline_schedule_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/ci/processable_spec.rb'

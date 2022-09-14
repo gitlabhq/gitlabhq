@@ -12,6 +12,10 @@ milestone: '13.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53480
 time_frame: all
 data_source: redis
+instrumentation_class: RedisMetric
+options:
+  prefix: package_events
+  event: i_package_rubygems_delete_package
 distribution:
 - ce
 - ee

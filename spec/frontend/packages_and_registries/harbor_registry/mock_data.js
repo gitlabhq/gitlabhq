@@ -68,7 +68,6 @@ export const defaultConfig = {
   connectionError: false,
   invalidPathError: false,
   isGroupPage: false,
-  helpPagePath: '',
   containersErrorImage: 'containersErrorImage',
 };
 

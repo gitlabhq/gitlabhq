@@ -7,6 +7,7 @@ import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import {
   HARBOR_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
+  HARBOR_REGISTRY_HELP_PAGE_PATH,
 } from '~/packages_and_registries/harbor_registry/constants/index';
 
 describe('harbor_list_header', () => {
@@ -77,10 +78,10 @@ describe('harbor_list_header', () => {
   describe('info messages', () => {
     describe('default message', () => {
       it('is correctly bound to title_area props', () => {
-        mountComponent({ helpPagePath: 'foo' });
+        mountComponent();
 
         expect(findTitleArea().props('infoMessages')).toEqual([
-          { text: LIST_INTRO_TEXT, link: 'foo' },
+          { text: LIST_INTRO_TEXT, link: HARBOR_REGISTRY_HELP_PAGE_PATH },
         ]);
       });
     });

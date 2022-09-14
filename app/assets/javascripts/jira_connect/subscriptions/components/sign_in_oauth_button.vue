@@ -1,18 +1,23 @@
 <script>
 import { mapActions, mapMutations } from 'vuex';
 import { GlButton } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
 import { sprintf } from '~/locale';
+
 import {
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
   I18N_CUSTOM_SIGN_IN_BUTTON_TEXT,
+  I18N_OAUTH_APPLICATION_ID_ERROR_MESSAGE,
+  I18N_OAUTH_FAILED_TITLE,
+  I18N_OAUTH_FAILED_MESSAGE,
+  OAUTH_SELF_MANAGED_DOC_LINK,
   OAUTH_WINDOW_OPTIONS,
   PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM,
 } from '~/jira_connect/subscriptions/constants';
+import { fetchOAuthApplicationId, fetchOAuthToken } from '~/jira_connect/subscriptions/api';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { createCodeVerifier, createCodeChallenge } from '../pkce';
-import { SET_ACCESS_TOKEN } from '../store/mutation_types';
+import { SET_ACCESS_TOKEN, SET_ALERT } from '../store/mutation_types';
 
 export default {
   components: {
@@ -30,6 +35,7 @@ export default {
     return {
       loading: false,
       codeVerifier: null,
+      clientId: null,
       canUseCrypto: AccessorUtilities.canUseCrypto(),
     };
   },
@@ -52,30 +58,72 @@ export default {
     ...mapActions(['loadCurrentUser']),
     ...mapMutations({
       setAccessToken: SET_ACCESS_TOKEN,
+      setAlert: SET_ALERT,
     }),
-    async startOAuthFlow() {
-      this.loading = true;
-
+    async fetchOauthClientId() {
+      const {
+        data: { application_id: clientId },
+      } = await fetchOAuthApplicationId();
+      return clientId;
+    },
+    async getOauthAuthorizeURL() {
       // Generate state necessary for PKCE OAuth flow
       this.codeVerifier = createCodeVerifier();
       const codeChallenge = await createCodeChallenge(this.codeVerifier);
+      try {
+        this.clientId = this.gitlabBasePath
+          ? await this.fetchOauthClientId()
+          : this.oauthMetadata?.oauth_token_payload?.client_id;
+      } catch {
+        throw new Error(I18N_OAUTH_APPLICATION_ID_ERROR_MESSAGE);
+      }
 
       // Build the initial OAuth authorization URL
       const { oauth_authorize_url: oauthAuthorizeURL } = this.oauthMetadata;
-
-      const oauthAuthorizeURLWithChallenge = setUrlParams(
-        {
-          code_challenge: codeChallenge,
-          code_challenge_method: PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM.short,
-        },
-        oauthAuthorizeURL,
+      const oauthAuthorizeURLWithChallenge = new URL(
+        setUrlParams(
+          {
+            code_challenge: codeChallenge,
+            code_challenge_method: PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM.short,
+            client_id: this.clientId,
+          },
+          oauthAuthorizeURL,
+        ),
       );
 
-      window.open(
-        oauthAuthorizeURLWithChallenge,
-        I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
-        OAUTH_WINDOW_OPTIONS,
-      );
+      // Rebase URL on the specified GitLab base path (if specified).
+      if (this.gitlabBasePath) {
+        const gitlabBasePathURL = new URL(this.gitlabBasePath);
+        oauthAuthorizeURLWithChallenge.hostname = gitlabBasePathURL.hostname;
+        oauthAuthorizeURLWithChallenge.pathname = `${
+          gitlabBasePathURL.pathname === '/' ? '' : gitlabBasePathURL.pathname
+        }${oauthAuthorizeURLWithChallenge.pathname}`;
+      }
+
+      return oauthAuthorizeURLWithChallenge.toString();
+    },
+    async startOAuthFlow() {
+      try {
+        this.loading = true;
+        const oauthAuthorizeURL = await this.getOauthAuthorizeURL();
+
+        window.open(oauthAuthorizeURL, I18N_DEFAULT_SIGN_IN_BUTTON_TEXT, OAUTH_WINDOW_OPTIONS);
+      } catch (e) {
+        if (e.message) {
+          this.setAlert({
+            message: e.message,
+            variant: 'danger',
+          });
+        } else {
+          this.setAlert({
+            linkUrl: OAUTH_SELF_MANAGED_DOC_LINK,
+            title: I18N_OAUTH_FAILED_TITLE,
+            message: this.gitlabBasePath ? I18N_OAUTH_FAILED_MESSAGE : '',
+            variant: 'danger',
+          });
+        }
+        this.loading = false;
+      }
     },
     async handleWindowMessage(event) {
       if (window.origin !== event.origin) {
@@ -113,10 +161,11 @@ export default {
         oauth_token_payload: oauthTokenPayload,
         oauth_token_url: oauthTokenURL,
       } = this.oauthMetadata;
-      const { data } = await axios.post(oauthTokenURL, {
+      const { data } = await fetchOAuthToken(oauthTokenURL, {
         ...oauthTokenPayload,
         code,
         code_verifier: this.codeVerifier,
+        client_id: this.clientId,
       });
 
       return data.access_token;

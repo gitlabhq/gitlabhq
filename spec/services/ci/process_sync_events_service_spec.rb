@@ -120,19 +120,27 @@ RSpec.describe Ci::ProcessSyncEventsService do
       before do
         Namespaces::SyncEvent.delete_all
 
+        # Creates a sync event for group, and the ProjectNamespace of project1 & project2: 3 in total
         group.update!(parent: parent_group_2)
+        # Creates a sync event for parent_group2 and all the children: 4 in total
         parent_group_2.update!(parent: parent_group_1)
       end
 
       shared_examples 'event consuming' do
         it 'consumes events' do
-          expect { execute }.to change(Namespaces::SyncEvent, :count).from(2).to(0)
+          expect { execute }.to change(Namespaces::SyncEvent, :count).from(7).to(0)
 
           expect(group.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id, group.id]
           )
           expect(parent_group_2.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id]
+          )
+          expect(project1.reload.project_namespace).to have_attributes(
+            traversal_ids: [parent_group_1.id, parent_group_2.id, group.id, project1.project_namespace.id]
+          )
+          expect(project2.reload.project_namespace).to have_attributes(
+            traversal_ids: [parent_group_1.id, parent_group_2.id, group.id, project2.project_namespace.id]
           )
         end
       end
@@ -157,7 +165,7 @@ RSpec.describe Ci::ProcessSyncEventsService do
       end
 
       it 'does not enqueue Namespaces::ProcessSyncEventsWorker if no left' do
-        stub_const("#{described_class}::BATCH_SIZE", 2)
+        stub_const("#{described_class}::BATCH_SIZE", 7)
 
         expect(Namespaces::ProcessSyncEventsWorker).not_to receive(:perform_async)
 

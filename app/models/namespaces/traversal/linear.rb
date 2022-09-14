@@ -47,6 +47,8 @@ module Namespaces
         # This uses rails internal before_commit API to sync traversal_ids on namespace create, right before transaction is committed.
         # This helps reduce the time during which the root namespace record is locked to ensure updated traversal_ids are valid
         before_commit :sync_traversal_ids, on: [:create]
+
+        define_model_callbacks :sync_traversal_ids
       end
 
       class_methods do
@@ -208,10 +210,12 @@ module Namespaces
       #
       # NOTE: self.traversal_ids will be stale. Reload for a fresh record.
       def sync_traversal_ids
-        # Clear any previously memoized root_ancestor as our ancestors have changed.
-        clear_memoization(:root_ancestor)
+        run_callbacks :sync_traversal_ids do
+          # Clear any previously memoized root_ancestor as our ancestors have changed.
+          clear_memoization(:root_ancestor)
 
-        Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
+          Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
+        end
       end
 
       # Lock the root of the hierarchy we just left, and lock the root of the hierarchy

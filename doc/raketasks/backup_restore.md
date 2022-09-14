@@ -79,10 +79,18 @@ For detailed information on restoring GitLab, see [Restore GitLab](restore_gitla
 
 ## Alternative backup strategies
 
-If your GitLab instance contains a lot of Git repository data, you may find the
-GitLab backup script to be too slow. If your GitLab instance has a lot of forked
-projects, the regular backup task also duplicates the Git data for all of them.
-In these cases, consider using file system snapshots as part of your backup strategy.
+In the following cases, consider using file system data transfer or snapshots as part of your backup strategy:
+
+- Your GitLab instance contains a lot of Git repository data and the GitLab backup script is too slow.
+- Your GitLab instance has a lot of forked projects and the regular backup task duplicates the Git data for all of them.
+- Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
+
+When considering using file system data transfer or snapshots:
+
+- Don't use these methods to migrate from one operating system to another. The operating systems of the source and destination should be as similar as possible. For example,
+  don't use these methods to migrate from Ubuntu to Fedora.
+- Data consistency is very important. We recommend stopping GitLab with `sudo gitlab-ctl stop` before taking doing a file system transfer (with rsync, for example) or taking a
+  snapshot.
 
 Example: Amazon Elastic Block Store (EBS)
 

@@ -11,7 +11,7 @@ that is pushed to your project.
 
 To enable emails on push:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Emails on push**.
 1. In the **Recipients** section, provide a list of emails separated by spaces or newlines.

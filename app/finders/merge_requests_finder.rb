@@ -30,6 +30,8 @@
 #     updated_before: datetime
 #
 class MergeRequestsFinder < IssuableFinder
+  extend ::Gitlab::Utils::Override
+
   include MergedAtFilter
 
   def self.scalar_params
@@ -81,6 +83,16 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   private
+
+  override :sort
+  def sort(items)
+    items = super(items)
+
+    return items unless use_grouping_columns?
+
+    grouping_columns = klass.grouping_columns(params[:sort])
+    items.group(grouping_columns) # rubocop:disable CodeReuse/ActiveRecord
+  end
 
   def by_commit(items)
     return items unless params[:commit_sha].presence
@@ -223,6 +235,12 @@ class MergeRequestsFinder < IssuableFinder
     DateTime.parse(input.byteslice(0, 128)) if input
   rescue Date::Error
     nil
+  end
+
+  def use_grouping_columns?
+    return false unless params[:sort].present?
+
+    params[:approved_by_usernames].present? || params[:approved_by_ids].present?
   end
 end
 

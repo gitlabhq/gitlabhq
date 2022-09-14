@@ -268,7 +268,7 @@ module Gitlab
 
       # @return [Array<#totals>] An array of objects that respond to `#totals`
       def usage_data_counters
-        Gitlab::UsageDataCounters.counters
+        Gitlab::UsageDataCounters.unmigrated_counters
       end
 
       def components_usage_data

@@ -7,7 +7,7 @@ export const HARBOR_REGISTRY_TITLE = s__('HarborRegistry|Harbor Registry');
 
 export const CONNECTION_ERROR_TITLE = s__('HarborRegistry|Harbor connection error');
 export const CONNECTION_ERROR_MESSAGE = s__(
-  `HarborRegistry|We are having trouble connecting to the Harbor Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}.`,
+  `HarborRegistry|We are having trouble connecting to the Harbor Registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the documentation%{docLinkEnd}.`,
 );
 
 export const FETCH_IMAGES_LIST_ERROR_MESSAGE = s__(

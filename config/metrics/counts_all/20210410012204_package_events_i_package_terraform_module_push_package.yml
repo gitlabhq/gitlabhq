@@ -12,6 +12,10 @@ milestone: '13.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55018
 time_frame: all
 data_source: redis
+instrumentation_class: RedisMetric
+options:
+  prefix: package_events
+  event: i_package_terraform_module_push_package
 distribution:
 - ce
 - ee

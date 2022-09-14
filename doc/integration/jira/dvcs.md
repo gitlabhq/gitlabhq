@@ -277,7 +277,7 @@ In the example above, the merge requests feature is disabled.
 
 To resolve the issue, enable the relevant feature:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggles to enable the features as needed.

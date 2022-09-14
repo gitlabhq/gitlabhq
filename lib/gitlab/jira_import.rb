@@ -66,11 +66,6 @@ module Gitlab
       cache_class.write(cache_key, value)
     end
 
-    def self.cache_issue_mapping(issue_id, jira_issue_id, project_id)
-      cache_key = JiraImport.jira_item_cache_key(project_id, jira_issue_id, :issues)
-      cache_class.write(cache_key, issue_id)
-    end
-
     def self.get_import_label_id(project_id)
       cache_class.read(JiraImport.import_label_cache_key(project_id))
     end

@@ -30,7 +30,7 @@ To use Akismet:
 1. Sign in or create a new account.
 1. Select **Show** to reveal the API key, and copy the API key's value.
 1. Sign in to GitLab as an administrator.
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Reporting** (`/admin/application_settings/reporting`).
 1. Select the **Enable Akismet** checkbox.
 1. Fill in the API key from step 3.

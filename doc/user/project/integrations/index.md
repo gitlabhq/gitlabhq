@@ -18,7 +18,7 @@ Prerequisites:
 
 To view the available integrations for your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 
 You can also view and manage integration settings across [all projects in an instance or group](../../admin_area/settings/project_integration_management.md).

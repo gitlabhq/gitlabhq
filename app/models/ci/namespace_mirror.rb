@@ -43,20 +43,6 @@ module Ci
 
         upsert({ namespace_id: event.namespace_id, traversal_ids: traversal_ids },
                unique_by: :namespace_id)
-
-        # It won't be necessary once we remove `sync_traversal_ids`.
-        # More info: https://gitlab.com/gitlab-org/gitlab/-/issues/347541
-        sync_children_namespaces!(event.namespace_id, traversal_ids)
-      end
-
-      private
-
-      def sync_children_namespaces!(namespace_id, traversal_ids)
-        by_group_and_descendants(namespace_id)
-          .where.not(namespace_id: namespace_id)
-          .update_all(
-            "traversal_ids = ARRAY[#{sanitize_sql(traversal_ids.join(','))}]::int[] || traversal_ids[array_position(traversal_ids, #{sanitize_sql(namespace_id)}) + 1:]"
-          )
       end
     end
   end

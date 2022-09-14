@@ -16,7 +16,7 @@
             = _('A default branch cannot be chosen for an empty project.')
         - else
           .form-group
-            = f.label :default_branch, "Default branch", class: 'label-bold'
+            = f.label :default_branch, _("Default branch"), class: 'label-bold'
             = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide', data: { qa_selector: 'default_branch_dropdown' }})
 
         .form-group

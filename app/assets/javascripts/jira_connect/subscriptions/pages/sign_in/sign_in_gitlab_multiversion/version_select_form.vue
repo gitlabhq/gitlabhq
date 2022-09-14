@@ -28,6 +28,13 @@ export default {
     GlFormRadio,
     GlButton,
   },
+  props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   data() {
     return {
       selected: DEFAULT_RADIO_OPTION,
@@ -83,7 +90,7 @@ export default {
     </gl-form-group>
 
     <div class="gl-display-flex gl-justify-content-end">
-      <gl-button variant="confirm" type="submit">{{ __('Save') }}</gl-button>
+      <gl-button variant="confirm" type="submit" :loading="loading">{{ __('Save') }}</gl-button>
     </div>
   </gl-form>
 </template>

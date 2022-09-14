@@ -1,6 +1,5 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
@@ -8,11 +7,13 @@ import {
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
   OAUTH_WINDOW_OPTIONS,
 } from '~/jira_connect/subscriptions/constants';
-import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatus from '~/lib/utils/http_status';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { getCurrentUser } from '~/jira_connect/subscriptions/api';
+import {
+  getCurrentUser,
+  fetchOAuthApplicationId,
+  fetchOAuthToken,
+} from '~/jira_connect/subscriptions/api';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ACCESS_TOKEN } from '~/jira_connect/subscriptions/store/mutation_types';
 
@@ -24,16 +25,17 @@ jest.mock('~/jira_connect/subscriptions/pkce', () => ({
   createCodeChallenge: jest.fn().mockResolvedValue('mock-challenge'),
 }));
 
-const mockOauthMetadata = {
-  oauth_authorize_url: 'https://gitlab.com/mockOauth',
-  oauth_token_url: 'https://gitlab.com/mockOauthToken',
-  state: 'good-state',
-};
-
 describe('SignInOauthButton', () => {
   let wrapper;
-  let mockAxios;
   let store;
+  const mockOauthMetadata = {
+    oauth_authorize_url: 'https://gitlab.com/mockOauth',
+    oauth_token_url: 'https://gitlab.com/mockOauthToken',
+    oauth_token_payload: {
+      client_id: '543678901',
+    },
+    state: 'good-state',
+  };
 
   const createComponent = ({ slots, props } = {}) => {
     store = createStore();
@@ -50,13 +52,8 @@ describe('SignInOauthButton', () => {
     });
   };
 
-  beforeEach(() => {
-    mockAxios = new MockAdapter(axios);
-  });
-
   afterEach(() => {
     wrapper.destroy();
-    mockAxios.restore();
   });
 
   const findButton = () => wrapper.findComponent(GlButton);
@@ -70,7 +67,7 @@ describe('SignInOauthButton', () => {
   });
 
   describe('when `gitlabBasePath` is passed', () => {
-    const mockBasePath = 'gitlab.mycompany.com';
+    const mockBasePath = 'https://gitlab.mycompany.com';
 
     it('uses custom text for button', () => {
       createComponent({
@@ -80,6 +77,32 @@ describe('SignInOauthButton', () => {
       });
 
       expect(findButton().text()).toBe(`Sign in to ${mockBasePath}`);
+    });
+
+    describe('on click', () => {
+      const mockClientId = '798412381';
+
+      beforeEach(async () => {
+        fetchOAuthApplicationId.mockReturnValue({ data: { application_id: mockClientId } });
+        jest.spyOn(window, 'open').mockReturnValue();
+        createComponent({
+          props: {
+            gitlabBasePath: mockBasePath,
+          },
+        });
+
+        findButton().vm.$emit('click');
+
+        await nextTick();
+      });
+
+      it('calls `window.open` with correct arguments', () => {
+        expect(window.open).toHaveBeenCalledWith(
+          `${mockBasePath}/mockOauth?code_challenge=mock-challenge&code_challenge_method=S256&client_id=${mockClientId}`,
+          I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+          OAUTH_WINDOW_OPTIONS,
+        );
+      });
     });
   });
 
@@ -110,7 +133,7 @@ describe('SignInOauthButton', () => {
 
     it('calls `window.open` with correct arguments', () => {
       expect(window.open).toHaveBeenCalledWith(
-        `${mockOauthMetadata.oauth_authorize_url}?code_challenge=mock-challenge&code_challenge_method=S256`,
+        `${mockOauthMetadata.oauth_authorize_url}?code_challenge=mock-challenge&code_challenge_method=S256&client_id=${mockOauthMetadata.oauth_token_payload.client_id}`,
         I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
         OAUTH_WINDOW_OPTIONS,
       );
@@ -165,11 +188,7 @@ describe('SignInOauthButton', () => {
 
         describe('when API requests succeed', () => {
           beforeEach(async () => {
-            jest.spyOn(axios, 'post');
-            jest.spyOn(axios, 'get');
-            mockAxios
-              .onPost(mockOauthMetadata.oauth_token_url)
-              .replyOnce(httpStatus.OK, { access_token: mockAccessToken });
+            fetchOAuthToken.mockResolvedValue({ data: { access_token: mockAccessToken } });
             getCurrentUser.mockResolvedValue({ data: mockUser });
 
             window.dispatchEvent(new MessageEvent('message', mockEvent));
@@ -178,9 +197,10 @@ describe('SignInOauthButton', () => {
           });
 
           it('executes POST request to Oauth token endpoint', () => {
-            expect(axios.post).toHaveBeenCalledWith(mockOauthMetadata.oauth_token_url, {
+            expect(fetchOAuthToken).toHaveBeenCalledWith(mockOauthMetadata.oauth_token_url, {
               code: '1234',
               code_verifier: 'mock-verifier',
+              client_id: mockOauthMetadata.oauth_token_payload.client_id,
             });
           });
 
@@ -199,10 +219,7 @@ describe('SignInOauthButton', () => {
 
         describe('when API requests fail', () => {
           beforeEach(async () => {
-            jest.spyOn(axios, 'post');
-            mockAxios
-              .onPost(mockOauthMetadata.oauth_token_url)
-              .replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+            fetchOAuthToken.mockRejectedValue();
 
             window.dispatchEvent(new MessageEvent('message', mockEvent));
 

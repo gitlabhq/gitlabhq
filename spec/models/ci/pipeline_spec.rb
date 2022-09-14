@@ -4211,6 +4211,37 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#has_reports?' do
+    subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
+
+    let(:pipeline) { create(:ci_pipeline, :running) }
+
+    context 'when pipeline has builds with test reports' do
+      before do
+        create(:ci_build, :test_reports, pipeline: pipeline)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when pipeline does not have builds with test reports' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when retried build has test reports but latest one has none' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline)
+        create(:ci_build, :artifacts, pipeline: pipeline)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#complete_and_has_reports?' do
     subject { pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 
@@ -5284,16 +5315,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it { is_expected.to be_falsey }
     end
 
-    context 'when the pipeline is still running' do
-      let(:pipeline) { create(:ci_pipeline, :running) }
+    context 'when the pipeline is still running and with test reports' do
+      let(:pipeline) { create(:ci_pipeline, :running, :with_test_reports) }
 
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when the pipeline is completed without test reports' do
-      let(:pipeline) { create(:ci_pipeline, :success) }
-
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_truthy }
     end
   end
 

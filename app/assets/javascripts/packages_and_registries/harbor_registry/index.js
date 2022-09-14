@@ -70,7 +70,6 @@ export default (id) => {
           projectName,
           containersErrorImage,
           noContainersImage,
-          helpPagePath: '',
         };
       },
       render(createElement) {

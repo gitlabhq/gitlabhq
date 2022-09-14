@@ -280,6 +280,32 @@ RSpec.describe Note do
         expect { note.destroy! }.not_to raise_error
       end
     end
+
+    describe 'sets internal flag' do
+      subject(:internal) { note.reload.internal }
+
+      let(:note) { create(:note, confidential: confidential, project: issue.project, noteable: issue) }
+
+      let_it_be(:issue) { create(:issue) }
+
+      context 'when confidential is `true`' do
+        let(:confidential) { true }
+
+        it { is_expected.to be true }
+      end
+
+      context 'when confidential is `false`' do
+        let(:confidential) { false }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when confidential is `nil`' do
+        let(:confidential) { nil }
+
+        it { is_expected.to be false }
+      end
+    end
   end
 
   describe "Commit notes" do

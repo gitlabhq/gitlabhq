@@ -27,6 +27,12 @@ RSpec.describe MemberUserEntity do
     expect(entity_hash[:blocked]).to be(true)
   end
 
+  it 'correctly exposes `is_bot`' do
+    allow(user).to receive(:bot?).and_return(true)
+
+    expect(entity_hash[:is_bot]).to be(true)
+  end
+
   it 'does not expose `two_factor_enabled` by default' do
     expect(entity_hash[:two_factor_enabled]).to be(nil)
   end

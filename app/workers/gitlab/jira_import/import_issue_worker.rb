@@ -15,8 +15,7 @@ module Gitlab
       loggable_arguments 3
 
       def perform(project_id, jira_issue_id, issue_attributes, waiter_key)
-        issue_id = create_issue(issue_attributes, project_id)
-        JiraImport.cache_issue_mapping(issue_id, jira_issue_id, project_id)
+        create_issue(issue_attributes, project_id)
       rescue StandardError => ex
         # Todo: Record jira issue id(or better jira issue key),
         # so that we can report the list of failed to import issues to the user

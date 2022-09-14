@@ -54,7 +54,7 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 You can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enforce this:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.

@@ -23,6 +23,7 @@ export const member = {
     webUrl: 'https://gitlab.com/root',
     avatarUrl: 'https://www.gravatar.com/avatar/4816142ef496f956a277bedf1a40607b?s=80&d=identicon',
     blocked: false,
+    isBot: false,
     twoFactorEnabled: false,
     oncallSchedules: [{ name: 'schedule 1' }],
     escalationPolicies: [{ name: 'policy 1' }],

@@ -29,7 +29,7 @@ Complete these steps on GitHub:
 
 Complete these steps in GitLab:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **GitHub**.
 1. Ensure the **Active** checkbox is selected.

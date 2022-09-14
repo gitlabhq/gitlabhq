@@ -6,6 +6,7 @@ import {
   fetchGroups,
   getCurrentUser,
   addJiraConnectSubscription,
+  updateInstallation,
 } from '~/jira_connect/subscriptions/api';
 import { getJwt } from '~/jira_connect/subscriptions/utils';
 import httpStatus from '~/lib/utils/http_status';
@@ -152,5 +153,41 @@ describe('JiraConnect API', () => {
       );
       expect(response.data).toEqual(mockResponse);
     });
+  });
+
+  describe('updateInstallation', () => {
+    const expectedUrl = '/-/jira_connect/installations';
+
+    it.each`
+      instanceUrl                       | expectedInstanceUrl
+      ${'https://gitlab.com'}           | ${null}
+      ${'https://gitlab.mycompany.com'} | ${'https://gitlab.mycompany.com'}
+    `(
+      'when instanceUrl is $instanceUrl, it passes `instance_url` as $expectedInstanceUrl',
+      async ({ instanceUrl, expectedInstanceUrl }) => {
+        const makeRequest = () => updateInstallation(instanceUrl);
+
+        jest.spyOn(axiosInstance, 'put');
+        axiosMock
+          .onPut(expectedUrl, {
+            jwt: mockJwt,
+            installation: {
+              instance_url: expectedInstanceUrl,
+            },
+          })
+          .replyOnce(httpStatus.OK, mockResponse);
+
+        response = await makeRequest();
+
+        expect(getJwt).toHaveBeenCalled();
+        expect(axiosInstance.put).toHaveBeenCalledWith(expectedUrl, {
+          jwt: mockJwt,
+          installation: {
+            instance_url: expectedInstanceUrl,
+          },
+        });
+        expect(response.data).toEqual(mockResponse);
+      },
+    );
   });
 });

@@ -22,6 +22,10 @@ module Gitlab
       "payment_method_validation"
     end
 
+    def self.registration_validation_form_id
+      "cc_registration_validation"
+    end
+
     def self.registration_validation_form_url
       "#{self.subscriptions_url}/payment_forms/cc_registration_validation"
     end
@@ -90,3 +94,4 @@ Gitlab::SubscriptionPortal::PAYMENT_FORM_URL = Gitlab::SubscriptionPortal.paymen
 Gitlab::SubscriptionPortal::PAYMENT_VALIDATION_FORM_ID = Gitlab::SubscriptionPortal.payment_validation_form_id.freeze
 Gitlab::SubscriptionPortal::RENEWAL_SERVICE_EMAIL = Gitlab::SubscriptionPortal.renewal_service_email.freeze
 Gitlab::SubscriptionPortal::REGISTRATION_VALIDATION_FORM_URL = Gitlab::SubscriptionPortal.registration_validation_form_url.freeze
+Gitlab::SubscriptionPortal::REGISTRATION_VALIDATION_FORM_ID = Gitlab::SubscriptionPortal.registration_validation_form_id.freeze
