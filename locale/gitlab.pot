@@ -9725,6 +9725,9 @@ msgstr ""
 msgid "Complete verification to sign in."
 msgstr ""
 
+msgid "Complete verification to sign up."
+msgstr ""
+
 msgid "Completed"
 msgstr ""
 
@@ -29909,6 +29912,9 @@ msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
+msgstr ""
+
+msgid "Please wait while we prepare for verification."
 msgstr ""
 
 msgid "Pods in use"

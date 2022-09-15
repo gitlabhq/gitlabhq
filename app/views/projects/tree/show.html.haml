@@ -1,3 +1,4 @@
+- add_page_specific_style 'page_bundles/tree'
 - current_route_path = request.fullpath.match(%r{-/tree/[^/]+/(.+$)}).to_a[1]
 - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
 - add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })

@@ -46,7 +46,7 @@ Maintainer role for the group.
 
 If you don't have a group, create one:
 
-1. On the top bar, select **Main menu > Groups > View all groups**
+1. On the top bar, select **Main menu > Groups > View all groups**.
 1. On the right of the page, select **New group**.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.

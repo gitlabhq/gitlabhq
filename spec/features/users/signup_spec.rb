@@ -66,6 +66,7 @@ RSpec.describe 'Signup' do
   flag_values = [true, false]
   flag_values.each do |val|
     before do
+      stub_feature_flags(arkose_labs_signup_challenge: false)
       stub_feature_flags(restyle_login_page: val)
       stub_application_setting(require_admin_approval_after_user_signup: false)
     end

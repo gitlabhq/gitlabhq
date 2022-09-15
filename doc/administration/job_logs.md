@@ -134,8 +134,8 @@ For more information, see [delete references to missing artifacts](raketasks/che
 
 ## Incremental logging architecture
 
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18169) in GitLab 10.8 [with a flag](feature_flags.md) named `ci_enable_live_trace`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/241471) in GitLab 13.6.
 > - [Recommended for production use](https://gitlab.com/groups/gitlab-org/-/epics/4275) in GitLab 13.6.
 > - [Recommended for production use with AWS S3](https://gitlab.com/gitlab-org/gitlab/-/issues/273498) in GitLab 13.7.
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).

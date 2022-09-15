@@ -1,4 +1,4 @@
-= gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors js-sign-in-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
+= gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
   .form-group.gl-px-5.gl-pt-5
     = render_if_exists 'devise/sessions/new_base_user_login_label', form: f
     = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input top js-username-field', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { qa_selector: 'login_field', testid: 'username-field' }
