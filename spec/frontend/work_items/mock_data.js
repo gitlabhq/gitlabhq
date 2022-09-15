@@ -138,6 +138,16 @@ export const updateWorkItemMutationResponse = {
   },
 };
 
+export const updateWorkItemMutationErrorResponse = {
+  data: {
+    workItemUpdate: {
+      __typename: 'WorkItemUpdatePayload',
+      errors: ['Error!'],
+      workItem: {},
+    },
+  },
+};
+
 export const mockParent = {
   parent: {
     id: 'gid://gitlab/Issue/1',
@@ -152,6 +162,7 @@ export const workItemResponseFactory = ({
   canDelete = false,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
+  datesWidgetPresent = true,
   weightWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
@@ -199,6 +210,14 @@ export const workItemResponseFactory = ({
               assignees: {
                 nodes: mockAssignees,
               },
+            }
+          : { type: 'MOCK TYPE' },
+        datesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetStartAndDueDate',
+              type: 'START_AND_DUE_DATE',
+              dueDate: '2022-12-31',
+              startDate: '2022-01-01',
             }
           : { type: 'MOCK TYPE' },
         weightWidgetPresent
@@ -383,6 +402,21 @@ export const deleteWorkItemFromTaskMutationErrorResponse = {
     workItemDeleteTask: {
       workItem: { id: 123, descriptionHtml: 'updated work item desc' },
       errors: ['Error'],
+    },
+  },
+};
+
+export const workItemDatesSubscriptionResponse = {
+  data: {
+    issuableDatesUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+          dueDate: '2022-12-31',
+          startDate: '2022-01-01',
+        },
+      ],
     },
   },
 };

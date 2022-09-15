@@ -4,12 +4,14 @@ import VueApollo from 'vue-apollo';
 import workItemWeightSubscription from 'ee_component/work_items/graphql/work_item_weight.subscription.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
+  workItemDatesSubscriptionResponse,
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemWeightSubscriptionResponse,
 } from 'jest/work_items/mock_data';
 import App from '~/work_items/components/app.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
@@ -21,6 +23,7 @@ describe('Work items router', () => {
   Vue.use(VueApollo);
 
   const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
+  const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
   const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
 
@@ -32,6 +35,7 @@ describe('Work items router', () => {
 
     const handlers = [
       [workItemQuery, workItemQueryHandler],
+      [workItemDatesSubscription, datesSubscriptionHandler],
       [workItemTitleSubscription, titleSubscriptionHandler],
     ];
 

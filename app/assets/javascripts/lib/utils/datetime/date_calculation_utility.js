@@ -215,6 +215,19 @@ export const newDateAsLocaleTime = (date) => {
   return new Date(`${date}${suffix}`);
 };
 
+/**
+ * Takes a Date object (where timezone could be GMT or EST) and
+ * returns a Date object with the same date but in UTC.
+ *
+ * @param {Date} date A Date object
+ * @returns {Date|null} A Date object with the same date but in UTC
+ */
+export const getDateWithUTC = (date) => {
+  return date instanceof Date
+    ? new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+    : null;
+};
+
 export const beginOfDayTime = 'T00:00:00Z';
 export const endOfDayTime = 'T23:59:59Z';
 

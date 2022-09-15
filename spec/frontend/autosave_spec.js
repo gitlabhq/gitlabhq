@@ -8,6 +8,7 @@ describe('Autosave', () => {
 
   let autosave;
   const field = $('<textarea></textarea>');
+  const checkbox = $('<input type="checkbox">');
   const key = 'key';
   const fallbackKey = 'fallbackKey';
   const lockVersionKey = 'lockVersionKey';
@@ -90,6 +91,24 @@ describe('Autosave', () => {
         expect(eventHandler).toHaveBeenCalledTimes(1);
         fieldElement.removeEventListener('change', eventHandler);
       });
+
+      describe('if field type is checkbox', () => {
+        beforeEach(() => {
+          autosave = {
+            field: checkbox,
+            key,
+            isLocalStorageAvailable: true,
+            type: 'checkbox',
+          };
+        });
+
+        it('should restore', () => {
+          window.localStorage.setItem(key, true);
+          expect(checkbox.is(':checked')).toBe(false);
+          Autosave.prototype.restore.call(autosave);
+          expect(checkbox.is(':checked')).toBe(true);
+        });
+      });
     });
 
     describe('if field gets deleted from DOM', () => {
@@ -167,6 +186,31 @@ describe('Autosave', () => {
 
       it('should call .setItem', () => {
         expect(window.localStorage.setItem).toHaveBeenCalled();
+      });
+    });
+
+    describe('if field type is checkbox', () => {
+      beforeEach(() => {
+        autosave = {
+          field: checkbox,
+          key,
+          isLocalStorageAvailable: true,
+          type: 'checkbox',
+        };
+      });
+
+      it('should save true when checkbox on', () => {
+        checkbox.prop('checked', true);
+        Autosave.prototype.save.call(autosave);
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(key, true);
+      });
+
+      it('should call reset when checkbox off', () => {
+        autosave.reset = jest.fn();
+        checkbox.prop('checked', false);
+        Autosave.prototype.save.call(autosave);
+        expect(autosave.reset).toHaveBeenCalled();
+        expect(window.localStorage.setItem).not.toHaveBeenCalled();
       });
     });
   });

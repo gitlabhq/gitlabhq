@@ -14,6 +14,7 @@ export const TASK_TYPE_NAME = 'Task';
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_LABELS = 'LABELS';
+export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
 export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';

@@ -114,6 +114,35 @@ To change the assignee on a task:
 1. From the dropdown list, select the user(s) to add as an assignee.
 1. Select any area outside the dropdown list.
 
+## Set a start and due date
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4.
+
+You can set a [start and due date](project/issues/due_dates.md) on a task.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can set start and due dates on a task to show when work should begin and end.
+
+To set a due date:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. If the task already has a due date next to **Due date**, select it. Otherwise, select **Add due date**.
+1. In the date picker, select the desired due date.
+
+To set a start date:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. If the task already has a start date next to **Start date**, select it. Otherwise, select **Add start date**.
+1. In the date picker, select the desired due date.
+
+   The due date must be the same or later than the start date.
+   If you select a start date to be later than the due date, the due date is then changed to the same day.
+
 ## Set task weight **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.

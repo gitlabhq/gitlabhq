@@ -144,6 +144,13 @@ export default class IssuableForm {
     );
     IssuableForm.addAutosave(
       autosaveMap,
+      'confidential',
+      this.form.find('input:checkbox[name*="[confidential]"]'),
+      this.searchTerm,
+      this.fallbackKey,
+    );
+    IssuableForm.addAutosave(
+      autosaveMap,
       'due_date',
       this.form.find('input[name*="[due_date]"]'),
       this.searchTerm,

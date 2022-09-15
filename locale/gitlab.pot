@@ -45008,6 +45008,12 @@ msgstr ""
 msgid "WorkItem|Add assignees"
 msgstr ""
 
+msgid "WorkItem|Add due date"
+msgstr ""
+
+msgid "WorkItem|Add start date"
+msgstr ""
+
 msgid "WorkItem|Add task"
 msgstr ""
 
@@ -45040,7 +45046,13 @@ msgstr ""
 msgid "WorkItem|Create work item"
 msgstr ""
 
+msgid "WorkItem|Dates"
+msgstr ""
+
 msgid "WorkItem|Delete %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|Due date"
 msgstr ""
 
 msgid "WorkItem|Expand tasks"
@@ -45107,6 +45119,9 @@ msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please 
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."
+msgstr ""
+
+msgid "WorkItem|Start date"
 msgstr ""
 
 msgid "WorkItem|Task"

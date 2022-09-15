@@ -16,12 +16,14 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
 } from '../constants';
 
 import workItemQuery from '../graphql/work_item.query.graphql';
+import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
@@ -30,6 +32,7 @@ import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
+import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemInformation from './work_item_information.vue';
@@ -49,6 +52,7 @@ export default {
     WorkItemAssignees,
     WorkItemActions,
     WorkItemDescription,
+    WorkItemDueDate,
     WorkItemLabels,
     WorkItemTitle,
     WorkItemState,
@@ -106,14 +110,27 @@ export default {
           document.title = `${this.workItem.title} · ${this.workItem?.workItemType?.name}${path}`;
         }
       },
-      subscribeToMore: {
-        document: workItemTitleSubscription,
-        variables() {
-          return {
-            issuableId: this.workItemId,
-          };
+      subscribeToMore: [
+        {
+          document: workItemTitleSubscription,
+          variables() {
+            return {
+              issuableId: this.workItemId,
+            };
+          },
         },
-      },
+        {
+          document: workItemDatesSubscription,
+          variables() {
+            return {
+              issuableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.workItemDueDate;
+          },
+        },
+      ],
     },
   },
   computed: {
@@ -143,6 +160,11 @@ export default {
     },
     workItemLabels() {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+    },
+    workItemDueDate() {
+      return this.workItem?.widgets?.find(
+        (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
+      );
     },
     workItemWeight() {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
@@ -346,6 +368,15 @@ export default {
           :work-item-id="workItem.id"
           :can-update="canUpdate"
           :full-path="fullPath"
+          @error="error = $event"
+        />
+        <work-item-due-date
+          v-if="workItemDueDate"
+          :can-update="canUpdate"
+          :due-date="workItemDueDate.dueDate"
+          :start-date="workItemDueDate.startDate"
+          :work-item-id="workItem.id"
+          :work-item-type="workItemType"
           @error="error = $event"
         />
       </template>

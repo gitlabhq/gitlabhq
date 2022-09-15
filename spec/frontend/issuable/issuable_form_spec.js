@@ -85,18 +85,25 @@ describe('IssuableForm', () => {
         );
       });
 
-      it('creates due_date autosave when due_date input exist', () => {
-        $form.append(`<input type="text" name="issue[due_date]"/>`);
-        const $dueDate = $form.find(`input[name*="[due_date]"]`);
+      it.each([
+        {
+          id: 'confidential',
+          input: '<input type="checkbox" name="issue[confidential]"/>',
+          selector: 'input[name*="[confidential]"]',
+        },
+        {
+          id: 'due_date',
+          input: '<input type="text" name="issue[due_date]"/>',
+          selector: 'input[name*="[due_date]"]',
+        },
+      ])('creates $id autosave when $id input exist', ({ id, input, selector }) => {
+        $form.append(input);
+        const $input = $form.find(selector);
         const totalAutosaveFormFields = $form.children().length;
         createIssuable($form);
 
         expect(Autosave).toHaveBeenCalledTimes(totalAutosaveFormFields);
-        expect(Autosave).toHaveBeenLastCalledWith(
-          $dueDate,
-          ['/', '', 'due_date'],
-          `autosave///=due_date`,
-        );
+        expect(Autosave).toHaveBeenLastCalledWith($input, ['/', '', id], `autosave///=${id}`);
       });
     });
 
@@ -129,12 +136,15 @@ describe('IssuableForm', () => {
         expect(resetAutosave).toHaveBeenCalledTimes(1);
       });
 
-      it('creates due_date autosave when due_date input exist', () => {
-        $form.append(`<input type="text" name="issue[due_date]"/>`);
+      it.each([
+        { id: 'confidential', input: '<input type="checkbox" name="issue[confidential]"/>' },
+        { id: 'due_date', input: '<input type="text" name="issue[due_date]"/>' },
+      ])('calls reset on autosave $id when $id input exist', ({ id, input }) => {
+        $form.append(input);
         instance = createIssuable($form);
         instance.resetAutosave();
 
-        expect(instance.autosaves.get('due_date').reset).toHaveBeenCalledTimes(1);
+        expect(instance.autosaves.get(id).reset).toHaveBeenCalledTimes(1);
       });
     });
   });

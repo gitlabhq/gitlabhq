@@ -793,11 +793,13 @@ table.code {
 }
 
 .diff-comments-more-count,
-.diff-notes-collapse {
+.diff-notes-collapse,
+.diff-codequality-collapse {
   @include avatar-counter(50%);
 }
 
-.diff-notes-collapse {
+.diff-notes-collapse,
+.diff-codequality-collapse {
   border: 0;
   border-radius: 50%;
   padding: 0;
@@ -982,7 +984,8 @@ table.code {
     position: relative;
   }
 
-  .diff-notes-collapse {
+  .diff-notes-collapse,
+  .diff-codequality-collapse {
     position: absolute;
     left: -12px;
   }
@@ -1112,6 +1115,7 @@ table.code {
     }
 
     .diff-notes-collapse,
+    .diff-codequality-collapse,
     .note,
     .discussion-reply-holder {
       display: none;

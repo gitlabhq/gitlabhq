@@ -6323,6 +6323,7 @@ The connection type for [`CiGroupVariable`](#cigroupvariable).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cigroupvariableconnectionedges"></a>`edges` | [`[CiGroupVariableEdge]`](#cigroupvariableedge) | A list of edges. |
+| <a id="cigroupvariableconnectionlimit"></a>`limit` | [`Int!`](#int) | Maximum amount of group CI/CD variables. |
 | <a id="cigroupvariableconnectionnodes"></a>`nodes` | [`[CiGroupVariable]`](#cigroupvariable) | A list of nodes. |
 | <a id="cigroupvariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
@@ -6498,6 +6499,7 @@ The connection type for [`CiProjectVariable`](#ciprojectvariable).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="ciprojectvariableconnectionedges"></a>`edges` | [`[CiProjectVariableEdge]`](#ciprojectvariableedge) | A list of edges. |
+| <a id="ciprojectvariableconnectionlimit"></a>`limit` | [`Int!`](#int) | Maximum amount of project CI/CD variables. |
 | <a id="ciprojectvariableconnectionnodes"></a>`nodes` | [`[CiProjectVariable]`](#ciprojectvariable) | A list of nodes. |
 | <a id="ciprojectvariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 

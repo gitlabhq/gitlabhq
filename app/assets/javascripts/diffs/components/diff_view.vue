@@ -230,6 +230,7 @@ export default {
         :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
         :inline="inline"
         :index="index"
+        :code-quality-expanded="codeQualityExpandedLines.includes(getCodeQualityLine(line))"
         :is-highlighted="isHighlighted(line)"
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"

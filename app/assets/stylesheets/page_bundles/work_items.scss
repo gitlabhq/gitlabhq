@@ -7,7 +7,7 @@
 
 #weight-widget-input:not(:hover, :focus),
 #weight-widget-input[readonly] {
-  box-shadow: inset 0 0 0 $gl-border-size-1 var(--white, $white);
+  box-shadow: none;
 }
 
 #weight-widget-input[readonly] {
@@ -23,6 +23,34 @@
     .assignees-selector:hover .assign-myself {
       display: block;
     }
+  }
+}
+
+.work-item-due-date {
+  .gl-datepicker-input.gl-form-input.form-control {
+    width: 10rem;
+
+    &:not(:focus, :hover) {
+      box-shadow: none;
+
+      ~ .gl-datepicker-actions {
+        display: none;
+      }
+    }
+
+    &[disabled] {
+      background-color: var(--white, $white);
+      box-shadow: none;
+
+      ~ .gl-datepicker-actions {
+        display: none;
+      }
+    }
+  }
+
+  .gl-datepicker-actions:focus,
+  .gl-datepicker-actions:hover {
+    display: flex !important;
   }
 }
 

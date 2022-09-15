@@ -1,8 +1,0 @@
----
-name: ci_cost_factors_narrow_os_contribution_by_plan
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96273
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372263
-milestone: '15.4'
-type: development
-group: group::pipeline execution
-default_enabled: false

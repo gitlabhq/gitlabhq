@@ -107,16 +107,14 @@ module CounterAttribute
   end
 
   def delayed_increment_counter(attribute, increment)
+    raise ArgumentError, "#{attribute} is not a counter attribute" unless counter_attribute_enabled?(attribute)
+
     return if increment == 0
 
     run_after_commit_or_now do
-      if counter_attribute_enabled?(attribute)
-        increment_counter(attribute, increment)
+      increment_counter(attribute, increment)
 
-        FlushCounterIncrementsWorker.perform_in(WORKER_DELAY, self.class.name, self.id, attribute)
-      else
-        legacy_increment!(attribute, increment)
-      end
+      FlushCounterIncrementsWorker.perform_in(WORKER_DELAY, self.class.name, self.id, attribute)
     end
 
     true
@@ -170,10 +168,6 @@ module CounterAttribute
     redis_state do |redis|
       redis.eval(LUA_STEAL_INCREMENT_SCRIPT, keys: [increment_key, flushed_key])
     end
-  end
-
-  def legacy_increment!(attribute, increment)
-    increment!(attribute, increment)
   end
 
   def unsafe_update_counters(id, increments)

@@ -14,6 +14,11 @@ fragment WorkItemWidgets on WorkItemWidget {
       }
     }
   }
+  ... on WorkItemWidgetStartAndDueDate {
+    type
+    dueDate
+    startDate
+  }
   ... on WorkItemWidgetHierarchy {
     type
     parent {

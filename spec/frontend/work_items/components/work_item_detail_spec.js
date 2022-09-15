@@ -9,6 +9,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
@@ -16,15 +17,17 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { temporaryConfig } from '~/graphql_shared/issuable_client';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
-  workItemTitleSubscriptionResponse,
-  workItemResponseFactory,
   mockParent,
+  workItemDatesSubscriptionResponse,
+  workItemResponseFactory,
+  workItemTitleSubscriptionResponse,
   workItemWeightSubscriptionResponse,
 } from '../mock_data';
 
@@ -41,7 +44,8 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
+  const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
+  const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
   const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -51,6 +55,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
+  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
@@ -65,7 +70,7 @@ describe('WorkItemDetail component', () => {
     updateInProgress = false,
     workItemId = workItemQueryResponse.data.workItem.id,
     handler = successHandler,
-    subscriptionHandler = initialSubscriptionHandler,
+    subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     workItemsMvc2Enabled = false,
     includeWidgets = false,
@@ -74,6 +79,7 @@ describe('WorkItemDetail component', () => {
     const handlers = [
       [workItemQuery, handler],
       [workItemTitleSubscription, subscriptionHandler],
+      [workItemDatesSubscription, datesSubscriptionHandler],
       confidentialityMock,
     ];
 
@@ -399,11 +405,37 @@ describe('WorkItemDetail component', () => {
     expect(findAlert().text()).toBe(updateError);
   });
 
-  it('calls the subscription', () => {
-    createComponent();
+  describe('subscriptions', () => {
+    it('calls the title subscription', () => {
+      createComponent();
 
-    expect(initialSubscriptionHandler).toHaveBeenCalledWith({
-      issuableId: workItemQueryResponse.data.workItem.id,
+      expect(titleSubscriptionHandler).toHaveBeenCalledWith({
+        issuableId: workItemQueryResponse.data.workItem.id,
+      });
+    });
+
+    describe('dates subscription', () => {
+      describe('when the due date widget exists', () => {
+        it('calls the dates subscription', async () => {
+          createComponent();
+          await waitForPromises();
+
+          expect(datesSubscriptionHandler).toHaveBeenCalledWith({
+            issuableId: workItemQueryResponse.data.workItem.id,
+          });
+        });
+      });
+
+      describe('when the due date widget does not exist', () => {
+        it('does not call the dates subscription', async () => {
+          const response = workItemResponseFactory({ datesWidgetPresent: false });
+          const handler = jest.fn().mockResolvedValue(response);
+          createComponent({ handler, workItemsMvc2Enabled: true });
+          await waitForPromises();
+
+          expect(datesSubscriptionHandler).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 
@@ -440,6 +472,34 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemLabels().exists()).toBe(exists);
+    });
+  });
+
+  describe('dates widget', () => {
+    describe.each`
+      description                               | datesWidgetPresent | exists
+      ${'when widget is returned from API'}     | ${true}            | ${true}
+      ${'when widget is not returned from API'} | ${false}           | ${false}
+    `('$description', ({ datesWidgetPresent, exists }) => {
+      it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, async () => {
+        const response = workItemResponseFactory({ datesWidgetPresent });
+        const handler = jest.fn().mockResolvedValue(response);
+        createComponent({ handler, workItemsMvc2Enabled: true });
+        await waitForPromises();
+
+        expect(findWorkItemDueDate().exists()).toBe(exists);
+      });
+    });
+
+    it('shows an error message when it emits an `error` event', async () => {
+      createComponent({ workItemsMvc2Enabled: true });
+      await waitForPromises();
+      const updateError = 'Failed to update';
+
+      findWorkItemDueDate().vm.$emit('error', updateError);
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(updateError);
     });
   });
 
