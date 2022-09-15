@@ -27117,6 +27117,12 @@ msgstr ""
 msgid "Notify|CI/CD project settings"
 msgstr ""
 
+msgid "Notify|Commit Author"
+msgstr ""
+
+msgid "Notify|Committed by"
+msgstr ""
+
 msgid "Notify|Don't want to receive updates from GitLab administrators?"
 msgstr ""
 
@@ -27193,6 +27199,9 @@ msgid "Notify|No preview for this file type"
 msgstr ""
 
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
+msgstr ""
+
+msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
 msgstr ""
 
 msgid "Notify|Remote mirror"

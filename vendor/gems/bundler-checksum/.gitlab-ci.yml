@@ -1,0 +1,28 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+.test:
+  cache:
+    key: bundler-checksum
+    paths:
+      - vendor/gems/bundler-checksum/vendor/ruby
+  before_script:
+    - cd vendor/gems/bundler-checksum
+    - ruby -v                                   # Print out ruby version for debugging
+    - gem install bundler --no-document         # Bundler is not installed with the image
+    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
+    - bundle config set with 'development'
+    - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
+    - bundle config                             # Show bundler configuration
+    - bundle install -j $(nproc)
+  script:
+    - pushd test/project_with_checksum_lock && scripts/test
+
+test-2.7:
+  image: "ruby:2.7"
+  extends: .test
+
+test-3.0:
+  image: "ruby:3.0"
+  extends: .test

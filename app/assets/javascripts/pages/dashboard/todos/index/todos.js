@@ -140,10 +140,10 @@ export default class Todos {
       restoreBtn.classList.add('hidden');
       doneBtn.classList.remove('hidden');
     } else if (target === doneBtn) {
-      row.classList.add('done-reversible');
+      row.classList.add('done-reversible', 'gl-bg-gray-50', 'gl-border-gray-100');
       restoreBtn.classList.remove('hidden');
     } else if (target === restoreBtn) {
-      row.classList.remove('done-reversible');
+      row.classList.remove('done-reversible', 'gl-bg-gray-50', 'gl-border-gray-100');
       doneBtn.classList.remove('hidden');
     } else {
       row.parentNode.removeChild(row);

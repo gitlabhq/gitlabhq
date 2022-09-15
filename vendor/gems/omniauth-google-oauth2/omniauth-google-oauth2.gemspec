@@ -15,14 +15,15 @@ Gem::Specification.new do |gem|
   gem.email         = ['quest@mac.com']
   gem.homepage      = 'https://github.com/zquestz/omniauth-google-oauth2'
 
-  gem.files         =  Dir.glob("lib/**/*.*")
+  gem.files         = Dir.glob("lib/**/*.*")
   gem.require_paths = ['lib']
 
-  gem.required_ruby_version = '>= 2.1'
+  gem.required_ruby_version = '>= 2.2'
 
   gem.add_runtime_dependency 'jwt', '>= 2.0'
-  gem.add_runtime_dependency 'omniauth', '>= 1.9', '< 3'
-  gem.add_runtime_dependency 'omniauth-oauth2', '>= 1.5'
+  gem.add_runtime_dependency 'oauth2', '~> 2.0'
+  gem.add_runtime_dependency 'omniauth', '~> 2.0'
+  gem.add_runtime_dependency 'omniauth-oauth2', '~> 1.7.1'
 
   gem.add_development_dependency 'rake', '~> 12.0'
   gem.add_development_dependency 'rspec', '~> 3.6'

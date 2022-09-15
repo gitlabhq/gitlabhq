@@ -1544,6 +1544,12 @@
       changes: ["vendor/gems/devise-pbkdf2-encryptable/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:bundler-checksum:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/bundler-checksum/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 ##################
 # Releases rules #
 ##################

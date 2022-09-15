@@ -4,7 +4,7 @@ PATH
     omniauth_crowd (2.4.0)
       activesupport
       nokogiri (>= 1.4.4)
-      omniauth (~> 1.0, < 3)
+      omniauth (~> 2.0)
 
 GEM
   remote: http://rubygems.org/
@@ -29,12 +29,15 @@ GEM
     nokogiri (1.13.8)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    omniauth (1.9.1)
+    omniauth (2.1.0)
       hashie (>= 3.4.6)
-      rack (>= 1.6.2, < 3)
+      rack (>= 2.2.3)
+      rack-protection
     public_suffix (4.0.7)
     racc (1.6.0)
     rack (2.2.4)
+    rack-protection (2.2.2)
+      rack
     rack-test (2.0.2)
       rack (>= 1.3)
     rake (13.0.6)

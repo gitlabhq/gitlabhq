@@ -1,6 +1,106 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.1 - 2022-03-10
+
+### Added
+- Output granted scopes in credentials block of the auth hash.
+- Migrated to GitHub actions.
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Nothing.
+
+### Fixed
+- Overriding the `redirect_uri` via params or JSON request body.
+
+## 1.0.0 - 2021-03-14
+
+### Added
+- Support for Omniauth 2.x!
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Support for Omniauth 1.x.
+
+### Fixed
+- Nothing.
+
+## 0.8.2 - 2021-03-14
+
+### Added
+- Constrains the version to Omniauth 1.x.
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Nothing.
+
+### Fixed
+- Nothing.
+
+## 0.8.1 - 2020-12-12
+
+### Added
+- Support reading the access token from a json request body.
+
+### Deprecated
+- Nothing.
+
+### Removed
+- No longer verify the iat claim for JWT.
+
+### Fixed
+- A few minor issues with .rubocop.yml.
+- Issues with image resizing code when the image came with size information from Google.
+
+## 0.8.0 - 2019-08-21
+
+### Added
+- Updated omniauth-oauth2 to v1.6.0 for security fixes.
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Ruby 2.1 support.
+
+### Fixed
+- Nothing.
+
+## 0.7.0 - 2019-06-03
+
+### Added
+- Ensure `info[:email]` is always verified, and include `unverified_email`
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Nothing.
+
+### Fixed
+- Nothing.
+
+## 0.6.1 - 2019-03-07
+
+### Added
+- Return `email` and `email_verified` keys in response.
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Nothing.
+
+### Fixed
+- Nothing.
+
 ## 0.6.0 - 2018-12-28
 
 ### Added
@@ -12,6 +112,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - Support for JWT 1.x.
 - Support for `raw_friend_info` and `raw_image_info`.
+- Stop using Google+ API endpoints.
 
 ### Fixed
 - Nothing.

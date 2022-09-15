@@ -1,0 +1,18 @@
+PATH
+  remote: .
+  specs:
+    bundler-checksum (0.1.0)
+      bundler
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler-checksum!
+
+BUNDLED WITH
+   2.3.17

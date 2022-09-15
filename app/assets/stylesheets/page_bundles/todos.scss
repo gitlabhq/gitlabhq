@@ -9,12 +9,6 @@
   // workaround because we cannot use border-collapse
   border-top: 1px solid transparent;
 
-  &:hover {
-    background-color: var(--blue-50, $blue-50);
-    border-color: var(--blue-200, $blue-200);
-    cursor: pointer;
-  }
-
   // overwrite border style of .content-list
   &:last-child {
     border-bottom: 1px solid transparent;
@@ -26,8 +20,6 @@
 
   &.todo-pending.done-reversible {
     &:hover {
-      border-color: var(--border-color, $border-color);
-      background-color: var(--gray-50, $gray-50);
       border-top: 1px solid transparent;
 
       .todo-avatar,
@@ -40,19 +32,11 @@
     .todo-item {
       opacity: 0.2;
     }
-
-    .btn {
-      background-color: var(--gray-50, $gray-50);
-    }
   }
 }
 
 .todo-item {
   @include transition(opacity);
-
-  .status-box {
-    line-height: inherit;
-  }
 
   .todo-label,
   .todo-project {
@@ -64,22 +48,6 @@
   .todo-body {
     p {
       color: var(--gl-text-color, $gl-text-color);
-    }
-
-    pre {
-      border: 0;
-      background: var(--gray-50, $gray-50);
-      border-radius: 0;
-      color: var(--gray-500, $gray-500);
-      margin: 0 20px;
-      overflow: hidden;
-    }
-
-    .note-image-attach {
-      margin-top: 4px;
-      margin-left: 0;
-      max-width: 200px;
-      float: none;
     }
 
     .gl-label-scoped {

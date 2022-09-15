@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.version       = OmniAuth::AzureOauth2::VERSION
   gem.license       = "MIT"
 
-  gem.add_runtime_dependency 'omniauth', '~> 1.0', '< 3'
+  gem.add_runtime_dependency 'omniauth', '~> 2.0'
   gem.add_dependency 'jwt', ['>= 1.0', '< 3.0']
 
   gem.add_runtime_dependency 'omniauth-oauth2', '~> 1.4'

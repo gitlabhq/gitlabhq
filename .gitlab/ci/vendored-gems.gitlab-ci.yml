@@ -69,3 +69,11 @@ vendor devise-pbkdf2-encryptable:
   trigger:
     include: vendor/gems/devise-pbkdf2-encryptable/.gitlab-ci.yml
     strategy: depend
+
+vendor bundler-checksum:
+  extends:
+    - .vendor:rules:bundler-checksum
+  needs: []
+  trigger:
+    include: vendor/gems/bundler-checksum/.gitlab-ci.yml
+    strategy: depend
