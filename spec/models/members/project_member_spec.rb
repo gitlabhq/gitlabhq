@@ -201,7 +201,7 @@ RSpec.describe ProjectMember do
       it 'does not refresh' do
         expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:bulk_perform_and_wait)
 
-        member = build(:project_member)
+        member = build(:project_member, project: project)
         member.importing = true
         member.save!
       end

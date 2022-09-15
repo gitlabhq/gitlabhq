@@ -889,7 +889,8 @@ RSpec.describe Member do
   end
 
   describe 'generate invite token on create' do
-    let!(:member) { build(:project_member, invite_email: "user@example.com") }
+    let(:project) { create(:project) }
+    let!(:member) { build(:project_member, invite_email: "user@example.com", project: project) }
 
     it 'sets the invite token' do
       expect { member.save! }.to change { member.invite_token }.to(kind_of(String))

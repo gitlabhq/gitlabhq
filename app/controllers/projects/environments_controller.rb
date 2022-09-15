@@ -50,16 +50,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        environments_count_by_state = {}
-
-        if Feature.enabled?(:environments_search, project)
-          @environments = search_environments.with_state(params[:scope] || :available)
-          environments_count_by_state = search_environments.count_by_state
-        else
-          @environments = project.environments
-            .with_state(params[:scope] || :available)
-          environments_count_by_state = project.environments.count_by_state
-        end
+        @environments = search_environments.with_state(params[:scope] || :available)
+        environments_count_by_state = search_environments.count_by_state
 
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
         render json: {
@@ -80,12 +72,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        folder_environments =
-          if Feature.enabled?(:environments_search, project)
-            search_environments(type: params[:id])
-          else
-            project.environments.where(environment_type: params[:id])
-          end
+        folder_environments = search_environments(type: params[:id])
 
         @environments = folder_environments.with_state(params[:scope] || :available)
           .order(:name)

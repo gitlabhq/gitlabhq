@@ -9,7 +9,7 @@
   - if current_user
     .page-title-controls
       = render 'shared/new_project_item_select',
-        path: '-/milestones/new', label: 'New milestone',
+        path: '-/milestones/new', label: _('Milestone'),
         include_groups: true, type: :milestones
 
 - if @milestone_states.any? { |name, count| count > 0 }
@@ -23,7 +23,7 @@
       - if current_user
         .page-title-controls
           = render 'shared/new_project_item_select',
-            path: '-/milestones/new', label: 'New milestone',
+            path: '-/milestones/new', label: _('Milestone'),
             include_groups: true, type: :milestones
   - else
     .milestones
@@ -36,5 +36,5 @@
     - if current_user
       .page-title-controls
         = render 'shared/new_project_item_select',
-          path: '-/milestones/new', label: 'New milestone',
+          path: '-/milestones/new', label: _('Milestone'),
           include_groups: true, type: :milestones

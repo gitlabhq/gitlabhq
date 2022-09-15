@@ -26,6 +26,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     downstream_pipeline_creation_failed: 'The downstream pipeline could not be created',
     secrets_provider_not_found: 'The secrets provider can not be found',
     reached_max_descendant_pipelines_depth: 'You reached the maximum depth of child pipelines',
+    reached_max_pipeline_hierarchy_size: 'The downstream pipeline tree is too large',
     project_deleted: 'The job belongs to a deleted project',
     user_blocked: 'The user who created this job is blocked',
     ci_quota_exceeded: 'No more CI minutes available',

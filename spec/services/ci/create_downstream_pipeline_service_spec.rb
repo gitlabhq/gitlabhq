@@ -833,5 +833,46 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         end
       end
     end
+
+    context 'when the pipeline tree is too large' do
+      let_it_be(:parent)     { create(:ci_pipeline) }
+      let_it_be(:child)      { create(:ci_pipeline, child_of: parent) }
+      let_it_be(:sibling)    { create(:ci_pipeline, child_of: parent) }
+
+      before do
+        stub_const("#{described_class}::MAX_HIERARCHY_SIZE", 3)
+      end
+
+      let(:bridge) do
+        create(:ci_bridge, status: :pending, user: user, options: trigger, pipeline: child)
+      end
+
+      it 'does not create a new pipeline' do
+        expect { subject }.not_to change { Ci::Pipeline.count }
+      end
+
+      it 'drops the trigger job with an explanatory reason' do
+        subject
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('reached_max_pipeline_hierarchy_size')
+      end
+
+      context 'with :ci_limit_complete_hierarchy_size disabled' do
+        before do
+          stub_feature_flags(ci_limit_complete_hierarchy_size: false)
+        end
+
+        it 'creates a new pipeline' do
+          expect { subject }.to change { Ci::Pipeline.count }.by(1)
+        end
+
+        it 'marks the bridge job as successful' do
+          subject
+
+          expect(bridge.reload).to be_success
+        end
+      end
+    end
   end
 end

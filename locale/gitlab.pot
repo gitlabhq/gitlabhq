@@ -13331,16 +13331,7 @@ msgstr ""
 msgid "Deprecated API rate limits"
 msgstr ""
 
-msgid "Deprecations|Feature deprecation and removal"
-msgstr ""
-
 msgid "Deprecations|For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}."
-msgstr ""
-
-msgid "Deprecations|For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}."
-msgstr ""
-
-msgid "Deprecations|The logs and tracing features were also deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0."
 msgstr ""
 
 msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7."

@@ -40,7 +40,8 @@ module Enums
           downstream_pipeline_creation_failed: 1_007,
           secrets_provider_not_found: 1_008,
           reached_max_descendant_pipelines_depth: 1_009,
-          ip_restriction_failure: 1_010
+          ip_restriction_failure: 1_010,
+          reached_max_pipeline_hierarchy_size: 1_011
         }
       end
     end

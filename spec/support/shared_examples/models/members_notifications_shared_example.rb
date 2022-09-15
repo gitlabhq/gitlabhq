@@ -8,7 +8,7 @@ RSpec.shared_examples 'members notifications' do |entity_type|
   end
 
   describe "#after_create" do
-    let(:member) { build(:"#{entity_type}_member") }
+    let(:member) { build(:"#{entity_type}_member", "#{entity_type}": create(entity_type.to_s)) }
 
     it "sends email to user" do
       expect(notification_service).to receive(:"new_#{entity_type}_member").with(member)
@@ -35,7 +35,7 @@ RSpec.shared_examples 'members notifications' do |entity_type|
 
   describe '#after_commit' do
     context 'on creation of a member requesting access' do
-      let(:member) { build(:"#{entity_type}_member", :access_request) }
+      let(:member) { build(:"#{entity_type}_member", :access_request, "#{entity_type}": create(entity_type.to_s)) }
 
       it "calls NotificationService.new_access_request" do
         expect(notification_service).to receive(:new_access_request).with(member)

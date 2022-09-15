@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :project_member do
     user
     source { association(:project) }
+    member_namespace_id { source.id }
     maintainer
 
     trait(:guest) { access_level { ProjectMember::GUEST } }

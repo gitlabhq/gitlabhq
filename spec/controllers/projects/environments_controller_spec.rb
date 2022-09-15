@@ -18,8 +18,27 @@ RSpec.describe Projects::EnvironmentsController do
     sign_in(user)
   end
 
-  # TODO: inline when FF is removed https://gitlab.com/gitlab-org/gitlab/-/issues/372541
-  shared_examples 'index examples' do
+  describe 'GET index' do
+    context 'when a request for the HTML is made' do
+      it 'responds with status code 200' do
+        get :index, params: environment_params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'expires etag cache to force reload environments list' do
+        expect_any_instance_of(Gitlab::EtagCaching::Store)
+          .to receive(:touch).with(project_environments_path(project, format: :json))
+
+        get :index, params: environment_params
+      end
+
+      it_behaves_like 'tracking unique visits', :index do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
+    end
+
     context 'when requesting JSON response for folders' do
       before do
         allow_any_instance_of(Environment).to receive(:has_terminals?).and_return(true)
@@ -57,16 +76,8 @@ RSpec.describe Projects::EnvironmentsController do
         it 'handles search option properly' do
           get :index, params: environment_params(format: :json, search: 'staging/r')
 
-          if Feature.enabled?(:environments_search, project)
-            expect(environments.map { |env| env['name'] } ).to contain_exactly('staging/review-1', 'staging/review-2')
-            expect(json_response['available_count']).to eq 2
-          else
-            expect(environments.map { |env| env['name'] } ).to contain_exactly('production',
-                                                                            'staging/review-1',
-                                                                            'staging/review-2')
-            expect(json_response['available_count']).to eq 3
-          end
-
+          expect(environments.map { |env| env['name'] } ).to contain_exactly('staging/review-1', 'staging/review-2')
+          expect(json_response['available_count']).to eq 2
           expect(json_response['stopped_count']).to eq 1
         end
 
@@ -160,40 +171,32 @@ RSpec.describe Projects::EnvironmentsController do
     end
   end
 
-  describe 'GET index' do
-    context 'when a request for the HTML is made' do
-      it 'responds with status code 200' do
-        get :index, params: environment_params
+  describe 'GET folder' do
+    context 'when using default format' do
+      it 'responds with HTML' do
+        get :folder, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'staging-1.0'
+        }
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template 'folder'
       end
 
-      it 'expires etag cache to force reload environments list' do
-        expect_any_instance_of(Gitlab::EtagCaching::Store)
-          .to receive(:touch).with(project_environments_path(project, format: :json))
+      it_behaves_like 'tracking unique visits', :folder do
+        let(:request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: 'staging-1.0'
+          }
+        end
 
-        get :index, params: environment_params
-      end
-
-      it_behaves_like 'tracking unique visits', :index do
-        let(:request_params) { environment_params }
         let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
-    include_examples 'index examples'
-
-    context 'when environments_search feature flag is disabled' do
-      before do
-        stub_feature_flags(environments_search: false)
-      end
-
-      include_examples 'index examples'
-    end
-  end
-
-  # TODO: inline when FF is removed https://gitlab.com/gitlab-org/gitlab/-/issues/372541
-  shared_examples 'folder examples' do
     context 'when using JSON format' do
       before do
         create(:environment, project: project,
@@ -230,54 +233,10 @@ RSpec.describe Projects::EnvironmentsController do
           search: 'staging-1.0/z'
         }, format: :json)
 
-        if Feature.enabled?(:environments_search, project)
-          expect(environments.map { |env| env['name'] } ).to eq(['staging-1.0/zzz'])
-          expect(json_response['available_count']).to eq 1
-        else
-          expect(environments.map { |env| env['name'] } ).to contain_exactly('staging-1.0/review',
-                                                                             'staging-1.0/zzz')
-          expect(json_response['available_count']).to eq 2
-        end
-
+        expect(environments.map { |env| env['name'] } ).to eq(['staging-1.0/zzz'])
+        expect(json_response['available_count']).to eq 1
         expect(json_response['stopped_count']).to eq 0
       end
-    end
-  end
-
-  describe 'GET folder' do
-    context 'when using default format' do
-      it 'responds with HTML' do
-        get :folder, params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: 'staging-1.0'
-        }
-
-        expect(response).to be_ok
-        expect(response).to render_template 'folder'
-      end
-
-      it_behaves_like 'tracking unique visits', :folder do
-        let(:request_params) do
-          {
-            namespace_id: project.namespace,
-            project_id: project,
-            id: 'staging-1.0'
-          }
-        end
-
-        let(:target_id) { 'users_visiting_environments_pages' }
-      end
-    end
-
-    include_examples 'folder examples'
-
-    context 'when environments_search feature flag is disabled' do
-      before do
-        stub_feature_flags(environments_search: false)
-      end
-
-      include_examples 'folder examples'
     end
   end
 

@@ -11,6 +11,7 @@ module Ci
     DuplicateDownstreamPipelineError = Class.new(StandardError)
 
     MAX_NESTED_CHILDREN = 2
+    MAX_HIERARCHY_SIZE  = 1000
 
     def execute(bridge)
       @bridge = bridge
@@ -86,6 +87,11 @@ module Ci
         return false
       end
 
+      if Feature.enabled?(:ci_limit_complete_hierarchy_size) && pipeline_tree_too_large?
+        @bridge.drop!(:reached_max_pipeline_hierarchy_size)
+        return false
+      end
+
       unless can_create_downstream_pipeline?(target_ref)
         @bridge.drop!(:insufficient_bridge_permissions)
         return false
@@ -139,6 +145,13 @@ module Ci
       # only applies to parent-child pipelines not multi-project
       ancestors_of_new_child = @bridge.pipeline.self_and_project_ancestors
       ancestors_of_new_child.count > MAX_NESTED_CHILDREN
+    end
+
+    def pipeline_tree_too_large?
+      return false unless @bridge.triggers_downstream_pipeline?
+
+      # Applies to the entire pipeline tree across all projects
+      @bridge.pipeline.complete_hierarchy_count >= MAX_HIERARCHY_SIZE
     end
 
     def config_checksum(pipeline)
