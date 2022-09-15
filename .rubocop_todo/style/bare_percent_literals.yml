@@ -1,16 +1,13 @@
 ---
 # Cop supports --auto-correct.
 Style/BarePercentLiterals:
-  # Offense count: 220
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/models/commit.rb'
     - 'app/models/concerns/storage/legacy_namespace.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/services/feature_flags/base_service.rb'
     - 'app/services/repositories/base_service.rb'
-    - 'app/services/repositories/destroy_service.rb'
     - 'ee/app/services/jira/jql_builder_service.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/file_size_check.rb'
     - 'ee/spec/features/projects/environments/environments_spec.rb'
@@ -41,17 +38,15 @@ Style/BarePercentLiterals:
     - 'qa/qa/ee/page/project/show.rb'
     - 'qa/qa/ee/page/project/snippet/index.rb'
     - 'qa/qa/ee/page/project/wiki/show.rb'
-    - 'qa/qa/page/component/design_management.rb'
     - 'qa/qa/page/component/select2.rb'
     - 'qa/qa/page/element.rb'
     - 'qa/qa/page/file/form.rb'
     - 'qa/qa/page/project/web_ide/edit.rb'
     - 'qa/qa/resource/events/project.rb'
-    - 'qa/qa/resource/members.rb'
+    - 'qa/qa/resource/personal_access_token_cache.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/1_manage/group/group_saml_enforced_sso_new_account_spec.rb'
+    - 'qa/qa/specs/features/browser_ui/4_verify/pipeline/pipeline_with_image_pull_policy_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/push_rules_spec.rb'
-    - 'qa/qa/support/page/logging.rb'
     - 'qa/spec/runtime/feature_spec.rb'
     - 'scripts/regenerate-schema'
     - 'scripts/trigger-build.rb'
@@ -79,6 +74,7 @@ Style/BarePercentLiterals:
     - 'spec/lib/banzai/filter/references/label_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/milestone_reference_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/full_pipeline_spec.rb'
+    - 'spec/lib/banzai/pipeline/incident_management/timeline_event_pipeline_spec.rb'
     - 'spec/lib/banzai/pipeline/plain_markdown_pipeline_spec.rb'
     - 'spec/lib/banzai/reference_parser/commit_parser_spec.rb'
     - 'spec/lib/banzai/reference_parser/issue_parser_spec.rb'
@@ -95,6 +91,7 @@ Style/BarePercentLiterals:
     - 'spec/mailers/emails/releases_spec.rb'
     - 'spec/mailers/emails/service_desk_spec.rb'
     - 'spec/models/deployment_spec.rb'
+    - 'spec/models/incident_management/timeline_event_spec.rb'
     - 'spec/models/integrations/drone_ci_spec.rb'
     - 'spec/models/integrations/teamcity_spec.rb'
     - 'spec/models/project_label_spec.rb'
@@ -102,6 +99,8 @@ Style/BarePercentLiterals:
     - 'spec/requests/api/ci/job_artifacts_spec.rb'
     - 'spec/requests/api/deployments_spec.rb'
     - 'spec/requests/api/graphql/mutations/snippets/destroy_spec.rb'
+    - 'spec/requests/api/graphql/project/incident_management/timeline_events_spec.rb'
+    - 'spec/requests/projects/packages/package_files_controller_spec.rb'
     - 'spec/rubocop/cop/gitlab/mark_used_feature_flags_spec.rb'
     - 'spec/services/prometheus/proxy_variable_substitution_service_spec.rb'
     - 'spec/support/banzai/reference_filter_shared_examples.rb'

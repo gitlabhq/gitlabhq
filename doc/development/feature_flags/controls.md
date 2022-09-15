@@ -339,7 +339,7 @@ take one of the following actions:
 
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
-1. Add the ~"feature flag" label so release managers are aware the changes are hidden behind a feature flag.
+1. Add the ~"feature flag" label so release managers are aware of the removal.
 1. If the merge request has to be picked into a stable branch, add the
    appropriate `~"Pick into X.Y"` label, for example `~"Pick into 13.0"`.
    See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)

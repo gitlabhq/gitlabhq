@@ -884,6 +884,18 @@ Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = Settings.absolute(Settings.satellites['path'] || "tmp/repo_satellites/")
 
 #
+# Microsoft Graph Mailer
+#
+Settings['microsoft_graph_mailer'] ||= Settingslogic.new({})
+Settings.microsoft_graph_mailer['enabled'] = false if Settings.microsoft_graph_mailer['enabled'].nil?
+Settings.microsoft_graph_mailer['user_id'] ||= nil
+Settings.microsoft_graph_mailer['tenant'] ||= nil
+Settings.microsoft_graph_mailer['client_id'] ||= nil
+Settings.microsoft_graph_mailer['client_secret'] ||= nil
+Settings.microsoft_graph_mailer['azure_ad_endpoint'] ||= 'https://login.microsoftonline.com'
+Settings.microsoft_graph_mailer['graph_endpoint'] ||= 'https://graph.microsoft.com'
+
+#
 # Kerberos
 #
 Gitlab.ee do

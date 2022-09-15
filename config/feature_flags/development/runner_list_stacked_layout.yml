@@ -1,8 +1,0 @@
----
-name: runner_list_stacked_layout
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95617
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371031
-milestone: '15.4'
-type: development
-group: group::runner
-default_enabled: false

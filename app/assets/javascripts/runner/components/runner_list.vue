@@ -1,27 +1,14 @@
 <script>
 import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { __, s__ } from '~/locale';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { s__ } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
-import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStackedSummaryCell from './cells/runner_stacked_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 
 const defaultFields = [
-  tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
-  tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-40p'] }),
-  tableField({ key: 'version', label: __('Version') }),
-  tableField({ key: 'jobCount', label: __('Jobs') }),
-  tableField({ key: 'contactedAt', label: __('Last contact') }),
-  tableField({ key: 'actions', label: '' }),
-];
-
-const stackedLayoutFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner') }),
   tableField({ key: 'actions', label: '', thClasses: ['gl-w-15p'] }),
@@ -32,17 +19,13 @@ export default {
     GlFormCheckbox,
     GlTableLite,
     GlSkeletonLoader,
-    TooltipOnTruncate,
-    TimeAgo,
     RunnerStatusPopover,
-    RunnerSummaryCell,
     RunnerStackedSummaryCell,
     RunnerStatusCell,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   apollo: {
     checkedRunnerIds: {
       query: checkedRunnerIdsQuery,
@@ -72,11 +55,6 @@ export default {
     return { checkedRunnerIds: [] };
   },
   computed: {
-    stackedLayout() {
-      // runner_list_stacked_layout_admin or runner_list_stacked_layout
-      const { runnerListStackedLayoutAdmin, runnerListStackedLayout } = this.glFeatures || {};
-      return runnerListStackedLayoutAdmin || runnerListStackedLayout;
-    },
     tableClass() {
       // <gl-table-lite> does not provide a busy state, add
       // simple support for it.
@@ -86,7 +64,7 @@ export default {
       };
     },
     fields() {
-      const fields = this.stackedLayout ? stackedLayoutFields : defaultFields;
+      const fields = defaultFields;
 
       if (this.checkable) {
         const checkboxField = tableField({
@@ -155,32 +133,11 @@ export default {
       </template>
 
       <template #cell(summary)="{ item, index }">
-        <runner-stacked-summary-cell v-if="stackedLayout" :runner="item">
+        <runner-stacked-summary-cell :runner="item">
           <template #runner-name="{ runner }">
             <slot name="runner-name" :runner="runner" :index="index"></slot>
           </template>
         </runner-stacked-summary-cell>
-
-        <runner-summary-cell v-else :runner="item">
-          <template #runner-name="{ runner }">
-            <slot name="runner-name" :runner="runner" :index="index"></slot>
-          </template>
-        </runner-summary-cell>
-      </template>
-
-      <template v-if="!stackedLayout" #cell(version)="{ item: { version } }">
-        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="version">
-          {{ version }}
-        </tooltip-on-truncate>
-      </template>
-
-      <template v-if="!stackedLayout" #cell(jobCount)="{ item: { jobCount } }">
-        <span data-testid="job-count">{{ formatJobCount(jobCount) }}</span>
-      </template>
-
-      <template v-if="!stackedLayout" #cell(contactedAt)="{ item: { contactedAt } }">
-        <time-ago v-if="contactedAt" :time="contactedAt" />
-        <template v-else>{{ __('Never') }}</template>
       </template>
 
       <template #cell(actions)="{ item }">

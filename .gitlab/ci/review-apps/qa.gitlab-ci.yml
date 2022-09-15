@@ -36,7 +36,7 @@ include:
   variables:
     GIT_LFS_SKIP_SMUDGE: 1
     WD_INSTALL_DIR: /usr/local/bin
-    RSPEC_REPORT_OPTS: --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec.xml
+    RSPEC_REPORT_OPTS: --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml
   script:
     - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO} ${QA_GITLAB_URL} -- ${QA_TESTS} ${RSPEC_REPORT_OPTS}"
@@ -50,7 +50,7 @@ include:
     paths:
       - qa/tmp
     reports:
-      junit: qa/tmp/rspec.xml
+      junit: qa/tmp/rspec-*.xml
     expire_in: 7 days
     when: always
 
@@ -145,6 +145,11 @@ e2e-test-report:
     GIT_STRATEGY: none
   allow_failure: true
   when: always
+  artifacts: # re-save rspec results for displaying in parent pipeline
+    expire_in: 1 day
+    when: always
+    paths:
+      - qa/tmp/rspec-*.xml
 
 upload-knapsack-report:
   extends:

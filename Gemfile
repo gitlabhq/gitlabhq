@@ -527,6 +527,8 @@ gem 'erubi', '~> 1.9.0'
 gem 'mail', '= 2.7.1'
 gem 'mail-smtp_pool', '~> 0.1.0', path: 'vendor/gems/mail-smtp_pool', require: false
 
+gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer'
+
 # File encryption
 gem 'lockbox', '~> 0.6.2'
 

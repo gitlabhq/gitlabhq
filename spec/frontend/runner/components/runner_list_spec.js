@@ -65,9 +65,6 @@ describe('RunnerList', () => {
     expect(headerLabels).toEqual([
       'Status',
       'Runner',
-      'Version',
-      'Jobs',
-      'Last contact',
       '', // actions has no label
     ]);
   });
@@ -87,23 +84,28 @@ describe('RunnerList', () => {
   });
 
   it('Displays details of a runner', () => {
-    const { id, description, version, shortSha } = mockRunners[0];
-
     createComponent({}, mountExtended);
 
+    const { id, description, version, shortSha } = mockRunners[0];
+    const numericId = getIdFromGraphQLId(id);
+
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toBe(I18N_STATUS_NEVER_CONTACTED);
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
+      I18N_STATUS_NEVER_CONTACTED,
+    );
 
     // Runner summary
-    expect(findCell({ fieldKey: 'summary' }).text()).toContain(
-      `#${getIdFromGraphQLId(id)} (${shortSha})`,
-    );
-    expect(findCell({ fieldKey: 'summary' }).text()).toContain(description);
+    const summary = findCell({ fieldKey: 'summary' }).text();
 
-    // Other fields
-    expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
-    expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
-    expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
+    expect(summary).toContain(`#${numericId} (${shortSha})`);
+    expect(summary).toContain(I18N_PROJECT_TYPE);
+
+    expect(summary).toContain(version);
+    expect(summary).toContain(description);
+
+    expect(summary).toContain('Last contact');
+    expect(summary).toContain('0'); // job count
+    expect(summary).toContain('Created');
 
     // Actions
     expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
@@ -162,42 +164,6 @@ describe('RunnerList', () => {
     });
   });
 
-  describe('Table data formatting', () => {
-    let mockRunnersCopy;
-
-    beforeEach(() => {
-      mockRunnersCopy = [
-        {
-          ...mockRunners[0],
-        },
-      ];
-    });
-
-    it('Formats job counts', () => {
-      mockRunnersCopy[0].jobCount = 1;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1');
-    });
-
-    it('Formats large job counts', () => {
-      mockRunnersCopy[0].jobCount = 1000;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000');
-    });
-
-    it('Formats large job counts with a plus symbol', () => {
-      mockRunnersCopy[0].jobCount = 1001;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000+');
-    });
-  });
-
   it('Shows runner identifier', () => {
     const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
@@ -224,64 +190,6 @@ describe('RunnerList', () => {
       createComponent({ props: { loading: true } }, mountExtended);
 
       expect(findSkeletonLoader().exists()).toBe(false);
-    });
-  });
-
-  describe.each`
-    glFeatures
-    ${{ runnerListStackedLayoutAdmin: true }}
-    ${{ runnerListStackedLayout: true }}
-  `('When glFeatures = $glFeatures', ({ glFeatures }) => {
-    beforeEach(() => {
-      createComponent(
-        {
-          stubs: {
-            RunnerStatusPopover: {
-              template: '<div/>',
-            },
-          },
-          provide: {
-            glFeatures,
-          },
-        },
-        mountExtended,
-      );
-    });
-
-    it('Displays stacked list headers', () => {
-      const headerLabels = findHeaders().wrappers.map((w) => w.text());
-
-      expect(headerLabels).toEqual([
-        'Status',
-        'Runner',
-        '', // actions has no label
-      ]);
-    });
-
-    it('Displays stacked details of a runner', () => {
-      const { id, description, version, shortSha } = mockRunners[0];
-      const numericId = getIdFromGraphQLId(id);
-
-      // Badges
-      expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
-        I18N_STATUS_NEVER_CONTACTED,
-      );
-
-      // Runner summary
-      const summary = findCell({ fieldKey: 'summary' }).text();
-
-      expect(summary).toContain(`#${numericId} (${shortSha})`);
-      expect(summary).toContain(I18N_PROJECT_TYPE);
-
-      expect(summary).toContain(version);
-      expect(summary).toContain(description);
-
-      expect(summary).toContain('Last contact');
-      expect(summary).toContain('0'); // job count
-      expect(summary).toContain('Created');
-
-      // Actions
-      expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
     });
   });
 });

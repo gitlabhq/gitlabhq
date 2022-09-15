@@ -420,6 +420,26 @@ RSpec.describe Gitlab::Git::Repository do
     end
   end
 
+  describe '#delete_branch' do
+    let(:repository) { mutable_repository }
+
+    it 'deletes a branch' do
+      expect(repository.find_branch('feature')).not_to be_nil
+
+      repository.delete_branch('feature')
+
+      expect(repository.find_branch('feature')).to be_nil
+    end
+
+    it 'deletes a fully qualified branch' do
+      expect(repository.find_branch('feature')).not_to be_nil
+
+      repository.delete_branch('refs/heads/feature')
+
+      expect(repository.find_branch('feature')).to be_nil
+    end
+  end
+
   describe '#delete_refs' do
     let(:repository) { mutable_repository }
 

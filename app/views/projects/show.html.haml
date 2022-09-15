@@ -2,7 +2,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - @skip_current_level_breadcrumb = true
 - add_page_specific_style 'page_bundles/project'
-- add_page_specific_style 'page_bundles/tree'
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")

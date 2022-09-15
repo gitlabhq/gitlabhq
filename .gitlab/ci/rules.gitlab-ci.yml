@@ -1496,6 +1496,12 @@
       changes: ["vendor/gems/mail-smtp_pool/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:microsoft_graph_mailer:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/microsoft_graph_mailer/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .vendor:rules:ipynbdiff:
   rules:
     - <<: *if-merge-request

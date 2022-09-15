@@ -29,7 +29,6 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
-
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
@@ -58,8 +57,10 @@ import {
   WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
-
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+
+import('~/issuable/bulk_update_sidebar');
+import('~/users_select');
 
 jest.mock('@sentry/browser');
 jest.mock('~/flash');

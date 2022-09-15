@@ -52,5 +52,10 @@ namespace :ci do
       QA_FEATURE_FLAGS='#{feature_flags}'
     TXT
   end
+
+  desc "Download test results from downstream pipeline"
+  task :download_test_results, [:trigger_name, :test_report_job_name, :report_path] do |_, args|
+    QA::Tools::Ci::TestResults.get(args[:trigger_name], args[:test_report_job_name], args[:report_path])
+  end
 end
 # rubocop:enable Rails/RakeEnvironment

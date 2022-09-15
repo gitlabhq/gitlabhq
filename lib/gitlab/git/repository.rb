@@ -701,7 +701,9 @@ module Gitlab
       # Delete the specified branch from the repository
       # Note: No Git hooks are executed for this action
       def delete_branch(branch_name)
-        write_ref(branch_name, Gitlab::Git::BLANK_SHA)
+        branch_name = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}" unless branch_name.start_with?("refs/")
+
+        delete_refs(branch_name)
       rescue CommandError => e
         raise DeleteBranchError, e
       end

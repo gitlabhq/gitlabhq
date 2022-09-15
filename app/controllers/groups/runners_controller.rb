@@ -4,9 +4,6 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_read_group_runners!, only: [:index, :show]
   before_action :authorize_admin_group_runners!, only: [:edit, :update, :destroy, :pause, :resume]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
-  before_action only: [:index] do
-    push_frontend_feature_flag(:runner_list_stacked_layout, @group)
-  end
 
   before_action only: [:show] do
     push_frontend_feature_flag(:enforce_runner_token_expires_at)

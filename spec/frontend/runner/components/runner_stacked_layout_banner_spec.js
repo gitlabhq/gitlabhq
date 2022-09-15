@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
@@ -16,42 +16,24 @@ describe('RunnerStackedLayoutBanner', () => {
     });
   };
 
-  it('Does not display a banner', () => {
+  it('Displays a banner', () => {
     createComponent();
 
-    expect(findBanner().exists()).toBe(false);
+    expect(findBanner().props()).toMatchObject({
+      svgPath: expect.stringContaining('data:image/svg+xml;utf8,'),
+      title: expect.any(String),
+      buttonText: expect.any(String),
+      buttonLink: expect.stringContaining('https://gitlab.com/gitlab-org/gitlab/-/issues/'),
+    });
+    expect(findLocalStorageSync().exists()).toBe(true);
   });
 
-  describe.each`
-    glFeatures
-    ${{ runnerListStackedLayoutAdmin: true }}
-    ${{ runnerListStackedLayout: true }}
-  `('When glFeatures = $glFeatures', ({ glFeatures }) => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          glFeatures,
-        },
-      });
-    });
+  it('Does not display a banner when dismissed', async () => {
+    findLocalStorageSync().vm.$emit('input', true);
 
-    it('Displays a banner', () => {
-      expect(findBanner().props()).toMatchObject({
-        svgPath: expect.stringContaining('data:image/svg+xml;utf8,'),
-        title: expect.any(String),
-        buttonText: expect.any(String),
-        buttonLink: expect.stringContaining('https://gitlab.com/gitlab-org/gitlab/-/issues/'),
-      });
-      expect(findLocalStorageSync().exists()).toBe(true);
-    });
+    await nextTick();
 
-    it('Does not display a banner when dismissed', async () => {
-      findLocalStorageSync().vm.$emit('input', true);
-
-      await Vue.nextTick();
-
-      expect(findBanner().exists()).toBe(false);
-      expect(findLocalStorageSync().exists()).toBe(true); // continues syncing after removal
-    });
+    expect(findBanner().exists()).toBe(false);
+    expect(findLocalStorageSync().exists()).toBe(true); // continues syncing after removal
   });
 });

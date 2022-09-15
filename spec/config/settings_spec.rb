@@ -164,4 +164,16 @@ RSpec.describe Settings do
       end
     end
   end
+
+  describe '.microsoft_graph_mailer' do
+    it 'defaults' do
+      expect(described_class.microsoft_graph_mailer.enabled).to be false
+      expect(described_class.microsoft_graph_mailer.user_id).to be_nil
+      expect(described_class.microsoft_graph_mailer.tenant).to be_nil
+      expect(described_class.microsoft_graph_mailer.client_id).to be_nil
+      expect(described_class.microsoft_graph_mailer.client_secret).to be_nil
+      expect(described_class.microsoft_graph_mailer.azure_ad_endpoint).to eq('https://login.microsoftonline.com')
+      expect(described_class.microsoft_graph_mailer.graph_endpoint).to eq('https://graph.microsoft.com')
+    end
+  end
 end

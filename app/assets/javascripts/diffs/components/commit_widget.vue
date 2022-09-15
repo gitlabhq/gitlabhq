@@ -22,7 +22,7 @@ export default {
 <template>
   <div class="info-well mw-100 mx-0">
     <div class="well-segment">
-      <ul class="gl-list-style-none gl-m-0 gl-p-0">
+      <ul class="blob-commit-info">
         <commit-item :commit="commit" :collapsible="collapsible" />
       </ul>
     </div>

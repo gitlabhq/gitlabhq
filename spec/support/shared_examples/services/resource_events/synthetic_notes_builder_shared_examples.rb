@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'filters by paginated notes' do |event_type|
-  let(:event) { create(event_type) } # rubocop:disable Rails/SaveBang
+  let(:event) { create(event_type, issue: create(:issue)) }
 
   before do
     create(event_type, issue: event.issue)

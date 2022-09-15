@@ -6,6 +6,14 @@ vendor mail-smtp_pool:
     include: vendor/gems/mail-smtp_pool/.gitlab-ci.yml
     strategy: depend
 
+vendor microsoft_graph_mailer:
+  extends:
+    - .vendor:rules:microsoft_graph_mailer
+  needs: []
+  trigger:
+    include: vendor/gems/microsoft_graph_mailer/.gitlab-ci.yml
+    strategy: depend
+
 vendor ipynbdiff:
   extends:
     - .vendor:rules:ipynbdiff

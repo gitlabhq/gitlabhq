@@ -31,6 +31,13 @@ PATH
       mail (~> 2.7)
 
 PATH
+  remote: vendor/gems/microsoft_graph_mailer
+  specs:
+    microsoft_graph_mailer (0.1.0)
+      mail (~> 2.7)
+      oauth2 (>= 1.4.4, < 3)
+
+PATH
   remote: vendor/gems/omniauth-azure-oauth2
   specs:
     omniauth-azure-oauth2 (0.0.10)
@@ -1670,6 +1677,7 @@ DEPENDENCIES
   mail-smtp_pool (~> 0.1.0)!
   marginalia (~> 1.10.0)
   memory_profiler (~> 0.9)
+  microsoft_graph_mailer (~> 0.1.0)!
   mini_magick (~> 4.10.1)
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
