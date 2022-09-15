@@ -40,6 +40,22 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#repos' do
+    it 'returns the user\'s repositories as a hash' do
+      client = described_class.new('foo')
+
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:get, 'https://api.github.com/user/repos?page=1&page_length=10&per_page=100')
+        .to_return(status: 200, body: [{ id: 1 }, { id: 2 }].to_json, headers: { 'Content-Type' => 'application/json' })
+
+      repos = client.repos({ page: 1, page_length: 10 })
+
+      expect(repos).to match_array([{ id: 1 }, { id: 2 }])
+    end
+  end
+
   describe '#repository' do
     it 'returns the details of a repository' do
       client = described_class.new('foo')
@@ -48,6 +64,20 @@ RSpec.describe Gitlab::GithubImport::Client do
       expect(client).to receive(:with_rate_limit).and_yield
 
       client.repository('foo/bar')
+    end
+
+    it 'returns repository data as a hash' do
+      client = described_class.new('foo')
+
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:get, 'https://api.github.com/repos/foo/bar')
+        .to_return(status: 200, body: { id: 1 }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+      repository = client.repository('foo/bar')
+
+      expect(repository).to eq({ id: 1 })
     end
   end
 
@@ -258,7 +288,7 @@ RSpec.describe Gitlab::GithubImport::Client do
           expect(client).to receive(:requests_remaining?).twice.and_return(true)
           expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
 
-          expect(client.with_rate_limit(&block_to_rate_limit)).to be(true)
+          expect(client.with_rate_limit(&block_to_rate_limit)).to eq({})
         end
 
         it 'retries and does not succeed' do
@@ -279,7 +309,7 @@ RSpec.describe Gitlab::GithubImport::Client do
 
           expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
 
-          expect(client.with_rate_limit(&block_to_rate_limit)).to be(true)
+          expect(client.with_rate_limit(&block_to_rate_limit)).to eq({})
         end
 
         it 'retries and does not succeed' do
@@ -583,7 +613,7 @@ RSpec.describe Gitlab::GithubImport::Client do
 
           expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
 
-          expect(client.search_repos_by_name('test')).to be(true)
+          expect(client.search_repos_by_name('test')).to eq({})
         end
 
         it 'retries and does not succeed' do
@@ -623,7 +653,7 @@ RSpec.describe Gitlab::GithubImport::Client do
     call_count = 0
     allow(client.octokit).to receive(method) do
       call_count += 1
-      call_count > 1 ? true : raise(described_class::CLIENT_CONNECTION_ERROR, 'execution expired')
+      call_count > 1 ? {} : raise(described_class::CLIENT_CONNECTION_ERROR, 'execution expired')
     end
   end
 end

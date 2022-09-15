@@ -86,7 +86,7 @@ describe('Ci variable modal', () => {
         createComponent();
       });
 
-      it('shows the submit button as disabled ', () => {
+      it('shows the submit button as disabled', () => {
         expect(findAddorUpdateButton().attributes('disabled')).toBe('true');
       });
     });
@@ -96,7 +96,7 @@ describe('Ci variable modal', () => {
         createComponent({ props: { selectedVariable: mockVariables[0] } });
       });
 
-      it('shows the submit button as enabled ', () => {
+      it('shows the submit button as enabled', () => {
         expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
       });
     });

@@ -103,8 +103,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _("Control which projects can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API.")
-      = link_to _('Learn more'), help_page_path('ci/jobs/ci_job_token'), target: '_blank', rel: 'noopener noreferrer'
+      = _("Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects.")
   .settings-content
     = render 'ci/token_access/index'
 

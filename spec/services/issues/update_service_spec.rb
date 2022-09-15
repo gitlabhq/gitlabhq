@@ -48,6 +48,11 @@ RSpec.describe Issues::UpdateService, :mailer do
       described_class.new(project: project, current_user: user, params: opts).execute(issue)
     end
 
+    it_behaves_like 'issuable update service updating last_edited_at values' do
+      let(:issuable) { issue }
+      subject(:update_issuable) { update_issue(update_params) }
+    end
+
     context 'valid params' do
       let(:opts) do
         {

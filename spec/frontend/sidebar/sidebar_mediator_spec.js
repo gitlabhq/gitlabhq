@@ -27,7 +27,7 @@ describe('Sidebar mediator', () => {
     mock.restore();
   });
 
-  it('assigns yourself ', () => {
+  it('assigns yourself', () => {
     mediator.assignYourself();
 
     expect(mediator.store.currentUser).toEqual(mediatorMockData.currentUser);

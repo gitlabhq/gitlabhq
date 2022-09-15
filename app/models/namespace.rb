@@ -185,6 +185,8 @@ class Namespace < ApplicationRecord
     reorder(order_expression.desc, Namespace.arel_table['parent_id'].desc.nulls_last, Namespace.arel_table['id'].desc)
   end
 
+  scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
+
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
   attr_writer :root_ancestor, :emails_disabled_memoized
@@ -368,7 +370,7 @@ class Namespace < ApplicationRecord
   end
 
   def any_project_with_shared_runners_enabled?
-    projects.with_shared_runners.any?
+    projects.with_shared_runners_enabled.any?
   end
 
   def user_ids_for_project_authorizations

@@ -13,15 +13,15 @@ RSpec.describe API::ImportGithub do
     let(:provider_username) { user.username }
     let(:provider_user) { double('provider', login: provider_username) }
     let(:provider_repo) do
-      double('provider',
+      {
         name: 'vim',
         full_name: "#{provider_username}/vim",
         owner: double('provider', login: provider_username),
         description: 'provider',
         private: false,
         clone_url: 'https://fake.url/vim.git',
-        has_wiki?: true
-      )
+        has_wiki: true
+      }
     end
 
     before do
@@ -48,7 +48,7 @@ RSpec.describe API::ImportGithub do
 
     it 'returns 201 response when the project is imported successfully' do
       allow(Gitlab::LegacyGithubImport::ProjectCreator)
-        .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+        .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
           .and_return(double(execute: project))
 
       post api("/import/github", user), params: {
@@ -63,7 +63,7 @@ RSpec.describe API::ImportGithub do
 
     it 'returns 201 response when the project is imported successfully from GHE' do
       allow(Gitlab::LegacyGithubImport::ProjectCreator)
-        .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+        .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
           .and_return(double(execute: project))
 
       post api("/import/github", user), params: {

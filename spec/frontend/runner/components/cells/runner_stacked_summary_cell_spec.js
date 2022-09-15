@@ -117,7 +117,7 @@ describe('RunnerTypeCell', () => {
     expect(findRunnerSummaryField('pipeline').text()).toContain(`${mockRunner.jobCount}`);
   });
 
-  it('Formats large job counts ', () => {
+  it('Formats large job counts', () => {
     createComponent({
       jobCount: 1000,
     });

@@ -111,8 +111,8 @@ the README file with information, it's included on your profile page.
 
 To create a new project and add its README to your profile:
 
-1. On the top bar, select **Main menu > Projects**.
-1. Select **Create new project**.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name for your new project.

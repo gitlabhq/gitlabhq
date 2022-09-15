@@ -79,6 +79,20 @@ module Gitlab
         @users[login] = api.user(login)
       end
 
+      def repository(id)
+        request(:repository, id).to_h
+      end
+
+      def repos
+        repositories = request(:repos, nil)
+
+        if repositories.is_a?(Array)
+          repositories.map(&:to_h)
+        else
+          repositories
+        end
+      end
+
       private
 
       def api_endpoint

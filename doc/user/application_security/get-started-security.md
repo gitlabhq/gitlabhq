@@ -18,7 +18,7 @@ The following steps will help you get the most from GitLab application security 
    feature branch scans to be compared against. This allows [merge requests](../project/merge_requests/index.md)
    to display only newly-introduced vulnerabilities. Otherwise, merge requests will display every
    vulnerability in the branch, regardless of whether it was introduced by a change in the branch.
-   - If you are after simplicity, enable only Secret Detection first. It only has one analyzer, 
+   - If you are after simplicity, enable only Secret Detection first. It only has one analyzer,
    no build requirements, and relatively simple findings: is this a secret or not?
    - It is good practice to enable Dependency Scanning early so you can start identifying existing
    vulnerable packages in your codebase.

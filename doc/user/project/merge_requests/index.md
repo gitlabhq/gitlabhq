@@ -160,9 +160,7 @@ change and whether you need access to a development environment:
 
 ## Assign a user to a merge request
 
-When a merge request is created, it's assigned by default to the person who created it.
-This person owns the merge request, but isn't responsible for [reviewing it](reviews/index.md).
-To assign the merge request to someone else, use the `/assign @user`
+To assign the merge request to a user, use the `/assign @user`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area in
 a merge request, or:
 

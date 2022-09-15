@@ -293,6 +293,16 @@ module Types
           description: 'Jobs of a project. This field can only be resolved for one project in any single request.',
           resolver: Resolvers::ProjectJobsResolver
 
+    field :job,
+          type: Types::Ci::JobType,
+          null: true,
+          authorize: :read_build,
+          description: 'One job belonging to the project, selected by ID.' do
+            argument :id, Types::GlobalIDType[::CommitStatus],
+              required: true,
+              description: 'ID of the job.'
+          end
+
     field :pipelines,
           null: true,
           description: 'Build pipelines of the project.',
@@ -574,6 +584,11 @@ module Types
       result.map do |var_key, var_config|
         { key: var_key, **var_config }
       end
+    end
+
+    def job(id:)
+      object.commit_statuses.find(id.model_id)
+    rescue ActiveRecord::RecordNotFound
     end
 
     def sast_ci_configuration

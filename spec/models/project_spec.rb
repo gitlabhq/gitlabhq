@@ -1759,8 +1759,8 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '.with_shared_runners' do
-    subject { described_class.with_shared_runners }
+  describe '.with_shared_runners_enabled' do
+    subject { described_class.with_shared_runners_enabled }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:project, shared_runners_enabled: true) }

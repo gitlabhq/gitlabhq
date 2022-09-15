@@ -248,7 +248,7 @@ describe('AlertDetails', () => {
         });
       });
 
-      it('shows error alert when incident creation fails ', async () => {
+      it('shows error alert when incident creation fails', async () => {
         const errorMsg = 'Something went wrong';
         mountComponent({
           mountMethod: mount,

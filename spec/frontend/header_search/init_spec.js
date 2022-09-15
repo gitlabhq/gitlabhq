@@ -27,7 +27,7 @@ describe('Header Search EventListener', () => {
     expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
   });
 
-  it('removes event listener ', async () => {
+  it('removes event listener', async () => {
     const searchInputBox = document?.querySelector('#search');
     const removeEventListenerSpy = jest.spyOn(searchInputBox, 'removeEventListener');
     jest.mock('~/header_search', () => ({ initHeaderSearchApp: jest.fn() }));

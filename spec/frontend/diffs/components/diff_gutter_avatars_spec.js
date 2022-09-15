@@ -44,7 +44,7 @@ describe('DiffGutterAvatars', () => {
       expect(wrapper.emitted().toggleLineDiscussions).toBeDefined();
     });
 
-    it('renders the proper title and aria-label ', () => {
+    it('renders the proper title and aria-label', () => {
       expect(findCollapseButton().attributes('title')).toBe(HIDE_COMMENTS);
       expect(findCollapseButton().attributes('aria-label')).toBe(HIDE_COMMENTS);
     });

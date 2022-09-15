@@ -16,7 +16,8 @@ Prerequisite:
 
 To import a GitLab.com project to your self-managed GitLab instance:
 
-1. On the top bar, select **Main menu > Projects > Create new project**.
+1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Import project**.
 1. Select **GitLab.com**.
 1. Give GitLab.com permission to access your projects.

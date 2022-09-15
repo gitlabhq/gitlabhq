@@ -361,7 +361,7 @@ module API
         def authenticate_list_runners_jobs!(runner)
           return if current_user.admin?
 
-          forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
+          forbidden!("No access granted") unless can?(current_user, :read_builds, runner)
         end
       end
     end

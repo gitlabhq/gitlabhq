@@ -40,7 +40,7 @@ describe('Multi-file editor commit sidebar list', () => {
       wrapper = mountComponent({ fileList: [] });
     });
 
-    it('renders no changes text ', () => {
+    it('renders no changes text', () => {
       expect(wrapper.text()).toContain('No changes');
     });
   });

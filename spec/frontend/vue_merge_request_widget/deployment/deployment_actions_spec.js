@@ -189,7 +189,7 @@ describe('DeploymentAction component', () => {
                 });
               });
 
-              describe('it should call the executeAction method ', () => {
+              describe('it should call the executeAction method', () => {
                 beforeEach(async () => {
                   jest.spyOn(wrapper.vm, 'executeAction').mockImplementation();
 

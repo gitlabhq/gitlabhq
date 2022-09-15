@@ -7,15 +7,15 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
   let(:namespace) { create(:group) }
 
   let(:repo) do
-    ActiveSupport::InheritableOptions.new(
+    {
       login: 'vim',
       name: 'vim',
       full_name: 'asd/vim',
       clone_url: 'https://gitlab.com/asd/vim.git'
-    )
+    }
   end
 
-  subject(:service) { described_class.new(repo, repo.name, namespace, user, github_access_token: 'asdffg') }
+  subject(:service) { described_class.new(repo, repo[:name], namespace, user, github_access_token: 'asdffg') }
 
   before do
     namespace.add_owner(user)
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
     context 'when GitHub project is private' do
       it 'sets project visibility to private' do
-        repo.private = true
+        repo[:private] = true
 
         project = service.execute
 
@@ -50,17 +50,19 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
     context 'when GitHub project is public' do
       it 'sets project visibility to namespace visibility level' do
-        repo.private = false
+        repo[:private] = false
+
         project = service.execute
 
         expect(project.visibility_level).to eq(namespace.visibility_level)
       end
 
       context 'when importing into a user namespace' do
-        subject(:service) { described_class.new(repo, repo.name, user.namespace, user, github_access_token: 'asdffg') }
+        subject(:service) { described_class.new(repo, repo[:name], user.namespace, user, github_access_token: 'asdffg') }
 
         it 'sets project visibility to user namespace visibility level' do
-          repo.private = false
+          repo[:private] = false
+
           project = service.execute
 
           expect(project.visibility_level).to eq(user.namespace.visibility_level)
@@ -76,7 +78,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
         end
 
         it 'sets project visibility to the default project visibility' do
-          repo.private = true
+          repo[:private] = true
 
           project = service.execute
 
@@ -91,7 +93,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
         end
 
         it 'sets project visibility to the default project visibility' do
-          repo.private = false
+          repo[:private] = false
 
           project = service.execute
 
@@ -102,7 +104,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
     context 'when GitHub project has wiki' do
       it 'does not create the wiki repository' do
-        allow(repo).to receive(:has_wiki?).and_return(true)
+        repo[:has_wiki] = true
 
         project = service.execute
 
@@ -112,7 +114,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
     context 'when GitHub project does not have wiki' do
       it 'creates the wiki repository' do
-        allow(repo).to receive(:has_wiki?).and_return(false)
+        repo[:has_wiki] = false
 
         project = service.execute
 

@@ -22,14 +22,6 @@ RSpec.describe Banzai::Filter::BlockquoteFenceFilter do
     expect(filter(">>> \ntest\n>>> ")).to eq("\n> test\n")
   end
 
-  context 'when feature flag is turned off' do
-    it 'does not require a leading or trailing blank line' do
-      stub_feature_flags(markdown_corrected_blockquote: false)
-
-      expect(filter("Foo\n>>>\ntest\n>>>\nBar")).to eq("Foo\n\n> test\n\nBar")
-    end
-  end
-
   context 'when incomplete blockquote fences with multiple blocks are present' do
     it 'does not raise timeout error' do
       test_string = ">>>#{"\n```\nfoo\n```" * 20}"

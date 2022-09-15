@@ -70,7 +70,7 @@ runner settings:
 
 To view the rendered details:
 
-1. On the top bar, select **Main menu > Project** and select any group or project.
+1. On the top bar, select **Main menu > Projects** or **Main menu > Groups** and find your project or group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 

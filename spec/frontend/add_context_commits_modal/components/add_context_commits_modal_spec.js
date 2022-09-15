@@ -112,7 +112,7 @@ describe('AddContextCommitsModal', () => {
   });
 
   describe('has an ok button when clicked calls action', () => {
-    it('"createContextCommits" when only new commits to be added ', async () => {
+    it('"createContextCommits" when only new commits to be added', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       findModal().vm.$emit('ok');
       await nextTick();
@@ -121,7 +121,7 @@ describe('AddContextCommitsModal', () => {
         forceReload: true,
       });
     });
-    it('"removeContextCommits" when only added commits are to be removed ', async () => {
+    it('"removeContextCommits" when only added commits are to be removed', async () => {
       wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
       await nextTick();

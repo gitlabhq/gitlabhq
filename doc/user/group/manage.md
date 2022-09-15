@@ -44,7 +44,7 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 To remove a group and its contents:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Remove group**.
@@ -82,7 +82,7 @@ Prerequisites:
 
 To immediately remove a group marked for deletion:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Permanently remove group" section, select **Remove group**.
@@ -97,7 +97,7 @@ are deleted.
 
 To restore a group that is marked for deletion:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Path, transfer, remove** section.
 1. In the Restore group section, select **Restore group**.
@@ -106,7 +106,7 @@ To restore a group that is marked for deletion:
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Under the group name, select **Request Access**.
 
 As many as ten of the most-recently-active group owners receive an email with your request.
@@ -127,7 +127,7 @@ To find members in a group, you can sort, filter, or search.
 
 Filter a group to find members. By default, all members in the group and subgroups are displayed.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
@@ -138,7 +138,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 
 You can search for members by name, username, or email.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
@@ -147,7 +147,7 @@ You can search for members by name, username, or email.
 
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
 1. Above the list of members, on the top right, from the **Account** list, select
    the criteria to filter by.
@@ -158,7 +158,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 You can give a user access to all projects in a group.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
 1. Select **Invite members**.
 1. Fill in the fields.
@@ -184,7 +184,7 @@ Prerequisites:
 
 To remove a member from a group:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
 1. Next to the member you want to remove, select **Remove member**.
 1. Optional. On the **Remove member** confirmation box:
@@ -226,12 +226,12 @@ You can change the owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
-  1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+  1. On the top bar, select **Main menu > Groups** and find your group.
   1. On the left sidebar, select **Group information > Members**.
   1. Give a different member the **Owner** role.
   1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
-  1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+  1. On the top bar, select **Main menu > Groups** and find your group.
   1. On the left sidebar, select **Group information > Members**.
   1. Give a different member the **Owner** role.
   1. Have the new owner sign in and remove the **Owner** role from you.
@@ -251,7 +251,7 @@ create a new group and transfer projects to it instead.
 
 To change your group path (group URL):
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General** page.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
@@ -332,7 +332,7 @@ When transferring groups, note:
 
 To transfer a group:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Transfer group**.
@@ -362,7 +362,7 @@ the default setting.
 
 To enable delayed deletion of projects in a group:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Scroll to:
@@ -384,7 +384,7 @@ You can disable all email notifications related to the group, which includes its
 
 To disable email notifications:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Email notifications are disabled**.
@@ -404,7 +404,7 @@ This is particularly helpful for groups with a large number of users.
 
 To disable group mentions:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
@@ -417,7 +417,7 @@ To disable group mentions:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group or subgroup.
+1. On the top bar, select **Main menu > Groups** and find your group or subgroup.
 1. On the left sidebar, select either **Group information > Members** or **Subgroup information > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
@@ -444,7 +444,7 @@ Prerequisite:
 
 To specify a user cap:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
    You can set a cap on the top-level group only.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
@@ -466,7 +466,7 @@ Prerequisite:
 
 To remove the user cap:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. In the **User cap** box, delete the value.
@@ -487,7 +487,7 @@ Prerequisite:
 
 To approve members that are pending because they've exceeded the user cap:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
@@ -518,7 +518,7 @@ Define project templates at a group level by setting a group as the template sou
 
 To enable group file templates:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
@@ -536,7 +536,7 @@ that belong to the group.
 
 To view the merge request approval settings for a group:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.

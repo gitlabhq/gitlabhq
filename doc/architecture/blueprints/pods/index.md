@@ -54,7 +54,7 @@ A top-level namespace is the logical object container in the code that represent
 
 A top-level namespace is the root of nested collection namespaces and projects. The namespace and its related entities form a tree-like hierarchy: Namespaces are the nodes of the tree, projects are the leaves. An organization usually contains a single top-level namespace, called a workspace.
 
-Example: 
+Example:
 
 `https://gitlab.com/gitlab-org/gitlab/`:
 
@@ -117,7 +117,7 @@ A number of technical issues need to be resolved to implement Pods (in no partic
 
 ## Iteration 1
 
-Ultimately, a Pods architecture should offer the same user experience as self-managed and GitLab dedicated. However, at this moment GitLab.com has many more "social-network"-like capabilities that will be difficult to implement with a Pods architecture. We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases. 
+Ultimately, a Pods architecture should offer the same user experience as self-managed and GitLab dedicated. However, at this moment GitLab.com has many more "social-network"-like capabilities that will be difficult to implement with a Pods architecture. We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases.
 
 The first iteration of Pods will still contain some limitations that would break cross-workspace workflows. This means it may only be acceptable for new customers, or for existing customers that are briefed.
 

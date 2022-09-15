@@ -7267,7 +7267,7 @@ msgstr ""
 msgid "CICD|Limit CI_JOB_TOKEN access"
 msgstr ""
 
-msgid "CICD|Select projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable."
+msgid "CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}"
@@ -10577,13 +10577,13 @@ msgstr ""
 msgid "Control emails linked to your account"
 msgstr ""
 
+msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
+msgstr ""
+
 msgid "Control how the GitLab Package Registry functions."
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
-msgstr ""
-
-msgid "Control which projects can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API."
 msgstr ""
 
 msgid "Cookie domain"

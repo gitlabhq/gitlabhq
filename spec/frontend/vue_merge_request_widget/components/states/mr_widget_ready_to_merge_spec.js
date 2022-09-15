@@ -549,7 +549,7 @@ describe('ReadyToMerge', () => {
           ${'squashIsSelected'} | ${'selected'}   | ${'value'}      | ${false}
           ${'squashIsSelected'} | ${'unselected'} | ${'value'}      | ${false}
         `(
-          'is $state when squashIsReadonly returns $expectation ',
+          'is $state when squashIsReadonly returns $expectation',
           ({ squashState, prop, expectation }) => {
             createComponent({
               mr: { commitsCount: 2, enableSquashBeforeMerge: true, [squashState]: expectation },

@@ -11,15 +11,15 @@ module QA
             element :job_log_content
           end
 
-          view 'app/assets/javascripts/jobs/components/stages_dropdown.vue' do
+          view 'app/assets/javascripts/jobs/components/job/sidebar/stages_dropdown.vue' do
             element :pipeline_path, required: true
           end
 
-          view 'app/assets/javascripts/jobs/components/sidebar.vue' do
+          view 'app/assets/javascripts/jobs/components/job/sidebar/legacy_sidebar_header.vue' do
             element :retry_button
           end
 
-          view 'app/assets/javascripts/jobs/components/artifacts_block.vue' do
+          view 'app/assets/javascripts/jobs/components/job/sidebar/artifacts_block.vue' do
             element :browse_artifacts_button
           end
 

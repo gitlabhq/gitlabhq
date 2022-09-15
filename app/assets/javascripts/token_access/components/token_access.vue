@@ -1,7 +1,16 @@
 <script>
-import { GlButton, GlCard, GlFormInput, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import {
+  GlButton,
+  GlCard,
+  GlFormInput,
+  GlLink,
+  GlLoadingIcon,
+  GlSprintf,
+  GlToggle,
+} from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
 import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
@@ -13,7 +22,7 @@ export default {
   i18n: {
     toggleLabelTitle: s__('CICD|Limit CI_JOB_TOKEN access'),
     toggleHelpText: s__(
-      `CICD|Select projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable.`,
+      `CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
     ),
     cardHeaderTitle: s__('CICD|Add an existing project to the scope'),
     addProject: __('Add project'),
@@ -26,7 +35,9 @@ export default {
     GlButton,
     GlCard,
     GlFormInput,
+    GlLink,
     GlLoadingIcon,
+    GlSprintf,
     GlToggle,
     TokenProjectsTable,
   },
@@ -76,6 +87,9 @@ export default {
     isProjectPathEmpty() {
       return this.targetProjectPath === '';
     },
+    ciJobTokenHelpPage() {
+      return helpPagePath('ci/jobs/ci_job_token');
+    },
   },
   methods: {
     async updateCIJobTokenScope() {
@@ -99,10 +113,6 @@ export default {
         }
       } catch (error) {
         createFlash({ message: error });
-      } finally {
-        if (this.jobTokenScopeEnabled) {
-          this.getProjects();
-        }
       }
     },
     async addProject() {
@@ -172,10 +182,20 @@ export default {
       <gl-toggle
         v-model="jobTokenScopeEnabled"
         :label="$options.i18n.toggleLabelTitle"
-        :help="$options.i18n.toggleHelpText"
         @change="updateCIJobTokenScope"
-      />
-      <div v-if="jobTokenScopeEnabled" data-testid="token-section">
+      >
+        <template #help>
+          <gl-sprintf :message="$options.i18n.toggleHelpText">
+            <template #link="{ content }">
+              <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+      </gl-toggle>
+
+      <div data-testid="token-section">
         <gl-card class="gl-mt-5">
           <template #header>
             <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>

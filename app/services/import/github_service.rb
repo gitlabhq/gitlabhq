@@ -50,7 +50,7 @@ module Import
     end
 
     def project_name
-      @project_name ||= params[:new_name].presence || repo.name
+      @project_name ||= params[:new_name].presence || repo[:name]
     end
 
     def namespace_path
@@ -66,13 +66,13 @@ module Import
     end
 
     def oversized?
-      repository_size_limit > 0 && repo.size > repository_size_limit
+      repository_size_limit > 0 && repo[:size] > repository_size_limit
     end
 
     def oversize_error_message
       _('"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
-        repository_name: repo.name,
-        repository_size: number_to_human_size(repo.size),
+        repository_name: repo[:name],
+        repository_size: number_to_human_size(repo[:size]),
         limit: number_to_human_size(repository_size_limit)
       }
     end

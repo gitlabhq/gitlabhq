@@ -132,7 +132,8 @@ rubocop:
         unset CI_SLACK_WEBHOOK_URL
         run_timed_command "bundle exec rake rubocop:check:graceful"
       else
-        run_timed_command "bundle exec rubocop --parallel --force-exclusion $(cat ${RSPEC_CHANGED_FILES_PATH})"
+        cat ${RSPEC_CHANGED_FILES_PATH} | ruby -e 'puts $stdin.read.split(" ").select { |f| File.exist?(f) }.join(" ")' > tmp/rubocop_target_files.txt
+        run_timed_command "bundle exec rubocop --parallel --force-exclusion $(cat tmp/rubocop_target_files.txt)"
       fi
 
 qa:metadata-lint:

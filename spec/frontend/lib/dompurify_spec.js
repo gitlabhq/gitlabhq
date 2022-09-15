@@ -203,7 +203,7 @@ describe('~/lib/dompurify', () => {
       expect(el.getAttribute('rel')).toBe('noreferrer noopener');
     });
 
-    it('does not update `rel` values when target is not `_blank` ', () => {
+    it('does not update `rel` values when target is not `_blank`', () => {
       const html = `<a href="https://example.com" target="_self" rel="help">internal</a>`;
       const el = getSanitizedNode(html);
 

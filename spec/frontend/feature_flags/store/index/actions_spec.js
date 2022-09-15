@@ -56,7 +56,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestFeatureFlags and receiveFeatureFlagsSuccess ', () => {
+      it('dispatches requestFeatureFlags and receiveFeatureFlagsSuccess', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, getRequestData, {});
 
         return testAction(
@@ -78,7 +78,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestFeatureFlags and receiveFeatureFlagsError ', () => {
+      it('dispatches requestFeatureFlags and receiveFeatureFlagsError', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
 
         return testAction(
@@ -153,7 +153,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdSuccess ', () => {
+      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdSuccess', () => {
         mock.onPost(`${TEST_HOST}/endpoint.json`).replyOnce(200, rotateData, {});
 
         return testAction(
@@ -175,7 +175,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdError ', () => {
+      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdError', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
 
         return testAction(

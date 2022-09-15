@@ -244,7 +244,7 @@ describe('NotificationsDropdown', () => {
       expect(dropdownItem.props('isChecked')).toBe(true);
     });
 
-    it("won't update the selectedNotificationLevel and shows a toast message when the request fails and ", async () => {
+    it("won't update the selectedNotificationLevel and shows a toast message when the request fails and", async () => {
       mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
       wrapper = createComponent();
 

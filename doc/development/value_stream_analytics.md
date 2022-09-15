@@ -286,7 +286,7 @@ The group VSA Vuex store makes use of [Vuex modules](https://vuex.vuejs.org/guid
 
 ### Shared components
 
-Parts of the UI are shared between project VSA and group VSA such as the stage table and path. These shared components live in the project VSA directory `app/assets/javascripts/cycle_analytics/components` and are included at the group level VSA where needed. 
+Parts of the UI are shared between project VSA and group VSA such as the stage table and path. These shared components live in the project VSA directory `app/assets/javascripts/cycle_analytics/components` and are included at the group level VSA where needed.
 
 All the frontend code for group-level features are located in `ee/app/assets/javascripts/analytics/cycle_analytics/components`.
 

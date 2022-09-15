@@ -108,7 +108,7 @@ describe('Registry Search', () => {
       ]);
     });
 
-    it('on sort item click emits sorting:changed event ', () => {
+    it('on sort item click emits sorting:changed event', () => {
       mountComponent();
 
       findSortingItems().at(1).vm.$emit('click');

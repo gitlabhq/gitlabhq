@@ -25,7 +25,7 @@ describe('TagsLoader component', () => {
     wrapper = null;
   });
 
-  it('produces the correct amount of loaders ', () => {
+  it('produces the correct amount of loaders', () => {
     mountComponent();
     expect(findGlSkeletonLoaders().length).toBe(1);
   });

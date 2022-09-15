@@ -26,7 +26,7 @@ describe('Commit form modal mutations', () => {
   });
 
   describe('CLEAR_MODAL', () => {
-    it('should clear modal state ', () => {
+    it('should clear modal state', () => {
       stateCopy = { branch: '_main_', defaultBranch: '_default_branch_' };
 
       mutations[types.CLEAR_MODAL](stateCopy);

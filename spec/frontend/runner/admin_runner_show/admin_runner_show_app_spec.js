@@ -164,7 +164,7 @@ describe('AdminRunnerShowApp', () => {
       });
     });
 
-    describe('when runner does not have an edit url ', () => {
+    describe('when runner does not have an edit url', () => {
       beforeEach(async () => {
         mockRunnerQueryResult({
           editAdminUrl: null,

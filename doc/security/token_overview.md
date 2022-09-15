@@ -136,4 +136,4 @@ This table shows available scopes per token. Scopes can be limited further on to
 - Be careful not to include tokens when pasting code, console commands, or log outputs into an issue or MR description or comment.
 - Don’t log credentials in the console logs. Consider [protecting](../ci/variables/index.md#protected-cicd-variables) and
   [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
-- Review all currently active access tokens of all types on a regular basis and revoke any that are no longer needed. 
+- Review all currently active access tokens of all types on a regular basis and revoke any that are no longer needed.

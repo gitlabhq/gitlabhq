@@ -62,7 +62,7 @@ To create a project in GitLab:
 
 1. On the top bar, select **Main menu > Projects > View all projects**.
 1. On the right of the page, select **New project**.
-1. On the **Create new project** page, select an option:
+1. Select an option:
    - Create a [blank project](#create-a-blank-project).
    - Create a project from a:
       - [built-in template](#create-a-project-from-a-built-in-template).
@@ -207,8 +207,7 @@ Prerequisites:
   [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
-  1. On the top bar, select **Main menu > Groups > View all groups**.
-  1. Select a group.
+  1. On the top bar, select **Main menu > Groups** and find your group.
   1. Confirm that **New project** is visible in the upper right
      corner. Contact your GitLab
      administrator if you require permission.
@@ -254,8 +253,7 @@ You can add a star to projects you use frequently to make them easier to find.
 
 To add a star to a project:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Select a project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. In the upper right corner of the page, select **Star**.
 
 ## View starred projects
@@ -280,7 +278,7 @@ called `my-project` under your username, the project is created at `https://gitl
 To view your personal projects:
 
 1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Under **Your projects**, select **Personal**.
+1. In the **Your projects** tab, select **Personal**.
 
 ## Delete a project
 
@@ -289,8 +287,7 @@ you can [enable delayed project removal](../group/manage.md#enable-delayed-proje
 
 To delete a project:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Select a project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. Scroll down to the **Delete project** section.
@@ -324,8 +321,7 @@ Each project in the list shows:
 
 To view the activity of a project:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Select a project.
+1. On the top bar, select **Main menu > Projects** and find your project..
 1. On the left sidebar, select **Project information > Activity**.
 1. Select a tab to view the type of project activity.
 
@@ -359,8 +355,7 @@ member and cannot contribute.
 
 To leave a project:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Select a project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Leave project**. The **Leave project** option only displays
 on the project dashboard when a project is part of a group under a
 [group namespace](../namespace/index.md).

@@ -1,6 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
-import JobApp from './components/job_app.vue';
+import JobApp from './components/job/job_app.vue';
 import createStore from './store';
 
 Vue.use(GlToast);

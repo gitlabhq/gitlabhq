@@ -670,13 +670,19 @@ Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT
 
 ### Use Maven with `mvn dependency:get`
 
-You can install packages by using the Maven commands directly.
+You can install packages by using the Maven `dependency:get` [command](https://maven.apache.org/plugins/maven-dependency-plugin/get-mojo.html) directly.
 
 1. In your project directory, run:
 
    ```shell
-   mvn dependency:get -Dartifact=com.nickkipling.app:nick-test-app:1.1-SNAPSHOT
+   mvn dependency:get -Dartifact=com.nickkipling.app:nick-test-app:1.1-SNAPSHOT -DremoteRepositories=gitlab-maven::::<gitlab endpoint url>  -s <path to settings.xml>
    ```
+
+   - `<gitlab endpoint url>` is the URL of the GitLab [endpoint](#use-the-gitlab-endpoint-for-maven-packages).
+   - `<path to settings.xml>` is the path to the `settings.xml` file that contains the [authentication details](#authenticate-to-the-package-registry-with-maven).
+
+NOTE:
+The repository IDs in the command(`gitlab-maven`) and the `settings.xml` file must match.
 
 The message should show that the package is downloading from the Package Registry:
 

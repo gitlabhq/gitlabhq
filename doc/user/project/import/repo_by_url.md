@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can import your existing repositories by providing the Git URL:
 
-1. On the top bar, select **Main menu > Create new project**.
+1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select the **Import project** tab.
 1. Select **Repository by URL**.
 1. Enter a **Git repository URL**.

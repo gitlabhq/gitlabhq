@@ -84,7 +84,7 @@ describe('DeleteBlobModal', () => {
       ${GlToggle}       | ${'true'}                     | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
       ${GlToggle}       | ${undefined}                  | ${true}     | ${'same-branch'}             | ${'same-branch'}               | ${false}
     `(
-      'has the correct form fields ',
+      'has the correct form fields',
       ({ component, defaultValue, canPushCode, targetBranch, originalBranch, exist }) => {
         createComponent({
           canPushCode,

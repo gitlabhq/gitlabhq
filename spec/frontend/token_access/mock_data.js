@@ -24,19 +24,6 @@ export const disabledJobTokenScope = {
   },
 };
 
-export const updateJobTokenScope = {
-  data: {
-    ciCdSettingsUpdate: {
-      ciCdSettings: {
-        jobTokenScopeEnabled: true,
-        __typename: 'ProjectCiCdSetting',
-      },
-      errors: [],
-      __typename: 'CiCdSettingsUpdatePayload',
-    },
-  },
-};
-
 export const projectsWithScope = {
   data: {
     project: {

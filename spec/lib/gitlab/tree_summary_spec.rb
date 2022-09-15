@@ -25,6 +25,14 @@ RSpec.describe Gitlab::TreeSummary do
     it 'defaults limit to 25' do
       expect(summary.limit).to eq(25)
     end
+
+    context 'when offset is larger than the maximum' do
+      let(:offset) { described_class::MAX_OFFSET + 1 }
+
+      it 'sets offset to the maximum' do
+        expect(subject.offset).to eq(described_class::MAX_OFFSET)
+      end
+    end
   end
 
   describe '#summarize' do
@@ -42,6 +50,14 @@ RSpec.describe Gitlab::TreeSummary do
         )
 
         expect(summary.resolved_commits.values).to match_array(entries.map { |entry| entry[:commit] })
+      end
+    end
+
+    context 'when offset is negative' do
+      let(:offset) { -1 }
+
+      it 'returns an empty array' do
+        expect(entries).to eq([])
       end
     end
 

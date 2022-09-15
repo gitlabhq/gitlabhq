@@ -15,6 +15,23 @@ We do not allow gems that are fetched from Git repositories. All gems have
 to be available in the RubyGems index. We want to minimize external build
 dependencies and build times.
 
+## Request an Appsec review
+
+When adding a new gem to our `Gemfile` or even changing versions in
+`Gemfile.lock` it is strongly recommended that you
+[request a Security review](https://about.gitlab.com/handbook/engineering/security/#how-to-request-a-security-review).
+New gems add an extra security risk for GitLab, and it is important to
+evaluate this risk before we ship this to production. Technically, just adding
+a new gem and pushing to a branch in our main `gitlab` project is a security
+risk as it will run in CI using your GitLab.com credentials. As such you should
+evaluate early on if you think this gem seems legitimate before you even
+install it.
+
+Reviewers should also be aware of our related
+[recommendations for reviewing community contributions](code_review.md#community-contributions)
+and take care before running a pipeline for community contributions that
+contains changes to `Gemfile` or `Gemfile.lock`.
+
 ## License compliance
 
 Refer to [licensing guidelines](licensing.md) for ensuring license compliance.

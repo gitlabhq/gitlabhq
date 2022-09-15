@@ -84,7 +84,7 @@ describe('StartupJSLink', () => {
     });
   });
 
-  describe('variable match errors: ', () => {
+  describe('variable match errors:', () => {
     it('forwards requests if the variables are not matching', () => {
       window.gl = {
         startup_graphql_calls: [

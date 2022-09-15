@@ -1521,3 +1521,12 @@ To fix that:
    - Store your deployments locally, by commenting out that line.
 
 1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+### 404 error `The page you're looking for could not be found`
+
+If you get a `404 Page Not Found` response from GitLab Pages:
+
+1. Check `.gitlab-ci.yml` contains the job `pages:`.
+1. Check the current project's pipeline to confirm the job `pages:deploy` is being run.
+
+Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.

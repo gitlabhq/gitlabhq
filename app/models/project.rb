@@ -614,7 +614,7 @@ class Project < ApplicationRecord
   scope :include_integration, -> (integration_association_name) { includes(integration_association_name) }
   scope :with_integration, -> (integration_class) { joins(:integrations).merge(integration_class.all) }
   scope :with_active_integration, -> (integration_class) { with_integration(integration_class).merge(integration_class.active) }
-  scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
+  scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.

@@ -197,7 +197,7 @@ describe('CustomNotificationsModal', () => {
         ${null}   | ${1}    | ${'/api/v4/groups/1/notification_settings'}   | ${'group'}       | ${'a groupId is given'}
         ${null}   | ${null} | ${'/api/v4/notification_settings'}            | ${'global'}      | ${'neither projectId nor groupId are given'}
       `(
-        'updates the $notificationType notification settings when $condition and the user clicks the checkbox ',
+        'updates the $notificationType notification settings when $condition and the user clicks the checkbox',
         async ({ projectId, groupId, endpointUrl }) => {
           mockAxios
             .onGet(endpointUrl)

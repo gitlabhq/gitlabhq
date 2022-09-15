@@ -134,7 +134,7 @@ describe('Access Level Dropdown', () => {
       await waitForPromises();
     });
 
-    it('renders headers for each section ', () => {
+    it('renders headers for each section', () => {
       expect(findAllDropdownHeaders()).toHaveLength(4);
     });
 
@@ -164,7 +164,7 @@ describe('Access Level Dropdown', () => {
       expect(findDropdown().props('toggleClass')).toBe('gl-text-gray-500!');
     });
 
-    it('when no items selected, displays a default fallback label and has default CSS class ', () => {
+    it('when no items selected, displays a default fallback label and has default CSS class', () => {
       expect(findDropdownToggleLabel()).toBe(i18n.selectUsers);
       expect(findDropdown().props('toggleClass')).toBe('gl-text-gray-500!');
     });
@@ -217,7 +217,7 @@ describe('Access Level Dropdown', () => {
   });
 
   describe('selecting an item', () => {
-    it('selects the item on click and deselects on the next click ', async () => {
+    it('selects the item on click and deselects on the next click', async () => {
       createComponent();
       await waitForPromises();
 
@@ -230,7 +230,7 @@ describe('Access Level Dropdown', () => {
       expect(item.props('isChecked')).toBe(false);
     });
 
-    it('emits a formatted update on selection ', async () => {
+    it('emits a formatted update on selection', async () => {
       // ids: the items appear in that order in the dropdown
       // 1 2 3 - roles
       // 4 5 6 - groups

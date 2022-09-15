@@ -33,7 +33,7 @@ describe('BindInOut', () => {
         testContext.bindInOut = new BindInOut({ tagName: 'INPUT' });
       });
 
-      it('should set .eventType to keyup ', () => {
+      it('should set .eventType to keyup', () => {
         expect(testContext.bindInOut.eventType).toEqual('keyup');
       });
     });
@@ -43,7 +43,7 @@ describe('BindInOut', () => {
         testContext.bindInOut = new BindInOut({ tagName: 'TEXTAREA' });
       });
 
-      it('should set .eventType to keyup ', () => {
+      it('should set .eventType to keyup', () => {
         expect(testContext.bindInOut.eventType).toEqual('keyup');
       });
     });
@@ -53,7 +53,7 @@ describe('BindInOut', () => {
         testContext.bindInOut = new BindInOut({ tagName: 'SELECT' });
       });
 
-      it('should set .eventType to change ', () => {
+      it('should set .eventType to change', () => {
         expect(testContext.bindInOut.eventType).toEqual('change');
       });
     });

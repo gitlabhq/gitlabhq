@@ -8,13 +8,11 @@ import createFlash from '~/flash';
 import TokenAccess from '~/token_access/components/token_access.vue';
 import addProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
-import updateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/update_ci_job_token_scope.mutation.graphql';
 import getCIJobTokenScopeQuery from '~/token_access/graphql/queries/get_ci_job_token_scope.query.graphql';
 import getProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
 import {
   enabledJobTokenScope,
   disabledJobTokenScope,
-  updateJobTokenScope,
   projectsWithScope,
   addProjectSuccess,
   removeProjectSuccess,
@@ -32,7 +30,6 @@ describe('TokenAccess component', () => {
 
   const enabledJobTokenScopeHandler = jest.fn().mockResolvedValue(enabledJobTokenScope);
   const disabledJobTokenScopeHandler = jest.fn().mockResolvedValue(disabledJobTokenScope);
-  const updateJobTokenScopeHandler = jest.fn().mockResolvedValue(updateJobTokenScope);
   const getProjectsWithScope = jest.fn().mockResolvedValue(projectsWithScope);
   const addProjectSuccessHandler = jest.fn().mockResolvedValue(addProjectSuccess);
   const addProjectFailureHandler = jest.fn().mockRejectedValue(error);
@@ -95,7 +92,7 @@ describe('TokenAccess component', () => {
       expect(findTokenSection().exists()).toBe(true);
     });
 
-    it('the toggle should be disabled and the token section should not show', async () => {
+    it('the toggle should be disabled and the token section should show', async () => {
       createComponent([
         [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
         [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
@@ -104,28 +101,7 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(findToggle().props('value')).toBe(false);
-      expect(findTokenSection().exists()).toBe(false);
-    });
-
-    it('switching the toggle calls the mutation and fetches the projects again', async () => {
-      createComponent([
-        [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
-        [updateCIJobTokenScopeMutation, updateJobTokenScopeHandler],
-        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
-      ]);
-
-      await waitForPromises();
-
-      expect(getProjectsWithScope).toHaveBeenCalledTimes(1);
-
-      findToggle().vm.$emit('change', true);
-
-      await waitForPromises();
-
-      expect(updateJobTokenScopeHandler).toHaveBeenCalledWith({
-        input: { fullPath: projectPath, jobTokenScopeEnabled: true },
-      });
-      expect(getProjectsWithScope).toHaveBeenCalledTimes(2);
+      expect(findTokenSection().exists()).toBe(true);
     });
   });
 

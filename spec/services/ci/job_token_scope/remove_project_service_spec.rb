@@ -14,6 +14,14 @@ RSpec.describe Ci::JobTokenScope::RemoveProjectService do
       target_project: target_project)
   end
 
+  shared_examples 'removes project' do |context|
+    it 'removes the project from the scope' do
+      expect do
+        expect(result).to be_success
+      end.to change { Ci::JobToken::ProjectScopeLink.count }.by(-1)
+    end
+  end
+
   describe '#execute' do
     subject(:result) { service.execute(target_project) }
 
@@ -24,10 +32,14 @@ RSpec.describe Ci::JobTokenScope::RemoveProjectService do
           target_project.add_developer(current_user)
         end
 
-        it 'removes the project from the scope' do
-          expect do
-            expect(result).to be_success
-          end.to change { Ci::JobToken::ProjectScopeLink.count }.by(-1)
+        it_behaves_like 'removes project'
+
+        context 'when token scope is disabled' do
+          before do
+            project.ci_cd_settings.update!(job_token_scope_enabled: false)
+          end
+
+          it_behaves_like 'removes project'
         end
       end
 

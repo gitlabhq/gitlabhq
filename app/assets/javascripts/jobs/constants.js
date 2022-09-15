@@ -3,11 +3,17 @@ import { __, s__ } from '~/locale';
 const cancel = __('Cancel');
 const moreInfo = __('More information');
 
-export const JOB_SIDEBAR = {
+export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
+
+export const JOB_SIDEBAR_COPY = {
   cancel,
+  cancelJobButtonLabel: s__('Job|Cancel'),
   debug: __('Debug'),
+  eraseLogButtonLabel: s__('Job|Erase job log and artifacts'),
+  eraseLogConfirmText: s__('Job|Are you sure you want to erase this job log and artifacts?'),
   newIssue: __('New issue'),
   retry: __('Retry'),
+  retryJobButtonLabel: s__('Job|Retry'),
   toggleSidebar: __('Toggle Sidebar'),
 };
 

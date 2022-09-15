@@ -78,7 +78,7 @@ describe('IDE store file actions', () => {
         });
     });
 
-    it('switches to the next available file before closing the current one ', () => {
+    it('switches to the next available file before closing the current one', () => {
       const f = file('newOpenFile');
 
       store.state.openFiles.push(f);

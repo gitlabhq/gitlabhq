@@ -15,7 +15,7 @@ together.
 
 ## How do we test GitLab?
 
-We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we test these packages 
+We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we test these packages
 using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool to run the end-to-end tests located in the `qa` directory.
 
 ### Testing nightly builds

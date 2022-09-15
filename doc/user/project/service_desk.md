@@ -360,7 +360,7 @@ does not count toward the license limit count.
 
 ### Moving a Service Desk issue
 
-Service Desk issues can be moved like any other issue in GitLab. 
+Service Desk issues can be moved like any other issue in GitLab.
 
 You can move a Service Desk issue the same way you
 [move a regular issue](issues/managing_issues.md#move-an-issue) in GitLab.

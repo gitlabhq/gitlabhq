@@ -40,7 +40,7 @@ describe('MRWidgetFailedToMerge', () => {
       expect(wrapper.vm.intervalId).toBe(dummyIntervalId);
     });
 
-    it('clears interval when destroying ', () => {
+    it('clears interval when destroying', () => {
       createComponent();
       wrapper.destroy();
 

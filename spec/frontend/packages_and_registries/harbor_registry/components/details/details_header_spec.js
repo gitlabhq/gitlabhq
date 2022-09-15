@@ -30,7 +30,7 @@ describe('Harbor Details Header', () => {
         mountComponent({ propsData: { imagesDetail: { name: '', artifactCount: 1 } } });
       });
 
-      it('root image ', () => {
+      it('root image', () => {
         expect(findTitle().text()).toBe(ROOT_IMAGE_TEXT);
       });
     });
@@ -40,7 +40,7 @@ describe('Harbor Details Header', () => {
         mountComponent({ propsData: { imagesDetail: { name: 'shao/flinkx', artifactCount: 1 } } });
       });
 
-      it('shows artifact.name ', () => {
+      it('shows artifact.name', () => {
         expect(findTitle().text()).toContain('shao/flinkx');
       });
     });

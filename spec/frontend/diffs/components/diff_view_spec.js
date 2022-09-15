@@ -56,7 +56,7 @@ describe('DiffView', () => {
     expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
   });
 
-  it('does render a diff-line component with the correct props when there is a finding & refactorCodeQualityInlineFindings flag is true ', async () => {
+  it('does render a diff-line component with the correct props when there is a finding & refactorCodeQualityInlineFindings flag is true', async () => {
     const wrapper = createWrapper(diffCodeQuality, {
       glFeatures: { refactorCodeQualityInlineFindings: true },
     });
@@ -65,7 +65,7 @@ describe('DiffView', () => {
     expect(wrapper.findComponent(DiffLine).props('line')).toBe(diffCodeQuality.diffLines[2]);
   });
 
-  it('does not render a diff-line component when there is a finding & refactorCodeQualityInlineFindings flag is false ', async () => {
+  it('does not render a diff-line component when there is a finding & refactorCodeQualityInlineFindings flag is false', async () => {
     const wrapper = createWrapper(diffCodeQuality, {
       glFeatures: { refactorCodeQualityInlineFindings: false },
     });

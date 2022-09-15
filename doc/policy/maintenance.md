@@ -139,7 +139,7 @@ For very serious security issues, there is
 to backport security fixes to even more monthly releases of GitLab.
 This decision is made on a case-by-case basis.
 
-In some circumstances we may choose to address a vulnerability using the [patch release](#patch-releases) process or the regular monthly release process, that is, updating the current stable release only, with no backports. Factors influencing this decision include very low likelihood of exploitation, low impact, fix complexity and risk to stability. We will **always address 
+In some circumstances we may choose to address a vulnerability using the [patch release](#patch-releases) process or the regular monthly release process, that is, updating the current stable release only, with no backports. Factors influencing this decision include very low likelihood of exploitation, low impact, fix complexity and risk to stability. We will **always address
 high and critical** security issues with a security release.
 
 ## More information

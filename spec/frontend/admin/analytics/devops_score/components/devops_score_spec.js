@@ -34,7 +34,7 @@ describe('DevopsScore', () => {
       createComponent({ devopsScoreMetrics: {} });
     });
 
-    it('includes the DevopsScoreCallout component ', () => {
+    it('includes the DevopsScoreCallout component', () => {
       expect(bannerExists()).toBe(true);
     });
 
@@ -67,7 +67,7 @@ describe('DevopsScore', () => {
       createComponent();
     });
 
-    it('includes the DevopsScoreCallout component ', () => {
+    it('includes the DevopsScoreCallout component', () => {
       expect(bannerExists()).toBe(true);
     });
 

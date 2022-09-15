@@ -56,7 +56,7 @@ RSpec.describe Import::GithubService do
     end
 
     context 'repository size validation' do
-      let(:repository_double) { double(name: 'repository', size: 99) }
+      let(:repository_double) { { name: 'repository', size: 99 } }
 
       before do
         expect(client).to receive(:repository).and_return(repository_double)
@@ -84,7 +84,7 @@ RSpec.describe Import::GithubService do
         end
 
         it 'returns error when the repository is larger than the limit' do
-          allow(repository_double).to receive(:size).and_return(101)
+          repository_double[:size] = 101
 
           expect(subject.execute(access_params, :github)).to include(size_limit_error)
         end
@@ -103,7 +103,7 @@ RSpec.describe Import::GithubService do
           end
 
           it 'returns error when the repository is larger than the limit' do
-            allow(repository_double).to receive(:size).and_return(101)
+            repository_double[:size] = 101
 
             expect(subject.execute(access_params, :github)).to include(size_limit_error)
           end
@@ -113,14 +113,14 @@ RSpec.describe Import::GithubService do
 
     context 'when import source is disabled' do
       let(:repository_double) do
-        double({
+        {
           name: 'vim',
           description: 'test',
           full_name: 'test/vim',
           clone_url: 'http://repo.com/repo/repo.git',
           private: false,
           has_wiki?: false
-        })
+        }
       end
 
       before do

@@ -8,14 +8,6 @@ RSpec.shared_examples 'editable job token scope' do
     end
   end
 
-  context 'when job token scope is disabled for the given project' do
-    before do
-      allow(project).to receive(:ci_job_token_scope_enabled?).and_return(false)
-    end
-
-    it_behaves_like 'returns error', 'Job token scope is disabled for this project'
-  end
-
   context 'when user does not have permissions to edit the job token scope' do
     it_behaves_like 'returns error', 'Insufficient permissions to modify the job token scope'
   end

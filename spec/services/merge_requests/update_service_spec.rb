@@ -47,6 +47,11 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       @merge_request.reload
     end
 
+    it_behaves_like 'issuable update service updating last_edited_at values' do
+      let(:issuable) { merge_request }
+      subject(:update_issuable) { update_merge_request(update_params) }
+    end
+
     context 'valid params' do
       let(:locked) { true }
 

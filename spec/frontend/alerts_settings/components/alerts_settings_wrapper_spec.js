@@ -148,7 +148,7 @@ describe('AlertsSettingsWrapper', () => {
       expect(findIntegrations()).toHaveLength(mockIntegrations.length);
     });
 
-    it('renders `Add new integration` button when multiple integrations are supported ', () => {
+    it('renders `Add new integration` button when multiple integrations are supported', () => {
       createComponent({
         data: {
           integrations: mockIntegrations,
@@ -321,7 +321,7 @@ describe('AlertsSettingsWrapper', () => {
       });
     });
 
-    it('shows an error alert when integration creation fails ', async () => {
+    it('shows an error alert when integration creation fails', async () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(ADD_INTEGRATION_ERROR);
       findAlertsSettingsForm().vm.$emit('create-new-integration', {});
 
@@ -330,7 +330,7 @@ describe('AlertsSettingsWrapper', () => {
       expect(createFlash).toHaveBeenCalledWith({ message: ADD_INTEGRATION_ERROR });
     });
 
-    it('shows an error alert when integration token reset fails ', async () => {
+    it('shows an error alert when integration token reset fails', async () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(RESET_INTEGRATION_TOKEN_ERROR);
 
       findAlertsSettingsForm().vm.$emit('reset-token', {});
@@ -339,7 +339,7 @@ describe('AlertsSettingsWrapper', () => {
       expect(createFlash).toHaveBeenCalledWith({ message: RESET_INTEGRATION_TOKEN_ERROR });
     });
 
-    it('shows an error alert when integration update fails ', async () => {
+    it('shows an error alert when integration update fails', async () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(errorMsg);
 
       findAlertsSettingsForm().vm.$emit('update-integration', {});
@@ -357,14 +357,14 @@ describe('AlertsSettingsWrapper', () => {
         mock.restore();
       });
 
-      it('shows an error alert when integration test payload is invalid ', async () => {
+      it('shows an error alert when integration test payload is invalid', async () => {
         mock.onPost(/(.*)/).replyOnce(httpStatusCodes.UNPROCESSABLE_ENTITY);
         await wrapper.vm.testAlertPayload({ endpoint: '', data: '', token: '' });
         expect(createFlash).toHaveBeenCalledWith({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
         expect(createFlash).toHaveBeenCalledTimes(1);
       });
 
-      it('shows an error alert when integration is not activated ', async () => {
+      it('shows an error alert when integration is not activated', async () => {
         mock.onPost(/(.*)/).replyOnce(httpStatusCodes.FORBIDDEN);
         await wrapper.vm.testAlertPayload({ endpoint: '', data: '', token: '' });
         expect(createFlash).toHaveBeenCalledWith({

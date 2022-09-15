@@ -16486,6 +16486,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
 
+##### `Project.job`
+
+One job belonging to the project, selected by ID.
+
+Returns [`CiJob`](#cijob).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectjobid"></a>`id` | [`JobID!`](#jobid) | ID of the job. |
+
 ##### `Project.jobs`
 
 Jobs of a project. This field can only be resolved for one project in any single request.

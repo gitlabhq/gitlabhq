@@ -336,6 +336,26 @@ RSpec.describe Namespace do
         expect(described_class.without_project_namespaces).to match_array([namespace, namespace1, namespace2, namespace1sub, namespace2sub, user_namespace, project_namespace.parent])
       end
     end
+
+    describe '.with_shared_runners_enabled' do
+      subject { described_class.with_shared_runners_enabled }
+
+      context 'when shared runners are enabled for namespace' do
+        let!(:namespace_inheriting_shared_runners) { create(:namespace, shared_runners_enabled: true) }
+
+        it "returns a namespace inheriting shared runners" do
+          is_expected.to include(namespace_inheriting_shared_runners)
+        end
+      end
+
+      context 'when shared runners are disabled for namespace' do
+        let!(:namespace_not_inheriting_shared_runners) { create(:namespace, shared_runners_enabled: false) }
+
+        it "does not return a namespace not inheriting shared runners" do
+          is_expected.not_to include(namespace_not_inheriting_shared_runners)
+        end
+      end
+    end
   end
 
   describe 'delegate' do
@@ -707,6 +727,24 @@ RSpec.describe Namespace do
           expect(project_namespace.all_container_repositories).to match_array([rep1, rep2])
         end
       end
+    end
+  end
+
+  describe '#any_project_with_shared_runners_enabled?' do
+    subject { namespace.any_project_with_shared_runners_enabled? }
+
+    let!(:project_not_inheriting_shared_runners) do
+      create(:project, namespace: namespace, shared_runners_enabled: false)
+    end
+
+    context 'when a child project has shared runners enabled' do
+      let!(:project_inheriting_shared_runners) { create(:project, namespace: namespace, shared_runners_enabled: true) }
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when all child projects have shared runners disabled' do
+      it { is_expected.to eq false }
     end
   end
 

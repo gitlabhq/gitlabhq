@@ -85,7 +85,7 @@ describe('import_projects store getters', () => {
   });
 
   describe('hasImportableRepos', () => {
-    it('returns true if there are any importable projects ', () => {
+    it('returns true if there are any importable projects', () => {
       localState.repositories = [IMPORTABLE_REPO, IMPORTED_REPO, INCOMPATIBLE_REPO];
 
       expect(hasImportableRepos(localState)).toBe(true);
@@ -99,7 +99,7 @@ describe('import_projects store getters', () => {
   });
 
   describe('importAllCount', () => {
-    it('returns count of available importable projects ', () => {
+    it('returns count of available importable projects', () => {
       localState.repositories = [
         IMPORTABLE_REPO,
         IMPORTABLE_REPO,

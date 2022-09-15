@@ -76,11 +76,15 @@ module Gitlab
         each_object(:pull_request_reviews, repo_name, iid)
       end
 
+      def repos(options = {})
+        octokit.repos(nil, options).map(&:to_h)
+      end
+
       # Returns the details of a GitHub repository.
       #
       # name - The path (in the form `owner/repository`) of the repository.
       def repository(name)
-        with_rate_limit { octokit.repo(name) }
+        with_rate_limit { octokit.repo(name).to_h }
       end
 
       def pull_request(repo_name, iid)
@@ -175,7 +179,7 @@ module Gitlab
       end
 
       def search_repos_by_name(name, options = {})
-        with_retry { octokit.search_repositories(search_query(str: name, type: :name), options) }
+        with_retry { octokit.search_repositories(search_query(str: name, type: :name), options).to_h }
       end
 
       def search_query(str:, type:, include_collaborations: true, include_orgs: true)

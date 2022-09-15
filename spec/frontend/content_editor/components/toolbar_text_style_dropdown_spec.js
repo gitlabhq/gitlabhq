@@ -53,7 +53,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
     });
   });
 
-  describe('when there is an active item ', () => {
+  describe('when there is an active item', () => {
     let activeTextStyle;
 
     beforeEach(async () => {
@@ -68,7 +68,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
     });
 
-    it('displays the active text style label as the dropdown toggle text ', () => {
+    it('displays the active text style label as the dropdown toggle text', () => {
       expect(findDropdown().props().text).toBe(activeTextStyle.label);
     });
 

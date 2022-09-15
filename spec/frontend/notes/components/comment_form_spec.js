@@ -679,7 +679,7 @@ describe('issue_comment_form component', () => {
           );
         });
 
-        it('clicking `add comment now`, should call note endpoint, set `isDraft` false ', () => {
+        it('clicking `add comment now`, should call note endpoint, set `isDraft` false', () => {
           mountComponent({ mountFunction: mount, initialData: { note: 'a comment' } });
 
           jest.spyOn(store, 'dispatch').mockResolvedValue();
