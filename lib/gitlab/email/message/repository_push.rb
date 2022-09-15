@@ -79,11 +79,11 @@ module Gitlab
           @action_name ||=
             case @action
             when :create
-              'pushed new'
+              s_('Notify|pushed new')
             when :delete
-              'deleted'
+              s_('Notify|deleted')
             else
-              'pushed to'
+              s_('Notify|pushed to')
             end
         end
 

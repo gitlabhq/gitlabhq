@@ -1,8 +1,15 @@
 import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
+import {
+  I18N_USER_BLOCKED,
+  I18N_USER_LEARN,
+  I18N_USER_FOLLOW,
+  I18N_USER_UNFOLLOW,
+} from '~/vue_shared/components/user_popover/constants';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { followUser, unfollowUser } from '~/api/user_api';
@@ -310,7 +317,9 @@ describe('User Popover Component', () => {
       const securityBotDocsLink = findSecurityBotDocsLink();
       expect(securityBotDocsLink.exists()).toBe(true);
       expect(securityBotDocsLink.attributes('href')).toBe(SECURITY_BOT_USER.websiteUrl);
-      expect(securityBotDocsLink.text()).toBe('Learn more about GitLab Security Bot');
+      expect(securityBotDocsLink.text()).toBe(
+        sprintf(I18N_USER_LEARN, { name: SECURITY_BOT_USER.name }),
+      );
     });
 
     it("does not show a link to the bot's documentation if there is no website_url", () => {
@@ -320,9 +329,10 @@ describe('User Popover Component', () => {
     });
 
     it("doesn't escape user's name", () => {
-      createWrapper({ user: { ...SECURITY_BOT_USER, name: '%<>\';"' } });
+      const name = '%<>\';"';
+      createWrapper({ user: { ...SECURITY_BOT_USER, name } });
       const securityBotDocsLink = findSecurityBotDocsLink();
-      expect(securityBotDocsLink.text()).toBe('Learn more about %<>\';"');
+      expect(securityBotDocsLink.text()).toBe(sprintf(I18N_USER_LEARN, { name }, false));
     });
 
     it('does not display local time', () => {
@@ -336,7 +346,7 @@ describe('User Popover Component', () => {
     beforeEach(() => createWrapper());
 
     it('renders the Follow button with the correct variant', () => {
-      expect(findToggleFollowButton().text()).toBe('Follow');
+      expect(findToggleFollowButton().text()).toBe(I18N_USER_FOLLOW);
       expect(findToggleFollowButton().props('variant')).toBe('confirm');
     });
 
@@ -387,7 +397,7 @@ describe('User Popover Component', () => {
     beforeEach(() => createWrapper({ user: { ...DEFAULT_PROPS.user, isFollowed: true } }));
 
     it('renders the Unfollow button with the correct variant', () => {
-      expect(findToggleFollowButton().text()).toBe('Unfollow');
+      expect(findToggleFollowButton().text()).toBe(I18N_USER_UNFOLLOW);
       expect(findToggleFollowButton().props('variant')).toBe('default');
     });
 
@@ -438,6 +448,25 @@ describe('User Popover Component', () => {
 
     it("doesn't render the toggle follow button", () => {
       expect(findToggleFollowButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when the user is blocked', () => {
+    const bio = 'My super interesting bio';
+    const status = 'My status';
+    beforeEach(() =>
+      createWrapper({
+        user: { ...DEFAULT_PROPS.user, state: 'blocked', bio, status: { message_html: status } },
+      }),
+    );
+
+    it('renders warning', () => {
+      expect(wrapper.text()).toContain(I18N_USER_BLOCKED);
+    });
+
+    it("doesn't show other information", () => {
+      expect(wrapper.text()).not.toContain(bio);
+      expect(wrapper.text()).not.toContain(status);
     });
   });
 

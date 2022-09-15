@@ -46,6 +46,7 @@ const populateUserInfo = (user) => {
           pronouns: userData.pronouns,
           localTime: userData.local_time,
           isFollowed: userData.is_followed,
+          state: userData.state,
           loaded: true,
         });
       }

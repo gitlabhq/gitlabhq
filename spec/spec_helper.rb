@@ -36,6 +36,7 @@ require 'rspec-parameterized'
 require 'shoulda/matchers'
 require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/factory_default'
+require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 
 rspec_profiling_is_configured =
@@ -109,11 +110,6 @@ RSpec.configure do |config|
         warn `curl -s -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
       end
     end
-  else
-    # Allow running `:focus` examples locally,
-    # falling back to all tests when there is no `:focus` example.
-    config.filter_run focus: true
-    config.run_all_when_everything_filtered = true
   end
 
   # Attempt to troubleshoot  https://gitlab.com/gitlab-org/gitlab/-/issues/351531

@@ -21,6 +21,7 @@ fi
 variables=$(cat <<YML
 variables:
   GITLAB_VERSION: "$(cat VERSION)"
+  COLORIZED_LOGS: "true"
   QA_TESTS: "$QA_TESTS"
   QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
   QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"
@@ -29,13 +30,10 @@ YML
 )
 
 echo "Using .gitlab/ci/review-apps/main.gitlab-ci.yml and .gitlab/ci/package-and-test/main.gitlab-ci.yml"
-
 cp .gitlab/ci/review-apps/main.gitlab-ci.yml "$REVIEW_PIPELINE_YML"
 echo "$variables" >>"$REVIEW_PIPELINE_YML"
-echo "Successfully generated review-app pipeline with following variables section:"
-echo "$variables"
-
 cp .gitlab/ci/package-and-test/main.gitlab-ci.yml "$OMNIBUS_PIPELINE_YML"
 echo "$variables" >>"$OMNIBUS_PIPELINE_YML"
-echo "Successfully generated package-and-test pipeline with following variables section:"
+
+echo "Successfully generated review-app and package-and-test pipeline with following variables section:"
 echo "$variables"

@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 0.13.0
+    ref: 1.2.2
     file:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
@@ -8,7 +8,7 @@ include:
 .test-variables:
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
-    COLORIZED_LOGS: "true"
+    QA_CAN_TEST_PRAEFECT: "false"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITLAB_ADMIN_USERNAME: "root"
@@ -21,49 +21,31 @@ include:
     - .qa-cache
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
   before_script:
-    - export QA_GITLAB_URL="$(cat environment_url.txt)"
     - cd qa && bundle install
 
 .review-qa-base:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:
     - .use-docker-in-docker
     - .bundle-base
     - .test-variables
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   stage: qa
   needs:
     - review-deploy
     - download-knapsack-report
   variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: /certs
-    DOCKER_CERT_PATH: /certs/client
-    DOCKER_TLS_VERIFY: 1
     GIT_LFS_SKIP_SMUDGE: 1
     WD_INSTALL_DIR: /usr/local/bin
-  before_script:
-    - !reference [.bundle-base, before_script]
+    RSPEC_REPORT_OPTS: --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec.xml
   script:
     - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
-    - qa_run_status=0
+    - QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO} ${QA_GITLAB_URL} -- ${QA_TESTS} ${RSPEC_REPORT_OPTS}"
+    - echo "Running - '${QA_COMMAND}'"
+    - eval "$QA_COMMAND"
+  after_script:
     - |
-      bundle exec rake "knapsack:rspec[\
-        ${RSPEC_TAGS} \
-        --tag ~orchestrated \
-        --tag ~transient \
-        --tag ~skip_signup_disabled \
-        --tag ~requires_git_protocol_v2 \
-        --tag ~requires_praefect \
-        --force-color \
-        --order random \
-        --format documentation \
-        --format RspecJunitFormatter --out tmp/rspec.xml \
-      ]" || qa_run_status=$?
-    - if [ ${qa_run_status} -ne 0 ]; then
-        release_sha=$(echo "${CI_COMMIT_SHA}" | cut -c1-11);
-        echo "Errors can be found at https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/${release_sha}/all-events/.";
-      fi
-    - exit ${qa_run_status}
+      echo "Sentry errors for the current review-app test run can be found via following url:"
+      echo "https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/$(echo "${CI_COMMIT_SHA}" | cut -c1-11)/all-events/."
   artifacts:
     paths:
       - qa/tmp
@@ -72,20 +54,11 @@ include:
     expire_in: 7 days
     when: always
 
-.allure-report-base:
-  extends: .generate-allure-report-base
-  stage: post-qa
-  variables:
-    GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
-    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
-    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
-    ALLURE_RESULTS_GLOB: qa/tmp/allure-results/*
-
 # Store knapsack report as artifact so the same report is reused across all jobs
 download-knapsack-report:
   extends:
     - .bundle-base
-    - .review:rules:review-qa-reliable
+    - .rules:qa-framework-changes-or-review-scenarios
   stage: prepare
   script:
     - bundle exec rake "knapsack:download[qa]"
@@ -98,30 +71,39 @@ download-knapsack-report:
 review-qa-smoke:
   extends:
     - .review-qa-base
-    - .review:rules:review-qa-smoke
-  retry: 1
+    - .rules:qa-smoke
   variables:
+    QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: review-qa-smoke
-    RSPEC_TAGS: --tag smoke
-
-review-qa-reliable:
-  extends:
-    - .review-qa-base
-    - .review:rules:review-qa-reliable
   retry: 1
-  parallel: 10
-  variables:
-    QA_RUN_TYPE: review-qa-reliable
-    RSPEC_TAGS: --tag reliable --tag sanity_feature_flags
 
-review-qa-all:
+review-qa-blocking:
   extends:
     - .review-qa-base
-    - .review:rules:review-qa-all
-  parallel: 5
+    - .rules:qa-blocking
   variables:
-    QA_RUN_TYPE: review-qa-all
-    RSPEC_TAGS: --tag ~reliable --tag ~smoke --tag ~sanity_feature_flags
+    QA_SCENARIO: Test::Instance::ReviewBlocking
+    QA_RUN_TYPE: review-qa-blocking
+  retry: 1
+review-qa-blocking-parallel:
+  extends:
+    - review-qa-blocking
+    - .rules:qa-blocking-parallel
+  parallel: 10
+
+review-qa-non-blocking:
+  extends:
+    - .review-qa-base
+    - .rules:qa-non-blocking
+  variables:
+    QA_SCENARIO: Test::Instance::ReviewNonBlocking
+    QA_RUN_TYPE: review-qa-non-blocking
+  allow_failure: true
+review-qa-non-blocking-parallel:
+  extends:
+    - review-qa-non-blocking
+    - .rules:qa-non-blocking-parallel
+  parallel: 5
 
 review-performance:
   extends:
@@ -149,27 +131,20 @@ review-performance:
       performance: performance.json
     expire_in: 31d
 
-# Generate single report for both smoke and reliable test jobs
-# Both job types are essentially the same:
-# * always executed
-# * always blocking
-allure-report-qa-blocking:
+e2e-test-report:
   extends:
-    - .allure-report-base
-    - .review:rules:review-qa-blocking-report
-  needs:
-    - review-qa-smoke
-    - review-qa-reliable
+    - .generate-allure-report-base
+    - .rules:qa-framework-changes-or-review-scenarios
+  stage: post-qa
   variables:
-    ALLURE_JOB_NAME: e2e-review-qa-blocking
-
-allure-report-qa-all:
-  extends:
-    - .allure-report-base
-    - .review:rules:review-qa-all-report
-  needs: ["review-qa-all"]
-  variables:
-    ALLURE_JOB_NAME: e2e-review-qa-all
+    ALLURE_JOB_NAME: e2e-review-qa
+    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
+    ALLURE_RESULTS_GLOB: qa/tmp/allure-results/*
+    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
+    GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
+    GIT_STRATEGY: none
+  allow_failure: true
+  when: always
 
 upload-knapsack-report:
   extends:
@@ -182,13 +157,13 @@ upload-knapsack-report:
 delete-test-resources:
   extends:
     - .bundle-base
-    - .review:rules:review-qa-cleanup
+    - .rules:qa-framework-changes-or-review-scenarios
   stage: post-qa
   variables:
     QA_TEST_RESOURCES_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-resources-*.json
     GITLAB_QA_ACCESS_TOKEN: $REVIEW_APPS_ROOT_TOKEN
-    COLORIZED_LOGS: "true"
   script:
     - export GITLAB_ADDRESS="$QA_GITLAB_URL"
     - bundle exec rake "test_resources:delete[$QA_TEST_RESOURCES_FILE_PATTERN]"
   allow_failure: true
+  when: always

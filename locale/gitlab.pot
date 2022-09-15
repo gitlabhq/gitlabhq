@@ -7723,6 +7723,9 @@ msgstr ""
 msgid "Changes to the title have not been saved"
 msgstr ""
 
+msgid "Changes:"
+msgstr ""
+
 msgid "Changing any setting here requires an application restart"
 msgstr ""
 
@@ -9618,6 +9621,9 @@ msgid "Commits to"
 msgstr ""
 
 msgid "Commits you select appear here. Go to the first tab and select commits to add to this merge request."
+msgstr ""
+
+msgid "Commits:"
 msgstr ""
 
 msgid "Commits|An error occurred while fetching merge requests data."
@@ -12715,6 +12721,9 @@ msgid "Deleted"
 msgstr ""
 
 msgid "Deleted chat nickname: %{chat_name}!"
+msgstr ""
+
+msgid "Deleted commits:"
 msgstr ""
 
 msgid "Deleted projects cannot be restored!"
@@ -23423,7 +23432,7 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-msgid "Learn more about %{username}"
+msgid "Learn more about %{name}"
 msgstr ""
 
 msgid "Learn more about Auto DevOps"
@@ -27039,10 +27048,19 @@ msgstr ""
 msgid "Notify|%{author_link}'s issue %{issue_reference_link} is due soon."
 msgstr ""
 
+msgid "Notify|%{author_name} %{action_name} %{ref_type} %{ref_name} at %{project_link}"
+msgstr ""
+
+msgid "Notify|%{changed_files}:"
+msgstr ""
+
 msgid "Notify|%{commit_link} in %{mr_link}"
 msgstr ""
 
 msgid "Notify|%{commits_text} from branch `%{target_branch}`"
+msgstr ""
+
+msgid "Notify|%{committed_by_start} by %{author_name} %{committed_by_end} %{committed_at_start} at %{committed_date} %{committed_at_end}"
 msgstr ""
 
 msgid "Notify|%{invite_email}, now known as %{user_name}, has accepted your invitation to join the %{target_name} %{target_model_name}."
@@ -27171,6 +27189,9 @@ msgstr ""
 msgid "Notify|New issue: %{project_issue_url}"
 msgstr ""
 
+msgid "Notify|No preview for this file type"
+msgstr ""
+
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
 msgstr ""
 
@@ -27178,6 +27199,15 @@ msgid "Notify|Remote mirror"
 msgstr ""
 
 msgid "Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}."
+msgstr ""
+
+msgid "Notify|The diff for this file was not included because it is too large."
+msgstr ""
+
+msgid "Notify|The diff was not included because it is too large."
+msgstr ""
+
+msgid "Notify|The push did not contain any new commits, but force pushed to delete the commits and changes below."
 msgstr ""
 
 msgid "Notify|This issue is due on: %{issue_due_date}"
@@ -27202,6 +27232,15 @@ msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been
 msgstr ""
 
 msgid "Notify|currently supported languages"
+msgstr ""
+
+msgid "Notify|deleted"
+msgstr ""
+
+msgid "Notify|pushed new"
+msgstr ""
+
+msgid "Notify|pushed to"
 msgstr ""
 
 msgid "Notify|successfully completed %{jobs} in %{stages}."
@@ -43051,6 +43090,9 @@ msgstr ""
 msgid "User identity was successfully updated."
 msgstr ""
 
+msgid "User is blocked"
+msgstr ""
+
 msgid "User is not allowed to resolve thread"
 msgstr ""
 
@@ -44192,6 +44234,9 @@ msgid "Vulnerability|Unmodified Response"
 msgstr ""
 
 msgid "Vulnerability|View training"
+msgstr ""
+
+msgid "WARNING:"
 msgstr ""
 
 msgid "WARNING: This snippet contains hidden files which might be used to mask malicious behavior. Exercise caution if cloning and executing code from this snippet."

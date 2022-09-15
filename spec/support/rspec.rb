@@ -14,6 +14,13 @@ RSpec.configure do |config|
   # Re-run failures locally with `--only-failures`
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
 
+  unless ENV['CI']
+    # Allow running `:focus` examples locally,
+    # falling back to all tests when there is no `:focus` example.
+    config.filter_run focus: true
+    config.run_all_when_everything_filtered = true
+  end
+
   config.mock_with :rspec do |mocks|
     mocks.verify_doubled_constant_names = true
   end

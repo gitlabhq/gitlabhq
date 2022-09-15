@@ -1667,6 +1667,9 @@
 ################
 # Review rules #
 ################
+.review-change-pattern: &review-change-pattern
+  APP_CHANGE_TRIGGER: "true"
+
 .review:rules:start-review-app-pipeline:
   rules:
     - <<: *if-not-ee
@@ -1678,12 +1681,16 @@
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
+      variables: *review-change-pattern
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
+      variables: *review-change-pattern
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *models-patterns
+      variables: *review-change-pattern
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *lib-gitlab-patterns
+      variables: *review-change-pattern
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1716,49 +1723,6 @@
 .review:rules:review-delete-deployment:
   rules:
     - when: on_success
-
-.review:rules:review-qa-smoke:
-  rules:
-    - when: on_success
-
-# If the needed job isn't allowed to fail, we need to use `when: always` in
-# order to keep the job always running after it.
-#
-# If the needed job is allowed to fail, we need to use both
-# `when: on_success` and `when: on_failure` in order to keep
-# the job always running after it.
-# Not that if the needed job has `when: on_success` we can use `when: always`
-# for the depending job.
-#
-# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76756
-
-.review:rules:review-qa-reliable:
-  rules:
-    - when: on_success
-
-# Since `review-qa-reliable` isn't allowed to fail, we need to use `when: always`for `review-qa-reliable-report`.
-.review:rules:review-qa-blocking-report:
-  rules:
-    - when: always
-
-.review:rules:review-qa-all:
-  rules:
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true  # manual jobs needs to be allowed to fail, otherwise they block the pipeline
-    - when: on_success
-      allow_failure: true
-
-# Since `review-qa-all` is allowed to fail (and potentially manual), we need to use `when: on_success` and `when: on_failure` for `review-qa-all-report`.
-.review:rules:review-qa-all-report:
-  rules:
-    - when: on_success
-    - when: on_failure
-
-.review:rules:review-qa-cleanup:
-  rules:
-    - when: always
 
 .review:rules:review-cleanup:
   rules:

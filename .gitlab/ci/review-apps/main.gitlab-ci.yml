@@ -11,6 +11,7 @@ stages:
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/rules.gitlab-ci.yml
+  - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml
 
@@ -97,6 +98,7 @@ review-deploy:
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
     - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
+    - echo "QA_GITLAB_URL=${CI_ENVIRONMENT_URL}" > environment.env
     - *base-before_script
   script:
     - check_kube_domain
@@ -112,6 +114,8 @@ review-deploy:
   artifacts:
     paths:
       - environment_url.txt
+    reports:
+      dotenv: environment.env
     expire_in: 7 days
     when: always
 
