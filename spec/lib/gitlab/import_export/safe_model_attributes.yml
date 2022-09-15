@@ -586,6 +586,7 @@ ProjectFeature:
 - environments_access_level
 - feature_flags_access_level
 - releases_access_level
+- monitor_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

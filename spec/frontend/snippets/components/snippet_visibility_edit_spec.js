@@ -2,10 +2,12 @@ import { GlFormRadio, GlIcon, GlFormRadioGroup, GlLink } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
 import {
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+} from '~/visibility_level/constants';
+import {
   SNIPPET_VISIBILITY,
-  SNIPPET_VISIBILITY_PRIVATE,
-  SNIPPET_VISIBILITY_INTERNAL,
-  SNIPPET_VISIBILITY_PUBLIC,
   SNIPPET_LEVELS_RESTRICTED,
   SNIPPET_LEVELS_DISABLED,
 } from '~/snippets/constants';
@@ -75,19 +77,19 @@ describe('Snippet Visibility Edit component', () => {
       const findRestrictedInfo = () => wrapper.find('[data-testid="restricted-levels-info"]');
       const RESULTING_OPTIONS = {
         0: {
-          value: SNIPPET_VISIBILITY_PRIVATE,
+          value: VISIBILITY_LEVEL_PRIVATE_STRING,
           icon: SNIPPET_VISIBILITY.private.icon,
           text: SNIPPET_VISIBILITY.private.label,
           description: SNIPPET_VISIBILITY.private.description,
         },
         10: {
-          value: SNIPPET_VISIBILITY_INTERNAL,
+          value: VISIBILITY_LEVEL_INTERNAL_STRING,
           icon: SNIPPET_VISIBILITY.internal.icon,
           text: SNIPPET_VISIBILITY.internal.label,
           description: SNIPPET_VISIBILITY.internal.description,
         },
         20: {
-          value: SNIPPET_VISIBILITY_PUBLIC,
+          value: VISIBILITY_LEVEL_PUBLIC_STRING,
           icon: SNIPPET_VISIBILITY.public.icon,
           text: SNIPPET_VISIBILITY.public.label,
           description: SNIPPET_VISIBILITY.public.description,
@@ -130,7 +132,7 @@ describe('Snippet Visibility Edit component', () => {
         createComponent({ propsData: { isProjectSnippet: true }, deep: true });
 
         expect(findRadiosData()[0]).toEqual({
-          value: SNIPPET_VISIBILITY_PRIVATE,
+          value: VISIBILITY_LEVEL_PRIVATE_STRING,
           icon: SNIPPET_VISIBILITY.private.icon,
           text: SNIPPET_VISIBILITY.private.label,
           description: SNIPPET_VISIBILITY.private.description_project,
@@ -141,7 +143,7 @@ describe('Snippet Visibility Edit component', () => {
 
   describe('functionality', () => {
     it('pre-selects correct option in the list', () => {
-      const value = SNIPPET_VISIBILITY_INTERNAL;
+      const value = VISIBILITY_LEVEL_INTERNAL_STRING;
 
       createComponent({ propsData: { value } });
 

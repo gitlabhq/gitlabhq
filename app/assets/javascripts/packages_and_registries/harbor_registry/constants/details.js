@@ -1,4 +1,4 @@
-import { s__, __ } from '~/locale';
+import { s__, __, n__ } from '~/locale';
 
 export const FETCH_ARTIFACT_LIST_ERROR_MESSAGE = s__(
   'HarborRegistry|Something went wrong while fetching the artifact list.',
@@ -25,3 +25,13 @@ export const FETCH_TAGS_ERROR_MESSAGE = s__(
 );
 
 export const TAG_LABEL = s__('HarborRegistry|Tag');
+export const EMPTY_TAG_LABEL = s__('HarborRegistry|-- tags');
+
+export const EMPTY_ARTIFACTS_LABEL = s__('HarborRegistry|-- artifacts');
+export const artifactsLabel = (count) => {
+  return n__('%d artifact', '%d artifacts', count);
+};
+
+export const tagsCountText = (count) => {
+  return n__('%d tag', '%d tags', count);
+};

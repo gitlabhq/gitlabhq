@@ -21,10 +21,12 @@ RSpec.describe Gitlab::ImportExport::Config do
         end
 
         it 'parses default config' do
+          expected_keys = [:tree, :excluded_attributes, :included_attributes, :methods, :preloads, :export_reorders]
+          expected_keys << :include_if_exportable if ee
+
           expect { subject }.not_to raise_error
           expect(subject).to be_a(Hash)
-          expect(subject.keys).to contain_exactly(
-            :tree, :excluded_attributes, :included_attributes, :methods, :preloads, :export_reorders)
+          expect(subject.keys).to match_array(expected_keys)
         end
       end
     end

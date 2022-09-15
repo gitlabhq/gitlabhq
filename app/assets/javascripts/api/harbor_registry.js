@@ -35,11 +35,15 @@ export function getHarborArtifacts({ requestPath, repoName, limit, page, sort, s
   });
 }
 
-export function getHarborTags({ requestPath, repoName, digest }) {
+export function getHarborTags({ requestPath, repoName, digest, page }) {
   const url = buildApiUrl(HARBOR_TAGS_PATH)
     .replace('/:request_path', requestPath)
     .replace(':repo_name', repoName)
     .replace(':digest', digest);
 
-  return axios.get(url);
+  return axios.get(url, {
+    params: {
+      page,
+    },
+  });
 }

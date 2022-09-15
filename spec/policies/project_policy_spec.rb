@@ -1930,14 +1930,10 @@ RSpec.describe ProjectPolicy do
   describe 'operations feature' do
     using RSpec::Parameterized::TableSyntax
 
-    before do
-      stub_feature_flags(split_operations_visibility_permissions: false)
-    end
+    let(:guest_permissions) { [:read_environment, :read_deployment] }
 
-    let(:guest_operations_permissions) { [:read_environment, :read_deployment] }
-
-    let(:developer_operations_permissions) do
-      guest_operations_permissions + [
+    let(:developer_permissions) do
+      guest_permissions + [
         :read_feature_flag, :read_sentry_issue, :read_alert_management_alert, :read_terraform_state,
         :metrics_dashboard, :read_pod_logs, :read_prometheus, :create_feature_flag,
         :create_environment, :create_deployment, :update_feature_flag, :update_environment,
@@ -1946,11 +1942,15 @@ RSpec.describe ProjectPolicy do
       ]
     end
 
-    let(:maintainer_operations_permissions) do
-      developer_operations_permissions + [
+    let(:maintainer_permissions) do
+      developer_permissions + [
         :read_cluster, :create_cluster, :update_cluster, :admin_environment,
         :admin_cluster, :admin_terraform_state, :admin_deployment
       ]
+    end
+
+    before do
+      stub_feature_flags(split_operations_visibility_permissions: false)
     end
 
     where(:project_visibility, :access_level, :role, :allowed) do
@@ -2005,33 +2005,22 @@ RSpec.describe ProjectPolicy do
           expect_disallowed(*permissions_abilities(role))
         end
       end
-
-      def permissions_abilities(role)
-        case role
-        when :maintainer
-          maintainer_operations_permissions
-        when :developer
-          developer_operations_permissions
-        else
-          guest_operations_permissions
-        end
-      end
     end
   end
 
   describe 'environments feature' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:guest_environments_permissions) { [:read_environment, :read_deployment] }
+    let(:guest_permissions) { [:read_environment, :read_deployment] }
 
-    let(:developer_environments_permissions) do
-      guest_environments_permissions + [
+    let(:developer_permissions) do
+      guest_permissions + [
         :create_environment, :create_deployment, :update_environment, :update_deployment, :destroy_environment
       ]
     end
 
-    let(:maintainer_environments_permissions) do
-      developer_environments_permissions + [:admin_environment, :admin_deployment]
+    let(:maintainer_permissions) do
+      developer_permissions + [:admin_environment, :admin_deployment]
     end
 
     where(:project_visibility, :access_level, :role, :allowed) do
@@ -2086,15 +2075,73 @@ RSpec.describe ProjectPolicy do
           expect_disallowed(*permissions_abilities(role))
         end
       end
+    end
+  end
 
-      def permissions_abilities(role)
-        case role
-        when :maintainer
-          maintainer_environments_permissions
-        when :developer
-          developer_environments_permissions
+  describe 'monitor feature' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:guest_permissions) { [] }
+
+    let(:developer_permissions) do
+      guest_permissions + [
+        :read_sentry_issue, :read_alert_management_alert, :metrics_dashboard,
+        :update_sentry_issue, :update_alert_management_alert
+      ]
+    end
+
+    let(:maintainer_permissions) { developer_permissions }
+
+    where(:project_visibility, :access_level, :role, :allowed) do
+      :public   | ProjectFeature::ENABLED   | :maintainer | true
+      :public   | ProjectFeature::ENABLED   | :developer  | true
+      :public   | ProjectFeature::ENABLED   | :guest      | true
+      :public   | ProjectFeature::ENABLED   | :anonymous  | true
+      :public   | ProjectFeature::PRIVATE   | :maintainer | true
+      :public   | ProjectFeature::PRIVATE   | :developer  | true
+      :public   | ProjectFeature::PRIVATE   | :guest      | true
+      :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+      :public   | ProjectFeature::DISABLED  | :maintainer | false
+      :public   | ProjectFeature::DISABLED  | :developer  | false
+      :public   | ProjectFeature::DISABLED  | :guest      | false
+      :public   | ProjectFeature::DISABLED  | :anonymous  | false
+      :internal | ProjectFeature::ENABLED   | :maintainer | true
+      :internal | ProjectFeature::ENABLED   | :developer  | true
+      :internal | ProjectFeature::ENABLED   | :guest      | true
+      :internal | ProjectFeature::ENABLED   | :anonymous  | false
+      :internal | ProjectFeature::PRIVATE   | :maintainer | true
+      :internal | ProjectFeature::PRIVATE   | :developer  | true
+      :internal | ProjectFeature::PRIVATE   | :guest      | true
+      :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+      :internal | ProjectFeature::DISABLED  | :maintainer | false
+      :internal | ProjectFeature::DISABLED  | :developer  | false
+      :internal | ProjectFeature::DISABLED  | :guest      | false
+      :internal | ProjectFeature::DISABLED  | :anonymous  | false
+      :private  | ProjectFeature::ENABLED   | :maintainer | true
+      :private  | ProjectFeature::ENABLED   | :developer  | true
+      :private  | ProjectFeature::ENABLED   | :guest      | false
+      :private  | ProjectFeature::ENABLED   | :anonymous  | false
+      :private  | ProjectFeature::PRIVATE   | :maintainer | true
+      :private  | ProjectFeature::PRIVATE   | :developer  | true
+      :private  | ProjectFeature::PRIVATE   | :guest      | false
+      :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+      :private  | ProjectFeature::DISABLED  | :maintainer | false
+      :private  | ProjectFeature::DISABLED  | :developer  | false
+      :private  | ProjectFeature::DISABLED  | :guest      | false
+      :private  | ProjectFeature::DISABLED  | :anonymous  | false
+    end
+
+    with_them do
+      let(:current_user) { user_subject(role) }
+      let(:project) { project_subject(project_visibility) }
+
+      it 'allows/disallows the abilities based on the monitor feature access level' do
+        project.project_feature.update!(monitor_access_level: access_level)
+
+        if allowed
+          expect_allowed(*permissions_abilities(role))
         else
-          guest_environments_permissions
+          expect_disallowed(*permissions_abilities(role))
         end
       end
     end
@@ -2681,6 +2728,8 @@ RSpec.describe ProjectPolicy do
       end
     end
   end
+
+  private
 
   def project_subject(project_type)
     case project_type

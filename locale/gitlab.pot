@@ -19337,6 +19337,9 @@ msgstr[1] ""
 msgid "HarborRegistry|-- artifacts"
 msgstr ""
 
+msgid "HarborRegistry|-- tags"
+msgstr ""
+
 msgid "HarborRegistry|Digest: %{imageId}"
 msgstr ""
 
@@ -31261,6 +31264,9 @@ msgstr ""
 msgid "ProjectSettings|Merging is only allowed when the source branch is up-to-date with its target."
 msgstr ""
 
+msgid "ProjectSettings|Monitor"
+msgstr ""
+
 msgid "ProjectSettings|No merge commits are created."
 msgstr ""
 
@@ -41709,6 +41715,9 @@ msgid "Total artifacts size: %{total_size}"
 msgstr ""
 
 msgid "Total cores (CPUs)"
+msgstr ""
+
+msgid "Total issue weight"
 msgstr ""
 
 msgid "Total memory (GB)"

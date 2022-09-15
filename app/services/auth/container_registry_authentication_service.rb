@@ -83,6 +83,7 @@ module Auth
         token.audience = params[:service]
         token.subject = current_user.try(:username)
         token.expire_time = self.class.token_expire_at
+        token[:auth_type] = params[:auth_type]
         token[:access] = accesses.compact
       end
     end

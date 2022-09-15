@@ -78,7 +78,11 @@ class JwtController < ApplicationController
   end
 
   def additional_params
-    { scopes: scopes_param, deploy_token: @authentication_result.deploy_token }.compact
+    {
+      scopes: scopes_param,
+      deploy_token: @authentication_result.deploy_token,
+      auth_type: @authentication_result.type
+    }.compact
   end
 
   # We have to parse scope here, because Docker Client does not send an array of scopes,

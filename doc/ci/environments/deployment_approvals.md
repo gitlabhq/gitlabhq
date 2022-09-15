@@ -65,9 +65,6 @@ co-exist and multiple approval rules takes the precedence over the unified appro
 
 #### Unified approval setting
 
-NOTE:
-At this time, it is not possible to require approvals for an existing protected environment. The workaround is to unprotect the environment and configure approvals when re-protecting the environment.
-
 There are two ways to configure approvals for a protected environment:
 
 1. Using the [UI](protected_environments.md#protecting-environments)

@@ -72,7 +72,7 @@ export default {
     linkTo() {
       const { project, image } = this.$route.params;
 
-      return { name: 'details', params: { project, image, digest: this.artifact.digest } };
+      return { name: 'tags', params: { project, image, digest: this.artifact.digest } };
     },
   },
 };
@@ -99,10 +99,10 @@ export default {
     </template>
 
     <template #left-secondary>
-      <span class="gl-mr-2" data-testid="size">
+      <span class="gl-mr-3" data-testid="size">
         {{ formattedSize }}
       </span>
-      <span id="tagsCount" data-testid="tags-count">
+      <span id="tagsCount" class="gl-display-flex gl-align-items-center" data-testid="tags-count">
         <gl-icon name="tag" class="gl-mr-2" />
         {{ tagsCountText }}
       </span>

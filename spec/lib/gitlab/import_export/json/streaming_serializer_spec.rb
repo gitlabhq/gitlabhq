@@ -32,18 +32,20 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
   let(:hash) { { name: exportable.name, description: exportable.description }.stringify_keys }
   let(:include) { [] }
   let(:custom_orderer) { nil }
+  let(:include_if_exportable) { {} }
 
   let(:relations_schema) do
     {
       only: [:name, :description],
       include: include,
       preload: { issues: nil },
-      export_reorder: custom_orderer
+      export_reorder: custom_orderer,
+      include_if_exportable: include_if_exportable
     }
   end
 
   subject do
-    described_class.new(exportable, relations_schema, json_writer, exportable_path: exportable_path, logger: logger)
+    described_class.new(exportable, relations_schema, json_writer, exportable_path: exportable_path, logger: logger, current_user: user)
   end
 
   describe '#execute' do
@@ -208,6 +210,63 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
         expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
 
         subject.execute
+      end
+    end
+
+    describe 'conditional export of included associations' do
+      let(:include) do
+        [{ issues: { include: [{ label_links: { include: [:label] } }] } }]
+      end
+
+      let(:include_if_exportable) do
+        { issues: [:label_links] }
+      end
+
+      let_it_be(:label) { create(:label, project: exportable) }
+      let_it_be(:link) { create(:label_link, label: label, target: issue) }
+
+      context 'when association is exportable' do
+        before do
+          allow_next_found_instance_of(Issue) do |issue|
+            allow(issue).to receive(:exportable_association?).with(:label_links, current_user: user).and_return(true)
+          end
+        end
+
+        it 'includes exportable association' do
+          expected_issue = issue.to_json(include: [{ label_links: { include: [:label] } }])
+
+          expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, array_including(expected_issue))
+
+          subject.execute
+        end
+      end
+
+      context 'when association is not exportable' do
+        before do
+          allow_next_found_instance_of(Issue) do |issue|
+            allow(issue).to receive(:exportable_association?).with(:label_links, current_user: user).and_return(false)
+          end
+        end
+
+        it 'filters out not exportable association' do
+          expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, array_including(issue.to_json))
+
+          subject.execute
+        end
+      end
+
+      context 'when association does not respond to exportable_association?' do
+        before do
+          allow_next_found_instance_of(Issue) do |issue|
+            allow(issue).to receive(:respond_to?).with(:exportable_association?).and_return(false)
+          end
+        end
+
+        it 'filters out not exportable association' do
+          expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, array_including(issue.to_json))
+
+          subject.execute
+        end
       end
     end
   end

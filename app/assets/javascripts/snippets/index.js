@@ -2,7 +2,10 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 
-import { SNIPPET_LEVELS_MAP, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
+import {
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVELS_INTEGER_TO_STRING,
+} from '~/visibility_level/constants';
 import Translate from '~/vue_shared/translate';
 
 Vue.use(VueApollo);
@@ -36,7 +39,8 @@ export default function appFactory(el, Component) {
     apolloProvider,
     provide: {
       visibilityLevels: JSON.parse(visibilityLevels),
-      selectedLevel: SNIPPET_LEVELS_MAP[selectedLevel] ?? SNIPPET_VISIBILITY_PRIVATE,
+      selectedLevel:
+        VISIBILITY_LEVELS_INTEGER_TO_STRING[selectedLevel] ?? VISIBILITY_LEVEL_PRIVATE_STRING,
       multipleLevelsRestricted: 'multipleLevelsRestricted' in el.dataset,
       reportAbusePath,
       canReportSpam,

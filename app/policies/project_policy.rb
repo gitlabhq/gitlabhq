@@ -208,6 +208,7 @@ class ProjectPolicy < BasePolicy
     metrics_dashboard
     analytics
     operations
+    monitor
     security_and_compliance
     environments
     feature_flags
@@ -400,6 +401,12 @@ class ProjectPolicy < BasePolicy
 
   rule { split_operations_visibility_permissions & releases_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:release))
+  end
+
+  rule { split_operations_visibility_permissions & monitor_disabled }.policy do
+    prevent(:metrics_dashboard)
+    prevent(*create_read_update_admin_destroy(:sentry_issue))
+    prevent(*create_read_update_admin_destroy(:alert_management_alert))
   end
 
   rule { can?(:metrics_dashboard) }.policy do

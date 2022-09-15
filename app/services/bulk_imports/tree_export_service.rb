@@ -2,11 +2,12 @@
 
 module BulkImports
   class TreeExportService
-    def initialize(portable, export_path, relation)
+    def initialize(portable, export_path, relation, user)
       @portable = portable
       @export_path = export_path
       @relation = relation
       @config = FileTransfer.config_for(portable)
+      @user = user
     end
 
     def execute
@@ -27,7 +28,7 @@ module BulkImports
 
     private
 
-    attr_reader :export_path, :portable, :relation, :config
+    attr_reader :export_path, :portable, :relation, :config, :user
 
     # rubocop: disable CodeReuse/Serializer
     def serializer
@@ -35,7 +36,8 @@ module BulkImports
         portable,
         config.portable_tree,
         json_writer,
-        exportable_path: ''
+        exportable_path: '',
+        current_user: user
       )
     end
     # rubocop: enable CodeReuse/Serializer

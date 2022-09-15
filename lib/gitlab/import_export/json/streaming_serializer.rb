@@ -14,8 +14,9 @@ module Gitlab
           end
         end
 
-        def initialize(exportable, relations_schema, json_writer, exportable_path:, logger: Gitlab::Export::Logger)
+        def initialize(exportable, relations_schema, json_writer, current_user:, exportable_path:, logger: Gitlab::Export::Logger)
           @exportable = exportable
+          @current_user = current_user
           @exportable_path = exportable_path
           @relations_schema = relations_schema
           @json_writer = json_writer
@@ -59,7 +60,7 @@ module Gitlab
 
         private
 
-        attr_reader :json_writer, :relations_schema, :exportable, :logger
+        attr_reader :json_writer, :relations_schema, :exportable, :logger, :current_user
 
         def serialize_many_relations(key, records, options)
           log_relation_export(key, records.size)
@@ -73,7 +74,7 @@ module Gitlab
               batch.each do |record|
                 before_read_callback(record)
 
-                items << Raw.new(record.to_json(options))
+                items << exportable_json_record(record, options, key)
 
                 after_read_callback(record)
               end
@@ -81,6 +82,27 @@ module Gitlab
           end
 
           json_writer.write_relation_array(@exportable_path, key, enumerator)
+        end
+
+        def exportable_json_record(record, options, key)
+          associations = relations_schema[:include_if_exportable]&.dig(key)
+          return Raw.new(record.to_json(options)) unless associations && options[:include]
+
+          filtered_options = options.deep_dup
+          associations.each do |association|
+            filtered_options[:include].delete_if do |option|
+              !exportable_json_association?(option, record, association.to_sym)
+            end
+          end
+
+          Raw.new(record.to_json(filtered_options))
+        end
+
+        def exportable_json_association?(option, record, association)
+          return true unless option.has_key?(association)
+          return false unless record.respond_to?(:exportable_association?)
+
+          record.exportable_association?(association, current_user: current_user)
         end
 
         def batch(relation, key)
@@ -111,7 +133,7 @@ module Gitlab
 
           enumerator = Enumerator.new do |items|
             records.each do |record|
-              items << Raw.new(record.to_json(options))
+              items << exportable_json_record(record, options, key)
             end
           end
 
@@ -121,7 +143,7 @@ module Gitlab
         def serialize_single_relation(key, record, options)
           log_relation_export(key)
 
-          json = Raw.new(record.to_json(options))
+          json = exportable_json_record(record, options, key)
 
           json_writer.write_relation(@exportable_path, key, json)
         end

@@ -21,6 +21,7 @@ module RuboCop
           metrics_dashboard
           analytics
           operations
+          monitor
           security_and_compliance
           container_registry
           environments

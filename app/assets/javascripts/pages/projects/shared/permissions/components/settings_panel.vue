@@ -5,7 +5,11 @@ import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/s
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
-  visibilityOptions,
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_INTERNAL_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
+} from '~/visibility_level/constants';
+import {
   visibilityLevelDescriptions,
   featureAccessLevelMembers,
   featureAccessLevelEveryone,
@@ -37,6 +41,7 @@ export default {
     featureFlagsHelpText: s__(
       'ProjectSettings|Roll out new features without redeploying with feature flags.',
     ),
+    monitorLabel: s__('ProjectSettings|Monitor'),
     packagesHelpText: s__(
       'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
     ),
@@ -62,6 +67,9 @@ export default {
     ),
     confirmButtonText: __('Save changes'),
   },
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_INTERNAL_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
 
   components: {
     ProjectFeatureSetting,
@@ -104,9 +112,9 @@ export default {
       type: Array,
       required: false,
       default: () => [
-        visibilityOptions.PRIVATE,
-        visibilityOptions.INTERNAL,
-        visibilityOptions.PUBLIC,
+        VISIBILITY_LEVEL_PRIVATE_INTEGER,
+        VISIBILITY_LEVEL_INTERNAL_INTEGER,
+        VISIBILITY_LEVEL_PUBLIC_INTEGER,
       ],
     },
     lfsAvailable: {
@@ -220,8 +228,7 @@ export default {
   },
   data() {
     const defaults = {
-      visibilityOptions,
-      visibilityLevel: visibilityOptions.PUBLIC,
+      visibilityLevel: VISIBILITY_LEVEL_PUBLIC_INTEGER,
       issuesAccessLevel: featureAccessLevel.EVERYONE,
       repositoryAccessLevel: featureAccessLevel.EVERYONE,
       forkingAccessLevel: featureAccessLevel.EVERYONE,
@@ -239,6 +246,7 @@ export default {
       environmentsAccessLevel: featureAccessLevel.EVERYONE,
       featureFlagsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       releasesAccessLevel: featureAccessLevel.EVERYONE,
+      monitorAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
       warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
@@ -259,7 +267,7 @@ export default {
   computed: {
     featureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
-      if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
+      if (this.visibilityLevel !== VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         options.push(featureAccessLevelEveryone);
       }
       return options;
@@ -271,18 +279,12 @@ export default {
       );
     },
 
-    operationsFeatureAccessLevelOptions() {
-      return this.featureAccessLevelOptions.filter(
-        ([value]) => value <= this.operationsAccessLevel,
-      );
-    },
-
     packageRegistryFeatureAccessLevelOptions() {
       const options = [FEATURE_ACCESS_LEVEL_ANONYMOUS];
 
-      if (this.visibilityLevel === visibilityOptions.PRIVATE) {
+      if (this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         options.unshift(featureAccessLevelMembers);
-      } else if (this.visibilityLevel === visibilityOptions.INTERNAL) {
+      } else if (this.visibilityLevel === VISIBILITY_LEVEL_INTERNAL_INTEGER) {
         options.unshift(featureAccessLevelEveryone);
       }
 
@@ -293,15 +295,15 @@ export default {
       const options = [featureAccessLevelMembers];
 
       if (this.pagesAccessControlForced) {
-        if (this.visibilityLevel === visibilityOptions.INTERNAL) {
+        if (this.visibilityLevel === VISIBILITY_LEVEL_INTERNAL_INTEGER) {
           options.push(featureAccessLevelEveryone);
         }
       } else {
-        if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
+        if (this.visibilityLevel !== VISIBILITY_LEVEL_PRIVATE_INTEGER) {
           options.push(featureAccessLevelEveryone);
         }
 
-        if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
+        if (this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER) {
           options.push(FEATURE_ACCESS_LEVEL_ANONYMOUS);
         }
       }
@@ -316,6 +318,10 @@ export default {
       return this.environmentsAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
 
+    monitorEnabled() {
+      return this.monitorAccessLevel > featureAccessLevel.NOT_ENABLED;
+    },
+
     repositoryEnabled() {
       return this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
@@ -326,13 +332,13 @@ export default {
 
     showContainerRegistryPublicNote() {
       return (
-        this.visibilityLevel === visibilityOptions.PUBLIC &&
+        this.visibilityLevel === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
         this.containerRegistryAccessLevel === featureAccessLevel.EVERYONE
       );
     },
 
     repositoryHelpText() {
-      if (this.visibilityLevel === visibilityOptions.PRIVATE) {
+      if (this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         return s__('ProjectSettings|View and edit files in this project.');
       }
 
@@ -341,7 +347,7 @@ export default {
       );
     },
     cveIdRequestIsDisabled() {
-      return this.visibilityLevel !== visibilityOptions.PUBLIC;
+      return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
     },
     isVisibilityReduced() {
       return (
@@ -355,11 +361,19 @@ export default {
     splitOperationsEnabled() {
       return this.glFeatures.splitOperationsVisibilityPermissions;
     },
+    monitorOperationsFeatureAccessLevelOptions() {
+      if (this.splitOperationsEnabled) {
+        return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
+      }
+      return this.featureAccessLevelOptions.filter(
+        ([value]) => value <= this.operationsAccessLevel,
+      );
+    },
   },
 
   watch: {
     visibilityLevel(value, oldValue) {
-      if (value === visibilityOptions.PRIVATE) {
+      if (value === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         // when private, features are restricted to "only team members"
         this.issuesAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -381,7 +395,7 @@ export default {
           if (
             this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE ||
             (this.packageRegistryAccessLevel > featureAccessLevel.EVERYONE &&
-              oldValue === visibilityOptions.PUBLIC)
+              oldValue === VISIBILITY_LEVEL_PUBLIC_INTEGER)
           ) {
             this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
           }
@@ -423,6 +437,10 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.releasesAccessLevel,
         );
+        this.monitorAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.monitorAccessLevel,
+        );
         this.containerRegistryAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.containerRegistryAccessLevel,
@@ -432,7 +450,7 @@ export default {
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
         this.highlightChanges();
-      } else if (oldValue === visibilityOptions.PRIVATE) {
+      } else if (oldValue === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         // if changing away from private, make enabled features more permissive
         if (this.issuesAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.issuesAccessLevel = featureAccessLevel.EVERYONE;
@@ -466,19 +484,21 @@ export default {
           this.operationsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.environmentsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.monitorAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.monitorAccessLevel = featureAccessLevel.EVERYONE;
         if (this.containerRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
 
         this.highlightChanges();
       } else if (this.packageRegistryAccessLevelEnabled) {
         if (
-          value === visibilityOptions.PUBLIC &&
+          value === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
           this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
         ) {
           // eslint-disable-next-line prefer-destructuring
           this.packageRegistryAccessLevel = FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
         } else if (
-          value === visibilityOptions.INTERNAL &&
+          value === VISIBILITY_LEVEL_INTERNAL_INTEGER &&
           this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
         ) {
           this.packageRegistryAccessLevel = featureAccessLevel.EVERYONE;
@@ -501,6 +521,16 @@ export default {
     },
 
     operationsAccessLevel(value, oldValue) {
+      this.updateSubFeatureAccessLevel(value, oldValue);
+    },
+
+    monitorAccessLevel(value, oldValue) {
+      this.updateSubFeatureAccessLevel(value, oldValue);
+    },
+  },
+
+  methods: {
+    updateSubFeatureAccessLevel(value, oldValue) {
       if (value < oldValue) {
         // sub-features cannot have more permissive access level
         this.metricsDashboardAccessLevel = Math.min(this.metricsDashboardAccessLevel, value);
@@ -508,9 +538,7 @@ export default {
         this.metricsDashboardAccessLevel = value;
       }
     },
-  },
 
-  methods: {
     highlightChanges() {
       this.highlightChangesClass = true;
       this.$nextTick(() => {
@@ -548,20 +576,20 @@ export default {
               data-qa-selector="project_visibility_dropdown"
             >
               <option
-                :value="visibilityOptions.PRIVATE"
-                :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
+                :value="$options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
+                :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_PRIVATE_INTEGER)"
               >
                 {{ s__('ProjectSettings|Private') }}
               </option>
               <option
-                :value="visibilityOptions.INTERNAL"
-                :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
+                :value="$options.VISIBILITY_LEVEL_INTERNAL_INTEGER"
+                :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_INTERNAL_INTEGER)"
               >
                 {{ s__('ProjectSettings|Internal') }}
               </option>
               <option
-                :value="visibilityOptions.PUBLIC"
-                :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
+                :value="$options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
+                :disabled="!visibilityAllowed($options.VISIBILITY_LEVEL_PUBLIC_INTEGER)"
               >
                 {{ s__('ProjectSettings|Public') }}
               </option>
@@ -592,7 +620,7 @@ export default {
         <div class="gl-mt-4">
           <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
-            v-if="visibilityLevel !== visibilityOptions.PRIVATE"
+            v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
             class="gl-line-height-28 gl-font-weight-normal gl-mb-0"
           >
             <input
@@ -604,7 +632,7 @@ export default {
             {{ s__('ProjectSettings|Users can request access') }}
           </label>
           <label
-            v-if="visibilityLevel !== visibilityOptions.PUBLIC"
+            v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
             class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
           >
             <input
@@ -881,6 +909,22 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
+        v-if="splitOperationsEnabled"
+        ref="monitor-settings"
+        :label="$options.i18n.monitorLabel"
+        :help-text="
+          s__('ProjectSettings|Configure your project resources and monitor their health.')
+        "
+      >
+        <project-feature-setting
+          v-model="monitorAccessLevel"
+          :label="$options.i18n.monitorLabel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][monitor_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-else
         ref="operations-settings"
         :label="$options.i18n.operationsLabel"
         :help-text="
@@ -903,7 +947,7 @@ export default {
           <project-feature-setting
             v-model="metricsDashboardAccessLevel"
             :show-toggle="false"
-            :options="operationsFeatureAccessLevelOptions"
+            :options="monitorOperationsFeatureAccessLevelOptions"
             name="project[project_feature_attributes][metrics_dashboard_access_level]"
           />
         </project-setting-row>

@@ -442,6 +442,7 @@ class ProjectsController < Projects::ApplicationController
     if Feature.enabled?(:split_operations_visibility_permissions, project)
       %i[
         environments_access_level feature_flags_access_level releases_access_level
+        monitor_access_level
       ]
     else
       %i[operations_access_level]

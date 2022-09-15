@@ -6,7 +6,7 @@ import {
   SNIPPET_MEASURE_BLOBS_CONTENT,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
 import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 
 import { getSnippetMixin } from '../mixins/snippets';
@@ -31,7 +31,7 @@ export default {
   mixins: [getSnippetMixin],
   computed: {
     embeddable() {
-      return this.snippet.visibilityLevel === SNIPPET_VISIBILITY_PUBLIC;
+      return this.snippet.visibilityLevel === VISIBILITY_LEVEL_PUBLIC_STRING;
     },
     canBeCloned() {
       return Boolean(this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo);

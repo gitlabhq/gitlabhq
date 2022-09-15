@@ -18927,6 +18927,7 @@ CREATE TABLE packages_rpm_metadata (
     arch text DEFAULT ''::text NOT NULL,
     license text,
     url text,
+    epoch integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_3798bae3d6 CHECK ((char_length(arch) <= 255)),
     CONSTRAINT check_5d29ba59ac CHECK ((char_length(description) <= 5000)),
     CONSTRAINT check_6e8cbd536d CHECK ((char_length(url) <= 1000)),

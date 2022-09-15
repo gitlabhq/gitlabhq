@@ -54,6 +54,12 @@ RSpec.shared_examples 'a valid token' do
   end
 end
 
+RSpec.shared_examples 'with auth_type' do
+  let(:current_params) { super().merge(auth_type: :foo) }
+
+  it { expect(payload['auth_type']).to eq('foo') }
+end
+
 RSpec.shared_examples 'a browsable' do
   let(:access) do
     [{ 'type' => 'registry',
@@ -286,6 +292,7 @@ RSpec.shared_examples 'a container registry auth service' do
     shared_examples 'private project' do
       context 'allow to use scope-less authentication' do
         it_behaves_like 'a valid token'
+        it_behaves_like 'with auth_type'
       end
 
       context 'allow developer to push images' do
@@ -299,6 +306,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         it_behaves_like 'a pushable'
         it_behaves_like 'container repository factory'
+        it_behaves_like 'with auth_type'
       end
 
       context 'disallow developer to delete images' do
@@ -341,6 +349,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
           it_behaves_like 'a pullable'
           it_behaves_like 'not a container repository factory'
+          it_behaves_like 'with auth_type'
         end
       end
 
@@ -381,6 +390,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         it_behaves_like 'a pullable'
         it_behaves_like 'not a container repository factory'
+        it_behaves_like 'with auth_type'
       end
 
       context 'disallow guest to pull or push images' do
@@ -445,6 +455,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         it_behaves_like 'a pullable'
         it_behaves_like 'not a container repository factory'
+        it_behaves_like 'with auth_type'
       end
 
       context 'disallow anyone to push images' do
@@ -495,6 +506,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
           it_behaves_like 'a pullable'
           it_behaves_like 'not a container repository factory'
+          it_behaves_like 'with auth_type'
         end
 
         context 'disallow anyone to push images' do
@@ -600,6 +612,7 @@ RSpec.shared_examples 'a container registry auth service' do
     end
 
     it_behaves_like 'a valid token'
+    it_behaves_like 'with auth_type'
 
     context 'allow to pull and push images' do
       let(:current_params) do
@@ -944,10 +957,11 @@ RSpec.shared_examples 'a container registry auth service' do
 
       shared_examples 'able to login' do
         context 'registry provides read_container_image authentication_abilities' do
-          let(:current_params) { { deploy_token: deploy_token } }
+          let(:current_params) { { deploy_token: deploy_token, auth_type: :deploy_token } }
           let(:authentication_abilities) { [:read_container_image] }
 
           it_behaves_like 'an authenticated'
+          it { expect(payload['auth_type']).to eq('deploy_token') }
         end
       end
 

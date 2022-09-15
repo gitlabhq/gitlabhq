@@ -90,7 +90,7 @@ describe('Harbor artifact list row', () => {
     });
 
     it('has correct digest', () => {
-      expect(findByTestId('digest').text()).toBe('Digest: 5d98daa');
+      expect(findByTestId('digest').text()).toBe('Digest: mock_sh');
     });
     describe('time', () => {
       it('has the correct push time', () => {

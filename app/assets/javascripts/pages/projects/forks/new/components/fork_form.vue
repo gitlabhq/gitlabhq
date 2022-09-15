@@ -18,17 +18,13 @@ import csrf from '~/lib/utils/csrf';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
+import {
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+  VISIBILITY_LEVELS_STRING_TO_INTEGER,
+} from '~/visibility_level/constants';
 import ProjectNamespace from './project_namespace.vue';
-
-const PRIVATE_VISIBILITY = 'private';
-const INTERNAL_VISIBILITY = 'internal';
-const PUBLIC_VISIBILITY = 'public';
-
-const VISIBILITY_LEVEL = {
-  [PRIVATE_VISIBILITY]: 0,
-  [INTERNAL_VISIBILITY]: 10,
-  [PUBLIC_VISIBILITY]: 20,
-};
 
 const initFormField = ({ value, required = true, skipValidation = false }) => ({
   value,
@@ -110,11 +106,12 @@ export default {
   },
   computed: {
     projectVisibilityLevel() {
-      return VISIBILITY_LEVEL[this.projectVisibility];
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
     },
     namespaceVisibilityLevel() {
-      const visibility = this.form.fields.namespace.value?.visibility || PUBLIC_VISIBILITY;
-      return VISIBILITY_LEVEL[visibility];
+      const visibility =
+        this.form.fields.namespace.value?.visibility || VISIBILITY_LEVEL_PUBLIC_STRING;
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
     },
     visibilityLevelCap() {
       return Math.min(this.projectVisibilityLevel, this.namespaceVisibilityLevel);
@@ -123,7 +120,7 @@ export default {
       return new Set(this.restrictedVisibilityLevels);
     },
     allowedVisibilityLevels() {
-      const allowedLevels = Object.entries(VISIBILITY_LEVEL).reduce(
+      const allowedLevels = Object.entries(VISIBILITY_LEVELS_STRING_TO_INTEGER).reduce(
         (levels, [levelName, levelValue]) => {
           if (
             !this.restrictedVisibilityLevelsSet.has(levelValue) &&
@@ -137,7 +134,7 @@ export default {
       );
 
       if (!allowedLevels.length) {
-        return [PRIVATE_VISIBILITY];
+        return [VISIBILITY_LEVEL_PRIVATE_STRING];
       }
 
       return allowedLevels;
@@ -146,26 +143,26 @@ export default {
       return [
         {
           text: s__('ForkProject|Private'),
-          value: PRIVATE_VISIBILITY,
+          value: VISIBILITY_LEVEL_PRIVATE_STRING,
           icon: 'lock',
           help: s__(
             'ForkProject|Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
           ),
-          disabled: this.isVisibilityLevelDisabled(PRIVATE_VISIBILITY),
+          disabled: this.isVisibilityLevelDisabled(VISIBILITY_LEVEL_PRIVATE_STRING),
         },
         {
           text: s__('ForkProject|Internal'),
-          value: INTERNAL_VISIBILITY,
+          value: VISIBILITY_LEVEL_INTERNAL_STRING,
           icon: 'shield',
           help: s__('ForkProject|The project can be accessed by any logged in user.'),
-          disabled: this.isVisibilityLevelDisabled(INTERNAL_VISIBILITY),
+          disabled: this.isVisibilityLevelDisabled(VISIBILITY_LEVEL_INTERNAL_STRING),
         },
         {
           text: s__('ForkProject|Public'),
-          value: PUBLIC_VISIBILITY,
+          value: VISIBILITY_LEVEL_PUBLIC_STRING,
           icon: 'earth',
           help: s__('ForkProject|The project can be accessed without any authentication.'),
-          disabled: this.isVisibilityLevelDisabled(PUBLIC_VISIBILITY),
+          disabled: this.isVisibilityLevelDisabled(VISIBILITY_LEVEL_PUBLIC_STRING),
         },
       ];
     },
@@ -185,7 +182,7 @@ export default {
     },
     setNamespace(namespace) {
       this.form.fields.visibility.value =
-        this.restrictedVisibilityLevels.length !== 0 ? null : PRIVATE_VISIBILITY;
+        this.restrictedVisibilityLevels.length !== 0 ? null : VISIBILITY_LEVEL_PRIVATE_STRING;
       this.form.fields.namespace.value = namespace;
       this.form.fields.namespace.state = true;
     },

@@ -2,6 +2,8 @@ export const harborImageDetailEmptyResponse = {
   data: null,
 };
 
+export const MOCK_SHA_DIGEST = 'mock_sha_digest_value';
+
 export const harborImageDetailResponse = {
   artifactCount: 10,
   creationTime: '2022-03-02T06:35:53.205Z',
@@ -16,7 +18,7 @@ export const harborImageDetailResponse = {
 export const harborArtifactsResponse = [
   {
     id: 1,
-    digest: 'sha256:5d98daa36cdc8d6c7ed6579ce17230f0f9fd893a9012fc069cb7d714c0e3df35',
+    digest: `sha256:${MOCK_SHA_DIGEST}`,
     size: 773928,
     push_time: '2022-05-19T15:54:47.821Z',
     tags: ['latest'],
@@ -26,7 +28,7 @@ export const harborArtifactsResponse = [
 export const harborArtifactsList = [
   {
     id: 1,
-    digest: 'sha256:5d98daa36cdc8d6c7ed6579ce17230f0f9fd893a9012fc069cb7d714c0e3df35',
+    digest: `sha256:${MOCK_SHA_DIGEST}`,
     size: 773928,
     pushTime: '2022-05-19T15:54:47.821Z',
     tags: ['latest'],
@@ -103,4 +105,10 @@ export const dockerCommands = {
   dockerBuildCommand: 'foofoo',
   dockerPushCommand: 'barbar',
   dockerLoginCommand: 'bazbaz',
+};
+
+export const mockArtifactDetail = {
+  project: 'test-project',
+  image: 'test-repository',
+  digest: `sha256:${MOCK_SHA_DIGEST}`,
 };

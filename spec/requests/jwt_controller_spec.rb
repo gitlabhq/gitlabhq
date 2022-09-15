@@ -84,7 +84,7 @@ RSpec.describe JwtController do
         context 'project with enabled CI' do
           subject! { get '/jwt/auth', params: parameters, headers: headers }
 
-          it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters).permit!) }
+          it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters.merge(auth_type: :build)).permit!) }
 
           it_behaves_like 'user logging'
         end
@@ -107,7 +107,12 @@ RSpec.describe JwtController do
 
           it 'authenticates correctly' do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(service_class).to have_received(:new).with(nil, nil, ActionController::Parameters.new(parameters.merge(deploy_token: deploy_token)).permit!)
+            expect(service_class).to have_received(:new)
+              .with(
+                nil,
+                nil,
+                ActionController::Parameters.new(parameters.merge(deploy_token: deploy_token, auth_type: :deploy_token)).permit!
+              )
           end
 
           it 'does not log a user' do
@@ -127,7 +132,12 @@ RSpec.describe JwtController do
 
           it 'authenticates correctly' do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit!)
+            expect(service_class).to have_received(:new)
+              .with(
+                nil,
+                user,
+                ActionController::Parameters.new(parameters.merge(auth_type: :personal_access_token)).permit!
+              )
           end
 
           it_behaves_like 'rejecting a blocked user'
@@ -142,7 +152,7 @@ RSpec.describe JwtController do
 
         subject! { get '/jwt/auth', params: parameters, headers: headers }
 
-        it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit!) }
+        it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap)).permit!) }
 
         it_behaves_like 'rejecting a blocked user'
 
@@ -162,7 +172,7 @@ RSpec.describe JwtController do
             ActionController::Parameters.new({ service: service_name, scopes: %w(scope1 scope2) }).permit!
           end
 
-          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters) }
+          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
 
           it_behaves_like 'user logging'
         end

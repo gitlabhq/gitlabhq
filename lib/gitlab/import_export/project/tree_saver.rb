@@ -50,7 +50,8 @@ module Gitlab
             reader.project_tree,
             json_writer,
             exportable_path: "project",
-            logger: @logger
+            logger: @logger,
+            current_user: @current_user
           )
 
           Retriable.retriable(on: Net::OpenTimeout, on_retry: on_retry) do

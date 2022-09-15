@@ -7,5 +7,6 @@ FactoryBot.define do
     summary { FFaker::Lorem.sentences(2).join }
     description { FFaker::Lorem.sentences(4).join }
     arch { FFaker::Lorem.word }
+    epoch { 0 }
   end
 end

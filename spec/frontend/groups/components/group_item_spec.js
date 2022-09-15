@@ -8,9 +8,9 @@ import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import { ITEM_TYPE } from '~/groups/constants';
 import {
-  VISIBILITY_LEVEL_PRIVATE,
-  VISIBILITY_LEVEL_INTERNAL,
-  VISIBILITY_LEVEL_PUBLIC,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
 } from '~/visibility_level/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -19,7 +19,7 @@ import { mockParentGroupItem, mockChildren } from '../mock_data';
 const createComponent = (
   propsData = { group: mockParentGroupItem, parentGroup: mockChildren[0] },
   provide = {
-    currentGroupVisibility: VISIBILITY_LEVEL_PRIVATE,
+    currentGroupVisibility: VISIBILITY_LEVEL_PRIVATE_STRING,
   },
 ) => {
   return mountExtended(GroupItem, {
@@ -320,16 +320,16 @@ describe('GroupItemComponent', () => {
 
     describe('when showing projects', () => {
       describe.each`
-        itemVisibility               | currentGroupVisibility       | isPopoverShown
-        ${VISIBILITY_LEVEL_PRIVATE}  | ${VISIBILITY_LEVEL_PUBLIC}   | ${false}
-        ${VISIBILITY_LEVEL_INTERNAL} | ${VISIBILITY_LEVEL_PUBLIC}   | ${false}
-        ${VISIBILITY_LEVEL_PUBLIC}   | ${VISIBILITY_LEVEL_PUBLIC}   | ${false}
-        ${VISIBILITY_LEVEL_PRIVATE}  | ${VISIBILITY_LEVEL_PRIVATE}  | ${false}
-        ${VISIBILITY_LEVEL_INTERNAL} | ${VISIBILITY_LEVEL_PRIVATE}  | ${true}
-        ${VISIBILITY_LEVEL_PUBLIC}   | ${VISIBILITY_LEVEL_PRIVATE}  | ${true}
-        ${VISIBILITY_LEVEL_PRIVATE}  | ${VISIBILITY_LEVEL_INTERNAL} | ${false}
-        ${VISIBILITY_LEVEL_INTERNAL} | ${VISIBILITY_LEVEL_INTERNAL} | ${false}
-        ${VISIBILITY_LEVEL_PUBLIC}   | ${VISIBILITY_LEVEL_INTERNAL} | ${true}
+        itemVisibility                      | currentGroupVisibility              | isPopoverShown
+        ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${false}
+        ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${false}
+        ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${false}
+        ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${false}
+        ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${true}
+        ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${true}
+        ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${false}
+        ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${false}
+        ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${true}
       `(
         'when item visibility is $itemVisibility and parent group visibility is $currentGroupVisibility',
         ({ itemVisibility, currentGroupVisibility, isPopoverShown }) => {
@@ -374,7 +374,7 @@ describe('GroupItemComponent', () => {
       wrapper = createComponent({
         group: {
           ...mockParentGroupItem,
-          visibility: VISIBILITY_LEVEL_PUBLIC,
+          visibility: VISIBILITY_LEVEL_PUBLIC_STRING,
           type: ITEM_TYPE.PROJECT,
         },
         parentGroup: mockChildren[0],

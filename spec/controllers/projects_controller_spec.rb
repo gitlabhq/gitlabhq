@@ -920,6 +920,7 @@ RSpec.describe ProjectsController do
           environments_access_level
           feature_flags_access_level
           releases_access_level
+          monitor_access_level
         ]
       end
 
@@ -947,6 +948,7 @@ RSpec.describe ProjectsController do
         where(:feature_access_level) do
           %i[
             environments_access_level feature_flags_access_level
+            monitor_access_level
           ]
         end
 

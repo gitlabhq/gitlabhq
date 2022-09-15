@@ -1,10 +1,13 @@
 <script>
 import { isEmpty } from 'lodash';
-import { n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { ROOT_IMAGE_TEXT } from '~/packages_and_registries/harbor_registry/constants/index';
+import {
+  ROOT_IMAGE_TEXT,
+  EMPTY_ARTIFACTS_LABEL,
+  artifactsLabel,
+} from '~/packages_and_registries/harbor_registry/constants/index';
 
 export default {
   name: 'DetailsHeader',
@@ -19,9 +22,9 @@ export default {
   computed: {
     artifactCountText() {
       if (isEmpty(this.imagesDetail)) {
-        return s__('HarborRegistry|-- artifacts');
+        return EMPTY_ARTIFACTS_LABEL;
       }
-      return n__('%d artifact', '%d artifacts', this.imagesDetail.artifactCount);
+      return artifactsLabel(this.imagesDetail.artifactCount);
     },
     repositoryFullName() {
       return this.imagesDetail.name || ROOT_IMAGE_TEXT;

@@ -1,8 +1,7 @@
 <script>
-// We are using gl-breadcrumb only at the last child of the handwritten breadcrumb
-// until this gitlab-ui issue is resolved: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1079
-//
-// See the CSS workaround in app/assets/stylesheets/pages/registry.scss when this file is changed.
+// Since app/assets/javascripts/packages_and_registries/shared/components/registry_breadcrumb.vue
+// can only handle two levels of breadcrumbs, but we have three levels here.
+// So we extended the registry_breadcrumb.vue component with harbor_registry_breadcrumb.vue to support multiple levels of breadcrumbs
 import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
 import { isArray, last } from 'lodash';
 
