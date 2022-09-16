@@ -15,7 +15,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
 
     [
       branch.new(name: 'main', protection: protection.new(enabled: false)),
-      branch.new(name: 'staging', protection: protection.new(enabled: true))
+      branch.new(name: 'staging', protection: protection.new(enabled: true)),
+      branch.new(name: 'development', protection: nil) # when user has no admin right for this repo
     ]
   end
 
@@ -154,12 +155,14 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
     let(:protection_struct) { Struct.new(:enabled, keyword_init: true) }
     let(:protected_branch) { branch_struct.new(name: 'main', protection: protection_struct.new(enabled: true)) }
     let(:unprotected_branch) { branch_struct.new(name: 'staging', protection: protection_struct.new(enabled: false)) }
+    # when user has no admin rights on repo
+    let(:unknown_protection_branch) { branch_struct.new(name: 'development', protection: nil) }
 
     let(:page_counter) { instance_double(Gitlab::GithubImport::PageCounter) }
 
     before do
       allow(client).to receive(:branches).with(project.import_source)
-        .and_return([protected_branch, unprotected_branch])
+        .and_return([protected_branch, unprotected_branch, unknown_protection_branch])
       allow(client).to receive(:branch_protection)
         .with(project.import_source, protected_branch.name).once
         .and_return(github_protection_rule)

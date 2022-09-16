@@ -19307,6 +19307,21 @@ CREATE VIEW postgres_autovacuum_activity AS
 
 COMMENT ON VIEW postgres_autovacuum_activity IS 'Contains information about PostgreSQL backends currently performing autovacuum operations on the tables indicated here.';
 
+CREATE VIEW postgres_constraints AS
+ SELECT pg_constraint.oid,
+    pg_constraint.conname AS name,
+    pg_constraint.contype AS constraint_type,
+    pg_constraint.convalidated AS constraint_valid,
+    ( SELECT array_agg(pg_attribute.attname ORDER BY attnums.ordering) AS array_agg
+           FROM (unnest(pg_constraint.conkey) WITH ORDINALITY attnums(attnum, ordering)
+             JOIN pg_attribute ON (((pg_attribute.attnum = attnums.attnum) AND (pg_attribute.attrelid = pg_class.oid))))) AS column_names,
+    (((pg_namespace.nspname)::text || '.'::text) || (pg_class.relname)::text) AS table_identifier,
+    NULLIF(pg_constraint.conparentid, (0)::oid) AS parent_constraint_oid,
+    pg_get_constraintdef(pg_constraint.oid) AS definition
+   FROM ((pg_constraint
+     JOIN pg_class ON ((pg_constraint.conrelid = pg_class.oid)))
+     JOIN pg_namespace ON ((pg_class.relnamespace = pg_namespace.oid)));
+
 CREATE VIEW postgres_foreign_keys AS
  SELECT pg_constraint.oid,
     pg_constraint.conname AS name,

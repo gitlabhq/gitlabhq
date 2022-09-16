@@ -39991,6 +39991,9 @@ msgstr ""
 msgid "The scan has been created."
 msgstr ""
 
+msgid "The secret is only available when you first create the application."
+msgstr ""
+
 msgid "The snippet can be accessed without any authentication."
 msgstr ""
 
@@ -40724,6 +40727,9 @@ msgid "This is the highest peak of users on your installation since the license 
 msgstr ""
 
 msgid "This is the number of %{billable_users_link_start}billable users%{link_end} on your installation, and this is the minimum number you need to purchase when you renew your license."
+msgstr ""
+
+msgid "This is the only time the secret is accessible. Copy the secret and store it securely."
 msgstr ""
 
 msgid "This is your current session"

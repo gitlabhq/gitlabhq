@@ -10,6 +10,11 @@ value_type: number
 status: active
 time_frame: all
 data_source: redis
+instrumentation_class: RedisMetric
+options:
+  prefix: web_ide
+  event: terminals_count
+  include_usage_prefix: false
 distribution:
 - ce
 - ee

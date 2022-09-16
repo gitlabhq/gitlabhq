@@ -240,9 +240,9 @@ Every GitLab instance includes documentation at `/help` (`https://gitlab.example
 that matches the version of the instance. For example, <https://gitlab.com/help>.
 
 The documentation available online at <https://docs.gitlab.com> is deployed every
-four hours from the default branch of [GitLab, Omnibus, Runner, and Charts](#source-files-and-rendered-web-locations).
+hour from the default branch of [GitLab, Omnibus, Runner, and Charts](#source-files-and-rendered-web-locations).
 After a merge request that updates documentation is merged, it is available online
-in 4 hours or less.
+in an hour or less.
 
 However, it's only available at `/help` on self-managed instances in the next released
 version. The date an update is merged can impact which self-managed release the update

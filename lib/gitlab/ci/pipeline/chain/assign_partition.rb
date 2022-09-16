@@ -17,9 +17,12 @@ module Gitlab
 
           private
 
-          # TODO handle parent-child pipelines
           def find_partition_id
-            ::Ci::Pipeline.current_partition_value
+            if @command.creates_child_pipeline?
+              @command.parent_pipeline_partition_id
+            else
+              ::Ci::Pipeline.current_partition_value
+            end
           end
         end
       end

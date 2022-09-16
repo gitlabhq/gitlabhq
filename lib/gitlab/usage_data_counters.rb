@@ -4,7 +4,6 @@ module Gitlab
   module UsageDataCounters
     COUNTERS = [
       WikiPageCounter,
-      WebIdeCounter,
       NoteCounter,
       SnippetCounter,
       SearchCounter,
@@ -20,7 +19,8 @@ module Gitlab
     ].freeze
 
     COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES = [
-      PackageEventCounter
+      PackageEventCounter,
+      WebIdeCounter
     ].freeze
 
     UsageDataCounterError = Class.new(StandardError)

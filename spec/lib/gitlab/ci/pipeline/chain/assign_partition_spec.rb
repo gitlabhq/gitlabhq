@@ -24,5 +24,24 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition do
     it 'assigns partition_id to pipeline' do
       expect { subject }.to change(pipeline, :partition_id).to(current_partition_id)
     end
+
+    context 'with parent-child pipelines' do
+      let(:bridge) do
+        instance_double(Ci::Bridge,
+          triggers_child_pipeline?: true,
+          parent_pipeline: instance_double(Ci::Pipeline, partition_id: 125))
+      end
+
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project,
+          current_user: user,
+          bridge: bridge)
+      end
+
+      it 'assigns partition_id to pipeline' do
+        expect { subject }.to change(pipeline, :partition_id).to(125)
+      end
+    end
   end
 end

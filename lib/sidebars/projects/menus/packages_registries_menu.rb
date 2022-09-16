@@ -66,7 +66,7 @@ module Sidebars
         end
 
         def harbor_registry__menu_item
-          if Feature.disabled?(:harbor_registry_integration) || context.project.harbor_integration.nil?
+          if Feature.disabled?(:harbor_registry_integration, context.project) || context.project.harbor_integration.nil?
             return ::Sidebars::NilMenuItem.new(item_id: :harbor_registry)
           end
 

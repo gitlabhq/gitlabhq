@@ -11,10 +11,6 @@ module UsageDataHelpers
       wiki_pages_create
       wiki_pages_update
       wiki_pages_delete
-      web_ide_views
-      web_ide_commits
-      web_ide_merge_requests
-      web_ide_previews
       navbar_searches
       cycle_analytics_views
       productivity_analytics_views

@@ -14,7 +14,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def show
-    @created = get_created_session
+    @created = get_created_session if Feature.disabled?('hash_oauth_secrets')
   end
 
   def new
@@ -30,9 +30,14 @@ class Admin::ApplicationsController < Admin::ApplicationController
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
 
-      set_created_session
+      if Feature.enabled?('hash_oauth_secrets')
+        @created = true
+        render :show
+      else
+        set_created_session
 
-      redirect_to admin_application_url(@application)
+        redirect_to admin_application_url(@application)
+      end
     else
       render :new
     end

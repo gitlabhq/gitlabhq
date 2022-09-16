@@ -831,3 +831,17 @@ resource_state_events:
   - merge_request
   - source_merge_request
   - epic
+iteration:
+  - group
+  - iterations_cadence
+  - issues
+  - labels
+  - merge_requests
+resource_iteration_events:
+  - user
+  - issue
+  - merge_request
+  - iteration
+iterations_cadence:
+  - group
+  - iterations

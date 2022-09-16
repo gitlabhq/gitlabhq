@@ -1020,6 +1020,35 @@ excluded_attributes:
     - :merge_request_id
     - :epic_id
     - :source_merge_request_id
+  iteration:
+    - :id
+    - :title
+    - :title_html
+    - :project_id
+    - :description_html
+    - :cached_markdown_version
+    - :iterations_cadence_id
+    - :sequence
+  resource_iteration_events:
+    - :id
+    - :issue_id
+    - :merge_request_id
+    - :iteration_id
+  iterations_cadence:
+    - :id
+    - :last_run_date
+    - :duration_in_weeks
+    - :iterations_in_advance
+    - :automatic
+    - :group_id
+    - :created_at
+    - :updated_at
+    - :start_date
+    - :active
+    - :roll_over
+    - :description
+    - :sequence
+
 methods:
   notes:
     - :type
@@ -1093,6 +1122,11 @@ ee:
         - epic_issue:
           - :epic
         - :issuable_sla
+        - iteration:
+          - :iterations_cadence
+        - resource_iteration_events:
+          - iteration:
+            - :iterations_cadence
       - protected_branches:
         - :unprotect_access_levels
       - protected_environments:
@@ -1151,12 +1185,22 @@ ee:
       - :auto_fix_dependency_scanning
       - :auto_fix_sast
     project:
-    - :requirements_enabled
-    - :requirements_access_level
+      - :requirements_enabled
+      - :requirements_access_level
     resource_iteration_events:
       - :user_id
       - :action
       - :created_at
+    iteration:
+      - :iid
+      - :created_at
+      - :updated_at
+      - :start_date
+      - :due_date
+      - :group_id
+      - :description
+    iterations_cadence:
+      - :title
 
   preloads:
     issues:

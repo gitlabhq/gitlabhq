@@ -304,38 +304,6 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
       end
 
-      it 'does not rebalance even if needed if the flag is disabled' do
-        stub_feature_flags(rebalance_issues: false)
-
-        range = described_class::NO_REBALANCING_NEEDED
-        issue1 = create(:issue, project: project, relative_position: range.first - 100)
-        issue2 = create(:issue, project: project, relative_position: range.first)
-        issue.update!(relative_position: RelativePositioning::START_POSITION)
-
-        opts[:move_between_ids] = [issue1.id, issue2.id]
-
-        expect(Issues::RebalancingWorker).not_to receive(:perform_async)
-
-        update_issue(opts)
-        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
-      end
-
-      it 'rebalances if needed if the flag is enabled for the project' do
-        stub_feature_flags(rebalance_issues: project)
-
-        range = described_class::NO_REBALANCING_NEEDED
-        issue1 = create(:issue, project: project, relative_position: range.first - 100)
-        issue2 = create(:issue, project: project, relative_position: range.first)
-        issue.update!(relative_position: RelativePositioning::START_POSITION)
-
-        opts[:move_between_ids] = [issue1.id, issue2.id]
-
-        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, project.root_namespace.id)
-
-        update_issue(opts)
-        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
-      end
-
       it 'rebalances if needed on the left' do
         range = described_class::NO_REBALANCING_NEEDED
         issue1 = create(:issue, project: project, relative_position: range.first - 100)

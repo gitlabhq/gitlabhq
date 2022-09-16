@@ -80,6 +80,10 @@ module Gitlab
             bridge&.parent_pipeline
           end
 
+          def parent_pipeline_partition_id
+            parent_pipeline.partition_id if creates_child_pipeline?
+          end
+
           def creates_child_pipeline?
             bridge&.triggers_child_pipeline?
           end

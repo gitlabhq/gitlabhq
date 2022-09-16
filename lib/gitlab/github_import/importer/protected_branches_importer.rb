@@ -11,7 +11,7 @@ module Gitlab
         def each_object_to_import
           repo = project.import_source
 
-          protected_branches = client.branches(repo).select { |branch| branch.protection.enabled }
+          protected_branches = client.branches(repo).select { |branch| branch.protection&.enabled }
           protected_branches.each do |protected_branch|
             object = client.branch_protection(repo, protected_branch.name)
             next if object.nil? || already_imported?(object)

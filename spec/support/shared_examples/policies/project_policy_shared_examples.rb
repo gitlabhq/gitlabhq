@@ -107,70 +107,88 @@ RSpec.shared_examples 'deploy token does not get confused with user' do
 end
 
 RSpec.shared_examples 'project policies as guest' do
-  context 'abilities for public projects' do
-    let(:project) { public_project }
-    let(:current_user) { guest }
+  let(:reporter_public_build_permissions) do
+    reporter_permissions - [:read_build, :read_pipeline]
+  end
 
-    it do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*public_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
+  context 'as a direct project member' do
+    context 'abilities for public projects' do
+      let(:project) { public_project }
+      let(:current_user) { guest }
+
+      specify do
+        expect_allowed(*guest_permissions)
+        expect_allowed(*public_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
+    end
+
+    context 'abilities for non-public projects' do
+      let(:project) { private_project }
+      let(:current_user) { guest }
+
+      specify do
+        expect_allowed(*guest_permissions)
+        expect_disallowed(*reporter_public_build_permissions)
+        expect_disallowed(*team_member_reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'deploy token does not get confused with user' do
+        let(:user_id) { guest.id }
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { guest_permissions }
+      end
+
+      context 'public builds enabled' do
+        specify do
+          expect_allowed(*guest_permissions)
+          expect_allowed(:read_build, :read_pipeline)
+        end
+      end
+
+      context 'when public builds disabled' do
+        before do
+          project.update!(public_builds: false)
+        end
+
+        specify do
+          expect_allowed(*guest_permissions)
+          expect_disallowed(:read_build, :read_pipeline)
+        end
+      end
+
+      context 'when builds are disabled' do
+        before do
+          project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
+        end
+
+        specify do
+          expect_disallowed(:read_build)
+          expect_allowed(:read_pipeline)
+        end
+      end
     end
   end
 
-  context 'abilities for non-public projects' do
-    let(:project) { private_project }
-    let(:current_user) { guest }
+  context 'as an inherited member from the group' do
+    context 'abilities for private projects' do
+      let(:project) { private_project_in_group }
+      let(:current_user) { inherited_guest }
 
-    let(:reporter_public_build_permissions) do
-      reporter_permissions - [:read_build, :read_pipeline]
-    end
-
-    it do
-      expect_allowed(*guest_permissions)
-      expect_disallowed(*reporter_public_build_permissions)
-      expect_disallowed(*team_member_reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
-
-    it_behaves_like 'deploy token does not get confused with user' do
-      let(:user_id) { guest.id }
-    end
-
-    it_behaves_like 'archived project policies' do
-      let(:regular_abilities) { guest_permissions }
-    end
-
-    context 'public builds enabled' do
-      it do
+      specify do
         expect_allowed(*guest_permissions)
-        expect_allowed(:read_build, :read_pipeline)
-      end
-    end
-
-    context 'when public builds disabled' do
-      before do
-        project.update!(public_builds: false)
-      end
-
-      it do
-        expect_allowed(*guest_permissions)
-        expect_disallowed(:read_build, :read_pipeline)
-      end
-    end
-
-    context 'when builds are disabled' do
-      before do
-        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
-      end
-
-      it do
-        expect_disallowed(:read_build)
-        expect_allowed(:read_pipeline)
+        expect_disallowed(*reporter_public_build_permissions)
+        expect_disallowed(*team_member_reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
   end
@@ -181,7 +199,7 @@ RSpec.shared_examples 'project policies as reporter' do
     let(:project) { private_project }
     let(:current_user) { reporter }
 
-    it do
+    specify do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*team_member_reporter_permissions)
@@ -198,6 +216,22 @@ RSpec.shared_examples 'project policies as reporter' do
       let(:regular_abilities) { reporter_permissions }
     end
   end
+
+  context 'as an inherited member from the group' do
+    context 'abilities for private projects' do
+      let(:project) { private_project_in_group }
+      let(:current_user) { inherited_reporter }
+
+      specify do
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*team_member_reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'project policies as developer' do
@@ -205,7 +239,7 @@ RSpec.shared_examples 'project policies as developer' do
     let(:project) { private_project }
     let(:current_user) { developer }
 
-    it do
+    specify do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*team_member_reporter_permissions)
@@ -220,6 +254,22 @@ RSpec.shared_examples 'project policies as developer' do
 
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { developer_permissions }
+    end
+  end
+
+  context 'as an inherited member from the group' do
+    context 'abilities for private projects' do
+      let(:project) { private_project_in_group }
+      let(:current_user) { inherited_developer }
+
+      specify do
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*team_member_reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
     end
   end
 end

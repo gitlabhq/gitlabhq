@@ -302,13 +302,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
 
     context 'when bridge is present' do
       context 'when bridge triggers a child pipeline' do
-        let(:bridge) { double(:bridge, triggers_child_pipeline?: true) }
+        let(:bridge) { instance_double(Ci::Bridge, triggers_child_pipeline?: true) }
 
         it { is_expected.to be_truthy }
       end
 
       context 'when bridge triggers a multi-project pipeline' do
-        let(:bridge) { double(:bridge, triggers_child_pipeline?: false) }
+        let(:bridge) { instance_double(Ci::Bridge, triggers_child_pipeline?: false) }
 
         it { is_expected.to be_falsey }
       end
@@ -318,6 +318,38 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       let(:bridge) { nil }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#parent_pipeline_partition_id' do
+    let(:command) { described_class.new(bridge: bridge) }
+
+    subject { command.parent_pipeline_partition_id }
+
+    context 'when bridge is present' do
+      context 'when bridge triggers a child pipeline' do
+        let(:pipeline) { instance_double(Ci::Pipeline, partition_id: 123) }
+
+        let(:bridge) do
+          instance_double(Ci::Bridge,
+            triggers_child_pipeline?: true,
+            parent_pipeline: pipeline)
+        end
+
+        it { is_expected.to eq(123) }
+      end
+
+      context 'when bridge triggers a multi-project pipeline' do
+        let(:bridge) { instance_double(Ci::Bridge, triggers_child_pipeline?: false) }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when bridge is not present' do
+      let(:bridge) { nil }
+
+      it { is_expected.to be_nil }
     end
   end
 
@@ -345,7 +377,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
   describe '#observe_step_duration' do
     context 'when ci_pipeline_creation_step_duration_tracking is enabled' do
       it 'adds the duration to the step duration histogram' do
-        histogram = double(:histogram)
+        histogram = instance_double(Prometheus::Client::Histogram)
         duration = 1.hour
 
         expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_creation_step_duration_histogram)

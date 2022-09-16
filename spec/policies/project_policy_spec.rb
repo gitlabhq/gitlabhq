@@ -2729,6 +2729,41 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'read_milestone' do
+    context 'when project is public' do
+      let(:project) { public_project_in_group }
+
+      context 'and issues and merge requests are private' do
+        before do
+          project.project_feature.update!(
+            issues_access_level: ProjectFeature::PRIVATE,
+            merge_requests_access_level: ProjectFeature::PRIVATE
+          )
+        end
+
+        context 'when user is an inherited member from the group' do
+          context 'and user is a guest' do
+            let(:current_user) { inherited_guest }
+
+            it { is_expected.to be_allowed(:read_milestone) }
+          end
+
+          context 'and user is a reporter' do
+            let(:current_user) { inherited_reporter }
+
+            it { is_expected.to be_allowed(:read_milestone) }
+          end
+
+          context 'and user is a developer' do
+            let(:current_user) { inherited_developer }
+
+            it { is_expected.to be_allowed(:read_milestone) }
+          end
+        end
+      end
+    end
+  end
+
   private
 
   def project_subject(project_type)

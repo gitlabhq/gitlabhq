@@ -155,6 +155,42 @@ into another list. Learn about possible effects in [Dragging epics between lists
 To move a list, select its top bar, and drag it horizontally.
 You can't move the **Open** and **Closed** lists, but you can hide them when editing an epic board.
 
+#### Move an epic to the start of the list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+
+When you have many epics, it's inconvenient to manually drag an epic from the bottom of a board list all
+the way to the top. You can move epics to the top of the list with a menu shortcut.
+
+Your epic is moved to the top of the list even if other epics are hidden by a filter.
+
+Prerequisites:
+
+- You must at least have the Reporter role for a group.
+
+To move an epic to the start of the list:
+
+1. In an epic board, hover over the card of the epic you want to move.
+1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to start of list**.
+
+#### Move an epic to the end of the list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+
+When you have many epics, it's inconvenient to manually drag an epic from the top of a board list all
+the way to the bottom. You can move epics to the bottom of the list with a menu shortcut.
+
+Your epic is moved to the bottom of the list even if other epics are hidden by a filter.
+
+Prerequisites:
+
+- You must at least have the Reporter role for a group.
+
+To move an epic to the end of the list:
+
+1. In an epic board, hover over the card of the epic you want to move.
+1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to end of list**.
+
 #### Dragging epics between lists
 
 When you drag epics between lists, the result is different depending on the source list

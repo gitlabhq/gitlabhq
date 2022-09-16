@@ -285,19 +285,6 @@ $gl-line-height-42: px-to-rem(42px);
   padding-right: $gl-spacing-scale-10;
 }
 
-// TODO: will be moved to @gitlab/ui as part of https://gitlab.com/gitlab-org/gitlab/-/issues/349008
-.gl-sm-mt-6 {
-  @include media-breakpoint-up(sm) {
-    margin-top: $gl-spacing-scale-6;
-  }
-}
-
-.gl-sm-mt-6\! {
-  @include media-breakpoint-up(sm) {
-    margin-top: $gl-spacing-scale-6 !important;
-  }
-}
-
 /*
 All of the following (up until the "End gitlab-ui#1709" comment) will be moved
 to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709

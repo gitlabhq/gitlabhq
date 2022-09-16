@@ -21,6 +21,7 @@ module QA
           eq
           be
           include
+          match
           be_truthy
           be_falsey
           be_empty

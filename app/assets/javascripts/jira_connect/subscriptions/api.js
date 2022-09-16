@@ -92,6 +92,6 @@ export const fetchOAuthApplicationId = () => {
   return axiosInstance.get(JIRA_CONNECT_OAUTH_APPLICATION_ID_PATH);
 };
 
-export const fetchOAuthToken = (oauthTokenURL, data = {}) => {
-  return axiosInstance.post(oauthTokenURL, data);
+export const fetchOAuthToken = (oauthTokenPath, data = {}) => {
+  return axiosInstance.post(oauthTokenPath, data);
 };

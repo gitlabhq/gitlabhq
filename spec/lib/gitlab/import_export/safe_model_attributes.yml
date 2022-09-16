@@ -930,3 +930,17 @@ ResourceStateEvent:
   - source_commit
   - close_after_error_tracking_resolve
   - close_auto_resolve_prometheus_alert
+Iteration:
+  - created_at
+  - updated_at
+  - start_date
+  - due_date
+  - group_id
+  - iid
+  - description
+ResourceIterationEvent:
+  - user_id
+  - created_at
+  - action
+Iterations::Cadence:
+  - title

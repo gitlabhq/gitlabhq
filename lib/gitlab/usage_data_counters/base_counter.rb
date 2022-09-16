@@ -10,7 +10,9 @@ module Gitlab::UsageDataCounters
       def redis_key(event)
         require_known_event(event)
 
-        "USAGE_#{prefix}_#{event}".upcase
+        usage_prefix = Gitlab::Usage::Metrics::Instrumentations::RedisMetric::USAGE_PREFIX
+
+        "#{usage_prefix}#{prefix}_#{event}".upcase
       end
 
       def count(event)

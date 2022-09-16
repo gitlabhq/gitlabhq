@@ -30,7 +30,7 @@ describe('SignInOauthButton', () => {
   let store;
   const mockOauthMetadata = {
     oauth_authorize_url: 'https://gitlab.com/mockOauth',
-    oauth_token_url: 'https://gitlab.com/mockOauthToken',
+    oauth_token_path: 'https://gitlab.com/mockOauthToken',
     oauth_token_payload: {
       client_id: '543678901',
     },
@@ -197,7 +197,7 @@ describe('SignInOauthButton', () => {
           });
 
           it('executes POST request to Oauth token endpoint', () => {
-            expect(fetchOAuthToken).toHaveBeenCalledWith(mockOauthMetadata.oauth_token_url, {
+            expect(fetchOAuthToken).toHaveBeenCalledWith(mockOauthMetadata.oauth_token_path, {
               code: '1234',
               code_verifier: 'mock-verifier',
               client_id: mockOauthMetadata.oauth_token_payload.client_id,

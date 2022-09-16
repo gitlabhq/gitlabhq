@@ -96,6 +96,47 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     end
   end
 
+  context 'with parent child pipelines' do
+    before do
+      allow(Ci::Pipeline)
+        .to receive(:current_partition_value)
+        .and_return(current_partition_id, 301, 302)
+
+      allow_next_found_instance_of(Ci::Bridge) do |bridge|
+        allow(bridge).to receive(:yaml_for_downstream).and_return(child_config)
+      end
+    end
+
+    let(:config) do
+      <<-YAML
+      test:
+        trigger:
+          include: child.yml
+      YAML
+    end
+
+    let(:child_config) do
+      <<-YAML
+      test:
+        script: make test
+      YAML
+    end
+
+    it 'assigns partition values to child pipelines', :aggregate_failures, :sidekiq_inline do
+      expect(pipeline).to be_created_successfully
+      expect(pipeline.child_pipelines).to all be_created_successfully
+
+      child_partition_ids = pipeline.child_pipelines.map(&:partition_id).uniq
+      child_jobs = CommitStatus.where(commit_id: pipeline.child_pipelines)
+
+      expect(pipeline.partition_id).to eq(current_partition_id)
+      expect(child_partition_ids).to eq([current_partition_id])
+
+      expect(child_jobs).to all be_a(Ci::Build)
+      expect(child_jobs.pluck(:partition_id).uniq).to eq([current_partition_id])
+    end
+  end
+
   def find_metadata(name)
     pipeline
       .processables

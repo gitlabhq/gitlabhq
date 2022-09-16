@@ -686,6 +686,7 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
 > - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
 
 To help you track issue statuses, you can assign a status to each issue.
 This status marks issues as progressing as planned or needing attention to keep on schedule.
@@ -704,7 +705,11 @@ To edit health status of an issue:
    - Needs attention (amber)
    - At risk (red)
 
-You can then see the issue's status in the issues list and the epic tree.
+You can see the issue’s health status in:
+
+- Issues list
+- Epic tree
+- Issue cards in issue boards
 
 After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
 until the issue is reopened.

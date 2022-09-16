@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512 do
+RSpec.describe Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512 do
   describe '.transform_secret' do
     let(:plaintext_token) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
 
