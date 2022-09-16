@@ -66,7 +66,7 @@ Rails/HelperInstanceVariable:
     - 'ee/app/helpers/ee/groups/group_members_helper.rb'
     - 'ee/app/helpers/ee/groups_helper.rb'
     - 'ee/app/helpers/ee/integrations_helper.rb'
-    - 'ee/app/helpers/ee/kerberos_spnego_helper.rb'
+    - 'ee/app/helpers/ee/kerberos_helper.rb'
     - 'ee/app/helpers/ee/labels_helper.rb'
     - 'ee/app/helpers/ee/lock_helper.rb'
     - 'ee/app/helpers/ee/merge_requests_helper.rb'

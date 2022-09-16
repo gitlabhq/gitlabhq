@@ -535,16 +535,18 @@ Feature.remove(:feature_flag_name)
 
   ```mermaid
   graph LR
-      A[flag: default off] -->|'added' / 'changed'| B(flag: default on)
+      A[flag: default off] -->|'added' / 'changed' / 'fixed' / '...'| B(flag: default on)
       B -->|'other'| C(remove flag, keep new code)
       B -->|'removed' / 'changed'| D(remove flag, keep old code)
-      A -->|'added' / 'changed'| C
+      A -->|'added' / 'changed' / 'fixed' / '...'| C
       A -->|no changelog| D
   ```
 
 - Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
 - The changelog for a feature flag should describe the feature and not the
   flag, unless a default on feature flag is removed keeping the new code (`other` in the flowchart above).
+- A feature flag can also be used for rolling out a bug fix or a maintenance work. In this scenario, the changelog
+  must be related to it, for example; `fixed` or `other`.
 
 ## Feature flags in tests
 

@@ -38,6 +38,7 @@ RSpec.describe 'File blame', :js do
     within '[data-testid="blob-content-holder"]' do
       expect(page).to have_css('.blame-commit')
       expect(page).not_to have_css('.gl-pagination')
+      expect(page).not_to have_link _('View entire blame')
     end
   end
 

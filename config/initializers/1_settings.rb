@@ -117,6 +117,27 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
+# Handle backward compatibility with the renamed kerberos_spnego provider
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335#note_1094265436
+Gitlab.ee do
+  kerberos_spnego = Settings.omniauth.providers.find { |p| p.name == 'kerberos_spnego' }
+  if kerberos_spnego
+    Settings.omniauth.providers.delete_if { |p| p.name == 'kerberos' }
+    kerberos_spnego['name'] = 'kerberos'
+
+    omniauth_keys = %w(allow_single_sign_on auto_link_user external_providers sync_profile_from_provider allow_bypass_two_factor)
+    omniauth_keys.each do |key|
+      next unless Settings.omniauth[key].is_a?(Array)
+
+      Settings.omniauth[key].map! { |p| p == 'kerberos_spnego' ? 'kerberos' : p }
+    end
+
+    if Settings.omniauth['auto_sign_in_with_provider'] == 'kerberos_spnego'
+      Settings.omniauth['auto_sign_in_with_provider'] = 'kerberos'
+    end
+  end
+end
+
 # Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
 
 github_default_url = "https://github.com"
@@ -909,8 +930,8 @@ Gitlab.ee do
   Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
   Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
-  if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos_spnego')
-    Settings.omniauth.providers << Settingslogic.new({ 'name' => 'kerberos_spnego' })
+  if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos')
+    Settings.omniauth.providers << Settingslogic.new({ 'name' => 'kerberos' })
   end
 end
 

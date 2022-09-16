@@ -346,11 +346,13 @@ To create an incremental backup, run:
 sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
 ```
 
-Incremental backups can also be created from [an untarred backup](#skipping-tar-creation) by using `SKIP=tar`:
+To create an [untarred](#skipping-tar-creation) incremental backup from a tarred backup, use `SKIP=tar`:
 
 ```shell
 sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 ```
+
+You can't create an incremental backup from an [untarred](#skipping-tar-creation) backup.
 
 ### Back up specific repository storages
 

@@ -1,17 +1,19 @@
 %p
-  Hi #{sanitize_name(@user['name'])}!
+  = s_('Notify|Hi %{username}!') % {username: sanitize_name(@user['name'])}
 %p
   - if Gitlab::CurrentSettings.allow_signup?
-    Your account has been created successfully.
+    = s_('Notify|Your account has been created successfully.')
   - else
-    The Administrator created an account for you. Now you are a member of the company GitLab application.
+    = s_('Notify|The Administrator created an account for you. Now you are a member of the company GitLab application.')
 %p
-  login..........................................
+  = s_('Notify|login..........................................')
   %code= @user['email']
 
 - if @user.created_by_id
   %p
-    = link_to "Click here to set your password", edit_password_url(@user, reset_password_token: @token)
+    = link_to s_('Notify|Click here to set your password'), edit_password_url(@user, reset_password_token: @token)
   %p
-    This link is valid for #{password_reset_token_valid_time}.
-    After it expires, you can #{link_to("request a new one", new_user_password_url(user_email: @user.email))}.
+    = s_('Notify|This link is valid for %{password_reset_token_valid_time}.') % {password_reset_token_valid_time: password_reset_token_valid_time}
+    - a_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % {url: new_user_password_url(user_email: @user.email)}
+    - a_end = '</a>'.html_safe
+    = html_escape(s_('Notify|After it expires, you can %{a_start} request a new one %{a_end}.')) % {a_start: a_start, a_end: a_end}

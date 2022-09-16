@@ -39,6 +39,7 @@ or other scanners) during a scan could cause inaccurate results.
 You can run a Web API fuzzing scan using the following methods:
 
 - [OpenAPI Specification](#openapi-specification) - version 2, and 3.
+- [GraphQL Schema](#graphql-schema)
 - [HTTP Archive](#http-archive-har) (HAR)
 - [Postman Collection](#postman-collection) - version 2.0 or 2.1
 
@@ -76,6 +77,7 @@ To enable Web API fuzzing:
 
 - For manual configuration instructions, see the respective section, depending on the API type:
   - [OpenAPI Specification](#openapi-specification)
+  - [GraphQL Schema](#graphql-schema)
   - [HTTP Archive (HAR)](#http-archive-har)
   - [Postman Collection](#postman-collection)
 - Otherwise, see [Web API fuzzing configuration form](#web-api-fuzzing-configuration-form).
@@ -262,13 +264,125 @@ Example `.gitlab-ci.yml` file using a HAR file:
      FUZZAPI_TARGET_URL: http://test-deployment/
    ```
 
-This is a minimal configuration for API fuzzing. From here you can:
+This example is a minimal configuration for API fuzzing. From here you can:
 
 - [Run your first scan](#running-your-first-scan).
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
 For details of API fuzzing configuration options, see [Available CI/CD variables](#available-cicd-variables).
+
+### GraphQL Schema
+
+> Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+
+GraphQL is a query language for your API and an alternative to REST APIs.
+API Fuzzing supports testing GraphQL endpoints multiple ways:
+
+- Test using the GraphQL Schema. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+- Test using a recording (HAR) of GraphQL queries.
+- Test using a Postman Collection containing GraphQL queries.
+
+This section documents how to test using a GraphQL schema. The GraphQL schema support in
+API Fuzzing is able to query the schema from endpoints that support introspection.
+Introspection is enabled by default to allow tools like GraphiQL to work.
+
+#### API Fuzzing scanning with a GraphQL endpoint URL
+
+The GraphQL support in API Fuzzing is able to query a GraphQL endpoint for the schema.
+
+NOTE:
+The GraphQL endpoint must support introspection queries for this method to work correctly.
+
+To configure API Fuzzing to use an GraphQL endpoint URL that provides information about the target API to test:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `FUZZAPI_GRAPHQL` variable.
+
+1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. See the [dynamic environment solutions](#dynamic-environment-solutions) section of our documentation for more information.
+
+Complete example configuration of using a GraphQL endpoint URL:
+
+```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+apifuzzer_fuzz:
+  variables:
+    FUZZAPI_GRAPHQL: /api/graphql
+    FUZZAPI_TARGET_URL: http://test-deployment/
+```
+
+This example is a minimal configuration for API Fuzzing. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
+
+#### API Fuzzing with a GraphQL Schema file
+
+To configure API Fuzzing to use a GraphQl schema file that provides information about the target API to test:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `FUZZAPI_GRAPHQL` variable.
+
+1. Provide the location of the GraphQL schema file. You can provide the location as a file path
+   or URL. Specify the location by adding the `FUZZAPI_GRAPHQL_SCHEMA` variable.
+
+1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. See the [dynamic environment solutions](#dynamic-environment-solutions) section of our documentation for more information.
+
+Complete example configuration of using an GraphQL schema file:
+
+```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+apifuzzer_fuzz:
+  variables:
+    FUZZAPI_GRAPHQL: /api/graphql
+    FUZZAPI_GRAPHQL_SCHEMA: test-api-graphql.schema
+    FUZZAPI_TARGET_URL: http://test-deployment/
+```
+
+Complete example configuration of using an GraphQL schema file URL:
+
+```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+apifuzzer_fuzz:
+  variables:
+    FUZZAPI_GRAPHQL: /api/graphql
+    FUZZAPI_GRAPHQL_SCHEMA: http://file-store/files/test-api-graphql.schema
+    FUZZAPI_TARGET_URL: http://test-deployment/
+```
+
+This example is a minimal configuration for API Fuzzing. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
 
 ### Postman Collection
 
@@ -991,6 +1105,8 @@ profile increases as the number of tests increases.
 |[`FUZZAPI_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`FUZZAPI_OPENAPI_MEDIA_TYPES`](#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`FUZZAPI_HAR`](#http-archive-har)                           | HTTP Archive (HAR) file. |
+|[`FUZZAPI_GRAPHQL`](#graphql-schema)                         | Path to GraphQL endpoint, for example `/api/graphql`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
+|[`FUZZAPI_GRAPHQL_SCHEMA`](#graphql-schema)                  | A URL or filename for a GraphQL schema in JSON format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
 |[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)          | Postman Collection file. |
 |[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. The support for comma-separated (`,`) files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1. |
 |[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. |
@@ -2103,7 +2219,7 @@ A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can 
 
 The version information can be found in the job details for the `apifuzzer_fuzz` job.
 
-If the issue is occurring with versions v1.6.196 or greater, please contact Support and provide the following information:
+If the issue is occurring with versions v1.6.196 or greater, contact Support and provide the following information:
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.

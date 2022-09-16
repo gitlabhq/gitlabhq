@@ -73,7 +73,7 @@ RSpec/AnyInstanceOf:
   - ee/spec/requests/api/projects_spec.rb
   - ee/spec/requests/git_http_spec.rb
   - ee/spec/requests/groups_controller_spec.rb
-  - ee/spec/requests/omniauth_kerberos_spnego_spec.rb
+  - ee/spec/requests/omniauth_kerberos_spec.rb
   - ee/spec/requests/repositories/git_http_controller_spec.rb
   - ee/spec/services/ee/git/branch_push_service_spec.rb
   - ee/spec/services/ee/merge_requests/create_from_vulnerability_data_service_spec.rb

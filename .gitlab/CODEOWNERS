@@ -12,13 +12,13 @@ docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @je
 GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Files that are excluded from required approval
-/.gitlab/issue_templates/
-/.gitlab/merge_request_templates/
+/.gitlab/issue_templates/*.md
+/.gitlab/merge_request_templates/*.md
 /doc/*.md
 /doc/**/*.md
 /doc/**/*.png
-/data/deprecations/
-/data/removals/
+/data/deprecations/*.yml
+/data/removals/*.yml
 
 ^[Backend]
 *.rb @gitlab-org/maintainers/rails-backend
@@ -1160,7 +1160,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/controllers/groups/omniauth_callbacks_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/controllers/groups/scim_oauth_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/controllers/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/omniauth_kerberos_spnego_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/ee/app/controllers/omniauth_kerberos_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/finders/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/helpers/ee/access_tokens_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/helpers/ee/auth_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers

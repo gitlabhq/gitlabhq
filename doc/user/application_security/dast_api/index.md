@@ -55,6 +55,7 @@ The following projects demonstrate DAST API scanning:
 You can specify the API you want to scan by using:
 
 - [OpenAPI v2 or v3 Specification](#openapi-specification)
+- [GraphQL Schema](#graphql-schema)
 - [HTTP Archive (HAR)](#http-archive-har)
 - [Postman Collection v2.0 or v2.1](#postman-collection)
 
@@ -199,7 +200,119 @@ variables:
   DAST_API_TARGET_URL: http://test-deployment/
 ```
 
-This is a minimal configuration for DAST API. From here you can:
+This example is a minimal configuration for DAST API. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
+
+### GraphQL Schema
+
+> Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+
+GraphQL is a query language for your API and an alternative to REST APIs.
+DAST API supports testing GraphQL endpoints multiple ways:
+
+- Test using the GraphQL Schema. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+- Test using a recording (HAR) of GraphQL queries.
+- Test using a Postman Collection containing GraphQL queries.
+
+This section documents how to test using a GraphQL schema. The GraphQL schema support in
+DAST API is able to query the schema from endpoints that support introspection.
+Introspection is enabled by default to allow tools like GraphiQL to work.
+
+#### DAST API scanning with a GraphQL endpoint URL
+
+The GraphQL support in DAST API is able to query a GraphQL endpoint for the schema.
+
+NOTE:
+The GraphQL endpoint must support introspection queries for this method to work correctly.
+
+To configure DAST API to use a GraphQL endpoint URL that provides information about the target API to test:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+1. Provide the path to the GraphQL endpoint, for example `/api/graphql`. Specify the location by adding the `DAST_API_GRAPHQL` variable.
+
+1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. See the [dynamic environment solutions](#dynamic-environment-solutions) section of our documentation for more information.
+
+Complete example configuration of using a GraphQL endpoint path:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+dast_api:
+  variables:
+    DAST_API_GRAPHQL: /api/graphql
+    DAST_API_TARGET_URL: http://test-deployment/
+```
+
+This example is a minimal configuration for DAST API. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
+
+#### DAST API scanning with a GraphQL Schema file
+
+To configure DAST API to use a GraphQL schema file that provides information about the target API to test:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+1. Provide the GraphQL endpoint path, for example  `/api/graphql`. Specify the path by adding the `DAST_API_GRAPHQL` variable.
+
+1. Provide the location of the GraphQL schema file. You can provide the location as a file path
+   or URL. Specify the location by adding the `DAST_API_GRAPHQL_SCHEMA` variable.
+
+1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. See the [dynamic environment solutions](#dynamic-environment-solutions) section of our documentation for more information.
+
+Complete example configuration of using an GraphQL schema file:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+dast_api:
+  variables:
+    DAST_API_GRAPHQL: /api/graphql
+    DAST_API_GRAPHQL_SCHEMA: test-api-graphql.schema
+    DAST_API_TARGET_URL: http://test-deployment/
+```
+
+Complete example configuration of using an GraphQL schema file URL:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+dast_api:
+  variables:
+    DAST_API_GRAPHQL: /api/graphql
+    DAST_API_GRAPHQL_SCHEMA: http://file-store/files/test-api-graphql.schema
+    DAST_API_TARGET_URL: http://test-deployment/
+```
+
+This example is a minimal configuration for DAST API. From here you can:
 
 - [Run your first scan](#running-your-first-scan).
 - [Add authentication](#authentication).
@@ -938,6 +1051,8 @@ can be added, removed, and modified by creating a custom configuration.
 |[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`DAST_API_OPENAPI_MEDIA_TYPES`](#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`DAST_API_HAR`](#http-archive-har)                    | HTTP Archive (HAR) file. |
+|[`DAST_API_GRAPHQL`](#graphql-schema)                  | Path to GraphQL endpoint, for example `/api/graphql`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
+|[`DAST_API_GRAPHQL_SCHEMA`](#graphql-schema)           | A URL or filename for a GraphQL schema in JSON format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
 |[`DAST_API_POSTMAN_COLLECTION`](#postman-collection)   | Postman Collection file. |
 |[`DAST_API_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. The support for comma-separated (`,`) files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1. |
 |[`DAST_API_OVERRIDES_FILE`](#overrides)                | Path to a JSON file containing overrides. |

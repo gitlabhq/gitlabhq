@@ -24,6 +24,10 @@ Maintainer role.
 
 ## Protecting environments
 
+Prerequisites:
+
+- When granting the **Allowed to deploy** permission to a group or sub-group, the user configuring the protected environment must be a **direct member** of the group or sub-group to be added. Otherwise, the group or sub-group will not show up in the dropdown. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
+
 To protect an environment:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

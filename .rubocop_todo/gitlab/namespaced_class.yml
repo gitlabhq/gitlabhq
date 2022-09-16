@@ -851,7 +851,7 @@ Gitlab/NamespacedClass:
     - 'app/workers/x509_issuer_crl_check_worker.rb'
     - 'ee/app/controllers/countries_controller.rb'
     - 'ee/app/controllers/country_states_controller.rb'
-    - 'ee/app/controllers/omniauth_kerberos_spnego_controller.rb'
+    - 'ee/app/controllers/omniauth_kerberos_controller.rb'
     - 'ee/app/controllers/operations_controller.rb'
     - 'ee/app/controllers/sitemap_controller.rb'
     - 'ee/app/controllers/smartcard_controller.rb'

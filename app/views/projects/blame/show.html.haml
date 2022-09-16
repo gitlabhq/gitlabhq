@@ -59,7 +59,7 @@
 
           - current_line += line_count
 
-    - if @blame_pagination
+    - if @blame_pagination && @blame_pagination.total_pages > 1
       .gl-display-flex.gl-justify-content-center.gl-flex-direction-column.gl-align-items-center.gl-p-3.gl-bg-gray-50.gl-border-t-solid.gl-border-t-1.gl-border-gray-100
         = _('For faster browsing, not all history is shown.')
         = render Pajamas::ButtonComponent.new(href: namespace_project_blame_path(namespace_id: @project.namespace, project_id: @project, id: @id, no_pagination: true), size: :small, button_options: { class: 'gl-mt-3' }) do |c|

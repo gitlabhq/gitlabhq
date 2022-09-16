@@ -75,6 +75,7 @@ RSpec.describe MergeRequests::FfMergeService do
         expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
         expect { execute_ff_merge }.not_to change { merge_request.squash_commit_sha }
+        expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
 
@@ -87,6 +88,7 @@ RSpec.describe MergeRequests::FfMergeService do
           .to change { merge_request.squash_commit_sha }
           .from(nil)
 
+        expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
     end
@@ -106,7 +108,6 @@ RSpec.describe MergeRequests::FfMergeService do
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to include(error_message)
         expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
@@ -117,11 +118,6 @@ RSpec.describe MergeRequests::FfMergeService do
         pre_receive_error = Gitlab::Git::PreReceiveError.new(raw_message, fallback_message: error_message)
         allow(service).to receive(:repository).and_raise(pre_receive_error)
         allow(service).to receive(:execute_hooks)
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          pre_receive_error,
-          pre_receive_message: raw_message,
-          merge_request_id: merge_request.id
-        )
 
         service.execute(merge_request)
 

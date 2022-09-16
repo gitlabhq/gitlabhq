@@ -27087,6 +27087,9 @@ msgstr ""
 msgid "Notify|A remote mirror update has failed."
 msgstr ""
 
+msgid "Notify|After it expires, you can %{a_start} request a new one %{a_end}."
+msgstr ""
+
 msgid "Notify|All discussions on merge request %{mr_link} were resolved by %{name}"
 msgstr ""
 
@@ -27108,6 +27111,9 @@ msgstr ""
 msgid "Notify|CI/CD project settings"
 msgstr ""
 
+msgid "Notify|Click here to set your password"
+msgstr ""
+
 msgid "Notify|Commit Author"
 msgstr ""
 
@@ -27124,6 +27130,9 @@ msgid "Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please
 msgstr ""
 
 msgid "Notify|Fingerprint: %{fingerprint}"
+msgstr ""
+
+msgid "Notify|Hi %{username}!"
 msgstr ""
 
 msgid "Notify|Hi %{user}!"
@@ -27198,6 +27207,9 @@ msgstr ""
 msgid "Notify|Remote mirror"
 msgstr ""
 
+msgid "Notify|The Administrator created an account for you. Now you are a member of the company GitLab application."
+msgstr ""
+
 msgid "Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}."
 msgstr ""
 
@@ -27211,6 +27223,9 @@ msgid "Notify|The push did not contain any new commits, but force pushed to dele
 msgstr ""
 
 msgid "Notify|This issue is due on: %{issue_due_date}"
+msgstr ""
+
+msgid "Notify|This link is valid for %{password_reset_token_valid_time}."
 msgstr ""
 
 msgid "Notify|Unless you verify your domain by %{time_start}%{time}%{time_end} it will be removed from your GitLab project."
@@ -27228,6 +27243,9 @@ msgstr ""
 msgid "Notify|Your CSV import for project %{project_link} has been completed."
 msgstr ""
 
+msgid "Notify|Your account has been created successfully."
+msgstr ""
+
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."
 msgstr ""
 
@@ -27235,6 +27253,9 @@ msgid "Notify|currently supported languages"
 msgstr ""
 
 msgid "Notify|deleted"
+msgstr ""
+
+msgid "Notify|login.........................................."
 msgstr ""
 
 msgid "Notify|pushed new"
