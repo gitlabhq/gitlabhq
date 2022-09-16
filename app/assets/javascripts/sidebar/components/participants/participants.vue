@@ -27,7 +27,7 @@ export default {
     numberOfLessParticipants: {
       type: Number,
       required: false,
-      default: 7,
+      default: 8,
     },
     showParticipantLabel: {
       type: Boolean,
@@ -123,7 +123,7 @@ export default {
             :size="24"
             :tooltip-text="participant.name"
             :img-alt="participant.name"
-            css-classes="avatar-inline"
+            css-classes="gl-mr-0!"
             tooltip-placement="bottom"
           />
         </a>

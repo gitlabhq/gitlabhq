@@ -5,60 +5,44 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# GitLab Advanced Search **(PREMIUM)**
+# Advanced Search **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
-Advanced Search uses Elasticsearch for faster, more advanced search across the entire
-GitLab instance.
+You can use Advanced Search for faster, more efficient search across the entire GitLab
+instance. Advanced Search is based on Elasticsearch, a purpose-built full-text search
+engine you can horizontally scale to get results in up to a second in most cases.
 
-Use Advanced Search when searching in:
+You can find code you want to update in all projects at once to save
+maintenance time and promote innersourcing.
+
+You can use Advanced Search in:
 
 - Projects
 - Issues
 - Merge requests
 - Milestones
 - Users
-- Epics (when searching in a group only)
+- Epics (in groups only)
 - Code
 - Comments
 - Commits
-- Wiki (except [group wikis](../project/wiki/group.md))
+- Project wikis (not [group wikis](../project/wiki/group.md))
 
-Advanced Search can be useful in various scenarios:
+## Configure Advanced Search
 
-- **Faster searches:**
-  Advanced Search is based on Elasticsearch, which is a purpose-built full
-  text search engine that can be horizontally scaled so that it can provide
-  search results in 1-2 seconds in most cases.
-- **Code Maintenance:**
-  Finding all the code that needs to be updated at once across an entire
-  instance can save time spent maintaining code.
-  This is especially helpful for organizations with more than 10 active projects.
-  This can also help build confidence is code refactoring to identify unknown impacts.
-- **Promote innersourcing:**
-  Your company may consist of many different developer teams each of which has
-  their own group where the various projects are hosted. Some of your applications
-  may be connected to each other, so your developers need to instantly search
-  throughout the GitLab instance and find the code they search for.
+- On GitLab.com, Advanced Search is enabled for groups with paid subscriptions.
+- For self-managed GitLab instances, an administrator must
+  [configure Advanced Search](../../integration/advanced_search/elasticsearch.md).
 
-## Configuring Advanced Search
+## Syntax
 
-For self-managed GitLab instances, an administrator must
-[configure Advanced Search](../../integration/advanced_search/elasticsearch.md).
+See [Advanced Search syntax](global_search/advanced_search_syntax.md) for more information.
 
-On GitLab.com, Advanced Search is enabled.
+## Search by ID
 
-## Advanced Search syntax
-
-See the documentation on [Advanced Search syntax](global_search/advanced_search_syntax.md).
-
-## Search by issue or merge request ID
-
-You can search a specific issue or merge request by its ID with a special prefix.
-
-- To search by issue ID, use prefix `#` followed by issue ID. For example, [#23456](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964)
-- To search by merge request ID, use prefix `!` followed by merge request ID. For example [!23456](https://gitlab.com/search?snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964)
+- To search by issue ID, use the `#` prefix followed by the issue ID (for example, [`#23456`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964)).
+- To search by merge request ID, use the `!` prefix followed by the merge request ID (for example, [`!23456`](https://gitlab.com/search?snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964)).
 
 ## Global search scopes **(FREE SELF)**
 

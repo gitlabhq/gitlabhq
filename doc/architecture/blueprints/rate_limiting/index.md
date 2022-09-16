@@ -212,10 +212,40 @@ GitLab Runners, Gitaly, Workhorse, KAS could use the API to receive a set of
 application limits those are supposed to enforce. This will still allow us to
 define all of them in a single place.
 
+We should, however, avoid the possible negative-feedback-loop, that will put
+additional strain on the Rails application when there is a sudden increase in
+usage happening. This might be a big customer starting a new automation that
+traverses our API or a Denial of Service attack. In such cases, the additional
+traffic will reach GitLab Rails and subsequently also other satellite services.
+Then the satellite services may need to consult Rails again to obtain new
+instructions / policies around rate limiting the increased traffic. This can
+put additional strain on Rails application and eventually degrade performance
+even more. In order to avoid this problem, we should extract the API endpoints
+to separate service (see the section below) if the request rate to those
+endpoints depends on the volume of incoming traffic. Alternatively we can keep
+those endpoints in Rails if the increased traffic will not translate into
+increase of requests rate or increase in resources consumption on these API
+endpoints on the Rails side.
+
+#### Decoupled Limits Service
+
+At some point we may decide that it is time to extract a stateful backend
+responsible for storing metadata around limits, all the counters and state
+required, and exposing API, out of Rails.
+
+It is impossible to make a decision about extracting such a decoupled limits
+service yet, because we will need to ship more proof-of-concept work, and
+concrete iterations to inform us better about when and how we should do that. We
+will depend on the Evolution Architecture practice to guide us towards either
+extracting Decoupled Limits Service or not doing that at all.
+
+As we evolve this blueprint, we will document our findings and insights about
+how this service should look like, in this section of the document.
+
 ### GitLab Policy Service
 
-_Disclaimer_: Extracting a GitLab Policy Service might be out of scope of the
-current workstream organized around implementing this blueprint.
+_Disclaimer_: Extracting a GitLab Policy Service might be out of scope
+of the current workstream organized around implementing this blueprint.
 
 Not all limits can be easily described in YAML. There are some more complex
 policies that require a bit more sophisticated approach and a declarative
@@ -256,6 +286,33 @@ counter or any other volatile global state to get evaluated. It may still
 require to have a globally defined rules / configuration, but this state is not
 volatile in a same way a rate limiting counter may be, or a megabytes consumed
 to evaluate quota limit.
+
+#### Policies used internally and externally
+
+The GitLab Policy Service might be used in two different ways:
+
+1. Rails limits framework will use it as a source of policies enforced internally.
+1. The policy service feature will be used as a backend to store policies defined by users.
+
+These are two slightly different use-cases: first one is about using
+internally-defined policies to ensure the stability / availably of a GitLab
+instance (GitLab.com or self-managed instance). The second use-case is about
+making GitLab Policy Service a feature that users will be able to build on top
+of.
+
+Both use-cases are valid but we will need to make technical decision about how
+to separate them. Even if we decide to implement them both in a single service,
+we will need to draw a strong boundary between the two.
+
+The same principle might apply to Decouple Limits Service described in one of
+the sections of this document above.
+
+#### The two limits / policy services
+
+It is possible that GitLab Policy Service and Decoupled Limits Service can
+actually be the same thing. It, however, depends on the implementation details
+that we can't predict yet, and the decision about merging these services
+together will need to be informed by subsequent interations' feedback.
 
 ## Hierarchical limits
 

@@ -58,7 +58,7 @@ include:
 download-knapsack-report:
   extends:
     - .bundle-base
-    - .rules:qa-framework-changes-or-review-scenarios
+    - .review:rules:review-build-cng
   stage: prepare
   script:
     - bundle exec rake "knapsack:download[qa]"

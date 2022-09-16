@@ -349,6 +349,22 @@ You can also filter runners by status, type, and tag. To filter:
 
 ![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
 
+#### Bulk delete runners
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370241) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `admin_runners_bulk_delete`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `admin_runners_bulk_delete`. On GitLab.com, this feature is not available but can be enabled by GitLab.com administrators.
+
+You can delete multiple runners at the same time.
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Overview > Runners**.
+1. To the left of the runners you want to delete, select the checkbox.
+   To select all of the runners on the page, select the checkbox above
+   the list.
+1. Select **Delete selected**.
+
 #### Runner attributes
 
 For each runner, the following attributes are listed:

@@ -12,7 +12,7 @@ module Gitlab
     VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
     INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'
-    NOTIFICATION_CHANNEL = 'workhorse:notifications'
+    NOTIFICATION_PREFIX = 'workhorse:notifications:'
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
     DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'
     ARCHIVE_FORMATS = %w(zip tar.gz tar.bz2 tar).freeze
@@ -217,11 +217,7 @@ module Gitlab
         Gitlab::Redis::SharedState.with do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
-            redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
-
-            if Feature.enabled?(:workhorse_long_polling_publish_many)
-              redis.publish("#{NOTIFICATION_CHANNEL}:#{key}", value)
-            end
+            redis.publish(NOTIFICATION_PREFIX + key, value)
 
             value
           else

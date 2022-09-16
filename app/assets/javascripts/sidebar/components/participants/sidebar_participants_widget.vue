@@ -71,7 +71,7 @@ export default {
   <participants
     :loading="isLoading"
     :participants="participants"
-    :number-of-less-participants="7"
+    :number-of-less-participants="8"
     :lazy="false"
     class="block participants"
     @toggleSidebar="toggleSidebar"

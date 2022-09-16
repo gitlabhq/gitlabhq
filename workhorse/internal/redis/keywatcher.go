@@ -20,11 +20,10 @@ type KeyWatcher struct {
 	subscribers      map[string][]chan string
 	shutdown         chan struct{}
 	reconnectBackoff backoff.Backoff
-	channelPerKey    bool // TODO remove this field https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1902
 	conn             *redis.PubSubConn
 }
 
-func NewKeyWatcher(channelPerKey bool) *KeyWatcher {
+func NewKeyWatcher() *KeyWatcher {
 	return &KeyWatcher{
 		shutdown: make(chan struct{}),
 		reconnectBackoff: backoff.Backoff{
@@ -33,7 +32,6 @@ func NewKeyWatcher(channelPerKey bool) *KeyWatcher {
 			Factor: 2,
 			Jitter: true,
 		},
-		channelPerKey: channelPerKey,
 	}
 }
 
@@ -71,10 +69,7 @@ var (
 	)
 )
 
-const (
-	keySubChannel = "workhorse:notifications"
-	channelPrefix = keySubChannel + ":"
-)
+const channelPrefix = "workhorse:notifications:"
 
 func countAction(action string) { totalActions.WithLabelValues(action).Add(1) }
 
@@ -103,33 +98,13 @@ func (kw *KeyWatcher) receivePubSubStream(conn redis.Conn) error {
 		kw.subscribers = nil
 	}()
 
-	if kw.channelPerKey {
-		// Do not drink from firehose
-	} else {
-		// Do drink from firehose
-		if err := kw.conn.Subscribe(keySubChannel); err != nil {
-			return err
-		}
-		defer kw.conn.Unsubscribe(keySubChannel)
-	}
-
 	for {
 		switch v := kw.conn.Receive().(type) {
 		case redis.Message:
 			totalMessages.Inc()
-			dataStr := string(v.Data)
-			receivedBytes.Add(float64(len(dataStr)))
+			receivedBytes.Add(float64(len(v.Data)))
 			if strings.HasPrefix(v.Channel, channelPrefix) {
-				// v is a message on a per-key channel
-				kw.notifySubscribers(v.Channel[len(channelPrefix):], dataStr)
-			} else if v.Channel == keySubChannel {
-				// v is a message on the firehose channel
-				msg := strings.SplitN(dataStr, "=", 2)
-				if len(msg) != 2 {
-					log.WithError(fmt.Errorf("keywatcher: invalid notification: %q", dataStr)).Error()
-					continue
-				}
-				kw.notifySubscribers(msg[0], msg[1])
+				kw.notifySubscribers(v.Channel[len(channelPrefix):], string(v.Data))
 			}
 		case redis.Subscription:
 			redisSubscriptions.Set(float64(v.Count))
@@ -220,10 +195,8 @@ func (kw *KeyWatcher) addSubscription(key string, notify chan string) error {
 
 	if len(kw.subscribers[key]) == 0 {
 		countAction("create-subscription")
-		if kw.channelPerKey {
-			if err := kw.conn.Subscribe(channelPrefix + key); err != nil {
-				return err
-			}
+		if err := kw.conn.Subscribe(channelPrefix + key); err != nil {
+			return err
 		}
 	}
 
@@ -257,7 +230,7 @@ func (kw *KeyWatcher) delSubscription(key string, notify chan string) {
 	if len(kw.subscribers[key]) == 0 {
 		delete(kw.subscribers, key)
 		countAction("delete-subscription")
-		if kw.channelPerKey && kw.conn != nil {
+		if kw.conn != nil {
 			kw.conn.Unsubscribe(channelPrefix + key)
 		}
 	}
