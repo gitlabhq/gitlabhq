@@ -26,7 +26,6 @@ Migration/BackgroundMigrationBaseClass:
     - 'lib/gitlab/background_migration/backfill_work_item_type_id_for_issues.rb'
     - 'lib/gitlab/background_migration/cleanup_draft_data_from_faulty_regex.rb'
     - 'lib/gitlab/background_migration/cleanup_orphaned_lfs_objects_projects.rb'
-    - 'lib/gitlab/background_migration/copy_ci_builds_columns_to_security_scans.rb'
     - 'lib/gitlab/background_migration/create_security_setting.rb'
     - 'lib/gitlab/background_migration/delete_orphaned_deployments.rb'
     - 'lib/gitlab/background_migration/disable_expiration_policies_linked_to_no_container_images.rb'

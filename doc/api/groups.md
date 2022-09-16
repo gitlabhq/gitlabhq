@@ -62,7 +62,8 @@ GET /groups
     "full_path": "foo-bar",
     "file_template_project_id": 1,
     "parent_id": null,
-    "created_at": "2020-01-15T12:36:29.590Z"
+    "created_at": "2020-01-15T12:36:29.590Z",
+    "ip_restriction_ranges": null
   }
 ]
 ```
@@ -684,7 +685,8 @@ Example response:
         }
       ]
     }
-  ]
+  ],
+  "ip_restriction_ranges": null
 }
 ```
 
@@ -1065,7 +1067,8 @@ Example response:
       "shared_with_groups": [],
       "request_access_enabled": false
     }
-  ]
+  ],
+  "ip_restriction_ranges": null
 }
 ```
 

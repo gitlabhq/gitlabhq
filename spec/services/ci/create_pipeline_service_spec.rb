@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :clean_gitlab_redis_cache do
   include ProjectForksHelper
 
   let_it_be_with_refind(:project) { create(:project, :repository) }
@@ -46,54 +46,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       end
     end
     # rubocop:enable Metrics/ParameterLists
-
-    context 'when pipeline has a job with environment' do
-      let(:pipeline) { execute_service.payload }
-
-      before do
-        stub_ci_pipeline_yaml_file(YAML.dump(config))
-      end
-
-      context 'when environment name is valid' do
-        let(:config) do
-          {
-            review_app: {
-              script: 'deploy',
-              environment: {
-                name: 'review/${CI_COMMIT_REF_NAME}',
-                url: 'http://${CI_COMMIT_REF_SLUG}-staging.example.com'
-              }
-            }
-          }
-        end
-
-        it 'has a job with environment' do
-          expect(pipeline.builds.count).to eq(1)
-          expect(pipeline.builds.first.persisted_environment.name).to eq('review/master')
-          expect(pipeline.builds.first.deployment).to be_created
-        end
-      end
-
-      context 'when environment name is invalid' do
-        let(:config) do
-          {
-            'job:deploy-to-test-site': {
-              script: 'deploy',
-              environment: {
-                name: '${CI_JOB_NAME}',
-                url: 'https://$APP_URL'
-              }
-            }
-          }
-        end
-
-        it 'has a job without environment' do
-          expect(pipeline.builds.count).to eq(1)
-          expect(pipeline.builds.first.persisted_environment).to be_nil
-          expect(pipeline.builds.first.deployment).to be_nil
-        end
-      end
-    end
 
     context 'performance' do
       it_behaves_like 'pipelines are created without N+1 SQL queries' do
@@ -1312,6 +1264,54 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           expect(pipeline).to be_failed
           expect(pipeline.variables).to be_empty
           expect(pipeline.errors[:base]).to eq(['Duplicate variable names: hello, other'])
+        end
+      end
+    end
+
+    context 'when pipeline has a job with environment' do
+      let(:pipeline) { execute_service.payload }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      context 'when environment name is valid' do
+        let(:config) do
+          {
+            review_app: {
+              script: 'deploy',
+              environment: {
+                name: 'review/${CI_COMMIT_REF_NAME}',
+                url: 'http://${CI_COMMIT_REF_SLUG}-staging.example.com'
+              }
+            }
+          }
+        end
+
+        it 'has a job with environment' do
+          expect(pipeline.builds.count).to eq(1)
+          expect(pipeline.builds.first.persisted_environment.name).to eq('review/master')
+          expect(pipeline.builds.first.deployment).to be_created
+        end
+      end
+
+      context 'when environment name is invalid' do
+        let(:config) do
+          {
+            'job:deploy-to-test-site': {
+              script: 'deploy',
+              environment: {
+                name: '${CI_JOB_NAME}',
+                url: 'https://$APP_URL'
+              }
+            }
+          }
+        end
+
+        it 'has a job without environment' do
+          expect(pipeline.builds.count).to eq(1)
+          expect(pipeline.builds.first.persisted_environment).to be_nil
+          expect(pipeline.builds.first.deployment).to be_nil
         end
       end
     end

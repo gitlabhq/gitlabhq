@@ -161,54 +161,14 @@ RSpec.describe "Group Runners" do
       create(:ci_runner, :group, groups: [group])
     end
 
-    context 'when group_runner_edit_vue_ui is disabled' do
-      before do
-        stub_feature_flags(group_runner_edit_vue_ui: false)
-      end
-
-      it 'user edits the runner to be protected' do
-        visit edit_group_runner_path(group, group_runner)
-
-        expect(page.find_field('runner[access_level]')).not_to be_checked
-
-        check 'runner_access_level'
-        click_button _('Save changes')
-
-        expect(page).to have_content "#{s_('Runners|Configuration')} #{s_('Runners|Protected')}"
-      end
-
-      context 'when a runner has a tag' do
-        before do
-          group_runner.update!(tag_list: ['tag1'])
-        end
-
-        it 'user edits runner not to run untagged jobs' do
-          visit edit_group_runner_path(group, group_runner)
-
-          page.find_field('runner[tag_list]').set('tag1, tag2')
-
-          uncheck 'runner_run_untagged'
-          click_button _('Save changes')
-
-          # Tags can be in any order
-          expect(page).to have_content /#{s_('Runners|Tags')}.*tag1/
-          expect(page).to have_content /#{s_('Runners|Tags')}.*tag2/
-        end
-      end
+    before do
+      visit edit_group_runner_path(group, group_runner)
+      wait_for_requests
     end
 
-    context 'when group_runner_edit_vue_ui is enabled' do
-      before do
-        stub_feature_flags(group_runner_edit_vue_ui: true)
-
-        visit edit_group_runner_path(group, group_runner)
-        wait_for_requests
-      end
-
-      it_behaves_like 'submits edit runner form' do
-        let(:runner) { group_runner }
-        let(:runner_page_path) { group_runner_path(group, group_runner) }
-      end
+    it_behaves_like 'submits edit runner form' do
+      let(:runner) { group_runner }
+      let(:runner_page_path) { group_runner_path(group, group_runner) }
     end
   end
 end

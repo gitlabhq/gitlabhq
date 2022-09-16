@@ -1,8 +1,0 @@
----
-name: group_runner_edit_vue_ui
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372055
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96451
-milestone: '15.4'
-type: development
-group: group::runner
-default_enabled: false
