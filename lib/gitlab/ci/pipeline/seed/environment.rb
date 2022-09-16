@@ -5,12 +5,13 @@ module Gitlab
     module Pipeline
       module Seed
         class Environment < Seed::Base
-          attr_reader :job
+          attr_reader :job, :merge_request
 
           delegate :simple_variables, to: :job
 
-          def initialize(job)
+          def initialize(job, merge_request: nil)
             @job = job
+            @merge_request = merge_request
           end
 
           def to_resource
@@ -18,6 +19,7 @@ module Gitlab
               # Initialize the attributes at creation
               environment.auto_stop_in = expanded_auto_stop_in
               environment.tier = deployment_tier
+              environment.merge_request = merge_request
             end
           end
 

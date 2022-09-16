@@ -191,5 +191,34 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
 
       it_behaves_like 'returning a correct environment'
     end
+
+    context 'when merge_request is provided' do
+      let(:environment_name) { 'development' }
+      let(:attributes) { { environment: environment_name, options: { environment: { name: environment_name } } } }
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:seed) { described_class.new(job, merge_request: merge_request) }
+
+      context 'and environment does not exist' do
+        let(:environment_name) { 'review/$CI_COMMIT_REF_NAME' }
+
+        it 'creates an environment associated with the merge request' do
+          expect { subject }.to change { Environment.count }.by(1)
+
+          expect(subject.merge_request).to eq(merge_request)
+        end
+      end
+
+      context 'and environment already exists' do
+        before do
+          create(:environment, project: project, name: environment_name)
+        end
+
+        it 'does not change the merge request associated with the environment' do
+          expect { subject }.not_to change { Environment.count }
+
+          expect(subject.merge_request).to be_nil
+        end
+      end
+    end
   end
 end

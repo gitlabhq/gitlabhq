@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## List project repository tags
 
+> `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
+
 Get a list of repository tags from a project, sorted by update date and time in descending order. This endpoint can be accessed without authentication if the
 repository is publicly accessible.
 
@@ -19,9 +21,9 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string| yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user|
-| `order_by` | string | no | Return tags ordered by `name`, `updated`, or `version` (since 15.4) fields. Default is `updated` |
-| `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
+| `id` | integer or string| yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `order_by` | string | no | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
+| `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
 | `search` | string | no | Return list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. No other regular expressions are supported. |
 
 ```json
@@ -115,7 +117,7 @@ Parameters:
 
 | Attribute             | Type           | Required | Description                                                                                                     |
 | --------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `id`                  | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                  | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `tag_name`            | string         | yes      | The name of a tag                                                                                               |
 | `ref`                 | string         | yes      | Create tag using commit SHA, another tag name, or branch name                                                   |
 | `message`             | string         | no       | Creates annotated tag                                                                                           |
@@ -172,5 +174,5 @@ Parameters:
 
 | Attribute  | Type           | Required | Description                                                                                                     |
 | ---------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `tag_name` | string         | yes      | The name of a tag                                                                                               |

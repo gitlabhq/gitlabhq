@@ -15036,7 +15036,8 @@ CREATE TABLE environments (
     slug character varying NOT NULL,
     auto_stop_at timestamp with time zone,
     auto_delete_at timestamp with time zone,
-    tier smallint
+    tier smallint,
+    merge_request_id bigint
 );
 
 CREATE SEQUENCE environments_id_seq
@@ -28625,6 +28626,8 @@ CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
 
 CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (enabled = true);
 
+CREATE INDEX index_environments_on_merge_request_id ON environments USING btree (merge_request_id);
+
 CREATE INDEX index_environments_on_name_varchar_pattern_ops ON environments USING btree (name varchar_pattern_ops);
 
 CREATE UNIQUE INDEX index_environments_on_project_id_and_name ON environments USING btree (project_id, name);
@@ -32272,6 +32275,9 @@ ALTER TABLE ONLY deployments
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY environments
+    ADD CONSTRAINT fk_01a033a308 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

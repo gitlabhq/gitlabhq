@@ -13,6 +13,7 @@ class Environment < ApplicationRecord
   self.reactive_cache_work_type = :external_dependency
 
   belongs_to :project, optional: false
+  belongs_to :merge_request, optional: true
 
   use_fast_destroy :all_deployments
   nullify_if_blank :external_url
@@ -68,6 +69,7 @@ class Environment < ApplicationRecord
             allow_nil: true
 
   validate :safe_external_url
+  validate :merge_request_not_changed
 
   delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
@@ -522,6 +524,12 @@ class Environment < ApplicationRecord
 
   def ensure_environment_tier
     self.tier ||= guess_tier
+  end
+
+  def merge_request_not_changed
+    if merge_request_id_changed? && persisted?
+      errors.add(:merge_request, 'merge_request cannot be changed')
+    end
   end
 
   # Guessing the tier of the environment if it's not explicitly specified by users.

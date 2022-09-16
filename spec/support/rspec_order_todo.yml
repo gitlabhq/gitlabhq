@@ -218,7 +218,6 @@
 - './ee/spec/elastic/migrate/20220713103500_delete_commits_from_original_index_spec.rb'
 - './ee/spec/factories/lfs_object_spec.rb'
 - './ee/spec/features/account_recovery_regular_check_spec.rb'
-- './ee/spec/features/admin/admin_audit_logs_spec.rb'
 - './ee/spec/features/admin/admin_credentials_inventory_spec.rb'
 - './ee/spec/features/admin/admin_dashboard_spec.rb'
 - './ee/spec/features/admin/admin_dev_ops_reports_spec.rb'

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Runners' do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -24,25 +24,25 @@ RSpec.describe 'Runners' do
   end
 
   context 'when a project has enabled shared_runners' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     before do
       project.add_maintainer(user)
     end
 
     context 'when a project_type runner is activated on the project' do
-      let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
       it 'user sees the specific runner' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
-          expect(page).to have_content(specific_runner.display_name)
+          expect(page).to have_content(project_runner.display_name)
         end
 
-        click_on specific_runner.short_sha
+        click_on project_runner.short_sha
 
-        expect(page).to have_content(specific_runner.platform)
+        expect(page).to have_content(project_runner.platform)
       end
 
       it 'user can pause and resume the specific runner' do
@@ -72,7 +72,7 @@ RSpec.describe 'Runners' do
           click_on 'Remove runner'
         end
 
-        expect(page).not_to have_content(specific_runner.display_name)
+        expect(page).not_to have_content(project_runner.display_name)
       end
 
       it 'user edits the runner to be protected' do
@@ -92,7 +92,7 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          specific_runner.update!(tag_list: ['tag'])
+          project_runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do
@@ -120,24 +120,23 @@ RSpec.describe 'Runners' do
           expect(page.find('.available-shared-runners')).to have_content(shared_runner.display_name)
         end
       end
-    end
 
-    context 'when multiple runners are configured' do
-      let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
-      let!(:specific_runner_2) { create(:ci_runner, :project, projects: [project]) }
+      context 'when multiple runners are configured' do
+        let!(:project_runner_2) { create(:ci_runner, :project, projects: [project]) }
 
-      it 'adds pagination to the runner list' do
-        stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
+        it 'adds pagination to the runner list' do
+          stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
 
-        visit project_runners_path(project)
+          visit project_runners_path(project)
 
-        expect(find('.pagination')).not_to be_nil
+          expect(find('.pagination')).not_to be_nil
+        end
       end
     end
 
     context 'when a specific runner exists in another project' do
       let(:another_project) { create(:project) }
-      let!(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }
+      let!(:project_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       before do
         another_project.add_maintainer(user)
@@ -150,13 +149,13 @@ RSpec.describe 'Runners' do
           click_on 'Enable for this project'
         end
 
-        expect(page.find('.activated-specific-runners')).to have_content(specific_runner.display_name)
+        expect(page.find('.activated-specific-runners')).to have_content(project_runner.display_name)
 
         within '.activated-specific-runners' do
           click_on 'Disable for this project'
         end
 
-        expect(page.find('.available-specific-runners')).to have_content(specific_runner.display_name)
+        expect(page.find('.available-specific-runners')).to have_content(project_runner.display_name)
       end
     end
 
@@ -255,7 +254,8 @@ RSpec.describe 'Runners' do
       project.add_maintainer(user)
     end
 
-    let(:group) { create :group }
+    let_it_be(:group) { create :group }
+    let_it_be(:project) { create :project, group: group }
 
     context 'as project and group maintainer' do
       before do
@@ -263,8 +263,6 @@ RSpec.describe 'Runners' do
       end
 
       context 'project with a group but no group runner' do
-        let(:project) { create :project, group: group }
-
         it 'group runners are not available' do
           visit project_runners_path(project)
 
@@ -280,8 +278,6 @@ RSpec.describe 'Runners' do
       end
 
       context 'project with a group but no group runner' do
-        let(:project) { create :project, group: group }
-
         it 'group runners are available' do
           visit project_runners_path(project)
 
@@ -304,44 +300,46 @@ RSpec.describe 'Runners' do
         end
       end
 
-      context 'project with a group but no group runner' do
-        let(:group) { create(:group) }
-        let(:project) { create(:project, group: group) }
+      context 'with group project' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
 
-        it 'group runners are not available' do
-          visit project_runners_path(project)
+        context 'project with a group but no group runner' do
+          it 'group runners are not available' do
+            visit project_runners_path(project)
 
-          expect(page).to have_content 'This group does not have any group runners yet.'
+            expect(page).to have_content 'This group does not have any group runners yet.'
 
-          expect(page).not_to have_content 'To register them, go to the group\'s Runners page.'
-          expect(page).to have_content 'Ask your group owner to set up a group runner.'
-        end
-      end
-
-      context 'project with a group and a group runner' do
-        let(:group) { create(:group) }
-        let(:project) { create(:project, group: group) }
-        let!(:ci_runner) { create(:ci_runner, :group, groups: [group], description: 'group-runner') }
-
-        it 'group runners are available' do
-          visit project_runners_path(project)
-
-          expect(page).to have_content 'Available group runners: 1'
-          expect(page).to have_content 'group-runner'
+            expect(page).not_to have_content 'To register them, go to the group\'s Runners page.'
+            expect(page).to have_content 'Ask your group owner to set up a group runner.'
+          end
         end
 
-        it 'group runners may be disabled for a project' do
-          visit project_runners_path(project)
+        context 'project with a group and a group runner' do
+          let_it_be(:ci_runner) do
+            create(:ci_runner, :group, groups: [group], description: 'group-runner')
+          end
 
-          click_on 'Disable group runners'
+          it 'group runners are available' do
+            visit project_runners_path(project)
 
-          expect(page).to have_content 'Enable group runners'
-          expect(project.reload.group_runners_enabled).to be false
+            expect(page).to have_content 'Available group runners: 1'
+            expect(page).to have_content 'group-runner'
+          end
 
-          click_on 'Enable group runners'
+          it 'group runners may be disabled for a project' do
+            visit project_runners_path(project)
 
-          expect(page).to have_content 'Disable group runners'
-          expect(project.reload.group_runners_enabled).to be true
+            click_on 'Disable group runners'
+
+            expect(page).to have_content 'Enable group runners'
+            expect(project.reload.group_runners_enabled).to be false
+
+            click_on 'Enable group runners'
+
+            expect(page).to have_content 'Disable group runners'
+            expect(project.reload.group_runners_enabled).to be true
+          end
         end
       end
     end

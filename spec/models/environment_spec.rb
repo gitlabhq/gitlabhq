@@ -17,6 +17,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to nullify_if_blank(:external_url) }
 
   it { is_expected.to belong_to(:project).required }
+  it { is_expected.to belong_to(:merge_request).optional }
+
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
   it { is_expected.to have_many(:alert_management_alerts) }
@@ -39,6 +41,26 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       environment = build(:environment, external_url: nil)
 
       expect(environment).to be_valid
+    end
+
+    context 'does not allow changes to merge_request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it 'for an environment that has no merge request associated' do
+        environment = create(:environment)
+
+        environment.merge_request = merge_request
+
+        expect(environment).not_to be_valid
+      end
+
+      it 'for an environment that has a merge request associated' do
+        environment = create(:environment, merge_request: merge_request)
+
+        environment.merge_request = nil
+
+        expect(environment).not_to be_valid
+      end
     end
   end
 

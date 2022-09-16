@@ -168,7 +168,7 @@ Required options:
 ```yaml
 time_frame: all
 data_source: redis
-instrumentation_class: 'RedisMetric'
+instrumentation_class: RedisMetric
 options:
   event: pushes
   prefix: source_code
@@ -199,7 +199,7 @@ You must also use the class's name in the YAML setup.
 ```yaml
 time_frame: all
 data_source: redis
-instrumentation_class: 'MergeUsageCountRedisMetric'
+instrumentation_class: MergeUsageCountRedisMetric
 options:
   event: pushes
   prefix: source_code
@@ -217,7 +217,7 @@ Count unique values for `i_quickactions_approve` event.
 ```yaml
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: 'RedisHLLMetric'
+instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_quickactions_approve
@@ -248,7 +248,7 @@ You must also use the class's name in the YAML setup.
 ```yaml
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: 'MergeUsageCountRedisHLLMetric'
+instrumentation_class: MergeUsageCountRedisHLLMetric
 options:
   events:
     - i_quickactions_approve
@@ -288,7 +288,7 @@ You must also include the instrumentation class name in the YAML setup.
 
 ```yaml
 time_frame: 28d
-instrumentation_class: 'IssuesBoardsCountMetric'
+instrumentation_class: IssuesBoardsCountMetric
 ```
 
 ## Generic metrics
@@ -345,7 +345,7 @@ The generator takes the class name as an argument and the following options:
 - `--ee` Indicates if the metric is for EE.
 
 ```shell
-rails generate gitlab:usage_metric CountIssues --type database
+rails generate gitlab:usage_metric CountIssues --type database --operation distinct_count
         create lib/gitlab/usage/metrics/instrumentations/count_issues_metric.rb
         create spec/lib/gitlab/usage/metrics/instrumentations/count_issues_metric_spec.rb
 ```

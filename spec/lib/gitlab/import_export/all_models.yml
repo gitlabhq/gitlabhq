@@ -211,6 +211,7 @@ merge_requests:
 - user_note_authors
 - cleanup_schedule
 - compliance_violations
+- created_environments
 external_pull_requests:
 - project
 merge_request_diff:

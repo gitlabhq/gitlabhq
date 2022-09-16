@@ -1234,3 +1234,33 @@ If the above steps are **not successful**, proceed through the next steps:
 ## Additional tools
 
 There are useful snippets for manipulating Geo internals in the [GitLab Rails Cheat Sheet](../../troubleshooting/gitlab_rails_cheat_sheet.md#geo). For example, you can find how to manually sync or verify a replicable in Rails console.
+
+## Check OS locale data compatibility
+
+If different operating systems or different operating system versions are deployed across Geo sites, we recommend that you perform a locale data compatibility check setting up Geo.
+
+Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system’s C library for sorting text. If the locale data in the C library is incompatible across Geo sites, erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723). See [here](https://wiki.postgresql.org/wiki/Locale_data_changes) for more details.
+
+On all hosts running PostgreSQL, across all Geo sites, run the following shell command:
+
+```shell
+( echo "1-1"; echo "11" ) | LC_COLLATE=en_US.UTF-8 sort
+```
+
+The output will either look like:
+
+```plaintext
+1-1
+11
+```
+
+or the reverse order:
+
+```plaintext
+11
+1-1
+```
+
+If the output is identical on all hosts, then they running compatible versions of locale data.
+
+If the output differs on some hosts, then PostgreSQL replication will not work properly. We advise that you select operating system versions that are compatible.

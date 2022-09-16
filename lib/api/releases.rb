@@ -100,6 +100,62 @@ module API
         present release, with: Entities::Release, current_user: current_user, include_html_description: params[:include_html_description]
       end
 
+      desc 'Download a project release asset file' do
+        detail 'This feature was introduced in GitLab 15.4.'
+        named 'download_release_asset_file'
+      end
+      params do
+        requires :tag_name, type: String,
+                            desc: 'The name of the tag.', as: :tag
+        requires :file_path, type: String,
+                             file_path: true,
+                             desc: 'The path to the file to download, as specified when creating the release asset.'
+      end
+      route_setting :authentication, job_token_allowed: true
+      get ':id/releases/:tag_name/downloads/*file_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
+        authorize_download_code!
+
+        not_found! unless release
+
+        link = release.links.find_by_filepath!("/#{params[:file_path]}")
+
+        not_found! unless link
+
+        redirect link.url
+      end
+
+      desc 'Get the latest project release' do
+        detail 'This feature was introduced in GitLab 15.4.'
+        named 'get_latest_release'
+      end
+      params do
+        requires :suffix_path, type: String, file_path: true, desc: 'The path to be suffixed to the latest release'
+      end
+      route_setting :authentication, job_token_allowed: true
+      get ':id/releases/permalink/latest(/)(*suffix_path)', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
+        authorize_download_code!
+
+        # Try to find the latest release
+        latest_release = find_latest_release
+        not_found! unless latest_release
+
+        # Build the full API URL with the tag of the latest release
+        redirect_url = api_v4_projects_releases_path(id: user_project.id, tag_name: latest_release.tag)
+
+        # Include the additional suffix_path if present
+        redirect_url += "/#{params[:suffix_path]}" if params[:suffix_path].present?
+
+        # Include any query parameter except `order_by` since we have plans to extend it in the future.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/352945 for reference.
+        query_parameters_except_order_by = get_query_params.except('order_by')
+
+        if query_parameters_except_order_by.present?
+          redirect_url += "?#{query_parameters_except_order_by.compact.to_param}"
+        end
+
+        redirect redirect_url
+      end
+
       desc 'Create a new release' do
         detail 'This feature was introduced in GitLab 11.7.'
         named 'create_release'
@@ -230,6 +286,16 @@ module API
 
       def release
         @release ||= user_project.releases.find_by_tag(params[:tag])
+      end
+
+      def find_latest_release
+        ReleasesFinder.new(user_project, current_user, { order_by: 'released_at', sort: 'desc' }).execute.first
+      end
+
+      def get_query_params
+        return {} unless @request.query_string.present?
+
+        Rack::Utils.parse_nested_query(@request.query_string)
       end
 
       def log_release_created_audit_event(release)

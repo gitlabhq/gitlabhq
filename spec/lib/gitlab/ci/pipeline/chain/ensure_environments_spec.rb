@@ -2,11 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failures do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:stage) { build(:ci_stage, project: project, statuses: [job]) }
   let(:pipeline) { build(:ci_pipeline, project: project, stages: [stage]) }
+  let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:environment) { project.environments.find_by_name('review/master') }
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user)
@@ -24,12 +26,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments do
     context 'when a pipeline contains a deployment job' do
       let!(:job) { build(:ci_build, :start_review_app, project: project) }
 
-      it 'ensures environment existence for the job' do
-        expect { subject }.to change { Environment.count }.by(1)
+      context 'and the environment does not exist' do
+        it 'creates the environment specified by the job' do
+          expect { subject }.to change { Environment.count }.by(1)
 
-        expect(project.environments.find_by_name('review/master')).to be_present
-        expect(job.persisted_environment.name).to eq('review/master')
-        expect(job.metadata.expanded_environment_name).to eq('review/master')
+          expect(environment).to be_present
+          expect(job.persisted_environment.name).to eq('review/master')
+          expect(job.metadata.expanded_environment_name).to eq('review/master')
+        end
+
+        context 'and the pipeline is for a merge request' do
+          let(:command) do
+            Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user, merge_request: merge_request)
+          end
+
+          it 'associates the environment with the merge request' do
+            expect { subject }.to change { Environment.count }.by(1)
+
+            expect(environment.merge_request).to eq(merge_request)
+          end
+        end
       end
 
       context 'when an environment has already been existed' do
@@ -40,9 +56,21 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments do
         it 'ensures environment existence for the job' do
           expect { subject }.not_to change { Environment.count }
 
-          expect(project.environments.find_by_name('review/master')).to be_present
+          expect(environment).to be_present
           expect(job.persisted_environment.name).to eq('review/master')
           expect(job.metadata.expanded_environment_name).to eq('review/master')
+        end
+
+        context 'and the pipeline is for a merge request' do
+          let(:command) do
+            Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user, merge_request: merge_request)
+          end
+
+          it 'does not associate the environment with the merge request' do
+            expect { subject }.not_to change { Environment.count }
+
+            expect(environment.merge_request).to be_nil
+          end
         end
       end
 
@@ -65,7 +93,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments do
       it 'ensures environment existence for the job' do
         expect { subject }.to change { Environment.count }.by(1)
 
-        expect(project.environments.find_by_name('review/master')).to be_present
+        expect(environment).to be_present
         expect(job.persisted_environment.name).to eq('review/master')
         expect(job.metadata.expanded_environment_name).to eq('review/master')
       end

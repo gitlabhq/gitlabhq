@@ -923,6 +923,16 @@ RSpec.describe API::Groups do
         expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(true)
       end
 
+      it 'removes the group avatar' do
+        put api("/groups/#{group1.id}", user1), params: { avatar: '' }
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['avatar_url']).to be_nil
+          expect(group1.reload.avatar_url).to be_nil
+        end
+      end
+
       it 'does not update visibility_level if it is restricted' do
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
 

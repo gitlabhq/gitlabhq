@@ -248,6 +248,8 @@ module API
 
         authorize! :admin_group, group
 
+        group.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?
+
         if update_group(group)
           present_group_details(params, group, with_projects: true)
         else

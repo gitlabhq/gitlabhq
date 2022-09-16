@@ -3,5 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountFooMetric do
-  it_behaves_like 'a correct instrumented metric value', {}, 1
+  let(:expected_value) { 1 }
+
+  it_behaves_like 'a correct instrumented metric value', { time_frame: 'all', data_source: 'database' }
 end

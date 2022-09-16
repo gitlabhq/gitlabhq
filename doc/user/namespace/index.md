@@ -16,7 +16,6 @@ GitLab has two types of namespaces:
     read about [repository redirects](../project/repository/index.md#what-happens-when-a-repository-path-changes).
   - You cannot create subgroups in a personal namespace.
   - Groups in your namespace do not inherit your namespace permissions and group features.
-  - Creating subgroups under this namespace is not allowed.
   - All the *Personal Projects* created will fall under the scope of this namespace.
 
 - A *group* or *subgroup* namespace:

@@ -648,7 +648,7 @@ installation, run the following in the [GitLab Rails console](operations/rails_c
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
 
-### Number of files per GitLab Pages web-site
+### Number of files per GitLab Pages website
 
 The total number of file entries (including directories and symlinks) is limited to `200,000` per
 GitLab Pages website.
@@ -662,6 +662,14 @@ For example, to change the limit to `100`:
 ```ruby
 Plan.default.actual_limits.update!(pages_file_entries: 100)
 ```
+
+### Number of custom domains per GitLab Pages website
+
+The total number of custom domains per GitLab Pages website is limited to `150` for [GitLab SaaS](../subscriptions/gitlab_com/index.md).
+
+The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
+To set a limit on your self-managed instance, use the
+[Admin Area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 
 ### Number of registered runners per scope
 

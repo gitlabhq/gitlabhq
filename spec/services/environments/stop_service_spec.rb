@@ -201,6 +201,25 @@ RSpec.describe Environments::StopService do
         project.add_developer(user)
       end
 
+      context 'and merge request has associated created_environments' do
+        let!(:environment1) { create(:environment, project: project, merge_request: merge_request) }
+        let!(:environment2) { create(:environment, project: project, merge_request: merge_request) }
+
+        before do
+          subject
+        end
+
+        it 'stops the associated created_environments' do
+          expect(environment1.reload).to be_stopped
+          expect(environment2.reload).to be_stopped
+        end
+
+        it 'does not affect environments that are not associated to the merge request' do
+          expect(pipeline.environments_in_self_and_project_descendants.first.merge_request).to be_nil
+          expect(pipeline.environments_in_self_and_project_descendants.first).to be_available
+        end
+      end
+
       it 'stops the active environment' do
         subject
         expect(pipeline.environments_in_self_and_project_descendants.first).to be_stopping
