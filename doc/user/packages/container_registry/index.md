@@ -67,6 +67,8 @@ To download and run a container image hosted in the GitLab Container Registry:
    docker run [options] registry.example.com/group/project/image [arguments]
    ```
 
+[Authentication](#authenticate-with-the-container-registry) is needed to download images from private repository.
+
 For more information on running Docker containers, visit the
 [Docker documentation](https://docs.docker.com/engine/userguide/intro/).
 
@@ -97,15 +99,9 @@ registry.example.com/mynamespace/myproject/image:latest
 registry.example.com/mynamespace/myproject/my/image:rc1
 ```
 
-## Build and push images by using Docker commands
+## Authenticate with the Container Registry
 
-To build and push to the Container Registry, you can use Docker commands.
-
-### Authenticate with the Container Registry
-
-Before you can build and push images, you must authenticate with the Container Registry.
-
-To authenticate, you can use:
+To authenticate with the Container Registry, you can use:
 
 - A [personal access token](../../profile/personal_access_tokens.md).
 - A [deploy token](../../project/deploy_tokens/index.md).
@@ -121,7 +117,9 @@ To authenticate, run the `docker` command. For example:
    docker login registry.example.com -u <username> -p <token>
    ```
 
-### Build and push images by using Docker commands
+## Build and push images by using Docker commands
+
+Before you can build and push images, you must [authenticate](#authenticate-with-the-container-registry) with the Container Registry.
 
 To build and push to the Container Registry:
 

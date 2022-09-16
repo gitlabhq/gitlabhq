@@ -30,7 +30,7 @@ Before you can enable automatic provisioning of an SSL certificate for your doma
 - Acquired a domain (`example.com`) and added a [DNS entry](index.md)
   pointing it to your Pages website. The top-level domain (`.com`) must be a
   [public suffix](https://publicsuffix.org/).
-- [Added your domain to your Pages project](index.md#1-add-a-custom-domain-to-pages)
+- [Added your domain to your Pages project](index.md#1-add-a-custom-domain)
   and verified your ownership.
 - Verified your website is up and running, accessible through your custom domain.
 
@@ -76,7 +76,7 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
     1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
     1. Make sure your domain **doesn't have** an `AAAA` DNS record.
     1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
-    1. Make sure [your domain is verified](index.md#1-add-a-custom-domain-to-pages).
+    1. Make sure [your domain is verified](index.md#1-add-a-custom-domain).
     1. Go to step 1.
 
 ### Message "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later." hangs for more than an hour
@@ -85,7 +85,7 @@ If you've enabled Let's Encrypt integration, but a certificate is absent after a
 
 1. Go to your project's **Settings > Pages**.
 1. Select **Remove** on your domain.
-1. [Add the domain again and verify it](index.md#1-add-a-custom-domain-to-pages).
+1. [Add the domain again and verify it](index.md#1-add-a-custom-domain).
 1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
 1. If you still see the same message after some time:
     1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
