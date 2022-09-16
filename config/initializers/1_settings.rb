@@ -218,6 +218,7 @@ Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonat
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
 Settings.gitlab['max_request_duration_seconds'] ||= 57
 Settings.gitlab['display_initial_root_password'] = false if Settings.gitlab['display_initial_root_password'].nil?
+Settings.gitlab['weak_passwords_digest_set'] ||= YAML.safe_load(File.open(Rails.root.join('config', 'weak_password_digests.yml')), permitted_classes: [String]).to_set.freeze
 
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300

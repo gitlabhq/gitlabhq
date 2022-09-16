@@ -261,6 +261,108 @@ RSpec.describe GroupsFinder do
         end
       end
     end
+
+    context 'with include_ancestors' do
+      let_it_be(:user) { create(:user) }
+
+      let_it_be(:parent_group) { create(:group, :public) }
+      let_it_be(:public_subgroup) { create(:group, :public, parent: parent_group) }
+      let_it_be(:public_subgroup2) { create(:group, :public, parent: parent_group) }
+      let_it_be(:private_subgroup1) { create(:group, :private, parent: parent_group) }
+      let_it_be(:internal_sub_subgroup) { create(:group, :internal, parent: public_subgroup) }
+      let_it_be(:public_sub_subgroup) { create(:group, :public, parent: public_subgroup) }
+      let_it_be(:private_subgroup2) { create(:group, :private, parent: parent_group) }
+      let_it_be(:private_sub_subgroup) { create(:group, :private, parent: private_subgroup2) }
+      let_it_be(:private_sub_sub_subgroup) { create(:group, :private, parent: private_sub_subgroup) }
+
+      context 'if include_ancestors is true' do
+        let(:params) { { include_ancestors: true } }
+
+        it 'returns ancestors of user groups' do
+          private_sub_subgroup.add_developer(user)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            parent_group,
+            public_subgroup,
+            public_subgroup2,
+            internal_sub_subgroup,
+            public_sub_subgroup,
+            private_subgroup2,
+            private_sub_subgroup,
+            private_sub_sub_subgroup
+          )
+        end
+
+        it 'returns subgroup if user is member of project of subgroup' do
+          project = create(:project, :private, namespace: private_sub_subgroup)
+          project.add_developer(user)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            parent_group,
+            public_subgroup,
+            public_subgroup2,
+            internal_sub_subgroup,
+            public_sub_subgroup,
+            private_subgroup2,
+            private_sub_subgroup
+          )
+        end
+
+        it 'returns only groups related to user groups if all_available is false' do
+          params[:all_available] = false
+          private_sub_subgroup.add_developer(user)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            parent_group,
+            private_subgroup2,
+            private_sub_subgroup,
+            private_sub_sub_subgroup
+          )
+        end
+      end
+
+      context 'if include_ancestors is false' do
+        let(:params) { { include_ancestors: false } }
+
+        it 'does not return private ancestors of user groups' do
+          private_sub_subgroup.add_developer(user)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            parent_group,
+            public_subgroup,
+            public_subgroup2,
+            internal_sub_subgroup,
+            public_sub_subgroup,
+            private_sub_subgroup,
+            private_sub_sub_subgroup
+          )
+        end
+
+        it "returns project's parent group if user is member of project" do
+          project = create(:project, :private, namespace: private_sub_subgroup)
+          project.add_developer(user)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            parent_group,
+            public_subgroup,
+            public_subgroup2,
+            internal_sub_subgroup,
+            public_sub_subgroup,
+            private_sub_subgroup
+          )
+        end
+
+        it 'returns only user groups and their descendants if all_available is false' do
+          params[:all_available] = false
+          private_sub_subgroup.add_developer(user)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            private_sub_subgroup,
+            private_sub_sub_subgroup
+          )
+        end
+      end
+    end
   end
 
   describe '#execute' do

@@ -493,6 +493,33 @@ RSpec.describe RegistrationsController do
         end
       end
     end
+
+    context 'when the password is weak' do
+      render_views
+      let_it_be(:new_user_params) { { new_user: base_user_params.merge({ password: "password" }) } }
+
+      subject { post(:create, params: new_user_params) }
+
+      context 'when block_weak_passwords is enabled (default)' do
+        it 'renders the form with errors' do
+          expect { subject }.not_to change(User, :count)
+
+          expect(controller.current_user).to be_nil
+          expect(response).to render_template(:new)
+          expect(response.body).to include(_('Password must not contain commonly used combinations of words and letters'))
+        end
+      end
+
+      context 'when block_weak_passwords is disabled' do
+        before do
+          stub_feature_flags(block_weak_passwords: false)
+        end
+
+        it 'permits weak passwords' do
+          expect { subject }.to change(User, :count).by(1)
+        end
+      end
+    end
   end
 
   describe '#destroy' do

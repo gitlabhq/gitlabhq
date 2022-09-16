@@ -103,8 +103,11 @@ When applications are deleted, all grants and tokens associated with the applica
 
 ## Authorized applications
 
-Every application you authorize with your GitLab credentials is shown
-in the **Authorized applications** section under **Settings > Applications**.
+To see all the application you've authorized with your GitLab credentials:
+
+1. On the top bar, in the top right corner, select your avatar.
+1. Select **Edit profile** and then select **Applications**.
+1. Scroll down to the **Authorized applications** section.
 
 The GitLab OAuth 2 applications support scopes, which allow various actions that any given
 application can perform. Available scopes are depicted in the following table.

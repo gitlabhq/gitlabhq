@@ -261,6 +261,7 @@ class User < ApplicationRecord
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username, presence: true
+  validate  :check_password_weakness, if: :encrypted_password_changed?
 
   validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
@@ -2312,6 +2313,14 @@ class User < ApplicationRecord
     return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 
     errors.add(:username, _('ending with a reserved file extension is not allowed.'))
+  end
+
+  def check_password_weakness
+    if Feature.enabled?(:block_weak_passwords) &&
+        password.present? &&
+        Security::WeakPasswords.weak_for_user?(password, self)
+      errors.add(:password, _('must not contain commonly used combinations of words and letters'))
+    end
   end
 
   def groups_with_developer_maintainer_project_access
