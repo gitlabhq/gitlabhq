@@ -16,17 +16,17 @@ describe('getAverageByMonth', () => {
     expect(getAverageByMonth(mockCountsData2)).toStrictEqual(countsMonthlyChartData2);
   });
 
-  it('it transforms a data point to the first of the month', () => {
+  it('transforms a data point to the first of the month', () => {
     const item = mockCountsData1[0];
     const firstOfTheMonth = item.recordedAt.replace(/-[0-9]{2}$/, '-01');
     expect(getAverageByMonth([item])).toStrictEqual([[firstOfTheMonth, item.count]]);
   });
 
-  it('it uses sane defaults', () => {
+  it('uses sane defaults', () => {
     expect(getAverageByMonth()).toStrictEqual([]);
   });
 
-  it('it errors when passing null', () => {
+  it('errors when passing null', () => {
     expect(() => {
       getAverageByMonth(null);
     }).toThrow();

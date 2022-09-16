@@ -10,16 +10,16 @@ module Gitlab
       CycleAnalyticsCounter,
       ProductivityAnalyticsCounter,
       SourceCodeCounter,
-      MergeRequestCounter,
-      DesignsCounter,
       KubernetesAgentCounter,
-      DiffsCounter,
-      ServiceUsageDataCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze
 
     COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES = [
       PackageEventCounter,
+      MergeRequestCounter,
+      DesignsCounter,
+      DiffsCounter,
+      ServiceUsageDataCounter,
       WebIdeCounter
     ].freeze
 

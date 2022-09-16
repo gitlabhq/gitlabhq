@@ -92,7 +92,7 @@ describe('Batch comments submit dropdown', () => {
     canApprove | exists   | existsText
     ${true}    | ${true}  | ${'shows'}
     ${false}   | ${false} | ${'hides'}
-  `('it $existsText approve checkbox if can_approve is $canApprove', ({ canApprove, exists }) => {
+  `('$existsText approve checkbox if can_approve is $canApprove', ({ canApprove, exists }) => {
     factory({ canApprove });
 
     expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);

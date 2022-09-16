@@ -6,6 +6,7 @@ FactoryBot.define do
     project
 
     transient do
+      ee { false }
       default_push_level { true }
       default_merge_level { true }
       default_access_level { true }
@@ -17,14 +18,11 @@ FactoryBot.define do
       ProtectedBranches::CacheService.new(protected_branch.project).refresh
     end
 
-    after(:build) do |protected_branch, evaluator|
-      if evaluator.default_access_level && evaluator.default_push_level
-        protected_branch.push_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
-      end
+    after(:build) do |obj, ctx|
+      next if ctx.ee || !ctx.default_access_level
 
-      if evaluator.default_access_level && evaluator.default_merge_level
-        protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
-      end
+      obj.push_access_levels.new(access_level: Gitlab::Access::MAINTAINER) if ctx.default_push_level
+      obj.merge_access_levels.new(access_level: Gitlab::Access::MAINTAINER) if ctx.default_merge_level
     end
 
     trait :create_branch_on_repository do

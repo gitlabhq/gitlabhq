@@ -246,6 +246,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
             before do
               stub_feature_flags(soft_email_confirmation: false)
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+              stub_feature_flags(identity_verification: false)
             end
 
             it 'signs up and redirects to the group activity page' do

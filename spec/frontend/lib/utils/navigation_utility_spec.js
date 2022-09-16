@@ -63,7 +63,7 @@ describe('initPrefetchLinks', () => {
     expect(newLink.addEventListener).toHaveBeenCalled();
   });
 
-  it('it is not fired when less then 100ms over link', () => {
+  it('is not fired when less then 100ms over link', () => {
     const mouseOverEvent = new Event('mouseover');
     const mouseOutEvent = new Event('mouseout');
 

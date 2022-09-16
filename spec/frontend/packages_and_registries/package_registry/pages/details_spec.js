@@ -178,7 +178,7 @@ describe('PackagesApp', () => {
       ${PACKAGE_TYPE_PYPI}     | ${true}
       ${PACKAGE_TYPE_NPM}      | ${false}
     `(
-      `It is $visible that the component is visible when the package is $packageType`,
+      `is $visible that the component is visible when the package is $packageType`,
       async ({ packageType, visible }) => {
         createComponent({
           resolver: jest.fn().mockResolvedValue(

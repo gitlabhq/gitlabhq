@@ -382,7 +382,7 @@ describe('Source Editor Instance', () => {
         },
       );
 
-      it('it does not remove entry from the global registry to keep for potential future re-use', () => {
+      it('does not remove entry from the global registry to keep for potential future re-use', () => {
         const extensionStore = new Map();
         seInstance = new SourceEditorInstance({}, extensionStore);
         const extensions = seInstance.use(fullExtensionsArray);

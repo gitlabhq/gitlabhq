@@ -554,7 +554,7 @@ describe('Pipeline graph wrapper', () => {
           mock.restore();
         });
 
-        it('it calls reportPerformance with expected arguments', () => {
+        it('calls reportPerformance with expected arguments', () => {
           expect(markAndMeasure).toHaveBeenCalled();
           expect(reportPerformance).toHaveBeenCalled();
           expect(reportPerformance).toHaveBeenCalledWith(metricsPath, metricsData);

@@ -93,7 +93,7 @@ describe('ManageViaMr component', () => {
           createComponent({ apolloProvider, featureName, featureType, isFeatureConfigured: true });
         });
 
-        it('it does not render a button', () => {
+        it('does not render a button', () => {
           expect(findButton().exists()).toBe(false);
         });
       });
@@ -104,7 +104,7 @@ describe('ManageViaMr component', () => {
           createComponent({ apolloProvider, featureName, featureType, isFeatureConfigured: false });
         });
 
-        it('it does render a button', () => {
+        it('does render a button', () => {
           expect(findButton().exists()).toBe(true);
         });
 

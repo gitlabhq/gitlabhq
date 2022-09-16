@@ -176,7 +176,7 @@ describe('ValueStreamMetrics', () => {
       await waitForPromises();
     });
 
-    it('it should render an error message', () => {
+    it('should render an error message', () => {
       expect(createFlash).toHaveBeenCalledWith({
         message: `There was an error while fetching value stream analytics ${fakeReqName} data.`,
       });

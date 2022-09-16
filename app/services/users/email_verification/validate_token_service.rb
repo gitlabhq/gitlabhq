@@ -27,10 +27,12 @@ module Users
       attr_reader :user
 
       def verification_rate_limited?
-        Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: token)
+        Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: user[attr])
       end
 
       def valid?
+        return false unless token.present?
+
         Devise.secure_compare(user[attr], digest)
       end
 
@@ -59,11 +61,11 @@ module Users
         case reason
         when :rate_limited
           format(s_("IdentityVerification|You've reached the maximum amount of tries. "\
-             'Wait %{interval} or resend a new code and try again.'), interval: email_verification_interval)
+             'Wait %{interval} or send a new code and try again.'), interval: email_verification_interval)
         when :expired
-          s_('IdentityVerification|The code has expired. Resend a new code and try again.')
+          s_('IdentityVerification|The code has expired. Send a new code and try again.')
         when :invalid
-          s_('IdentityVerification|The code is incorrect. Enter it again, or resend a new code.')
+          s_('IdentityVerification|The code is incorrect. Enter it again, or send a new code.')
         end
       end
 

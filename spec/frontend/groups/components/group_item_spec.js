@@ -274,7 +274,7 @@ describe('GroupItemComponent', () => {
         ${'itemscope'} | ${'itemscope'}
         ${'itemtype'}  | ${'https://schema.org/Organization'}
         ${'itemprop'}  | ${'subOrganization'}
-      `('it does set correct $attr', ({ attr, value } = {}) => {
+      `('does set correct $attr', ({ attr, value } = {}) => {
         expect(wrapper.attributes(attr)).toBe(value);
       });
 
@@ -283,7 +283,7 @@ describe('GroupItemComponent', () => {
         ${'img'}                               | ${'logo'}
         ${'[data-testid="group-name"]'}        | ${'name'}
         ${'[data-testid="group-description"]'} | ${'description'}
-      `('it does set correct $selector', ({ selector, propValue } = {}) => {
+      `('does set correct $selector', ({ selector, propValue } = {}) => {
         expect(wrapper.find(selector).attributes('itemprop')).toBe(propValue);
       });
     });

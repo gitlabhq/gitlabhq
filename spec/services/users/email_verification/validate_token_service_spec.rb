@@ -25,7 +25,8 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
 
         context 'when rate limited' do
           before do
-            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:email_verification, scope: encrypted_token).and_return(true)
           end
 
           it 'returns a failure status' do
@@ -33,8 +34,8 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
               {
                 status: :failure,
                 reason: :rate_limited,
-                message: "You've reached the maximum amount of tries. "\
-                         'Wait 10 minutes or resend a new code and try again.'
+                message: format(s_("IdentityVerification|You've reached the maximum amount of tries. "\
+                         'Wait %{interval} or send a new code and try again.'), interval: '10 minutes')
               }
             )
           end
@@ -48,7 +49,7 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
               {
                 status: :failure,
                 reason: :expired,
-                message: 'The code has expired. Resend a new code and try again.'
+                message: s_('IdentityVerification|The code has expired. Send a new code and try again.')
               }
             )
           end
@@ -62,7 +63,22 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
               {
                 status: :failure,
                 reason: :invalid,
-                message: 'The code is incorrect. Enter it again, or resend a new code.'
+                message: s_('IdentityVerification|The code is incorrect. Enter it again, or send a new code.')
+              }
+            )
+          end
+        end
+
+        context 'when encrypted token was not set and a blank token is provided' do
+          let(:encrypted_token) { nil }
+          let(:token) { '' }
+
+          it 'returns a failure status' do
+            expect(service.execute).to eq(
+              {
+                status: :failure,
+                reason: :invalid,
+                message: s_('IdentityVerification|The code is incorrect. Enter it again, or send a new code.')
               }
             )
           end

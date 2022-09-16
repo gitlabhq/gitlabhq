@@ -6,7 +6,6 @@ module UsageDataHelpers
       snippet_update
       snippet_comment
       merge_request_comment
-      merge_request_create
       commit_comment
       wiki_pages_create
       wiki_pages_update
@@ -15,9 +14,6 @@ module UsageDataHelpers
       cycle_analytics_views
       productivity_analytics_views
       source_code_pushes
-      design_management_designs_create
-      design_management_designs_update
-      design_management_designs_delete
     ).freeze
 
   COUNTS_KEYS = %i(
@@ -122,7 +118,6 @@ module UsageDataHelpers
       uploads
       web_hooks
       user_preferences_user_gitpod_enabled
-      service_usage_data_download_payload_click
     ).push(*SMAU_KEYS)
 
   USAGE_DATA_KEYS = %i(

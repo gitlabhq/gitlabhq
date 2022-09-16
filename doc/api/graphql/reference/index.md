@@ -10132,6 +10132,7 @@ Branch protection details for a branch rule.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="branchprotectionallowforcepush"></a>`allowForcePush` | [`Boolean!`](#boolean) | Toggle force push to the branch for users with write access. |
+| <a id="branchprotectioncodeownerapprovalrequired"></a>`codeOwnerApprovalRequired` | [`Boolean!`](#boolean) | Enforce code owner approvals before allowing a merge. |
 | <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when this branch is the source branch. (see [Connections](#connections)) |
 | <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when this branch is the source branch. (see [Connections](#connections)) |
 
@@ -13857,6 +13858,8 @@ Represents the merge access level of a branch protection.
 | ---- | ---- | ----------- |
 | <a id="mergeaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
 | <a id="mergeaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="mergeaccesslevelgroup"></a>`group` | [`Group`](#group) | Group associated with this access level. |
+| <a id="mergeaccessleveluser"></a>`user` | [`UserCore`](#usercore) | User associated with this access level. |
 
 ### `MergeRequest`
 
@@ -17173,6 +17176,8 @@ Represents the push access level of a branch protection.
 | ---- | ---- | ----------- |
 | <a id="pushaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
 | <a id="pushaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="pushaccesslevelgroup"></a>`group` | [`Group`](#group) | Group associated with this access level. |
+| <a id="pushaccessleveluser"></a>`user` | [`UserCore`](#usercore) | User associated with this access level. |
 
 ### `PushRules`
 

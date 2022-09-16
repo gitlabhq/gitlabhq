@@ -122,6 +122,7 @@ RSpec.describe RegistrationsController do
           context 'when `send_user_confirmation_email` is true' do
             before do
               stub_application_setting(send_user_confirmation_email: true)
+              stub_feature_flags(identity_verification: false)
             end
 
             it 'sends a confirmation email' do
@@ -134,6 +135,10 @@ RSpec.describe RegistrationsController do
     end
 
     context 'email confirmation' do
+      before do
+        stub_feature_flags(identity_verification: false)
+      end
+
       context 'when send_user_confirmation_email is false' do
         it 'signs the user in' do
           stub_application_setting(send_user_confirmation_email: false)

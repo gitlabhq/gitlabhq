@@ -19,7 +19,7 @@ describe('ResolveWithIssueButton', () => {
     wrapper.destroy();
   });
 
-  it('it should have a link with the provided link property as href', () => {
+  it('should have a link with the provided link property as href', () => {
     const button = wrapper.findComponent(GlButton);
 
     expect(button.attributes().href).toBe(url);

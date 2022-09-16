@@ -38,6 +38,12 @@ FactoryBot.define do
       file_fixture { 'spec/fixtures/packages/debian/distribution/D-I-Packages' }
     end
 
+    trait(:older_sha256) do
+      created_at { '2020-01-24T08:00:00Z' }
+      file_sha256 { '157a1ad2b9102038560eea56771913b312ebf25093f5ef3b9842021c639c880d' }
+      file_fixture { 'spec/fixtures/packages/debian/distribution/OtherSHA256' }
+    end
+
     trait(:object_storage) do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end

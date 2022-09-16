@@ -190,6 +190,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Codename: unstable
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
+        Acquire-By-Hash: yes
         Architectures: all amd64 arm64
         Components: contrib main
         MD5Sum:
@@ -249,6 +250,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Codename: unstable
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
+        Acquire-By-Hash: yes
         MD5Sum:
         SHA256:
         EOF

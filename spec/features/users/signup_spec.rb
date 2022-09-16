@@ -203,6 +203,7 @@ RSpec.describe 'Signup' do
         context 'when soft email confirmation is not enabled' do
           before do
             stub_feature_flags(soft_email_confirmation: false)
+            stub_feature_flags(identity_verification: false)
           end
 
           it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do

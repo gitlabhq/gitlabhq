@@ -106,7 +106,7 @@ describe('Diffs tree list component', () => {
         ${'index.js'}   | ${1}
         ${'app/*.js'}   | ${1}
         ${'*.js, *.rb'} | ${2}
-      `('it returns $itemSize item for $extension', async ({ extension, itemSize }) => {
+      `('returns $itemSize item for $extension', async ({ extension, itemSize }) => {
         wrapper.find('[data-testid="diff-tree-search"]').setValue(extension);
 
         await nextTick();

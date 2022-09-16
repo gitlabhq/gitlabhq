@@ -19821,16 +19821,34 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
+msgid "IdentityVerification|A new code has been sent."
+msgstr ""
+
 msgid "IdentityVerification|Before you create your first project, we need you to verify your identity with a valid payment method. You will not be charged during this step. If we ever need to charge you, we will let you know."
 msgstr ""
 
 msgid "IdentityVerification|Before you create your group, we need you to verify your identity with a valid payment method. You will not be charged during this step. If we ever need to charge you, we will let you know."
 msgstr ""
 
+msgid "IdentityVerification|Before you finish creating your account, we need to verify your identity. On the verification page, enter the following code."
+msgstr ""
+
 msgid "IdentityVerification|Before you sign in, we need to verify your identity. Enter the following code on the sign-in page."
 msgstr ""
 
+msgid "IdentityVerification|Confirm your email address"
+msgstr ""
+
 msgid "IdentityVerification|Create a project"
+msgstr ""
+
+msgid "IdentityVerification|Didn't receive a code?"
+msgstr ""
+
+msgid "IdentityVerification|Enter a code."
+msgstr ""
+
+msgid "IdentityVerification|Enter a valid code."
 msgstr ""
 
 msgid "IdentityVerification|For added security, you'll need to verify your identity in a few quick steps."
@@ -19881,16 +19899,22 @@ msgstr ""
 msgid "IdentityVerification|Resend code"
 msgstr ""
 
+msgid "IdentityVerification|Send a new code"
+msgstr ""
+
 msgid "IdentityVerification|Send code"
+msgstr ""
+
+msgid "IdentityVerification|Something went wrong. Please try again."
 msgstr ""
 
 msgid "IdentityVerification|Step 1: Verify phone number"
 msgstr ""
 
-msgid "IdentityVerification|The code has expired. Resend a new code and try again."
+msgid "IdentityVerification|The code has expired. Send a new code and try again."
 msgstr ""
 
-msgid "IdentityVerification|The code is incorrect. Enter it again, or resend a new code."
+msgid "IdentityVerification|The code is incorrect. Enter it again, or send a new code."
 msgstr ""
 
 msgid "IdentityVerification|Verification code"
@@ -19900,6 +19924,9 @@ msgid "IdentityVerification|Verification successful"
 msgstr ""
 
 msgid "IdentityVerification|Verify code"
+msgstr ""
+
+msgid "IdentityVerification|Verify email address"
 msgstr ""
 
 msgid "IdentityVerification|Verify payment method"
@@ -19914,10 +19941,13 @@ msgstr ""
 msgid "IdentityVerification|You will receive a text containing a code. Standard charges may apply."
 msgstr ""
 
-msgid "IdentityVerification|You've reached the maximum amount of tries. Wait %{interval} or resend a new code and try again."
+msgid "IdentityVerification|You've reached the maximum amount of resends. Wait %{interval} and try again."
 msgstr ""
 
-msgid "IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment or %{redirect_url_start}click here%{redirect_url_end} to refresh."
+msgid "IdentityVerification|You've reached the maximum amount of tries. Wait %{interval} or send a new code and try again."
+msgstr ""
+
+msgid "IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment. You can also %{redirect_url_start}refresh the page%{redirect_url_end}."
 msgstr ""
 
 msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."

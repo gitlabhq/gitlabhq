@@ -90,7 +90,7 @@ describe('Issue boards new issue form', () => {
       });
     });
 
-    it('it uses the first issue ID as moveAfterId', async () => {
+    it('uses the first issue ID as moveAfterId', async () => {
       findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
 
       await nextTick();

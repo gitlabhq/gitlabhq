@@ -17,11 +17,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
-    let(:group) { create(:group, :nested) }
+    let_it_be(:group) { create(:group, :nested) }
+    let_it_be(:user) { create(:user) }
+
     let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
-    let(:user) { create(:user) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:job) do
       create(:ci_build, :pending, :queued, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
@@ -354,6 +355,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
 
             context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+              let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
               before do
                 project.update!(ci_default_git_depth: nil)
               end
@@ -411,7 +415,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           context 'when job is made for merge request' do
             let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
             let!(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
-            let(:merge_request) { create(:merge_request) }
+
+            let_it_be(:merge_request) { create(:merge_request) }
 
             it 'sets branch as ref_type' do
               request_job
@@ -728,7 +733,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           describe 'timeout support' do
             context 'when project specifies job timeout' do
-              let(:project) { create(:project, shared_runners_enabled: false, build_timeout: 1234) }
+              let_it_be(:project) { create(:project, shared_runners_enabled: false, build_timeout: 1234) }
+
+              let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
               it 'contains info about timeout taken from project' do
                 request_job
@@ -926,8 +933,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when the runner is of group type' do
-            let(:group) { create(:group) }
-            let(:runner) { create(:ci_runner, :group, groups: [group]) }
+            let_it_be(:group) { create(:group) }
+            let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 
             it_behaves_like 'storing arguments in the application context for the API' do
               let(:expected_params) { { root_namespace: group.full_path_components.first, client_id: "runner/#{runner.id}" } }

@@ -25,3 +25,5 @@ module Types
     end
   end
 end
+
+Types::BranchRules::BranchProtectionType.prepend_mod_with('Types::BranchRules::BranchProtectionType')

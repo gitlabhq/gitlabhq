@@ -4,13 +4,13 @@ import { getFrequentlyUsedEmojis, addToFrequentlyUsed } from '~/emoji/components
 jest.mock('~/lib/utils/cookies');
 
 describe('getFrequentlyUsedEmojis', () => {
-  it('it returns null when no saved emojis set', () => {
+  it('returns null when no saved emojis set', () => {
     jest.spyOn(Cookies, 'get').mockReturnValue(null);
 
     expect(getFrequentlyUsedEmojis()).toBe(null);
   });
 
-  it('it returns frequently used emojis object', () => {
+  it('returns frequently used emojis object', () => {
     jest.spyOn(Cookies, 'get').mockReturnValue('thumbsup,thumbsdown');
 
     expect(getFrequentlyUsedEmojis()).toEqual({

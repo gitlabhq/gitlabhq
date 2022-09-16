@@ -34,7 +34,7 @@ RSpec.describe "Admin Runners" do
 
     context "when there are runners" do
       context "with an instance runner" do
-        let!(:instance_runner) { create(:ci_runner, :instance) }
+        let_it_be(:instance_runner) { create(:ci_runner, :instance) }
 
         before do
           visit admin_runners_path
@@ -86,10 +86,12 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'search' do
-        before do
+        before_all do
           create(:ci_runner, :instance, description: 'runner-foo')
           create(:ci_runner, :instance, description: 'runner-bar')
+        end
 
+        before do
           visit admin_runners_path
         end
 
@@ -130,10 +132,12 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'filter by paused' do
-        before do
+        before_all do
           create(:ci_runner, :instance, description: 'runner-active')
           create(:ci_runner, :instance, description: 'runner-paused', active: false)
+        end
 
+        before do
           visit admin_runners_path
         end
 
@@ -164,15 +168,17 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'filter by status' do
-        let!(:never_contacted) do
+        let_it_be(:never_contacted) do
           create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)
         end
 
-        before do
+        before_all do
           create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.zone.now)
           create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.zone.now)
           create(:ci_runner, :instance, description: 'runner-offline', contacted_at: 1.week.ago)
+        end
 
+        before do
           visit admin_runners_path
         end
 
@@ -238,7 +244,7 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'filter by type' do
-        before do
+        before_all do
           create(:ci_runner, :project, description: 'runner-project', projects: [project])
           create(:ci_runner, :group, description: 'runner-group', groups: [group])
         end
@@ -345,7 +351,7 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'filter by tag' do
-        before do
+        before_all do
           create(:ci_runner, :instance, description: 'runner-blue', tag_list: ['blue'])
           create(:ci_runner, :instance, description: 'runner-red', tag_list: ['red'])
         end
@@ -464,7 +470,7 @@ RSpec.describe "Admin Runners" do
   end
 
   describe "Runner show page", :js do
-    let(:runner) do
+    let_it_be(:runner) do
       create(
         :ci_runner,
         description: 'runner-foo',
@@ -520,9 +526,9 @@ RSpec.describe "Admin Runners" do
   end
 
   describe "Runner edit page" do
-    let(:project_runner) { create(:ci_runner, :project) }
-    let!(:project1) { create(:project) }
-    let!(:project2) { create(:project) }
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project_runner) { create(:ci_runner, :project) }
 
     before do
       visit edit_admin_runner_path(project_runner)

@@ -36,16 +36,34 @@ RSpec.describe API::DebianProjectPackages do
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
     end
 
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+    end
+
     describe 'GET projects/:id/packages/debian/dists/*distribution/source/Sources' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/Sources" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Sources file/
     end
 
+    describe 'GET projects/:id/packages/debian/dists/*distribution/source/by-hash/SHA256/:file_sha256' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/by-hash/SHA256/#{component_file_sources_older_sha256.file_sha256}" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+    end
+
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
+    end
+
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{component_file_di_older_sha256.file_sha256}" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
     end
 
     describe 'GET projects/:id/packages/debian/pool/:codename/:letter/:package_name/:package_version/:file_name' do

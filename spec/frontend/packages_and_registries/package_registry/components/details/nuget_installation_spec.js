@@ -71,7 +71,7 @@ describe('NugetInstallation', () => {
       });
     });
 
-    it('it has docs link', () => {
+    it('has docs link', () => {
       expect(findSetupDocsLink().attributes()).toMatchObject({
         href: NUGET_HELP_PATH,
         target: '_blank',

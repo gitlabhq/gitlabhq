@@ -46,7 +46,7 @@ module API
             def present_index_file!(file_type)
               relation = "::Packages::Debian::#{project_or_group.class.name}ComponentFile".constantize
 
-              component_file = relation
+              relation = relation
                 .preload_distribution
                 .with_container(project_or_group)
                 .with_codename_or_suite(params[:distribution])
@@ -55,9 +55,10 @@ module API
                 .with_architecture_name(params[:architecture])
                 .with_compression_type(nil)
                 .order_created_asc
-                .last!
 
-              present_carrierwave_file!(component_file.file)
+              relation = relation.with_file_sha256(params[:file_sha256]) if params[:file_sha256]
+
+              present_carrierwave_file!(relation.last!.file)
             end
           end
 
@@ -135,6 +136,17 @@ module API
                 get 'Packages' do
                   present_index_file!(:di_packages)
                 end
+
+                # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256
+                # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
+                desc 'The installer (udeb) binary files index by hash' do
+                  detail 'This feature was introduced in GitLab 15.4'
+                end
+
+                route_setting :authentication, authenticate_non_public: true
+                get 'by-hash/SHA256/:file_sha256' do
+                  present_index_file!(:di_packages)
+                end
               end
 
               namespace 'source', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
@@ -146,6 +158,17 @@ module API
 
                 route_setting :authentication, authenticate_non_public: true
                 get 'Sources' do
+                  present_index_file!(:sources)
+                end
+
+                # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256
+                # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
+                desc 'The source files index by hash' do
+                  detail 'This feature was introduced in GitLab 15.4'
+                end
+
+                route_setting :authentication, authenticate_non_public: true
+                get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:sources)
                 end
               end
@@ -163,6 +186,17 @@ module API
 
                 route_setting :authentication, authenticate_non_public: true
                 get 'Packages' do
+                  present_index_file!(:packages)
+                end
+
+                # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256
+                # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
+                desc 'The binary files index by hash' do
+                  detail 'This feature was introduced in GitLab 15.4'
+                end
+
+                route_setting :authentication, authenticate_non_public: true
+                get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:packages)
                 end
               end

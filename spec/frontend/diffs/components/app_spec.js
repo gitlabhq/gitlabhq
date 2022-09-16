@@ -682,7 +682,7 @@ describe('diffs/components/app', () => {
         ${'123'}          | ${2}
         ${'312'}          | ${1}
       `(
-        'it calls navigateToDiffFileIndex with $index when $link is clicked',
+        'calls navigateToDiffFileIndex with $index when $link is clicked',
         async ({ currentDiffFileId, targetFile }) => {
           createComponent({ fileByFileUserPreference: true }, ({ state }) => {
             state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });

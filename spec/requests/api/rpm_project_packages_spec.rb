@@ -3,6 +3,9 @@ require 'spec_helper'
 
 RSpec.describe API::RpmProjectPackages do
   include HttpBasicAuthHelpers
+  include WorkhorseHelpers
+
+  include_context 'workhorse headers'
 
   using RSpec::Parameterized::TableSyntax
 
@@ -141,8 +144,9 @@ RSpec.describe API::RpmProjectPackages do
 
   describe 'POST /api/v4/projects/:project_id/packages/rpm' do
     let(:url) { "/projects/#{project.id}/packages/rpm" }
+    let(:file_upload) { fixture_file_upload('spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm') }
 
-    subject { post api(url), headers: headers }
+    subject { post api(url), params: { file: file_upload }, headers: headers }
 
     context 'with user token' do
       context 'with valid project' do
@@ -178,6 +182,41 @@ RSpec.describe API::RpmProjectPackages do
 
           it_behaves_like params[:shared_examples_name], params[:expected_status]
         end
+      end
+
+      context 'when user can upload file' do
+        before do
+          project.add_developer(user)
+        end
+
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token).merge(workhorse_headers) }
+
+        context 'when file size too large' do
+          before do
+            allow_next_instance_of(UploadedFile) do |uploaded_file|
+              allow(uploaded_file).to receive(:size).and_return(project.actual_limits.rpm_max_file_size + 1)
+            end
+          end
+
+          it 'returns an error' do
+            upload_file(params: { file: file_upload }, request_headers: headers)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to match(/File is too large/)
+          end
+        end
+      end
+
+      def upload_file(params: {}, request_headers: headers)
+        url = "/projects/#{project.id}/packages/rpm"
+        workhorse_finalize(
+          api(url),
+          method: :post,
+          file_key: :file,
+          params: params,
+          headers: request_headers,
+          send_rewritten_field: true
+        )
       end
     end
 

@@ -18,3 +18,5 @@ module Types
     end
   end
 end
+
+Types::BranchProtections::BaseAccessLevelType.prepend_mod

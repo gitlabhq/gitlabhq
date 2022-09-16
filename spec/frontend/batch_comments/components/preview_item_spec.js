@@ -118,7 +118,7 @@ describe('Batch comments draft preview item component', () => {
       );
     });
 
-    it('it renders thread resolved text', () => {
+    it('renders thread resolved text', () => {
       expect(vm.$el.querySelector('.draft-note-resolution').textContent).toContain(
         'Thread will be resolved',
       );

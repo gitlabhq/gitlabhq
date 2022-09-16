@@ -407,7 +407,7 @@ describe('Dashboard', () => {
       await nextTick();
     });
 
-    it('it does not show loading icons in any group', async () => {
+    it('does not show loading icons in any group', async () => {
       setupStoreWithData(store);
 
       await nextTick();
@@ -614,7 +614,7 @@ describe('Dashboard', () => {
         const findFirstDraggableRemoveButton = () =>
           findDraggablePanels().at(0).find('.js-draggable-remove');
 
-        it('it enables draggables', async () => {
+        it('enables draggables', async () => {
           findRearrangeButton().vm.$emit('click');
           await nextTick();
 
@@ -656,7 +656,7 @@ describe('Dashboard', () => {
           expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount - 1);
         });
 
-        it('it disables draggables when clicked again', async () => {
+        it('disables draggables when clicked again', async () => {
           findRearrangeButton().vm.$emit('click');
           await nextTick();
 

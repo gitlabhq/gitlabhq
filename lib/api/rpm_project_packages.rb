@@ -45,6 +45,11 @@ module API
         desc 'Upload a RPM package'
         post do
           authorize_create_package!(authorized_user_project)
+
+          if authorized_user_project.actual_limits.exceeded?(:rpm_max_file_size, params[:file].size)
+            bad_request!('File is too large')
+          end
+
           not_found!
         end
 

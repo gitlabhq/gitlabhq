@@ -9,6 +9,7 @@ module VerifiesWithEmail
 
   included do
     prepend_before_action :verify_with_email, only: :create, unless: -> { two_factor_enabled? }
+    skip_before_action :required_signup_info, only: :successful_verification
   end
 
   def verify_with_email

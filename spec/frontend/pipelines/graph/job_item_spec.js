@@ -59,7 +59,7 @@ describe('pipeline graph job item', () => {
       });
     });
 
-    it('it should render status and name', () => {
+    it('should render status and name', () => {
       expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
       expect(wrapper.find('a').exists()).toBe(false);
 
@@ -72,7 +72,7 @@ describe('pipeline graph job item', () => {
   });
 
   describe('action icon', () => {
-    it('it should render the action icon', () => {
+    it('should render the action icon', () => {
       createWrapper({ job: mockJob });
 
       const actionComponent = findActionComponent();
@@ -82,7 +82,7 @@ describe('pipeline graph job item', () => {
       expect(actionComponent.attributes('disabled')).not.toBe('disabled');
     });
 
-    it('it should render disabled action icon when user cannot run the action', () => {
+    it('should render disabled action icon when user cannot run the action', () => {
       createWrapper({ job: mockJobWithUnauthorizedAction });
 
       const actionComponent = findActionComponent();

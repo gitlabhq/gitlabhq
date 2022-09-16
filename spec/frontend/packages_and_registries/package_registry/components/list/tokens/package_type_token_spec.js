@@ -24,13 +24,13 @@ describe('packages_filter', () => {
     wrapper = null;
   });
 
-  it('it binds all of his attrs to filtered search token', () => {
+  it('binds all of his attrs to filtered search token', () => {
     mountComponent({ attrs: { foo: 'bar' } });
 
     expect(findFilteredSearchToken().attributes('foo')).toBe('bar');
   });
 
-  it('it binds all of his events to filtered search token', () => {
+  it('binds all of his events to filtered search token', () => {
     const clickListener = jest.fn();
     mountComponent({ listeners: { click: clickListener } });
 
