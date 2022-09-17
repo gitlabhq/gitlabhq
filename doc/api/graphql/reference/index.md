@@ -19367,6 +19367,9 @@ Represents a description widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdescriptiondescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemwidgetdescriptiondescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
+| <a id="workitemwidgetdescriptionedited"></a>`edited` | [`Boolean!`](#boolean) | Whether the description has been edited since the work item was created. |
+| <a id="workitemwidgetdescriptionlasteditedat"></a>`lastEditedAt` | [`Time`](#time) | Timestamp of when the work item's description was last edited. |
+| <a id="workitemwidgetdescriptionlasteditedby"></a>`lastEditedBy` | [`UserCore`](#usercore) | User that made the last edit to the work item's description. |
 | <a id="workitemwidgetdescriptiontype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetHierarchy`

@@ -23,5 +23,9 @@ FactoryBot.define do
       issue_type { :incident }
       association :work_item_type, :default, :incident
     end
+
+    trait :last_edited_by_user do
+      association :last_edited_by, factory: :user
+    end
   end
 end

@@ -35,6 +35,12 @@ module Resolvers
 
     private
 
+    def preloads
+      {
+        last_edited_by: :last_edited_by
+      }
+    end
+
     # Allows to apply lookahead for fields
     # selected from  WidgetInterface
     override :node_selection

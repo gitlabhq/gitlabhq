@@ -18,7 +18,7 @@ For Free, Premium, and Ultimate plan customers, jobs on these instances consume 
 |                   | Small                     | Medium                    | Large                    |
 |-------------------|---------------------------|---------------------------|--------------------------|
 | Specs             | 1 vCPU, 3.75GB RAM        | 2 vCPUs, 8GB RAM          | 4 vCPUs, 16GB RAM        |
-| GitLab CI/CD tags | `saas-linux-medium-amd64` | `saas-linux-medium-amd64` | `saas-linux-large-amd64` |
+| GitLab CI/CD tags | `saas-linux-small-amd64` | `saas-linux-medium-amd64` | `saas-linux-large-amd64` |
 | Subscription      | Free, Premium, Ultimate   | Free, Premium, Ultimate   | Premium, Ultimate        |
 
 The `small` machine type is the default. Your job runs on this machine type if you don't specify
