@@ -24,7 +24,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
 
       it 'completely clean up the repository' do
         expect(Projects::ContainerRepository::CleanupTagsService)
-          .to receive(:new).with(repository, nil, cleanup_tags_service_params).and_return(cleanup_tags_service)
+          .to receive(:new).with(container_repository: repository, params: cleanup_tags_service_params).and_return(cleanup_tags_service)
         expect(cleanup_tags_service).to receive(:execute).and_return(status: :success, deleted_size: 1)
 
         response = subject

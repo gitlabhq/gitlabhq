@@ -8,7 +8,7 @@ RSpec.describe OmniAuth::Strategies::Bitbucket do
   describe '#callback_url' do
     let(:base_url) { 'https://example.com' }
 
-    context 'when script name is present' do
+    context 'when script name is not present' do
       it 'has the correct default callback path' do
         allow(subject).to receive(:full_host) { base_url }
         allow(subject).to receive(:script_name).and_return('')
@@ -17,7 +17,7 @@ RSpec.describe OmniAuth::Strategies::Bitbucket do
       end
     end
 
-    context 'when script name is not present' do
+    context 'when script name is present' do
       it 'sets the callback path with script_name' do
         allow(subject).to receive(:full_host) { base_url }
         allow(subject).to receive(:script_name).and_return('/v1')

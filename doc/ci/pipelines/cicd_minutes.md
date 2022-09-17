@@ -239,12 +239,14 @@ GitLab administrators can add a namespace to the reduced cost factor
 
 ### Additional costs on GitLab SaaS
 
-GitLab SaaS shared runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
+GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type  | Virtual machine configuration   | CI/CD minutes cost factor  |
+| GitLab SaaS runner type  | Machine Type   | CI/CD minutes cost factor  |
 | :--------- | :------------------- | :--------- |
-| Linux OS + Docker executor| 1 vCPU, 3.75 GB RAM   |1|
-| macOS + shell executor   | 4 vCPU, 10 GB RAM| 6 |
+| Linux OS + Docker executor| Small  |1|
+| Linux OS + Docker executor| Medium  |2|
+| Linux OS + Docker executor| Large |3|
+| macOS + shell executor   | Large| 6 |
 
 ### Monthly reset of CI/CD minutes
 

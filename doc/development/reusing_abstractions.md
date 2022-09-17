@@ -206,6 +206,31 @@ response = ServiceResponse.success(payload: { issue: issue })
 response.payload[:issue] # => issue
 ```
 
+Error responses can also specify the failure `reason` which can be used by the caller
+to understand the nature of the failure.
+The caller, if an HTTP endpoint, could translate the reason symbol into an HTTP status code:
+
+```ruby
+response = ServiceResponse.error(
+  message: 'Job is in a state that cannot be retried',
+  reason: :job_not_retrieable)
+
+if response.success?
+  head :ok
+if response.reason == :job_not_retriable
+  head :unprocessable_entity
+else
+  head :bad_request
+end
+```
+
+For common failures such as resource `:not_found` or operation `:forbidden`, we could
+leverage the Rails [HTTP status symbols](http://www.railsstatuscodes.com/) as long as
+they are sufficiently specific for the domain logic involved.
+For other failures use domain-specific reasons whenever possible.
+
+For example: `:job_not_retriable`, `:duplicate_package`, `:merge_request_not_mergeable`.
+
 ### Finders
 
 Everything in `app/finders`, typically used for retrieving data from a database.

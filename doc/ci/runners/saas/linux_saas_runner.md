@@ -4,43 +4,97 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on Linux **(FREE SAAS)**
+# SaaS runners on Linux
 
-SaaS runners on Linux are autoscaled ephemeral Google Cloud Platform virtual machines.
+When you run jobs on SaaS runners on Linux, the runners are on auto-scaled ephemeral virtual machine (VM) instances.
+Each VM uses the Google Container-Optimized OS (COS) and the latest version of Docker Engine.
+The default region for the VMs is `us-east1`.
 
-Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs for each job, thus maximizing security. These shared runners are available on GitLab.com.
+## Machine types available for private projects (x86-64)
 
-GitLab offers Ultimate tier capabilities and included CI/CD minutes per group per month for our [Open Source](https://about.gitlab.com/solutions/open-source/join/), [Education](https://about.gitlab.com/solutions/education/), and [Startups](https://about.gitlab.com/solutions/startups/) programs. For private projects, GitLab offers various [plans](https://about.gitlab.com/pricing/), starting with a Free tier.
+For the SaaS runners on Linux, GitLab offers a range of machine types for use in private projects.
+For Free, Premium, and Ultimate plan customers, jobs on these instances consume the CI/CD minutes allocated to your namespace.
 
-All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, Google COS and the latest Docker Engine
-installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
-region of the VMs is US East1.
-Each instance is used only for one job. This ensures that any sensitive data left on the system can't be accessed by other people's CI/CD jobs.
+|                   | Small                     | Medium                    | Large                    |
+|-------------------|---------------------------|---------------------------|--------------------------|
+| Specs             | 1 vCPU, 3.75GB RAM        | 2 vCPUs, 8GB RAM          | 4 vCPUs, 16GB RAM        |
+| GitLab CI/CD tags | `saas-linux-medium-amd64` | `saas-linux-medium-amd64` | `saas-linux-large-amd64` |
+| Subscription      | Free, Premium, Ultimate   | Free, Premium, Ultimate   | Premium, Ultimate        |
+
+The `small` machine type is the default. Your job runs on this machine type if you don't specify
+a [tags:](../../yaml/index.md#tags) keyword in your `.gitlab-ci.yml` file.
+
+CI/CD jobs that run on `medium` and `large` machine types **will** consume CI minutes at a different rate than CI/CD jobs on the `small` machine type.
+
+Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
+
+## Example of how to tag a job
+
+To use a machine type other than `small`, add a `tags:` keyword to your job.
+For example:
+
+```yaml
+stages:
+  - Prebuild
+  - Build
+  - Unit Test
+
+job_001:
+ stage: Prebuild
+ script:
+  - echo "this job runs on the default (small) instance"
+
+job_002:
+ tags: [ saas-linux-medium-amd64 ]
+ stage: Build
+ script:
+  - echo "this job runs on the medium instance"
+
+
+job_003:
+ tags: [ saas-linux-large-amd64 ]
+ stage: Unit Test
+ script:
+  - echo "this job runs on the large instance"
+
+```
+
+## SaaS runners for GitLab projects
+
+The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated for
+GitLab projects and related community forks. These runners are backed by a Google Compute
+`n1-standard-2` machine type and do not run untagged jobs. Unlike the machine types used
+for private projects, each virtual machine is re-used up to 40 times.
+
+## SaaS runners on Linux settings
+
+Below are the settings for SaaS runners on Linux.
+
+| Setting                                                                 | GitLab.com       | Default |
+|-------------------------------------------------------------------------|------------------|---------|
+| Executor                                                                | `docker+machine` | -       |
+| Default Docker image                                                    | `ruby:2.5`       | -       |
+| `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`           | `false` |
+
+- **Cache**: These runners share a
+  [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
+  that's stored in a Google Cloud Storage (GCS) bucket. Cache contents not updated within
+  the last 14 days are automatically removed, based on the
+  [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle).
+
+- **Timeout settings**: Jobs handled by the SaaS Runners on Linux
+  **time out after 3 hours**, regardless of the timeout configured in a
+  project. For details, see issues [#4010](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4010)
+  and [#4070](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4070).
 
 NOTE:
-The final disk space your jobs can use will be less than 25GB. Some disk space allocated to the instance will be occupied by the operating system, the Docker image, and a copy of your cloned repository.
-
-The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They don't run untagged jobs and unlike the general fleet of shared runners, the instances are re-used up to 40 times.
-
-Jobs handled by shared runners on GitLab.com (`shared-runners-manager-X.gitlab.com`)
-**time out after 3 hours**, regardless of the timeout configured in a
-project. Check issue [#4010](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4010) and [#4070](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4070) for the reference.
-
-Jobs handled by shared runners on Windows and macOS on GitLab.com **time out after 1 hour** while this service is in the [Beta](../../../policy/alpha-beta-support.md#beta-features) stage.
-
-Below are the runners' settings.
-
-| Setting                               | GitLab.com                                        | Default    |
-| -----------                           | -----------------                                 | ---------- |
-| Executor                              | `docker+machine`                                  | -          |
-| Default Docker image                  | `ruby:2.5`                                        | -          |
-| `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`          | `false`    |
-
-These runners share a [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) through use of a Google Cloud Storage (GCS) bucket. Cache contents not updated within the last 14 days are automatically removed through use of an [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle).
+The final disk space your jobs can use will be less than 25GB. Some disk space
+allocated to the instance will be occupied by the operating system, the Docker image,
+and a copy of your cloned repository.
 
 ## Pre-clone script
 
-With SaaS runners on Linux, you can run commands in a CI
+With SaaS runners on Linux, you can run commands in a CI/CD
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The
 [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
@@ -55,12 +109,13 @@ To use this feature, define a [CI/CD variable](../../../ci/variables/index.md#cu
 `CI_PRE_CLONE_SCRIPT` that contains a bash script.
 
 NOTE:
-The `CI_PRE_CLONE_SCRIPT` variable does not work on GitLab SaaS Windows or macOS Runners.
+The `CI_PRE_CLONE_SCRIPT` variable does not work on GitLab SaaS Windows or macOS runners.
 
 ### Pre-clone script example
 
 This example was used in the `gitlab-org/gitlab` project until November 2021.
-The project no longer uses this optimization because the [pack-objects cache](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
+The project no longer uses this optimization because the
+[pack-objects cache](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
 lets Gitaly serve the full CI/CD fetch traffic. See [Git fetch caching](../../../development/pipelines.md#git-fetch-caching).
 
 The `CI_PRE_CLONE_SCRIPT` was defined as a project CI/CD variable:

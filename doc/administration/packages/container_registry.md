@@ -906,7 +906,7 @@ project.container_repositories.find_each do |repo|
   puts repo.attributes
 
   # Start the tag cleanup
-  puts Projects::ContainerRepository::CleanupTagsService.new(repo, user, policy.attributes.except("created_at", "updated_at")).execute()
+  puts Projects::ContainerRepository::CleanupTagsService.new(container_repository: repo, current_user: user, params: policy.attributes.except("created_at", "updated_at")).execute
 end
 ```
 

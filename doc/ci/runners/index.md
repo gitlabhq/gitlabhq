@@ -7,8 +7,8 @@ type: reference
 
 # Runner SaaS **(FREE SAAS)**
 
-If you use GitLab SaaS (GitLab.com), your CI jobs automatically run on runners provided by GitLab.
-No configuration is required. Your jobs can run on:
+If you use GitLab SaaS (GitLab.com), your [untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) CI jobs automatically run in containers on the Linux Runners.
+As long as shared runners are enabled for your project, no configuration is required. Your jobs can run on:
 
 - [Linux runners](saas/linux_saas_runner.md).
 - [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).

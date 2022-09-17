@@ -8,12 +8,9 @@ module Projects
 
         TAGS_PAGE_SIZE = 1000
 
-        def initialize(container_repository, user = nil, params = {})
-          @container_repository = container_repository
-          @current_user = user
+        def initialize(container_repository:, current_user: nil, params: {})
+          super
           @params = params.dup
-
-          @project = container_repository.project
         end
 
         def execute
@@ -21,7 +18,7 @@ module Projects
           return error('invalid regex') unless valid_regex?
 
           with_timeout do |start_time, result|
-            @container_repository.each_tags_page(page_size: TAGS_PAGE_SIZE) do |tags|
+            container_repository.each_tags_page(page_size: TAGS_PAGE_SIZE) do |tags|
               execute_for_tags(tags, result)
 
               raise TimeoutError if timeout?(start_time)
@@ -32,19 +29,18 @@ module Projects
         private
 
         def execute_for_tags(tags, overall_result)
-          @tags = tags
-          original_size = @tags.size
+          original_size = tags.size
 
-          filter_out_latest
-          filter_by_name
+          filter_out_latest!(tags)
+          filter_by_name!(tags)
 
-          filter_by_keep_n
-          filter_by_older_than
+          tags = filter_by_keep_n(tags)
+          tags = filter_by_older_than(tags)
 
-          overall_result[:before_delete_size] += @tags.size
+          overall_result[:before_delete_size] += tags.size
           overall_result[:original_size] += original_size
 
-          result = delete_tags
+          result = delete_tags(tags)
 
           overall_result[:deleted_size] += result[:deleted]&.size
           overall_result[:deleted] += result[:deleted]
@@ -68,12 +64,12 @@ module Projects
           result
         end
 
-        def filter_by_keep_n
-          @tags, _ = partition_by_keep_n
+        def filter_by_keep_n(tags)
+          partition_by_keep_n(tags).first
         end
 
-        def filter_by_older_than
-          @tags, _ = partition_by_older_than
+        def filter_by_older_than(tags)
+          partition_by_older_than(tags).first
         end
 
         def pushed_at(tag)

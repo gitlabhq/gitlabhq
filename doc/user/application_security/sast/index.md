@@ -746,6 +746,31 @@ variables:
   SECURE_LOG_LEVEL: "debug"
 ```
 
+### Pipeline errors related to changes in the GitLab-managed CI/CD template
+
+The [the GitLab-managed SAST CI/CD template](#configure-sast-manually) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+
+- See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
+- Experience another type of unexpected issue with your CI/CD pipeline configuration.
+
+If you're experiencing a job failure or seeing a SAST-related `yaml invalid` pipeline status, you can temporarily revert to an older version of the template so your pipelines keep working while you investigate the issue. To use an older version of the template, change the existing `include` statement in your CI/CD YAML file to refer to a specific template version, such as `v15.3.3-ee`:
+
+```yaml
+include:
+  remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/v15.3.3-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml'
+```
+
+If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
+
+We recommend that you only use this solution temporarily and that you return to [the standard template](#configure-sast-manually) as soon as possible.
+
+### Errors in a specific analyzer job
+
+GitLab SAST [analyzers](analyzers.md) are released as container images.
+If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-manually) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
+
+Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
+
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
 This error occurs when the Docker version that runs the SAST job is `19.03.0`.

@@ -1,6 +1,3 @@
-default:
-  interruptible: true
-
 stages:
   - prepare
   - deploy
