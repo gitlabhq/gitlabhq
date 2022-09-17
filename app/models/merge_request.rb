@@ -67,6 +67,8 @@ class MergeRequest < ApplicationRecord
   has_one :merge_head_diff,
     -> { merge_head }, inverse_of: :merge_request, class_name: 'MergeRequestDiff'
   has_one :cleanup_schedule, inverse_of: :merge_request
+  has_one :predictions, inverse_of: :merge_request
+  delegate :suggested_reviewers, to: :predictions
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request

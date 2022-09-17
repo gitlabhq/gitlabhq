@@ -299,6 +299,8 @@
   - 1
 - - merge_requests_execute_approval_hooks
   - 1
+- - merge_requests_fetch_suggested_reviewers
+  - 1
 - - merge_requests_handle_assignees_change
   - 1
 - - merge_requests_resolve_todos

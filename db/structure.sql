@@ -11468,6 +11468,7 @@ CREATE TABLE application_settings (
     inactive_projects_min_size_mb integer DEFAULT 0 NOT NULL,
     inactive_projects_send_warning_email_after_months integer DEFAULT 1 NOT NULL,
     delayed_group_deletion boolean DEFAULT true NOT NULL,
+    maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
     arkose_labs_namespace text DEFAULT 'client'::text NOT NULL,
     max_export_size integer DEFAULT 0,
     encrypted_slack_app_signing_secret bytea,
@@ -17490,6 +17491,22 @@ CREATE SEQUENCE merge_request_metrics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_request_metrics_id_seq OWNED BY merge_request_metrics.id;
+
+CREATE TABLE merge_request_predictions (
+    merge_request_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    suggested_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_predictions_merge_request_id_seq OWNED BY merge_request_predictions.merge_request_id;
 
 CREATE TABLE merge_request_reviewers (
     id bigint NOT NULL,
@@ -23730,6 +23747,8 @@ ALTER TABLE ONLY merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('merge_
 
 ALTER TABLE ONLY merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('merge_request_metrics_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_predictions ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_predictions_merge_request_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_reviewers ALTER COLUMN id SET DEFAULT nextval('merge_request_reviewers_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval('merge_request_user_mentions_id_seq'::regclass);
@@ -25752,6 +25771,9 @@ ALTER TABLE ONLY merge_request_diffs
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT merge_request_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_request_predictions
+    ADD CONSTRAINT merge_request_predictions_pkey PRIMARY KEY (merge_request_id);
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT merge_request_reviewers_pkey PRIMARY KEY (id);
@@ -34346,6 +34368,9 @@ ALTER TABLE ONLY issues_prometheus_alert_events
 
 ALTER TABLE ONLY merge_trains
     ADD CONSTRAINT fk_rails_b374b5225d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_predictions
+    ADD CONSTRAINT fk_rails_b3b78cbcd0 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_b3c9c17bd4 FOREIGN KEY (oncall_schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;

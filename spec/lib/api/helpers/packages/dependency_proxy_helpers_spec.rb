@@ -8,6 +8,8 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
   describe '#redirect_registry_request' do
     using RSpec::Parameterized::TableSyntax
 
+    let_it_be(:project) { create(:project) }
+
     let(:options) { {} }
 
     subject { helper.redirect_registry_request(forward_to_registry, package_type, options) { helper.fallback } }
@@ -38,11 +40,12 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
       end
     end
 
-    %i[npm pypi].each do |forwardable_package_type|
+    %i[maven npm pypi].each do |forwardable_package_type|
       context "with #{forwardable_package_type} packages" do
         include_context 'dependency proxy helpers context'
 
         let(:package_type) { forwardable_package_type }
+        let(:options) { { project: project } }
 
         where(:application_setting, :forward_to_registry, :example_name) do
           true  | true  | 'executing redirect'
@@ -59,17 +62,41 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
           it_behaves_like params[:example_name]
         end
       end
+
+      context 'when maven_central_request_forwarding is disabled' do
+        let(:package_type) { :maven }
+        let(:options) { { project: project } }
+
+        include_context 'dependency proxy helpers context'
+
+        where(:application_setting, :forward_to_registry) do
+          true  | true
+          true  | false
+          false | true
+          false | false
+        end
+
+        with_them do
+          before do
+            stub_feature_flags(maven_central_request_forwarding: false)
+            allow_fetch_application_setting(attribute: "maven_package_requests_forwarding", return_value: application_setting)
+          end
+
+          it_behaves_like 'executing fallback'
+        end
+      end
     end
 
     context 'with non-forwardable package type' do
       let(:forward_to_registry) { true }
 
       before do
+        stub_application_setting(maven_package_requests_forwarding: true)
         stub_application_setting(npm_package_requests_forwarding: true)
         stub_application_setting(pypi_package_requests_forwarding: true)
       end
 
-      Packages::Package.package_types.keys.without('npm', 'pypi').each do |pkg_type|
+      Packages::Package.package_types.keys.without('maven', 'npm', 'pypi').each do |pkg_type|
         context "#{pkg_type}" do
           let(:package_type) { pkg_type.to_sym }
 
@@ -81,18 +108,21 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
     end
 
     describe '#registry_url' do
-      subject { helper.registry_url(package_type, package_name: 'test') }
+      subject { helper.registry_url(package_type, options) }
 
-      where(:package_type, :expected_result) do
-        :npm  | 'https://registry.npmjs.org/test'
-        :pypi | 'https://pypi.org/simple/test/'
+      where(:package_type, :expected_result, :params) do
+        :maven | 'https://repo.maven.apache.org/maven2/test/123' | { path: 'test', file_name: '123', project: project }
+        :npm   | 'https://registry.npmjs.org/test' | { package_name: 'test' }
+        :pypi  | 'https://pypi.org/simple/test/' | { package_name: 'test' }
       end
 
       with_them do
+        let(:options) { params }
+
         it { is_expected.to eq(expected_result) }
       end
 
-      Packages::Package.package_types.keys.without('npm', 'pypi').each do |pkg_type|
+      Packages::Package.package_types.keys.without('maven', 'npm', 'pypi').each do |pkg_type|
         context "with non-forwardable package type #{pkg_type}" do
           let(:package_type) { pkg_type }
 

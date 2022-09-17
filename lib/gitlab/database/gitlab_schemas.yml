@@ -318,6 +318,7 @@ merge_request_diff_details: :gitlab_main
 merge_request_diff_files: :gitlab_main
 merge_request_diffs: :gitlab_main
 merge_request_metrics: :gitlab_main
+merge_request_predictions: :gitlab_main
 merge_request_reviewers: :gitlab_main
 merge_requests_closing_issues: :gitlab_main
 merge_requests: :gitlab_main

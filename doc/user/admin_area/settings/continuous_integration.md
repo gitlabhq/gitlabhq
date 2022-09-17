@@ -275,6 +275,18 @@ To select a CI/CD template for the required pipeline configuration:
 
 ## Package Registry configuration
 
+### Maven Forwarding **(PREMIUM SELF)**
+
+GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
+
+To disable forwarding Maven requests:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand the **Package Registry** section.
+1. Clear the checkbox **Forward Maven package requests to the Maven Registry if the packages are not found in the GitLab Package Registry**.
+1. Select **Save changes**.
+
 ### npm Forwarding **(PREMIUM SELF)**
 
 GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).

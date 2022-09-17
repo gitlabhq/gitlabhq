@@ -212,6 +212,7 @@ merge_requests:
 - cleanup_schedule
 - compliance_violations
 - created_environments
+- predictions
 external_pull_requests:
 - project
 merge_request_diff:

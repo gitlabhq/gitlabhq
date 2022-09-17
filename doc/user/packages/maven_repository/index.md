@@ -703,6 +703,67 @@ dependencies {
 }
 ```
 
+### Request forwarding to Maven Central
+
+> [Introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/362657>) behind a [feature flag](../../feature_flags.md), disabled by default in GitLab 15.4
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
+On GitLab.com, this feature is not available.
+
+When a Maven package is not found in the Package Registry, the request is forwarded
+to [Maven Central](https://search.maven.org/).
+
+When the feature flag is enabled, administrators can disable this behavior in the
+[Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+
+There are many ways to configure your Maven project so that it will request packages
+in Maven Central from GitLab. Maven repositories are queried in a
+[specific order](https://maven.apache.org/guides/mini/guide-multiple-repositories.html#repository-order).
+By default, maven-central is usually checked first through the
+[Super POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Super_POM), so
+GitLab needs to be configured to be queried before maven-central.
+
+[Using GitLab as a mirror of the central proxy](#setting-gitlab-as-a-mirror-for-the-central-proxy) is one
+way to force GitLab to be queried in place of maven-central.
+
+Maven forwarding is restricted to only the [project level](#project-level-maven-endpoint) and
+[group level](#group-level-maven-endpoint) endpoints. The [instance level endpoint](#instance-level-maven-endpoint)
+has naming restrictions that prevent it from being used for packages that don't follow that convention and also
+introduces too much security risk for supply-chain style attacks.
+
+#### Setting GitLab as a mirror for the central proxy
+
+To ensure all package requests are sent to GitLab instead of Maven Central,
+you can override Maven Central as the central repository by adding a `<mirror>`
+section to your `settings.xml`:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>central-proxy</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Private-Token</name>
+            <value>{personal_access_token}</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+  <mirrors>
+    <mirror>
+      <id>central-proxy</id>
+      <name>GitLab proxy of central repo</name>
+      <url>https://gitlab.example.com/api/v4/projects/{project_id}/packages/maven</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>
+```
+
 ## Remove a package
 
 For your project, go to **Packages and registries > Package Registry**.

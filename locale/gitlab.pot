@@ -12390,6 +12390,9 @@ msgstr ""
 msgid "Date range must be shorter than %{max_range} days."
 msgstr ""
 
+msgid "DateRange|%{start_date}–%{end_date}"
+msgstr ""
+
 msgid "Day of month"
 msgstr ""
 

@@ -89,6 +89,7 @@ Example response:
   "asset_proxy_url": "https://assets.example.com",
   "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
   "asset_proxy_allowlist": ["example.com", "*.example.com", "your-instance.com"],
+  "maven_package_requests_forwarding": true,
   "npm_package_requests_forwarding": true,
   "pypi_package_requests_forwarding": true,
   "snippet_size_limit": 52428800,
@@ -201,6 +202,7 @@ Example response:
   "allow_local_requests_from_hooks_and_services": true,
   "allow_local_requests_from_web_hooks_and_services": true,
   "allow_local_requests_from_system_hooks": false,
+  "maven_package_requests_forwarding": true,
   "npm_package_requests_forwarding": true,
   "pypi_package_requests_forwarding": true,
   "snippet_size_limit": 52428800,
@@ -390,6 +392,7 @@ listed in the descriptions of the relevant settings.
 | `mirror_capacity_threshold` **(PREMIUM)** | integer          | no                                   | Minimum capacity to be available before scheduling more mirrors preemptively. |
 | `mirror_max_capacity` **(PREMIUM)**      | integer          | no                                   | Maximum number of mirrors that can be synchronizing at the same time. |
 | `mirror_max_delay` **(PREMIUM)**         | integer          | no                                   | Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
+| `maven_package_requests_forwarding` **(PREMIUM)** | boolean   | no                                   | Use repo.maven.apache.org as a default remote repository when the package is not found in the GitLab Package Registry for Maven. |
 | `npm_package_requests_forwarding` **(PREMIUM)** | boolean   | no                                   | Use npmjs.org as a default remote repository when the package is not found in the GitLab Package Registry for npm. |
 | `pypi_package_requests_forwarding` **(PREMIUM)** | boolean  | no                                   | Use pypi.org as a default remote repository when the package is not found in the GitLab Package Registry for PyPI. |
 | `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for hooks and services are disabled.
