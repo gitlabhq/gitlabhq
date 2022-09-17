@@ -29,7 +29,7 @@ export default {
       <li
         v-for="finding in codeQuality"
         :key="finding.description"
-        class="gl-pt-1 gl-pb-1 gl-pl-3 gl-border-solid gl-border-bottom-0 gl-border-right-0 gl-border-1 gl-border-gray-100"
+        class="gl-pt-1 gl-pb-1 gl-pl-3 gl-border-solid gl-border-bottom-0 gl-border-right-0 gl-border-1 gl-border-gray-100 gl-font-regular"
       >
         <gl-icon
           :size="12"
