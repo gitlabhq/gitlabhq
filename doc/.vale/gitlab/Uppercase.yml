@@ -81,7 +81,6 @@ exceptions:
   - FREE
   - FTP
   - GCP
-  - GCS
   - GDK
   - GDPR
   - GET
