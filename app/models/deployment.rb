@@ -453,6 +453,12 @@ class Deployment < ApplicationRecord
     deployable.environment_tier_from_options
   end
 
+  # default tag limit is 100, 0 means no limit
+  def tags(limit: 100)
+    project.repository.tag_names_contains(sha, limit: limit)
+  end
+  strong_memoize_attr :tags
+
   private
 
   def update_status!(status)

@@ -1,8 +1,17 @@
 <script>
-import { GlBadge, GlIcon, GlLink, GlTooltipDirective as GlTooltip, GlTruncate } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlIcon,
+  GlLink,
+  GlLoadingIcon,
+  GlTooltipDirective as GlTooltip,
+  GlTruncate,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import createFlash from '~/flash';
+import deploymentDetails from '../graphql/queries/deployment_details.query.graphql';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
 import Commit from './commit.vue';
 
@@ -15,17 +24,24 @@ export default {
     GlIcon,
     GlLink,
     GlTruncate,
+    GlLoadingIcon,
     TimeAgoTooltip,
   },
   directives: {
     GlTooltip,
   },
+  inject: ['projectPath'],
   props: {
     deployment: {
       type: Object,
       required: true,
     },
     latest: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    visible: {
       type: Boolean,
       default: false,
       required: false,
@@ -37,6 +53,9 @@ export default {
     },
     iid() {
       return this.deployment?.iid;
+    },
+    isTag() {
+      return this.deployment?.tag;
     },
     shortSha() {
       return this.commit?.shortId;
@@ -68,9 +87,6 @@ export default {
     jobPath() {
       return this.deployable?.buildPath;
     },
-    refLabel() {
-      return this.deployment?.tag ? this.$options.i18n.tag : this.$options.i18n.branch;
-    },
     ref() {
       return this.deployment?.ref;
     },
@@ -83,6 +99,36 @@ export default {
     needsApproval() {
       return this.deployment.pendingApprovalCount > 0;
     },
+    hasTags() {
+      return this.tags?.length > 0;
+    },
+    displayTags() {
+      return this.tags?.slice(0, 5);
+    },
+  },
+  apollo: {
+    tags: {
+      query: deploymentDetails,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+          iid: this.deployment.iid,
+        };
+      },
+      update(data) {
+        return data?.project?.deployment?.tags;
+      },
+      error(error) {
+        createFlash({
+          message: this.$options.i18n.LOAD_ERROR_MESSAGE,
+          captureError: true,
+          error,
+        });
+      },
+      skip() {
+        return !this.visible;
+      },
+    },
   },
   i18n: {
     latestBadge: s__('Deployment|Latest Deployed'),
@@ -94,7 +140,7 @@ export default {
     job: __('Job'),
     api: __('API'),
     branch: __('Branch'),
-    tag: __('Tag'),
+    tags: __('Tags'),
   },
   headerClasses: [
     'gl-display-flex',
@@ -197,13 +243,36 @@ export default {
         </gl-badge>
       </div>
       <div
-        v-if="ref"
+        v-if="ref && !isTag"
         class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
       >
-        <span class="gl-text-gray-500">{{ refLabel }}</span>
+        <span class="gl-text-gray-500">{{ $options.i18n.branch }}</span>
         <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
           <gl-truncate :text="refName" with-tooltip />
         </gl-link>
+      </div>
+      <div
+        v-if="hasTags || $apollo.queries.tags.loading"
+        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+      >
+        <span class="gl-text-gray-500">{{ $options.i18n.tags }}</span>
+        <gl-loading-icon
+          v-if="$apollo.queries.tags.loading"
+          class="gl-font-monospace gl-mt-3"
+          size="sm"
+          inline
+        />
+        <div v-if="hasTags" class="gl-display-flex gl-flex-direction-row">
+          <gl-link
+            v-for="(tag, ndx) in displayTags"
+            :key="tag.name"
+            :href="tag.path"
+            class="gl-font-monospace gl-mt-3 gl-mr-3"
+          >
+            {{ tag.name }}<span v-if="ndx + 1 < tags.length">, </span>
+          </gl-link>
+          <div v-if="tags.length > 5" class="gl-font-monospace gl-mt-3 gl-mr-3">...</div>
+        </div>
       </div>
     </div>
   </div>

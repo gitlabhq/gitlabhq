@@ -11237,8 +11237,20 @@ The details of the deployment.
 | <a id="deploymentdetailssha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
 | <a id="deploymentdetailsstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |
 | <a id="deploymentdetailstag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
+| <a id="deploymentdetailstags"></a>`tags` | [`[DeploymentTag!]`](#deploymenttag) | Git tags that contain this deployment. |
 | <a id="deploymentdetailstriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentdetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
+
+### `DeploymentTag`
+
+Tags for a given deployment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymenttagname"></a>`name` | [`String`](#string) | Name of this git tag. |
+| <a id="deploymenttagpath"></a>`path` | [`String`](#string) | Path for this tag. |
 
 ### `Design`
 

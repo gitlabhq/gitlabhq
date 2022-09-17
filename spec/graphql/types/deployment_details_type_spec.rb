@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['DeploymentDetails'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id iid ref tag sha created_at updated_at finished_at status commit job triggerer
+      id iid ref tag tags sha created_at updated_at finished_at status commit job triggerer
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

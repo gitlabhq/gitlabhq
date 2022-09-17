@@ -310,6 +310,7 @@ export default {
         <div v-if="lastDeployment" :class="$options.deploymentClasses">
           <deployment
             :deployment="lastDeployment"
+            :visible="visible"
             :class="{ 'gl-ml-7': inFolder }"
             latest
             class="gl-pl-4"

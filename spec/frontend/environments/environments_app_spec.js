@@ -50,6 +50,7 @@ describe('~/environments/components/environments_app.vue', () => {
         defaultBranchName: 'main',
         helpPagePath: '/help',
         projectId: '1',
+        projectPath: '/1',
         ...provide,
       },
       apolloProvider,

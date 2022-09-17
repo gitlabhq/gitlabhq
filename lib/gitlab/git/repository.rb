@@ -1012,8 +1012,8 @@ module Gitlab
         gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
-      def tag_names_contains_sha(sha)
-        gitaly_ref_client.tag_names_contains_sha(sha)
+      def tag_names_contains_sha(sha, limit: 0)
+        gitaly_ref_client.tag_names_contains_sha(sha, limit: limit)
       end
 
       def search_files_by_content(query, ref, options = {})

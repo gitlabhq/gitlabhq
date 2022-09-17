@@ -1,0 +1,13 @@
+query getDeploymentDetails($projectPath: ID!, $iid: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    deployment(iid: $iid) {
+      id
+      iid
+      tags {
+        name
+        path
+      }
+    }
+  }
+}

@@ -1305,6 +1305,19 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '#tags' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment) { create(:deployment, project: project) }
+
+    subject { deployment.tags }
+
+    it 'will return tags related to this deployment' do
+      expect(project.repository).to receive(:tag_names_contains).with(deployment.sha, limit: 100).and_return(['test'])
+
+      is_expected.to match_array(['test'])
+    end
+  end
+
   describe '#valid_sha' do
     it 'does not add errors for a valid SHA' do
       project = create(:project, :repository)

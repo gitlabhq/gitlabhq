@@ -1,3 +1,6 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { stubTransition } from 'helpers/stub_transition';
@@ -7,9 +10,13 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import Commit from '~/environments/components/commit.vue';
 import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
-import { resolvedEnvironment } from './graphql/mock_data';
+import createMockApollo from '../__helpers__/mock_apollo_helper';
+import waitForPromises from '../__helpers__/wait_for_promises';
+import getDeploymentDetails from '../../../app/assets/javascripts/environments/graphql/queries/deployment_details.query.graphql';
+import { resolvedEnvironment, resolvedDeploymentDetails } from './graphql/mock_data';
 
 describe('~/environments/components/deployment.vue', () => {
+  Vue.use(VueApollo);
   useFakeDate(2022, 0, 8, 16);
 
   let deployment;
@@ -19,14 +26,23 @@ describe('~/environments/components/deployment.vue', () => {
     deployment = resolvedEnvironment.lastDeployment;
   });
 
-  const createWrapper = ({ propsData = {} } = {}) =>
-    mountExtended(Deployment, {
+  const createWrapper = ({ propsData = {}, options = {} } = {}) => {
+    const mockApollo = createMockApollo([
+      [getDeploymentDetails, jest.fn().mockResolvedValue(resolvedDeploymentDetails)],
+    ]);
+
+    return mountExtended(Deployment, {
+      stubs: { transition: stubTransition() },
       propsData: {
         deployment,
+        visible: true,
         ...propsData,
       },
-      stubs: { transition: stubTransition() },
+      apolloProvider: mockApollo,
+      provide: { projectPath: '/1' },
+      ...options,
     });
+  };
 
   afterEach(() => {
     wrapper?.destroy();
@@ -204,6 +220,24 @@ describe('~/environments/components/deployment.vue', () => {
       const ref = wrapper.findByRole('link', { name: deployment.ref.name });
       expect(ref.attributes('href')).toBe(deployment.ref.refPath);
     });
+
+    it('shows information about tags related to the deployment', async () => {
+      expect(wrapper.findByText(__('Tags')).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+
+      await waitForPromises();
+
+      for (let i = 1; i < 6; i += 1) {
+        const tagName = __(`testTag${i}`);
+        const testTag = wrapper.findByText(tagName);
+        expect(testTag.exists()).toBe(true);
+        expect(testTag.attributes('href')).toBe(`tags/${tagName}`);
+      }
+      expect(wrapper.findByText(__('testTag6')).exists()).toBe(false);
+      expect(wrapper.findByText(__('Tag')).exists()).toBe(false);
+      // with more than 5 tags, show overflow marker
+      expect(wrapper.findByText('...').exists()).toBe(true);
+    });
   });
 
   describe('with tagged deployment', () => {
@@ -211,9 +245,12 @@ describe('~/environments/components/deployment.vue', () => {
       wrapper = createWrapper({ propsData: { deployment: { ...deployment, tag: true } } });
     });
 
-    it('shows tag instead of branch', () => {
-      const refLabel = wrapper.findByText(__('Tag'));
+    it('shows tags instead of branch', () => {
+      const refLabel = wrapper.findByText(__('Tags'));
       expect(refLabel.exists()).toBe(true);
+
+      const branchLabel = wrapper.findByText(__('Branch'));
+      expect(branchLabel.exists()).toBe(false);
     });
   });
 
