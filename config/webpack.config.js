@@ -490,7 +490,9 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      filename: '[name].[contenthash:8].worker.js',
+    }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
 
