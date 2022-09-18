@@ -23,7 +23,7 @@ describe('WalkthroughPopover component', () => {
     });
 
     it('emits "walkthrough-popover-cta-clicked" event', async () => {
-      expect(wrapper.emitted()['walkthrough-popover-cta-clicked']).toBeTruthy();
+      expect(wrapper.emitted()['walkthrough-popover-cta-clicked']).toHaveLength(1);
     });
   });
 });

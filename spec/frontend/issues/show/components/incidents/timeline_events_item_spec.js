@@ -94,7 +94,7 @@ describe('IncidentTimelineEventList', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted().delete).toBeTruthy();
+        expect(wrapper.emitted().delete).toHaveLength(1);
       });
     });
   });

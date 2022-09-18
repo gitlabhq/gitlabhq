@@ -217,7 +217,7 @@ describe('NewBranchForm', () => {
       });
 
       it('emits `success` event', () => {
-        expect(wrapper.emitted('success')).toBeTruthy();
+        expect(wrapper.emitted('success')).toHaveLength(1);
       });
 
       it('called `createBranch` mutation correctly', () => {

@@ -128,9 +128,11 @@ describe('Poll', () => {
         errorCallback: callbacks.error,
       });
 
+      expect(Polling.timeoutID).toBeNull();
+
       Polling.makeDelayedRequest(1);
 
-      expect(Polling.timeoutID).toBeTruthy();
+      expect(Polling.timeoutID).not.toBeNull();
 
       return waitForAllCallsToFinish(2, () => {
         Polling.stop();

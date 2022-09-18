@@ -313,8 +313,7 @@ describe('WorkItemDetail component', () => {
           await waitForPromises();
           findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
           await waitForPromises();
-
-          expect(wrapper.emitted('workItemUpdated')).toBeFalsy();
+          expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
 
           await nextTick();
 

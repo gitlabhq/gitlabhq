@@ -55,7 +55,7 @@ describe('SidebarTodo', () => {
       wrapper.find('button').trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().toggleTodo).toBeTruthy();
+      expect(wrapper.emitted().toggleTodo).toHaveLength(1);
     });
 
     it('renders component container element with proper data attributes', () => {

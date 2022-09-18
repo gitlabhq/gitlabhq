@@ -618,7 +618,7 @@ describe('Dashboard', () => {
           findRearrangeButton().vm.$emit('click');
           await nextTick();
 
-          expect(findRearrangeButton().attributes('pressed')).toBeTruthy();
+          expect(findRearrangeButton().attributes('pressed')).toBe('true');
           expect(findEnabledDraggables().wrappers).toEqual(findDraggables().wrappers);
         });
 
@@ -662,7 +662,7 @@ describe('Dashboard', () => {
 
           findRearrangeButton().vm.$emit('click');
           await nextTick();
-          expect(findRearrangeButton().attributes('pressed')).toBeFalsy();
+          expect(findRearrangeButton().attributes('pressed')).toBeUndefined();
           expect(findEnabledDraggables().length).toBe(0);
         });
       });

@@ -86,7 +86,7 @@ describe('SignInGitlabMultiversion', () => {
           const button = findSignInOauthButton();
           button.vm.$emit('error');
 
-          expect(wrapper.emitted('error')).toBeTruthy();
+          expect(wrapper.emitted('error')).toHaveLength(1);
         });
       });
     });

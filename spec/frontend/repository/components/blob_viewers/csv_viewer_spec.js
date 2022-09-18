@@ -21,7 +21,7 @@ describe('CSV Viewer', () => {
   it('renders a Source Editor component', () => {
     createComponent();
     expect(findCsvViewerComp().exists()).toBe(true);
-    expect(findCsvViewerComp().props('remoteFile')).toBeTruthy();
+    expect(findCsvViewerComp().props('remoteFile')).toBe(true);
     expect(findCsvViewerComp().props('csv')).toBe(DEFAULT_BLOB_DATA.rawPath);
   });
 });

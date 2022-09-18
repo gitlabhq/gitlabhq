@@ -164,8 +164,9 @@ describe('JiraImportForm', () => {
 
     it('shows a heading for the user mapping section', () => {
       expect(
-        getByRole(wrapper.element, 'heading', { name: 'Jira-GitLab user mapping template' }),
-      ).toBeTruthy();
+        getByRole(wrapper.element, 'heading', { name: 'Jira-GitLab user mapping template' })
+          .innerText,
+      ).toBe('Jira-GitLab user mapping template');
     });
 
     it('shows information to the user', () => {
@@ -182,15 +183,15 @@ describe('JiraImportForm', () => {
       });
 
       it('has a "Jira display name" column', () => {
-        expect(getHeader('Jira display name')).toBeTruthy();
+        expect(getHeader('Jira display name').innerText).toBe('Jira display name');
       });
 
       it('has an "arrow" column', () => {
-        expect(getHeader('Arrow')).toBeTruthy();
+        expect(getHeader('Arrow').getAttribute('aria-label')).toBe('Arrow');
       });
 
       it('has a "GitLab username" column', () => {
-        expect(getHeader('GitLab username')).toBeTruthy();
+        expect(getHeader('GitLab username').innerText).toBe('GitLab username');
       });
     });
 

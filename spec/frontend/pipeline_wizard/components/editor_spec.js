@@ -11,7 +11,7 @@ describe('Pages Yaml Editor wrapper', () => {
     const wrapper = mount(YamlEditor, defaultOptions);
 
     it('editor is mounted', () => {
-      expect(wrapper.vm.editor).not.toBeFalsy();
+      expect(wrapper.vm.editor).not.toBeUndefined();
       expect(wrapper.find('.gl-source-editor').exists()).toBe(true);
     });
   });

@@ -97,14 +97,14 @@ describe('BlobButtonGroup component', () => {
         findReplaceButton().trigger('click');
 
         expect(findUploadBlobModal().vm.show).not.toHaveBeenCalled();
-        expect(wrapper.emitted().fork).toBeTruthy();
+        expect(wrapper.emitted().fork).toHaveLength(1);
       });
 
       it('does not trigger the DeleteBlobModal from the delete button', () => {
         findDeleteButton().trigger('click');
 
         expect(findDeleteBlobModal().vm.show).not.toHaveBeenCalled();
-        expect(wrapper.emitted().fork).toBeTruthy();
+        expect(wrapper.emitted().fork).toHaveLength(1);
       });
     });
   });

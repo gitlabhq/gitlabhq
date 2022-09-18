@@ -70,7 +70,7 @@ describe('MultilineCommentForm', () => {
     glSelect.vm.$emit('change', { ...testLine });
 
     expect(wrapper.vm.commentLineStart).toEqual(line);
-    expect(wrapper.emitted('input')).toBeTruthy();
+    expect(wrapper.emitted('input')).toHaveLength(1);
     // Once during created, once during updateCommentLineStart
     expect(setSelectedCommentPosition).toHaveBeenCalledTimes(2);
   });

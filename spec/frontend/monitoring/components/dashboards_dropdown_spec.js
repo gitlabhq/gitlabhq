@@ -163,9 +163,6 @@ describe('DashboardsDropdown', () => {
       findItemAt(1).vm.$emit('click');
     });
 
-    it('emits a "selectDashboard" event', () => {
-      expect(wrapper.emitted().selectDashboard).toBeTruthy();
-    });
     it('emits a "selectDashboard" event with dashboard information', () => {
       expect(wrapper.emitted().selectDashboard[0]).toEqual([dashboardGitResponse[0]]);
     });
