@@ -281,6 +281,48 @@ RSpec.describe SearchController do
 
         get :show, params: { scope: 'issues', search: 'hello world' }
       end
+
+      context 'custom search sli error rate' do
+        context 'when the search is successful' do
+          it 'increments the custom search sli error rate with error: false' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+              error: false,
+              search_scope: 'issues',
+              search_type: 'basic',
+              search_level: 'global'
+            )
+
+            get :show, params: { scope: 'issues', search: 'hello world' }
+          end
+        end
+
+        context 'when the search raises an error' do
+          before do
+            allow_next_instance_of(SearchService) do |service|
+              allow(service).to receive(:search_results).and_raise(ActiveRecord::QueryCanceled)
+            end
+          end
+
+          it 'increments the custom search sli error rate with error: true' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+              error: true,
+              search_scope: 'issues',
+              search_type: 'basic',
+              search_level: 'global'
+            )
+
+            get :show, params: { scope: 'issues', search: 'hello world' }
+          end
+        end
+
+        context 'when something goes wrong before a search is done' do
+          it 'does not increment the error rate' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).not_to receive(:record_error_rate)
+
+            get :show, params: { scope: 'issues' } # no search query
+          end
+        end
+      end
     end
 
     describe 'GET #count', :aggregate_failures do

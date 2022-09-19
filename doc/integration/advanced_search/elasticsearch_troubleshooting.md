@@ -9,6 +9,64 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the following information to troubleshoot Elasticsearch issues.
 
+## Set configurations in the Rails console
+
+See [Starting a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+### List attributes
+
+To list all available attributes:
+
+1. Open the Rails console (`gitlab rails c`).
+1. Run the following command:
+
+```ruby
+ApplicationSetting.last.attributes
+```
+
+The output contains all the settings available in [Elasticsearch integration](../../integration/advanced_search/elasticsearch.md), such as `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, and `elasticsearch_pause_indexing`.
+
+### Set attributes
+
+To set an Elasticsearch integration setting, run a command like:
+
+```ruby
+ApplicationSetting.last.update(elasticsearch_url: '<your ES URL and port>')
+
+#or
+
+ApplicationSetting.last.update(elasticsearch_indexing: false)
+```
+
+### Get attributes
+
+To check if the settings have been set in [Elasticsearch integration](../../integration/advanced_search/elasticsearch.md) or in the Rails console, run a command like:
+
+```ruby
+Gitlab::CurrentSettings.elasticsearch_url
+
+#or
+
+Gitlab::CurrentSettings.elasticsearch_indexing
+```
+
+### Change the password
+
+To change the Elasticsearch password, run the following commands:
+
+```ruby
+es_url = Gitlab::CurrentSettings.current_application_settings
+
+# Confirm the current Elasticsearch URL
+es_url.elasticsearch_url
+
+# Set the Elasticsearch URL
+es_url.elasticsearch_url = "http://<username>:<password>@your.es.host:<port>"
+
+# Save the change
+es_url.save!
+```
+
 ## View logs
 
 One of the most valuable tools for identifying issues with the Elasticsearch

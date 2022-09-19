@@ -167,6 +167,9 @@
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
+  - ".gitlab/ci/package-and-test/*.yml"
+  - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
+  - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
 
 .gitaly-patterns: &gitaly-patterns
   - "GITALY_SERVER_VERSION"

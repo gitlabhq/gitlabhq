@@ -10,6 +10,14 @@ RSpec.describe Projects::ProcessSyncEventsWorker do
 
   include_examples 'an idempotent worker'
 
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
+  it 'has an option to reschedule once if deduplicated' do
+    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once })
+  end
+
   describe '#perform' do
     subject(:perform) { worker.perform }
 

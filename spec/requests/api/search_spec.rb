@@ -363,6 +363,32 @@ RSpec.describe API::Search do
         get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
       end
 
+      it 'increments the custom search sli error rate with error false if no error occurred' do
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+          error: false,
+          search_scope: 'issues',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
+      end
+
+      it 'increments the custom search sli error rate with error true if an error occurred' do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(:search_results).and_raise(ActiveRecord::QueryCanceled)
+        end
+
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+          error: true,
+          search_scope: 'issues',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
+      end
+
       it 'sets global search information for logging' do
         expect(Gitlab::Instrumentation::GlobalSearchApi).to receive(:set_information).with(
           type: 'basic',
@@ -630,7 +656,7 @@ RSpec.describe API::Search do
 
       context 'when requesting basic search' do
         it 'passes the parameter to search service' do
-          expect(SearchService).to receive(:new).with(user, hash_including(basic_search: 'true'))
+          expect(SearchService).to receive(:new).with(user, hash_including(basic_search: 'true')).twice
 
           get api(endpoint, user), params: { scope: 'issues', search: 'awesome', basic_search: 'true' }
         end

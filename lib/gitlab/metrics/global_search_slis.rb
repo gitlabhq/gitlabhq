@@ -13,9 +13,13 @@ module Gitlab
         ADVANCED_CODE_TARGET_S = 13.546
 
         def initialize_slis!
-          return unless Feature.enabled?(:global_search_custom_slis)
+          if Feature.enabled?(:global_search_custom_slis)
+            Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, possible_labels)
+          end
 
-          Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, possible_labels)
+          return unless Feature.enabled?(:global_search_error_rate_sli)
+
+          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:global_search, possible_labels)
         end
 
         def record_apdex(elapsed:, search_type:, search_level:, search_scope:)
@@ -24,6 +28,15 @@ module Gitlab
           Gitlab::Metrics::Sli::Apdex[:global_search].increment(
             labels: labels(search_type: search_type, search_level: search_level, search_scope: search_scope),
             success: elapsed < duration_target(search_type, search_scope)
+          )
+        end
+
+        def record_error_rate(error:, search_type:, search_level:, search_scope:)
+          return unless Feature.enabled?(:global_search_error_rate_sli)
+
+          Gitlab::Metrics::Sli::ErrorRate[:global_search].increment(
+            labels: labels(search_type: search_type, search_level: search_level, search_scope: search_scope),
+            error: error
           )
         end
 
