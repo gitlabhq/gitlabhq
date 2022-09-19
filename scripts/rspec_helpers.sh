@@ -358,7 +358,7 @@ function rspec_fail_fast() {
 }
 
 function rspec_matched_foss_tests() {
-  local test_file_count_threshold=20
+  local test_file_count_threshold=40
   local matching_tests_file=${1}
   local foss_matching_tests_file="${matching_tests_file}-foss"
 

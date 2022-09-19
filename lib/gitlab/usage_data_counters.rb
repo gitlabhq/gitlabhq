@@ -3,13 +3,8 @@
 module Gitlab
   module UsageDataCounters
     COUNTERS = [
-      WikiPageCounter,
       NoteCounter,
-      SnippetCounter,
       SearchCounter,
-      CycleAnalyticsCounter,
-      ProductivityAnalyticsCounter,
-      SourceCodeCounter,
       KubernetesAgentCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze
@@ -20,7 +15,12 @@ module Gitlab
       DesignsCounter,
       DiffsCounter,
       ServiceUsageDataCounter,
-      WebIdeCounter
+      WebIdeCounter,
+      WikiPageCounter,
+      SnippetCounter,
+      CycleAnalyticsCounter,
+      ProductivityAnalyticsCounter,
+      SourceCodeCounter
     ].freeze
 
     UsageDataCounterError = Class.new(StandardError)

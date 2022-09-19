@@ -27,9 +27,7 @@ module QA
       before do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
-          commit.add_files([
-            { file_path: 'README.md', content: readme_content }
-          ])
+          commit.add_files([{ file_path: 'README.md', content: readme_content }])
         end
 
         Flow::Login.sign_in

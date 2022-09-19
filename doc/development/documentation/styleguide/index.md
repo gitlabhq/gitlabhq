@@ -1127,6 +1127,14 @@ Do not use words to describe the icon:
 - Avoid: `Select **Erase job log** (the trash icon).`
 - Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
 
+When the button doesn't have any hover text, you can describe the icon.
+Follow up by creating a
+[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Bug)
+to add hover text to the button to improve accessibility.
+
+- Avoid: `Select **{ellipsis_v}**.`
+- Use instead: `Select the vertical ellipsis (**{ellipsis_v}**).` This generates as: Select the vertical ellipsis (**{ellipsis_v}**).
+
 ## Videos
 
 Adding GitLab YouTube video tutorials to the documentation is highly

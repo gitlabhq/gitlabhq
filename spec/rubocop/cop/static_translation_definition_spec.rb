@@ -38,6 +38,15 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
           C = n_("c")
               ^^^^^^^ #{msg}
         CODE
+        <<~'CODE',
+          A = _('a' \
+              ^^^^^^^ [...]
+                'b')
+        CODE
+        <<~'CODE',
+          A = _("a#{s}")
+              ^^^^^^^^^^ [...]
+        CODE
         <<~CODE,
           class MyClass
             def self.translations
@@ -100,6 +109,9 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
         'CONSTANT_1 = __("a")',
         'CONSTANT_2 = s__("a")',
         'CONSTANT_3 = n__("a")',
+        'CONSTANT_var = _(code)',
+        'CONSTANT_int = _(1)',
+        'CONSTANT_none = _()',
         <<~CODE,
           class MyClass
             def self.method

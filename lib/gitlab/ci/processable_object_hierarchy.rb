@@ -20,12 +20,16 @@ module Gitlab
       def ancestor_conditions(cte)
         middle_table[:name].eq(objects_table[:name]).and(
           middle_table[:build_id].eq(cte.table[:id])
+        ).and(
+          objects_table[:commit_id].eq(cte.table[:commit_id])
         )
       end
 
       def descendant_conditions(cte)
         middle_table[:build_id].eq(objects_table[:id]).and(
           middle_table[:name].eq(cte.table[:name])
+        ).and(
+          objects_table[:commit_id].eq(cte.table[:commit_id])
         )
       end
     end

@@ -47,7 +47,11 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute' do
 
         it 'reassigns associated projects and returns success response' do
           expect(execute).to be_success
-          expect(runner.reload.projects.ids).to eq([owner_project.id] + project_ids)
+
+          runner.reload
+
+          expect(runner.owner_project).to eq(owner_project)
+          expect(runner.projects.ids).to match_array([owner_project.id] + project_ids)
         end
       end
 
@@ -56,7 +60,11 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute' do
 
         it 'reassigns associated projects and returns success response' do
           expect(execute).to be_success
-          expect(runner.reload.projects.ids).to eq([owner_project.id] + project_ids)
+
+          runner.reload
+
+          expect(runner.owner_project).to eq(owner_project)
+          expect(runner.projects.ids).to match_array([owner_project.id] + project_ids)
         end
       end
     end

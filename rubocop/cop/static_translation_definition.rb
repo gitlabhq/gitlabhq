@@ -64,7 +64,7 @@ module RuboCop
       NON_METHOD_DEFINITIONS = %i[class_methods included prepended].to_set.freeze
 
       def_node_matcher :translation_method?, <<~PATTERN
-        (send _ {#{RESTRICT_ON_SEND.map(&:inspect).join(' ')}} str*)
+        (send _ {#{RESTRICT_ON_SEND.map(&:inspect).join(' ')}} {dstr str}+)
       PATTERN
 
       def on_send(node)

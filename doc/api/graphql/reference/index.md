@@ -320,7 +320,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
-| <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: '<field_name>_<sort_direction>', for example: 'id_desc' or 'name_asc'. |
+| <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 | <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 
 ### `Query.queryComplexity`

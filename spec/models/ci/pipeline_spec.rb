@@ -3813,7 +3813,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   describe '#upstream_root' do
     subject { pipeline.upstream_root }
 
-    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
 
     context 'when pipeline is child of child pipeline' do
       let!(:root_ancestor) { create(:ci_pipeline) }

@@ -138,9 +138,9 @@ module Gitlab
         .with
         .recursive(ancestors.to_arel, descendants.to_arel)
         .from_union([
-          ancestors_scope,
-          descendants_scope
-        ])
+                      ancestors_scope,
+                      descendants_scope
+                    ])
 
       read_only(relation)
     end

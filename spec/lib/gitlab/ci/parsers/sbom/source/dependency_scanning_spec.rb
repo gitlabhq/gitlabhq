@@ -19,8 +19,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning do
     it 'returns expected source data' do
       is_expected.to have_attributes(
         source_type: :dependency_scanning,
-        data: property_data,
-        fingerprint: '4dbcb747e6f0fb3ed4f48d96b777f1d64acdf43e459fdfefad404e55c004a188'
+        data: property_data
       )
     end
   end

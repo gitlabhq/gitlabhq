@@ -4,6 +4,7 @@ query getPackageDetails($id: PackagesPackageID!) {
     name
     packageType
     version
+    lastDownloadedAt
     createdAt
     updatedAt
     status

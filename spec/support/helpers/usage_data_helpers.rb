@@ -2,18 +2,10 @@
 
 module UsageDataHelpers
   SMAU_KEYS = %i(
-      snippet_create
-      snippet_update
       snippet_comment
       merge_request_comment
       commit_comment
-      wiki_pages_create
-      wiki_pages_update
-      wiki_pages_delete
       navbar_searches
-      cycle_analytics_views
-      productivity_analytics_views
-      source_code_pushes
     ).freeze
 
   COUNTS_KEYS = %i(

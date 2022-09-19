@@ -21,18 +21,18 @@ module Gitlab
     MAX_GENERATION_TIME_FOR_SAAS = 40.hours
 
     CE_MEMOIZED_VALUES = %i(
-        issue_minimum_id
-        issue_maximum_id
-        project_minimum_id
-        project_maximum_id
-        user_minimum_id
-        user_maximum_id
-        deployment_minimum_id
-        deployment_maximum_id
-        auth_providers
-        aggregated_metrics
-        recorded_at
-      ).freeze
+      issue_minimum_id
+      issue_maximum_id
+      project_minimum_id
+      project_maximum_id
+      user_minimum_id
+      user_maximum_id
+      deployment_minimum_id
+      deployment_maximum_id
+      auth_providers
+      aggregated_metrics
+      recorded_at
+    ).freeze
 
     class << self
       include Gitlab::Utils::UsageData

@@ -23,8 +23,7 @@ module Gitlab
 
               ::Gitlab::Ci::Reports::Sbom::Source.new(
                 type: :dependency_scanning,
-                data: data,
-                fingerprint: fingerprint
+                data: data
               )
             end
 
@@ -36,10 +35,6 @@ module Gitlab
               REQUIRED_ATTRIBUTES.all? do |keys|
                 data.dig(*keys).present?
               end
-            end
-
-            def fingerprint
-              Digest::SHA256.hexdigest(data.to_json)
             end
           end
         end

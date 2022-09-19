@@ -79,6 +79,18 @@ exports[`PackageTitle renders with tags 1`] = `
             texttooltip=""
           />
         </div>
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <metadata-item-stub
+            data-testid="package-last-downloaded-at"
+            icon="download"
+            link=""
+            size="m"
+            text="Last downloaded Aug 17, 2021"
+            texttooltip=""
+          />
+        </div>
       </div>
     </div>
      
@@ -161,6 +173,18 @@ exports[`PackageTitle renders without tags 1`] = `
             link=""
             size="s"
             text="800.00 KiB"
+            texttooltip=""
+          />
+        </div>
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <metadata-item-stub
+            data-testid="package-last-downloaded-at"
+            icon="download"
+            link=""
+            size="m"
+            text="Last downloaded Aug 17, 2021"
             texttooltip=""
           />
         </div>

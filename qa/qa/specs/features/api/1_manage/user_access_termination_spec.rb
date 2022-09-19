@@ -69,9 +69,7 @@ module QA
                 commit.branch = "new_branch_#{SecureRandom.hex(8)}"
                 commit.start_branch = @project.default_branch
                 commit.commit_message = 'Add new file'
-                commit.add_files([
-                  { file_path: 'test.txt', content: 'new file' }
-                ])
+                commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
               end
             end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError, /403 Forbidden - You are not allowed to push into this branch/)
           end

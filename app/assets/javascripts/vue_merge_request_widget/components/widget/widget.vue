@@ -187,7 +187,7 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="media gl-p-5">
+    <div class="gl-p-5 gl-align-items-center gl-display-flex">
       <status-icon
         :level="1"
         :name="widgetName"

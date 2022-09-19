@@ -175,21 +175,22 @@ module Gitlab
           order_expression = arel_table[column].public_send(direction).public_send(nulls_position) # rubocop:disable GitlabSecurity/PublicSend
           reverse_order_expression = arel_table[column].public_send(reverse_direction).public_send(reverse_nulls_position) # rubocop:disable GitlabSecurity/PublicSend
 
-          ::Gitlab::Pagination::Keyset::Order.build([
-            ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-              attribute_name: column,
-              column_expression: arel_table[column],
-              order_expression: order_expression,
-              reversed_order_expression: reverse_order_expression,
-              order_direction: direction,
-              nullable: nulls_position,
-              distinct: false
-            ),
-            ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-              attribute_name: klass.primary_key,
-              order_expression: arel_order_classes[direction].new(arel_table[klass.primary_key.to_sym])
-            )
-          ])
+          ::Gitlab::Pagination::Keyset::Order.build(
+            [
+              ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                attribute_name: column,
+                column_expression: arel_table[column],
+                order_expression: order_expression,
+                reversed_order_expression: reverse_order_expression,
+                order_direction: direction,
+                nullable: nulls_position,
+                distinct: false
+              ),
+              ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                attribute_name: klass.primary_key,
+                order_expression: arel_order_classes[direction].new(arel_table[klass.primary_key.to_sym])
+              )
+            ])
         end
 
         def read_from_replica_if_available(&block)

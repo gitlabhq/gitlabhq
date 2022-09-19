@@ -49,10 +49,10 @@ module Gitlab
             [
               nil,
               list([
-                s_('InProductMarketing|Start by %{performance_link}').html_safe % { performance_link: performance_link },
-                s_('InProductMarketing|Move on to easily creating a Pages website %{ci_template_link}').html_safe % { ci_template_link: ci_template_link },
-                s_('InProductMarketing|And finally %{deploy_link} a Python application.').html_safe % { deploy_link: deploy_link }
-              ]),
+                     s_('InProductMarketing|Start by %{performance_link}').html_safe % { performance_link: performance_link },
+                     s_('InProductMarketing|Move on to easily creating a Pages website %{ci_template_link}').html_safe % { ci_template_link: ci_template_link },
+                     s_('InProductMarketing|And finally %{deploy_link} a Python application.').html_safe % { deploy_link: deploy_link }
+                   ]),
               nil
             ][series]
           end

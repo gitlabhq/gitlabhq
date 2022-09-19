@@ -45,7 +45,8 @@ RSpec.describe Mutations::Ci::Runner::Update do
     end
 
     context 'when user can update runner', :enable_admin_mode do
-      let(:admin_user) { create(:user, :admin) }
+      let_it_be(:admin_user) { create(:user, :admin) }
+
       let(:current_ctx) { { current_user: admin_user } }
 
       context 'with valid arguments' do
@@ -134,8 +135,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
               response
 
               expect(response[:errors]).to match_array(['user not allowed to assign runner'])
-              expect(response[:runner]).to be_an_instance_of(Ci::Runner)
-              expect(response[:runner]).not_to have_attributes(expected_attributes)
+              expect(response[:runner]).to be_nil
               expect(runner.reload).not_to have_attributes(expected_attributes)
               expect(runner.projects).to match_array([project1])
             end
@@ -164,7 +164,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
         let(:mutation_params) do
           {
             id: runner.to_global_id,
-            associated_projects: ['gid://gitlab/Project/-1']
+            associated_projects: ["gid://gitlab/Project/#{non_existing_record_id}"]
           }
         end
 
@@ -191,6 +191,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
         end
 
         it 'returns a descriptive error' do
+          expect(response[:runner]).to be_nil
           expect(response[:errors]).to contain_exactly(
             'Maximum timeout needs to be at least 10 minutes',
             'Tags list can not be empty when runner is not allowed to pick untagged jobs'
@@ -202,6 +203,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
         it 'returns a descriptive error' do
           mutation_params[:maintenance_note] = '1' * 1025
 
+          expect(response[:runner]).to be_nil
           expect(response[:errors]).to contain_exactly(
             'Maintenance note is too long (maximum is 1024 characters)'
           )

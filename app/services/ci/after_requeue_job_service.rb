@@ -26,7 +26,7 @@ module Ci
       return legacy_dependent_jobs unless ::Feature.enabled?(:ci_requeue_with_dag_object_hierarchy, project)
 
       ordered_by_dag(
-        ::Ci::Processable
+        @processable.pipeline.processables
           .from_union(needs_dependent_jobs, stage_dependent_jobs)
           .skipped
           .ordered_by_stage

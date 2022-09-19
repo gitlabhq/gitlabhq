@@ -16,18 +16,18 @@ module QA
             commit.project = project
             commit.update_files(
               [
-                  {
-                      file_path: '.gitlab-ci.yml',
-                      content: 'script'
-                  }
+                {
+                    file_path: '.gitlab-ci.yml',
+                    content: 'script'
+                }
               ]
             )
             commit.add_files(
               [
-                  {
-                      file_path: 'foo',
-                      content: 'bar'
-                  }
+                {
+                    file_path: 'foo',
+                    content: 'bar'
+                }
               ]
             )
           end

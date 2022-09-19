@@ -28398,6 +28398,9 @@ msgstr ""
 msgid "PackageRegistry|Invalid Package: failed metadata extraction"
 msgstr ""
 
+msgid "PackageRegistry|Last downloaded %{dateTime}"
+msgstr ""
+
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
@@ -43498,7 +43501,7 @@ msgstr ""
 msgid "UsersSelect|Unassigned"
 msgstr ""
 
-msgid "Uses GitLab as a lightweight alternative to Sentry."
+msgid "Uses GitLab as an alternative to Sentry."
 msgstr ""
 
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"

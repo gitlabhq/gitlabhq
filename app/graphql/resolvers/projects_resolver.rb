@@ -12,8 +12,8 @@ module Resolvers
 
     argument :sort, GraphQL::Types::String,
              required: false,
-             description: "Sort order of results. Format: '<field_name>_<sort_direction>', " \
-                 "for example: 'id_desc' or 'name_asc'"
+             description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
+                 "for example: `id_desc` or `name_asc`"
 
     def resolve(**args)
       ProjectsFinder

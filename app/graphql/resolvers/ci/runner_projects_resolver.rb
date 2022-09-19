@@ -21,8 +21,8 @@ module Resolvers
                    'Specify `"id_asc"` if query results\' order is important',
                  milestone: '15.4'
                },
-               description: "Sort order of results. Format: '<field_name>_<sort_direction>', " \
-                 "for example: 'id_desc' or 'name_asc'"
+               description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
+                 "for example: `id_desc` or `name_asc`"
 
       def resolve_with_lookahead(**args)
         return unless runner.project_type?

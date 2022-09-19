@@ -955,6 +955,10 @@ rspec foss-impact:
     expire_in: 7d
     paths:
       - tmp/capybara/
+  # Temporary allow failure because of the high rate of failure due to the job
+  # running a lot more tests since https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96152.
+  # This should be reverted once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96797 is merged.
+  allow_failure: true
 
 fail-pipeline-early:
   extends:
