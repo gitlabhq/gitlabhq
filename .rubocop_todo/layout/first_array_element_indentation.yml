@@ -2,22 +2,6 @@
 # Cop supports --auto-correct.
 Layout/FirstArrayElementIndentation:
   Exclude:
-    - 'ee/lib/ee/api/helpers/award_emoji.rb'
-    - 'ee/spec/graphql/mutations/incident_management/escalation_policy/create_spec.rb'
-    - 'ee/spec/lib/gitlab/graphql/loaders/bulk_epic_aggregate_loader_spec.rb'
-    - 'ee/spec/models/snippet_repository_spec.rb'
-    - 'ee/spec/services/protected_environments/base_service_spec.rb'
-    - 'ee/spec/services/search_service_spec.rb'
-    - 'ee/spec/services/security/ingestion/tasks/hooks_execution_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/process_scan_result_policy_service_spec.rb'
-    - 'ee/spec/services/security/store_findings_metadata_service_spec.rb'
-    - 'ee/spec/services/timebox_report_service_spec.rb'
-    - 'ee/spec/services/user_permissions/export_service_spec.rb'
-    - 'ee/spec/support/shared_examples/services/search_notes_shared_examples.rb'
-    - 'ee/spec/workers/geo/scheduler/scheduler_worker_spec.rb'
-    - 'lib/event_filter.rb'
-    - 'lib/gitlab/database/migration_helpers.rb'
-    - 'lib/gitlab/email/message/in_product_marketing/team.rb'
     - 'lib/gitlab/email/message/in_product_marketing/trial.rb'
     - 'lib/gitlab/email/message/in_product_marketing/verify.rb'
     - 'lib/gitlab/import_export/base/relation_factory.rb'

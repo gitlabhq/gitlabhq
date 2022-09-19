@@ -4495,6 +4495,7 @@ Input type: `RunnerUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
 | <a id="mutationrunnerupdateactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `paused`. Deprecated in 14.8. |
+| <a id="mutationrunnerupdateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Projects associated with the runner. Available only for project runners. |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnerupdatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="mutationrunnerupdateid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner to update. |

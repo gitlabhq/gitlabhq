@@ -17,6 +17,8 @@ module Ci
           return ServiceResponse.error(message: 'user not allowed to assign runner', http_status: :forbidden)
         end
 
+        return ServiceResponse.success if project_ids.blank?
+
         set_associated_projects
       end
 
@@ -47,16 +49,15 @@ module Ci
 
       def associate_new_projects(new_project_ids, current_project_ids)
         missing_projects = Project.id_in(new_project_ids - current_project_ids)
-        missing_projects.each do |project|
-          return false unless runner.assign_to(project, current_user)
-        end
-
-        true
+        missing_projects.all? { |project| runner.assign_to(project, current_user) }
       end
 
       def disassociate_old_projects(new_project_ids, current_project_ids)
+        projects_to_be_deleted = current_project_ids - new_project_ids
+        return true if projects_to_be_deleted.empty?
+
         Ci::RunnerProject
-          .destroy_by(project_id: current_project_ids - new_project_ids)
+          .destroy_by(project_id: projects_to_be_deleted)
           .all?(&:destroyed?)
       end
 

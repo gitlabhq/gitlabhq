@@ -35,6 +35,10 @@ module QA
         end
 
         def click_submit
+          # In case any changes were just made, wait for the hidden content field to be updated via a deferred call
+          # before clicking submit. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97693#note_1098728562
+          sleep 0.5
+
           click_element(:wiki_submit_button)
 
           QA::Support::Retrier.retry_on_exception do

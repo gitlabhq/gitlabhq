@@ -8,7 +8,8 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute' do
   let_it_be(:owner_project) { create(:project) }
   let_it_be(:project2) { create(:project) }
   let_it_be(:original_projects) { [owner_project, project2] }
-  let_it_be(:runner) { create(:ci_runner, :project, projects: original_projects) }
+
+  let(:runner) { create(:ci_runner, :project, projects: original_projects) }
 
   context 'without user' do
     let(:user) { nil }
@@ -35,35 +36,52 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute' do
   end
 
   context 'with admin user', :enable_admin_mode do
-    let(:user) { create_default(:user, :admin) }
-    let(:project_ids) { [project3.id, project4.id] }
+    let_it_be(:user) { create(:user, :admin) }
+
     let(:project3) { create(:project) }
     let(:project4) { create(:project) }
 
     context 'with successful requests' do
-      it 'calls assign_to on runner and returns success response' do
-        expect(execute).to be_success
-        expect(runner.reload.projects.ids).to match_array([owner_project.id] + project_ids)
+      context 'when disassociating a project' do
+        let(:project_ids) { [project3.id, project4.id] }
+
+        it 'reassigns associated projects and returns success response' do
+          expect(execute).to be_success
+          expect(runner.reload.projects.ids).to eq([owner_project.id] + project_ids)
+        end
+      end
+
+      context 'when disassociating no projects' do
+        let(:project_ids) { [project2.id, project3.id] }
+
+        it 'reassigns associated projects and returns success response' do
+          expect(execute).to be_success
+          expect(runner.reload.projects.ids).to eq([owner_project.id] + project_ids)
+        end
       end
     end
 
     context 'with failing assign_to requests' do
+      let(:project_ids) { [project3.id, project4.id] }
+
       it 'returns error response and rolls back transaction' do
         expect(runner).to receive(:assign_to).with(project4, user).once.and_return(false)
 
         expect(execute).to be_error
-        expect(runner.reload.projects).to match_array(original_projects)
+        expect(runner.reload.projects).to eq(original_projects)
       end
     end
 
     context 'with failing destroy calls' do
+      let(:project_ids) { [project3.id, project4.id] }
+
       it 'returns error response and rolls back transaction' do
         allow_next_found_instance_of(Ci::RunnerProject) do |runner_project|
           allow(runner_project).to receive(:destroy).and_return(false)
         end
 
         expect(execute).to be_error
-        expect(runner.reload.projects).to match_array(original_projects)
+        expect(runner.reload.projects).to eq(original_projects)
       end
     end
   end

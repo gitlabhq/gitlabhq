@@ -131,18 +131,19 @@ class EventFilter
     finder_query = -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
 
     if order_hint_column.present?
-      order = Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: order_hint_column,
-          order_expression: Event.arel_table[order_hint_column].desc,
-          nullable: :nulls_last,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :id,
-          order_expression: Event.arel_table[:id].desc
-        )
-      ])
+      order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: order_hint_column,
+            order_expression: Event.arel_table[order_hint_column].desc,
+            nullable: :nulls_last,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Event.arel_table[:id].desc
+          )
+        ])
 
       finder_query = -> (_order_hint, id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
     end

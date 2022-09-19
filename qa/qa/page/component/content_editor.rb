@@ -46,8 +46,6 @@ module QA
             find_element(:file_upload_field, visible: false).send_keys(image_path)
           end
 
-          wait_for_requests
-
           QA::Support::Retrier.retry_on_exception do
             source = find_element(:wiki_hidden_content, visible: false)
             source.value =~ %r{uploads/.*#{::File.basename(image_path)}}
