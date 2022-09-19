@@ -30876,8 +30876,6 @@ CREATE INDEX tmp_index_container_repos_on_non_migrated ON container_repositories
 
 CREATE INDEX tmp_index_container_repositories_on_id_migration_state ON container_repositories USING btree (id, migration_state);
 
-CREATE INDEX tmp_index_for_namespace_id_migration_on_group_members ON members USING btree (id) WHERE ((member_namespace_id IS NULL) AND ((type)::text = 'GroupMember'::text));
-
 CREATE INDEX tmp_index_for_null_project_namespace_id ON projects USING btree (id) WHERE (project_namespace_id IS NULL);
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));

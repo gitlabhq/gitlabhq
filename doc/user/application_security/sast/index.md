@@ -748,7 +748,7 @@ variables:
 
 ### Pipeline errors related to changes in the GitLab-managed CI/CD template
 
-The [the GitLab-managed SAST CI/CD template](#configure-sast-manually) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+The [GitLab-managed SAST CI/CD template](#configure-sast-manually) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
 
 - See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
 - Experience another type of unexpected issue with your CI/CD pipeline configuration.

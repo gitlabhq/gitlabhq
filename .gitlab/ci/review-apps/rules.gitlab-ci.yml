@@ -70,10 +70,11 @@
 # ------------------------------------------
 # Prepare/Report
 # ------------------------------------------
-# if no framework changes or QA_SUITES do not contain review scenarios, pipeline will not have e2e test jobs
+# if no rules for test execution are matched, pipeline will not have e2e test jobs
 # so we need to skip knapsack, allure and test resource deletion jobs as well
-.rules:qa-framework-changes-or-review-scenarios:
+.rules:app-or-qa-framework-changes-or-review-scenarios:
   rules:
+    - *app-changes
     - *qa-framework-changes
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/

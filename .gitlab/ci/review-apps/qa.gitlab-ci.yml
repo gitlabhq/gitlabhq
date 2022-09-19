@@ -58,7 +58,7 @@ include:
 download-knapsack-report:
   extends:
     - .bundle-base
-    - .review:rules:review-build-cng
+    - .rules:app-or-qa-framework-changes-or-review-scenarios
   stage: prepare
   script:
     - bundle exec rake "knapsack:download[qa]"
@@ -134,7 +134,7 @@ review-performance:
 e2e-test-report:
   extends:
     - .generate-allure-report-base
-    - .rules:qa-framework-changes-or-review-scenarios
+    - .rules:app-or-qa-framework-changes-or-review-scenarios
   stage: post-qa
   variables:
     ALLURE_JOB_NAME: e2e-review-qa
@@ -162,7 +162,7 @@ upload-knapsack-report:
 delete-test-resources:
   extends:
     - .bundle-base
-    - .rules:qa-framework-changes-or-review-scenarios
+    - .rules:app-or-qa-framework-changes-or-review-scenarios
   stage: post-qa
   variables:
     QA_TEST_RESOURCES_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-resources-*.json
