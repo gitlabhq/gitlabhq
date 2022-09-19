@@ -25,7 +25,7 @@ class WebHookLog < ApplicationRecord
   before_save :redact_author_email
 
   def self.recent
-    where('created_at >= ?', 2.days.ago.beginning_of_day)
+    where(created_at: 2.days.ago.beginning_of_day..Time.zone.now)
       .order(created_at: :desc)
   end
 

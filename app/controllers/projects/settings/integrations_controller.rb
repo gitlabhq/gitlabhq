@@ -124,7 +124,7 @@ module Projects
       def web_hook_logs
         return unless integration.try(:service_hook).present?
 
-        @web_hook_logs ||= integration.service_hook.web_hook_logs.recent.page(params[:page])
+        @web_hook_logs ||= integration.service_hook.web_hook_logs.recent.page(params[:page]).without_count
       end
 
       def ensure_integration_enabled

@@ -1,5 +1,5 @@
-import { GlDaterangePicker, GlSprintf } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlDaterangePicker } from '@gitlab/ui';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import Daterange from '~/analytics/shared/components/daterange.vue';
 
@@ -13,13 +13,12 @@ describe('Daterange component', () => {
 
   let wrapper;
 
-  const factory = (props = defaultProps, mountFn = shallowMount) => {
+  const factory = (props = defaultProps, mountFn = shallowMountExtended) => {
     wrapper = mountFn(Daterange, {
       propsData: {
         ...defaultProps,
         ...props,
       },
-      stubs: { GlSprintf },
     });
   };
 
@@ -28,7 +27,7 @@ describe('Daterange component', () => {
   });
 
   const findDaterangePicker = () => wrapper.findComponent(GlDaterangePicker);
-  const findDateRangeIndicator = () => wrapper.findComponent(GlSprintf);
+  const findDateRangeIndicator = () => wrapper.findByTestId('daterange-picker-indicator');
 
   describe('template', () => {
     describe('when show is false', () => {
@@ -52,7 +51,7 @@ describe('Daterange component', () => {
         const endDate = new Date('2019-09-30');
         const minDate = new Date('2019-06-01');
 
-        factory({ show: true, startDate, endDate, minDate }, mount);
+        factory({ show: true, startDate, endDate, minDate }, mountExtended);
         const input = findDaterangePicker().find('input');
 
         input.setValue('2019-01-01');
@@ -64,7 +63,7 @@ describe('Daterange component', () => {
 
     describe('with a maxDateRange being set', () => {
       beforeEach(() => {
-        factory({ maxDateRange: 30 });
+        factory({ maxDateRange: 30 }, mountExtended);
       });
 
       it('displays the max date range indicator', () => {
@@ -72,7 +71,7 @@ describe('Daterange component', () => {
       });
 
       it('displays the correct number of selected days in the indicator', () => {
-        expect(findDateRangeIndicator().text()).toMatchInterpolatedText('10 days selected');
+        expect(findDateRangeIndicator().text()).toBe('10 days selected');
       });
 
       it('sets the tooltip', () => {

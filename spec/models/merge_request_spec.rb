@@ -3227,62 +3227,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe '#detailed_merge_status' do
-    subject(:detailed_merge_status) { merge_request.detailed_merge_status }
-
-    context 'when merge status is cannot_be_merged_rechecking' do
-      let(:merge_request) { create(:merge_request, merge_status: :cannot_be_merged_rechecking) }
-
-      it 'returns :checking' do
-        expect(detailed_merge_status).to eq(:checking)
-      end
-    end
-
-    context 'when merge status is preparing' do
-      let(:merge_request) { create(:merge_request, merge_status: :preparing) }
-
-      it 'returns :checking' do
-        expect(detailed_merge_status).to eq(:checking)
-      end
-    end
-
-    context 'when merge status is checking' do
-      let(:merge_request) { create(:merge_request, merge_status: :checking) }
-
-      it 'returns :checking' do
-        expect(detailed_merge_status).to eq(:checking)
-      end
-    end
-
-    context 'when merge status is unchecked' do
-      let(:merge_request) { create(:merge_request, merge_status: :unchecked) }
-
-      it 'returns :unchecked' do
-        expect(detailed_merge_status).to eq(:unchecked)
-      end
-    end
-
-    context 'when merge checks are a success' do
-      let(:merge_request) { create(:merge_request) }
-
-      it 'returns :mergeable' do
-        expect(detailed_merge_status).to eq(:mergeable)
-      end
-    end
-
-    context 'when merge status have a failure' do
-      let(:merge_request) { create(:merge_request) }
-
-      before do
-        merge_request.close!
-      end
-
-      it 'returns the failure reason' do
-        expect(detailed_merge_status).to eq(:not_open)
-      end
-    end
-  end
-
   describe '#mergeable_state?' do
     it_behaves_like 'for mergeable_state'
 

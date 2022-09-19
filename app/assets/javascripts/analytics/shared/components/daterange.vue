@@ -1,13 +1,10 @@
 <script>
-import { GlDaterangePicker, GlSprintf } from '@gitlab/ui';
-import { getDayDifference } from '~/lib/utils/datetime_utility';
-import { __, sprintf } from '~/locale';
-import { OFFSET_DATE_BY_ONE } from '../constants';
+import { GlDaterangePicker } from '@gitlab/ui';
+import { n__, __, sprintf } from '~/locale';
 
 export default {
   components: {
     GlDaterangePicker,
-    GlSprintf,
   },
   props: {
     show: {
@@ -69,9 +66,10 @@ export default {
         this.$emit('change', { startDate, endDate });
       },
     },
-    numberOfDays() {
-      const dayDifference = getDayDifference(this.startDate, this.endDate);
-      return this.includeSelectedDate ? dayDifference + OFFSET_DATE_BY_ONE : dayDifference;
+  },
+  methods: {
+    numberOfDays(daysSelected) {
+      return n__('1 day selected', '%d days selected', daysSelected);
     },
   },
 };
@@ -96,9 +94,9 @@ export default {
       end-picker-class="js-daterange-picker-to gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-lg-align-items-center gl-mb-2 gl-lg-mb-0"
       label-class="gl-mb-2 gl-lg-mb-0"
     >
-      <gl-sprintf :message="n__('1 day selected', '%d days selected', numberOfDays)">
-        <template #numberOfDays>{{ numberOfDays }}</template>
-      </gl-sprintf>
+      <template #default="{ daysSelected }">
+        {{ numberOfDays(daysSelected) }}
+      </template>
     </gl-daterange-picker>
   </div>
 </template>

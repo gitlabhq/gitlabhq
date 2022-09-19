@@ -57,6 +57,10 @@ export default {
         includeSubgroups: true,
       };
     },
+    currentDate() {
+      const now = new Date();
+      return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    },
   },
   multiProjectSelect: true,
   maxDateRange: DATE_RANGE_LIMIT,
@@ -93,6 +97,7 @@ export default {
           v-if="hasDateRangeFilter"
           :start-date="startDate"
           :end-date="endDate"
+          :max-date="currentDate"
           :max-date-range="$options.maxDateRange"
           :include-selected-date="true"
           class="js-daterange-picker"

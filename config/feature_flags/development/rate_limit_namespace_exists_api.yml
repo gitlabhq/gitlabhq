@@ -1,8 +1,0 @@
----
-name: rate_limit_namespace_exists_api
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96133
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371723
-milestone: '15.4'
-type: development
-group: group::workspace
-default_enabled: false

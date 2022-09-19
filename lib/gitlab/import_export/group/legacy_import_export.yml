@@ -29,7 +29,7 @@ included_attributes:
     - :created_at
     - :updated_at
     - :start_date
-    - :last_run_date
+    - :next_run_date
     - :duration_in_weeks
     - :iterations_in_advance
     - :active

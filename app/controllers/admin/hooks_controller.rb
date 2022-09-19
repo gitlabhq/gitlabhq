@@ -27,7 +27,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def hook_logs
-    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page])
+    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
   end
 
   def hook_param_names

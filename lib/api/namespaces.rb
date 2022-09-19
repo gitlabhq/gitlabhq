@@ -66,7 +66,7 @@ module API
         optional :parent_id, type: Integer, desc: "The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered."
       end
       get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
-        check_rate_limit!(:namespace_exists, scope: current_user) if Feature.enabled?(:rate_limit_namespace_exists_api)
+        check_rate_limit!(:namespace_exists, scope: current_user)
 
         namespace_path = params[:namespace]
         existing_namespaces_within_the_parent = Namespace.without_project_namespaces.by_parent(params[:parent_id])

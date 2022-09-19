@@ -38612,7 +38612,7 @@ msgstr ""
 msgid "SuggestedColors|Green-cyan"
 msgstr ""
 
-msgid "SuggestedColors|Lavendar"
+msgid "SuggestedColors|Lavender"
 msgstr ""
 
 msgid "SuggestedColors|Magenta-pink"

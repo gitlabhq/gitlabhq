@@ -158,12 +158,18 @@ Set the limit to `0` to disable it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
 
-This setting limits global search requests.
+This setting limits global search requests as follows:
 
 | Limit                   | Default (requests per minute) |
 |-------------------------|-------------------------------|
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
+
+Depending on the number of enabled [scopes](../user/search/advanced_search.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
+
+```plaintext
+This endpoint has been requested too many times. Try again later.
+```
 
 ### Pipeline creation rate limit
 
