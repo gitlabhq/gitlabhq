@@ -26,6 +26,8 @@ to be emitted from the rails application:
 
 1. [`rails_request_apdex`](rails_request_apdex.md)
 1. `global_search_apdex`
+1. `global_search_error_rate`
+1. `global_search_indexing_apdex`
 
 ## Defining a new SLI
 

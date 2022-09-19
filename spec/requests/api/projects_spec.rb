@@ -4783,18 +4783,6 @@ RSpec.describe API::Projects do
           expect(project_ids_from_response).to include(shared_to_owner_group.id)
           expect(project_ids_from_response).not_to include(shared_to_guest_group.id)
         end
-
-        context 'when the feature flag `include_groups_from_group_shares_in_project_transfer_locations` is disabled' do
-          before do
-            stub_feature_flags(include_groups_from_group_shares_in_project_transfer_locations: false)
-          end
-
-          it 'does not include any groups arising from group shares' do
-            request
-
-            expect(project_ids_from_response).not_to include(shared_to_owner_group.id, shared_to_guest_group.id)
-          end
-        end
       end
 
       def project_ids_from_response

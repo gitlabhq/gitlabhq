@@ -1,7 +1,7 @@
+import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
@@ -86,18 +86,14 @@ describe('CI Badge Link Component', () => {
     wrapper.destroy();
   });
 
-  it.each(Object.keys(statuses))('should render badge for status: %s', async (status) => {
+  it.each(Object.keys(statuses))('should render badge for status: %s', (status) => {
     createComponent({ status: statuses[status] });
 
-    expect(wrapper.attributes('href')).toBe();
+    expect(wrapper.attributes('href')).toBe(statuses[status].details_path);
     expect(wrapper.text()).toBe(statuses[status].text);
     expect(wrapper.classes()).toContain('ci-status');
     expect(wrapper.classes()).toContain(`ci-${statuses[status].group}`);
     expect(findIcon().exists()).toBe(true);
-
-    await wrapper.trigger('click');
-
-    expect(visitUrl).toHaveBeenCalledWith(statuses[status].details_path);
   });
 
   it('should not render label', () => {
@@ -109,7 +105,7 @@ describe('CI Badge Link Component', () => {
   it('should emit ciStatusBadgeClick event', async () => {
     createComponent({ status: statuses.success });
 
-    await wrapper.trigger('click');
+    await wrapper.find(GlLink).vm.$emit('click');
 
     expect(wrapper.emitted('ciStatusBadgeClick')).toEqual([[]]);
   });

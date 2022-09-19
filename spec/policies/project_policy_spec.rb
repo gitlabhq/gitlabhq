@@ -465,15 +465,14 @@ RSpec.describe ProjectPolicy do
   end
 
   context 'owner access' do
-    let!(:owner_user) { create(:user) }
-    let!(:owner_of_different_thing) { create(:user) }
-    let(:stranger) { create(:user) }
+    let_it_be(:owner_user) { owner }
+    let_it_be(:owner_of_different_thing) { create(:user) }
 
     context 'personal project' do
-      let!(:project) { create(:project) }
-      let!(:project2) { create(:project) }
+      let_it_be(:project) { private_project }
+      let_it_be(:project2) { create(:project) }
 
-      before do
+      before_all do
         project.add_guest(guest)
         project.add_reporter(reporter)
         project.add_developer(developer)
@@ -483,7 +482,7 @@ RSpec.describe ProjectPolicy do
 
       it 'allows owner access', :aggregate_failures do
         expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
-        expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(non_member, project)).to be_disallowed(:owner_access)
         expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
         expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
         expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
@@ -493,12 +492,12 @@ RSpec.describe ProjectPolicy do
     end
 
     context 'group project' do
-      let(:group) { create(:group) }
-      let!(:group2) { create(:group) }
-      let!(:project) { create(:project, group: group) }
+      let_it_be(:project) { private_project_in_group }
+      let_it_be(:group2) { create(:group) }
+      let_it_be(:group) { project.group }
 
       context 'group members' do
-        before do
+        before_all do
           group.add_guest(guest)
           group.add_reporter(reporter)
           group.add_developer(developer)
@@ -509,7 +508,7 @@ RSpec.describe ProjectPolicy do
 
         it 'allows owner access', :aggregate_failures do
           expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
-          expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(non_member, project)).to be_disallowed(:owner_access)
           expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
           expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
           expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
@@ -1692,7 +1691,7 @@ RSpec.describe ProjectPolicy do
       let_it_be(:project_with_analytics_private) { create(:project, :analytics_private) }
       let_it_be(:project_with_analytics_enabled) { create(:project, :analytics_enabled) }
 
-      before do
+      before_all do
         project_with_analytics_disabled.add_guest(guest)
         project_with_analytics_private.add_guest(guest)
         project_with_analytics_enabled.add_guest(guest)

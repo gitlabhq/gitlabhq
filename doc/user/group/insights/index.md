@@ -1,50 +1,47 @@
 ---
-type: reference, howto
 stage: Manage
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Insights **(ULTIMATE)**
+# Insights for groups **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
-Configure the Insights that matter for your groups. Explore data such as
-triage hygiene, issues created or closed for a given period, average time for merge
-requests to be merged, and much more.
-
-![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v13_11.png)
+Configure Insights to explore data about you group's activity, such as
+triage hygiene, issues created or closed in a given period, and average time for merge
+requests to be merged.
 
 ## View your group's Insights
+
+Prerequisites:
+
+- You must have [permission](../../permissions.md#group-members-permissions) to view the group.
+- You must have access to a project to view information about its merge requests and issues,
+  and permission to view them if they are confidential.
 
 To access your group's Insights:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Insights**.
 
+![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v13_11.png)
+
 ## Configure your Insights
 
-GitLab reads Insights from the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
-If you want to customize it:
+GitLab reads Insights from the
+[default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
+You can also create custom Insights charts that are more relevant for your group.
 
-1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md)
+To customize your Insights:
+
+1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#writing-your-gitlabinsightsyml)
 in a project that belongs to your group.
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Insights**.
 1. Select the project that contains your `.gitlab/insights.yml` configuration file.
 1. Select **Save changes**.
-
-## Permissions
-
-If you have access to view a group, then you have access to view its Insights.
-
-NOTE:
-Issues or merge requests that you don't have access to (because you don't have
-access to the project they belong to, or because they are confidential) are
-filtered out of the Insights charts.
-
-You may also consult the [group permissions table](../../permissions.md#group-members-permissions).
 
 <!-- ## Troubleshooting
 

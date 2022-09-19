@@ -181,9 +181,11 @@ Include in the MR description:
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
   through the `#database-lab` Slack channel or through [ChatOps](database/understanding_explain_plans.md#chatops).
-  - Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the
-  `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`)
-   projects provide enough data to serve as a good example.
+  - To produce a query plan with enough data, you can use the IDs of:
+    - The `gitlab-org` namespace (`namespace_id = 9970`), for queries involving a group.
+    - The `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`) projects, for queries involving a project.
+    - The `gitlab-qa` user (`user_id = 1614863`), for queries involving a user.
+      - Optionally, you can also use your own `user_id`, or the `user_id` of a user with a long history within the project or group being used to generate the query plan.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
   - If your queries belong to a new feature in GitLab.com and thus they don't return data in production:
     - You may analyze the query and to provide the plan from a local environment.

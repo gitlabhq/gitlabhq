@@ -276,6 +276,10 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
    end
    ```
 
+   NOTE:
+   For EE migrations that define `scope_to`, ensure the module extends `ActiveSupport::Concern`.
+   Otherwise, records are processed without taking the scope into consideration.
+
 1. In the post-deployment migration, enqueue the batched background migration:
 
    ```ruby

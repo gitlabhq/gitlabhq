@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"net/url"
@@ -164,7 +163,15 @@ func sentinelDialer(dopts []redis.DialOption) redisDialerFunc {
 			return nil, err
 		}
 		dopts = append(dopts, redis.DialNetDial(keepAliveDialer))
-		return redisDial("tcp", address, dopts...)
+		conn, err := redisDial("tcp", address, dopts...)
+		if err != nil {
+			return nil, err
+		}
+		if !sentinel.TestRole(conn, "master") {
+			conn.Close()
+			return nil, fmt.Errorf("%s is not redis master", address)
+		}
+		return conn, nil
 	}
 }
 
@@ -246,14 +253,6 @@ func Configure(cfg *config.RedisConfig, dialFunc func(*config.RedisConfig, bool)
 		IdleTimeout: defaultIdleTimeout, // X time until an unused connection is closed
 		Dial:        poolDialFunc,
 		Wait:        true,
-	}
-	if sntnl != nil {
-		pool.TestOnBorrow = func(c redis.Conn, t time.Time) error {
-			if !sentinel.TestRole(c, "master") {
-				return errors.New("role check failed")
-			}
-			return nil
-		}
 	}
 }
 
