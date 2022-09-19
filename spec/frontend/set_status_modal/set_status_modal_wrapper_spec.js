@@ -1,14 +1,14 @@
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import createFlash from '~/flash';
 import stubChildren from 'helpers/stub_children';
-import SetStatusModalWrapper, {
-  AVAILABILITY_STATUS,
-} from '~/set_status_modal/set_status_modal_wrapper.vue';
+import SetStatusModalWrapper from '~/set_status_modal/set_status_modal_wrapper.vue';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
+import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 
 jest.mock('~/flash');
 
@@ -33,7 +33,7 @@ describe('SetStatusModalWrapper', () => {
   };
 
   const createComponent = (props = {}) => {
-    return mount(SetStatusModalWrapper, {
+    return mountExtended(SetStatusModalWrapper, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -42,6 +42,7 @@ describe('SetStatusModalWrapper', () => {
         ...stubChildren(SetStatusModalWrapper),
         GlFormInput: false,
         GlFormInputGroup: false,
+        SetStatusForm: false,
         EmojiPicker: EmojiPickerStub,
       },
       mocks: {
@@ -51,7 +52,8 @@ describe('SetStatusModalWrapper', () => {
   };
 
   const findModal = () => wrapper.find(GlModal);
-  const findFormField = (field) => wrapper.find(`[name="user[status][${field}]"]`);
+  const findMessageField = () =>
+    wrapper.findByPlaceholderText(SetStatusForm.i18n.statusMessagePlaceholder);
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
   const findAvailabilityCheckbox = () => wrapper.find(GlFormCheckbox);
   const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
@@ -81,14 +83,8 @@ describe('SetStatusModalWrapper', () => {
       return initModal();
     });
 
-    it('sets the hidden status emoji field', () => {
-      const field = findFormField('emoji');
-      expect(field.exists()).toBe(true);
-      expect(field.element.value).toBe(defaultEmoji);
-    });
-
     it('sets the message field', () => {
-      const field = findFormField('message');
+      const field = findMessageField();
       expect(field.exists()).toBe(true);
       expect(field.element.value).toBe(defaultMessage);
     });
@@ -118,10 +114,10 @@ describe('SetStatusModalWrapper', () => {
       });
     });
 
-    it('sets emojiTag when clicking in emoji picker', async () => {
+    it('passes emoji to `SetStatusForm`', async () => {
       await getEmojiPicker().vm.$emit('click', 'thumbsup');
 
-      expect(wrapper.vm.emojiTag).toContain('data-name="thumbsup"');
+      expect(wrapper.findComponent(SetStatusForm).props('emoji')).toBe('thumbsup');
     });
   });
 
@@ -133,23 +129,11 @@ describe('SetStatusModalWrapper', () => {
     });
 
     it('does not set the message field', () => {
-      expect(findFormField('message').element.value).toBe('');
+      expect(findMessageField().element.value).toBe('');
     });
 
     it('hides the clear status button', () => {
       expect(findClearStatusButton().exists()).toBe(false);
-    });
-  });
-
-  describe('with no currentEmoji set', () => {
-    beforeEach(async () => {
-      await initEmojiMock();
-      wrapper = createComponent({ currentEmoji: '' });
-      return initModal();
-    });
-
-    it('does not set the hidden status emoji field', () => {
-      expect(findFormField('emoji').element.value).toBe('');
     });
   });
 
@@ -182,8 +166,7 @@ describe('SetStatusModalWrapper', () => {
         findModal().vm.$emit('secondary');
         await nextTick();
 
-        expect(findFormField('message').element.value).toBe('');
-        expect(findFormField('emoji').element.value).toBe('');
+        expect(findMessageField().element.value).toBe('');
       });
 
       it('clicking "setStatus" submits the user status', async () => {
@@ -194,7 +177,7 @@ describe('SetStatusModalWrapper', () => {
         findAvailabilityCheckbox().vm.$emit('input', true);
 
         // set the currentClearStatusAfter to 30 minutes
-        wrapper.find('[data-testid="thirtyMinutes"]').vm.$emit('click');
+        wrapper.find('[data-testid="thirtyMinutes"]').trigger('click');
 
         findModal().vm.$emit('primary');
         await nextTick();

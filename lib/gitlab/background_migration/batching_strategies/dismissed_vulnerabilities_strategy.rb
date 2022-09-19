@@ -3,14 +3,9 @@
 module Gitlab
   module BackgroundMigration
     module BatchingStrategies
-      # Batching class to use for setting state in vulnerabilitites table.
-      # Batches will be scoped to records where the dismissed_at is set.
-      #
-      # If no more batches exist in the table, returns nil.
+      # Used to apply additional filters to the batching table, migrated to
+      # use BatchedMigrationJob#filter_batch with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93771
       class DismissedVulnerabilitiesStrategy < PrimaryKeyBatchingStrategy
-        def apply_additional_filters(relation, job_arguments: [], job_class: nil)
-          relation.where.not(dismissed_at: nil)
-        end
       end
     end
   end

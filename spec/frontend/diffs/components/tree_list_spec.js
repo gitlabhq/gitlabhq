@@ -106,7 +106,7 @@ describe('Diffs tree list component', () => {
         ${'index.js'}   | ${1}
         ${'app/*.js'}   | ${1}
         ${'*.js, *.rb'} | ${2}
-      `('it returns $itemSize item for $extension', async ({ extension, itemSize }) => {
+      `('returns $itemSize item for $extension', async ({ extension, itemSize }) => {
         wrapper.find('[data-testid="diff-tree-search"]').setValue(extension);
 
         await nextTick();
@@ -175,7 +175,7 @@ describe('Diffs tree list component', () => {
       await nextTick();
       // Have to use $attrs['viewed-files'] because we are passing down an object
       // and attributes('') stringifies values (e.g. [object])...
-      expect(wrapper.find(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
+      expect(wrapper.findComponent(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
     });
   });
 });

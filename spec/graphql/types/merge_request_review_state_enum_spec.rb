@@ -12,10 +12,6 @@ RSpec.describe GitlabSchema.types['MergeRequestReviewState'] do
       'UNREVIEWED' => have_attributes(
         description: 'The merge request is unreviewed.',
         value: 'unreviewed'
-      ),
-      'ATTENTION_REQUESTED' => have_attributes(
-        description: 'The merge request is attention_requested.',
-        value: 'attention_requested'
       )
     )
   end

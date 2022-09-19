@@ -1,4 +1,4 @@
-- can_add_new_domain = can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
+- can_add_new_domain = can_create_pages_custom_domains?(current_user, @project)
 
 %h1.page-title.gl-font-size-h-display.with-button
   = s_('GitLabPages|Pages')

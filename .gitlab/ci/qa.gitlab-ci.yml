@@ -1,5 +1,5 @@
 .qa-job-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-chrome-103-docker-20.10.14
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
   extends:
     - .default-retry
     - .qa-cache
@@ -57,7 +57,7 @@ qa:selectors-as-if-foss:
     - .qa:rules:as-if-foss
     - .as-if-foss
 
-update-qa-cache:
+qa:update-qa-cache:
   extends:
     - .qa-job-base
     - .qa-cache-push
@@ -66,103 +66,40 @@ update-qa-cache:
   script:
     - echo "Cache has been updated and ready to be uploaded."
 
-populate-qa-tests-var:
+e2e:package-and-test:
   extends:
-    - .qa:rules:determine-qa-tests
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
-  stage: prepare
-  script:
-    - export QA_TESTS=$(scripts/determine-qa-tests --files $CHANGES_FILE --labels "$CI_MERGE_REQUEST_LABELS")
-    - 'echo "QA_TESTS=$QA_TESTS" >> qa_tests_var.env'
-    - 'echo "QA_TESTS: $QA_TESTS"'
-  artifacts:
-    expire_in: 2d
-    reports:
-      dotenv: qa_tests_var.env
-    paths:
-      - ${CHANGES_FILE}
-      - qa_tests_var.env
-  variables:
-    CHANGES_FILE: tmp/changed_files.txt
-  needs:
-    - detect-tests
-
-.package-and-qa-base:
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}-alpine
+    - .qa:rules:package-and-test
   stage: qa
-  retry: 0
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-    - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
-  script:
-    - 'echo "QA_TESTS: $QA_TESTS"'
-    - exit_code=0 && tooling/bin/qa/run_qa_check ${CHANGES_DIFFS_DIR} || exit_code=$?
-    - echo $exit_code
-    - |
-      if [ $exit_code -eq 0 ]; then
-        ./scripts/trigger-build.rb omnibus
-      elif [ $exit_code -eq 1 ]; then
-        exit 1
-      else
-        echo "Downstream jobs will not be triggered because run_qa_check exited with code: $exit_code"
-      fi
-  # These jobs often time out, so temporarily use private runners and a long timeout: https://gitlab.com/gitlab-org/gitlab/-/issues/238563
-  tags:
-    - prm
-  timeout: 4h
   needs:
-    - job: build-qa-image
-      artifacts: false
-    - job: build-assets-image
-      artifacts: false
-    - job: populate-qa-tests-var
-    - detect-tests
-  artifacts:
-    expire_in: 7d
-    paths:
-      - ${CHANGES_DIFFS_DIR}/*
+    - build-assets-image
+    - build-qa-image
+    - e2e-test-pipeline-generate
   variables:
-    CHANGES_DIFFS_DIR: tmp/diffs
-    ALLURE_JOB_NAME: $CI_JOB_NAME
+    SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
+  trigger:
+    strategy: depend
+    include:
+      - artifact: package-and-test-pipeline.yml
+        job: e2e-test-pipeline-generate
 
-.package-and-qa-ff-base:
+# Fetch child pipeline test results and store in parent pipeline
+# workaround until natively implemented: https://gitlab.com/groups/gitlab-org/-/epics/8205
+e2e:package-and-test-results:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
+  extends:
+    - .qa-job-base
+    - .qa:rules:package-and-test
+  stage: qa
+  needs:
+    - e2e:package-and-test
+  variables:
+    COLORIZED_LOGS: "true"
+    QA_LOG_LEVEL: "debug"
+  when: always
+  allow_failure: true
   script:
-    - |
-      feature_flags=$(scripts/changed-feature-flags --files $CHANGES_DIFFS_DIR --state $QA_FF_STATE)
-      if [[ $feature_flags ]]; then
-        export GITLAB_QA_OPTIONS="--set-feature-flags $feature_flags"
-        echo $GITLAB_QA_OPTIONS
-        ./scripts/trigger-build.rb omnibus
-      else
-        echo "No changed feature flag found to test as $QA_FF_STATE."
-      fi
-
-package-and-qa:
-  extends:
-    - .package-and-qa-base
-    - .qa:rules:package-and-qa
-
-package-and-qa-ff-enabled:
-  extends:
-    - .package-and-qa-base
-    - .package-and-qa-ff-base
-    - .qa:rules:package-and-qa:feature-flags
-  variables:
-    QA_FF_STATE: "enabled"
-
-package-and-qa-ff-disabled:
-  extends:
-    - .package-and-qa-base
-    - .package-and-qa-ff-base
-    - .qa:rules:package-and-qa:feature-flags
-  variables:
-    QA_FF_STATE: "disabled"
-
-package-and-qa-ff-deleted:
-  extends:
-    - .package-and-qa-base
-    - .package-and-qa-ff-base
-    - .qa:rules:package-and-qa:feature-flags
-  variables:
-    QA_FF_STATE: "deleted"
+    - bundle exec rake "ci:download_test_results[e2e:package-and-test,e2e-test-report,${CI_PROJECT_DIR}]"
+  artifacts:
+    when: always
+    reports:
+      junit: gitlab-qa-run-*/**/rspec-*.xml

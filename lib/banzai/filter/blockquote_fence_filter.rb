@@ -6,13 +6,13 @@ module Banzai
       REGEX = %r{
           #{::Gitlab::Regex.markdown_code_or_html_blocks}
         |
-          (?=^>>>\ *\n.*\n>>>\ *$)(?:
+          (?=(?<=^\n|\A)>>>\ *\n.*\n>>>\ *(?=\n$|\z))(?:
             # Blockquote:
             # >>>
             # Anything, including code and HTML blocks
             # >>>
 
-            ^>>>\ *\n
+            (?<=^\n|\A)>>>\ *\n
             (?<quote>
               (?:
                   # Any character that doesn't introduce a code or HTML block
@@ -30,7 +30,7 @@ module Banzai
                   \g<html>
               )+?
             )
-            \n>>>\ *$
+            \n>>>\ *(?=\n$|\z)
           )
       }mx.freeze
 

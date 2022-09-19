@@ -27,7 +27,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
     end
 
     it 'displays a mini pipeline graph' do
-      expect(page).to have_selector('[data-testid="commit-box-mini-graph"]')
+      expect(page).to have_selector('[data-testid="commit-box-pipeline-mini-graph"]')
 
       first('[data-testid="mini-pipeline-graph-dropdown"]').click
 
@@ -35,7 +35,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
 
       page.within '.js-builds-dropdown-list' do
         expect(page).to have_selector('.ci-status-icon-running')
-        expect(page).to have_content(build.stage)
+        expect(page).to have_content(build.stage_name)
       end
 
       build.drop

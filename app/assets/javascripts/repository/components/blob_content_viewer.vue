@@ -13,9 +13,10 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
+import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import addBlameLink from '~/blob/blob_blame_link';
+import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
-import blobInfoQuery from '../queries/blob_info.query.graphql';
 import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
@@ -41,6 +42,21 @@ export default {
     },
   },
   apollo: {
+    projectInfo: {
+      query: projectInfoQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+        };
+      },
+      error() {
+        this.displayError();
+      },
+      update({ project }) {
+        this.pathLocks = project.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
+        this.userPermissions = project.userPermissions;
+      },
+    },
     gitpodEnabled: {
       query: applicationInfoQuery,
       error() {
@@ -121,6 +137,8 @@ export default {
       gitpodEnabled: DEFAULT_BLOB_INFO.gitpodEnabled,
       currentUser: DEFAULT_BLOB_INFO.currentUser,
       useFallback: false,
+      pathLocks: DEFAULT_BLOB_INFO.pathLocks,
+      userPermissions: DEFAULT_BLOB_INFO.userPermissions,
     };
   },
   computed: {
@@ -163,7 +181,7 @@ export default {
       );
     },
     canLock() {
-      const { pushCode, downloadCode } = this.project.userPermissions;
+      const { pushCode, downloadCode } = this.userPermissions;
       const currentUsername = window.gon?.current_username;
 
       if (this.pathLockedByUser && this.pathLockedByUser.username !== currentUsername) {
@@ -173,12 +191,12 @@ export default {
       return pushCode && downloadCode;
     },
     pathLockedByUser() {
-      const pathLock = this.project?.pathLocks?.nodes.find((node) => node.path === this.path);
+      const pathLock = this.pathLocks?.nodes.find((node) => node.path === this.path);
 
       return pathLock ? pathLock.user : null;
     },
     showForkSuggestion() {
-      const { createMergeRequestIn, forkProject } = this.project.userPermissions;
+      const { createMergeRequestIn, forkProject } = this.userPermissions;
       const { canModifyBlob } = this.blobInfo;
 
       return this.isLoggedIn && !canModifyBlob && createMergeRequestIn && forkProject;
@@ -338,7 +356,7 @@ export default {
             :name="blobInfo.name"
             :replace-path="blobInfo.replacePath"
             :delete-path="blobInfo.webPath"
-            :can-push-code="project.userPermissions.pushCode"
+            :can-push-code="userPermissions.pushCode"
             :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
             :empty-repo="project.repository.empty"
             :project-path="projectPath"

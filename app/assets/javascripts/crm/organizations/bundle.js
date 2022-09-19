@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import CrmOrganizationsRoot from './components/organizations_root.vue';
 import routes from './routes';
 
@@ -21,7 +22,14 @@ export default () => {
     return false;
   }
 
-  const { basePath, canAdminCrmOrganization, groupFullPath, groupId, groupIssuesPath } = el.dataset;
+  const {
+    basePath,
+    canAdminCrmOrganization,
+    groupFullPath,
+    groupId,
+    groupIssuesPath,
+    textQuery,
+  } = el.dataset;
 
   const router = new VueRouter({
     base: basePath,
@@ -33,7 +41,13 @@ export default () => {
     el,
     router,
     apolloProvider,
-    provide: { canAdminCrmOrganization, groupFullPath, groupId, groupIssuesPath },
+    provide: {
+      canAdminCrmOrganization: parseBoolean(canAdminCrmOrganization),
+      groupFullPath,
+      groupId,
+      groupIssuesPath,
+      textQuery,
+    },
     render(createElement) {
       return createElement(CrmOrganizationsRoot);
     },

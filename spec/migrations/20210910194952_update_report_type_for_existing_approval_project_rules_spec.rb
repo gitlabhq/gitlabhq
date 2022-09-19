@@ -39,7 +39,7 @@ RSpec.describe UpdateReportTypeForExistingApprovalProjectRules, :migration do
   end
 
   context 'with the rule name set to another value (e.g., Test Rule)' do
-    let(:rule_name) { 'Test Rule'}
+    let(:rule_name) { 'Test Rule' }
 
     it 'does not update report_type' do
       expect { migrate! }.not_to change { approval_project_rule.reload.report_type }

@@ -10,6 +10,8 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu do
     end
   end
 
+  let_it_be(:harbor_integration) { create(:harbor_integration, group: group, project: nil) }
+
   let(:user) { owner }
   let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
   let(:menu) { described_class.new(context) }

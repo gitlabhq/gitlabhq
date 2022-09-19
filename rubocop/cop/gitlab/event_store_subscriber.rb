@@ -30,7 +30,7 @@ module RuboCop
       #    end
       #  end
       #
-      class EventStoreSubscriber < RuboCop::Cop::Cop
+      class EventStoreSubscriber < RuboCop::Cop::Base
         SUBSCRIBER_MODULE_NAME = 'Gitlab::EventStore::Subscriber'
         FORBID_PERFORM_OVERRIDE = "Do not override `perform` in a `#{SUBSCRIBER_MODULE_NAME}`."
         REQUIRE_HANDLE_EVENT = "A `#{SUBSCRIBER_MODULE_NAME}` must implement `#handle_event(event)`."

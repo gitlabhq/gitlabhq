@@ -102,8 +102,12 @@ export default function initCopyToClipboard() {
  * @param {HTMLElement} btnElement
  */
 export function clickCopyToClipboardButton(btnElement) {
-  // Ensure the button has already been tooltip'd.
-  add([btnElement], { show: true });
+  const { clipboardHandleTooltip = true } = btnElement.dataset;
+
+  if (parseBoolean(clipboardHandleTooltip)) {
+    // Ensure the button has already been tooltip'd.
+    add([btnElement], { show: true });
+  }
 
   btnElement.click();
 }

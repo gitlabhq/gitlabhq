@@ -27,6 +27,13 @@ associated with a group rather than a project or user.
 
 In self-managed instances, group access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
 
+WARNING:
+The ability to create group access tokens without expiry was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and is planned for removal in GitLab
+16.0. When this ability is removed, existing group access tokens without an expiry are planned to have an expiry added.
+The automatic adding of an expiry occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry
+occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
+
 You can use group access tokens:
 
 - On GitLab SaaS if you have the Premium license tier or higher. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
@@ -43,11 +50,12 @@ configured for personal access tokens.
 
 ## Create a group access token using UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 
 To create a group access token:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
@@ -104,7 +112,7 @@ or API. However, administrators can use a workaround:
 
 To revoke a group access token:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Next to the group access token to revoke, select **Revoke**.
 
@@ -138,7 +146,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 
 To enable or disable group access token creation for all sub-groups in a top-level group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
@@ -154,8 +162,9 @@ to groups instead of projects. Bot users for groups:
 - Do not count as licensed seats.
 - Can have a maximum role of Owner for a group. For more information, see
   [Create a group access token](../../../api/group_access_tokens.md#create-a-group-access-token).
-- The username is set to `group_{project_id}_bot` for the first access token. For example, `project_123_bot`.  
-- The email is set to `group{group_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot@noreply.example.com`.
-- All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects)
+- Have a username set to `group_{group_id}_bot` for the first access token. For example, `group_123_bot`.  
+- Have an email set to `group{group_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot@noreply.example.com`.
+
+All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).
 
 For more information, see [Bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).

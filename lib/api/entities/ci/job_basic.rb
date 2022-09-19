@@ -18,6 +18,12 @@ module API
         expose :web_url do |job, _options|
           Gitlab::Routing.url_helpers.project_job_url(job.project, job)
         end
+
+        expose :project do
+          expose :ci_job_token_scope_enabled do |job|
+            job.project.ci_job_token_scope_enabled?
+          end
+        end
       end
     end
   end

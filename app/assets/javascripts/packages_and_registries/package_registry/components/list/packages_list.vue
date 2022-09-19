@@ -151,7 +151,7 @@ export default {
         @primaryAction="showConfirmationModal"
         >{{ $options.i18n.errorMessageBodyAlert }}</gl-alert
       >
-      <div data-qa-selector="packages-table">
+      <div data-testid="packages-table">
         <packages-list-row
           v-for="packageEntity in list"
           :key="packageEntity.id"

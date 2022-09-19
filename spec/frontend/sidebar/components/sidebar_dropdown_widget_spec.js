@@ -238,6 +238,24 @@ describe('SidebarDropdownWidget', () => {
         expect(findSelectedAttribute().text()).toBe('None');
       });
     });
+
+    describe("when user doesn't have permission to view current attribute", () => {
+      it('renders no permission text', () => {
+        createComponent({
+          data: {
+            hasCurrentAttribute: true,
+            currentAttribute: null,
+          },
+          queries: {
+            currentAttribute: { loading: false },
+          },
+        });
+
+        expect(findSelectedAttribute().text()).toBe(
+          `You don't have permission to view this ${wrapper.props('issuableAttribute')}.`,
+        );
+      });
+    });
   });
 
   describe('when a user can edit', () => {

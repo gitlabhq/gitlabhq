@@ -1,5 +1,5 @@
-import { masks } from 'dateformat';
 import { get } from 'lodash';
+import { masks } from '~/lib/dateformat';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
 const { isoDate } = masks;

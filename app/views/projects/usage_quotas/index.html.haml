@@ -1,6 +1,6 @@
 - page_title s_("UsageQuota|Usage")
 
-= render_if_exists 'namespaces/free_user_cap/projects/usage_quota_limitations_banner'
+= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
 = render Pajamas::AlertComponent.new(title: _('Repository usage recalculation started'),
   variant: :info,

@@ -40,7 +40,7 @@ describe('Commits message dropdown component', () => {
     wrapper.destroy();
   });
 
-  const findDropdownElements = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownElements = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownElement = () => findDropdownElements().at(0);
 
   it('should have 3 elements in dropdown list', () => {

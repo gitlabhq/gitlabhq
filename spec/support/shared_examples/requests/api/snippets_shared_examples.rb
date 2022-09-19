@@ -133,7 +133,7 @@ RSpec.shared_examples 'snippet file updates' do
     context 'when save fails due to a repository commit error' do
       before do
         allow_next_instance_of(Repository) do |instance|
-          allow(instance).to receive(:multi_action).and_raise(Gitlab::Git::CommitError)
+          allow(instance).to receive(:commit_files).and_raise(Gitlab::Git::CommitError)
         end
 
         update_snippet(params: { files: [create_action] })

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class AuthorizeTypes < RuboCop::Cop::Cop
+      class AuthorizeTypes < RuboCop::Cop::Base
         MSG = 'Add an `authorize :ability` call to the type: '\
               'https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization'
 
@@ -19,7 +19,7 @@ module RuboCop
           return if allowed?(class_constant(node))
           return if allowed?(superclass_constant(node))
 
-          add_offense(node, location: :expression) unless authorize?(node)
+          add_offense(node) unless authorize?(node)
         end
 
         private

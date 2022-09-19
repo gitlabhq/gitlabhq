@@ -93,20 +93,20 @@ describe('Ref selector component', () => {
 
   const findNoResults = () => wrapper.find('[data-testid="no-results"]');
 
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   const findBranchesSection = () => wrapper.find('[data-testid="branches-section"]');
-  const findBranchDropdownItems = () => findBranchesSection().findAll(GlDropdownItem);
+  const findBranchDropdownItems = () => findBranchesSection().findAllComponents(GlDropdownItem);
   const findFirstBranchDropdownItem = () => findBranchDropdownItems().at(0);
 
   const findTagsSection = () => wrapper.find('[data-testid="tags-section"]');
-  const findTagDropdownItems = () => findTagsSection().findAll(GlDropdownItem);
+  const findTagDropdownItems = () => findTagsSection().findAllComponents(GlDropdownItem);
   const findFirstTagDropdownItem = () => findTagDropdownItems().at(0);
 
   const findCommitsSection = () => wrapper.find('[data-testid="commits-section"]');
-  const findCommitDropdownItems = () => findCommitsSection().findAll(GlDropdownItem);
+  const findCommitDropdownItems = () => findCommitsSection().findAllComponents(GlDropdownItem);
   const findFirstCommitDropdownItem = () => findCommitDropdownItems().at(0);
 
   //
@@ -530,13 +530,13 @@ describe('Ref selector component', () => {
       });
 
       it('renders a checkmark by the selected item', async () => {
-        expect(findFirstBranchDropdownItem().find(GlIcon).element).toHaveClass(
+        expect(findFirstBranchDropdownItem().findComponent(GlIcon).element).toHaveClass(
           'gl-visibility-hidden',
         );
 
         await selectFirstBranch();
 
-        expect(findFirstBranchDropdownItem().find(GlIcon).element).not.toHaveClass(
+        expect(findFirstBranchDropdownItem().findComponent(GlIcon).element).not.toHaveClass(
           'gl-visibility-hidden',
         );
       });
@@ -684,7 +684,8 @@ describe('Ref selector component', () => {
 
   describe('validation state', () => {
     const invalidClass = 'gl-inset-border-1-red-500!';
-    const isInvalidClassApplied = () => wrapper.find(GlDropdown).props('toggleClass')[invalidClass];
+    const isInvalidClassApplied = () =>
+      wrapper.findComponent(GlDropdown).props('toggleClass')[invalidClass];
 
     describe('valid state', () => {
       describe('when the state prop is not provided', () => {

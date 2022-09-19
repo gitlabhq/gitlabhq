@@ -1,6 +1,8 @@
-import { fetchSubscriptions as fetchSubscriptionsREST } from '~/jira_connect/subscriptions/api';
-import { getCurrentUser } from '~/rest_api';
-import { addJiraConnectSubscription } from '~/api/integrations_api';
+import {
+  fetchSubscriptions as fetchSubscriptionsREST,
+  getCurrentUser,
+  addJiraConnectSubscription,
+} from '~/jira_connect/subscriptions/api';
 import {
   I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
   I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,

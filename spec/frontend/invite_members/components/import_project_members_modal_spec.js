@@ -53,7 +53,7 @@ afterEach(() => {
 
 describe('ImportProjectMembersModal', () => {
   const findGlModal = () => wrapper.findComponent(GlModal);
-  const findIntroText = () => wrapper.find({ ref: 'modalIntro' }).text();
+  const findIntroText = () => wrapper.findComponent({ ref: 'modalIntro' }).text();
   const clickImportButton = () => findGlModal().vm.$emit('primary', { preventDefault: jest.fn() });
   const closeModal = () => findGlModal().vm.$emit('hidden', { preventDefault: jest.fn() });
   const findFormGroup = () => wrapper.findByTestId('form-group');

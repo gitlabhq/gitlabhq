@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
       }
     end
 
-    where(vulnerability_finding_signatures_enabled: [true, false])
+    where(signatures_enabled: [true, false])
     with_them do
       let_it_be(:pipeline) { create(:ci_pipeline) }
 
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         let(:validator_class) { Gitlab::Ci::Parsers::Security::Validators::SchemaValidator }
         let(:data) { {}.merge(scanner_data) }
         let(:json_data) { data.to_json }
-        let(:parser) { described_class.new(json_data, report, vulnerability_finding_signatures_enabled, validate: validate) }
+        let(:parser) { described_class.new(json_data, report, signatures_enabled: signatures_enabled, validate: validate) }
 
         subject(:parse_report) { parser.parse! }
 
@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
 
       context 'report parsing' do
         before do
-          artifact.each_blob { |blob| described_class.parse!(blob, report, vulnerability_finding_signatures_enabled) }
+          artifact.each_blob { |blob| described_class.parse!(blob, report, signatures_enabled: signatures_enabled) }
         end
 
         describe 'parsing finding.name' do
@@ -262,7 +262,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         describe 'top-level scanner' do
           it 'is the primary scanner' do
             expect(report.primary_scanner.external_id).to eq('gemnasium')
-            expect(report.primary_scanner.name).to eq('Gemnasium')
+            expect(report.primary_scanner.name).to eq('Gemnasium top-level')
             expect(report.primary_scanner.vendor).to eq('GitLab')
             expect(report.primary_scanner.version).to eq('2.18.0')
           end
@@ -278,9 +278,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         describe 'parsing scanners' do
           subject(:scanner) { report.findings.first.scanner }
 
-          context 'when vendor is not missing in scanner' do
-            it 'returns scanner with parsed vendor value' do
-              expect(scanner.vendor).to eq('GitLab')
+          context 'when the report contains top-level scanner' do
+            it 'sets the scanner of finding as top-level scanner' do
+              expect(scanner.name).to eq('Gemnasium top-level')
+            end
+          end
+
+          context 'when the report does not contain top-level scanner' do
+            let(:artifact) { build(:ci_job_artifact, :common_security_report_without_top_level_scanner) }
+
+            it 'sets the scanner of finding as `vulnerabilities[].scanner`' do
+              expect(scanner.name).to eq('Gemnasium')
             end
           end
         end
@@ -465,7 +473,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               finding = report.findings.first
               highest_signature = finding.signatures.max_by(&:priority)
 
-              identifiers = if vulnerability_finding_signatures_enabled
+              identifiers = if signatures_enabled
                               "#{finding.report_type}-#{finding.primary_identifier.fingerprint}-#{highest_signature.signature_hex}-#{report.project_id}"
                             else
                               "#{finding.report_type}-#{finding.primary_identifier.fingerprint}-#{finding.location.fingerprint}-#{report.project_id}"

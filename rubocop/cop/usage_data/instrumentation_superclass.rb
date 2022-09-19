@@ -16,7 +16,7 @@ module RuboCop
       #  class CountIssues < BaseMetric
       #    # ...
       #  end
-      class InstrumentationSuperclass < RuboCop::Cop::Cop
+      class InstrumentationSuperclass < RuboCop::Cop::Base
         MSG = "Instrumentation classes should subclass one of the following: %{allowed_classes}."
 
         BASE_PATTERN = "(const nil? !#allowed_class?)"

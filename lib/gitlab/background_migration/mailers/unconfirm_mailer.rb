@@ -11,7 +11,7 @@ module Gitlab
           @user = user
           @verification_from_mail = Gitlab.config.gitlab.email_from
 
-          mail(
+          mail_with_locale(
             template_path: 'unconfirm_mailer',
             template_name: 'unconfirm_notification_email',
             to: @user.notification_email_or_default,

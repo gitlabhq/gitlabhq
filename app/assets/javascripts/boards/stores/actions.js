@@ -15,6 +15,7 @@ import {
   FilterFields,
   ListTypeTitles,
   DraggableItemTypes,
+  DEFAULT_BOARD_LIST_ITEMS_SIZE,
 } from 'ee_else_ce/boards/constants';
 import {
   formatIssueInput,
@@ -429,7 +430,7 @@ export default {
       filters: filterParams,
       isGroup: boardType === BoardType.group,
       isProject: boardType === BoardType.project,
-      first: 10,
+      first: DEFAULT_BOARD_LIST_ITEMS_SIZE,
       after: fetchNext ? state.pageInfoByListId[listId].endCursor : undefined,
     };
 
@@ -478,9 +479,15 @@ export default {
       toListId,
       moveBeforeId,
       moveAfterId,
+      positionInList,
+      allItemsLoadedInList,
     } = moveData;
 
     commit(types.REMOVE_BOARD_ITEM_FROM_LIST, { itemId, listId: fromListId });
+
+    if (reordering && !allItemsLoadedInList && positionInList === -1) {
+      return;
+    }
 
     if (reordering) {
       commit(types.ADD_BOARD_ITEM_TO_LIST, {
@@ -488,6 +495,9 @@ export default {
         listId: toListId,
         moveBeforeId,
         moveAfterId,
+        positionInList,
+        atIndex: originalIndex,
+        allItemsLoadedInList,
       });
 
       return;
@@ -499,6 +509,7 @@ export default {
         listId: toListId,
         moveBeforeId,
         moveAfterId,
+        positionInList,
       });
     }
 
@@ -552,7 +563,15 @@ export default {
 
   updateIssueOrder: async ({ commit, dispatch, state }, { moveData, mutationVariables = {} }) => {
     try {
-      const { itemId, fromListId, toListId, moveBeforeId, moveAfterId, itemNotInToList } = moveData;
+      const {
+        itemId,
+        fromListId,
+        toListId,
+        moveBeforeId,
+        moveAfterId,
+        itemNotInToList,
+        positionInList,
+      } = moveData;
       const {
         fullBoardId,
         filterParams,
@@ -560,6 +579,8 @@ export default {
           [itemId]: { iid, referencePath },
         },
       } = state;
+
+      commit(types.MUTATE_ISSUE_IN_PROGRESS, true);
 
       const { data } = await gqlClient.mutate({
         mutation: issueMoveListMutation,
@@ -571,6 +592,7 @@ export default {
           toListId: getIdFromGraphQLId(toListId),
           moveBeforeId: moveBeforeId ? getIdFromGraphQLId(moveBeforeId) : undefined,
           moveAfterId: moveAfterId ? getIdFromGraphQLId(moveAfterId) : undefined,
+          positionInList,
           // 'mutationVariables' allows EE code to pass in extra parameters.
           ...mutationVariables,
         },
@@ -642,7 +664,9 @@ export default {
       }
 
       commit(types.MUTATE_ISSUE_SUCCESS, { issue: data.issueMoveList.issue });
+      commit(types.MUTATE_ISSUE_IN_PROGRESS, false);
     } catch {
+      commit(types.MUTATE_ISSUE_IN_PROGRESS, false);
       commit(
         types.SET_ERROR,
         s__('Boards|An error occurred while moving the issue. Please try again.'),

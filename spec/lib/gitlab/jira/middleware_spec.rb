@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Jira::Middleware do
   let(:app) { double(:app) }
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Jira::Middleware do
   describe '#call' do
     it 'adjusts HTTP_AUTHORIZATION env when request from Jira DVCS user agent' do
       expect(app).to receive(:call).with({ 'HTTP_USER_AGENT' => jira_user_agent,
-                                         'HTTP_AUTHORIZATION' => 'Bearer hash-123' })
+                                           'HTTP_AUTHORIZATION' => 'Bearer hash-123' })
 
       middleware.call('HTTP_USER_AGENT' => jira_user_agent, 'HTTP_AUTHORIZATION' => 'token hash-123')
     end

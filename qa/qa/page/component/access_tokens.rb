@@ -18,6 +18,10 @@ module QA
             element :expiry_date_field
           end
 
+          base.view 'app/views/shared/access_tokens/_created_container.html.haml' do
+            element :created_access_token_field
+          end
+
           base.view 'app/views/shared/access_tokens/_form.html.haml' do
             element :access_token_name_field
             element :create_token_button
@@ -32,7 +36,7 @@ module QA
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/new_access_token_app.vue' do
-            element :created_access_token
+            element :created_access_token_field
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
@@ -53,7 +57,7 @@ module QA
         end
 
         def created_access_token
-          find_element(:created_access_token, wait: 30).value
+          find_element(:created_access_token_field, wait: 30).value
         end
 
         def fill_expiry_date(date)

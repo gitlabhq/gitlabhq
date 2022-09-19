@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import ItemState from '~/work_items/components/item_state.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import {
-  i18n,
   STATE_OPEN,
   STATE_CLOSED,
   STATE_EVENT_CLOSE,
@@ -104,7 +103,9 @@ describe('WorkItemState component', () => {
       findItemState().vm.$emit('changed', STATE_CLOSED);
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+      expect(wrapper.emitted('error')).toEqual([
+        ['Something went wrong while updating the task. Please try again.'],
+      ]);
     });
 
     it('tracks editing the state', async () => {

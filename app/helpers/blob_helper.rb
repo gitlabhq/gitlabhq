@@ -92,32 +92,6 @@ module BlobHelper
     end
   end
 
-  def replace_blob_link(project = @project, ref = @ref, path = @path, blob:)
-    modify_file_button(
-      project,
-      ref,
-      path,
-      blob: blob,
-      label: _("Replace"),
-      action: "replace",
-      btn_class: "default",
-      modal_type: "upload"
-    )
-  end
-
-  def delete_blob_link(project = @project, ref = @ref, path = @path, blob:)
-    modify_file_button(
-      project,
-      ref,
-      path,
-      blob: blob,
-      label: _("Delete"),
-      action: "delete",
-      btn_class: "default",
-      modal_type: "remove"
-    )
-  end
-
   def can_modify_blob?(blob, project = @project, ref = @ref)
     !blob.stored_externally? && can_edit_tree?(project, ref)
   end

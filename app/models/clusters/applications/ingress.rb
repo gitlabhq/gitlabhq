@@ -16,13 +16,9 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
       include UsageStatistics
-      include IgnorableColumns
 
       default_value_for :ingress_type, :nginx
       default_value_for :version, VERSION
-
-      ignore_column :modsecurity_enabled, remove_with: '14.2', remove_after: '2021-07-22'
-      ignore_column :modsecurity_mode, remove_with: '14.2', remove_after: '2021-07-22'
 
       enum ingress_type: {
         nginx: 1

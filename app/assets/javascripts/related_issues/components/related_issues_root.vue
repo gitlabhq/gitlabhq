@@ -40,7 +40,7 @@ import RelatedIssuesBlock from './related_issues_block.vue';
 export default {
   name: 'RelatedIssuesRoot',
   components: {
-    relatedIssuesBlock: RelatedIssuesBlock,
+    RelatedIssuesBlock,
   },
   props: {
     endpoint: {

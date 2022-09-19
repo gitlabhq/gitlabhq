@@ -1,7 +1,7 @@
 %h3
-  = sanitize_name(@updated_by_user.name)
-  pushed new commits to merge request
-  = merge_request_reference_link(@merge_request)
+  - updated_by_user_name = sanitize_name(@updated_by_user.name)
+  - mr_link = sanitize(merge_request_reference_link(@merge_request))
+  = s_('Notify|%{updated_by_user_name} pushed new commits to merge request %{mr_link}').html_safe % {updated_by_user_name: updated_by_user_name, mr_link: mr_link}
 
 - if @total_existing_commits_count > 0
   %ul
@@ -13,8 +13,8 @@
         = link_to(project_compare_url(@merge_request.target_project, from: @existing_commits.first[:short_id], to: @existing_commits.last[:short_id])) do
           #{@existing_commits.first[:short_id]}...#{@existing_commits.last[:short_id]}
       = precede '&nbsp;- ' do
-        - commits_text = "#{@total_existing_commits_count} commit".pluralize(@total_existing_commits_count)
-        #{commits_text} from branch `#{@merge_request.target_branch}`
+        - commits_text = n_("%d commit", "%d commits", @total_existing_commits_count) % @total_existing_commits_count
+        = s_('Notify|%{commits_text} from branch `%{target_branch}`') % {commits_text: commits_text, target_branch: @merge_request.target_branch}
 
 - if @total_new_commits_count > 0
   %ul
@@ -24,4 +24,5 @@
         = precede ' - ' do
           #{commit[:title]}
     - if @total_stripped_new_commits_count > 0
-      %li And #{@total_stripped_new_commits_count} more
+      %li
+        = s_('Notify|And %{total_stripped_new_commits_count} more') % {total_stripped_new_commits_count: @total_stripped_new_commits_count}

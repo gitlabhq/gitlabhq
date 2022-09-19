@@ -77,7 +77,7 @@ RSpec.shared_examples 'a model including Escalatable' do
   end
 
   context 'scopes' do
-    let(:all_escalatables) { described_class.where(id: [triggered_escalatable, acknowledged_escalatable, ignored_escalatable, resolved_escalatable])}
+    let(:all_escalatables) { described_class.where(id: [triggered_escalatable, acknowledged_escalatable, ignored_escalatable, resolved_escalatable]) }
 
     describe '.order_status' do
       subject { all_escalatables.order_status(order) }

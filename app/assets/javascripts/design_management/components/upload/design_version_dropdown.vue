@@ -73,8 +73,8 @@ export default {
     <gl-dropdown-item
       v-for="(version, index) in allVersions"
       :key="version.id"
-      :is-check-item="true"
-      :is-check-centered="true"
+      is-check-item
+      is-check-centered
       :is-checked="findVersionId(version.id) === currentVersionId"
       :avatar-url="getAvatarUrl(version)"
       @click="routeToVersion(version.id)"

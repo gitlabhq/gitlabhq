@@ -150,8 +150,8 @@ RSpec.describe Issue do
           issue.confidential = false
 
           expect(issue).not_to be_valid
-          expect(issue.errors[:confidential])
-            .to include('associated parent is confidential and can not have non-confidential children.')
+          expect(issue.errors[:base])
+            .to include(_('A non-confidential issue cannot have a confidential parent.'))
         end
 
         it 'allows to make parent not-confidential' do
@@ -172,8 +172,8 @@ RSpec.describe Issue do
           issue.confidential = true
 
           expect(issue).not_to be_valid
-          expect(issue.errors[:confidential])
-            .to include('confidential parent can not be used if there are non-confidential children.')
+          expect(issue.errors[:base])
+            .to include(_('A confidential issue cannot have a parent that already has non-confidential children.'))
         end
 
         it 'allows to make child confidential' do
@@ -282,6 +282,14 @@ RSpec.describe Issue do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
 
         create(:issue)
+      end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:issue) { create(:issue) }
+        let(:project) { issue.project }
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:user) { issue.author }
+        subject(:service_action) { issue }
       end
     end
 
@@ -1779,22 +1787,6 @@ RSpec.describe Issue do
     describe '.order_closed_at_desc' do
       it 'orders on closed at' do
         expect(described_class.order_closed_at_desc.to_a).to eq([issue_a, issue_d, issue_b, issue_c_nil, issue_e_nil])
-      end
-    end
-  end
-
-  describe '#full_search' do
-    context 'when searching non-english terms' do
-      [
-        'abc 中文語',
-        '中文語cn',
-        '中文語'
-      ].each do |term|
-        it 'adds extra where clause to match partial index' do
-          expect(described_class.full_search(term).to_sql).to include(
-            "AND (issues.title NOT SIMILAR TO '[\\u0000-\\u218F]*' OR issues.description NOT SIMILAR TO '[\\u0000-\\u218F]*')"
-          )
-        end
       end
     end
   end

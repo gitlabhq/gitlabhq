@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Packages & Registries settings' do
+RSpec.describe 'Group Package and registry settings' do
   include WaitForRequests
 
   let(:user) { create(:user) }
@@ -25,7 +25,7 @@ RSpec.describe 'Group Packages & Registries settings' do
 
       settings_menu = find_settings_menu
 
-      expect(settings_menu).not_to have_content 'Packages & Registries'
+      expect(settings_menu).not_to have_content 'Packages and registries'
     end
 
     it 'renders 404 when navigating to page' do
@@ -40,57 +40,58 @@ RSpec.describe 'Group Packages & Registries settings' do
       visit group_path(group)
 
       settings_menu = find_settings_menu
-      expect(settings_menu).to have_content 'Packages & Registries'
+      expect(settings_menu).to have_content 'Packages and registries'
     end
 
     it 'has a page title set' do
       visit_settings_page
 
-      expect(page).to have_title _('Packages & Registries')
+      expect(page).to have_title _('Package and registry settings')
     end
 
     it 'sidebar menu is open' do
       visit_settings_page
 
       sidebar = find('.nav-sidebar')
-      expect(sidebar).to have_link _('Packages & Registries')
+      expect(sidebar).to have_link _('Packages and registries')
     end
 
     it 'has a Duplicate packages section', :js do
       visit_settings_page
 
       expect(page).to have_content('Duplicate packages')
+      expect(page).to have_content('Allow duplicates')
+      expect(page).to have_content('Exceptions')
     end
 
     it 'automatically saves changes to the server', :js do
       visit_settings_page
+      wait_for_requests
 
       within '[data-testid="maven-settings"]' do
-        expect(page).to have_content('Reject packages with the same name and version')
-        expect(page).not_to have_content('Exceptions')
+        expect(page).to have_field _('Exceptions'), disabled: true
 
-        find('.gl-toggle').click
+        click_button class: 'gl-toggle'
 
-        expect(page).to have_content('Exceptions')
+        expect(page).to have_field _('Exceptions'), disabled: false
 
         visit_settings_page
 
-        expect(page).to have_content('Exceptions')
+        expect(page).to have_field _('Exceptions'), disabled: false
       end
     end
 
     it 'shows an error on wrong regex', :js do
       visit_settings_page
+      wait_for_requests
 
       within '[data-testid="maven-settings"]' do
-        expect(page).to have_content('Reject packages with the same name and version')
+        click_button class: 'gl-toggle'
 
-        find('.gl-toggle').click
-
-        fill_in 'Exceptions', with: ')'
+        fill_in _('Exceptions'), with: ')'
 
         # simulate blur event
-        find('#maven-duplicated-settings-regex-input').native.send_keys(:tab)
+        send_keys(:tab)
       end
 
       expect(page).to have_content('is an invalid regexp')
@@ -99,13 +100,16 @@ RSpec.describe 'Group Packages & Registries settings' do
     context 'in a sub group' do
       it 'works correctly', :js do
         visit_sub_group_settings_page
+        wait_for_requests
 
         within '[data-testid="maven-settings"]' do
-          expect(page).to have_content('Reject packages with the same name and version')
+          expect(page).to have_content('Allow duplicates')
 
-          find('.gl-toggle').click
+          expect(page).to have_field _('Exceptions'), disabled: true
 
-          expect(page).to have_content('Exceptions')
+          click_button class: 'gl-toggle'
+
+          expect(page).to have_field _('Exceptions'), disabled: false
         end
       end
     end

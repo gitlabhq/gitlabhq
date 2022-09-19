@@ -259,13 +259,15 @@ ul.related-merge-requests > li gl-emoji {
 }
 
 .issue-sticky-header {
+  --width: 100%;
+
   @include gl-left-0;
-  @include gl-w-full;
+  width: var(--width);
   top: $header-height;
 
   // collapsed right sidebar
   @include media-breakpoint-up(sm) {
-    width: calc(100% - #{$gutter-collapsed-width});
+    --width: calc(100% - #{$gutter-collapsed-width});
   }
 }
 
@@ -283,12 +285,12 @@ ul.related-merge-requests > li gl-emoji {
   // collapsed left sidebar + collapsed right sidebar
   .issue-sticky-header {
     left: $contextual-sidebar-collapsed-width;
-    width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-collapsed-width});
+    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-collapsed-width});
   }
 
   // collapsed left sidebar + expanded right sidebar
   .right-sidebar-expanded .issue-sticky-header {
-    width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-width});
+    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-width});
   }
 }
 
@@ -296,23 +298,23 @@ ul.related-merge-requests > li gl-emoji {
   // expanded left sidebar + collapsed right sidebar
   .issue-sticky-header {
     left: $contextual-sidebar-width;
-    width: calc(100% - #{$contextual-sidebar-width} - #{$gutter-collapsed-width});
+    --width: calc(100% - #{$contextual-sidebar-width} - #{$gutter-collapsed-width});
   }
 
   // collapsed left sidebar + collapsed right sidebar
   .page-with-icon-sidebar .issue-sticky-header {
     left: $contextual-sidebar-collapsed-width;
-    width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-collapsed-width});
+    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-collapsed-width});
   }
 
   // expanded left sidebar + expanded right sidebar
   .right-sidebar-expanded .issue-sticky-header {
-    width: calc(100% - #{$contextual-sidebar-width} - #{$gutter-width});
+    --width: calc(100% - #{$contextual-sidebar-width} - #{$gutter-width});
   }
 
   // collapsed left sidebar + expanded right sidebar
   .right-sidebar-expanded.page-with-icon-sidebar .issue-sticky-header {
-    width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-width});
+    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-width});
   }
 }
 

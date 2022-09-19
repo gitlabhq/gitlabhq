@@ -101,7 +101,7 @@ class PostReceiveService
   def record_onboarding_progress
     return unless project
 
-    OnboardingProgressService.new(project.namespace).execute(action: :git_write)
+    Onboarding::ProgressService.new(project.namespace).execute(action: :git_write)
   end
 end
 

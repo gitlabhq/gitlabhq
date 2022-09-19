@@ -96,8 +96,7 @@ class EnvironmentSerializer < BaseSerializer
           scheduled_actions: [:metadata],
           latest_successful_builds: []
         },
-        project: project_associations,
-        deployment: []
+        project: project_associations
       }
     }
   end

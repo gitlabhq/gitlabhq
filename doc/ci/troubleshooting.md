@@ -40,15 +40,26 @@ is at:
 https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json.
 ```
 
-The schema rules for custom YAML tags like `!reference` will not work until the
-custom tags are set in the editor settings. For example, in VS Code, you can set
-`vscode-yaml` to parse `customTags`:
+The schema rules for custom YAML tags like `!reference` are treated as invalid by your editor until the custom tags are
+set in your editor settings. For example:
 
-```json
-"yaml.customTags": [
-   "!reference sequence"
-]
-```
+- In VS Code, you can set `vscode-yaml` to parse `customTags` in your `settings.json` file:
+
+  ```json
+  "yaml.customTags": [
+     "!reference sequence"
+  ]
+  ```
+
+- In Sublime Text, if you are using the `LSP-yaml` package, you can set `customTags` in your `LSP-yaml` user settings:
+
+  ```json
+  {
+    "settings": {
+      "yaml.customTags": ["!reference sequence"]
+    }
+  }
+  ```
 
 To see the full list of custom tags covered by the CI/CD schema, check the
 latest version of the schema, linked above.
@@ -87,11 +98,11 @@ and [templates](examples/index.md#cicd-templates).
 Some pipeline types have their own detailed usage guides that you should read
 if you are using that type:
 
-- [Multi-project pipelines](pipelines/multi_project_pipelines.md): Have your pipeline trigger
+- [Multi-project pipelines](pipelines/downstream_pipelines.md#multi-project-pipelines): Have your pipeline trigger
   a pipeline in a different project.
-- [Parent/child pipelines](pipelines/parent_child_pipelines.md): Have your main pipeline trigger
+- [Parent/child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines): Have your main pipeline trigger
   and run separate pipelines in the same project. You can also
-  [dynamically generate the child pipeline's configuration](pipelines/parent_child_pipelines.md#dynamic-child-pipelines)
+  [dynamically generate the child pipeline's configuration](pipelines/downstream_pipelines.md#dynamic-child-pipelines)
   at runtime.
 - [Merge request pipelines](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.
@@ -259,7 +270,7 @@ are enabled, the button is either **Add to merge train** or **Add to merge train
 
 #### "A CI/CD pipeline must run and be successful before merge" message
 
-This message is shown if the [Pipelines must succeed](../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+This message is shown if the [Pipelines must succeed](../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
 setting is enabled in the project and a pipeline has not yet run successfully.
 This also applies if the pipeline has not been created yet, or if you are waiting
 for an external CI service. If you don't use pipelines for your project, then you
@@ -316,10 +327,15 @@ To reduce the configuration size, you can:
   [merged YAML](pipeline_editor/index.md#view-expanded-configuration) tab. Look for
   duplicated configuration that can be removed or simplified.
 - Move long or repeated `script` sections into standalone scripts in the project.
-- Use [parent and child pipelines](pipelines/parent_child_pipelines.md) to move some
+- Use [parent and child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines) to move some
   work to jobs in an independent child pipeline.
 
 On a self-managed instance, you can [increase the size limits](../administration/instance_limits.md#maximum-size-and-depth-of-cicd-configuration-yaml-files).
+
+### Error 500 when editing the `.gitlab-ci.yml` file
+
+A [loop of included configuration files](pipeline_editor/index.md#configuration-validation-currently-not-available-message)
+can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web editor](../user/project/repository/web_editor.md).
 
 ## Pipeline warnings
 

@@ -19,6 +19,13 @@ Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) an
 
 In both cases, you authenticate with a personal access token in place of your password.
 
+WARNING:
+The ability to create personal access tokens without expiry was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and is planned for removal in GitLab
+16.0. When this ability is removed, existing personal access tokens without an expiry are planned to have an expiry added.
+The automatic adding of an expiry occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry
+occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
+
 Personal access tokens are:
 
 - Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
@@ -39,6 +46,8 @@ Alternately, GitLab administrators can use the API to create [impersonation toke
 Use impersonation tokens to automate authentication as a specific user.
 
 ## Create a personal access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
 
 You can create as many personal access tokens as you like.
 

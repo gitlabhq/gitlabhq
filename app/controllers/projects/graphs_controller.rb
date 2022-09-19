@@ -2,14 +2,18 @@
 
 class Projects::GraphsController < Projects::ApplicationController
   include ExtractsPath
-  include RedisTracking
+  include ProductAnalyticsTracking
 
   # Authorize
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_read_repository_graphs!
 
-  track_redis_hll_event :charts, name: 'p_analytics_repo'
+  track_custom_event :charts,
+    name: 'p_analytics_repo',
+    action: 'perform_analytics_usage_action',
+    label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
+    destinations: %i[redis_hll snowplow]
 
   feature_category :source_code_management, [:show, :commits, :languages, :charts]
   urgency :low, [:show]
@@ -101,6 +105,14 @@ class Projects::GraphsController < Projects::ApplicationController
     end
 
     render json: @log.to_json
+  end
+
+  def tracking_namespace_source
+    project.namespace
+  end
+
+  def tracking_project_source
+    project
   end
 end
 

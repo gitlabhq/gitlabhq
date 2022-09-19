@@ -4,6 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
 import createFlash from '~/flash';
+import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import * as notesConstants from '~/notes/constants';
@@ -14,7 +15,9 @@ import mutations from '~/notes/stores/mutations';
 import * as utils from '~/notes/stores/utils';
 import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import promoteTimelineEvent from '~/notes/graphql/promote_timeline_event.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import waitForPromises from 'helpers/wait_for_promises';
 import { resetStore } from '../helpers';
 import {
@@ -37,6 +40,8 @@ jest.mock('~/flash', () => {
 
   return flash;
 });
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Actions Notes Store', () => {
   let commit;
@@ -1320,6 +1325,102 @@ describe('Actions Notes Store', () => {
         { state: { discussions: [] } },
         [{ type: mutationTypes.UPDATE_DISCUSSION_POSITION, payload: updatedPosition }],
         [],
+      );
+    });
+  });
+
+  describe('promoteCommentToTimelineEvent', () => {
+    const actionArgs = {
+      noteId: '1',
+      addError: 'addError: Create error',
+      addGenericError: 'addGenericError',
+    };
+    const commitSpy = jest.fn();
+
+    describe('for successful request', () => {
+      const timelineEventSuccessResponse = {
+        data: {
+          timelineEventPromoteFromNote: {
+            timelineEvent: {
+              id: 'gid://gitlab/IncidentManagement::TimelineEvent/19',
+            },
+            errors: [],
+          },
+        },
+      };
+
+      beforeEach(() => {
+        jest.spyOn(utils.gqClient, 'mutate').mockResolvedValue(timelineEventSuccessResponse);
+      });
+
+      it('calls gqClient mutation with the correct values', () => {
+        actions.promoteCommentToTimelineEvent({ commit: () => {} }, actionArgs);
+
+        expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
+        expect(utils.gqClient.mutate).toHaveBeenCalledWith({
+          mutation: promoteTimelineEvent,
+          variables: {
+            input: {
+              noteId: 'gid://gitlab/Note/1',
+            },
+          },
+        });
+      });
+
+      it('returns success response', () => {
+        jest.spyOn(notesEventHub, '$emit').mockImplementation(() => {});
+
+        return actions.promoteCommentToTimelineEvent({ commit: commitSpy }, actionArgs).then(() => {
+          expect(notesEventHub.$emit).toHaveBeenLastCalledWith(
+            'comment-promoted-to-timeline-event',
+          );
+          expect(toast).toHaveBeenCalledWith('Comment added to the timeline.');
+          expect(commitSpy).toHaveBeenCalledWith(
+            mutationTypes.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS,
+            false,
+          );
+        });
+      });
+    });
+
+    describe('for failing request', () => {
+      const errorResponse = {
+        data: {
+          timelineEventPromoteFromNote: {
+            timelineEvent: null,
+            errors: ['Create error'],
+          },
+        },
+      };
+
+      it.each`
+        mockReject | message                     | captureError | error
+        ${true}    | ${'addGenericError'}        | ${true}      | ${new Error()}
+        ${false}   | ${'addError: Create error'} | ${false}     | ${null}
+      `(
+        'should show an error when submission fails',
+        ({ mockReject, message, captureError, error }) => {
+          const expectedAlertArgs = {
+            captureError,
+            error,
+            message,
+          };
+          if (mockReject) {
+            jest.spyOn(utils.gqClient, 'mutate').mockRejectedValueOnce(new Error());
+          } else {
+            jest.spyOn(utils.gqClient, 'mutate').mockResolvedValue(errorResponse);
+          }
+
+          return actions
+            .promoteCommentToTimelineEvent({ commit: commitSpy }, actionArgs)
+            .then(() => {
+              expect(createFlash).toHaveBeenCalledWith(expectedAlertArgs);
+              expect(commitSpy).toHaveBeenCalledWith(
+                mutationTypes.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS,
+                false,
+              );
+            });
+        },
       );
     });
   });

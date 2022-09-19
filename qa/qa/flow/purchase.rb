@@ -5,7 +5,7 @@ module QA
     module Purchase
       include QA::Support::Helpers::Plan
 
-      module_function
+      extend self
 
       def upgrade_subscription(plan: PREMIUM)
         Page::Group::Menu.perform(&:go_to_billing)

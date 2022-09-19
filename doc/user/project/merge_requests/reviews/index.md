@@ -56,12 +56,11 @@ displays next to your name.
 You can submit your completed review in multiple ways:
 
 - Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
-- Select **Finish review** and then **Submit review** in the footer at the bottom of the screen.
+- Select **Finish review**, then select **Submit review** at the bottom of the modal window.
+  In the modal window, you can supply a **Summary comment**, approve the merge request, and
+  include quick actions:
 
-Selecting **Finish review** opens a modal window to add an optional comment to summarize your review.
-You can also include quick actions:
-
-![Finish review with comment](img/mr_summary_comment_v15_3.png)
+  ![Finish review with comment](img/mr_summary_comment_v15_4.png)
 
 When you submit your review, GitLab:
 
@@ -69,6 +68,7 @@ When you submit your review, GitLab:
 - Sends a single email to every notifiable user of the merge request, with your
   review comments attached. Replying to this email creates a new comment on the merge request.
 - Perform any quick actions you added to your review comments.
+- Optional. Approves the merge request.
 
 ### Resolve or unresolve thread with a comment
 
@@ -96,7 +96,7 @@ If you have a review in progress, you can also add a comment from the **Overview
 ### Approval Rule information for Reviewers **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
+> - [Feature flag `reviewer_approval_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)

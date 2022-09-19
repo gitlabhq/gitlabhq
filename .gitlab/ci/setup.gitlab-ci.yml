@@ -3,16 +3,20 @@
 cache gems:
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .setup:rules:cache-gems
-  stage: test
-  needs: ["setup-test-env"]
+  stage: prepare
+  needs: []
   variables:
-    BUNDLE_INSTALL_FLAGS: --with=production --with=development --with=test --jobs=2 --path=vendor --retry=3 --quiet
+    BUNDLE_WITHOUT: ""
+    BUNDLE_WITH: "production:development:test"
     SETUP_DB: "false"
   script:
-    - bundle package --all --all-platforms
+    - echo -e "\e[0Ksection_start:`date +%s`:bundle-package[collapsed=true]\r\e[0KPackaging gems"
+    - bundle config set cache_all true
+    - run_timed_command "bundle package --all-platforms"
+    - echo -e "\e[0Ksection_end:`date +%s`:bundle-package\r\e[0K"
   artifacts:
     paths:
       - vendor/cache
@@ -110,10 +114,13 @@ generate-frontend-fixtures-mapping:
     paths:
       - ${FRONTEND_FIXTURES_MAPPING_PATH}
 
-.detect-test-base:
+detect-tests:
+  extends: .rails:rules:detect-tests
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
   needs: []
   stage: prepare
+  variables:
+    RSPEC_TESTS_MAPPING_ENABLED: "true"
   script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
@@ -123,42 +130,23 @@ generate-frontend-fixtures-mapping:
     - retrieve_frontend_fixtures_mapping
     - |
       if [ -n "$CI_MERGE_REQUEST_IID" ]; then
-        tooling/bin/find_changes ${CHANGES_FILE};
-        tooling/bin/find_tests ${CHANGES_FILE} ${MATCHED_TESTS_FILE};
-        tooling/bin/find_changes ${CHANGES_FILE} ${MATCHED_TESTS_FILE} ${FRONTEND_FIXTURES_MAPPING_PATH};
-        echo "Changed files: $(cat $CHANGES_FILE)";
-        echo "Related rspec tests: $(cat $MATCHED_TESTS_FILE)";
+        mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
+        tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH};
+        tooling/bin/find_tests ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
+        tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH} ${FRONTEND_FIXTURES_MAPPING_PATH};
+        echo "Changed files: $(cat $RSPEC_CHANGED_FILES_PATH)";
+        echo "Related rspec tests: $(cat $RSPEC_MATCHING_TESTS_PATH)";
       fi
   artifacts:
     expire_in: 7d
     paths:
-      - ${CHANGES_FILE}
-      - ${MATCHED_TESTS_FILE}
+      - ${RSPEC_CHANGED_FILES_PATH}
+      - ${RSPEC_MATCHING_TESTS_PATH}
       - ${FRONTEND_FIXTURES_MAPPING_PATH}
-
-detect-tests:
-  extends:
-    - .detect-test-base
-    - .rails:rules:detect-tests
-  variables:
-    RSPEC_TESTS_MAPPING_ENABLED: "true"
-    CHANGES_FILE: tmp/changed_files.txt
-    MATCHED_TESTS_FILE: tmp/matching_tests.txt
-
-detect-tests as-if-foss:
-  extends:
-    - .detect-test-base
-    - .rails:rules:detect-tests
-    - .as-if-foss
-  variables:
-    CHANGES_FILE: tmp/changed_foss_files.txt
-    MATCHED_TESTS_FILE: tmp/matching_foss_tests.txt
-  before_script:
-    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
 
 detect-previous-failed-tests:
   extends:
-    - .detect-test-base
+    - detect-tests
     - .rails:rules:detect-previous-failed-tests
   variables:
     PREVIOUS_FAILED_TESTS_DIR: tmp/previous_failed_tests/
@@ -172,3 +160,23 @@ detect-previous-failed-tests:
     expire_in: 7d
     paths:
       - ${PREVIOUS_FAILED_TESTS_DIR}
+
+e2e-test-pipeline-generate:
+  extends:
+    - .qa-job-base
+    - .minimal-job
+    - .qa:rules:determine-e2e-tests
+  stage: prepare
+  variables:
+    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
+    OMNIBUS_PIPELINE_YML: package-and-test-pipeline.yml
+    REVIEW_PIPELINE_YML: review-app-pipeline.yml
+    COLORIZED_LOGS: "true"
+  script:
+    - bundle exec rake "ci:detect_changes[$ENV_FILE]"
+    - cd $CI_PROJECT_DIR && scripts/generate-e2e-pipeline
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - $OMNIBUS_PIPELINE_YML
+      - $REVIEW_PIPELINE_YML

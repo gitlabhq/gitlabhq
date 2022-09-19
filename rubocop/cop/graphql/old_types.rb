@@ -19,7 +19,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class OldTypes < RuboCop::Cop::Cop
+      class OldTypes < RuboCop::Cop::Base
         MSG_ID      = 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'
         MSG_INT     = 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'
         MSG_STRING  = 'Avoid using GraphQL::STRING_TYPE. Use GraphQL::Types::String instead'
@@ -37,7 +37,7 @@ module RuboCop
           old_constant = has_old_type?(node)
           return unless old_constant
 
-          add_offense(node, location: :expression, message: "#{self.class}::MSG_#{old_constant[0..-6]}".constantize)
+          add_offense(node, message: "#{self.class}::MSG_#{old_constant[0..-6]}".constantize)
         end
       end
     end

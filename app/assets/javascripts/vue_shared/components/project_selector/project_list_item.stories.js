@@ -2,7 +2,7 @@ import ProjectListItem from './project_list_item.vue';
 
 export default {
   component: ProjectListItem,
-  title: 'vue_shared/components/project_selector/project_list_item',
+  title: 'vue_shared/project_selector/project_list_item',
 };
 
 const Template = (args, { argTypes }) => ({

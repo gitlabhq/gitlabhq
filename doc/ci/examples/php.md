@@ -176,7 +176,7 @@ Using phpenv also allows to easily configure the PHP environment with:
 phpenv config-add my_config.ini
 ```
 
-*__Important note:__ It seems `phpenv/phpenv`
+**Important note:** It seems `phpenv/phpenv`
  [is abandoned](https://github.com/phpenv/phpenv/issues/57). There is a fork
  at [`madumlao/phpenv`](https://github.com/madumlao/phpenv) that tries to bring
  the project back to life. [`CHH/phpenv`](https://github.com/CHH/phpenv) also

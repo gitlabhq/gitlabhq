@@ -23,7 +23,7 @@ module RuboCop
       #   end
       # end
       #
-      class IdempotentWorker < RuboCop::Cop::Cop
+      class IdempotentWorker < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         HELP_LINK = 'https://github.com/mperham/sidekiq/wiki/Best-Practices#2-make-your-job-idempotent-and-transactional'
@@ -51,7 +51,7 @@ module RuboCop
           return unless in_worker?(node)
           return if idempotent?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

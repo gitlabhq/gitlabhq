@@ -7,6 +7,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStatusPopover from '~/runner/components/runner_status_popover.vue';
+import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/runner/constants';
 import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
@@ -22,7 +23,10 @@ describe('RunnerList', () => {
   const findCell = ({ row = 0, fieldKey }) =>
     extendedWrapper(findRows().at(row).find(`[data-testid="td-${fieldKey}"]`));
 
-  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
+  const createComponent = (
+    { props = {}, provide = {}, ...options } = {},
+    mountFn = shallowMountExtended,
+  ) => {
     wrapper = mountFn(RunnerList, {
       propsData: {
         runners: mockRunners,
@@ -32,6 +36,7 @@ describe('RunnerList', () => {
       provide: {
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
+        ...provide,
       },
       ...options,
     });
@@ -60,10 +65,6 @@ describe('RunnerList', () => {
     expect(headerLabels).toEqual([
       'Status',
       'Runner',
-      'Version',
-      'Jobs',
-      'Tags',
-      'Last contact',
       '', // actions has no label
     ]);
   });
@@ -83,24 +84,28 @@ describe('RunnerList', () => {
   });
 
   it('Displays details of a runner', () => {
-    const { id, description, version, shortSha } = mockRunners[0];
-
     createComponent({}, mountExtended);
 
+    const { id, description, version, shortSha } = mockRunners[0];
+    const numericId = getIdFromGraphQLId(id);
+
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('never contacted');
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
+      I18N_STATUS_NEVER_CONTACTED,
+    );
 
     // Runner summary
-    expect(findCell({ fieldKey: 'summary' }).text()).toContain(
-      `#${getIdFromGraphQLId(id)} (${shortSha})`,
-    );
-    expect(findCell({ fieldKey: 'summary' }).text()).toContain(description);
+    const summary = findCell({ fieldKey: 'summary' }).text();
 
-    // Other fields
-    expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
-    expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
-    expect(findCell({ fieldKey: 'tagList' }).text()).toBe('');
-    expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
+    expect(summary).toContain(`#${numericId} (${shortSha})`);
+    expect(summary).toContain(I18N_PROJECT_TYPE);
+
+    expect(summary).toContain(version);
+    expect(summary).toContain(description);
+
+    expect(summary).toContain('Last contact');
+    expect(summary).toContain('0'); // job count
+    expect(summary).toContain('Created');
 
     // Actions
     expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
@@ -156,42 +161,6 @@ describe('RunnerList', () => {
       );
 
       expect(findCell({ fieldKey: 'actions' }).text()).toBe(`Actions: ${mockRunners[0].id}`);
-    });
-  });
-
-  describe('Table data formatting', () => {
-    let mockRunnersCopy;
-
-    beforeEach(() => {
-      mockRunnersCopy = [
-        {
-          ...mockRunners[0],
-        },
-      ];
-    });
-
-    it('Formats job counts', () => {
-      mockRunnersCopy[0].jobCount = 1;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1');
-    });
-
-    it('Formats large job counts', () => {
-      mockRunnersCopy[0].jobCount = 1000;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000');
-    });
-
-    it('Formats large job counts with a plus symbol', () => {
-      mockRunnersCopy[0].jobCount = 1001;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000+');
     });
   });
 

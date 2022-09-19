@@ -146,12 +146,19 @@ reduces the aforementioned [bike-shedding](https://en.wiktionary.org/wiki/bikesh
 
 To that end, we encourage creation of new RuboCop rules in the codebase.
 
-We currently maintain Cops across several Ruby code bases, and not all of them are
+We maintain Cops across several Ruby code bases, and not all of them are
 specific to the GitLab application.
 When creating a new cop that could be applied to multiple applications, we encourage you
 to add it to our [GitLab Styles](https://gitlab.com/gitlab-org/gitlab-styles) gem.
 If the Cop targets rules that only apply to the main GitLab application,
 it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
+
+#### RuboCop node pattern
+
+When creating [node patterns](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to match
+Ruby's AST, you can use [`scripts/rubocop-parse`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/rubocop-parse)
+to display the AST of a Ruby expression, in order to help you create the matcher.
+See also [!97024](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97024).
 
 ### Resolving RuboCop exceptions
 
@@ -221,6 +228,34 @@ We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/
 ## Documentation
 
 See the dedicated [Documentation Style Guide](../documentation/styleguide/index.md).
+
+### Guidelines for good practices
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36576/) in GitLab 13.2 as GitLab Development documentation.
+
+*Good practice* examples demonstrate encouraged ways of writing code while
+comparing with examples of practices to avoid. These examples are labeled as
+*Bad* or *Good*. In GitLab development guidelines, when presenting the cases,
+it's recommended to follow a *first-bad-then-good* strategy. First demonstrate
+the *Bad* practice (how things *could* be done, which is often still working
+code), and then how things *should* be done better, using a *Good* example. This
+is typically an improved example of the same code.
+
+Consider the following guidelines when offering examples:
+
+- First, offer the *Bad* example, and then the *Good* one.
+- When only one bad case and one good case is given, use the same code block.
+- When more than one bad case or one good case is offered, use separated code
+  blocks for each. With many examples being presented, a clear separation helps
+  the reader to go directly to the good part. Consider offering an explanation
+  (for example, a comment, or a link to a resource) on why something is bad
+  practice.
+- Better and best cases can be considered part of the good cases' code block.
+  In the same code block, precede each with comments: `# Better` and `# Best`.
+
+Although the bad-then-good approach is acceptable for the GitLab development
+guidelines, do not use it for user documentation. For user documentation, use
+*Do* and *Don't*. For examples, see the [Pajamas Design System](https://design.gitlab.com/content/punctuation/).
 
 ## Python
 

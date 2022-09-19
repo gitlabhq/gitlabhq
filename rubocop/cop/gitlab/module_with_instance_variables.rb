@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Gitlab
-      class ModuleWithInstanceVariables < RuboCop::Cop::Cop
+      class ModuleWithInstanceVariables < RuboCop::Cop::Base
         MSG = <<~EOL
           Do not use instance variables in a module. Please read this
           for the rationale behind it:
@@ -32,12 +32,12 @@ module RuboCop
             if only_ivar_or_assignment?(definition)
               # We don't allow if any other ivar is used
               definition.each_descendant(:ivar) do |offense|
-                add_offense(offense, location: :expression)
+                add_offense(offense)
               end
             # We allow initialize method and single ivar
             elsif !initialize_method?(definition) && !single_ivar?(definition)
               definition.each_descendant(:ivar, :ivasgn) do |offense|
-                add_offense(offense, location: :expression)
+                add_offense(offense)
               end
             end
           end

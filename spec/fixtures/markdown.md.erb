@@ -283,7 +283,23 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
   - [x] Complete sub-task 1
 - [X] Complete task 2
 
-#### Gollum Tags
+### Math
+
+- Dollar math: $a^2 + b^2 = c^2$
+- Dollar math and snippet reference: $d^2 + e^2 = f^2$ and <%= snippet.to_reference %>
+- Dollar math and snippet in another project: <%= xsnippet.to_reference(project) %> and $g^2 + h^2 = i^2$
+- Not dollar math: $20,000 and $30,000
+- Dollar-backtick math: $`j^2 + k^2 = l^2`$
+- Dollar display math: $$m^2 + n^2 = o^2$$
+- Dollar display math and snippet reference: $$p^2 + q^2 = r^2$$ and <%= snippet.to_reference %>
+- Dollar math and snippet in another project: <%= xsnippet.to_reference(project) %> and $$s^2 + t^2 = u^2$$
+- Display math using a block
+
+  ```math
+  v^2 + w^2 = x^2
+  ```
+
+### Gollum Tags
 
 - [[linked-resource]]
 - [[link-text|linked-resource]]
@@ -326,15 +342,15 @@ However the wrapping tags cannot be mixed as such:
 
 ### Colors
 
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.7)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.7)`  
+`#F00`
+`#F00A`
+`#FF0000`
+`#FF0000AA`
+`RGB(0,255,0)`
+`RGB(0%,100%,0%)`
+`RGBA(0,255,0,0.7)`
+`HSL(540,70%,50%)`
+`HSLA(540,70%,50%,0.7)`
 
 ### Mermaid
 

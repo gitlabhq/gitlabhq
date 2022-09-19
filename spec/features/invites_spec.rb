@@ -10,6 +10,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
   let(:group_invite) { group.group_members.invite.last }
 
   before do
+    stub_feature_flags(arkose_labs_signup_challenge: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
     project.add_maintainer(owner)
     group.add_owner(owner)
@@ -245,6 +246,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
             before do
               stub_feature_flags(soft_email_confirmation: false)
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+              stub_feature_flags(identity_verification: false)
             end
 
             it 'signs up and redirects to the group activity page' do

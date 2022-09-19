@@ -20,10 +20,10 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
         project.add_member(current_user, :maintainer)
       end
 
-      it 'returns nil when scope is not enabled' do
+      it 'returns the same project in the allow list of projects for the Ci Job Token when scope is not enabled' do
         allow(project).to receive(:ci_job_token_scope_enabled?).and_return(false)
 
-        expect(resolve_scope).to eq(nil)
+        expect(resolve_scope.all_projects).to contain_exactly(project)
       end
 
       it 'returns the same project in the allow list of projects for the Ci Job Token' do
@@ -43,8 +43,8 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
           project.update!(ci_job_token_scope_enabled: false)
         end
 
-        it 'returns nil' do
-          expect(resolve_scope).to be_nil
+        it 'resolves projects' do
+          expect(resolve_scope.all_projects).to contain_exactly(project)
         end
       end
     end

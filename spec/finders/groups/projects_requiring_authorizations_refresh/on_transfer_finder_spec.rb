@@ -46,9 +46,9 @@ RSpec.describe Groups::ProjectsRequiringAuthorizationsRefresh::OnTransferFinder 
       it 'includes only the expected projects' do
         expected_projects = Project.id_in(
           [
-              project_b_subgroup_1,
-              project_b_subgroup_2,
-              project_c
+            project_b_subgroup_1,
+            project_b_subgroup_2,
+            project_c
           ]
         )
 

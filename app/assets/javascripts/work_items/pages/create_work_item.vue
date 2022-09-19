@@ -1,7 +1,9 @@
 <script>
 import { GlButton, GlAlert, GlLoadingIcon, GlFormSelect } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { getPreferredLocales, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { sprintfWorkItem, I18N_WORK_ITEM_ERROR_CREATING } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import createWorkItemFromTaskMutation from '../graphql/create_work_item_from_task.mutation.graphql';
@@ -10,7 +12,6 @@ import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.
 import ItemTitle from '../components/item_title.vue';
 
 export default {
-  createErrorText: s__('WorkItem|Something went wrong when creating a task. Please try again'),
   fetchTypesErrorText: s__(
     'WorkItem|Something went wrong when fetching work item types. Please try again',
   ),
@@ -69,7 +70,7 @@ export default {
       update(data) {
         return data.workspace?.workItemTypes?.nodes.map((node) => ({
           value: node.id,
-          text: node.name,
+          text: capitalizeFirstCharacter(node.name.toLocaleLowerCase(getPreferredLocales()[0])),
         }));
       },
       error() {
@@ -78,14 +79,18 @@ export default {
     },
   },
   computed: {
-    dropdownButtonText() {
-      return this.selectedWorkItemType?.name || s__('WorkItem|Type');
-    },
     formOptions() {
       return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypes];
     },
     isButtonDisabled() {
       return this.title.trim().length === 0 || !this.selectedWorkItemType;
+    },
+    createErrorText() {
+      const workItemType = this.workItemTypes.find(
+        (item) => item.value === this.selectedWorkItemType,
+      )?.text;
+
+      return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemType);
     },
   },
   methods: {
@@ -128,7 +133,7 @@ export default {
         } = response;
         this.$router.push({ name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } });
       } catch {
-        this.error = this.$options.createErrorText;
+        this.error = this.createErrorText;
       }
     },
     async createWorkItemFromTask() {
@@ -150,7 +155,7 @@ export default {
         });
         this.$emit('onCreate', data.workItemCreateFromTask.workItem.descriptionHtml);
       } catch {
-        this.error = this.$options.createErrorText;
+        this.error = this.createErrorText;
       }
     },
     handleTitleInput(title) {

@@ -26,6 +26,8 @@ module QA
       def initialize
         @description = "QA test run at #{Runtime::Namespace.time}"
         @require_two_factor_authentication = false
+        # Add visibility to enable create private group
+        @visibility = 'public'
       end
 
       def fabricate!
@@ -39,6 +41,7 @@ module QA
 
             Page::Group::New.perform do |group_new|
               group_new.set_path(path)
+              group_new.set_visibility(@visibility)
               group_new.create_subgroup
             end
 
@@ -73,7 +76,7 @@ module QA
           parent_id: sandbox.id,
           path: path,
           name: name,
-          visibility: 'public',
+          visibility: @visibility.downcase,
           require_two_factor_authentication: @require_two_factor_authentication,
           avatar: avatar
         }

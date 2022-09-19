@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Promote an incident timeline event from a comment' do
   include GraphqlHelpers
+  include NotesHelper
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
@@ -53,7 +54,7 @@ RSpec.describe 'Promote an incident timeline event from a comment' do
       'promotedFromNote' => {
         'id' => comment.to_global_id.to_s
       },
-      'note' => comment.note,
+      'note' => "@#{comment.author.username} [commented](#{noteable_note_url(comment)}): '#{comment.note}'",
       'action' => 'comment',
       'editable' => true,
       'occurredAt' => comment.created_at.iso8601

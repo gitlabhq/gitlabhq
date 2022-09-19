@@ -5,7 +5,8 @@ require 'digest'
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Compare archives of different user projects with the same name and check they\'re different' do
+    describe 'Compare archives of different user projects with the same name and check they\'re different',
+             product_group: :source_code do
       include Support::API
       let(:project_name) { "project-archive-download-#{SecureRandom.hex(8)}" }
 
@@ -52,12 +53,11 @@ module QA
           project.api_client = api_client
         end
 
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
-          push.file_name = 'README.md'
-          push.file_content = '# This is a test project'
-          push.commit_message = 'Add README.md'
-          push.user = user
+        Resource::Repository::Commit.fabricate_via_api! do |commit|
+          commit.project = project
+          commit.add_files([{ file_path: 'README.md', content: '# This is a test project' }])
+          commit.commit_message = 'Add README.md'
+          commit.api_client = api_client
         end
 
         project
@@ -65,7 +65,7 @@ module QA
 
       def download_project_archive_via_api(api_client, project, type = 'tar.gz')
         get_project_archive_zip = Runtime::API::Request.new(api_client, project.api_get_archive_path(type))
-        project_archive_download = get(get_project_archive_zip.url, raw_response: true)
+        project_archive_download = Support::API.get(get_project_archive_zip.url, raw_response: true)
         expect(project_archive_download.code).to eq(200)
 
         project_archive_download.file

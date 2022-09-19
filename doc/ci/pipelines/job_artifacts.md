@@ -305,7 +305,7 @@ the artifact.
 ## How searching for job artifacts works
 
 In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201784), artifacts
-for [parent and child pipelines](parent_child_pipelines.md) are searched in hierarchical
+for [parent and child pipelines](downstream_pipelines.md#parent-child-pipelines) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the job artifact from the parent pipeline is returned.
 
@@ -388,7 +388,7 @@ Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
 a project, you can disable this behavior to save space:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Artifacts**.
 1. Clear the **Keep artifacts from most recent successful jobs** checkbox.
@@ -451,3 +451,63 @@ test-job:
     reports:
       dotenv: build.env
 ```
+
+### Job artifacts are not expired
+
+If some job artifacts are not expiring as expected, check if the
+[**Keep artifacts from most recent successful jobs**](#keep-artifacts-from-most-recent-successful-jobs)
+setting is enabled.
+
+When this setting is enabled, job artifacts from the latest successful pipeline
+of each ref do not expire and are not deleted.
+
+### Error message `This job could not start because it could not retrieve the needed artifacts.`
+
+A job configured with [`needs:artifacts`](../yaml/index.md#needsartifacts) keyword
+fails to start and returns this error message if:
+
+- The job's dependencies cannot be found.
+- The job cannot access the relevant resources due to insufficient permissions.
+
+The troubleshooting steps to follow are determined by the syntax used in the job configuration.
+
+#### Job configured with `needs:project`
+
+The `could not retrieve the needed artifacts.` error can happen for a job using
+[`needs:project`](../yaml/index.md#needsproject), with a configuration similar to:
+
+```yaml
+rspec:
+  needs:
+    - project: org/another-project
+      job: dependency-job
+      ref: master
+      artifacts: true
+```
+
+To troubleshoot this job, verify that:
+
+- Project `org/another-project` is in a group with a Premium subscription plan.
+- The user running the job has permissions to access resources in `org/another-project`.
+- The `project`, `job`, and `ref` combination exists and results in the desired dependency.
+- Any variables in use evaluate to the correct values.
+
+#### Job configured with `needs:pipeline:job`
+
+The `could not retrieve the needed artifacts.` error can happen for a job using
+[`needs:pipeline:job`](../yaml/index.md#needspipelinejob), with a configuration similar to:
+
+```yaml
+rspec:
+  needs:
+    - pipeline: $UPSTREAM_PIPELINE_ID
+      job: dependency-job
+      artifacts: true
+```
+
+To troubleshoot this job, verify that:
+
+- The `$UPSTREAM_PIPELINE_ID` CI/CD variable is available in the current pipeline's
+   parent-child pipeline hierarchy.
+- The `pipeline` and `job` combination exists and resolves to an existing pipeline.
+- `dependency-job` has run and finished successfully.

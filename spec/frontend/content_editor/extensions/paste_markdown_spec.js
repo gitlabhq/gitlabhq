@@ -5,12 +5,7 @@ import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Bold from '~/content_editor/extensions/bold';
 import { VARIANT_DANGER } from '~/flash';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import {
-  ALERT_EVENT,
-  LOADING_CONTENT_EVENT,
-  LOADING_SUCCESS_EVENT,
-  LOADING_ERROR_EVENT,
-} from '~/content_editor/constants';
+import { ALERT_EVENT } from '~/content_editor/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
 
@@ -115,25 +110,11 @@ describe('content_editor/extensions/paste_markdown', () => {
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
-
-      it(`triggers ${LOADING_SUCCESS_EVENT}`, async () => {
-        await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
-
-        expect(eventHub.$emit).toHaveBeenCalledWith(LOADING_CONTENT_EVENT);
-        expect(eventHub.$emit).toHaveBeenCalledWith(LOADING_SUCCESS_EVENT);
-      });
     });
 
     describe('when rendering markdown fails', () => {
       beforeEach(() => {
         renderMarkdown.mockRejectedValueOnce();
-      });
-
-      it(`triggers ${LOADING_ERROR_EVENT} event`, async () => {
-        await triggerPasteEventHandler(buildClipboardEvent());
-        await waitForPromises();
-
-        expect(eventHub.$emit).toHaveBeenCalledWith(LOADING_ERROR_EVENT);
       });
 
       it(`triggers ${ALERT_EVENT} event`, async () => {

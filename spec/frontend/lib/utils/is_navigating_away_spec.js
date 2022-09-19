@@ -6,7 +6,7 @@ describe('isNavigatingAway', () => {
     setNavigatingForTestsOnly(false);
   });
 
-  it.each([false, true])('it returns the navigation flag with value %s', (flag) => {
+  it.each([false, true])('returns the navigation flag with value %s', (flag) => {
     setNavigatingForTestsOnly(flag);
     expect(isNavigatingAway()).toEqual(flag);
   });

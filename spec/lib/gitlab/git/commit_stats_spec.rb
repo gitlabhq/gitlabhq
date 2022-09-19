@@ -2,17 +2,19 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::CommitStats, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-  let(:commit) { Gitlab::Git::Commit.find(repository, SeedRepo::Commit::ID) }
+RSpec.describe Gitlab::Git::CommitStats do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
+
+  let(:commit) { Gitlab::Git::Commit.find(repository, TestEnv::BRANCH_SHA['feature']) }
 
   def verify_stats!
     stats = described_class.new(repository, commit)
 
     expect(stats).to have_attributes(
-      additions: eq(11),
-      deletions: eq(6),
-      total: eq(17)
+      additions: eq(5),
+      deletions: eq(0),
+      total: eq(5)
     )
   end
 
@@ -21,7 +23,7 @@ RSpec.describe Gitlab::Git::CommitStats, :seed_helper do
 
     verify_stats!
 
-    expect(Rails.cache.fetch("commit_stats:group/project:#{commit.id}")).to eq([11, 6])
+    expect(Rails.cache.fetch("commit_stats:#{repository.gl_project_path}:#{commit.id}")).to eq([5, 0])
 
     expect(repository.gitaly_commit_client).not_to receive(:commit_stats)
 

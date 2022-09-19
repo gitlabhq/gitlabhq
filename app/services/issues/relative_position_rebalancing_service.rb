@@ -16,8 +16,6 @@ module Issues
     end
 
     def execute
-      return unless Feature.enabled?(:rebalance_issues, root_namespace)
-
       # Given can_start_rebalance? and track_new_running_rebalance are not atomic
       # it can happen that we end up with more than Rebalancing::State::MAX_NUMBER_OF_CONCURRENT_REBALANCES running.
       # Considering the number of allowed Rebalancing::State::MAX_NUMBER_OF_CONCURRENT_REBALANCES is small we should be ok,

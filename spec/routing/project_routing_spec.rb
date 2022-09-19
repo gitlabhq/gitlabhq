@@ -480,7 +480,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/blame/master/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                     { controller: 'projects/blame', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
@@ -499,7 +499,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/blob/blob/master/blob/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                     { controller: 'projects/blob', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "blob/master/blob/#{newline_file}" })
@@ -520,7 +520,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/tree/master/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                     { controller: 'projects/tree', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
@@ -540,7 +540,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/find_file/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                     { controller: 'projects/find_file', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "#{newline_file}" })
@@ -551,7 +551,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/files/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                     { controller: 'projects/find_file', action: 'list',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "#{newline_file}" })
@@ -570,7 +570,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/edit/master/docs/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                       { controller: 'projects/blob', action: 'edit',
                         namespace_id: 'gitlab', project_id: 'gitlabhq',
                         id: "master/docs/#{newline_file}" })
@@ -584,7 +584,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/edit/master/docs/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                       { controller: 'projects/blob', action: 'edit',
                         namespace_id: 'gitlab', project_id: 'gitlabhq',
                         id: "master/docs/#{newline_file}" })
@@ -600,7 +600,7 @@ RSpec.describe 'project routing' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing({ path: "/gitlab/gitlabhq/-/raw/master/#{url_encoded_newline_file}",
-                        method: :get },
+                       method: :get },
                     { controller: 'projects/raw', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
@@ -889,8 +889,8 @@ RSpec.describe 'project routing' do
   describe Projects::Snippets::BlobsController, "routing" do
     it "to #raw" do
       expect(get('/gitlab/gitlabhq/-/snippets/1/raw/master/lib/version.rb'))
-        .to route_to('projects/snippets/blobs#raw', namespace_id: 'gitlab',
-                     project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
+        .to route_to('projects/snippets/blobs#raw',
+          namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
     end
   end
 

@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Commit, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+RSpec.describe Gitlab::Git::Commit do
+  let(:repository) { create(:project, :repository).repository.raw }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
 
   describe "Commit info from gitaly commit" do
@@ -121,14 +121,6 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       it "returns nil for id containing NULL" do
         expect(described_class.find(repository, "HE\x00AD")).to be_nil
       end
-
-      context 'with broken repo' do
-        let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH, '', 'group/project') }
-
-        it 'returns nil' do
-          expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_nil
-        end
-      end
     end
 
     describe '.find with Gitaly enabled' do
@@ -154,7 +146,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
         describe '#id' do
           subject { super().id }
 
-          it { is_expected.to eq(SeedRepo::LastCommit::ID) }
+          it { is_expected.to eq(TestEnv::BRANCH_SHA['master']) }
         end
       end
 
@@ -223,7 +215,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
         expect(subject.size).to eq(10)
       end
 
-      it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
+      it { is_expected.to include(TestEnv::BRANCH_SHA['master']) }
     end
 
     context 'path is nil' do
@@ -242,28 +234,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
         expect(subject.size).to eq(10)
       end
 
-      it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
-    end
-
-    context 'ref is branch name' do
-      subject do
-        commits = described_class.where(
-          repo: repository,
-          ref: 'master',
-          path: 'files',
-          limit: 3,
-          offset: 1
-        )
-
-        commits.map { |c| c.id }
-      end
-
-      it 'has 3 elements' do
-        expect(subject.size).to eq(3)
-      end
-
-      it { is_expected.to include("d14d6c0abdd253381df51a723d58691b2ee1ab08") }
-      it { is_expected.not_to include("eb49186cfa5c4338011f5f590fac11bd66c5c631") }
+      it { is_expected.to include(TestEnv::BRANCH_SHA['master']) }
     end
 
     context 'ref is commit id' do
@@ -323,13 +294,12 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
 
       context 'requesting a commit range' do
         let(:from) { 'v1.0.0' }
-        let(:to) { 'v1.2.0' }
+        let(:to) { 'v1.1.0' }
 
         let(:commits_in_range) do
           %w[
             570e7b2abdd848b95f2f578043fc23bd6f6fd24d
             5937ac0a7beb003549fc5fd26fc247adbce4a52e
-            eb49186cfa5c4338011f5f590fac11bd66c5c631
           ]
         end
 
@@ -338,9 +308,9 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
         end
 
         context 'limited' do
-          let(:limit) { 2 }
+          let(:limit) { 1 }
 
-          it { expect(commit_ids).to eq(commits_in_range.last(2)) }
+          it { expect(commit_ids).to eq(commits_in_range.last(1)) }
         end
       end
     end
@@ -383,16 +353,8 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
           commits.map(&:id)
         end
 
-        it 'has 34 elements' do
-          expect(subject.size).to eq(34)
-        end
-
-        it 'includes the expected commits' do
-          expect(subject).to include(
-            SeedRepo::Commit::ID,
-            SeedRepo::Commit::PARENT_ID,
-            SeedRepo::FirstCommit::ID
-          )
+        it 'has maximum elements' do
+          expect(subject.size).to eq(50)
         end
       end
 
@@ -408,13 +370,13 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
           commits.map(&:id)
         end
 
-        it 'has 24 elements' do
-          expect(subject.size).to eq(24)
+        it 'has 36 elements' do
+          expect(subject.size).to eq(36)
         end
 
         it 'includes the expected commits' do
           expect(subject).to include(SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID)
-          expect(subject).not_to include(SeedRepo::LastCommit::ID)
+          expect(subject).not_to include(TestEnv::BRANCH_SHA['master'])
         end
       end
     end
@@ -650,8 +612,8 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
 
     subject { commit.ref_names(repository) }
 
-    it 'has 2 element' do
-      expect(subject.size).to eq(2)
+    it 'has 3 elements' do
+      expect(subject.size).to eq(3)
     end
 
     it { is_expected.to include("master") }
@@ -681,6 +643,8 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
     end
 
     it 'gets messages in one batch', :request_store do
+      repository # preload repository so that the project factory does not pollute request counts
+
       expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
     end
   end

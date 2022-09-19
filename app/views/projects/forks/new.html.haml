@@ -3,7 +3,7 @@
 #fork-groups-mount-element{ data: { fork_illustration: image_path('illustrations/project-create-new-sm.svg'),
   endpoint: new_project_fork_path(@project, format: :json),
   new_group_path: new_group_path,
-  project_full_path: project_path(@project),
+  project_full_path: @project.full_path,
   visibility_help_path: help_page_path("user/public_access"),
   project_id: @project.id,
   project_name: @project.name,

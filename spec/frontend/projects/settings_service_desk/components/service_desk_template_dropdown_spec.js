@@ -7,7 +7,7 @@ import { TEMPLATES } from './mock_data';
 describe('ServiceDeskTemplateDropdown', () => {
   let wrapper;
 
-  const findTemplateDropdown = () => wrapper.find(GlDropdown);
+  const findTemplateDropdown = () => wrapper.findComponent(GlDropdown);
 
   const createComponent = ({ props = {} } = {}) =>
     extendedWrapper(
@@ -53,7 +53,7 @@ describe('ServiceDeskTemplateDropdown', () => {
         props: { templates: TEMPLATES },
       });
 
-      const headerItems = wrapper.findAll(GlDropdownSectionHeader);
+      const headerItems = wrapper.findAllComponents(GlDropdownSectionHeader);
 
       expect(headerItems).toHaveLength(1);
       expect(headerItems.at(0).text()).toBe(TEMPLATES[0]);
@@ -68,7 +68,7 @@ describe('ServiceDeskTemplateDropdown', () => {
 
       const expectedTemplates = templates[1];
 
-      const items = wrapper.findAll(GlDropdownItem);
+      const items = wrapper.findAllComponents(GlDropdownItem);
       const dropdownList = expectedTemplates.map((_, index) => items.at(index).text());
 
       expect(items).toHaveLength(expectedTemplates.length);

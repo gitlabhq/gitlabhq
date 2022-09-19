@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module CodeReuse
       # Cop that enforces various code reuse rules for Finders.
-      class Finder < RuboCop::Cop::Cop
+      class Finder < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         IN_FINDER = 'Finders can not be used inside a Finder.'

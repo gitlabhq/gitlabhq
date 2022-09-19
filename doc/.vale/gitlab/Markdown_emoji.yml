@@ -1,0 +1,13 @@
+---
+# Warning: gitlab.Markdown_emoji
+#
+# Check for use of GLFM emoji syntax (https://docs.gitlab.com/ee/user/markdown.html#emojis), which doesn't render correctly in documentation.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'This appears to be GLFM emoji syntax. Replace "%s" with GitLab SVGs or Unicode emojis.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#gitlab-svg-icons
+level: warning
+scope: text
+raw:
+  - '(?:\s+|^):[a-zA-Z0-9\-_\+]+:(?:\s+|$|\.)'

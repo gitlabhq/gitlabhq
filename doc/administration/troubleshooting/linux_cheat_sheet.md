@@ -204,7 +204,7 @@ or you can build it from source if you have the Rust compiler.
 
 #### How to use the tool
 
-First run the tool with `summary` flag to get a summary of the top processes sorted by time spent actively performing tasks. 
+First run the tool with `summary` flag to get a summary of the top processes sorted by time spent actively performing tasks.
 You can also sort based on total time, # of system calls made, PID #, and # of child processes
 using the `-s` or `--sort` flag. The number of results defaults to 25 processes, but
 can be changed using the `-c`/`--count` option. See `--help` for full details.

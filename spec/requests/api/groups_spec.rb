@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Groups do
   include GroupAPIHelpers
   include UploadHelpers
+  include WorkhorseHelpers
 
   let_it_be(:user1) { create(:user, can_create_group: false) }
   let_it_be(:user2) { create(:user) }
@@ -540,9 +541,9 @@ RSpec.describe API::Groups do
     # Returns a Hash of visibility_level => Project pairs
     def add_projects_to_group(group, share_with: nil)
       projects = {
-        public:   create(:project, :public,   namespace: group),
+        public: create(:project, :public, namespace: group),
         internal: create(:project, :internal, namespace: group),
-        private:  create(:project, :private,  namespace: group)
+        private: create(:project, :private,  namespace: group)
       }
 
       if share_with
@@ -872,21 +873,31 @@ RSpec.describe API::Groups do
         group_param = {
           avatar: fixture_file_upload(file_path)
         }
-        put api("/groups/#{group1.id}", user1), params: group_param
+        workhorse_form_with_file(
+          api("/groups/#{group1.id}", user1),
+          method: :put,
+          file_key: :avatar,
+          params: group_param
+        )
       end
     end
 
     context 'when authenticated as the group owner' do
       it 'updates the group' do
-        put api("/groups/#{group1.id}", user1), params: {
-          name: new_group_name,
-          request_access_enabled: true,
-          project_creation_level: "noone",
-          subgroup_creation_level: "maintainer",
-          default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
-          prevent_sharing_groups_outside_hierarchy: true,
-          avatar: fixture_file_upload(file_path)
-        }
+        workhorse_form_with_file(
+          api("/groups/#{group1.id}", user1),
+          method: :put,
+          file_key: :avatar,
+          params: {
+            name: new_group_name,
+            request_access_enabled: true,
+            project_creation_level: "noone",
+            subgroup_creation_level: "maintainer",
+            default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+            prevent_sharing_groups_outside_hierarchy: true,
+            avatar: fixture_file_upload(file_path)
+          }
+        )
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(new_group_name)
@@ -910,6 +921,16 @@ RSpec.describe API::Groups do
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['avatar_url']).to end_with('dk.png')
         expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(true)
+      end
+
+      it 'removes the group avatar' do
+        put api("/groups/#{group1.id}", user1), params: { avatar: '' }
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['avatar_url']).to be_nil
+          expect(group1.reload.avatar_url).to be_nil
+        end
       end
 
       it 'does not update visibility_level if it is restricted' do
@@ -1787,7 +1808,12 @@ RSpec.describe API::Groups do
           attrs[:avatar] = fixture_file_upload(file_path)
         end
 
-        post api("/groups", user3), params: params
+        workhorse_form_with_file(
+          api('/groups', user3),
+          method: :post,
+          file_key: :avatar,
+          params: params
+        )
       end
     end
 
@@ -2025,6 +2051,90 @@ RSpec.describe API::Groups do
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
+      end
+    end
+  end
+
+  describe 'GET /groups/:id/transfer_locations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:source_group) { create(:group, :private) }
+
+    let(:params) { {} }
+
+    subject(:request) do
+      get api("/groups/#{source_group.id}/transfer_locations", user), params: params
+    end
+
+    context 'when the user has rights to transfer the group' do
+      let_it_be(:guest_group) { create(:group) }
+      let_it_be(:maintainer_group) { create(:group, name: 'maintainer group', path: 'maintainer-group') }
+      let_it_be(:owner_group_1) { create(:group, name: 'owner group', path: 'owner-group') }
+      let_it_be(:owner_group_2) { create(:group, name: 'gitlab group', path: 'gitlab-group') }
+      let_it_be(:shared_with_group_where_direct_owner_as_owner) { create(:group) }
+
+      before do
+        source_group.add_owner(user)
+        guest_group.add_guest(user)
+        maintainer_group.add_maintainer(user)
+        owner_group_1.add_owner(user)
+        owner_group_2.add_owner(user)
+        create(:group_group_link, :owner,
+               shared_with_group: owner_group_1,
+               shared_group: shared_with_group_where_direct_owner_as_owner
+        )
+      end
+
+      it 'returns 200' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+      end
+
+      it 'only includes groups where the user has permissions to transfer a group to' do
+        request
+
+        expect(group_ids_from_response).to contain_exactly(
+          owner_group_1.id,
+          owner_group_2.id,
+          shared_with_group_where_direct_owner_as_owner.id
+        )
+      end
+
+      context 'with search' do
+        let(:params) { { search: 'gitlab' } }
+
+        it 'includes groups where the user has permissions to transfer a group to, matching the search term' do
+          request
+
+          expect(group_ids_from_response).to contain_exactly(owner_group_2.id)
+        end
+      end
+
+      def group_ids_from_response
+        json_response.map { |group| group['id'] }
+      end
+    end
+
+    context 'when the user does not have permissions to transfer the group' do
+      before do
+        source_group.add_developer(user)
+      end
+
+      it 'returns 403' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'for an anonymous user' do
+      let_it_be(:user) { nil }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

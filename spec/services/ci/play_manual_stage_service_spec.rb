@@ -75,7 +75,6 @@ RSpec.describe Ci::PlayManualStageService, '#execute' do
     options.merge!({
       when: 'manual',
       pipeline: pipeline,
-      stage: stage.name,
       stage_id: stage.id,
       user: pipeline.user
     })
@@ -87,7 +86,6 @@ RSpec.describe Ci::PlayManualStageService, '#execute' do
     options.merge!({
       when: 'manual',
       pipeline: pipeline,
-      stage: stage.name,
       stage_id: stage.id,
       user: pipeline.user,
       downstream: downstream_project

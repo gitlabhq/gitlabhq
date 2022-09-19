@@ -31,7 +31,7 @@ with sibling pages listed in alphabetical order. To view a list of all pages, se
 
 To access a project wiki:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. To display the wiki, either:
    - On the left sidebar, select **Wiki**.
    - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
@@ -61,7 +61,7 @@ When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific title
 to be used as your wiki's home page. To create it:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -79,7 +79,7 @@ to be used as your wiki's home page. To create it:
 
 Users with at least the Developer role can create new wiki pages:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -142,7 +142,7 @@ may not be able to check out the wiki locally afterward.
 
 You need at least the Developer role to edit a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -161,7 +161,7 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 You need at least the Developer role to delete a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -174,7 +174,7 @@ You need at least the Developer role to delete a wiki page:
 
 You need at least the Developer role to move a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -200,7 +200,7 @@ The history page shows:
 
 To view the changes for a wiki page:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -213,7 +213,7 @@ To view the changes for a wiki page:
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -246,7 +246,7 @@ You need at least the Developer role to customize the wiki
 navigation sidebar. This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
-1. On the top bar, select **Menu**.
+1. On the top bar, select **Main menu**.
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
@@ -284,7 +284,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 
 To add a link to an external wiki from a project's left sidebar:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
@@ -300,7 +300,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 
 To hide the link to an external wiki:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. In the **Enable integration** section, clear the **Active** checkbox.
@@ -310,7 +310,7 @@ To hide the link to an external wiki:
 
 To disable a project's internal wiki:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Go to your project and select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find **Wiki** and toggle it off (in gray).

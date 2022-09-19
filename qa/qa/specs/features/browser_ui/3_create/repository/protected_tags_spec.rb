@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository tags', :reliable do
+    describe 'Repository tags', :reliable, product_group: :source_code do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-for-tags'

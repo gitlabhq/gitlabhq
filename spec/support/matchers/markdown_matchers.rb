@@ -134,7 +134,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-snippet', count: 5)
+      expect(actual).to have_selector('a.gfm.gfm-snippet', count: 9)
     end
   end
 
@@ -193,6 +193,16 @@ module MarkdownMatchers
       expect(actual).to have_selector('li.task-list-item.inapplicable > s', count: 2)
       expect(actual).to have_selector('input[checked]', count: 3)
       expect(actual).to have_selector('input[data-inapplicable]', count: 2)
+    end
+  end
+
+  # MathFilter
+  matcher :parse_math do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('[data-math-style="inline"]', count: 4)
+      expect(actual).to have_selector('[data-math-style="display"]', count: 4)
     end
   end
 

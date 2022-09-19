@@ -40,7 +40,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagSuccess ', () => {
+      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagSuccess', () => {
         const featureFlag = {
           name: 'name',
           description: 'description',
@@ -75,7 +75,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagError ', () => {
+      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagError', () => {
         mock.onPut(`${TEST_HOST}/endpoint.json`).replyOnce(500, { message: [] });
 
         return testAction(
@@ -154,7 +154,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestFeatureFlag and receiveFeatureFlagSuccess ', () => {
+      it('dispatches requestFeatureFlag and receiveFeatureFlagSuccess', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 1 });
 
         return testAction(
@@ -176,7 +176,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestFeatureFlag and receiveUpdateFeatureFlagError ', () => {
+      it('dispatches requestFeatureFlag and receiveUpdateFeatureFlagError', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
 
         return testAction(

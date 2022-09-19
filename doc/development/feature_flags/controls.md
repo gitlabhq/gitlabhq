@@ -112,6 +112,8 @@ incidents or in-progress change issues, for example:
   2021-06-29 Canary deployment failing QA tests
 ```
 
+Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature Flags and the Change Management Process](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+
 The following `/chatops` commands should be performed in the Slack
 `#production` channel.
 
@@ -337,7 +339,7 @@ take one of the following actions:
 
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
-1. Add the ~"feature flag" label so release managers are aware the changes are hidden behind a feature flag.
+1. Add the ~"feature flag" label so release managers are aware of the removal.
 1. If the merge request has to be picked into a stable branch, add the
    appropriate `~"Pick into X.Y"` label, for example `~"Pick into 13.0"`.
    See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)

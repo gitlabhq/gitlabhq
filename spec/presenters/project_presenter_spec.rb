@@ -102,7 +102,7 @@ RSpec.describe ProjectPresenter do
           expect(release).to be_truthy
           expect(presenter.releases_anchor_data).to have_attributes(
             is_link: true,
-            label:  a_string_including("#{project.releases.count}"),
+            label: a_string_including("#{project.releases.count}"),
             link: presenter.project_releases_path(project)
           )
         end
@@ -216,7 +216,7 @@ RSpec.describe ProjectPresenter do
       it 'returns storage data' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including('0 Bytes'),
+          label: a_string_including('0 Bytes'),
           link: nil
         )
       end
@@ -270,7 +270,7 @@ RSpec.describe ProjectPresenter do
       it 'returns storage data without usage quotas link for non-admin users' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including('0 Bytes'),
+          label: a_string_including('0 Bytes'),
           link: nil
         )
       end
@@ -280,7 +280,7 @@ RSpec.describe ProjectPresenter do
 
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including('0 Bytes'),
+          label: a_string_including('0 Bytes'),
           link: presenter.project_usage_quotas_path(project)
         )
       end
@@ -293,7 +293,7 @@ RSpec.describe ProjectPresenter do
         expect(release).to be_truthy
         expect(presenter.releases_anchor_data).to have_attributes(
           is_link: true,
-          label:  a_string_including("#{project.releases.count}"),
+          label: a_string_including("#{project.releases.count}"),
           link: presenter.project_releases_path(project)
         )
       end
@@ -484,6 +484,12 @@ RSpec.describe ProjectPresenter do
     end
 
     describe '#autodevops_anchor_data' do
+      it 'returns nil if builds feature is not available' do
+        allow(project).to receive(:feature_available?).with(:builds, user).and_return(false)
+
+        expect(presenter.autodevops_anchor_data).to be_nil
+      end
+
       context 'when Auto Devops is enabled' do
         it 'returns anchor data' do
           allow(project).to receive(:auto_devops_enabled?).and_return(true)
@@ -566,7 +572,7 @@ RSpec.describe ProjectPresenter do
         it 'returns upload_anchor_data' do
           expect(presenter.upload_anchor_data).to have_attributes(
             is_link: false,
-            label:  a_string_including('Upload file'),
+            label: a_string_including('Upload file'),
             data: {
               "can_push_code" => "true",
               "original_branch" => "master",
@@ -613,7 +619,7 @@ RSpec.describe ProjectPresenter do
     end
 
     context 'empty repo' do
-      let(:project) { create(:project, :stubbed_repository)}
+      let(:project) { create(:project, :stubbed_repository) }
 
       context 'for a guest user' do
         it 'orders the items correctly' do

@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectMembersResolver do
+RSpec.describe 'Resolvers::ProjectMembersResolver' do
   include GraphqlHelpers
+
+  let(:described_class) { Resolvers::ProjectMembersResolver }
 
   it_behaves_like 'querying members with a group' do
     let_it_be(:project) { create(:project, group: group_1) }

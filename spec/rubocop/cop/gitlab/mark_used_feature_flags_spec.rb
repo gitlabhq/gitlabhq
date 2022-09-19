@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/mark_used_feature_flags'
@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
   let(:defined_feature_flags) do
     %w[a_feature_flag foo_hello foo_world baz_experiment_percentage bar_baz]
   end
-
-  subject(:cop) { described_class.new }
 
   before do
     allow(cop).to receive(:defined_feature_flags).and_return(defined_feature_flags)
@@ -48,6 +46,7 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     Feature.enabled?
     Feature.disabled?
     push_frontend_feature_flag
+    YamlProcessor::FeatureFlags.enabled?
   ].each do |feature_flag_method|
     context "#{feature_flag_method} method" do
       context 'a string feature flag' do
@@ -210,19 +209,6 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
   describe 'Worker `deduplicate` method' do
     include_examples 'sets flag as used', 'deduplicate :delayed, feature_flag: :foo', 'foo'
     include_examples 'does not set any flags as used', 'deduplicate :delayed'
-  end
-
-  describe 'GraphQL `field` method' do
-    before do
-      allow(cop).to receive(:in_graphql_types?).and_return(true)
-    end
-
-    include_examples 'sets flag as used', 'field :runners, Types::Ci::RunnerType.connection_type, null: true, _deprecated_feature_flag: :foo', 'foo'
-    include_examples 'sets flag as used', 'field :runners, null: true, _deprecated_feature_flag: :foo', 'foo'
-    include_examples 'does not set any flags as used', 'field :solution'
-    include_examples 'does not set any flags as used', 'field :runners, Types::Ci::RunnerType.connection_type'
-    include_examples 'does not set any flags as used', 'field :runners, Types::Ci::RunnerType.connection_type, null: true, description: "hello world"'
-    include_examples 'does not set any flags as used', 'field :solution, type: GraphQL::Types::String, null: true, description: "URL to the vulnerabilitys details page."'
   end
 
   describe "tracking of usage data metrics known events happens at the beginning of inspection" do

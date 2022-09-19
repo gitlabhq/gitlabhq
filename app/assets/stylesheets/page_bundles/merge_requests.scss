@@ -41,16 +41,20 @@ $tabs-holder-z-index: 250;
   // If they don't match, the file tree and the diff files stick
   // to the top at different heights, which is a bad-looking defect
   $diff-file-header-top: 11px;
-  $top-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
+  --initial-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
+  --top-pos: var(--initial-pos);
 
   position: -webkit-sticky;
   position: sticky;
-  // Unitless zero values are not allowed in calculations
-  top: calc(#{$top-pos} + var(--system-header-height, 0px) + var(--performance-bar-height, 0px));
-  max-height: calc(100vh - #{$top-pos} - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
+  top: var(--top-pos);
+  max-height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
 
   .drag-handle {
     bottom: 16px;
+  }
+
+  &.is-sidebar-moved {
+    --top-pos: calc(var(--initial-pos) + 26px);
   }
 }
 
@@ -196,12 +200,8 @@ $tabs-holder-z-index: 250;
   background-color: var(--gray-50, $gray-50);
 }
 
-.mr-conflict-loader {
-  max-width: 334px;
-
-  > svg {
-    vertical-align: middle;
-  }
+.mr-widget-body-loading svg {
+  vertical-align: middle;
 }
 
 .mr-info-list {
@@ -398,12 +398,6 @@ $tabs-holder-z-index: 250;
     display: block;
   }
 
-  .mr-widget-pipeline-graph {
-    .dropdown-menu {
-      z-index: $zindex-dropdown-menu;
-    }
-  }
-
   .normal {
     flex: 1;
     flex-basis: auto;
@@ -440,7 +434,7 @@ $tabs-holder-z-index: 250;
 
   .mr-widget-body {
     &:not(.mr-widget-body-line-height-1) {
-      line-height: 28px;
+      line-height: 24px;
     }
 
     @include clearfix;
@@ -475,12 +469,6 @@ $tabs-holder-z-index: 250;
       margin: 0 0 0 10px;
     }
 
-    .bold {
-      font-weight: $gl-font-weight-bold;
-      color: var(--gray-600, $gray-600);
-      margin-left: 10px;
-    }
-
     .state-label {
       font-weight: $gl-font-weight-bold;
       padding-right: 10px;
@@ -488,11 +476,6 @@ $tabs-holder-z-index: 250;
 
     .danger {
       color: var(--red-500, $red-500);
-    }
-
-    .spacing,
-    .bold {
-      vertical-align: middle;
     }
 
     .dropdown-menu {
@@ -621,8 +604,8 @@ $tabs-holder-z-index: 250;
 .mr-widget-extension-icon::before {
   @include gl-content-empty;
   @include gl-absolute;
-  @include gl-left-0;
-  @include gl-top-0;
+  @include gl-left-50p;
+  @include gl-top-half;
   @include gl-opacity-3;
   @include gl-border-solid;
   @include gl-border-4;
@@ -630,24 +613,20 @@ $tabs-holder-z-index: 250;
 
   width: 24px;
   height: 24px;
+  transform: translate(-50%, -50%);
 }
 
 .mr-widget-extension-icon::after {
   @include gl-content-empty;
   @include gl-absolute;
   @include gl-rounded-full;
+  @include gl-left-50p;
+  @include gl-top-half;
 
-  top: 4px;
-  left: 4px;
   width: 16px;
   height: 16px;
-  border: 4px solid currentColor;
-}
-
-.mr-widget-extension-icon svg {
-  position: relative;
-  top: 2px;
-  left: 2px;
+  border: 4px solid;
+  transform: translate(-50%, -50%);
 }
 
 .mr-widget-heading {
@@ -777,6 +756,7 @@ $tabs-holder-z-index: 250;
   &.show .dropdown-menu {
     width: calc(100vw - 20px);
     max-width: 650px;
+    max-height: calc(100vh - 50px);
 
     .gl-new-dropdown-inner {
       max-height: none !important;
@@ -818,8 +798,7 @@ $tabs-holder-z-index: 250;
   }
 
   .md-preview-holder {
-    max-height: 180px;
-    height: 180px;
+    max-height: 172px;
   }
 }
 
@@ -838,5 +817,31 @@ $tabs-holder-z-index: 250;
     &:focus {
       @include gl-text-decoration-none;
     }
+  }
+}
+
+.merge-request-sticky-header {
+  z-index: 204;
+  box-shadow: 0 1px 2px $issue-boards-card-shadow;
+  --width: calc(100% - #{$contextual-sidebar-width});
+
+  @include media-breakpoint-down(lg) {
+    --width: calc(100% - #{$contextual-sidebar-collapsed-width});
+  }
+}
+
+.detail-page-header-actions {
+  .gl-toggle {
+    @include gl-ml-auto;
+  }
+}
+
+.page-with-icon-sidebar .issue-sticky-header {
+  --width: calc(100% - #{$contextual-sidebar-collapsed-width});
+}
+
+.merge-request-notification-toggle {
+  .gl-toggle-label {
+    @include gl-font-weight-normal;
   }
 }

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import pipelineHeader from './components/header_component.vue';
+import PipelineHeader from './components/header_component.vue';
 
 Vue.use(VueApollo);
 
@@ -16,7 +16,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
   new Vue({
     el,
     components: {
-      pipelineHeader,
+      PipelineHeader,
     },
     apolloProvider,
     provide: {

@@ -27,8 +27,8 @@ module Gitlab
 
             labels = {
               method: env['REQUEST_METHOD'].downcase,
-              path:   env['PATH_INFO'].to_s,
-              code:   response.first.to_s
+              path: env['PATH_INFO'].to_s,
+              code: response.first.to_s
             }
 
             @requests_total.increment(labels)

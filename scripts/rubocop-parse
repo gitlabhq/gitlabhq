@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Emit AST from parsed Ruby code by RuboCop.
+#
+# This is an alternative to `ruby-parser` shipped with `parser` gem.
+#
+# Usage:
+#   rubocop-parse -e 'puts "hello"'
+#   (send nil :puts
+#     (str "hello"))
+#
+#   rubocop-parse -e 'puts "hello"' -v 3.0
+#   (send nil :puts
+#     (str "hello"))
+#
+#   rubocop-parse app/models/project.rb
+#   (begin
+#     (send nil :require
+#       (str "carrierwave/orm/activerecord"))
+#     (class
+#       (const nil :Project)
+#       (const nil :ApplicationRecord)
+#       (begin
+#         (send nil :include
+#    ...
+
+require_relative '../config/bundler_setup'
+
+require 'rubocop'
+require 'optparse'
+
+def print_ast(file, source, version)
+  version ||= RuboCop::ConfigStore.new.for_file(file).target_ruby_version
+  puts RuboCop::AST::ProcessedSource.new(source, version).ast.to_s
+end
+
+options = Struct.new(:eval, :ruby_version, :print_help, keyword_init: true).new
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [-e code] [FILE...]"
+
+  opts.on('-e FRAGMENT', '--eval FRAGMENT', 'Process a fragment of Ruby code') do |code|
+    options.eval = code
+  end
+
+  opts.on('-v RUBY_VERSION', '--ruby-version RUBY_VERSION',
+          'Parse as Ruby would. Defaults to RuboCop TargetRubyVersion setting.') do |ruby_version|
+    options.ruby_version = Float(ruby_version)
+  end
+
+  opts.on('-h', '--help') do
+    options.print_help = true
+  end
+end
+
+args = parser.parse!
+
+if options.print_help
+  puts parser
+  exit
+end
+
+print_ast('', options.eval, options.ruby_version) if options.eval
+
+args.each do |arg|
+  if File.file?(arg)
+    source = File.read(arg)
+    print_ast(arg, source, options.ruby_version)
+  else
+    warn "Skipping non-file #{arg.inspect}"
+  end
+end

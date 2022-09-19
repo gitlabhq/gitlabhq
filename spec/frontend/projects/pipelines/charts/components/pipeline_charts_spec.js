@@ -44,7 +44,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
 
   describe('overall statistics', () => {
     it('displays the statistics list', () => {
-      const list = wrapper.find(StatisticsList);
+      const list = wrapper.findComponent(StatisticsList);
 
       expect(list.exists()).toBe(true);
       expect(list.props('counts')).toEqual({
@@ -56,9 +56,9 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
     });
 
     it('displays the commit duration chart', () => {
-      const chart = wrapper.find(GlColumnChart);
+      const chart = wrapper.findComponent(GlColumnChart);
 
-      expect(chart.exists()).toBeTruthy();
+      expect(chart.exists()).toBe(true);
       expect(chart.props('yAxisTitle')).toBe('Minutes');
       expect(chart.props('xAxisTitle')).toBe('Commit');
       expect(chart.props('bars')).toBe(wrapper.vm.timesChartTransformedData);
@@ -68,12 +68,12 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
 
   describe('pipelines charts', () => {
     it('displays the charts components', () => {
-      expect(wrapper.find(CiCdAnalyticsCharts).exists()).toBe(true);
+      expect(wrapper.findComponent(CiCdAnalyticsCharts).exists()).toBe(true);
     });
 
     describe('displays individual correctly', () => {
       it('renders with the correct data', () => {
-        const charts = wrapper.find(CiCdAnalyticsCharts);
+        const charts = wrapper.findComponent(CiCdAnalyticsCharts);
         expect(charts.props()).toEqual({
           charts: wrapper.vm.areaCharts,
           chartOptions: wrapper.vm.$options.areaChartOptions,

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Rails console **(FREE SELF)**
 
-At the heart of GitLab is a web application 
+At the heart of GitLab is a web application
 [built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
 provides a way to interact with your GitLab instance from the command line, and also grants access to the amazing tools built right into Rails.
@@ -19,7 +19,7 @@ with no consequences, you are strongly advised to do so in a test environment.
 
 The Rails console is for GitLab system administrators who are troubleshooting
 a problem or need to retrieve some data that can only be done through direct
-access of the GitLab application. Basic knowledge of Ruby is needed (try 
+access of the GitLab application. Basic knowledge of Ruby is needed (try
 [this 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction).
 Rails experience is useful but not required.
 
@@ -136,7 +136,7 @@ root
 1
 ```
 
-Some basic knowledge of Ruby will be very useful. Try 
+Some basic knowledge of Ruby will be very useful. Try
 [this 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction.
 Rails experience is helpful but not essential.
 
@@ -200,6 +200,44 @@ sudo mv /script_path/helloworld.rb /scripts
 sudo chown -R git:git /scripts
 sudo chmod 700 /scripts
 sudo gitlab-rails runner /scripts/helloworld.rb
+```
+
+## Find specific methods for an object
+
+```ruby
+Array.methods.select { |m| m.to_s.include? "sing" }
+Array.methods.grep(/sing/)
+```
+
+## Find method source
+
+```ruby
+instance_of_object.method(:foo).source_location
+
+# Example for when we would call project.private?
+project.method(:private?).source_location
+```
+
+## Limiting output
+
+Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This can be used if you are already explicitly printing details and potentially have a lot of return output:
+
+```ruby
+puts ActiveRecord::Base.descendants; :ok
+Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
+```
+
+## Get or store the result of last operation
+
+Underscore(`_`) represents the implicit return of the previous statement. You can use this to quickly assign a variable from the output of the previous command:
+
+```ruby
+Project.last
+# => #<Project id:2537 root/discard>>
+project = _
+# => #<Project id:2537 root/discard>>
+project.id
+# => 2537
 ```
 
 ## Active Record objects
@@ -330,6 +368,15 @@ D, [2020-03-05T17:18:30.406047 #910] DEBUG -- :   User Load (2.6ms)  SELECT "use
 
 For more on different ways to retrieve data from the database using Active
 Record, please see the [Active Record Query Interface documentation](https://guides.rubyonrails.org/active_record_querying.html).
+
+## Query the database using an Active Record model
+
+```ruby
+m = Model.where('attribute like ?', 'ex%')
+
+# for example to query the projects
+projects = Project.where('path like ?', 'Oumua%')
+```
 
 ### Modifying Active Record objects
 

@@ -5,9 +5,8 @@ import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
 import initDiffsApp from '../diffs';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import MergeRequest from '../merge_request';
-import discussionCounter from '../notes/components/discussion_counter.vue';
+import DiscussionCounter from '../notes/components/discussion_counter.vue';
 import initDiscussionFilters from '../notes/discussion_filters';
-import initSortDiscussions from '../notes/sort_discussions';
 import initNotesApp from './init_notes';
 
 export default function initMrNotes() {
@@ -38,7 +37,7 @@ export default function initMrNotes() {
         el,
         name: 'DiscussionCounter',
         components: {
-          discussionCounter,
+          DiscussionCounter,
         },
         store,
         render(createElement) {
@@ -52,6 +51,5 @@ export default function initMrNotes() {
     }
 
     initDiscussionFilters(store);
-    initSortDiscussions(store);
   });
 }

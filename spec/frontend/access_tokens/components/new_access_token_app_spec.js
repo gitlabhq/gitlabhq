@@ -23,18 +23,27 @@ describe('~/access_tokens/components/new_access_token_app', () => {
   };
 
   const triggerSuccess = async (newToken = 'new token') => {
-    wrapper.find(DomElementListener).vm.$emit(EVENT_SUCCESS, { detail: [{ new_token: newToken }] });
+    wrapper
+      .findComponent(DomElementListener)
+      .vm.$emit(EVENT_SUCCESS, { detail: [{ new_token: newToken }] });
     await nextTick();
   };
 
   const triggerError = async (errors = ['1', '2']) => {
-    wrapper.find(DomElementListener).vm.$emit(EVENT_ERROR, { detail: [{ errors }] });
+    wrapper.findComponent(DomElementListener).vm.$emit(EVENT_ERROR, { detail: [{ errors }] });
     await nextTick();
   };
 
   beforeEach(() => {
     // NewAccessTokenApp observes a form element
-    setHTMLFixture(`<form id="${FORM_SELECTOR.slice(1)}"><input type="submit"/></form>`);
+    setHTMLFixture(
+      `<form id="${FORM_SELECTOR.slice(1)}">
+        <input type="text" id="expires_at" value="2022-01-01"/>
+        <input type="text" value='1'/>
+        <input type="checkbox" checked/>
+        <input type="submit" value="Create"/>
+      </form>`,
+    );
 
     createComponent();
   });
@@ -78,7 +87,6 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         .findByLabelText(sprintf(__('Your new %{accessTokenType}'), { accessTokenType }))
         .attributes();
       expect(inputAttributes).toMatchObject({
-        class: expect.stringContaining('qa-created-access-token'),
         'data-qa-selector': 'created_access_token_field',
       });
     });
@@ -94,12 +102,29 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       });
     });
 
-    it('should reset the form', async () => {
-      const resetSpy = jest.spyOn(wrapper.vm.form, 'reset');
+    describe('when resetting the form', () => {
+      it('should reset selectively some input fields', async () => {
+        expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('1');
+        expect(document.querySelector('input[type=checkbox]').checked).toBe(true);
+        await triggerSuccess();
 
-      await triggerSuccess();
+        expect(document.querySelector('input[type=text]:not([id$=expires_at])').value).toBe('');
+        expect(document.querySelector('input[type=checkbox]').checked).toBe(false);
+      });
 
-      expect(resetSpy).toHaveBeenCalled();
+      it('should not reset the date field', async () => {
+        expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
+        await triggerSuccess();
+
+        expect(document.querySelector('input[type=text][id$=expires_at]').value).toBe('2022-01-01');
+      });
+
+      it('should not reset the submit button value', async () => {
+        expect(document.querySelector('input[type=submit]').value).toBe('Create');
+        await triggerSuccess();
+
+        expect(document.querySelector('input[type=submit]').value).toBe('Create');
+      });
     });
   });
 

@@ -1,7 +1,8 @@
 <script>
 import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import eventHub from '../../event_hub';
-import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '../../constants';
+import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL, TRACKING_CATEGORIES } from '../../constants';
 import PipelineMultiActions from './pipeline_multi_actions.vue';
 import PipelinesManualActions from './pipelines_manual_actions.vue';
 
@@ -17,6 +18,7 @@ export default {
     PipelineMultiActions,
     PipelinesManualActions,
   },
+  mixins: [Tracking.mixin()],
   props: {
     pipeline: {
       type: Object,
@@ -52,6 +54,7 @@ export default {
   },
   methods: {
     handleCancelClick() {
+      this.trackClick('click_cancel_button');
       eventHub.$emit('openConfirmationModal', {
         pipeline: this.pipeline,
         endpoint: this.pipeline.cancel_path,
@@ -59,7 +62,11 @@ export default {
     },
     handleRetryClick() {
       this.isRetrying = true;
+      this.trackClick('click_retry_button');
       eventHub.$emit('retryPipeline', this.pipeline.retry_path);
+    },
+    trackClick(action) {
+      this.track(action, { label: TRACKING_CATEGORIES.table });
     },
   },
 };

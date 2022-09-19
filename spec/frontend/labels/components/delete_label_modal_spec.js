@@ -34,7 +34,7 @@ describe('~/labels/components/delete_label_modal', () => {
     wrapper.destroy();
   });
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findPrimaryModalButton = () => wrapper.findByTestId('delete-button');
 
   describe('template', () => {

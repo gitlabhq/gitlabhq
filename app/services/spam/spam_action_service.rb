@@ -4,11 +4,12 @@ module Spam
   class SpamActionService
     include SpamConstants
 
-    def initialize(spammable:, spam_params:, user:, action:)
+    def initialize(spammable:, spam_params:, user:, action:, extra_features: {})
       @target = spammable
       @spam_params = spam_params
       @user = user
       @action = action
+      @extra_features = extra_features
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -40,7 +41,7 @@ module Spam
 
     private
 
-    attr_reader :user, :action, :target, :spam_params, :spam_log
+    attr_reader :user, :action, :target, :spam_params, :spam_log, :extra_features
 
     ##
     # In order to be proceed to the spam check process, the target must be
@@ -124,7 +125,9 @@ module Spam
       SpamVerdictService.new(target: target,
                              user: user,
                              options: options,
-                             context: context)
+                             context: context,
+                             extra_features: extra_features
+                            )
     end
 
     def noteable_type

@@ -11,8 +11,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter do
   let(:parallel) { true }
   let(:issue_event) do
     struct = Struct.new(
-      :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone,
-      :source, :assignee, :assigner, :issue, :created_at, :performed_via_github_app,
+      :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone, :source,
+      :assignee, :assigner, :review_requester, :requested_reviewer, :issue, :created_at, :performed_via_github_app,
       keyword_init: true
     )
     struct.new(id: rand(10), event: 'closed', created_at: '2022-04-26 18:30:53 UTC')

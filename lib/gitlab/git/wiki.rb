@@ -70,18 +70,6 @@ module Gitlab
         @repository.exists?
       end
 
-      def write_page(name, format, content, commit_details)
-        wrapped_gitaly_errors do
-          gitaly_write_page(name, format, content, commit_details)
-        end
-      end
-
-      def update_page(page_path, title, format, content, commit_details)
-        wrapped_gitaly_errors do
-          gitaly_update_page(page_path, title, format, content, commit_details)
-        end
-      end
-
       def list_pages(limit: 0, sort: nil, direction_desc: false, load_content: false)
         wrapped_gitaly_errors do
           gitaly_list_pages(
@@ -113,21 +101,13 @@ module Gitlab
         @gitaly_wiki_client ||= Gitlab::GitalyClient::WikiService.new(@repository)
       end
 
-      def gitaly_write_page(name, format, content, commit_details)
-        gitaly_wiki_client.write_page(name, format, content, commit_details)
-      end
-
-      def gitaly_update_page(page_path, title, format, content, commit_details)
-        gitaly_wiki_client.update_page(page_path, title, format, content, commit_details)
-      end
-
       def gitaly_find_page(title:, version: nil, dir: nil, load_content: true)
         return unless title.present?
 
         wiki_page, version = gitaly_wiki_client.find_page(title: title, version: version, dir: dir, load_content: load_content)
         return unless wiki_page
 
-        Gitlab::Git::WikiPage.new(wiki_page, version)
+        Gitlab::Git::WikiPage.from_gitaly_wiki_page(wiki_page, version)
       rescue GRPC::InvalidArgument
         nil
       end
@@ -143,7 +123,7 @@ module Gitlab
           end
 
         gitaly_pages.map do |wiki_page, version|
-          Gitlab::Git::WikiPage.new(wiki_page, version)
+          Gitlab::Git::WikiPage.from_gitaly_wiki_page(wiki_page, version)
         end
       end
     end

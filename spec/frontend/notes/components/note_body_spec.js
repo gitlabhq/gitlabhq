@@ -74,11 +74,11 @@ describe('issue_note_body component', () => {
     });
 
     it.each`
-      confidential | buttonText
-      ${false}     | ${'Save comment'}
-      ${true}      | ${'Save internal note'}
-    `('renders save button with text "$buttonText"', ({ confidential, buttonText }) => {
-      wrapper = createComponent({ props: { note: { ...note, confidential }, isEditing: true } });
+      internal | buttonText
+      ${false} | ${'Save comment'}
+      ${true}  | ${'Save internal note'}
+    `('renders save button with text "$buttonText"', ({ internal, buttonText }) => {
+      wrapper = createComponent({ props: { note: { ...note, internal }, isEditing: true } });
 
       expect(wrapper.findComponent(NoteForm).props('saveButtonTitle')).toBe(buttonText);
     });

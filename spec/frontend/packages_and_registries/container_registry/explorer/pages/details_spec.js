@@ -45,16 +45,16 @@ describe('Details Page', () => {
   let wrapper;
   let apolloProvider;
 
-  const findDeleteModal = () => wrapper.find(DeleteModal);
-  const findPagination = () => wrapper.find(GlKeysetPagination);
-  const findTagsLoader = () => wrapper.find(TagsLoader);
-  const findTagsList = () => wrapper.find(TagsList);
-  const findDeleteAlert = () => wrapper.find(DeleteAlert);
-  const findDetailsHeader = () => wrapper.find(DetailsHeader);
-  const findEmptyState = () => wrapper.find(GlEmptyState);
-  const findPartialCleanupAlert = () => wrapper.find(PartialCleanupAlert);
-  const findStatusAlert = () => wrapper.find(StatusAlert);
-  const findDeleteImage = () => wrapper.find(DeleteImage);
+  const findDeleteModal = () => wrapper.findComponent(DeleteModal);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findTagsLoader = () => wrapper.findComponent(TagsLoader);
+  const findTagsList = () => wrapper.findComponent(TagsList);
+  const findDeleteAlert = () => wrapper.findComponent(DeleteAlert);
+  const findDetailsHeader = () => wrapper.findComponent(DetailsHeader);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findPartialCleanupAlert = () => wrapper.findComponent(PartialCleanupAlert);
+  const findStatusAlert = () => wrapper.findComponent(StatusAlert);
+  const findDeleteImage = () => wrapper.findComponent(DeleteImage);
 
   const routeId = 1;
 

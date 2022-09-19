@@ -20,11 +20,7 @@ module Gitlab
 
       CATEGORIES_FOR_TOTALS = %w[
         analytics
-        code_review
         compliance
-        deploy_token_packages
-        ecosystem
-        epic_boards_usage
         epics_usage
         error_tracking
         ide_edit
@@ -32,11 +28,13 @@ module Gitlab
         issues_edit
         pipeline_authoring
         quickactions
-        user_packages
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
         ci_users
+        deploy_token_packages
+        code_review
+        ecosystem
         error_tracking
         ide_edit
         importer
@@ -49,6 +47,7 @@ module Gitlab
         source_code
         terraform
         testing
+        user_packages
         work_items
       ].freeze
 

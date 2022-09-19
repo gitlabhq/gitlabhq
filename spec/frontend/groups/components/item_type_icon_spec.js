@@ -23,7 +23,7 @@ describe('ItemTypeIcon', () => {
     }
   });
 
-  const findGlIcon = () => wrapper.find(GlIcon);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   describe('template', () => {
     it('renders component template correctly', () => {

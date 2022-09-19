@@ -65,9 +65,6 @@ co-exist and multiple approval rules takes the precedence over the unified appro
 
 #### Unified approval setting
 
-NOTE:
-At this time, it is not possible to require approvals for an existing protected environment. The workaround is to unprotect the environment and configure approvals when re-protecting the environment.
-
 There are two ways to configure approvals for a protected environment:
 
 1. Using the [UI](protected_environments.md#protecting-environments)
@@ -137,7 +134,7 @@ Prerequisites:
 
 To approve or reject a deployment to a protected environment using the UI:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
@@ -169,7 +166,7 @@ curl --data "status=approved&comment=Looks good to me" \
 
 ### Using the UI
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment being deployed to.
 1. Look for the `blocked` label.

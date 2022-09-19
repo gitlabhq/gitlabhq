@@ -3,8 +3,10 @@
 module RuboCop
   module Cop
     module Gitlab
-      class FinderWithFindBy < RuboCop::Cop::Cop
-        FIND_PATTERN = /\Afind(_by\!?)?\z/.freeze
+      class FinderWithFindBy < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
+        FIND_PATTERN = /\Afind(_by!?)?\z/.freeze
         ALLOWED_MODULES = ['FinderMethods'].freeze
 
         def message(used_method)
@@ -18,13 +20,9 @@ module RuboCop
         end
 
         def on_send(node)
-          if find_on_execute?(node) && !allowed_module?(node)
-            add_offense(node, location: :selector, message: message(node.method_name))
-          end
-        end
+          return unless find_on_execute?(node) && !allowed_module?(node)
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.loc.selector, message: message(node.method_name)) do |corrector|
             upto_including_execute = node.descendants.first.source_range
             before_execute = node.descendants[1].source_range
             range_to_remove = node.source_range

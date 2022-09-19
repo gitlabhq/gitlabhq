@@ -83,9 +83,7 @@ export default {
 
       <span class="font-weight-bold">{{ __('Pipeline') }}</span>
 
-      <a :href="pipeline.path" class="js-pipeline-path link-commit qa-pipeline-path"
-        >#{{ pipeline.id }}</a
-      >
+      <a :href="pipeline.path" class="js-pipeline-path link-commit">#{{ pipeline.id }}</a>
       <template v-if="hasRef">
         {{ __('from') }}
         <a :href="pipeline.ref.path" class="link-commit ref-name">{{ pipeline.ref.name }}</a>

@@ -1,25 +1,13 @@
 <script>
-import {
-  GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlIcon,
-  GlSafeHtmlDirective,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlSafeHtmlDirective, GlSprintf } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
+import { timelineItemI18n } from './constants';
 import { getEventIcon } from './utils';
 
 export default {
   name: 'IncidentTimelineEventListItem',
-  i18n: {
-    delete: __('Delete'),
-    moreActions: __('More actions'),
-    timeUTC: __('%{time} UTC'),
-  },
+  i18n: timelineItemI18n,
   components: {
-    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlIcon,
@@ -28,12 +16,8 @@ export default {
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
-  inject: ['canUpdate'],
+  inject: ['canUpdateTimelineEvent'],
   props: {
-    isLastItem: {
-      type: Boolean,
-      required: true,
-    },
     occurredAt: {
       type: String,
       required: true,
@@ -58,43 +42,41 @@ export default {
 };
 </script>
 <template>
-  <li
-    class="timeline-entry timeline-entry-vertical-line note system-note note-wrapper gl-my-2! gl-pr-0!"
-  >
-    <div class="gl-display-flex gl-align-items-center">
-      <div
-        class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-n2 gl-mr-3 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
-      >
-        <gl-icon :name="getEventIcon(action)" class="note-icon" />
-      </div>
-      <div
-        class="timeline-event-note gl-w-full gl-display-flex gl-flex-direction-row"
-        :class="{ 'gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid': !isLastItem }"
-        data-testid="event-text-container"
-      >
-        <div>
-          <strong class="gl-font-lg" data-testid="event-time">
-            <gl-sprintf :message="$options.i18n.timeUTC">
-              <template #time>{{ time }}</template>
-            </gl-sprintf>
-          </strong>
-          <div v-safe-html="noteHtml"></div>
-        </div>
-        <gl-dropdown
-          v-if="canUpdate"
-          right
-          class="event-note-actions gl-ml-auto gl-align-self-center"
-          icon="ellipsis_v"
-          text-sr-only
-          :text="$options.i18n.moreActions"
-          category="tertiary"
-          no-caret
-        >
-          <gl-dropdown-item @click="$emit('delete')">
-            <gl-button>{{ $options.i18n.delete }}</gl-button>
-          </gl-dropdown-item>
-        </gl-dropdown>
-      </div>
+  <div class="gl-display-flex gl-align-items-start">
+    <div
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-mr-3 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
+    >
+      <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
-  </li>
+    <div
+      class="timeline-event-note timeline-event-border gl-w-full gl-display-flex gl-flex-direction-row"
+      data-testid="event-text-container"
+    >
+      <div>
+        <strong class="gl-font-lg" data-testid="event-time">
+          <gl-sprintf :message="$options.i18n.timeUTC">
+            <template #time>{{ time }}</template>
+          </gl-sprintf>
+        </strong>
+        <div v-safe-html="noteHtml"></div>
+      </div>
+      <gl-dropdown
+        v-if="canUpdateTimelineEvent"
+        right
+        class="event-note-actions gl-ml-auto gl-align-self-start"
+        icon="ellipsis_v"
+        text-sr-only
+        :text="$options.i18n.moreActions"
+        category="tertiary"
+        no-caret
+      >
+        <gl-dropdown-item @click="$emit('edit')">
+          {{ $options.i18n.edit }}
+        </gl-dropdown-item>
+        <gl-dropdown-item @click="$emit('delete')">
+          {{ $options.i18n.delete }}
+        </gl-dropdown-item>
+      </gl-dropdown>
+    </div>
+  </div>
 </template>

@@ -34,7 +34,7 @@ module Ci
     end
 
     def ensure_metadata
-      metadata || build_metadata(project: project)
+      metadata || build_metadata(project: project, partition_id: partition_id)
     end
 
     def degenerated?

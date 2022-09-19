@@ -117,6 +117,27 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
+# Handle backward compatibility with the renamed kerberos_spnego provider
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335#note_1094265436
+Gitlab.ee do
+  kerberos_spnego = Settings.omniauth.providers.find { |p| p.name == 'kerberos_spnego' }
+  if kerberos_spnego
+    Settings.omniauth.providers.delete_if { |p| p.name == 'kerberos' }
+    kerberos_spnego['name'] = 'kerberos'
+
+    omniauth_keys = %w(allow_single_sign_on auto_link_user external_providers sync_profile_from_provider allow_bypass_two_factor)
+    omniauth_keys.each do |key|
+      next unless Settings.omniauth[key].is_a?(Array)
+
+      Settings.omniauth[key].map! { |p| p == 'kerberos_spnego' ? 'kerberos' : p }
+    end
+
+    if Settings.omniauth['auto_sign_in_with_provider'] == 'kerberos_spnego'
+      Settings.omniauth['auto_sign_in_with_provider'] = 'kerberos'
+    end
+  end
+end
+
 # Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
 
 github_default_url = "https://github.com"
@@ -214,11 +235,11 @@ Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['content_security_policy'] ||= {}
 Settings.gitlab['allowed_hosts'] ||= []
-Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
 Settings.gitlab['max_request_duration_seconds'] ||= 57
 Settings.gitlab['display_initial_root_password'] = false if Settings.gitlab['display_initial_root_password'].nil?
+Settings.gitlab['weak_passwords_digest_set'] ||= YAML.safe_load(File.open(Rails.root.join('config', 'weak_password_digests.yml')), permitted_classes: [String]).to_set.freeze
 
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300
@@ -547,7 +568,7 @@ Settings.cron_jobs['container_registry_migration_observer_worker'] ||= Settingsl
 Settings.cron_jobs['container_registry_migration_observer_worker']['cron'] ||= '*/30 * * * *'
 Settings.cron_jobs['container_registry_migration_observer_worker']['job_class'] = 'ContainerRegistry::Migration::ObserverWorker'
 Settings.cron_jobs['container_registry_migration_enqueuer_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['cron'] ||= '45 */1 * * *'
+Settings.cron_jobs['container_registry_migration_enqueuer_worker']['cron'] ||= '15,45 */1 * * *'
 Settings.cron_jobs['container_registry_migration_enqueuer_worker']['job_class'] = 'ContainerRegistry::Migration::EnqueuerWorker'
 Settings.cron_jobs['image_ttl_group_policy_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['image_ttl_group_policy_worker']['cron'] ||= '40 0 * * *'
@@ -633,6 +654,9 @@ Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseFor
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '@daily'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
+Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job_class'] = 'Users::MigrateRecordsToGhostUserInBatchesWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -713,9 +737,6 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['free_user_cap_data_remediation'] ||= Settingslogic.new({})
-  Settings.cron_jobs['free_user_cap_data_remediation']['cron'] ||= '17 6,10,14,18 * * *'
-  Settings.cron_jobs['free_user_cap_data_remediation']['job_class'] = 'Namespaces::FreeUserCap::RemediationWorker'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
@@ -791,7 +812,7 @@ end
 #
 Settings['sidekiq'] ||= Settingslogic.new({})
 Settings['sidekiq']['log_format'] ||= 'default'
-Settings['sidekiq']['routing_rules'] ||= []
+Settings['sidekiq']['routing_rules'] = Settings.__send__(:build_sidekiq_routing_rules, Settings['sidekiq']['routing_rules'])
 
 #
 # GitLab Shell
@@ -885,6 +906,18 @@ Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = Settings.absolute(Settings.satellites['path'] || "tmp/repo_satellites/")
 
 #
+# Microsoft Graph Mailer
+#
+Settings['microsoft_graph_mailer'] ||= Settingslogic.new({})
+Settings.microsoft_graph_mailer['enabled'] = false if Settings.microsoft_graph_mailer['enabled'].nil?
+Settings.microsoft_graph_mailer['user_id'] ||= nil
+Settings.microsoft_graph_mailer['tenant'] ||= nil
+Settings.microsoft_graph_mailer['client_id'] ||= nil
+Settings.microsoft_graph_mailer['client_secret'] ||= nil
+Settings.microsoft_graph_mailer['azure_ad_endpoint'] ||= 'https://login.microsoftonline.com'
+Settings.microsoft_graph_mailer['graph_endpoint'] ||= 'https://graph.microsoft.com'
+
+#
 # Kerberos
 #
 Gitlab.ee do
@@ -897,8 +930,8 @@ Gitlab.ee do
   Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
   Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
-  if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos_spnego')
-    Settings.omniauth.providers << Settingslogic.new({ 'name' => 'kerberos_spnego' })
+  if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos')
+    Settings.omniauth.providers << Settingslogic.new({ 'name' => 'kerberos' })
   end
 end
 

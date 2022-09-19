@@ -22,6 +22,7 @@ module API
     end
 
     helpers ::API::Helpers::PackagesHelpers
+    helpers ::API::Helpers::Packages::DependencyProxyHelpers
 
     helpers do
       def path_exists?(path)
@@ -76,7 +77,10 @@ module API
         format == 'jar'
       end
 
-      def present_carrierwave_file_with_head_support!(file, supports_direct_download: true)
+      def present_carrierwave_file_with_head_support!(package_file, supports_direct_download: true)
+        package_file.package.touch_last_downloaded_at
+        file = package_file.file
+
         if head_request_on_aws_file?(file, supports_direct_download) && !file.file_storage?
           return redirect(signed_head_url(file))
         end
@@ -110,7 +114,31 @@ module API
           project || group,
           path: params[:path],
           order_by_package_file: order_by_package_file
-        ).execute!
+        ).execute
+      end
+
+      def find_and_present_package_file(package, file_name, format, params)
+        project = package&.project
+        package_file = nil
+
+        package_file = ::Packages::PackageFileFinder.new(package, file_name).execute if package
+
+        no_package_found = package_file ? false : true
+
+        redirect_registry_request(no_package_found, :maven, path: params[:path], file_name: params[:file_name], target: params[:target]) do
+          not_found!('Package') if no_package_found
+
+          case format
+          when 'md5'
+            package_file.file_md5
+          when 'sha1'
+            package_file.file_sha1
+          else
+            track_package_event('pull_package', :maven, project: project, namespace: project&.namespace) if jar_file?(format)
+
+            present_carrierwave_file_with_head_support!(package_file)
+          end
+        end
       end
     end
 
@@ -138,6 +166,8 @@ module API
 
       package = fetch_package(file_name: file_name, project: project)
 
+      not_found!('Package') unless package
+
       package_file = ::Packages::PackageFileFinder
         .new(package, file_name).execute!
 
@@ -148,7 +178,7 @@ module API
         package_file.file_sha1
       else
         track_package_event('pull_package', :maven, project: project, namespace: project.namespace) if jar_file?(format)
-        present_carrierwave_file_with_head_support!(package_file.file)
+        present_carrierwave_file_with_head_support!(package_file)
       end
     end
 
@@ -166,31 +196,20 @@ module API
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/-/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         # return a similar failure to group = find_group(params[:id])
-        not_found!('Group') unless path_exists?(params[:path])
-
-        file_name, format = extract_format(params[:file_name])
-
         group = find_group(params[:id])
+
+        if Feature.disabled?(:maven_central_request_forwarding, group&.root_ancestor)
+          not_found!('Group') unless path_exists?(params[:path])
+        end
 
         not_found!('Group') unless can?(current_user, :read_group, group)
 
+        file_name, format = extract_format(params[:file_name])
         package = fetch_package(file_name: file_name, group: group)
 
-        authorize_read_package!(package.project)
+        authorize_read_package!(package.project) if package
 
-        package_file = ::Packages::PackageFileFinder
-          .new(package, file_name).execute!
-
-        case format
-        when 'md5'
-          package_file.file_md5
-        when 'sha1'
-          package_file.file_sha1
-        else
-          track_package_event('pull_package', :maven, project: package.project, namespace: package.project.namespace) if jar_file?(format)
-
-          present_carrierwave_file_with_head_support!(package_file.file)
-        end
+        find_and_present_package_file(package, file_name, format, params.merge(target: group))
       end
     end
 
@@ -208,7 +227,9 @@ module API
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         # return a similar failure to user_project
-        not_found!('Project') unless path_exists?(params[:path])
+        unless Feature.enabled?(:maven_central_request_forwarding, user_project&.root_ancestor)
+          not_found!('Project') unless path_exists?(params[:path])
+        end
 
         authorize_read_package!(user_project)
 
@@ -216,19 +237,7 @@ module API
 
         package = fetch_package(file_name: file_name, project: user_project)
 
-        package_file = ::Packages::PackageFileFinder
-          .new(package, file_name).execute!
-
-        case format
-        when 'md5'
-          package_file.file_md5
-        when 'sha1'
-          package_file.file_sha1
-        else
-          track_package_event('pull_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
-
-          present_carrierwave_file_with_head_support!(package_file.file)
-        end
+        find_and_present_package_file(package, file_name, format, params.merge(target: user_project))
       end
 
       desc 'Workhorse authorize the maven package file upload' do

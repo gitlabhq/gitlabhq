@@ -63,6 +63,7 @@ RSpec.describe API::NpmProjectPackages do
 
         it_behaves_like 'successfully downloads the file'
         it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
+        it_behaves_like 'bumping the package last downloaded at field'
       end
 
       context 'with job token' do
@@ -70,12 +71,14 @@ RSpec.describe API::NpmProjectPackages do
 
         it_behaves_like 'successfully downloads the file'
         it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
+        it_behaves_like 'bumping the package last downloaded at field'
       end
     end
 
     context 'a public project' do
       it_behaves_like 'successfully downloads the file'
       it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
+      it_behaves_like 'bumping the package last downloaded at field'
 
       context 'with a job token for a different user' do
         let_it_be(:other_user) { create(:user) }

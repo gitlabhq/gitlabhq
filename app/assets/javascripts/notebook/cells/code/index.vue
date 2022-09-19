@@ -1,10 +1,11 @@
 <script>
-import Prism from '../../lib/highlight';
+import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 import Prompt from '../prompt.vue';
 
 export default {
   name: 'CodeOutput',
   components: {
+    CodeBlockHighlighted,
     Prompt,
   },
   props: {
@@ -12,11 +13,6 @@ export default {
       type: Number,
       required: false,
       default: 0,
-    },
-    codeCssClass: {
-      type: String,
-      required: false,
-      default: '',
     },
     type: {
       type: String,
@@ -41,15 +37,9 @@ export default {
 
       return type.charAt(0).toUpperCase() + type.slice(1);
     },
-    cellCssClass() {
-      return {
-        [this.codeCssClass]: true,
-        'jupyter-notebook-scrolled': this.metadata.scrolled,
-      };
+    maxHeight() {
+      return this.metadata.scrolled ? '20rem' : 'initial';
     },
-  },
-  mounted() {
-    Prism.highlightElement(this.$refs.code);
   },
 };
 </script>
@@ -57,6 +47,11 @@ export default {
 <template>
   <div :class="type">
     <prompt :type="promptType" :count="count" />
-    <pre ref="code" :class="cellCssClass" class="language-python" v-text="code"></pre>
+    <code-block-highlighted
+      language="python"
+      :code="code"
+      :max-height="maxHeight"
+      class="gl-border"
+    />
   </div>
 </template>

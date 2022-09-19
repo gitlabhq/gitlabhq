@@ -241,12 +241,11 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
   let(:provider_user) { double('user', login: provider_username) }
   let(:project) { create(:project, import_type: provider, import_status: :finished, import_source: "#{provider_username}/vim") }
   let(:provider_repo) do
-    double(
-      'provider',
+    {
       name: 'vim',
       full_name: "#{provider_username}/vim",
       owner: double('owner', login: provider_username)
-    )
+    }
   end
 
   before do
@@ -256,7 +255,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
   it 'returns 200 response when the project is imported successfully' do
     allow(Gitlab::LegacyGithubImport::ProjectCreator)
-      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+      .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
       .and_return(double(execute: project))
 
     post :create, format: :json
@@ -270,7 +269,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
     project.errors.add(:path, 'is old')
 
     allow(Gitlab::LegacyGithubImport::ProjectCreator)
-      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+      .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
       .and_return(double(execute: project))
 
     post :create, format: :json
@@ -281,7 +280,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
   it "touches the etag cache store" do
     allow(Gitlab::LegacyGithubImport::ProjectCreator)
-      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+      .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
       .and_return(double(execute: project))
     expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
       expect(store).to receive(:touch) { "realtime_changes_import_#{provider}_path" }
@@ -294,7 +293,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
     context "when the provider user and GitLab user's usernames match" do
       it "takes the current user's namespace" do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
-          .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+          .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
           .and_return(double(execute: project))
 
         post :create, format: :json
@@ -306,7 +305,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
       it "takes the current user's namespace" do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
-          .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+          .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
           .and_return(double(execute: project))
 
         post :create, format: :json
@@ -331,7 +330,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
         it "takes the existing namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
-            .to receive(:new).with(provider_repo, provider_repo.name, existing_namespace, user, type: provider, **access_params)
+            .to receive(:new).with(provider_repo, provider_repo[:name], existing_namespace, user, type: provider, **access_params)
             .and_return(double(execute: project))
 
           post :create, format: :json
@@ -343,7 +342,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
           create(:user, username: provider_username)
 
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
-            .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+            .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
             .and_return(double(execute: project))
 
           post :create, format: :json
@@ -357,15 +356,15 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).and_return(double(execute: project))
 
-          expect { post :create, params: { target_namespace: provider_repo.name }, format: :json }.to change(Namespace, :count).by(1)
+          expect { post :create, params: { target_namespace: provider_repo[:name] }, format: :json }.to change(Namespace, :count).by(1)
         end
 
         it "takes the new namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
-            .to receive(:new).with(provider_repo, provider_repo.name, an_instance_of(Group), user, type: provider, **access_params)
+            .to receive(:new).with(provider_repo, provider_repo[:name], an_instance_of(Group), user, type: provider, **access_params)
             .and_return(double(execute: project))
 
-          post :create, params: { target_namespace: provider_repo.name }, format: :json
+          post :create, params: { target_namespace: provider_repo[:name] }, format: :json
         end
       end
 
@@ -383,7 +382,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
         it "takes the current user's namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
-            .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
+            .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
             .and_return(double(execute: project))
 
           post :create, format: :json

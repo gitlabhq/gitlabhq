@@ -13,17 +13,16 @@ RSpec::Matchers.define :abort_execution do
     captured = @captured_stderr.string.chomp
     @actual_exit_code = e.status
     break false unless e.status == 1
+    break true unless @message
 
-    if @message
-      if @message.is_a? String
-        @message == captured
-      elsif @message.is_a? Regexp
-        @message.match?(captured)
-      else
-        raise ArgumentError, 'with_message must be either a String or a Regular Expression'
-      end
+    case @message
+    when String
+      @message == captured
+    when Regexp
+      @message.match?(captured)
+    else
+      raise ArgumentError, 'with_message must be either a String or a Regular Expression'
     end
-
   ensure
     $stderr = original_stderr
   end

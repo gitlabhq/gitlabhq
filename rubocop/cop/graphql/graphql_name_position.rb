@@ -20,7 +20,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class GraphqlNamePosition < RuboCop::Cop::Cop
+      class GraphqlNamePosition < RuboCop::Cop::Base
         MSG = '`graphql_name` should be the first line of the class: '\
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#naming-conventions'
 
@@ -32,7 +32,7 @@ module RuboCop
           return unless graphql_name?(node)
           return if node.body.single_line?
 
-          add_offense(node, location: :expression) unless graphql_name?(node.body.children.first)
+          add_offense(node) unless graphql_name?(node.body.children.first)
         end
       end
     end

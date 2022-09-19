@@ -46,7 +46,7 @@ describe('GlobalSearchSort', () => {
   const findSortButtonGroup = () => wrapper.find(GlButtonGroup);
   const findSortDropdown = () => wrapper.find(GlDropdown);
   const findSortDirectionButton = () => wrapper.find(GlButton);
-  const findDropdownItems = () => findSortDropdown().findAll(GlDropdownItem);
+  const findDropdownItems = () => findSortDropdown().findAllComponents(GlDropdownItem);
   const findDropdownItemsText = () => findDropdownItems().wrappers.map((w) => w.text());
 
   describe('template', () => {

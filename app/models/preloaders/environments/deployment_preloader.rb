@@ -41,11 +41,11 @@ module Preloaders
           environment.association(association_name).target = associated_deployment
           environment.association(association_name).loaded!
 
-          if associated_deployment
-            # `last?` in DeploymentEntity requires this environment to be loaded
-            associated_deployment.association(:environment).target = environment
-            associated_deployment.association(:environment).loaded!
-          end
+          next unless associated_deployment
+
+          # `last?` in DeploymentEntity requires this environment to be loaded
+          associated_deployment.association(:environment).target = environment
+          associated_deployment.association(:environment).loaded!
         end
       end
     end

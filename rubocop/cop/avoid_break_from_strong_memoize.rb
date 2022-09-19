@@ -20,7 +20,7 @@ module RuboCop
     #     do_an_heavy_calculation
     #   end
     #
-    class AvoidBreakFromStrongMemoize < RuboCop::Cop::Cop
+    class AvoidBreakFromStrongMemoize < RuboCop::Cop::Base
       MSG = 'Do not use break inside strong_memoize, use next instead.'
 
       def on_block(node)

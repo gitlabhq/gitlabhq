@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Service do
   before do
-    stub_feature_flags(ci_docker_image_pull_policy: true)
     entry.compose!
   end
 
@@ -149,18 +148,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
         it 'is valid' do
           expect(entry).to be_valid
         end
-
-        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-          before do
-            stub_feature_flags(ci_docker_image_pull_policy: false)
-            entry.compose!
-          end
-
-          it 'is not valid' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include('service config contains unknown keys: pull_policy')
-          end
-        end
       end
 
       describe '#value' do
@@ -169,18 +156,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
             name: 'postgresql:9.5',
             pull_policy: ['if-not-present']
           )
-        end
-
-        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-          before do
-            stub_feature_flags(ci_docker_image_pull_policy: false)
-          end
-
-          it 'is not valid' do
-            expect(entry.value).to eq(
-              name: 'postgresql:9.5'
-            )
-          end
         end
       end
     end

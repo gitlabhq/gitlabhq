@@ -234,6 +234,7 @@ module MergeRequests
     end
 
     # Add comment about pushing new commits to merge requests and send nofitication emails
+    #
     def notify_about_push(merge_request)
       return unless @commits.present?
 

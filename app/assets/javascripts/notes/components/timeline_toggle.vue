@@ -53,7 +53,6 @@ export default {
     :selected="timelineEnabled"
     :title="tooltip"
     :aria-label="tooltip"
-    class="gl-mr-3"
     @click="toggleTimeline"
   />
 </template>

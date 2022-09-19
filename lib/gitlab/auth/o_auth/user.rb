@@ -240,11 +240,11 @@ module Gitlab
           valid_username = Uniquify.new.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
 
           {
-            name:                       name.strip.presence || valid_username,
-            username:                   valid_username,
-            email:                      email,
-            password:                   auth_hash.password,
-            password_confirmation:      auth_hash.password,
+            name: name.strip.presence || valid_username,
+            username: valid_username,
+            email: email,
+            password: auth_hash.password,
+            password_confirmation: auth_hash.password,
             password_automatically_set: true
           }
         end

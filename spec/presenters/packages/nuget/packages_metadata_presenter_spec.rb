@@ -12,7 +12,7 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter do
   describe '#count' do
     subject { presenter.count }
 
-    it {is_expected.to eq 1}
+    it { is_expected.to eq 1 }
   end
 
   describe '#items' do

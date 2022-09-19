@@ -172,6 +172,7 @@ module ProjectsHelper
 
   def project_list_cache_key(project, pipeline_status: true)
     key = [
+      project.star_count,
       project.route.cache_key,
       project.cache_key,
       project.last_activity_date,
@@ -389,7 +390,10 @@ module ProjectsHelper
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
       pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
       issuesHelpPath: help_page_path('user/project/issues/index'),
-      membersPagePath: project_project_members_path(project)
+      membersPagePath: project_project_members_path(project),
+      environmentsHelpPath: help_page_path('ci/environments/index'),
+      featureFlagsHelpPath: help_page_path('operations/feature_flags'),
+      releasesHelpPath: help_page_path('user/project/releases/index')
     }
   end
 
@@ -437,7 +441,6 @@ module ProjectsHelper
   def show_inactive_project_deletion_banner?(project)
     return false unless project.present? && project.saved?
     return false unless delete_inactive_projects?
-    return false unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
 
     project.inactive?
   end
@@ -452,9 +455,9 @@ module ProjectsHelper
 
   def clusters_deprecation_alert_message
     if has_active_license?
-      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.')
+      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.')
     else
-      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.')
+      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.')
     end
   end
 
@@ -635,6 +638,7 @@ module ProjectsHelper
       emailsDisabled: project.emails_disabled?,
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       operationsAccessLevel: feature.operations_access_level,
+      monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
       enforceAuthChecksOnUploads: project.enforce_auth_checks_on_uploads?,

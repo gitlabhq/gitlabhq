@@ -53,7 +53,7 @@ describe('DeleteAccountModal component', () => {
       input: vm.$el.querySelector(`[name="${confirmation}"]`),
     };
   };
-  const findModal = () => wrapper.find(GlModalStub);
+  const findModal = () => wrapper.findComponent(GlModalStub);
 
   describe('with password confirmation', () => {
     beforeEach(async () => {

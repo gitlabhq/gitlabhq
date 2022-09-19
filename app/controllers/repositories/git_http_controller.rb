@@ -83,7 +83,7 @@ module Repositories
       return if Gitlab::Database.read_only?
       return unless repo_type.project?
 
-      OnboardingProgressService.async(project.namespace_id).execute(action: :git_pull)
+      Onboarding::ProgressService.async(project.namespace_id).execute(action: :git_pull)
 
       return if Feature.enabled?(:disable_git_http_fetch_writes)
 

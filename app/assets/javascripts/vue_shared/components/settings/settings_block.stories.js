@@ -2,7 +2,7 @@ import SettingsBlock from './settings_block.vue';
 
 export default {
   component: SettingsBlock,
-  title: 'vue_shared/components/settings/settings_block',
+  title: 'vue_shared/settings/settings_block',
 };
 
 const Template = (args, { argTypes }) => ({

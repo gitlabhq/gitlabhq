@@ -39,12 +39,26 @@ function format(searchTerm, isFallbackKey = false) {
   return formattedQuery;
 }
 
+function getSearchTerm(newIssuePath) {
+  const { search, pathname } = document.location;
+  return newIssuePath === pathname ? '' : format(search);
+}
+
 function getFallbackKey() {
   const searchTerm = format(document.location.search, true);
   return ['autosave', document.location.pathname, searchTerm].join('/');
 }
 
 export default class IssuableForm {
+  static addAutosave(map, id, $input, searchTerm, fallbackKey) {
+    if ($input.length) {
+      map.set(
+        id,
+        new Autosave($input, [document.location.pathname, searchTerm, id], `${fallbackKey}=${id}`),
+      );
+    }
+  }
+
   constructor(form) {
     if (form.length === 0) {
       return;
@@ -72,14 +86,15 @@ export default class IssuableForm {
     this.reviewersSelect = new UsersSelect(undefined, '.js-reviewer-search');
     this.zenMode = new ZenMode();
 
-    this.newIssuePath = form[0].getAttribute(DATA_ISSUES_NEW_PATH);
+    this.searchTerm = getSearchTerm(form[0].getAttribute(DATA_ISSUES_NEW_PATH));
+    this.fallbackKey = getFallbackKey();
     this.titleField = this.form.find('input[name*="[title]"]');
     this.descriptionField = this.form.find('textarea[name*="[description]"]');
     if (!(this.titleField.length && this.descriptionField.length)) {
       return;
     }
 
-    this.initAutosave();
+    this.autosaves = this.initAutosave();
     this.form.on('submit', this.handleSubmit);
     this.form.on('click', '.btn-cancel, .js-reset-autosave', this.resetAutosave);
     this.form.find('.js-unwrap-on-load').unwrap();
@@ -95,7 +110,10 @@ export default class IssuableForm {
         container: $issuableDueDate.parent().get(0),
         parse: (dateString) => parsePikadayDate(dateString),
         toString: (date) => pikadayToString(date),
-        onSelect: (dateText) => $issuableDueDate.val(calendar.toString(dateText)),
+        onSelect: (dateText) => {
+          $issuableDueDate.val(calendar.toString(dateText));
+          if (this.autosaves.has('due_date')) this.autosaves.get('due_date').save();
+        },
         firstDay: gon.first_day_of_week,
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
@@ -109,21 +127,37 @@ export default class IssuableForm {
   }
 
   initAutosave() {
-    const { search, pathname } = document.location;
-    const searchTerm = this.newIssuePath === pathname ? '' : format(search);
-    const fallbackKey = getFallbackKey();
-
-    this.autosave = new Autosave(
-      this.titleField,
-      [document.location.pathname, searchTerm, 'title'],
-      `${fallbackKey}=title`,
+    const autosaveMap = new Map();
+    IssuableForm.addAutosave(
+      autosaveMap,
+      'title',
+      this.form.find('input[name*="[title]"]'),
+      this.searchTerm,
+      this.fallbackKey,
+    );
+    IssuableForm.addAutosave(
+      autosaveMap,
+      'description',
+      this.form.find('textarea[name*="[description]"]'),
+      this.searchTerm,
+      this.fallbackKey,
+    );
+    IssuableForm.addAutosave(
+      autosaveMap,
+      'confidential',
+      this.form.find('input:checkbox[name*="[confidential]"]'),
+      this.searchTerm,
+      this.fallbackKey,
+    );
+    IssuableForm.addAutosave(
+      autosaveMap,
+      'due_date',
+      this.form.find('input[name*="[due_date]"]'),
+      this.searchTerm,
+      this.fallbackKey,
     );
 
-    return new Autosave(
-      this.descriptionField,
-      [document.location.pathname, searchTerm, 'description'],
-      `${fallbackKey}=description`,
-    );
+    return autosaveMap;
   }
 
   handleSubmit() {
@@ -131,8 +165,9 @@ export default class IssuableForm {
   }
 
   resetAutosave() {
-    this.titleField.data('autosave').reset();
-    return this.descriptionField.data('autosave').reset();
+    this.autosaves.forEach((autosaveItem) => {
+      autosaveItem?.reset();
+    });
   }
 
   initWip() {

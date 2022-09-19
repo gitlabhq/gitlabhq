@@ -86,6 +86,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:operations_access_level, value)
   end
 
+  def monitor_access_level=(value)
+    write_feature_attribute_string(:monitor_access_level, value)
+  end
+
   def security_and_compliance_access_level=(value)
     write_feature_attribute_string(:security_and_compliance_access_level, value)
   end

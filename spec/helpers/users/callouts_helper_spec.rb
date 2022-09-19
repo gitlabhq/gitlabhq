@@ -241,10 +241,10 @@ RSpec.describe Users::CalloutsHelper do
 
       context 'the web-hook failure callout has been dismissed', :freeze_time do
         before do
-          create(:namespace_callout,
+          create(:project_callout,
                  feature_name: described_class::WEB_HOOK_DISABLED,
                  user: user,
-                 namespace: project.namespace,
+                 project: project,
                  dismissed_at: 1.week.ago)
         end
 

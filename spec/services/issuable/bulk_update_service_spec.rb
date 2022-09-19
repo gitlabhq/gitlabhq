@@ -47,7 +47,7 @@ RSpec.describe Issuable::BulkUpdateService do
 
     let(:bulk_update_params) do
       {
-        add_label_ids:    add_labels.map(&:id),
+        add_label_ids: add_labels.map(&:id),
         remove_label_ids: remove_labels.map(&:id)
       }
     end

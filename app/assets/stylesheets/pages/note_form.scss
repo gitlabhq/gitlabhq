@@ -48,7 +48,7 @@
 
 .common-note-form {
   .md-area {
-    padding: $gl-padding-8 $gl-padding;
+    padding: 0 $gl-padding;
     border: 1px solid $border-color;
     border-radius: $border-radius-base;
     transition: border-color ease-in-out 0.15s,
@@ -305,7 +305,6 @@ table {
 }
 
 .comment-toolbar {
-  padding-top: $gl-padding-top;
   color: $gl-text-color-secondary;
   border-top: 1px solid $border-color;
 }
@@ -336,8 +335,7 @@ table {
 
 .toolbar-text {
   font-size: 14px;
-  line-height: 16px;
-  margin-top: 2px;
+  line-height: $gl-spacing-scale-7;
 
   @include media-breakpoint-up(md) {
     float: left;

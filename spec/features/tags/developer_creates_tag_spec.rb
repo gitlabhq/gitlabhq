@@ -60,7 +60,7 @@ RSpec.describe 'Developer creates tag' do
 
     it 'opens dropdown for ref', :js do
       click_link 'New tag'
-      ref_row = find('.form-group:nth-of-type(2) .col-sm-10')
+      ref_row = find('.form-group:nth-of-type(2) .col-sm-12')
       page.within ref_row do
         ref_input = find('[name="ref"]', visible: false)
         expect(ref_input.value).to eq 'master'

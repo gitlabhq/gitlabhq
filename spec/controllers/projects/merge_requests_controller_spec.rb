@@ -896,12 +896,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject do
-      get :exposed_artifacts, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :exposed_artifacts,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     describe 'permissions on a public project with private CI/CD' do
@@ -1031,12 +1032,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject do
-      get :coverage_reports, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :coverage_reports,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     describe 'permissions on a public project with private CI/CD' do
@@ -1161,12 +1163,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject(:get_codequality_mr_diff_reports) do
-      get :codequality_mr_diff_reports, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :codequality_mr_diff_reports,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     context 'permissions on a public project with private CI/CD' do
@@ -1264,12 +1267,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject do
-      get :terraform_reports, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :terraform_reports,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     describe 'permissions on a public project with private CI/CD' do
@@ -1394,12 +1398,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject do
-      get :test_reports, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :test_reports,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     before do
@@ -1522,12 +1527,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject do
-      get :accessibility_reports, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :accessibility_reports,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     context 'permissions on a public project with private CI/CD' do
@@ -1642,12 +1648,13 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     subject do
-      get :codequality_reports, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      },
-      format: :json
+      get :codequality_reports,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: :json
     end
 
     context 'permissions on a public project with private CI/CD' do

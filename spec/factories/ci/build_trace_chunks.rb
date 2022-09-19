@@ -23,7 +23,7 @@ FactoryBot.define do
     end
 
     trait :database_with_data do
-      data_store { :database}
+      data_store { :database }
 
       transient do
         initial_data { 'test data' }
@@ -55,7 +55,7 @@ FactoryBot.define do
     end
 
     trait :persisted do
-      data_store { :database}
+      data_store { :database }
 
       transient do
         initial_data { 'test data' }

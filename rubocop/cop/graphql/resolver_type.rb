@@ -23,7 +23,7 @@
 module RuboCop
   module Cop
     module Graphql
-      class ResolverType < RuboCop::Cop::Cop
+      class ResolverType < RuboCop::Cop::Base
         MSG = 'Missing type annotation: Please add `type` DSL method call. ' \
           'e.g: type UserType.connection_type, null: true'
 
@@ -32,7 +32,7 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          add_offense(node, location: :expression) if resolver?(node) && !typed?(node)
+          add_offense(node) if resolver?(node) && !typed?(node)
         end
 
         private

@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'rack'
+require 'tempfile'
 
 RSpec.describe Gitlab::Middleware::RackMultipartTempfileFactory do
   let(:app) do

@@ -217,7 +217,7 @@ describe('UploadBlobModal', () => {
         createComponent();
       });
 
-      it('displays the default "Upload new file" modal title  ', () => {
+      it('displays the default "Upload new file" modal title', () => {
         expect(findModal().props('title')).toBe('Upload new file');
       });
 

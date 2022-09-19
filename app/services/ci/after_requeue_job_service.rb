@@ -21,9 +21,16 @@ module Ci
       @processable.pipeline.reset_source_bridge!(current_user)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def dependent_jobs
+      return legacy_dependent_jobs unless ::Feature.enabled?(:ci_requeue_with_dag_object_hierarchy, project)
+
       ordered_by_dag(
-        stage_dependent_jobs.or(needs_dependent_jobs).ordered_by_stage
+        ::Ci::Processable
+          .from_union(needs_dependent_jobs, stage_dependent_jobs)
+          .skipped
+          .ordered_by_stage
+          .preload(:needs)
       )
     end
 
@@ -34,22 +41,37 @@ module Ci
     end
 
     def stage_dependent_jobs
-      skipped_jobs.after_stage(@processable.stage_idx)
+      @processable.pipeline.processables.after_stage(@processable.stage_idx)
     end
 
     def needs_dependent_jobs
-      skipped_jobs.scheduling_type_dag.with_needs([@processable.name])
+      ::Gitlab::Ci::ProcessableObjectHierarchy.new(
+        ::Ci::Processable.where(id: @processable.id)
+      ).descendants
     end
 
-    def skipped_jobs
-      @skipped_jobs ||= @processable.pipeline.processables.skipped
+    def legacy_skipped_jobs
+      @legacy_skipped_jobs ||= @processable.pipeline.processables.skipped
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
+    def legacy_dependent_jobs
+      ordered_by_dag(
+        legacy_stage_dependent_jobs.or(legacy_needs_dependent_jobs).ordered_by_stage.preload(:needs)
+      )
+    end
+
+    def legacy_stage_dependent_jobs
+      legacy_skipped_jobs.after_stage(@processable.stage_idx)
+    end
+
+    def legacy_needs_dependent_jobs
+      legacy_skipped_jobs.scheduling_type_dag.with_needs([@processable.name])
+    end
+
     def ordered_by_dag(jobs)
       sorted_job_names = sort_jobs(jobs).each_with_index.to_h
 
-      jobs.preload(:needs).group_by(&:stage_idx).flat_map do |_, stage_jobs|
+      jobs.group_by(&:stage_idx).flat_map do |_, stage_jobs|
         stage_jobs.sort_by { |job| sorted_job_names.fetch(job.name) }
       end
     end

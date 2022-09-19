@@ -1,9 +1,11 @@
 import { Extension } from '@tiptap/core';
+import Audio from './audio';
 import Blockquote from './blockquote';
 import Bold from './bold';
 import BulletList from './bullet_list';
 import Code from './code';
 import CodeBlockHighlight from './code_block_highlight';
+import Diagram from './diagram';
 import FootnoteReference from './footnote_reference';
 import FootnoteDefinition from './footnote_definition';
 import Frontmatter from './frontmatter';
@@ -25,17 +27,21 @@ import Table from './table';
 import TableCell from './table_cell';
 import TableHeader from './table_header';
 import TableRow from './table_row';
+import TableOfContents from './table_of_contents';
+import Video from './video';
 
 export default Extension.create({
   addGlobalAttributes() {
     return [
       {
         types: [
+          Audio.name,
           Bold.name,
           Blockquote.name,
           BulletList.name,
           Code.name,
           CodeBlockHighlight.name,
+          Diagram.name,
           FootnoteReference.name,
           FootnoteDefinition.name,
           Frontmatter.name,
@@ -56,6 +62,8 @@ export default Extension.create({
           TableCell.name,
           TableHeader.name,
           TableRow.name,
+          TableOfContents.name,
+          Video.name,
           ...HTMLNodes.map((htmlNode) => htmlNode.name),
         ],
         attributes: {

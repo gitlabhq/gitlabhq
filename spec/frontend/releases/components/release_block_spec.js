@@ -74,7 +74,7 @@ describe('Release block', () => {
     });
 
     it('renders the footer', () => {
-      expect(wrapper.find(ReleaseBlockFooter).exists()).toBe(true);
+      expect(wrapper.findComponent(ReleaseBlockFooter).exists()).toBe(true);
     });
   });
 
@@ -133,7 +133,7 @@ describe('Release block', () => {
   describe('evidence block', () => {
     it('renders the evidence block when the evidence is available', () => {
       return factory(release).then(() => {
-        expect(wrapper.find(EvidenceBlock).exists()).toBe(true);
+        expect(wrapper.findComponent(EvidenceBlock).exists()).toBe(true);
       });
     });
 
@@ -141,7 +141,7 @@ describe('Release block', () => {
       release.evidences = [];
 
       return factory(release).then(() => {
-        expect(wrapper.find(EvidenceBlock).exists()).toBe(false);
+        expect(wrapper.findComponent(EvidenceBlock).exists()).toBe(false);
       });
     });
   });

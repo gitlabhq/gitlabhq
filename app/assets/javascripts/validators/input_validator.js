@@ -19,6 +19,7 @@ export default class InputValidator {
   setValidationMessage() {
     if (this.invalidInput) {
       this.inputDomElement.setCustomValidity(this.errorMessage);
+      // eslint-disable-next-line no-unsanitized/property
       this.inputErrorMessage.innerHTML = this.errorMessage;
     } else {
       this.resetValidationMessage();
@@ -28,6 +29,7 @@ export default class InputValidator {
   resetValidationMessage() {
     if (this.inputDomElement.validationMessage === this.errorMessage) {
       this.inputDomElement.setCustomValidity('');
+      // eslint-disable-next-line no-unsanitized/property
       this.inputErrorMessage.innerHTML = this.inputDomElement.title;
     }
   }

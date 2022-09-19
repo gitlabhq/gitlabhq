@@ -2,7 +2,7 @@ import ProjectAvatar from './project_avatar.vue';
 
 export default {
   component: ProjectAvatar,
-  title: 'vue_shared/components/project_avatar',
+  title: 'vue_shared/project_avatar',
 };
 
 const Template = (args, { argTypes }) => ({
@@ -13,8 +13,7 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  projectAvatarUrl:
-    'https://gitlab.com/uploads/-/system/project/avatar/278964/logo-extra-whitespace.png?width=64',
+  projectAvatarUrl: 'https://gitlab.com/uploads/-/system/project/avatar/278964/project_avatar.png',
   projectName: 'GitLab',
 };
 

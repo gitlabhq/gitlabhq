@@ -1,11 +1,11 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import notebookLab from '~/notebook/index.vue';
+import NotebookLab from '~/notebook/index.vue';
 
 export default {
   components: {
-    notebookLab,
+    NotebookLab,
     GlLoadingIcon,
   },
   props: {
@@ -66,7 +66,7 @@ export default {
     <div v-if="loading && !error" class="text-center loading">
       <gl-loading-icon class="mt-5" size="lg" />
     </div>
-    <notebook-lab v-if="!loading && !error" :notebook="json" code-css-class="code white" />
+    <notebook-lab v-if="!loading && !error" :notebook="json" />
     <p v-if="error" class="text-center">
       <span v-if="loadError" ref="loadErrorMessage">{{
         __('An error occurred while loading the file. Please try again later.')

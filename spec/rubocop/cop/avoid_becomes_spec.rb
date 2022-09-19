@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_becomes'
 
 RSpec.describe RuboCop::Cop::AvoidBecomes do
-  subject(:cop) { described_class.new }
-
   it 'flags the use of becomes with a constant parameter' do
     expect_offense(<<~CODE)
       foo.becomes(Project)

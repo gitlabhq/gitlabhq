@@ -10,15 +10,47 @@ RSpec.describe ProtectedBranchPolicy do
 
   subject { described_class.new(user, protected_branch) }
 
-  it 'branches can be updated via project maintainers' do
-    project.add_maintainer(user)
+  context 'as maintainers' do
+    before do
+      project.add_maintainer(user)
+    end
 
-    is_expected.to be_allowed(:update_protected_branch)
+    it 'can be read' do
+      is_expected.to be_allowed(:read_protected_branch)
+    end
+
+    it 'can be created' do
+      is_expected.to be_allowed(:create_protected_branch)
+    end
+
+    it 'can be updated' do
+      is_expected.to be_allowed(:update_protected_branch)
+    end
+
+    it 'can be destroyed' do
+      is_expected.to be_allowed(:destroy_protected_branch)
+    end
   end
 
-  it "branches can't be updated by guests" do
-    project.add_guest(user)
+  context 'as guests' do
+    before do
+      project.add_guest(user)
+    end
 
-    is_expected.to be_disallowed(:update_protected_branch)
+    it 'can be read' do
+      is_expected.to be_disallowed(:read_protected_branch)
+    end
+
+    it 'can be created' do
+      is_expected.to be_disallowed(:create_protected_branch)
+    end
+
+    it 'can be updated' do
+      is_expected.to be_disallowed(:update_protected_branch)
+    end
+
+    it 'cannot be destroyed' do
+      is_expected.to be_disallowed(:destroy_protected_branch)
+    end
   end
 end

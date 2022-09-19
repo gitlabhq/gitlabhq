@@ -32,7 +32,18 @@ module Gitlab
           end
 
           def build_attributes
-            attributes.merge(pipeline_attributes)
+            attributes.merge(pipeline_attributes, ci_stage_attributes)
+          end
+
+          def ci_stage_attributes
+            {
+              ci_stage: ::Ci::Stage.new(
+                name: attributes[:stage],
+                position: attributes[:stage_idx],
+                pipeline: pipeline_attributes[:pipeline],
+                project: pipeline_attributes[:project]
+              )
+            }
           end
         end
       end

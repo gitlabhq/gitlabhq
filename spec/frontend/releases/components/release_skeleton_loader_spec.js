@@ -10,6 +10,6 @@ describe('release_skeleton_loader.vue', () => {
   });
 
   it('renders a GlSkeletonLoader', () => {
-    expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+    expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
   });
 });

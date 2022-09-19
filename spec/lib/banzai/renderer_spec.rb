@@ -76,7 +76,7 @@ RSpec.describe Banzai::Renderer do
         let(:object) { fake_object(fresh: true) }
 
         it 'uses the cache' do
-          expect(object).to receive(:refresh_markdown_cache!).never
+          expect(object).not_to receive(:refresh_markdown_cache!)
 
           is_expected.to eq('field_html')
         end

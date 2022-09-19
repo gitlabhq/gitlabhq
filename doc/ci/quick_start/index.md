@@ -109,6 +109,7 @@ To create a `.gitlab-ci.yml` file:
      stage: deploy
      script:
        - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
+     environment: production
    ```
 
    `$GITLAB_USER_LOGIN` and `$CI_COMMIT_BRANCH` are

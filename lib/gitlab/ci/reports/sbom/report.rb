@@ -17,11 +17,11 @@ module Gitlab
           end
 
           def set_source(source)
-            self.source = Source.new(source)
+            self.source = source
           end
 
           def add_component(component)
-            components << Component.new(component)
+            components << component
           end
 
           private

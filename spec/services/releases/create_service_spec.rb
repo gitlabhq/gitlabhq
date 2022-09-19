@@ -70,6 +70,28 @@ RSpec.describe Releases::CreateService do
         expect(result[:release]).not_to be_nil
       end
 
+      context 'and the tag would be protected' do
+        let!(:protected_tag) { create(:protected_tag, project: project, name: tag_name) }
+
+        context 'and the user does not have permissions' do
+          let(:user) { create(:user) }
+
+          before do
+            project.add_developer(user)
+          end
+
+          it 'raises an error' do
+            result = service.execute
+
+            expect(result[:status]).to eq(:error)
+          end
+        end
+
+        context 'and the user has permissions' do
+          it_behaves_like 'a successful release creation'
+        end
+      end
+
       context 'and tag_message is provided' do
         let(:ref) { 'master' }
         let(:tag_name) { 'foobar' }

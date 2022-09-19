@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tsort'
 
 RSpec.describe Gitlab::Ci::YamlProcessor::Dag do
   let(:nodes) { {} }

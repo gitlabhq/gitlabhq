@@ -64,9 +64,9 @@ end
 
 RSpec.shared_examples 'shows no runners registered' do
   it 'shows counts with 0' do
-    expect(page).to have_text "Online runners 0"
-    expect(page).to have_text "Offline runners 0"
-    expect(page).to have_text "Stale runners 0"
+    expect(page).to have_text "#{s_('Runners|Online')} 0"
+    expect(page).to have_text "#{s_('Runners|Offline')} 0"
+    expect(page).to have_text "#{s_('Runners|Stale')} 0"
   end
 
   it 'shows "no runners" message' do
@@ -101,7 +101,7 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
     within_runner_row(runner.id) do
       click_button "Pause"
 
-      expect(page).to have_text 'paused'
+      expect(page).to have_text s_('Runners|Paused')
       expect(page).to have_button 'Resume'
       expect(page).not_to have_button 'Pause'
 
@@ -142,6 +142,42 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
       wait_for_requests
 
       expect(page).to have_content runner.description
+    end
+  end
+end
+
+RSpec.shared_examples 'submits edit runner form' do
+  it 'breadcrumb contains runner id and token' do
+    page.within '[data-testid="breadcrumb-links"]' do
+      expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
+      expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
+    end
+  end
+
+  describe 'runner header', :js do
+    it 'contains the runner id' do
+      expect(page).to have_content("Runner ##{runner.id} created")
+    end
+  end
+
+  context 'when a runner is updated', :js do
+    before do
+      find('[data-testid="runner-field-description"] input').set('new-runner-description')
+
+      click_on _('Save changes')
+      wait_for_requests
+    end
+
+    it 'redirects to runner page' do
+      expect(current_url).to match(runner_page_path)
+    end
+
+    it 'show success alert' do
+      expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+    end
+
+    it 'shows updated information' do
+      expect(page).to have_content("#{s_('Runners|Description')} new-runner-description")
     end
   end
 end

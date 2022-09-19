@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/json_type'
 
 RSpec.describe RuboCop::Cop::Graphql::JSONType do
   let(:msg) do
     'Avoid using GraphQL::Types::JSON. See: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#json'
   end
-
-  subject(:cop) { described_class.new }
 
   context 'fields' do
     it 'adds an offense when GraphQL::Types::JSON is used' do

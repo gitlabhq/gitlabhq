@@ -154,22 +154,24 @@ end
 
 You can use Redis metrics to track events not kept in the database, for example, a count of how many times the search bar has been used.
 
-[Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66582).
+[Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97009).
+
+Please note that `RedisMetric` class can only be used as the `instrumentation_class` for Redis metrics with simple counters classes (classes that only inherit `BaseCounter` and set `PREFIX` and `KNOWN_EVENTS` constants). In case the counter class has additional logic included in it, a new `instrumentation_class`, inheriting from `RedisMetric`, needs to be created. This new class needs to include the additional logic from the counter class.
 
 Count unique values for `source_code_pushes` event.
 
 Required options:
 
 - `event`: the event name.
-- `counter_class`: one of the counter classes from the `Gitlab::UsageDataCounters` namespace; it should implement `read` method or inherit it from `BaseCounter`.
+- `prefix`: the value of the `PREFIX` constant used in the counter classes from the `Gitlab::UsageDataCounters` namespace.
 
 ```yaml
 time_frame: all
 data_source: redis
-instrumentation_class: 'RedisMetric'
+instrumentation_class: RedisMetric
 options:
   event: pushes
-  counter_class: SourceCodeCounter
+  prefix: source_code
 ```
 
 ### Availability-restrained Redis metrics
@@ -197,14 +199,14 @@ You must also use the class's name in the YAML setup.
 ```yaml
 time_frame: all
 data_source: redis
-instrumentation_class: 'MergeUsageCountRedisMetric'
+instrumentation_class: MergeUsageCountRedisMetric
 options:
   event: pushes
-  counter_class: SourceCodeCounter
+  prefix: source_code
 ```
 
 ## Redis HyperLogLog metrics
- 
+
 You can use Redis HyperLogLog metrics to track events not kept in the database and incremented for unique values such as unique users,
 for example, a count of how many different users used the search bar.
 
@@ -215,7 +217,7 @@ Count unique values for `i_quickactions_approve` event.
 ```yaml
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: 'RedisHLLMetric'
+instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_quickactions_approve
@@ -246,7 +248,7 @@ You must also use the class's name in the YAML setup.
 ```yaml
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: 'MergeUsageCountRedisHLLMetric'
+instrumentation_class: MergeUsageCountRedisHLLMetric
 options:
   events:
     - i_quickactions_approve
@@ -286,7 +288,7 @@ You must also include the instrumentation class name in the YAML setup.
 
 ```yaml
 time_frame: 28d
-instrumentation_class: 'IssuesBoardsCountMetric'
+instrumentation_class: IssuesBoardsCountMetric
 ```
 
 ## Generic metrics
@@ -337,13 +339,13 @@ To create a stub instrumentation for a Service Ping metric, you can use a dedica
 The generator takes the class name as an argument and the following options:
 
 - `--type=TYPE` Required. Indicates the metric type. It must be one of: `database`, `generic`, `redis`, `numbers`.
-- `--operation` Required for `database` & `numebers` type.
+- `--operation` Required for `database` & `numbers` type.
   - For `database` it must be one of: `count`, `distinct_count`, `estimate_batch_distinct_count`, `sum`, `average`.
   - For `numbers` it must be: `add`.
 - `--ee` Indicates if the metric is for EE.
 
 ```shell
-rails generate gitlab:usage_metric CountIssues --type database
+rails generate gitlab:usage_metric CountIssues --type database --operation distinct_count
         create lib/gitlab/usage/metrics/instrumentations/count_issues_metric.rb
         create spec/lib/gitlab/usage/metrics/instrumentations/count_issues_metric_spec.rb
 ```

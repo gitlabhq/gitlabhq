@@ -1,0 +1,9 @@
+---
+table_name: packages_rpm_metadata
+classes:
+- Packages::Rpm::Metadatum
+feature_categories:
+- package_registry
+description: Rpm package metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96019
+milestone: '15.4'

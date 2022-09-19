@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::ChangedPath do
   subject(:changed_path) { described_class.new(path: path, status: status) }

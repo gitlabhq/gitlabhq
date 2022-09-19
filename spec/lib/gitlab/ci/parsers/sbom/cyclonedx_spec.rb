@@ -102,11 +102,11 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
 
     it 'adds each component, ignoring unused attributes' do
       expect(report).to receive(:add_component)
-        .with({ "name" => "activesupport", "version" => "5.1.4", "type" => "library" })
+        .with(an_object_having_attributes(name: "activesupport", version: "5.1.4", component_type: "library"))
       expect(report).to receive(:add_component)
-        .with({ "name" => "byebug", "version" => "10.0.0", "type" => "library" })
+        .with(an_object_having_attributes(name: "byebug", version: "10.0.0", component_type: "library"))
       expect(report).to receive(:add_component)
-        .with({ "name" => "minimal-component", "type" => "library" })
+        .with(an_object_having_attributes(name: "minimal-component", version: nil, component_type: "library"))
 
       parse!
     end

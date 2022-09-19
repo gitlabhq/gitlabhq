@@ -16,7 +16,7 @@ GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) t
 - Account on GitLab.
 - Access to a cloud provider that supports OIDC to configure authorization and create roles.
 
-The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, GCP, and Vault.
+The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/index.md). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, Azure, GCP, and Vault.
 
 NOTE:
 Configuring OIDC enables JWT token access to the target environments for all pipelines.
@@ -25,8 +25,9 @@ review for the pipeline, focusing on the additional access. You can use the [sof
 as a starting point, and for more information about supply chain attacks, see
 [How a DevOps Platform helps protect against supply chain attacks](https://about.gitlab.com/blog/2021/04/28/devops-platform-supply-chain-attacks/).
 
-WARNING:
-The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../policy/alpha-beta-support.md#alpha-features) and is not yet suitable for production use.
+The `CI_JOB_JWT_V2` variable is available for testing, but the full feature is planned
+to be generally available when [issue 360657](https://gitlab.com/gitlab-org/gitlab/-/issues/360657)
+is complete.
 
 ## Use cases
 
@@ -38,7 +39,7 @@ The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../policy/alpha-b
 
 ## How it works
 
-Each job has a JSON web token (JWT) provided as a CI/CD [predefined variable](../variables/predefined_variables.md) named `CI_JOB_JWT` or `CI_JOB_JWT_V2`. This JWT can be used to authenticate with the OIDC-supported cloud provider such as AWS, GCP, or Vault.
+Each job has a JSON web token (JWT) provided as a CI/CD [predefined variable](../variables/predefined_variables.md) named `CI_JOB_JWT` or `CI_JOB_JWT_V2`. This JWT can be used to authenticate with the OIDC-supported cloud provider such as AWS, Azure, GCP, or Vault.
 
 The following fields are included in the JWT:
 
@@ -112,7 +113,7 @@ sequenceDiagram
 
 ```
 
-1. Create an OIDC identity provider in the cloud (for example, AWS, GCP, Vault).
+1. Create an OIDC identity provider in the cloud (for example, AWS, Azure, GCP, Vault).
 1. Create a conditional role in the cloud service that filters to a group, project, branch, or tag.
 1. The CI/CD job includes a predefined variable `CI_JOB_JWT_V2` that is a JWT token. You can use this token for authorization with your cloud API.
 1. The cloud verifies the token, validates the conditional role from the payload, and returns a temporary credential.
@@ -138,4 +139,5 @@ To configure the trust between GitLab and OIDC, you must create a conditional ro
 To connect with your cloud provider, see the following tutorials:
 
 - [Configure OpenID Connect in AWS](aws/index.md)
+- [Configure OpenID Connect in Azure](azure/index.md)
 - [Configure OpenID Connect in Google Cloud](google_cloud/index.md)

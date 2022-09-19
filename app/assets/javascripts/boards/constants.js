@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import boardBlockingIssuesQuery from './graphql/board_blocking_issues.query.graphql';
+import boardBlockingEpicsQuery from './graphql/board_blocking_epics.query.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from './graphql/board_list_update.mutation.graphql';
 
@@ -69,6 +70,9 @@ export const listsQuery = {
 export const blockingIssuablesQueries = {
   [issuableTypes.issue]: {
     query: boardBlockingIssuesQuery,
+  },
+  [issuableTypes.epic]: {
+    query: boardBlockingEpicsQuery,
   },
 };
 
@@ -146,3 +150,5 @@ export default {
   BoardType,
   ListType,
 };
+
+export const DEFAULT_BOARD_LIST_ITEMS_SIZE = 10;

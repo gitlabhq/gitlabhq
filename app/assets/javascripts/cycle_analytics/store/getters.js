@@ -1,5 +1,5 @@
-import dateFormat from 'dateformat';
 import { dateFormats } from '~/analytics/shared/constants';
+import dateFormat from '~/lib/dateformat';
 import { filterToQueryObject } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import { PAGINATION_TYPE } from '../constants';
 import { transformStagesForPathNavigation, filterStagesByHiddenStatus } from '../utils';

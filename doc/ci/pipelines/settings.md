@@ -25,7 +25,7 @@ For public and internal projects, you can change who can see your:
 
 To change the visibility of your pipelines and related features:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Select or clear the **Public pipelines** checkbox.
@@ -57,7 +57,7 @@ This setting has no effect when:
 
 To change the pipeline visibility for non-project members:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. For **CI/CD**, choose:
@@ -73,7 +73,7 @@ is selected.
 
 You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General Pipelines**.
 1. Select the **Auto-cancel redundant pipelines** checkbox.
@@ -94,7 +94,7 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Select the **Skip outdated deployment jobs** checkbox.
@@ -130,7 +130,7 @@ directory. However, you can specify an alternate filename path, including locati
 
 To customize the path:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **CI/CD configuration file** field, enter the filename. If the file:
@@ -179,7 +179,7 @@ able to edit it.
 
 You can choose how your repository is fetched from GitLab when a job runs.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Under **Git strategy**, select an option:
@@ -200,7 +200,7 @@ in the `.gitlab-ci.yml` file.
 You can limit the number of changes that GitLab CI/CD fetches when it clones
 a repository.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Under **Git strategy**, under **Git shallow clone**, enter a value.
@@ -217,7 +217,7 @@ in the `.gitlab-ci.yml` file.
 
 You can define how long a job can run before it times out.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.
@@ -282,7 +282,7 @@ You can verify correct syntax using the [pipeline editor](../pipeline_editor/ind
 To migrate from the project coverage setting to the `coverage` keyword, use the
 regular expression displayed in the settings. Available in GitLab 14.10 and earlier:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 
@@ -326,7 +326,7 @@ Use this regex for commonly used test tools.
 To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Repository**.
 
 The historic data for each job is listed in the dropdown above the graph.
@@ -392,7 +392,7 @@ Support for [`semver`](https://semver.org/) sorting is tracked [in this issue](h
 You can view the exact link for your badges. Then you can embed the badge in your HTML
 or Markdown pages.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.

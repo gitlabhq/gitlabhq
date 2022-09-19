@@ -9,7 +9,7 @@ const plainStatusUrl = 'https://status.com';
 describe('PinnedLinks', () => {
   let wrapper;
 
-  const findButtons = () => wrapper.findAll(GlButton);
+  const findButtons = () => wrapper.findAllComponents(GlButton);
 
   const createComponent = (props) => {
     wrapper = shallowMount(PinnedLinks, {

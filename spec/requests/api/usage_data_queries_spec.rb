@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'rake_helper'
 
 RSpec.describe API::UsageDataQueries do
   include UsageDataHelpers
@@ -62,6 +63,37 @@ RSpec.describe API::UsageDataQueries do
         get api(endpoint, user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when querying sql metrics' do
+      let(:file) { Rails.root.join('tmp', 'test', 'sql_metrics_queries.json') }
+
+      before do
+        Rake.application.rake_require 'tasks/gitlab/usage_data'
+
+        run_rake_task('gitlab:usage_data:generate_sql_metrics_queries')
+      end
+
+      after do
+        FileUtils.rm_rf(file)
+      end
+
+      it 'matches the generated query' do
+        Timecop.freeze(2021, 1, 1) do
+          get api(endpoint, admin)
+        end
+
+        data = Gitlab::Json.parse(File.read(file))
+
+        expect(
+          json_response['counts_monthly'].except('aggregated_metrics')
+        ).to eq(data['counts_monthly'].except('aggregated_metrics'))
+
+        expect(json_response['counts']).to eq(data['counts'])
+        expect(json_response['active_user_count']).to eq(data['active_user_count'])
+        expect(json_response['usage_activity_by_stage']).to eq(data['usage_activity_by_stage'])
+        expect(json_response['usage_activity_by_stage_monthly']).to eq(data['usage_activity_by_stage_monthly'])
       end
     end
   end

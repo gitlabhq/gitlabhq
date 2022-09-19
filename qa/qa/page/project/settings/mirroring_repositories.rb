@@ -13,6 +13,9 @@ module QA
           view 'app/views/projects/mirrors/_mirror_repos.html.haml' do
             element :mirror_repository_url_input
             element :mirror_repository_button
+          end
+
+          view 'app/views/projects/mirrors/_mirror_repos_list.html.haml' do
             element :mirror_repository_url_cell
             element :mirror_last_update_at_cell
             element :mirror_error_badge

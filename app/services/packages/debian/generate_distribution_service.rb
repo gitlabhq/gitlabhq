@@ -220,6 +220,7 @@ module Packages
           valid_until_field,
           rfc822_field('NotAutomatic', !@distribution.automatic, !@distribution.automatic),
           rfc822_field('ButAutomaticUpgrades', @distribution.automatic_upgrades, !@distribution.automatic && @distribution.automatic_upgrades),
+          rfc822_field('Acquire-By-Hash', 'yes'),
           rfc822_field('Architectures', @distribution.architectures.map { |architecture| architecture.name }.sort.join(' ')),
           rfc822_field('Components', @distribution.components.map { |component| component.name }.sort.join(' ')),
           rfc822_field('Description', @distribution.description)

@@ -14,7 +14,8 @@ RSpec.shared_examples 'checking spam' do
         spammable: kind_of(Snippet),
         spam_params: spam_params,
         user: an_instance_of(User),
-        action: action
+        action: action,
+        extra_features: { files: an_instance_of(Array) }
       }
     ) do |instance|
       expect(instance).to receive(:execute)
@@ -24,7 +25,7 @@ RSpec.shared_examples 'checking spam' do
   end
 end
 
-shared_examples 'invalid params error response' do
+RSpec.shared_examples 'invalid params error response' do
   before do
     allow_next_instance_of(described_class) do |service|
       allow(service).to receive(:valid_params?).and_return false

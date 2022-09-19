@@ -195,6 +195,15 @@ RSpec.describe Member do
             expect(member).not_to be_valid
           end
         end
+
+        context 'access_level cannot be changed' do
+          it 'is invalid' do
+            member.access_level = Gitlab::Access::MAINTAINER
+
+            expect(member).not_to be_valid
+            expect(member.errors.full_messages).to include( "Access level cannot be changed since member is associated with a custom role")
+          end
+        end
       end
     end
   end
@@ -880,7 +889,8 @@ RSpec.describe Member do
   end
 
   describe 'generate invite token on create' do
-    let!(:member) { build(:project_member, invite_email: "user@example.com") }
+    let(:project) { create(:project) }
+    let!(:member) { build(:project_member, invite_email: "user@example.com", project: project) }
 
     it 'sets the invite token' do
       expect { member.save! }.to change { member.invite_token }.to(kind_of(String))

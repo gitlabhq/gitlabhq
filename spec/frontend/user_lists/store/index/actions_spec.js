@@ -41,7 +41,7 @@ describe('~/user_lists/store/index/actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestUserLists and receiveUserListsSuccess ', () => {
+      it('dispatches requestUserLists and receiveUserListsSuccess', () => {
         return testAction(
           fetchUserLists,
           null,
@@ -61,7 +61,7 @@ describe('~/user_lists/store/index/actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestUserLists and receiveUserListsError ', () => {
+      it('dispatches requestUserLists and receiveUserListsError', () => {
         Api.fetchFeatureFlagUserLists.mockRejectedValue();
 
         return testAction(

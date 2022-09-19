@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../rubocop/cop_todo'
 
 RSpec.describe RuboCop::CopTodo do
@@ -14,7 +14,8 @@ RSpec.describe RuboCop::CopTodo do
         cop_name: cop_name,
         files: be_empty,
         offense_count: 0,
-        previously_disabled: false
+        previously_disabled: false,
+        grace_period: false
       )
     end
   end
@@ -95,6 +96,23 @@ RSpec.describe RuboCop::CopTodo do
             # Offense count: 3
             # Temporarily disabled due to too many offenses
             Enabled: false
+            Exclude:
+              - 'a.rb'
+              - 'b.rb'
+        YAML
+      end
+    end
+
+    context 'with grace period' do
+      specify do
+        cop_todo.record('a.rb', 1)
+        cop_todo.record('b.rb', 2)
+        cop_todo.grace_period = true
+
+        expect(yaml).to eq(<<~YAML)
+          ---
+          #{cop_name}:
+            Details: grace period
             Exclude:
               - 'a.rb'
               - 'b.rb'

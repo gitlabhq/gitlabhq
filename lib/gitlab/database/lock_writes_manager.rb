@@ -5,42 +5,63 @@ module Gitlab
     class LockWritesManager
       TRIGGER_FUNCTION_NAME = 'gitlab_schema_prevent_write'
 
-      def initialize(table_name:, connection:, database_name:, logger: nil)
+      def initialize(table_name:, connection:, database_name:, logger: nil, dry_run: false)
         @table_name = table_name
         @connection = connection
         @database_name = database_name
         @logger = logger
+        @dry_run = dry_run
+      end
+
+      def table_locked_for_writes?(table_name)
+        query = <<~SQL
+            SELECT COUNT(*) from information_schema.triggers
+            WHERE event_object_table = '#{table_name}'
+            AND trigger_name = '#{write_trigger_name(table_name)}'
+        SQL
+
+        connection.select_value(query) == 3
       end
 
       def lock_writes
+        if table_locked_for_writes?(table_name)
+          logger&.info "Skipping lock_writes, because #{table_name} is already locked for writes"
+          return
+        end
+
         logger&.info "Database: '#{database_name}', Table: '#{table_name}': Lock Writes".color(:yellow)
-        sql = <<-SQL
-          DROP TRIGGER IF EXISTS #{write_trigger_name(table_name)} ON #{table_name};
+        sql_statement = <<~SQL
           CREATE TRIGGER #{write_trigger_name(table_name)}
             BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE
             ON #{table_name}
             FOR EACH STATEMENT EXECUTE FUNCTION #{TRIGGER_FUNCTION_NAME}();
         SQL
 
-        with_retries(connection) do
-          connection.execute(sql)
-        end
+        execute_sql_statement(sql_statement)
       end
 
       def unlock_writes
         logger&.info "Database: '#{database_name}', Table: '#{table_name}': Allow Writes".color(:green)
-        sql = <<-SQL
-          DROP TRIGGER IF EXISTS #{write_trigger_name(table_name)} ON #{table_name}
+        sql_statement = <<~SQL
+          DROP TRIGGER IF EXISTS #{write_trigger_name(table_name)} ON #{table_name};
         SQL
 
-        with_retries(connection) do
-          connection.execute(sql)
-        end
+        execute_sql_statement(sql_statement)
       end
 
       private
 
-      attr_reader :table_name, :connection, :database_name, :logger
+      attr_reader :table_name, :connection, :database_name, :logger, :dry_run
+
+      def execute_sql_statement(sql)
+        if dry_run
+          logger&.info sql
+        else
+          with_retries(connection) do
+            connection.execute(sql)
+          end
+        end
+      end
 
       def with_retries(connection, &block)
         with_statement_timeout_retries do

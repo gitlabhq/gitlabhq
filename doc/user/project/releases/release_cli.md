@@ -46,7 +46,7 @@ Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is av
    Or from the GitLab Package Registry:
 
    ```shell
-   curl --location --output /usr/local/bin/release-cli "https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli/packages/generic/release-cli/latest/release-cli-darwin-amd64"
+   curl --location --output /usr/local/bin/release-cli "https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli/packages/generic/release-cli/latest/release-cli-linux-amd64"
    ```
 
 1. Give it permissions to execute:

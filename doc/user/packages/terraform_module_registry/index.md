@@ -24,7 +24,7 @@ When you publish a Terraform Module, if it does not exist, it is created.
 
 Prerequisites:
 
-- A package with the same name and version must not already exist.
+- A package with the same name and version must not already exist in the top-level namespace.
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
 - You must [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 

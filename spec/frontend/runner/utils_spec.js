@@ -1,4 +1,4 @@
-import { formatJobCount, tableField, getPaginationVariables } from '~/runner/utils';
+import { formatJobCount, tableField, getPaginationVariables, parseInterval } from '~/runner/utils';
 
 describe('~/runner/utils', () => {
   describe('formatJobCount', () => {
@@ -64,6 +64,17 @@ describe('~/runner/utils', () => {
       ${'first page with N items'} | ${{}}         | ${20}        | ${{ first: 20 }}
     `('navigates to $case', ({ pagination, pageSize, variables }) => {
       expect(getPaginationVariables(pagination, pageSize)).toEqual(variables);
+    });
+  });
+
+  describe('parseInterval', () => {
+    it.each`
+      case                            | argument     | returnValue
+      ${'parses integer'}             | ${'86400'}   | ${86400}
+      ${'returns null for undefined'} | ${undefined} | ${null}
+      ${'returns null for null'}      | ${null}      | ${null}
+    `('$case', ({ argument, returnValue }) => {
+      expect(parseInterval(argument)).toStrictEqual(returnValue);
     });
   });
 });

@@ -51,6 +51,30 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportService do
       let!(:pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
 
       it_behaves_like 'creating or updating a pipeline coverage report'
+
+      context 'when ci_update_unlocked_pipeline_artifacts feature flag is enabled' do
+        it "artifact has pipeline's locked status" do
+          subject
+
+          artifact = Ci::PipelineArtifact.first
+
+          expect(artifact.locked).to eq(pipeline.locked)
+        end
+      end
+
+      context 'when ci_update_unlocked_pipeline_artifacts is disabled' do
+        before do
+          stub_feature_flags(ci_update_unlocked_pipeline_artifacts: false)
+        end
+
+        it 'artifact has unknown locked status' do
+          subject
+
+          artifact = Ci::PipelineArtifact.first
+
+          expect(artifact.locked).to eq('unknown')
+        end
+      end
     end
 
     context 'when pipeline has coverage report from child pipeline' do

@@ -314,7 +314,7 @@ describe('deprecatedJQueryDropdown', () => {
     });
 
     describe('with a trackSuggestionsClickedLabel', () => {
-      it('it includes data-track attributes', () => {
+      it('includes data-track attributes', () => {
         const dropdown = dropdownWithOptions({
           trackSuggestionClickedLabel: 'some_value_for_label',
         });
@@ -333,7 +333,7 @@ describe('deprecatedJQueryDropdown', () => {
         expect(link).toHaveAttr('data-track-property', 'suggestion-category');
       });
 
-      it('it defaults property to no_category when category not provided', () => {
+      it('defaults property to no_category when category not provided', () => {
         const dropdown = dropdownWithOptions({
           trackSuggestionClickedLabel: 'some_value_for_label',
         });

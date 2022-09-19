@@ -79,10 +79,14 @@ RSpec.describe ::Gitlab::ContainerRepository::Tags::Cache, :clean_gitlab_redis_c
 
       it 'inserts values in redis' do
         ::Gitlab::Redis::Cache.with do |redis|
-          expect(redis)
-            .to receive(:set)
-                  .with(cache_key(tag), rfc3339(tag.created_at), ex: ttl.to_i)
-                  .and_call_original
+          expect(redis).to receive(:pipelined).and_call_original
+
+          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+            expect(pipeline)
+              .to receive(:set)
+                    .with(cache_key(tag), rfc3339(tag.created_at), ex: ttl.to_i)
+                    .and_call_original
+          end
         end
 
         subject

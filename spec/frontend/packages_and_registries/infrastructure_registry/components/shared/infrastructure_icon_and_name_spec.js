@@ -5,7 +5,7 @@ import InfrastructureIconAndName from '~/packages_and_registries/infrastructure_
 describe('InfrastructureIconAndName', () => {
   let wrapper;
 
-  const findIcon = () => wrapper.find(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
   const mountComponent = () => {
     wrapper = shallowMount(InfrastructureIconAndName, {});

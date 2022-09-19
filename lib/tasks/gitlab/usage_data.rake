@@ -17,11 +17,16 @@ namespace :gitlab do
       puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values))
     end
 
+    desc 'GitLab | UsageData | Generate non SQL data for usage ping in JSON'
+    task dump_non_sql_in_json: :environment do
+      puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :non_sql_metrics_values))
+    end
+
     desc 'GitLab | UsageData | Generate usage ping and send it to Versions Application'
     task generate_and_send: :environment do
-      result = ServicePing::SubmitService.new.execute
+      response = GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
 
-      puts Gitlab::Json.pretty_generate(result.attributes)
+      puts response.body, response.code, response.message, response.headers.inspect
     end
 
     desc 'GitLab | UsageDataMetrics | Generate usage ping from metrics definition YAML files in JSON'
@@ -49,6 +54,19 @@ namespace :gitlab do
       ]
 
       File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, banner + YAML.dump(all_includes).gsub(/ *$/m, ''))
+    end
+
+    desc 'GitLab | UsageDataMetrics | Generate raw SQL metrics queries for RSpec'
+    task generate_sql_metrics_queries: :environment do
+      path = Rails.root.join('tmp', 'test')
+
+      queries = Timecop.freeze(2021, 1, 1) do
+        Gitlab::Usage::ServicePingReport.for(output: :metrics_queries)
+      end
+
+      FileUtils.mkdir_p(path)
+      FileUtils.chdir(path)
+      File.write('sql_metrics_queries.json', Gitlab::Json.pretty_generate(queries))
     end
 
     def ci_template_includes_hash(source, template_directory = nil)

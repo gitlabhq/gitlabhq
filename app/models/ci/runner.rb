@@ -8,14 +8,11 @@ module Ci
     include ChronicDurationAttribute
     include FromUnion
     include TokenAuthenticatable
-    include IgnorableColumns
     include FeatureGate
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
     include Presentable
     include EachBatch
-
-    ignore_column :semver, remove_with: '15.4', remove_after: '2022-08-22'
 
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
 
@@ -351,20 +348,18 @@ module Ci
       end
     end
 
+    def owner_project
+      return unless project_type?
+
+      runner_projects.order(:id).first.project
+    end
+
     def belongs_to_one_project?
       runner_projects.count == 1
     end
 
     def belongs_to_more_than_one_project?
       runner_projects.limit(2).count(:all) > 1
-    end
-
-    def assigned_to_group?
-      runner_namespaces.any?
-    end
-
-    def assigned_to_project?
-      runner_projects.any?
     end
 
     def match_build_if_online?(build)

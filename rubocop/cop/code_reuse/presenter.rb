@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module CodeReuse
       # Cop that enforces various code reuse rules for Presenter classes.
-      class Presenter < RuboCop::Cop::Cop
+      class Presenter < RuboCop::Cop::Base
         include CodeReuseHelpers
 
         IN_SERVICE = 'Presenters can not be used in a Service class.'

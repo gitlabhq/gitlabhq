@@ -13,7 +13,7 @@ to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
 When authenticating with the API, you can use:
 
 - A [trigger token](#create-a-trigger-token) to trigger a branch or tag pipeline.
-- A [CI/CD job token](../jobs/ci_job_token.md) to trigger a [multi-project pipeline](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api).
+- A [CI/CD job token](../jobs/ci_job_token.md) to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
 
 ## Create a trigger token
 
@@ -26,7 +26,7 @@ Prerequisite:
 
 To create a trigger token:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Pipeline triggers**.
 1. Enter a description and select **Add trigger**.
@@ -88,6 +88,7 @@ trigger_pipeline:
     - 'curl --fail --request POST --form token=$MY_TRIGGER_TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"'
   rules:
     - if: $CI_COMMIT_TAG
+  environment: production
 ```
 
 In this example:
@@ -152,7 +153,7 @@ users with the Owner and Maintainer role can view the values.
 
 To revoke a trigger token:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Pipeline triggers**.
 1. To the left of the trigger token you want to revoke, select **Revoke** (**{remove}**).
@@ -169,7 +170,7 @@ To [configure when to run jobs](../jobs/job_control.md) in triggered pipelines:
 | `$CI_PIPELINE_SOURCE` value | `only`/`except` keywords | Trigger method      |
 |-----------------------------|--------------------------|---------------------|
 | `trigger`                   | `triggers`               | In pipelines triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using a [trigger token](#create-a-trigger-token). |
-| `pipeline`                  | `pipelines`              | In [multi-project pipelines](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api) triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using the [`$CI_JOB_TOKEN`](../jobs/ci_job_token.md), or by using the [`trigger`](../yaml/index.md#trigger) keyword in the CI/CD configuration file. |
+| `pipeline`                  | `pipelines`              | In [multi-project pipelines](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api) triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using the [`$CI_JOB_TOKEN`](../jobs/ci_job_token.md), or by using the [`trigger`](../yaml/index.md#trigger) keyword in the CI/CD configuration file. |
 
 Additionally, the `$CI_PIPELINE_TRIGGERED` predefined CI/CD variable is set to `true`
 in pipelines triggered with a trigger token.

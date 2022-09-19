@@ -28,62 +28,6 @@ RSpec.describe 'projects/edit' do
     end
   end
 
-  context 'merge suggestions settings' do
-    it 'displays a placeholder if none is set' do
-      render
-
-      expect(rendered).to have_field('project[suggestion_commit_message]', placeholder: "Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)")
-    end
-
-    it 'displays the user entered value' do
-      project.update!(suggestion_commit_message: 'refactor: changed %{file_paths}')
-
-      render
-
-      expect(rendered).to have_field('project[suggestion_commit_message]', with: 'refactor: changed %{file_paths}')
-    end
-  end
-
-  context 'merge commit template' do
-    it 'displays default template if none is set' do
-      render
-
-      expect(rendered).to have_field('project[merge_commit_template_or_default]', with: <<~MSG.rstrip)
-        Merge branch '%{source_branch}' into '%{target_branch}'
-
-        %{title}
-
-        %{issues}
-
-        See merge request %{reference}
-      MSG
-    end
-
-    it 'displays the user entered value' do
-      project.update!(merge_commit_template: '%{title}')
-
-      render
-
-      expect(rendered).to have_field('project[merge_commit_template_or_default]', with: '%{title}')
-    end
-  end
-
-  context 'squash template' do
-    it 'displays default template if none is set' do
-      render
-
-      expect(rendered).to have_field('project[squash_commit_template_or_default]', with: '%{title}')
-    end
-
-    it 'displays the user entered value' do
-      project.update!(squash_commit_template: '%{first_multiline_commit}')
-
-      render
-
-      expect(rendered).to have_field('project[squash_commit_template_or_default]', with: '%{first_multiline_commit}')
-    end
-  end
-
   context 'forking' do
     before do
       assign(:project, project)

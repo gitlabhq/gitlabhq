@@ -7,6 +7,42 @@ class Gitlab::Seeder::TriageOps
   WEBHOOK_URL = 'http://0.0.0.0:$PORT$'
   WEBHOOK_TOKEN = "triage-ops-webhook-token"
 
+  WORK_TYPE_LABELS = %w(
+    bug::availability
+    bug::mobile
+    bug::performance
+    bug::vulnerability
+    feature::addition
+    feature::consolidation
+    feature::enhancement
+    feature::removal
+    maintenance::dependency
+    maintenance::pipelines
+    maintenance::refactor
+    maintenance::test-gap
+    maintenance::usability
+    maintenance::workflow
+    type::bug
+    type::feature
+    type::maintenance
+  )
+
+  WORKFLOW_LABELS = %w(
+    workflow::blocked
+    workflow::design
+    workflow::in dev
+    workflow::in review
+    workflow::planning breakdown
+    workflow::production
+    workflow::ready
+    workflow::ready for design
+    workflow::ready for development
+    workflow::ready for review
+    workflow::refinement
+    workflow::validation backlog
+    workflow::verification
+  )
+
   def seed!
     puts "Updating settings to allow web hooks to localhost"
     ApplicationSetting.current_without_cache.update!(allow_local_requests_from_web_hooks_and_services: true)
@@ -33,8 +69,12 @@ class Gitlab::Seeder::TriageOps
         ensure_webhook_for('gitlab-org')
 
         puts "Ensuring work type labels"
-        ensure_work_type_labels_for('gitlab-com')
-        ensure_work_type_labels_for('gitlab-org')
+        ensure_labels_for(WORK_TYPE_LABELS, 'gitlab-com')
+        ensure_labels_for(WORK_TYPE_LABELS, 'gitlab-org')
+
+        puts "Ensuring workflow type labels"
+        ensure_labels_for(WORKFLOW_LABELS, 'gitlab-com')
+        ensure_labels_for(WORKFLOW_LABELS, 'gitlab-org')
       end
     end
   end
@@ -89,27 +129,7 @@ class Gitlab::Seeder::TriageOps
     puts "Hook with url '#{hook.url}' and token '#{hook.token}' for '#{group_path}' is present now."
   end
 
-  def ensure_work_type_labels_for(group_path)
-    label_titles = [
-      'bug::availability',
-      'bug::mobile',
-      'bug::performance',
-      'bug::vulnerability',
-      'feature::addition',
-      'feature::consolidation',
-      'feature::enhancement',
-      'feature::removal',
-      'maintenance::dependency',
-      'maintenance::pipelines',
-      'maintenance::refactor',
-      'maintenance::test-gap',
-      'maintenance::usability',
-      'maintenance::workflow',
-      'type::bug',
-      'type::feature',
-      'type::maintenance',
-    ]
-
+  def ensure_labels_for(label_titles, group_path)
     group = Group.find_by_full_path(group_path)
 
     label_titles.each do |label_title|

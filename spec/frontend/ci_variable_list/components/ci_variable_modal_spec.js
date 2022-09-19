@@ -11,6 +11,7 @@ import {
   EVENT_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
   instanceString,
+  variableOptions,
 } from '~/ci_variable_list/constants';
 import { mockVariablesWithScopes } from '../mocks';
 import ModalStub from '../stubs';
@@ -57,21 +58,23 @@ describe('Ci variable modal', () => {
     });
   };
 
-  const findCiEnvironmentsDropdown = () => wrapper.find(CiEnvironmentsDropdown);
+  const findCiEnvironmentsDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
   const findReferenceWarning = () => wrapper.findByTestId('contains-variable-reference');
-  const findModal = () => wrapper.find(ModalStub);
+  const findModal = () => wrapper.findComponent(ModalStub);
   const findAWSTip = () => wrapper.findByTestId('aws-guidance-tip');
   const findAddorUpdateButton = () => wrapper.findByTestId('ciUpdateOrAddVariableBtn');
   const deleteVariableButton = () =>
     findModal()
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .wrappers.find((button) => button.props('variant') === 'danger');
   const findProtectedVariableCheckbox = () =>
     wrapper.findByTestId('ci-variable-protected-checkbox');
   const findMaskedVariableCheckbox = () => wrapper.findByTestId('ci-variable-masked-checkbox');
   const findValueField = () => wrapper.find('#ci-variable-value');
   const findEnvScopeLink = () => wrapper.findByTestId('environment-scope-link');
-  const findEnvScopeInput = () => wrapper.findByTestId('environment-scope').find(GlFormInput);
+  const findEnvScopeInput = () =>
+    wrapper.findByTestId('environment-scope').findComponent(GlFormInput);
+  const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
 
   afterEach(() => {
     wrapper.destroy();
@@ -83,7 +86,7 @@ describe('Ci variable modal', () => {
         createComponent();
       });
 
-      it('shows the submit button as disabled ', () => {
+      it('shows the submit button as disabled', () => {
         expect(findAddorUpdateButton().attributes('disabled')).toBe('true');
       });
     });
@@ -93,7 +96,7 @@ describe('Ci variable modal', () => {
         createComponent({ props: { selectedVariable: mockVariables[0] } });
       });
 
-      it('shows the submit button as enabled ', () => {
+      it('shows the submit button as enabled', () => {
         expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
       });
     });
@@ -280,6 +283,21 @@ describe('Ci variable modal', () => {
 
         expect(findCiEnvironmentsDropdown().exists()).toBe(false);
         expect(findEnvScopeInput().attributes('readonly')).toBe('readonly');
+      });
+    });
+  });
+
+  describe('variable type dropdown', () => {
+    describe('default behaviour', () => {
+      beforeEach(() => {
+        createComponent({ mountFn: mountExtended });
+      });
+
+      it('adds each option as a dropdown item', () => {
+        expect(findVariableTypeDropdown().findAll('option')).toHaveLength(variableOptions.length);
+        variableOptions.forEach((v) => {
+          expect(findVariableTypeDropdown().text()).toContain(v.text);
+        });
       });
     });
   });

@@ -20,3 +20,5 @@ module DependencyProxy
     end
   end
 end
+
+DependencyProxy::GroupAccess.prepend_mod_with('DependencyProxy::GroupAccess')

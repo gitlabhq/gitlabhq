@@ -37,12 +37,10 @@ RSpec.describe 'merge requests discussions' do
     it 'avoids N+1 DB queries', :request_store do
       send_request # warm up
 
-      create(:diff_note_on_merge_request, noteable: merge_request,
-             project: merge_request.project)
+      create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
       control = ActiveRecord::QueryRecorder.new { send_request }
 
-      create(:diff_note_on_merge_request, noteable: merge_request,
-             project: merge_request.project)
+      create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
 
       expect do
         send_request
@@ -51,8 +49,7 @@ RSpec.describe 'merge requests discussions' do
 
     it 'limits Gitaly queries', :request_store do
       Gitlab::GitalyClient.allow_n_plus_1_calls do
-        create_list(:diff_note_on_merge_request, 7, noteable: merge_request,
-                    project: merge_request.project)
+        create_list(:diff_note_on_merge_request, 7, noteable: merge_request, project: merge_request.project)
       end
 
       # The creations above write into the Gitaly counts

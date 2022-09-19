@@ -433,8 +433,8 @@ When using the percentage rollout of actors on multiple feature flags, the actor
 For example, the following feature flags are enabled for a certain percentage of actors:
 
 ```plaintext
-/chatops run chatops feature set feature-set-1 25 --actors
-/chatops run chatops feature set feature-set-2 25 --actors
+/chatops run feature set feature-set-1 25 --actors
+/chatops run feature set feature-set-2 25 --actors
 ```
 
 If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.
@@ -514,12 +514,12 @@ You can also enable a feature flag for a given gate:
 Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 ```
 
-### Removing a feature flag locally (in development)
+### Disabling a feature flag locally (in development)
 
 When manually enabling or disabling a feature flag from the Rails console, its default value gets overwritten.
 This can cause confusion when changing the flag's `default_enabled` attribute.
 
-To reset the feature flag to the default status, you can remove it in the rails console (`rails c`)
+To reset the feature flag to the default status, you can disable it in the rails console (`rails c`)
 as follows:
 
 ```ruby
@@ -535,16 +535,18 @@ Feature.remove(:feature_flag_name)
 
   ```mermaid
   graph LR
-      A[flag: default off] -->|'added' / 'changed'| B(flag: default on)
+      A[flag: default off] -->|'added' / 'changed' / 'fixed' / '...'| B(flag: default on)
       B -->|'other'| C(remove flag, keep new code)
       B -->|'removed' / 'changed'| D(remove flag, keep old code)
-      A -->|'added' / 'changed'| C
+      A -->|'added' / 'changed' / 'fixed' / '...'| C
       A -->|no changelog| D
   ```
 
 - Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
 - The changelog for a feature flag should describe the feature and not the
   flag, unless a default on feature flag is removed keeping the new code (`other` in the flowchart above).
+- A feature flag can also be used for rolling out a bug fix or a maintenance work. In this scenario, the changelog
+  must be related to it, for example; `fixed` or `other`.
 
 ## Feature flags in tests
 

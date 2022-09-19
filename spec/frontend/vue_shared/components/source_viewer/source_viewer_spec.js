@@ -110,6 +110,13 @@ describe('Source Viewer component', () => {
       expect(hljs.registerLanguage).toHaveBeenCalledWith('json', languageDefinition.default);
     });
 
+    it('correctly maps languages starting with uppercase', async () => {
+      await createComponent({ language: 'Python3' });
+      const languageDefinition = await import(`highlight.js/lib/languages/python`);
+
+      expect(hljs.registerLanguage).toHaveBeenCalledWith('python', languageDefinition.default);
+    });
+
     it('highlights the first chunk', () => {
       expect(hljs.highlight).toHaveBeenCalledWith(chunk1.trim(), { language: mappedLanguage });
     });
@@ -149,7 +156,7 @@ describe('Source Viewer component', () => {
 
   it('emits showBlobInteractionZones on the eventHub when chunk appears', () => {
     findChunks().at(0).vm.$emit('appear');
-    expect(eventHub.$emit).toBeCalledWith('showBlobInteractionZones', path);
+    expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', path);
   });
 
   describe('LineHighlighter', () => {

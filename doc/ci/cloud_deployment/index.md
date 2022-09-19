@@ -50,6 +50,7 @@ deploy:
   script:
    - aws s3 ...
    - aws create-deployment ...
+  environment: production
 ```
 
 GitLab provides a Docker image that includes the AWS CLI:
@@ -215,3 +216,14 @@ To deploy to EC2, complete the following steps.
    - Your built application is pushed to your S3 bucket then and deployed to your EC2 instance, based
      on the related JSON object's content. The deployment job finishes when the deployment to EC2
      is done or has failed.
+
+## Troubleshooting
+
+### Error `'ascii' codec can't encode character '\uxxxx'`
+
+This error can occur when the response from the `aws-cli` utility used by the Cloud Deploy images contains a Unicode character. The Cloud Deploy images we provide do not have a defined locale and default to using ASCII. To resolve this error, add the following CI/CD variable:
+
+```yaml
+variables:
+  LANG: "UTF-8"
+```

@@ -7,5 +7,7 @@
 class JiraConnect::OauthCallbacksController < ApplicationController
   feature_category :integrations
 
+  skip_before_action :authenticate_user!
+
   def index; end
 end

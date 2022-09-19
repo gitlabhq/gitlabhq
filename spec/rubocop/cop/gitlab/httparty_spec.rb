@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/httparty'
 
 RSpec.describe RuboCop::Cop::Gitlab::HTTParty do # rubocop:disable RSpec/FilePath
-  subject(:cop) { described_class.new }
-
   shared_examples('registering include offense') do
     it 'registers an offense when the class includes HTTParty' do
       expect_offense(source)

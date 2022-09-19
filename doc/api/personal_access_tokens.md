@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -134,9 +134,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ### Using a request header
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350240) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350240) in GitLab 15.0. Limited to tokens with `api` scope.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369103) in GitLab 15.4, any token can use this endpoint.
 
-Revokes a personal access token that is passed in using a request header.
+Revokes a personal access token that is passed in using a request header. Requires:
+
+- `api` scope in GitLab 15.0 to GitLab 15.3.
+- Any scope in GitLab 15.4 and later.
 
 ```plaintext
 DELETE /personal_access_tokens/self

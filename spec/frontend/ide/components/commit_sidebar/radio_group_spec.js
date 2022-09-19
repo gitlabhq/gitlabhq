@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import radioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
+import RadioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
 import { createStore } from '~/ide/stores';
 
 describe('IDE commit sidebar radio group', () => {
@@ -10,7 +10,7 @@ describe('IDE commit sidebar radio group', () => {
   beforeEach(async () => {
     store = createStore();
 
-    const Component = Vue.extend(radioGroup);
+    const Component = Vue.extend(RadioGroup);
 
     store.state.commit.commitAction = '2';
 
@@ -38,7 +38,7 @@ describe('IDE commit sidebar radio group', () => {
 
     vm = new Vue({
       components: {
-        radioGroup,
+        RadioGroup,
       },
       store,
       render: (createElement) =>
@@ -62,7 +62,7 @@ describe('IDE commit sidebar radio group', () => {
     beforeEach(async () => {
       vm.$destroy();
 
-      const Component = Vue.extend(radioGroup);
+      const Component = Vue.extend(RadioGroup);
 
       store.state.commit.commitAction = '1';
       store.state.commit.newBranchName = 'test-123';

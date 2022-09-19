@@ -78,7 +78,7 @@ GitLab supports two deduplication strategies:
 - `until_executing`, which is the default strategy
 - `until_executed`
 
-More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195). 
+More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195).
 If you are implementing a worker that could benefit from a different
 strategy, please comment in the issue.
 

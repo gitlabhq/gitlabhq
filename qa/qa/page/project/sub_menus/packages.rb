@@ -23,12 +23,20 @@ module QA
             end
           end
 
+          def go_to_infrastructure_registry
+            hover_registry do
+              within_submenu do
+                click_link('Infrastructure Registry')
+              end
+            end
+          end
+
           private
 
           def hover_registry
             within_sidebar do
-              scroll_to_element(:sidebar_menu_link, menu_item: 'Packages & Registries')
-              find_element(:sidebar_menu_link, menu_item: 'Packages & Registries').hover
+              scroll_to_element(:sidebar_menu_link, menu_item: 'Packages and registries')
+              find_element(:sidebar_menu_link, menu_item: 'Packages and registries').hover
 
               yield
             end

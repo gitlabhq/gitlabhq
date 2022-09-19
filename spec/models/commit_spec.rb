@@ -84,6 +84,22 @@ RSpec.describe Commit do
     end
   end
 
+  describe '.build_from_sidekiq_hash' do
+    it 'returns a Commit' do
+      commit = described_class.build_from_sidekiq_hash(project, id: '123')
+
+      expect(commit).to be_an_instance_of(Commit)
+    end
+
+    it 'parses date strings into Time instances' do
+      commit = described_class.build_from_sidekiq_hash(project,
+                                   id: '123',
+                                   authored_date: Time.current.to_s)
+
+      expect(commit.authored_date).to be_a_kind_of(Time)
+    end
+  end
+
   describe '#diff_refs' do
     it 'is equal to itself' do
       expect(commit.diff_refs).to eq(commit.diff_refs)

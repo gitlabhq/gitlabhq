@@ -149,8 +149,8 @@ export default {
               v-for="option in presetOptions"
               :key="option.id"
               :is-checked="isSelected(option)"
-              :is-check-centered="true"
-              :is-check-item="true"
+              is-check-centered
+              is-check-item
               @click.native.capture.stop="selectOption(option)"
             >
               <slot name="preset-item" :item="option">

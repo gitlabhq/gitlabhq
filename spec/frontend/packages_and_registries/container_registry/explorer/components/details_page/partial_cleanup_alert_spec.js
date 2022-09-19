@@ -9,7 +9,7 @@ import {
 describe('Partial Cleanup alert', () => {
   let wrapper;
 
-  const findAlert = () => wrapper.find(GlAlert);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findRunLink = () => wrapper.find('[data-testid="run-link"');
   const findHelpLink = () => wrapper.find('[data-testid="help-link"');
 

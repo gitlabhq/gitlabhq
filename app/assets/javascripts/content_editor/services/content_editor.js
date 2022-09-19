@@ -1,5 +1,3 @@
-import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } from '../constants';
-
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
   constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub }) {
@@ -20,14 +18,19 @@ export class ContentEditor {
   }
 
   get changed() {
-    return this._pristineDoc?.eq(this.tiptapEditor.state.doc);
+    if (!this._pristineDoc) {
+      return !this.empty;
+    }
+
+    return !this._pristineDoc.eq(this.tiptapEditor.state.doc);
   }
 
   get empty() {
-    const doc = this.tiptapEditor?.state.doc;
+    return this.tiptapEditor.isEmpty;
+  }
 
-    // Makes sure the document has more than one empty paragraph
-    return doc.childCount === 0 || (doc.childCount === 1 && doc.child(0).childCount === 0);
+  get editable() {
+    return this.tiptapEditor.isEditable;
   }
 
   dispose() {
@@ -55,24 +58,22 @@ export class ContentEditor {
     return this._assetResolver.renderDiagram(code, language);
   }
 
+  setEditable(editable = true) {
+    this._tiptapEditor.setOptions({
+      editable,
+    });
+  }
+
   async setSerializedContent(serializedContent) {
-    const { _tiptapEditor: editor, _eventHub: eventHub } = this;
+    const { _tiptapEditor: editor } = this;
     const { doc, tr } = editor.state;
 
-    try {
-      eventHub.$emit(LOADING_CONTENT_EVENT);
-      const { document } = await this.deserialize(serializedContent);
+    const { document } = await this.deserialize(serializedContent);
 
-      if (document) {
-        this._pristineDoc = document;
-        tr.replaceWith(0, doc.content.size, document).setMeta('preventUpdate', true);
-        editor.view.dispatch(tr);
-      }
-
-      eventHub.$emit(LOADING_SUCCESS_EVENT);
-    } catch (e) {
-      eventHub.$emit(LOADING_ERROR_EVENT, e);
-      throw e;
+    if (document) {
+      this._pristineDoc = document;
+      tr.replaceWith(0, doc.content.size, document).setMeta('preventUpdate', true);
+      editor.view.dispatch(tr);
     }
   }
 

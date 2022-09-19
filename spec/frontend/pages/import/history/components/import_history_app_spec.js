@@ -79,7 +79,7 @@ describe('ImportHistoryApp', () => {
   describe('general behavior', () => {
     it('renders loading state when loading', () => {
       createComponent();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('renders empty state when no data is available', async () => {
@@ -87,8 +87,8 @@ describe('ImportHistoryApp', () => {
       createComponent();
       await axios.waitForAll();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlEmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlEmptyState).exists()).toBe(true);
     });
 
     it('renders table with data when history is available', async () => {
@@ -96,7 +96,7 @@ describe('ImportHistoryApp', () => {
       createComponent();
       await axios.waitForAll();
 
-      const table = wrapper.find(GlTable);
+      const table = wrapper.findComponent(GlTable);
       expect(table.exists()).toBe(true);
       expect(table.props().items).toStrictEqual(DUMMY_RESPONSE);
     });
@@ -127,7 +127,7 @@ describe('ImportHistoryApp', () => {
 
       expect(mock.history.get.length).toBe(1);
       expect(mock.history.get[0].params).toStrictEqual(expect.objectContaining({ page: NEW_PAGE }));
-      expect(wrapper.find(GlTable).props().items).toStrictEqual(FAKE_NEXT_PAGE_REPLY);
+      expect(wrapper.findComponent(GlTable).props().items).toStrictEqual(FAKE_NEXT_PAGE_REPLY);
     });
   });
 

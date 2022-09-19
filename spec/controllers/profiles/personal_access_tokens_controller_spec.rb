@@ -48,8 +48,8 @@ RSpec.describe Profiles::PersonalAccessTokensController do
     end
 
     it "only includes details of the active personal access token" do
-      active_personal_access_tokens_detail = ::API::Entities::PersonalAccessTokenWithDetails
-        .represent([active_personal_access_token])
+      active_personal_access_tokens_detail =
+        ::PersonalAccessTokenSerializer.new.represent([active_personal_access_token])
 
       expect(assigns(:active_personal_access_tokens).to_json).to eq(active_personal_access_tokens_detail.to_json)
     end
@@ -100,8 +100,8 @@ RSpec.describe Profiles::PersonalAccessTokensController do
         get :index
 
         first_token = assigns(:active_personal_access_tokens).first.as_json
-        expect(first_token[:name]).to eq("Token1")
-        expect(first_token[:expires_at]).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
+        expect(first_token['name']).to eq("Token1")
+        expect(first_token['expires_at']).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
       end
 
       it "orders tokens on id in case token has same expires_at" do
@@ -110,12 +110,12 @@ RSpec.describe Profiles::PersonalAccessTokensController do
         get :index
 
         first_token = assigns(:active_personal_access_tokens).first.as_json
-        expect(first_token[:name]).to eq("Token3")
-        expect(first_token[:expires_at]).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
+        expect(first_token['name']).to eq("Token3")
+        expect(first_token['expires_at']).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
 
         second_token = assigns(:active_personal_access_tokens).second.as_json
-        expect(second_token[:name]).to eq("Token1")
-        expect(second_token[:expires_at]).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
+        expect(second_token['name']).to eq("Token1")
+        expect(second_token['expires_at']).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
       end
     end
 

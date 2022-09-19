@@ -18,7 +18,7 @@ describe('Ci Variable Popover', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
     createComponent();

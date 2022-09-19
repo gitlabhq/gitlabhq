@@ -5,7 +5,7 @@ const defaultWidth = '250px';
 
 export default {
   component: TooltipOnTruncate,
-  title: 'vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue',
+  title: 'vue_shared/tooltip_on_truncate/tooltip_on_truncate.vue',
 };
 
 const createStory = ({ ...options }) => {

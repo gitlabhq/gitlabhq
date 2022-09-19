@@ -21,6 +21,30 @@ module Types
     field :path, GraphQL::Types::String, null: false,
                                          description: 'Path to the environment.'
 
+    field :slug, GraphQL::Types::String,
+      description: 'Slug of the environment.'
+
+    field :external_url, GraphQL::Types::String, null: true,
+                                                 description: 'External URL of the environment.'
+
+    field :created_at, Types::TimeType,
+      description: 'When the environment was created.'
+
+    field :updated_at, Types::TimeType,
+      description: 'When the environment was updated.'
+
+    field :auto_stop_at, Types::TimeType,
+      description: 'When the environment is going to be stopped automatically.'
+
+    field :auto_delete_at, Types::TimeType,
+      description: 'When the environment is going to be deleted automatically.'
+
+    field :tier, Types::DeploymentTierEnum,
+      description: 'Deployment tier of the environment.'
+
+    field :environment_type, GraphQL::Types::String,
+      description: 'Folder name of the environment.'
+
     field :metrics_dashboard, Types::Metrics::DashboardType, null: true,
                                                              description: 'Metrics dashboard schema for the environment.',
                                                              resolver: Resolvers::Metrics::DashboardResolver
@@ -29,5 +53,22 @@ module Types
           Types::AlertManagement::AlertType,
           null: true,
           description: 'Most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.'
+
+    field :deployments,
+          Types::DeploymentType.connection_type,
+          null: true,
+          description: 'Deployments of the environment. This field can only be resolved for one project in any single request.',
+          resolver: Resolvers::DeploymentsResolver do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
+
+    field :last_deployment,
+          Types::DeploymentType,
+          description: 'Last deployment of the environment.',
+          resolver: Resolvers::Environments::LastDeploymentResolver
+
+    def tier
+      object.tier.to_sym
+    end
   end
 end

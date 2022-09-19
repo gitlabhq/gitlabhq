@@ -14,7 +14,9 @@ module QA
       attributes :id,
                  :runners_token,
                  :name,
-                 :full_path
+                 :full_path,
+                 # Add visibility to enable create private group
+                 :visibility
 
       # Get group projects
       #

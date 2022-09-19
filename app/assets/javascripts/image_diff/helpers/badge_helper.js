@@ -30,6 +30,7 @@ export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
 
 export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
   const buttonEl = createImageBadge(noteId, coordinate, ['image-comment-badge']);
+  // eslint-disable-next-line no-unsanitized/property
   buttonEl.innerHTML = spriteIcon('image-comment-dark');
 
   containerEl.appendChild(buttonEl);

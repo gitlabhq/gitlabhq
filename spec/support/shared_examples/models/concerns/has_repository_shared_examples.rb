@@ -125,17 +125,17 @@ RSpec.shared_examples 'model with repository' do
   end
 
   describe '#valid_repo?' do
-    it { expect(stubbed_container.valid_repo?).to be(false)}
+    it { expect(stubbed_container.valid_repo?).to be(false) }
     it { expect(container.valid_repo?).to be(true) }
   end
 
   describe '#repository_exists?' do
-    it { expect(stubbed_container.repository_exists?).to be(false)}
+    it { expect(stubbed_container.repository_exists?).to be(false) }
     it { expect(container.repository_exists?).to be(true) }
   end
 
   describe '#repo_exists?' do
-    it { expect(stubbed_container.repo_exists?).to be(false)}
+    it { expect(stubbed_container.repo_exists?).to be(false) }
     it { expect(container.repo_exists?).to be(true) }
   end
 

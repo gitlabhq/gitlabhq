@@ -1,5 +1,5 @@
 = form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-gitaly-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting, pajamas_alert: true)
+  = form_errors(@application_setting)
 
   %fieldset
     .form-group

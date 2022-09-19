@@ -53,7 +53,7 @@ You can use the following fuzzing engines to test the specified languages.
 
 To confirm the status of coverage-guided fuzz testing:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Coverage Fuzzing** section the status is:
    - **Not configured**
@@ -174,7 +174,7 @@ artifacts files you can download from the CI/CD pipeline.
 
 To view details of the corpus registry:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
@@ -202,7 +202,7 @@ provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every p
 
 To upload an existing corpus file:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 1. Select **New corpus**.
@@ -277,7 +277,7 @@ For a complete example, read the [Go coverage-guided fuzzing example](https://gi
 
 It's also possible to run the coverage-guided fuzzing jobs longer and without blocking your main
 pipeline. This configuration uses the GitLab
-[parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md).
+[parent-child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 The suggested workflow in this scenario is to have long-running, asynchronous fuzzing jobs on the
 main or development branch, and short synchronous fuzzing jobs on all other branches and MRs. This
@@ -376,4 +376,4 @@ corpus file extracts into a folder named `corpus`.
 
 If you see this error message when running the fuzzing job with `COVFUZZ_USE_REGISTRY` set to `true`,
 ensure that duplicates are allowed. For more details, see
-[duplicate Generic packages](../../packages/generic_packages/#do-not-allow-duplicate-generic-packages).
+[duplicate Generic packages](../../packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages).

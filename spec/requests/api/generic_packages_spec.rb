@@ -572,6 +572,12 @@ RSpec.describe API::GenericPackages do
 
           expect(response).to have_gitlab_http_status(expected_status)
         end
+
+        if params[:expected_status] == :success
+          it_behaves_like 'bumping the package last downloaded at field' do
+            subject { download_file(auth_header) }
+          end
+        end
       end
 
       where(:authenticate_with, :expected_status) do
@@ -586,6 +592,12 @@ RSpec.describe API::GenericPackages do
           download_file(deploy_token_auth_header)
 
           expect(response).to have_gitlab_http_status(expected_status)
+        end
+
+        if params[:expected_status] == :success
+          it_behaves_like 'bumping the package last downloaded at field' do
+            subject { download_file(deploy_token_auth_header) }
+          end
         end
       end
     end
@@ -607,6 +619,12 @@ RSpec.describe API::GenericPackages do
           download_file(personal_access_token_header)
 
           expect(response).to have_gitlab_http_status(expected_status)
+        end
+
+        if params[:expected_status] == :success
+          it_behaves_like 'bumping the package last downloaded at field' do
+            subject { download_file(personal_access_token_header) }
+          end
         end
       end
     end

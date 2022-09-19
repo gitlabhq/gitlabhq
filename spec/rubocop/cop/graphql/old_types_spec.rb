@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/graphql/old_types'
 
 RSpec.describe RuboCop::Cop::Graphql::OldTypes do
   using RSpec::Parameterized::TableSyntax
-
-  subject(:cop) { described_class.new }
 
   where(:old_type, :message) do
     'GraphQL::ID_TYPE'        | 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'

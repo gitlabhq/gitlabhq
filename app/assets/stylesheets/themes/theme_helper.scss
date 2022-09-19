@@ -6,18 +6,22 @@
   $search-and-nav-links,
   $accent,
   $border-and-box-shadow,
-  $sidebar-text,
-  $nav-svg-color,
-  $color-alternate
+  $navbar-theme-color,
+  $navbar-theme-contrast-color
 ) {
   // Set custom properties
 
   --gl-theme-accent: #{$accent};
 
+  $search-and-nav-links-a20: rgba($search-and-nav-links, 0.2);
+  $search-and-nav-links-a30: rgba($search-and-nav-links, 0.3);
+  $search-and-nav-links-a40: rgba($search-and-nav-links, 0.4);
+  $search-and-nav-links-a80: rgba($search-and-nav-links, 0.8);
+
   // Header
 
   .navbar-gitlab {
-    background-color: $nav-svg-color;
+    background-color: $navbar-theme-color;
 
     .navbar-collapse {
       color: $search-and-nav-links;
@@ -37,7 +41,7 @@
         > button {
           &:hover,
           &:focus {
-            background-color: rgba($search-and-nav-links, 0.2);
+            background-color: $search-and-nav-links-a20;
           }
         }
 
@@ -45,13 +49,13 @@
         &.dropdown.show {
           > a,
           > button {
-            color: $nav-svg-color;
-            background-color: $color-alternate;
+            color: $navbar-theme-color;
+            background-color: $navbar-theme-contrast-color;
           }
         }
 
         &.line-separator {
-          border-left: 1px solid rgba($search-and-nav-links, 0.2);
+          border-left: 1px solid $search-and-nav-links-a20;
         }
       }
     }
@@ -65,12 +69,12 @@
         color: $search-and-nav-links;
 
         &.header-search-new {
-          color: $sidebar-text;
+          color: $gray-900;
         }
 
         > a {
           .notification-dot {
-            border: 2px solid $nav-svg-color;
+            border: 2px solid $navbar-theme-color;
           }
 
           &.header-help-dropdown-toggle {
@@ -88,7 +92,7 @@
           &:hover,
           &:focus {
             @include media-breakpoint-up(sm) {
-              background-color: rgba($search-and-nav-links, 0.2);
+              background-color: $search-and-nav-links-a20;
             }
 
             svg {
@@ -97,7 +101,7 @@
 
             .notification-dot {
               will-change: border-color, background-color;
-              border-color: adjust-color($nav-svg-color, $red: 33, $green: 33, $blue: 33);
+              border-color: adjust-color($navbar-theme-color, $red: 33, $green: 33, $blue: 33);
             }
 
             &.header-help-dropdown-toggle .notification-dot {
@@ -108,12 +112,12 @@
 
         &.active > a,
         &.dropdown.show > a {
-          color: $nav-svg-color;
-          background-color: $color-alternate;
+          color: $navbar-theme-color;
+          background-color: $navbar-theme-contrast-color;
 
           &:hover {
             svg {
-              fill: $nav-svg-color;
+              fill: $navbar-theme-color;
             }
           }
 
@@ -123,7 +127,7 @@
 
           &.header-help-dropdown-toggle {
             .notification-dot {
-              background-color: $nav-svg-color;
+              background-color: $navbar-theme-color;
             }
           }
         }
@@ -131,7 +135,7 @@
         .impersonated-user,
         .impersonated-user:hover {
           svg {
-            fill: $nav-svg-color;
+            fill: $navbar-theme-color;
           }
         }
       }
@@ -142,30 +146,30 @@
     > a {
       &:hover,
       &:focus {
-        background-color: rgba($search-and-nav-links, 0.2);
+        background-color: $search-and-nav-links-a20;
       }
     }
   }
 
   .header-search {
-    background-color: rgba($search-and-nav-links, 0.2) !important;
+    background-color: $search-and-nav-links-a20 !important;
     border-radius: $border-radius-default;
 
     &:hover {
-      background-color: rgba($search-and-nav-links, 0.3) !important;
+      background-color: $search-and-nav-links-a30 !important;
     }
 
     svg.gl-search-box-by-type-search-icon {
-      color: rgba($search-and-nav-links, 0.8);
+      color: $search-and-nav-links-a80;
     }
 
     input {
       background-color: transparent;
-      color: rgba($search-and-nav-links, 0.8);
-      box-shadow: inset 0 0 0 1px rgba($search-and-nav-links, 0.4);
+      color: $search-and-nav-links-a80;
+      box-shadow: inset 0 0 0 1px $search-and-nav-links-a40;
 
       &::placeholder {
-        color: rgba($search-and-nav-links, 0.8);
+        color: $search-and-nav-links-a80;
       }
 
       &:focus,
@@ -178,27 +182,27 @@
 
     .keyboard-shortcut-helper {
       color: $search-and-nav-links;
-      background-color: rgba($search-and-nav-links, 0.2);
+      background-color: $search-and-nav-links-a20;
     }
   }
 
   .search {
     form {
-      background-color: rgba($search-and-nav-links, 0.2);
+      background-color: $search-and-nav-links-a20;
 
       &:hover {
-        background-color: rgba($search-and-nav-links, 0.3);
+        background-color: $search-and-nav-links-a30;
       }
     }
 
     .search-input::placeholder {
-      color: rgba($search-and-nav-links, 0.8);
+      color: $search-and-nav-links-a80;
     }
 
     .search-input-wrap {
       .search-icon,
       .clear-icon {
-        fill: rgba($search-and-nav-links, 0.8);
+        fill: $search-and-nav-links-a80;
       }
     }
 
@@ -209,7 +213,7 @@
 
       .search-input-wrap {
         .search-icon {
-          fill: rgba($search-and-nav-links, 0.8);
+          fill: $search-and-nav-links-a80;
         }
       }
     }
@@ -217,7 +221,7 @@
 
   // Sidebar
   .nav-sidebar li.active > a {
-    color: $sidebar-text;
+    color: $gray-900;
   }
 
   .nav-sidebar {

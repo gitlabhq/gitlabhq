@@ -59,6 +59,50 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#pause!' do
+    context 'when an invalid transition is applied' do
+      %i[finished failed finalizing].each do |state|
+        it 'raises an exception' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect { batched_migration.pause! }.to raise_error(StateMachines::InvalidTransition, /Cannot transition status/)
+        end
+      end
+    end
+
+    context 'when a valid transition is applied' do
+      %i[active paused].each do |state|
+        it 'moves to pause' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect(batched_migration.pause!).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#execute!' do
+    context 'when an invalid transition is applied' do
+      %i[finished finalizing].each do |state|
+        it 'raises an exception' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect { batched_migration.execute! }.to raise_error(StateMachines::InvalidTransition, /Cannot transition status/)
+        end
+      end
+    end
+
+    context 'when a valid transition is applied' do
+      %i[active paused failed].each do |state|
+        it 'moves to active' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect(batched_migration.execute!).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '.valid_status' do
     valid_status = [:paused, :active, :finished, :failed, :finalizing]
 
@@ -74,6 +118,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     it 'returns batched migrations ordered by their id' do
       expect(described_class.queue_order.all).to eq([migration1, migration2, migration3])
+    end
+  end
+
+  describe '.ordered_by_created_at_desc' do
+    let!(:migration_1) { create(:batched_background_migration, created_at: Time.zone.now - 2) }
+    let!(:migration_2) { create(:batched_background_migration, created_at: Time.zone.now - 1) }
+    let!(:migration_3) { create(:batched_background_migration, created_at: Time.zone.now - 3) }
+
+    it 'returns batched migrations ordered by created_at (DESC)' do
+      expect(described_class.ordered_by_created_at_desc).to eq([migration_2, migration_1, migration_3])
     end
   end
 
@@ -620,10 +674,22 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   describe '#progress' do
     subject { migration.progress }
 
-    context 'when the migration is finished' do
+    context 'when the migration is completed' do
       let(:migration) do
         create(:batched_background_migration, :finished, total_tuple_count: 1).tap do |record|
           create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
+        end
+      end
+
+      it 'returns 100' do
+        expect(subject).to be 100
+      end
+    end
+
+    context 'when the status is finished' do
+      let(:migration) do
+        create(:batched_background_migration, :finished, total_tuple_count: 100).tap do |record|
+          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 5)
         end
       end
 

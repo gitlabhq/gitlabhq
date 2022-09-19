@@ -7,13 +7,13 @@ module Gitlab
         class Scanner
           ANALYZER_ORDER = {
             "bundler_audit" => 1,
-            "retire.js" =>  2,
+            "retire.js" => 2,
             "gemnasium" => 3,
             "gemnasium-maven" => 3,
             "gemnasium-python" => 3,
             "bandit" => 1,
             "spotbugs" => 1,
-            "semgrep" =>  2
+            "semgrep" => 2
           }.freeze
 
           attr_accessor :external_id, :name, :vendor, :version

@@ -31,7 +31,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     context 'when there is an app_id and an app_secret, and an array of args' do
       let(:provider) do
         {
-          'name' =>  'unknown',
+          'name' => 'unknown',
           'app_id' => 1,
           'app_secret' => 2,
           'args' => %w[one two three]
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     context 'when there is an app_id and an app_secret, and an array of args, and default values' do
       let(:provider) do
         {
-          'name' =>  'unknown',
+          'name' => 'unknown',
           'app_id' => 1,
           'app_secret' => 2,
           'args' => %w[one two three]
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     context 'when there is an app_id and an app_secret, and a hash of args' do
       let(:provider) do
         {
-          'name' =>  'unknown',
+          'name' => 'unknown',
           'app_id' => 1,
           'app_secret' => 2,
           'args' => { 'foo' => 100, 'bar' => 200, 'nested' => { 'value' => 300 } }
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     context 'when there is an app_id and an app_secret, and a hash of args, and default arguments' do
       let(:provider) do
         {
-          'name' =>  'unknown',
+          'name' => 'unknown',
           'app_id' => 1,
           'app_secret' => 2,
           'args' => { 'foo' => 100, 'bar' => 200, 'nested' => { 'value' => 300 } }
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     context 'when there is an app_id and an app_secret, no args, and default values' do
       let(:provider) do
         {
-          'name' =>  'unknown',
+          'name' => 'unknown',
           'app_id' => 1,
           'app_secret' => 2
         }
@@ -127,7 +127,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     context 'when there are args, of an unsupported type' do
       let(:provider) do
         {
-          'name' =>  'unknown',
+          'name' => 'unknown',
           'args' => 1
         }
       end

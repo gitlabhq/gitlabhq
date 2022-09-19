@@ -170,7 +170,7 @@ export default {
       ref="mainPipelineContainer"
       class="gl-display-flex gl-position-relative gl-bg-gray-10 gl-white-space-nowrap"
       :class="{
-        'gl-pipeline-min-h gl-py-5 gl-overflow-auto gl-border-t-solid gl-border-t-1 gl-border-gray-100': !isLinkedPipeline,
+        'gl-pipeline-min-h gl-py-5 gl-overflow-auto': !isLinkedPipeline,
       }"
     >
       <linked-graph-wrapper>

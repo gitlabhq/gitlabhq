@@ -3,15 +3,65 @@
 require 'spec_helper'
 
 RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
-  let_it_be(:user) { create(:user) }
+  context 'with regular user' do
+    context 'with project creation enabled' do
+      let_it_be(:user) { create(:user) }
 
-  before do
-    allow(view).to receive(:current_user).and_return(user)
+      before do
+        allow(view).to receive(:current_user).and_return(user)
+      end
+
+      it 'has a doc_url' do
+        render
+
+        expect(rendered).to have_link(href: Gitlab::Saas.doc_url)
+      end
+
+      it "shows create project panel" do
+        render
+
+        expect(rendered).to include(_('Create a project'))
+      end
+    end
+
+    context 'with project creation disabled' do
+      let_it_be(:user_projects_limit) { create(:user, projects_limit: 0 ) }
+
+      before do
+        allow(view).to receive(:current_user).and_return(user_projects_limit)
+      end
+
+      it "doesn't show create project panel" do
+        render
+
+        expect(rendered).not_to include(_('Create a project'))
+      end
+
+      it 'shows an alert' do
+        render
+
+        expect(rendered).to include(_("You see projects here when you're added to a group or project."))
+      end
+    end
   end
 
-  it 'has a doc_url' do
-    render
+  context 'with external user' do
+    let_it_be(:external_user) { create(:user, :external) }
 
-    expect(rendered).to have_link(href: Gitlab::Saas.doc_url)
+    before do
+      allow(view).to receive(:current_user).and_return(external_user)
+    end
+
+    it "doesn't show create project panel" do
+      render
+
+      expect(rendered).not_to include(_('Create a project'))
+    end
+
+    it 'shows an alert' do
+      render
+
+      expect(rendered).to include(_("You see projects here when you're added to a group or project."))
+    end
   end
 end

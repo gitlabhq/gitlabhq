@@ -31,7 +31,7 @@ module Emails
 
     def mail_to(to:, subject:)
       custom_headers = Gitlab.com? ? CUSTOM_HEADERS : {}
-      mail(to: to, subject: subject, **custom_headers) do |format|
+      mail_with_locale(to: to, subject: subject, **custom_headers) do |format|
         format.html do
           @message.format = :html
 

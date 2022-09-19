@@ -75,6 +75,7 @@ export default function createComponent({
     id: 1,
     iid: 1,
     confidential: false,
+    referencePath: 'gitlab-org/test-subgroup/gitlab-test#1',
     labels: [],
     assignees: [],
     ...listIssueProps,

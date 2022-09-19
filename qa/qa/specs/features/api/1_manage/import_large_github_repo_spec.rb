@@ -88,14 +88,19 @@ module QA
       let(:gh_issue_comments) do
         logger.debug("= Fetching issue comments =")
         github_client.issues_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
-          hash[c.html_url.gsub(/\#\S+/, "")] << c.body&.gsub(gh_link_pattern, dummy_url) # use base html url as key
+          # use base html url as key
+          hash[c.html_url.gsub(/\#\S+/, "")] << c.body&.gsub(gh_link_pattern, dummy_url)
         end
       end
 
       let(:gh_pr_comments) do
         logger.debug("= Fetching pr comments =")
         github_client.pull_requests_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
-          hash[c.html_url.gsub(/\#\S+/, "")] << c.body&.gsub(gh_link_pattern, dummy_url) # use base html url as key
+          # use base html url as key
+          hash[c.html_url.gsub(/\#\S+/, "")] << c.body
+            # some suggestions can contain extra whitespaces which gitlab will remove
+            &.gsub(/suggestion\s+\r/, "suggestion\r")
+            &.gsub(gh_link_pattern, dummy_url)
         end
       end
 

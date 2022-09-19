@@ -58,7 +58,7 @@ func TestRouting(t *testing.T) {
 			handle(u, quxbaz),
 			handle(u, main),
 		}
-	})
+	}, nil)
 	ts := httptest.NewServer(u)
 	defer ts.Close()
 
@@ -415,7 +415,7 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 		configureRoutes(u)
 	}
 	cfg := newUpstreamConfig(railsServerURL)
-	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes)
+	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes, nil)
 	ws := httptest.NewServer(upstreamHandler)
 
 	waitForNextApiPoll := func() {}

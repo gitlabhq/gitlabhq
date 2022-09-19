@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that checks if `remove_concurrent_index` is used with `up`/`down` methods
       # and not `change`.
-      class RemoveConcurrentIndex < RuboCop::Cop::Cop
+      class RemoveConcurrentIndex < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`remove_concurrent_index` is not reversible so you must manually define ' \
@@ -18,12 +18,8 @@ module RuboCop
           return unless node.children[1] == :remove_concurrent_index
 
           node.each_ancestor(:def) do |def_node|
-            add_offense(def_node, location: :name) if method_name(def_node) == :change
+            add_offense(def_node.loc.name) if def_node.method_name == :change
           end
-        end
-
-        def method_name(node)
-          node.children[0]
         end
       end
     end

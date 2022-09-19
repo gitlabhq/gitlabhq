@@ -30,7 +30,7 @@ describe('resolveCommit', () => {
       { fileName: 'index.js', filePath: '/app/assets/index.js' },
     ];
 
-    resolveCommit(commits, '', resolver);
+    resolveCommit(commits, '/', resolver);
 
     expect(resolver.resolve).toHaveBeenCalledWith({
       fileName: 'index.js',
@@ -107,14 +107,14 @@ describe('fetchLogsTree', () => {
     }));
 
   it('calls entry resolver', () =>
-    fetchLogsTree(client, '', '0', resolver).then(() => {
+    fetchLogsTree(client, 'test', '0', resolver).then(() => {
       expect(resolver.resolve).toHaveBeenCalledWith(
         expect.objectContaining({
           __typename: 'LogTreeCommit',
           commitPath: 'https://test.com',
           committedDate: '2019-01-01',
           fileName: 'index.js',
-          filePath: '/index.js',
+          filePath: 'test/index.js',
           message: 'testing message',
           sha: '123',
         }),
@@ -122,7 +122,7 @@ describe('fetchLogsTree', () => {
     }));
 
   it('writes query to client', async () => {
-    await fetchLogsTree(client, '', '0', resolver);
+    await fetchLogsTree(client, '/', '0', resolver);
     expect(client.readQuery({ query: commitsQuery })).toEqual({
       commits: [
         expect.objectContaining({

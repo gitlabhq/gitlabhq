@@ -142,7 +142,8 @@ module API
 
           reject_if_build_artifacts_size_refreshing!(build.project)
 
-          build.erase(erased_by: current_user)
+          ::Ci::BuildEraseService.new(build, current_user).execute
+
           present build, with: Entities::Ci::Job
         end
 
@@ -209,8 +210,8 @@ module API
             .select { |_role, role_access_level| role_access_level <= user_access_level }
             .map(&:first)
 
-          environment = if environment_slug = current_authenticated_job.persisted_environment&.slug
-                          { slug: environment_slug }
+          environment = if persisted_environment = current_authenticated_job.persisted_environment
+                          { tier: persisted_environment.tier, slug: persisted_environment.slug }
                         end
 
           # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api

@@ -61,7 +61,7 @@ module Emails
 
       Gitlab::Tracking.event(self.class.name, 'invite_email_sent', label: 'invite_email', property: member_id.to_s)
 
-      mail(to: member.invite_email, subject: invite_email_subject, **invite_email_headers) do |format|
+      mail_with_locale(to: member.invite_email, subject: invite_email_subject, **invite_email_headers) do |format|
         format.html { render layout: 'unknown_user_mailer' }
         format.text { render layout: 'unknown_user_mailer' }
       end

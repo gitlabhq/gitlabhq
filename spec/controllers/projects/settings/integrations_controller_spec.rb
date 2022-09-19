@@ -50,7 +50,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
       end
     end
 
-    context 'when validations fail' do
+    context 'when validations fail', :clean_gitlab_redis_rate_limiting do
       let(:integration_params) { { active: 'true', url: '' } }
 
       it 'returns error messages in JSON response' do
@@ -62,7 +62,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
       end
     end
 
-    context 'when successful' do
+    context 'when successful', :clean_gitlab_redis_rate_limiting do
       context 'with empty project' do
         let_it_be(:project) { create(:project) }
 
@@ -200,8 +200,8 @@ RSpec.describe Projects::Settings::IntegrationsController do
 
         2.times { post :test, params: project_params(service: integration_params) }
 
-        expect(response.body).to eq(_('This endpoint has been requested too many times. Try again later.'))
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.body).to include(_('This endpoint has been requested too many times. Try again later.'))
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

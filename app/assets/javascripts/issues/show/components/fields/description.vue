@@ -1,11 +1,11 @@
 <script>
-import markdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import updateMixin from '../../mixins/update';
 
 export default {
   components: {
-    markdownField,
+    MarkdownField,
   },
   mixins: [updateMixin],
   props: {

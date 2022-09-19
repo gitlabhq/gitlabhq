@@ -23,6 +23,10 @@ export default {
       required: false,
       default: false,
     },
+    editable: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     assigneesText() {
@@ -43,7 +47,7 @@ export default {
       data-testid="none"
     >
       <span> {{ __('None') }}</span>
-      <template v-if="signedIn">
+      <template v-if="signedIn && editable">
         <span class="gl-ml-2">-</span>
         <gl-button
           data-testid="assign-yourself"

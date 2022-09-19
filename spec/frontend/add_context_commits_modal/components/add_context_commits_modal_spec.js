@@ -48,8 +48,8 @@ describe('AddContextCommitsModal', () => {
     return wrapper;
   };
 
-  const findModal = () => wrapper.find(GlModal);
-  const findSearch = () => wrapper.find(GlSearchBoxByType);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -75,7 +75,7 @@ describe('AddContextCommitsModal', () => {
     it('when user starts entering text in search box, it calls action "searchCommits" after waiting for 500s', () => {
       const searchText = 'abcd';
       findSearch().vm.$emit('input', searchText);
-      expect(searchCommits).not.toBeCalled();
+      expect(searchCommits).not.toHaveBeenCalled();
       jest.advanceTimersByTime(500);
       expect(searchCommits).toHaveBeenCalledWith(expect.anything(), searchText);
     });
@@ -107,12 +107,12 @@ describe('AddContextCommitsModal', () => {
 
     it('a disabled ok button in first tab, when row is selected in second tab', () => {
       createWrapper({ selectedContextCommits: [commit] });
-      expect(wrapper.find(GlModal).attributes('ok-disabled')).toBe('true');
+      expect(wrapper.findComponent(GlModal).attributes('ok-disabled')).toBe('true');
     });
   });
 
   describe('has an ok button when clicked calls action', () => {
-    it('"createContextCommits" when only new commits to be added ', async () => {
+    it('"createContextCommits" when only new commits to be added', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       findModal().vm.$emit('ok');
       await nextTick();
@@ -121,7 +121,7 @@ describe('AddContextCommitsModal', () => {
         forceReload: true,
       });
     });
-    it('"removeContextCommits" when only added commits are to be removed ', async () => {
+    it('"removeContextCommits" when only added commits are to be removed', async () => {
       wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
       await nextTick();

@@ -31,11 +31,13 @@ describe('RecoveryCodes', () => {
   };
 
   const queryByText = (text, options) => within(wrapper.element).queryByText(text, options);
-  const findAlert = () => wrapper.find(GlAlert);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findRecoveryCodes = () => wrapper.findByTestId('recovery-codes');
-  const findCopyButton = () => wrapper.find(ClipboardButton);
+  const findCopyButton = () => wrapper.findComponent(ClipboardButton);
   const findButtonByText = (text) =>
-    wrapper.findAll(GlButton).wrappers.find((buttonWrapper) => buttonWrapper.text() === text);
+    wrapper
+      .findAllComponents(GlButton)
+      .wrappers.find((buttonWrapper) => buttonWrapper.text() === text);
   const findDownloadButton = () => findButtonByText('Download codes');
   const findPrintButton = () => findButtonByText('Print codes');
   const findProceedButton = () => findButtonByText('Proceed');

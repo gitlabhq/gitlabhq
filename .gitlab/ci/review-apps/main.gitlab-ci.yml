@@ -8,6 +8,7 @@ stages:
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/rules.gitlab-ci.yml
+  - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml
 
@@ -94,6 +95,7 @@ review-deploy:
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
     - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
+    - echo "QA_GITLAB_URL=${CI_ENVIRONMENT_URL}" > environment.env
     - *base-before_script
   script:
     - check_kube_domain
@@ -102,7 +104,6 @@ review-deploy:
     - deploy || (display_deployment_debug && exit 1)
     - verify_deploy || exit 1
     - disable_sign_ups || (delete_release && exit 1)
-    - create_sample_projects
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.
@@ -110,8 +111,26 @@ review-deploy:
   artifacts:
     paths:
       - environment_url.txt
+    reports:
+      dotenv: environment.env
     expire_in: 7 days
     when: always
+
+review-deploy-sample-projects:
+  extends:
+    - .review-workflow-base
+    - .review:rules:review-deploy
+  stage: deploy
+  needs: ["review-deploy"]
+  before_script:
+    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
+    - *base-before_script
+  script:
+    - date
+    - create_sample_projects
 
 .review-stop-base:
   extends: .review-workflow-base

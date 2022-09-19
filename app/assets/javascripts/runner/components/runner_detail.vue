@@ -21,7 +21,8 @@ export default {
   props: {
     label: {
       type: String,
-      required: true,
+      default: null,
+      required: false,
     },
     value: {
       type: String,
@@ -39,7 +40,11 @@ export default {
 
 <template>
   <div class="gl-display-contents">
-    <dt class="gl-mb-5 gl-mr-6 gl-max-w-26">{{ label }}</dt>
+    <dt class="gl-mb-5 gl-mr-6 gl-max-w-26">
+      <template v-if="label || $scopedSlots.label">
+        <slot name="label">{{ label }}</slot>
+      </template>
+    </dt>
     <dd class="gl-mb-5">
       <template v-if="value || $scopedSlots.value">
         <slot name="value">{{ value }}</slot>

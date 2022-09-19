@@ -1,22 +1,20 @@
 ---
-stage: Manage
+stage: Govern
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Inactive project deletion **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](../administration/feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
-[enable the feature flag](../administration/feature_flags.md) named `inactive_projects_deletion`.
-On GitLab.com, this feature is not available. This feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](../administration/feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
+> - [Feature flag `inactive_projects_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) removed in GitLab 15.4.
 
 Administrators of large GitLab instances can find that over time, projects become inactive and are no longer used.
 These projects take up unnecessary disk space. With inactive project deletion, you can identify these projects, warn
 the maintainers ahead of time, and then delete the projects if they remain inactive. When an inactive project is
 deleted, the action generates an audit event that it was performed by the first active administrator.
+
+For the default setting on GitLab.com, see the [GitLab.com settings page](../user/gitlab_com/index.md#inactive-project-deletion).
 
 ## Configure inactive project deletion
 
@@ -62,7 +60,7 @@ You can use the [Application settings API](../api/settings.md#change-application
 
 To configure inactive projects with the GitLab UI:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Inactive project deletion** section, configure the necessary options.

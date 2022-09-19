@@ -31,11 +31,11 @@ describe('Deploy freeze settings', () => {
 
   describe('Deploy freeze table contains components', () => {
     it('contains deploy freeze table', () => {
-      expect(wrapper.find(DeployFreezeTable).exists()).toBe(true);
+      expect(wrapper.findComponent(DeployFreezeTable).exists()).toBe(true);
     });
 
     it('contains deploy freeze modal', () => {
-      expect(wrapper.find(DeployFreezeModal).exists()).toBe(true);
+      expect(wrapper.findComponent(DeployFreezeModal).exists()).toBe(true);
     });
   });
 });

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp do
   let(:log_entry) do
     {
       status: 200,
-      time:  {
+      time: {
         total: 758.58,
         db: 77.06,
         view: 681.52

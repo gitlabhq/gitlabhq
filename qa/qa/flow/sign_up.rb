@@ -3,7 +3,7 @@
 module QA
   module Flow
     module SignUp
-      module_function
+      extend self
 
       def page
         Capybara.current_session
@@ -55,3 +55,5 @@ module QA
     end
   end
 end
+
+QA::Flow::SignUp.prepend_mod_with('Flow::SignUp', namespace: QA)

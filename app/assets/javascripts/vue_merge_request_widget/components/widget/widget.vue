@@ -1,21 +1,32 @@
 <script>
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import StatusIcon from '../extensions/status_icon.vue';
-import { EXTENSION_ICON_NAMES } from '../../constants';
+import ActionButtons from '../action_buttons.vue';
+import { EXTENSION_ICONS } from '../../constants';
+import ContentSection from './widget_content_section.vue';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
+const FETCH_TYPE_EXPANDED = 'expanded';
 
 export default {
   components: {
+    ActionButtons,
     StatusIcon,
+    GlButton,
+    GlLoadingIcon,
+    ContentSection,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     /**
      * @param {value.collapsed} Object
-     * @param {value.extended} Object
+     * @param {value.expanded} Object
      */
     value: {
       type: Object,
@@ -35,7 +46,7 @@ export default {
       type: Function,
       required: true,
     },
-    fetchExtendedData: {
+    fetchExpandedData: {
       type: Function,
       required: false,
       default: undefined,
@@ -61,7 +72,16 @@ export default {
       type: String,
       default: 'neutral',
       required: false,
-      validator: (value) => Object.keys(EXTENSION_ICON_NAMES).indexOf(value) > -1,
+      validator: (value) => Object.keys(EXTENSION_ICONS).indexOf(value) > -1,
+    },
+    isCollapsible: {
+      type: Boolean,
+      required: true,
+    },
+    actionButtons: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     widgetName: {
       type: String,
@@ -70,9 +90,21 @@ export default {
   },
   data() {
     return {
+      isExpandedForTheFirstTime: true,
+      isCollapsed: true,
       isLoading: false,
-      error: null,
+      isLoadingExpandedContent: false,
+      summaryError: null,
+      contentError: null,
     };
+  },
+  computed: {
+    collapseButtonLabel() {
+      return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
+    },
+    summaryStatusIcon() {
+      return this.summaryError ? this.$options.failedStatusIcon : this.statusIconName;
+    },
   },
   watch: {
     isLoading(newValue) {
@@ -85,12 +117,36 @@ export default {
     try {
       await this.fetch(this.fetchCollapsedData, FETCH_TYPE_COLLAPSED);
     } catch {
-      this.error = this.errorText;
+      this.summaryError = this.errorText;
     }
 
     this.isLoading = false;
   },
   methods: {
+    toggleCollapsed() {
+      this.isCollapsed = !this.isCollapsed;
+
+      if (this.isExpandedForTheFirstTime && typeof this.fetchExpandedData === 'function') {
+        this.isExpandedForTheFirstTime = false;
+        this.fetchExpandedContent();
+      }
+    },
+    async fetchExpandedContent() {
+      this.isLoadingExpandedContent = true;
+      this.contentError = null;
+
+      try {
+        await this.fetch(this.fetchExpandedData, FETCH_TYPE_EXPANDED);
+      } catch {
+        this.contentError = this.errorText;
+
+        // Reset these values so that we allow refetching
+        this.isExpandedForTheFirstTime = true;
+        this.isCollapsed = true;
+      }
+
+      this.isLoadingExpandedContent = false;
+    },
     fetch(handler, dataType) {
       const requests = this.multiPolling ? handler() : [handler];
 
@@ -125,6 +181,7 @@ export default {
       });
     },
   },
+  failedStatusIcon: EXTENSION_ICONS.failed,
 };
 </script>
 
@@ -135,24 +192,58 @@ export default {
         :level="1"
         :name="widgetName"
         :is-loading="isLoading"
-        :icon-name="statusIconName"
+        :icon-name="summaryStatusIcon"
       />
       <div
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
-          <slot name="summary">{{ isLoading ? loadingText : summary }}</slot>
+          <span v-if="summaryError">{{ summaryError }}</span>
+          <slot v-else name="summary">{{ isLoading ? loadingText : summary }}</slot>
         </div>
-        <!-- actions will go here -->
-        <!-- toggle button will go here -->
+        <action-buttons
+          v-if="actionButtons.length > 0"
+          :widget="widgetName"
+          :tertiary-buttons="actionButtons"
+        />
+        <div
+          v-if="isCollapsible"
+          class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
+        >
+          <gl-button
+            v-gl-tooltip
+            :title="collapseButtonLabel"
+            :aria-expanded="`${!isCollapsed}`"
+            :aria-label="collapseButtonLabel"
+            :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
+            category="tertiary"
+            data-testid="toggle-button"
+            size="small"
+            @click="toggleCollapsed"
+          />
+        </div>
       </div>
     </div>
     <div
+      v-if="!isCollapsed || contentError"
       class="mr-widget-grouped-section gl-relative"
       data-testid="widget-extension-collapsed-section"
     >
-      <slot name="content">{{ content }}</slot>
+      <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
+        <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
+      </div>
+      <content-section
+        v-else-if="contentError"
+        class="report-block-container"
+        :status-icon-name="$options.failedStatusIcon"
+        :widget-name="widgetName"
+      >
+        {{ contentError }}
+      </content-section>
+      <slot v-else name="content">
+        {{ content }}
+      </slot>
     </div>
   </section>
 </template>

@@ -9,7 +9,7 @@ import {
   MR_WIDGET_MISSING_BRANCH_RESTORE,
   MR_WIDGET_MISSING_BRANCH_MANUALCLI,
 } from '../../i18n';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetMissingBranch',
@@ -19,7 +19,7 @@ export default {
   components: {
     GlIcon,
     GlSprintf,
-    statusIcon,
+    StatusIcon,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {
@@ -71,10 +71,10 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="true" status="warning" />
+    <status-icon :show-disabled-button="true" status="failed" />
 
     <div class="media-body space-children">
-      <span class="gl-ml-0! gl-text-body! bold js-branch-text" data-testid="widget-content">
+      <span class="gl-font-weight-bold js-branch-text" data-testid="widget-content">
         <gl-sprintf :message="warning">
           <template #code="{ content }">
             <code>{{ content }}</code>

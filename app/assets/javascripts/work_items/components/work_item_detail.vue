@@ -16,12 +16,14 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
 } from '../constants';
 
 import workItemQuery from '../graphql/work_item.query.graphql';
+import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
@@ -30,9 +32,9 @@ import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
+import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
-import WorkItemWeight from './work_item_weight.vue';
 import WorkItemInformation from './work_item_information.vue';
 
 export default {
@@ -50,10 +52,11 @@ export default {
     WorkItemAssignees,
     WorkItemActions,
     WorkItemDescription,
+    WorkItemDueDate,
     WorkItemLabels,
     WorkItemTitle,
     WorkItemState,
-    WorkItemWeight,
+    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemInformation,
     LocalStorageSync,
     WorkItemTypeIcon,
@@ -98,14 +101,36 @@ export default {
       error() {
         this.error = this.$options.i18n.fetchError;
       },
-      subscribeToMore: {
-        document: workItemTitleSubscription,
-        variables() {
-          return {
-            issuableId: this.workItemId,
-          };
-        },
+      result() {
+        if (!this.isModal) {
+          const path = this.workItem.project?.fullPath
+            ? ` · ${this.workItem.project.fullPath}`
+            : '';
+
+          document.title = `${this.workItem.title} · ${this.workItem?.workItemType?.name}${path}`;
+        }
       },
+      subscribeToMore: [
+        {
+          document: workItemTitleSubscription,
+          variables() {
+            return {
+              issuableId: this.workItemId,
+            };
+          },
+        },
+        {
+          document: workItemDatesSubscription,
+          variables() {
+            return {
+              issuableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.workItemDueDate;
+          },
+        },
+      ],
     },
   },
   computed: {
@@ -121,6 +146,9 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    fullPath() {
+      return this.workItem?.project.fullPath;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -132,6 +160,11 @@ export default {
     },
     workItemLabels() {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+    },
+    workItemDueDate() {
+      return this.workItem?.widgets?.find(
+        (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
+      );
     },
     workItemWeight() {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
@@ -276,11 +309,12 @@ export default {
         <work-item-actions
           v-if="canUpdate || canDelete"
           :work-item-id="workItem.id"
+          :work-item-type="workItemType"
           :can-delete="canDelete"
           :can-update="canUpdate"
           :is-confidential="workItem.confidential"
           :is-parent-confidential="parentWorkItemConfidentiality"
-          @deleteWorkItem="$emit('deleteWorkItem')"
+          @deleteWorkItem="$emit('deleteWorkItem', workItemType)"
           @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="error = $event"
         />
@@ -317,21 +351,32 @@ export default {
         :can-update="canUpdate"
         @error="error = $event"
       />
+      <work-item-assignees
+        v-if="workItemAssignees"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :assignees="workItemAssignees.assignees.nodes"
+        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+        :work-item-type="workItemType"
+        :can-invite-members="workItemAssignees.canInviteMembers"
+        :full-path="fullPath"
+        @error="error = $event"
+      />
       <template v-if="workItemsMvc2Enabled">
-        <work-item-assignees
-          v-if="workItemAssignees"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :assignees="workItemAssignees.assignees.nodes"
-          :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-          :work-item-type="workItemType"
-          :can-invite-members="workItemAssignees.canInviteMembers"
-          @error="error = $event"
-        />
         <work-item-labels
           v-if="workItemLabels"
           :work-item-id="workItem.id"
           :can-update="canUpdate"
+          :full-path="fullPath"
+          @error="error = $event"
+        />
+        <work-item-due-date
+          v-if="workItemDueDate"
+          :can-update="canUpdate"
+          :due-date="workItemDueDate.dueDate"
+          :start-date="workItemDueDate.startDate"
+          :work-item-id="workItem.id"
+          :work-item-type="workItemType"
           @error="error = $event"
         />
       </template>
@@ -347,6 +392,7 @@ export default {
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
+        :full-path="fullPath"
         class="gl-pt-5"
         @error="error = $event"
       />

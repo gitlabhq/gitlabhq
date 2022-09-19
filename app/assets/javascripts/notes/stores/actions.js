@@ -6,6 +6,7 @@ import createFlash from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
+import toast from '~/vue_shared/plugins/global_toast';
 import { confidentialWidget } from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
@@ -18,6 +19,12 @@ import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_NOTE } from '~/graphql_shared/constants';
+import notesEventHub from '../event_hub';
+
+import promoteTimelineEvent from '../graphql/promote_timeline_event.mutation.graphql';
+
 import * as constants from '../constants';
 import * as types from './mutation_types';
 import * as utils from './utils';
@@ -224,6 +231,54 @@ export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes)
       commit(types.ADD_NEW_NOTE, note);
     }
   });
+};
+
+export const promoteCommentToTimelineEvent = (
+  { commit },
+  { noteId, addError, addGenericError },
+) => {
+  commit(types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS, true); // Set loading state
+  return utils.gqClient
+    .mutate({
+      mutation: promoteTimelineEvent,
+      variables: {
+        input: {
+          noteId: convertToGraphQLId(TYPE_NOTE, noteId),
+        },
+      },
+    })
+    .then(({ data = {} }) => {
+      const errors = data.timelineEventPromoteFromNote?.errors;
+      if (errors.length) {
+        const errorMessage = sprintf(addError, {
+          error: errors.join('. '),
+        });
+        throw new Error(errorMessage);
+      } else {
+        notesEventHub.$emit('comment-promoted-to-timeline-event');
+        toast(__('Comment added to the timeline.'));
+      }
+    })
+    .catch((error) => {
+      const message = error.message || addGenericError;
+
+      let captureError = false;
+      let errorObj = null;
+
+      if (message === addGenericError) {
+        captureError = true;
+        errorObj = error;
+      }
+
+      createFlash({
+        message,
+        captureError,
+        error: errorObj,
+      });
+    })
+    .finally(() => {
+      commit(types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS, false); // Revert loading state
+    });
 };
 
 export const replyToDiscussion = (

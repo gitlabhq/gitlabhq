@@ -58,8 +58,19 @@ module Gitlab
             records.each_slice(BATCH_SIZE) do |batch|
               valid_records, invalid_records = batch.partition { |record| record.valid? }
 
-              invalid_subrelations << invalid_records
               relation_object.public_send(relation_name) << valid_records
+
+              # Attempt to save some of the invalid subrelations, as they might be valid after all.
+              # For example, a merge request `Approval` validates presence of merge_request_id.
+              # It is not present at a time of calling `#valid?` above, since it's indeed missing.
+              # However, when saving such subrelation against already persisted merge request
+              # such validation won't fail (e.g. `merge_request.approvals << Approval.new(user_id: 1)`),
+              # as we're operating on a merge request that has `id` present.
+              invalid_records.each do |invalid_record|
+                relation_object.public_send(relation_name) << invalid_record
+
+                invalid_subrelations << invalid_record unless invalid_record.persisted?
+              end
             end
           end
         end

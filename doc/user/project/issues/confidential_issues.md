@@ -22,7 +22,7 @@ confidential checkbox and hit **Save changes**.
 
 When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/index.md). **Contributed projects** does not show information about the confidential issue; it only shows the project name.
 
-![Creating a new confidential issue](img/confidential_issues_create.png)
+![Creating a new confidential issue](img/confidential_issues_create_v15_4.png)
 
 ## Modify issue confidentiality
 
@@ -39,9 +39,12 @@ The second way is to locate the **Confidentiality** section in the sidebar and s
 | ![Turn off confidentiality](img/turn_off_confidentiality_v15_1.png) | ![Turn on confidentiality](img/turn_on_confidentiality_v15_1.png) |
 
 Every change from regular to confidential and vice versa, is indicated by a
-system note in the issue's comments.
+system note in the issue's comments:
 
-![Confidential issues system notes](img/confidential_issues_system_notes.png)
+![Confidential issues system notes](img/confidential_issues_system_notes_v15_4.png)
+
+- **{eye-slash}** The issue is made confidential.
+- **{eye}** The issue is made public.
 
 When an issue is made confidential, only users with at least the Reporter role
 for the project have access to the issue.
@@ -51,7 +54,7 @@ the issue even if they were actively participating before the change.
 ## Confidential issue indicators
 
 There are a few things that visually separate a confidential issue from a
-regular one. In the issues index page view, you can see the eye-slash (**{eye-slash}**) icon
+regular one. In the issues index page view, you can see the confidential (**{eye-slash}**) icon
 next to the issues that are marked as confidential:
 
 ![Confidential issues index page](img/confidential_issues_index_page.png)
@@ -61,7 +64,7 @@ you cannot see confidential issues at all.
 
 ---
 
-Likewise, while inside the issue, you can see the eye-slash icon right next to
+Likewise, while inside the issue, you can see the confidential (**{eye-slash}**) icon right next to
 the issue number. There is also an indicator in the comment area that the
 issue you are commenting on is confidential.
 

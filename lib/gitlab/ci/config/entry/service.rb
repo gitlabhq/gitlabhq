@@ -11,14 +11,9 @@ module Gitlab
           include ::Gitlab::Ci::Config::Entry::Imageable
 
           ALLOWED_KEYS = %i[command alias variables].freeze
-          LEGACY_ALLOWED_KEYS = %i[command alias variables].freeze
 
           validations do
-            validates :config, allowed_keys: ALLOWED_KEYS + IMAGEABLE_ALLOWED_KEYS,
-                               if: :ci_docker_image_pull_policy_enabled?
-            validates :config, allowed_keys: LEGACY_ALLOWED_KEYS + IMAGEABLE_LEGACY_ALLOWED_KEYS,
-                               unless: :ci_docker_image_pull_policy_enabled?
-
+            validates :config, allowed_keys: ALLOWED_KEYS + IMAGEABLE_ALLOWED_KEYS
             validates :command, array_of_strings: true, allow_nil: true
             validates :alias, type: String, allow_nil: true
             validates :alias, type: String, presence: true, unless: ->(record) { record.ports.blank? }
@@ -43,7 +38,7 @@ module Gitlab
               { name: @config }
             elsif hash?
               @config.merge(
-                pull_policy: (pull_policy_value if ci_docker_image_pull_policy_enabled?)
+                pull_policy: pull_policy_value
               ).compact
             else
               {}

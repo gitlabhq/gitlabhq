@@ -65,6 +65,7 @@ describe('Sidebar assignees widget', () => {
         issuableId: 0,
         fullPath: '/mygroup/myProject',
         allowMultipleAssignees: true,
+        editable: true,
         ...props,
       },
       provide: {
@@ -347,6 +348,17 @@ describe('Sidebar assignees widget', () => {
 
     it('passes signedIn prop as false to IssuableAssignees', () => {
       expect(findAssignees().props('signedIn')).toBe(false);
+    });
+  });
+
+  describe('when issuable is not editable by the user', () => {
+    beforeEach(async () => {
+      createComponent({ props: { editable: false } });
+      await waitForPromises();
+    });
+
+    it('passes editable prop as false to IssuableAssignees', () => {
+      expect(findAssignees().props('editable')).toBe(false);
     });
   });
 

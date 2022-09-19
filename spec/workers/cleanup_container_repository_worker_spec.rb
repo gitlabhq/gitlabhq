@@ -17,7 +17,7 @@ RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_stat
 
       it 'executes the destroy service' do
         expect(Projects::ContainerRepository::CleanupTagsService).to receive(:new)
-          .with(repository, user, params)
+          .with(container_repository: repository, current_user: user, params: params)
           .and_return(service)
         expect(service).to receive(:execute)
 

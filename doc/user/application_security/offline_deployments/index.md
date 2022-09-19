@@ -87,9 +87,9 @@ above. You can find more information at each of the pages below:
 
 - [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment)
 - [SAST offline directions](../sast/index.md#running-sast-in-an-offline-environment)
-- [Secret Detection offline directions](../secret_detection/#running-secret-detection-in-an-offline-environment)
+- [Secret Detection offline directions](../secret_detection/index.md#running-secret-detection-in-an-offline-environment)
 - [DAST offline directions](../dast/run_dast_offline.md#run-dast-in-an-offline-environment)
-- [API Fuzzing offline directions](../api_fuzzing/#running-api-fuzzing-in-an-offline-environment)
+- [API Fuzzing offline directions](../api_fuzzing/index.md#running-api-fuzzing-in-an-offline-environment)
 - [License Compliance offline directions](../../compliance/license_compliance/index.md#running-license-compliance-in-an-offline-environment)
 - [Dependency Scanning offline directions](../dependency_scanning/index.md#running-dependency-scanning-in-an-offline-environment)
 
@@ -236,4 +236,4 @@ an offline environment.
 
 Note that these steps are specific to GitLab Secure with AutoDevOps. Using other stages with
 AutoDevOps may require other steps covered in the
-[Auto DevOps documentation](../../../topics/autodevops/).
+[Auto DevOps documentation](../../../topics/autodevops/index.md).

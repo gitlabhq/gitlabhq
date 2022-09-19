@@ -936,13 +936,14 @@ module Gitlab
       def revert_backfill_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
         columns = Array.wrap(columns)
 
-        conditions = ActiveRecord::Base.sanitize_sql([
-          'job_class_name = :job_class_name AND table_name = :table_name AND column_name = :column_name AND job_arguments = :job_arguments',
-          job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-          table_name: table,
-          column_name: primary_key,
-          job_arguments: [columns, columns.map { |column| convert_to_bigint_column(column) }].to_json
-        ])
+        conditions = ActiveRecord::Base.sanitize_sql(
+          [
+            'job_class_name = :job_class_name AND table_name = :table_name AND column_name = :column_name AND job_arguments = :job_arguments',
+            job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
+            table_name: table,
+            column_name: primary_key,
+            job_arguments: [columns, columns.map { |column| convert_to_bigint_column(column) }].to_json
+          ])
 
         execute("DELETE FROM batched_background_migrations WHERE #{conditions}")
       end

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The Operations Dashboard provides a summary of each project's operational health,
 including pipeline and alert status.
 
-To access the dashboard, on the top bar, select **Menu > Operations**.
+To access the dashboard, on the top bar, select **Main menu > Operations**.
 
 ## Adding a project to the dashboard
 

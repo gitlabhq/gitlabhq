@@ -1,24 +1,17 @@
 <script>
 import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { __, s__ } from '~/locale';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { s__ } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
-import RunnerSummaryCell from './cells/runner_summary_cell.vue';
+import RunnerStackedSummaryCell from './cells/runner_stacked_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
-import RunnerTags from './runner_tags.vue';
 
 const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
-  tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
-  tableField({ key: 'version', label: __('Version') }),
-  tableField({ key: 'jobCount', label: __('Jobs') }),
-  tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
-  tableField({ key: 'contactedAt', label: __('Last contact') }),
-  tableField({ key: 'actions', label: '' }),
+  tableField({ key: 'summary', label: s__('Runners|Runner') }),
+  tableField({ key: 'actions', label: '', thClasses: ['gl-w-15p'] }),
 ];
 
 export default {
@@ -26,11 +19,8 @@ export default {
     GlFormCheckbox,
     GlTableLite,
     GlSkeletonLoader,
-    TooltipOnTruncate,
-    TimeAgo,
     RunnerStatusPopover,
-    RunnerSummaryCell,
-    RunnerTags,
+    RunnerStackedSummaryCell,
     RunnerStatusCell,
   },
   directives: {
@@ -74,6 +64,8 @@ export default {
       };
     },
     fields() {
+      const fields = defaultFields;
+
       if (this.checkable) {
         const checkboxField = tableField({
           key: 'checkbox',
@@ -81,9 +73,9 @@ export default {
           thClasses: ['gl-w-9'],
           tdClass: ['gl-text-center'],
         });
-        return [checkboxField, ...defaultFields];
+        return [checkboxField, ...fields];
       }
-      return defaultFields;
+      return fields;
     },
   },
   methods: {
@@ -141,30 +133,11 @@ export default {
       </template>
 
       <template #cell(summary)="{ item, index }">
-        <runner-summary-cell :runner="item">
+        <runner-stacked-summary-cell :runner="item">
           <template #runner-name="{ runner }">
             <slot name="runner-name" :runner="runner" :index="index"></slot>
           </template>
-        </runner-summary-cell>
-      </template>
-
-      <template #cell(version)="{ item: { version } }">
-        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="version">
-          {{ version }}
-        </tooltip-on-truncate>
-      </template>
-
-      <template #cell(jobCount)="{ item: { jobCount } }">
-        {{ formatJobCount(jobCount) }}
-      </template>
-
-      <template #cell(tagList)="{ item: { tagList } }">
-        <runner-tags :tag-list="tagList" size="sm" />
-      </template>
-
-      <template #cell(contactedAt)="{ item: { contactedAt } }">
-        <time-ago v-if="contactedAt" :time="contactedAt" />
-        <template v-else>{{ __('Never') }}</template>
+        </runner-stacked-summary-cell>
       </template>
 
       <template #cell(actions)="{ item }">

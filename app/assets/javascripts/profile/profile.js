@@ -1,11 +1,14 @@
 import $ from 'jquery';
+import Vue from 'vue';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseRailsFormFields } from '~/lib/utils/forms';
 import { Rails } from '~/lib/utils/rails_ujs';
 import TimezoneDropdown, {
   formatTimezone,
 } from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';
+import UserProfileSetStatusWrapper from '~/set_status_modal/user_profile_set_status_wrapper.vue';
 
 export default class Profile {
   constructor({ form } = {}) {
@@ -116,3 +119,24 @@ export default class Profile {
     }
   }
 }
+
+export const initSetStatusForm = () => {
+  const el = document.getElementById('js-user-profile-set-status-form');
+
+  if (!el) {
+    return null;
+  }
+
+  const fields = parseRailsFormFields(el);
+
+  return new Vue({
+    el,
+    name: 'UserProfileStatusForm',
+    provide: {
+      fields,
+    },
+    render(h) {
+      return h(UserProfileSetStatusWrapper);
+    },
+  });
+};

@@ -63,7 +63,7 @@ module Gitlab
       # Imports all the objects in sequence in the current thread.
       def sequential_import
         each_object_to_import do |object|
-          repr = representation_class.from_api_response(object, additional_object_data)
+          repr = object_representation(object)
 
           importer_class.new(repr, project, client).execute
         end
@@ -83,7 +83,7 @@ module Gitlab
         import_arguments = []
 
         each_object_to_import do |object|
-          repr = representation_class.from_api_response(object, additional_object_data)
+          repr = object_representation(object)
 
           import_arguments << [project.id, repr.to_hash, waiter.key]
 
@@ -208,6 +208,10 @@ module Gitlab
 
       def additional_object_data
         {}
+      end
+
+      def object_representation(object)
+        representation_class.from_api_response(object, additional_object_data)
       end
 
       def info(project_id, extra = {})

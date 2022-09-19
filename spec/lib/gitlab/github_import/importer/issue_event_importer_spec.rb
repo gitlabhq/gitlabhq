@@ -42,10 +42,6 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
   end
 
   describe '#execute' do
-    before do
-      issue_event.attributes[:issue_db_id] = issue.id
-    end
-
     context "when it's closed issue event" do
       let(:event_name) { 'closed' }
 
@@ -114,6 +110,20 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
 
       it_behaves_like 'triggers specific event importer',
                       Gitlab::GithubImport::Importer::Events::ChangedAssignee
+    end
+
+    context "when it's review_requested issue event" do
+      let(:event_name) { 'review_requested' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedReviewer
+    end
+
+    context "when it's review_request_removed issue event" do
+      let(:event_name) { 'review_request_removed' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedReviewer
     end
 
     context "when it's unknown issue event" do

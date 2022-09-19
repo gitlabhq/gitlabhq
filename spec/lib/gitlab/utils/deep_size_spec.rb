@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Utils::DeepSize do
   let(:data) do
@@ -56,12 +56,6 @@ RSpec.describe Gitlab::Utils::DeepSize do
       let(:max_depth) { 2 }
 
       it { is_expected.not_to be_valid }
-    end
-  end
-
-  describe '.human_default_max_size' do
-    it 'returns 1 MB' do
-      expect(described_class.human_default_max_size).to eq('1 MB')
     end
   end
 end

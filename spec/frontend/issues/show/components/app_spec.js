@@ -461,7 +461,7 @@ describe('Issuable output', () => {
     describe('when title is not in view', () => {
       beforeEach(() => {
         wrapper.vm.state.titleText = 'Sticky header title';
-        wrapper.find(GlIntersectionObserver).vm.$emit('disappear');
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
       });
 
       it('shows with title', () => {

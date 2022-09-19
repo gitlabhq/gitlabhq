@@ -17,7 +17,6 @@ describe('DiffCodeQuality', () => {
     return mountFunction(DiffCodeQuality, {
       propsData: {
         expandedLines: [],
-        line: 1,
         codeQuality,
       },
     });
@@ -28,9 +27,7 @@ describe('DiffCodeQuality', () => {
     expect(wrapper.findByTestId('diff-codequality').exists()).toBe(true);
 
     await wrapper.findByTestId('diff-codequality-close').trigger('click');
-
     expect(wrapper.emitted('hideCodeQualityFindings').length).toBe(1);
-    expect(wrapper.emitted().hideCodeQualityFindings[0][0]).toBe(wrapper.props('line'));
   });
 
   it('renders correct amount of list items for codequality array and their description', async () => {

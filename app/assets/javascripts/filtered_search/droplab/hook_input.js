@@ -97,6 +97,7 @@ class HookInput extends Hook {
   }
 
   restoreInitialState() {
+    // eslint-disable-next-line no-unsanitized/property
     this.list.list.innerHTML = this.list.initialState;
   }
 

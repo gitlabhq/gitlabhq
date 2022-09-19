@@ -17,7 +17,7 @@ RSpec.shared_context 'labels from nested groups and projects' do
   let_it_be(:maintainer) { create(:user) }
 
   let(:labels_select) { find("[data-testid='sidebar-labels']") }
-  let(:labels_dropdown) { labels_select.find('[data-testid="dropdown-content"]')}
+  let(:labels_dropdown) { labels_select.find('[data-testid="dropdown-content"]') }
 
   before do
     group.add_maintainer(maintainer)

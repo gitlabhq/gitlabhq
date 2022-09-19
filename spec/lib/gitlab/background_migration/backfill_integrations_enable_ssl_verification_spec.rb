@@ -9,25 +9,35 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsEnableSslVerific
   before do
     integrations.create!(id: 1, type_new: 'Integrations::Bamboo') # unaffected integration
     integrations.create!(id: 2, type_new: 'Integrations::DroneCi') # no properties
-    integrations.create!(id: 3, type_new: 'Integrations::DroneCi',
+    integrations.create!(
+      id: 3, type_new: 'Integrations::DroneCi',
       properties: {}) # no URL
-    integrations.create!(id: 4, type_new: 'Integrations::DroneCi',
+    integrations.create!(
+      id: 4, type_new: 'Integrations::DroneCi',
       properties: { 'drone_url' => '' }) # blank URL
-    integrations.create!(id: 5, type_new: 'Integrations::DroneCi',
+    integrations.create!(
+      id: 5, type_new: 'Integrations::DroneCi',
       properties: { 'drone_url' => 'https://example.com:foo' }) # invalid URL
-    integrations.create!(id: 6, type_new: 'Integrations::DroneCi',
+    integrations.create!(
+      id: 6, type_new: 'Integrations::DroneCi',
       properties: { 'drone_url' => 'https://example.com' }) # unknown URL
-    integrations.create!(id: 7, type_new: 'Integrations::DroneCi',
+    integrations.create!(
+      id: 7, type_new: 'Integrations::DroneCi',
       properties: { 'drone_url' => 'http://cloud.drone.io' }) # no HTTPS
-    integrations.create!(id: 8, type_new: 'Integrations::DroneCi',
+    integrations.create!(
+      id: 8, type_new: 'Integrations::DroneCi',
       properties: { 'drone_url' => 'https://cloud.drone.io' }) # known URL
-    integrations.create!(id: 9, type_new: 'Integrations::Teamcity',
+    integrations.create!(
+      id: 9, type_new: 'Integrations::Teamcity',
       properties: { 'teamcity_url' => 'https://example.com' }) # unknown URL
-    integrations.create!(id: 10, type_new: 'Integrations::Teamcity',
+    integrations.create!(
+      id: 10, type_new: 'Integrations::Teamcity',
       properties: { 'teamcity_url' => 'https://foo.bar.teamcity.com' }) # unknown URL
-    integrations.create!(id: 11, type_new: 'Integrations::Teamcity',
+    integrations.create!(
+      id: 11, type_new: 'Integrations::Teamcity',
       properties: { 'teamcity_url' => 'https://teamcity.com' }) # unknown URL
-    integrations.create!(id: 12, type_new: 'Integrations::Teamcity',
+    integrations.create!(
+      id: 12, type_new: 'Integrations::Teamcity',
       properties: { 'teamcity_url' => 'https://customer.teamcity.com' }) # known URL
   end
 

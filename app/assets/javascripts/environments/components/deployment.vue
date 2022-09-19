@@ -1,17 +1,17 @@
 <script>
 import {
   GlBadge,
-  GlButton,
-  GlCollapse,
   GlIcon,
   GlLink,
+  GlLoadingIcon,
   GlTooltipDirective as GlTooltip,
   GlTruncate,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import createFlash from '~/flash';
+import deploymentDetails from '../graphql/queries/deployment_details.query.graphql';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
 import Commit from './commit.vue';
 
@@ -21,16 +21,16 @@ export default {
     Commit,
     DeploymentStatusBadge,
     GlBadge,
-    GlButton,
-    GlCollapse,
     GlIcon,
     GlLink,
     GlTruncate,
+    GlLoadingIcon,
     TimeAgoTooltip,
   },
   directives: {
     GlTooltip,
   },
+  inject: ['projectPath'],
   props: {
     deployment: {
       type: Object,
@@ -41,9 +41,11 @@ export default {
       default: false,
       required: false,
     },
-  },
-  data() {
-    return { visible: false };
+    visible: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   computed: {
     status() {
@@ -52,25 +54,20 @@ export default {
     iid() {
       return this.deployment?.iid;
     },
+    isTag() {
+      return this.deployment?.tag;
+    },
     shortSha() {
       return this.commit?.shortId;
     },
     createdAt() {
       return this.deployment?.createdAt;
     },
-    isMobile() {
-      return !GlBreakpointInstance.isDesktop();
-    },
-    detailsButton() {
-      return this.visible
-        ? { text: this.$options.i18n.hideDetails, icon: 'expand-up' }
-        : { text: this.$options.i18n.showDetails, icon: 'expand-down' };
-    },
-    detailsButtonClasses() {
-      return this.isMobile ? 'gl-sr-only' : '';
-    },
     commit() {
       return this.deployment?.commit;
+    },
+    commitPath() {
+      return this.commit?.commitPath;
     },
     user() {
       return this.deployment?.user;
@@ -90,9 +87,6 @@ export default {
     jobPath() {
       return this.deployable?.buildPath;
     },
-    refLabel() {
-      return this.deployment?.tag ? this.$options.i18n.tag : this.$options.i18n.branch;
-    },
     ref() {
       return this.deployment?.ref;
     },
@@ -105,10 +99,35 @@ export default {
     needsApproval() {
       return this.deployment.pendingApprovalCount > 0;
     },
+    hasTags() {
+      return this.tags?.length > 0;
+    },
+    displayTags() {
+      return this.tags?.slice(0, 5);
+    },
   },
-  methods: {
-    toggleCollapse() {
-      this.visible = !this.visible;
+  apollo: {
+    tags: {
+      query: deploymentDetails,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+          iid: this.deployment.iid,
+        };
+      },
+      update(data) {
+        return data?.project?.deployment?.tags;
+      },
+      error(error) {
+        createFlash({
+          message: this.$options.i18n.LOAD_ERROR_MESSAGE,
+          captureError: true,
+          error,
+        });
+      },
+      skip() {
+        return !this.visible;
+      },
     },
   },
   i18n: {
@@ -116,14 +135,12 @@ export default {
     deploymentId: s__('Deployment|Deployment ID'),
     copyButton: __('Copy commit SHA'),
     commitSha: __('Commit SHA'),
-    showDetails: __('Show details'),
-    hideDetails: __('Hide details'),
     triggerer: s__('Deployment|Triggerer'),
     needsApproval: s__('Deployment|Needs Approval'),
     job: __('Job'),
     api: __('API'),
     branch: __('Branch'),
-    tag: __('Tag'),
+    tags: __('Tags'),
   },
   headerClasses: [
     'gl-display-flex',
@@ -179,7 +196,9 @@ export default {
             class="gl-font-monospace gl-display-flex gl-align-items-center"
           >
             <gl-icon ref="deployment-commit-icon" name="commit" class="gl-mr-2" />
-            <span v-gl-tooltip :title="$options.i18n.commitSha">{{ shortSha }}</span>
+            <gl-link v-gl-tooltip :title="$options.i18n.commitSha" :href="commitPath">
+              {{ shortSha }}
+            </gl-link>
             <clipboard-button
               :text="shortSha"
               category="tertiary"
@@ -195,54 +214,66 @@ export default {
           </time-ago-tooltip>
         </div>
       </div>
-      <gl-button
-        ref="details-toggle"
-        category="tertiary"
-        :icon="detailsButton.icon"
-        :button-text-classes="detailsButtonClasses"
-        @click="toggleCollapse"
-      >
-        {{ detailsButton.text }}
-      </gl-button>
     </div>
     <commit v-if="commit" :commit="commit" class="gl-mt-3" />
     <div class="gl-mt-3"><slot name="approval"></slot></div>
-    <gl-collapse :visible="visible">
+    <div
+      class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"
+    >
+      <div v-if="user" class="gl-display-flex gl-flex-direction-column gl-md-max-w-15p">
+        <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
+        <gl-link :href="userPath" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="username" with-tooltip />
+        </gl-link>
+      </div>
       <div
-        class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"
+        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
       >
-        <div v-if="user" class="gl-display-flex gl-flex-direction-column gl-md-max-w-15p">
-          <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
-          <gl-link :href="userPath" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="username" with-tooltip />
+        <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
+          {{ $options.i18n.job }}
+        </span>
+        <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="jobName" with-tooltip position="middle" />
+        </gl-link>
+        <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="jobName" with-tooltip position="middle" />
+        </span>
+        <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
+          {{ $options.i18n.api }}
+        </gl-badge>
+      </div>
+      <div
+        v-if="ref && !isTag"
+        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+      >
+        <span class="gl-text-gray-500">{{ $options.i18n.branch }}</span>
+        <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
+          <gl-truncate :text="refName" with-tooltip />
+        </gl-link>
+      </div>
+      <div
+        v-if="hasTags || $apollo.queries.tags.loading"
+        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+      >
+        <span class="gl-text-gray-500">{{ $options.i18n.tags }}</span>
+        <gl-loading-icon
+          v-if="$apollo.queries.tags.loading"
+          class="gl-font-monospace gl-mt-3"
+          size="sm"
+          inline
+        />
+        <div v-if="hasTags" class="gl-display-flex gl-flex-direction-row">
+          <gl-link
+            v-for="(tag, ndx) in displayTags"
+            :key="tag.name"
+            :href="tag.path"
+            class="gl-font-monospace gl-mt-3 gl-mr-3"
+          >
+            {{ tag.name }}<span v-if="ndx + 1 < tags.length">, </span>
           </gl-link>
-        </div>
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
-        >
-          <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
-            {{ $options.i18n.job }}
-          </span>
-          <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="jobName" with-tooltip position="middle" />
-          </gl-link>
-          <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="jobName" with-tooltip position="middle" />
-          </span>
-          <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
-            {{ $options.i18n.api }}
-          </gl-badge>
-        </div>
-        <div
-          v-if="ref"
-          class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
-        >
-          <span class="gl-text-gray-500">{{ refLabel }}</span>
-          <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
-            <gl-truncate :text="refName" with-tooltip />
-          </gl-link>
+          <div v-if="tags.length > 5" class="gl-font-monospace gl-mt-3 gl-mr-3">...</div>
         </div>
       </div>
-    </gl-collapse>
+    </div>
   </div>
 </template>

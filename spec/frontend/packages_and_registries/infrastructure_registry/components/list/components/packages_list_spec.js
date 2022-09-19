@@ -20,11 +20,11 @@ describe('packages_list', () => {
 
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
 
-  const findPackagesListLoader = () => wrapper.find(PackagesListLoader);
-  const findPackageListPagination = () => wrapper.find(GlPagination);
-  const findPackageListDeleteModal = () => wrapper.find(GlModal);
-  const findEmptySlot = () => wrapper.find(EmptySlotStub);
-  const findPackagesListRow = () => wrapper.find(PackagesListRow);
+  const findPackagesListLoader = () => wrapper.findComponent(PackagesListLoader);
+  const findPackageListPagination = () => wrapper.findComponent(GlPagination);
+  const findPackageListDeleteModal = () => wrapper.findComponent(GlModal);
+  const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
+  const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
 
   const createStore = (isGroupPage, packages, isLoading) => {
     const state = {

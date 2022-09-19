@@ -5,10 +5,10 @@ module Gitlab
     class YamlProcessor
       module FeatureFlags
         ACTOR_KEY = 'ci_yaml_processor_feature_flag_actor'
+        CORRECT_USAGE_KEY = 'ci_yaml_processor_feature_flag_correct_usage'
         NO_ACTOR_VALUE = :no_actor
-
-        NoActorError = Class.new(StandardError)
         NO_ACTOR_MESSAGE = "Actor not set. Ensure to call `enabled?` inside `with_actor` block"
+        NoActorError = Class.new(StandardError)
 
         class << self
           # Cache a feature flag actor as thread local variable so
@@ -31,6 +31,15 @@ module Gitlab
             ::Feature.enabled?(feature_flag, current_actor)
           end
 
+          def ensure_correct_usage
+            previous = Thread.current[CORRECT_USAGE_KEY]
+            Thread.current[CORRECT_USAGE_KEY] = true
+
+            yield
+          ensure
+            Thread.current[CORRECT_USAGE_KEY] = previous
+          end
+
           private
 
           def current_actor
@@ -39,9 +48,21 @@ module Gitlab
 
             value
           rescue NoActorError => e
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+            handle_missing_actor(e)
 
             nil
+          end
+
+          def handle_missing_actor(exception)
+            if ensure_correct_usage?
+              Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
+            else
+              Gitlab::ErrorTracking.track_exception(exception)
+            end
+          end
+
+          def ensure_correct_usage?
+            Thread.current[CORRECT_USAGE_KEY] == true
           end
         end
       end

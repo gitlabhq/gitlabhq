@@ -91,6 +91,7 @@ ci_job_artifact_states: :gitlab_ci
 ci_minutes_additional_packs: :gitlab_ci
 ci_namespace_monthly_usages: :gitlab_ci
 ci_namespace_mirrors: :gitlab_ci
+ci_partitions: :gitlab_ci
 ci_pending_builds: :gitlab_ci
 ci_pipeline_artifacts: :gitlab_ci
 ci_pipeline_chat_data: :gitlab_ci
@@ -182,6 +183,7 @@ design_management_versions: :gitlab_main
 design_user_mentions: :gitlab_main
 detached_partitions: :gitlab_shared
 diff_note_positions: :gitlab_main
+dora_configurations: :gitlab_main
 dora_daily_metrics: :gitlab_main
 draft_notes: :gitlab_main
 elastic_index_settings: :gitlab_main
@@ -228,6 +230,7 @@ geo_repository_deleted_events: :gitlab_main
 geo_repository_renamed_events: :gitlab_main
 geo_repository_updated_events: :gitlab_main
 geo_reset_checksum_events: :gitlab_main
+ghost_user_migrations: :gitlab_main
 gitlab_subscription_histories: :gitlab_main
 gitlab_subscriptions: :gitlab_main
 gpg_keys: :gitlab_main
@@ -315,6 +318,7 @@ merge_request_diff_details: :gitlab_main
 merge_request_diff_files: :gitlab_main
 merge_request_diffs: :gitlab_main
 merge_request_metrics: :gitlab_main
+merge_request_predictions: :gitlab_main
 merge_request_reviewers: :gitlab_main
 merge_requests_closing_issues: :gitlab_main
 merge_requests: :gitlab_main
@@ -380,6 +384,7 @@ packages_events: :gitlab_main
 packages_helm_file_metadata: :gitlab_main
 packages_maven_metadata: :gitlab_main
 packages_npm_metadata: :gitlab_main
+packages_rpm_metadata: :gitlab_main
 packages_nuget_dependency_link_metadata: :gitlab_main
 packages_nuget_metadata: :gitlab_main
 packages_package_file_build_infos: :gitlab_main
@@ -399,6 +404,7 @@ plans: :gitlab_main
 pool_repositories: :gitlab_main
 postgres_async_indexes: :gitlab_shared
 postgres_autovacuum_activity: :gitlab_shared
+postgres_constraints: :gitlab_shared
 postgres_foreign_keys: :gitlab_shared
 postgres_index_bloat_estimates: :gitlab_shared
 postgres_indexes: :gitlab_shared
@@ -479,6 +485,7 @@ sbom_components: :gitlab_main
 sbom_occurrences: :gitlab_main
 sbom_component_versions: :gitlab_main
 sbom_sources: :gitlab_main
+sbom_vulnerable_component_versions: :gitlab_main
 schema_migrations: :gitlab_internal
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main
@@ -549,6 +556,7 @@ user_statuses: :gitlab_main
 user_synced_attributes_metadata: :gitlab_main
 verification_codes: :gitlab_main
 vulnerabilities: :gitlab_main
+vulnerability_advisories: :gitlab_main
 vulnerability_exports: :gitlab_main
 vulnerability_external_issue_links: :gitlab_main
 vulnerability_feedback: :gitlab_main

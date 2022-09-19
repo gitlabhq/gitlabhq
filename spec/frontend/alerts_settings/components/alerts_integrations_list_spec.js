@@ -53,8 +53,8 @@ describe('AlertIntegrationsList', () => {
     mountComponent();
   });
 
-  const findTableComponent = () => wrapper.find(GlTable);
-  const findTableComponentRows = () => wrapper.find(GlTable).findAll('table tbody tr');
+  const findTableComponent = () => wrapper.findComponent(GlTable);
+  const findTableComponentRows = () => wrapper.findComponent(GlTable).findAll('table tbody tr');
   const finsStatusCell = () => wrapper.findAll('[data-testid="integration-activated-status"]');
 
   it('renders a table', () => {
@@ -67,7 +67,7 @@ describe('AlertIntegrationsList', () => {
   });
 
   it('renders an an edit and delete button for each integration', () => {
-    expect(findTableComponent().findAll(GlButton).length).toBe(4);
+    expect(findTableComponent().findAllComponents(GlButton).length).toBe(4);
   });
 
   it('renders an highlighted row when a current integration is selected to edit', () => {
@@ -78,7 +78,7 @@ describe('AlertIntegrationsList', () => {
   describe('integration status', () => {
     it('enabled', () => {
       const cell = finsStatusCell().at(0);
-      const activatedIcon = cell.find(GlIcon);
+      const activatedIcon = cell.findComponent(GlIcon);
       expect(cell.text()).toBe(i18n.status.enabled.name);
       expect(activatedIcon.attributes('name')).toBe('check');
       expect(activatedIcon.attributes('title')).toBe(i18n.status.enabled.tooltip);
@@ -86,7 +86,7 @@ describe('AlertIntegrationsList', () => {
 
     it('disabled', () => {
       const cell = finsStatusCell().at(1);
-      const notActivatedIcon = cell.find(GlIcon);
+      const notActivatedIcon = cell.findComponent(GlIcon);
       expect(cell.text()).toBe(i18n.status.disabled.name);
       expect(notActivatedIcon.attributes('name')).toBe('warning-solid');
       expect(notActivatedIcon.attributes('title')).toBe(i18n.status.disabled.tooltip);

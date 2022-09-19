@@ -287,7 +287,7 @@ module Ci
       Gitlab::ErrorTracking.track_exception(ex,
         build_id: build.id,
         build_name: build.name,
-        build_stage: build.stage,
+        build_stage: build.stage_name,
         pipeline_id: build.pipeline_id,
         project_id: build.project_id
       )

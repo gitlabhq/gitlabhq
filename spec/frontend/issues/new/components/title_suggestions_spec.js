@@ -83,7 +83,7 @@ describe('Issue title suggestions component', () => {
       wrapper.setData(data);
 
       await nextTick();
-      expect(wrapper.findAll(TitleSuggestionsItem).length).toBe(2);
+      expect(wrapper.findAllComponents(TitleSuggestionsItem).length).toBe(2);
     });
 
     it('adds margin class to first item', async () => {

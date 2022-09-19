@@ -153,7 +153,7 @@ class Group < Namespace
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
-  after_save :update_two_factor_requirement
+  after_commit :update_two_factor_requirement
   after_update :path_changed_hook, if: :saved_change_to_path?
   after_create -> { create_or_load_association(:group_feature) }
 
@@ -184,6 +184,27 @@ class Group < Namespace
     ]
 
     where(project_creation_level: permitted_levels)
+  end
+
+  scope :shared_into_ancestors, -> (group) do
+    joins(:shared_group_links)
+      .where(group_group_links: { shared_group_id: group.self_and_ancestors })
+  end
+
+  # WARNING: This method should never be used on its own
+  # please do make sure the number of rows you are filtering is small
+  # enough for this query
+  #
+  # It's a replacement for `public_or_visible_to_user` that correctly
+  # supports subgroup permissions
+  scope :accessible_to_user, -> (user) do
+    if user
+      Preloaders::GroupPolicyPreloader.new(self, user).execute
+
+      select { |group| user.can?(:read_group, group) }
+    else
+      public_to_user
+    end
   end
 
   class << self
@@ -614,11 +635,11 @@ class Group < Namespace
   # 4. They belong to an ancestor group
   def direct_and_indirect_users
     User.from_union([
-      User
-        .where(id: direct_and_indirect_members.select(:user_id))
-        .reorder(nil),
-      project_users_with_descendants
-    ])
+                      User
+                        .where(id: direct_and_indirect_members.select(:user_id))
+                        .reorder(nil),
+                      project_users_with_descendants
+                    ])
   end
 
   # Returns all users (also inactive) that are members of the group because:
@@ -628,11 +649,11 @@ class Group < Namespace
   # 4. They belong to an ancestor group
   def direct_and_indirect_users_with_inactive
     User.from_union([
-      User
-        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
-        .reorder(nil),
-      project_users_with_descendants
-    ])
+                      User
+                        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
+                        .reorder(nil),
+                      project_users_with_descendants
+                    ])
   end
 
   def users_count
@@ -670,14 +691,6 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
-  end
-
-  def ci_variables_for(ref, project, environment: nil)
-    cache_key = "ci_variables_for:group:#{self&.id}:project:#{project&.id}:ref:#{ref}:environment:#{environment}"
-
-    ::Gitlab::SafeRequestStore.fetch(cache_key) do
-      uncached_ci_variables_for(ref, project, environment: environment)
-    end
   end
 
   def member(user)
@@ -890,6 +903,18 @@ class Group < Namespace
     end
   end
 
+  def packages_policy_subject
+    if Feature.enabled?(:read_package_policy_rule, self)
+      ::Packages::Policies::Group.new(self)
+    else
+      self
+    end
+  end
+
+  def update_two_factor_requirement_for_members
+    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
@@ -912,7 +937,7 @@ class Group < Namespace
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
-    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
+    Groups::UpdateTwoFactorRequirementForMembersWorker.perform_async(self.id)
   end
 
   def path_changed_hook
@@ -1030,26 +1055,6 @@ class Group < Namespace
 
   def enable_shared_runners!
     update!(shared_runners_enabled: true)
-  end
-
-  def uncached_ci_variables_for(ref, project, environment: nil)
-    list_of_ids = if root_ancestor.use_traversal_ids?
-                    [self] + ancestors(hierarchy_order: :asc)
-                  else
-                    [self] + ancestors
-                  end
-
-    variables = Ci::GroupVariable.where(group: list_of_ids)
-    variables = variables.unprotected unless project.protected_for?(ref)
-
-    variables = if environment
-                  variables.on_environment(environment)
-                else
-                  variables.where(environment_scope: '*')
-                end
-
-    variables = variables.group_by(&:group_id)
-    list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
   end
 end
 

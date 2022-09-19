@@ -31,7 +31,7 @@ describe('popovers/components/popovers.vue', () => {
     return target;
   };
 
-  const allPopovers = () => wrapper.findAll(GlPopover);
+  const allPopovers = () => wrapper.findAllComponents(GlPopover);
 
   afterEach(() => {
     wrapper.destroy();
@@ -42,7 +42,7 @@ describe('popovers/components/popovers.vue', () => {
     it('attaches popovers to the targets specified', async () => {
       const target = createPopoverTarget();
       await buildWrapper(target);
-      expect(wrapper.find(GlPopover).props('target')).toBe(target);
+      expect(wrapper.findComponent(GlPopover).props('target')).toBe(target);
     });
 
     it('does not attach a popover twice to the same element', async () => {
@@ -52,7 +52,7 @@ describe('popovers/components/popovers.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.findAll(GlPopover)).toHaveLength(1);
+      expect(wrapper.findAllComponents(GlPopover)).toHaveLength(1);
     });
 
     describe('supports HTML content', () => {
@@ -66,7 +66,7 @@ describe('popovers/components/popovers.vue', () => {
       `('$description', async ({ content, render }) => {
         await buildWrapper(createPopoverTarget({ content, html: true }));
 
-        const html = wrapper.find(GlPopover).html();
+        const html = wrapper.findComponent(GlPopover).html();
         expect(html).toContain(render);
       });
     });
@@ -78,7 +78,7 @@ describe('popovers/components/popovers.vue', () => {
     `('sets $option to $value when data-$option is set in target', async ({ option, value }) => {
       await buildWrapper(createPopoverTarget({ [option]: value }));
 
-      expect(wrapper.find(GlPopover).props(option)).toBe(value);
+      expect(wrapper.findComponent(GlPopover).props(option)).toBe(value);
     });
   });
 

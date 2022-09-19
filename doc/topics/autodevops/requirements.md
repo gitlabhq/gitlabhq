@@ -41,7 +41,7 @@ that works best for your needs:
 
 You can choose the deployment method when enabling Auto DevOps or later:
 
-1. In GitLab, on the top bar, select **Menu > Projects** and find your project.
+1. In GitLab, on the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Choose the deployment strategy.
@@ -61,7 +61,7 @@ To define the base domain, either:
 
 - In the project, group, or instance level: go to your cluster settings and add it there.
 - In the project or group level: add it as an environment variable: `KUBE_INGRESS_BASE_DOMAIN`.
-- In the instance level: go to **Menu > Admin > Settings > CI/CD > Continuous Integration and Delivery** and add it there.
+- In the instance level: go to **Main menu > Admin > Settings > CI/CD > Continuous Integration and Delivery** and add it there.
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/index.md#cicd-variable-precedence).

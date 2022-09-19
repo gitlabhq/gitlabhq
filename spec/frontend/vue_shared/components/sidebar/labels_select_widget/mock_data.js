@@ -56,7 +56,7 @@ export const mockSuggestedColors = {
   '#013220': 'Dark green',
   '#6699cc': 'Blue-gray',
   '#0000ff': 'Blue',
-  '#e6e6fa': 'Lavendar',
+  '#e6e6fa': 'Lavender',
   '#9400d3': 'Dark violet',
   '#330066': 'Deep violet',
   '#808080': 'Gray',

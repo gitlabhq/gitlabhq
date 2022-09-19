@@ -11,14 +11,14 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
   let_it_be(:developer) { create(:user) }
   let_it_be(:stranger) { create(:user) }
   let_it_be(:old_version) do
-    create(:design_version, issue: issue,
-           created_designs: create_list(:design, 3, issue: issue))
+    create(:design_version, issue: issue, created_designs: create_list(:design, 3, issue: issue))
   end
 
   let_it_be(:version) do
-    create(:design_version, issue: issue,
-           modified_designs: old_version.designs,
-           created_designs: create_list(:design, 2, issue: issue))
+    create(:design_version,
+      issue: issue,
+      modified_designs: old_version.designs,
+      created_designs: create_list(:design, 2, issue: issue))
   end
 
   let(:current_user) { developer }

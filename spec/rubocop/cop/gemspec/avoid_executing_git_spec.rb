@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gemspec/avoid_executing_git'
 
 RSpec.describe RuboCop::Cop::Gemspec::AvoidExecutingGit do
-  subject(:cop) { described_class.new }
-
   it 'flags violation for executing git' do
     expect_offense(<<~RUBY)
       Gem::Specification.new do |gem|

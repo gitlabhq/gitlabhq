@@ -45,24 +45,91 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
-## Announced in 15.8
+## Announced in 15.4
 
 <div class="deprecation removal-160 breaking-change">
 
-### Security report schemas version 14.x.x
+### Container Scanning variables that reference Docker
 
-End of Support: GitLab <span class="removal-milestone">15.8</span> (2023-01-22)
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-All [security report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas) versions before 15.0.0 are considered deprecated in GitLab %15.8. Specifically, all [schemas](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/ee/gitlab/ci/parsers/security/validators/schemas) that match 14.*.* will be deprecated.
+All Container Scanning variables that are prefixed by `DOCKER_` in variable name are deprecated. This includes the `DOCKER_IMAGE`, `DOCKER_PASSWORD`, `DOCKER_USER`, and `DOCKERFILE_PATH` variables. Support for these variables will be removed in the GitLab 16.0 release. Use the [new variable names](https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-cicd-variables) `CS_IMAGE`, `CS_REGISTRY_PASSWORD`, `CS_REGISTRY_USER`, and `CS_DOCKERFILE_PATH` in place of the deprecated names.
 
-Please note that any [security report scanner integration](https://docs.gitlab.com/ee/development/integrations/secure.html) with GitLab using a deprecated schema version will result in a deprecation warning as a result of [report validation](https://docs.gitlab.com/ee/development/integrations/secure.html#report-validation).
+</div>
 
-See [Security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation) for more information.
+<div class="deprecation removal-160 breaking-change">
+
+### Non-expiring access tokens
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Access tokens that have no expiration date are valid indefinitely, which presents a security risk if the access token
+is divulged. Because access tokens that have an exipiration date are better, from GitLab 15.3 we
+[populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).
+
+In GitLab 16.0, any [personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html),
+[project](https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html), or
+[group](https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html) access token that does not have an
+expiration date will automatically have an expiration date set at one year.
+
+We recommend giving your access tokens an expiration date in line with your company's security policies before the
+default is applied:
+
+- On GitLab.com during the 16.0 milestone.
+- On GitLab self-managed instances when they are upgraded to 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Starboard directive in the config for the GitLab Agent for Kubernetes
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab Agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Toggle behavior of `/draft` quick action in merge requests
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2022-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In order to make the behavior of toggling the draft status of a merge request more clear via a quick action, we're deprecating and removing the toggle behavior of the `/draft` quick action. Beginning with the 16.0 release of GitLab, `/draft` will only set a merge request to Draft and a new `/ready` quick action will be used to remove the draft status.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Vulnerability confidence field
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 15.3, [security report schemas below version 15 were deprecated](https://docs.gitlab.com/ee/update/deprecations.html#security-report-schemas-version-14xx).
+The `confidence` attribute on vulnerability findings exists only in schema versions before `15-0-0`, and therefore is effectively deprecated since GitLab 15.4 supports schema version `15-0-0`. To maintain consistency
+between the reports and our public APIs, the `confidence` attribute on any vulnerability-related components of our GraphQL API is now deprecated and will be
+removed in 16.0.
 
 </div>
 </div>
@@ -85,6 +152,20 @@ The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth 
 next major release, GitLab 16.0. This gem sees very little use and its
 [lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
 [blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
+</div>
+
+<div class="deprecation removal-154">
+
+### Bundled Grafana deprecated
+
+Planned removal: GitLab <span class="removal-milestone">15.4</span> (2022-09-22)
+
+In GitLab 15.4, we will be swapping the bundled Grafana to a fork of Grafana maintained by GitLab.
+
+There was an [identified CVE for Grafana](https://nvd.nist.gov/vuln/detail/CVE-2022-31107), and to mitigate this security vulnerability, we must swap to our own fork because the older version of Grafana we were bundling is no longer receiving long-term support.
+
+This is not expected to cause any incompatibilities with the previous version of Grafana. Neither when using our bundled version, nor when using an external instance of Grafana.
 
 </div>
 
@@ -121,7 +202,7 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 
 ### Redis 5 deprecated
 
-End of Support: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)
+End of Support: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)<br />
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
@@ -131,6 +212,40 @@ Review the details carefully before upgrading.
 With GitLab 13.9, in the Omnibus GitLab package and GitLab Helm chart 4.9, the Redis version [was updated to Redis 6](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#omnibus-improvements).
 Redis 5 has reached the end of life in April 2022 and will no longer be supported as of GitLab 15.6.
 If you are using your own Redis 5.0 instance, you should upgrade it to Redis 6.0 or higher before upgrading to GitLab 16.0 or higher.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Security report schemas version 14.x.x
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Version 14.x.x [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) are deprecated.
+
+In GitLab 15.8 and later, [security report scanner integrations](https://docs.gitlab.com/ee/development/integrations/secure.html) that use schema version 14.x.x will display a deprecation warning in the pipeline's **Security** tab.
+
+In GitLab 16.0 and later, the feature will be removed. Security reports that use schema version 14.x.x will cause an error in the pipeline's **Security** tab.
+
+For more information, refer to [security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Use of `id` field in vulnerabilityFindingDismiss mutation
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status of a vulnerability finding to `Dismissed`. Previously, this mutation used the `id` field to identify findings uniquely. However, this did not work for dismissing findings from the pipeline security tab. Therefore, using the `id` field as an identifier has been dropped in favor of the `uuid` field. Using the 'uuid' field as an identifier allows you to dismiss the finding from the pipeline security tab.
 
 </div>
 </div>
@@ -334,38 +449,6 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 In GitLab 15.0, for Dependency Scanning, the default version of Java that the scanner expects will be updated from 11 to 17. Java 17 is [the most up-to-date Long Term Support (LTS) version](https://en.wikipedia.org/wiki/Java_version_history). Dependency scanning continues to support the same [range of versions (8, 11, 13, 14, 15, 16, 17)](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#supported-languages-and-package-managers), only the default version is changing. If your project uses the previous default of Java 11, be sure to [set the `DS_Java_Version` variable to match](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning).
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### Manual iteration management
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-Manual iteration management is deprecated and only automatic iteration cadences will be supported in the future.
-
-Creating and deleting iterations will be fully removed in 16.0. Updating all iteration fields except for
-`description` will also be removed.
-
-On the GraphQL API the following mutations will be removed:
-
-  1. `iterationCreate`
-  1. `iterationDelete`
-
-The update `updateIteration` mutation will only allow updating the iteration's `description`. The following
-arguments will be removed:
-
-  1. `title`
-  1. `dueDate`
-  1. `startDate`
-
-For more information about iteration cadences, you can refer to
-[the documentation of the feature](https://docs.gitlab.com/ee/user/group/iterations/#iteration-cadences).
 
 </div>
 
@@ -1757,17 +1840,17 @@ When checking if a runner is `paused`, API users are advised to check the boolea
 
 </div>
 
-<div class="deprecation removal-156 breaking-change">
+<div class="deprecation removal-159 breaking-change">
 
 ### SaaS certificate-based integration with Kubernetes
 
-Planned removal: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)
+Planned removal: GitLab <span class="removal-milestone">15.9</span> (2023-02-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab SaaS customer, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace. The integrations are expected to be switched off completely on GitLab SaaS around 2022 November 22.
+The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab SaaS customer, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
 [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
@@ -1778,11 +1861,11 @@ GitLab self-managed customers can still use the feature [with a feature flag](ht
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### Self-managed certificate-based integration with Kubernetes
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1792,7 +1875,7 @@ The certificate-based integration with Kubernetes [will be deprecated and remove
 
 As a self-managed customer, we are introducing the [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
 
-In GitLab 16.0 we will remove both the feature and its related code. Until the final removal in 16.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
+In GitLab 17.0 we will remove both the feature and its related code. Until the final removal in 17.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
 [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)

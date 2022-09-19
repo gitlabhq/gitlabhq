@@ -33,13 +33,31 @@ module QA
           delete_cluster
         end
 
-        def install_ingress
-          QA::Runtime::Logger.info "Attempting to install Ingress on cluster #{cluster_name}"
-          shell 'kubectl create -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-0.31.0/deploy/static/provider/cloud/deploy.yaml'
-          wait_for_ingress
+        # kas is hardcoded to staging since this test should only run in staging for now
+        def install_kubernetes_agent(agent_token)
+          install_helm
+
+          shell <<~CMD.tr("\n", ' ')
+            helm repo add gitlab https://charts.gitlab.io &&
+            helm repo update &&
+            helm upgrade --install test gitlab/gitlab-agent
+              --namespace gitlab-agent
+              --create-namespace
+              --set image.tag=#{Runtime::Env.gitlab_agentk_version}
+              --set config.token=#{agent_token}
+              --set config.kasAddress=wss://kas.staging.gitlab.com
+          CMD
         end
 
         private
+
+        def install_helm
+          shell <<~CMD.tr("\n", ' ')
+            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 &&
+            chmod 700 get_helm.sh &&
+            ./get_helm.sh
+          CMD
+        end
 
         def login_if_not_already_logged_in
           if Runtime::Env.has_gcloud_credentials?
@@ -103,18 +121,6 @@ module QA
 
         def get_region
           Runtime::Env.gcloud_region || @available_regions.delete(@available_regions.sample)
-        end
-
-        def wait_for_ingress
-          QA::Runtime::Logger.info 'Waiting for Ingress controller pod to be initialized'
-
-          Support::Retrier.retry_until(max_attempts: 60, sleep_interval: 1) do
-            service_available?('kubectl get pods --all-namespaces -l app.kubernetes.io/component=controller | grep -o "ingress-nginx-controller.*1/1"')
-          end
-        end
-
-        def service_available?(command)
-          system("#{command} > /dev/null 2>&1")
         end
       end
     end

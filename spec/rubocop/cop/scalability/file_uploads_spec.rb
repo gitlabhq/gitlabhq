@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/file_uploads'
 
 RSpec.describe RuboCop::Cop::Scalability::FileUploads do
-  subject(:cop) { described_class.new }
-
   let(:message) { 'Do not upload files without workhorse acceleration. Please refer to https://docs.gitlab.com/ee/development/uploads.html' }
 
   context 'with required params' do

@@ -142,7 +142,7 @@ describe('ClustersMainViewComponent', () => {
         createWrapper({ certificateBasedClustersEnabled: false });
       });
 
-      it('it displays only the Agent tab', () => {
+      it('displays only the Agent tab', () => {
         expect(findAllTabs()).toHaveLength(1);
         const agentTab = findGlTabAtIndex(0);
 

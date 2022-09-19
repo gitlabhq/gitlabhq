@@ -1,13 +1,7 @@
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/projects/new/event_hub';
-
-// Values are from lib/gitlab/visibility_level.rb
-const visibilityLevel = {
-  private: 0,
-  internal: 10,
-  public: 20,
-};
+import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';
 
 function setVisibilityOptions({ name, visibility, showPath, editPath }) {
   document.querySelectorAll('.visibility-level-setting .gl-form-radio').forEach((option) => {
@@ -19,13 +13,14 @@ function setVisibilityOptions({ name, visibility, showPath, editPath }) {
     const optionInput = option.querySelector('input[type=radio]');
     const optionValue = optionInput ? parseInt(optionInput.value, 10) : 0;
 
-    if (visibilityLevel[visibility] < optionValue) {
+    if (VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility] < optionValue) {
       option.classList.add('disabled');
       optionInput.disabled = true;
       const reason = option.querySelector('.option-disabled-reason');
       if (reason) {
         const optionTitle = option.querySelector('.js-visibility-level-radio span');
         const optionName = optionTitle ? optionTitle.innerText.toLowerCase() : '';
+        // eslint-disable-next-line no-unsanitized/property
         reason.innerHTML = sprintf(
           __(
             'This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group.',

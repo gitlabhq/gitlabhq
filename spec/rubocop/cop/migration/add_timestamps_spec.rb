@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_timestamps'
 
 RSpec.describe RuboCop::Cop::Migration::AddTimestamps do
-  subject(:cop) { described_class.new }
-
   let(:migration_with_add_timestamps) do
     %q(
       class Users < ActiveRecord::Migration[4.2]

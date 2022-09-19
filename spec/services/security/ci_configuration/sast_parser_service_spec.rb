@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Security::CiConfiguration::SastParserService do
-  include Ci::TemplateHelpers
-
   describe '#configuration' do
     include_context 'read ci configuration for sast enabled project'
 

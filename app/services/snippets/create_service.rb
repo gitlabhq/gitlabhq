@@ -24,7 +24,8 @@ module Snippets
         spammable: @snippet,
         spam_params: spam_params,
         user: current_user,
-        action: :create
+        action: :create,
+        extra_features: { files: file_paths_to_commit }
       ).execute
 
       if save_and_commit

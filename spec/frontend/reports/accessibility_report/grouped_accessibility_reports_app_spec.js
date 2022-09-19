@@ -114,7 +114,7 @@ describe('Grouped accessibility reports app', () => {
       });
 
       it('renders custom accessibility issue body', () => {
-        const issueBody = wrapper.find(AccessibilityIssueBody);
+        const issueBody = wrapper.findComponent(AccessibilityIssueBody);
 
         expect(issueBody.props('issue').code).toBe(mockReport.new_errors[0].code);
         expect(issueBody.props('issue').message).toBe(mockReport.new_errors[0].message);

@@ -10,7 +10,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 NOTE:
 The documentation below is the single source of truth for the merge request terminology and functionality.
 
-The merge request is made up of several different key components and ideas that encompass the overall merge request experience. These concepts sometimes have competing and confusing terminology or overlap with other concepts. The concepts this will cover are:
+The merge request is made up of several different key components and ideas that encompass the overall merge request experience. These concepts sometimes have competing and confusing terminology or overlap with other concepts. This page covers the following concepts:
 
 1. Merge widget
 1. Report widgets
@@ -40,15 +40,17 @@ Reports are widgets within the merge request that report information about chang
 
 ## Merge checks
 
-Merge checks are statuses that can either pass or fail and conditionally control the availability of the merge button being available within a merge request. The key distinguishing factor in a merge check is that users **do not** interact with the merge checks inside of the merge request, but are able to influence whether or not the check passes or fails. Results from the check are processed as true/false to determine whether or not a merge request can be merged. Examples include:
+Merge checks are statuses that can either pass or fail and conditionally control the availability of the merge button being available within a merge request. The key distinguishing factor in a merge check is that users **do not** interact with the merge checks inside of the merge request, but are able to influence whether or not the check passes or fails. Results from the check are processed as true/false to determine whether or not a merge request can be merged.
 
-- Merge conflicts.
-- Pipeline success.
-- Threads resolution.
-- [External status checks](../../user/project/merge_requests/status_checks.md).
-- Required approvals.
+Examples of merge checks include:
 
-When all of the required merge checks are satisfied a merge request becomes mergeable.
+- Merge conflicts
+- Pipeline success
+- Threads resolution
+- [External status checks](../../user/project/merge_requests/status_checks.md)
+- Required approvals
+
+A merge request can be merged only when all of the required merge checks are satisfied.
 
 ## Approvals
 
@@ -58,8 +60,8 @@ Additionally, approval settings provide configuration options to define how thos
 
 Examples of approval rules and settings include:
 
-1. [merge request approval rules](../../user/project/merge_requests/approvals/rules.md)
-1. [code owner approvals](../../user/project/code_owners.md)
-1. [security approvals](../../user/application_security/index.md#security-approvals-in-merge-requests)
-1. [prevent editing approval rules](../../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests)
-1. [remove all approvals when commits are added](../../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)
+- [Merge request approval rules](../../user/project/merge_requests/approvals/rules.md)
+- [Code owner approvals](../../user/project/code_owners.md)
+- [Security approvals](../../user/application_security/index.md#security-approvals-in-merge-requests)
+- [Prevent editing approval rules](../../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests)
+- [Remove all approvals when commits are added](../../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)

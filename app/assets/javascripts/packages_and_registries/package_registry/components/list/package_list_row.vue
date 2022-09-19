@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <list-item data-qa-selector="package_row">
+  <list-item data-testid="package-row">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
         <router-link

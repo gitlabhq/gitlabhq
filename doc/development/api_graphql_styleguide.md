@@ -77,6 +77,63 @@ The complexity score of a query [can itself be queried for](../api/graphql/getti
 
 Requests time out at 30 seconds.
 
+### Limit maximum field call count
+
+In some cases, you want to prevent the evaluation of a specific field on multiple parent nodes
+because it results in an N+1 query problem and there is no optimal solution. This should be
+considered an option of last resort, to be used only when methods such as
+[lookahead to preload associations](#look-ahead), or [using batching](graphql_guide/batchloader.md)
+have been considered.
+
+For example:
+
+```graphql
+# This usage is expected.
+query {
+  project {
+    environments
+  }
+}
+
+# This usage is NOT expected.
+# It results in N+1 query problem. EnvironmentsResolver can't use GraphQL batch loader in favor of GraphQL pagination.
+query {
+  projects {
+    nodes {
+      environments
+    }
+  }
+}
+```
+
+To prevent this, you can use the `Gitlab::Graphql::Limit::FieldCallCount` extension on the field:
+
+```ruby
+# This allows maximum 1 call to the `environments` field. If the field is evaluated on more than one node,
+# it raises an error.
+field :environments do
+        extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+      end
+```
+
+or you can apply the extension in a resolver class:
+
+```ruby
+module Resolvers
+  class EnvironmentsResolver < BaseResolver
+    extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+    # ...
+  end
+end
+```
+
+When you add this limit, make sure that the affected field's `description` is also updated accordingly. For example,
+
+```ruby
+field :environments,
+      description: 'Environments of the project. This field can only be resolved for one project in any single request.'
+```
+
 ## Breaking changes
 
 The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) which means
@@ -484,7 +541,7 @@ You can also
 [change or remove Alpha items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
 the schema item by removing its Alpha property to make it public.
 
-### Descriptions for feature flagged items
+### Descriptions for feature-flagged items
 
 When using a feature flag to toggle the value or behavior of a schema item, the
 `description` of the item must:
@@ -494,7 +551,11 @@ When using a feature flag to toggle the value or behavior of a schema item, the
 - State what the field returns, or behavior is, when the feature flag is disabled (or
   enabled, if more appropriate).
 
-Example of a feature-flagged field:
+### Examples of using feature flags
+
+#### Feature-flagged field
+
+A field value is toggled based on the feature flag state. A common use is to return `null` if the feature flag is disabled:
 
 ```ruby
 field :foo, GraphQL::Types::String, null: true,
@@ -507,7 +568,10 @@ def foo
 end
 ```
 
-Example of a feature-flagged argument:
+#### Feature-flagged argument
+
+An argument can be ignored, or have its value changed, based on the feature flag state.
+A common use is to ignore the argument when a feature flag is disabled:
 
 ```ruby
 argument :foo, type: GraphQL::Types::String, required: false,
@@ -521,11 +585,23 @@ def resolve(args)
 end
 ```
 
-### `feature_flag` property (deprecated)
+#### Feature-flagged mutation
 
-NOTE:
-This property is deprecated and should no longer be used. The property
-has been temporarily renamed to `_deprecated_feature_flag` and support for it will be removed in [#369202](https://gitlab.com/gitlab-org/gitlab/-/issues/369202).
+A mutation that cannot be performed due to a feature flag state is handled as a
+[non-recoverable mutation error](#failure-irrelevant-to-the-user). The error is returned at the top level:
+
+```ruby
+description 'Mutates an object. Does not mutate the object if ' \
+            '`my_feature_flag` feature flag is disabled.'
+
+def resolve(id: )
+  object = authorized_find!(id: id)
+
+  raise Gitlab::Graphql::Errors::ResourceNotAvailable, '`my_feature_flag` feature flag is disabled.' \
+    if Feature.disabled?(:my_feature_flag, object)
+  # ...
+end
+```
 
 ## Deprecating schema items
 
@@ -1611,7 +1687,7 @@ correctly rendered to the clients.
 
 ### Errors in mutations
 
-We encourage following the practice of 
+We encourage following the practice of
 [errors as data](https://graphql-ruby.org/mutations/mutation_errors) for mutations, which
 distinguishes errors by who they are relevant to, defined by who can deal with
 them.

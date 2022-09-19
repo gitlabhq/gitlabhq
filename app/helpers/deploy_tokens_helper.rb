@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module DeployTokensHelper
-  def expand_deploy_tokens_section?(deploy_token)
-    deploy_token.persisted? ||
-      deploy_token.errors.present? ||
+  def expand_deploy_tokens_section?(new_deploy_token, created_deploy_token)
+    created_deploy_token ||
+      new_deploy_token.errors.present? ||
       Rails.env.test?
   end
 
@@ -14,7 +14,7 @@ module DeployTokensHelper
 
   def packages_registry_enabled?(group_or_project)
     Gitlab.config.packages.enabled &&
-      can?(current_user, :read_package, group_or_project)
+      can?(current_user, :read_package, group_or_project&.packages_policy_subject)
   end
 
   def deploy_token_revoke_button_data(token:, group_or_project:)

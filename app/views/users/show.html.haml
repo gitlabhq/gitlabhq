@@ -36,7 +36,7 @@
       - if can?(current_user, :read_user_profile, @user)
         = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
           title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-          = sprite_icon('rss', css_class: 'qa-rss-icon')
+          = sprite_icon('rss')
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: link_classes + 'btn gl-button btn-default btn-icon', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

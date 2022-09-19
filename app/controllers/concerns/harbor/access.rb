@@ -17,7 +17,7 @@ module Harbor
     private
 
     def harbor_registry_enabled!
-      render_404 unless Feature.enabled?(:harbor_registry_integration)
+      render_404 unless Feature.enabled?(:harbor_registry_integration, defined?(group) ? group : project)
     end
 
     def authorize_read_harbor_registry!

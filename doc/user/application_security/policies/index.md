@@ -1,6 +1,6 @@
 ---
-stage: Protect
-group: Container Security
+stage: Govern
+group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -54,7 +54,7 @@ to select, edit, and unlink a security policy project.
 As a project owner, take the following steps to create or edit an association between your current
 project and a project that you would like to designate as the security policy project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Policies**.
 1. Select **Edit Policy Project**, and search for and select the
    project you would like to link from the dropdown menu.
@@ -78,7 +78,7 @@ policies for all available environments. You can check a
 policy's information (for example, description or enforcement
 status), and create and edit deployed policies:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Policies**.
 
 ![Policies List Page](img/policies_list_v15_1.png)
@@ -89,7 +89,7 @@ status), and create and edit deployed policies:
 
 You can use the policy editor to create, edit, and delete policies:
 
-1. On the top bar, select **Menu > Projects** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your group.
 1. On the left sidebar, select **Security & Compliance > Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.
@@ -144,6 +144,6 @@ for more information on the product direction of security policies within GitLab
 
 When you create a new security policy or change an existing policy, a new branch is automatically created with the branch name following the pattern `update-policy-<timestamp>`. For example: `update-policy-1659094451`.
 
-If you have group or instance push rules that do not allow branch name patterns that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name does not follow the pattern 'update-policy-<timestamp>'`. 
+If you have group or instance push rules that do not allow branch name patterns that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name does not follow the pattern 'update-policy-<timestamp>'`.
 
 The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.

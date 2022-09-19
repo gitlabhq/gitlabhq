@@ -364,9 +364,8 @@ world. Custom domains and TLS are supported.
    ```
 
 1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
-   order to enable the pages daemon. In `gitlab_pages_options` the
-   `-pages-domain`, `-listen-http` and `-listen-https` must match the `host`,
-   `external_http` and `external_https` settings that you set above respectively.
+   order to enable the pages daemon. In `gitlab_pages_options`, you must match the
+   `-pages-domain` with `host`, `-listen-http` with `external_http`, and `-listen-https` with `external_https` settings.
    The `-root-cert` and `-root-key` settings are the wildcard TLS certificates
    of the `example.io` domain:
 
@@ -486,7 +485,7 @@ The default for the maximum size of unpacked archives per project is 100 MB.
 
 To change this value:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Update the value for **Maximum size of pages (MB)**.

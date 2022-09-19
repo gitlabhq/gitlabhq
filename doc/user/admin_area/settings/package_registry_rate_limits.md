@@ -30,7 +30,7 @@ no difference in functionality compared to the general user and IP rate limits.
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **Package registry rate limits**.
 1. Select **Enable unauthenticated request rate limit**.
 
@@ -43,7 +43,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **Package registry rate limits**.
 1. Select **Enable authenticated API request rate limit**.
 

@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -152,7 +152,7 @@ From there, you can see the following actions:
 - Added, removed, or updated protected branches
 - Release was added to a project
 - Release was updated
-- Release was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 13.5)
+- Release was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 15.3)
 - Release milestone associations changed
 - Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Permission to approve merge requests by committers was updated.
@@ -209,7 +209,7 @@ Instance events do not include group or project audit events.
 
 To view the server-wide audit events:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 
 The following user actions are recorded:
@@ -309,7 +309,7 @@ audit events.
 
 To export the audit events to CSV:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. Select the available search [filters](#search).
 1. Select **Export as CSV**.

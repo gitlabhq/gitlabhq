@@ -1,7 +1,11 @@
 <script>
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import {
+  sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_UPDATING,
+  TRACKING_CATEGORY_SHOW,
+} from '../constants';
 import { getUpdateWorkItemMutation } from './update_work_item';
 import ItemTitle from './item_title.vue';
 
@@ -78,7 +82,8 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        this.$emit('error', i18n.updateError);
+        const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
+        this.$emit('error', msg);
         Sentry.captureException(error);
       }
 

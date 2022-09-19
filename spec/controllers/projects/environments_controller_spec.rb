@@ -32,6 +32,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         get :index, params: environment_params
       end
+
+      it_behaves_like 'tracking unique visits', :index do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
     end
 
     context 'when requesting JSON response for folders' do
@@ -64,6 +69,24 @@ RSpec.describe Projects::EnvironmentsController do
           expect(environments.first).to include('name' => 'production', 'name_without_type' => 'production')
           expect(environments.second).to include('name' => 'staging/review-1', 'name_without_type' => 'review-1')
           expect(environments.third).to include('name' => 'staging/review-2', 'name_without_type' => 'review-2')
+          expect(json_response['available_count']).to eq 3
+          expect(json_response['stopped_count']).to eq 1
+        end
+
+        it 'handles search option properly' do
+          get :index, params: environment_params(format: :json, search: 'staging/r')
+
+          expect(environments.map { |env| env['name'] } ).to contain_exactly('staging/review-1', 'staging/review-2')
+          expect(json_response['available_count']).to eq 2
+          expect(json_response['stopped_count']).to eq 1
+        end
+
+        it 'ignores search option if is shorter than a minimum' do
+          get :index, params: environment_params(format: :json, search: 'st')
+
+          expect(environments.map { |env| env['name'] } ).to contain_exactly('production',
+                                                                             'staging/review-1',
+                                                                             'staging/review-2')
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
@@ -149,29 +172,43 @@ RSpec.describe Projects::EnvironmentsController do
   end
 
   describe 'GET folder' do
-    before do
-      create(:environment, project: project,
-                           name: 'staging-1.0/review',
-                           state: :available)
-      create(:environment, project: project,
-                           name: 'staging-1.0/zzz',
-                           state: :available)
-    end
-
     context 'when using default format' do
       it 'responds with HTML' do
         get :folder, params: {
-                       namespace_id: project.namespace,
-                       project_id: project,
-                       id: 'staging-1.0'
-                     }
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'staging-1.0'
+        }
 
-        expect(response).to be_ok
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template 'folder'
+      end
+
+      it_behaves_like 'tracking unique visits', :folder do
+        let(:request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: 'staging-1.0'
+          }
+        end
+
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
     context 'when using JSON format' do
+      before do
+        create(:environment, project: project,
+                             name: 'staging-1.0/review',
+                             state: :available)
+        create(:environment, project: project,
+                             name: 'staging-1.0/zzz',
+                             state: :available)
+      end
+
+      let(:environments) { json_response['environments'] }
+
       it 'sorts the subfolders lexicographically' do
         get :folder, params: {
                        namespace_id: project.namespace,
@@ -187,6 +224,19 @@ RSpec.describe Projects::EnvironmentsController do
         expect(json_response['environments'][1])
           .to include('name' => 'staging-1.0/zzz', 'name_without_type' => 'zzz')
       end
+
+      it 'handles search option properly' do
+        get(:folder, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'staging-1.0',
+          search: 'staging-1.0/z'
+        }, format: :json)
+
+        expect(environments.map { |env| env['name'] } ).to eq(['staging-1.0/zzz'])
+        expect(json_response['available_count']).to eq 1
+        expect(json_response['stopped_count']).to eq 0
+      end
     end
   end
 
@@ -196,6 +246,11 @@ RSpec.describe Projects::EnvironmentsController do
         get :show, params: environment_params
 
         expect(response).to be_ok
+      end
+
+      it_behaves_like 'tracking unique visits', :show do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
@@ -210,11 +265,29 @@ RSpec.describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET new' do
+    it 'responds with a status code 200' do
+      get :new, params: environment_params
+
+      expect(response).to be_ok
+    end
+
+    it_behaves_like 'tracking unique visits', :new do
+      let(:request_params) { environment_params }
+      let(:target_id) { 'users_visiting_environments_pages' }
+    end
+  end
+
   describe 'GET edit' do
     it 'responds with a status code 200' do
       get :edit, params: environment_params
 
       expect(response).to be_ok
+    end
+
+    it_behaves_like 'tracking unique visits', :edit do
+      let(:request_params) { environment_params }
+      let(:target_id) { 'users_visiting_environments_pages' }
     end
   end
 
@@ -229,6 +302,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['path']).to eq("/#{project.full_path}/-/environments/#{environment.id}")
+      end
+
+      it_behaves_like 'tracking unique visits', :update do
+        let(:request_params) { params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
@@ -294,6 +372,11 @@ RSpec.describe Projects::EnvironmentsController do
           { 'redirect_url' =>
               project_environment_url(project, environment) })
       end
+
+      it_behaves_like 'tracking unique visits', :stop do
+        let(:request_params) { environment_params(format: :json) }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
     end
 
     context 'when no stop action' do
@@ -320,6 +403,11 @@ RSpec.describe Projects::EnvironmentsController do
       let(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
 
       it_behaves_like 'successful response for #cancel_auto_stop'
+
+      it_behaves_like 'tracking unique visits', :cancel_auto_stop do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
+      end
 
       context 'when user is reporter' do
         let(:user) { reporter }
@@ -356,6 +444,11 @@ RSpec.describe Projects::EnvironmentsController do
           .to receive(:terminals)
 
         get :terminal, params: environment_params
+      end
+
+      it_behaves_like 'tracking unique visits', :terminal do
+        let(:request_params) { environment_params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 
@@ -858,6 +951,11 @@ RSpec.describe Projects::EnvironmentsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['path']).to eq("/#{project.full_path}/-/environments/#{json_response['environment']['id']}")
+      end
+
+      it_behaves_like 'tracking unique visits', :create do
+        let(:request_params) { params }
+        let(:target_id) { 'users_visiting_environments_pages' }
       end
     end
 

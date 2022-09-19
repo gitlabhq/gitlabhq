@@ -55,6 +55,7 @@ The following projects demonstrate DAST API scanning:
 You can specify the API you want to scan by using:
 
 - [OpenAPI v2 or v3 Specification](#openapi-specification)
+- [GraphQL Schema](#graphql-schema)
 - [HTTP Archive (HAR)](#http-archive-har)
 - [Postman Collection v2.0 or v2.1](#postman-collection)
 
@@ -199,7 +200,119 @@ variables:
   DAST_API_TARGET_URL: http://test-deployment/
 ```
 
-This is a minimal configuration for DAST API. From here you can:
+This example is a minimal configuration for DAST API. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
+
+### GraphQL Schema
+
+> Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+
+GraphQL is a query language for your API and an alternative to REST APIs.
+DAST API supports testing GraphQL endpoints multiple ways:
+
+- Test using the GraphQL Schema. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+- Test using a recording (HAR) of GraphQL queries.
+- Test using a Postman Collection containing GraphQL queries.
+
+This section documents how to test using a GraphQL schema. The GraphQL schema support in
+DAST API is able to query the schema from endpoints that support introspection.
+Introspection is enabled by default to allow tools like GraphiQL to work.
+
+#### DAST API scanning with a GraphQL endpoint URL
+
+The GraphQL support in DAST API is able to query a GraphQL endpoint for the schema.
+
+NOTE:
+The GraphQL endpoint must support introspection queries for this method to work correctly.
+
+To configure DAST API to use a GraphQL endpoint URL that provides information about the target API to test:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+1. Provide the path to the GraphQL endpoint, for example `/api/graphql`. Specify the location by adding the `DAST_API_GRAPHQL` variable.
+
+1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. See the [dynamic environment solutions](#dynamic-environment-solutions) section of our documentation for more information.
+
+Complete example configuration of using a GraphQL endpoint path:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+dast_api:
+  variables:
+    DAST_API_GRAPHQL: /api/graphql
+    DAST_API_TARGET_URL: http://test-deployment/
+```
+
+This example is a minimal configuration for DAST API. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
+
+#### DAST API scanning with a GraphQL Schema file
+
+To configure DAST API to use a GraphQL schema file that provides information about the target API to test:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+1. Provide the GraphQL endpoint path, for example  `/api/graphql`. Specify the path by adding the `DAST_API_GRAPHQL` variable.
+
+1. Provide the location of the GraphQL schema file. You can provide the location as a file path
+   or URL. Specify the location by adding the `DAST_API_GRAPHQL_SCHEMA` variable.
+
+1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. See the [dynamic environment solutions](#dynamic-environment-solutions) section of our documentation for more information.
+
+Complete example configuration of using an GraphQL schema file:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+dast_api:
+  variables:
+    DAST_API_GRAPHQL: /api/graphql
+    DAST_API_GRAPHQL_SCHEMA: test-api-graphql.schema
+    DAST_API_TARGET_URL: http://test-deployment/
+```
+
+Complete example configuration of using an GraphQL schema file URL:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+dast_api:
+  variables:
+    DAST_API_GRAPHQL: /api/graphql
+    DAST_API_GRAPHQL_SCHEMA: http://file-store/files/test-api-graphql.schema
+    DAST_API_TARGET_URL: http://test-deployment/
+```
+
+This example is a minimal configuration for DAST API. From here you can:
 
 - [Run your first scan](#running-your-first-scan).
 - [Add authentication](#authentication).
@@ -267,35 +380,266 @@ This is a minimal configuration for DAST API. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-##### Postman variables
+#### Postman variables
+
+> - Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+> - Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+> - Support for Postman variable scopes: Global and Environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+
+##### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
-requests. These placeholders are called variables, as explained in [Using variables](https://learning.postman.com/docs/sending-requests/variables/).
+requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/).
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
 ![Edit collection variable tab View](img/dast_api_postman_collection_edit_variable.png)
 
+Or alternatively, you can add variables in an environment:
+
+![Edit environment variables View](img/dast_api_postman_environment_edit_variable.png)
+
 You can then use the variables in sections such as URL, headers, and others:
 
 ![Edit request using variables View](img/dast_api_postman_request_edit.png)
 
-Variables can be defined at different [scopes](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes)
-(for example, Global, Collection, Environment, Local, and Data). In this example, they're defined at
-the Environment scope:
+Postman has grown from a basic client tool with a nice UX experience to a more complex ecosystem that allows testing APIs with scripts, creating complex collections that trigger secondary requests, and setting variables along the way. Not every feature in the Postman ecosystem is supported. For example, scripts are not supported. The main focus of the Postman support is to ingest Postman Collection definitions that are used by the Postman Client and their related variables defined in the workspace, environments, and the collections themselves.
 
-![Edit environment variables View](img/dast_api_postman_environment_edit_variable.png)
+Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a _global environment_ scope that is seen by every operation definition and workspace. You can also create a variable in a specific _environment_ scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a _local_ scope, but test scripts do.
 
-When you export a Postman collection, only Postman collection variables are exported into the
-Postman file. For example, Postman does not export environment-scoped variables into the Postman
-file.
+Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. We strongly recommend that you read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes) from Postman documentation before moving forward.
 
-By default, the DAST API scanner uses the Postman file to resolve Postman variable values. If a JSON file
-is set in a GitLab CI/CD environment variable `DAST_API_POSTMAN_COLLECTION_VARIABLES`, then the JSON
-file takes precedence to get Postman variable values.
+As mentioned above, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
-WARNING:
-Although Postman can export environment variables into a JSON file, the format is not compatible with the JSON expected by `DAST_API_POSTMAN_COLLECTION_VARIABLES`.
+> If a variable with the same name is declared in two different scopes, the value stored in the variable with narrowest scope is used. For example, if there is a global variable named `username` and a local variable named `username`, the local value is used when the request runs.
+
+The following is a summary of the variable scopes supported by the Postman Client and DAST API:
+
+- **Global Environment (Global) scope** is a special pre-defined environment that is available throughout a workspace. We can also refer to the _global environment_ scope as the _global_ scope. The Postman Client allows exporting the global environment into a JSON file, which can be used with DAST API.
+- **Environment scope** is a named group of variables created by a user in the Postman Client.
+The Postman Client supports a single active environment along with the global environment. The variables defined in an active user-created environment take precedence over variables defined in the global environment. The Postman Client allows exporting your environment into a JSON file, which can be used with DAST API.
+- **Collection scope** is a group of variables declared in a given collection. The collection variables are available to the collection where they have been declared and the nested requests or collections. Variables defined in the collection scope take precedence over the _global environment_ scope and also the _environment_ scope.
+The Postman Client can export one or more collections into a JSON file, this JSON file contains selected collections, requests, and collection variables.
+- **DAST API Scope** is a new scope added by DAST API to allow users to provide extra variables, or override variables defined in other supported scopes. This scope is not supported by Postman. The _DAST API Scope_ variables are provided using a [custom JSON file format](#dast-api-scope-custom-json-file-format).
+  - Override values defined in the environment or collection
+  - Defining variables from scripts
+  - Define a single row of data from the unsupported _data scope_
+- **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
+DAST API does **not** support reading data from a CSV or JSON file.
+- **Local scope** are variables that are defined in Postman scripts. DAST API does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or our custom JSON format.
+
+Not all scopes are supported by DAST API and variables defined in scripts are not supported. The following table is sorted by broadest scope to narrowest scope.
+
+| Scope              |Postman    | DAST API     | Comment  |
+| ------------------ |:---------:|:------------:| :--------|
+| Global Environment | Yes       | Yes          | Special pre-defined environment |
+| Environment        | Yes       | Yes          | Named environments |
+| Collection         | Yes       | Yes          | Defined in your postman collection |
+| DAST API Scope     | No        | Yes          | Custom scope added by DAST API |
+| Data               | Yes       | No           | External files in CSV or JSON format |
+| Local              | Yes       | No           | Variables defined in scripts |
+
+For more details on how to define variables and export variables in different scopes, see:
+
+- [Defining collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables)
+- [Defining environment variables](https://learning.postman.com/docs/sending-requests/variables/#defining-environment-variables)
+- [Defining global variables](https://learning.postman.com/docs/sending-requests/variables/#defining-global-variables)
+
+##### Exporting from Postman Client
+
+The Postman Client lets you export different file formats, for instance, you can export a Postman collection or a Postman environment.
+The exported environment can be the global environment (which is always available) or can be any custom environment you previously have created. When you export a Postman Collection, it may contain only declarations for _collection_ and _local_ scoped variables; _environment_ scoped variables are not included.
+
+To get the declaration for _environment_ scoped variables, you have to export a given environment at the time. Each exported file only includes variables from the selected environment.
+
+For more details on exporting variables in different supported scopes, see:
+
+- [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-collections)
+- [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments)
+- [Downloading global environments](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
+
+##### DAST API Scope, custom JSON file format
+
+Our custom JSON file format is a JSON object where each object property represents a variable name and the property value represents the variable value. This file can be created using your favorite text editor, or it can be produced by an earlier job in your pipeline.
+
+This example defines two variables `base_url` and `token` in the DAST API scope:
+
+```json
+{
+  "base_url": "http://127.0.0.1/",
+  "token": "Token 84816165151"
+}
+```
+
+##### Using scopes with DAST API
+
+The scopes: _global_, _environment_, _collection_, and _GitLab DAST API_ are supported in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only the _collection_, and _GitLab DAST API_ scopes.
+
+The following table provides a quick reference for mapping scope files/URLs to DAST API configuration variables:
+
+| Scope              |  How to Provide |
+| ------------------ | --------------- |
+| Global Environment | DAST_API_POSTMAN_COLLECTION_VARIABLES |
+| Environment        | DAST_API_POSTMAN_COLLECTION_VARIABLES |
+| Collection         | DAST_API_POSTMAN_COLLECTION           |
+| DAST API Scope     | DAST_API_POSTMAN_COLLECTION_VARIABLES |
+| Data               | Not supported   |
+| Local              | Not supported   |
+
+The Postman Collection document automatically includes any _collection_ scoped variables. The Postman Collection is provided with the configuration variable `DAST_API_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-collections).
+
+Variables from other scopes are provided through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only one single file. The order of the files provided is not important as the files provide the needed scope information.
+
+The configuration variable `DAST_API_POSTMAN_COLLECTION_VARIABLES` can be set to:
+
+- [Exported Global environment](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
+- [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments)
+- [DAST API Custom JSON format](#dast-api-scope-custom-json-file-format)
+
+##### Undefined Postman variables
+
+There is a chance that DAST API engine does not find all variables references that your Postman collection file is using. Some cases can be:
+
+- You are using _data_ or _local_ scoped variables, and as stated previously these scopes are not supported by DAST API. Thus, assuming the values for these variables have not been provided through [the DAST API scope](#dast-api-scope-custom-json-file-format), then the values of the _data_ and _local_ scoped variables are undefined.
+- A variable name was typed incorrectly, and the name does not match the defined variable.
+- Postman Client supports a new dynamic variable that is not supported by DAST API.
+
+When possible, DAST API follows the same behavior as the Postman Client does when dealing with undefined variables. The text of the variable reference remains the same, and there is no text substitution. The same behavior also applies to any unsupported dynamic variables.
+
+For example, if a request definition in the Postman Collection references the variable `{{full_url}}` and the variable is not found it is left unchanged with the value `{{full_url}}`.
+
+##### Dynamic Postman variables
+
+In addition to variables that a user can define at various scope levels, Postman has a set of pre-defined variables called _dynamic_ variables. The [_dynamic_ variables](https://learning.postman.com/docs/writing-scripts/script-references/variables-list/) are already defined and their name is prefixed with a dollar sign (`$`), for instance, `$guid`. _Dynamic_ variables can be used like any other variable, and in the Postman Client, they produce random values during the request/collection run.
+
+An important difference between DAST API and Postman is that DAST API returns the same value for each usage of the same dynamic variables. This differs from the Postman Client behavior which returns a random value on each use of the same dynamic variable. In other words, DAST API uses static values for dynamic variables while Postman uses random values.
+
+The supported dynamic variables during the scanning process are:
+
+| Variable    | Value       |
+| ----------- | ----------- |
+| `$guid` | `611c2e81-2ccb-42d8-9ddc-2d0bfa65c1b4` |
+| `$isoTimestamp` | `2020-06-09T21:10:36.177Z` |
+| `$randomAbbreviation` | `PCI` |
+| `$randomAbstractImage` | `http://no-a-valid-host/640/480/abstract` |
+| `$randomAdjective` | `auxiliary` |
+| `$randomAlphaNumeric` | `a` |
+| `$randomAnimalsImage` | `http://no-a-valid-host/640/480/animals` |
+| `$randomAvatarImage` | `https://no-a-valid-host/path/to/some/image.jpg` |
+| `$randomBankAccount` | `09454073` |
+| `$randomBankAccountBic` | `EZIAUGJ1` |
+| `$randomBankAccountIban` | `MU20ZPUN3039684000618086155TKZ` |
+| `$randomBankAccountName` | `Home Loan Account` |
+| `$randomBitcoin` | `3VB8JGT7Y4Z63U68KGGKDXMLLH5` |
+| `$randomBoolean` | `true` |
+| `$randomBs` | `killer leverage schemas` |
+| `$randomBsAdjective` | `viral` |
+| `$randomBsBuzz` | `repurpose` |
+| `$randomBsNoun` | `markets` |
+| `$randomBusinessImage` | `http://no-a-valid-host/640/480/business` |
+| `$randomCatchPhrase` | `Future-proofed heuristic open architecture` |
+| `$randomCatchPhraseAdjective` | `Business-focused` |
+| `$randomCatchPhraseDescriptor` | `bandwidth-monitored` |
+| `$randomCatchPhraseNoun` | `superstructure` |
+| `$randomCatsImage` | `http://no-a-valid-host/640/480/cats` |
+| `$randomCity` | `Spinkahaven` |
+| `$randomCityImage` | `http://no-a-valid-host/640/480/city` |
+| `$randomColor` | `fuchsia` |
+| `$randomCommonFileExt` | `wav` |
+| `$randomCommonFileName` | `well_modulated.mpg4` |
+| `$randomCommonFileType` | `audio` |
+| `$randomCompanyName` | `Grady LLC` |
+| `$randomCompanySuffix` | `Inc` |
+| `$randomCountry` | `Kazakhstan` |
+| `$randomCountryCode` | `MD` |
+| `$randomCreditCardMask` | `3622` |
+| `$randomCurrencyCode` | `ZMK` |
+| `$randomCurrencyName` | `Pound Sterling` |
+| `$randomCurrencySymbol` | `£` |
+| `$randomDatabaseCollation` | `utf8_general_ci` |
+| `$randomDatabaseColumn` | `updatedAt` |
+| `$randomDatabaseEngine` | `Memory` |
+| `$randomDatabaseType` | `text` |
+| `$randomDateFuture` | `Tue Mar 17 2020 13:11:50 GMT+0530 (India Standard Time)` |
+| `$randomDatePast` | `Sat Mar 02 2019 09:09:26 GMT+0530 (India Standard Time)` |
+| `$randomDateRecent` | `Tue Jul 09 2019 23:12:37 GMT+0530 (India Standard Time)` |
+| `$randomDepartment` | `Electronics` |
+| `$randomDirectoryPath` | `/usr/local/bin` |
+| `$randomDomainName` | `trevor.info` |
+| `$randomDomainSuffix` | `org` |
+| `$randomDomainWord` | `jaden` |
+| `$randomEmail` | `Iva.Kovacek61@no-a-valid-host.com` |
+| `$randomExampleEmail` | `non-a-valid-user@example.net` |
+| `$randomFashionImage` | `http://no-a-valid-host/640/480/fashion` |
+| `$randomFileExt` | `war` |
+| `$randomFileName` | `neural_sri_lanka_rupee_gloves.gdoc` |
+| `$randomFilePath` | `/home/programming_chicken.cpio` |
+| `$randomFileType` | `application` |
+| `$randomFirstName` | `Chandler` |
+| `$randomFoodImage` | `http://no-a-valid-host/640/480/food` |
+| `$randomFullName` | `Connie Runolfsdottir` |
+| `$randomHexColor` | `#47594a` |
+| `$randomImageDataUri` | `data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20baseProfile%3D%22full%22%20width%3D%22undefined%22%20height%3D%22undefined%22%3E%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22grey%22%2F%3E%20%20%3Ctext%20x%3D%220%22%20y%3D%2220%22%20font-size%3D%2220%22%20text-anchor%3D%22start%22%20fill%3D%22white%22%3Eundefinedxundefined%3C%2Ftext%3E%20%3C%2Fsvg%3E` |
+| `$randomImageUrl` | `http://no-a-valid-host/640/480` |
+| `$randomIngverb` | `navigating` |
+| `$randomInt` | `494` |
+| `$randomIP` | `241.102.234.100` |
+| `$randomIPV6` | `dbe2:7ae6:119b:c161:1560:6dda:3a9b:90a9` |
+| `$randomJobArea` | `Mobility` |
+| `$randomJobDescriptor` | `Senior` |
+| `$randomJobTitle` | `International Creative Liaison` |
+| `$randomJobType` | `Supervisor` |
+| `$randomLastName` | `Schneider` |
+| `$randomLatitude` | `55.2099` |
+| `$randomLocale` | `ny` |
+| `$randomLongitude` | `40.6609` |
+| `$randomLoremLines` | `Ducimus in ut mollitia.\nA itaque non.\nHarum temporibus nihil voluptas.\nIste in sed et nesciunt in quaerat sed.` |
+| `$randomLoremParagraph` | `Ab aliquid odio iste quo voluptas voluptatem dignissimos velit. Recusandae facilis qui commodi ea magnam enim nostrum quia quis. Nihil est suscipit assumenda ut voluptatem sed. Esse ab voluptas odit qui molestiae. Rem est nesciunt est quis ipsam expedita consequuntur.` |
+| `$randomLoremParagraphs` | `Voluptatem rem magnam aliquam ab id aut quaerat. Placeat provident possimus voluptatibus dicta velit non aut quasi. Mollitia et aliquam expedita sunt dolores nam consequuntur. Nam dolorum delectus ipsam repudiandae et ipsam ut voluptatum totam. Nobis labore labore recusandae ipsam quo.` |
+| `$randomLoremSentence` | `Molestias consequuntur nisi non quod.` |
+| `$randomLoremSentences` | `Et sint voluptas similique iure amet perspiciatis vero sequi atque. Ut porro sit et hic. Neque aspernatur vitae fugiat ut dolore et veritatis. Ab iusto ex delectus animi. Voluptates nisi iusto. Impedit quod quae voluptate qui.` |
+| `$randomLoremSlug` | `eos-aperiam-accusamus, beatae-id-molestiae, qui-est-repellat` |
+| `$randomLoremText` | `Quisquam asperiores exercitationem ut ipsum. Aut eius nesciunt. Et reiciendis aut alias eaque. Nihil amet laboriosam pariatur eligendi. Sunt ullam ut sint natus ducimus. Voluptas harum aspernatur soluta rem nam.` |
+| `$randomLoremWord` | `est` |
+| `$randomLoremWords` | `vel repellat nobis` |
+| `$randomMACAddress` | `33:d4:68:5f:b4:c7` |
+| `$randomMimeType` | `audio/vnd.vmx.cvsd` |
+| `$randomMonth` | `February` |
+| `$randomNamePrefix` | `Dr.` |
+| `$randomNameSuffix` | `MD` |
+| `$randomNatureImage` | `http://no-a-valid-host/640/480/nature` |
+| `$randomNightlifeImage` | `http://no-a-valid-host/640/480/nightlife` |
+| `$randomNoun` | `bus` |
+| `$randomPassword` | `t9iXe7COoDKv8k3` |
+| `$randomPeopleImage` | `http://no-a-valid-host/640/480/people` |
+| `$randomPhoneNumber` | `700-008-5275` |
+| `$randomPhoneNumberExt` | `27-199-983-3864` |
+| `$randomPhrase` | `You can't program the monitor without navigating the mobile XML program!` |
+| `$randomPrice` | `531.55` |
+| `$randomProduct` | `Pizza` |
+| `$randomProductAdjective` | `Unbranded` |
+| `$randomProductMaterial` | `Steel` |
+| `$randomProductName` | `Handmade Concrete Tuna` |
+| `$randomProtocol` | `https` |
+| `$randomSemver` | `7.0.5` |
+| `$randomSportsImage` | `http://no-a-valid-host/640/480/sports` |
+| `$randomStreetAddress` | `5742 Harvey Streets` |
+| `$randomStreetName` | `Kuhic Island` |
+| `$randomTransactionType` | `payment` |
+| `$randomTransportImage` | `http://no-a-valid-host/640/480/transport` |
+| `$randomUrl` | `https://no-a-valid-host.net` |
+| `$randomUserAgent` | `Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.9.8; rv:15.6) Gecko/20100101 Firefox/15.6.6` |
+| `$randomUserName` | `Jarrell.Gutkowski` |
+| `$randomUUID` | `6929bb52-3ab2-448a-9796-d6480ecad36b` |
+| `$randomVerb` | `navigate` |
+| `$randomWeekday` | `Thursday` |
+| `$randomWord` | `withdrawal` |
+| `$randomWords` | `Samoa Synergistic sticky copying Grocery` |
+| `$timestamp` | `1562757107` |
+
+##### Example: Global Scope
+
+In this example, [the _global_ scope is exported](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to DAST API through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
 Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
 
@@ -308,21 +652,170 @@ include:
 
 variables:
   DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection_serviceA.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: variable-collection-dictionary.json
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_POSTMAN_COLLECTION_VARIABLES: global-scope.json
   DAST_API_TARGET_URL: http://test-deployment/
 ```
 
-The file `variable-collection-dictionary.json` is a JSON document. This JSON is an object with
-key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+##### Example: Environment Scope
+
+In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) from the Postman Client as `environment-scope.json` and provided to DAST API through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+
+Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_POSTMAN_COLLECTION_VARIABLES: environment-scope.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
+
+##### Example: Collection Scope
+
+The _collection_ scope variables are included in the exported Postman Collection file and provided through the `DAST_API_POSTMAN_COLLECTION` configuration variable.
+
+Here is an example of using `DAST_API_POSTMAN_COLLECTION`:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
+
+##### Example: DAST API Scope
+
+The DAST API Scope is used for two main purposes, defining _data_ and _local_ scope variables that are not supported by DAST API, and changing the value of an existing variable defined in another scope. The DAST API Scope is provided through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+
+Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_POSTMAN_COLLECTION_VARIABLES: dast-api-scope.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
+
+The file `dast-api-scope.json` uses our [custom JSON file format](#dast-api-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
-   ```json
-   {
-      "base_url": "http://127.0.0.1/",
-      "token": "Token 84816165151"
-   }
-   ```
+```json
+{
+  "base_url": "http://127.0.0.1/",
+  "token": "Token 84816165151"
+}
+```
+
+##### Example: Multiple Scopes
+
+In this example, a _global_ scope, _environment_ scope, and _collection_ scope are configured. The first step is to export our various scopes.
+
+- [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
+- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) as `environment-scope.json`
+- Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
+
+The Postman Collection is provided using the `DAST_API_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `DAST_API_POSTMAN_COLLECTION_VARIABLES`. DAST API can identify which scope the provided files match using data provided in each file.
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_POSTMAN_COLLECTION_VARIABLES: global-scope.json,environment-scope.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
+
+##### Example: Changing a Variables Value
+
+When using exported scopes, it's often the case that the value of a variable must be changed for use with DAST API. For example, a _collection_ scoped variable might contain a variable named `api_version` with a value of `v2`, while your test needs a value of `v1`. Instead of modifying the exported collection to change the value, the DAST API scope can be used to change its value. This works because the _DAST API_ scope takes precedence over all other scopes.
+
+The _collection_ scope variables are included in the exported Postman Collection file and provided through the `DAST_API_POSTMAN_COLLECTION` configuration variable.
+
+The DAST API Scope is provided through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable, but first, we must create the file.
+The file `dast-api-scope.json` uses our [custom JSON file format](#dast-api-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+values. For example:
+
+```json
+{
+  "api_version": "v1"
+}
+```
+
+Our CI definition:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_POSTMAN_COLLECTION_VARIABLES: dast-api-scope.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
+
+##### Example: Changing a Variables Value with Multiple Scopes
+
+When using exported scopes, it's often the case that the value of a variable must be changed for use with DAST API. For example, an _environment_ scope might contain a variable named `api_version` with a value of `v2`, while your test needs a value of `v1`. Instead of modifying the exported file to change the value, the DAST API scope can be used. This works because the _DAST API_ scope takes precedence over all other scopes.
+
+In this example, a _global_ scope, _environment_ scope, _collection_ scope, and _DAST API_ scope are configured. The first step is to export and create our various scopes.
+
+- [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
+- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) as `environment-scope.json`
+- Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
+
+The DAST API scope is used by creating a file `dast-api-scope.json` using our [custom JSON file format](#dast-api-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+values. For example:
+
+```json
+{
+  "api_version": "v1"
+}
+```
+
+The Postman Collection is provided using the `DAST_API_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `DAST_API_POSTMAN_COLLECTION_VARIABLES`. DAST API can identify which scope the provided files match using data provided in each file.
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection.json
+  DAST_API_POSTMAN_COLLECTION_VARIABLES: global-scope.json,environment-scope.json,dast-api-scope.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
 
 ## Authentication
 
@@ -332,17 +825,19 @@ provide a script that performs an authentication flow or calculates the token.
 ### HTTP Basic Authentication
 
 [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
-is an authentication method built in to the HTTP protocol and used in conjunction with
+is an authentication method built into the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
-To use HTTP basic authentication, two CI/CD variables are added to your `.gitlab-ci.yml` file:
+
+We recommended that you [create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables)
+for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
+variables from the GitLab project's page at **Settings > CI/CD**, in the **Variables** section.
+Because of the [limitations on masked variables](../../../ci/variables/index.md#mask-a-cicd-variable),
+you should Base64-encode the password before adding it as a variable.
+
+Finally, add two CI/CD variables to your `.gitlab-ci.yml` file:
 
 - `DAST_API_HTTP_USERNAME`: The username for authentication.
-- `DAST_API_HTTP_PASSWORD`: The password for authentication.
-
-For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables)
-(for example, `TEST_API_PASSWORD`) set to the password. You can create CI/CD variables from the
-GitLab projects page at **Settings > CI/CD**, in the **Variables** section. Use that variable
-as the value for `DAST_API_HTTP_PASSWORD`:
+- `DAST_API_HTTP_PASSWORD_BASE64`: The Base64-encoded password for authentication.
 
 ```yaml
 stages:
@@ -356,8 +851,12 @@ variables:
   DAST_API_HAR: test-api-recording.har
   DAST_API_TARGET_URL: http://test-deployment/
   DAST_API_HTTP_USERNAME: testuser
-  DAST_API_HTTP_PASSWORD: $TEST_API_PASSWORD
+  DAST_API_HTTP_PASSWORD_BASE64: $TEST_API_PASSWORD
 ```
+
+#### Raw password
+
+If you do not want to Base64-encode the password (or if you are using GitLab 15.3 or earlier) you can provide the raw password `DAST_API_HTTP_PASSWORD`, instead of using `DAST_API_HTTP_PASSWORD_BASE64`.
 
 ### Bearer tokens
 
@@ -383,7 +882,7 @@ Follow these steps to provide the Bearer token with `DAST_API_OVERRIDES_ENV`:
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
    **Variables** section.
    Due to the format of `TEST_API_BEARERAUTH` it's not possible to mask the variable.
-   To mask the token's value, you can create a second variable with the token value's, and define
+   To mask the token's value, you can create a second variable with the token values, and define
    `TEST_API_BEARERAUTH` with the value `{"headers":{"Authorization":"Bearer $MASKED_VARIABLE"}}`.
 
 1. In your `.gitlab-ci.yml` file, set `DAST_API_OVERRIDES_ENV` to the variable you just created:
@@ -402,12 +901,12 @@ Follow these steps to provide the Bearer token with `DAST_API_OVERRIDES_ENV`:
      DAST_API_OVERRIDES_ENV: $TEST_API_BEARERAUTH
    ```
 
-1. To validate that authentication is working, run an DAST API test and review the job logs
+1. To validate that authentication is working, run a DAST API test and review the job logs
    and the test API's application logs.
 
 #### Token generated at test runtime
 
-If the Bearer token must be generated and doesn't expire during testing, you can provide DAST API a file that has the token. A prior stage and job, or part of the DAST API job, can
+If the Bearer token must be generated and doesn't expire during testing, you can provide DAST API with a file that has the token. A prior stage and job, or part of the DAST API job, can
 generate this file.
 
 DAST API expects to receive a JSON file with the following structure:
@@ -439,7 +938,7 @@ variables:
   DAST_API_OVERRIDES_FILE: dast-api-overrides.json
 ```
 
-To validate that authentication is working, run an DAST API test and review the job logs and
+To validate that authentication is working, run a DAST API test and review the job logs and
 the test API's application logs.
 
 #### Token has short expiration
@@ -552,8 +1051,10 @@ can be added, removed, and modified by creating a custom configuration.
 |[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`DAST_API_OPENAPI_MEDIA_TYPES`](#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`DAST_API_HAR`](#http-archive-har)                    | HTTP Archive (HAR) file. |
+|[`DAST_API_GRAPHQL`](#graphql-schema)                  | Path to GraphQL endpoint, for example `/api/graphql`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
+|[`DAST_API_GRAPHQL_SCHEMA`](#graphql-schema)           | A URL or filename for a GraphQL schema in JSON format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
 |[`DAST_API_POSTMAN_COLLECTION`](#postman-collection)   | Postman Collection file. |
-|[`DAST_API_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract postman variable values. |
+|[`DAST_API_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. The support for comma-separated (`,`) files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1. |
 |[`DAST_API_OVERRIDES_FILE`](#overrides)                | Path to a JSON file containing overrides. |
 |[`DAST_API_OVERRIDES_ENV`](#overrides)                 | JSON string containing headers to override. |
 |[`DAST_API_OVERRIDES_CMD`](#overrides)                 | Overrides command. |
@@ -562,7 +1063,8 @@ can be added, removed, and modified by creating a custom configuration.
 |`DAST_API_POST_SCRIPT`                                 | Run user command or script after scan session has finished. |
 |[`DAST_API_OVERRIDES_INTERVAL`](#overrides)            | How often to run overrides command in seconds. Defaults to `0` (once). |
 |[`DAST_API_HTTP_USERNAME`](#http-basic-authentication) | Username for HTTP authentication. |
-|[`DAST_API_HTTP_PASSWORD`](#http-basic-authentication) | Password for HTTP authentication. |
+|[`DAST_API_HTTP_PASSWORD`](#http-basic-authentication) | Password for HTTP authentication. Consider using `DAST_API_HTTP_PASSWORD_BASE64` instead. |
+|[`DAST_API_HTTP_PASSWORD_BASE64`](#http-basic-authentication) | Password for HTTP authentication, base64-encoded. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing-src/-/merge_requests/702) in GitLab 15.4. |
 |`DAST_API_SERVICE_START_TIMEOUT`                       | How long to wait for target API to become available in seconds. Default is 300 seconds. |
 |`DAST_API_TIMEOUT`                                     | How long to wait for API responses in seconds. Default is 30 seconds. |
 
@@ -1010,21 +1512,21 @@ This example excludes the `/auth` resource. This does not exclude child resource
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/auth
+  DAST_API_EXCLUDE_PATHS: /auth
 ```
 
 To exclude `/auth`, and child resources (`/auth/child`), we use a wildcard.
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/auth*
+  DAST_API_EXCLUDE_PATHS: /auth*
 ```
 
 To exclude multiple paths we use the `;` character. In this example we exclude `/auth*` and `/v1/*`.
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/auth*;/v1/*
+  DAST_API_EXCLUDE_PATHS: /auth*;/v1/*
 ```
 
 To exclude one or more nested levels within a path we use `**`. In this example we are testing API endpoints. We are testing `/api/v1/` and `/api/v2/` of a data query requesting `mass`, `brightness` and `coordinates` data for `planet`, `moon`, `star`, and `satellite` objects. Example paths that could be scanned include, but are not limited to:
@@ -1037,7 +1539,7 @@ In this example we test the `brightness` endpoint only:
 
 ```yaml
 variables:
-  DAST_API_EXCLUDE_PATHS=/api/**/mass;/api/**/coordinates
+  DAST_API_EXCLUDE_PATHS: /api/**/mass;/api/**/coordinates
 ```
 
 ### Exclude parameters
@@ -1297,7 +1799,15 @@ Each value in `DAST_API_EXCLUDE_URLS` is a regular expression. Characters such a
 The following example excludes the URL `http://target/api/auth` and its child resources.
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: http://target/api/auth
 ```
 
@@ -1306,7 +1816,15 @@ variables:
 To exclude the URLs `http://target/api/buy` and `http://target/api/sell` but allowing to scan their child resources, for instance: `http://target/api/buy/toy` or `http://target/api/sell/chair`. You could use the value `http://target/api/buy/$,http://target/api/sell/$`. This value is using two regular expressions, each of them separated by a `,` character. Hence, it contains `http://target/api/buy$` and `http://target/api/sell$`. In each regular expression, the trailing `$` character points out where the matching URL should end.
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: http://target/api/buy/$,http://target/api/sell/$
 ```
 
@@ -1315,7 +1833,15 @@ variables:
 In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: http://target/api/buy,http://target/api/sell
 ```
 
@@ -1324,7 +1850,15 @@ variables:
 In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
 
 ```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
 variables:
+  DAST_API_TARGET_URL: http://target/
+  DAST_API_OPENAPI: test-api-specification.json
   DAST_API_EXCLUDE_URLS: https://target/api/v.*/user/create$
 ```
 
@@ -1544,7 +2078,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 **Error message**
 
 - In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
-- In GitLab 13.10 and earlier, `API Security version header not found. Are you sure that you are connecting to the API Security server?`.
+- In GitLab 13.10 and earlier, `API Security version header not found. Are you sure that you are connecting to the DAST API server?`.
 
 **Solution**
 
@@ -1568,12 +2102,15 @@ This solution is for pipelines in which the target API URL doesn't change (is st
 For environments where the target API remains the same, we recommend you specify the target URL by using the `DAST_API_TARGET_URL` environment variable. In your `.gitlab-ci.yml`, add a variable `DAST_API_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
 
 ```yaml
-include:
-    - template: DAST-API.gitlab-ci.yml
+stages:
+  - dast
 
-  variables:
-    DAST_API_TARGET_URL: http://test-deployment/
-    DAST_API_OPENAPI: test-api-specification.json
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_OPENAPI: test-api-specification.json
 ```
 
 #### Dynamic environment solutions
@@ -1603,7 +2140,7 @@ deploy-test-target:
 
 ### Use OpenAPI with an invalid schema
 
-There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the API Security is able to perform a relaxed validation by setting the variable `DAST_API_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
+There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the DAST API is able to perform a relaxed validation by setting the variable `DAST_API_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
 
 #### Edit a non-compliant OpenAPI file
 
@@ -1620,25 +2157,25 @@ If your OpenAPI document is generated manually, load your document in the editor
 
 Relaxed validation is meant for cases when the OpenAPI document cannot meet OpenAPI specifications, but it still has enough content to be consumed by different tools. A validation is performed but less strictly in regards to document schema.
 
-API Security can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API Security to perform a relaxed validation, set the variable `DAST_API_OPENAPI_RELAXED_VALIDATION` to any value, for example:
+DAST API can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct DAST API to perform a relaxed validation, set the variable `DAST_API_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
 ```yaml
-   stages:
-     - dast
+stages:
+  - dast
 
-   include:
-     - template: DAST-API.gitlab-ci.yml
+include:
+  - template: DAST-API.gitlab-ci.yml
 
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_TARGET_URL: http://test-deployment/
-     DAST_API_OPENAPI: test-api-specification.json
-     DAST_API_OPENAPI_RELAXED_VALIDATION: On
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_OPENAPI_RELAXED_VALIDATION: 'On'
 ```
 
 ### `No operation in the OpenAPI document is consuming any supported media type`
 
-API Security uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
+DAST API uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
 
 **Error message**
 

@@ -45,7 +45,7 @@ Note the following:
   compatible as described in the [Version history](../../user/project/settings/import_export.md#version-history).
 - The project import option must be enabled:
 
-  1. On the top bar, select **Menu > Admin**.
+  1. On the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Visibility and access controls**.
   1. Under **Import sources**, check the "Project export enabled" option.

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe BulkImports::Pipeline do
   let(:context) { instance_double(BulkImports::Pipeline::Context, tracker: nil) }

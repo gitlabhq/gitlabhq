@@ -5,6 +5,6 @@ classes:
 feature_categories:
 - value_stream_management
 - code_review
-description: Store various metrics for merge requests
+description: Store various metrics for merge requests.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'

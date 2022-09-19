@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::UrlBlockers::IpAllowlistEntry do
   let(:ipv4) { IPAddr.new('192.168.1.1') }

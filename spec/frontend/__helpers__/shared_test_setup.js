@@ -48,9 +48,6 @@ testUtilsConfig.deprecationWarningHandler = (method, message) => {
   const ALLOWED_DEPRECATED_METHODS = [
     // https://gitlab.com/gitlab-org/gitlab/-/issues/295679
     'finding components with `find` or `get`',
-
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/295680
-    'finding components with `findAll`',
   ];
   if (!ALLOWED_DEPRECATED_METHODS.includes(method)) {
     global.console.error(message);

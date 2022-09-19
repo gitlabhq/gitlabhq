@@ -691,6 +691,36 @@ Get Confluence integration settings for a project.
 GET /projects/:id/integrations/confluence
 ```
 
+## Shimo integration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `shimo_integration`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) in GitLab 15.4.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) in GitLab 15.4. [Feature flag `shimo_integration`](https://gitlab.com/gitlab-org/gitlab/-/issues/345356) removed.
+
+Replaces the link to the internal wiki with a link to a Shimo Workspace.
+
+### Create/Edit Shimo integration
+
+Set Shimo integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/shimo
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `external_wiki_url` | string | true | Shimo Workspace URL  |
+
+### Disable Shimo integration
+
+Disable the Shimo integration for a project. Integration settings are preserved.
+
+```plaintext
+DELETE /projects/:id/integrations/shimo
+```
+
 ## External wiki
 
 Replaces the link to the internal wiki with a link to an external wiki.

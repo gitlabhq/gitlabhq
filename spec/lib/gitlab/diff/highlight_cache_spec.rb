@@ -9,33 +9,33 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
     { ".gitignore-false-false-false" =>
       [{ line_code: nil, rich_text: nil, text: "@@ -17,3 +17,4 @@ rerun.txt", type: "match", index: 0, old_pos: 17, new_pos: 17 },
        { line_code: "a5cc2925ca8258af241be7e5b0381edf30266302_17_17",
-        rich_text: " <span id=\"LC17\" class=\"line\" lang=\"plaintext\">pickle-email-*.html</span>\n",
-        text: " pickle-email-*.html",
-        type: nil,
-        index: 1,
-        old_pos: 17,
-        new_pos: 17 },
+         rich_text: " <span id=\"LC17\" class=\"line\" lang=\"plaintext\">pickle-email-*.html</span>\n",
+         text: " pickle-email-*.html",
+         type: nil,
+         index: 1,
+         old_pos: 17,
+         new_pos: 17 },
        { line_code: "a5cc2925ca8258af241be7e5b0381edf30266302_18_18",
-        rich_text: " <span id=\"LC18\" class=\"line\" lang=\"plaintext\">.project</span>\n",
-        text: " .project",
-        type: nil,
-        index: 2,
-        old_pos: 18,
-        new_pos: 18 },
+         rich_text: " <span id=\"LC18\" class=\"line\" lang=\"plaintext\">.project</span>\n",
+         text: " .project",
+         type: nil,
+         index: 2,
+         old_pos: 18,
+         new_pos: 18 },
        { line_code: "a5cc2925ca8258af241be7e5b0381edf30266302_19_19",
-        rich_text: " <span id=\"LC19\" class=\"line\" lang=\"plaintext\">config/initializers/secret_token.rb</span>\n",
-        text: " config/initializers/secret_token.rb",
-        type: nil,
-        index: 3,
-        old_pos: 19,
-        new_pos: 19 },
+         rich_text: " <span id=\"LC19\" class=\"line\" lang=\"plaintext\">config/initializers/secret_token.rb</span>\n",
+         text: " config/initializers/secret_token.rb",
+         type: nil,
+         index: 3,
+         old_pos: 19,
+         new_pos: 19 },
        { line_code: "a5cc2925ca8258af241be7e5b0381edf30266302_20_20",
-        rich_text: "+<span id=\"LC20\" class=\"line\" lang=\"plaintext\">.DS_Store</span>",
-        text: "+.DS_Store",
-        type: "new",
-        index: 4,
-        old_pos: 20,
-        new_pos: 20 }] }
+         rich_text: "+<span id=\"LC20\" class=\"line\" lang=\"plaintext\">.DS_Store</span>",
+         text: "+.DS_Store",
+         type: "new",
+         index: 4,
+         old_pos: 20,
+         new_pos: 20 }] }
   end
 
   let(:cache_key) { cache.key }
@@ -109,23 +109,59 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   end
 
   shared_examples 'caches missing entries' do
-    it 'filters the key/value list of entries to be caches for each invocation' do
-      expect(cache).to receive(:write_to_redis_hash)
-        .with(hash_including(*paths))
-        .once
-        .and_call_original
-
-      Gitlab::Redis::Cache.with do |redis|
-        expect(redis).to receive(:expire).with(cache.key, described_class::EXPIRATION)
-      end
-
-      2.times { cache.write_if_empty }
+    where(:expiration_period, :renewable_expiration_ff, :short_renewable_expiration_ff) do
+      [
+        [1.day, false, true],
+        [1.day, false, false],
+        [1.hour, true, true],
+        [8.hours, true, false]
+      ]
     end
 
-    it 'reads from cache once' do
-      expect(cache).to receive(:read_cache).once.and_call_original
+    with_them do
+      before do
+        stub_feature_flags(
+          highlight_diffs_renewable_expiration: renewable_expiration_ff,
+          highlight_diffs_short_renewable_expiration: short_renewable_expiration_ff
+        )
+      end
 
-      cache.write_if_empty
+      it 'filters the key/value list of entries to be caches for each invocation' do
+        expect(cache).to receive(:write_to_redis_hash)
+          .with(hash_including(*paths))
+          .once
+          .and_call_original
+
+        2.times { cache.write_if_empty }
+      end
+
+      it 'reads from cache once' do
+        expect(cache).to receive(:read_cache).once.and_call_original
+
+        cache.write_if_empty
+      end
+
+      it 'refreshes TTL of the key on read' do
+        cache.write_if_empty
+
+        time_until_expire = 30.minutes
+
+        Gitlab::Redis::Cache.with do |redis|
+          # Emulate that a key is going to expire soon
+          redis.expire(cache.key, time_until_expire)
+
+          expect(redis.ttl(cache.key)).to be <= time_until_expire
+
+          cache.send(:read_cache)
+
+          if renewable_expiration_ff
+            expect(redis.ttl(cache.key)).to be > time_until_expire
+            expect(redis.ttl(cache.key)).to be_within(1.minute).of(expiration_period)
+          else
+            expect(redis.ttl(cache.key)).to be <= time_until_expire
+          end
+        end
+      end
     end
   end
 

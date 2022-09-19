@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe PostReceiveService do
+  include GitlabShellHelpers
   include Gitlab::Routing
 
   let_it_be(:user) { create(:user) }
@@ -13,7 +14,6 @@ RSpec.describe PostReceiveService do
   let(:identifier) { 'key-123' }
   let(:gl_repository) { "project-#{project.id}" }
   let(:branch_name) { 'feature' }
-  let(:secret_token) { Gitlab::Shell.secret_token }
   let(:reference_counter) { double('ReferenceCounter') }
   let(:push_options) { ['ci.skip', 'another push option'] }
   let(:repository) { project.repository }
@@ -25,7 +25,6 @@ RSpec.describe PostReceiveService do
   let(:params) do
     {
       gl_repository: gl_repository,
-      secret_token: secret_token,
       identifier: identifier,
       changes: changes,
       push_options: push_options

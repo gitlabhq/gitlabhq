@@ -212,8 +212,8 @@ module Gitlab
       def build_attributes_for_project(project)
         {
           project_id: project.id,
-          shard_id:   find_shard_id(project.repository_storage),
-          disk_path:  project.disk_path
+          shard_id: find_shard_id(project.repository_storage),
+          disk_path: project.disk_path
         }
       end
 

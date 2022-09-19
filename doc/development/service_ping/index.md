@@ -374,9 +374,9 @@ Possible values are "Amazon Aurora PostgreSQL", "PostgreSQL on Amazon RDS", "Clo
 
 In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
 
-## Export Service Ping SQL queries and definitions
+## Export Service Ping data
 
-Two Rake tasks exist to export Service Ping definitions.
+Rake tasks exist to export Service Ping data in different formats.
 
 - The Rake tasks export the raw SQL queries for `count`, `distinct_count`, `sum`.
 - The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
@@ -385,11 +385,14 @@ Two Rake tasks exist to export Service Ping definitions.
 In the home directory of your local GitLab installation run the following Rake tasks for the YAML and JSON versions respectively:
 
 ```shell
-# for YAML export
+# for YAML export of SQL queries
 bin/rake gitlab:usage_data:dump_sql_in_yaml
 
-# for JSON export
+# for JSON export of SQL queries
 bin/rake gitlab:usage_data:dump_sql_in_json
+
+# for JSON export of Non SQL data
+bin/rake gitlab:usage_data:dump_non_sql_in_json
 
 # You may pipe the output into a file
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
@@ -405,7 +408,7 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
 1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
-1. Run `ServicePing::SubmitService.new.execute`.
+1. Run `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`.
 
 #### Trigger Service Ping with a detached screen session
 
@@ -430,7 +433,7 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 1. Run:
 
    ```shell
-   ServicePing::SubmitService.new.execute
+   GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
    ```
 
 1. To detach from screen, press `ctrl + A`, `ctrl + D`.
@@ -490,7 +493,7 @@ To skip database write operations, DevOps report creation, and storage of usage 
 
 ```shell
 skip_db_write:
-ServicePing::SubmitService.new(skip_db_write: true).execute
+GitlabServicePingWorker.new.perform('triggered_from_cron' => false, 'skip_db_write' => true)
 ```
 
 ## Monitoring

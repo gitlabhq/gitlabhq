@@ -190,7 +190,7 @@ pdf:
 
 Additionally, we have package management features like built-in container and package registries that you
 can leverage. You can see the complete list of packaging features in the
-[Packages & Registries](../../user/packages/index.md) documentation.
+[Packages and registries](../../user/packages/index.md) documentation.
 
 ## Integrated features
 

@@ -22,16 +22,16 @@ import {
   commentLineOptions,
   formatLineRange,
 } from './multiline_comment_utils';
-import noteActions from './note_actions.vue';
+import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
-import noteHeader from './note_header.vue';
+import NoteHeader from './note_header.vue';
 
 export default {
   name: 'NoteableNote',
   components: {
     GlSprintf,
-    noteHeader,
-    noteActions,
+    NoteHeader,
+    NoteActions,
     NoteBody,
     TimelineEntryItem,
     GlAvatarLink,
@@ -109,7 +109,7 @@ export default {
       return this.note.author;
     },
     commentType() {
-      return this.note.confidential ? __('internal note') : __('comment');
+      return this.note.internal ? __('internal note') : __('comment');
     },
     classNameBindings() {
       return {
@@ -259,7 +259,7 @@ export default {
       });
       const confirmed = await confirmAction(msg, {
         primaryBtnVariant: 'danger',
-        primaryBtnText: this.note.confidential ? __('Delete internal note') : __('Delete comment'),
+        primaryBtnText: this.note.internal ? __('Delete internal note') : __('Delete comment'),
       });
 
       if (confirmed) {
@@ -406,7 +406,7 @@ export default {
 <template>
   <timeline-entry-item
     :id="noteAnchorId"
-    :class="{ ...classNameBindings, 'internal-note': note.confidential }"
+    :class="{ ...classNameBindings, 'internal-note': note.internal }"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
     class="note note-wrapper"
@@ -440,7 +440,7 @@ export default {
       </gl-avatar-link>
     </div>
 
-    <div v-else class="gl-float-left gl-pl-3 gl-mr-3 gl-md-pl-2 gl-md-pr-2">
+    <div v-else class="gl-float-left gl-pl-3 gl-md-pl-2">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"
@@ -459,7 +459,7 @@ export default {
           :author="author"
           :created-at="note.created_at"
           :note-id="note.id"
-          :is-internal-note="note.confidential"
+          :is-internal-note="note.internal"
           :noteable-type="noteableType"
         >
           <template #note-header-info>

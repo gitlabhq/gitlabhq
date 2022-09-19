@@ -60,26 +60,21 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
 
       expect(batch_bounds).to eq([namespace4.id, namespace4.id])
     end
-  end
 
-  context 'additional filters' do
-    let(:strategy_with_filters) do
-      Class.new(described_class) do
-        def apply_additional_filters(relation, job_arguments:, job_class: nil)
-          min_id = job_arguments.first
-
-          relation.where.not(type: 'Project').where('id >= ?', min_id)
+    context 'when scope has a join which makes the column name ambiguous' do
+      let(:job_class) do
+        Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+          scope_to ->(r) { r.joins('LEFT JOIN users ON users.id = namespaces.owner_id') }
         end
       end
-    end
 
-    let(:batching_strategy) { strategy_with_filters.new(connection: ActiveRecord::Base.connection) }
-    let!(:namespace5) { namespaces.create!(name: 'batchtest5', path: 'batch-test5', type: 'Project') }
+      it 'executes the correct query' do
+        expect(job_class).to receive(:generic_instance).and_call_original
 
-    it 'applies additional filters' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id, batch_size: 3, job_arguments: [1])
+        batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id, batch_size: 3, job_arguments: [], job_class: job_class)
 
-      expect(batch_bounds).to eq([namespace4.id, namespace4.id])
+        expect(batch_bounds).to eq([namespace4.id, namespace4.id])
+      end
     end
   end
 end

@@ -205,64 +205,10 @@ field populated.
 
 ### Timeline events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled by default.
+Incident timelines give a high-level overview of what happened
+during an incident, and the steps that were taken for it to be resolved.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `incident_timeline`.
-On GitLab.com, this feature is available.
-
-Incident timelines are an important part of record keeping for incidents.
-They give a high-level overview, to executives and external viewers, of what happened during the incident,
-and the steps that were taken for it to be resolved.
-
-#### View the event timeline
-
-Incident timeline events are listed in ascending order of the date and time.
-They are grouped with dates and are listed in ascending order of the time when they occured:
-
-![Incident timeline events list](img/timeline_events_v15_1.png)
-
-To view the event timeline of an incident:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
-1. Select an incident.
-1. Select the **Timeline** tab.
-
-#### Create a timeline event
-
-Create a timeline event manually using the form.
-
-Prerequisites:
-
-- You must have at least the Developer role for the project.
-
-To create a timeline event:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
-1. Select an incident.
-1. Select the **Timeline** tab.
-1. Select **Add new timeline event**.
-1. Complete the required fields.
-1. Select **Save** or **Save and add another event**.
-
-#### Delete a timeline event
-
-You can also delete timeline events.
-
-Prerequisites:
-
-- You must have at least the Developer role for the project.
-
-To delete a timeline event:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
-1. Select an incident.
-1. Select the **Timeline** tab.
-1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Delete**.
-1. To confirm, select **Delete Event**.
+Read more about [timeline events](incident_timeline_events.md) and how to enable this feature.
 
 ### Recent updates view **(PREMIUM)**
 
@@ -297,32 +243,28 @@ as a column in the Incidents List, and as a field on newly created Incidents. If
 the incident isn't closed before the SLA period ends, GitLab adds a `missed::SLA`
 label to the incident.
 
-## Incident actions
-
-There are different actions available to help triage and respond to incidents.
-
-### Assign incidents
+## Assign incidents
 
 Assign incidents to users that are actively responding. Select **Edit** in the
 right-hand side bar to select or clear assignees.
 
-### Associate a milestone
+## Associate a milestone
 
 Associate an incident to a milestone by selecting **Edit** next to the milestone feature in the right-hand side bar.
 
-### Change severity
+## Change severity
 
 See [Incident List](#incident-list) for a full description of the severity levels available.
 Select **Edit** in the right-hand side bar to change the severity of an incident.
 
 You can also change the severity using the [`/severity` quick action](../../user/project/quick_actions.md).
 
-### Add a to-do item
+## Add a to-do item
 
 Add a to-do for incidents that you want to track in your to-do list. Select
 **Add a to do** at the top of the right-hand side bar to add a to-do item.
 
-### Change incident status
+## Change incident status
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
@@ -343,7 +285,7 @@ In GitLab 15.1 and earlier, updating the status of an [incident created from an 
 also updates the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the alert status is independent and does not update when the incident status changes.
 
-### Change escalation policy **(PREMIUM)**
+## Change escalation policy **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
@@ -362,30 +304,30 @@ In GitLab 15.1 and earlier, the escalation policy for [incidents created from al
 reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident escalation policy is independent and can be changed.
 
-### Manage incidents from Slack
+## Manage incidents from Slack
 
 Slack slash commands allow you to control GitLab and view GitLab content without leaving Slack.
 
 Learn how to [set up Slack slash commands](../../user/project/integrations/slack_slash_commands.md)
 and how to [use the available slash commands](../../integration/slash_commands.md).
 
-### Associate Zoom calls
+## Associate Zoom calls
 
 GitLab enables you to [associate a Zoom meeting with an issue](../../user/project/issues/associate_zoom_meeting.md)
 for synchronous communication during incident management. After starting a Zoom
 call for an incident, you can associate the conference call with an issue. Your
 team members can join the Zoom call without requesting a link.
 
-### Linked resources
+## Linked resources
 
-In an incident, you can [links to various resources](linked_resources.md),
+In an incident, you can add [links to various resources](linked_resources.md),
 for example:
 
 - The incident Slack channel
 - Zoom meeting
 - Resources for resolving the incidents
 
-### Embed metrics in incidents
+## Embed metrics in incidents
 
 You can embed metrics anywhere [GitLab Markdown](../../user/markdown.md) is
 used, such as descriptions, comments on issues, and merge requests. Embedding
@@ -398,7 +340,7 @@ You can embed both [GitLab-hosted metrics](../metrics/embed.md) and
 [Grafana metrics](../metrics/embed_grafana.md) in incidents and issue
 templates.
 
-### Automatically close incidents via recovery alerts
+## Automatically close incidents via recovery alerts
 
 > - [Introduced for Prometheus Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13401) in GitLab 12.5.
 > - [Introduced for HTTP Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.

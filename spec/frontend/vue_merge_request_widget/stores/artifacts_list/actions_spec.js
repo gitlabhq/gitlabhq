@@ -60,7 +60,7 @@ describe('Artifacts App Store Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestArtifacts and receiveArtifactsSuccess ', () => {
+      it('dispatches requestArtifacts and receiveArtifactsSuccess', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, [
           {
             text: 'result.txt',
@@ -103,7 +103,7 @@ describe('Artifacts App Store Actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestArtifacts and receiveArtifactsError ', () => {
+      it('dispatches requestArtifacts and receiveArtifactsError', () => {
         return testAction(
           fetchArtifacts,
           null,

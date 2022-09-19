@@ -88,10 +88,11 @@ RSpec.describe GraphqlController do
         post :execute, params: { _json: multiplex }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq([
-          { 'data' => { '__typename' => 'Query' } },
-          { 'data' => { '__typename' => 'Query' } }
-        ])
+        expect(json_response).to eq(
+          [
+            { 'data' => { '__typename' => 'Query' } },
+            { 'data' => { '__typename' => 'Query' } }
+          ])
       end
 
       it 'sets a limit on the total query size' do

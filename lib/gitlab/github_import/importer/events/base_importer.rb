@@ -29,6 +29,19 @@ module Gitlab
           def issuable_db_id(object)
             IssuableFinder.new(project, object).database_id
           end
+
+          def issuable_type(issue_event)
+            merge_request_event?(issue_event) ? MergeRequest.name : Issue.name
+          end
+
+          def merge_request_event?(issue_event)
+            issue_event.issuable_type == MergeRequest.name
+          end
+
+          def resource_event_belongs_to(issue_event)
+            belongs_to_key = merge_request_event?(issue_event) ? :merge_request_id : :issue_id
+            { belongs_to_key => issuable_db_id(issue_event) }
+          end
         end
       end
     end

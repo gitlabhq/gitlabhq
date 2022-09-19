@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Gitlab
-      class ChangeTimezone < RuboCop::Cop::Cop
+      class ChangeTimezone < RuboCop::Cop::Base
         MSG = "Do not change timezone in the runtime (application or rspec), " \
           "it could result in silently modifying other behavior."
 

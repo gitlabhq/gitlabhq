@@ -303,7 +303,7 @@ Example of response
 ```
 
 In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#get-a-single-pipeline)
-including [child pipelines](../ci/pipelines/parent_child_pipelines.md).
+including [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 In GitLab 13.5 and later, this endpoint does not return retried jobs in the response
 by default. Additionally, jobs are sorted by ID in descending order (newest first).
@@ -368,6 +368,9 @@ Example of response
     "status": "pending",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -454,6 +457,9 @@ Example of response
   "failure_reason": "script_failure",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": {
     "id": 1,
     "name": "Administrator",
@@ -611,6 +617,9 @@ Example of response
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": {
     "id": 1,
     "name": "Administrator",
@@ -701,6 +710,9 @@ Example of response
   "status": "canceled",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```
@@ -751,6 +763,9 @@ Example of response
   "status": "pending",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```
@@ -806,6 +821,9 @@ Example of response
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```
@@ -816,7 +834,7 @@ You can't delete archived jobs with the API, but you can
 
 ## Run a job
 
-Triggers a manual action to start a job.
+For a job in manual status, trigger an action to start the job.
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/play
@@ -882,6 +900,9 @@ Example response:
   "status": "pending",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/1",
+  "project": {
+    "ci_job_token_scope_enabled": false
+  },
   "user": null
 }
 ```

@@ -58,7 +58,7 @@ consists of 2-3 steps, for a total of 3-4 steps visible to the user.
 
 ```yaml
 # ~/pipeline_wizard/templates/my_template.yml
-
+id: gitlab/my-template
 title: Set up my specific tech pipeline
 description: Here's two or three introductory sentences that help the user understand what this wizard is going to set up.
 steps:
@@ -156,12 +156,13 @@ Webpack does not parse it as an Object.
 
 In the root element of the template file, you can define the following properties:
 
-| Name          | Required               | Type   | Description                                                                           |
-|---------------|------------------------|--------|---------------------------------------------------------------------------------------|
-| `title`       | **{check-circle}** Yes | string | The page title as displayed to the user. It becomes an `h1` heading above the wizard. |
-| `description` | **{check-circle}** Yes | string | The page description as displayed to the user.                                        |
-| `filename`    | **{dotted-circle}** No | string | The name of the file that is being generated. Defaults to `.gitlab-ci.yml`.           |
-| `steps`       | **{check-circle}** Yes | list   | A list of [step definitions](#step-reference).                                        |
+| Name          | Required               | Type   | Description                                                                                                                                                                                                              |
+|---------------|------------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | **{check-circle}** Yes | string | A unique template ID. This ID should follow a namespacing pattern, with a forward slash `/` as separator. Templates committed to GitLab source code should always begin with `gitlab`. For example: `gitlab/my-template` |
+| `title`       | **{check-circle}** Yes | string | The page title as displayed to the user. It becomes an `h1` heading above the wizard.                                                                                                                                    |
+| `description` | **{check-circle}** Yes | string | The page description as displayed to the user.                                                                                                                                                                           |
+| `filename`    | **{dotted-circle}** No | string | The name of the file that is being generated. Defaults to `.gitlab-ci.yml`.                                                                                                                                              |
+| `steps`       | **{check-circle}** Yes | list   | A list of [step definitions](#step-reference).                                                                                                                                                                           |
 
 ### `step` Reference
 

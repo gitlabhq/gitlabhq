@@ -5,14 +5,14 @@ module Gitlab
     module OAuth
       class Provider
         LABELS = {
-          "alicloud"                 => "AliCloud",
-          "dingtalk"                 => "DingTalk",
-          "github"                   => "GitHub",
-          "gitlab"                   => "GitLab.com",
-          "google_oauth2"            => "Google",
-          "azure_oauth2"             => "Azure AD",
+          "alicloud" => "AliCloud",
+          "dingtalk" => "DingTalk",
+          "github" => "GitHub",
+          "gitlab" => "GitLab.com",
+          "google_oauth2" => "Google",
+          "azure_oauth2" => "Azure AD",
           "azure_activedirectory_v2" => "Azure AD v2",
-          'atlassian_oauth2'         => 'Atlassian'
+          'atlassian_oauth2' => 'Atlassian'
         }.freeze
 
         def self.authentication(user, provider)
@@ -68,7 +68,9 @@ module Gitlab
               nil
             end
           else
-            provider = Gitlab.config.omniauth.providers.find { |provider| provider.name == name }
+            provider = Gitlab.config.omniauth.providers.find do |provider|
+              provider.name == name || (provider.name == 'openid_connect' && provider.args.name == name)
+            end
             merge_provider_args_with_defaults!(provider)
 
             provider

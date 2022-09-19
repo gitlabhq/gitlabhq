@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/deprecate_track_redis_hll_event'
 
 RSpec.describe RuboCop::Cop::Gitlab::DeprecateTrackRedisHLLEvent do
-  subject(:cop) { described_class.new }
-
   it 'does not flag the use of track_event' do
     expect_no_offenses('track_event :show, name: "p_analytics_insights"')
   end

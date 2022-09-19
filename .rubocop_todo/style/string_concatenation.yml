@@ -74,7 +74,7 @@ Style/StringConcatenation:
     - 'ee/lib/elastic/latest/git_class_proxy.rb'
     - 'ee/lib/gitlab/elastic/search_results.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
-    - 'ee/lib/omni_auth/strategies/kerberos_spnego.rb'
+    - 'ee/lib/omni_auth/strategies/kerberos.rb'
     - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/lib/tasks/gitlab/license.rake'
     - 'ee/spec/controllers/trial_registrations_controller_spec.rb'

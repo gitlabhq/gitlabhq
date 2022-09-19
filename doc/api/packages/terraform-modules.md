@@ -12,8 +12,8 @@ WARNING:
 This API is used by the [terraform cli](https://www.terraform.io/)
 and is generally not meant for manual consumption.
 
-For instructions on how to upload and install Maven packages from the GitLab
-package registry, see the [Terraform modules registry documentation](../../user/packages/terraform_module_registry/index.md).
+For instructions on how to upload and install Terraform modules from the GitLab
+infrastructure registry, see the [Terraform modules registry documentation](../../user/packages/terraform_module_registry/index.md).
 
 ## List available versions for a specific module
 
@@ -114,7 +114,7 @@ Example response:
 
 ## Get specific version for a specific module
 
-Get information about the latest version for a given module.
+Get information about a specific version for a given module.
 
 ```plaintext
 GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/1.0.0

@@ -365,8 +365,8 @@ RSpec.describe API::FeatureFlags do
   describe 'PUT /projects/:id/feature_flags/:name' do
     context 'with a version 2 feature flag' do
       let!(:feature_flag) do
-        create(:operations_feature_flag, :new_version_flag, project: project, active: true,
-               name: 'feature1', description: 'old description')
+        create(:operations_feature_flag, :new_version_flag,
+          project: project, active: true, name: 'feature1', description: 'old description')
       end
 
       it 'returns a 404 if the feature flag does not exist' do
@@ -591,8 +591,8 @@ RSpec.describe API::FeatureFlags do
 
       it 'deletes a feature flag strategy' do
         strategy_a = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
-        strategy_b = create(:operations_strategy, feature_flag: feature_flag,
-                          name: 'userWithId', parameters: { userIds: 'userA,userB' })
+        strategy_b = create(:operations_strategy,
+          feature_flag: feature_flag, name: 'userWithId', parameters: { userIds: 'userA,userB' })
         params = {
           strategies: [{
             id: strategy_a.id,

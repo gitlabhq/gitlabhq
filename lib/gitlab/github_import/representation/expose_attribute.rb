@@ -20,6 +20,10 @@ module Gitlab
             end
           end
         end
+
+        def [](key)
+          respond_to?(key.to_sym) ? attributes[key] : nil
+        end
       end
     end
   end

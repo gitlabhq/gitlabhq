@@ -82,6 +82,11 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
     it 'benchmarks all filters in the PlainMarkdownPipeline' do
       benchmark_pipeline_filters(:plain_markdown)
     end
+
+    it 'benchmarks specified filters in the FullPipeline' do
+      filter_klass_list = [Banzai::Filter::MathFilter]
+      benchmark_pipeline_filters(:full, filter_klass_list)
+    end
   end
 
   # build up the source text for each filter
@@ -105,7 +110,7 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
     filter_source
   end
 
-  def benchmark_pipeline_filters(pipeline_type)
+  def benchmark_pipeline_filters(pipeline_type, filter_klass_list = nil)
     pipeline      = Banzai::Pipeline[pipeline_type]
     filter_source = build_filter_text(pipeline, markdown_text)
 
@@ -114,7 +119,8 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
     Benchmark.ips do |x|
       x.config(time: 10, warmup: 2)
 
-      pipeline.filters.each do |filter_klass|
+      filters = filter_klass_list || pipeline.filters
+      filters.each do |filter_klass|
         label = filter_klass.name.demodulize.delete_suffix('Filter').truncate(20)
 
         x.report(label) do

@@ -196,3 +196,8 @@ export const MEMBER_ACCESS_LEVEL_PROPERTY_NAME = 'access_level';
 
 export const GROUP_LINK_BASE_PROPERTY_NAME = 'group_link';
 export const GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME = 'group_access';
+
+export const I18N_USER_YOU = __("It's you");
+export const I18N_USER_BLOCKED = __('Blocked');
+export const I18N_USER_BOT = __('Bot');
+export const I188N_USER_2FA = __('2FA');

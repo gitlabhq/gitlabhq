@@ -1,0 +1,81 @@
+# Specific specs passed
+.specific-specs: &specific-specs
+  if: $QA_TESTS != ""
+
+# No specific specs passed
+.all-specs: &all-specs
+  if: $QA_TESTS == ""
+
+# No specific specs in mr pipeline
+.all-specs-mr: &all-specs-mr
+  if: $CI_MERGE_REQUEST_IID && $QA_TESTS == ""
+  when: manual
+
+# Triggered by change pattern
+.app-changes: &app-changes
+  if: $APP_CHANGE_TRIGGER == "true"
+
+# QA framework changes present
+.qa-framework-changes: &qa-framework-changes
+  if: $QA_FRAMEWORK_CHANGES == "true"
+
+.never-when-qa-framework-changes-or-no-specific-specs:
+  - <<: *qa-framework-changes
+    when: never
+  - <<: *all-specs
+    when: never
+
+.never-when-specific-specs-always-when-qa-framework-changes:
+  - <<: *specific-specs
+    when: never
+  - *qa-framework-changes
+
+# ------------------------------------------
+# Test
+# ------------------------------------------
+.rules:qa-smoke:
+  rules:
+    # always trigger smoke suite if review pipeline got triggered by specific changes in application code
+    - <<: *app-changes
+      variables:
+        QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
+    - *qa-framework-changes
+    - if: $QA_SUITES =~ /Test::Instance::Smoke/
+
+.rules:qa-blocking:
+  rules:
+    - <<: *app-changes
+      when: never
+    - !reference [.never-when-qa-framework-changes-or-no-specific-specs]
+    - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
+.rules:qa-blocking-parallel:
+  rules:
+    # always trigger blocking suite if review pipeline got triggered by specific changes in application code
+    - <<: *app-changes
+      variables:
+        QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
+    - !reference [.never-when-specific-specs-always-when-qa-framework-changes]
+    - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
+
+.rules:qa-non-blocking:
+  rules:
+    - !reference [.never-when-qa-framework-changes-or-no-specific-specs]
+    - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
+.rules:qa-non-blocking-parallel:
+  rules:
+    - !reference [.never-when-specific-specs-always-when-qa-framework-changes]
+    - *all-specs-mr # set full suite to manual when no specific specs passed in mr
+    - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
+
+# ------------------------------------------
+# Prepare/Report
+# ------------------------------------------
+# if no rules for test execution are matched, pipeline will not have e2e test jobs
+# so we need to skip knapsack, allure and test resource deletion jobs as well
+.rules:app-or-qa-framework-changes-or-review-scenarios:
+  rules:
+    - *app-changes
+    - *qa-framework-changes
+    - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
+    - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/

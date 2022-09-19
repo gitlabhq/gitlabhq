@@ -82,7 +82,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
             let(:params) do
               {
                 earlier_or_equal_to_sha: first_version.sha,
-                earlier_or_equal_to_id:  global_id_of(first_version)
+                earlier_or_equal_to_id: global_id_of(first_version)
               }
             end
 
@@ -95,7 +95,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
             let(:params) do
               {
                 earlier_or_equal_to_sha: first_version.sha,
-                earlier_or_equal_to_id:  global_id_of(other_version)
+                earlier_or_equal_to_id: global_id_of(other_version)
               }
             end
 

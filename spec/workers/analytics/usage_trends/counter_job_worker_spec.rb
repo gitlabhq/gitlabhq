@@ -48,9 +48,41 @@ RSpec.describe Analytics::UsageTrends::CounterJobWorker do
   end
 
   it 'does not insert anything when BatchCount returns error' do
-    allow(Gitlab::Database::BatchCount).to receive(:batch_count).and_return(Gitlab::Database::BatchCounter::FALLBACK)
+    allow(Gitlab::Database::BatchCount).to receive(:batch_count_with_timeout)
+      .and_return({ status: :canceled })
 
     expect { subject }.not_to change { Analytics::UsageTrends::Measurement.count }
+  end
+
+  context 'when the timeout elapses' do
+    let(:min_id) { 1 }
+    let(:max_id) { 12345 }
+    let(:continue_from) { 321 }
+    let(:partial_results) { 42 }
+    let(:final_count) { 123 }
+
+    subject { described_class.new.perform(users_measurement_identifier, min_id, max_id, recorded_at) }
+
+    it 'continues counting later when the timeout elapses' do
+      expect(Gitlab::Database::BatchCount).to receive(:batch_count_with_timeout)
+        .with(anything, start: min_id, finish: max_id, timeout: 250.seconds, partial_results: nil)
+        .and_return({ status: :timeout, partial_results: partial_results, continue_from: continue_from })
+
+      expect(described_class).to receive(:perform_async).with(anything, continue_from, max_id, recorded_at, partial_results) do |*args|
+        described_class.new.perform(*args)
+      end
+
+      expect(Gitlab::Database::BatchCount).to receive(:batch_count_with_timeout)
+        .with(anything, start: continue_from, finish: max_id, timeout: 250.seconds, partial_results: partial_results)
+        .and_return({ status: :completed, count: final_count })
+
+      expect { subject }.to change { Analytics::UsageTrends::Measurement.count }
+
+      measurement = Analytics::UsageTrends::Measurement.users.last
+      expect(measurement.recorded_at).to be_like_time(recorded_at)
+      expect(measurement.identifier).to eq('users')
+      expect(measurement.count).to eq(final_count)
+    end
   end
 
   context 'when pipelines_succeeded identifier is passed' do

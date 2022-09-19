@@ -80,6 +80,11 @@ Example response:
 }
 ```
 
+## Container Registry pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are [paginated](index.md#pagination).
+
 ## List registry repositories
 
 ### Within a project

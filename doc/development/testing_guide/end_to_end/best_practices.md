@@ -62,13 +62,13 @@ In those and similar cases we need to include the test case link by other means.
 To illustrate, there are two tests in the shared examples in [`qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb):
 
 ```ruby
-shared_examples 'unselected maintainer' do |testcase|
+RSpec.shared_examples 'unselected maintainer' do |testcase|
   it 'user fails to push', testcase: testcase do
     ...
   end
 end
 
-shared_examples 'selected developer' do |testcase|
+RSpec.shared_examples 'selected developer' do |testcase|
   it 'user pushes and merges', testcase: testcase do
     ...
   end
@@ -415,7 +415,7 @@ except(page).to have_no_text('hidden')
 Unfortunately, that's not automatically the case for the predicate methods that we add to our
 [page objects](page_objects.md). We need to [create our own negatable matchers](https://relishapp.com/rspec/rspec-expectations/v/3-9/docs/custom-matchers/define-a-custom-matcher#matcher-with-separate-logic-for-expect().to-and-expect().not-to).
 
-The initial example uses the `have_job` matcher which is derived from the 
+The initial example uses the `have_job` matcher which is derived from the
 [`has_job?` predicate method of the `Page::Project::Pipeline::Show` page object](https://gitlab.com/gitlab-org/gitlab/-/blob/87864b3047c23b4308f59c27a3757045944af447/qa/qa/page/project/pipeline/show.rb#L53).
 To create a negatable matcher, we use `has_no_job?` for the negative case:
 

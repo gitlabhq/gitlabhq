@@ -5,7 +5,7 @@ RSpec.describe 'pypi package details' do
   include GraphqlHelpers
   include_context 'package details setup'
 
-  let_it_be(:package) { create(:pypi_package, project: project) }
+  let_it_be(:package) { create(:pypi_package, :last_downloaded_at, project: project) }
 
   let(:metadata) { query_graphql_fragment('PypiMetadata') }
 

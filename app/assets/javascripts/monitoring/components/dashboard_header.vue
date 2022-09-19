@@ -189,6 +189,7 @@ export default {
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
         data-qa-selector="environments_dropdown"
+        data-testid="environments-dropdown"
         toggle-class="dropdown-menu-toggle"
         menu-class="monitor-environment-dropdown-menu"
         :text="environmentDropdownText"
@@ -202,7 +203,7 @@ export default {
             <gl-dropdown-item
               v-for="environment in filteredEnvironments"
               :key="environment.id"
-              :is-check-item="true"
+              is-check-item
               :is-checked="environment.name === currentEnvironmentName"
               :href="getEnvironmentPath(environment.id)"
             >

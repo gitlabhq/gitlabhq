@@ -865,4 +865,93 @@ RSpec.describe API::Helpers do
       helper.bad_request!('custom reason')
     end
   end
+
+  describe '#authenticate_by_gitlab_shell_token!' do
+    include GitlabShellHelpers
+
+    let(:valid_secret_token) { 'valid' }
+    let(:invalid_secret_token) { 'invalid' }
+    let(:headers) { {} }
+    let(:params) { {} }
+
+    shared_examples 'authorized' do
+      it 'authorized' do
+        expect(helper).not_to receive(:unauthorized!)
+
+        helper.authenticate_by_gitlab_shell_token!
+      end
+    end
+
+    shared_examples 'unauthorized' do
+      it 'unauthorized' do
+        expect(helper).to receive(:unauthorized!)
+
+        helper.authenticate_by_gitlab_shell_token!
+      end
+    end
+
+    before do
+      allow(Gitlab::Shell).to receive(:secret_token).and_return(valid_secret_token)
+      allow(helper).to receive_messages(params: params, headers: headers, secret_token: valid_secret_token)
+    end
+
+    context 'when jwt token is not provided' do
+      it_behaves_like 'unauthorized'
+    end
+
+    context 'when jwt token is invalid' do
+      let(:headers) { gitlab_shell_internal_api_request_header(secret_token: invalid_secret_token) }
+
+      it_behaves_like 'unauthorized'
+    end
+
+    context 'when jwt token issuer is invalid' do
+      let(:headers) { gitlab_shell_internal_api_request_header(issuer: 'gitlab-workhorse') }
+
+      it_behaves_like 'unauthorized'
+    end
+
+    context 'when jwt token is valid' do
+      let(:headers) { gitlab_shell_internal_api_request_header }
+
+      it_behaves_like 'authorized'
+    end
+
+    context 'when gitlab_shell_jwt_token is disabled' do
+      let(:valid_secret_token) { +'valid' } # mutable string to use chomp!
+      let(:invalid_secret_token) { +'invalid' } # mutable string to use chomp!
+
+      before do
+        stub_feature_flags(gitlab_shell_jwt_token: false)
+      end
+
+      context 'when shared secret is not provided' do
+        it_behaves_like 'unauthorized'
+      end
+
+      context 'when shared secret provided via params' do
+        let(:params) { { 'secret_token' => valid_secret_token } }
+
+        it_behaves_like 'authorized'
+
+        context 'but it is invalid' do
+          let(:params) { { 'secret_token' => invalid_secret_token } }
+
+          it_behaves_like 'unauthorized'
+        end
+      end
+
+      context 'when shared secret provided via headers' do
+        let(:headers) { { described_class::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(valid_secret_token) } }
+
+        it_behaves_like 'authorized'
+
+        context 'but it is invalid' do
+          let(:headers) { { described_class::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(invalid_secret_token) } }
+
+          it_behaves_like 'unauthorized'
+        end
+      end
+    end
+  end
 end

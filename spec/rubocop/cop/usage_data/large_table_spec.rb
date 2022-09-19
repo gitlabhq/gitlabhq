@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/large_table'
 
@@ -17,8 +17,6 @@ RSpec.describe RuboCop::Cop::UsageData::LargeTable do
                           'AllowedMethods' => allowed_methods
                         })
   end
-
-  subject(:cop) { described_class.new(config) }
 
   context 'when in usage_data files' do
     before do

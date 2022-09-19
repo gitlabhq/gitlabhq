@@ -757,3 +757,41 @@ export const resolvedFolder = {
   stoppedCount: 0,
   __typename: 'LocalEnvironmentFolder',
 };
+
+export const resolvedDeploymentDetails = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/20',
+      deployment: {
+        id: 'gid://gitlab/Deployment/99',
+        iid: '55',
+        tags: [
+          {
+            name: 'testTag1',
+            path: 'tags/testTag1',
+          },
+          {
+            name: 'testTag2',
+            path: 'tags/testTag2',
+          },
+          {
+            name: 'testTag3',
+            path: 'tags/testTag3',
+          },
+          {
+            name: 'testTag4',
+            path: 'tags/testTag4',
+          },
+          {
+            name: 'testTag5',
+            path: 'tags/testTag5',
+          },
+          {
+            name: 'testTag6',
+            path: 'tags/testTag6',
+          },
+        ],
+      },
+    },
+  },
+};

@@ -3,7 +3,7 @@
 RSpec.shared_examples 'snippets sort order' do
   let(:params) { {} }
   let(:sort_argument) { {} }
-  let(:sort_params) { params.merge(sort_argument)}
+  let(:sort_params) { params.merge(sort_argument) }
 
   before do
     sign_in(user)

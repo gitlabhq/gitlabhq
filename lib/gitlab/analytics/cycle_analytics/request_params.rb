@@ -105,9 +105,8 @@ module Gitlab
         private
 
         def use_aggregated_backend?
-          group.present? && # for now it's only available on the group-level
-            aggregation.enabled &&
-            Feature.enabled?(:use_vsa_aggregated_tables, group)
+          # for now it's only available on the group-level
+          group.present? && aggregation.enabled
         end
 
         def aggregation_attributes

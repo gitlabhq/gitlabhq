@@ -32,7 +32,7 @@ describe('Diff File Row component', () => {
       ...diffFileRowProps,
     });
 
-    expect(wrapper.find(FileRow).props()).toEqual(
+    expect(wrapper.findComponent(FileRow).props()).toEqual(
       expect.objectContaining({
         ...sharedProps,
       }),
@@ -47,7 +47,7 @@ describe('Diff File Row component', () => {
       showTooltip: true,
     });
 
-    expect(wrapper.find(ChangedFileIcon).props()).toEqual(
+    expect(wrapper.findComponent(ChangedFileIcon).props()).toEqual(
       expect.objectContaining({
         file: {},
         size: 16,
@@ -74,7 +74,7 @@ describe('Diff File Row component', () => {
         hideFileStats: false,
         viewedFiles: isViewed ? { '#123456789': true } : {},
       });
-      expect(wrapper.find(FileRow).props('fileClasses')).toBe(expected);
+      expect(wrapper.findComponent(FileRow).props('fileClasses')).toBe(expected);
     },
   );
 
@@ -92,7 +92,7 @@ describe('Diff File Row component', () => {
         },
         hideFileStats,
       });
-      expect(wrapper.find(FileRowStats).exists()).toEqual(value);
+      expect(wrapper.findComponent(FileRowStats).exists()).toEqual(value);
     });
   });
 

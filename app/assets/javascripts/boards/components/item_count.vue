@@ -30,7 +30,9 @@ export default {
       {{ itemsSize }}
     </span>
     <span v-if="isMaxLimitSet" class="max-issue-size">
-      {{ maxIssueCount }}
+      <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+      {{ `/ ${maxIssueCount}` }}
+      <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
     </span>
   </div>
 </template>

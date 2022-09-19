@@ -126,7 +126,10 @@ RSpec.describe 'Project fork' do
     let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
     def submit_form
-      select(group.name)
+      find('[data-testid="select_namespace_dropdown"]').click
+      find('[data-testid="select_namespace_dropdown_search_field"]').fill_in(with: group.name)
+      click_button group.name
+
       click_button 'Fork project'
     end
 

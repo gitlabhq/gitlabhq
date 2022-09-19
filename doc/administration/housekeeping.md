@@ -27,7 +27,7 @@ GitLab automatically runs `git gc` and `git repack` on repositories after Git pu
 
 You can change how often this happens or turn it off:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Housekeeping** section, configure the [housekeeping options](#housekeeping-options).

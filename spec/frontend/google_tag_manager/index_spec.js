@@ -8,13 +8,13 @@ import {
   trackSaasTrialSubmit,
   trackSaasTrialSkip,
   trackSaasTrialGroup,
-  trackSaasTrialProject,
   trackSaasTrialGetStarted,
   trackTrialAcceptTerms,
   trackCheckout,
   trackTransaction,
   trackAddToCartUsageTab,
   getNamespaceId,
+  trackCompanyForm,
 } from '~/google_tag_manager';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
@@ -148,9 +148,6 @@ describe('~/google_tag_manager/index', () => {
     }),
     createTestCase(trackSaasTrialGroup, {
       forms: [{ cls: 'js-saas-trial-group', expectation: { event: 'saasTrialGroup' } }],
-    }),
-    createTestCase(trackSaasTrialProject, {
-      forms: [{ id: 'new_project', expectation: { event: 'saasTrialProject' } }],
     }),
     createTestCase(trackProjectImport, {
       links: [
@@ -440,6 +437,34 @@ describe('~/google_tag_manager/index', () => {
         });
       });
     });
+
+    describe('when trackCompanyForm is invoked', () => {
+      it('with an ultimate trial', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCompanyForm('ultimate_trial');
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+          event: 'aboutYourCompanyFormSubmit',
+          aboutYourCompanyType: 'ultimate_trial',
+        });
+        expect(logError).not.toHaveBeenCalled();
+      });
+
+      it('with a free account', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCompanyForm('free_account');
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+          event: 'aboutYourCompanyFormSubmit',
+          aboutYourCompanyType: 'free_account',
+        });
+        expect(logError).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe.each([
@@ -452,11 +477,11 @@ describe('~/google_tag_manager/index', () => {
     });
 
     it('no ops', () => {
-      setHTMLFixture(createHTML({ forms: [{ id: 'new_project' }] }));
+      setHTMLFixture(createHTML({ forms: [{ cls: 'js-saas-trial-group' }] }));
 
-      trackSaasTrialProject();
+      trackSaasTrialGroup();
 
-      triggerEvent('#new_project', 'submit');
+      triggerEvent('.js-saas-trial-group', 'submit');
 
       expect(spy).not.toHaveBeenCalled();
       expect(logError).not.toHaveBeenCalled();
@@ -477,11 +502,11 @@ describe('~/google_tag_manager/index', () => {
     });
 
     it('logs error', () => {
-      setHTMLFixture(createHTML({ forms: [{ id: 'new_project' }] }));
+      setHTMLFixture(createHTML({ forms: [{ cls: 'js-saas-trial-group' }] }));
 
-      trackSaasTrialProject();
+      trackSaasTrialGroup();
 
-      triggerEvent('#new_project', 'submit');
+      triggerEvent('.js-saas-trial-group', 'submit');
 
       expect(logError).toHaveBeenCalledWith(
         'Unexpected error while pushing to dataLayer',

@@ -3,7 +3,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 
 import eventHub from '../notes/event_hub';
-import diffsApp from './components/app.vue';
+import DiffsApp from './components/app.vue';
 
 import { TREE_LIST_STORAGE_KEY, DIFF_WHITESPACE_COOKIE_NAME } from './constants';
 import { getReviewsForMergeRequest } from './utils/file_reviews';
@@ -14,7 +14,7 @@ export default function initDiffsApp(store) {
     el: '#js-diffs-app',
     name: 'MergeRequestDiffs',
     components: {
-      diffsApp,
+      DiffsApp,
     },
     store,
     data() {

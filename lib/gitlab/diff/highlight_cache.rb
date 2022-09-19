@@ -6,7 +6,7 @@ module Gitlab
       include Gitlab::Utils::Gzip
       include Gitlab::Utils::StrongMemoize
 
-      EXPIRATION = 1.day
+      EXPIRATION = 1.hour
       VERSION = 2
 
       delegate :diffable,     to: :@diff_collection
@@ -82,6 +82,16 @@ module Gitlab
 
       private
 
+      def expiration
+        return 1.day unless Feature.enabled?(:highlight_diffs_renewable_expiration, diffable.project)
+
+        if Feature.enabled?(:highlight_diffs_short_renewable_expiration, diffable.project)
+          EXPIRATION
+        else
+          8.hours
+        end
+      end
+
       def set_highlighted_diff_lines(diff_file, content)
         diff_file.highlighted_diff_lines = content.map do |line|
           Gitlab::Diff::Line.safe_init_from_hash(line)
@@ -125,9 +135,9 @@ module Gitlab
       #
       def write_to_redis_hash(hash)
         Gitlab::Redis::Cache.with do |redis|
-          redis.pipelined do
+          redis.pipelined do |pipeline|
             hash.each do |diff_file_id, highlighted_diff_lines_hash|
-              redis.hset(
+              pipeline.hset(
                 key,
                 diff_file_id,
                 gzip_compress(highlighted_diff_lines_hash.to_json)
@@ -137,8 +147,7 @@ module Gitlab
             end
 
             # HSETs have to have their expiration date manually updated
-            #
-            redis.expire(key, EXPIRATION)
+            pipeline.expire(key, expiration)
           end
 
           record_memory_usage(fetch_memory_usage(redis, key))
@@ -188,10 +197,18 @@ module Gitlab
         return {} unless file_paths.any?
 
         results = []
+        cache_key = key
+        highlight_diffs_renewable_expiration_enabled = Feature.enabled?(:highlight_diffs_renewable_expiration, diffable.project)
+        expiration_period = expiration
 
         Gitlab::Redis::Cache.with do |redis|
-          results = redis.hmget(key, file_paths)
+          redis.pipelined do |pipeline|
+            results = pipeline.hmget(cache_key, file_paths)
+            pipeline.expire(key, expiration_period) if highlight_diffs_renewable_expiration_enabled
+          end
         end
+
+        results = results.value
 
         record_hit_ratio(results)
 

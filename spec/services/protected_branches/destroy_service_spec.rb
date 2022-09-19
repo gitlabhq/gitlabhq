@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ProtectedBranches::DestroyService do
   let_it_be_with_reload(:project) { create(:project) }
 
-  let(:protected_branch) { create(:protected_branch, project: project) }
+  let!(:protected_branch) { create(:protected_branch, project: project) }
   let(:user) { project.first_owner }
 
   subject(:service) { described_class.new(project, user) }

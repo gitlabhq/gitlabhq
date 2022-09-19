@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/predicate_memoization'
 
 RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
-  subject(:cop) { described_class.new }
-
   shared_examples('not registering offense') do
     it 'does not register offenses' do
       expect_no_offenses(source)

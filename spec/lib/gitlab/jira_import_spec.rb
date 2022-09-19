@@ -106,12 +106,6 @@ RSpec.describe Gitlab::JiraImport do
     end
   end
 
-  describe '.jira_issue_cache_key' do
-    it 'returns cache key for Jira issue imported to given project' do
-      expect(described_class.jira_item_cache_key(project_id, 'DEMO-123', :issues)).to eq("jira-import/items-mapper/#{project_id}/issues/DEMO-123")
-    end
-  end
-
   describe '.already_imported_cache_key' do
     it 'returns cache key for already imported items' do
       expect(described_class.already_imported_cache_key(:issues, project_id)).to eq("jira-importer/already-imported/#{project_id}/issues")

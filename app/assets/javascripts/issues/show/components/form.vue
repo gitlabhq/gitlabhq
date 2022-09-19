@@ -22,10 +22,6 @@ export default {
     LockedWarning,
   },
   props: {
-    canDestroy: {
-      type: Boolean,
-      required: true,
-    },
     endpoint: {
       type: String,
       required: true,
@@ -62,11 +58,6 @@ export default {
     projectNamespace: {
       type: String,
       required: true,
-    },
-    showDeleteButton: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     canAttachFile: {
       type: Boolean,
@@ -231,12 +222,6 @@ export default {
       :enable-autocomplete="enableAutocomplete"
     />
 
-    <edit-actions
-      :endpoint="endpoint"
-      :form-state="formState"
-      :can-destroy="canDestroy"
-      :show-delete-button="showDeleteButton"
-      :issuable-type="issuableType"
-    />
+    <edit-actions :endpoint="endpoint" :form-state="formState" :issuable-type="issuableType" />
   </form>
 </template>

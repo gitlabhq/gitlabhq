@@ -9,29 +9,29 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
   before do
     sign_in(user)
-    visit edit_project_path(project)
+    visit project_settings_merge_requests_path(project)
   end
 
   it 'shows "Merge commit" strategy' do
-    page.within '#js-merge-request-settings' do
+    page.within '.merge-request-settings-form' do
       expect(page).to have_content 'Merge commit'
     end
   end
 
   it 'shows "Merge commit with semi-linear history " strategy' do
-    page.within '#js-merge-request-settings' do
+    page.within '.merge-request-settings-form' do
       expect(page).to have_content 'Merge commit with semi-linear history'
     end
   end
 
   it 'shows "Fast-forward merge" strategy' do
-    page.within '#js-merge-request-settings' do
+    page.within '.merge-request-settings-form' do
       expect(page).to have_content 'Fast-forward merge'
     end
   end
 
   it 'shows Squash commit options', :aggregate_failures do
-    page.within '#js-merge-request-settings' do
+    page.within '.merge-request-settings-form' do
       expect(page).to have_content 'Do not allow'
       expect(page).to have_content 'Squashing is never performed and the checkbox is hidden.'
 
@@ -52,30 +52,33 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         expect(page).to have_content 'Pipelines must succeed'
         expect(page).to have_content 'All threads must be resolved'
 
-        within('.sharing-permissions-form') do
-          find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
-          find('[data-testid="project-features-save-button"]').send_keys(:return)
-        end
+        visit edit_project_path(project)
 
-        expect(page).not_to have_content 'Pipelines must succeed'
-        expect(page).not_to have_content 'All threads must be resolved'
+        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
+        find('[data-testid="project-features-save-button"]').send_keys(:return)
+
+        visit project_settings_merge_requests_path(project)
+
+        expect(page).to have_content "Page Not Found"
       end
     end
 
     context 'when Pipelines are initially disabled', :js do
       before do
         project.project_feature.update_attribute('builds_access_level', ProjectFeature::DISABLED)
-        visit edit_project_path(project)
+        visit project_settings_merge_requests_path(project)
       end
 
       it 'shows the Merge Requests settings that do not depend on Builds feature' do
         expect(page).to have_content 'Pipelines must succeed'
         expect(page).to have_content 'All threads must be resolved'
 
-        within('.sharing-permissions-form') do
-          find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
-          find('[data-testid="project-features-save-button"]').send_keys(:return)
-        end
+        visit edit_project_path(project)
+
+        find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
+        find('[data-testid="project-features-save-button"]').send_keys(:return)
+
+        visit project_settings_merge_requests_path(project)
 
         expect(page).to have_content 'Pipelines must succeed'
         expect(page).to have_content 'All threads must be resolved'
@@ -86,17 +89,21 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
   context 'when Merge Request are initially disabled', :js do
     before do
       project.project_feature.update_attribute('merge_requests_access_level', ProjectFeature::DISABLED)
-      visit edit_project_path(project)
+      visit project_settings_merge_requests_path(project)
     end
 
     it 'does not show the Merge Requests settings' do
       expect(page).not_to have_content 'Pipelines must succeed'
       expect(page).not_to have_content 'All threads must be resolved'
 
+      visit edit_project_path(project)
+
       within('.sharing-permissions-form') do
         find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
         find('[data-testid="project-features-save-button"]').send_keys(:return)
       end
+
+      visit project_settings_merge_requests_path(project)
 
       expect(page).to have_content 'Pipelines must succeed'
       expect(page).to have_content 'All threads must be resolved'

@@ -146,6 +146,11 @@
   category: testing
   redis_slot: testing
   aggregation: weekly
+- name: i_testing_test_report_uploaded
+  category: testing
+  redis_slot: testing
+  aggregation: weekly
+  feature_flag: usage_data_ci_i_testing_test_report_uploaded
 # Project Management group
 - name: g_project_management_issue_title_changed
   category: issues_edit
@@ -332,11 +337,6 @@
   redis_slot: testing
   category: testing
   aggregation: weekly
-# Container Security - Network Policies
-- name: clusters_using_network_policies_ui
-  redis_slot: network_policies
-  category: network_policies
-  aggregation: weekly
 # Geo group
 - name: g_geo_proxied_requests
   category: geo
@@ -352,3 +352,8 @@
   category: manage
   aggregation: weekly
   expiry: 42
+# Environments page
+- name: users_visiting_environments_pages
+  category: environments
+  redis_slot: users
+  aggregation: weekly

@@ -15,13 +15,13 @@ class Projects::GoogleCloud::GcpRegionsController < Projects::GoogleCloud::BaseC
       cancelPath: project_google_cloud_configuration_path(project)
     }
     @js_data = js_data.to_json
-    track_event('gcp_regions#index', 'success', js_data)
+    track_event(:render_form)
   end
 
   def create
     permitted_params = params.permit(:ref, :gcp_region)
-    response = GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
-    track_event('gcp_regions#create', 'success', response)
+    GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
+    track_event(:configure_region)
     redirect_to project_google_cloud_configuration_path(project), notice: _('GCP region configured')
   end
 end

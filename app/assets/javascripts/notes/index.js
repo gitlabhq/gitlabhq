@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import notesApp from './components/notes_app.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import NotesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
-import initSortDiscussions from './sort_discussions';
 import { store } from './stores';
 import initTimelineToggle from './timeline';
 
@@ -16,7 +16,7 @@ export default () => {
     el,
     name: 'NotesRoot',
     components: {
-      notesApp,
+      NotesApp,
     },
     store,
     data() {
@@ -40,6 +40,7 @@ export default () => {
           username: parsedUserData.username,
           avatar_url: parsedUserData.avatar_path || parsedUserData.avatar_url,
           path: parsedUserData.path,
+          can_add_timeline_events: parseBoolean(notesDataset.canAddTimelineEvents),
         };
       }
 
@@ -61,6 +62,5 @@ export default () => {
   });
 
   initDiscussionFilters(store);
-  initSortDiscussions(store);
   initTimelineToggle(store);
 };

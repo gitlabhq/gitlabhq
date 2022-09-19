@@ -116,7 +116,7 @@ RSpec.describe Settings do
   describe '.cron_for_service_ping' do
     it 'returns correct crontab for some manually calculated example' do
       allow(Gitlab::CurrentSettings)
-        .to receive(:uuid) { 'd9e2f4e8-db1f-4e51-b03d-f427e1965c4a'}
+        .to receive(:uuid) { 'd9e2f4e8-db1f-4e51-b03d-f427e1965c4a' }
 
       expect(described_class.send(:cron_for_service_ping)).to eq('44 10 * * 4')
     end
@@ -148,6 +148,32 @@ RSpec.describe Settings do
     it 'returns empty encrypted config when a key has not been set' do
       allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
       expect(Settings.encrypted('tmp/tests/test.enc').read).to be_empty
+    end
+  end
+
+  describe '.build_sidekiq_routing_rules' do
+    [
+      [nil, [['*', 'default']]],
+      [[], [['*', 'default']]],
+      [[['name=foobar', 'foobar']], [['name=foobar', 'foobar']]]
+    ].each do |input_rules, output_rules|
+      context "Given input routing_rules #{input_rules}" do
+        it "returns output routing_rules #{output_rules}" do
+          expect(described_class.send(:build_sidekiq_routing_rules, input_rules)).to eq(output_rules)
+        end
+      end
+    end
+  end
+
+  describe '.microsoft_graph_mailer' do
+    it 'defaults' do
+      expect(described_class.microsoft_graph_mailer.enabled).to be false
+      expect(described_class.microsoft_graph_mailer.user_id).to be_nil
+      expect(described_class.microsoft_graph_mailer.tenant).to be_nil
+      expect(described_class.microsoft_graph_mailer.client_id).to be_nil
+      expect(described_class.microsoft_graph_mailer.client_secret).to be_nil
+      expect(described_class.microsoft_graph_mailer.azure_ad_endpoint).to eq('https://login.microsoftonline.com')
+      expect(described_class.microsoft_graph_mailer.graph_endpoint).to eq('https://graph.microsoft.com')
     end
   end
 end

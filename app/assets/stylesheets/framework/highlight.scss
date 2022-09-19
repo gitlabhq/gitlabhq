@@ -31,8 +31,7 @@
         width: 100%;
         padding-left: 10px;
         padding-right: 10px;
-        white-space: break-spaces;
-        word-break: break-word;
+        white-space: pre;
 
         &:empty::before {
           content: '\200b';

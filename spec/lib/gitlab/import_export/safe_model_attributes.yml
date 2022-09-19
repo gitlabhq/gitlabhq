@@ -586,6 +586,7 @@ ProjectFeature:
 - environments_access_level
 - feature_flags_access_level
 - releases_access_level
+- monitor_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:
@@ -706,7 +707,7 @@ ProtectedEnvironment:
 - name
 - created_at
 - updated_at
-ProtectedEnvironment::DeployAccessLevel:
+ProtectedEnvironments::DeployAccessLevel:
 - id
 - protected_environment_id
 - access_level
@@ -917,3 +918,29 @@ Approval:
   - user_id
   - created_at
   - updated_at
+ResourceMilestoneEvent:
+  - user_id
+  - action
+  - state
+  - created_at
+ResourceStateEvent:
+  - user_id
+  - created_at
+  - state
+  - source_commit
+  - close_after_error_tracking_resolve
+  - close_auto_resolve_prometheus_alert
+Iteration:
+  - created_at
+  - updated_at
+  - start_date
+  - due_date
+  - group_id
+  - iid
+  - description
+ResourceIterationEvent:
+  - user_id
+  - created_at
+  - action
+Iterations::Cadence:
+  - title

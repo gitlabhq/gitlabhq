@@ -269,7 +269,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'hides the weight input' do
-        expect(page).not_to have_selector('.qa-issuable-weight-input') # rubocop:disable QA/SelectorUsage
+        expect(page).not_to have_selector('[data-testid="issuable-weight-input"]')
       end
 
       it 'shows the incident help text' do

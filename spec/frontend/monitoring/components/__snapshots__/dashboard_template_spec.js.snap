@@ -3,7 +3,8 @@
 exports[`Dashboard template matches the default snapshot 1`] = `
 <div
   class="prometheus-graphs"
-  data-qa-selector="prometheus_graphs"
+  data-qa-selector="prometheus_graphs_content"
+  data-testid="prometheus-graphs"
   environmentstate="available"
   metricsdashboardbasepath="/monitoring/monitor-project/-/metrics?environment=1"
   metricsendpoint="/monitoring/monitor-project/-/environments/1/additional_metrics.json"
@@ -60,6 +61,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         clearalltext="Clear all"
         clearalltextclass="gl-px-5"
         data-qa-selector="environments_dropdown"
+        data-testid="environments-dropdown"
         headertext=""
         hideheaderborder="true"
         highlighteditemstitle="Selected"

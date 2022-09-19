@@ -1,4 +1,4 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -8,7 +8,9 @@ import { createAlert } from '~/flash';
 import { sprintf } from '~/locale';
 import {
   I18N_ASSIGNED_PROJECTS,
-  I18N_NONE,
+  I18N_CLEAR_FILTER_PROJECTS,
+  I18N_FILTER_PROJECTS,
+  I18N_NO_PROJECTS_FOUND,
   RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
 } from '~/runner/constants';
 import RunnerProjects from '~/runner/components/runner_projects.vue';
@@ -35,6 +37,7 @@ describe('RunnerProjects', () => {
 
   const findHeading = () => wrapper.find('h3');
   const findGlSkeletonLoading = () => wrapper.findComponent(GlSkeletonLoader);
+  const findGlSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
 
@@ -64,7 +67,18 @@ describe('RunnerProjects', () => {
     expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(1);
     expect(mockRunnerProjectsQuery).toHaveBeenCalledWith({
       id: mockRunner.id,
+      search: '',
       first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
+    });
+  });
+
+  it('Shows a filter box', () => {
+    createComponent();
+
+    expect(findGlSearchBoxByType().attributes()).toMatchObject({
+      clearbuttontitle: I18N_CLEAR_FILTER_PROJECTS,
+      debounce: '500',
+      placeholder: I18N_FILTER_PROJECTS,
     });
   });
 
@@ -110,6 +124,7 @@ describe('RunnerProjects', () => {
         expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(2);
         expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
           id: mockRunner.id,
+          search: '',
           first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
           after: 'AFTER_CURSOR',
         });
@@ -123,9 +138,50 @@ describe('RunnerProjects', () => {
         expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(3);
         expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
           id: mockRunner.id,
+          search: '',
           last: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
           before: 'BEFORE_CURSOR',
         });
+      });
+
+      it('When user filters after paginating, the first page is requested', async () => {
+        findGlSearchBoxByType().vm.$emit('input', 'my search');
+        await waitForPromises();
+
+        expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(3);
+        expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
+          id: mockRunner.id,
+          search: 'my search',
+          first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
+        });
+      });
+    });
+
+    describe('When user filters', () => {
+      it('Filtered results are requested', async () => {
+        expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(1);
+
+        findGlSearchBoxByType().vm.$emit('input', 'my search');
+        await waitForPromises();
+
+        expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(2);
+        expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
+          id: mockRunner.id,
+          search: 'my search',
+          first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
+        });
+      });
+
+      it('Filtered results are not requested for short searches', async () => {
+        expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(1);
+
+        findGlSearchBoxByType().vm.$emit('input', 'm');
+        await waitForPromises();
+
+        findGlSearchBoxByType().vm.$emit('input', 'my');
+        await waitForPromises();
+
+        expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -136,10 +192,11 @@ describe('RunnerProjects', () => {
 
       expect(findGlSkeletonLoading().exists()).toBe(true);
 
-      expect(wrapper.findByText(I18N_NONE).exists()).toBe(false);
+      expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(false);
       expect(findRunnerAssignedItems().length).toBe(0);
 
       expect(findRunnerPagination().attributes('disabled')).toBe('true');
+      expect(findGlSearchBoxByType().props('isLoading')).toBe(true);
     });
   });
 
@@ -168,7 +225,7 @@ describe('RunnerProjects', () => {
     });
 
     it('Shows a "None" label', () => {
-      expect(wrapper.findByText(I18N_NONE).exists()).toBe(true);
+      expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(true);
     });
   });
 

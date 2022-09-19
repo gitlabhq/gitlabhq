@@ -31,6 +31,49 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.4
+
+### SAST analyzer consolidation and CI/CD template changes
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+We have replaced the GitLab SAST [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) for certain languages in GitLab 15.4 as part of our long-term strategy to deliver a more consistent user experience, faster scan times, and reduced CI minute usage.
+
+Starting from GitLab 15.4, the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) uses [Semgrep-based scanning](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#transition-to-semgrep-based-scanning) instead of the following analyzers:
+
+- [ESLint](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) for JavaScript, TypeScript, React
+- [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) for Go
+- [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) for Python
+- [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) for Java
+
+We will no longer make any updates to the ESLint-, Gosec-, and Bandit-based analyzers.
+The SpotBugs-based analyzer will continue to be used for Groovy, Kotlin, and Scala scanning.
+
+We won't delete container images previously published for these analyzers, so older versions of the CI/CD template will continue to work.
+
+If you changed the default GitLab SAST configuration, you may need to update your configuration as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352554#actions-required).
+
+## Removed in 15.3
+
+### Support for Debian 9
+
+Long term service and support (LTSS) for [Debian 9 Stretch ended in July 2022](https://wiki.debian.org/LTS). Therefore, we will no longer support the Debian 9 distribution for the GitLab package. Users can upgrade to Debian 10 or Debian 11.
+
+### Vulnerability Report sort by State
+
+The ability to sort the Vulnerability Report by the `State` column was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
+of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
+by this value remains performant. Due to very low usage of the `State` column for sorting, the feature flag is instead removed in 15.3 to simplify the codebase and prevent any unwanted performance degradation.
+
+### Vulnerability Report sort by Tool
+
+The ability to sort the Vulnerability Report by the `Tool` column (scan type) was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
+of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
+by this value remains performant. Due to very low usage of the `Tool` column for sorting, the feature flag is instead removed in
+GitLab 15.3 to simplify the codebase and prevent any unwanted performance degradation.
+
 ## Removed in 15.2
 
 ### Support for older browsers
@@ -121,8 +164,8 @@ If you have set a prefix, you can use a workaround to revert to background uploa
     gitlab_rails['env'] = { 'GITLAB_LEGACY_BACKGROUND_UPLOADS' => 'artifacts,external_diffs,lfs,uploads,packages,dependency_proxy,terraform_state,pages' }
     ```
 
-Prefixes will be supported officially in [GitLab 15.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91307).
-This workaround will be dropped, so we encourage migrating to consolidated object storage.
+Support for prefixes was restored in GitLab 15.2 via [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91307).
+Support for setting `GITLAB_LEGACY_BACKGROUND_UPLOADS` will be removed in GitLab 15.4.
 
 ### Container Network and Host Security
 

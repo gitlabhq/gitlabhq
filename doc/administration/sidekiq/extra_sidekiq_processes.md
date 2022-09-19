@@ -95,7 +95,7 @@ To start multiple processes:
 
 To view the Sidekiq processes in GitLab:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 
 ## Negate settings

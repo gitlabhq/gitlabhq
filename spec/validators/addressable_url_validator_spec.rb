@@ -245,7 +245,7 @@ RSpec.describe AddressableUrlValidator do
   end
 
   context 'when enforce_user is' do
-    let(:url) { 'http://$user@example.com'}
+    let(:url) { 'http://$user@example.com' }
     let(:validator) { described_class.new(attributes: [:link_url], enforce_user: enforce_user) }
 
     context 'true' do
@@ -274,7 +274,7 @@ RSpec.describe AddressableUrlValidator do
   end
 
   context 'when ascii_only is' do
-    let(:url) { 'https://𝕘itⅼαƄ.com/foo/foo.bar'}
+    let(:url) { 'https://𝕘itⅼαƄ.com/foo/foo.bar' }
     let(:validator) { described_class.new(attributes: [:link_url], ascii_only: ascii_only) }
 
     context 'true' do

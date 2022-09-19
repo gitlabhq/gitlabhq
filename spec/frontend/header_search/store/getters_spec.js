@@ -73,30 +73,6 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    project         | ref                | expectedPath
-    ${null}         | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}`}
-    ${MOCK_PROJECT} | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}`}
-    ${null}         | ${MOCK_PROJECT.id} | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_ref=${MOCK_PROJECT.id}`}
-    ${MOCK_PROJECT} | ${MOCK_PROJECT.id} | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}&project_ref=${MOCK_PROJECT.id}`}
-  `('autocompleteQuery', ({ project, ref, expectedPath }) => {
-    describe(`when project is ${project?.name} and project ref is ${ref}`, () => {
-      beforeEach(() => {
-        createState({
-          searchContext: {
-            project,
-            ref,
-          },
-        });
-        state.search = MOCK_SEARCH;
-      });
-
-      it(`should return ${expectedPath}`, () => {
-        expect(getters.autocompleteQuery(state)).toBe(expectedPath);
-      });
-    });
-  });
-
-  describe.each`
     group                     | group_metadata                   | project                     | project_metadata                   | expectedPath
     ${null}                   | ${null}                          | ${null}                     | ${null}                            | ${MOCK_ISSUE_PATH}
     ${{ name: 'Test Group' }} | ${{ issues_path: 'group/path' }} | ${null}                     | ${null}                            | ${'group/path'}

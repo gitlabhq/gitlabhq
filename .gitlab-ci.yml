@@ -35,17 +35,10 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    # For merged result pipelines, set $QA_IMAGE, since $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is only available for merged result pipelines.
-    # AND
     # For merge requests running exclusively in Ruby 3.0
     - if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
-        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
         RUBY_VERSION: "3.0"
-    # For merged result pipelines, set $QA_IMAGE, since $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is only available for merged result pipelines.
-    - if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train")'
-      variables:
-        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     # For merge requests running exclusively in Ruby 3.0
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
@@ -74,7 +67,7 @@ variables:
   RAILS_ENV: "test"
   NODE_ENV: "test"
   BUNDLE_WITHOUT: "production:development"
-  BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3 --quiet"
+  BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
   BUNDLE_FROZEN: "true"
   # we override the max_old_space_size to prevent OOM errors
   NODE_OPTIONS: --max_old_space_size=3584
@@ -97,6 +90,8 @@ variables:
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
+  RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
+  RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   JUNIT_RESULT_FILE: rspec/junit_rspec.xml
   JUNIT_RETRY_FILE: rspec/junit_rspec-retry.xml
@@ -121,11 +116,6 @@ variables:
 
   BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
   SIMPLECOV: "true"
-
-  # For the default QA image, we use $CI_COMMIT_SHA as tag since it's always available and we override it for specific workflow.rules (see above)
-  QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
-  # Default latest tag for particular branch
-  QA_IMAGE_BRANCH: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
 
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"

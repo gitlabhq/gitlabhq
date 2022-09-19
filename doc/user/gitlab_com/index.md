@@ -208,9 +208,9 @@ from those IPs and allow them.
 
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
-For outgoing connections from CI/CD runners, we are not providing static IP
-addresses. All GitLab.com shared runners are deployed into Google Cloud Platform (GCP). Any
-IP-based firewall can be configured by looking up all
+For outgoing connections from CI/CD runners, we are not providing static IP addresses.
+All GitLab.com shared runners are deployed into Google Cloud Platform (GCP) in `us-east1`.
+Any IP-based firewall can be configured by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
 ## Hostname list
@@ -328,6 +328,12 @@ for `shared_buffers` is quite high, and we are
 
 GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
 
+## Merge request reviewer maximum
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91406) in GitLab 15.3.
+
+A maximum of 100 reviewers can be assigned to a merge request.
+
 ## GitLab.com-specific rate limits
 
 NOTE:
@@ -336,7 +342,7 @@ documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There
-are also informational headers with this response detailed in 
+are also informational headers with this response detailed in
 [rate limiting responses](#rate-limiting-responses).
 
 The following table describes the rate limits for GitLab.com, both before and
@@ -358,8 +364,8 @@ after the limits change in January, 2021:
 | **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute              |
 | **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour |
 
-More details are available on the rate limits for 
-[protected paths](#protected-paths-throttle) and 
+More details are available on the rate limits for
+[protected paths](#protected-paths-throttle) and
 [raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
 
 GitLab can rate-limit requests at several layers. The rate limits listed here

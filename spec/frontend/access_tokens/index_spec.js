@@ -182,7 +182,7 @@ describe('access tokens', () => {
   });
 
   describe('initTokensApp', () => {
-    it('mounts the component and provides`tokenTypes` ', () => {
+    it('mounts the component and provides`tokenTypes`', () => {
       const tokensData = {
         [FEED_TOKEN]: FEED_TOKEN,
         [INCOMING_EMAIL_TOKEN]: INCOMING_EMAIL_TOKEN,

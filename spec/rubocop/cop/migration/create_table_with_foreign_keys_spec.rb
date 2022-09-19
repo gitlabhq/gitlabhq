@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/create_table_with_foreign_keys'
 
 RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
 
           include_context 'when there is a target to a high traffic table', :foreign_key do
             let(:explicit_target_opts) { ", to_table: :#{table_name}" }
-            let(:implicit_target_opts) { }
+            let(:implicit_target_opts) {}
           end
         end
       end

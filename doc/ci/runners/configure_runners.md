@@ -151,7 +151,7 @@ different places.
 To view the IP address of a shared runner you must have administrator access to
 the GitLab instance. To determine this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
@@ -859,7 +859,7 @@ You can clean up group runners that have been inactive for more than three month
 
 Group runners are those that were created at the group level.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Enable stale runner cleanup** toggle.
@@ -903,8 +903,8 @@ The version of GitLab Runner used by your runners should be
 To determine which runners need to be upgraded:
 
 1. View the list of runners:
-   - For a group, on the top bar, select **Menu > Groups** and on the left sidebar, select **CI/CD > Runners**.
-   - For the instance, select **Menu > Admin** and on the left sidebar, select **Runners**.
+   - For a group, on the top bar, select **Main menu > Groups**, find your group, and on the left sidebar select **CI/CD > Runners**.
+   - For the instance, select **Main menu > Admin** and on the left sidebar, select **Runners**.
 
 1. Above the list of runners, view the status:
    - **Outdated - recommended**: The runner does not have the latest `PATCH` version, which may make it vulnerable
@@ -912,3 +912,43 @@ To determine which runners need to be upgraded:
    - **Outdated - available**: Newer versions are available but upgrading is not critical.
 
 1. Filter the list by status to view which individual runners need to be upgraded.
+
+## Authentication token security
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+[enable the feature flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`.
+On GitLab.com, this feature is not available.
+
+Each runner has an [authentication token](../../api/runners.md#registration-and-authentication-tokens)
+to connect with the GitLab instance.
+
+To help prevent the token from being compromised, you can have the
+token rotate automatically at specified intervals. When the tokens are rotated,
+they are updated for each runner, regardless of the runner's status (`online` or `offline`).
+
+No manual intervention should be required, and no running jobs should be affected.
+
+If you need to manually update the authentication token, you can run a
+command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
+
+### Automatically rotate authentication tokens
+
+You can specify an interval for authentication tokens to rotate.
+This rotation helps ensure the security of the tokens assigned to your runners.
+
+Prerequisites:
+
+- Ensure your runners are using [GitLab Runner 15.3 or later](https://docs.gitlab.com/runner/#gitlab-runner-versions).
+
+To automatically rotate runner authentication tokens:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**
+1. Set a **Runners expiration** time for runners, leave empty for no expiration.
+1. Select **Save**.
+
+Before the interval expires, runners automatically request a new authentication token.

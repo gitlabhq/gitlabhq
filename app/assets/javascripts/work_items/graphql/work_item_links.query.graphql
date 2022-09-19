@@ -1,4 +1,4 @@
-query workItemQuery($id: WorkItemID!) {
+query workItemLinksQuery($id: WorkItemID!) {
   workItem(id: $id) {
     id
     workItemType {
@@ -26,6 +26,8 @@ query workItemQuery($id: WorkItemID!) {
             }
             title
             state
+            createdAt
+            closedAt
           }
         }
       }

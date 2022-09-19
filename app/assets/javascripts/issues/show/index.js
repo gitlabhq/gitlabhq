@@ -32,6 +32,7 @@ export function initIncidentApp(issueData = {}) {
   const {
     canCreateIncident,
     canUpdate,
+    canUpdateTimelineEvent,
     iid,
     issuableId,
     projectNamespace,
@@ -51,6 +52,7 @@ export function initIncidentApp(issueData = {}) {
     provide: {
       issueType: INCIDENT_TYPE,
       canCreateIncident,
+      canUpdateTimelineEvent,
       canUpdate,
       fullPath,
       iid,

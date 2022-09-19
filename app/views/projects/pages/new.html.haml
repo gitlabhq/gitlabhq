@@ -1,4 +1,4 @@
-- if Feature.enabled?(:use_pipeline_wizard_for_pages, @group)
+- if Feature.enabled?(:use_pipeline_wizard_for_pages, @project.group)
   #js-pages{ data: @pipeline_wizard_data }
 
 - else

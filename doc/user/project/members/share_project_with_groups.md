@@ -48,6 +48,7 @@ After sharing 'Project Acme' with 'Engineering':
 
 - The group is listed in the **Groups** tab.
 - The project is listed on the group dashboard.
+- All members, including members from the ancestors of the 'Engineering' group, gain access to 'Project Acme' with an access level based on the outcome of [maximum access level](#maximum-access-level).
 
 When you share a project, be aware of the following restrictions and outcomes:
 
@@ -83,7 +84,7 @@ The following outcomes occur:
 
 ## Share project with group lock
 
-It is possible to prevent projects in a group from 
+It is possible to prevent projects in a group from
 [sharing a project with another group](../members/share_project_with_groups.md).
 This allows for tighter control over project access.
 

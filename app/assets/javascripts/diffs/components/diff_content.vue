@@ -11,7 +11,7 @@ import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_prev
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import eventHub from '~/notes/event_hub';
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { getDiffMode } from '../store/utils';
 import DiffDiscussions from './diff_discussions.vue';
@@ -28,7 +28,7 @@ export default {
     ImageDiffOverlay,
     NotDiffableViewer,
     NoPreviewViewer,
-    userAvatarLink,
+    UserAvatarLink,
     DiffFileDrafts,
   },
   mixins: [diffLineNoteFormMixin, draftCommentsMixin],

@@ -1,0 +1,6 @@
+- if link?
+  %a{ href: @href, **html_options }><
+    = badge_content
+- else
+  %span{ **html_options }><
+    = badge_content

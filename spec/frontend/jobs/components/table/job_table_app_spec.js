@@ -11,12 +11,14 @@ import VueApollo from 'vue-apollo';
 import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { TEST_HOST } from 'spec/test_constants';
 import createFlash from '~/flash';
 import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query.graphql';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
+import * as urlUtils from '~/lib/utils/url_utility';
 import {
   mockJobsResponsePaginated,
   mockJobsResponseEmpty,
@@ -229,6 +231,18 @@ describe('Job table app', () => {
 
       expect(createFlash).toHaveBeenCalledWith(expectedWarning);
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+    });
+
+    it('updates URL query string when filtering jobs by status', async () => {
+      createComponent();
+
+      jest.spyOn(urlUtils, 'updateHistory');
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?statuses=FAILED`,
+      });
     });
   });
 });

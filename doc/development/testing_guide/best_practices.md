@@ -83,6 +83,31 @@ You can silence deprecation warnings by setting the environment variable
 SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 ```
 
+### Test order
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
+
+All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
+to surface flaky tests that are dependent on test order.
+
+When randomized:
+
+- The string `# order random` is added below the example group description.
+- The used seed is shown in the spec output below the test suite summary. For example, `Randomized with seed 27443`.
+
+For a list of spec files which are still run in defined order, see [`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml).
+
+To make spec files run in random order, check their order dependency with:
+
+```shell
+scripts/rspec_check_order_dependence spec/models/project_spec.rb
+```
+
+If the specs pass the check the script removes them from
+[`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml) automatically.
+
+If the specs fail the check they must be fixed before than can run in random order.
+
 ### Test speed
 
 GitLab has a massive test suite that, without [parallelization](../pipelines.md#test-suite-parallelization), can take hours
@@ -232,7 +257,7 @@ Here is an example of when `let_it_be` cannot be used, but `let_it_be_with_reloa
 
 ```ruby
 let_it_be(:user) { create(:user) }
-let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used 
+let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used
 
 context 'with a developer' do
   before do
@@ -422,7 +447,7 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 ### System / Feature tests
 
 NOTE:
-Before writing a new system test, 
+Before writing a new system test,
 [please consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
@@ -711,6 +736,7 @@ should either:
 - Add `require_dependency 're2'` to files in your library that need `re2` gem,
   to make this requirement explicit. This approach is preferred.
 - Add it to the spec itself.
+- Use `rubocop_spec_helper` for RuboCop related specs.
 
 It takes around one second to load tests that are using `fast_spec_helper`
 instead of 30+ seconds in case of a regular `spec_helper`.
@@ -909,7 +935,7 @@ By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
 If a test queues Sidekiq jobs and need them to be processed, the
 `:sidekiq_inline` trait can be used.
 
-The `:sidekiq_might_not_need_inline` trait was added when 
+The `:sidekiq_might_not_need_inline` trait was added when
 [Sidekiq inline mode was changed to fake mode](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15479)
 to all the tests that needed Sidekiq to actually process jobs. Tests with
 this trait should be either fixed to not rely on Sidekiq processing jobs, or their
@@ -1048,7 +1074,7 @@ Most tests for Elasticsearch logic relate to:
 
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
-The `:elastic_with_delete_by_query` trait was added to reduce run time for pipelines by creating and deleting indices
+The `:elastic_delete_by_query` trait was added to reduce run time for pipelines by creating and deleting indices
 at the start and end of each context only. The [Elasticsearch DeleteByQuery API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
 is used to delete data in all indices in between examples to ensure a clean index.
 
@@ -1081,12 +1107,11 @@ Snowplow performs **runtime type checks** by using the [contracts gem](https://r
 Because Snowplow is **by default disabled in tests and development**, it can be hard to
 **catch exceptions** when mocking `Gitlab::Tracking`.
 
-To catch runtime errors due to type checks, you can enable Snowplow in tests. Mark the spec with
-`:snowplow` and use the `expect_snowplow_event` helper, which checks for
+To catch runtime errors due to type checks you can use `expect_snowplow_event`, which checks for
 calls to `Gitlab::Tracking#event`.
 
 ```ruby
-describe '#show', :snowplow do
+describe '#show' do
   it 'tracks snowplow events' do
     get :show
 
@@ -1111,7 +1136,7 @@ end
 When you want to ensure that no event got called, you can use `expect_no_snowplow_event`.
 
 ```ruby
-  describe '#show', :snowplow do
+  describe '#show' do
     it 'does not track any snowplow events' do
       get :show
 
@@ -1356,6 +1381,47 @@ RSpec.configure do |config|
   config.include Spec::Support::Helpers::CycleAnalyticsHelpers
 end
 ```
+
+### Testing Ruby constants
+
+When testing code that uses Ruby constants, focus the test on the behavior that depends on the constant,
+rather than testing the values of the constant.
+
+For example, the following is preferred because it tests the behavior of the class method `.categories`.
+
+```ruby
+  describe '.categories' do
+    it 'gets CE unique category names' do
+      expect(described_class.categories).to include(
+        'deploy_token_packages',
+        'user_packages',
+        # ...
+        'kubernetes_agent'
+      )
+    end
+  end
+```
+
+On the other hand, testing the value of the constant itself, often only repeats the values
+in the code and the test, which provides little value.
+
+```ruby
+  describe CATEGORIES do
+  it 'has values' do
+    expect(CATEGORIES).to eq([
+                            'deploy_token_packages',
+                            'user_packages',
+                            # ...
+                            'kubernetes_agent'
+                             ])
+  end
+end
+```
+
+In critical cases where an error on a constant could have a catastrophic impact,
+testing the constant values might be useful as an added safeguard. For example,
+if it could bring down the entire GitLab service, cause a customer to be billed more than they should be,
+or [cause the universe to implode](../contributing/verify/index.md#do-not-cause-our-universe-to-implode).
 
 ### Factories
 

@@ -12,18 +12,16 @@ RSpec.describe Gitlab::HealthChecks::Probes::Collection do
       let(:checks) do
         [
           Gitlab::HealthChecks::DbCheck,
-          Gitlab::HealthChecks::Redis::RedisCheck,
-          Gitlab::HealthChecks::Redis::CacheCheck,
-          Gitlab::HealthChecks::Redis::QueuesCheck,
-          Gitlab::HealthChecks::Redis::SharedStateCheck,
-          Gitlab::HealthChecks::Redis::TraceChunksCheck,
-          Gitlab::HealthChecks::Redis::RateLimitingCheck,
-          Gitlab::HealthChecks::Redis::SessionsCheck,
+          *Gitlab::HealthChecks::Redis::ALL_INSTANCE_CHECKS,
           Gitlab::HealthChecks::GitalyCheck
         ]
       end
 
       it 'responds with readiness checks data' do
+        expect_next_instance_of(Gitlab::GitalyClient::ServerService) do |service|
+          expect(service).to receive(:readiness_check).and_return({ success: true })
+        end
+
         expect(subject.http_status).to eq(200)
 
         expect(subject.json[:status]).to eq('ok')
@@ -37,8 +35,8 @@ RSpec.describe Gitlab::HealthChecks::Probes::Collection do
 
       context 'when Redis fails' do
         before do
-          allow(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_return(
-            Gitlab::HealthChecks::Result.new('redis_check', false, "check error"))
+          allow(Gitlab::HealthChecks::Redis::SharedStateCheck).to receive(:readiness).and_return(
+            Gitlab::HealthChecks::Result.new('shared_state_check', false, "check error"))
         end
 
         it 'responds with failure' do
@@ -46,14 +44,14 @@ RSpec.describe Gitlab::HealthChecks::Probes::Collection do
 
           expect(subject.json[:status]).to eq('failed')
           expect(subject.json['cache_check']).to contain_exactly(status: 'ok')
-          expect(subject.json['redis_check']).to contain_exactly(
+          expect(subject.json['shared_state_check']).to contain_exactly(
             status: 'failed', message: 'check error')
         end
       end
 
       context 'when check raises exception not handled inside the check' do
         before do
-          expect(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_raise(
+          expect(Gitlab::HealthChecks::Redis::CacheCheck).to receive(:readiness).and_raise(
             ::Redis::CannotConnectError, 'Redis down')
         end
 

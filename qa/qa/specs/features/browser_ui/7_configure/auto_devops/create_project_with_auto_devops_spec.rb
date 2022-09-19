@@ -1,78 +1,67 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Configure',
-    only: { subdomain: %i[staging staging-canary] },
-    quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1198',
-      type: :waiting_on
-    } do
-    let(:project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.name = 'autodevops-project'
-        project.auto_devops_enabled = true
+  RSpec.describe 'Configure', only: { subdomain: %i[staging staging-canary] } do
+    describe 'Auto DevOps with a Kubernetes Agent' do
+      let!(:app_project) do
+        Resource::Project.fabricate_via_api! do |project|
+          project.name = 'autodevops-app-project'
+          project.template_name = 'express'
+          project.auto_devops_enabled = true
+        end
       end
-    end
 
-    before do
-      set_kube_ingress_base_domain(project)
-      disable_optional_jobs(project)
-    end
+      let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::Gcloud).create! }
 
-    describe 'Auto DevOps support' do
-      context 'when rbac is enabled' do
-        let(:cluster) { Service::KubernetesCluster.new.create! }
+      let!(:kubernetes_agent) do
+        Resource::Clusters::Agent.fabricate_via_api! do |agent|
+          agent.name = 'agent1'
+          agent.project = app_project
+        end
+      end
 
-        after do
-          cluster&.remove!
-          project.remove_via_api!
+      let!(:agent_token) do
+        Resource::Clusters::AgentToken.fabricate_via_api! do |token|
+          token.agent = kubernetes_agent
+        end
+      end
+
+      before do
+        cluster.install_kubernetes_agent(agent_token.token)
+        upload_agent_config(app_project, kubernetes_agent.name)
+
+        set_kube_ingress_base_domain(app_project)
+        set_kube_context(app_project)
+        disable_optional_jobs(app_project)
+      end
+
+      after do
+        cluster&.remove!
+      end
+
+      it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348061' do
+        Flow::Login.sign_in
+
+        app_project.visit!
+
+        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
+        Page::Project::Pipeline::New.perform(&:click_run_pipeline_button)
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job('build')
+        end
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 600)
+
+          job.click_element(:pipeline_path)
         end
 
-        it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348061' do
-          Flow::Login.sign_in
-
-          Resource::KubernetesCluster::ProjectCluster.fabricate! do |k8s_cluster|
-            k8s_cluster.project = project
-            k8s_cluster.cluster = cluster
-            k8s_cluster.install_ingress = true
-          end
-
-          Resource::Repository::ProjectPush.fabricate! do |push|
-            push.project = project
-            push.directory = Pathname
-              .new(__dir__)
-              .join('../../../../../fixtures/auto_devops_rack')
-            push.commit_message = 'Create Auto DevOps compatible rack application'
-          end
-
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('build')
-          end
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 600)
-
-            job.click_element(:pipeline_path)
-          end
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('test')
-          end
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 600)
-
-            job.click_element(:pipeline_path)
-          end
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('production')
-          end
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 1200)
-
-            job.click_element(:pipeline_path)
-          end
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job('production')
+        end
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 600)
         end
       end
     end
@@ -88,12 +77,43 @@ module QA
       end
     end
 
+    def set_kube_context(project)
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'KUBE_CONTEXT'
+        resource.value = "#{project.path_with_namespace}:#{kubernetes_agent.name}"
+        resource.masked = false
+      end
+    end
+
+    def upload_agent_config(project, agent)
+      Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+        Resource::Repository::Commit.fabricate_via_api! do |commit|
+          commit.project = project
+          commit.commit_message = 'Add kubernetes agent configuration'
+          commit.add_files(
+            [
+              {
+                file_path: ".gitlab/agents/#{agent}/config.yaml",
+                content: <<~YAML
+                  ci_access:
+                    projects:
+                      - id: #{project.path_with_namespace}            
+                YAML
+              }
+            ]
+          )
+        end
+      end
+    end
+
     def disable_optional_jobs(project)
       %w[
-        CODE_QUALITY_DISABLED LICENSE_MANAGEMENT_DISABLED
-        SAST_DISABLED DAST_DISABLED DEPENDENCY_SCANNING_DISABLED
-        CONTAINER_SCANNING_DISABLED BROWSER_PERFORMANCE_DISABLED
-        SECRET_DETECTION_DISABLED
+        TEST_DISABLED CODE_QUALITY_DISABLED LICENSE_MANAGEMENT_DISABLED
+        BROWSER_PERFORMANCE_DISABLED LOAD_PERFORMANCE_DISABLED
+        SAST_DISABLED SECRET_DETECTION_DISABLED DEPENDENCY_SCANNING_DISABLED
+        CONTAINER_SCANNING_DISABLED DAST_DISABLED REVIEW_DISABLED
+        CODE_INTELLIGENCE_DISABLED CLUSTER_IMAGE_SCANNING_DISABLED
       ].each do |key|
         Resource::CiVariable.fabricate_via_api! do |resource|
           resource.project = project

@@ -29,10 +29,10 @@ module Sidebars
         override :pill_count
         def pill_count
           strong_memoize(:pill_count) do
-            percentage = LearnGitlab::Onboarding.new(
+            percentage = Onboarding::Completion.new(
               context.project.namespace,
               context.current_user
-            ).completed_percentage
+            ).percentage
 
             "#{percentage}%"
           end

@@ -26,7 +26,7 @@ module Glfm
     EXAMPLE_BACKTICKS_LENGTH = 32
     EXAMPLE_BACKTICKS_STRING = '`' * EXAMPLE_BACKTICKS_LENGTH
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
     def parse_examples(spec_txt_lines)
       line_number = 0
       start_line = 0
@@ -41,6 +41,7 @@ module Glfm
 
       h1_regex = /\A# / # new logic compared to original Python code
       h2_regex = /\A## / # new logic compared to original Python code
+      h3_regex = /\A### / # new logic compared to original Python code
       header_regex = /\A#+ / # Added beginning of line anchor to original Python code
 
       spec_txt_lines.each do |line|
@@ -102,12 +103,24 @@ module Glfm
           # reset the headers array if we found a new H1
           headers = [] if line =~ h1_regex
 
-          # headers should be size 2 or less [<H1_headertext>, <H2_headertext>]
-          # pop the last entry from the headers array if we are in an H2 and found a new H2
-          headers.pop if headers.length == 2 && line =~ h2_regex
+          # headers should be size 3 or less [<H1_headertext>, <H2_headertext>, <H3_headertext>]
+
+          if headers.length == 1 && line =~ h3_regex
+            errmsg = "Error: The H3 '#{headertext}' may not be nested directly within the H1 '#{headers[0]}'. " \
+              " Add an H2 header before the H3 header."
+            raise errmsg
+          end
+
+          if (headers.length == 2 || headers.length == 3) && line =~ h2_regex
+            # drop the everything but first entry from the headers array if we are in an H2 and found a new H2
+            headers = [headers[0]]
+          elsif headers.length == 3 && line =~ h3_regex
+            # pop the last entry from the headers array if we are in an H3 and found a new H3
+            headers.pop
+          end
 
           # push the new header text to the headers array
-          headers << headertext if line =~ h1_regex || line =~ h2_regex
+          headers << headertext if line =~ h1_regex || line =~ h2_regex || line =~ h3_regex
         else
           # Else if we are in regular text...
 
@@ -119,7 +132,7 @@ module Glfm
           # no-op - skips any other non-header regular text lines
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
 
       tests
     end

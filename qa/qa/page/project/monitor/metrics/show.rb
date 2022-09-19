@@ -10,7 +10,7 @@ module QA
             LOADING_MESSAGE = 'Waiting for performance data'
 
             view 'app/assets/javascripts/monitoring/components/dashboard.vue' do
-              element :prometheus_graphs
+              element :prometheus_graphs_content
             end
 
             view 'app/assets/javascripts/monitoring/components/dashboard_header.vue' do
@@ -54,7 +54,7 @@ module QA
             end
 
             def has_metrics?
-              within_element :prometheus_graphs do
+              within_element :prometheus_graphs_content do
                 has_text?(EXPECTED_TITLE)
               end
             end
@@ -102,7 +102,7 @@ module QA
             end
 
             def has_custom_metric?(metric)
-              within_element :prometheus_graphs do
+              within_element :prometheus_graphs_content do
                 has_text?(metric)
               end
             end
@@ -114,7 +114,7 @@ module QA
             end
 
             def has_template_metric?(metric)
-              within_element :prometheus_graphs do
+              within_element :prometheus_graphs_content do
                 has_text?(metric)
               end
             end

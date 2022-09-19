@@ -91,7 +91,7 @@ RSpec.shared_examples 'variable list' do |is_admin|
     end
 
     page.within('#add-ci-variable') do
-      find('[data-qa-selector="ci_variable_key_field"] input').set('new_key') # rubocop:disable QA/SelectorUsage
+      find('[data-testid="pipeline-form-ci-variable-key"] input').set('new_key')
 
       click_button('Update variable')
     end
@@ -173,7 +173,7 @@ RSpec.shared_examples 'variable list' do |is_admin|
     click_button('Add variable')
 
     page.within('#add-ci-variable') do
-      find('[data-qa-selector="ci_variable_key_field"] input').set('empty_mask_key') # rubocop:disable QA/SelectorUsage
+      find('[data-testid="pipeline-form-ci-variable-key"] input').set('empty_mask_key')
       find('[data-testid="ci-variable-protected-checkbox"]').click
       find('[data-testid="ci-variable-masked-checkbox"]').click
 
@@ -290,8 +290,8 @@ RSpec.shared_examples 'variable list' do |is_admin|
     wait_for_requests
 
     page.within('#add-ci-variable') do
-      find('[data-qa-selector="ci_variable_key_field"] input').set(key) # rubocop:disable QA/SelectorUsage
-      find('[data-qa-selector="ci_variable_value_field"]').set(value) if value.present? # rubocop:disable QA/SelectorUsage
+      find('[data-testid="pipeline-form-ci-variable-key"] input').set(key)
+      find('[data-testid="pipeline-form-ci-variable-value"]').set(value) if value.present?
       find('[data-testid="ci-variable-protected-checkbox"]').click if protected
       find('[data-testid="ci-variable-masked-checkbox"]').click if masked
 

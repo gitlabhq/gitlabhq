@@ -140,6 +140,7 @@
     "WorkItemWidgetAssignees",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHierarchy",
+    "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetVerificationStatus",

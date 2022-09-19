@@ -9,23 +9,38 @@ workhorse:verify:
 
 .workhorse:test:
   extends: .workhorse:rules:workhorse
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}:git-2.36
   variables:
     GITALY_ADDRESS: "tcp://127.0.0.1:8075"
+    GO_VERSION: "1.17"
   stage: test
   needs:
     - setup-test-env
-  script:
+  before_script:
     - go version
     - apt-get update && apt-get -y install libimage-exiftool-perl
     - scripts/gitaly-test-build
+  script:
     - make -C workhorse test
 
-workhorse:test using go 1.17:
+workhorse:test go:
   extends: .workhorse:test
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-1.17-git-2.31
+  parallel:
+    matrix:
+      - GO_VERSION: ["1.17", "1.18"]
+  script:
+    - make -C workhorse test-coverage
+  coverage: '/\d+.\d+%/'
+  artifacts:
+    paths:
+      - workhorse/coverage.html
 
-workhorse:test using go 1.17 with FIPS:
+workhorse:test fips:
   extends: .workhorse:test
   variables:
     WORKHORSE_TEST_FIPS_ENABLED: 1
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-1.17-git-2.31
+
+workhorse:test race:
+  extends: .workhorse:test
+  script:
+    - make -C workhorse test-race

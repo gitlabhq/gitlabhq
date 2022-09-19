@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/qa/selector_usage'
 
 RSpec.describe RuboCop::Cop::QA::SelectorUsage do
-  subject(:cop) { described_class.new }
-
   shared_examples 'non-qa file usage' do
     it 'reports an offense' do
       expect_offense(<<-RUBY)

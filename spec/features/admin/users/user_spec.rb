@@ -205,7 +205,7 @@ RSpec.describe 'Admin::Users::User' do
         it 'logs in as the user when impersonate is clicked' do
           subject
 
-          find('[data-qa-selector="user_menu"]').click # rubocop:disable QA/SelectorUsage
+          find('[data-testid="user-menu"]').click
 
           expect(page.find(:css, '[data-testid="user-profile-link"]')['data-user']).to eql(another_user.username)
         end
@@ -241,7 +241,7 @@ RSpec.describe 'Admin::Users::User' do
         it 'logs out of impersonated user back to original user' do
           subject
 
-          find('[data-qa-selector="user_menu"]').click # rubocop:disable QA/SelectorUsage
+          find('[data-testid="user-menu"]').click
 
           expect(page.find(:css, '[data-testid="user-profile-link"]')['data-user']).to eq(current_user.username)
         end

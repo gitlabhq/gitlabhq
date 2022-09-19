@@ -166,7 +166,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       let(:user) { create(:user, :external) }
 
       it 'is nil' do
-        # We have to us `view.render` because `render` causes issues
+        # We have to use `view.render` because `render` causes issues
         # https://github.com/rails/rails/issues/41320
         expect(view.render("layouts/header/new_dropdown")).to be_nil
       end

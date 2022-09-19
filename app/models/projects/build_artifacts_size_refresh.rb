@@ -2,6 +2,7 @@
 
 module Projects
   class BuildArtifactsSizeRefresh < ApplicationRecord
+    include AfterCommitQueue
     include BulkInsertSafe
 
     STALE_WINDOW = 2.hours
@@ -52,6 +53,8 @@ module Projects
     scope :remaining, -> { with_state(:created, :pending).or(stale) }
     scope :processing_queue, -> { remaining.order(state: :desc) }
 
+    after_destroy :schedule_namespace_aggregation_worker
+
     def self.enqueue_refresh(projects)
       now = Time.zone.now
 
@@ -92,6 +95,14 @@ module Projects
 
     def started?
       !created?
+    end
+
+    private
+
+    def schedule_namespace_aggregation_worker
+      run_after_commit do
+        Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
+      end
     end
   end
 end

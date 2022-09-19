@@ -12,7 +12,7 @@ describe('diffs/components/commit_widget', () => {
   });
 
   it('renders commit item', () => {
-    const commitElement = wrapper.find(CommitItem);
+    const commitElement = wrapper.findComponent(CommitItem);
 
     expect(commitElement.exists()).toBe(true);
   });

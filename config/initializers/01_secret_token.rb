@@ -65,11 +65,10 @@ end
 
 def set_missing_keys(defaults)
   defaults.stringify_keys.each_with_object({}) do |(key, default), missing|
-    if Rails.application.secrets[key].blank?
-      warn_missing_secret(key)
+    next if Rails.application.secrets[key].present?
 
-      missing[key] = Rails.application.secrets[key] = default
-    end
+    warn_missing_secret(key)
+    missing[key] = Rails.application.secrets[key] = default
   end
 end
 

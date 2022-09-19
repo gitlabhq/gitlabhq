@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ContinueParams do
   let(:controller_class) do
+    # rubocop:disable Rails/ApplicationController
     Class.new(ActionController::Base) do
       include ContinueParams
 
@@ -11,6 +12,7 @@ RSpec.describe ContinueParams do
         @request ||= Struct.new(:host, :port).new('test.host', 80)
       end
     end
+    # rubocop:enable Rails/ApplicationController
   end
 
   subject(:controller) { controller_class.new }

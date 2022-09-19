@@ -31,6 +31,7 @@ RSpec.describe Gitlab::Utils::DelegatorOverride do
 
   before do
     stub_env('STATIC_VERIFICATION', 'true')
+    described_class.validators.clear
   end
 
   describe '.delegator_target' do

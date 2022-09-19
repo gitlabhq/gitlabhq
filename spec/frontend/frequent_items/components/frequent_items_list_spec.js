@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import frequentItemsListComponent from '~/frequent_items/components/frequent_items_list.vue';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { createStore } from '~/frequent_items/store';
@@ -12,7 +12,7 @@ describe('FrequentItemsListComponent', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = mount(frequentItemsListComponent, {
+    wrapper = mountExtended(frequentItemsListComponent, {
       store: createStore(),
       propsData: {
         namespace: 'projects',
@@ -94,8 +94,8 @@ describe('FrequentItemsListComponent', () => {
 
       await nextTick();
       expect(wrapper.classes('frequent-items-list-container')).toBe(true);
-      expect(wrapper.findAll({ ref: 'frequentItemsList' })).toHaveLength(1);
-      expect(wrapper.findAll(frequentItemsListItemComponent)).toHaveLength(5);
+      expect(wrapper.findAllByTestId('frequent-items-list')).toHaveLength(1);
+      expect(wrapper.findAllComponents(frequentItemsListItemComponent)).toHaveLength(5);
     });
 
     it('should render component element with empty message', async () => {
@@ -105,7 +105,7 @@ describe('FrequentItemsListComponent', () => {
 
       await nextTick();
       expect(wrapper.vm.$el.querySelectorAll('li.section-empty')).toHaveLength(1);
-      expect(wrapper.findAll(frequentItemsListItemComponent)).toHaveLength(0);
+      expect(wrapper.findAllComponents(frequentItemsListItemComponent)).toHaveLength(0);
     });
   });
 });

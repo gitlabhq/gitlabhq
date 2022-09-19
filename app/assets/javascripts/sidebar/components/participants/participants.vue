@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
-import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
   directives: {
@@ -11,7 +11,7 @@ export default {
     GlButton,
     GlIcon,
     GlLoadingIcon,
-    userAvatarImage,
+    UserAvatarImage,
   },
   props: {
     loading: {
@@ -27,7 +27,7 @@ export default {
     numberOfLessParticipants: {
       type: Number,
       required: false,
-      default: 7,
+      default: 8,
     },
     showParticipantLabel: {
       type: Boolean,
@@ -123,7 +123,7 @@ export default {
             :size="24"
             :tooltip-text="participant.name"
             :img-alt="participant.name"
-            css-classes="avatar-inline"
+            css-classes="gl-mr-0!"
             tooltip-placement="bottom"
           />
         </a>

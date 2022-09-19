@@ -6,24 +6,24 @@ module Gitlab
       module Helpers
         class << self
           def merge_variables(current_vars, new_vars)
-            current_vars = transform_from_yaml_variables(current_vars)
-            new_vars = transform_from_yaml_variables(new_vars)
+            return current_vars if new_vars.blank?
 
-            transform_to_yaml_variables(
-              current_vars.merge(new_vars)
-            )
+            current_vars = transform_to_array(current_vars) if current_vars.is_a?(Hash)
+            new_vars = transform_to_array(new_vars) if new_vars.is_a?(Hash)
+
+            (new_vars + current_vars).uniq { |var| var[:key] }
           end
 
-          def transform_to_yaml_variables(vars)
-            vars.to_h.map do |key, value|
-              { key: key.to_s, value: value, public: true }
+          def transform_to_array(vars)
+            return [] if vars.blank?
+
+            vars.map do |key, data|
+              if data.is_a?(Hash)
+                { key: key.to_s, **data.except(:key) }
+              else
+                { key: key.to_s, value: data }
+              end
             end
-          end
-
-          def transform_from_yaml_variables(vars)
-            return vars.stringify_keys.transform_values(&:to_s) if vars.is_a?(Hash)
-
-            vars.to_a.to_h { |var| [var[:key].to_s, var[:value]] }
           end
 
           def inherit_yaml_variables(from:, to:, inheritance:)
@@ -35,7 +35,7 @@ module Gitlab
           def apply_inheritance(variables, inheritance)
             case inheritance
             when true then variables
-            when false then {}
+            when false then []
             when Array then variables.select { |var| inheritance.include?(var[:key]) }
             end
           end

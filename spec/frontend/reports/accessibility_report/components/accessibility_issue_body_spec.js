@@ -41,7 +41,7 @@ describe('CustomMetricsForm', () => {
   });
 
   it('Displays the issue message', () => {
-    const description = wrapper.find({ ref: 'accessibility-issue-description' }).text();
+    const description = wrapper.findComponent({ ref: 'accessibility-issue-description' }).text();
 
     expect(description).toContain(`Message: ${issue.message}`);
   });
@@ -49,7 +49,7 @@ describe('CustomMetricsForm', () => {
   describe('When an issue code is present', () => {
     it('Creates the correct URL for learning more about the issue code', () => {
       const learnMoreUrl = wrapper
-        .find({ ref: 'accessibility-issue-learn-more' })
+        .findComponent({ ref: 'accessibility-issue-learn-more' })
         .attributes('href');
 
       expect(learnMoreUrl).toBe(issue.learnMoreUrl);
@@ -66,7 +66,7 @@ describe('CustomMetricsForm', () => {
 
     it('Creates a URL leading to the overview documentation page', () => {
       const learnMoreUrl = wrapper
-        .find({ ref: 'accessibility-issue-learn-more' })
+        .findComponent({ ref: 'accessibility-issue-learn-more' })
         .attributes('href');
 
       expect(learnMoreUrl).toBe('https://www.w3.org/TR/WCAG20-TECHS/Overview.html');
@@ -83,7 +83,7 @@ describe('CustomMetricsForm', () => {
 
     it('Creates a URL leading to the overview documentation page', () => {
       const learnMoreUrl = wrapper
-        .find({ ref: 'accessibility-issue-learn-more' })
+        .findComponent({ ref: 'accessibility-issue-learn-more' })
         .attributes('href');
 
       expect(learnMoreUrl).toBe('https://www.w3.org/TR/WCAG20-TECHS/Overview.html');

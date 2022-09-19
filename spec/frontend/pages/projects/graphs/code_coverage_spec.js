@@ -20,9 +20,9 @@ describe('Code Coverage', () => {
   const graphRef = 'master';
   const graphCsvPath = 'url/';
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findAreaChart = () => wrapper.find(GlAreaChart);
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAreaChart = () => wrapper.findComponent(GlAreaChart);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownItem = () => findAllDropdownItems().at(0);
   const findSecondDropdownItem = () => findAllDropdownItems().at(1);
   const findDownloadButton = () => wrapper.find('[data-testid="download-button"]');
@@ -142,7 +142,7 @@ describe('Code Coverage', () => {
     });
 
     it('renders the dropdown with all custom names as options', () => {
-      expect(wrapper.find(GlDropdown).exists()).toBeDefined();
+      expect(wrapper.findComponent(GlDropdown).exists()).toBeDefined();
       expect(findAllDropdownItems()).toHaveLength(codeCoverageMockData.length);
       expect(findFirstDropdownItem().text()).toBe(codeCoverageMockData[0].group_name);
     });

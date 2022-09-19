@@ -14,19 +14,34 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
     allow(subject).to receive(:sleep)
   end
 
-  it 'does not run for GitLab.com' do
+  it 'does not run for GitLab.com when triggered from cron' do
     allow(Gitlab).to receive(:com?).and_return(true)
     expect(ServicePing::SubmitService).not_to receive(:new)
 
     subject.perform
   end
 
+  it 'runs for GitLab.com when triggered manually' do
+    allow(Gitlab).to receive(:com?).and_return(true)
+    expect(ServicePing::SubmitService).to receive(:new)
+
+    subject.perform('triggered_from_cron' => false)
+  end
+
   it 'delegates to ServicePing::SubmitService' do
-    expect_next_instance_of(ServicePing::SubmitService, payload: payload) do |service|
+    expect_next_instance_of(ServicePing::SubmitService, payload: payload, skip_db_write: false) do |service|
       expect(service).to receive(:execute)
     end
 
     subject.perform
+  end
+
+  it 'passes Hash arguments to ServicePing::SubmitService' do
+    expect_next_instance_of(ServicePing::SubmitService, payload: payload, skip_db_write: true) do |service|
+      expect(service).to receive(:execute)
+    end
+
+    subject.perform('skip_db_write' => true)
   end
 
   context 'payload computation' do
@@ -46,7 +61,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
       allow(::ServicePing::BuildPayload).to receive(:new).and_raise(error)
 
       expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-      expect_next_instance_of(::ServicePing::SubmitService, payload: nil) do |service|
+      expect_next_instance_of(::ServicePing::SubmitService, payload: nil, skip_db_write: false) do |service|
         expect(service).to receive(:execute)
       end
 

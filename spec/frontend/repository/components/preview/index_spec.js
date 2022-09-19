@@ -68,6 +68,6 @@ describe('Repository file preview component', () => {
     vm.setData({ loading: 1 });
 
     await nextTick();
-    expect(vm.find(GlLoadingIcon).exists()).toBe(true);
+    expect(vm.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 });

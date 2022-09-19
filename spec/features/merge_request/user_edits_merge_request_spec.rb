@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User edits a merge request', :js do
-  include Select2Helper
-
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
@@ -89,7 +87,12 @@ RSpec.describe 'User edits a merge request', :js do
     it 'allows user to change target branch' do
       expect(page).to have_content('From master into feature')
 
-      select2('merge-test', from: '#merge_request_target_branch')
+      first('.js-target-branch').click
+
+      wait_for_requests
+
+      first('.js-target-branch-dropdown a', text: 'merge-test').click
+
       click_button('Save changes')
 
       expect(page).to have_content("requested to merge #{merge_request.source_branch} into merge-test")
@@ -101,7 +104,7 @@ RSpec.describe 'User edits a merge request', :js do
 
       it 'does not allow user to change target branch' do
         expect(page).to have_content('From master into feature')
-        expect(page).not_to have_selector('.select2-container')
+        expect(page).not_to have_selector('.js-target-branch.js-compare-dropdown')
       end
     end
   end

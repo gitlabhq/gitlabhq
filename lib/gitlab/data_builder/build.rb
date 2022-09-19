@@ -24,7 +24,7 @@ module Gitlab
           # Leaving this way to have backward compatibility
           build_id: build.id,
           build_name: build.name,
-          build_stage: build.stage,
+          build_stage: build.stage_name,
           build_status: build.status,
           build_created_at: build.created_at,
           build_started_at: build.started_at,

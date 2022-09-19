@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'gitlab_shell_helpers'
+
 module APIInternalBaseHelpers
+  include GitlabShellHelpers
+
   def gl_repository_for(container)
     case container
     when ProjectWiki
@@ -33,9 +37,9 @@ module APIInternalBaseHelpers
         project: full_path_for(container),
         gl_repository: gl_repository_for(container),
         action: 'git-upload-pack',
-        secret_token: secret_token,
         protocol: protocol
-      }
+      },
+      headers: gitlab_shell_internal_api_request_header
     )
   end
 
@@ -56,7 +60,6 @@ module APIInternalBaseHelpers
       key_id: key.id,
       project: full_path,
       action: 'git-receive-pack',
-      secret_token: secret_token,
       protocol: protocol,
       env: env
     }
@@ -64,7 +67,8 @@ module APIInternalBaseHelpers
 
     post(
       api("/internal/allowed"),
-      params: params
+      params: params,
+      headers: gitlab_shell_internal_api_request_header
     )
   end
 
@@ -77,9 +81,9 @@ module APIInternalBaseHelpers
         project: full_path_for(container),
         gl_repository: gl_repository_for(container),
         action: 'git-upload-archive',
-        secret_token: secret_token,
         protocol: 'ssh'
-      }
+      },
+      headers: gitlab_shell_internal_api_request_header
     )
   end
 end

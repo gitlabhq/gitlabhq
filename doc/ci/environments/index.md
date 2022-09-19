@@ -30,7 +30,7 @@ Prerequisites:
 
 To view a list of environments and deployments:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
@@ -57,7 +57,7 @@ You can create an environment and deployment in the UI or in your `.gitlab-ci.ym
 
 In the UI:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select **New environment**.
 1. Enter a name and external URL.
@@ -364,7 +364,7 @@ If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or rollback a deployment:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment.
 1. To the right of the deployment name:
@@ -642,7 +642,7 @@ When the environment is stopped, the system runs `on_stop` actions
 
 You can view a deployment's expiration date in the GitLab UI.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the name of the deployment.
 
@@ -652,7 +652,7 @@ In the top left, next to the environment name, the expiration date is displayed.
 
 You can manually override a deployment's expiration date.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the deployment name.
 1. On the top right, select the thumbtack (**{thumbtack}**).
@@ -670,7 +670,7 @@ You can delete [stopped environments](#stop-an-environment) in the GitLab UI or 
 
 To delete a stopped environment in the GitLab UI:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
@@ -785,7 +785,7 @@ Limitations of GitLab Auto Rollback:
 
 GitLab Auto Rollback is turned off by default. To turn it on:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
@@ -945,7 +945,7 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 Renaming an environment through the UI is not possible.
 Instead, you need to delete the old environment and create a new one:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Find the environment and stop it.
 1. Delete the environment.

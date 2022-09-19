@@ -21,8 +21,8 @@ module Resolvers
     def resolve(**args)
       return unless project.present?
 
-      Environments::EnvironmentsFinder.new(project, context[:current_user], args).execute
-    rescue Environments::EnvironmentsFinder::InvalidStatesError => e
+      ::Environments::EnvironmentsFinder.new(project, context[:current_user], args).execute
+    rescue ::Environments::EnvironmentsFinder::InvalidStatesError => e
       raise Gitlab::Graphql::Errors::ArgumentError, e.message
     end
   end

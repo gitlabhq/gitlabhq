@@ -97,7 +97,7 @@ describe('noteable_discussion component', () => {
     `(
       'reply button on form should have title "$saveButtonTitle" when note is $noteType',
       async ({ isNoteInternal, saveButtonTitle }) => {
-        wrapper.setProps({ discussion: { ...discussionMock, confidential: isNoteInternal } });
+        wrapper.setProps({ discussion: { ...discussionMock, internal: isNoteInternal } });
         await nextTick();
 
         const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);

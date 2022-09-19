@@ -30,10 +30,10 @@ describe('packages_list_row', () => {
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
   const packageCannotDestroy = { ...packageData(), canDestroy: false };
 
-  const findPackageTags = () => wrapper.find(PackageTags);
-  const findPackagePath = () => wrapper.find(PackagePath);
+  const findPackageTags = () => wrapper.findComponent(PackageTags);
+  const findPackagePath = () => wrapper.findComponent(PackagePath);
   const findDeleteDropdown = () => wrapper.findByTestId('action-delete');
-  const findPackageIconAndName = () => wrapper.find(PackageIconAndName);
+  const findPackageIconAndName = () => wrapper.findComponent(PackageIconAndName);
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');

@@ -120,177 +120,177 @@ describe('emoji', () => {
 
   describe('isFlagEmoji', () => {
     it('should gracefully handle empty string', () => {
-      expect(isFlagEmoji('')).toBeFalsy();
+      expect(isFlagEmoji('')).toBe(false);
     });
 
     it('should detect flag_ac', () => {
-      expect(isFlagEmoji('🇦🇨')).toBeTruthy();
+      expect(isFlagEmoji('🇦🇨')).toBe(true);
     });
 
     it('should detect flag_us', () => {
-      expect(isFlagEmoji('🇺🇸')).toBeTruthy();
+      expect(isFlagEmoji('🇺🇸')).toBe(true);
     });
 
     it('should detect flag_zw', () => {
-      expect(isFlagEmoji('🇿🇼')).toBeTruthy();
+      expect(isFlagEmoji('🇿🇼')).toBe(true);
     });
 
     it('should not detect flags', () => {
-      expect(isFlagEmoji('🎏')).toBeFalsy();
+      expect(isFlagEmoji('🎏')).toBe(false);
     });
 
     it('should not detect triangular_flag_on_post', () => {
-      expect(isFlagEmoji('🚩')).toBeFalsy();
+      expect(isFlagEmoji('🚩')).toBe(false);
     });
 
     it('should not detect single letter', () => {
-      expect(isFlagEmoji('🇦')).toBeFalsy();
+      expect(isFlagEmoji('🇦')).toBe(false);
     });
 
     it('should not detect >2 letters', () => {
-      expect(isFlagEmoji('🇦🇧🇨')).toBeFalsy();
+      expect(isFlagEmoji('🇦🇧🇨')).toBe(false);
     });
   });
 
   describe('isRainbowFlagEmoji', () => {
     it('should gracefully handle empty string', () => {
-      expect(isRainbowFlagEmoji('')).toBeFalsy();
+      expect(isRainbowFlagEmoji('')).toBe(false);
     });
 
     it('should detect rainbow_flag', () => {
-      expect(isRainbowFlagEmoji('🏳🌈')).toBeTruthy();
+      expect(isRainbowFlagEmoji('🏳🌈')).toBe(true);
     });
 
     it("should not detect flag_white on its' own", () => {
-      expect(isRainbowFlagEmoji('🏳')).toBeFalsy();
+      expect(isRainbowFlagEmoji('🏳')).toBe(false);
     });
 
     it("should not detect rainbow on its' own", () => {
-      expect(isRainbowFlagEmoji('🌈')).toBeFalsy();
+      expect(isRainbowFlagEmoji('🌈')).toBe(false);
     });
 
     it('should not detect flag_white with something else', () => {
-      expect(isRainbowFlagEmoji('🏳🔵')).toBeFalsy();
+      expect(isRainbowFlagEmoji('🏳🔵')).toBe(false);
     });
   });
 
   describe('isKeycapEmoji', () => {
     it('should gracefully handle empty string', () => {
-      expect(isKeycapEmoji('')).toBeFalsy();
+      expect(isKeycapEmoji('')).toBe(false);
     });
 
     it('should detect one(keycap)', () => {
-      expect(isKeycapEmoji('1️⃣')).toBeTruthy();
+      expect(isKeycapEmoji('1️⃣')).toBe(true);
     });
 
     it('should detect nine(keycap)', () => {
-      expect(isKeycapEmoji('9️⃣')).toBeTruthy();
+      expect(isKeycapEmoji('9️⃣')).toBe(true);
     });
 
     it('should not detect ten(keycap)', () => {
-      expect(isKeycapEmoji('🔟')).toBeFalsy();
+      expect(isKeycapEmoji('🔟')).toBe(false);
     });
 
     it('should not detect hash(keycap)', () => {
-      expect(isKeycapEmoji('#⃣')).toBeFalsy();
+      expect(isKeycapEmoji('#⃣')).toBe(false);
     });
   });
 
   describe('isSkinToneComboEmoji', () => {
     it('should gracefully handle empty string', () => {
-      expect(isSkinToneComboEmoji('')).toBeFalsy();
+      expect(isSkinToneComboEmoji('')).toBe(false);
     });
 
     it('should detect hand_splayed_tone5', () => {
-      expect(isSkinToneComboEmoji('🖐🏿')).toBeTruthy();
+      expect(isSkinToneComboEmoji('🖐🏿')).toBe(true);
     });
 
     it('should not detect hand_splayed', () => {
-      expect(isSkinToneComboEmoji('🖐')).toBeFalsy();
+      expect(isSkinToneComboEmoji('🖐')).toBe(false);
     });
 
     it('should detect lifter_tone1', () => {
-      expect(isSkinToneComboEmoji('🏋🏻')).toBeTruthy();
+      expect(isSkinToneComboEmoji('🏋🏻')).toBe(true);
     });
 
     it('should not detect lifter', () => {
-      expect(isSkinToneComboEmoji('🏋')).toBeFalsy();
+      expect(isSkinToneComboEmoji('🏋')).toBe(false);
     });
 
     it('should detect rowboat_tone4', () => {
-      expect(isSkinToneComboEmoji('🚣🏾')).toBeTruthy();
+      expect(isSkinToneComboEmoji('🚣🏾')).toBe(true);
     });
 
     it('should not detect rowboat', () => {
-      expect(isSkinToneComboEmoji('🚣')).toBeFalsy();
+      expect(isSkinToneComboEmoji('🚣')).toBe(false);
     });
 
     it('should not detect individual tone emoji', () => {
-      expect(isSkinToneComboEmoji('🏻')).toBeFalsy();
+      expect(isSkinToneComboEmoji('🏻')).toBe(false);
     });
   });
 
   describe('isHorceRacingSkinToneComboEmoji', () => {
     it('should gracefully handle empty string', () => {
-      expect(isHorceRacingSkinToneComboEmoji('')).toBeFalsy();
+      expect(isHorceRacingSkinToneComboEmoji('')).toBeUndefined();
     });
 
     it('should detect horse_racing_tone2', () => {
-      expect(isHorceRacingSkinToneComboEmoji('🏇🏼')).toBeTruthy();
+      expect(isHorceRacingSkinToneComboEmoji('🏇🏼')).toBe(true);
     });
 
     it('should not detect horse_racing', () => {
-      expect(isHorceRacingSkinToneComboEmoji('🏇')).toBeFalsy();
+      expect(isHorceRacingSkinToneComboEmoji('🏇')).toBe(false);
     });
   });
 
   describe('isPersonZwjEmoji', () => {
     it('should gracefully handle empty string', () => {
-      expect(isPersonZwjEmoji('')).toBeFalsy();
+      expect(isPersonZwjEmoji('')).toBe(false);
     });
 
     it('should detect couple_mm', () => {
-      expect(isPersonZwjEmoji('👨‍❤️‍👨')).toBeTruthy();
+      expect(isPersonZwjEmoji('👨‍❤️‍👨')).toBe(true);
     });
 
     it('should not detect couple_with_heart', () => {
-      expect(isPersonZwjEmoji('💑')).toBeFalsy();
+      expect(isPersonZwjEmoji('💑')).toBe(false);
     });
 
     it('should not detect couplekiss', () => {
-      expect(isPersonZwjEmoji('💏')).toBeFalsy();
+      expect(isPersonZwjEmoji('💏')).toBe(false);
     });
 
     it('should detect family_mmb', () => {
-      expect(isPersonZwjEmoji('👨‍👨‍👦')).toBeTruthy();
+      expect(isPersonZwjEmoji('👨‍👨‍👦')).toBe(true);
     });
 
     it('should detect family_mwgb', () => {
-      expect(isPersonZwjEmoji('👨‍👩‍👧‍👦')).toBeTruthy();
+      expect(isPersonZwjEmoji('👨‍👩‍👧‍👦')).toBe(true);
     });
 
     it('should not detect family', () => {
-      expect(isPersonZwjEmoji('👪')).toBeFalsy();
+      expect(isPersonZwjEmoji('👪')).toBe(false);
     });
 
     it('should detect kiss_ww', () => {
-      expect(isPersonZwjEmoji('👩‍❤️‍💋‍👩')).toBeTruthy();
+      expect(isPersonZwjEmoji('👩‍❤️‍💋‍👩')).toBe(true);
     });
 
     it('should not detect girl', () => {
-      expect(isPersonZwjEmoji('👧')).toBeFalsy();
+      expect(isPersonZwjEmoji('👧')).toBe(false);
     });
 
     it('should not detect girl_tone5', () => {
-      expect(isPersonZwjEmoji('👧🏿')).toBeFalsy();
+      expect(isPersonZwjEmoji('👧🏿')).toBe(false);
     });
 
     it('should not detect man', () => {
-      expect(isPersonZwjEmoji('👨')).toBeFalsy();
+      expect(isPersonZwjEmoji('👨')).toBe(false);
     });
 
     it('should not detect woman', () => {
-      expect(isPersonZwjEmoji('👩')).toBeFalsy();
+      expect(isPersonZwjEmoji('👩')).toBe(false);
     });
   });
 
@@ -298,13 +298,13 @@ describe('emoji', () => {
     it('should gracefully handle empty string with unicode support', () => {
       const isSupported = isEmojiUnicodeSupported({ '1.0': true }, '', '1.0');
 
-      expect(isSupported).toBeTruthy();
+      expect(isSupported).toBe(true);
     });
 
     it('should gracefully handle empty string without unicode support', () => {
       const isSupported = isEmojiUnicodeSupported({}, '', '1.0');
 
-      expect(isSupported).toBeFalsy();
+      expect(isSupported).toBeUndefined();
     });
 
     it('bomb(6.0) with 6.0 support', () => {
@@ -316,7 +316,7 @@ describe('emoji', () => {
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
 
-      expect(isSupported).toBeTruthy();
+      expect(isSupported).toBe(true);
     });
 
     it('bomb(6.0) without 6.0 support', () => {
@@ -328,7 +328,7 @@ describe('emoji', () => {
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
 
-      expect(isSupported).toBeFalsy();
+      expect(isSupported).toBe(false);
     });
 
     it('bomb(6.0) without 6.0 but with 9.0 support', () => {
@@ -340,7 +340,7 @@ describe('emoji', () => {
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
 
-      expect(isSupported).toBeFalsy();
+      expect(isSupported).toBe(false);
     });
 
     it('construction_worker_tone5(8.0) without skin tone modifier support', () => {
@@ -367,7 +367,7 @@ describe('emoji', () => {
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
 
-      expect(isSupported).toBeFalsy();
+      expect(isSupported).toBe(false);
     });
 
     it('use native keycap on >=57 chrome', () => {
@@ -386,7 +386,7 @@ describe('emoji', () => {
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
 
-      expect(isSupported).toBeTruthy();
+      expect(isSupported).toBe(true);
     });
 
     it('fallback keycap on <57 chrome', () => {
@@ -405,7 +405,7 @@ describe('emoji', () => {
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
 
-      expect(isSupported).toBeFalsy();
+      expect(isSupported).toBe(false);
     });
   });
 

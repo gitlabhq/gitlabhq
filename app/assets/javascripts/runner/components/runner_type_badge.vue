@@ -1,26 +1,31 @@
 <script>
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  I18N_INSTANCE_TYPE,
   I18N_INSTANCE_RUNNER_DESCRIPTION,
+  I18N_GROUP_TYPE,
   I18N_GROUP_RUNNER_DESCRIPTION,
+  I18N_PROJECT_TYPE,
   I18N_PROJECT_RUNNER_DESCRIPTION,
 } from '../constants';
 
 const BADGE_DATA = {
   [INSTANCE_TYPE]: {
-    text: s__('Runners|shared'),
+    icon: 'users',
+    text: I18N_INSTANCE_TYPE,
     tooltip: I18N_INSTANCE_RUNNER_DESCRIPTION,
   },
   [GROUP_TYPE]: {
-    text: s__('Runners|group'),
+    icon: 'group',
+    text: I18N_GROUP_TYPE,
     tooltip: I18N_GROUP_RUNNER_DESCRIPTION,
   },
   [PROJECT_TYPE]: {
-    text: s__('Runners|specific'),
+    icon: 'project',
+    text: I18N_PROJECT_TYPE,
     tooltip: I18N_PROJECT_RUNNER_DESCRIPTION,
   },
 };
@@ -50,7 +55,13 @@ export default {
 };
 </script>
 <template>
-  <gl-badge v-if="badge" v-gl-tooltip="badge.tooltip" variant="info" v-bind="$attrs">
+  <gl-badge
+    v-if="badge"
+    v-gl-tooltip="badge.tooltip"
+    variant="muted"
+    :icon="badge.icon"
+    v-bind="$attrs"
+  >
     {{ badge.text }}
   </gl-badge>
 </template>

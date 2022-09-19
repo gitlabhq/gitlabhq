@@ -9,7 +9,7 @@ import ActionComponent from '~/pipelines/components/jobs_shared/action_component
 describe('pipeline graph action component', () => {
   let wrapper;
   let mock;
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
   const findTooltipWrapper = () => wrapper.find('[data-testid="ci-action-icon-tooltip-wrapper"]');
 
   beforeEach(() => {

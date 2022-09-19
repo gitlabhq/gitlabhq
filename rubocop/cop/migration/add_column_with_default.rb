@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class AddColumnWithDefault < RuboCop::Cop::Cop
+      class AddColumnWithDefault < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`add_column_with_default` is deprecated, use `add_column` instead'
@@ -15,7 +15,7 @@ module RuboCop
 
           name = node.children[1]
 
-          add_offense(node, location: :selector) if name == :add_column_with_default
+          add_offense(node.loc.selector) if name == :add_column_with_default
         end
       end
     end

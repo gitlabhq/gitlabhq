@@ -887,7 +887,7 @@ To be consistent, use these templates when you write navigation steps in a task 
 To open project settings:
 
 ```markdown
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -895,7 +895,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -903,7 +903,7 @@ To open group settings:
 To open the Admin Area:
 
 ```markdown
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 ```
 
 To select your avatar:
@@ -950,7 +950,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
@@ -1360,6 +1360,48 @@ It renders on the GitLab documentation site as:
 >
 > - This is a list item
 > - Second item in the list
+
+## Tabs
+
+On the docs site, you can format text so it's displayed as tabs.
+
+To create a set of tabs, follow this example:
+
+```plaintext
+::Tabs
+
+:::TabTitle Tab One
+
+Here's some content in tab one.
+
+:::TabTitle Tab Two
+
+Here's some other content in tab two.
+
+::EndTabs
+```
+
+This code renders on the GitLab documentation site as:
+
+::Tabs
+
+:::TabTitle Tab One
+
+Here's some content in tab one.
+
+:::TabTitle Tab Two
+
+Here's some other content in tab two.
+
+::EndTabs
+
+For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
+For example:
+
+- `Omnibus package`, `Helm chart`, `Source`
+- `15.1 and earlier`, `15.2 and later`
+
+See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for details.
 
 ## Terms
 

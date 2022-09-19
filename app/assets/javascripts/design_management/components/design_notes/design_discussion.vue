@@ -174,6 +174,7 @@ export default {
       this.$emit('open-form', this.discussion.id);
       this.isFormRendered = true;
     },
+
     toggleResolvedStatus() {
       this.isResolving = true;
 
@@ -234,6 +235,7 @@ export default {
         :note="firstNote"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
+        :noteable-id="noteableId"
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('update-note-error', $event)"
       >
@@ -276,6 +278,7 @@ export default {
         :note="note"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
+        :noteable-id="noteableId"
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('update-note-error', $event)"
       />
@@ -307,6 +310,8 @@ export default {
               v-model="discussionComment"
               :is-saving="loading"
               :markdown-preview-path="markdownPreviewPath"
+              :noteable-id="noteableId"
+              :discussion-id="discussion.id"
               @submit-form="mutate"
               @cancel-form="hideForm"
             >

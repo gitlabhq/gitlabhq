@@ -286,67 +286,134 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#find_page' do
-    before do
-      subject.create_page('index page', 'This is an awesome Gollum Wiki')
-    end
-
-    it 'returns the latest version of the page if it exists' do
-      page = subject.find_page('index page')
-
-      expect(page.title).to eq('index page')
-    end
-
-    it 'returns nil if the page or version does not exist' do
-      expect(subject.find_page('non-existent')).to be_nil
-      expect(subject.find_page('index page', 'non-existent')).to be_nil
-    end
-
-    it 'can find a page by slug' do
-      page = subject.find_page('index-page')
-
-      expect(page.title).to eq('index page')
-    end
-
-    it 'returns a WikiPage instance' do
-      page = subject.find_page('index page')
-
-      expect(page).to be_a WikiPage
-    end
-
-    context 'pages with multibyte-character title' do
+    shared_examples 'wiki model #find_page' do
       before do
-        subject.create_page('autre pagé', "C'est un génial Gollum Wiki")
+        subject.create_page('index page', 'This is an awesome Gollum Wiki')
+      end
+
+      it 'returns the latest version of the page if it exists' do
+        page = subject.find_page('index page')
+
+        expect(page.title).to eq('index page')
+      end
+
+      it 'returns nil if the page or version does not exist' do
+        expect(subject.find_page('non-existent')).to be_nil
+        expect(subject.find_page('index page', 'non-existent')).to be_nil
       end
 
       it 'can find a page by slug' do
-        page = subject.find_page('autre pagé')
+        page = subject.find_page('index-page')
 
-        expect(page.title).to eq('autre pagé')
+        expect(page.title).to eq('index page')
+      end
+
+      it 'returns a WikiPage instance' do
+        page = subject.find_page('index page')
+
+        expect(page).to be_a WikiPage
+      end
+
+      context 'pages with multibyte-character title' do
+        before do
+          subject.create_page('autre pagé', "C'est un génial Gollum Wiki")
+        end
+
+        it 'can find a page by slug' do
+          page = subject.find_page('autre pagé')
+
+          expect(page.title).to eq('autre pagé')
+        end
+      end
+
+      context 'pages with invalidly-encoded content' do
+        before do
+          subject.create_page('encoding is fun', "f\xFCr".b)
+        end
+
+        it 'can find the page' do
+          page = subject.find_page('encoding is fun')
+
+          expect(page.content).to eq('fr')
+        end
+      end
+
+      context 'pages with different file extensions' do
+        where(:extension, :path, :title) do
+          [
+            [:md, "wiki-markdown.md", "wiki markdown"],
+            [:markdown, "wiki-markdown-2.md", "wiki markdown 2"],
+            [:rdoc, "wiki-rdoc.rdoc", "wiki rdoc"],
+            [:asciidoc, "wiki-asciidoc.asciidoc", "wiki asciidoc"],
+            [:adoc, "wiki-asciidoc-2.adoc", "wiki asciidoc 2"],
+            [:org, "wiki-org.org", "wiki org"],
+            [:textile, "wiki-textile.textile", "wiki textile"],
+            [:creole, "wiki-creole.creole", "wiki creole"],
+            [:rest, "wiki-rest.rest", "wiki rest"],
+            [:rst, "wiki-rest-2.rst", "wiki rest 2"],
+            [:mediawiki, "wiki-mediawiki.mediawiki", "wiki mediawiki"],
+            [:wiki, "wiki-mediawiki-2.wiki", "wiki mediawiki 2"],
+            [:pod, "wiki-pod.pod", "wiki pod"],
+            [:text, "wiki-text.txt", "wiki text"]
+          ]
+        end
+
+        with_them do
+          before do
+            wiki.repository.create_file(
+              user, path, "content of wiki file",
+              branch_name: wiki.default_branch,
+              message: "created page #{path}",
+              author_email: user.email,
+              author_name: user.name
+            )
+          end
+
+          it "can find page with #{params[:extension]} extension" do
+            page = subject.find_page(title)
+
+            expect(page.content).to eq("content of wiki file")
+          end
+        end
       end
     end
 
-    context 'pages with invalidly-encoded content' do
+    context 'find page with legacy wiki service' do
       before do
-        subject.create_page('encoding is fun', "f\xFCr".b)
+        stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
       end
 
-      it 'can find the page' do
-        page = subject.find_page('encoding is fun')
+      it_behaves_like 'wiki model #find_page'
+    end
 
-        expect(page.content).to eq('fr')
-      end
+    context 'find page with normal repository RPCs' do
+      it_behaves_like 'wiki model #find_page'
     end
   end
 
   describe '#find_sidebar' do
-    before do
-      subject.create_page(described_class::SIDEBAR, 'This is an awesome Sidebar')
+    shared_examples 'wiki model #find_sidebar' do
+      before do
+        subject.create_page(described_class::SIDEBAR, 'This is an awesome Sidebar')
+      end
+
+      it 'finds the page defined as _sidebar' do
+        page = subject.find_sidebar
+
+        expect(page.content).to eq('This is an awesome Sidebar')
+      end
     end
 
-    it 'finds the page defined as _sidebar' do
-      page = subject.find_sidebar
+    context 'find sidebar with legacy wiki service' do
+      before do
+        stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
+      end
 
-      expect(page.content).to eq('This is an awesome Sidebar')
+      it_behaves_like 'wiki model #find_sidebar'
+    end
+
+    context 'find sidebar with normal repository RPCs' do
+      it_behaves_like 'wiki model #find_sidebar'
     end
   end
 
@@ -450,9 +517,7 @@ RSpec.shared_examples 'wiki model' do
 
         expect(subject.error_message).to match(/Duplicate page:/)
       end
-    end
 
-    it_behaves_like 'create_page tests' do
       it 'returns false if a page exists already in the repository', :aggregate_failures do
         subject.create_page('test page', 'content')
 
@@ -537,6 +602,16 @@ RSpec.shared_examples 'wiki model' do
           allow(subject.repository).to receive(:ls_files).and_return(existing_repo_files)
 
           expect(subject.create_page(new_file, 'content', format)).to eq success
+        end
+      end
+    end
+
+    it_behaves_like 'create_page tests'
+
+    context 'create page with legacy find_page wiki service' do
+      it_behaves_like 'create_page tests' do
+        before do
+          stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
         end
       end
     end
@@ -634,6 +709,17 @@ RSpec.shared_examples 'wiki model' do
     it_behaves_like 'update_page tests' do
       include_context 'common examples'
       include_context 'extended examples'
+    end
+
+    context 'update page with legacy find_page wiki service' do
+      it_behaves_like 'update_page tests' do
+        before do
+          stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
+        end
+
+        include_context 'common examples'
+        include_context 'extended examples'
+      end
     end
 
     context 'when format is invalid' do

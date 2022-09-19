@@ -10,6 +10,10 @@ value_type: number
 status: active
 time_frame: all
 data_source: redis
+instrumentation_class: RedisMetric
+options:
+  prefix: package_events
+  event: i_package_delete_package
 distribution:
 - ee
 - ce

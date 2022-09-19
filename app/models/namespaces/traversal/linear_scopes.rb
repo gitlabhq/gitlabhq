@@ -41,24 +41,13 @@ module Namespaces
         def self_and_descendants(include_self: true)
           return super unless use_traversal_ids_for_descendants_scopes?
 
-          if Feature.enabled?(:traversal_ids_btree)
-            self_and_descendants_with_comparison_operators(include_self: include_self)
-          else
-            records = self_and_descendants_with_duplicates_with_array_operator(include_self: include_self)
-            distinct = records.select('DISTINCT on(namespaces.id) namespaces.*')
-            distinct.normal_select
-          end
+          self_and_descendants_with_comparison_operators(include_self: include_self)
         end
 
         def self_and_descendant_ids(include_self: true)
           return super unless use_traversal_ids_for_descendants_scopes?
 
-          if Feature.enabled?(:traversal_ids_btree)
-            self_and_descendants_with_comparison_operators(include_self: include_self).as_ids
-          else
-            self_and_descendants_with_duplicates_with_array_operator(include_self: include_self)
-              .select('DISTINCT namespaces.id')
-          end
+          self_and_descendants(include_self: include_self).as_ids
         end
 
         def self_and_hierarchy
@@ -179,20 +168,6 @@ module Namespaces
 
         def unnest_func(*args)
           Arel::Nodes::NamedFunction.new('unnest', args)
-        end
-
-        def self_and_descendants_with_duplicates_with_array_operator(include_self: true)
-          base_ids = select(:id)
-
-          records = unscoped
-            .from("namespaces, (#{base_ids.to_sql}) base")
-            .where('namespaces.traversal_ids @> ARRAY[base.id]')
-
-          if include_self
-            records
-          else
-            records.where('namespaces.id <> base.id')
-          end
         end
 
         def superset_cte(base_name)

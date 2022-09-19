@@ -102,8 +102,7 @@ RSpec.describe API::ConanProjectPackages do
   context 'file download endpoints', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326194' do
     include_context 'conan file download endpoints'
 
-    describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/
-:recipe_revision/export/:file_name' do
+    describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/export/:file_name' do
       subject do
         get api("/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/export/#{recipe_file.file_name}"),
             headers: headers
@@ -113,8 +112,7 @@ RSpec.describe API::ConanProjectPackages do
       it_behaves_like 'project not found by project id'
     end
 
-    describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/
-:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
+    describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
       subject do
         get api("/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/package/#{metadata.conan_package_reference}/#{metadata.package_revision}/#{package_file.file_name}"),
             headers: headers

@@ -10,9 +10,9 @@ module Gitlab
           results = {}
 
           Gitlab::Redis::Cache.with do |r|
-            r.pipelined do
+            r.pipelined do |pipeline|
               subjects.each do |subject|
-                results[subject.cache_key] = new(subject).read
+                results[subject.cache_key] = new(subject).read(pipeline)
               end
             end
           end
@@ -34,11 +34,15 @@ module Gitlab
           end
         end
 
-        def read
+        def read(pipeline = nil)
           @loaded = true
 
-          Gitlab::Redis::Cache.with do |r|
-            r.mapped_hmget(markdown_cache_key, *fields)
+          if pipeline
+            pipeline.mapped_hmget(markdown_cache_key, *fields)
+          else
+            Gitlab::Redis::Cache.with do |r|
+              r.mapped_hmget(markdown_cache_key, *fields)
+            end
           end
         end
 

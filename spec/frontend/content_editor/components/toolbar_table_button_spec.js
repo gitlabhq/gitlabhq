@@ -1,6 +1,7 @@
 import { GlDropdown, GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
+import { stubComponent } from 'helpers/stub_component';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_table_button', () => {
@@ -11,6 +12,9 @@ describe('content_editor/components/toolbar_table_button', () => {
     wrapper = mountExtended(ToolbarTableButton, {
       provide: {
         tiptapEditor: editor,
+      },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown),
       },
     });
   };
@@ -97,5 +101,15 @@ describe('content_editor/components/toolbar_table_button', () => {
     }
 
     expect(getNumButtons()).toBe(100); // 10x10 (and not 11x11)
+  });
+
+  describe('a11y tests', () => {
+    it('sets text, title, and text-sr-only properties to the table button dropdown', () => {
+      expect(findDropdown().props()).toMatchObject({
+        text: 'Insert table',
+        textSrOnly: true,
+      });
+      expect(findDropdown().attributes('title')).toBe('Insert table');
+    });
   });
 });

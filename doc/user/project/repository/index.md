@@ -49,7 +49,7 @@ to a branch in the repository. When you use the command line, you can commit mul
   on their respective thread.
 - **Cherry-pick a commit:**
   In GitLab, you can
-  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-commit)
+  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
   from the UI.
 - **Revert a commit:**
   [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
@@ -200,6 +200,14 @@ To render an OpenAPI file:
    **Display rendered file** button.
 
 ## Repository size
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368150) in GitLab 15.3, feature flags `gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size` for alternative repository size calculations.
+
+FLAG:
+On self-managed GitLab, by default GitLab uses the `du -sk` command to determine the size of a repository. GitLab can use either
+`git-rev-list` (enabled with feature flag `gitaly_revlist_for_repo_size`) or `git-cat-file` (enabled with feature flag
+`gitaly_catfile_repo_size`) instead. To switch between different calculation methods, ask an administrator to
+[enable or disable](../../../administration/feature_flags.md) these feature flags.
 
 The **Project information** page shows the size of all files in the repository. The size is
 updated, at most, every 15 minutes. The file size includes repository files, artifacts, and LFS.

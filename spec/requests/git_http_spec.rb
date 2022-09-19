@@ -452,7 +452,7 @@ RSpec.describe 'Git HTTP requests' do
                 canonical_project.add_maintainer(user)
                 create(:merge_request,
                        source_project: project,
-                       target_project:  canonical_project,
+                       target_project: canonical_project,
                        source_branch: 'fixes',
                        allow_collaboration: true)
               end
@@ -1105,7 +1105,7 @@ RSpec.describe 'Git HTTP requests' do
                 canonical_project.add_maintainer(user)
                 create(:merge_request,
                        source_project: project,
-                       target_project:  canonical_project,
+                       target_project: canonical_project,
                        source_branch: 'fixes',
                        allow_collaboration: true)
               end

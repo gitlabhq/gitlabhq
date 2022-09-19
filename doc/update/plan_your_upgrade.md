@@ -132,7 +132,7 @@ to your instance and then upgrade it for any relevant features you're using.
   [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
-  - On the top bar, select **Menu > Admin**, and look for the version of
+  - On the top bar, select **Main menu > Admin**, and look for the version of
     PostgreSQL you are using.
     If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),
     account for the relevant
@@ -171,6 +171,9 @@ After updating GitLab, upgrade your runners to match
 If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/index.md#update-the-agent-version) to match your new GitLab version.
 
 #### Elasticsearch
+
+Before updating GitLab, confirm Advanced Search migrations are complete by
+[checking for pending advanced search migrations](index.md#checking-for-pending-advanced-search-migrations).
 
 After updating GitLab, you may have to upgrade
 [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).

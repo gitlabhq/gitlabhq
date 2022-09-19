@@ -23,6 +23,11 @@ RSpec.describe GoogleCloud::EnableCloudsqlService do
       project.save!
     end
 
+    after do
+      project.variables.destroy_all # rubocop:disable Cop/DestroyAll
+      project.save!
+    end
+
     it 'enables cloudsql, compute and service networking Google APIs', :aggregate_failures do
       expect_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
         expect(instance).to receive(:enable_cloud_sql_admin).with('prj-prod')
@@ -34,6 +39,23 @@ RSpec.describe GoogleCloud::EnableCloudsqlService do
       end
 
       expect(result[:status]).to eq(:success)
+    end
+
+    context 'when Google APIs raise an error' do
+      it 'returns error result' do
+        allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+          allow(instance).to receive(:enable_cloud_sql_admin).with('prj-prod')
+          allow(instance).to receive(:enable_compute).with('prj-prod')
+          allow(instance).to receive(:enable_service_networking).with('prj-prod')
+          allow(instance).to receive(:enable_cloud_sql_admin).with('prj-staging')
+          allow(instance).to receive(:enable_compute).with('prj-staging')
+          allow(instance).to receive(:enable_service_networking).with('prj-staging')
+                                                                .and_raise(Google::Apis::Error.new('error'))
+        end
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq('error')
+      end
     end
   end
 end

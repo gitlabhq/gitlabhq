@@ -99,7 +99,7 @@ RSpec.describe ProfilesHelper do
   describe "#ssh_key_expires_field_description" do
     subject { helper.ssh_key_expires_field_description }
 
-    it { is_expected.to eq('Key becomes invalid on this date.') }
+    it { is_expected.to eq(s_('Profiles|Optional but recommended. If set, key becomes invalid on the specified date.')) }
   end
 
   describe '#middle_dot_divider_classes' do

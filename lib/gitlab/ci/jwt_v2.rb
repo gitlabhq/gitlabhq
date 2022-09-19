@@ -8,7 +8,7 @@ module Gitlab
       def reserved_claims
         super.merge(
           iss: Settings.gitlab.base_url,
-          sub:  "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
+          sub: "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
           aud: Settings.gitlab.base_url
         )
       end

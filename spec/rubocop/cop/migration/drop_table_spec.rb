@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/drop_table'
 
 RSpec.describe RuboCop::Cop::Migration::DropTable do
-  subject(:cop) { described_class.new }
-
   context 'when in deployment migration' do
     let(:msg) do
       '`drop_table` in deployment migrations requires downtime. Drop tables in post-deployment migrations instead.'

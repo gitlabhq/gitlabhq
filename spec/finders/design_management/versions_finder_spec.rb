@@ -71,13 +71,13 @@ RSpec.describe DesignManagement::VersionsFinder do
 
         describe 'returning versions earlier or equal to a version' do
           context 'when argument is the first version' do
-            let(:params) { { earlier_or_equal_to: version_1 }}
+            let(:params) { { earlier_or_equal_to: version_1 } }
 
             it { is_expected.to eq([version_1]) }
           end
 
           context 'when argument is the second version' do
-            let(:params) { { earlier_or_equal_to: version_2 }}
+            let(:params) { { earlier_or_equal_to: version_2 } }
 
             it { is_expected.to contain_exactly(version_1, version_2) }
           end

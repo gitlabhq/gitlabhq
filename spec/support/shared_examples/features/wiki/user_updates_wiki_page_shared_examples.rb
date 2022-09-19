@@ -137,16 +137,7 @@ RSpec.shared_examples 'User updates wiki page' do
       end
     end
 
-    context 'when using the content editor' do
-      context 'with feature flag on' do
-        before do
-          find('[data-testid="toggle-editing-mode-button"] label', text: 'Rich text').click
-        end
-
-        it_behaves_like 'edits content using the content editor'
-      end
-    end
-
+    it_behaves_like 'edits content using the content editor'
     it_behaves_like 'autocompletes items'
   end
 

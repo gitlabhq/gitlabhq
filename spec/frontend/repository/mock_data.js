@@ -1,4 +1,5 @@
 export const simpleViewerMock = {
+  __typename: 'RepositoryBlob',
   id: '1',
   name: 'some_file.js',
   size: 123,

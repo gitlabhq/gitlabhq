@@ -263,10 +263,10 @@ class ContainerRepository < ApplicationRecord
                         .with_migration_import_started_at_nil_or_before(before_timestamp)
 
     union = ::Gitlab::SQL::Union.new([
-          stale_pre_importing,
-          stale_pre_import_done,
-          stale_importing
-        ])
+                                       stale_pre_importing,
+                                       stale_pre_import_done,
+                                       stale_importing
+                                     ])
     from("(#{union.to_sql}) #{ContainerRepository.table_name}")
   end
 
@@ -598,6 +598,7 @@ class ContainerRepository < ApplicationRecord
     tags_response_body.map do |raw_tag|
       tag = ContainerRegistry::Tag.new(self, raw_tag['name'])
       tag.force_created_at_from_iso8601(raw_tag['created_at'])
+      tag.updated_at = raw_tag['updated_at']
       tag
     end
   end

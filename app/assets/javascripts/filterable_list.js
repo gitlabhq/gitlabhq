@@ -81,6 +81,7 @@ export default class FilterableList {
 
   onFilterSuccess(response, queryData) {
     if (response.data.html) {
+      // eslint-disable-next-line no-unsanitized/property
       this.listHolderElement.innerHTML = response.data.html;
     }
 

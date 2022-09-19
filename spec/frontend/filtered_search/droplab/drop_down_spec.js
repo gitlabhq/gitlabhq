@@ -557,11 +557,11 @@ describe('DropLab DropDown', () => {
       DropDown.prototype.show.call(testContext.dropdown);
     });
 
-    it('it should set .list display to block', () => {
+    it('should set .list display to block', () => {
       expect(testContext.list.style.display).toBe('block');
     });
 
-    it('it should set .hidden to false', () => {
+    it('should set .hidden to false', () => {
       expect(testContext.dropdown.hidden).toBe(false);
     });
 
@@ -591,11 +591,11 @@ describe('DropLab DropDown', () => {
       DropDown.prototype.hide.call(testContext.dropdown);
     });
 
-    it('it should set .list display to none', () => {
+    it('should set .list display to none', () => {
       expect(testContext.list.style.display).toBe('none');
     });
 
-    it('it should set .hidden to true', () => {
+    it('should set .hidden to true', () => {
       expect(testContext.dropdown.hidden).toBe(true);
     });
   });
@@ -648,11 +648,11 @@ describe('DropLab DropDown', () => {
       DropDown.prototype.destroy.call(testContext.dropdown);
     });
 
-    it('it should call .hide', () => {
+    it('should call .hide', () => {
       expect(testContext.dropdown.hide).toHaveBeenCalled();
     });
 
-    it('it should call .removeEventListener', () => {
+    it('should call .removeEventListener', () => {
       expect(testContext.list.removeEventListener).toHaveBeenCalledWith(
         'click',
         testContext.eventWrapper.clickEvent,

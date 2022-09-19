@@ -1,0 +1,8 @@
+---
+name: ci_project_pipeline_config_refactoring
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97240
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372867
+milestone: '15.4'
+type: development
+group: group::pipeline authoring
+default_enabled: false

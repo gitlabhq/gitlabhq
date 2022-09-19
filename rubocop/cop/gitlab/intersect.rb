@@ -5,7 +5,7 @@ module RuboCop
     module Gitlab
       # Cop that disallows the use of `Gitlab::SQL::Intersect`, in favour of using
       # the `FromIntersect` module.
-      class Intersect < RuboCop::Cop::Cop
+      class Intersect < RuboCop::Cop::Base
         MSG = 'Use the `FromIntersect` concern, instead of using `Gitlab::SQL::Intersect` directly'
 
         def_node_matcher :raw_intersect?, <<~PATTERN
@@ -15,7 +15,7 @@ module RuboCop
         def on_send(node)
           return unless raw_intersect?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

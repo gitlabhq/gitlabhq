@@ -44,7 +44,7 @@ module QA
       alias_method :ldap_username, :username
 
       def password
-        @password || 'password'
+        @password ||= SecureRandom.hex(8)
       end
       alias_method :ldap_password, :password
 
@@ -232,3 +232,5 @@ module QA
     end
   end
 end
+
+QA::Resource::User.prepend_mod_with('Resource::User', namespace: QA)

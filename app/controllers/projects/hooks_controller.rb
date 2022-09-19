@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::HooksController < Projects::ApplicationController
-  include ::Integrations::HooksExecution
+  include ::WebHooks::HookActions
 
   # Authorize
   before_action :authorize_admin_project!
@@ -35,7 +35,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def hook_logs
-    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page])
+    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
   end
 
   def trigger_values

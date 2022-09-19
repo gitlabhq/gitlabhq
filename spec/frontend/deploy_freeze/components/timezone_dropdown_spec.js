@@ -30,8 +30,8 @@ describe('Deploy freeze timezone dropdown', () => {
     wrapper.setData({ searchTerm });
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findDropdownItemByIndex = (index) => wrapper.findAll(GlDropdownItem).at(index);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdownItemByIndex = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
 
   afterEach(() => {
     wrapper.destroy();
@@ -96,7 +96,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(wrapper.find(GlDropdown).vm.text).toBe('Alaska');
+      expect(wrapper.findComponent(GlDropdown).vm.text).toBe('Alaska');
     });
   });
 });

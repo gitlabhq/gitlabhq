@@ -22,7 +22,8 @@ class Packages::Package < ApplicationRecord
     debian: 9,
     rubygems: 10,
     helm: 11,
-    terraform_module: 12
+    terraform_module: 12,
+    rpm: 13
   }
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4 }
@@ -43,6 +44,7 @@ class Packages::Package < ApplicationRecord
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
   has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
+  has_one :rpm_metadatum, inverse_of: :package, class_name: 'Packages::Rpm::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
@@ -242,22 +244,23 @@ class Packages::Package < ApplicationRecord
     reverse_order_direction = direction == :asc ? desc_order_expression : asc_order_expression
     arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert
 
-    ::Gitlab::Pagination::Keyset::Order.build([
-      ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: "#{join_table}_#{column_name}",
-        column_expression: join_class.arel_table[column_name],
-        order_expression: order_direction,
-        reversed_order_expression: reverse_order_direction,
-        order_direction: direction,
-        distinct: false,
-        add_to_projections: true
-      ),
-      ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'id',
-        order_expression: arel_order_classes[direction].new(Packages::Package.arel_table[:id]),
-        add_to_projections: true
-      )
-    ])
+    ::Gitlab::Pagination::Keyset::Order.build(
+      [
+        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: "#{join_table}_#{column_name}",
+          column_expression: join_class.arel_table[column_name],
+          order_expression: order_direction,
+          reversed_order_expression: reverse_order_direction,
+          order_direction: direction,
+          distinct: false,
+          add_to_projections: true
+        ),
+        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: arel_order_classes[direction].new(Packages::Package.arel_table[:id]),
+          add_to_projections: true
+        )
+      ])
   end
 
   def versions
@@ -328,6 +331,12 @@ class Packages::Package < ApplicationRecord
     return name unless pypi?
 
     name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
+  end
+
+  def touch_last_downloaded_at
+    ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+      update_column(:last_downloaded_at, Time.zone.now)
+    end
   end
 
   private

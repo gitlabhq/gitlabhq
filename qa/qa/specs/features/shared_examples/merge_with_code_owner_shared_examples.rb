@@ -8,11 +8,9 @@ module QA
       # Require one approval from any eligible user on any branch
       # This will confirm that this type of unrestricted approval is
       # also satisfied when a code owner grants approval
-      Page::Project::Menu.perform(&:go_to_general_settings)
-      Page::Project::Settings::Main.perform do |main|
-        main.expand_merge_request_approvals_settings do |settings|
-          settings.set_default_number_of_approvals_required(1)
-        end
+      Page::Project::Menu.perform(&:go_to_merge_request_settings)
+      Page::Project::Settings::MergeRequest.perform do |settings|
+        settings.set_default_number_of_approvals_required(1)
       end
 
       Resource::Repository::Commit.fabricate_via_api! do |commit|

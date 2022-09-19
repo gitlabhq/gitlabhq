@@ -16,11 +16,11 @@ describe('ExpirationInput', () => {
 
   const tagsRegexHelpPagePath = 'fooPath';
 
-  const findInput = () => wrapper.find(GlFormInput);
-  const findFormGroup = () => wrapper.find(GlFormGroup);
+  const findInput = () => wrapper.findComponent(GlFormInput);
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findLabel = () => wrapper.find('[data-testid="label"]');
   const findDescription = () => wrapper.find('[data-testid="description"]');
-  const findDescriptionLink = () => wrapper.find(GlLink);
+  const findDescriptionLink = () => wrapper.findComponent(GlLink);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(component, {

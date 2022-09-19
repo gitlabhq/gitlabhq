@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import Autosave from '~/autosave';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 
 const showModal = jest.fn();
@@ -13,6 +14,7 @@ const GlModal = {
 
 describe('Design reply form component', () => {
   let wrapper;
+  let originalGon;
 
   const findTextarea = () => wrapper.find('textarea');
   const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
@@ -24,6 +26,7 @@ describe('Design reply form component', () => {
       propsData: {
         value: '',
         isSaving: false,
+        noteableId: 'gid://gitlab/DesignManagement::Design/6',
         ...props,
       },
       stubs: { GlModal },
@@ -31,8 +34,14 @@ describe('Design reply form component', () => {
     });
   }
 
+  beforeEach(() => {
+    originalGon = window.gon;
+    window.gon.current_user_id = 1;
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    window.gon = originalGon;
   });
 
   it('textarea has focus after component mount', () => {
@@ -65,6 +74,25 @@ describe('Design reply form component', () => {
 
     expect(findSubmitButton().html()).toMatchSnapshot();
   });
+
+  it.each`
+    discussionId                         | shortDiscussionId
+    ${undefined}                         | ${'new'}
+    ${'gid://gitlab/DiffDiscussion/123'} | ${123}
+  `(
+    'initializes autosave support on discussion with proper key',
+    async ({ discussionId, shortDiscussionId }) => {
+      createComponent({ discussionId });
+      await nextTick();
+
+      // We discourage testing `wrapper.vm` properties but
+      // since `autosave` library instantiates on component
+      // there's no other way to test whether instantiation
+      // happened correctly or not.
+      expect(wrapper.vm.autosaveDiscussion).toBeInstanceOf(Autosave);
+      expect(wrapper.vm.autosaveDiscussion.key).toBe(`autosave/Discussion/6/${shortDiscussionId}`);
+    },
+  );
 
   describe('when form has no text', () => {
     beforeEach(() => {
@@ -120,28 +148,37 @@ describe('Design reply form component', () => {
     });
 
     it('emits submitForm event on Comment button click', async () => {
+      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+
       findSubmitButton().vm.$emit('click');
 
       await nextTick();
       expect(wrapper.emitted('submit-form')).toBeTruthy();
+      expect(autosaveResetSpy).toHaveBeenCalled();
     });
 
     it('emits submitForm event on textarea ctrl+enter keydown', async () => {
+      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+
       findTextarea().trigger('keydown.enter', {
         ctrlKey: true,
       });
 
       await nextTick();
       expect(wrapper.emitted('submit-form')).toBeTruthy();
+      expect(autosaveResetSpy).toHaveBeenCalled();
     });
 
     it('emits submitForm event on textarea meta+enter keydown', async () => {
+      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+
       findTextarea().trigger('keydown.enter', {
         metaKey: true,
       });
 
       await nextTick();
       expect(wrapper.emitted('submit-form')).toBeTruthy();
+      expect(autosaveResetSpy).toHaveBeenCalled();
     });
 
     it('emits input event on changing textarea content', async () => {
@@ -180,10 +217,13 @@ describe('Design reply form component', () => {
     });
 
     it('emits cancelForm event on modal Ok button click', () => {
+      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+
       findTextarea().trigger('keyup.esc');
       findModal().vm.$emit('ok');
 
       expect(wrapper.emitted('cancel-form')).toBeTruthy();
+      expect(autosaveResetSpy).toHaveBeenCalled();
     });
   });
 });

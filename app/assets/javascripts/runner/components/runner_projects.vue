@@ -1,11 +1,13 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import { sprintf, formatNumber } from '~/locale';
 import { createAlert } from '~/flash';
 import runnerProjectsQuery from '../graphql/show/runner_projects.query.graphql';
 import {
   I18N_ASSIGNED_PROJECTS,
-  I18N_NONE,
+  I18N_CLEAR_FILTER_PROJECTS,
+  I18N_FILTER_PROJECTS,
+  I18N_NO_PROJECTS_FOUND,
   I18N_FETCH_ERROR,
   RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
 } from '../constants';
@@ -14,9 +16,12 @@ import { captureException } from '../sentry_utils';
 import RunnerAssignedItem from './runner_assigned_item.vue';
 import RunnerPagination from './runner_pagination.vue';
 
+const SHORT_SEARCH_LENGTH = 3;
+
 export default {
   name: 'RunnerProjects',
   components: {
+    GlSearchBoxByType,
     GlSkeletonLoader,
     RunnerAssignedItem,
     RunnerPagination,
@@ -35,6 +40,7 @@ export default {
         pageInfo: {},
         count: 0,
       },
+      search: '',
       pagination: {},
     };
   },
@@ -61,9 +67,10 @@ export default {
   },
   computed: {
     variables() {
-      const { id } = this.runner;
+      const { search, runner } = this;
       return {
-        id,
+        id: runner.id,
+        search: search.length >= SHORT_SEARCH_LENGTH ? search : '',
         ...getPaginationVariables(this.pagination, RUNNER_DETAILS_PROJECTS_PAGE_SIZE),
       };
     },
@@ -80,22 +87,38 @@ export default {
     isOwner(projectId) {
       return projectId === this.projects.ownerProjectId;
     },
+    onSearchInput(search) {
+      this.search = search;
+      this.pagination = {};
+    },
     onPaginationInput(value) {
       this.pagination = value;
     },
   },
-  I18N_NONE,
+  RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
+  I18N_CLEAR_FILTER_PROJECTS,
+  I18N_FILTER_PROJECTS,
+  I18N_NO_PROJECTS_FOUND,
 };
 </script>
 
 <template>
   <div class="gl-border-t-gray-100 gl-border-t-1 gl-border-t-solid">
-    <h3 class="gl-font-lg gl-mt-5 gl-mb-0">
+    <h3 class="gl-font-lg gl-mt-5">
       {{ heading }}
     </h3>
+    <gl-search-box-by-type
+      :is-loading="loading"
+      :clear-button-title="$options.I18N_CLEAR_FILTER_PROJECTS"
+      :placeholder="$options.I18N_FILTER_PROJECTS"
+      debounce="500"
+      class="gl-w-28"
+      :value="search"
+      @input="onSearchInput"
+    />
 
-    <div v-if="loading" class="gl-py-5">
-      <gl-skeleton-loader />
+    <div v-if="!projects.items.length && loading" class="gl-py-5">
+      <gl-skeleton-loader v-for="i in $options.RUNNER_DETAILS_PROJECTS_PAGE_SIZE" :key="i" />
     </div>
     <template v-else-if="projects.items.length">
       <runner-assigned-item
@@ -110,7 +133,7 @@ export default {
         :is-owner="isOwner(project.id)"
       />
     </template>
-    <span v-else class="gl-text-gray-500">{{ $options.I18N_NONE }}</span>
+    <div v-else class="gl-py-5 gl-text-gray-500">{{ $options.I18N_NO_PROJECTS_FOUND }}</div>
 
     <runner-pagination
       :disabled="loading"

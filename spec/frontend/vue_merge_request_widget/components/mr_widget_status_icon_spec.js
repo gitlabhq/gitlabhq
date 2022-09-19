@@ -1,14 +1,16 @@
-import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import mrStatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 
 describe('MR widget status icon component', () => {
   let wrapper;
 
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findStatusIcon = () => wrapper.findComponent(StatusIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
-  const createWrapper = (props, mountFn = shallowMount) => {
-    wrapper = mountFn(mrStatusIcon, {
+  const createWrapper = (props) => {
+    wrapper = shallowMount(mrStatusIcon, {
       propsData: {
         ...props,
       },
@@ -17,27 +19,45 @@ describe('MR widget status icon component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('while loading', () => {
     it('renders loading icon', () => {
       createWrapper({ status: 'loading' });
 
-      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findStatusIcon().exists()).toBe(true);
+      expect(findStatusIcon().props().isLoading).toBe(true);
     });
   });
 
   describe('with status icon', () => {
     it('renders success status icon', () => {
-      createWrapper({ status: 'success' }, mount);
+      createWrapper({ status: 'success' });
 
-      expect(wrapper.find('[data-testid="status_success-icon"]').exists()).toBe(true);
+      expect(findStatusIcon().exists()).toBe(true);
+      expect(findStatusIcon().props().iconName).toBe('success');
     });
 
     it('renders failed status icon', () => {
-      createWrapper({ status: 'failed' }, mount);
+      createWrapper({ status: 'failed' });
 
-      expect(wrapper.find('[data-testid="status_failed-icon"]').exists()).toBe(true);
+      expect(findStatusIcon().exists()).toBe(true);
+      expect(findStatusIcon().props().iconName).toBe('failed');
+    });
+
+    it('renders merged status icon', () => {
+      createWrapper({ status: 'merged' });
+
+      expect(findIcon().exists()).toBe(true);
+      expect(findIcon().props().name).toBe('merge');
+    });
+
+    it('renders closed status icon', () => {
+      createWrapper({ status: 'closed' });
+
+      expect(findIcon().exists()).toBe(true);
+      expect(findIcon().props().name).toBe('merge-request-close');
     });
   });
 });

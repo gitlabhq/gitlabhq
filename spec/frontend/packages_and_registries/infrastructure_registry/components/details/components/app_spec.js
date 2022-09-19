@@ -76,8 +76,8 @@ describe('PackagesApp', () => {
   const packageTitle = () => wrapper.findComponent(TerraformTitle);
   const emptyState = () => wrapper.findComponent(GlEmptyState);
   const deleteButton = () => wrapper.find('.js-delete-button');
-  const findDeleteModal = () => wrapper.find({ ref: 'deleteModal' });
-  const findDeleteFileModal = () => wrapper.find({ ref: 'deleteFileModal' });
+  const findDeleteModal = () => wrapper.findComponent({ ref: 'deleteModal' });
+  const findDeleteFileModal = () => wrapper.findComponent({ ref: 'deleteFileModal' });
   const versionsTab = () => wrapper.find('.js-versions-tab > a');
   const packagesLoader = () => wrapper.findComponent(PackagesListLoader);
   const packagesVersionRows = () => wrapper.findAllComponents(PackageListRow);

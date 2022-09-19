@@ -21,15 +21,37 @@ RSpec.describe SpamLog do
     end
 
     context 'when admin mode is enabled', :enable_admin_mode do
-      it 'removes the user', :sidekiq_might_not_need_inline do
-        spam_log = build(:spam_log)
-        user = spam_log.user
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it 'initiates user removal', :sidekiq_inline do
+          spam_log = build(:spam_log)
+          user = spam_log.user
 
-        perform_enqueued_jobs do
-          spam_log.remove_user(deleted_by: admin)
+          perform_enqueued_jobs do
+            spam_log.remove_user(deleted_by: admin)
+          end
+
+          expect(
+            Users::GhostUserMigration.where(user: user,
+                                            initiator_user: admin)
+          ).to be_exists
+        end
+      end
+
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
         end
 
-        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'removes the user', :sidekiq_inline do
+          spam_log = build(:spam_log)
+          user = spam_log.user
+
+          perform_enqueued_jobs do
+            spam_log.remove_user(deleted_by: admin)
+          end
+
+          expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
 

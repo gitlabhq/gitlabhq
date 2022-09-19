@@ -4,6 +4,7 @@ import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.v
 import eventHubFactory from '~/helpers/event_hub_factory';
 import Link from '~/content_editor/extensions/link';
 import { hasSelection } from '~/content_editor/services/utils';
+import { stubComponent } from 'helpers/stub_component';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 jest.mock('~/content_editor/services/utils');
@@ -18,6 +19,9 @@ describe('content_editor/components/toolbar_link_button', () => {
         tiptapEditor: editor,
         eventHub: eventHubFactory(),
       },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown),
+      },
     });
   };
   const findDropdown = () => wrapper.findComponent(GlDropdown);
@@ -26,7 +30,7 @@ describe('content_editor/components/toolbar_link_button', () => {
   const findRemoveLinkButton = () => wrapper.findByText('Remove link');
 
   const selectFile = async (file) => {
-    const input = wrapper.find({ ref: 'fileSelector' });
+    const input = wrapper.findComponent({ ref: 'fileSelector' });
 
     // override the property definition because `input.files` isn't directly modifyable
     Object.defineProperty(input.element, 'files', { value: [file], writable: true });
@@ -203,6 +207,18 @@ describe('content_editor/components/toolbar_link_button', () => {
         expect(commands.focus).not.toHaveBeenCalled();
         expect(commands.run).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('a11y tests', () => {
+    it('sets text, title, and text-sr-only properties to the table button dropdown', () => {
+      buildWrapper();
+
+      expect(findDropdown().props()).toMatchObject({
+        text: 'Insert link',
+        textSrOnly: true,
+      });
+      expect(findDropdown().attributes('title')).toBe('Insert link');
     });
   });
 });

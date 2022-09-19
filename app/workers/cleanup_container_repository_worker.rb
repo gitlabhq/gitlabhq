@@ -24,7 +24,7 @@ class CleanupContainerRepositoryWorker
     return unless valid?
 
     Projects::ContainerRepository::CleanupTagsService
-      .new(container_repository, current_user, params)
+      .new(container_repository: container_repository, current_user: current_user, params: params)
       .execute
   end
 

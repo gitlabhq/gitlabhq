@@ -72,6 +72,12 @@ Capybara.register_driver :chrome do |app|
   # Explicitly set user-data-dir to prevent crashes. See https://gitlab.com/gitlab-org/gitlab-foss/issues/58882#note_179811508
   options.add_argument("user-data-dir=/tmp/chrome") if ENV['CI'] || ENV['CI_SERVER']
 
+  # Set chrome default download path
+  if ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
+    options.add_preference("download.default_directory", ENV['DEFAULT_CHROME_DOWNLOAD_PATH'])
+    options.add_preference("download.prompt_for_download", false)
+  end
+
   # Chrome 75 defaults to W3C mode which doesn't allow console log access
   options.add_option(:w3c, false)
 

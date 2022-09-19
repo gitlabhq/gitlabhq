@@ -37,7 +37,7 @@
     %li.d-md-none
       = render 'shared/help_dropdown_forum_link'
   %li.d-md-none
-    = link_to _("Submit feedback"), "https://about.gitlab.com/submit-feedback"
+    = link_to _("Submit feedback"), Gitlab::Utils.append_path(promo_url, "submit-feedback")
   - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
     %li.d-md-none
       = render 'shared/user_dropdown_contributing_link'

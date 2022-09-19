@@ -17,14 +17,21 @@ module Topics
         refresh_target_topic_counters
         delete_source_topic
       end
+
+      ServiceResponse.success
+    rescue ArgumentError => e
+      ServiceResponse.error(message: e.message)
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e, source_topic_id: source_topic.id, target_topic_id: target_topic.id)
+      ServiceResponse.error(message: _('Topics could not be merged!'))
     end
 
     private
 
     def validate_parameters!
-      raise ArgumentError, 'The source topic is not a topic.' unless source_topic.is_a?(Projects::Topic)
-      raise ArgumentError, 'The target topic is not a topic.' unless target_topic.is_a?(Projects::Topic)
-      raise ArgumentError, 'The source topic and the target topic are identical.' if source_topic == target_topic
+      raise ArgumentError, _('The source topic is not a topic.') unless source_topic.is_a?(Projects::Topic)
+      raise ArgumentError, _('The target topic is not a topic.') unless target_topic.is_a?(Projects::Topic)
+      raise ArgumentError, _('The source topic and the target topic are identical.') if source_topic == target_topic
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -18,7 +18,7 @@ Prerequisites:
 
 To view the available integrations for your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 
 You can also view and manage integration settings across [all projects in an instance or group](../../admin_area/settings/project_integration_management.md).
@@ -76,6 +76,7 @@ You can configure the following integrations.
 | [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                           | **{dotted-circle}** No |
 | Pushover                                                                    | Get real-time notifications on your device.                           | **{dotted-circle}** No |
 | [Redmine](redmine.md)                                                       | Use Redmine as the issue tracker.                                     | **{dotted-circle}** No |
+| [Shimo Workspace](shimo.md)                                                 | Use Shimo instead of the GitLab Wiki.                    | **{dotted-circle}** No |
 | [Slack application](gitlab_slack_application.md)                            | Use Slack's official GitLab application.                              | **{dotted-circle}** No |
 | [Slack notifications](slack.md)                                             | Send notifications about project events to Slack.                     | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)                             | Enable slash commands in a workspace.                                 | **{dotted-circle}** No |

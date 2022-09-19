@@ -22,7 +22,7 @@ Only the complete settings for an integration can be inherited. Per-field inheri
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2137) in GitLab 13.3 for project-level integrations.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2543) in GitLab 13.6 for group-level integrations.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select an integration.
 1. Enter configuration details and select **Save changes**.
@@ -54,7 +54,7 @@ integration on all non-configured groups and projects by default.
 
 ### Remove an instance-level default setting
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -68,7 +68,7 @@ Resetting an instance-level default setting removes the integration from all pro
 You can view which projects in your instance use custom settings that [override the instance-level default settings](#use-custom-settings-for-a-group-or-project-integration)
 for an integration.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.

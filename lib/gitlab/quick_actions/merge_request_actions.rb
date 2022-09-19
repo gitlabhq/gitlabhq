@@ -88,33 +88,21 @@ module Gitlab
           @execution_message[:rebase] = _('Scheduled a rebase of branch %{branch}.') % { branch: branch }
         end
 
-        desc { _('Toggle the Draft status') }
+        desc { _('Set the Draft status') }
         explanation do
-          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          if quick_action_target.draft?
-            _("Marks this %{noun} as ready.")
-          else
-            _("Marks this %{noun} as a draft.")
-          end % { noun: noun }
+          draft_action_message(_("Marks"))
         end
         execution_message do
-          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          if quick_action_target.draft?
-            _("Marked this %{noun} as ready.")
-          else
-            _("Marked this %{noun} as a draft.")
-          end % { noun: noun }
+          draft_action_message(_("Marked"))
         end
 
         types MergeRequest
         condition do
           quick_action_target.respond_to?(:draft?) &&
-            # Allow it to mark as draft on MR creation page or through MR notes
-            #
             (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
         end
         command :draft do
-          @updates[:wip_event] = quick_action_target.draft? ? 'ready' : 'draft'
+          @updates[:wip_event] = draft_action_command
         end
 
         desc { _('Set the Ready status') }
@@ -314,6 +302,25 @@ module Gitlab
           users
         else
           [users.first]
+        end
+      end
+
+      def draft_action_message(verb)
+        noun = quick_action_target.to_ability_name.humanize(capitalize: false)
+        if !quick_action_target.draft?
+          _("%{verb} this %{noun} as a draft.")
+        elsif Feature.disabled?(:draft_quick_action_non_toggle, quick_action_target.project)
+          _("%{verb} this %{noun} as ready.")
+        else
+          _("No change to this %{noun}'s draft status.")
+        end % { verb: verb, noun: noun }
+      end
+
+      def draft_action_command
+        if Feature.disabled?(:draft_quick_action_non_toggle, quick_action_target.project)
+          quick_action_target.draft? ? 'ready' : 'draft'
+        else
+          'draft'
         end
       end
 

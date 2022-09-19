@@ -15,9 +15,9 @@ import {
 describe('graph component', () => {
   let wrapper;
 
-  const findLinkedColumns = () => wrapper.findAll(LinkedPipelinesColumn);
-  const findLinksLayer = () => wrapper.find(LinksLayer);
-  const findStageColumns = () => wrapper.findAll(StageColumnComponent);
+  const findLinkedColumns = () => wrapper.findAllComponents(LinkedPipelinesColumn);
+  const findLinksLayer = () => wrapper.findComponent(LinksLayer);
+  const findStageColumns = () => wrapper.findAllComponents(StageColumnComponent);
   const findStageNameInJob = () => wrapper.find('[data-testid="stage-name-in-job"]');
 
   const defaultProps = {
@@ -107,7 +107,7 @@ describe('graph component', () => {
       });
 
       it('dims unrelated jobs', () => {
-        const unrelatedJob = wrapper.find(JobItem);
+        const unrelatedJob = wrapper.findComponent(JobItem);
         expect(findLinksLayer().emitted().highlightedJobsChange).toHaveLength(1);
         expect(unrelatedJob.classes('gl-opacity-3')).toBe(true);
       });

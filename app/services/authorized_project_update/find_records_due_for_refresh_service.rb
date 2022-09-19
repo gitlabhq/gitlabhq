@@ -28,31 +28,33 @@ module AuthorizedProjectUpdate
       current.except!(*projects_with_duplicates)
 
       remove |= current.each_with_object([]) do |(project_id, row), array|
+        next if fresh[project_id] && fresh[project_id] == row.access_level
+
         # rows not in the new list or with a different access level should be
         # removed.
-        if !fresh[project_id] || fresh[project_id] != row.access_level
-          if incorrect_auth_found_callback
-            incorrect_auth_found_callback.call(project_id, row.access_level)
-          end
 
-          array << row.project_id
+        if incorrect_auth_found_callback
+          incorrect_auth_found_callback.call(project_id, row.access_level)
         end
+
+        array << row.project_id
       end
 
       add = fresh.each_with_object([]) do |(project_id, level), array|
+        next if current[project_id] && current[project_id].access_level == level
+
         # rows not in the old list or with a different access level should be
         # added.
-        if !current[project_id] || current[project_id].access_level != level
-          if missing_auth_found_callback
-            missing_auth_found_callback.call(project_id, level)
-          end
 
-          array << {
-            user_id: user.id,
-            project_id: project_id,
-            access_level: level
-          }
+        if missing_auth_found_callback
+          missing_auth_found_callback.call(project_id, level)
         end
+
+        array << {
+          user_id: user.id,
+          project_id: project_id,
+          access_level: level
+        }
       end
 
       [remove, add]

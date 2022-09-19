@@ -27,7 +27,7 @@ Broken metrics issues are marked with the ~"broken metric" label.
 1. Note which bastion host machine was assigned. For example: `<username>@bastion-01-inf-gprd.c.gitlab-production.internal:~$` shows that you are connected to `bastion-01-inf-gprd.c.gitlab-production.internal`.
 1. Create a named screen: `screen -S $USER-service-ping-$(date +%F)`.
 1. Connect to the console host: `ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`.
-1. Run: `ServicePing::SubmitService.new.execute`.
+1. Run: `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`.
 1. Press <kbd>Control</kbd>+<kbd>a</kbd> followed by <kbd>Control</kbd>+<kbd>d</kbd> to detach from the screen session.
 1. Exit from the bastion: `exit`.
 
@@ -58,12 +58,12 @@ OR
 ## Service Ping process triggering (through a long-running SSH session)
 
 1. Connect to the `gprd` Rails console.
-1. Run `SubmitUsagePingService.new.execute`. This process requires more than 30 hours to complete.
+1. Run `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`. This process requires more than 30 hours to complete.
 1. Find the last payload in the `raw_usage_data` table: `RawUsageData.last.payload`.
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`.
 
 ```plaintext
-ServicePing::SubmitService.new.execute
+GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
 
 # Get the payload
 RawUsageData.last.payload

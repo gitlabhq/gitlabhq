@@ -1,8 +1,0 @@
----
-name: ci_new_public_oss_cost_factor
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93046
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369113
-milestone: '15.3'
-type: development
-group: group::pipeline execution
-default_enabled: false

@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that checks if indexes are added in a concurrent manner.
-      class AddIndex < RuboCop::Cop::Cop
+      class AddIndex < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`add_index` requires downtime, use `add_concurrent_index` instead'
@@ -29,7 +29,7 @@ module RuboCop
             # data in these tables yet.
             next if new_tables.include?(first_arg)
 
-            add_offense(send_node, location: :selector)
+            add_offense(send_node.loc.selector)
           end
         end
 

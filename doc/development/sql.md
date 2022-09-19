@@ -80,7 +80,7 @@ USING GIN(column_name gin_trgm_ops);
 ```
 
 The key here is the `GIN(column_name gin_trgm_ops)` part. This creates a
-[GIN index](https://www.postgresql.org/docs/current/gin.html) 
+[GIN index](https://www.postgresql.org/docs/current/gin.html)
 with the operator class set to `gin_trgm_ops`. These indexes
 _can_ be used by `ILIKE` / `LIKE` and can lead to greatly improved performance.
 One downside of these indexes is that they can easily get quite large (depending
@@ -397,7 +397,7 @@ default.
 
 While `WHERE IN` and `WHERE EXISTS` can be used to produce the same data it is
 recommended to use `WHERE EXISTS` whenever possible. While in many cases
-PostgreSQL can optimise `WHERE IN` quite well there are also many cases where
+PostgreSQL can optimize `WHERE IN` quite well there are also many cases where
 `WHERE EXISTS` performs (much) better.
 
 In Rails you have to use this by creating SQL fragments:

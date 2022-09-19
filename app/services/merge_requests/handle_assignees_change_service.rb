@@ -21,7 +21,7 @@ module MergeRequests
       merge_request_activity_counter.track_users_assigned_to_mr(users: new_assignees)
       merge_request_activity_counter.track_assignees_changed_action(user: current_user)
 
-      execute_assignees_hooks(merge_request, old_assignees) if options[:execute_hooks]
+      execute_assignees_hooks(merge_request, old_assignees) if options['execute_hooks']
     end
 
     private

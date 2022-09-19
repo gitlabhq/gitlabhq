@@ -41,12 +41,8 @@ export const i18n = {
   ),
   noOpenIssuesDescription: __('To keep this project going, create a new issue'),
   noOpenIssuesTitle: __('There are no open issues'),
-  noIssuesSignedInDescription: __(
-    'Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.',
-  ),
-  noIssuesSignedInTitle: __(
-    'The Issue Tracker is the place to add things that need to be improved or solved in a project',
-  ),
+  noIssuesSignedInDescription: __('Learn more about issues.'),
+  noIssuesSignedInTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
   noIssuesSignedOutDescription: __(
     'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
@@ -151,6 +147,7 @@ export const TOKEN_TYPE_EPIC = 'epic_id';
 export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_CONTACT = 'crm_contact';
 export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
+export const TOKEN_TYPE_HEALTH = 'health_status';
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'task-done', title: 'task', value: 'task' };
 
@@ -324,6 +321,16 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
+      },
+    },
+  },
+  [TOKEN_TYPE_HEALTH]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'healthStatus',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'health_status',
       },
     },
   },

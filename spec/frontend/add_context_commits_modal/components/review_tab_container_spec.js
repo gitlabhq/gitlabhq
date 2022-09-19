@@ -32,7 +32,7 @@ describe('ReviewTabContainer', () => {
 
   it('shows loading icon when commits are being loaded', () => {
     createWrapper({ isLoading: true });
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('shows loading error text when API call fails', () => {
@@ -46,6 +46,6 @@ describe('ReviewTabContainer', () => {
 
   it('renders all passed commits as list', () => {
     createWrapper({ commits: [commit] });
-    expect(wrapper.findAll(CommitItem).length).toBe(1);
+    expect(wrapper.findAllComponents(CommitItem).length).toBe(1);
   });
 });

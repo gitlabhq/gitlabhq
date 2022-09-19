@@ -9,9 +9,10 @@ RSpec.shared_examples 'group and project packages query' do
   let_it_be(:composer_package) { create(:composer_package, project: project2, name: 'dab', version: '4.0.0', created_at: 3.days.ago) }
   let_it_be(:debian_package) { create(:debian_package, project: project2, name: 'aab', version: '5.0.0', created_at: 2.days.ago) }
   let_it_be(:composer_metadatum) do
-    create(:composer_metadatum, package: composer_package,
-           target_sha: 'afdeh',
-           composer_json: { name: 'x', type: 'y', license: 'z', version: 1 })
+    create(:composer_metadatum,
+      package: composer_package,
+      target_sha: 'afdeh',
+      composer_json: { name: 'x', type: 'y', license: 'z', version: 1 })
   end
 
   let(:package_names) { graphql_data_at(resource_type, :packages, :nodes, :name) }

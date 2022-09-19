@@ -1,0 +1,11 @@
+query getProjectEnvironments($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    environments {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+}

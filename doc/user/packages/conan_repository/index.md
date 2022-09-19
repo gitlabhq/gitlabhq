@@ -310,6 +310,7 @@ create_package:
     - conan new <package-name>/0.1 -t
     - conan create . <group-name>+<project-name>/stable
     - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload <package-name>/0.1@<group-name>+<project-name>/stable --all --remote=gitlab
+  environment: production
 ```
 
 Additional Conan images to use as the basis of your CI file are available in the
@@ -389,7 +390,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
 
 - From the GitLab user interface:
 
-  Go to your project's **Packages & Registries > Package Registry**. Remove the
+  Go to your project's **Packages and registries > Package Registry**. Remove the
   package by selecting **Remove repository** (**{remove}**).
 
 ## Search for Conan packages in the Package Registry

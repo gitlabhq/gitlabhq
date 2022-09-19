@@ -97,7 +97,7 @@ If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus G
 
 ### Preparation
 
-Before beginning, you should already have a working GitLab instance. 
+Before beginning, you should already have a working GitLab instance.
 [Learn how to install GitLab](https://about.gitlab.com/install/).
 
 Provision a PostgreSQL server. We recommend using the PostgreSQL that is shipped
@@ -164,7 +164,8 @@ The replication state is internal to each instance of GitLab and should
 not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of
-failure. Alternatively, [you can use PostgreSQL replication and failover](../postgresql/replication_and_failover.md).
+failure. To avoid this, you can configure your own clustered PostgreSQL. Support for PostgreSQL replication and failover using Omnibus GitLab is being tracked in
+[a relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/7814).
 
 The following options are available:
 
@@ -221,7 +222,7 @@ For using Omnibus-provided PgBouncer you need to take the following additional s
 recommend using the PostgreSQL that is shipped with Omnibus as the backend. The following
 instructions only work on Omnibus-provided PostgreSQL:
 
-1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` user instead the of the
+1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` password instead the of the
    actual password:
 
    ```sql
@@ -331,7 +332,7 @@ To configure the additional connection, you must either:
 #### Configure a new PgBouncer database with `pool_mode = session`
 
 We recommend using PgBouncer with `session` pool mode. You can use the
-[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and 
+[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and
 [configure it manually](https://www.pgbouncer.org/config.html).
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
@@ -620,7 +621,7 @@ Updates to example must be made at:
    gitlab-ctl reconfigure
    ```
 
-1. To ensure that Praefect 
+1. To ensure that Praefect
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
    [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
 
@@ -884,7 +885,7 @@ For more information on Gitaly server configuration, see our
         gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
         ```
 
-1. Configure and `internal_api_url`, which is also needed for `git push` operations:
+1. Configure an `internal_api_url`, which is also needed for `git push` operations:
 
    ```ruby
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
@@ -928,7 +929,7 @@ For more information on Gitaly server configuration, see our
    gitlab-ctl reconfigure
    ```
 
-1. To ensure that Gitaly 
+1. To ensure that Gitaly
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
    [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
 
@@ -1114,7 +1115,7 @@ Particular attention should be shown to:
 
 1. Check that the Praefect storage is configured to store new repositories:
 
-   1. On the top bar, select **Menu > Admin**.
+   1. On the top bar, select **Main menu > Admin**.
    1. On the left sidebar, select **Settings > Repository**.
    1. Expand the **Repository storage** section.
 

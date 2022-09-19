@@ -8,6 +8,10 @@ RSpec.describe 'User creates new blob', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :empty_repo) }
 
+  before do
+    stub_feature_flags(vscode_web_ide: false)
+  end
+
   shared_examples 'creating a file' do
     it 'allows the user to add a new file in Web IDE' do
       visit project_path(project)

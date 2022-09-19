@@ -15,6 +15,10 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           diff_refs: merge_request.diff_refs)
   end
 
+  before do
+    stub_feature_flags(moved_mr_sidebar: false)
+  end
+
   context 'no threads' do
     before do
       project.add_maintainer(user)
@@ -62,7 +66,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to mark thread as resolved' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
         end
 
         expect(page).to have_selector('.discussion-body', visible: false)
@@ -78,7 +82,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to unresolve thread' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
           click_button 'Unresolve thread'
         end
 
@@ -90,7 +94,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
       describe 'resolved thread' do
         before do
           page.within '.diff-content' do
-            find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+            find('button[data-testid="resolve-discussion-button"]').click
           end
 
           visit_merge_request
@@ -190,7 +194,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to resolve from reply form without a comment' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
         end
 
         page.within '.discussions-counter' do
@@ -225,7 +229,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'hides jump to next button when all resolved' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
         end
 
         expect(page).to have_selector('.discussion-next-btn', visible: false)
@@ -320,7 +324,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
       it 'allows user to mark all threads as resolved' do
         page.all('.discussion-reply-holder', count: 2).each do |reply_holder|
           page.within reply_holder do
-            find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+            find('button[data-testid="resolve-discussion-button"]').click
           end
         end
 
@@ -331,7 +335,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to quickly scroll to next unresolved thread' do
         page.within('.discussion-reply-holder', match: :first) do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
         end
 
         page.within '.discussions-counter' do
@@ -402,7 +406,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to mark thread as resolved' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
         end
 
         page.within '.diff-content .note' do
@@ -416,7 +420,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to unresolve thread' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
           click_button 'Unresolve thread'
         end
 
@@ -443,7 +447,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
       it 'allows user to comment & unresolve thread' do
         page.within '.diff-content' do
-          find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
+          find('button[data-testid="resolve-discussion-button"]').click
 
           find_field('Reply…').click
 

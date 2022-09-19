@@ -20,6 +20,8 @@ module QA
 
       def initialize
         @path = Runtime::Namespace.sandbox_name
+        # Visibility should be public by default for backward compatibility
+        @visibility = 'public'
       end
 
       alias_method :full_path, :path
@@ -38,7 +40,7 @@ module QA
             Page::Group::New.perform do |group|
               group.click_create_group
               group.set_path(path)
-              group.set_visibility('Public')
+              group.set_visibility(@visibility)
               group.create
             end
 
@@ -68,7 +70,7 @@ module QA
         {
           path: path,
           name: path,
-          visibility: 'public',
+          visibility: @visibility.downcase,
           avatar: avatar
         }
       end

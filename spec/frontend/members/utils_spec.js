@@ -1,5 +1,12 @@
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { DEFAULT_SORT, MEMBER_TYPES } from '~/members/constants';
+import {
+  DEFAULT_SORT,
+  MEMBER_TYPES,
+  I18N_USER_YOU,
+  I18N_USER_BLOCKED,
+  I18N_USER_BOT,
+  I188N_USER_2FA,
+} from '~/members/constants';
 import {
   generateBadges,
   isGroup,
@@ -52,9 +59,10 @@ describe('Members Utils', () => {
 
     it.each`
       member                                                            | expected
-      ${memberMock}                                                     | ${{ show: true, text: "It's you", variant: 'success' }}
-      ${{ ...memberMock, user: { ...memberMock.user, blocked: true } }} | ${{ show: true, text: 'Blocked', variant: 'danger' }}
-      ${member2faEnabled}                                               | ${{ show: true, text: '2FA', variant: 'info' }}
+      ${memberMock}                                                     | ${{ show: true, text: I18N_USER_YOU, variant: 'success' }}
+      ${{ ...memberMock, user: { ...memberMock.user, blocked: true } }} | ${{ show: true, text: I18N_USER_BLOCKED, variant: 'danger' }}
+      ${{ ...memberMock, user: { ...memberMock.user, isBot: true } }}   | ${{ show: true, text: I18N_USER_BOT, variant: 'muted' }}
+      ${member2faEnabled}                                               | ${{ show: true, text: I188N_USER_2FA, variant: 'info' }}
     `('returns expected output for "$expected.text" badge', ({ member, expected }) => {
       expect(
         generateBadges({ member, isCurrentUser: true, canManageMembers: true }),

@@ -80,7 +80,7 @@ module Ci
           Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
 
         artifact_attributes = {
-          job_id: job.id,
+          job: job,
           project: project,
           expire_in: expire_in
         }

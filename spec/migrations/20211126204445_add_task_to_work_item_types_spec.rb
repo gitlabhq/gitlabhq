@@ -10,11 +10,11 @@ RSpec.describe AddTaskToWorkItemTypes, :migration do
 
   let(:base_types) do
     {
-      issue:       0,
-      incident:    1,
-      test_case:   2,
+      issue: 0,
+      incident: 1,
+      test_case: 2,
       requirement: 3,
-      task:        4
+      task: 4
     }
   end
 

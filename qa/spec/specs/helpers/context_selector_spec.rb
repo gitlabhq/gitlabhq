@@ -57,6 +57,26 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
         expect(described_class.context_matches?(:production)).to be_truthy
       end
 
+      it 'matches domain' do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com')
+
+        aggregate_failures do
+          expect(described_class.context_matches?(:production)).to be_falsey
+          expect(described_class.context_matches?(domain: 'gitlab')).to be_falsey
+          expect(described_class.context_matches?(domain: 'jihulab')).to be_truthy
+        end
+      end
+
+      it 'matches tld' do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.cn')
+
+        aggregate_failures do
+          expect(described_class.context_matches?).to be_falsey
+          expect(described_class.context_matches?(tld: 'net')).to be_falsey
+          expect(described_class.context_matches?(tld: 'cn')).to be_truthy
+        end
+      end
+
       it 'doesnt match with mismatching switches' do
         QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.test')
 

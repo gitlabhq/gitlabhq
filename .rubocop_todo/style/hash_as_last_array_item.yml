@@ -20,7 +20,6 @@ Style/HashAsLastArrayItem:
     - 'app/graphql/resolvers/concerns/issue_resolver_arguments.rb'
     - 'app/graphql/types/boards/board_issuable_input_base_type.rb'
     - 'app/graphql/types/boards/board_issue_input_base_type.rb'
-    - 'app/helpers/learn_gitlab_helper.rb'
     - 'app/helpers/namespaces_helper.rb'
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/organization.rb'

@@ -49,7 +49,7 @@ RSpec.describe 'Project navbar' do
       stub_config(pages: { enabled: true })
 
       insert_after_sub_nav_item(
-        _('Packages & Registries'),
+        _('Packages and registries'),
         within: _('Settings'),
         new_sub_nav_item_name: _('Pages')
       )
@@ -83,6 +83,8 @@ RSpec.describe 'Project navbar' do
   end
 
   context 'when harbor registry is available' do
+    let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
+
     before do
       stub_feature_flags(harbor_registry_integration: true)
 

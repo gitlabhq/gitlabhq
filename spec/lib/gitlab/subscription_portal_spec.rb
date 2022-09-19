@@ -53,12 +53,13 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     it { is_expected.to match(link_match) }
   end
 
-  context 'url methods' do
+  describe 'class methods' do
     where(:method_name, :result) do
       :default_subscriptions_url | staging_customers_url
       :payment_form_url | "#{staging_customers_url}/payment_forms/cc_validation"
       :payment_validation_form_id | 'payment_method_validation'
       :registration_validation_form_url | "#{staging_customers_url}/payment_forms/cc_registration_validation"
+      :registration_validation_form_id | 'cc_registration_validation'
       :subscriptions_graphql_url | "#{staging_customers_url}/graphql"
       :subscriptions_more_minutes_url | "#{staging_customers_url}/buy_pipeline_minutes"
       :subscriptions_more_storage_url | "#{staging_customers_url}/buy_storage"
@@ -106,6 +107,18 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     it do
       url = "#{staging_customers_url}/gitlab/namespaces/#{group_id}/renew"
       is_expected.to eq(url)
+    end
+  end
+
+  describe 'constants' do
+    where(:constant_name, :result) do
+      'REGISTRATION_VALIDATION_FORM_ID' | 'cc_registration_validation'
+    end
+
+    with_them do
+      subject { "#{described_class}::#{constant_name}".constantize }
+
+      it { is_expected.to eq(result) }
     end
   end
 end

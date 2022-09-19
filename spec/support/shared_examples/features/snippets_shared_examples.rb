@@ -194,7 +194,7 @@ end
 RSpec.shared_examples 'personal snippet with references' do
   let_it_be(:project)         { create(:project, :repository) }
   let_it_be(:merge_request)   { create(:merge_request, source_project: project) }
-  let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project)}
+  let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project) }
   let_it_be(:issue)           { create(:issue, project: project) }
   let_it_be(:commit)          { project.commit }
 

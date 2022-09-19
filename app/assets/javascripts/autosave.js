@@ -5,7 +5,7 @@ import AccessorUtilities from './lib/utils/accessor';
 export default class Autosave {
   constructor(field, key, fallbackKey, lockVersion) {
     this.field = field;
-
+    this.type = this.field.prop('type');
     this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     if (key.join != null) {
       key = key.join('/');
@@ -22,11 +22,12 @@ export default class Autosave {
   restore() {
     if (!this.isLocalStorageAvailable) return;
     if (!this.field.length) return;
-
     const text = window.localStorage.getItem(this.key);
     const fallbackText = window.localStorage.getItem(this.fallbackKey);
 
-    if (text) {
+    if (this.type === 'checkbox') {
+      this.field.prop('checked', text || fallbackText);
+    } else if (text) {
       this.field.val(text);
     } else if (fallbackText) {
       this.field.val(fallbackText);
@@ -49,17 +50,16 @@ export default class Autosave {
 
   save() {
     if (!this.field.length) return;
+    const value = this.type === 'checkbox' ? this.field.is(':checked') : this.field.val();
 
-    const text = this.field.val();
-
-    if (this.isLocalStorageAvailable && text) {
+    if (this.isLocalStorageAvailable && value) {
       if (this.fallbackKey) {
-        window.localStorage.setItem(this.fallbackKey, text);
+        window.localStorage.setItem(this.fallbackKey, value);
       }
       if (this.lockVersion !== undefined) {
         window.localStorage.setItem(this.lockVersionKey, this.lockVersion);
       }
-      return window.localStorage.setItem(this.key, text);
+      return window.localStorage.setItem(this.key, value);
     }
 
     return this.reset();

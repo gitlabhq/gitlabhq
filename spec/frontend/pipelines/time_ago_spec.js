@@ -48,7 +48,7 @@ describe('Timeago component', () => {
     });
 
     it('should render duration and timer svg', () => {
-      const icon = duration().find(GlIcon);
+      const icon = duration().findComponent(GlIcon);
 
       expect(duration().exists()).toBe(true);
       expect(icon.props('name')).toBe('timer');
@@ -71,7 +71,7 @@ describe('Timeago component', () => {
     });
 
     it('should render time and calendar icon', () => {
-      const icon = finishedAt().find(GlIcon);
+      const icon = finishedAt().findComponent(GlIcon);
       const time = finishedAt().find('time');
 
       expect(finishedAt().exists()).toBe(true);

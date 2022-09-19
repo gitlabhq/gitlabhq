@@ -9,4 +9,4 @@
       = _('Define rules for who can push, merge, and the required approvals for each branch.')
 
   .settings-content.gl-pr-0
-    #js-branch-rules
+    #js-branch-rules{ data: { project_path: @project.full_path } }

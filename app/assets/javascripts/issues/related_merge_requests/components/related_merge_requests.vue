@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
-    <div class="card card-slim gl-mt-5">
+    <div class="card card-slim gl-mt-5 gl-mb-0">
       <div class="card-header gl-bg-gray-10">
         <div
           class="card-title gl-relative gl-display-flex gl-align-items-center gl-line-height-20 gl-font-weight-bold gl-m-0"
@@ -112,7 +112,7 @@ export default {
     </div>
     <div
       v-if="hasClosingMergeRequest && !isFetchingMergeRequests"
-      class="issue-closed-by-widget second-block"
+      class="issue-closed-by-widget second-block gl-mt-3"
     >
       {{ closingMergeRequestsText }}
     </div>

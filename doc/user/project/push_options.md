@@ -102,7 +102,7 @@ long Git commands.
 
 ### Merge when pipeline succeeds alias
 
-To set up a Git alias for the 
+To set up a Git alias for the
 [merge when pipeline succeeds Git push option](#push-options-for-merge-requests):
 
 ```shell

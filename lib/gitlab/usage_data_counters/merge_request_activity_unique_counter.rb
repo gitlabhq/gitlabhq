@@ -49,6 +49,8 @@ module Gitlab
       MR_LOAD_CONFLICT_UI_ACTION = 'i_code_review_user_load_conflict_ui'
       MR_RESOLVE_CONFLICT_ACTION = 'i_code_review_user_resolve_conflict'
       MR_RESOLVE_THREAD_IN_ISSUE_ACTION = 'i_code_review_user_resolve_thread_in_issue'
+      MR_SUBMIT_REVIEW_APPROVE = 'i_code_review_submit_review_approve'
+      MR_SUBMIT_REVIEW_COMMENT = 'i_code_review_submit_review_comment'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -228,6 +230,14 @@ module Gitlab
 
         def track_resolve_thread_in_issue_action(user:)
           track_unique_action_by_user(MR_RESOLVE_THREAD_IN_ISSUE_ACTION, user)
+        end
+
+        def track_submit_review_approve(user:)
+          track_unique_action_by_user(MR_SUBMIT_REVIEW_APPROVE, user)
+        end
+
+        def track_submit_review_comment(user:)
+          track_unique_action_by_user(MR_SUBMIT_REVIEW_COMMENT, user)
         end
 
         private

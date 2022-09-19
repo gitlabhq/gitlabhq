@@ -26,7 +26,7 @@ If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable [GitHub integration](../../../integration/github.md).
 - To import projects from GitHub Enterprise to GitLab.com, use the [Import API](../../../api/import.md).
-- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#allowlist-for-local-requests)
+- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests)
   with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
   [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
 
@@ -62,7 +62,7 @@ For this association to succeed, each GitHub author and assignee in the reposito
 must meet one of the following conditions prior to the import:
 
 - Have previously logged in to a GitLab account using the GitHub icon.
-- Have a GitHub account with a [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-user-account/managing-email-preferences/setting-your-commit-email-address)
+- Have a GitHub account with a [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
   that matches their GitLab account's email address.
 
 GitLab content imports that use GitHub accounts require that the GitHub public-facing email address is populated. This means
@@ -76,7 +76,7 @@ field to be populated so you may have to add it on existing accounts.
 Before you begin, ensure that any GitHub users who you want to map to GitLab users have either:
 
 - A GitLab account that has logged in using the GitHub icon.
-- A GitLab account with an email address that matches the [publicly visible email address](https://docs.github.com/en/rest/reference/users#get-a-user) in the profile of the GitHub user
+- A GitLab account with an email address that matches the [publicly visible email address](https://docs.github.com/en/rest/users#get-a-user) in the profile of the GitHub user
 
 If you are importing to GitLab.com, you can alternatively import GitHub repositories using a [personal access token](#use-a-github-token).
 We do not recommend this method, as it does not associate all user activity (such as issues and pull requests) with matching GitLab users.
@@ -171,12 +171,15 @@ The following items of a project are imported:
 
 - Repository description.
 - Git repository data.
+- Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
 - Issues.
 - Pull requests.
 - Wiki pages.
 - Milestones.
 - Labels.
 - Release note descriptions.
+- Release note attachments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4 with `github_importer_attachments_import`
+  [feature flag](../../../administration/feature_flags.md) disabled by default.
 - Pull request review comments.
 - Regular issue and pull request comments.
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).
@@ -184,6 +187,8 @@ The following items of a project are imported:
 - Pull request "merged by" information (GitLab.com and GitLab 13.7 and later).
 - Pull request comments replies in discussions ([GitLab.com and GitLab 14.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/336596)).
 - Diff Notes suggestions ([GitLab.com and GitLab 14.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)).
+- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4 with `github_importer_issue_events_import`
+  [feature flag](../../../administration/feature_flags.md) disabled by default.
 
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it

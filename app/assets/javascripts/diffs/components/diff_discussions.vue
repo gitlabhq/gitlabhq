@@ -2,11 +2,11 @@
 import { GlIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
-import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 
 export default {
   components: {
-    noteableDiscussion,
+    NoteableDiscussion,
     GlIcon,
     DesignNotePin,
   },

@@ -24,6 +24,10 @@ FactoryBot.define do
       status { :pending_destruction }
     end
 
+    trait :last_downloaded_at do
+      last_downloaded_at { 2.days.ago }
+    end
+
     factory :maven_package do
       maven_metadatum
 
@@ -53,6 +57,12 @@ FactoryBot.define do
           pkg.rubygems_metadatum = build(:rubygems_metadatum)
         end
       end
+    end
+
+    factory :rpm_package do
+      sequence(:name) { |n| "package-#{n}" }
+      sequence(:version) { |n| "v1.0.#{n}" }
+      package_type { :rpm }
     end
 
     factory :debian_package do
@@ -115,7 +125,7 @@ FactoryBot.define do
     end
 
     factory :npm_package do
-      sequence(:name) { |n| "@#{project.root_namespace.path}/package-#{n}"}
+      sequence(:name) { |n| "@#{project.root_namespace.path}/package-#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :npm }
 
@@ -153,7 +163,7 @@ FactoryBot.define do
     end
 
     factory :nuget_package do
-      sequence(:name) { |n| "NugetPackage#{n}"}
+      sequence(:name) { |n| "NugetPackage#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :nuget }
 
@@ -175,7 +185,7 @@ FactoryBot.define do
     end
 
     factory :pypi_package do
-      sequence(:name) { |n| "pypi-package-#{n}"}
+      sequence(:name) { |n| "pypi-package-#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :pypi }
 
@@ -193,7 +203,7 @@ FactoryBot.define do
     end
 
     factory :composer_package do
-      sequence(:name) { |n| "composer-package-#{n}"}
+      sequence(:name) { |n| "composer-package-#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :composer }
 
@@ -210,7 +220,7 @@ FactoryBot.define do
     end
 
     factory :golang_package do
-      sequence(:name) { |n| "golang.org/x/pkg-#{n}"}
+      sequence(:name) { |n| "golang.org/x/pkg-#{n}" }
       sequence(:version) { |n| "v1.0.#{n}" }
       package_type { :golang }
     end

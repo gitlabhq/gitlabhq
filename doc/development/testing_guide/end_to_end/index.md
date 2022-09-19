@@ -8,16 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## What is end-to-end testing?
 
-End-to-end testing is a strategy used to check whether your application works
+End-to-end (e2e) testing is a strategy used to check whether your application works
 as expected across the entire software stack and architecture, including
 integration of all micro-services and components that are supposed to work
 together.
 
 ## How do we test GitLab?
 
-We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we
-test these packages using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool, which is
-a black-box testing framework for the API and the UI.
+We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we test these packages
+using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool to run the end-to-end tests located in the `qa` directory.
 
 ### Testing nightly builds
 
@@ -33,11 +32,9 @@ You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/p
 
 ### Testing code in merge requests
 
-#### Using the `package-and-qa` job
+#### Using the package-and-test job
 
-It is possible to run end-to-end tests for a merge request, eventually being run in
-a pipeline in the [`gitlab-org/gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror) project,
-by triggering the `package-and-qa` manual action in the `qa` stage (not
+It is possible to run end-to-end tests for a merge request by triggering the `e2e:package-and-test` manual action in the `qa` stage (not
 available for forks).
 
 **This runs end-to-end tests against a custom EE (with an Ultimate license)
@@ -59,7 +56,7 @@ graph TB
 
 subgraph "`gitlab-org/gitlab` pipeline"
     A1[`build-images` stage<br>`build-qa-image` and `build-assets-image` jobs]
-    A2[`qa` stage<br>`package-and-qa` job]
+    A2[`qa` stage<br>`e2e:package-and-test` job]
     end
 
 subgraph "`gitlab-org/build/omnibus-gitlab-mirror` pipeline"
@@ -72,38 +69,30 @@ subgraph "`gitlab-org/gitlab-qa-mirror` pipeline"
 ```
 
 1. In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
-   1. Developer triggers the `package-and-qa` manual action (available once the `build-qa-image` and
+   1. Developer triggers the `e2e:package-and-test` manual action (available once the `build-qa-image` and
       `build-assets-image` jobs are done), that can be found in GitLab merge
-      requests. This starts a chain of pipelines in multiple projects.
-   1. The script being executed triggers a pipeline in
+      requests. This starts a e2e test child pipeline.
+   1. E2E child pipeline triggers a downstream pipeline in
       [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
       and polls for the resulting status. We call this a _status attribution_.
 
 1. In the [`gitlab-org/build/omnibus-gitlab-mirror` pipeline](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror):
    1. Docker image is being built and pushed to its Container Registry.
-   1. Finally, the `Trigger:qa-test` job triggers a new end-to-end pipeline in
-      [`gitlab-org/gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror/pipelines) and polls for the resulting status.
+   1. Once Docker images are built and pushed jobs in `test` stage are started
 
-1. In the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror):
+1. In the `Test` stage:
    1. Container for the Docker image stored in the [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) registry is spun-up.
    1. End-to-end tests are run with the `gitlab-qa` executable, which spin up a container for the end-to-end image from the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) registry.
 
-1. The result of the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror) is being
-   propagated upstream (through polling from upstream pipelines), through [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror), back to the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) merge request.
-
-We plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/156)
-about the tests included in each job/scenario that runs in `gitlab-org/gitlab-qa-mirror`.
-
 NOTE:
 You may have noticed that we use `gitlab-org/build/omnibus-gitlab-mirror` instead of
-`gitlab-org/omnibus-gitlab`, and `gitlab-org/gitlab-qa-mirror` instead of `gitlab-org/gitlab-qa`.
+`gitlab-org/omnibus-gitlab`.
 This is due to technical limitations in the GitLab permission model: the ability to run a pipeline
 against a protected branch is controlled by the ability to push/merge to this branch.
 This means that for developers to be able to trigger a pipeline for the default branch in
-`gitlab-org/omnibus-gitlab`/`gitlab-org/gitlab-qa`, they would need to have the
-Maintainer role for those projects.
+`gitlab-org/omnibus-gitlab`, they would need to have the Maintainer role for this project.
 For security reasons and implications, we couldn't open up the default branch to all the Developers.
-Hence we created these mirrors where Developers and Maintainers are allowed to push/merge to the default branch.
+Hence we created this mirror where Developers and Maintainers are allowed to push/merge to the default branch.
 This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues/63#note_107175160> and the "mirror"
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
@@ -111,22 +100,19 @@ A feature proposal to segregate access control regarding running pipelines from 
 #### With merged results pipelines
 
 In a merged results pipeline, the pipeline runs on a new ref that contains the merge result of the source and target branch.
-However, this ref is not available to the `gitlab-qa-mirror` pipeline.
 
-For this reason, the end-to-end tests on a merged results pipeline would use the head of the merge request source branch.
+The end-to-end tests on a merged results pipeline would use the new ref instead of the head of the merge request source branch.
 
 ```mermaid
 graph LR
 
-A["a1b1c1 - branch HEAD (CI_MERGE_REQUEST_SOURCE_BRANCH_SHA)"]
-B["x1y1z1 - master HEAD"]
-C["d1e1f1 - merged results (CI_COMMIT_SHA)"]
+A["x1y1z1 - master HEAD"]
+B["d1e1f1 - merged results (CI_COMMIT_SHA)"]
 
-A --> C
-B --> C
+A --> B
 
-A --> E["E2E tests"]
-C --> D["Merged results pipeline"]
+B --> C["Merged results pipeline"]
+C --> D["E2E tests"]
  ```
 
 ##### Running custom tests
@@ -140,7 +126,7 @@ a flaky test we first want to make sure that it's no longer flaky.
 We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
 Both are manual jobs that you can configure using custom variables.
 When clicking the name (not the play icon) of one of the parallel jobs,
-you are prompted to enter variables. You can use any of 
+you are prompted to enter variables. You can use any of
 [the variables that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
 as well as these:
 
@@ -150,8 +136,8 @@ as well as these:
 | `QA_TESTS` | The tests to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, for example, `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
 | `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
 
-For now, 
-[manual jobs with custom variables don't use the same variable when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367), 
+For now,
+[manual jobs with custom variables don't use the same variable when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367),
 so if you want to run the same tests multiple times,
 specify the same variables in each `custom-parallel` job (up to as
 many of the 10 available jobs that you want to run).
@@ -165,7 +151,7 @@ automatically started: it runs the QA smoke suite against the
 You can also manually start the `review-qa-all`: it runs the full QA suite
 against the [Review App](../review_apps.md).
 
-**This runs end-to-end tests against a Review App based on 
+**This runs end-to-end tests against a Review App based on
 [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with custom
 [Cloud Native components](https://gitlab.com/gitlab-org/build/CNG) built from your merge request's changes.**
 
@@ -197,7 +183,7 @@ Use these environment variables to configure metrics export:
 | -------- | -------- | ----------- |
 | `QA_INFLUXDB_URL` | `true` | Should be set to `https://influxdb.quality.gitlab.net`. No default value. |
 | `QA_INFLUXDB_TOKEN` | `true` | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value. |
-| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `package-and-qa`. Automatically inferred from the project name for live environment test executions. No default value. |
+| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `package-and-test`. Automatically inferred from the project name for live environment test executions. No default value. |
 | `QA_EXPORT_TEST_METRICS` | `false` | Flag to enable or disable metrics export. Defaults to `true`. |
 
 ## Test reports
@@ -231,7 +217,7 @@ a link to the current test report.
 
 Each type of scheduled pipeline generates a static link for the latest test report according to its stage:
 
-- [`master`](https://storage.googleapis.com/gitlab-qa-allure-reports/package-and-qa/master/index.html)
+- [`master`](https://storage.googleapis.com/gitlab-qa-allure-reports/e2e-package-and-test/master/index.html)
 - [`staging-full`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-full/master/index.html)
 - [`staging-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity/master/index.html)
 - [`staging-sanity-no-admin`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity-no-admin/master/index.html)
@@ -244,7 +230,7 @@ Each type of scheduled pipeline generates a static link for the latest test repo
 If you are not [testing code in a merge request](#testing-code-in-merge-requests),
 there are two main options for running the tests. If you want to run
 the existing tests against a live GitLab instance or against a pre-built Docker image,
-use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md). See also 
+use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md). See also
 [examples of the test scenarios you can run via the orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#examples).
 
 On the other hand, if you would like to run against a local development GitLab
@@ -263,7 +249,7 @@ architecture. See the [documentation about it](https://gitlab.com/gitlab-org/git
 
 Once you decided where to put [test environment orchestration scenarios](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario) and
 [instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features), take a look at the [GitLab QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md),
-the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md), 
+the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md),
 and [the already existing instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features).
 
 ### Consider **not** writing an end-to-end test

@@ -9,6 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The information in this documentation page describes common errors when using
 Auto DevOps, and any available workarounds.
 
+## Trace Helm commands
+
+Set the CI/CD variable `TRACE` to any value to make Helm commands produce verbose output. You can use this output to diagnose Auto DevOps deployment problems.
+
+You can resolve some problems with Auto DevOps deployment by changing advanced Auto DevOps configuration variables. Read more about [customizing Auto DevOps CI/CD variables](customize.md#cicd-variables).
+
 ## Unable to select a buildpack
 
 Auto Build and Auto Test may fail to detect your language or framework with the

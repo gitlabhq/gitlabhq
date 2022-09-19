@@ -7,7 +7,7 @@ module SnowplowHelpers
   #
   # Examples:
   #
-  #   describe '#show', :snowplow do
+  #   describe '#show' do
   #     it 'tracks snowplow events' do
   #       get :show
   #
@@ -15,7 +15,7 @@ module SnowplowHelpers
   #     end
   #   end
   #
-  #   describe '#create', :snowplow do
+  #   describe '#create' do
   #     it 'tracks snowplow events' do
   #       post :create
   #

@@ -53,7 +53,7 @@ module ProfilesHelper
 
   # Overridden in EE::ProfilesHelper#ssh_key_expires_field_description
   def ssh_key_expires_field_description
-    s_('Profiles|Key becomes invalid on this date.')
+    s_('Profiles|Optional but recommended. If set, key becomes invalid on the specified date.')
   end
 
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_policy_enabled?

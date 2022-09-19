@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class ScheduleAsync < RuboCop::Cop::Cop
+      class ScheduleAsync < RuboCop::Cop::Base
         include MigrationHelpers
 
         ENFORCED_SINCE = 2020_02_12_00_00_00
@@ -32,7 +32,7 @@ module RuboCop
           return if version(node) < ENFORCED_SINCE
           return unless calls_background_migration_worker?(node) || calls_ci_database_worker?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

@@ -221,7 +221,7 @@ ON DELETE CASCADE;
 ```
 
 The migration must run after the `DELETE` trigger is installed and the loose
-foreign key definition is deployed. As such, it must be a 
+foreign key definition is deployed. As such, it must be a
 [post-deployment migration](post_deployment_migrations.md) dated after the migration for the
 trigger. If the foreign key is deleted earlier, there is a good chance of
 introducing data inconsistency which needs manual cleanup:

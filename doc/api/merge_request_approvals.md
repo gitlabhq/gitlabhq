@@ -23,16 +23,17 @@ following endpoint:
 GET /projects/:id/approvals
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute | Type    | Required | Description         |
 | --------- | ------- | -------- | ------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
+| `id`      | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
 
 ```json
 {
   "approvals_before_merge": 2,
   "reset_approvals_on_push": true,
+  "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,
   "merge_requests_author_approval": true,
   "merge_requests_disable_committers_approval": false,
@@ -51,22 +52,24 @@ endpoint:
 POST /projects/:id/approvals
 ```
 
-**Parameters:**
+Supported attributes:
 
-| Attribute                                        | Type    | Required | Description                                                                                         |
-| ------------------------------------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------- |
-| `id`                                             | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)  |
-| `approvals_before_merge`                         | integer | no       | How many approvals are required before an MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
-| `reset_approvals_on_push`                        | boolean | no       | Reset approvals on a new push                                                                       |
-| `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow or prevent overriding approvers per MR                                                          |
-| `merge_requests_author_approval`                 | boolean | no       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve |
-| `merge_requests_disable_committers_approval`     | boolean | no       | Allow or prevent committers from self approving merge requests                                        |
-| `require_password_to_approve`                    | boolean | no       | Require approver to enter a password to authenticate before adding the approval         |
+| Attribute                                        | Type    | Required | Description |
+| ------------------------------------------------ | ------- | -------- | -- |
+| `id`                                             | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approvals_before_merge`                         | integer | **{dotted-circle}** No       | How many approvals are required before a merge request can be merged. Deprecated in GitLab 12.0 in favor of Approval Rules API. |
+| `disable_overriding_approvers_per_merge_request` | boolean | **{dotted-circle}** No       | Allow or prevent overriding approvers per merge request. |
+| `merge_requests_author_approval`                 | boolean | **{dotted-circle}** No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
+| `merge_requests_disable_committers_approval`     | boolean | **{dotted-circle}** No       | Allow or prevent committers from self approving merge requests. |
+| `require_password_to_approve`                    | boolean | **{dotted-circle}** No       | Require approver to enter a password to authenticate before adding the approval. |
+| `reset_approvals_on_push`                        | boolean | **{dotted-circle}** No       | Reset approvals on a new push. |
+| `selective_code_owner_removals`                  | boolean | **{dotted-circle}** No       | Reset approvals from Code Owners if their files changed. Can be enabled only if `reset_approvals_on_push` is disabled. |
 
 ```json
 {
   "approvals_before_merge": 2,
   "reset_approvals_on_push": true,
+  "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,
   "merge_requests_author_approval": false,
   "merge_requests_disable_committers_approval": false,
@@ -76,9 +79,7 @@ POST /projects/:id/approvals
 
 ### Get project-level rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
-> - `protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.7.
 > - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 
@@ -90,11 +91,11 @@ GET /projects/:id/approval_rules
 
 Use the `page` and `per_page` [pagination](index.md#offset-based-pagination) parameters to restrict the list of approval rules.
 
-**Parameters:**
+Supported attributes:
 
 | Attribute            | Type    | Required | Description                                               |
 |----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
+| `id`                 | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
 
 ```json
 [
@@ -191,12 +192,12 @@ You can request information about a single project approval rules using the foll
 GET /projects/:id/approval_rules/:approval_rule_id
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute            | Type    | Required | Description                                               |
 |----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `approval_rule_id`   | integer | yes      | The ID of a approval rule                                 |
+| `id`                 | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approval_rule_id`   | integer | **{check-circle}** Yes      | The ID of a approval rule. |
 
 ```json
 {
@@ -282,7 +283,6 @@ GET /projects/:id/approval_rules/:approval_rule_id
 
 ### Create project-level rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
@@ -293,19 +293,19 @@ You can create project approval rules using the following endpoint:
 POST /projects/:id/approval_rules
 ```
 
-**Parameters:**
+Supported attributes:
 
-| Attribute                           | Type              | Required | Description                                                                                                                                                                                                                     |
-|-------------------------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)                                                                                                                                                    |
-| `name`                              | string            | yes      | The name of the approval rule                                                                                                                                                                                                   |
-| `report_type`                       | string            | no       | The report type required when the rule type is `report_approver`. The supported report types are: `license_scanning` and `code_coverage`.                                                                                       |
-| `approvals_required`                | integer           | yes      | The number of required approvals for this rule                                                                                                                                                                                  |
-| `rule_type`                         | string            | no       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`.                                                                                                  |
-| `user_ids`                          | Array             | no       | The ids of users as approvers                                                                                                                                                                                                   |
-| `group_ids`                         | Array             | no       | The ids of groups as approvers                                                                                                                                                                                                  |
-| `protected_branch_ids`              | Array             | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
-| `applies_to_all_protected_branches` | boolean           | no       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| Attribute                           | Type              | Required | Description |
+|-------------------------------------|-------------------|----------|------------ |
+| `id`                                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approvals_required`                | integer           | **{check-circle}** Yes      | The number of required approvals for this rule. |
+| `name`                              | string            | **{check-circle}** Yes      | The name of the approval rule. |
+| `applies_to_all_protected_branches` | boolean           | **{dotted-circle}** No       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| `group_ids`                         | Array             | **{dotted-circle}** No       | The IDs of groups as approvers. |
+| `protected_branch_ids`              | Array             | **{dotted-circle}** No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
+| `report_type`                       | string            | **{dotted-circle}** No       | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` and `code_coverage`. |
+| `rule_type`                         | string            | **{dotted-circle}** No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`. |
+| `user_ids`                          | Array             | **{dotted-circle}** No       | The IDs of users as approvers. |
 
 ```json
 {
@@ -408,7 +408,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### Update project-level rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
@@ -421,18 +420,18 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 **Important:** Approvers and groups not in the `users`/`groups` parameters are **removed**
 
-**Parameters:**
+Supported attributes:
 
-| Attribute                           | Type              | Required | Description                                                                                                                                                                                                                     |
-|-------------------------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)                                                                                                                                                    |
-| `approval_rule_id`                  | integer           | yes      | The ID of a approval rule                                                                                                                                                                                                       |
-| `name`                              | string            | yes      | The name of the approval rule                                                                                                                                                                                                   |
-| `approvals_required`                | integer           | yes      | The number of required approvals for this rule                                                                                                                                                                                  |
-| `user_ids`                          | Array             | no       | The ids of users as approvers                                                                                                                                                                                                   |
-| `group_ids`                         | Array             | no       | The ids of groups as approvers                                                                                                                                                                                                  |
-| `protected_branch_ids`              | Array             | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
-| `applies_to_all_protected_branches` | boolean           | no       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| Attribute                           | Type              | Required | Description |
+|-------------------------------------|-------------------|----------|-------------|
+| `id`                                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approvals_required`                | integer           | **{check-circle}** Yes      | The number of required approvals for this rule. |
+| `approval_rule_id`                  | integer           | **{check-circle}** Yes      | The ID of a approval rule. |
+| `name`                              | string            | **{check-circle}** Yes      | The name of the approval rule. |
+| `applies_to_all_protected_branches` | boolean           | **{dotted-circle}** No       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| `group_ids`                         | Array             | **{dotted-circle}** No       | The IDs of groups as approvers. |
+| `protected_branch_ids`              | Array             | **{dotted-circle}** No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
+| `user_ids`                          | Array             | **{dotted-circle}** No       | The IDs of users as approvers. |
 
 ```json
 {
@@ -518,8 +517,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 ### Delete project-level rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can delete project approval rules using the following endpoint:
 
@@ -527,12 +525,12 @@ You can delete project approval rules using the following endpoint:
 DELETE /projects/:id/approval_rules/:approval_rule_id
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute          | Type              | Required | Description                                                                  |
 |--------------------|-------------------|----------|------------------------------------------------------------------------------|
-| `id`               | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `approval_rule_id` | integer           | yes      | The ID of a approval rule                                                    |
+| `id`               | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approval_rule_id` | integer           | **{check-circle}** Yes      | The ID of a approval rule.                                                   |
 
 ## Merge request-level MR approvals
 
@@ -549,12 +547,12 @@ following endpoint:
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type              | Required | Description                                                                  |
 |---------------------|-------------------|----------|------------------------------------------------------------------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer           | yes      | The IID of MR                                                                |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer           | **{check-circle}** Yes      | The IID of the merge request.                                                |
 
 ```json
 {
@@ -595,13 +593,13 @@ endpoint:
 POST /projects/:id/merge_requests/:merge_request_iid/approvals
 ```
 
-**Parameters:**
+Supported attributes:
 
-| Attribute            | Type              | Required | Description                                                                                    |
-|----------------------|-------------------|----------|------------------------------------------------------------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)                   |
-| `merge_request_iid`  | integer           | yes      | The IID of MR                                                                                  |
-| `approvals_required` | integer           | yes      | Approvals required before MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
+| Attribute            | Type              | Required | Description |
+|----------------------|-------------------|----------|-------------|
+| `id`                 | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approvals_required` | integer           | **{check-circle}** Yes      | Approvals required before MR can be merged. Deprecated in GitLab 12.0 in favor of Approval Rules API. |
+| `merge_request_iid`  | integer           | **{check-circle}** Yes      | The IID of the merge request. |
 
 ```json
 {
@@ -622,8 +620,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 
 ### Get the approval state of merge requests
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13712) in GitLab 12.3.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can request information about a merge request's approval state by using the following endpoint:
 
@@ -637,12 +634,12 @@ are created for the merge request. If there are none, it is `false`.
 This includes additional information about the users who have already approved
 (`approved_by`) and whether a rule is already approved (`approved`).
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type              | Required | Description                                                                  |
 |---------------------|-------------------|----------|------------------------------------------------------------------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer           | yes      | The IID of MR                                                                |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer           | **{check-circle}** Yes      | The IID of the merge request.                                                 |
 
 ```json
 {
@@ -695,7 +692,6 @@ This includes additional information about the users who have already approved
 
 ### Get merge request level rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13712) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 > - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
 
@@ -707,12 +703,12 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 Use the `page` and `per_page` [pagination](index.md#offset-based-pagination) parameters to restrict the list of approval rules.
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type    | Required | Description         |
 |---------------------|---------|----------|---------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer | yes      | The IID of MR       |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer | **{check-circle}** Yes      | The IID of the merge request. |
 
 ```json
 [
@@ -784,13 +780,13 @@ You can request information about a single merge request approval rule using the
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type    | Required | Description                                                                  |
 |---------------------|---------|----------|------------------------------------------------------------------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
-| `merge_request_iid`  | integer | yes      | The IID of a merge request.                                                            |
-| `approval_rule_id`   | integer | yes      | The ID of an approval rule.                                                 |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approval_rule_id`   | integer | **{check-circle}** Yes      | The ID of an approval rule.                                                 |
+| `merge_request_iid`  | integer | **{check-circle}** Yes      | The IID of a merge request.                                                            |
 
 ```json
 {
@@ -852,8 +848,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 ### Create merge request level rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can create merge request approval rules using the following endpoint:
 
@@ -861,17 +856,17 @@ You can create merge request approval rules using the following endpoint:
 POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute                  | Type    | Required | Description                                    |
 |----------------------------|---------|----------|------------------------------------------------|
-| `id`                       | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid`        | integer | yes      | The IID of MR                                  |
-| `name`                     | string  | yes      | The name of the approval rule                  |
-| `approvals_required`       | integer | yes      | The number of required approvals for this rule |
-| `approval_project_rule_id` | integer | no       | The ID of a project-level approval rule        |
-| `user_ids`                 | Array   | no       | The ids of users as approvers                  |
-| `group_ids`                | Array   | no       | The ids of groups as approvers                 |
+| `id`                       | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
+| `approvals_required`       | integer | **{check-circle}** Yes      | The number of required approvals for this rule. |
+| `merge_request_iid`        | integer | **{check-circle}** Yes      | The IID of the merge request.                   |
+| `name`                     | string  | **{check-circle}** Yes      | The name of the approval rule.                  |
+| `approval_project_rule_id` | integer | **{dotted-circle}** No       | The ID of a project-level approval rule.        |
+| `group_ids`                | Array   | **{dotted-circle}** No       | The IDs of groups as approvers.                 |
+| `user_ids`                 | Array   | **{dotted-circle}** No       | The IDs of users as approvers.                  |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and
 `groups` of project-level rule are copied. The `approvals_required` specified
@@ -937,8 +932,7 @@ is used.
 
 ### Update merge request level rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can update merge request approval rules using the following endpoint:
 
@@ -951,17 +945,17 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 **Important:** Updating a `report_approver` or `code_owner` rule is not allowed.
 These are system generated rules.
 
-**Parameters:**
+Supported attributes:
 
 | Attribute            | Type    | Required | Description                                    |
 |----------------------|---------|----------|------------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
-| `merge_request_iid`  | integer | yes      | The IID of a merge request.                     |
-| `approval_rule_id`   | integer | yes      | The ID of an approval rule.                     |
-| `name`               | string  | yes      | The name of the approval rule.                  |
-| `approvals_required` | integer | yes      | The number of required approvals for this rule. |
-| `user_ids`           | Array   | no       | The IDs of users as approvers.                  |
-| `group_ids`          | Array   | no       | The IDs of groups as approvers.                 |
+| `id`                 | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approvals_required` | integer | **{check-circle}** Yes      | The number of required approvals for this rule. |
+| `approval_rule_id`   | integer | **{check-circle}** Yes      | The ID of an approval rule.                     |
+| `merge_request_iid`  | integer | **{check-circle}** Yes      | The IID of a merge request.                     |
+| `name`               | string  | **{check-circle}** Yes      | The name of the approval rule.                  |
+| `group_ids`          | Array   | **{dotted-circle}** No       | The IDs of groups as approvers.                 |
+| `user_ids`           | Array   | **{dotted-circle}** No       | The IDs of users as approvers.                  |
 
 ```json
 {
@@ -1023,8 +1017,7 @@ These are system generated rules.
 
 ### Delete merge request level rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can delete merge request approval rules using the following endpoint:
 
@@ -1035,13 +1028,13 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_
 **Important:** Deleting a `report_approver` or `code_owner` rule is not allowed.
 These are system generated rules.
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type    | Required | Description               |
 |---------------------|---------|----------|---------------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer | yes      | The IID of the merge request |
-| `approval_rule_id`  | integer | yes      | The ID of an approval rule |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approval_rule_id`  | integer | **{check-circle}** Yes      | The ID of an approval rule. |
+| `merge_request_iid` | integer | **{check-circle}** Yes      | The IID of the merge request. |
 
 ## Approve merge request
 
@@ -1054,14 +1047,14 @@ endpoint:
 POST /projects/:id/merge_requests/:merge_request_iid/approve
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type    | Required | Description             |
 |---------------------|---------|----------|-------------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer | yes      | The IID of the merge request |
-| `sha`               | string  | no       | The `HEAD` of the merge request |
-| `approval_password` | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `approval_password` | string  | **{dotted-circle}** No      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
+| `merge_request_iid` | integer | **{check-circle}** Yes      | The IID of the merge request. |
+| `sha`               | string  | **{dotted-circle}** No       | The `HEAD` of the merge request. |
 
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#merge-a-merge-request): if it is passed, then it must
@@ -1117,9 +1110,9 @@ endpoint:
 POST /projects/:id/merge_requests/:merge_request_iid/unapprove
 ```
 
-**Parameters:**
+Supported attributes:
 
 | Attribute           | Type    | Required | Description         |
 |---------------------|---------|----------|---------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer | yes      | The IID of a merge request |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer | **{check-circle}** Yes      | The IID of a merge request. |

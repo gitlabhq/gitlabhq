@@ -194,6 +194,18 @@ class Repository
     CommitCollection.new(container, commits, ref)
   end
 
+  def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
+    return [] unless exists?
+    return [] unless has_visible_content?
+    return [] unless query.present? && ref.present?
+
+    commits = raw_repository.list_commits_by(
+      query, ref, author: author, before: before, after: after, limit: limit).map do |c|
+      commit(c)
+    end
+    CommitCollection.new(container, commits, ref)
+  end
+
   def find_branch(name)
     raw_repository.find_branch(name)
   end
@@ -779,8 +791,8 @@ class Repository
     raw_repository.branch_names_contains_sha(sha)
   end
 
-  def tag_names_contains(sha)
-    raw_repository.tag_names_contains_sha(sha)
+  def tag_names_contains(sha, limit: 0)
+    raw_repository.tag_names_contains_sha(sha, limit: limit)
   end
 
   def local_branches
@@ -796,7 +808,7 @@ class Repository
   def create_dir(user, path, **options)
     options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def create_file(user, path, content, **options)
@@ -808,7 +820,7 @@ class Repository
       options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
     end
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def update_file(user, path, content, **options)
@@ -823,13 +835,13 @@ class Repository
       options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
     end
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def delete_file(user, path, **options)
     options[:actions] = [{ action: :delete, file_path: path }]
 
-    multi_action(user, **options)
+    commit_files(user, **options)
   end
 
   def with_cache_hooks
@@ -843,14 +855,14 @@ class Repository
     result.newrev
   end
 
-  def multi_action(user, **options)
+  def commit_files(user, **options)
     start_project = options.delete(:start_project)
 
     if start_project
       options[:start_repository] = start_project.repository.raw_repository
     end
 
-    with_cache_hooks { raw.multi_action(user, **options) }
+    with_cache_hooks { raw.commit_files(user, **options) }
   end
 
   def merge(user, source_sha, merge_request, message)

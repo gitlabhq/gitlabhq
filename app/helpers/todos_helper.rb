@@ -142,6 +142,16 @@ module TodosHelper
     todos_filter_params.values.none?
   end
 
+  def no_todos_messages
+    [
+      s_('Todos|Good job! Looks like you don\'t have anything left on your To-Do List'),
+      s_('Todos|Isn\'t an empty To-Do List beautiful?'),
+      s_('Todos|Give yourself a pat on the back!'),
+      s_('Todos|Nothing left to do. High five!'),
+      s_('Todos|Henceforth, you shall be known as "To-Do Destroyer"')
+    ]
+  end
+
   def todos_filter_path(options = {})
     without = options.delete(:without)
 

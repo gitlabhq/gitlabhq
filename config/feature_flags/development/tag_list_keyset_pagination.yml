@@ -1,8 +1,0 @@
----
-name: tag_list_keyset_pagination
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74239
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345595
-milestone: '14.5'
-type: development
-group: group::source code
-default_enabled: true

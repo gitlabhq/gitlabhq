@@ -114,7 +114,7 @@ module Gitlab
           'PostgreSQL on Amazon RDS' => { statement: 'SHOW rds.extensions', error: /PG::UndefinedObject/ },
           # Based on https://cloud.google.com/sql/docs/postgres/flags#postgres-c this should be specific
           # to Cloud SQL for PostgreSQL
-          'Cloud SQL for PostgreSQL' =>  { statement: 'SHOW cloudsql.iam_authentication', error: /PG::UndefinedObject/ },
+          'Cloud SQL for PostgreSQL' => { statement: 'SHOW cloudsql.iam_authentication', error: /PG::UndefinedObject/ },
           # Based on
           #   - https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions
           #   - https://docs.microsoft.com/en-us/azure/postgresql/concepts-extensions

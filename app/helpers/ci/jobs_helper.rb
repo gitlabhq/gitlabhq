@@ -11,7 +11,7 @@ module Ci
         "runner_settings_url" => project_runners_path(@build.project, anchor: 'js-runners-settings'),
         "page_path" => project_job_path(@project, @build),
         "build_status" => @build.status,
-        "build_stage" => @build.stage,
+        "build_stage" => @build.stage_name,
         "log_state" => '',
         "build_options" => javascript_build_options,
         "retry_outdated_job_docs_url" => help_page_path('ci/pipelines/settings', anchor: 'retry-outdated-jobs')

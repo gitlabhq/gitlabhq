@@ -31,10 +31,14 @@
     - if issuable.merged?
       %code= target_title
   - unless issuable.new_record? || issuable.merged?
-    %span.dropdown.gl-ml-2.d-inline-block
-      = form.hidden_field(:target_branch,
-        { class: 'target_branch js-target-branch-select ref-name mw-xl',
-          data: { placeholder: _('Select branch'), endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
+    .merge-request-select.dropdown.gl-w-auto
+      = form.hidden_field :target_branch
+      = dropdown_toggle form.object.target_branch.presence || _("Select branch"), { toggle: "dropdown", 'field-name': "#{form.object_name}[target_branch]", 'refs-url': refs_project_path(@project, sort: 'updated_desc', find: 'branches'), selected: form.object.target_branch, default_text: _("Select branch") }, { toggle_class: "js-compare-dropdown js-target-branch monospace" }
+      .dropdown-menu.dropdown-menu-selectable.js-target-branch-dropdown.target_branch.ref-name.git-revision-dropdown
+        = dropdown_title(_("Select branch"))
+        = dropdown_filter(_("Search branches"))
+        = dropdown_content
+        = dropdown_loading
 
 - if source_level < target_level
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|

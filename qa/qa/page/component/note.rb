@@ -28,7 +28,7 @@ module QA
           end
 
           base.view 'app/assets/javascripts/notes/components/discussion_filter.vue' do
-            element :discussion_filter_dropdown, required: true
+            element :discussion_preferences_dropdown, required: true
             element :filter_menu_item
           end
 
@@ -169,7 +169,7 @@ module QA
         def select_filter_with_text(text)
           retry_on_exception do
             click_element(:title_content)
-            click_element :discussion_filter_dropdown
+            click_element :discussion_preferences_dropdown
             find_element(:filter_menu_item, text: text).click
 
             wait_for_requests

@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_limit_to_text_columns'
 
 RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
-  subject(:cop) { described_class.new }
-
   context 'when in migration' do
     let(:msg) { 'Text columns should always have a limit set (255 is suggested)[...]' }
 

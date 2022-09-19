@@ -128,7 +128,7 @@ RSpec.describe GroupMemberPolicy do
 
   context 'with the group parent' do
     let(:current_user) { create :user }
-    let(:subgroup) { create(:group, :private, parent: group)}
+    let(:subgroup) { create(:group, :private, parent: group) }
 
     before do
       group.add_owner(owner)
@@ -143,7 +143,7 @@ RSpec.describe GroupMemberPolicy do
 
   context 'without group parent' do
     let(:current_user) { create :user }
-    let(:subgroup) { create(:group, :private)}
+    let(:subgroup) { create(:group, :private) }
 
     before do
       subgroup.add_owner(current_user)
@@ -158,7 +158,7 @@ RSpec.describe GroupMemberPolicy do
   context 'without group parent with two owners' do
     let(:current_user) { create :user }
     let(:other_user) { create :user }
-    let(:subgroup) { create(:group, :private)}
+    let(:subgroup) { create(:group, :private) }
 
     before do
       subgroup.add_owner(current_user)

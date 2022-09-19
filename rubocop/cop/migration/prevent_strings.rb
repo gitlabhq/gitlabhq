@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that enforces using text instead of the string data type
-      class PreventStrings < RuboCop::Cop::Cop
+      class PreventStrings < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = 'Do not use the `string` data type, use `text` instead. ' \
@@ -26,7 +26,7 @@ module RuboCop
           node.each_descendant(:send) do |send_node|
             next unless string_operation?(send_node)
 
-            add_offense(send_node, location: :selector)
+            add_offense(send_node.loc.selector)
           end
         end
 

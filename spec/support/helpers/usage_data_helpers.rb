@@ -6,22 +6,14 @@ module UsageDataHelpers
       snippet_update
       snippet_comment
       merge_request_comment
-      merge_request_create
       commit_comment
       wiki_pages_create
       wiki_pages_update
       wiki_pages_delete
-      web_ide_views
-      web_ide_commits
-      web_ide_merge_requests
-      web_ide_previews
       navbar_searches
       cycle_analytics_views
       productivity_analytics_views
       source_code_pushes
-      design_management_designs_create
-      design_management_designs_update
-      design_management_designs_delete
     ).freeze
 
   COUNTS_KEYS = %i(
@@ -126,7 +118,6 @@ module UsageDataHelpers
       uploads
       web_hooks
       user_preferences_user_gitpod_enabled
-      service_usage_data_download_payload_click
     ).push(*SMAU_KEYS)
 
   USAGE_DATA_KEYS = %i(
@@ -193,11 +184,11 @@ module UsageDataHelpers
     allow(Settings).to receive(:[]).with('artifacts')
       .and_return(
         { 'enabled' => true,
-         'object_store' =>
+          'object_store' =>
          { 'enabled' => true,
-          'remote_directory' => 'artifacts',
-          'direct_upload' => true,
-          'connection' =>
+           'remote_directory' => 'artifacts',
+           'direct_upload' => true,
+           'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
            'background_upload' => false,
            'proxy_download' => false } }
@@ -208,11 +199,11 @@ module UsageDataHelpers
     allow(Settings).to receive(:[]).with('lfs')
       .and_return(
         { 'enabled' => true,
-         'object_store' =>
+          'object_store' =>
          { 'enabled' => false,
-          'remote_directory' => 'lfs-objects',
-          'direct_upload' => true,
-          'connection' =>
+           'remote_directory' => 'lfs-objects',
+           'direct_upload' => true,
+           'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
            'background_upload' => false,
            'proxy_download' => false } }
@@ -221,21 +212,21 @@ module UsageDataHelpers
       .and_return(
         { 'object_store' =>
           { 'enabled' => false,
-          'remote_directory' => 'uploads',
-          'direct_upload' => true,
-          'connection' =>
+            'remote_directory' => 'uploads',
+            'direct_upload' => true,
+            'connection' =>
           { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => false,
-           'proxy_download' => false } }
+            'background_upload' => false,
+            'proxy_download' => false } }
       )
     allow(Settings).to receive(:[]).with('packages')
       .and_return(
         { 'enabled' => true,
-         'object_store' =>
+          'object_store' =>
          { 'enabled' => false,
-          'remote_directory' => 'packages',
-          'direct_upload' => false,
-          'connection' =>
+           'remote_directory' => 'packages',
+           'direct_upload' => false,
+           'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
            'background_upload' => true,
            'proxy_download' => false } }

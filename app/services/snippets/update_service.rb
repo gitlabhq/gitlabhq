@@ -23,11 +23,14 @@ module Snippets
 
       update_snippet_attributes(snippet)
 
+      files = snippet.all_files.map { |f| { path: f } } + file_paths_to_commit
+
       Spam::SpamActionService.new(
         spammable: snippet,
         spam_params: spam_params,
         user: current_user,
-        action: :update
+        action: :update,
+        extra_features: { files: files }
       ).execute
 
       if save_and_commit(snippet)

@@ -33,7 +33,7 @@ RSpec.describe 'Admin mode', :js do
         open_top_nav_projects
 
         within_top_nav do
-          click_link('Your projects')
+          click_link('View all projects')
         end
 
         expect(page).to have_current_path(dashboard_projects_path)
@@ -99,7 +99,7 @@ RSpec.describe 'Admin mode', :js do
         open_top_nav_projects
 
         within_top_nav do
-          click_link('Your projects')
+          click_link('View all projects')
         end
 
         expect(page).to have_current_path(dashboard_projects_path)

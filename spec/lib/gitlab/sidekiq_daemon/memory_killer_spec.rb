@@ -326,7 +326,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
           class: described_class.to_s,
           signal: signal,
           pid: pid,
-          message:   "sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})")
+          message: "sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})")
       expect(Process).to receive(:kill).with(signal, pid).ordered
 
       subject
@@ -340,7 +340,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
           class: described_class.to_s,
           signal: signal,
           pid: pid,
-          message:   "sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})")
+          message: "sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})")
       expect(Process).to receive(:kill).with(signal, 0).ordered
 
       subject

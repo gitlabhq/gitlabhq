@@ -30,18 +30,18 @@ describe('Confidential merge request project dropdown component', () => {
       },
     ]);
 
-    expect(vm.findAll(GlDropdownItem).length).toBe(2);
+    expect(vm.findAllComponents(GlDropdownItem).length).toBe(2);
   });
 
   it('shows lock icon', () => {
     factory();
 
-    expect(vm.find(GlDropdown).props('icon')).toBe('lock');
+    expect(vm.findComponent(GlDropdown).props('icon')).toBe('lock');
   });
 
   it('has dropdown text', () => {
     factory();
 
-    expect(vm.find(GlDropdown).props('text')).toBe('Select private project');
+    expect(vm.findComponent(GlDropdown).props('text')).toBe('Select private project');
   });
 });

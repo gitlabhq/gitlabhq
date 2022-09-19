@@ -17,10 +17,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-| Attribute           | Type    | Required | Description                                                                                                     |
-|---------------------|---------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`                | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request                                                                            |
+| Attribute           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | integer | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer | **{check-circle}** Yes | The internal ID of the merge request. |
 
 ```json
 [
@@ -51,18 +51,18 @@ POST /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-| Attribute           | Type    | Required | Description                                                                                                     |
-|---------------------|---------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`                | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request                                                                            |
+| Attribute           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | integer | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `merge_request_iid` | integer | **{check-circle}** Yes | The internal ID of the merge request. |
 
 ```plaintext
 POST /projects/:id/merge_requests/
 ```
 
-| Attribute                  | Type    | Required | Description                                                                     |
-| ---------                  | ----    | -------- | -----------                                                                     |
-| `commits`             | string array | yes | The context commits' SHA  |
+| Attribute                  | Type    | Required | Description |
+| ---------                  | ----    | -------- | ----------- |
+| `commits`             | string array | **{check-circle}** Yes | The context commits' SHA. |
 
 ```json
 [
@@ -92,8 +92,8 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-| Attribute           | Type         | Required | Description                                                                                                     |
-|---------------------|--------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`                | integer      | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `merge_request_iid` | integer      | yes      | The internal ID of the merge request                                                                            |
-| `commits`           | string array | yes      | The context commits' SHA                                                                                        |
+| Attribute           | Type         | Required | Description  |
+|---------------------|--------------|----------|--------------|
+| `commits`           | string array | **{check-circle}** Yes | The context commits' SHA. |
+| `id`                | integer      | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer      | **{check-circle}** Yes | The internal ID of the merge request. |

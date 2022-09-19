@@ -15,7 +15,12 @@ export default {
 </script>
 
 <template>
-  <section role="region" :aria-label="__('Merge request reports')" data-testid="mr-widget-app">
+  <section
+    v-if="widgets.length"
+    role="region"
+    :aria-label="__('Merge request reports')"
+    data-testid="mr-widget-app"
+  >
     <component
       :is="widget"
       v-for="(widget, index) in widgets"

@@ -47,7 +47,7 @@ describe('AlertMappingBuilder', () => {
     expect(findColumnInRow(0, 2).text()).toContain(i18n.columns.payloadKeyTitle);
     expect(findColumnInRow(0, 3).text()).toContain(i18n.columns.fallbackKeyTitle);
 
-    const fallbackColumnIcon = findColumnInRow(0, 3).find(GlIcon);
+    const fallbackColumnIcon = findColumnInRow(0, 3).findComponent(GlIcon);
     expect(fallbackColumnIcon.exists()).toBe(true);
     expect(fallbackColumnIcon.attributes('name')).toBe('question');
     expect(fallbackColumnIcon.attributes('title')).toBe(i18n.fallbackTooltip);
@@ -55,7 +55,7 @@ describe('AlertMappingBuilder', () => {
 
   it('renders disabled form input for each mapped field', () => {
     alertFields.forEach((field, index) => {
-      const input = findColumnInRow(index + 1, 0).find(GlFormInput);
+      const input = findColumnInRow(index + 1, 0).findComponent(GlFormInput);
       const types = field.types.map((t) => capitalizeFirstCharacter(t.toLowerCase())).join(' or ');
       expect(input.attributes('value')).toBe(`${field.label} (${types})`);
       expect(input.attributes('disabled')).toBe('');
@@ -71,7 +71,7 @@ describe('AlertMappingBuilder', () => {
 
   it('renders mapping dropdown for each field', () => {
     alertFields.forEach(({ types }, index) => {
-      const dropdown = findColumnInRow(index + 1, 2).find(GlDropdown);
+      const dropdown = findColumnInRow(index + 1, 2).findComponent(GlDropdown);
       const { searchBox, dropdownItems, mappingOptions } = getDropdownContent(dropdown, types);
 
       expect(dropdown.exists()).toBe(true);
@@ -82,7 +82,7 @@ describe('AlertMappingBuilder', () => {
 
   it('renders fallback dropdown only for the fields that have fallback', () => {
     alertFields.forEach(({ types, numberOfFallbacks }, index) => {
-      const dropdown = findColumnInRow(index + 1, 3).find(GlDropdown);
+      const dropdown = findColumnInRow(index + 1, 3).findComponent(GlDropdown);
       expect(dropdown.exists()).toBe(Boolean(numberOfFallbacks));
 
       if (numberOfFallbacks) {
@@ -96,8 +96,8 @@ describe('AlertMappingBuilder', () => {
   it('emits event with selected mapping', () => {
     const mappingToSave = { fieldName: 'TITLE', mapping: 'PARSED_TITLE' };
     jest.spyOn(transformationUtils, 'transformForSave').mockReturnValue(mappingToSave);
-    const dropdown = findColumnInRow(1, 2).find(GlDropdown);
-    const option = dropdown.find(GlDropdownItem);
+    const dropdown = findColumnInRow(1, 2).findComponent(GlDropdown);
+    const option = dropdown.findComponent(GlDropdownItem);
     option.vm.$emit('click');
     expect(wrapper.emitted('onMappingUpdate')[0]).toEqual([mappingToSave]);
   });

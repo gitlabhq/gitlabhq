@@ -6,7 +6,7 @@ module Gitlab
     include ::MarkupHelper
 
     CACHE_EXPIRE_IN = 1.hour
-    MAX_OFFSET = 2**31
+    MAX_OFFSET = 2**31 - 1
 
     attr_reader :commit, :project, :path, :offset, :limit, :user, :resolved_commits
 
@@ -35,6 +35,8 @@ module Gitlab
     #         - commit_path: URI of the commit in the web interface
     #         - commit_title_html: Rendered commit title
     def summarize
+      return [] if offset < 0
+
       commits_hsh = fetch_last_cached_commits_list
       prerender_commit_full_titles!(commits_hsh.values)
 

@@ -25,8 +25,19 @@ module Environments
     def execute_for_merge_request_pipeline(merge_request)
       return unless merge_request.actual_head_pipeline&.merge_request?
 
-      merge_request.environments_in_head_pipeline(deployment_status: :success).each do |environment|
-        execute(environment)
+      created_environments = merge_request.created_environments
+
+      if created_environments.any?
+        created_environments.each { |env| execute(env) }
+      else
+        environments_in_head_pipeline = merge_request.environments_in_head_pipeline(deployment_status: :success)
+        environments_in_head_pipeline.each { |env| execute(env) }
+
+        if environments_in_head_pipeline.any?
+          # If we don't see a message often, we'd be able to remove this path. (or likely in GitLab 16.0)
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/372965
+          Gitlab::AppJsonLogger.info(message: 'Running legacy dynamic environment stop logic', project_id: project.id)
+        end
       end
     end
 

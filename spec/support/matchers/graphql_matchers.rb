@@ -230,3 +230,61 @@ RSpec::Matchers.define :expose_permissions_using do |expected|
     expect(permission_field.type.of_type.graphql_name).to eq(expected.graphql_name)
   end
 end
+
+RSpec::Matchers.define :have_graphql_name do |expected|
+  def graphql_name(object)
+    object.graphql_name if object.respond_to?(:graphql_name)
+  end
+
+  match do |object|
+    name = graphql_name(object)
+
+    begin
+      if expected.present?
+        expect(name).to eq(expected)
+      else
+        expect(expected).to be_present
+      end
+    rescue RSpec::Expectations::ExpectationNotMetError => error
+      @error = error
+      raise
+    end
+  end
+
+  failure_message do |object|
+    if expected.present?
+      @error
+    else
+      'Expected graphql_name value cannot be blank'
+    end
+  end
+end
+
+RSpec::Matchers.define :have_graphql_description do |expected|
+  def graphql_description(object)
+    object.description if object.respond_to?(:description)
+  end
+
+  match do |object|
+    description = graphql_description(object)
+
+    begin
+      if expected.present?
+        expect(description).to eq(expected)
+      else
+        expect(description).to be_present
+      end
+    rescue RSpec::Expectations::ExpectationNotMetError => error
+      @error = error
+      raise
+    end
+  end
+
+  failure_message do |object|
+    if expected.present?
+      @error
+    else
+      "have_graphql_description expected value cannot be blank"
+    end
+  end
+end

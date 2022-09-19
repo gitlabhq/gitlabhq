@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_break_from_strong_memoize'
 
 RSpec.describe RuboCop::Cop::AvoidBreakFromStrongMemoize do
-  subject(:cop) { described_class.new }
-
   it 'flags violation for break inside strong_memoize' do
     expect_offense(<<~RUBY)
       strong_memoize(:result) do

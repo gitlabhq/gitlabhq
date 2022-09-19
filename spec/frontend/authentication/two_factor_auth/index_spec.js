@@ -10,7 +10,7 @@ describe('initRecoveryCodes', () => {
   let el;
   let wrapper;
 
-  const findRecoveryCodesComponent = () => wrapper.find(RecoveryCodes);
+  const findRecoveryCodesComponent = () => wrapper.findComponent(RecoveryCodes);
 
   beforeEach(() => {
     el = document.createElement('div');

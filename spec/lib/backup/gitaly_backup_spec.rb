@@ -17,7 +17,7 @@ RSpec.describe Backup::GitalyBackup do
   let(:expected_env) do
     {
       'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
-      'SSL_CERT_DIR'  => Gitlab::X509::Certificate.default_cert_dir
+      'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir
     }.merge(ENV)
   end
 
@@ -121,7 +121,7 @@ RSpec.describe Backup::GitalyBackup do
       let(:ssl_env) do
         {
           'SSL_CERT_FILE' => '/some/cert/file',
-          'SSL_CERT_DIR'  => '/some/cert'
+          'SSL_CERT_DIR' => '/some/cert'
         }
       end
 

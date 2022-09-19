@@ -144,7 +144,7 @@ RSpec.shared_examples 'cacheable diff collection' do
   end
 end
 
-shared_examples_for 'sortable diff files' do
+RSpec.shared_examples_for 'sortable diff files' do
   subject { described_class.new(diffable, **collection_default_args) }
 
   describe '#raw_diff_files' do
@@ -170,7 +170,7 @@ shared_examples_for 'sortable diff files' do
   end
 end
 
-shared_examples_for 'unsortable diff files' do
+RSpec.shared_examples_for 'unsortable diff files' do
   subject { described_class.new(diffable, **collection_default_args) }
 
   describe '#raw_diff_files' do

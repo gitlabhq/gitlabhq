@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that checks if sidekiq_queue_migrate is used in a regular
       # (not post-deployment) migration.
-      class SidekiqQueueMigrate < RuboCop::Cop::Cop
+      class SidekiqQueueMigrate < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`sidekiq_queue_migrate` must only be used in post-deployment migrations'
@@ -19,7 +19,7 @@ module RuboCop
             send_method = send_node.children[1]
 
             if send_method == :sidekiq_queue_migrate
-              add_offense(send_node, location: :selector)
+              add_offense(send_node.loc.selector)
             end
           end
         end

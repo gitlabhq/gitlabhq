@@ -20,8 +20,10 @@ module QA
         Flow::Login.sign_in(as: user)
 
         Page::Dashboard::Welcome.perform do |welcome|
-          expect(welcome).to have_welcome_title("Welcome to GitLab")
-
+          Support::Waiter.wait_until(sleep_interval: 2, max_duration: 60, reload_page: page,
+                                     retry_on_exception: true) do
+            expect(welcome).to have_welcome_title("Welcome to GitLab")
+          end
           # This would be better if it were a visual validation test
           expect(welcome).to have_loaded_all_images
         end

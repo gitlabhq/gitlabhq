@@ -18,6 +18,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v15/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v15/streamio"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -78,13 +79,28 @@ func ensureGitalyRepository(t *testing.T, apiResponse *api.Response) error {
 		return err
 	}
 
-	createReq := &gitalypb.CreateRepositoryFromURLRequest{
-		Repository: &apiResponse.Repository,
-		Url:        "https://gitlab.com/gitlab-org/gitlab-test.git",
+	stream, err := repository.CreateRepositoryFromBundle(ctx)
+	if err != nil {
+		return fmt.Errorf("initiate stream: %w", err)
 	}
 
-	_, err = repository.CreateRepositoryFromURL(ctx, createReq)
-	return err
+	if err := stream.Send(&gitalypb.CreateRepositoryFromBundleRequest{Repository: &apiResponse.Repository}); err != nil {
+		return err
+	}
+
+	gitBundle := exec.Command("git", "-C", path.Join(testRepoRoot, testRepo), "bundle", "create", "-", "--all")
+	gitBundle.Stdout = streamio.NewWriter(func(p []byte) error {
+		return stream.Send(&gitalypb.CreateRepositoryFromBundleRequest{Data: p})
+	})
+
+	if err := gitBundle.Run(); err != nil {
+		return fmt.Errorf("run git bundle --create: %w", err)
+	}
+	if _, err := stream.CloseAndRecv(); err != nil {
+		return fmt.Errorf("finish CreateRepositoryFromBundle: %w", err)
+	}
+
+	return nil
 }
 
 func TestAllowedClone(t *testing.T) {
@@ -282,24 +298,22 @@ func TestAllowedGetGitDiff(t *testing.T) {
 	apiResponse := realGitalyOkBody(t)
 	require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
-	leftCommit := "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
-	rightCommit := "e395f646b1499e8e0279445fc99a0596a65fab7e"
-	expectedBody := "diff --git a/README.md b/README.md"
-
 	msg := serializedMessage("RawDiffRequest", &gitalypb.RawDiffRequest{
 		Repository:    &apiResponse.Repository,
-		LeftCommitId:  leftCommit,
-		RightCommitId: rightCommit,
+		LeftCommitId:  "b0e52af38d7ea43cf41d8a6f2471351ac036d6c9",
+		RightCommitId: "732401c65e924df81435deb12891ef570167d2e2",
 	})
 	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
 
 	resp, body, err := doSendDataRequest("/something", "git-diff", jsonParams)
 	require.NoError(t, err)
-	shortBody := string(body[:len(expectedBody)])
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
-	require.Equal(t, expectedBody, shortBody, "GET %q: response body", resp.Request.URL)
 	requireNginxResponseBuffering(t, "no", resp, "GET %q: nginx response buffering", resp.Request.URL)
+
+	expectedBody := "diff --git a/LICENSE b/LICENSE\n"
+	require.Equal(t, expectedBody, string(body[:len(expectedBody)]),
+		"GET %q: response body", resp.Request.URL)
 }
 
 func TestAllowedGetGitFormatPatch(t *testing.T) {
@@ -309,12 +323,10 @@ func TestAllowedGetGitFormatPatch(t *testing.T) {
 	apiResponse := realGitalyOkBody(t)
 	require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
-	leftCommit := "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
-	rightCommit := "e395f646b1499e8e0279445fc99a0596a65fab7e"
 	msg := serializedMessage("RawPatchRequest", &gitalypb.RawPatchRequest{
 		Repository:    &apiResponse.Repository,
-		LeftCommitId:  leftCommit,
-		RightCommitId: rightCommit,
+		LeftCommitId:  "b0e52af38d7ea43cf41d8a6f2471351ac036d6c9",
+		RightCommitId: "0e1b353b348f8477bdbec1ef47087171c5032cd9",
 	})
 	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
 
@@ -324,14 +336,10 @@ func TestAllowedGetGitFormatPatch(t *testing.T) {
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 	requireNginxResponseBuffering(t, "no", resp, "GET %q: nginx response buffering", resp.Request.URL)
 
-	requirePatchSeries(
-		t,
-		body,
-		"372ab6950519549b14d220271ee2322caa44d4eb",
-		"57290e673a4c87f51294f5216672cbc58d485d25",
-		"41ae11ba5d091d73d5de671f6fa7d1a4539e979e",
-		"742518b2be68fc750bb4c357c0df821a88113286",
-		rightCommit,
+	requirePatchSeries(t, body,
+		"732401c65e924df81435deb12891ef570167d2e2",
+		"33bcff41c232a11727ac6d660bd4b0c2ba86d63d",
+		"0e1b353b348f8477bdbec1ef47087171c5032cd9",
 	)
 }
 

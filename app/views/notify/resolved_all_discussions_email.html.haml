@@ -1,3 +1,2 @@
 %p
-  All discussions on merge request #{merge_request_reference_link(@merge_request)}
-  were resolved by #{sanitize_name(@resolved_by.name)}
+  = s_('Notify|All discussions on merge request %{mr_link} were resolved by %{name}').html_safe % { mr_link: merge_request_reference_link(@merge_request), name: sanitize_name(@resolved_by.name) }

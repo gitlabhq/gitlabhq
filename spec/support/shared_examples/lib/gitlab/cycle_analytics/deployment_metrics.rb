@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'deployment metrics examples' do
+RSpec.shared_examples 'deployment metrics examples' do
   def create_deployment(args)
     project = args[:project]
     environment = project.environments.production.first || create(:environment, :production, project: project)

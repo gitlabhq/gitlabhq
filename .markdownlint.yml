@@ -23,7 +23,8 @@ first-line-h1: false
 code-block-style:
   style: "fenced"
 emphasis-style: false
-strong-style: false
+link-fragments: false
+reference-links-images: false
 proper-names:
   names: [
     "Akismet",

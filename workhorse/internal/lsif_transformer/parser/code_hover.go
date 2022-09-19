@@ -28,6 +28,16 @@ type truncatableString struct {
 	Truncated bool
 }
 
+// supportedLexerLanguages is used for a fast lookup to ensure the language
+// is supported by the lexer library.
+var supportedLexerLanguages = map[string]struct{}{}
+
+func init() {
+	for _, name := range lexers.Names(true) {
+		supportedLexerLanguages[name] = struct{}{}
+	}
+}
+
 func (ts *truncatableString) UnmarshalText(b []byte) error {
 	s := 0
 	for i := 0; s < len(b); i++ {
@@ -93,6 +103,24 @@ func newCodeHover(content json.RawMessage) (*codeHover, error) {
 }
 
 func (c *codeHover) setTokens() {
+	// fastpath: bail early if no language specified
+	if c.Language == "" {
+		return
+	}
+
+	// fastpath: lexer.Get() will first match against indexed languages by
+	// name and alias, and then fallback to a very slow filepath match. We
+	// avoid this slow path by first checking against languages we know to
+	// be within the index, and bailing if not found.
+	//
+	// Not case-folding immediately is done intentionally. These two lookups
+	// mirror the behaviour of lexer.Get().
+	if _, ok := supportedLexerLanguages[c.Language]; !ok {
+		if _, ok := supportedLexerLanguages[strings.ToLower(c.Language)]; !ok {
+			return
+		}
+	}
+
 	lexer := lexers.Get(c.Language)
 	if lexer == nil {
 		return

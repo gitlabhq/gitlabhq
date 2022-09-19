@@ -50,12 +50,12 @@ possible, we encourage you to use all of our security scanning tools:
   declared software dependencies (and those installed as a sub-dependency).
   Dependency Scanning can not detect software dependencies that are pre-bundled
   into the container's base image. To identify pre-bundled dependencies, enable
-  [Container Scanning](../container_scanning/) language scanning using the
-  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
-- [Container Scanning](../container_scanning/) analyzes your containers and tells
+  [Container Scanning](../container_scanning/index.md) language scanning using the
+  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).
+- [Container Scanning](../container_scanning/index.md) analyzes your containers and tells
   you about known risks in the operating system's (OS) packages. You can configure it
   to also report on software and language dependencies, if you enable it and use
-  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
+  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).
   Turning this variable on can result in some duplicate findings, as we do not yet
   de-duplicate results between Container Scanning and Dependency Scanning. For more details,
   efforts to de-duplicate these findings can be tracked in
@@ -304,7 +304,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
     <p>
-      npm is only supported when `lockfileVersion = 1` or `lockfileVersion = 2`. Work to add support for `lockfileVersion = 3` is being tracked in issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">GitLab#365176</a>.
+      npm is only supported when <code>lockfileVersion = 1</code> or <code>lockfileVersion = 2</code>. Work to add support for <code>lockfileVersion = 3</code> is being tracked in issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">GitLab#365176</a>.
     </p>
   </li>
   <li>
@@ -452,8 +452,8 @@ We only execute one build in the directory where a build file has been detected.
 multiple Gradle, Maven, or sbt builds, or any combination of these, `gemnasium-maven` only analyzes dependencies for the first build file
 that is detected. Build files are searched for in the following order:
 
-1. `build.gradle` or `build.gradle.kts` for single or [multi-project](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html) Gradle builds.
 1. `pom.xml` for single or [multi-module](https://maven.apache.org/pom.html#Aggregation) Maven projects.
+1. `build.gradle` or `build.gradle.kts` for single or [multi-project](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html) Gradle builds.
 1. `build.sbt` for single or [multi-project](https://www.scala-sbt.org/1.x/docs/Multi-Project.html) sbt builds.
 
 The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently an sbt build file in the root directory would be detected before a Gradle build file in a subdirectory.
@@ -521,7 +521,7 @@ always take the latest dependency scanning artifact available.
 
 To enable Dependency Scanning in a project, you can create a merge request:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable Dependency Scanning.
@@ -627,7 +627,7 @@ The following variables are used for configuring specific analyzers (used for a 
 The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they will work. This is a large list, many of which we may be unaware of, and as such is not documented.
 
 For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
-set it as a [custom CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+set it as a [custom CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 file like this:
 
 ```yaml

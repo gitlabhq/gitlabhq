@@ -71,8 +71,8 @@ configure CAS for back-channel logout.
 
 1. Save the configuration file.
 
-1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or
-   [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to
-   take effect if you installed GitLab via Omnibus or from source respectively.
+1. For the changes to take effect:
+   - If you installed via Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - If you installed from source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 On the sign in page there should now be a CAS tab in the sign in form.

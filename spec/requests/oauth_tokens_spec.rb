@@ -78,11 +78,12 @@ RSpec.describe 'OAuth Tokens requests' do
 
         context 'revoked refresh token' do
           let!(:existing_token) do
-            create(:oauth_access_token, application: application,
-                   resource_owner_id: user.id,
-                   created_at: 2.hours.ago,
-                   revoked_at: 1.hour.ago,
-                   expires_in: 5)
+            create(:oauth_access_token,
+              application: application,
+              resource_owner_id: user.id,
+              created_at: 2.hours.ago,
+              revoked_at: 1.hour.ago,
+              expires_in: 5)
           end
 
           it 'does not issue a new token' do

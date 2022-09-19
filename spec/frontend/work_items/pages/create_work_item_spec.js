@@ -193,6 +193,8 @@ describe('Create work item component', () => {
     wrapper.find('form').trigger('submit');
     await waitForPromises();
 
-    expect(findAlert().text()).toBe(CreateWorkItem.createErrorText);
+    expect(findAlert().text()).toBe(
+      'Something went wrong when creating work item. Please try again.',
+    );
   });
 });

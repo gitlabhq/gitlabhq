@@ -30,7 +30,7 @@ FactoryBot.define do
     end
 
     trait :remote_store do
-      file_store { ::ObjectStorage::Store::REMOTE}
+      file_store { ::ObjectStorage::Store::REMOTE }
     end
 
     trait :with_coverage_report do

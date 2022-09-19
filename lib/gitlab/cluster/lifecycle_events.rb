@@ -4,6 +4,11 @@ require_relative '../utils' # Gitlab::Utils
 
 module Gitlab
   module Cluster
+    # We take advantage of the fact that the application is pre-loaded in the primary
+    # process. If it's a pre-fork server like Puma, this will be the Puma master process.
+    # Otherwise it is the worker itself such as for Sidekiq.
+    PRIMARY_PID = $$
+
     #
     # LifecycleEvents lets Rails initializers register application startup hooks
     # that are sensitive to forking. For example, to defer the creation of

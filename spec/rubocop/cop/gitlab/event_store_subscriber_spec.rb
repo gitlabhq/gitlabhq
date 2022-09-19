@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/gitlab/event_store_subscriber'
 
 RSpec.describe RuboCop::Cop::Gitlab::EventStoreSubscriber do
-  subject(:cop) { described_class.new }
-
   context 'when an event store subscriber overrides #perform' do
     it 'registers an offense' do
       expect_offense(<<~WORKER)

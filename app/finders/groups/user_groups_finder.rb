@@ -13,7 +13,7 @@
 #
 # Initially created to filter user groups and descendants where the user can create projects
 module Groups
-  class UserGroupsFinder
+  class UserGroupsFinder < Base
     def initialize(current_user, target_user, params = {})
       @current_user = current_user
       @target_user = target_user
@@ -33,16 +33,6 @@ module Groups
     private
 
     attr_reader :current_user, :target_user, :params
-
-    def sort(items)
-      items.order(Group.arel_table[:path].asc, Group.arel_table[:id].asc) # rubocop: disable CodeReuse/ActiveRecord
-    end
-
-    def by_search(items)
-      return items if params[:search].blank?
-
-      items.search(params[:search], include_parents: true)
-    end
 
     def by_permission_scope
       if permission_scope_create_projects?

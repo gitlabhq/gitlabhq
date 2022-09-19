@@ -20,7 +20,7 @@ on the left sidebar in your project.
 
 To enable a custom issue tracker in a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Custom issue tracker**.
 1. Select the checkbox under **Enable integration**.

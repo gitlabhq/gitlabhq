@@ -136,9 +136,9 @@ module Gitlab
             attributes_permitter.permit(importable_class_sym, params)
           else
             Gitlab::ImportExport::AttributeCleaner.clean(
-              relation_hash:  params,
+              relation_hash: params,
               relation_class: importable_class,
-              excluded_keys:  excluded_keys_for_relation(importable_class_sym))
+              excluded_keys: excluded_keys_for_relation(importable_class_sym))
           end
         end
 

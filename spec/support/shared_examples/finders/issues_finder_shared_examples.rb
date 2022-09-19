@@ -365,7 +365,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         let!(:created_items) do
           milestones.map do |milestone|
             create(factory, project: milestone.project || project_in_group,
-                   milestone: milestone, author: user, assignees: [user])
+                            milestone: milestone, author: user, assignees: [user])
           end
         end
 

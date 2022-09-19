@@ -144,12 +144,10 @@ module Trigger
     end
 
     def base_variables
-      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results,
-      # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
       {
         'GITLAB_REF_SLUG' => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
-        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
+        'TOP_UPSTREAM_SOURCE_SHA' => ENV['CI_COMMIT_SHA']
       }
     end
 
@@ -158,53 +156,6 @@ module Trigger
       Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
         params[version_file] = version_param_value(version_file)
       end
-    end
-  end
-
-  class Omnibus < Base
-    def self.access_token
-      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'package-and-qa' job)" at https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/settings/access_tokens
-      ENV['OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN'] || super
-    end
-
-    private
-
-    def downstream_project_path
-      ENV.fetch('OMNIBUS_PROJECT_PATH', 'gitlab-org/build/omnibus-gitlab-mirror')
-    end
-
-    def ref_param_name
-      'OMNIBUS_BRANCH'
-    end
-
-    def primary_ref
-      'master'
-    end
-
-    def trigger_stable_branch_if_detected?
-      true
-    end
-
-    def extra_variables
-      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA (MR HEAD commit) so that the image is in sync with the assets and QA images.
-      # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results.
-      # We also set IMAGE_TAG so the GitLab Docker image is tagged with that SHA.
-      source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
-
-      {
-        'GITLAB_VERSION' => source_sha,
-        'IMAGE_TAG' => source_sha,
-        'QA_IMAGE' => ENV['QA_IMAGE'],
-        'SKIP_QA_DOCKER' => 'true',
-        'ALTERNATIVE_SOURCES' => 'true',
-        'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
-        'ee' => Trigger.ee? ? 'true' : 'false',
-        'QA_BRANCH' => ENV['QA_BRANCH'] || 'master',
-        'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE'],
-        'GITLAB_QA_OPTIONS' => ENV['GITLAB_QA_OPTIONS'],
-        'QA_TESTS' => ENV['QA_TESTS'],
-        'ALLURE_JOB_NAME' => ENV['ALLURE_JOB_NAME']
-      }
     end
   end
 
@@ -232,14 +183,11 @@ module Trigger
     end
 
     def extra_variables
-      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA (MR HEAD commit) so that the image is in sync with the assets and QA images.
-      source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
-
       {
         "TRIGGER_BRANCH" => ref,
-        "GITLAB_VERSION" => source_sha,
+        "GITLAB_VERSION" => ENV['CI_COMMIT_SHA'],
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'], # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
-        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : source_sha,
+        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_SHA'],
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
@@ -403,10 +351,9 @@ module Trigger
 
     def extra_variables
       {
-        # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
-        # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
         'GITLAB_COMMIT_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
-        'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN']
+        'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN'],
+        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
       }
     end
 
@@ -482,8 +429,6 @@ end
 
 if $0 == __FILE__
   case ARGV[0]
-  when 'omnibus'
-    Trigger::Omnibus.new.invoke!(downstream_job_name: 'Trigger:qa-test').wait!
   when 'cng'
     Trigger::CNG.new.invoke!.wait!
   when 'gitlab-com-database-testing'

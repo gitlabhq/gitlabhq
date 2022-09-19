@@ -30,10 +30,8 @@ RSpec.describe Ci::Processable do
       let_it_be(:downstream_project) { create(:project, :repository) }
 
       let_it_be_with_refind(:processable) do
-        create(
-          :ci_bridge, :success, pipeline: pipeline, downstream: downstream_project,
-          description: 'a trigger job', stage_id: stage.id
-        )
+        create(:ci_bridge, :success,
+          pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', stage_id: stage.id)
       end
 
       let(:clone_accessors) { ::Ci::Bridge.clone_accessors }
@@ -57,8 +55,7 @@ RSpec.describe Ci::Processable do
       let(:clone_accessors) { ::Ci::Build.clone_accessors.without(::Ci::Build.extra_accessors) }
 
       let(:reject_accessors) do
-        %i[id status user token_encrypted coverage trace runner
-           artifacts_expire_at
+        %i[id status user token_encrypted coverage runner artifacts_expire_at
            created_at updated_at started_at finished_at queued_at erased_by
            erased_at auto_canceled_by job_artifacts job_artifacts_archive
            job_artifacts_metadata job_artifacts_trace job_artifacts_junit
@@ -86,7 +83,7 @@ RSpec.describe Ci::Processable do
            resource resource_group_id processed security_scans author
            pipeline_id report_results pending_state pages_deployments
            queuing_entry runtime_metadata trace_metadata
-           dast_site_profile dast_scanner_profile].freeze
+           dast_site_profile dast_scanner_profile stage_id].freeze
       end
 
       before_all do
@@ -208,10 +205,11 @@ RSpec.describe Ci::Processable do
         let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
 
         let!(:processable) do
-          create(:ci_build, :with_deployment, environment: environment_name,
-                options: { environment: { name: environment_name } },
-                pipeline: pipeline, stage_id: stage.id, project: project,
-                user: other_developer)
+          create(:ci_build, :with_deployment,
+            environment: environment_name,
+            options: { environment: { name: environment_name } },
+            pipeline: pipeline, stage_id: stage.id, project: project,
+            user: other_developer)
         end
 
         it 're-uses the previous persisted environment' do

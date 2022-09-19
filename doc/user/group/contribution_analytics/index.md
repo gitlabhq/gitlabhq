@@ -19,7 +19,7 @@ group.
 
 To view Contribution Analytics:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Contribution**.
 
 ## Using Contribution Analytics

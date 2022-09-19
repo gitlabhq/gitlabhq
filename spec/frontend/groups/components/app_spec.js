@@ -40,7 +40,7 @@ describe('AppComponent', () => {
   const store = new GroupsStore({ hideProjects: false });
   const service = new GroupsService(mockEndpoint);
 
-  const createShallowComponent = ({ propsData = {}, provide = {} } = {}) => {
+  const createShallowComponent = ({ propsData = {} } = {}) => {
     store.state.pageInfo = mockPageInfo;
     wrapper = shallowMount(appComponent, {
       propsData: {
@@ -52,10 +52,6 @@ describe('AppComponent', () => {
       },
       mocks: {
         $toast,
-      },
-      provide: {
-        renderEmptyState: false,
-        ...provide,
       },
     });
     vm = wrapper.vm;
@@ -402,8 +398,7 @@ describe('AppComponent', () => {
         ({ action, groups, fromSearch, renderEmptyState, expected }) => {
           it(expected ? 'renders empty state' : 'does not render empty state', async () => {
             createShallowComponent({
-              propsData: { action },
-              provide: { renderEmptyState },
+              propsData: { action, renderEmptyState },
             });
 
             vm.updateGroups(groups, fromSearch);
@@ -420,7 +415,6 @@ describe('AppComponent', () => {
       it('renders legacy empty state', async () => {
         createShallowComponent({
           propsData: { action: 'subgroups_and_projects' },
-          provide: { renderEmptyState: false },
         });
 
         vm.updateGroups([], false);
@@ -481,7 +475,7 @@ describe('AppComponent', () => {
     it('should render loading icon', async () => {
       vm.isLoading = true;
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('should render groups tree', async () => {
@@ -494,7 +488,7 @@ describe('AppComponent', () => {
     it('renders modal confirmation dialog', () => {
       createShallowComponent();
 
-      const findGlModal = wrapper.find(GlModal);
+      const findGlModal = wrapper.findComponent(GlModal);
 
       expect(findGlModal.exists()).toBe(true);
       expect(findGlModal.attributes('title')).toBe('Are you sure?');

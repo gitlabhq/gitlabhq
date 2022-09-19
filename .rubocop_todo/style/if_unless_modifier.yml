@@ -652,6 +652,7 @@ Style/IfUnlessModifier:
     - 'ee/app/services/vulnerability_feedback/create_service.rb'
     - 'ee/app/services/vulnerability_feedback/destroy_service.rb'
     - 'ee/app/services/vulnerability_feedback_module/update_service.rb'
+    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/validators/host_validator.rb'
     - 'ee/app/validators/password/complexity_validator.rb'
     - 'ee/app/workers/app_sec/dast/profile_schedule_worker.rb'

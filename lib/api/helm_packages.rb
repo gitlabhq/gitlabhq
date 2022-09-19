@@ -67,7 +67,7 @@ module API
 
           track_package_event('pull_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace)
 
-          present_carrierwave_file!(package_file.file)
+          present_package_file!(package_file)
         end
 
         desc 'Authorize a chart upload from workhorse' do

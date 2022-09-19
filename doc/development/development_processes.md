@@ -67,7 +67,7 @@ Some changes affect more than one group. For example:
 
 - Changes to [code review guidelines](code_review.md).
 - Changes to [commit message guidelines](contributing/merge_request_workflow.md#commit-messages-guidelines).
-- Changes to guidelines in [feature flags in development of GitLab](feature_flags/).
+- Changes to guidelines in [feature flags in development of GitLab](feature_flags/index.md).
 - Changes to [feature flags documentation guidelines](documentation/feature_flags.md).
 
 In these cases, use the following workflow:

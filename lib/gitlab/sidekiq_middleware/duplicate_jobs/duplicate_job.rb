@@ -112,10 +112,12 @@ module Gitlab
         end
 
         def delete!
-          with_redis do |redis|
-            redis.multi do |multi|
-              multi.del(idempotency_key, deduplicated_flag_key)
-              delete_wal_locations!(multi)
+          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+            with_redis do |redis|
+              redis.multi do |multi|
+                multi.del(idempotency_key, deduplicated_flag_key)
+                delete_wal_locations!(multi)
+              end
             end
           end
         end

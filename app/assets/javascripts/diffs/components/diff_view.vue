@@ -9,7 +9,7 @@ import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
-import DiffCodeQuality from './diff_code_quality.vue';
+import DiffLine from './diff_line.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import DiffRow from './diff_row.vue';
 import { isHighlighted } from './diff_row_utils';
@@ -18,8 +18,8 @@ export default {
   components: {
     DiffExpansionCell,
     DiffRow,
+    DiffLine,
     DiffCommentCell,
-    DiffCodeQuality,
     DraftNote,
   },
   directives: {
@@ -96,10 +96,6 @@ export default {
       }
       this.idState.dragStart = line;
     },
-    parseCodeQuality(line) {
-      return (line.left ?? line.right)?.codequality;
-    },
-
     hideCodeQualityFindings(line) {
       const index = this.codeQualityExpandedLines.indexOf(line);
       if (index > -1) {
@@ -179,7 +175,7 @@ export default {
       );
     },
     getCodeQualityLine(line) {
-      return this.parseCodeQuality(line)?.[0]?.line;
+      return (line.left ?? line.right)?.codequality?.[0]?.line;
     },
   },
   userColorScheme: window.gon.user_color_scheme,
@@ -234,6 +230,7 @@ export default {
         :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
         :inline="inline"
         :index="index"
+        :code-quality-expanded="codeQualityExpandedLines.includes(getCodeQualityLine(line))"
         :is-highlighted="isHighlighted(line)"
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"
@@ -248,15 +245,13 @@ export default {
         @startdragging="onStartDragging"
         @stopdragging="onStopDragging"
       />
-
-      <diff-code-quality
+      <diff-line
         v-if="
           glFeatures.refactorCodeQualityInlineFindings &&
           codeQualityExpandedLines.includes(getCodeQualityLine(line))
         "
         :key="line.line_code"
-        :line="getCodeQualityLine(line)"
-        :code-quality="parseCodeQuality(line)"
+        :line="line"
         @hideCodeQualityFindings="hideCodeQualityFindings"
       />
       <div

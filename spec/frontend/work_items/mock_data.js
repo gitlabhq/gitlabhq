@@ -28,6 +28,11 @@ export const workItemQueryResponse = {
       confidential: false,
       createdAt: '2022-08-03T12:41:54Z',
       closedAt: null,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -93,6 +98,11 @@ export const updateWorkItemMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -128,6 +138,16 @@ export const updateWorkItemMutationResponse = {
   },
 };
 
+export const updateWorkItemMutationErrorResponse = {
+  data: {
+    workItemUpdate: {
+      __typename: 'WorkItemUpdatePayload',
+      errors: ['Error!'],
+      workItem: {},
+    },
+  },
+};
+
 export const mockParent = {
   parent: {
     id: 'gid://gitlab/Issue/1',
@@ -142,6 +162,7 @@ export const workItemResponseFactory = ({
   canDelete = false,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
+  datesWidgetPresent = true,
   weightWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
@@ -157,6 +178,11 @@ export const workItemResponseFactory = ({
       confidential,
       createdAt: '2022-08-03T12:41:54Z',
       closedAt: null,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -186,6 +212,14 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
+        datesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetStartAndDueDate',
+              type: 'START_AND_DUE_DATE',
+              dueDate: '2022-12-31',
+              startDate: '2022-01-01',
+            }
+          : { type: 'MOCK TYPE' },
         weightWidgetPresent
           ? {
               __typename: 'WorkItemWidgetWeight',
@@ -211,17 +245,6 @@ export const workItemResponseFactory = ({
     },
   },
 });
-
-export const updateWorkItemWidgetsResponse = {
-  data: {
-    workItemUpdateWidgets: {
-      workItem: {
-        id: 1234,
-      },
-      errors: [],
-    },
-  },
-};
 
 export const projectWorkItemTypesQueryResponse = {
   data: {
@@ -251,6 +274,11 @@ export const createWorkItemMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -282,6 +310,11 @@ export const createWorkItemFromTaskMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -310,6 +343,11 @@ export const createWorkItemFromTaskMutationResponse = {
         closedAt: null,
         description: '',
         confidential: false,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -368,11 +406,40 @@ export const deleteWorkItemFromTaskMutationErrorResponse = {
   },
 };
 
+export const workItemDatesSubscriptionResponse = {
+  data: {
+    issuableDatesUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+          dueDate: '2022-12-31',
+          startDate: '2022-01-01',
+        },
+      ],
+    },
+  },
+};
+
 export const workItemTitleSubscriptionResponse = {
   data: {
     issuableTitleUpdated: {
       id: 'gid://gitlab/WorkItem/1',
       title: 'new title',
+    },
+  },
+};
+
+export const workItemWeightSubscriptionResponse = {
+  data: {
+    issuableWeightUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetWeight',
+          weight: 1,
+        },
+      ],
     },
   },
 };
@@ -388,6 +455,11 @@ export const workItemHierarchyEmptyResponse = {
       title: 'New title',
       createdAt: '2022-08-03T12:41:54Z',
       closedAt: null,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
@@ -426,6 +498,11 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         deleteWorkItem: false,
         updateWorkItem: false,
       },
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       confidential: false,
       widgets: [
         {
@@ -461,6 +538,48 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
   },
 };
 
+export const workItemTask = {
+  id: 'gid://gitlab/WorkItem/4',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    __typename: 'WorkItemType',
+  },
+  title: 'bar',
+  state: 'OPEN',
+  confidential: false,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  __typename: 'WorkItem',
+};
+
+export const confidentialWorkItemTask = {
+  id: 'gid://gitlab/WorkItem/2',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    __typename: 'WorkItemType',
+  },
+  title: 'xyz',
+  state: 'OPEN',
+  confidential: true,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  __typename: 'WorkItem',
+};
+
+export const closedWorkItemTask = {
+  id: 'gid://gitlab/WorkItem/3',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    __typename: 'WorkItemType',
+  },
+  title: 'abc',
+  state: 'CLOSED',
+  confidential: false,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: '2022-08-12T13:07:52Z',
+  __typename: 'WorkItem',
+};
+
 export const workItemHierarchyResponse = {
   data: {
     workItem: {
@@ -475,6 +594,11 @@ export const workItemHierarchyResponse = {
         updateWorkItem: true,
       },
       confidential: false,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
       widgets: [
         {
           type: 'DESCRIPTION',
@@ -485,45 +609,9 @@ export const workItemHierarchyResponse = {
           parent: null,
           children: {
             nodes: [
-              {
-                id: 'gid://gitlab/WorkItem/2',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
-                  __typename: 'WorkItemType',
-                },
-                title: 'xyz',
-                state: 'OPEN',
-                confidential: true,
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                __typename: 'WorkItem',
-              },
-              {
-                id: 'gid://gitlab/WorkItem/3',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
-                  __typename: 'WorkItemType',
-                },
-                title: 'abc',
-                state: 'CLOSED',
-                confidential: false,
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: '2022-08-12T13:07:52Z',
-                __typename: 'WorkItem',
-              },
-              {
-                id: 'gid://gitlab/WorkItem/4',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
-                  __typename: 'WorkItemType',
-                },
-                title: 'bar',
-                state: 'OPEN',
-                confidential: false,
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                __typename: 'WorkItem',
-              },
+              confidentialWorkItemTask,
+              closedWorkItemTask,
+              workItemTask,
               {
                 id: 'gid://gitlab/WorkItem/5',
                 workItemType: {
@@ -570,6 +658,11 @@ export const changeWorkItemParentMutationResponse = {
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+        },
         widgets: [
           {
             __typename: 'WorkItemWidgetHierarchy',
@@ -649,6 +742,71 @@ export const projectMembersResponseWithCurrentUser = {
             },
           },
         ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+          startCursor: null,
+        },
+      },
+    },
+  },
+};
+
+export const projectMembersResponseWithCurrentUserWithNextPage = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      users: {
+        nodes: [
+          {
+            id: 'user-2',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/5',
+              avatarUrl: '/avatar2',
+              name: 'rookie',
+              username: 'rookie',
+              webUrl: 'rookie',
+              status: null,
+            },
+          },
+          {
+            id: 'user-1',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/1',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+              name: 'Administrator',
+              username: 'root',
+              webUrl: '/root',
+              status: null,
+            },
+          },
+        ],
+        pageInfo: {
+          hasNextPage: true,
+          endCursor: 'endCursor',
+          startCursor: 'startCursor',
+        },
+      },
+    },
+  },
+};
+
+export const projectMembersResponseWithNoMatchingUsers = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      users: {
+        nodes: [],
+        pageInfo: {
+          endCursor: null,
+          hasNextPage: false,
+          startCursor: null,
+        },
       },
     },
   },

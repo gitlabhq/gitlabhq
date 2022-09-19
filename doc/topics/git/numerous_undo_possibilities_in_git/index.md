@@ -209,7 +209,7 @@ To recover from multiple incorrect commits:
 The commits are now `A-B-C-D-E`.
 
 Alternatively, with GitLab,
-you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-commit)
+you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
 that commit into a new merge request.
 
 NOTE:

@@ -28,7 +28,7 @@ Prerequisite:
 
 To enable import and export for a group:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
@@ -44,6 +44,7 @@ be imported into the desired group structure.
 - If imported into a parent group, a subgroup inherits the same level of visibility unless otherwise restricted.
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
 sure these users exist before importing the desired groups.
+- Users must set a public email in the source GitLab instance that matches one of their verified emails in the target GitLab instance.
 
 ### Exported contents
 
@@ -55,6 +56,7 @@ The following items are exported:
 - Badges
 - Subgroups (including all the aforementioned data)
 - Epics
+  - Epic resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
 - Events
 - [Wikis](../../project/wiki/group.md)
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)
@@ -77,7 +79,7 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. In the **Advanced** section, select **Export Group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)

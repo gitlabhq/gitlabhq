@@ -4,7 +4,7 @@ require 'airborne'
 
 module QA
   RSpec.describe 'Create' do
-    describe 'API basics' do
+    describe 'API basics', product_group: :source_code do
       before(:context) do
         @api_client = Runtime::API::Client.new(:gitlab)
       end

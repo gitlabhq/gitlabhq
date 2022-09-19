@@ -40,16 +40,16 @@ describe('Incidents List', () => {
     all: 26,
   };
 
-  const findTable = () => wrapper.find(GlTable);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findTableRows = () => wrapper.findAll('table tbody tr');
-  const findAlert = () => wrapper.find(GlAlert);
-  const findLoader = () => wrapper.find(GlLoadingIcon);
-  const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findLoader = () => wrapper.findComponent(GlLoadingIcon);
+  const findTimeAgo = () => wrapper.findAllComponents(TimeAgoTooltip);
   const findAssignees = () => wrapper.findAll('[data-testid="incident-assignees"]');
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
-  const findEmptyState = () => wrapper.find(GlEmptyState);
-  const findSeverity = () => wrapper.findAll(SeverityToken);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findSeverity = () => wrapper.findAllComponents(SeverityToken);
   const findEscalationStatus = () => wrapper.findAll('[data-testid="incident-escalation-status"]');
   const findIncidentLink = () => wrapper.findByTestId('incident-link');
 
@@ -179,7 +179,7 @@ describe('Incidents List', () => {
       });
 
       it('renders an avatar component when there is an assignee', () => {
-        const avatar = findAssignees().at(1).find(GlAvatar);
+        const avatar = findAssignees().at(1).findComponent(GlAvatar);
         const { src, label } = avatar.attributes();
         const { name, avatarUrl } = mockIncidents[1].assignees.nodes[0];
 

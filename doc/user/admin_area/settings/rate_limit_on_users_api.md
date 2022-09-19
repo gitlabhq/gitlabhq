@@ -13,7 +13,7 @@ You can configure the per user rate limit for requests to [Users API](../../../a
 
 To change the rate limit:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Users API rate limit**.
 1. In the **Maximum requests per 10 minutes** text box, enter the new value.

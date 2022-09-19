@@ -33,7 +33,7 @@ Consider this list a best effort. The full list can be found in [`app/components
 
 #### Alert
 
-The `Pajamas::AlertComponent` follows the [Pajamas Alert](https://design.gitlab.com/components/alert) specification.
+The `Pajamas::AlertComponent` follows the [Pajamas Alert](https://design.gitlab.com/components/alert/) specification.
 
 **Examples:**
 
@@ -57,7 +57,7 @@ For the full list of options, see its
 
 #### Banner
 
-The `Pajamas::BannerComponent` follows the [Pajamas Banner](https://design.gitlab.com/components/banner) specification.
+The `Pajamas::BannerComponent` follows the [Pajamas Banner](https://design.gitlab.com/components/banner/) specification.
 
 **Examples:**
 
@@ -88,7 +88,7 @@ For the full list of options, see its
 
 #### Button
 
-The `Pajamas::ButtonComponent` follows the [Pajamas Button](https://design.gitlab.com/components/button) specification.
+The `Pajamas::ButtonComponent` follows the [Pajamas Button](https://design.gitlab.com/components/button/) specification.
 
 **Examples:**
 
@@ -125,7 +125,7 @@ For the full list of options, see its
 
 #### Card
 
-The `Pajamas::CardComponent` follows the [Pajamas Card](https://design.gitlab.com/components/card) specification.
+The `Pajamas::CardComponent` follows the [Pajamas Card](https://design.gitlab.com/components/card/) specification.
 
 **Examples:**
 
@@ -188,7 +188,7 @@ For the full list of options, see its
 
 #### Toggle
 
-The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle) specification.
+The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle/) specification.
 
 ```haml
 = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
@@ -205,7 +205,34 @@ To actually initialize this component, make sure to call the `initToggle` helper
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/toggle_component.rb).
 
-### Best practices
+## Layouts
+
+Layout components can be used to create common layout patterns used in GitLab.
+
+### Available components
+
+#### Horizontal section
+
+Many of the settings pages use a layout where the title and description are on the left and the settings fields are on the right. The `Layouts::HorizontalSectionComponent` can be used to create this layout.
+
+**Example:**
+
+```haml
+= render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-mb-6' }) do |c|
+  = c.title { _('Naming, visibility') }
+  = c.description do
+    = _('Update your group name, description, avatar, and visibility.')
+    = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+  = c.body do
+    .form-group.gl-form-group
+      = f.label :name, _('New group name')
+      = f.text_field :name
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/horizontal_section_component.rb).
+
+## Best practices
 
 - If you are about to create a new view in Haml, use the available components
   over creating plain Haml tags with CSS classes.

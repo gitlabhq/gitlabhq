@@ -90,7 +90,7 @@ describe('ProfilePreferences component', () => {
 
   it('should not render Integrations section', () => {
     wrapper = createComponent();
-    const views = wrapper.findAll(IntegrationView);
+    const views = wrapper.findAllComponents(IntegrationView);
     const divider = findIntegrationsDivider();
     const heading = findIntegrationsHeading();
 
@@ -103,7 +103,7 @@ describe('ProfilePreferences component', () => {
     wrapper = createComponent({ provide: { integrationViews } });
     const divider = findIntegrationsDivider();
     const heading = findIntegrationsHeading();
-    const views = wrapper.findAll(IntegrationView);
+    const views = wrapper.findAllComponents(IntegrationView);
 
     expect(divider.exists()).toBe(true);
     expect(heading.exists()).toBe(true);

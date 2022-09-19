@@ -83,4 +83,6 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
 
 1. Save the configuration file.
 
-1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
+1. For the changes to take effect:
+   - If you installed via Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - If you installed from source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).

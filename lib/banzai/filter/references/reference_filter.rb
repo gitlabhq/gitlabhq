@@ -15,6 +15,8 @@ module Banzai
         include RequestStoreReferenceCache
         include OutputSafety
 
+        REFERENCE_TYPE_DATA_ATTRIBUTE = 'data-reference-type='
+
         class << self
           # Implement in child class
           # Example: self.reference_type = :merge_request
@@ -132,13 +134,19 @@ module Banzai
         def data_attribute(attributes = {})
           attributes = attributes.reject { |_, v| v.nil? }
 
-          attributes[:reference_type] ||= self.class.reference_type
+          # "data-reference-type=" attribute got moved into a constant because we need
+          # to use it on ReferenceRewriter class to detect if the markdown contains any reference
+          reference_type_attribute = "#{REFERENCE_TYPE_DATA_ATTRIBUTE}#{escape_once(self.class.reference_type)} "
+
           attributes[:container] ||= 'body'
           attributes[:placement] ||= 'top'
           attributes.delete(:original) if context[:no_original_data]
+
           attributes.map do |key, value|
             %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
-          end.join(' ')
+          end
+            .join(' ')
+            .prepend(reference_type_attribute)
         end
 
         def ignore_ancestor_query

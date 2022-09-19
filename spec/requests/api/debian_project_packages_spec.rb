@@ -36,11 +36,41 @@ RSpec.describe API::DebianProjectPackages do
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
     end
 
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+    end
+
+    describe 'GET projects/:id/packages/debian/dists/*distribution/source/Sources' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/Sources" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Sources file/
+    end
+
+    describe 'GET projects/:id/packages/debian/dists/*distribution/source/by-hash/SHA256/:file_sha256' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/by-hash/SHA256/#{component_file_sources_older_sha256.file_sha256}" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+    end
+
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
+    end
+
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{component_file_di_older_sha256.file_sha256}" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+    end
+
     describe 'GET projects/:id/packages/debian/pool/:codename/:letter/:package_name/:package_version/:file_name' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:url) { "/projects/#{container.id}/packages/debian/pool/#{package.debian_distribution.codename}/#{letter}/#{package.name}/#{package.version}/#{file_name}" }
       let(:file_name) { params[:file_name] }
-
-      using RSpec::Parameterized::TableSyntax
 
       where(:file_name, :success_body) do
         'sample_1.2.3~alpha2.tar.xz'          | /^.7zXZ/
@@ -53,6 +83,12 @@ RSpec.describe API::DebianProjectPackages do
 
       with_them do
         it_behaves_like 'Debian packages read endpoint', 'GET', :success, params[:success_body]
+
+        context 'for bumping last downloaded at' do
+          include_context 'Debian repository access', :public, :developer, :basic do
+            it_behaves_like 'bumping the package last downloaded at field'
+          end
+        end
       end
     end
 

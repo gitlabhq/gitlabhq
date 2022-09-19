@@ -174,7 +174,7 @@ RSpec.describe Gitlab::Utils do
     {
       'TEST' => 'test',
       'project_with_underscores' => 'project-with-underscores',
-      'namespace/project' =>  'namespace-project',
+      'namespace/project' => 'namespace-project',
       'a' * 70 => 'a' * 63,
       'test_trailing_' => 'test-trailing'
     }.each do |original, expected|

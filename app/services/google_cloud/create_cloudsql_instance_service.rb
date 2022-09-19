@@ -11,7 +11,7 @@ module GoogleCloud
       trigger_instance_setup_worker
       success
     rescue Google::Apis::Error => err
-      error(err.to_json)
+      error(err.message)
     end
 
     private

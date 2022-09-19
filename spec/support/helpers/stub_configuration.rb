@@ -104,6 +104,10 @@ module StubConfiguration
       .to receive(:sentry_clientside_dsn) { clientside_dsn }
   end
 
+  def stub_microsoft_graph_mailer_setting(messages)
+    allow(Gitlab.config.microsoft_graph_mailer).to receive_messages(to_settings(messages))
+  end
+
   def stub_kerberos_setting(messages)
     allow(Gitlab.config.kerberos).to receive_messages(to_settings(messages))
   end

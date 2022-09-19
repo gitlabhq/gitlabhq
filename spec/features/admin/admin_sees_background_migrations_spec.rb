@@ -189,7 +189,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
     visit admin_background_migrations_path
 
     within '#content-body' do
-      expect(page).to have_link('Learn more', href: help_page_path('development/database/batched_background_migrations'))
+      expect(page).to have_link('Learn more', href: help_page_path('user/admin_area/monitoring/background_migrations'))
     end
   end
 

@@ -263,22 +263,6 @@ module QA
         ENV['GITLAB_QA_PASSWORD_6']
       end
 
-      def gitlab_qa_1p_email
-        ENV['GITLAB_QA_1P_EMAIL']
-      end
-
-      def gitlab_qa_1p_password
-        ENV['GITLAB_QA_1P_PASSWORD']
-      end
-
-      def gitlab_qa_1p_secret
-        ENV['GITLAB_QA_1P_SECRET']
-      end
-
-      def gitlab_qa_1p_github_uuid
-        ENV['GITLAB_QA_1P_GITHUB_UUID']
-      end
-
       def jira_admin_username
         ENV['JIRA_ADMIN_USERNAME']
       end
@@ -494,6 +478,10 @@ module QA
 
       def use_public_ip_api?
         enabled?(ENV['QA_USE_PUBLIC_IP_API'], default: false)
+      end
+
+      def chrome_default_download_path
+        ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
       end
 
       private

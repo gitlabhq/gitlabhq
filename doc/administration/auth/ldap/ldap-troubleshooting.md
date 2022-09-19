@@ -5,7 +5,9 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# LDAP Troubleshooting for Administrators **(FREE SELF)**
+# Troubleshooting LDAP **(FREE SELF)**
+
+If you are an administrator, use the following information to troubleshoot LDAP.
 
 ## Common Problems & Workflows
 
@@ -165,7 +167,7 @@ may see the following message: `Access denied for your LDAP account`.
 
 We have a workaround, based on toggling the access level of affected users:
 
-1. As an administrator, on the top bar, select **Menu > Admin**.
+1. As an administrator, on the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the name of the affected user.
 1. In the user's administrative page, press **Edit** on the top right of the page.
@@ -210,7 +212,7 @@ This shows you which user has this email address. One of two steps must be taken
   remove this email as a secondary email and make it a primary one so GitLab
   associates this profile to the LDAP identity.
 
-The user can do either of these steps 
+The user can do either of these steps
 [in their profile](../../../user/profile/index.md#access-your-user-profile) or an administrator can do it.
 
 #### Projects limit errors
@@ -223,7 +225,7 @@ field contains no data:
 
 To resolve this:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, go to **Settings > General**.
 1. Expand both of the following:
    - **Account and limit**.
@@ -366,7 +368,7 @@ things to debug the situation.
 - Ensure the correct [LDAP group link is added to the GitLab group](ldap_synchronization.md#add-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. On the top bar, select **Menu > Admin**.
+  1. On the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Overview > Users**.
   1. Search for the user.
   1. Open the user by selecting their name. Do not select **Edit**.
@@ -411,6 +413,63 @@ If all the above are true and the users are still not getting access,
 [look through the output](#example-console-output-after-a-group-sync) to see what happens when
 GitLab syncs the `admin_group`.
 
+#### Sync now button stuck in the UI
+
+The **Sync now** button on the **Group > Members** page of a group can become stuck. The button becomes stuck after it is pressed and the page is reloaded. The button then
+cannot be selected again.
+
+The **Sync now** button can become stuck for many reasons and requires debugging for specific cases. The following are two possible causes and possible solutions to the problem.
+
+##### Invalid memberships
+
+The **Sync now** button becomes stuck if some of the group's members or requesting members are invalid. You can track progress on improving the visibility of this problem in
+a [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348226). You can use a [Rails console](#rails-console) to confirm if this problem is causing the **Sync now**
+button to be stuck:
+
+```ruby
+# Find the group in question
+group = Group.find_by(name: 'my_gitlab_group')
+
+# Look for errors on the Group itself
+group.valid?
+group.errors.map(&:full_messages)
+
+# Look for errors among the group's members and requesters
+group.requesters.map(&:valid?)
+group.requesters.map(&:errors).map(&:full_messages)
+group.members.map(&:valid?)
+group.members.map(&:errors).map(&:full_messages)
+```
+
+A displayed error can identify the problem and point to a solution. For example, the Support Team has seen the following error:
+
+```ruby
+irb(main):018:0> group.members.map(&:errors).map(&:full_messages)
+=> [["The member's email address is not allowed for this group. Go to the group’s &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
+```
+
+This error showed that an Administrator chose to [restrict group membership by email domain](../../../user/group/access_and_permissions.md#restrict-group-access-by-domain),
+but there was a typo in the domain. After the domain setting was fixed, the **Sync now** button functioned again.
+
+##### Missing LDAP configuration on Sidekiq nodes
+
+The **Sync now** button becomes stuck when GitLab is scaled over multiple nodes and the LDAP configuration is missing from
+[the `/etc/gitlab/gitlab.rb` on the nodes running Sidekiq](../../sidekiq/index.md#configure-ldap-and-user-or-group-synchronization).
+In this case, the Sidekiq jobs seem to disappear.
+
+LDAP is required on the Sidekiq nodes because LDAP has multiple jobs that are
+run asynchronously that require a local LDAP configuration:
+
+- [User sync](ldap_synchronization.md#user-sync).
+- [Group sync](ldap_synchronization.md#group-sync).
+
+You can test whether missing LDAP configuration is the problem by running [the Rake task to check LDAP](#ldap-check)
+on each node that is running Sidekiq. If LDAP is set up correctly on this node, it connects to the LDAP server and returns users.
+
+To solve this issue, [configure LDAP](../../sidekiq/index.md#configure-ldap-and-user-or-group-synchronization) on the Sidekiq nodes.
+When configured, run [the Rake task to check LDAP](#ldap-check) to confirm
+that the GitLab node can connect to LDAP.
+
 #### Sync all groups
 
 NOTE:
@@ -430,7 +489,7 @@ Next, [learn how to read the output](#example-console-output-after-a-group-sync)
 
 ##### Example console output after a group sync
 
-Like the output from the user sync, the output from the 
+Like the output from the user sync, the output from the
 [manual group sync](#sync-all-groups) is also very verbose. However, it contains lots
 of helpful information.
 
@@ -599,6 +658,66 @@ end
 
 You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
 for each of these users.
+
+## Could not authenticate you from ldapmain because "Unknown provider"
+
+You can receive the following error when authenticating with an LDAP server:
+
+```plaintext
+Could not authenticate you from Ldapmain because "Unknown provider (ldapsecondary). available providers: ["ldapmain"]".
+```
+
+This error is caused when using an account that previously authenticated with an LDAP server that is renamed or removed from your GitLab configuration. For example:
+
+- Initially, `main` and `secondary` are set in `ldap_servers` in GitLab configuration.
+- The `secondary` setting is removed or renamed to `main`.
+- A user attempting to sign in has an `identify` record for `secondary`, but that is no longer configured.
+
+Use the [Rails console](../../operations/rails_console.md) to list affected users and check what LDAP servers they have identities for:
+
+```ruby
+ldap_identities = Identity.where(provider: "ldapsecondary")
+ldap_identities.each do |identity|
+  u=User.find_by_id(identity.user_id)
+  ui=Identity.where(user_id: identity.user_id)
+  puts "user: #{u.username}\n   #{u.email}\n   last activity: #{u.last_activity_on}\n   #{identity.provider} ID: #{identity.id} external: #{identity.extern_uid}"
+  puts "   all identities:"
+  ui.each do |alli|
+    puts "    - #{alli.provider} ID: #{alli.id} external: #{alli.extern_uid}"
+  end
+end;nil
+```
+
+You can solve this error in two ways.
+
+### Rename references to the LDAP server
+
+This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server. For example, if a
+load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
+
+NOTE:
+If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
+
+To [rename references to the LDAP server](../../raketasks/ldap.md#other-options) that is no longer configured, run:
+
+```shell
+sudo gitlab-rake gitlab:ldap:rename_provider[ldapsecondary,ldapmain]
+```
+
+### Remove the `identity` records that relate to the removed LDAP server
+
+With this solution, affected users can sign in with the configured LDAP servers and a new `identity` record is created by GitLab. In a
+[Rails console](../../operations/rails_console.md), delete the `ldapsecondary` identities:
+
+```ruby
+ldap_identities = Identity.where(provider: "ldapsecondary")
+ldap_identities.each do |identity|
+  puts "Destroying identity: #{identity.id} #{identity.provider}: #{identity.extern_uid}"
+  identity.destroy!
+rescue => e
+  puts 'Error generated when destroying identity:\n ' + e.to_s
+end; nil
+```
 
 ## Expired license causes errors with multiple LDAP servers
 

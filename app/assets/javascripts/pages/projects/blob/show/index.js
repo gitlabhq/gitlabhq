@@ -9,7 +9,7 @@ import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
@@ -64,7 +64,7 @@ if (statusLink) {
   new Vue({
     el: CommitPipelineStatusEl,
     components: {
-      commitPipelineStatus,
+      CommitPipelineStatus,
     },
     render(createElement) {
       return createElement('commit-pipeline-status', {

@@ -28,9 +28,6 @@ module Issues
       return if issue.relative_position.nil?
       return if NO_REBALANCING_NEEDED.cover?(issue.relative_position)
 
-      gates = [issue.project, issue.project.group].compact
-      return unless gates.any? { |gate| Feature.enabled?(:rebalance_issues, gate) }
-
       Issues::RebalancingWorker.perform_async(nil, *issue.project.self_or_root_group_ids)
     end
 

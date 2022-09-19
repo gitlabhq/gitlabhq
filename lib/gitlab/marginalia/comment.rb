@@ -31,7 +31,7 @@ module Gitlab
         if job.is_a?(ActionMailer::MailDeliveryJob)
           {
             "class" => job.arguments.first,
-            "jid"   => job.job_id
+            "jid" => job.job_id
           }
         else
           job

@@ -151,9 +151,8 @@ RSpec.describe Ci::JobArtifacts::CreateService do
 
           expect { subject }.not_to change { Ci::JobArtifact.count }
           expect(subject).to match(
-            a_hash_including(http_status: :bad_request,
-              message: 'another artifact of the same type already exists',
-              status: :error))
+            a_hash_including(
+              http_status: :bad_request, message: 'another artifact of the same type already exists', status: :error))
         end
       end
     end
@@ -179,6 +178,18 @@ RSpec.describe Ci::JobArtifacts::CreateService do
         expect(job.job_variables.as_json(only: [:key, :value, :source])).to contain_exactly(
           hash_including('key' => 'KEY1', 'value' => 'VAR1', 'source' => 'dotenv'),
           hash_including('key' => 'KEY2', 'value' => 'VAR2', 'source' => 'dotenv'))
+      end
+    end
+
+    context 'with job partitioning' do
+      let(:job) { create(:ci_build, project: project, partition_id: 123) }
+
+      it 'sets partition_id on artifacts' do
+        expect { subject }.to change { Ci::JobArtifact.count }
+
+        artifacts_partitions = job.job_artifacts.map(&:partition_id).uniq
+
+        expect(artifacts_partitions).to eq([123])
       end
     end
 

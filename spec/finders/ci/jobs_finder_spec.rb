@@ -56,7 +56,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
 
     context 'scope is an array' do
       let(:jobs) { [pending_job, running_job, successful_job, canceled_job] }
-      let(:params) {{ scope: %w'running success' }}
+      let(:params) { { scope: %w'running success' } }
 
       it 'filters by the job statuses in the scope' do
         expect(subject).to contain_exactly(running_job, successful_job)

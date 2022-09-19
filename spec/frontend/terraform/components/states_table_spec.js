@@ -134,7 +134,7 @@ describe('StatesTable', () => {
     await nextTick();
   };
 
-  const findActions = () => wrapper.findAll(StateActions);
+  const findActions = () => wrapper.findAllComponents(StateActions);
 
   beforeEach(() => {
     return createComponent();

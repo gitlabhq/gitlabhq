@@ -246,9 +246,7 @@ export default {
             </p>
             <p class="gl-m-0">
               <span data-testid="vsa-stage-event-build-author-and-date">
-                <gl-link class="gl-text-black-normal build-date" :href="item.url">{{
-                  item.date
-                }}</gl-link>
+                <gl-link class="gl-text-black-normal" :href="item.url">{{ item.date }}</gl-link>
                 {{ s__('ByAuthor|by') }}
                 <gl-link
                   class="gl-text-black-normal issue-author-link"

@@ -65,7 +65,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
       add_pagination_headers(tokens)
     end
 
-    ::API::Entities::PersonalAccessTokenWithDetails.represent(tokens)
+    ::PersonalAccessTokenSerializer.new.represent(tokens)
   end
 
   def add_pagination_headers(relation)

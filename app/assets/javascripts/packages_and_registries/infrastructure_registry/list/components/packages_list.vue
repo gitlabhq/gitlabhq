@@ -98,7 +98,7 @@ export default {
     </div>
 
     <template v-else>
-      <div data-qa-selector="packages-table">
+      <div data-testid="packages-table">
         <packages-list-row
           v-for="packageEntity in list"
           :key="packageEntity.id"

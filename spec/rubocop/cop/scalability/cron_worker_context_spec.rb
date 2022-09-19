@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/cron_worker_context'
 
 RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext do
-  subject(:cop) { described_class.new }
-
   it 'adds an offense when including CronjobQueue' do
     expect_offense(<<~CODE)
       class SomeWorker

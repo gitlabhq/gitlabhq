@@ -64,7 +64,7 @@ RSpec.shared_examples 'latest successful build for sha or ref' do
   context 'with build belonging to a child pipeline' do
     let(:child_pipeline) { create_pipeline(project) }
     let(:parent_bridge) { create(:ci_bridge, pipeline: pipeline, project: pipeline.project) }
-    let!(:pipeline_source) { create(:ci_sources_pipeline, source_job: parent_bridge, pipeline: child_pipeline)}
+    let!(:pipeline_source) { create(:ci_sources_pipeline, source_job: parent_bridge, pipeline: child_pipeline) }
     let!(:child_build) { create_build(child_pipeline, 'child-build') }
     let(:build_name) { child_build.name }
 

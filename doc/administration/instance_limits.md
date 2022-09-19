@@ -158,12 +158,18 @@ Set the limit to `0` to disable it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
 
-This setting limits global search requests.
+This setting limits global search requests as follows:
 
 | Limit                   | Default (requests per minute) |
 |-------------------------|-------------------------------|
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
+
+Depending on the number of enabled [scopes](../user/search/advanced_search.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
+
+```plaintext
+This endpoint has been requested too many times. Try again later.
+```
 
 ### Pipeline creation rate limit
 
@@ -581,7 +587,7 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 The total number of instance level CI/CD variables is limited at the instance level.
 This limit is checked each time a new instance level variable is created. If a new variable
-would cause the total number of variables to exceed the limit, the new variable is created.
+would cause the total number of variables to exceed the limit, the new variable is not created.
 
 On self-managed instances this limit is defined for the `default` plan. By default,
 this limit is set to `25`.
@@ -648,7 +654,7 @@ installation, run the following in the [GitLab Rails console](operations/rails_c
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
 
-### Number of files per GitLab Pages web-site
+### Number of files per GitLab Pages website
 
 The total number of file entries (including directories and symlinks) is limited to `200,000` per
 GitLab Pages website.
@@ -662,6 +668,14 @@ For example, to change the limit to `100`:
 ```ruby
 Plan.default.actual_limits.update!(pages_file_entries: 100)
 ```
+
+### Number of custom domains per GitLab Pages website
+
+The total number of custom domains per GitLab Pages website is limited to `150` for [GitLab SaaS](../subscriptions/gitlab_com/index.md).
+
+The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
+To set a limit on your self-managed instance, use the
+[Admin Area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 
 ### Number of registered runners per scope
 
@@ -736,7 +750,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 - To update the maximum YAML size, update `max_yaml_size_bytes` with the new value in megabytes:
 
   ```ruby
-  ApplicationSetting.update!(max_yaml_size_bytes: 2.megabytes)
+  ApplicationSetting.update(max_yaml_size_bytes: 2.megabytes)
   ```
 
   The `max_yaml_size_bytes` value is not directly tied to the size of the YAML file,
@@ -745,7 +759,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 - To update the maximum YAML depth, update `max_yaml_depth` with the new value in megabytes:
 
   ```ruby
-  ApplicationSetting.update!(max_yaml_depth: 125)
+  ApplicationSetting.update(max_yaml_depth: 125)
   ```
 
 ### Limit dotenv variables

@@ -164,8 +164,7 @@ describe('IssuableEditForm', () => {
         const titleInputEl = wrapper.findComponent(GlFormInput);
 
         titleInputEl.vm.$emit('keydown', eventObj, 'title');
-
-        expect(wrapper.emitted('keydown-title')).toBeTruthy();
+        expect(wrapper.emitted('keydown-title')).toHaveLength(1);
         expect(wrapper.emitted('keydown-title')[0]).toMatchObject([
           eventObj,
           {
@@ -179,8 +178,7 @@ describe('IssuableEditForm', () => {
         const descriptionInputEl = wrapper.find('[data-testid="description"] textarea');
 
         descriptionInputEl.trigger('keydown', eventObj, 'description');
-
-        expect(wrapper.emitted('keydown-description')).toBeTruthy();
+        expect(wrapper.emitted('keydown-description')).toHaveLength(1);
         expect(wrapper.emitted('keydown-description')[0]).toMatchObject([
           eventObj,
           {

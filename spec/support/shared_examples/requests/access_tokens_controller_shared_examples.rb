@@ -108,18 +108,31 @@ RSpec.shared_examples 'PUT resource access tokens available' do
     expect(resource.reload.bots).not_to include(bot_user)
   end
 
-  it 'converts issuables of the bot user to ghost user' do
-    issue = create(:issue, author: bot_user)
-
-    subject
-
-    expect(issue.reload.author.ghost?).to be true
+  context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+    it 'creates GhostUserMigration records to handle migration in a worker' do
+      expect { subject }.to(
+        change { Users::GhostUserMigration.count }.from(0).to(1))
+    end
   end
 
-  it 'deletes project bot user' do
-    subject
+  context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+    before do
+      stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+    end
 
-    expect(User.exists?(bot_user.id)).to be_falsy
+    it 'converts issuables of the bot user to ghost user' do
+      issue = create(:issue, author: bot_user)
+
+      subject
+
+      expect(issue.reload.author.ghost?).to be true
+    end
+
+    it 'deletes project bot user' do
+      subject
+
+      expect(User.exists?(bot_user.id)).to be_falsy
+    end
   end
 
   context 'when unsuccessful' do

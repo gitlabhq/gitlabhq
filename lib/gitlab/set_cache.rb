@@ -33,10 +33,10 @@ module Gitlab
 
     def write(key, value)
       with do |redis|
-        redis.pipelined do
-          redis.sadd(cache_key(key), value)
+        redis.pipelined do |pipeline|
+          pipeline.sadd(cache_key(key), value)
 
-          redis.expire(cache_key(key), expires_in)
+          pipeline.expire(cache_key(key), expires_in)
         end
       end
 
@@ -57,9 +57,9 @@ module Gitlab
       full_key = cache_key(key)
 
       with do |redis|
-        redis.multi do
-          redis.sismember(full_key, value)
-          redis.exists(full_key)
+        redis.multi do |multi|
+          multi.sismember(full_key, value)
+          multi.exists(full_key)
         end
       end
     end

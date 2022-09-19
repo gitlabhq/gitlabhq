@@ -195,33 +195,13 @@ RSpec.describe Trigger do
           end
         end
 
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
+        context 'when CI_COMMIT_SHA is set' do
           before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
-          end
-
-          it 'sets TOP_UPSTREAM_SOURCE_SHA to ci_merge_request_source_branch_sha' do
-            expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq('ci_merge_request_source_branch_sha')
-          end
-        end
-
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', '')
+            stub_env('CI_COMMIT_SHA', 'ci_commit_sha')
           end
 
           it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
-            expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
-          end
-        end
-
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
-          end
-
-          it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
-            expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
+            expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq('ci_commit_sha')
           end
         end
       end
@@ -259,195 +239,6 @@ RSpec.describe Trigger do
               expect(subject.variables[version_file]).to eq(version)
             end
           end
-        end
-      end
-    end
-  end
-
-  describe Trigger::Omnibus do
-    describe '#variables' do
-      it 'invokes the trigger with expected variables' do
-        expect(subject.variables).to include(
-          'QA_IMAGE' => env['QA_IMAGE'],
-          'SKIP_QA_DOCKER' => 'true',
-          'ALTERNATIVE_SOURCES' => 'true',
-          'CACHE_UPDATE' => env['OMNIBUS_GITLAB_CACHE_UPDATE'],
-          'GITLAB_QA_OPTIONS' => env['GITLAB_QA_OPTIONS'],
-          'QA_TESTS' => env['QA_TESTS'],
-          'ALLURE_JOB_NAME' => env['ALLURE_JOB_NAME']
-        )
-      end
-
-      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
-        before do
-          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
-        end
-
-        it 'sets GITLAB_VERSION & IMAGE_TAG to ci_merge_request_source_branch_sha' do
-          expect(subject.variables).to include(
-            'GITLAB_VERSION' => 'ci_merge_request_source_branch_sha',
-            'IMAGE_TAG' => 'ci_merge_request_source_branch_sha'
-          )
-        end
-      end
-
-      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
-        before do
-          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', '')
-        end
-
-        it 'sets GITLAB_VERSION & IMAGE_TAG to CI_COMMIT_SHA' do
-          expect(subject.variables).to include(
-            'GITLAB_VERSION' => env['CI_COMMIT_SHA'],
-            'IMAGE_TAG' => env['CI_COMMIT_SHA']
-          )
-        end
-      end
-
-      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
-        before do
-          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
-        end
-
-        it 'sets GITLAB_VERSION & IMAGE_TAG to CI_COMMIT_SHA' do
-          expect(subject.variables).to include(
-            'GITLAB_VERSION' => env['CI_COMMIT_SHA'],
-            'IMAGE_TAG' => env['CI_COMMIT_SHA']
-          )
-        end
-      end
-
-      context 'when Trigger.security? is true' do
-        before do
-          allow(Trigger).to receive(:security?).and_return(true)
-        end
-
-        it 'sets SECURITY_SOURCES to true' do
-          expect(subject.variables['SECURITY_SOURCES']).to eq('true')
-        end
-      end
-
-      context 'when Trigger.security? is false' do
-        before do
-          allow(Trigger).to receive(:security?).and_return(false)
-        end
-
-        it 'sets SECURITY_SOURCES to false' do
-          expect(subject.variables['SECURITY_SOURCES']).to eq('false')
-        end
-      end
-
-      context 'when Trigger.ee? is true' do
-        before do
-          allow(Trigger).to receive(:ee?).and_return(true)
-        end
-
-        it 'sets ee to true' do
-          expect(subject.variables['ee']).to eq('true')
-        end
-      end
-
-      context 'when Trigger.ee? is false' do
-        before do
-          allow(Trigger).to receive(:ee?).and_return(false)
-        end
-
-        it 'sets ee to false' do
-          expect(subject.variables['ee']).to eq('false')
-        end
-      end
-
-      context 'when QA_BRANCH is set' do
-        before do
-          stub_env('QA_BRANCH', 'qa_branch')
-        end
-
-        it 'sets QA_BRANCH to qa_branch' do
-          expect(subject.variables['QA_BRANCH']).to eq('qa_branch')
-        end
-      end
-    end
-
-    describe '.access_token' do
-      context 'when OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN is set' do
-        let(:omnibus_gitlab_project_access_token) { 'omnibus_gitlab_project_access_token' }
-
-        before do
-          stub_env('OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN', omnibus_gitlab_project_access_token)
-        end
-
-        it 'returns the omnibus-specific access token' do
-          expect(described_class.access_token).to eq(omnibus_gitlab_project_access_token)
-        end
-      end
-
-      context 'when OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN is not set' do
-        before do
-          stub_env('OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN', nil)
-        end
-
-        it 'returns the default access token' do
-          expect(described_class.access_token).to eq(Trigger::Base.access_token)
-        end
-      end
-    end
-
-    describe '#invoke!' do
-      let(:downstream_project_path) { 'gitlab-org/build/omnibus-gitlab-mirror' }
-      let(:ref) { 'master' }
-
-      let(:env) do
-        super().merge(
-          'QA_IMAGE' => 'qa_image',
-          'GITLAB_QA_OPTIONS' => 'gitlab_qa_options',
-          'QA_TESTS' => 'qa_tests',
-          'ALLURE_JOB_NAME' => 'allure_job_name'
-        )
-      end
-
-      describe '#downstream_project_path' do
-        context 'when OMNIBUS_PROJECT_PATH is set' do
-          let(:downstream_project_path) { 'omnibus_project_path' }
-
-          before do
-            stub_env('OMNIBUS_PROJECT_PATH', downstream_project_path)
-          end
-
-          it 'triggers the pipeline on the correct project' do
-            expect_run_trigger_with_params
-
-            subject.invoke!
-          end
-        end
-      end
-
-      describe '#ref' do
-        context 'when OMNIBUS_BRANCH is set' do
-          let(:ref) { 'omnibus_branch' }
-
-          before do
-            stub_env('OMNIBUS_BRANCH', ref)
-          end
-
-          it 'triggers the pipeline on the correct ref' do
-            expect_run_trigger_with_params
-
-            subject.invoke!
-          end
-        end
-      end
-
-      context 'when CI_COMMIT_REF_NAME is a stable branch' do
-        let(:ref) { '14-10-stable' }
-
-        before do
-          stub_env('CI_COMMIT_REF_NAME', "#{ref}-ee")
-        end
-
-        it 'triggers the pipeline on the correct ref' do
-          expect_run_trigger_with_params
-
-          subject.invoke!
         end
       end
     end
@@ -496,33 +287,13 @@ RSpec.describe Trigger do
       end
 
       describe "GITLAB_VERSION" do
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
+        context 'when CI_COMMIT_SHA is set' do
           before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
-          end
-
-          it 'sets GITLAB_VERSION to CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' do
-            expect(subject.variables['GITLAB_VERSION']).to eq('ci_merge_request_source_branch_sha')
-          end
-        end
-
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', '')
+            stub_env('CI_COMMIT_SHA', 'ci_commit_sha')
           end
 
           it 'sets GITLAB_VERSION to CI_COMMIT_SHA' do
-            expect(subject.variables['GITLAB_VERSION']).to eq(env['CI_COMMIT_SHA'])
-          end
-        end
-
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
-          end
-
-          it 'sets GITLAB_VERSION to CI_COMMIT_SHA' do
-            expect(subject.variables['GITLAB_VERSION']).to eq(env['CI_COMMIT_SHA'])
+            expect(subject.variables['GITLAB_VERSION']).to eq('ci_commit_sha')
           end
         end
       end
@@ -560,10 +331,9 @@ RSpec.describe Trigger do
           end
         end
 
-        context 'when CI_COMMIT_TAG and CI_MERGE_REQUEST_SOURCE_BRANCH_SHA are nil' do
+        context 'when CI_COMMIT_TAG is nil' do
           before do
             stub_env('CI_COMMIT_TAG', nil)
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
           end
 
           it 'sets GITLAB_ASSETS_TAG to CI_COMMIT_SHA' do
@@ -841,35 +611,33 @@ RSpec.describe Trigger do
         expect(subject.variables).to include('TRIGGERED_USER_LOGIN' => env['GITLAB_USER_LOGIN'])
       end
 
-      describe "GITLAB_COMMIT_SHA" do
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
-          end
-
-          it 'sets GITLAB_COMMIT_SHA to ci_merge_request_source_branch_sha' do
-            expect(subject.variables['GITLAB_COMMIT_SHA']).to eq('ci_merge_request_source_branch_sha')
-          end
+      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
+        before do
+          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
         end
 
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', '')
-          end
+        it 'sets TOP_UPSTREAM_SOURCE_SHA to ci_merge_request_source_branch_sha' do
+          expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq('ci_merge_request_source_branch_sha')
+        end
+      end
 
-          it 'sets GITLAB_COMMIT_SHA to CI_COMMIT_SHA' do
-            expect(subject.variables['GITLAB_COMMIT_SHA']).to eq(env['CI_COMMIT_SHA'])
-          end
+      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
+        before do
+          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', '')
         end
 
-        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
-          before do
-            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
-          end
+        it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
+        end
+      end
 
-          it 'sets GITLAB_COMMIT_SHA to CI_COMMIT_SHA' do
-            expect(subject.variables['GITLAB_COMMIT_SHA']).to eq(env['CI_COMMIT_SHA'])
-          end
+      context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
+        before do
+          stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', nil)
+        end
+
+        it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
         end
       end
     end

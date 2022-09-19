@@ -59,7 +59,8 @@ To compare branches in a repository:
 ![Delete merged branches](img/delete_merged_branches.png)
 
 This feature allows merged branches to be deleted in bulk. Only branches that
-have been merged and [are not protected](../../protected_branches.md) are deleted as part of
+have been merged into the project's default branch and
+[are not protected](../../protected_branches.md) are deleted as part of
 this operation.
 
 It's particularly useful to clean up old branches that were not deleted

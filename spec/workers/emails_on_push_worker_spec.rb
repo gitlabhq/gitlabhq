@@ -51,7 +51,7 @@ RSpec.describe EmailsOnPushWorker, :mailer do
     context "when push is a force push to delete commits" do
       before do
         data_force_push = data.stringify_keys.merge(
-          "after"  => data[:before],
+          "after" => data[:before],
           "before" => data[:after]
         )
 

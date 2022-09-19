@@ -58,8 +58,7 @@ RSpec.describe 'User browses jobs' do
 
       context 'when a job can be canceled' do
         let!(:job) do
-          create(:ci_build, pipeline: pipeline,
-                 stage: 'test')
+          create(:ci_build, pipeline: pipeline, stage: 'test')
         end
 
         before do
@@ -81,7 +80,7 @@ RSpec.describe 'User browses jobs' do
       context 'when a job can be retried' do
         let!(:job) do
           create(:ci_build, pipeline: pipeline,
-                 stage: 'test')
+                            stage: 'test')
         end
 
         before do
@@ -190,7 +189,7 @@ RSpec.describe 'User browses jobs' do
       context 'column links' do
         let!(:job) do
           create(:ci_build, pipeline: pipeline,
-                 stage: 'test')
+                            stage: 'test')
         end
 
         before do

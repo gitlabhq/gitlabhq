@@ -3,15 +3,12 @@ import {
   GlIcon,
   GlLink,
   GlForm,
-  GlFormInputGroup,
-  GlInputGroupText,
   GlFormInput,
   GlFormGroup,
   GlFormTextarea,
   GlButton,
   GlFormRadio,
   GlFormRadioGroup,
-  GlFormSelect,
 } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
@@ -21,16 +18,13 @@ import csrf from '~/lib/utils/csrf';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
-
-const PRIVATE_VISIBILITY = 'private';
-const INTERNAL_VISIBILITY = 'internal';
-const PUBLIC_VISIBILITY = 'public';
-
-const VISIBILITY_LEVEL = {
-  [PRIVATE_VISIBILITY]: 0,
-  [INTERNAL_VISIBILITY]: 10,
-  [PUBLIC_VISIBILITY]: 20,
-};
+import {
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+  VISIBILITY_LEVELS_STRING_TO_INTEGER,
+} from '~/visibility_level/constants';
+import ProjectNamespace from './project_namespace.vue';
 
 const initFormField = ({ value, required = true, skipValidation = false }) => ({
   value,
@@ -39,28 +33,18 @@ const initFormField = ({ value, required = true, skipValidation = false }) => ({
   feedback: null,
 });
 
-function sortNamespaces(namespaces) {
-  if (!namespaces || !namespaces?.length) {
-    return namespaces;
-  }
-
-  return namespaces.sort((a, b) => a.full_name.localeCompare(b.full_name));
-}
-
 export default {
   components: {
     GlForm,
     GlIcon,
     GlLink,
     GlButton,
-    GlFormInputGroup,
-    GlInputGroupText,
     GlFormInput,
     GlFormTextarea,
     GlFormGroup,
     GlFormRadio,
     GlFormRadioGroup,
-    GlFormSelect,
+    ProjectNamespace,
   },
   directives: {
     validation: validation(),
@@ -70,9 +54,6 @@ export default {
       default: '',
     },
     visibilityHelpPath: {
-      default: '',
-    },
-    endpoint: {
       default: '',
     },
     projectFullPath: {
@@ -96,6 +77,9 @@ export default {
     restrictedVisibilityLevels: {
       default: [],
     },
+    namespaceId: {
+      default: '',
+    },
   },
   data() {
     const form = {
@@ -117,20 +101,17 @@ export default {
     };
     return {
       isSaving: false,
-      namespaces: [],
       form,
     };
   },
   computed: {
-    projectUrl() {
-      return `${gon.gitlab_url}/`;
-    },
     projectVisibilityLevel() {
-      return VISIBILITY_LEVEL[this.projectVisibility];
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
     },
     namespaceVisibilityLevel() {
-      const visibility = this.form.fields.namespace.value?.visibility || PUBLIC_VISIBILITY;
-      return VISIBILITY_LEVEL[visibility];
+      const visibility =
+        this.form.fields.namespace.value?.visibility || VISIBILITY_LEVEL_PUBLIC_STRING;
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
     },
     visibilityLevelCap() {
       return Math.min(this.projectVisibilityLevel, this.namespaceVisibilityLevel);
@@ -139,7 +120,7 @@ export default {
       return new Set(this.restrictedVisibilityLevels);
     },
     allowedVisibilityLevels() {
-      const allowedLevels = Object.entries(VISIBILITY_LEVEL).reduce(
+      const allowedLevels = Object.entries(VISIBILITY_LEVELS_STRING_TO_INTEGER).reduce(
         (levels, [levelName, levelValue]) => {
           if (
             !this.restrictedVisibilityLevelsSet.has(levelValue) &&
@@ -153,7 +134,7 @@ export default {
       );
 
       if (!allowedLevels.length) {
-        return [PRIVATE_VISIBILITY];
+        return [VISIBILITY_LEVEL_PRIVATE_STRING];
       }
 
       return allowedLevels;
@@ -162,57 +143,55 @@ export default {
       return [
         {
           text: s__('ForkProject|Private'),
-          value: PRIVATE_VISIBILITY,
+          value: VISIBILITY_LEVEL_PRIVATE_STRING,
           icon: 'lock',
           help: s__(
             'ForkProject|Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
           ),
-          disabled: this.isVisibilityLevelDisabled(PRIVATE_VISIBILITY),
+          disabled: this.isVisibilityLevelDisabled(VISIBILITY_LEVEL_PRIVATE_STRING),
         },
         {
           text: s__('ForkProject|Internal'),
-          value: INTERNAL_VISIBILITY,
+          value: VISIBILITY_LEVEL_INTERNAL_STRING,
           icon: 'shield',
           help: s__('ForkProject|The project can be accessed by any logged in user.'),
-          disabled: this.isVisibilityLevelDisabled(INTERNAL_VISIBILITY),
+          disabled: this.isVisibilityLevelDisabled(VISIBILITY_LEVEL_INTERNAL_STRING),
         },
         {
           text: s__('ForkProject|Public'),
-          value: PUBLIC_VISIBILITY,
+          value: VISIBILITY_LEVEL_PUBLIC_STRING,
           icon: 'earth',
           help: s__('ForkProject|The project can be accessed without any authentication.'),
-          disabled: this.isVisibilityLevelDisabled(PUBLIC_VISIBILITY),
+          disabled: this.isVisibilityLevelDisabled(VISIBILITY_LEVEL_PUBLIC_STRING),
         },
       ];
     },
   },
   watch: {
     // eslint-disable-next-line func-names
-    'form.fields.namespace.value': function () {
-      this.form.fields.visibility.value =
-        this.restrictedVisibilityLevels.length !== 0 ? null : PRIVATE_VISIBILITY;
-    },
-    // eslint-disable-next-line func-names
     'form.fields.name.value': function (newVal) {
       this.form.fields.slug.value = kebabCase(newVal);
     },
   },
-  mounted() {
-    this.fetchNamespaces();
-  },
   methods: {
-    async fetchNamespaces() {
-      const { data } = await axios.get(this.endpoint);
-      this.namespaces = sortNamespaces(data.namespaces);
-    },
     isVisibilityLevelDisabled(visibility) {
       return !this.allowedVisibilityLevels.includes(visibility);
     },
     getInitialVisibilityValue() {
       return this.restrictedVisibilityLevels.length !== 0 ? null : this.projectVisibility;
     },
+    setNamespace(namespace) {
+      this.form.fields.visibility.value =
+        this.restrictedVisibilityLevels.length !== 0 ? null : VISIBILITY_LEVEL_PRIVATE_STRING;
+      this.form.fields.namespace.value = namespace;
+      this.form.fields.namespace.state = true;
+    },
     async onSubmit() {
       this.form.showValidation = true;
+
+      if (!this.form.fields.namespace.value) {
+        this.form.fields.namespace.state = false;
+      }
 
       if (!this.form.state) {
         return;
@@ -282,30 +261,7 @@ export default {
           :state="form.fields.namespace.state"
           :invalid-feedback="s__('ForkProject|Please select a namespace')"
         >
-          <gl-form-input-group>
-            <template #prepend>
-              <gl-input-group-text>
-                {{ projectUrl }}
-              </gl-input-group-text>
-            </template>
-            <gl-form-select
-              id="fork-url"
-              v-model="form.fields.namespace.value"
-              v-validation:[form.showValidation]
-              name="namespace"
-              data-testid="fork-url-input"
-              data-qa-selector="fork_namespace_dropdown"
-              :state="form.fields.namespace.state"
-              required
-            >
-              <template #first>
-                <option :value="null" disabled>{{ s__('ForkProject|Select a namespace') }}</option>
-              </template>
-              <option v-for="namespace in namespaces" :key="namespace.id" :value="namespace">
-                {{ namespace.full_name }}
-              </option>
-            </gl-form-select>
-          </gl-form-input-group>
+          <project-namespace @select="setNamespace" />
         </gl-form-group>
       </div>
       <div class="gl-flex-basis-half">

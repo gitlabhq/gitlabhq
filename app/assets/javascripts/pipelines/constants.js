@@ -110,4 +110,8 @@ export const DEFAULT_FIELDS = [
   },
 ];
 
-export const performanceModalId = 'performanceInsightsModal';
+export const TRACKING_CATEGORIES = {
+  table: 'pipelines_table_component',
+  tabs: 'pipelines_filter_tabs',
+  search: 'pipelines_filtered_search',
+};

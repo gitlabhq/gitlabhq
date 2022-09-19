@@ -20,13 +20,13 @@ import {
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { s__, n__ } from '~/locale';
-import instanceComponent from '~/vue_shared/components/deployment_instance.vue';
+import InstanceComponent from '~/vue_shared/components/deployment_instance.vue';
 import { STATUS_MAP, CANARY_STATUS } from '../constants';
 import CanaryIngress from './canary_ingress.vue';
 
 export default {
   components: {
-    instanceComponent,
+    InstanceComponent,
     CanaryIngress,
     GlIcon,
     GlLoadingIcon,

@@ -8,7 +8,10 @@ module Packages
       DEFAULT_PLATFORM = 'ruby'
 
       def execute
-        return ServiceResponse.error(message: "forbidden", http_status: :forbidden) unless Ability.allowed?(current_user, :read_package, project)
+        unless Ability.allowed?(current_user, :read_package, project&.packages_policy_subject)
+          return ServiceResponse.error(message: "forbidden", http_status: :forbidden)
+        end
+
         return ServiceResponse.error(message: "#{gem_name} not found", http_status: :not_found) if packages.empty?
 
         payload = packages.map do |package|

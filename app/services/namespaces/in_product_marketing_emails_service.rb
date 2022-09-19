@@ -89,7 +89,7 @@ module Namespaces
     end
 
     def groups_for_track
-      onboarding_progress_scope = OnboardingProgress
+      onboarding_progress_scope = Onboarding::Progress
         .completed_actions_with_latest_in_range(completed_actions, range)
         .incomplete_actions(incomplete_actions)
 

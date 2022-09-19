@@ -280,7 +280,7 @@ page.
 You can enable or configure DAST settings using the UI. The generated settings are formatted so they
 can be conveniently pasted into the `.gitlab-ci.yml` file.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Enable DAST** or
    **Configure DAST**.
@@ -357,13 +357,9 @@ variables:
 #### Import API specification from a file
 
 If your API specification file is in your repository, you can provide its filename as the target.
-The API specification file must be in the `/zap/wrk` directory.
 
 ```yaml
 dast:
-  before_script:
-    - mkdir -p /zap/wrk
-    - cp api-specification.yml /zap/wrk/api-specification.yml
   variables:
     GIT_STRATEGY: fetch
     DAST_API_SPECIFICATION: api-specification.yml
@@ -1075,7 +1071,7 @@ The on-demand DAST scan runs and the project's dashboard shows the results.
 
 To run a saved on-demand scan:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
@@ -1094,7 +1090,7 @@ The on-demand DAST scan runs, and the project's dashboard shows the results.
 
 To schedule a scan:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** text boxes.
@@ -1143,14 +1139,16 @@ To delete an on-demand scan:
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 
-### Site profile
+## Site profile
 
-A site profile describes the attributes of a web site to scan on demand with DAST. A site profile is
-required for an on-demand DAST scan.
+A site profile defines the attributes and configuration details of the deployed application,
+website, or API to be scanned by DAST. A site profile can be referenced in `.gitlab-ci.yml` and
+on-demand scans.
 
-A site profile contains the following:
+A site profile contains:
 
-- **Profile name**: A name you assign to the site to be scanned.
+- **Profile name**: A name you assign to the site to be scanned. While a site profile is referenced
+  in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
 - **Site type**: The type of target to be scanned, either website or API scan.
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
@@ -1168,7 +1166,7 @@ When an API site type is selected, a [host override](#host-override) is used to 
 When configured, request headers and password fields are encrypted using [`aes-256-gcm`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) before being stored in the database.
 This data can only be read and decrypted with a valid secrets file.
 
-#### Site profile validation
+### Site profile validation
 
 > - Site profile validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
 > - Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
@@ -1192,7 +1190,7 @@ All these methods are equivalent in functionality. Use whichever is feasible.
 In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/324990), site profile
 validation happens in a CI job using the [GitLab Runner](../../../ci/runners/index.md).
 
-#### Create a site profile
+### Create a site profile
 
 To create a site profile:
 
@@ -1203,7 +1201,7 @@ To create a site profile:
 
 The site profile is created.
 
-#### Edit a site profile
+### Edit a site profile
 
 If a site profile is linked to a security policy, a user cannot edit the profile from this page. See
 [Scan execution policies](../policies/scan-execution-policies.md)
@@ -1220,7 +1218,7 @@ To edit a site profile:
 1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
 1. Edit the fields then select **Save profile**.
 
-#### Delete a site profile
+### Delete a site profile
 
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
 See [Scan execution policies](../policies/scan-execution-policies.md)
@@ -1234,13 +1232,13 @@ To delete a site profile:
 1. In the profile's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 
-#### Validate a site profile
+### Validate a site profile
 
 Validating a site is required to run an active scan.
 
 To validate a site profile:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -1266,7 +1264,7 @@ To validate a site profile:
 The site is validated and an active scan can run against it. A site profile's validation status is
 revoked only when it's revoked manually, or its file, header, or meta tag is edited.
 
-#### Retry a failed validation
+### Retry a failed validation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322609) in GitLab 14.3.
 > - [Deployed behind the `dast_failed_site_validations` flag](../../../administration/feature_flags.md), enabled by default.
@@ -1277,13 +1275,13 @@ page.
 
 To retry a site profile's failed validation:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select **Retry validation**.
 
-#### Revoke a site profile's validation status
+### Revoke a site profile's validation status
 
 WARNING:
 When a site profile's validation status is revoked, all site profiles that share the same URL also
@@ -1297,12 +1295,12 @@ To revoke a site profile's validation status:
 
 The site profile's validation status is revoked.
 
-#### Validated site profile headers
+### Validated site profile headers
 
 The following are code samples of how you can provide the required site profile header in your
 application.
 
-##### Ruby on Rails example for on-demand scan
+#### Ruby on Rails example for on-demand scan
 
 Here's how you can add a custom header in a Ruby on Rails application:
 
@@ -1315,7 +1313,7 @@ class DastWebsiteTargetController < ActionController::Base
 end
 ```
 
-##### Django example for on-demand scan
+#### Django example for on-demand scan
 
 Here's how you can add a
 [custom header in Django](https://docs.djangoproject.com/en/2.2/ref/request-response/#setting-header-fields):
@@ -1329,7 +1327,7 @@ class DastWebsiteTargetView(View):
       return response
 ```
 
-##### Node (with Express) example for on-demand scan
+#### Node (with Express) example for on-demand scan
 
 Here's how you can add a
 [custom header in Node (with Express)](https://expressjs.com/en/5x/api.html#res.append):
@@ -1341,22 +1339,26 @@ app.get('/dast-website-target', function(req, res) {
 })
 ```
 
-### Scanner profile
+## Scanner profile
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222767) in GitLab 13.4.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/225804) in GitLab 13.5: scan mode, AJAX spider, debug messages.
 
-A scanner profile defines the scanner settings used to run an on-demand scan:
+A scanner profile defines the configuration details of a security scanner. A scanner profile can be
+referenced in `.gitlab-ci.yml` and on-demand scans.
 
-- **Profile name:** A name you give the scanner profile. For example, "Spider_15".
+A scanner profile contains:
+
+- **Profile name:** A name you give the scanner profile. For example, "Spider_15". While a scanner
+  profile is referenced in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
 - **Scan mode:** A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
 - **Spider timeout:** The maximum number of minutes allowed for the spider to traverse the site.
 - **Target timeout:** The maximum number of seconds DAST waits for the site to be available before
   starting the scan.
-- **AJAX spider:**  Run the AJAX spider, in addition to the traditional spider, to crawl the target site.
+- **AJAX spider:** Run the AJAX spider, in addition to the traditional spider, to crawl the target site.
 - **Debug messages:** Include debug messages in the DAST console output.
 
-#### Create a scanner profile
+### Create a scanner profile
 
 To create a scanner profile:
 
@@ -1366,7 +1368,7 @@ To create a scanner profile:
 1. Complete the form. For details of each field, see [Scanner profile](#scanner-profile).
 1. Select **Save profile**.
 
-#### Edit a scanner profile
+### Edit a scanner profile
 
 If a scanner profile is linked to a security policy, a user cannot edit the profile from this page.
 See [Scan execution policies](../policies/scan-execution-policies.md)
@@ -1381,7 +1383,7 @@ To edit a scanner profile:
 1. Edit the form.
 1. Select **Save profile**.
 
-#### Delete a scanner profile
+### Delete a scanner profile
 
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
 page. See [Scan execution policies](../policies/scan-execution-policies.md)

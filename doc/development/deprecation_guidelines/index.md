@@ -11,22 +11,33 @@ to GitLab features.
 
 ## Terminology
 
+<!--
+If updating these definitions, be sure to update them in the handbook as well:
+https://about.gitlab.com/handbook/product/gitlab-the-product/#definitions
+-->
+
 **Deprecation**:
 
+- Required before ending support for a feature or removing a feature.
 - Feature not recommended for use.
 - Development restricted to Priority 1 / Severity 1 bug fixes.
 - Will be removed in a future major release.
-- Begins after a deprecation announcement outlining an end-of-support date.
+- Begins after a deprecation announcement outlining an end-of-support or removal date.
 - Ends after the end-of-support date or removal date has passed.
 
 **End of Support**:
 
+- Optional step before removal.
 - Feature usage strongly discouraged.
 - No support or fixes provided.
 - No longer tested internally.
 - Will be removed in a future major release.
 - Begins after an end-of-support date has passed.
 - Ends after all relevant code has been removed.
+
+[Announcing an End of Support period](https://about.gitlab.com/handbook/marketing/blog/release-posts/#announcing-an-end-of-support-period)
+should only be used in special circumstances and is not recommended for general use.
+Most features should be deprecated and then removed.
 
 **Removal**:
 

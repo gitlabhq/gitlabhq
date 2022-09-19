@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import createFlash from '~/flash';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
+import Tracking from '~/tracking';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import {
@@ -11,6 +12,7 @@ import {
   RAW_TEXT_WARNING,
   FILTER_TAG_IDENTIFIER,
   PipelineKeyOptions,
+  TRACKING_CATEGORIES,
 } from '../../constants';
 import PipelinesMixin from '../../mixins/pipelines_mixin';
 import PipelinesService from '../../services/pipelines_service';
@@ -35,7 +37,7 @@ export default {
     PipelinesTableComponent,
     TablePagination,
   },
-  mixins: [PipelinesMixin],
+  mixins: [PipelinesMixin, Tracking.mixin()],
   props: {
     store: {
       type: Object,
@@ -246,6 +248,8 @@ export default {
       params = this.onChangeWithFilter(params);
 
       this.updateContent(params);
+
+      this.track('click_filter_tabs', { label: TRACKING_CATEGORIES.tabs });
     },
     successCallback(resp) {
       // Because we are polling & the user is interacting verify if the response received

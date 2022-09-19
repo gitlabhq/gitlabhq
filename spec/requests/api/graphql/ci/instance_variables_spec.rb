@@ -29,7 +29,7 @@ RSpec.describe 'Query.ciVariables' do
 
     it "returns the instance's CI variables" do
       variable = create(:ci_instance_variable, key: 'TEST_VAR', value: 'test',
-                        masked: false, protected: true, raw: true)
+                                               masked: false, protected: true, raw: true)
 
       post_graphql(query, current_user: user)
 

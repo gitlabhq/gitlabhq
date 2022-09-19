@@ -23,7 +23,7 @@ module API
           end
 
           def present_download_urls(entity)
-            authorize!(:read_package, project)
+            authorize_read_package!(project)
 
             presenter = ::Packages::Conan::PackagePresenter.new(
               package,
@@ -161,7 +161,7 @@ module API
           end
 
           def download_package_file(file_type)
-            authorize!(:read_package, project)
+            authorize_read_package!(project)
 
             package_file = ::Packages::Conan::PackageFileFinder
               .new(
@@ -173,7 +173,7 @@ module API
 
             track_package_event('pull_package', :conan, category: 'API::ConanPackages', user: current_user, project: project, namespace: project.namespace) if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
 
-            present_carrierwave_file!(package_file.file)
+            present_package_file!(package_file)
           end
 
           def find_or_create_package

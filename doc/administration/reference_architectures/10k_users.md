@@ -18,30 +18,30 @@ full list of reference architectures, see
 >   - **Test requests per second (RPS) rates:** API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)**
 
-| Service                                             | Nodes          | Configuration           | GCP              | AWS            | Azure          |
-|-----------------------------------------------------|----------------|-------------------------|------------------|----------------|----------------|
-| External load balancing node<sup>3</sup>            | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Consul<sup>1</sup>                                  | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| PostgreSQL<sup>1</sup>                              | 3              | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge`   | `D8s v3`       |
-| PgBouncer<sup>1</sup>                               | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Internal load balancing node<sup>3</sup>            | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Redis/Sentinel - Cache<sup>2</sup>                  | 3              | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`       |
-| Redis/Sentinel - Persistent<sup>2</sup>             | 3              | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`       |
-| Gitaly<sup>5</sup>                                  | 3              | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge`   | `D16s v3`      |
-| Praefect<sup>5</sup>                                | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Praefect PostgreSQL<sup>1</sup>                     | 1+             | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Sidekiq                                             | 4              | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`       |
-| GitLab Rails                                        | 3              | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`   | `F32s v2`      |
-| Monitoring node                                     | 1              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`       |
-| Object storage<sup>4</sup>                          | Not applicable | Not applicable          | Not applicable   | Not applicable | Not applicable |
-| NFS server (non-Gitaly)                             | 1              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`       |
+| Service                                  | Nodes | Configuration           | GCP              | AWS            | Azure     |
+|------------------------------------------|-------|-------------------------|------------------|----------------|-----------|
+| External load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`  |
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`  |
+| PostgreSQL<sup>1</sup>                   | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge`   | `D8s v3`  |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`  |
+| Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`  |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`  |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`  |
+| Gitaly<sup>5</sup>                       | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge`   | `D16s v3` |
+| Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`  |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`  |
+| Sidekiq                                  | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`  |
+| GitLab Rails                             | 3     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`   | `F32s v2` |
+| Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`  |
+| Object storage<sup>4</sup>               | -     | -                       | -                | -              | -         |
+| NFS server (non-Gitaly)                  | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`  |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
-4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
@@ -142,10 +142,12 @@ Before starting, you should take note of the following requirements / guidance f
 
 This reference architecture was built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform. On different hardware you may find that adjustments, either lower
-or higher, are required for your CPU or node counts. For more information, see
-our [Sysbench](https://github.com/akopytov/sysbench)-based
-[CPU benchmarks](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+CPU platform as a baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
+
+Newer, similarly sized CPUs are supported and may have improved performance as a result. For Omnibus environments, ARM-based equivalents are also supported.
+
+NOTE:
+Any "burstable" instance types are not recommended due to inconsistent performance.
 
 ### Supported infrastructure
 
@@ -186,10 +188,11 @@ To set up GitLab and its components to accommodate up to 10,000 users:
    environment.
 1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage.
 1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
-1. [Configure NFS](#configure-nfs)
-   to have shared disk storage service for certain GitLab operations (non Gitaly or Object Storage).
 
 The servers start on the same 10.6.0.0/24 private network range, and can
 connect to each other freely on these addresses.
@@ -259,7 +262,7 @@ Configure your load balancer to pass connections on port 443 as `TCP` rather
 than `HTTP(S)` protocol. This will pass the connection to the application node's
 NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
 
-See the [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
 for details on managing SSL certificates and configuring NGINX.
 
 ### Load balancer terminates SSL without backend SSL
@@ -270,7 +273,7 @@ terminating SSL.
 
 Since communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
-[NGINX proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 ### Load balancer terminates SSL with backend SSL
@@ -283,7 +286,7 @@ Traffic will also be secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
-[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
 for details on managing SSL certificates and configuring NGINX.
 
 ### Readiness checks
@@ -2009,7 +2012,7 @@ On each node perform the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-1. If you're [using NFS](#configure-nfs):
+1. If you're [using NFS](#configure-nfs-optional):
    1. If necessary, install the NFS client utility packages using the following
       commands:
 
@@ -2069,7 +2072,7 @@ On each node perform the following:
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
 certificates aren't present, NGINX will fail to start. For more information, see
-the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
 ### GitLab Rails post-configuration
 
@@ -2175,7 +2178,7 @@ To configure the Monitoring node:
 ## Configure the object storage
 
 GitLab supports using an object storage service for holding numerous types of data.
-It's recommended over [NFS](#configure-nfs) and in general it's better
+It's recommended over [NFS](#configure-nfs-optional) and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
 and scalable.
 
@@ -2187,7 +2190,6 @@ GitLab has been tested on a number of object storage providers:
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-- On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
 There are two ways of specifying object storage configuration in GitLab:
@@ -2197,25 +2199,13 @@ There are two ways of specifying object storage configuration in GitLab:
 - [Storage-specific form](../object_storage.md#storage-specific-configuration): Every object defines its
   own object storage [connection and configuration](../object_storage.md#connection-settings).
 
-Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
+The consolidated form is used in the following examples when available.
 
-For configuring object storage in GitLab 13.1 and earlier, or for storage types not
-supported by consolidated configuration form, refer to the following guides based
-on what features you intend to use:
-
-|Object storage type|Supported by consolidated configuration?|
-|-------------------|----------------------------------------|
-| [Backups](../../raketasks/backup_gitlab.md#uploading-backups-to-a-remote-cloud-storage) | No |
-| [Job artifacts](../job_artifacts.md#using-object-storage) including archived job logs | Yes |
-| [LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
-| [Uploads](../uploads.md#using-object-storage) | Yes |
-| [Container Registry](../packages/container_registry.md#use-object-storage) (optional feature) | No |
-| [Merge request diffs](../merge_request_diffs.md#using-object-storage) | Yes |
-| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
-| [Packages](../packages/index.md#using-object-storage) (optional feature) | Yes |
-| [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature) | Yes |
-| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
-| [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
+NOTE:
+When using the [storage-specific form](../object_storage.md#storage-specific-configuration)
+in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
+The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
+which was deprecated in 14.9, requires shared storage such as [NFS](#configure-nfs-optional).
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
@@ -2228,11 +2218,27 @@ in the future.
   </a>
 </div>
 
-## Enable incremental logging
+### Enable incremental logging
 
 GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+
+## Configure NFS (optional)
+
+[Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
+are recommended over NFS wherever possible for improved performance.
+
+See how to [configure NFS](../nfs.md).
+
+WARNING:
+Engineering support for NFS for Git repositories is deprecated, and [technical support is scheduled to be unavailable](../nfs.md#gitaly-and-nfs-deprecation)
+after the release of GitLab 15.6. No further enhancements are planned for this feature.
+
+Read:
+
+- [Gitaly and NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation).
+- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Configure Advanced Search
 
@@ -2243,28 +2249,6 @@ Elasticsearch cluster design and requirements are dependent on your specific
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Configure NFS
-
-[Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
-are recommended over NFS wherever possible for improved performance.
-
-See how to [configure NFS](../nfs.md).
-
-WARNING:
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable from GitLab 15.0. No further enhancements are planned for this feature.
-
-Read:
-
-- [Gitaly and NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation).
-- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2292,6 +2276,10 @@ to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
 section assumes this.
 
+NOTE:
+**Gitaly Cluster is not supported to be run in Kubernetes**.
+Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
+
 ### Cluster topology
 
 The following tables and diagram detail the hybrid environment using the same formats
@@ -2302,11 +2290,11 @@ use Google Cloud's Kubernetes Engine (GKE) or AWS Elastic Kubernetes Service (EK
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                       | Nodes | Configuration           | GCP             | AWS          | Min Allocatable CPUs and Memory |
-|-----------------------------------------------|-------|-------------------------|-----------------|--------------|---------------------------------|
-| Webservice                                    | 4     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `c5.9xlarge` | 127.5 vCPU, 118 GB memory       |
-| Sidekiq                                       | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 15.5 vCPU, 50 GB memory         |
-| Supporting services such as NGINX, Prometheus | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
+| Service             | Nodes | Configuration           | GCP             | AWS          | Min Allocatable CPUs and Memory |
+|---------------------|-------|-------------------------|-----------------|--------------|---------------------------------|
+| Webservice          | 4     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `c5.9xlarge` | 127.5 vCPU, 118 GB memory       |
+| Sidekiq             | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 15.5 vCPU, 50 GB memory         |
+| Supporting services | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
@@ -2316,25 +2304,25 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                  | Nodes          | Configuration         | GCP              | AWS            |
-|------------------------------------------|----------------|-----------------------|------------------|----------------|
-| Consul<sup>1</sup>                       | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`     |
-| PostgreSQL<sup>1</sup>                   | 3              | 8 vCPU, 30 GB memory  | `n1-standard-8`  | `m5.2xlarge`   |
-| PgBouncer<sup>1</sup>                    | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`     |
-| Internal load balancing node<sup>3</sup> | 1              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`     |
-| Redis/Sentinel - Cache<sup>2</sup>       | 3              | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`    |
-| Redis/Sentinel - Persistent<sup>2</sup>  | 3              | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`    |
-| Gitaly<sup>5</sup>                       | 3              | 16 vCPU, 60 GB memory | `n1-standard-16` | `m5.4xlarge`   |
-| Praefect<sup>5</sup>                     | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`     |
-| Praefect PostgreSQL<sup>1</sup>          | 1+             | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`     |
-| Object storage<sup>4</sup>               | Not applicable | Not applicable        | Not applicable   | Not applicable |
+| Service                                  | Nodes | Configuration         | GCP              | AWS          |
+|------------------------------------------|-------|-----------------------|------------------|--------------|
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| PostgreSQL<sup>1</sup>                   | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8`  | `m5.2xlarge` |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
+| Gitaly<sup>5</sup>                       | 3     | 16 vCPU, 60 GB memory | `n1-standard-16` | `m5.4xlarge` |
+| Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Object storage<sup>4</sup>               | -     | -                     | -                | -            |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
-4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
@@ -2353,7 +2341,7 @@ card "Kubernetes via Helm Charts" as kubernetes {
     collections "**Sidekiq** x4" as sidekiq #ff8dd1
   }
 
-  card "**Supporting Services**" as support
+  card "**Supporting Services** x2" as support
 }
 
 card "**Internal Load Balancer**" as ilb #9370DB
@@ -2419,28 +2407,41 @@ documents how to apply the calculated configuration to the Helm Chart.
 
 #### Webservice
 
-Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
-Each Webservice pod consumes roughly 4 vCPUs and 5 GB of memory using
+Webservice pods typically need about 1 CPU and 1.25 GB of memory _per worker_.
+Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because four worker processes
 are created by default and each pod has other small processes running.
 
 For 10,000 users we recommend a total Puma worker count of around 80.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 20
 Webservice pods with 4 workers per pod and 5 pods per node. Expand available resources using
-the ratio of 1 vCPU to 1.25 GB of memory _per each worker process_ for each additional
+the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
 Webservice pod.
 
 For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
 
 #### Sidekiq
 
-Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
+Sidekiq pods should generally have 0.9 CPU and 2 GB of memory.
 
 [The provided starting point](#cluster-topology) allows the deployment of up to
-14 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
+14 Sidekiq pods. Expand available resources using the 0.9 CPU to 2 GB memory
 ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
+
+### Supporting
+
+The Supporting Node Pool is designed to house all supporting deployments that don't need to be
+on the Webservice and Sidekiq pools.
+
+This includes various deployments related to the Cloud Provider's implementation and supporting
+GitLab deployments such as NGINX or [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
+
+If you wish to make any additional deployments, such as for Monitoring, it's recommended
+to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
+specifically to accommodate several additional deployments. However, if your deployments don't fit into the
+pool as given, you can increase the node pool accordingly.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

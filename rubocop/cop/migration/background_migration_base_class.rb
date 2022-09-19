@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Migration
-      class BackgroundMigrationBaseClass < RuboCop::Cop::Cop
+      class BackgroundMigrationBaseClass < RuboCop::Cop::Base
         MSG = 'Batched background migration jobs should inherit from Gitlab::BackgroundMigration::BatchedMigrationJob'
 
         def_node_search :top_level_module?, <<~PATTERN
@@ -25,7 +25,7 @@ module RuboCop
 
           return if top_level_class_node.nil? || inherits_batched_migration_job?(top_level_class_node)
 
-          add_offense(top_level_class_node, location: :expression)
+          add_offense(top_level_class_node)
         end
       end
     end

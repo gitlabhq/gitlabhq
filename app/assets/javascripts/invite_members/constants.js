@@ -81,6 +81,9 @@ export const MEMBER_ERROR_LIST_TEXT = s__(
 );
 export const COLLAPSED_ERRORS = s__('InviteMembersModal|Show more (%{count})');
 export const EXPANDED_ERRORS = s__('InviteMembersModal|Show less');
+export const EMPTY_INVITES_ERROR_TEXT = s__(
+  'InviteMembersModal|Please select members or type email addresses to invite',
+);
 
 export const MEMBER_MODAL_LABELS = {
   modal: {
@@ -119,6 +122,7 @@ export const MEMBER_MODAL_LABELS = {
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
   collapsedErrors: COLLAPSED_ERRORS,
   expandedErrors: EXPANDED_ERRORS,
+  emptyInvitesErrorText: EMPTY_INVITES_ERROR_TEXT,
 };
 
 export const GROUP_MODAL_LABELS = {
@@ -146,10 +150,6 @@ export const DANGER_ALERT_TITLE = s__(
   "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
 );
 
-export const DANGER_ALERT_TITLE_PERSONAL_NAMESPACE = s__(
-  "InviteMembersModal|You've reached your %{count} %{members} limit for your personal projects",
-);
-
 export const REACHED_LIMIT_MESSAGE = s__(
   'InviteMembersModal|You cannot add more members, but you can remove members who no longer need access.',
 );
@@ -162,7 +162,4 @@ export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.co
 
 export const CLOSE_TO_LIMIT_MESSAGE = s__(
   'InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
-);
-export const CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE = s__(
-  'InviteMembersModal|To make more space, you can remove members who no longer need access.',
 );

@@ -134,7 +134,7 @@ RSpec.describe Import::GithubController do
 
       it 'fetches repos using legacy client' do
         expect_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
-          expect(client).to receive(:repos)
+          expect(client).to receive(:repos).and_return([])
         end
 
         get :status
@@ -164,8 +164,8 @@ RSpec.describe Import::GithubController do
       end
 
       it 'fetches repos using latest github client' do
-        expect_next_instance_of(Octokit::Client) do |client|
-          expect(client).to receive(:repos).and_return([].to_enum)
+        expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
+          expect(client).to receive(:repos).and_return([])
         end
 
         get :status
@@ -184,8 +184,8 @@ RSpec.describe Import::GithubController do
       context 'pagination' do
         context 'when no page is specified' do
           it 'requests first page' do
-            expect_next_instance_of(Octokit::Client) do |client|
-              expect(client).to receive(:repos).with(nil, { page: 1, per_page: 25 }).and_return([].to_enum)
+            expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
+              expect(client).to receive(:repos).with({ page: 1, per_page: 25 }).and_return([])
             end
 
             get :status

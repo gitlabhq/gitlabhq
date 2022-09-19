@@ -245,7 +245,7 @@ A mutation written like this is easier to maintain. In addition, we avoid errors
 ### `getters.js`
 
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
-Using a getter also caches the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
+Using a getter also caches the result based on dependencies due to [how computed props work](https://v2.vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
 
 ```javascript
@@ -364,7 +364,7 @@ export default initialState => ({
 
 We made the conscious decision to avoid this pattern to improve the ability to
 discover and search our frontend codebase. The same applies
-when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in 
+when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in
 [this discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
 
 > Consider a `someStateKey` is being used in the store state. You _may_ not be

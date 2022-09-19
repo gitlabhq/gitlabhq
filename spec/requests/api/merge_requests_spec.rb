@@ -9,6 +9,7 @@ RSpec.describe API::MergeRequests do
   let_it_be(:user)  { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:bot) { create(:user, :project_bot) }
   let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
 
   let(:milestone1) { create(:milestone, title: '0.9', project: project) }
@@ -1022,6 +1023,22 @@ RSpec.describe API::MergeRequests do
           it_behaves_like 'a non-cached MergeRequest api request', 1
         end
 
+        context 'when the assignees change' do
+          before do
+            merge_request.assignees << create(:user)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
+        context 'when the reviewers change' do
+          before do
+            merge_request.reviewers << create(:user)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
         context 'when another user requests' do
           before do
             sign_in(user2)
@@ -1118,6 +1135,44 @@ RSpec.describe API::MergeRequests do
         expect do
           get api("/projects/#{project.id}/merge_requests", user)
         end.not_to exceed_query_limit(control)
+      end
+    end
+
+    context 'when user is an inherited member from the group' do
+      let_it_be(:group) { create(:group) }
+
+      shared_examples 'user cannot view merge requests' do
+        it 'returns 403 forbidden' do
+          get api("/projects/#{group_project.id}/merge_requests", inherited_user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'and user is a guest' do
+        let_it_be(:inherited_user) { create(:user) }
+
+        before_all do
+          group.add_guest(inherited_user)
+        end
+
+        context 'when project is public with private merge requests' do
+          let(:group_project) do
+            create(:project,
+                   :public,
+                   :repository,
+                   group: group,
+                   merge_requests_access_level: ProjectFeature::DISABLED)
+          end
+
+          it_behaves_like 'user cannot view merge requests'
+        end
+
+        context 'when project is private' do
+          let(:group_project) { create(:project, :private, :repository, group: group) }
+
+          it_behaves_like 'user cannot view merge requests'
+        end
       end
     end
   end
@@ -1528,7 +1583,6 @@ RSpec.describe API::MergeRequests do
       expect(json_response.last['user']['name']).to eq(reviewer.name)
       expect(json_response.last['user']['username']).to eq(reviewer.username)
       expect(json_response.last['state']).to eq('unreviewed')
-      expect(json_response.last['updated_state_by']).to be_nil
       expect(json_response.last['created_at']).to be_present
     end
 
@@ -2219,6 +2273,59 @@ RSpec.describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(:created)
       end
     end
+
+    context 'when user is an inherited member from the group' do
+      let_it_be(:group) { create(:group) }
+
+      shared_examples 'user cannot create merge requests' do
+        it 'returns 403 forbidden' do
+          post api("/projects/#{group_project.id}/merge_requests", inherited_user), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'and user is a guest' do
+        let_it_be(:inherited_user) { create(:user) }
+        let_it_be(:params) do
+          {
+            title: 'Test merge request',
+            source_branch: 'feature_conflict',
+            target_branch: 'master',
+            author_id: inherited_user.id
+          }
+        end
+
+        before_all do
+          group.add_guest(inherited_user)
+        end
+
+        context 'when project is public with private merge requests' do
+          let(:group_project) do
+            create(:project,
+                   :public,
+                   :repository,
+                   group: group,
+                   merge_requests_access_level: ProjectFeature::DISABLED,
+                   only_allow_merge_if_pipeline_succeeds: false)
+          end
+
+          it_behaves_like 'user cannot create merge requests'
+        end
+
+        context 'when project is private' do
+          let(:group_project) do
+            create(:project,
+                   :private,
+                   :repository,
+                   group: group,
+                   only_allow_merge_if_pipeline_succeeds: false)
+          end
+
+          it_behaves_like 'user cannot create merge requests'
+        end
+      end
+    end
   end
 
   describe 'PUT /projects/:id/merge_requests/:merge_request_iid' do
@@ -2246,6 +2353,16 @@ RSpec.describe API::MergeRequests do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
 
         expect(merge_request.notes.system.last.note).to include("assigned to #{user2.to_reference}")
+      end
+
+      it 'triggers webhooks', :sidekiq_inline do
+        hook = create(:project_hook, merge_requests_events: true, project: merge_request.project)
+
+        expect(WebHookWorker).to receive(:perform_async).with(hook.id, anything, 'merge_request_hooks', anything)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -3373,7 +3490,8 @@ RSpec.describe API::MergeRequests do
 
     context 'when merge request branch does not allow force push' do
       before do
-        create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
+        create_params = { name: merge_request.source_branch, allow_force_push: false, merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }] }
+        ProtectedBranches::CreateService.new(project, project.first_owner, create_params).execute
       end
 
       it 'returns 403' do
@@ -3410,6 +3528,71 @@ RSpec.describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
+    end
+  end
+
+  describe 'PUT :id/merge_requests/:merge_request_iid/reset_approvals' do
+    before do
+      merge_request.approvals.create!(user: user2)
+      create(:project_member, :maintainer, user: bot, source: project)
+    end
+
+    context 'when reset_approvals can be performed' do
+      it 'clears approvals of the merge_request' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+
+        merge_request.reload
+        expect(response).to have_gitlab_http_status(:accepted)
+        expect(merge_request.approvals).to be_empty
+      end
+
+      it 'for users with bot role' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+
+      context 'for users with non-bot roles' do
+        let(:human_user) { create(:user) }
+
+        [:add_owner, :add_maintainer, :add_developer, :add_guest].each do |role_method|
+          it 'returns 401' do
+            project.send(role_method, human_user)
+
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", human_user)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+      end
+
+      context 'for bot-users from external namespaces' do
+        let_it_be(:external_bot) { create(:user, :project_bot) }
+
+        context 'external group bot-user' do
+          before do
+            create(:group_member, :maintainer, user: external_bot, source: create(:group))
+          end
+
+          it 'returns 401' do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'external project bot-user' do
+          before do
+            create(:project_member, :maintainer, user: external_bot, source: create(:project))
+          end
+
+          it 'returns 401' do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+      end
     end
   end
 

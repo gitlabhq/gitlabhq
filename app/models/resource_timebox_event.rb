@@ -5,8 +5,9 @@ class ResourceTimeboxEvent < ResourceEvent
 
   include IssueResourceEvent
   include MergeRequestResourceEvent
+  include Importable
 
-  validate :exactly_one_issuable
+  validate :exactly_one_issuable, unless: :importing?
 
   enum action: {
     add: 1,
@@ -34,7 +35,8 @@ class ResourceTimeboxEvent < ResourceEvent
 
     case self
     when ResourceMilestoneEvent
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_milestone_changed_action(author: user)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_milestone_changed_action(author: user,
+                                                                                                 project: issue.project)
     else
       # no-op
     end

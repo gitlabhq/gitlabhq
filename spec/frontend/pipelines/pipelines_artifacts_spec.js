@@ -30,8 +30,9 @@ describe('Pipelines Artifacts dropdown', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findFirstGlDropdownItem = () => wrapper.find(GlDropdownItem);
-  const findAllGlDropdownItems = () => wrapper.find(GlDropdown).findAll(GlDropdownItem);
+  const findFirstGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findAllGlDropdownItems = () =>
+    wrapper.findComponent(GlDropdown).findAllComponents(GlDropdownItem);
 
   afterEach(() => {
     wrapper.destroy();

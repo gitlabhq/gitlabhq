@@ -37,8 +37,8 @@ module Types
     mount_mutation Mutations::Clusters::AgentTokens::Create
     mount_mutation Mutations::Clusters::AgentTokens::Revoke
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
-    mount_mutation Mutations::CustomEmoji::Create, _deprecated_feature_flag: :custom_emoji
-    mount_mutation Mutations::CustomEmoji::Destroy, _deprecated_feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomEmoji::Create, alpha: { milestone: '13.6' }
+    mount_mutation Mutations::CustomEmoji::Destroy, alpha: { milestone: '13.6' }
     mount_mutation Mutations::CustomerRelations::Contacts::Create
     mount_mutation Mutations::CustomerRelations::Contacts::Update
     mount_mutation Mutations::CustomerRelations::Organizations::Create
@@ -120,10 +120,12 @@ module Types
       milestone: '15.0'
     }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
+    mount_mutation Mutations::Ci::Job::ArtifactsDestroy
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Ci::Job::Cancel
     mount_mutation Mutations::Ci::Job::Unschedule
+    mount_mutation Mutations::Ci::JobArtifact::Destroy
     mount_mutation Mutations::Ci::JobTokenScope::AddProject
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::Runner::Update

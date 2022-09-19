@@ -60,7 +60,7 @@ RSpec.describe BulkImports::ExportRequestWorker do
 
     context 'when entity is group' do
       let(:entity) { create(:bulk_import_entity, :group_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
-      let(:expected) { '/groups/foo%2Fbar/export_relations'}
+      let(:expected) { '/groups/foo%2Fbar/export_relations' }
 
       include_examples 'requests relations export for api resource'
     end

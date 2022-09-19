@@ -22,39 +22,39 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'merge',
-                                   worker: 'MergeWorker',
-                                   urgency: 'high',
-                                   external_dependencies: 'no',
-                                   feature_category: 'source_code_management',
-                                   boundary: '',
-                                   job_status: 'done' })
+                                     worker: 'MergeWorker',
+                                     urgency: 'high',
+                                     external_dependencies: 'no',
+                                     feature_category: 'source_code_management',
+                                     boundary: '',
+                                     job_status: 'done' })
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'merge',
-                                   worker: 'MergeWorker',
-                                   urgency: 'high',
-                                   external_dependencies: 'no',
-                                   feature_category: 'source_code_management',
-                                   boundary: '',
-                                   job_status: 'fail' })
+                                     worker: 'MergeWorker',
+                                     urgency: 'high',
+                                     external_dependencies: 'no',
+                                     feature_category: 'source_code_management',
+                                     boundary: '',
+                                     job_status: 'fail' })
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'default',
-                                   worker: 'Ci::BuildFinishedWorker',
-                                   urgency: 'high',
-                                   external_dependencies: 'no',
-                                   feature_category: 'continuous_integration',
-                                   boundary: 'cpu',
-                                   job_status: 'done' })
+                                     worker: 'Ci::BuildFinishedWorker',
+                                     urgency: 'high',
+                                     external_dependencies: 'no',
+                                     feature_category: 'continuous_integration',
+                                     boundary: 'cpu',
+                                     job_status: 'done' })
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'default',
-                                   worker: 'Ci::BuildFinishedWorker',
-                                   urgency: 'high',
-                                   external_dependencies: 'no',
-                                   feature_category: 'continuous_integration',
-                                   boundary: 'cpu',
-                                   job_status: 'fail' })
+                                     worker: 'Ci::BuildFinishedWorker',
+                                     urgency: 'high',
+                                     external_dependencies: 'no',
+                                     feature_category: 'continuous_integration',
+                                     boundary: 'cpu',
+                                     job_status: 'fail' })
 
           described_class.initialize_process_metrics
         end

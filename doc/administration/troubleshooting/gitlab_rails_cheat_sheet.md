@@ -28,22 +28,6 @@ mentioned above, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 
-## Find specific methods for an object
-
-```ruby
-Array.methods.select { |m| m.to_s.include? "sing" }
-Array.methods.grep(/sing/)
-```
-
-## Find method source
-
-```ruby
-instance_of_object.method(:foo).source_location
-
-# Example for when we would call project.private?
-project.method(:private?).source_location
-```
-
 ## Attributes
 
 View available attributes, formatted using pretty print (`pp`).
@@ -78,28 +62,6 @@ Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
 Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ```
 
-## Limiting output
-
-Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This can be used if you are already explicitly printing details and potentially have a lot of return output:
-
-```ruby
-puts ActiveRecord::Base.descendants; :ok
-Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
-```
-
-## Get or store the result of last operation
-
-Underscore(`_`) represents the implicit return of the previous statement. You can use this to quickly assign a variable from the output of the previous command:
-
-```ruby
-Project.last
-# => #<Project id:2537 root/discard>>
-project = _
-# => #<Project id:2537 root/discard>>
-project.id
-# => 2537
-```
-
 ## Open object in `irb`
 
 Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
@@ -113,15 +75,6 @@ project.irb
 # Notice new context
 irb(#<Project>)> web_url
 # => "https://gitlab-example/root/discard"
-```
-
-## Query the database using an ActiveRecord Model
-
-```ruby
-m = Model.where('attribute like ?', 'ex%')
-
-# for example to query the projects
-projects = Project.where('path like ?', 'Oumua%')
 ```
 
 ## View all keys in cache
@@ -164,18 +117,6 @@ Benchmark.bm do |x|
   x.report(:label1) { <operation_1> }
   x.report(:label2) { <operation_2> }
 end
-```
-
-## Feature flags
-
-### Show all feature flags that are enabled
-
-```ruby
-# Regular output
-Feature.all
-
-# Nice output
-Feature.all.map {|f| [f.name, f.state]}
 ```
 
 ## Projects
@@ -813,30 +754,6 @@ subgroup.members.map(&:errors).map(&:full_messages)
 subgroup.members_and_requesters.map(&:errors).map(&:full_messages)
 ```
 
-## Authentication
-
-### Re-enable standard web sign-in form
-
-Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
-
-You can use this method when a configured external authentication provider (through SSO or an LDAP configuration) is facing an outage and direct sign-in access to GitLab is required.
-
-```ruby
-Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
-```
-
-## SCIM
-
-### Find groups using an SQL query
-
-Find and store an array of groups based on an SQL query:
-
-```ruby
-# Finds groups and subgroups that end with '%oup'
-Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
-=> [#<Group id:3 @test-group>, #<Group id:4 @template-group/template-subgroup>]
-```
-
 ## Routes
 
 ### Remove redirecting routes
@@ -1173,6 +1090,38 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ## Geo
 
+### Reverify all uploads (or any SSF data type which is verified)
+
+1. SSH into a GitLab Rails node in the primary Geo site.
+1. Open [Rails console](../operations/rails_console.md).
+1. Mark all uploads as "pending verification":
+
+   ```ruby
+   Upload.verification_state_table_class.each_batch do |relation|
+     relation.update_all(verification_state: 0)
+   end
+   ```
+
+1. This will cause the primary to start checksumming all Uploads.
+1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+
+A similar thing can be done for all Models handled by the [Geo Self-Service Framework](../../development/geo/framework.md) which have implemented verification:
+
+- `LfsObject`
+- `MergeRequestDiff`
+- `Packages::PackageFile`
+- `Terraform::StateVersion`
+- `SnippetRepository`
+- `Ci::PipelineArtifact`
+- `PagesDeployment`
+- `Upload`
+- `Ci::JobArtifact`
+- `Ci::SecureFile`
+
+NOTE:
+`GroupWikiRepository` is not in the previous list since verification is not implemented.
+There is an [issue to implement this functionality in the Admin UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+
 ### Artifacts
 
 #### Find failed artifacts
@@ -1361,55 +1310,4 @@ Prints the metrics saved in `conversational_development_index_metrics`.
 
 ```shell
 rake gitlab:usage_data:generate_and_send
-```
-
-## Elasticsearch
-
-### Configuration attributes
-
-Open the rails console (`gitlab rails c`) and run the following command to see all the available attributes:
-
-```ruby
-ApplicationSetting.last.attributes
-```
-
-Among other attributes, the output contains all the settings available in the [Elasticsearch Integration page](../../integration/advanced_search/elasticsearch.md), such as `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, and `elasticsearch_pause_indexing`.
-
-#### Setting attributes
-
-You can then set anyone of Elasticsearch integration settings by issuing a command similar to:
-
-```ruby
-ApplicationSetting.last.update(elasticsearch_url: '<your ES URL and port>')
-
-#or
-
-ApplicationSetting.last.update(elasticsearch_indexing: false)
-```
-
-#### Getting attributes
-
-You can then check if the settings have been set in the [Elasticsearch Integration page](../../integration/advanced_search/elasticsearch.md) or in the rails console by issuing:
-
-```ruby
-Gitlab::CurrentSettings.elasticsearch_url
-
-#or
-
-Gitlab::CurrentSettings.elasticsearch_indexing
-```
-
-#### Changing the Elasticsearch password
-
-```ruby
-es_url = Gitlab::CurrentSettings.current_application_settings
-
-# Confirm the current ElasticSearch URL
-es_url.elasticsearch_url
-
-# Set the ElasticSearch URL
-es_url.elasticsearch_url = "http://<username>:<password>@your.es.host:<port>"
-
-# Save the change
-es_url.save!
 ```

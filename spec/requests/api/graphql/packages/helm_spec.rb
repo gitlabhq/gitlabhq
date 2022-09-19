@@ -5,7 +5,7 @@ RSpec.describe 'helm package details' do
   include GraphqlHelpers
   include_context 'package details setup'
 
-  let_it_be(:package) { create(:helm_package, project: project) }
+  let_it_be(:package) { create(:helm_package, :last_downloaded_at, project: project) }
 
   let(:package_files_metadata) { query_graphql_fragment('HelmFileMetadata') }
 

@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :group_member do
     access_level { GroupMember::OWNER }
     source { association(:group) }
+    member_namespace_id { source.id }
     user
 
     trait(:guest)     { access_level { GroupMember::GUEST } }

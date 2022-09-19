@@ -39,7 +39,7 @@ describe('Packages Cleanup Policy Settings Form', () => {
     label: 'packages_cleanup_policies',
   };
 
-  const findForm = () => wrapper.find({ ref: 'form-element' });
+  const findForm = () => wrapper.findComponent({ ref: 'form-element' });
   const findSaveButton = () => wrapper.findByTestId('save-button');
   const findKeepNDuplicatedPackageFilesDropdown = () =>
     wrapper.findByTestId('keep-n-duplicated-package-files-dropdown');

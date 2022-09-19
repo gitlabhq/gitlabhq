@@ -74,7 +74,8 @@ RSpec.describe GroupMember do
   describe '#update_two_factor_requirement' do
     it 'is called after creation and deletion' do
       user = build :user
-      group_member = build :group_member, user: user
+      group = create :group
+      group_member = build :group_member, user: user, group: group
 
       expect(user).to receive(:update_two_factor_requirement)
 
@@ -151,8 +152,8 @@ RSpec.describe GroupMember do
     context 'when importing' do
       it 'does not refresh' do
         expect(UserProjectAccessChangedService).not_to receive(:new)
-
-        member = build(:group_member)
+        group = create(:group)
+        member = build(:group_member, group: group)
         member.importing = true
         member.save!
       end

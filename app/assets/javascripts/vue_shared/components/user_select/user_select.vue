@@ -320,7 +320,7 @@ export default {
           <gl-dropdown-item
             v-if="isSearchEmpty"
             :is-checked="selectedIsEmpty"
-            :is-check-centered="true"
+            is-check-centered
             data-testid="unassign"
             @click.native.capture.stop="$emit('input', [])"
           >

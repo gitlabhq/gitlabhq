@@ -27,21 +27,27 @@ module Gitlab
 
       # Write jemalloc stats to the given directory
       # @param [String] path Directory path the dump will be put into
+      # @param [String] tmp_dir Directory path the dump will be streaming to. It is moved to `path` when finished.
       # @param [String] format `json` or `txt`
       # @param [String] filename_label Optional custom string that will be injected into the file name, e.g. `worker_0`
       # @return [String] Full path to the resulting dump file
-      def dump_stats(path:, format: STATS_DEFAULT_FORMAT, filename_label: nil)
+      def dump_stats(path:, tmp_dir: Dir.tmpdir, format: STATS_DEFAULT_FORMAT, filename_label: nil)
         verify_format!(format)
 
         format_settings = STATS_FORMATS[format]
+        tmp_file_path = File.join(tmp_dir, file_name(format_settings[:extension], filename_label))
         file_path = File.join(path, file_name(format_settings[:extension], filename_label))
 
         with_malloc_stats_print do |stats_print|
-          File.open(file_path, 'wb') do |io|
+          File.open(tmp_file_path, 'wb') do |io|
             write_stats(stats_print, io, format_settings)
           end
         end
 
+        # On OSX, `with_malloc_stats_print` is no-op, and, as result, no file will be written
+        return unless File.exist?(tmp_file_path)
+
+        FileUtils.mv(tmp_file_path, file_path)
         file_path
       end
 

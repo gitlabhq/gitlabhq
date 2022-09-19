@@ -20,7 +20,7 @@ describe('releases/components/tag_field_existing', () => {
     });
   };
 
-  const findInput = () => wrapper.find(GlFormInput);
+  const findInput = () => wrapper.findComponent(GlFormInput);
   const findHelp = () => wrapper.find('[data-testid="tag-name-help"]');
 
   beforeEach(() => {

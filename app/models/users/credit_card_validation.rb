@@ -21,5 +21,11 @@ module Users
         network: network
       ).order(credit_card_validated_at: :desc).includes(:user)
     end
+
+    def similar_holder_names_count
+      return 0 unless holder_name
+
+      self.class.where('lower(holder_name) = lower(:value)', value: holder_name).count
+    end
   end
 end

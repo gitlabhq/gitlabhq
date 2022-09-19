@@ -6,8 +6,8 @@ RSpec.describe 'package details' do
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be_with_reload(:composer_package) { create(:composer_package, :last_downloaded_at, project: project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:composer_package) { create(:composer_package, project: project) }
   let_it_be(:composer_json) { { name: 'name', type: 'type', license: 'license', version: 1 } }
   let_it_be(:composer_metadatum) do
     # we are forced to manually create the metadatum, without using the factory to force the sha to be a string
@@ -65,6 +65,17 @@ RSpec.describe 'package details' do
       end
     end
 
+    context 'with package without last_downloaded_at' do
+      before do
+        composer_package.update!(last_downloaded_at: nil)
+        subject
+      end
+
+      it 'matches the JSON schema' do
+        expect(package_details).to match_schema('graphql/packages/package_details')
+      end
+    end
+
     context 'with package files pending destruction' do
       let_it_be(:package_file) { create(:package_file, package: composer_package) }
       let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: composer_package) }
@@ -97,7 +108,7 @@ RSpec.describe 'package details' do
 
         expect(graphql_data_at(:a, :name)).to eq(composer_package.name)
 
-        expect_graphql_errors_to_include [/Package details can be requested only for one package at a time/]
+        expect_graphql_errors_to_include [/"package" field can be requested only for 1 Query\(s\) at a time./]
         expect(graphql_data_at(:b)).to be(nil)
       end
     end

@@ -8,8 +8,8 @@ import { imagesListResponse, pageInfo as defaultPageInfo } from '../../mock_data
 describe('Image List', () => {
   let wrapper;
 
-  const findRow = () => wrapper.findAll(ImageListRow);
-  const findPagination = () => wrapper.find(GlKeysetPagination);
+  const findRow = () => wrapper.findAllComponents(ImageListRow);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(Component, {

@@ -17,6 +17,7 @@
         selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
-        templates: available_service_desk_templates_for(@project) } }
+        templates: available_service_desk_templates_for(@project),
+        public_project: "#{@project.public?}" } }
     - elsif show_callout?('promote_service_desk_dismissed')
       = render 'shared/promotions/promote_servicedesk'

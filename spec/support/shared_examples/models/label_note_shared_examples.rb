@@ -12,7 +12,7 @@ RSpec.shared_examples 'label note created from events' do
   def label_refs(events)
     labels = events.map(&:label).compact
 
-    labels.map { |l| l.to_reference}.sort.join(' ')
+    labels.map { |l| l.to_reference }.sort.join(' ')
   end
 
   let(:time) { Time.now }

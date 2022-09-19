@@ -6,10 +6,10 @@ require_migration!
 
 RSpec.describe ResetSeverityLevelsToNewDefault do
   let(:approval_project_rules) { table(:approval_project_rules) }
-  let(:projects) { table(:projects)}
-  let(:namespaces) { table(:namespaces)}
-  let(:namespace) { namespaces.create!(name: 'namespace', path: 'namespace')}
-  let(:project) { projects.create!(name: 'project', path: 'project', namespace_id: namespace.id)}
+  let(:projects) { table(:projects) }
+  let(:namespaces) { table(:namespaces) }
+  let(:namespace) { namespaces.create!(name: 'namespace', path: 'namespace') }
+  let(:project) { projects.create!(name: 'project', path: 'project', namespace_id: namespace.id) }
   let(:approval_project_rule) { approval_project_rules.create!(name: 'rule', project_id: project.id, severity_levels: severity_levels) }
 
   context 'without having all severity levels selected' do
@@ -27,7 +27,7 @@ RSpec.describe ResetSeverityLevelsToNewDefault do
 
     it 'changes severity_levels to the default value' do
       expect(approval_project_rule.severity_levels).to eq(severity_levels)
-      expect { migrate! }.to change {approval_project_rule.reload.severity_levels}.from(severity_levels).to(default_levels)
+      expect { migrate! }.to change { approval_project_rule.reload.severity_levels }.from(severity_levels).to(default_levels)
     end
   end
 end

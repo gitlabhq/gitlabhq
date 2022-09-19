@@ -1,8 +1,10 @@
+import Audio from '~/content_editor/extensions/audio';
 import Bold from '~/content_editor/extensions/bold';
 import Blockquote from '~/content_editor/extensions/blockquote';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Diagram from '~/content_editor/extensions/diagram';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
@@ -21,22 +23,27 @@ import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
 import TableHeader from '~/content_editor/extensions/table_header';
+import TableOfContents from '~/content_editor/extensions/table_of_contents';
 import TableRow from '~/content_editor/extensions/table_row';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TaskList from '~/content_editor/extensions/task_list';
 import TaskItem from '~/content_editor/extensions/task_item';
+import Video from '~/content_editor/extensions/video';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
+import { SAFE_VIDEO_EXT, SAFE_AUDIO_EXT, DIAGRAM_LANGUAGES } from '~/content_editor/constants';
 
 import { createTestEditor, createDocBuilder } from './test_utils';
 
 const tiptapEditor = createTestEditor({
   extensions: [
+    Audio,
     Blockquote,
     Bold,
     BulletList,
     Code,
     CodeBlockHighlight,
+    Diagram,
     FootnoteDefinition,
     FootnoteReference,
     Frontmatter,
@@ -55,8 +62,10 @@ const tiptapEditor = createTestEditor({
     TableRow,
     TableHeader,
     TableCell,
+    TableOfContents,
     TaskList,
     TaskItem,
+    Video,
     ...HTMLNodes,
   ],
 });
@@ -65,12 +74,14 @@ const {
   builders: {
     doc,
     paragraph,
+    audio,
     bold,
     blockquote,
     bulletList,
     code,
     codeBlock,
     div,
+    diagram,
     footnoteDefinition,
     footnoteReference,
     frontmatter,
@@ -89,17 +100,21 @@ const {
     tableRow,
     tableHeader,
     tableCell,
+    tableOfContents,
     taskItem,
     taskList,
+    video,
   },
 } = createDocBuilder({
   tiptapEditor,
   names: {
+    audio: { nodeType: Audio.name },
     blockquote: { nodeType: Blockquote.name },
     bold: { markType: Bold.name },
     bulletList: { nodeType: BulletList.name },
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
+    diagram: { nodeType: Diagram.name },
     footnoteDefinition: { nodeType: FootnoteDefinition.name },
     footnoteReference: { nodeType: FootnoteReference.name },
     frontmatter: { nodeType: Frontmatter.name },
@@ -118,8 +133,10 @@ const {
     tableCell: { nodeType: TableCell.name },
     tableHeader: { nodeType: TableHeader.name },
     tableRow: { nodeType: TableRow.name },
+    tableOfContents: { nodeType: TableOfContents.name },
     taskItem: { nodeType: TaskItem.name },
     taskList: { nodeType: TaskList.name },
+    video: { nodeType: Video.name },
     ...HTMLNodes.reduce(
       (builders, htmlNode) => ({
         ...builders,
@@ -1232,6 +1249,62 @@ title: 'layout'
           "{ title: 'layout' }",
         ),
       ),
+    },
+    ...SAFE_AUDIO_EXT.map((extension) => {
+      const src = `http://test.host/video.${extension}`;
+      const markdown = `![audio](${src})`;
+
+      return {
+        markdown,
+        expectedDoc: doc(
+          paragraph(
+            source(markdown),
+            audio({
+              ...source(markdown),
+              canonicalSrc: src,
+              src,
+              alt: 'audio',
+            }),
+          ),
+        ),
+      };
+    }),
+    ...SAFE_VIDEO_EXT.map((extension) => {
+      const src = `http://test.host/video.${extension}`;
+      const markdown = `![video](${src})`;
+
+      return {
+        markdown,
+        expectedDoc: doc(
+          paragraph(
+            source(markdown),
+            video({
+              ...source(markdown),
+              canonicalSrc: src,
+              src,
+              alt: 'video',
+            }),
+          ),
+        ),
+      };
+    }),
+    ...DIAGRAM_LANGUAGES.map((language) => {
+      const markdown = `\`\`\`${language}
+content
+\`\`\``;
+
+      return {
+        markdown,
+        expectedDoc: doc(diagram({ ...source(markdown), language }, 'content')),
+      };
+    }),
+    {
+      markdown: '[[_TOC_]]',
+      expectedDoc: doc(tableOfContents(source('[[_TOC_]]'))),
+    },
+    {
+      markdown: '[TOC]',
+      expectedDoc: doc(tableOfContents(source('[TOC]'))),
     },
   ];
 

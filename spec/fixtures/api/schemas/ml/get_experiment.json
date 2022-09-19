@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "experiment"
+  ],
+  "properties": {
+    "experiment": {
+      "type": "object",
+      "required" : [
+        "experiment_id",
+        "name",
+        "artifact_location",
+        "lifecycle_stage"
+      ],
+      "properties" : {
+        "experiment_id": { "type": "string" },
+        "name": { "type": "string" },
+        "artifact_location": { "type": "string" },
+        "lifecycle_stage": { "type": { "enum" : ["active", "deleted"] } }
+      }
+    }
+  }
+}

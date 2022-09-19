@@ -28,8 +28,6 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
       closed_at
     ]
 
-    fields.each do |field_name|
-      expect(described_class).to have_graphql_fields(*fields)
-    end
+    expect(described_class).to have_graphql_fields(*fields)
   end
 end

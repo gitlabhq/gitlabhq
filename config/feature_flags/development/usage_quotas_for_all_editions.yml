@@ -1,0 +1,8 @@
+---
+name: usage_quotas_for_all_editions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96063
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371639
+milestone: '15.4'
+type: development
+group: group::utilization
+default_enabled: false

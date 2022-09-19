@@ -183,6 +183,22 @@ production: &base
     # plaintext. This can be a security risk.
     # display_initial_root_password: false
 
+  # Allows delivery of emails using Microsoft Graph API with OAuth 2.0 client credentials flow.
+  microsoft_graph_mailer:
+    enabled: false
+    # The unique identifier for the user. To use Microsoft Graph on behalf of the user.
+    # user_id: "YOUR-USER-ID"
+    # The directory tenant the application plans to operate against, in GUID or domain-name format.
+    # tenant: "YOUR-TENANT-ID"
+    # The application ID that's assigned to your app. You can find this information in the portal where you registered your app.
+    # client_id: "YOUR-CLIENT-ID"
+    # The client secret that you generated for your app in the app registration portal.
+    # client_secret: "YOUR-CLIENT-SECRET-ID"
+    # Defaults to "https://login.microsoftonline.com".
+    # azure_ad_endpoint:
+    # Defaults to "https://graph.microsoft.com".
+    # graph_endpoint:
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see https://docs.gitlab.com/ee/administration/reply_by_email.html

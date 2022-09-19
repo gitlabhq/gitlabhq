@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers'
 
 RSpec.describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers do
-  subject(:cop) { described_class.new }
-
   it 'flags violation for keyword arguments usage in perform method signature' do
     expect_offense(<<~RUBY)
       def perform(id:)

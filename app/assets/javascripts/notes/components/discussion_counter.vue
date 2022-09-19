@@ -1,7 +1,16 @@
 <script>
-import { GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlButton,
+  GlButtonGroup,
+  GlDropdown,
+  GlDropdownItem,
+  GlIcon,
+} from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
+import { throttle } from 'lodash';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
@@ -11,13 +20,22 @@ export default {
   components: {
     GlButton,
     GlButtonGroup,
+    GlDropdown,
+    GlDropdownItem,
+    GlIcon,
   },
-  mixins: [discussionNavigation],
+  mixins: [glFeatureFlagsMixin(), discussionNavigation],
   props: {
     blocksMerge: {
       type: Boolean,
       required: true,
     },
+  },
+  data() {
+    return {
+      jumpNext: throttle(this.jumpToNextDiscussion, 500),
+      jumpPrevious: throttle(this.jumpToPreviousDiscussion, 500),
+    };
   },
   computed: {
     ...mapGetters([
@@ -54,27 +72,44 @@ export default {
 <template>
   <div
     v-if="resolvableDiscussionsCount > 0"
+    id="discussionCounter"
     ref="discussionCounter"
     class="gl-display-flex discussions-counter"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-pl-4 gl-rounded-base gl-mr-3"
+      class="gl-display-flex gl-align-items-center gl-pl-4 gl-rounded-base gl-mr-3 gl-min-h-7"
       :class="{
         'gl-bg-orange-50': blocksMerge && !allResolved,
         'gl-bg-gray-50': !blocksMerge || allResolved,
-        'gl-pr-4': allResolved,
         'gl-pr-2': !allResolved,
       }"
       data-testid="discussions-counter-text"
     >
       <template v-if="allResolved">
         {{ __('All threads resolved!') }}
+        <gl-dropdown
+          size="small"
+          category="tertiary"
+          right
+          toggle-class="btn-icon"
+          class="gl-pt-0! gl-px-2 gl-h-full gl-ml-2"
+        >
+          <template #button-content>
+            <gl-icon name="ellipsis_v" class="mr-0" />
+          </template>
+          <gl-dropdown-item
+            data-testid="toggle-all-discussions-btn"
+            @click="handleExpandDiscussions"
+          >
+            {{ toggleThreadsLabel }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </template>
       <template v-else>
         {{ n__('%d unresolved thread', '%d unresolved threads', unresolvedDiscussionsCount) }}
         <gl-button-group class="gl-ml-3">
           <gl-button
-            v-gl-tooltip.hover
+            v-gl-tooltip:discussionCounter.hover.bottom
             :title="__('Go to previous unresolved thread')"
             :aria-label="__('Go to previous unresolved thread')"
             class="discussion-previous-btn gl-rounded-base! gl-px-2!"
@@ -83,10 +118,10 @@ export default {
             data-track-property="click_previous_unresolved_thread_top"
             icon="chevron-lg-up"
             category="tertiary"
-            @click="jumpToPreviousDiscussion"
+            @click="jumpPrevious"
           />
           <gl-button
-            v-gl-tooltip.hover
+            v-gl-tooltip:discussionCounter.hover.bottom
             :title="__('Go to next unresolved thread')"
             :aria-label="__('Go to next unresolved thread')"
             class="discussion-next-btn gl-rounded-base! gl-px-2!"
@@ -95,29 +130,33 @@ export default {
             data-track-property="click_next_unresolved_thread_top"
             icon="chevron-lg-down"
             category="tertiary"
-            @click="jumpToNextDiscussion"
+            @click="jumpNext"
           />
+          <gl-dropdown
+            size="small"
+            category="tertiary"
+            right
+            toggle-class="btn-icon"
+            class="gl-pt-0! gl-px-2"
+          >
+            <template #button-content>
+              <gl-icon name="ellipsis_v" class="mr-0" />
+            </template>
+            <gl-dropdown-item
+              data-testid="toggle-all-discussions-btn"
+              @click="handleExpandDiscussions"
+            >
+              {{ toggleThreadsLabel }}
+            </gl-dropdown-item>
+            <gl-dropdown-item
+              v-if="resolveAllDiscussionsIssuePath && !allResolved"
+              :href="resolveAllDiscussionsIssuePath"
+            >
+              {{ __('Create issue to resolve all threads') }}
+            </gl-dropdown-item>
+          </gl-dropdown>
         </gl-button-group>
       </template>
     </div>
-    <gl-button-group>
-      <gl-button
-        v-gl-tooltip
-        :title="toggleThreadsLabel"
-        :aria-label="toggleThreadsLabel"
-        class="toggle-all-discussions-btn"
-        :icon="allExpanded ? 'collapse' : 'expand'"
-        @click="handleExpandDiscussions"
-      />
-      <gl-button
-        v-if="resolveAllDiscussionsIssuePath && !allResolved"
-        v-gl-tooltip
-        :href="resolveAllDiscussionsIssuePath"
-        :title="__('Create issue to resolve all threads')"
-        :aria-label="__('Create issue to resolve all threads')"
-        class="new-issue-for-discussion discussion-create-issue-btn"
-        icon="issue-new"
-      />
-    </gl-button-group>
   </div>
 </template>

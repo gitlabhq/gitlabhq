@@ -62,9 +62,14 @@ module OmniAuth
       end
 
       extra do
-        prune!(
-          raw_info.delete_if{ |k,v| AuthHashSchemaKeys.include?(k) }
-        )
+        hash = {}
+
+        unless skip_info?
+          hash = raw_info.dup
+          hash.delete_if { |k, _v| AuthHashSchemaKeys.include?(k) }
+        end
+
+        prune! hash
       end
 
       uid do

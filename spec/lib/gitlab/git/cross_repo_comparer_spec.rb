@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Git::CrossRepoComparer do
   def create_commit(user, repo, branch)
     action = { action: :create, file_path: '/FILE', content: 'content' }
 
-    result = repo.multi_action(user, branch_name: branch, message: 'Commit', actions: [action])
+    result = repo.commit_files(user, branch_name: branch, message: 'Commit', actions: [action])
 
     result.newrev
   end

@@ -10,11 +10,7 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
-  ignore_column %i[max_package_files_for_package_destruction], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
-  ignore_column :pseudonymizer_enabled, remove_with: '15.1', remove_after: '2022-06-22'
-  ignore_column :enforce_ssh_key_expiration, remove_with: '15.2', remove_after: '2022-07-22'
-  ignore_column :enforce_pat_expiration, remove_with: '15.2', remove_after: '2022-07-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -221,6 +217,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0,
                             less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
 
+  validates :max_pages_custom_domains_per_project,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :jobs_per_stage_page_size,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -404,6 +404,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :invisible_captcha_enabled,
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
+
+  validates :invitation_flow_enforcement,
+            allow_nil: false,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
   Gitlab::SSHPublicKey.supported_types.each do |type|
@@ -621,6 +625,10 @@ class ApplicationSetting < ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
             numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
+  validates :cube_api_base_url,
+            addressable_url: { allow_localhost: true, allow_local_network: false },
+            allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -658,6 +666,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :database_grafana_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :cube_api_key, encryption_options_base_32_aes_256_gcm
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }

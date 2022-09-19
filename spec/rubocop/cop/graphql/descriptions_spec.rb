@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/descriptions'
 
 RSpec.describe RuboCop::Cop::Graphql::Descriptions do
-  subject(:cop) { described_class.new }
-
   context 'with fields' do
     it 'adds an offense when there is no description' do
       expect_offense(<<~TYPE)

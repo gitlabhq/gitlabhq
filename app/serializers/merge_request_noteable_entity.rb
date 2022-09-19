@@ -10,6 +10,15 @@ class MergeRequestNoteableEntity < IssuableEntity
   expose :state
   expose :source_branch
   expose :target_branch
+
+  expose :source_branch_path, if: -> (merge_request) { merge_request.source_project } do |merge_request|
+    project_tree_path(merge_request.source_project, merge_request.source_branch)
+  end
+
+  expose :target_branch_path, if: -> (merge_request) { merge_request.source_project } do |merge_request|
+    project_tree_path(merge_request.source_project, merge_request.target_branch)
+  end
+
   expose :diff_head_sha
 
   expose :create_note_path do |merge_request|
@@ -40,6 +49,10 @@ class MergeRequestNoteableEntity < IssuableEntity
     expose :can_update do |merge_request|
       can?(current_user, :update_merge_request, merge_request)
     end
+
+    expose :can_approve do |merge_request|
+      merge_request.can_be_approved_by?(current_user)
+    end
   end
 
   expose :locked_discussion_docs_path, if: -> (merge_request) { merge_request.discussion_locked? } do |merge_request|
@@ -65,3 +78,5 @@ class MergeRequestNoteableEntity < IssuableEntity
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 end
+
+MergeRequestNoteableEntity.prepend_mod_with('MergeRequestNoteableEntity')

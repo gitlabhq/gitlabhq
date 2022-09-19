@@ -7,7 +7,7 @@ module Emails
       @project = @remote_mirror.project
       user = User.find(recipient_id)
 
-      mail(to: user.notification_email_for(@project.group), subject: subject('Remote mirror update failed'))
+      mail_with_locale(to: user.notification_email_for(@project.group), subject: subject('Remote mirror update failed'))
     end
   end
 end

@@ -92,6 +92,8 @@ module Types
                                              description: 'Indicates the job is stuck.'
       field :triggered, GraphQL::Types::Boolean, null: true,
                                                  description: 'Whether the job was triggered.'
+      field :web_path, GraphQL::Types::String, null: true,
+                                               description: 'Web path of the job.'
 
       def kind
         return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)
@@ -179,6 +181,10 @@ module Types
 
       def ref_path
         ::Gitlab::Routing.url_helpers.project_commits_path(object.project, ref_name)
+      end
+
+      def web_path
+        ::Gitlab::Routing.url_helpers.project_job_path(object.project, object)
       end
 
       def coverage

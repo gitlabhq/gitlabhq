@@ -42,7 +42,7 @@ describe('Alert Metrics', () => {
   });
 
   describe('Empty state', () => {
-    it('should display a message when metrics dashboard url is not provided ', () => {
+    it('should display a message when metrics dashboard url is not provided', () => {
       mountComponent();
       expect(findChart().exists()).toBe(false);
       expect(findEmptyState().text()).toBe("Metrics weren't available in the alerts payload.");

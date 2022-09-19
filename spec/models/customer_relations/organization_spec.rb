@@ -146,14 +146,42 @@ RSpec.describe CustomerRelations::Organization, type: :model do
     end
   end
 
-  describe '.sort_by_name' do
-    let_it_be(:organization_a) { create(:organization, group: group, name: "c") }
-    let_it_be(:organization_b) { create(:organization, group: group, name: "a") }
-    let_it_be(:organization_c) { create(:organization, group: group, name: "b") }
+  describe '.counts_by_state' do
+    before do
+      create_list(:organization, 3, group: group)
+      create_list(:organization, 2, group: group, state: 'inactive')
+    end
 
-    context 'when sorting the organizations' do
+    it 'returns correct organization counts' do
+      counts = group.organizations.counts_by_state
+
+      expect(counts['active']).to be(3)
+      expect(counts['inactive']).to be(2)
+    end
+
+    it 'returns 0 with no results' do
+      counts = group.organizations.where(id: non_existing_record_id).counts_by_state
+
+      expect(counts['active']).to be(0)
+      expect(counts['inactive']).to be(0)
+    end
+  end
+
+  describe 'sorting' do
+    let_it_be(:organization_a) { create(:organization, group: group, name: "c", description: "1") }
+    let_it_be(:organization_b) { create(:organization, group: group, name: "a") }
+    let_it_be(:organization_c) { create(:organization, group: group, name: "b", description: "2") }
+
+    describe '.sort_by_name' do
       it 'sorts them by name in ascendent order' do
         expect(group.organizations.sort_by_name).to eq([organization_b, organization_c, organization_a])
+      end
+    end
+
+    describe '.sort_by_field' do
+      it 'sorts them by description in descending order' do
+        expect(group.organizations.sort_by_field('description', :desc))
+          .to eq([organization_c, organization_a, organization_b])
       end
     end
   end

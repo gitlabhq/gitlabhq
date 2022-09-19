@@ -7,14 +7,15 @@ import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import {
   HARBOR_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
+  HARBOR_REGISTRY_HELP_PAGE_PATH,
 } from '~/packages_and_registries/harbor_registry/constants/index';
 
 describe('harbor_list_header', () => {
   let wrapper;
 
-  const findTitleArea = () => wrapper.find(TitleArea);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findCommandsSlot = () => wrapper.find('[data-testid="commands-slot"]');
-  const findImagesMetaDataItem = () => wrapper.find(MetadataItem);
+  const findImagesMetaDataItem = () => wrapper.findComponent(MetadataItem);
 
   const mountComponent = async (propsData, slots) => {
     wrapper = shallowMount(HarborListHeader, {
@@ -77,10 +78,10 @@ describe('harbor_list_header', () => {
   describe('info messages', () => {
     describe('default message', () => {
       it('is correctly bound to title_area props', () => {
-        mountComponent({ helpPagePath: 'foo' });
+        mountComponent();
 
         expect(findTitleArea().props('infoMessages')).toEqual([
-          { text: LIST_INTRO_TEXT, link: 'foo' },
+          { text: LIST_INTRO_TEXT, link: HARBOR_REGISTRY_HELP_PAGE_PATH },
         ]);
       });
     });

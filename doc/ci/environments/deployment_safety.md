@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deployment safety **(FREE)**
 
-[Deployment jobs](../jobs/#deployment-jobs) are a specific kind of CI/CD
+[Deployment jobs](../jobs/index.md#deployment-jobs) are a specific kind of CI/CD
 job. They can be more sensitive than other jobs in a pipeline,
 and might need to be treated with extra care. GitLab has several features
 that help maintain deployment security and stability.
@@ -66,7 +66,7 @@ For more information, see [Resource Group documentation](../resource_groups/inde
 ## Skip outdated deployment jobs
 
 The effective execution order of pipeline jobs can vary from run to run, which
-could cause undesired behavior. For example, a [deployment job](../jobs/#deployment-jobs)
+could cause undesired behavior. For example, a [deployment job](../jobs/index.md#deployment-jobs)
 in a newer pipeline could finish before a deployment job in an older pipeline.
 This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.
@@ -131,7 +131,7 @@ All users with the Maintainer role for the project have access to production sec
 that can deploy to a production environment, you can create a separate project and configure a new
 permission model that isolates the CD permissions from the original project and prevents the
 original users with the Maintainer role for the project from accessing the production secret and CD configuration. You can
-connect the CD project to your development projects by using [multi-project pipelines](../pipelines/multi_project_pipelines.md).
+connect the CD project to your development projects by using [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines).
 
 ## Protect `.gitlab-ci.yml` from change
 

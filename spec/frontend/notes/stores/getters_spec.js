@@ -211,7 +211,7 @@ describe('Getters Notes Store', () => {
 
   describe('isNotesFetched', () => {
     it('should return the state for the fetching notes', () => {
-      expect(getters.isNotesFetched(state)).toBeFalsy();
+      expect(getters.isNotesFetched(state)).toBe(false);
     });
   });
 
@@ -512,8 +512,8 @@ describe('Getters Notes Store', () => {
         unresolvedDiscussionsIdsByDate: [],
       };
 
-      expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(true)).toBeFalsy();
-      expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(false)).toBeFalsy();
+      expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(true)).toBeUndefined();
+      expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(false)).toBeUndefined();
     });
   });
 

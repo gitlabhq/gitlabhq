@@ -13,7 +13,8 @@
     "pipelines",
     "versions",
     "status",
-    "canDestroy"
+    "canDestroy",
+    "lastDownloadedAt"
   ],
   "properties": {
     "id": {
@@ -173,6 +174,9 @@
     },
     "composerConfigRepositoryUrl": {
       "type": "string"
+    },
+    "lastDownloadedAt": {
+      "type": ["string", "null"]
     }
   }
 }

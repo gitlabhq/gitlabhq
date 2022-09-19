@@ -27,15 +27,15 @@ RSpec.describe StorageHelper do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:               namespace,
-                               repository_size:         10.kilobytes,
-                               wiki_size:               10.bytes,
-                               lfs_objects_size:        20.gigabytes,
-                               build_artifacts_size:    30.megabytes,
+                               namespace: namespace,
+                               repository_size: 10.kilobytes,
+                               wiki_size: 10.bytes,
+                               lfs_objects_size: 20.gigabytes,
+                               build_artifacts_size: 30.megabytes,
                                pipeline_artifacts_size: 11.megabytes,
-                               snippets_size:           40.megabytes,
-                               packages_size:           12.megabytes,
-                               uploads_size:            15.megabytes))
+                               snippets_size: 40.megabytes,
+                               packages_size: 12.megabytes,
+                               uploads_size: 15.megabytes))
     end
 
     let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / Pipeline Artifacts: 11 MB / LFS: 20 GB / Snippets: 40 MB / Packages: 12 MB / Uploads: 15 MB' }
@@ -48,149 +48,6 @@ RSpec.describe StorageHelper do
       namespace_stats = Namespace.with_statistics.find(project.namespace.id)
 
       expect(helper.storage_counters_details(namespace_stats)).to eq(message)
-    end
-  end
-
-  describe "storage_enforcement_banner" do
-    let_it_be_with_refind(:current_user) { create(:user) }
-    let_it_be(:free_group) { create(:group) }
-    let_it_be(:paid_group) { create(:group) }
-
-    before do
-      allow(helper).to receive(:can?).with(current_user, :maintainer_access, free_group).and_return(true)
-      allow(helper).to receive(:can?).with(current_user, :maintainer_access, paid_group).and_return(true)
-      allow(helper).to receive(:current_user) { current_user }
-      allow(paid_group).to receive(:paid?).and_return(true)
-
-      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
-    end
-
-    describe "#storage_enforcement_banner_info" do
-      it 'returns nil when namespace is not free' do
-        expect(helper.storage_enforcement_banner_info(paid_group)).to be(nil)
-      end
-
-      it 'returns nil when storage_enforcement_date is not set' do
-        allow(free_group).to receive(:storage_enforcement_date).and_return(nil)
-
-        expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
-      end
-
-      describe 'when storage_enforcement_date is set' do
-        let_it_be(:storage_enforcement_date) { Date.today + 30 }
-
-        before do
-          allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
-        end
-
-        it 'returns nil when current_user do not have access usage quotas page' do
-          allow(helper).to receive(:can?).with(current_user, :maintainer_access, free_group).and_return(false)
-
-          expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
-        end
-
-        it 'returns nil when namespace_storage_limit_show_preenforcement_banner FF is disabled' do
-          stub_feature_flags(namespace_storage_limit_show_preenforcement_banner: false)
-
-          expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
-        end
-
-        context 'when current_user can access the usage quotas page' do
-          it 'returns a hash' do
-            used_storage = helper.storage_counter(free_group.root_storage_statistics&.storage_size || 0)
-
-            expect(helper.storage_enforcement_banner_info(free_group)).to eql({
-              text_paragraph_1: "Effective #{storage_enforcement_date}, namespace storage limits will apply to the <strong>#{free_group.name}</strong> namespace. View the <a href=\"/help/user/usage_quotas#namespace-storage-limit-enforcement-schedule\" >rollout schedule for this change</a>.",
-              text_paragraph_2: "The namespace is currently using <strong>#{used_storage}</strong> of namespace storage. Group owners can view namespace storage usage and purchase more from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more.</a>",
-              text_paragraph_3: "See our <a href=\"https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier\" >FAQ</a> for more information.",
-              variant: 'warning',
-              namespace_id: free_group.id,
-              callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
-              callouts_path: '/-/users/group_callouts'
-            })
-          end
-
-          context 'when namespace has used storage' do
-            before do
-              create(:namespace_root_storage_statistics, namespace: free_group, storage_size: 102400)
-            end
-
-            it 'returns a hash with the correct storage size text' do
-              expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_2]).to eql("The namespace is currently using <strong>100 KB</strong> of namespace storage. Group owners can view namespace storage usage and purchase more from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more.</a>")
-            end
-          end
-
-          context 'when the given group is a sub-group' do
-            let_it_be(:sub_group) { build(:group) }
-
-            before do
-              allow(helper).to receive(:can?).with(current_user, :maintainer_access, sub_group).and_return(true)
-              allow(sub_group).to receive(:root_ancestor).and_return(free_group)
-            end
-
-            it 'returns the banner hash' do
-              expect(helper.storage_enforcement_banner_info(sub_group).keys).to match_array(%i(text_paragraph_1 text_paragraph_2 text_paragraph_3 variant namespace_id callouts_feature_name callouts_path))
-            end
-          end
-        end
-      end
-
-      context 'when the :storage_banner_bypass_date_check is enabled', :freeze_time do
-        before do
-          stub_feature_flags(namespace_storage_limit_bypass_date_check: true)
-        end
-
-        it 'returns the enforcement info' do
-          puts helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]
-          expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]).to include("Effective #{Date.current}, namespace storage limits will apply")
-        end
-      end
-
-      context 'when storage_enforcement_date is set and dismissed callout exists' do
-        before do
-          create(:group_callout,
-                 user: current_user,
-                 group_id: free_group.id,
-                 feature_name: 'storage_enforcement_banner_second_enforcement_threshold')
-          storage_enforcement_date = Date.today + 30
-          allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
-        end
-
-        it { expect(helper.storage_enforcement_banner_info(free_group)).to be(nil) }
-      end
-
-      context 'callouts_feature_name' do
-        let(:days_from_now) { 45 }
-
-        subject do
-          storage_enforcement_date = Date.today + days_from_now
-          allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
-
-          helper.storage_enforcement_banner_info(free_group)[:callouts_feature_name]
-        end
-
-        it 'returns first callouts_feature_name' do
-          is_expected.to eq('storage_enforcement_banner_first_enforcement_threshold')
-        end
-
-        context 'returns second callouts_feature_name' do
-          let(:days_from_now) { 20 }
-
-          it { is_expected.to eq('storage_enforcement_banner_second_enforcement_threshold') }
-        end
-
-        context 'returns third callouts_feature_name' do
-          let(:days_from_now) { 13 }
-
-          it { is_expected.to eq('storage_enforcement_banner_third_enforcement_threshold') }
-        end
-
-        context 'returns fourth callouts_feature_name' do
-          let(:days_from_now) { 3 }
-
-          it { is_expected.to eq('storage_enforcement_banner_fourth_enforcement_threshold') }
-        end
-      end
     end
   end
 end

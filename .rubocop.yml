@@ -44,7 +44,7 @@ AllCops:
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
-  MaxFilesInCache: 30000
+  MaxFilesInCache: 35000
 
 Metrics/ParameterLists:
   Exclude:
@@ -566,21 +566,8 @@ Graphql/Descriptions:
 RSpec/ImplicitSubject:
   Enabled: false
 
-RSpec/DescribedClass:
-  Enabled: false
-
-RSpec/SharedExamples:
-  Enabled: false
-
-RSpec/EmptyLineAfterExampleGroup:
-  Enabled: false
-
-RSpec/ReceiveNever:
-  Enabled: false
-
-RSpec/MissingExampleGroupArgument:
-  Enabled: false
-
+# Already covered by `RSpec::Configuration#on_potential_false_positives = :raise`.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86429
 RSpec/UnspecifiedException:
   Enabled: false
 
@@ -611,9 +598,6 @@ Style/MultilineWhenThen:
 # performing code as seen in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36221#note_375659681
 Style/NumericPredicate:
   EnforcedStyle: comparison
-
-Style/FloatDivision:
-  Enabled: false
 
 Cop/BanCatchThrow:
   Enabled: true

@@ -79,7 +79,8 @@ The Rake task uses three parameters to find uploads to migrate:
 
 NOTE:
 These parameters are mainly internal to the structure of GitLab, you may want to refer to the task list
-instead below.
+instead below. After running these individual tasks, we recommend that you run the [all-in-one Rake task](#all-in-one-rake-task)
+to migrate any uploads not included in the listed types.
 
 This task also accepts an environment variable which you can use to override
 the default batch size:

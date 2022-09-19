@@ -35,10 +35,7 @@ module Milestones
 
     # rubocop: disable CodeReuse/ActiveRecord
     def milestones_to_transfer
-      Milestone.from_union([
-          group_milestones_applied_to_issues,
-          group_milestones_applied_to_merge_requests
-        ])
+      Milestone.from_union([group_milestones_applied_to_issues, group_milestones_applied_to_merge_requests])
         .reorder(nil)
         .distinct
     end

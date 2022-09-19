@@ -7,10 +7,10 @@ import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import SnippetTitle from '~/snippets/components/snippet_title.vue';
 import {
-  SNIPPET_VISIBILITY_INTERNAL,
-  SNIPPET_VISIBILITY_PRIVATE,
-  SNIPPET_VISIBILITY_PUBLIC,
-} from '~/snippets/constants';
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+} from '~/visibility_level/constants';
 import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 
@@ -69,7 +69,7 @@ describe('Snippet view app', () => {
     createComponent({
       data: {
         snippet: {
-          visibilityLevel: SNIPPET_VISIBILITY_PUBLIC,
+          visibilityLevel: VISIBILITY_LEVEL_PUBLIC_STRING,
           webUrl: 'http://foo.bar',
         },
       },
@@ -85,7 +85,7 @@ describe('Snippet view app', () => {
         },
       },
     });
-    const blobs = wrapper.findAll(SnippetBlob);
+    const blobs = wrapper.findAllComponents(SnippetBlob);
     expect(blobs.length).toBe(2);
     expect(blobs.at(0).props('blob')).toEqual(Blob);
     expect(blobs.at(1).props('blob')).toEqual(BinaryBlob);
@@ -93,11 +93,11 @@ describe('Snippet view app', () => {
 
   describe('Embed dropdown rendering', () => {
     it.each`
-      visibilityLevel                | condition       | isRendered
-      ${SNIPPET_VISIBILITY_INTERNAL} | ${'not render'} | ${false}
-      ${SNIPPET_VISIBILITY_PRIVATE}  | ${'not render'} | ${false}
-      ${'foo'}                       | ${'not render'} | ${false}
-      ${SNIPPET_VISIBILITY_PUBLIC}   | ${'render'}     | ${true}
+      visibilityLevel                     | condition       | isRendered
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${'not render'} | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${'not render'} | ${false}
+      ${'foo'}                            | ${'not render'} | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${'render'}     | ${true}
     `('does $condition embed-dropdown by default', ({ visibilityLevel, isRendered }) => {
       createComponent({
         data: {

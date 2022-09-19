@@ -22,7 +22,7 @@ module GoogleApi
         "https://www.googleapis.com/auth/logging.write",
         "https://www.googleapis.com/auth/monitoring"
       ].freeze
-      ROLES_LIST = %w[roles/iam.serviceAccountUser roles/artifactregistry.admin roles/cloudbuild.builds.builder roles/run.admin roles/storage.admin roles/cloudsql.admin roles/browser].freeze
+      ROLES_LIST = %w[roles/iam.serviceAccountUser roles/artifactregistry.admin roles/cloudbuild.builds.builder roles/run.admin roles/storage.admin roles/cloudsql.client roles/browser].freeze
       REVOKE_URL = 'https://oauth2.googleapis.com/revoke'
 
       class << self

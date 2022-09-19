@@ -277,7 +277,7 @@ RSpec.describe BulkImports::FileDownloadService do
         let_it_be(:content_disposition) { 'filename="../../xxx.b"' }
 
         before do
-          stub_const("#{described_class}::FILENAME_SIZE_LIMIT", 1)
+          stub_const('BulkImports::FileDownloads::FilenameFetch::FILENAME_SIZE_LIMIT', 1)
         end
 
         it 'raises an error when the filename is not provided in the request header' do

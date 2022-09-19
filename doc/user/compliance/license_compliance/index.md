@@ -736,7 +736,9 @@ Note, the merge request is not able to be merged until the `denied` license is r
 You may add a [`License-Check` approval rule](#enabling-license-approvals-within-a-project),
 which enables a designated approver that can approve and then merge a merge request with `denied` license.
 
-![Merge request with denied licenses](img/denied_licenses_v13_3.png)
+These policies can be configured by using the [Managed Licenses API](../../../api/managed_licenses.md).
+
+![Merge request with denied licenses](img/denied_licenses_v15_3.png)
 
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.
@@ -763,7 +765,7 @@ license.
 
 You can enable `License-Check` one of two ways:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** or **Edit**.
@@ -792,6 +794,18 @@ An approval is optional when a license report:
 We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
 
 ## Troubleshooting
+
+### The License Compliance widget is stuck in a loading state
+
+A loading spinner is displayed in the following scenarios:
+
+- While the pipeline is in progress.
+- If the pipeline is complete, but still parsing the results in the background.
+- If the license scanning job is complete, but the pipeline is still running.
+
+The License Compliance widget polls every few seconds for updated results. When the pipeline is complete, the first poll after pipeline completion triggers the parsing of the results. This can take a few seconds depending on the size of the generated report.
+
+The final state is when a successful pipeline run has been completed, parsed, and the licenses displayed in the widget.
 
 ### ASDF_PYTHON_VERSION does not automatically install the version
 
@@ -888,3 +902,17 @@ root@6abb70e9f193:~#
 
 NOTE:
 Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet) is currently not supported.
+
+### LicenseFinder::Maven: is not installed error
+
+If your project contains a `mvnw` or `mvnw.cmd` file, then the license scanning job may fail with the `LicenseFinder::Maven: is not installed error` error. To resolve this, modify the license scanning job to remove the files in the `before_script` section. Example:
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  before_script:
+    - rm mvnw
+    - rm mvnw.cmd
+```

@@ -61,7 +61,7 @@ RSpec.describe "Group Runners" do
 
       it 'shows a group badge' do
         within_runner_row(group_runner.id) do
-          expect(page).to have_selector '.badge', text: 'group'
+          expect(page).to have_selector '.badge', text: s_('Runners|Group')
         end
       end
 
@@ -101,9 +101,9 @@ RSpec.describe "Group Runners" do
         let(:runner) { project_runner }
       end
 
-      it 'shows a project (specific) badge' do
+      it 'shows a project badge' do
         within_runner_row(project_runner.id) do
-          expect(page).to have_selector '.badge', text: 'specific'
+          expect(page).to have_selector '.badge', text: s_('Runners|Project')
         end
       end
 
@@ -137,52 +137,38 @@ RSpec.describe "Group Runners" do
         focus_filtered_search
 
         page.within(search_bar_selector) do
-          expect(page).to have_link('Paused')
+          expect(page).to have_link(s_('Runners|Paused'))
           expect(page).to have_content('Status')
         end
       end
     end
   end
 
-  describe "Group runner edit page", :js do
-    let!(:runner) do
-      create(:ci_runner, :group, groups: [group], description: 'runner-foo', contacted_at: Time.zone.now)
+  describe "Group runner show page", :js do
+    let!(:group_runner) do
+      create(:ci_runner, :group, groups: [group], description: 'runner-foo')
     end
 
     it 'user views runner details' do
-      visit group_runner_path(group, runner)
+      visit group_runner_path(group, group_runner)
 
       expect(page).to have_content "#{s_('Runners|Description')} runner-foo"
     end
+  end
 
-    it 'user edits the runner to be protected' do
-      visit edit_group_runner_path(group, runner)
-
-      expect(page.find_field('runner[access_level]')).not_to be_checked
-
-      check 'runner_access_level'
-      click_button _('Save changes')
-
-      expect(page).to have_content "#{s_('Runners|Configuration')} #{s_('Runners|Protected')}"
+  describe "Group runner edit page", :js do
+    let!(:group_runner) do
+      create(:ci_runner, :group, groups: [group])
     end
 
-    context 'when a runner has a tag' do
-      before do
-        runner.update!(tag_list: ['tag1'])
-      end
+    before do
+      visit edit_group_runner_path(group, group_runner)
+      wait_for_requests
+    end
 
-      it 'user edits runner not to run untagged jobs' do
-        visit edit_group_runner_path(group, runner)
-
-        page.find_field('runner[tag_list]').set('tag1, tag2')
-
-        uncheck 'runner_run_untagged'
-        click_button _('Save changes')
-
-        # Tags can be in any order
-        expect(page).to have_content /#{s_('Runners|Tags')}.*tag1/
-        expect(page).to have_content /#{s_('Runners|Tags')}.*tag2/
-      end
+    it_behaves_like 'submits edit runner form' do
+      let(:runner) { group_runner }
+      let(:runner_page_path) { group_runner_path(group, group_runner) }
     end
   end
 end

@@ -40,12 +40,13 @@ describe('NotificationsDropdown', () => {
     });
   }
 
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
-  const findAllNotificationsDropdownItems = () => wrapper.findAll(NotificationsDropdownItem);
+  const findAllNotificationsDropdownItems = () =>
+    wrapper.findAllComponents(NotificationsDropdownItem);
   const findDropdownItemAt = (index) =>
-    findAllNotificationsDropdownItems().at(index).find(GlDropdownItem);
-  const findNotificationsModal = () => wrapper.find(CustomNotificationsModal);
+    findAllNotificationsDropdownItems().at(index).findComponent(GlDropdownItem);
+  const findNotificationsModal = () => wrapper.findComponent(CustomNotificationsModal);
 
   const clickDropdownItemAt = async (index) => {
     const dropdownItem = findDropdownItemAt(index);
@@ -243,7 +244,7 @@ describe('NotificationsDropdown', () => {
       expect(dropdownItem.props('isChecked')).toBe(true);
     });
 
-    it("won't update the selectedNotificationLevel and shows a toast message when the request fails and ", async () => {
+    it("won't update the selectedNotificationLevel and shows a toast message when the request fails and", async () => {
       mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
       wrapper = createComponent();
 

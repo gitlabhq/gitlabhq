@@ -65,6 +65,13 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
         expect(instrumentation_class_b.get_request_count).to eq(2)
       end
     end
+
+    it 'increments by the given amount' do
+      instrumentation_class_a.increment_request_count(2)
+      instrumentation_class_a.increment_request_count(3)
+
+      expect(instrumentation_class_a.get_request_count).to eq(5)
+    end
   end
 
   describe '.increment_write_bytes' do
@@ -103,21 +110,21 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
     context 'storage key overlapping' do
       it 'keys do not overlap across storages' do
         2.times do
-          instrumentation_class_a.add_call_details(0.3, [:set])
-          instrumentation_class_b.add_call_details(0.4, [:set])
+          instrumentation_class_a.add_call_details(0.3, [[:set]])
+          instrumentation_class_b.add_call_details(0.4, [[:set]])
         end
 
         expect(instrumentation_class_a.detail_store).to match(
           [
-            a_hash_including(cmd: :set, duration: 0.3, backtrace: an_instance_of(Array)),
-            a_hash_including(cmd: :set, duration: 0.3, backtrace: an_instance_of(Array))
+            a_hash_including(commands: [[:set]], duration: 0.3, backtrace: an_instance_of(Array)),
+            a_hash_including(commands: [[:set]], duration: 0.3, backtrace: an_instance_of(Array))
           ]
         )
 
         expect(instrumentation_class_b.detail_store).to match(
           [
-            a_hash_including(cmd: :set, duration: 0.4, backtrace: an_instance_of(Array)),
-            a_hash_including(cmd: :set, duration: 0.4, backtrace: an_instance_of(Array))
+            a_hash_including(commands: [[:set]], duration: 0.4, backtrace: an_instance_of(Array)),
+            a_hash_including(commands: [[:set]], duration: 0.4, backtrace: an_instance_of(Array))
           ]
         )
       end

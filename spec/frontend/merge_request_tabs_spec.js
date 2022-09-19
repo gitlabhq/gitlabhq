@@ -333,7 +333,7 @@ describe('MergeRequestTabs', () => {
       ${'show'}    | ${false} | ${'shows'}
       ${'diffs'}   | ${true}  | ${'hides'}
       ${'commits'} | ${true}  | ${'hides'}
-    `('it $hidesText expand button on $tab tab', ({ tab, hides }) => {
+    `('$hidesText expand button on $tab tab', ({ tab, hides }) => {
       window.gon = { features: { movedMrSidebar: true } };
 
       const expandButton = document.createElement('div');

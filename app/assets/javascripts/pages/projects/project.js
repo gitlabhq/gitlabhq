@@ -141,7 +141,7 @@ export default class Project {
               if (doesPathContainRef) {
                 // We are ignoring the url containing the ref portion
                 // and plucking the thereafter portion to reconstructure the url that is correct
-                const targetPath = splitPathAfterRefPortion?.slice(1).split('#')[0];
+                const targetPath = splitPathAfterRefPortion?.slice(1).split('#')[0].split('?')[0];
                 selectedUrl.searchParams.set('path', targetPath);
                 selectedUrl.hash = window.location.hash;
               }

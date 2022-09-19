@@ -6,7 +6,9 @@
     "package_type",
     "status",
     "_links",
-    "versions"
+    "versions",
+    "created_at",
+    "last_downloaded_at"
   ],
   "properties": {
     "name": {
@@ -37,6 +39,9 @@
     },
     "created_at": {
       "type": "string"
+    },
+    "last_downloaded_at": {
+      "type": ["string", "null"]
     },
     "versions": {
       "type": "array",

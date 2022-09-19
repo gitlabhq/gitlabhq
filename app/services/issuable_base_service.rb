@@ -285,7 +285,7 @@ class IssuableBaseService < ::BaseProjectService
     if issuable.changed? || params.present? || widget_params.present?
       issuable.assign_attributes(allowed_update_params(params))
 
-      if has_title_or_description_changed?(issuable)
+      if issuable.description_changed?
         issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
       end
 
@@ -396,10 +396,6 @@ class IssuableBaseService < ::BaseProjectService
     params[:lock_version]     = issuable.lock_version
 
     update_task(issuable)
-  end
-
-  def has_title_or_description_changed?(issuable)
-    issuable.title_changed? || issuable.description_changed?
   end
 
   def change_additional_attributes(issuable)

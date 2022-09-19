@@ -28,8 +28,8 @@ describe('CollapsedFilesWarning', () => {
   Vue.use(Vuex);
 
   const getAlertActionButton = () =>
-    wrapper.find(CollapsedFilesWarning).find('button.gl-alert-action:first-child');
-  const getAlertCloseButton = () => wrapper.find(CollapsedFilesWarning).find('button');
+    wrapper.findComponent(CollapsedFilesWarning).find('button.gl-alert-action:first-child');
+  const getAlertCloseButton = () => wrapper.findComponent(CollapsedFilesWarning).find('button');
 
   const createComponent = (props = {}, { full } = { full: false }) => {
     const mounter = full ? mount : shallowMount;

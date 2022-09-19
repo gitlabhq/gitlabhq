@@ -5,11 +5,10 @@ require 'spec_helper'
 RSpec.describe CommitSignatures::X509CommitSignature do
   # This commit is seeded from https://gitlab.com/gitlab-org/gitlab-test
   # For instructions on how to add more seed data, see the project README
-  let(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
-  let(:project) { create(:project, :public, :repository) }
-  let!(:commit) { create(:commit, project: project, sha: commit_sha) }
-  let(:x509_certificate) { create(:x509_certificate) }
-  let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha) }
+  let_it_be(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
+  let_it_be(:x509_certificate) { create(:x509_certificate) }
 
   let(:attributes) do
     {
@@ -19,6 +18,8 @@ RSpec.describe CommitSignatures::X509CommitSignature do
       verification_status: "verified"
     }
   end
+
+  let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha, x509_certificate: x509_certificate) }
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'commit signature'

@@ -98,6 +98,36 @@ RSpec.describe Gitlab::EncodingHelper do
     end
   end
 
+  describe '#encode_utf8_with_escaping!' do
+    where(:input, :expected) do
+      "abcd" | "abcd"
+      "ǲǲǲ" | "ǲǲǲ"
+      "\xC7\xB2\xC7ǲǲǲ" | "ǲ%C7ǲǲǲ"
+      "🐤🐤🐤🐤\xF0\x9F\x90" | "🐤🐤🐤🐤%F0%9F%90"
+      "\xD0\x9F\xD1\x80 \x90" | "Пр %90"
+      "\x41" | "A"
+    end
+
+    with_them do
+      it 'escapes invalid UTF-8' do
+        expect(ext_class.encode_utf8_with_escaping!(input.dup.force_encoding(Encoding::ASCII_8BIT))).to eq(expected)
+        expect(ext_class.encode_utf8_with_escaping!(input)).to eq(expected)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(escape_gitaly_refs: false)
+      end
+
+      it 'uses #encode! method' do
+        expect(ext_class).to receive(:encode!).with('String')
+
+        ext_class.encode_utf8_with_escaping!('String')
+      end
+    end
+  end
+
   describe '#encode_utf8' do
     [
       ["nil", nil, nil],

@@ -140,12 +140,12 @@ module DiffHelper
     if compare_url
 
       link_text = [
-          _('Compare'),
-          ' ',
-          content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
-          '...',
-          content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
-        ].join('').html_safe
+        _('Compare'),
+        ' ',
+        content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
+        '...',
+        content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
+      ].join('').html_safe
 
       tooltip = _('Compare submodule commit revisions')
       link = content_tag(:span, link_to(link_text, compare_url, class: 'btn gl-button has-tooltip', title: tooltip), class: 'submodule-compare')

@@ -16,6 +16,16 @@ export default {
       import('ee_component/access_tokens/components/max_expiration_date_message.vue'),
   },
   props: {
+    defaultDateOffset: {
+      type: Number,
+      required: false,
+      default: 30,
+    },
+    description: {
+      type: String,
+      required: false,
+      default: null,
+    },
     inputAttrs: {
       type: Object,
       required: false,
@@ -33,9 +43,15 @@ export default {
     },
   },
   computed: {
-    in30Days() {
-      const today = new Date();
-      return getDateInFuture(today, 30);
+    defaultDate() {
+      const defaultDate = getDateInFuture(new Date(), this.defaultDateOffset);
+      // The maximum date can be set by admins. If the maximum date is sooner
+      // than the default expiration date we use the maximum date as default
+      // expiration date.
+      if (this.maxDate && this.maxDate < defaultDate) {
+        return this.maxDate;
+      }
+      return defaultDate;
     },
   },
 };
@@ -47,7 +63,7 @@ export default {
       :target="null"
       :min-date="minDate"
       :max-date="maxDate"
-      :default-date="in30Days"
+      :default-date="defaultDate"
       show-clear-button
       :input-name="inputAttrs.name"
       :input-id="inputAttrs.id"
@@ -55,7 +71,10 @@ export default {
       data-qa-selector="expiry_date_field"
     />
     <template #description>
-      <max-expiration-date-message :max-date="maxDate" />
+      <template v-if="description">
+        {{ description }}
+      </template>
+      <max-expiration-date-message v-else :max-date="maxDate" />
     </template>
   </gl-form-group>
 </template>

@@ -93,7 +93,7 @@ module API
           params[:active] = !params.delete(:paused) if params.include?(:paused)
           update_service = ::Ci::Runners::UpdateRunnerService.new(runner)
 
-          if update_service.update(declared_params(include_missing: false))
+          if update_service.execute(declared_params(include_missing: false)).success?
             present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
           else
             render_validation_error!(runner)
@@ -129,8 +129,17 @@ module API
           authenticate_list_runners_jobs!(runner)
 
           jobs = ::Ci::RunnerJobsFinder.new(runner, current_user, params).execute
+          jobs = jobs.preload( # rubocop: disable CodeReuse/ActiveRecord
+            [
+              :user,
+              { pipeline: { project: [:route, { namespace: :route }] } },
+              { project: [:route, { namespace: :route }] }
+            ]
+          )
+          jobs = paginate(jobs)
+          jobs.each(&:commit) # batch loads all commits in the page
 
-          present paginate(jobs), with: Entities::Ci::JobBasicWithProject
+          present jobs, with: Entities::Ci::JobBasicWithProject
         end
 
         desc 'Reset runner authentication token' do
@@ -352,7 +361,7 @@ module API
         def authenticate_list_runners_jobs!(runner)
           return if current_user.admin?
 
-          forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
+          forbidden!("No access granted") unless can?(current_user, :read_builds, runner)
         end
       end
     end

@@ -1,0 +1,65 @@
+# This template is provided and maintained by Katalon, an official Technology Partner with GitLab.
+#
+# Use this template to run a Katalon Studio test from this repository.
+# You can:
+# - Copy and paste this template into a new `.gitlab-ci.yml` file.
+# - Add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# In either case, you must also select which job you want to run, `.katalon_tests`
+# or `.katalon_tests_with_artifacts` (see configuration below), and add that configuration
+# to a new job with `extends:`. For example:
+#
+# Katalon-tests:
+#   extends:
+#     - .katalon_tests_with_artifacts
+#
+# Requirements:
+# - A Katalon Studio project with the content saved in the root GitLab repository folder.
+# - An active KRE license.
+# - A valid Katalon API key.
+#
+# CI/CD variables, set in the project CI/CD settings:
+# - KATALON_TEST_SUITE_PATH: The default path is `Test Suites/<Your Test Suite Name>`.
+#   Defines which test suite to run.
+# - KATALON_API_KEY: The Katalon API key.
+# - KATALON_PROJECT_DIR: Optional. Add if the project is in another location.
+# - KATALON_ORG_ID: Optional. Add if you are part of multiple Katalon orgs.
+#   Set to the Org ID that has KRE licenses assigned. For more info on the Org ID,
+#   see https://support.katalon.com/hc/en-us/articles/4724459179545-How-to-get-Organization-ID-
+
+.katalon_tests:
+  # Use the latest version of the Katalon Runtime Engine. You can also use other versions of the
+  # Katalon Runtime Engine by specifying another tag, for example `katalonstudio/katalon:8.1.2`
+  # or `katalonstudio/katalon:8.3.0`.
+  image: 'katalonstudio/katalon'
+  services:
+    - docker:dind
+  variables:
+    # Specify the Katalon Studio project directory. By default, it is stored under the root project folder.
+    KATALON_PROJECT_DIR: $CI_PROJECT_DIR
+
+  # The following bash script has two different versions, one if you set the KATALON_ORG_ID
+  # CI/CD variable, and the other if you did not set it. If you have more than one org in
+  # admin.katalon.com you must set the KATALON_ORG_ID variable with an ORG ID or
+  # the Katalon Test Suite fails to run.
+  #
+  # You can update or add additional `katalonc` commands below. To see all of the arguments
+  # `katalonc` supports, go to https://docs.katalon.com/katalon-studio/docs/console-mode-execution.html
+  script:
+    - |-
+        if [[ $KATALON_ORG_ID == "" ]]; then
+          katalonc.sh -projectPath=$KATALON_PROJECT_DIR -apiKey=$KATALON_API_KEY -browserType="Chrome" -retry=0 -statusDelay=20 -testSuitePath="$KATALON_TEST_SUITE_PATH" -reportFolder=Reports/
+        else
+          katalonc.sh -projectPath=$KATALON_PROJECT_DIR -apiKey=$KATALON_API_KEY -browserType="Chrome" -retry=0 -statusDelay=20 -orgID=$KATALON_ORG_ID -testSuitePath="$KATALON_TEST_SUITE_PATH" -reportFolder=Reports/
+        fi
+
+# Upload the artifacts and make the junit report accessible under the Pipeline Tests
+.katalon_tests_with_artifacts:
+  extends: .katalon_tests
+  artifacts:
+    when: always
+    paths:
+      - Reports/
+    reports:
+      junit:
+        Reports/*/*/*/*.xml

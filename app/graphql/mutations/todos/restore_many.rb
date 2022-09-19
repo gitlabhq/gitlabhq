@@ -32,9 +32,7 @@ module Mutations
       private
 
       def model_ids_of(ids)
-        ids.map do |gid|
-          gid.model_id.to_i
-        end.compact
+        ids.filter_map { |gid| gid.model_id.to_i }
       end
 
       def raise_too_many_todos_requested_error

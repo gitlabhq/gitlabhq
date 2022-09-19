@@ -66,7 +66,7 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
     let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
 
     describe 'next_partition_if callback' do
-      let(:active_partition) { described_class.partitioning_strategy.active_partition.value }
+      let(:active_partition) { described_class.partitioning_strategy.active_partition }
 
       subject(:value) { described_class.partitioning_strategy.next_partition_if.call(active_partition) }
 
@@ -98,7 +98,7 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
     end
 
     describe 'detach_partition_if callback' do
-      let(:active_partition) { described_class.partitioning_strategy.active_partition.value }
+      let(:active_partition) { described_class.partitioning_strategy.active_partition }
 
       subject(:value) { described_class.partitioning_strategy.detach_partition_if.call(active_partition) }
 

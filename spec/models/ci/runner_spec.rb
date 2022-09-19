@@ -266,13 +266,13 @@ RSpec.describe Ci::Runner do
   end
 
   shared_examples '.belonging_to_parent_group_of_project' do
-    let!(:group1) { create(:group) }
-    let!(:project1) { create(:project, group: group1) }
-    let!(:runner1) { create(:ci_runner, :group, groups: [group1]) }
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:project1) { create(:project, group: group1) }
+    let_it_be(:runner1) { create(:ci_runner, :group, groups: [group1]) }
 
-    let!(:group2) { create(:group) }
-    let!(:project2) { create(:project, group: group2) }
-    let!(:runner2) { create(:ci_runner, :group, groups: [group2]) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:project2) { create(:project, group: group2) }
+    let_it_be(:runner2) { create(:ci_runner, :group, groups: [group2]) }
 
     let(:project_id) { project1.id }
 
@@ -495,8 +495,8 @@ RSpec.describe Ci::Runner do
   describe '.active' do
     subject { described_class.active(active_value) }
 
-    let!(:runner1) { create(:ci_runner, :instance, active: false) }
-    let!(:runner2) { create(:ci_runner, :instance) }
+    let_it_be(:runner1) { create(:ci_runner, :instance, active: false) }
+    let_it_be(:runner2) { create(:ci_runner, :instance) }
 
     context 'with active_value set to false' do
       let(:active_value) { false }
@@ -544,7 +544,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#stale?', :clean_gitlab_redis_cache do
-    let(:runner) { create(:ci_runner, :instance) }
+    let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.stale? }
 
@@ -619,7 +619,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#online?', :clean_gitlab_redis_cache do
-    let(:runner) { create(:ci_runner, :instance) }
+    let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.online? }
 
@@ -1016,7 +1016,7 @@ RSpec.describe Ci::Runner do
       let!(:last_update) { runner.ensure_runner_queue_value }
 
       before do
-        Ci::Runners::UpdateRunnerService.new(runner).update(description: 'new runner') # rubocop: disable Rails/SaveBang
+        Ci::Runners::UpdateRunnerService.new(runner).execute(description: 'new runner')
       end
 
       it 'sets a new last_update value' do
@@ -1162,13 +1162,13 @@ RSpec.describe Ci::Runner do
   end
 
   describe '.assignable_for' do
-    let(:project) { create(:project) }
-    let(:group) { create(:group) }
-    let(:another_project) { create(:project) }
-    let!(:unlocked_project_runner) { create(:ci_runner, :project, projects: [project]) }
-    let!(:locked_project_runner) { create(:ci_runner, :project, locked: true, projects: [project]) }
-    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-    let!(:instance_runner) { create(:ci_runner, :instance) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:another_project) { create(:project) }
+    let_it_be(:unlocked_project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:locked_project_runner) { create(:ci_runner, :project, locked: true, projects: [project]) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
 
     context 'with already assigned project' do
       subject { described_class.assignable_for(project) }
@@ -1186,59 +1186,74 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe "belongs_to_one_project?" do
-    it "returns false if there are two projects runner assigned to" do
-      project1 = create(:project)
-      project2 = create(:project)
-      runner = create(:ci_runner, :project, projects: [project1, project2])
+  context 'Project-related queries' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
 
-      expect(runner.belongs_to_one_project?).to be_falsey
+    describe '#owner_project' do
+      subject(:owner_project) { project_runner.owner_project }
+
+      context 'with project1 as first project associated with runner' do
+        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+
+        it { is_expected.to eq project1 }
+      end
+
+      context 'with project2 as first project associated with runner' do
+        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project2, project1]) }
+
+        it { is_expected.to eq project2 }
+      end
     end
 
-    it "returns true" do
-      project = create(:project)
-      runner = create(:ci_runner, :project, projects: [project])
+    describe "belongs_to_one_project?" do
+      it "returns false if there are two projects runner is assigned to" do
+        runner = create(:ci_runner, :project, projects: [project1, project2])
 
-      expect(runner.belongs_to_one_project?).to be_truthy
+        expect(runner.belongs_to_one_project?).to be_falsey
+      end
+
+      it "returns true if there is only one project runner is assigned to" do
+        runner = create(:ci_runner, :project, projects: [project1])
+
+        expect(runner.belongs_to_one_project?).to be_truthy
+      end
     end
-  end
 
-  describe '#belongs_to_more_than_one_project?' do
-    context 'project runner' do
-      let(:project1) { create(:project) }
-      let(:project2) { create(:project) }
+    describe '#belongs_to_more_than_one_project?' do
+      context 'project runner' do
+        context 'two projects assigned to runner' do
+          let(:runner) { create(:ci_runner, :project, projects: [project1, project2]) }
 
-      context 'two projects assigned to runner' do
-        let(:runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+          it 'returns true' do
+            expect(runner.belongs_to_more_than_one_project?).to be_truthy
+          end
+        end
 
-        it 'returns true' do
-          expect(runner.belongs_to_more_than_one_project?).to be_truthy
+        context 'one project assigned to runner' do
+          let(:runner) { create(:ci_runner, :project, projects: [project1]) }
+
+          it 'returns false' do
+            expect(runner.belongs_to_more_than_one_project?).to be_falsey
+          end
         end
       end
 
-      context 'one project assigned to runner' do
-        let(:runner) { create(:ci_runner, :project, projects: [project1]) }
+      context 'group runner' do
+        let(:group) { create(:group) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
         it 'returns false' do
           expect(runner.belongs_to_more_than_one_project?).to be_falsey
         end
       end
-    end
 
-    context 'group runner' do
-      let(:group) { create(:group) }
-      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+      context 'shared runner' do
+        let(:runner) { create(:ci_runner, :instance) }
 
-      it 'returns false' do
-        expect(runner.belongs_to_more_than_one_project?).to be_falsey
-      end
-    end
-
-    context 'shared runner' do
-      let(:runner) { create(:ci_runner, :instance) }
-
-      it 'returns false' do
-        expect(runner.belongs_to_more_than_one_project?).to be_falsey
+        it 'returns false' do
+          expect(runner.belongs_to_more_than_one_project?).to be_falsey
+        end
       end
     end
   end
@@ -1299,7 +1314,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe '.search' do
-    let(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
+    let_it_be(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
 
     it 'returns runners with a matching token' do
       expect(described_class.search(runner.token)).to eq([runner])
@@ -1326,57 +1341,10 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe '#assigned_to_group?' do
-    subject { runner.assigned_to_group? }
-
-    context 'when project runner' do
-      let(:runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-      let(:project) { create(:project) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when shared runner' do
-      let(:runner) { create(:ci_runner, :instance, description: 'Shared runner') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when group runner' do
-      let(:group) { create(:group) }
-      let(:runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#assigned_to_project?' do
-    subject { runner.assigned_to_project? }
-
-    context 'when group runner' do
-      let(:runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
-      let(:group) { create(:group) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when shared runner' do
-      let(:runner) { create(:ci_runner, :instance, description: 'Shared runner') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when project runner' do
-      let(:runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-      let(:project) { create(:project) }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
   describe '#pick_build!' do
+    let_it_be(:runner) { create(:ci_runner) }
+
     let(:build) { create(:ci_build) }
-    let(:runner) { create(:ci_runner) }
 
     context 'runner can pick the build' do
       it 'calls #tick_runner_queue' do
@@ -1413,26 +1381,26 @@ RSpec.describe Ci::Runner do
   end
 
   describe '.order_by' do
+    let_it_be(:runner1) { create(:ci_runner, created_at: 1.year.ago, contacted_at: 1.year.ago) }
+    let_it_be(:runner2) { create(:ci_runner, created_at: 1.month.ago, contacted_at: 1.month.ago) }
+
+    before do
+      runner1.update!(token_expires_at: 1.year.from_now)
+    end
+
     it 'supports ordering by the contact date' do
-      runner1 = create(:ci_runner, contacted_at: 1.year.ago)
-      runner2 = create(:ci_runner, contacted_at: 1.month.ago)
       runners = described_class.order_by('contacted_asc')
 
       expect(runners).to eq([runner1, runner2])
     end
 
     it 'supports ordering by the creation date' do
-      runner1 = create(:ci_runner, created_at: 1.year.ago)
-      runner2 = create(:ci_runner, created_at: 1.month.ago)
       runners = described_class.order_by('created_asc')
 
       expect(runners).to eq([runner2, runner1])
     end
 
     it 'supports ordering by the token expiration' do
-      runner1 = create(:ci_runner)
-      runner1.update!(token_expires_at: 1.year.from_now)
-      runner2 = create(:ci_runner)
       runner3 = create(:ci_runner)
       runner3.update!(token_expires_at: 1.month.from_now)
 

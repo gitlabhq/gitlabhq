@@ -7,6 +7,7 @@ module ApplicationSettingsHelper
            :gravatar_enabled?,
            :password_authentication_enabled_for_web?,
            :akismet_enabled?,
+           :spam_check_endpoint_enabled?,
            to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
@@ -58,6 +59,10 @@ module ApplicationSettingsHelper
 
   def http_enabled?
     all_protocols_enabled? || Gitlab::CurrentSettings.enabled_git_access_protocol == 'http'
+  end
+
+  def anti_spam_service_enabled?
+    akismet_enabled? || spam_check_endpoint_enabled?
   end
 
   def enabled_protocol_button(container, protocol)
@@ -278,6 +283,7 @@ module ApplicationSettingsHelper
       :max_export_size,
       :max_import_size,
       :max_pages_size,
+      :max_pages_custom_domains_per_project,
       :max_yaml_size_bytes,
       :max_yaml_depth,
       :metrics_method_call_threshold,
@@ -434,10 +440,22 @@ module ApplicationSettingsHelper
       :runner_token_expiration_interval,
       :group_runner_token_expiration_interval,
       :project_runner_token_expiration_interval,
-      :pipeline_limit_per_project_user_sha
+      :pipeline_limit_per_project_user_sha,
+      :invitation_flow_enforcement
     ].tap do |settings|
-      settings << :deactivate_dormant_users unless Gitlab.com?
+      next if Gitlab.com?
+
+      settings << :deactivate_dormant_users
+      settings << :deactivate_dormant_users_period
     end
+  end
+
+  def runner_token_expiration_interval_attributes
+    {
+      instance_runner_token_expiration_interval: @application_setting.runner_token_expiration_interval,
+      group_runner_token_expiration_interval: @application_setting.group_runner_token_expiration_interval,
+      project_runner_token_expiration_interval: @application_setting.project_runner_token_expiration_interval
+    }
   end
 
   def external_authorization_service_attributes

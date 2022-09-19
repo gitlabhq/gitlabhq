@@ -14,6 +14,8 @@ RSpec.describe 'Projects > Files > User edits files', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     sign_in(user)
   end
 
@@ -100,6 +102,21 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       click_link('Changes')
 
       expect(page).to have_content('*.rbca')
+    end
+
+    it 'shows loader on commit changes' do
+      set_default_button('edit')
+      click_link('.gitignore')
+      click_link_or_button('Edit')
+
+      # why: We don't want the form to actually submit, so that we can assert the button's changed state
+      page.execute_script("document.querySelector('.js-edit-blob-form').addEventListener('submit', e => e.preventDefault())")
+
+      find('.file-editor', match: :first)
+      editor_set_value('*.rbca')
+      click_button('Commit changes')
+
+      expect(page).to have_button('Commit changes', disabled: true, class: 'js-commit-button-loading')
     end
 
     it 'shows the diff of an edited file' do

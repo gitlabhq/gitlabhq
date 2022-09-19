@@ -160,15 +160,23 @@ checkbox appears. Select it to start a new merge request after you commit the ch
 
 ### `Configuration validation currently not available` message
 
-This message is due to a problem with the syntax validation in the pipeline editor.
-If GitLab is unable to communicate with the service that validates the syntax, the
-information in these sections may not display properly:
+This message is caused by a problem validating the syntax in the pipeline editor.
+It can happen when:
 
-- The syntax status on the **Edit** tab (valid or invalid).
-- The **Visualize** tab.
-- The **Lint** tab.
-- The **View merged YAML** tab.
+- GitLab is unable to communicate with the service that validates the syntax, so the
+  information in these sections may not display properly:
 
-You can still work on your CI/CD configuration and commit the changes you made without
-any issues. As soon as the service becomes available again, the syntax validation
-should display immediately.
+  - The syntax status on the **Edit** tab (valid or invalid).
+  - The **Visualize** tab.
+  - The **Lint** tab.
+  - The **View merged YAML** tab.
+
+  You can still work on your CI/CD configuration and commit the changes you made without
+  any issues. As soon as the service becomes available again, the syntax validation
+  should display immediately.
+
+- Using [`include`](../yaml/index.md#include), but the included configuration files create a loop.
+  For example, `.gitlab-ci.yml` includes `file1.yml`, which includes `file2.yml`,
+  which includes `file1.yml`, creating a loop between `file1.yml` and `file2.yml`.
+
+  Remove one of the `include` lines to eliminate the loop and resolve the issue.

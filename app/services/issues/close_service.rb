@@ -24,7 +24,7 @@ module Issues
         return issue
       end
 
-      if perform_close(issue)
+      if issue.close(current_user)
         event_service.close_issue(issue, current_user)
         create_note(issue, closed_via) if system_note
 
@@ -40,7 +40,7 @@ module Issues
 
         if closed_via.is_a?(MergeRequest)
           store_first_mentioned_in_commit_at(issue, closed_via)
-          OnboardingProgressService.new(project.namespace).execute(action: :issue_auto_closed)
+          Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
         end
 
         delete_milestone_closed_issue_counter_cache(issue.milestone)
@@ -50,11 +50,6 @@ module Issues
     end
 
     private
-
-    # Overridden on EE
-    def perform_close(issue)
-      issue.close(current_user)
-    end
 
     def can_close?(issue, skip_authorization: false)
       skip_authorization || can?(current_user, :update_issue, issue) || issue.is_a?(ExternalIssue)

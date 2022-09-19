@@ -41,7 +41,7 @@ RSpec/VerifiedDoubles:
     - ee/spec/helpers/ee/subscribable_banner_helper_spec.rb
     - ee/spec/helpers/ee/trial_helper_spec.rb
     - ee/spec/helpers/ee/trial_registration_helper_spec.rb
-    - ee/spec/helpers/kerberos_spnego_helper_spec.rb
+    - ee/spec/helpers/kerberos_helper_spec.rb
     - ee/spec/helpers/license_helper_spec.rb
     - ee/spec/helpers/roadmaps_helper_spec.rb
     - ee/spec/helpers/routing/pseudonymization_helper_spec.rb
@@ -90,7 +90,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
     - ee/spec/lib/system_check/geo/geo_database_configured_check_spec.rb
     - ee/spec/models/app_sec/fuzzing/api/ci_configuration_spec.rb
-    - ee/spec/models/approvable_spec.rb
     - ee/spec/models/concerns/geo/verification_state_spec.rb
     - ee/spec/models/ee/ci/job_artifact_spec.rb
     - ee/spec/models/ee/user_spec.rb
@@ -449,7 +448,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/gitlab/ci/config/external/file/project_spec.rb
     - spec/lib/gitlab/ci/config/external/rules_spec.rb
     - spec/lib/gitlab/ci/parsers/test/junit_spec.rb
-    - spec/lib/gitlab/ci/pipeline/chain/command_spec.rb
     - spec/lib/gitlab/ci/pipeline/chain/evaluate_workflow_rules_spec.rb
     - spec/lib/gitlab/ci/pipeline/chain/helpers_spec.rb
     - spec/lib/gitlab/ci/pipeline/chain/limit/deployments_spec.rb

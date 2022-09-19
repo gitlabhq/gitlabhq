@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Scalability
-      class CronWorkerContext < RuboCop::Cop::Cop
+      class CronWorkerContext < RuboCop::Cop::Base
         MSG = <<~MSG
           Manually define an ApplicationContext for cronjob-workers. The context
           is required to add metadata to our logs.
@@ -31,7 +31,7 @@ module RuboCop
           return if defines_contexts?(node.parent)
           return if schedules_with_batch_context?(node.parent)
 
-          add_offense(node.arguments.first, location: :expression)
+          add_offense(node.arguments.first)
         end
       end
     end

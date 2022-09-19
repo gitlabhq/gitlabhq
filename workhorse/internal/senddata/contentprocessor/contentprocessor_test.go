@@ -86,7 +86,7 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		},
 		{
 			desc:               "Application type",
-			contentType:        "application/pdf",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/file.pdf"),
 		},
@@ -110,7 +110,7 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		},
 		{
 			desc:               "Audio type",
-			contentType:        "audio/mpeg",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/audio.mp3"),
 		},
@@ -152,15 +152,21 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		},
 		{
 			desc:               "Sketch file",
-			contentType:        "application/zip",
+			contentType:        "application/octet-stream",
 			contentDisposition: "attachment",
 			body:               testhelper.LoadFile(t, "testdata/file.sketch"),
 		},
 		{
 			desc:               "PDF file with non-ASCII characters in filename",
-			contentType:        "application/pdf",
+			contentType:        "application/octet-stream",
 			contentDisposition: `attachment; filename="file-ä.pdf"; filename*=UTF-8''file-%c3.pdf`,
 			body:               testhelper.LoadFile(t, "testdata/file-ä.pdf"),
+		},
+		{
+			desc:               "Microsoft Word file",
+			contentType:        "application/octet-stream",
+			contentDisposition: `attachment`,
+			body:               testhelper.LoadFile(t, "testdata/file.docx"),
 		},
 	}
 

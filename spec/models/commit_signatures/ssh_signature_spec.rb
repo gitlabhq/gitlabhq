@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe CommitSignatures::SshSignature do
   # This commit is seeded from https://gitlab.com/gitlab-org/gitlab-test
   # For instructions on how to add more seed data, see the project README
-  let(:commit_sha) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
-  let!(:project) { create(:project, :repository, path: 'sample-project') }
-  let!(:commit) { create(:commit, project: project, sha: commit_sha) }
-  let(:signature) { create(:ssh_signature, commit_sha: commit_sha) }
-  let(:ssh_key) { create(:ed25519_key_256) }
+  let_it_be(:commit_sha) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
+  let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
+  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
+  let_it_be(:ssh_key) { create(:ed25519_key_256) }
+
   let(:attributes) do
     {
       commit_sha: commit_sha,
@@ -17,6 +17,8 @@ RSpec.describe CommitSignatures::SshSignature do
       key: ssh_key
     }
   end
+
+  let(:signature) { create(:ssh_signature, commit_sha: commit_sha, key: ssh_key) }
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'commit signature'

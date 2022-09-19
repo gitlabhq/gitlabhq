@@ -132,9 +132,36 @@ RSpec.describe Gitlab::Tracking do
           expect(args[:context].last).to eq(other_context)
         end
 
-        described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5,
-                              context: [other_context], project: project, user: user, namespace: namespace,
-                              extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
+        described_class.event('category', 'action',
+          label: 'label',
+          property: 'property',
+          value: 1.5,
+          context: [other_context],
+          project: project,
+          user: user,
+          namespace: namespace,
+          extra_key_1: 'extra value 1',
+          extra_key_2: 'extra value 2')
+      end
+    end
+
+    context 'when the action is not passed in as a string' do
+      it 'allows symbols' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+        described_class.event('category', :some_action)
+      end
+
+      it 'allows nil' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+        described_class.event('category', nil)
+      end
+
+      it 'allows integers' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+        described_class.event('category', 1)
       end
     end
 
@@ -197,8 +224,15 @@ RSpec.describe Gitlab::Tracking do
         expect(args[:extra_key_1]).to eq('extra value 1')
       end
 
-      described_class.definition('filename', category: nil, action: nil, label: 'label', property: '...',
-                                  project: project, user: user, namespace: namespace, extra_key_1: 'extra value 1')
+      described_class.definition('filename',
+        category: nil,
+        action: nil,
+        label: 'label',
+        property: '...',
+        project: project,
+        user: user,
+        namespace: namespace,
+        extra_key_1: 'extra value 1')
     end
   end
 

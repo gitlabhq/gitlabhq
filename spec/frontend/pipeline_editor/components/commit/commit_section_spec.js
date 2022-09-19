@@ -224,7 +224,7 @@ describe('Pipeline Editor | Commit section', () => {
     });
 
     it('emits a commit event with the right type, sourceBranch and targetBranch', () => {
-      expect(wrapper.emitted('commit')).toBeTruthy();
+      expect(wrapper.emitted('commit')).toHaveLength(1);
       expect(wrapper.emitted('commit')[0]).toMatchObject([
         {
           type: COMMIT_SUCCESS_WITH_REDIRECT,

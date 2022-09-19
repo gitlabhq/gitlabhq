@@ -68,13 +68,11 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
   end
 
   describe '#pill_count' do
-    before do
-      expect_next_instance_of(LearnGitlab::Onboarding) do |onboarding|
-        expect(onboarding).to receive(:completed_percentage).and_return(20)
-      end
-    end
-
     it 'returns pill count' do
+      expect_next_instance_of(Onboarding::Completion) do |onboarding|
+        expect(onboarding).to receive(:percentage).and_return(20)
+      end
+
       expect(subject.pill_count).to eq '20%'
     end
   end

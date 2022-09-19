@@ -48,7 +48,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#import_wiki?' do
     it 'returns true if the wiki should be imported' do
-      repo = double(:repo, has_wiki: true)
+      repo = { has_wiki: true }
 
       expect(client)
         .to receive(:repository)
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'returns false if the GitHub wiki is disabled' do
-      repo = double(:repo, has_wiki: false)
+      repo = { has_wiki: false }
 
       expect(client)
         .to receive(:repository)
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'returns false if the wiki has already been imported' do
-      repo = double(:repo, has_wiki: true)
+      repo = { has_wiki: true }
 
       expect(client)
         .to receive(:repository)
@@ -186,7 +186,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#import_repository' do
     it 'imports the repository' do
-      repo = double(:repo, default_branch: 'develop')
+      repo = { default_branch: 'develop' }
 
       expect(client)
         .to receive(:repository)

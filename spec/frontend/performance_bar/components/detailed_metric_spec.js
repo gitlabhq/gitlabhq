@@ -257,7 +257,7 @@ describe('detailedMetric', () => {
       });
 
       it('displays request warnings', () => {
-        expect(wrapper.find(RequestWarning).exists()).toBe(true);
+        expect(wrapper.findComponent(RequestWarning).exists()).toBe(true);
       });
 
       it('can open and close traces', async () => {

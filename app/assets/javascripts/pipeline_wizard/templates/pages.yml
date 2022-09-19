@@ -1,3 +1,4 @@
+id: gitlab/pages
 title: Get started with Pages
 description: "GitLab Pages lets you deploy static websites in minutes. All you
  need is a .gitlab-ci.yml file. Follow the below steps to

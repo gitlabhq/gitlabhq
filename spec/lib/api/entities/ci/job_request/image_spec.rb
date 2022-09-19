@@ -32,14 +32,4 @@ RSpec.describe API::Entities::Ci::JobRequest::Image do
   it 'returns the pull policy' do
     expect(subject[:pull_policy]).to eq(['if-not-present'])
   end
-
-  context 'when the FF ci_docker_image_pull_policy is disabled' do
-    before do
-      stub_feature_flags(ci_docker_image_pull_policy: false)
-    end
-
-    it 'does not return the pull policy' do
-      expect(subject).not_to have_key(:pull_policy)
-    end
-  end
 end

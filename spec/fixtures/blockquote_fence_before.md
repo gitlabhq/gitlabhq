@@ -129,3 +129,27 @@ Quote
 
 Quote
 >>>
+
+Requires a leading blank line
+>>>
+Not a quote
+>>>
+
+Requires a trailing blank line
+
+>>>
+Not a quote
+>>>
+Lorem
+
+Triple quoting is not our blockquote
+
+>>> foo
+>>> bar
+>>>
+> baz
+
+> boo
+>>> far
+>>>
+>>> faz

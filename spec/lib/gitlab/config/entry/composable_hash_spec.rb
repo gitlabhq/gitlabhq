@@ -6,7 +6,8 @@ RSpec.describe Gitlab::Config::Entry::ComposableHash, :aggregate_failures do
   let(:valid_config) do
     {
       DATABASE_SECRET: 'passw0rd',
-      API_TOKEN: 'passw0rd2'
+      API_TOKEN: 'passw0rd2',
+      ACCEPT_PASSWORD: false
     }
   end
 
@@ -55,6 +56,12 @@ RSpec.describe Gitlab::Config::Entry::ComposableHash, :aggregate_failures do
         expect(entry[:API_TOKEN].metadata).to eq(name: :API_TOKEN)
         expect(entry[:API_TOKEN].parent.class).to eq(Gitlab::Config::Entry::ComposableHash)
         expect(entry[:API_TOKEN].value).to eq('passw0rd2')
+        expect(entry[:ACCEPT_PASSWORD]).to be_a(Gitlab::Config::Entry::Node)
+        expect(entry[:ACCEPT_PASSWORD].description).to eq('ACCEPT_PASSWORD node definition')
+        expect(entry[:ACCEPT_PASSWORD].key).to eq(:ACCEPT_PASSWORD)
+        expect(entry[:ACCEPT_PASSWORD].metadata).to eq(name: :ACCEPT_PASSWORD)
+        expect(entry[:ACCEPT_PASSWORD].parent.class).to eq(Gitlab::Config::Entry::ComposableHash)
+        expect(entry[:ACCEPT_PASSWORD].value).to eq(false)
       end
 
       describe '#descendants' do

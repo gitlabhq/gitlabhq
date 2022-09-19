@@ -49,10 +49,10 @@ RSpec.describe Import::BitbucketController do
       let(:expires_in) { 1.day }
       let(:access_token) do
         double(token: token,
-          secret: secret,
-          expires_at: expires_at,
-          expires_in: expires_in,
-          refresh_token: refresh_token)
+               secret: secret,
+               expires_at: expires_at,
+               expires_in: expires_in,
+               refresh_token: refresh_token)
       end
 
       before do

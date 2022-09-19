@@ -7,7 +7,7 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { commentLineOptions, formatLineRange } from '~/notes/components/multiline_comment_utils';
-import noteForm from '~/notes/components/note_form.vue';
+import NoteForm from '~/notes/components/note_form.vue';
 import autosave from '~/notes/mixins/autosave';
 import {
   DIFF_NOTE_TYPE,
@@ -18,7 +18,7 @@ import {
 
 export default {
   components: {
-    noteForm,
+    NoteForm,
     MultilineCommentForm,
   },
   mixins: [autosave, diffLineNoteFormMixin, glFeatureFlagsMixin()],

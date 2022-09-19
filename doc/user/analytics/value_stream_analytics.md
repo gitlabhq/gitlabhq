@@ -32,7 +32,7 @@ Value stream analytics is also available for [groups](../group/value_stream_anal
 
 To view value stream analytics for your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -61,7 +61,7 @@ Value stream analytics shows the median time spent by issues or merge requests i
 
 To view the median time spent in each stage:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -81,7 +81,7 @@ Value stream analytics shows the lead time and cycle time for issues in your pro
 
 To view the lead time and cycle time for issues:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -101,7 +101,7 @@ Lead time for changes is the median duration between when a merge request is mer
 
 To view the lead time for changes for merge requests in your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -113,19 +113,26 @@ To view the lead time for changes for merge requests in your project:
 
 The **Lead Time for Changes** metrics display below the **Filter results** text box.
 
-## View number of successful deployments **(PREMIUM)**
+## View number of successful deployments **(FREE)**
 
-To view deployment metrics, you must have a
+Prerequisites:
+
+- To view deployment metrics, you must have a
 [production environment configured](../../ci/environments/index.md#deployment-tier-of-environments).
 
-Value stream analytics shows the following deployment metrics for your project:
+Value stream analytics shows the following deployment metrics for your project within the specified date range:
 
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.
 
+If you have a GitLab Premium or Ultimate subscription:
+
+- The number of successful deployments is calculated with DORA data.
+- The data is filtered based on environment and environment tier.
+
 To view deployment metrics for your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.

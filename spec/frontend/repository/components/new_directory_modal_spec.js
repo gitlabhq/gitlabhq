@@ -107,7 +107,7 @@ describe('NewDirectoryModal', () => {
       ${findMrToggle}      | ${'true'}                     | ${true}     | ${'new-target-branch'}       | ${'master'}                    | ${true}
       ${findMrToggle}      | ${'true'}                     | ${true}     | ${'master'}                  | ${'master'}                    | ${true}
     `(
-      'has the correct form fields ',
+      'has the correct form fields',
       ({ component, defaultValue, canPushCode, targetBranch, originalBranch, exist }) => {
         createComponent({
           canPushCode,

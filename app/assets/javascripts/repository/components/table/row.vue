@@ -17,8 +17,8 @@ import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import getRefMixin from '../../mixins/get_ref';
-import blobInfoQuery from '../../queries/blob_info.query.graphql';
 import commitQuery from '../../queries/commit.query.graphql';
 
 export default {
@@ -244,7 +244,7 @@ export default {
         /><span class="position-relative">{{ fullPath }}</span>
       </component>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <gl-badge v-if="lfsOid" variant="muted" size="sm" class="ml-1" data-qa-selector="label-lfs"
+      <gl-badge v-if="lfsOid" variant="muted" size="sm" class="ml-1" data-testid="label-lfs"
         >LFS</gl-badge
       >
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->

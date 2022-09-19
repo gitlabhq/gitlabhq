@@ -48,14 +48,14 @@ module Gitlab
           ::Gitlab::Redis::Cache.with do |redis|
             # we use a pipeline instead of a MSET because each tag has
             # a specific ttl
-            redis.pipelined do
+            redis.pipelined do |pipeline|
               cacheable_tags.each do |tag|
                 created_at = tag.created_at
                 # ttl is the max_ttl_in_seconds reduced by the number
                 # of seconds that the tag has already existed
                 ttl = max_ttl_in_seconds - (now - created_at).seconds
                 ttl = ttl.to_i
-                redis.set(cache_key(tag), created_at.rfc3339, ex: ttl) if ttl > 0
+                pipeline.set(cache_key(tag), created_at.rfc3339, ex: ttl) if ttl > 0
               end
             end
           end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Pipeline::Metrics do
   describe '.pipeline_creation_step_duration_histogram' do

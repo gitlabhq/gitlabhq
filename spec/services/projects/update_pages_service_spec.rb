@@ -19,6 +19,25 @@ RSpec.describe Projects::UpdatePagesService do
 
   subject { described_class.new(project, build) }
 
+  context 'when a deploy stage already exists' do
+    let!(:stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
+
+    it 'assigns the deploy stage' do
+      subject.execute
+
+      expect(GenericCommitStatus.last.ci_stage).to eq(stage)
+      expect(GenericCommitStatus.last.ci_stage.name).to eq('deploy')
+    end
+  end
+
+  context 'when a deploy stage does not exists' do
+    it 'assigns the deploy stage' do
+      subject.execute
+
+      expect(GenericCommitStatus.last.ci_stage.name).to eq('deploy')
+    end
+  end
+
   context 'for new artifacts' do
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }

@@ -33,7 +33,7 @@ Prerequisites:
 
 To create an issue:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Either:
 
    - On the left sidebar, select **Issues**, and then, in the top right corner, select **New issue**.
@@ -56,7 +56,7 @@ Prerequisites:
 
 To create an issue from a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
 1. In the top right corner, select **Select project to create issue**.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
@@ -103,7 +103,7 @@ Prerequisites:
 
 To create an issue from a project issue board:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Issues > Boards**.
 1. At the top of a board list, select **New issue** (**{plus-square}**).
 1. Enter the issue's title.
@@ -111,7 +111,7 @@ To create an issue from a project issue board:
 
 To create an issue from a group issue board:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Select **Issues > Boards**.
 1. At the top of a board list, select **New issue** (**{plus-square}**).
 1. Enter the issue's title.
@@ -138,7 +138,7 @@ Prerequisites:
 
 To email an issue to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Issues**.
 1. At the bottom of the page, select **Email a new issue to this project**.
 1. To copy the email address, select **Copy** (**{copy-to-clipboard}**).
@@ -271,7 +271,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
 1. Select **Edit issues**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -304,7 +304,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
 1. Select **Edit issues**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -458,7 +458,8 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
 
 You can disable the automatic issue closing feature on a per-project basis
 in the [project's settings](../settings/index.md).
@@ -469,23 +470,18 @@ Prerequisites:
 
 To disable automatic issue closing:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Default branch**.
-1. Select **Auto-close referenced issues on default branch**.
+1. Clear the **Auto-close referenced issues on default branch** checkbox.
 1. Select **Save changes**.
 
 Referenced issues are still displayed, but are not closed automatically.
 
-The automatic issue closing is disabled by default in a project if the project has the issue tracker
-disabled. If you want to enable automatic issue closing, make sure to
-[enable GitLab Issues](../settings/index.md#configure-project-visibility-features-and-permissions).
-
 Changing this setting applies only to new merge requests or commits. Already
 closed issues remain as they are.
-If issue tracking is enabled, disabling automatic issue closing only applies to merge requests
-attempting to automatically close issues in the same project.
-Merge requests in other projects can still close another project's issues.
+Disabling automatic issue closing only applies to issues in the project where the setting was disabled.
+Merge requests and commits in this project can still close another project's issues.
 
 #### Customize the issue closing pattern **(FREE SELF)**
 
@@ -602,7 +598,7 @@ GitLab displays the results on-screen, but you can also
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues > List**.
 1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
 
@@ -644,9 +640,14 @@ To copy the issue's email address:
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.5.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.9. Feature flags `real_time_issue_sidebar` and `broadcast_issue_updates` removed.
 
-Assignees in the sidebar are updated in real time.
-When you're viewing an issue and somebody changes its assignee,
+Some sections of the right sidebar are updated in real time.
+When you're viewing an issue and somebody changes one of the values,
 you can see the change without having to refresh the page.
+
+The following sections are updated in real time:
+
+- [Assignee](#assignee)
+- Labels, [if enabled](../labels.md#real-time-changes-to-labels)
 
 ## Assignee
 
@@ -685,6 +686,7 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
 > - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
 
 To help you track issue statuses, you can assign a status to each issue.
 This status marks issues as progressing as planned or needing attention to keep on schedule.
@@ -703,7 +705,11 @@ To edit health status of an issue:
    - Needs attention (amber)
    - At risk (red)
 
-You can then see the issue's status in the issues list and the epic tree.
+You can see the issue’s health status in:
+
+- Issues list
+- Epic tree
+- Issue cards in issue boards
 
 After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
 until the issue is reopened.

@@ -78,7 +78,7 @@ export default {
 </script>
 
 <template>
-  <list-item data-qa-selector="package_row" :disabled="disabledRow">
+  <list-item data-testid="package-row" :disabled="disabledRow">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
         <gl-link

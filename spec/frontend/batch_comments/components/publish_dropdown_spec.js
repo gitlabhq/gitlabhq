@@ -28,12 +28,12 @@ describe('Batch comments publish dropdown component', () => {
   it('renders list of drafts', () => {
     createComponent();
 
-    expect(wrapper.findAll(GlDropdownItem).length).toBe(2);
+    expect(wrapper.findAllComponents(GlDropdownItem).length).toBe(2);
   });
 
   it('renders draft count in dropdown title', () => {
     createComponent();
 
-    expect(wrapper.find(GlDropdown).props('headerText')).toEqual('2 pending comments');
+    expect(wrapper.findComponent(GlDropdown).props('headerText')).toEqual('2 pending comments');
   });
 });

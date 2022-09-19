@@ -18,12 +18,12 @@ import {
 
 describe('Pipeline DAG graph wrapper', () => {
   let wrapper;
-  const getAlert = () => wrapper.find(GlAlert);
-  const getAllAlerts = () => wrapper.findAll(GlAlert);
-  const getGraph = () => wrapper.find(DagGraph);
-  const getNotes = () => wrapper.find(DagAnnotations);
+  const getAlert = () => wrapper.findComponent(GlAlert);
+  const getAllAlerts = () => wrapper.findAllComponents(GlAlert);
+  const getGraph = () => wrapper.findComponent(DagGraph);
+  const getNotes = () => wrapper.findComponent(DagAnnotations);
   const getErrorText = (type) => wrapper.vm.$options.errorTexts[type];
-  const getEmptyState = () => wrapper.find(GlEmptyState);
+  const getEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const createComponent = ({
     graphData = mockParsedGraphQLNodes,

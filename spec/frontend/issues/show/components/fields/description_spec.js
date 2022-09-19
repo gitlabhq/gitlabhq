@@ -6,7 +6,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 describe('Description field component', () => {
   let wrapper;
 
-  const findTextarea = () => wrapper.find({ ref: 'textarea' });
+  const findTextarea = () => wrapper.findComponent({ ref: 'textarea' });
 
   const mountComponent = (description = 'test') =>
     shallowMount(DescriptionField, {

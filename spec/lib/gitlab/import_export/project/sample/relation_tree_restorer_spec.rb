@@ -21,15 +21,15 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer do
   let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
   let(:sample_data_relation_tree_restorer) do
     described_class.new(
-      user:                  user,
-      shared:                shared,
-      relation_reader:       relation_reader,
-      object_builder:        Gitlab::ImportExport::Project::ObjectBuilder,
-      members_mapper:        members_mapper,
-      relation_factory:      Gitlab::ImportExport::Project::Sample::RelationFactory,
-      reader:                reader,
-      importable:            importable,
-      importable_path:       'project',
+      user: user,
+      shared: shared,
+      relation_reader: relation_reader,
+      object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
+      members_mapper: members_mapper,
+      relation_factory: Gitlab::ImportExport::Project::Sample::RelationFactory,
+      reader: reader,
+      importable: importable,
+      importable_path: 'project',
       importable_attributes: attributes
     )
   end

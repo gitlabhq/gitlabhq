@@ -354,7 +354,8 @@ RSpec.describe Projects::PipelineSchedulesController do
     end
 
     def go
-      put :update, params: {
+      put :update,
+        params: {
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: pipeline_schedule,

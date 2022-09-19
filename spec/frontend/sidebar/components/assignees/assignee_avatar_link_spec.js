@@ -143,7 +143,7 @@ describe('AssigneeAvatarLink component', () => {
     issuableType       | userId
     ${'merge_request'} | ${undefined}
     ${'issue'}         | ${'1'}
-  `('it sets data-user-id as $userId for $issuableType', ({ issuableType, userId }) => {
+  `('sets data-user-id as $userId for $issuableType', ({ issuableType, userId }) => {
     createComponent({
       issuableType,
     });

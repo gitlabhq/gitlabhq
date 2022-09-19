@@ -12,10 +12,11 @@ RSpec.describe 'Cluster agent registration', :js do
     allow(Gitlab::Kas).to receive(:internal_url).and_return('kas.example.internal')
 
     allow_next_instance_of(Gitlab::Kas::Client) do |client|
-      allow(client).to receive(:list_agent_config_files).and_return([
-        double(agent_name: 'example-agent-1', path: '.gitlab/agents/example-agent-1/config.yaml'),
-        double(agent_name: 'example-agent-2', path: '.gitlab/agents/example-agent-2/config.yaml')
-      ])
+      allow(client).to receive(:list_agent_config_files).and_return(
+        [
+          double(agent_name: 'example-agent-1', path: '.gitlab/agents/example-agent-1/config.yaml'),
+          double(agent_name: 'example-agent-2', path: '.gitlab/agents/example-agent-2/config.yaml')
+        ])
       allow(client).to receive(:get_connected_agents).and_return([])
     end
 

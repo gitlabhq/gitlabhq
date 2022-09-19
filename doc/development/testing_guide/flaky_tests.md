@@ -123,7 +123,7 @@ reproduction.
 
 ### Hanging specs
 
-If a spec hangs, it might be caused by a [bug in Rails](https://github.com/rails/rails/issues/34310):
+If a spec hangs, it might be caused by a [bug in Rails](https://github.com/rails/rails/issues/45994):
 
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81112>
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/337039>

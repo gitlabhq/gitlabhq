@@ -52,7 +52,7 @@ export default {
 };
 </script>
 <template>
-  <span class="total-time">
+  <span>
     <template v-if="hasData">
       {{ calculatedTime.duration }} <span>{{ calculatedTime.units }}</span>
     </template>

@@ -18,7 +18,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     it 'sends an email' do
       mail = find_email_for(user)
       expect(mail.to).to match_array([user.email])
-      expect(mail.subject).to eq('Verify your identity')
+      expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
     end
   end
 
@@ -50,7 +50,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         it 'adds a verification error message' do
           expect(response.body)
             .to include("You&#39;ve reached the maximum amount of tries. "\
-                        'Wait 10 minutes or resend a new code and try again.')
+                        'Wait 10 minutes or send a new code and try again.')
         end
       end
 
@@ -62,7 +62,8 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         it_behaves_like 'prompt for email verification'
 
         it 'adds a verification error message' do
-          expect(response.body).to include(('The code is incorrect. Enter it again, or resend a new code.'))
+          expect(response.body)
+            .to include((s_('IdentityVerification|The code is incorrect. Enter it again, or send a new code.')))
         end
       end
 
@@ -75,7 +76,8 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         it_behaves_like 'prompt for email verification'
 
         it 'adds a verification error message' do
-          expect(response.body).to include(('The code has expired. Resend a new code and try again.'))
+          expect(response.body)
+            .to include((s_('IdentityVerification|The code has expired. Send a new code and try again.')))
         end
       end
 
@@ -112,7 +114,8 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
           it 'redirects to the login form and shows an alert message' do
             expect(response).to redirect_to(new_user_session_path)
-            expect(flash[:alert]).to eq('Maximum login attempts exceeded. Wait 10 minutes and try again.')
+            expect(flash[:alert])
+              .to eq(s_('IdentityVerification|Maximum login attempts exceeded. Wait 10 minutes and try again.'))
           end
         end
 
@@ -217,6 +220,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
   describe 'successful_verification' do
     before do
+      allow(user).to receive(:role_required?).and_return(true) # It skips the required signup info before_action
       sign_in(user)
     end
 

@@ -1,4 +1,5 @@
-import { AVAILABILITY_STATUS, isUserBusy } from '~/set_status_modal/utils';
+import { isUserBusy } from '~/set_status_modal/utils';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 
 describe('Set status modal utils', () => {
   describe('isUserBusy', () => {

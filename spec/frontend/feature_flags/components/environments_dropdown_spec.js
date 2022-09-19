@@ -8,7 +8,7 @@ import EnvironmentsDropdown from '~/feature_flags/components/environments_dropdo
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 
-describe('Feature flags > Environments dropdown ', () => {
+describe('Feature flags > Environments dropdown', () => {
   let wrapper;
   let mock;
   const results = ['production', 'staging'];

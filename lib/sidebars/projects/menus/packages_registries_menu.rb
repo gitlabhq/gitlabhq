@@ -15,7 +15,7 @@ module Sidebars
 
         override :title
         def title
-          _('Packages & Registries')
+          _('Packages and registries')
         end
 
         override :sprite_icon
@@ -66,7 +66,9 @@ module Sidebars
         end
 
         def harbor_registry__menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :harbor_registry) if Feature.disabled?(:harbor_registry_integration)
+          if Feature.disabled?(:harbor_registry_integration, context.project) || context.project.harbor_integration.nil?
+            return ::Sidebars::NilMenuItem.new(item_id: :harbor_registry)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Harbor Registry'),
@@ -77,7 +79,8 @@ module Sidebars
         end
 
         def packages_registry_disabled?
-          !::Gitlab.config.packages.enabled || !can?(context.current_user, :read_package, context.project)
+          !::Gitlab.config.packages.enabled ||
+            !can?(context.current_user, :read_package, context.project&.packages_policy_subject)
         end
       end
     end

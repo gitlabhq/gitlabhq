@@ -63,7 +63,7 @@ describe('Code navigation app component', () => {
   it('hides popover when no definition set', () => {
     factory();
 
-    expect(wrapper.find(Popover).exists()).toBe(false);
+    expect(wrapper.findComponent(Popover).exists()).toBe(false);
   });
 
   it('renders popover when definition set', () => {
@@ -73,7 +73,7 @@ describe('Code navigation app component', () => {
       currentBlobPath: 'index.js',
     });
 
-    expect(wrapper.find(Popover).exists()).toBe(true);
+    expect(wrapper.findComponent(Popover).exists()).toBe(true);
   });
 
   it('calls showDefinition when clicking blob viewer', () => {

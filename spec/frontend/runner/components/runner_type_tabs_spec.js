@@ -28,7 +28,7 @@ const mockCount = (type, multiplier = 1) => {
 describe('RunnerTypeTabs', () => {
   let wrapper;
 
-  const findTabs = () => wrapper.findAll(GlTab);
+  const findTabs = () => wrapper.findAllComponents(GlTab);
   const findActiveTab = () =>
     findTabs()
       .filter((tab) => tab.attributes('active') === 'true')

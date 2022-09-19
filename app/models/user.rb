@@ -92,7 +92,6 @@ class User < ApplicationRecord
   include ForcedEmailConfirmation
   include RequireEmailVerification
 
-  MINIMUM_INACTIVE_DAYS = 90
   MINIMUM_DAYS_CREATED = 7
 
   # Override Devise::Models::Trackable#update_tracked_fields!
@@ -262,6 +261,7 @@ class User < ApplicationRecord
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username, presence: true
+  validate  :check_password_weakness, if: :encrypted_password_changed?
 
   validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
@@ -488,7 +488,7 @@ class User < ApplicationRecord
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
-  scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
+  scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
@@ -697,28 +697,29 @@ class User < ApplicationRecord
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
-      order = Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'users_match_priority',
-          order_expression: sanitized_order_sql.asc,
-          add_to_projections: true,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'users_name',
-          order_expression: arel_table[:name].asc,
-          add_to_projections: true,
-          nullable: :not_nullable,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'users_id',
-          order_expression: arel_table[:id].asc,
-          add_to_projections: true,
-          nullable: :not_nullable,
-          distinct: true
-        )
-      ])
+      order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_match_priority',
+            order_expression: sanitized_order_sql.asc,
+            add_to_projections: true,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_name',
+            order_expression: arel_table[:name].asc,
+            add_to_projections: true,
+            nullable: :not_nullable,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_id',
+            order_expression: arel_table[:id].asc,
+            add_to_projections: true,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
       scope.reorder(order)
     end
 
@@ -1358,10 +1359,11 @@ class User < ApplicationRecord
   end
 
   def accessible_deploy_keys
-    DeployKey.from_union([
-      DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
-      DeployKey.are_public
-    ])
+    DeployKey.from_union(
+      [
+        DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
+        DeployKey.are_public
+      ])
   end
 
   def created_by
@@ -1662,10 +1664,11 @@ class User < ApplicationRecord
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)
 
-      Namespace.from_union([
-        manageable_groups(include_groups_with_developer_maintainer_access: true),
-        personal_namespace
-      ])
+      Namespace.from_union(
+        [
+          manageable_groups(include_groups_with_developer_maintainer_access: true),
+          personal_namespace
+        ])
     end
   end
 
@@ -2072,6 +2075,7 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  # Deprecated: do not use. See: https://gitlab.com/gitlab-org/gitlab/-/issues/371017
   def dismissed_callout_for_namespace?(feature_name:, namespace:, ignore_dismissal_earlier_than: nil)
     source_feature_name = "#{feature_name}_#{namespace.id}"
     callout = namespace_callouts_by_feature_name[source_feature_name]
@@ -2149,10 +2153,6 @@ class User < ApplicationRecord
     strong_memoize(:user_readme) do
       user_project&.repository&.readme
     end
-  end
-
-  def mr_attention_requests_enabled?
-    Feature.enabled?(:mr_attention_requests, self)
   end
 
   def account_age_in_days
@@ -2247,10 +2247,11 @@ class User < ApplicationRecord
   end
 
   def authorized_groups_without_shared_membership
-    Group.from_union([
-      groups.select(*Namespace.cached_column_list),
-      authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
-    ])
+    Group.from_union(
+      [
+        groups.select(*Namespace.cached_column_list),
+        authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
+      ])
   end
 
   def authorized_groups_with_shared_membership
@@ -2260,10 +2261,10 @@ class User < ApplicationRecord
     Group
       .with(cte.to_arel)
       .from_union([
-        Group.from(cte_alias),
-        Group.joins(:shared_with_group_links)
-             .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
-    ])
+                    Group.from(cte_alias),
+                    Group.joins(:shared_with_group_links)
+                         .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
+                  ])
   end
 
   def default_private_profile_to_false
@@ -2314,6 +2315,14 @@ class User < ApplicationRecord
     errors.add(:username, _('ending with a reserved file extension is not allowed.'))
   end
 
+  def check_password_weakness
+    if Feature.enabled?(:block_weak_passwords) &&
+        password.present? &&
+        Security::WeakPasswords.weak_for_user?(password, self)
+      errors.add(:password, _('must not contain commonly used combinations of words and letters'))
+    end
+  end
+
   def groups_with_developer_maintainer_project_access
     project_creation_levels = [::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS]
 
@@ -2325,7 +2334,7 @@ class User < ApplicationRecord
   end
 
   def no_recent_activity?
-    last_active_at.to_i <= MINIMUM_INACTIVE_DAYS.days.ago.to_i
+    last_active_at.to_i <= Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_i
   end
 
   def update_highest_role?

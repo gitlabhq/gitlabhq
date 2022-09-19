@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/instrumentation_superclass'
 
@@ -13,8 +13,6 @@ RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass do
                           'AllowedClasses' => allowed_classes
                         })
   end
-
-  subject(:cop) { described_class.new(config) }
 
   context 'with class definition' do
     context 'when inheriting from allowed superclass' do

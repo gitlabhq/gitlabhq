@@ -142,9 +142,16 @@ export const dayInQuarter = (date, quarter) => {
 
 export const millisecondsPerDay = 1000 * 60 * 60 * 24;
 
-export const getDayDifference = (a, b) => {
-  const date1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  const date2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+/**
+ * Calculates the number of days between 2 specified dates, excluding the current date
+ *
+ * @param {Date} startDate the earlier date that we will substract from the end date
+ * @param {Date} endDate the last date in the range
+ * @return {Number} number of days in between
+ */
+export const getDayDifference = (startDate, endDate) => {
+  const date1 = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  const date2 = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 
   return Math.floor((date2 - date1) / millisecondsPerDay);
 };
@@ -206,6 +213,19 @@ export const newDateAsLocaleTime = (date) => {
   }
   const suffix = 'T00:00:00';
   return new Date(`${date}${suffix}`);
+};
+
+/**
+ * Takes a Date object (where timezone could be GMT or EST) and
+ * returns a Date object with the same date but in UTC.
+ *
+ * @param {Date} date A Date object
+ * @returns {Date|null} A Date object with the same date but in UTC
+ */
+export const getDateWithUTC = (date) => {
+  return date instanceof Date
+    ? new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+    : null;
 };
 
 export const beginOfDayTime = 'T00:00:00Z';

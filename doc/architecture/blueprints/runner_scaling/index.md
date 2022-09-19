@@ -33,7 +33,7 @@ This design choice was crucial for the GitLab Runner success. Since that time
 the auto-scaling feature has been used by many users and customers and enabled
 rapid growth of CI/CD adoption on GitLab.com.
 
-We can not, however, continue using Docker Machine. Work on that project 
+We can not, however, continue using Docker Machine. Work on that project
 [was paused in July 2018](https://github.com/docker/machine/issues/4537) and there
 was no development made since that time (except for some highly important
 security fixes). In 2018, after Docker Machine entered the "maintenance mode",
@@ -76,7 +76,7 @@ mechanism with a reliable and flexible mechanism. We might be unable to build a
 drop-in replacement for Docker Machine, as there are presumably many reasons
 why it has been deprecated. It is very difficult to maintain compatibility with
 so many cloud providers, and it seems that Docker Machine has been deprecated
-in favor of Docker Desktop, which is not a viable replacement for us. 
+in favor of Docker Desktop, which is not a viable replacement for us.
 [This issue](https://github.com/docker/roadmap/issues/245) contains a discussion
 about how people are using Docker Machine right now, and it seems that GitLab
 CI is one of the most frequent reasons for people to keep using Docker Machine.

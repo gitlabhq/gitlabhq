@@ -43,7 +43,7 @@ Prerequisites:
 
 To export a project and its data, follow these steps:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Export project**.
@@ -57,13 +57,34 @@ moved to your configured `uploads_directory`. Every 24 hours, a worker deletes t
 
 ### Items that are exported
 
-The following items are exported:
+The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
+file lists the items exported and imported when migrating projects using file exports. View this file in the branch
+for your version of GitLab to see the list of items relevant to you. For example,
+[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/project/import_export.yml).
+
+Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
+[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
+
+Items that are exported include:
 
 - Project and wiki repositories
 - Project uploads
 - Project configuration, excluding integrations
-- Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, time
-  tracking, and other project entities
+- Issues
+  - Issue comments
+  - Issue resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+- Merge requests
+  - Merge request diffs
+  - Merge request comments
+  - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Merge request multiple assignees ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request reviewers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request approvers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+- Labels
+- Milestones
+- Snippets
+- Time tracking and other project entities
 - Design Management files and data
 - LFS objects
 - Issue boards
@@ -73,7 +94,7 @@ The following items are exported:
 - Group members are exported as project members, as long as the user has the Maintainer role in the
   exported project's group, or is an administrator
 
-The following items are **not** exported:
+Items that are **not** exported include:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Build traces and artifacts
@@ -82,19 +103,10 @@ The following items are **not** exported:
 - Pipeline triggers
 - Webhooks
 - Any encrypted tokens
-- Merge Request Approvers and [the number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
+- [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 - Secure Files
-
-These content rules also apply to creating projects from templates on the
-[group](../../group/custom_project_templates.md)
-or [instance](../../admin_area/custom_project_templates.md)
-levels, because the same export and import mechanisms are used.
-
-NOTE:
-For more details on the specific data persisted in a project export, see the
-[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
 
 ## Import a project and its data
 
@@ -166,7 +178,8 @@ Imported users can be mapped by their public email addresses on self-managed ins
 - Public email addresses are not set by default. Users must [set it in their profiles](../../profile/index.md#set-your-public-email)
   for mapping to work correctly.
 - For contributions to be mapped correctly, users must be an existing member of the namespace,
-  or they can be added as a member of the project. Otherwise, a supplementary comment is left to mention that the original author and the MRs, notes, or issues that are owned by the importer.
+  or they can be added as a member of the project. Otherwise, a supplementary comment is left to mention that the original
+  author and the merge requests, notes, or issues that are owned by the importer.
 - Imported users are set as [direct members](../members/index.md)
   in the imported project.
 
@@ -403,5 +416,5 @@ Error adding importer user to Project members.
 Validation failed: User project bots cannot be added to other groups / projects
 ```
 
-To use [Import REST APIs](../../../api/project_import_export.md),
+To use [Import REST API](../../../api/project_import_export.md),
 pass regular user account credentials such as [personal access tokens](../../profile/personal_access_tokens.md).

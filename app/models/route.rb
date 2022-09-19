@@ -39,17 +39,17 @@ class Route < ApplicationRecord
         attributes[:name] = route.name.sub(name_before_last_save, name)
       end
 
-      if attributes.present?
-        old_path = route.path
+      next if attributes.empty?
 
-        # Callbacks must be run manually
-        route.update_columns(attributes.merge(updated_at: Time.current))
+      old_path = route.path
 
-        # We are not calling route.delete_conflicting_redirects here, in hopes
-        # of avoiding deadlocks. The parent (self, in this method) already
-        # called it, which deletes conflicts for all descendants.
-        route.create_redirect(old_path) if attributes[:path]
-      end
+      # Callbacks must be run manually
+      route.update_columns(attributes.merge(updated_at: Time.current))
+
+      # We are not calling route.delete_conflicting_redirects here, in hopes
+      # of avoiding deadlocks. The parent (self, in this method) already
+      # called it, which deletes conflicts for all descendants.
+      route.create_redirect(old_path) if attributes[:path]
     end
   end
 

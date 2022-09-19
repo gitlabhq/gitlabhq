@@ -66,6 +66,7 @@ RSpec.describe 'Signup' do
   flag_values = [true, false]
   flag_values.each do |val|
     before do
+      stub_feature_flags(arkose_labs_signup_challenge: false)
       stub_feature_flags(restyle_login_page: val)
       stub_application_setting(require_admin_approval_after_user_signup: false)
     end
@@ -202,6 +203,7 @@ RSpec.describe 'Signup' do
         context 'when soft email confirmation is not enabled' do
           before do
             stub_feature_flags(soft_email_confirmation: false)
+            stub_feature_flags(identity_verification: false)
           end
 
           it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
@@ -297,9 +299,8 @@ RSpec.describe 'Signup' do
         enforce_terms
       end
 
-      it 'renders text that the user confirms terms by clicking register' do
+      it 'renders text that the user confirms terms by signing in' do
         visit new_user_registration_path
-
         expect(page).to have_content(/By clicking Register, I agree that I have read and accepted the Terms of Use and Privacy Policy/)
 
         fill_in_signup_form
@@ -391,7 +392,7 @@ RSpec.describe 'Signup' do
       enforce_terms
     end
 
-    it 'renders text that the user confirms terms by clicking register' do
+    it 'renders text that the user confirms terms by signing in' do
       visit new_user_registration_path
 
       expect(page).to have_content(/By clicking Register, I agree that I have read and accepted the Terms of Use and Privacy Policy/)

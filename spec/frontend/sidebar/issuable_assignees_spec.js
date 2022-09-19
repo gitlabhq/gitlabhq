@@ -12,6 +12,7 @@ describe('IssuableAssignees', () => {
       },
       propsData: {
         users: [],
+        editable: true,
         ...props,
       },
     });
@@ -25,15 +26,19 @@ describe('IssuableAssignees', () => {
   });
 
   describe('when no assignees are present', () => {
-    it('renders "None - assign yourself" when user is logged in', () => {
-      createComponent({ signedIn: true });
-      expect(findEmptyAssignee().text()).toBe('None - assign yourself');
-    });
-
-    it('renders "None" when user is not logged in', () => {
-      createComponent();
-      expect(findEmptyAssignee().text()).toBe('None');
-    });
+    it.each`
+      signedIn | editable | message
+      ${true}  | ${true}  | ${'None - assign yourself'}
+      ${true}  | ${false} | ${'None'}
+      ${false} | ${true}  | ${'None'}
+      ${false} | ${false} | ${'None'}
+    `(
+      'renders "$message" when signedIn is $signedIn and editable is $editable',
+      ({ signedIn, editable, message }) => {
+        createComponent({ signedIn, editable });
+        expect(findEmptyAssignee().text()).toBe(message);
+      },
+    );
   });
 
   describe('when assignees are present', () => {

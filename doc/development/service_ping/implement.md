@@ -127,7 +127,7 @@ Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recomme
 
 #### Grouping and batch operations
 
-The `count`, `distinct_count`, `sum`, and `average` batch counters can accept an `ActiveRecord::Relation`
+The `count`, `distinct_count` and `sum` batch counters can accept an `ActiveRecord::Relation`
 object, which groups by a specified column. With a grouped relation, the methods do batch counting,
 handle errors, and returns a hash table of key-value pairs.
 
@@ -142,9 +142,6 @@ distinct_count(Project.group(:visibility_level), :creator_id)
 
 sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
-
-average(Issue.group(:state_id), :weight))
-# returns => {1=>3.5, 2=>2.5}
 ```
 
 #### Add operation
@@ -275,7 +272,7 @@ Events are handled by counter classes in the `Gitlab::UsageDataCounters` namespa
 
 1. Listed in [`Gitlab::UsageDataCounters::COUNTERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters.rb#L5) to be then included in `Gitlab::UsageData`.
 
-1. Specified in the metric definition using the `RedisMetric` instrumentation class as a `counter_class` option to be picked up using the [metric instrumentation](metrics_instrumentation.md) framework. Refer to the [Redis metrics](metrics_instrumentation.md#redis-metrics) documentation for an example implementation.
+1. Specified in the metric definition using the `RedisMetric` instrumentation class by their `prefix` option to be picked up using the [metric instrumentation](metrics_instrumentation.md) framework. Refer to the [Redis metrics](metrics_instrumentation.md#redis-metrics) documentation for an example implementation.
 
 Inheriting classes are expected to override `KNOWN_EVENTS` and `PREFIX` constants to build event names and associated metrics. For example, for prefix `issues` and events array `%w[create, update, delete]`, three metrics will be added to the Service Ping payload: `counts.issues_create`, `counts.issues_update` and `counts.issues_delete`.
 
@@ -385,7 +382,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
      - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
-     - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: [:redis_hll].
+     - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: `:redis_hll`.
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
 
      Example:
@@ -623,7 +620,7 @@ alt_usage_data(999)
 ### Add counters to build new metrics
 
 When adding the results of two counters, use the `add` Service Data method that
-handles fallback values and exceptions. It also generates a valid [SQL export](index.md#export-service-ping-sql-queries-and-definitions).
+handles fallback values and exceptions. It also generates a valid [SQL export](index.md#export-service-ping-data).
 
 Example:
 
@@ -773,7 +770,7 @@ To set up Service Ping locally, you must:
 1. Using the `gitlab` Rails console, manually trigger Service Ping:
 
    ```ruby
-   ServicePing::SubmitService.new.execute
+   GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
    ```
 
 1. Use the `versions` Rails console to check the Service Ping was successfully received,
@@ -809,7 +806,7 @@ This is the recommended approach to test Prometheus-based Service Ping.
 To verify your change, build a new Omnibus image from your code branch using CI/CD, download the image,
 and run a local container instance:
 
-1. From your merge request, select the `qa` stage, then trigger the `package-and-qa` job. This job triggers an Omnibus
+1. From your merge request, select the `qa` stage, then trigger the `e2e:package-and-test` job. This job triggers an Omnibus
    build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/pipelines).
 1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
 1. Open the job logs and locate the full container name including the version. It takes the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.

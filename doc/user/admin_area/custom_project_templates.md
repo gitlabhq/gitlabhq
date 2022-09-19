@@ -34,7 +34,7 @@ To set project templates at the group level, see [Custom group-level project tem
 
 To select the group to use as the source for the project templates:
 
-1. On the top bar, navigate to **Menu > Admin > Settings > Templates**.
+1. On the top bar, navigate to **Main menu > Admin > Settings > Templates**.
 1. Expand **Custom project templates**.
 1. Select a group to use.
 1. Select **Save changes**.

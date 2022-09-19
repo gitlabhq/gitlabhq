@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/performance/readlines_each'
 
 RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
-  subject(:cop) { described_class.new }
-
   let(:message) { 'Avoid `IO.readlines.each`, since it reads contents into memory in full. Use `IO.each_line` or `IO.each` instead.' }
 
   shared_examples_for(:class_read) do |klass|

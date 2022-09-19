@@ -1,9 +1,11 @@
 import $ from 'jquery';
+import ClipboardJS from 'clipboard';
 import Mousetrap from 'mousetrap';
-import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
 import { DEBOUNCE_DROPDOWN_DELAY } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
+import toast from '~/vue_shared/plugins/global_toast';
+import { s__ } from '~/locale';
 import Sidebar from '~/right_sidebar';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import {
@@ -21,6 +23,15 @@ export default class ShortcutsIssuable extends Shortcuts {
   constructor() {
     super();
 
+    this.inMemoryButton = document.createElement('button');
+    this.clipboardInstance = new ClipboardJS(this.inMemoryButton);
+    this.clipboardInstance.on('success', () => {
+      toast(s__('GlobalShortcuts|Copied source branch name to clipboard.'));
+    });
+    this.clipboardInstance.on('error', () => {
+      toast(s__('GlobalShortcuts|Unable to copy the source branch name at this time.'));
+    });
+
     Mousetrap.bind(keysFor(ISSUE_MR_CHANGE_ASSIGNEE), () =>
       ShortcutsIssuable.openSidebarDropdown('assignee'),
     );
@@ -32,7 +43,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     );
     Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), ShortcutsIssuable.replyWithSelectedText);
     Mousetrap.bind(keysFor(ISSUABLE_EDIT_DESCRIPTION), ShortcutsIssuable.editIssue);
-    Mousetrap.bind(keysFor(MR_COPY_SOURCE_BRANCH_NAME), ShortcutsIssuable.copyBranchName);
+    Mousetrap.bind(keysFor(MR_COPY_SOURCE_BRANCH_NAME), () => this.copyBranchName());
 
     /**
      * We're attaching a global focus event listener on document for
@@ -153,17 +164,14 @@ export default class ShortcutsIssuable extends Shortcuts {
     return false;
   }
 
-  static copyBranchName() {
-    // There are two buttons - one that is shown when the sidebar
-    // is expanded, and one that is shown when it's collapsed.
-    const allCopyBtns = Array.from(document.querySelectorAll('.js-source-branch-copy'));
+  async copyBranchName() {
+    const button = document.querySelector('.js-source-branch-copy');
+    const branchName = button?.dataset.clipboardText;
 
-    // Select whichever button is currently visible so that
-    // the "Copied" tooltip is shown when a click is simulated.
-    const visibleBtn = allCopyBtns.find(isElementVisible);
+    if (branchName) {
+      this.inMemoryButton.dataset.clipboardText = branchName;
 
-    if (visibleBtn) {
-      clickCopyToClipboardButton(visibleBtn);
+      this.inMemoryButton.dispatchEvent(new CustomEvent('click'));
     }
   }
 }

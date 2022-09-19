@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'File management' do
+    describe 'File management', product_group: :source_code do
       let(:file) { Resource::File.fabricate_via_api! }
 
       commit_message_for_delete = 'QA Test - Delete file'

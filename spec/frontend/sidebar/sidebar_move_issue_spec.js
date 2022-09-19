@@ -7,6 +7,7 @@ import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import { GitLabDropdown } from '~/deprecated_jquery_dropdown/gl_dropdown';
 import Mock from './mock_data';
 
 jest.mock('~/flash');
@@ -75,7 +76,9 @@ describe('SidebarMoveIssue', () => {
     it('should initialize the deprecatedJQueryDropdown', () => {
       test.sidebarMoveIssue.initDropdown();
 
-      expect(test.sidebarMoveIssue.$dropdownToggle.data('deprecatedJQueryDropdown')).toBeTruthy();
+      expect(test.sidebarMoveIssue.$dropdownToggle.data('deprecatedJQueryDropdown')).toBeInstanceOf(
+        GitLabDropdown,
+      );
     });
 
     it('escapes html from project name', async () => {
@@ -97,7 +100,7 @@ describe('SidebarMoveIssue', () => {
       test.sidebarMoveIssue.onConfirmClicked();
 
       expect(test.mediator.moveIssue).toHaveBeenCalled();
-      expect(test.$confirmButton.prop('disabled')).toBeTruthy();
+      expect(test.$confirmButton.prop('disabled')).toBe(true);
       expect(test.$confirmButton.hasClass('is-loading')).toBe(true);
     });
 
@@ -113,7 +116,7 @@ describe('SidebarMoveIssue', () => {
       await waitForPromises();
 
       expect(createFlash).toHaveBeenCalled();
-      expect(test.$confirmButton.prop('disabled')).toBeFalsy();
+      expect(test.$confirmButton.prop('disabled')).toBe(false);
       expect(test.$confirmButton.hasClass('is-loading')).toBe(false);
     });
 
@@ -139,7 +142,7 @@ describe('SidebarMoveIssue', () => {
     test.$content.find('.js-move-issue-dropdown-item').eq(0).trigger('click');
 
     expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(0);
-    expect(test.$confirmButton.prop('disabled')).toBeTruthy();
+    expect(test.$confirmButton.prop('disabled')).toBe(true);
   });
 
   it('should set moveToProjectId on dropdown item click', async () => {

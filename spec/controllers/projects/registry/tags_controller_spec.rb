@@ -167,7 +167,7 @@ RSpec.describe Projects::Registry::TagsController do
                        repository_id: repository,
                        ids: names
                      },
-                     format: :json
+                          format: :json
     end
   end
 

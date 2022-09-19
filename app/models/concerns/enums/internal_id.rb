@@ -16,7 +16,8 @@ module Enums
         alert_management_alerts: 8,
         sprints: 9, # iterations
         design_management_designs: 10,
-        incident_management_oncall_schedules: 11
+        incident_management_oncall_schedules: 11,
+        ml_experiments: 12
       }
     end
   end

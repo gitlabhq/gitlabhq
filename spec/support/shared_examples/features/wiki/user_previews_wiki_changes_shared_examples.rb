@@ -64,7 +64,7 @@ RSpec.shared_examples 'User previews wiki changes' do
     end
 
     it_behaves_like 'relative links' do
-      let(:element) { page.find('[data-testid="wiki_page_content"]') }
+      let(:element) { page.find('[data-testid="wiki-page-content"]') }
     end
   end
 

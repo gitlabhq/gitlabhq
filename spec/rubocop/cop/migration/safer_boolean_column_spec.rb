@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/safer_boolean_column'
 
 RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn do
-  subject(:cop) { described_class.new }
-
   context 'in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

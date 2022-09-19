@@ -169,7 +169,7 @@ describe('DependencyProxySettings', () => {
     toggleName               | toggleFinder                   | localErrorMock                                | optimisticResponse
     ${'enable proxy'}        | ${findEnableProxyToggle}       | ${dependencyProxySettingMutationMock}         | ${updateGroupDependencyProxySettingsOptimisticResponse}
     ${'enable ttl policies'} | ${findEnableTtlPoliciesToggle} | ${dependencyProxyUpdateTllPolicyMutationMock} | ${updateDependencyProxyImageTtlGroupPolicyOptimisticResponse}
-  `('$toggleName settings update ', ({ optimisticResponse, toggleFinder, localErrorMock }) => {
+  `('$toggleName settings update', ({ optimisticResponse, toggleFinder, localErrorMock }) => {
     describe('success state', () => {
       it('emits a success event', async () => {
         mountComponent();

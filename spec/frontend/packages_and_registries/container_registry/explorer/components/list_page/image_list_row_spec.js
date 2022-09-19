@@ -233,7 +233,7 @@ describe('Image List Row', () => {
 
     it('contains a tag icon', () => {
       mountComponent();
-      const icon = findTagsCount().find(GlIcon);
+      const icon = findTagsCount().findComponent(GlIcon);
       expect(icon.exists()).toBe(true);
       expect(icon.props('name')).toBe('tag');
     });

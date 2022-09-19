@@ -346,10 +346,13 @@ backslash `\`. Otherwise the diff highlight does not render correctly:
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#math).
 
 Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
+_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
+the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-Math written between dollar signs `$` is rendered inline with the text. Math written
-in a [code block](#code-spans-and-blocks) with the language declared as `math` is rendered
-on a separate line:
+Math written between dollar signs with backticks (``$`...`$``) is rendered
+inline with the text. Math written in a [code block](#code-spans-and-blocks) with
+the language declared as `math` is rendered on a separate line:
 
 ````markdown
 This math is inline: $`a^2+b^2=c^2`$.
@@ -369,10 +372,44 @@ This math is on a separate line:
 a^2+b^2=c^2
 ```
 
-_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+#### LaTeX-compatible fencing
 
-This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
-the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
+> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default.
+
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#latex-compatible-fencing).
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `markdown_dollar_math`.
+On GitLab.com, this feature is available.
+The feature is not ready for production use.
+
+Math written between dollar signs (`$...$`) is rendered
+inline with the text. Math written between double dollar signs (`$$...$$`) is rendered
+on a separate line:
+
+````markdown
+This math is inline: $a^2+b^2=c^2$.
+
+This math is on a separate line: $$a^2+b^2=c^2$$
+
+This math is on a separate line:
+
+$$
+a^2+b^2=c^2
+$$
+````
+
+<!-- Uncomment the example below when the flag is enabled on GitLab.com -->
+<!-- This math is inline: $a^2+b^2=c^2$.
+
+This math is on a separate line: $$a^2+b^2=c^2$$
+
+This math is on a separate line:
+
+$$
+a^2+b^2=c^2
+$$ -->
 
 ### Task lists
 
@@ -611,9 +648,10 @@ Quote break.
 If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiline-blockquote).
 
 GitLab Flavored Markdown extends the standard Markdown by also supporting multi-line blockquotes
-fenced by `>>>`:
+fenced by `>>>`, with a blank line before and after the block:
 
 ```markdown
+
 >>>
 If you paste a message from somewhere else
 
@@ -621,6 +659,7 @@ that spans multiple lines,
 
 you can quote that without having to manually prepend `>` to every line!
 >>>
+
 ```
 
 >>>
@@ -772,6 +811,8 @@ Combined emphasis with **asterisks and _underscores_**.
 Strikethrough uses two tildes. ~~Scratch this.~~
 ```
 
+<!-- markdownlint-disable MD050 -->
+
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
 Strong emphasis, aka bold, with double **asterisks** or __underscores__.
@@ -779,6 +820,8 @@ Strong emphasis, aka bold, with double **asterisks** or __underscores__.
 Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
+
+<!-- markdownlint-enable MD050 -->
 
 #### Multiple underscores in words and mid-word emphasis
 
@@ -1471,7 +1514,9 @@ Press <kbd>Enter</kbd> to go to the next page.
 
 ### Tables
 
-Tables are not part of the core Markdown spec, but they are part of GitLab Flavored Markdown.
+Tables are not part of the core Markdown specification, but are part of GitLab Flavored Markdown.
+
+#### Markdown
 
 1. The first line contains the headers, separated by "pipes" (`|`).
 1. The second line separates the headers from the cells.
@@ -1547,12 +1592,12 @@ but they do not render properly on `docs.gitlab.com`:
 | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
 ```
 
-#### Copy from spreadsheet and paste in Markdown
+##### Copy and paste from a spreadsheet
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
-Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy-and-paste
+Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy and paste
 from a spreadsheet. For example, suppose you have the
 following spreadsheet:
 
@@ -1562,6 +1607,160 @@ Select the cells and copy them to your clipboard. Open a GitLab Markdown
 entry and paste the spreadsheet:
 
 ![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
+
+#### JSON
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+
+To render tables with JSON code blocks, use the following syntax:
+
+````markdown
+```json:table
+{}
+```
+````
+
+Watch the following video walkthrough of this feature:
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=12yWKw1AdKY">Demo: JSON Tables in Markdown</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+The `items` attribute is a list of objects representing the data points.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+````
+
+To specify the table labels, use the `fields` attribute.
+
+````markdown
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+````
+
+Not all elements of `items` must have corresponding values in `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+````
+
+When `fields` is not explicitly specified, the labels are picked from the first element of `items`.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+````
+
+You can specify custom labels for `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+````
+
+You can enable sorting for individual elements of `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA", "sortable": true},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+````
+
+You can use the `filter` attribute to render a table with content filtered dynamically by user input.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ],
+    "filter" : true
+}
+```
+````
+
+By default, every JSON table has the caption `Generated with JSON data`.
+You can override this caption by specifying the `caption` attribute.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+    "caption" : "Custom caption"
+}
+```
+````
+
+If JSON is invalid, an error occurs.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+}
+```
+````
 
 ## References
 

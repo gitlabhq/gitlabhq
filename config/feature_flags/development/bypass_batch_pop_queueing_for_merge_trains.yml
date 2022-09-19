@@ -1,0 +1,8 @@
+---
+name: bypass_batch_pop_queueing_for_merge_trains
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96793
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372366
+milestone: '15.4'
+type: development
+group: group::scalability
+default_enabled: false

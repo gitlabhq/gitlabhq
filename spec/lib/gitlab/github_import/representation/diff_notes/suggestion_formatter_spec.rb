@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormatter do
   it 'does nothing when there is any text before the suggestion tag' do

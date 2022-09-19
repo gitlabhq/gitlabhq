@@ -49,8 +49,8 @@ describe('Merge Conflict Resolver App', () => {
     extendedWrapper(w).findByTestId('interactive-button');
   const findFileInlineButton = (w = wrapper) => extendedWrapper(w).findByTestId('inline-button');
   const findSideBySideButton = () => wrapper.findByTestId('side-by-side');
-  const findInlineConflictLines = (w = wrapper) => w.find(InlineConflictLines);
-  const findParallelConflictLines = (w = wrapper) => w.find(ParallelConflictLines);
+  const findInlineConflictLines = (w = wrapper) => w.findComponent(InlineConflictLines);
+  const findParallelConflictLines = (w = wrapper) => w.findComponent(ParallelConflictLines);
   const findCommitMessageTextarea = () => wrapper.findByTestId('commit-message');
 
   it('shows the amount of conflicts', () => {

@@ -17,15 +17,7 @@ module OmniAuth
       protected
 
       def request_phase
-        if env['REQUEST_METHOD'] == 'GET'
-
-          if @configuration.use_sessions? && request.cookies[@configuration.session_cookie]
-            redirect callback_url
-          else            
-            get_credentials
-          end
-
-        elsif (env['REQUEST_METHOD'] == 'POST') && (not request.params['username'])
+        if (env['REQUEST_METHOD'] == 'POST') && (not request.params['username'])
           get_credentials
         else
           session['omniauth.crowd'] = {'username' => request['username'], 'password' => request['password']}

@@ -2,17 +2,19 @@ import { GlFilteredSearch } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 import { users, mockSearch, branches, tags } from '../mock_data';
 
 describe('Pipelines filtered search', () => {
   let wrapper;
   let mock;
 
-  const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
+  const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const getSearchToken = (type) =>
     findFilteredSearch()
       .props('availableTokens')
@@ -175,6 +177,22 @@ describe('Pipelines filtered search', () => {
 
       expect(findFilteredSearch().props('value')).toMatchObject(expectedValueProp);
       expect(findFilteredSearch().props('value')).toHaveLength(expectedValueProp.length);
+    });
+  });
+
+  describe('tracking', () => {
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks filtered search click', () => {
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+      findFilteredSearch().vm.$emit('submit', mockSearch);
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_filtered_search', {
+        label: TRACKING_CATEGORIES.search,
+      });
     });
   });
 });

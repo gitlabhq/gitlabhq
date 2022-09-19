@@ -19,6 +19,7 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import { DIFF_FILE_HEADER } from '../i18n';
@@ -45,7 +46,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
-  mixins: [IdState({ idProp: (vm) => vm.diffFile.file_hash })],
+  mixins: [IdState({ idProp: (vm) => vm.diffFile.file_hash }), glFeatureFlagsMixin()],
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: __('Compare submodule commit revisions'),
@@ -276,7 +277,10 @@ export default {
 <template>
   <div
     ref="header"
-    :class="{ 'gl-z-dropdown-menu!': idState.moreActionsShown }"
+    :class="{
+      'gl-z-dropdown-menu!': idState.moreActionsShown,
+      'is-sidebar-moved': glFeatures.movedMrSidebar,
+    }"
     class="js-file-title file-title file-title-flex-parent"
     data-qa-selector="file_title_container"
     :data-qa-file-name="filePath"

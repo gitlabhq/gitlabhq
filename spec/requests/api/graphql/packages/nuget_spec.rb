@@ -5,7 +5,7 @@ RSpec.describe 'nuget package details' do
   include GraphqlHelpers
   include_context 'package details setup'
 
-  let_it_be(:package) { create(:nuget_package, :with_metadatum, project: project) }
+  let_it_be(:package) { create(:nuget_package, :last_downloaded_at, :with_metadatum, project: project) }
   let_it_be(:dependency_link) { create(:packages_dependency_link, :with_nuget_metadatum, package: package) }
 
   let(:metadata) { query_graphql_fragment('NugetMetadata') }

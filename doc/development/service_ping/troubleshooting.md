@@ -4,7 +4,7 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting
+# Troubleshooting Service Ping
 
 ## Service Ping Payload drop
 
@@ -58,7 +58,7 @@ checking the configuration file of your GitLab instance:
 
 - Using the Admin Area:
 
-  1. On the top bar, select **Menu > Admin**.
+  1. On the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
   1. Are you able to check or uncheck the checkbox to disable Service Ping?
@@ -115,7 +115,7 @@ To work around this bug, you have two options:
      sudo gitlab-ctl reconfigure
      ```
 
-  1. In GitLab, on the top bar, select **Menu > Admin**.
+  1. In GitLab, on the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
   1. Clear the **Enable Service Ping** checkbox.

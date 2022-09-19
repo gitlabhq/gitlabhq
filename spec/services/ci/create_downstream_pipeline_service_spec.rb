@@ -5,9 +5,12 @@ require 'spec_helper'
 RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
   include Ci::SourcePipelineHelpers
 
-  let_it_be(:user) { create(:user) }
+  # Using let_it_be on user and projects for these specs can cause
+  # spec-ordering failures due to the project-based permissions
+  # associating them. They should be recreated every time.
+  let(:user) { create(:user) }
   let(:upstream_project) { create(:project, :repository) }
-  let_it_be(:downstream_project, refind: true) { create(:project, :repository) }
+  let(:downstream_project) { create(:project, :repository) }
 
   let!(:upstream_pipeline) do
     create(:ci_pipeline, :running, project: upstream_project)
@@ -440,10 +443,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
           let!(:trigger_project_bridge) do
             create(
-              :ci_bridge, status: :pending,
-              user: user,
-              options: trigger_downstream_project,
-              pipeline: child_pipeline
+              :ci_bridge, status: :pending, user: user, options: trigger_downstream_project, pipeline: child_pipeline
             )
           end
 
@@ -816,6 +816,61 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       context 'when not passing the required variable' do
         it 'does not create the pipeline' do
           expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
+        end
+      end
+    end
+
+    context 'when a downstream pipeline has sibling pipelines' do
+      it_behaves_like 'logs downstream pipeline creation' do
+        let(:expected_root_pipeline) { upstream_pipeline }
+        let(:expected_downstream_relationship) { :multi_project }
+
+        # New downstream, plus upstream, plus two children of upstream created below
+        let(:expected_hierarchy_size) { 4 }
+
+        before do
+          create_list(:ci_pipeline, 2, child_of: upstream_pipeline)
+        end
+      end
+    end
+
+    context 'when the pipeline tree is too large' do
+      let_it_be(:parent)     { create(:ci_pipeline) }
+      let_it_be(:child)      { create(:ci_pipeline, child_of: parent) }
+      let_it_be(:sibling)    { create(:ci_pipeline, child_of: parent) }
+
+      before do
+        stub_const("#{described_class}::MAX_HIERARCHY_SIZE", 3)
+      end
+
+      let(:bridge) do
+        create(:ci_bridge, status: :pending, user: user, options: trigger, pipeline: child)
+      end
+
+      it 'does not create a new pipeline' do
+        expect { subject }.not_to change { Ci::Pipeline.count }
+      end
+
+      it 'drops the trigger job with an explanatory reason' do
+        subject
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('reached_max_pipeline_hierarchy_size')
+      end
+
+      context 'with :ci_limit_complete_hierarchy_size disabled' do
+        before do
+          stub_feature_flags(ci_limit_complete_hierarchy_size: false)
+        end
+
+        it 'creates a new pipeline' do
+          expect { subject }.to change { Ci::Pipeline.count }.by(1)
+        end
+
+        it 'marks the bridge job as successful' do
+          subject
+
+          expect(bridge.reload).to be_success
         end
       end
     end

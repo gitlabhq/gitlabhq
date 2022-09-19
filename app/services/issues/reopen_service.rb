@@ -5,7 +5,7 @@ module Issues
     def execute(issue, skip_authorization: false)
       return issue unless can_reopen?(issue, skip_authorization: skip_authorization)
 
-      if perform_reopen(issue)
+      if issue.reopen
         event_service.reopen_issue(issue, current_user)
         create_note(issue, 'reopened')
         notification_service.async.reopen_issue(issue, current_user)
@@ -21,11 +21,6 @@ module Issues
     end
 
     private
-
-    # Overriden on EE
-    def perform_reopen(issue)
-      issue.reopen
-    end
 
     def can_reopen?(issue, skip_authorization: false)
       skip_authorization || can?(current_user, :reopen_issue, issue)

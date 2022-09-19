@@ -210,7 +210,7 @@ Prerequisites:
 
 To view epics in a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics**.
 
 ### Cached epic count
@@ -244,7 +244,7 @@ You can filter the list of epics by:
 
 To filter:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics**.
 1. Select the field **Search or filter results**.
 1. From the dropdown menu, select the scope or enter plain text to search by epic title or description.

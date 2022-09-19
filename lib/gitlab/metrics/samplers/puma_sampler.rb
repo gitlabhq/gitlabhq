@@ -12,15 +12,15 @@ module Gitlab
 
         def init_metrics
           {
-            puma_workers:            ::Gitlab::Metrics.gauge(:puma_workers, 'Total number of workers'),
-            puma_running_workers:    ::Gitlab::Metrics.gauge(:puma_running_workers, 'Number of active workers'),
-            puma_stale_workers:      ::Gitlab::Metrics.gauge(:puma_stale_workers, 'Number of stale workers'),
-            puma_running:            ::Gitlab::Metrics.gauge(:puma_running, 'Number of running threads'),
+            puma_workers: ::Gitlab::Metrics.gauge(:puma_workers, 'Total number of workers'),
+            puma_running_workers: ::Gitlab::Metrics.gauge(:puma_running_workers, 'Number of active workers'),
+            puma_stale_workers: ::Gitlab::Metrics.gauge(:puma_stale_workers, 'Number of stale workers'),
+            puma_running: ::Gitlab::Metrics.gauge(:puma_running, 'Number of running threads'),
             puma_queued_connections: ::Gitlab::Metrics.gauge(:puma_queued_connections, 'Number of connections in that worker\'s "todo" set waiting for a worker thread'),
             puma_active_connections: ::Gitlab::Metrics.gauge(:puma_active_connections, 'Number of threads processing a request'),
-            puma_pool_capacity:      ::Gitlab::Metrics.gauge(:puma_pool_capacity, 'Number of requests the worker is capable of taking right now'),
-            puma_max_threads:        ::Gitlab::Metrics.gauge(:puma_max_threads, 'Maximum number of worker threads'),
-            puma_idle_threads:       ::Gitlab::Metrics.gauge(:puma_idle_threads, 'Number of spawned threads which are not processing a request')
+            puma_pool_capacity: ::Gitlab::Metrics.gauge(:puma_pool_capacity, 'Number of requests the worker is capable of taking right now'),
+            puma_max_threads: ::Gitlab::Metrics.gauge(:puma_max_threads, 'Maximum number of worker threads'),
+            puma_idle_threads: ::Gitlab::Metrics.gauge(:puma_idle_threads, 'Number of spawned threads which are not processing a request')
           }
         end
 

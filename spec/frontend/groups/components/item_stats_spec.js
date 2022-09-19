@@ -24,7 +24,7 @@ describe('ItemStats', () => {
     }
   });
 
-  const findItemStatsValue = () => wrapper.find(ItemStatsValue);
+  const findItemStatsValue = () => wrapper.findComponent(ItemStatsValue);
 
   describe('template', () => {
     it('renders component container element correctly', () => {

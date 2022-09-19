@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Redis::DuplicateJobs do
 
           expect(redis_instance.primary_store.connection[:id]).to eq("redis://test-host:6379/99")
           expect(redis_instance.primary_store.connection[:namespace]).to be_nil
-          expect(redis_instance.secondary_store.connection[:id]).to eq("redis:///path/to/redis.sock/0")
+          expect(redis_instance.secondary_store.connection[:id]).to eq("unix:///path/to/redis.sock/0")
           expect(redis_instance.secondary_store.connection[:namespace]).to eq("resque:gitlab")
 
           expect(redis_instance.instance_name).to eq('DuplicateJobs')

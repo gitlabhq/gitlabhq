@@ -9,10 +9,10 @@ class Projects::GoogleCloud::RevokeOauthController < Projects::GoogleCloud::Base
 
     if response.success?
       redirect_message = { notice: s_('GoogleCloud|Google OAuth2 token revocation requested') }
-      track_event('revoke_oauth#create', 'success', response.to_json)
+      track_event(:revoke_oauth)
     else
       redirect_message = { alert: s_('GoogleCloud|Google OAuth2 token revocation request failed') }
-      track_event('revoke_oauth#create', 'error', response.to_json)
+      track_event(:error)
     end
 
     session.delete(GoogleApi::CloudPlatform::Client.session_key_for_token)

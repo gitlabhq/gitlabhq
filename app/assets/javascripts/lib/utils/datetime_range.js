@@ -1,5 +1,5 @@
-import dateformat from 'dateformat';
 import { pick, omit, isEqual, isEmpty } from 'lodash';
+import dateformat from '~/lib/dateformat';
 import { DATETIME_RANGE_TYPES } from './constants';
 import { secondsToMilliseconds } from './datetime_utility';
 

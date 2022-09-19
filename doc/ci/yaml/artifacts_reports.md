@@ -80,20 +80,6 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-## `artifacts:reports:cobertura` (removed)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0.
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7 and
-[removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0. Use `artifacts:reports:coverage_report`
-instead.
-
-<!--- end_remove -->
-
 ## `artifacts:reports:coverage_report`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.
@@ -113,7 +99,8 @@ artifacts:
       path: coverage/cobertura-coverage.xml
 ```
 
-The collected coverage report is uploaded to GitLab as an artifact.
+The collected coverage report is uploaded to GitLab as an artifact. You can use
+only one report per job.
 
 GitLab can display the results of coverage report in the merge request
 [diff annotations](../testing/test_coverage_visualization.md).
@@ -160,6 +147,30 @@ GitLab can display the results of one or more reports in:
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
+## `artifacts:reports:cyclonedx`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
+
+This report is a Software Bill of Materials describing the components of a project
+following the [cyclonedx](https://cyclonedx.org/docs/1.4) protocol format.
+
+You can specify multiple cyclonedx reports per job. These can be either supplied
+as a list of filenames, a filename pattern, or both:
+
+- List of filenames: `cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`.
+- A filename pattern: `cyclonedx: gl-sbom-*.json`.
+- Combination of both of the above: `cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`.
+
+Below is an example of a job exposing cyclonedx artifacts:
+
+```yaml
+artifacts:
+  reports:
+    cyclonedx:
+      - gl-sbom-npm-npm.cdx.json
+      - gl-sbom-bundler-gem.cdx.json
+```
+
 ## `artifacts:reports:dast` **(ULTIMATE)**
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
@@ -183,7 +194,7 @@ GitLab can display the results of one or more reports in:
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
-- The [dependency list](../../user/application_security/dependency_list/).
+- The [dependency list](../../user/application_security/dependency_list/index.md).
 
 ## `artifacts:reports:dotenv`
 
@@ -329,27 +340,3 @@ GitLab can display the results of one or more reports in the merge request
 [terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
 
 For more information, see [Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).
-
-## `artifacts:reports:cyclonedx`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
-
-This report is a Software Bill of Materials describing the components of a project
-following the [cyclonedx](https://cyclonedx.org/docs/1.4) protocol format.
-
-You can specify multiple cyclonedx reports per job. These can be either supplied
-as a list of filenames, a filename pattern, or both:
-
-- List of filenames: `cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`.
-- A filename pattern: `cyclonedx: gl-sbom-*.json`.
-- Combination of both of the above: `cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`.
-
-Below is an example of a job exposing cyclonedx artifacts:
-
-```yaml
-artifacts:
-  reports:
-    cyclonedx:
-      - gl-sbom-npm-npm.cdx.json
-      - gl-sbom-bundler-gem.cdx.json
-```

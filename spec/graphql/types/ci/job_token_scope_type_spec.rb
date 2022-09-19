@@ -69,8 +69,8 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
             expect(subject['errors']).to be_nil
           end
 
-          it 'returns nil' do
-            expect(subject['data']['project']['ciJobTokenScope']).to be_nil
+          it 'returns readable projects in scope' do
+            expect(returned_project_paths).to contain_exactly(project.path)
           end
         end
       end

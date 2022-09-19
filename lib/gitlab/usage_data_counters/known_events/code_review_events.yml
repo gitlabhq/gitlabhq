@@ -1,9 +1,29 @@
 ---
-- name: i_code_review_mr_diffs
+- name: i_code_review_create_note_in_ipynb_diff
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_mr_with_invalid_approvers
+- name: i_code_review_create_note_in_ipynb_diff_mr
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_create_note_in_ipynb_diff_commit
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_user_create_note_in_ipynb_diff
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_user_create_note_in_ipynb_diff_mr
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_user_create_note_in_ipynb_diff_commit
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_mr_diffs
   redis_slot: code_review
   category: code_review
   aggregation: weekly
@@ -135,12 +155,10 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_jetbrains_api_request
 - name: i_code_review_user_gitlab_cli_api_request
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_gitlab_cli_api_request
 - name: i_code_review_user_create_mr_from_issue
   redis_slot: code_review
   category: code_review
@@ -174,30 +192,6 @@
   category: code_review
   aggregation: weekly
 - name: i_code_review_user_labels_changed
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_create_note_in_ipynb_diff
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_user_create_note_in_ipynb_diff
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_create_note_in_ipynb_diff_mr
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_user_create_note_in_ipynb_diff_mr
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_create_note_in_ipynb_diff_commit
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_user_create_note_in_ipynb_diff_commit
   redis_slot: code_review
   category: code_review
   aggregation: weekly
@@ -400,53 +394,36 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-## Metrics
-- name: i_code_review_merge_request_widget_metrics_view
+- name: i_code_review_submit_review_approve
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_merge_request_widget_metrics_full_report_clicked
+- name: i_code_review_submit_review_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_merge_request_widget_metrics_expand
+## License Compliance
+- name: i_code_review_merge_request_widget_license_compliance_view
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_merge_request_widget_metrics_expand_success
+- name: i_code_review_merge_request_widget_license_compliance_full_report_clicked
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_merge_request_widget_metrics_expand_warning
+- name: i_code_review_merge_request_widget_license_compliance_expand
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_merge_request_widget_metrics_expand_failed
+- name: i_code_review_merge_request_widget_license_compliance_expand_success
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-## Status Checks
-- name: i_code_review_merge_request_widget_status_checks_view
+- name: i_code_review_merge_request_widget_license_compliance_expand_warning
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-- name: i_code_review_merge_request_widget_status_checks_full_report_clicked
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_merge_request_widget_status_checks_expand
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_merge_request_widget_status_checks_expand_success
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_merge_request_widget_status_checks_expand_warning
-  redis_slot: code_review
-  category: code_review
-  aggregation: weekly
-- name: i_code_review_merge_request_widget_status_checks_expand_failed
+- name: i_code_review_merge_request_widget_license_compliance_expand_failed
   redis_slot: code_review
   category: code_review
   aggregation: weekly

@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_katalon_weekly
+description: 'Weekly counts of times users have executed katalon_tests jobs'
+product_section: 'ops'
+product_stage: 'analytics'
+product_group: 'pipeline_authoring'
+product_category: 'pipeline_authoring'
+value_type: number
+status: active
+milestone: "15.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86484
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - p_ci_templates_katalon
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

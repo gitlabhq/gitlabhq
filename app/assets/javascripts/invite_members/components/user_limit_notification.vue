@@ -8,8 +8,6 @@ import {
   REACHED_LIMIT_MESSAGE,
   REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
   CLOSE_TO_LIMIT_MESSAGE,
-  CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE,
-  DANGER_ALERT_TITLE_PERSONAL_NAMESPACE,
 } from '../constants';
 
 export default {
@@ -52,13 +50,6 @@ export default {
       });
     },
     dangerAlertTitle() {
-      if (this.usersLimitDataset.userNamespace) {
-        return sprintf(DANGER_ALERT_TITLE_PERSONAL_NAMESPACE, {
-          count: this.freeUsersLimit,
-          members: this.pluralMembers(this.freeUsersLimit),
-        });
-      }
-
       return sprintf(DANGER_ALERT_TITLE, {
         count: this.freeUsersLimit,
         members: this.pluralMembers(this.freeUsersLimit),
@@ -71,20 +62,9 @@ export default {
     title() {
       return this.reachedLimit ? this.dangerAlertTitle : this.warningAlertTitle;
     },
-    reachedLimitMessage() {
-      if (this.usersLimitDataset.userNamespace) {
-        return this.$options.i18n.reachedLimitMessage;
-      }
-
-      return this.$options.i18n.reachedLimitUpgradeSuggestionMessage;
-    },
     message() {
       if (this.reachedLimit) {
-        return this.reachedLimitMessage;
-      }
-
-      if (this.usersLimitDataset.userNamespace) {
-        return this.$options.i18n.closeToLimitMessagePersonalNamespace;
+        return this.$options.i18n.reachedLimitUpgradeSuggestionMessage;
       }
 
       return this.$options.i18n.closeToLimitMessage;
@@ -99,7 +79,6 @@ export default {
     reachedLimitMessage: REACHED_LIMIT_MESSAGE,
     reachedLimitUpgradeSuggestionMessage: REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
     closeToLimitMessage: CLOSE_TO_LIMIT_MESSAGE,
-    closeToLimitMessagePersonalNamespace: CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE,
   },
 };
 </script>

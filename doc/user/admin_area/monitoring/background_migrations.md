@@ -59,7 +59,8 @@ Use the following database queries to see the state of the current batched backg
 
    ```sql
    SELECT
-    id job_class_name,
+    id, 
+    job_class_name,
     table_name,
     column_name,
     job_arguments

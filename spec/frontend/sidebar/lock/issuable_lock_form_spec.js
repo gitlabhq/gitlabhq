@@ -130,7 +130,7 @@ describe('IssuableLockForm', () => {
               expect(findEditForm().exists()).toBe(true);
             });
 
-            it('tracks the event ', () => {
+            it('tracks the event', () => {
               const spy = mockTracking('_category_', wrapper.element, jest.spyOn);
               triggerEvent(findEditLink().element);
 

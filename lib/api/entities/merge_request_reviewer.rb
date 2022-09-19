@@ -4,7 +4,6 @@ module API
   module Entities
     class MergeRequestReviewer < Grape::Entity
       expose :reviewer, as: :user, using: Entities::UserBasic
-      expose :updated_state_by, using: Entities::UserBasic
       expose :state
       expose :created_at
     end

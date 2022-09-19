@@ -64,7 +64,7 @@ exports[`Design management design index page renders design index 1`] = `
     <participants-stub
       class="gl-mb-4"
       lazy="true"
-      numberoflessparticipants="7"
+      numberoflessparticipants="8"
       participants="[object Object]"
     />
      
@@ -195,7 +195,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     <participants-stub
       class="gl-mb-4"
       lazy="true"
-      numberoflessparticipants="7"
+      numberoflessparticipants="8"
       participants="[object Object]"
     />
      

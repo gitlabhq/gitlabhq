@@ -298,8 +298,8 @@ module Gitlab
           context 'when delayed is defined' do
             let(:config) do
               YAML.dump(rspec: {
-                script:   'rollout 10%',
-                when:     'delayed',
+                script: 'rollout 10%',
+                when: 'delayed',
                 start_in: '1 day'
               })
             end
@@ -315,7 +315,7 @@ module Gitlab
           context 'when resource group is defined' do
             let(:config) do
               YAML.dump(rspec: {
-                script:   'test',
+                script: 'test',
                 resource_group: 'iOS'
               })
             end
@@ -448,7 +448,7 @@ module Gitlab
 
           it 'parses the root:variables as #root_variables' do
             expect(subject.root_variables)
-              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed' })
           end
         end
 
@@ -490,7 +490,7 @@ module Gitlab
 
           it 'parses the root:variables as #root_variables' do
             expect(subject.root_variables)
-              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed' })
           end
         end
 
@@ -997,18 +997,6 @@ module Gitlab
               scheduling_type: :stage
             })
           end
-
-          context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-            before do
-              stub_feature_flags(ci_docker_image_pull_policy: false)
-            end
-
-            it { is_expected.not_to be_valid }
-
-            it "returns no job" do
-              expect(processor.jobs).to eq({})
-            end
-          end
         end
 
         context 'when a service has pull_policy' do
@@ -1042,39 +1030,29 @@ module Gitlab
               scheduling_type: :stage
             })
           end
-
-          context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-            before do
-              stub_feature_flags(ci_docker_image_pull_policy: false)
-            end
-
-            it { is_expected.not_to be_valid }
-
-            it "returns no job" do
-              expect(processor.jobs).to eq({})
-            end
-          end
         end
       end
 
-      describe 'Variables' do
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+      # Change this to a `describe` block when removing the FF ci_variables_refactoring_to_variable
+      shared_examples 'Variables' do
+        subject(:execute) { described_class.new(config).execute }
 
-        let(:build) { subject.builds.first }
+        let(:build) { execute.builds.first }
         let(:job_variables) { build[:job_variables] }
         let(:root_variables_inheritance) { build[:root_variables_inheritance] }
 
         context 'when global variables are defined' do
-          let(:variables) do
-            { 'VAR1' => 'value1', 'VAR2' => 'value2' }
-          end
-
           let(:config) do
-            {
-              variables: variables,
-              before_script: ['pwd'],
-              rspec: { script: 'rspec' }
-            }
+            <<~YAML
+            variables:
+              VAR1: value1
+              VAR2: value2
+
+            before_script: [pwd]
+
+            rspec:
+              script: rspec
+            YAML
           end
 
           it 'returns global variables' do
@@ -1084,22 +1062,23 @@ module Gitlab
         end
 
         context 'when job variables are defined' do
-          let(:config) do
-            {
-              before_script: ['pwd'],
-              rspec: { script: 'rspec', variables: variables }
-            }
-          end
-
           context 'when syntax is correct' do
-            let(:variables) do
-              { 'VAR1' => 'value1', 'VAR2' => 'value2' }
+            let(:config) do
+              <<~YAML
+              before_script: [pwd]
+
+              rspec:
+                script: rspec
+                variables:
+                  VAR1: value1
+                  VAR2: value2
+              YAML
             end
 
             it 'returns job variables' do
               expect(job_variables).to contain_exactly(
-                { key: 'VAR1', value: 'value1', public: true },
-                { key: 'VAR2', value: 'value2', public: true }
+                { key: 'VAR1', value: 'value1' },
+                { key: 'VAR2', value: 'value2' }
               )
               expect(root_variables_inheritance).to eq(true)
             end
@@ -1107,16 +1086,28 @@ module Gitlab
 
           context 'when syntax is incorrect' do
             context 'when variables defined but invalid' do
-              let(:variables) do
-                %w(VAR1 value1 VAR2 value2)
+              let(:config) do
+                <<~YAML
+                before_script: [pwd]
+
+                rspec:
+                  script: rspec
+                  variables: [VAR1 value1 VAR2 value2]
+                YAML
               end
 
-              it_behaves_like 'returns errors', /jobs:rspec:variables config should be a hash of key value pairs/
+              it_behaves_like 'returns errors', /jobs:rspec:variables config should be a hash/
             end
 
             context 'when variables key defined but value not specified' do
-              let(:variables) do
-                nil
+              let(:config) do
+                <<~YAML
+                before_script: [pwd]
+
+                rspec:
+                  script: rspec
+                  variables: null
+                YAML
               end
 
               it 'returns empty array' do
@@ -1133,10 +1124,12 @@ module Gitlab
 
         context 'when job variables are not defined' do
           let(:config) do
-            {
-              before_script: ['pwd'],
-              rspec: { script: 'rspec' }
-            }
+            <<~YAML
+            before_script: ['pwd']
+
+            rspec:
+              script: rspec
+            YAML
           end
 
           it 'returns empty array' do
@@ -1144,6 +1137,42 @@ module Gitlab
             expect(root_variables_inheritance).to eq(true)
           end
         end
+
+        context 'when variables have different type of values' do
+          let(:config) do
+            <<~YAML
+            before_script: [pwd]
+
+            rspec:
+              variables:
+                VAR1: value1
+                VAR2: :value2
+                VAR3: 123
+              script: rspec
+            YAML
+          end
+
+          it 'returns job variables' do
+            expect(job_variables).to contain_exactly(
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' },
+              { key: 'VAR3', value: '123' }
+            )
+            expect(root_variables_inheritance).to eq(true)
+          end
+        end
+      end
+
+      context 'when ci_variables_refactoring_to_variable is enabled' do
+        it_behaves_like 'Variables'
+      end
+
+      context 'when ci_variables_refactoring_to_variable is disabled' do
+        before do
+          stub_feature_flags(ci_variables_refactoring_to_variable: false)
+        end
+
+        it_behaves_like 'Variables'
       end
 
       context 'when using `extends`' do
@@ -1203,21 +1232,21 @@ module Gitlab
             expect(config_processor.builds[0]).to include(
               name: 'test1',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'test1 var 1', public: true },
-                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'test1 var 1' },
+                              { key: 'VAR2', value: 'test2 var 2' }]
             )
 
             expect(config_processor.builds[1]).to include(
               name: 'test2',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true },
-                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'base var 1' },
+                              { key: 'VAR2', value: 'test2 var 2' }]
             )
 
             expect(config_processor.builds[2]).to include(
               name: 'test3',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true }]
+              job_variables: [{ key: 'VAR1', value: 'base var 1' }]
             )
 
             expect(config_processor.builds[3]).to include(
@@ -1647,10 +1676,10 @@ module Gitlab
       describe "Artifacts" do
         it "returns artifacts when defined" do
           config = YAML.dump({
-                               image:         "image:1.0",
-                               services:      ["mysql"],
+                               image: "image:1.0",
+                               services: ["mysql"],
                                before_script: ["pwd"],
-                               rspec:         {
+                               rspec: {
                                  artifacts: {
                                    paths: ["logs/", "binaries/"],
                                    expose_as: "Exposed artifacts",
@@ -1906,7 +1935,7 @@ module Gitlab
         let(:config) do
           {
             deploy_to_production: {
-              stage:  'deploy',
+              stage: 'deploy',
               script: 'test'
             }
           }
@@ -2275,15 +2304,15 @@ module Gitlab
 
         let(:config) do
           {
-            var_default:     { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null' }] },
-            var_when:        { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null', when: 'always' }] },
+            var_default: { stage: 'build', script: 'test', rules: [{ if: '$VAR == null' }] },
+            var_when: { stage: 'build', script: 'test', rules: [{ if: '$VAR == null', when: 'always' }] },
             var_and_changes: { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null', changes: %w[README], when: 'always' }] },
             changes_not_var: { stage: 'test',   script: 'test', rules: [{ if: '$VAR != null', changes: %w[README] }] },
             var_not_changes: { stage: 'test',   script: 'test', rules: [{ if: '$VAR == null', changes: %w[other/file.rb], when: 'always' }] },
-            nothing:         { stage: 'test',   script: 'test', rules: [{ when: 'manual' }] },
-            var_never:       { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'never' }] },
-            var_delayed:     { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] },
-            two_rules:       { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'on_success' }, { changes: %w[README], when: 'manual' }] }
+            nothing: { stage: 'test', script: 'test', rules: [{ when: 'manual' }] },
+            var_never: { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'never' }] },
+            var_delayed: { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] },
+            two_rules: { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'on_success' }, { changes: %w[README], when: 'manual' }] }
           }
         end
 
@@ -2729,13 +2758,13 @@ module Gitlab
         context 'returns errors if variables is not a map' do
           let(:config) { YAML.dump({ variables: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs, value can be a hash'
+          it_behaves_like 'returns errors', 'variables config should be a hash'
         end
 
         context 'returns errors if variables is not a map of key-value strings' do
           let(:config) { YAML.dump({ variables: { test: false }, rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs, value can be a hash'
+          it_behaves_like 'returns errors', 'variable definition must be either a string or a hash'
         end
 
         context 'returns errors if job when is not on_success, on_failure or always' do

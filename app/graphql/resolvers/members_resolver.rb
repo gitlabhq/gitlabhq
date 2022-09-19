@@ -11,6 +11,10 @@ module Resolvers
               required: false,
               description: 'Search query.'
 
+    argument :sort, ::Types::MemberSortEnum,
+              required: false,
+              description: 'sort query.'
+
     def resolve_with_lookahead(**args)
       authorize!(object)
 

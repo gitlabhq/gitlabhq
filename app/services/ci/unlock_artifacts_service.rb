@@ -7,8 +7,11 @@ module Ci
     def execute(ci_ref, before_pipeline = nil)
       results = {
         unlocked_pipelines: 0,
-        unlocked_job_artifacts: 0
+        unlocked_job_artifacts: 0,
+        unlocked_pipeline_artifacts: 0
       }
+
+      unlock_pipeline_artifacts_enabled = ::Feature.enabled?(:ci_update_unlocked_pipeline_artifacts, ci_ref.project)
 
       if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, ci_ref.project)
         loop do
@@ -18,6 +21,10 @@ module Ci
           ::Ci::Pipeline.transaction do
             unlocked_pipelines = unlock_pipelines(ci_ref, before_pipeline)
             unlocked_job_artifacts = unlock_job_artifacts(unlocked_pipelines)
+
+            if unlock_pipeline_artifacts_enabled
+              results[:unlocked_pipeline_artifacts] += unlock_pipeline_artifacts(unlocked_pipelines)
+            end
           end
 
           break if unlocked_pipelines.empty?
@@ -99,6 +106,14 @@ module Ci
         unlock_job_artifacts_query(pipelines.rows.flatten)
       )
     end
+
+    # rubocop:disable CodeReuse/ActiveRecord
+    def unlock_pipeline_artifacts(pipelines)
+      return 0 if pipelines.empty?
+
+      ::Ci::PipelineArtifact.where(pipeline_id: pipelines.rows.flatten).update_all(locked: :unlocked)
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
 
     def unlock_pipelines(ci_ref, before_pipeline)
       ::Ci::Pipeline.connection.exec_query(unlock_pipelines_query(ci_ref, before_pipeline))

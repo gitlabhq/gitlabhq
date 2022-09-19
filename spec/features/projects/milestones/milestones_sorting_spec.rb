@@ -8,7 +8,7 @@ RSpec.describe 'Milestones sorting', :js do
   let(:milestones_for_sort_by) do
     {
       'Due later' => %w[b c a],
-      'Name, ascending' =>  %w[a b c],
+      'Name, ascending' => %w[a b c],
       'Name, descending' => %w[c b a],
       'Start later' => %w[a c b],
       'Start soon' => %w[b c a],

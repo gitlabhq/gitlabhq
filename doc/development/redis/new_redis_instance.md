@@ -265,7 +265,7 @@ instances to cope without this functional partition.
 If we decide to keep the migration code:
 
 - We should document the migration steps.
-- If we used a feature flag, we should ensure it's an 
+- If we used a feature flag, we should ensure it's an
   [ops type feature flag](../feature_flags/index.md#ops-type), as these are long-lived flags.
 
 Otherwise, we can remove the flags and conclude the project.

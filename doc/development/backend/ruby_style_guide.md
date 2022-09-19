@@ -20,6 +20,17 @@ See also [guidelines for reusing abstractions](../reusing_abstractions.md).
 
 Everything listed here can be [reopened for discussion](https://about.gitlab.com/handbook/values/#disagree-commit-and-disagree).
 
+## String literals quoting
+
+Due to the sheer amount of work to rectify, we do not care whether string
+literals are single, or double quoted.
+
+Previous discussions include:
+
+- <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44234>
+- <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36076>
+- <https://gitlab.com/gitlab-org/gitlab/-/issues/198046>
+
 ## Instance variable access using `attr_reader`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52351) in GitLab 14.1.
@@ -72,3 +83,106 @@ end
 Public attributes should only be used if they are accessed outside of the class.
 There is not a strong opinion on what strategy is used when attributes are only
 accessed internally, as long as there is consistency in related code.
+
+## Newlines style guide
+
+This style guide recommends best practices for newlines in Ruby code.
+
+### Rule: separate code with newlines only to group together related logic
+
+```ruby
+# bad
+def method
+  issue = Issue.new
+
+  issue.save
+
+  render json: issue
+end
+```
+
+```ruby
+# good
+def method
+  issue = Issue.new
+  issue.save
+
+  render json: issue
+end
+```
+
+### Rule: separate code and block with newlines
+
+#### Newline before block
+
+```ruby
+# bad
+def method
+  issue = Issue.new
+  if issue.save
+    render json: issue
+  end
+end
+```
+
+```ruby
+# good
+def method
+  issue = Issue.new
+
+  if issue.save
+    render json: issue
+  end
+end
+```
+
+### Rule: Newline after block
+
+```ruby
+# bad
+def method
+  if issue.save
+    issue.send_email
+  end
+  render json: issue
+end
+```
+
+```ruby
+# good
+def method
+  if issue.save
+    issue.send_email
+  end
+
+  render json: issue
+end
+```
+
+#### Exception: no need for newline when code block starts or ends right inside another code block
+
+```ruby
+# bad
+def method
+
+  if issue
+
+    if issue.valid?
+      issue.save
+    end
+
+  end
+
+end
+```
+
+```ruby
+# good
+def method
+  if issue
+    if issue.valid?
+      issue.save
+    end
+  end
+end
+```

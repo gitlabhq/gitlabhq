@@ -17,16 +17,6 @@ your team when environment performance falls outside of the boundaries you set.
 
 Alerts are not currently supported for [Prometheus cluster integrations](../../user/clusters/integrations.md).
 
-<!--- start_remove The following content will be removed on remove_date: '2022-09-22' -->
-
-## External Prometheus instances (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219142) in GitLab 13.2 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338834) in 15.0.
-To manually configure a Prometheus server, we recommend
-you use the [generic alerts integration](../incident_management/integrations.md).
-
-<!--- end_remove -->
-
 ## Trigger actions from alerts **(ULTIMATE)**
 
 Alerts can be used to trigger actions, like opening an issue automatically

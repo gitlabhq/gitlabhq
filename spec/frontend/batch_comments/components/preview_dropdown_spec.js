@@ -53,7 +53,7 @@ describe('Batch comments preview dropdown', () => {
   });
 
   describe('clicking draft', () => {
-    it('it toggles active file when viewDiffsFileByFile is true', async () => {
+    it('toggles active file when viewDiffsFileByFile is true', async () => {
       factory({
         viewDiffsFileByFile: true,
         sortedDrafts: [{ id: 1, file_hash: 'hash' }],

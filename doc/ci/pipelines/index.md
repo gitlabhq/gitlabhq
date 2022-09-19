@@ -57,44 +57,10 @@ Pipelines can be configured in many different ways:
   already been merged into the target branch.
 - [Merge trains](../pipelines/merge_trains.md)
   use merged results pipelines to queue merges one after the other.
-- [Parent-child pipelines](parent_child_pipelines.md) break down complex pipelines
+- [Parent-child pipelines](downstream_pipelines.md#parent-child-pipelines) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
-- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
-
-### How parent-child pipelines compare to multi-project pipelines
-
-Parent-child pipelines and multi-project pipelines can sometimes be used for similar
-purposes, but there are some key differences:
-
-Parent-child pipelines:
-
-- Run under the same project, ref, and commit SHA as the parent pipeline.
-- Affect the overall status of the ref the pipeline runs against. For example,
-  if a pipeline fails for the main branch, it's common to say that "main is broken".
-  The status of child pipelines don't directly affect the status of the ref, unless the child
-  pipeline is triggered with [`strategy:depend`](../yaml/index.md#triggerstrategy).
-- Are automatically canceled if the pipeline is configured with [`interruptible`](../yaml/index.md#interruptible)
-  when a new pipeline is created for the same ref.
-- Display only the parent pipelines in the pipeline index page. Child pipelines are
-  visible when visiting their parent pipeline's page.
-- Are limited to 2 levels of nesting. A parent pipeline can trigger multiple child pipelines,
-  and those child pipeline can trigger multiple child pipelines (`A -> B -> C`).
-
-Multi-project pipelines:
-
-- Are triggered from another pipeline, but the upstream (triggering) pipeline does
-  not have much control over the downstream (triggered) pipeline. However, it can
-  choose the ref of the downstream pipeline, and pass CI/CD variables to it.
-- Affect the overall status of the ref of the project it runs in, but does not
-  affect the status of the triggering pipeline's ref, unless it was triggered with
-  [`strategy:depend`](../yaml/index.md#triggerstrategy).
-- Are not automatically canceled in the downstream project when using [`interruptible`](../yaml/index.md#interruptible)
-  if a new pipeline runs for the same ref in the upstream pipeline. They can be
-  automatically canceled if a new pipeline is triggered for the same ref on the downstream project.
-- Multi-project pipelines are standalone pipelines because they are normal pipelines
-  that happened to be triggered by an external project. They are all visible on the pipeline index page.
-- Are independent, so there are no nesting limits.
+- [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines) combine pipelines for different projects together.
 
 ## Configure a pipeline
 
@@ -175,7 +141,7 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
 1. Select **Run pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
@@ -288,7 +254,7 @@ page, then selecting **Delete**.
 ![Pipeline Delete](img/pipeline-delete.png)
 
 Deleting a pipeline does not automatically delete its
-[child pipelines](parent_child_pipelines.md).
+[child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
 for details.
 
@@ -322,6 +288,34 @@ branches, preventing untrusted code from executing on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
+
+## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
+
+You can trigger a pipeline in your project whenever a pipeline finishes for a new
+tag in a different project.
+
+Prerequisites:
+
+- The upstream project must be [public](../../user/public_access.md).
+- The user must have the Developer role
+  in the upstream project.
+
+To trigger the pipeline when the upstream project is rebuilt:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Pipeline subscriptions**.
+1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
+   For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
+1. Select **Subscribe**.
+
+Any pipelines that complete successfully for new tags in the subscribed project
+now trigger a pipeline on the current project's default branch. The maximum
+number of upstream pipeline subscriptions is 2 by default, for both the upstream and
+downstream projects. On self-managed instances, an administrator can change this
+[limit](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
 
 ### How pipeline duration is calculated
 
@@ -388,8 +382,8 @@ You can group the jobs by:
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
   jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
 
-[Multi-project pipeline graphs](multi_project_pipelines.md#multi-project-pipeline-visualization) help
-you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
+[Multi-project pipeline graphs](downstream_pipelines.md#view-multi-project-pipelines-in-pipeline-graphs) help
+you visualize the entire pipeline, including all cross-project inter-dependencies.
 
 If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
 pipeline graph. The remaining jobs still run as normal. To see the jobs:
@@ -403,8 +397,9 @@ pipeline graph. The remaining jobs still run as normal. To see the jobs:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
 
-You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
-dependencies.
+To arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
+dependencies, select **Job dependencies** in the **Group jobs by** section. This option
+is available for pipelines with 3 or more jobs with `needs` job dependencies.
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
 
@@ -454,25 +449,6 @@ Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/an
 
 Pipeline status and test coverage report badges are available and configurable for each project.
 For information on adding pipeline badges to projects, see [Pipeline badges](settings.md#pipeline-badges).
-
-### Downstream pipelines
-
-In the pipeline graph view, downstream pipelines ([Multi-project pipelines](multi_project_pipelines.md)
-and [Parent-child pipelines](parent_child_pipelines.md)) display as a list of cards
-on the right of the graph.
-
-#### Cancel or retry downstream pipelines from the graph view
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
-> - [Generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357406) in GitLab 15.1.
-
-To cancel a downstream pipeline that is still running, select **Cancel** (**{cancel}**)
-on the pipeline's card.
-
-To retry a failed downstream pipeline, select **Retry** (**{retry}**)
-on the pipeline's card.
-
-![downstream pipeline actions](img/downstream_pipeline_actions.png)
 
 ## Pipelines API
 

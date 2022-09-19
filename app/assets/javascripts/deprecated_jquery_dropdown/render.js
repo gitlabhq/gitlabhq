@@ -13,6 +13,7 @@ const renderersByType = {
   },
   header(element, data) {
     element.classList.add('dropdown-header');
+    // eslint-disable-next-line no-unsanitized/property
     element.innerHTML = data.content;
 
     return element;
@@ -122,6 +123,7 @@ function assignTextToLink(el, data, options) {
   const text = getLinkText(data, options);
 
   if (options.icon || options.highlight) {
+    // eslint-disable-next-line no-unsanitized/property
     el.innerHTML = text;
   } else {
     el.textContent = text;

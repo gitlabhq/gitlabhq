@@ -14,7 +14,7 @@ module API
       end
 
       def authorize_read_package!(subject = user_project)
-        authorize!(:read_package, subject)
+        authorize!(:read_package, subject.try(:packages_policy_subject) || subject)
       end
 
       def authorize_create_package!(subject = user_project)
@@ -52,6 +52,11 @@ module API
         ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
         category = args.delete(:category) || self.options[:for].name
         ::Gitlab::Tracking.event(category, event_name.to_s, **args)
+      end
+
+      def present_package_file!(package_file, supports_direct_download: true)
+        package_file.package.touch_last_downloaded_at
+        present_carrierwave_file!(package_file.file, supports_direct_download: supports_direct_download)
       end
     end
   end

@@ -31,7 +31,7 @@ describe('Pipeline editor file nav', () => {
 
   const findTip = () => wrapper.findComponent(GlAlert);
   const findCurrentConfigFilename = () => wrapper.findByTestId('current-config-filename');
-  const fileTreeItems = () => wrapper.findAll(PipelineEditorFileTreeItem);
+  const fileTreeItems = () => wrapper.findAllComponents(PipelineEditorFileTreeItem);
 
   afterEach(() => {
     localStorage.clear();

@@ -1,11 +1,11 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   name: 'EditedNoteText',
   components: {
-    timeAgoTooltip,
+    TimeAgoTooltip,
   },
   props: {
     actionText: {

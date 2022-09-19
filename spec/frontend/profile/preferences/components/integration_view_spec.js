@@ -98,6 +98,6 @@ describe('IntegrationView component', () => {
   it('should render the help text', () => {
     wrapper = createComponent();
 
-    expect(wrapper.find(IntegrationHelpText).exists()).toBe(true);
+    expect(wrapper.findComponent(IntegrationHelpText).exists()).toBe(true);
   });
 });

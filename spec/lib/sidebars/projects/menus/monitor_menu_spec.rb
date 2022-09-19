@@ -12,11 +12,28 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
   subject { described_class.new(context) }
 
   describe '#render?' do
-    context 'when operations feature is disabled' do
-      it 'returns false' do
-        project.project_feature.update!(operations_access_level: Featurable::DISABLED)
+    using RSpec::Parameterized::TableSyntax
+    let(:enabled) { Featurable::PRIVATE }
+    let(:disabled) { Featurable::DISABLED }
 
-        expect(subject.render?).to be false
+    where(:flag_enabled, :operations_access_level, :monitor_level, :render) do
+      true  | ref(:disabled) | ref(:enabled)  | true
+      true  | ref(:disabled) | ref(:disabled) | false
+      true  | ref(:enabled)  | ref(:enabled)  | true
+      true  | ref(:enabled)  | ref(:disabled) | false
+      false | ref(:disabled) | ref(:enabled)  | false
+      false | ref(:disabled) | ref(:disabled) | false
+      false | ref(:enabled)  | ref(:enabled)  | true
+      false | ref(:enabled)  | ref(:disabled) | true
+    end
+
+    with_them do
+      it 'renders when expected to' do
+        stub_feature_flags(split_operations_visibility_permissions: flag_enabled)
+        project.project_feature.update!(operations_access_level: operations_access_level)
+        project.project_feature.update!(monitor_access_level: monitor_level)
+
+        expect(subject.render?).to be render
       end
     end
 

@@ -49,15 +49,26 @@ export default {
       :class="getMenuSectionClasses(sectionIndex)"
       data-testid="menu-section"
     >
-      <top-nav-menu-item
-        v-for="(menuItem, menuItemIndex) in menuItems"
-        :key="menuItem.id"
-        :menu-item="menuItem"
-        data-testid="menu-item"
-        class="gl-w-full"
-        :class="{ 'gl-mt-1': menuItemIndex > 0 }"
-        @click="onClick(menuItem)"
-      />
+      <template v-for="(menuItem, menuItemIndex) in menuItems">
+        <strong
+          v-if="menuItem.type == 'header'"
+          :key="menuItem.title"
+          class="gl-px-4 gl-py-2 gl-text-gray-900 gl-display-block"
+          :class="{ 'gl-pt-3!': menuItemIndex > 0 }"
+          data-testid="menu-header"
+        >
+          {{ menuItem.title }}
+        </strong>
+        <top-nav-menu-item
+          v-else
+          :key="menuItem.id"
+          :menu-item="menuItem"
+          data-testid="menu-item"
+          class="gl-w-full"
+          :class="{ 'gl-mt-1': menuItemIndex > 0 }"
+          @click="onClick(menuItem)"
+        />
+      </template>
     </div>
   </div>
 </template>

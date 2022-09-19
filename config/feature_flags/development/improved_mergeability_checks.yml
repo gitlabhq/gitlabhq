@@ -1,8 +1,0 @@
----
-name: improved_mergeability_checks
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68312
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/342386
-milestone: '14.4'
-type: development
-group: group::code review
-default_enabled: false

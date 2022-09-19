@@ -69,6 +69,11 @@ If a feature is moved to another subscription tier, use `moved`:
 > - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
 ```
 
+#### Features introduced behind feature flags
+
+When features are introduced behind feature flags, you must add details about the feature flag to the documentation.
+For more information, see [Document features deployed behind feature flags](feature_flags.md).
+
 ### Inline version text
 
 If you're adding content to an existing topic, you can add version information
@@ -205,7 +210,7 @@ You can say that we plan to remove a feature.
 
 ### Legal disclaimer for future features
 
-If you **must** write about features we have not yet delivered, put this exact disclaimer near the content it applies to.
+If you **must** write about features we have not yet delivered, put this exact disclaimer about forward-looking statements near the content it applies to.
 
 ```markdown
 DISCLAIMER:
@@ -227,6 +232,6 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
-If all of the content on the page is not available, use the disclaimer once at the top of the page.
+If all of the content on the page is not available, use the disclaimer about forward-looking statements once at the top of the page.
 
 If the content in a topic is not ready, use the disclaimer in the topic.

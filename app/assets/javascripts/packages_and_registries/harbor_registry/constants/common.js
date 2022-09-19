@@ -1,4 +1,5 @@
 import { s__, __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const ROOT_IMAGE_TEXT = s__('HarborRegistry|Root image');
 export const NAME_SORT_FIELD = { orderBy: 'NAME', label: __('Name') };
@@ -16,14 +17,8 @@ export const SORT_FIELD_MAPPING = {
   CREATED: CREATED_SORT_FIELD_KEY,
 };
 
-/* eslint-disable @gitlab/require-i18n-strings */
-export const dockerBuildCommand = (repositoryUrl) => {
-  return `docker build -t ${repositoryUrl} .`;
-};
-export const dockerPushCommand = (repositoryUrl) => {
-  return `docker push ${repositoryUrl}`;
-};
-export const dockerLoginCommand = (registryHostUrlWithPort) => {
-  return `docker login ${registryHostUrlWithPort}`;
-};
-/* eslint-enable @gitlab/require-i18n-strings */
+export const DEFAULT_PER_PAGE = 10;
+
+export const HARBOR_REGISTRY_HELP_PAGE_PATH = helpPagePath(
+  'user/packages/harbor_container_registry/index',
+);

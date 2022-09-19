@@ -320,7 +320,9 @@ describe('Release edit/new getters', () => {
     it(description, () => {
       const expectedVariablesObject = { input: expect.objectContaining(expectedVariables) };
 
-      const actualVariables = getters.releaseUpdateMutatationVariables(state);
+      const actualVariables = getters.releaseUpdateMutatationVariables(state, {
+        releasedAtChanged: Object.hasOwn(state.release, 'releasedAt'),
+      });
 
       expect(actualVariables).toEqual(expectedVariablesObject);
     });
@@ -408,5 +410,20 @@ describe('Release edit/new getters', () => {
         }
       },
     );
+  });
+
+  describe('releasedAtChange', () => {
+    it('is false if the released at date has not changed', () => {
+      const date = new Date();
+      expect(
+        getters.releasedAtChanged({ originalReleasedAt: date, release: { releasedAt: date } }),
+      ).toBe(false);
+    });
+
+    it('is true if the date changed', () => {
+      const originalReleasedAt = new Date();
+      const releasedAt = new Date(2022, 5, 30);
+      expect(getters.releasedAtChanged({ originalReleasedAt, release: { releasedAt } })).toBe(true);
+    });
   });
 });

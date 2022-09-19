@@ -116,9 +116,9 @@ the following preparations into account.
 - Ensure that the Database Dictionary is updated as [documented](database/database_dictionary.md).
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
-- Add the output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations into the MR description.
-  - Ensure the down method reverts the changes in `db/structure.sql`.
-  - Update the migration output whenever you modify the migrations during the review process.
+- Check that the [`db:check-migrations`](database/dbcheck-migrations-job.md) pipeline job has run successfully and the migration rollback behaves as expected.
+  - Ensure the `db:check-schema` job has run successfully and no unexpected schema changes are introduced in a rollback. This job may only trigger a warning if the schema was changed.
+  - Verify that the previously mentioned jobs continue to succeed whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
 - When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`enable_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) method to enable lock-retries. Review the relevant [examples in our documentation](migration_style_guide.md#usage-with-transactional-migrations) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
@@ -181,9 +181,11 @@ Include in the MR description:
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
   through the `#database-lab` Slack channel or through [ChatOps](database/understanding_explain_plans.md#chatops).
-  - Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the
-  `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`)
-   projects provide enough data to serve as a good example.
+  - To produce a query plan with enough data, you can use the IDs of:
+    - The `gitlab-org` namespace (`namespace_id = 9970`), for queries involving a group.
+    - The `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`) projects, for queries involving a project.
+    - The `gitlab-qa` user (`user_id = 1614863`), for queries involving a user.
+      - Optionally, you can also use your own `user_id`, or the `user_id` of a user with a long history within the project or group being used to generate the query plan.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
   - If your queries belong to a new feature in GitLab.com and thus they don't return data in production:
     - You may analyze the query and to provide the plan from a local environment.

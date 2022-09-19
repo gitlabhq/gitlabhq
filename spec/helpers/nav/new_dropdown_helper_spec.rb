@@ -100,7 +100,7 @@ RSpec.describe Nav::NewDropdownHelper do
                 id: 'general_new_group',
                 title: 'New group',
                 href: '/groups/new',
-                data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown' }
+                data: { qa_selector: 'global_new_group_link', track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown' }
               )
             )
           )

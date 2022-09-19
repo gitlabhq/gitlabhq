@@ -437,6 +437,16 @@ If you need to manually remove job artifacts associated with multiple jobs while
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
    builds_to_clear.find_each do |build|
+     Ci::JobArtifacts::DeleteService.new(build).execute
+     build.update!(artifacts_expire_at: Time.now)
+   end
+   ```
+
+   In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
+
+   ```ruby
+   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
+   builds_to_clear.find_each do |build|
      build.artifacts_expire_at = Time.now
      build.erase_erasable_artifacts!
    end
@@ -489,13 +499,16 @@ If you need to manually remove **all** job artifacts associated with multiple jo
      print "Ci::Build ID #{build.id}... "
 
      if build.erasable?
-       build.erase(erased_by: admin_user)
+       Ci::BuildEraseService.new(build, admin_user).execute
        puts "Erased"
      else
        puts "Skipped (Nothing to erase or not erasable)"
      end
    end
    ```
+
+   In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/369132), replace
+   `Ci::BuildEraseService.new(build, admin_user).execute` with `build.erase(erased_by: admin_user)`.
 
    `1.week.ago` is a Rails `ActiveSupport::Duration` method which calculates a new
    date or time in the past. Other valid examples are:

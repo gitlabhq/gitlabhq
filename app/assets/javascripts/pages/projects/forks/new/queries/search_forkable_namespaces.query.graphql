@@ -1,0 +1,13 @@
+query searchForkableNamespaces($projectPath: ID!, $search: String) {
+  project(fullPath: $projectPath) {
+    id
+    forkTargets(search: $search) {
+      nodes {
+        id
+        fullPath
+        name
+        visibility
+      }
+    }
+  }
+}

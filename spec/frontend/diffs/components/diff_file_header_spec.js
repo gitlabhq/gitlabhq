@@ -76,18 +76,19 @@ describe('DiffFileHeader component', () => {
     wrapper.destroy();
   });
 
-  const findHeader = () => wrapper.find({ ref: 'header' });
-  const findTitleLink = () => wrapper.find({ ref: 'titleWrapper' });
-  const findExpandButton = () => wrapper.find({ ref: 'expandDiffToFullFileButton' });
+  const findHeader = () => wrapper.findComponent({ ref: 'header' });
+  const findTitleLink = () => wrapper.findComponent({ ref: 'titleWrapper' });
+  const findExpandButton = () => wrapper.findComponent({ ref: 'expandDiffToFullFileButton' });
   const findFileActions = () => wrapper.find('.file-actions');
-  const findModeChangedLine = () => wrapper.find({ ref: 'fileMode' });
+  const findModeChangedLine = () => wrapper.findComponent({ ref: 'fileMode' });
   const findLfsLabel = () => wrapper.find('[data-testid="label-lfs"]');
-  const findToggleDiscussionsButton = () => wrapper.find({ ref: 'toggleDiscussionsButton' });
-  const findExternalLink = () => wrapper.find({ ref: 'externalLink' });
-  const findReplacedFileButton = () => wrapper.find({ ref: 'replacedFileButton' });
-  const findViewFileButton = () => wrapper.find({ ref: 'viewButton' });
-  const findCollapseIcon = () => wrapper.find({ ref: 'collapseIcon' });
-  const findEditButton = () => wrapper.find({ ref: 'editButton' });
+  const findToggleDiscussionsButton = () =>
+    wrapper.findComponent({ ref: 'toggleDiscussionsButton' });
+  const findExternalLink = () => wrapper.findComponent({ ref: 'externalLink' });
+  const findReplacedFileButton = () => wrapper.findComponent({ ref: 'replacedFileButton' });
+  const findViewFileButton = () => wrapper.findComponent({ ref: 'viewButton' });
+  const findCollapseIcon = () => wrapper.findComponent({ ref: 'collapseIcon' });
+  const findEditButton = () => wrapper.findComponent({ ref: 'editButton' });
   const findReviewFileCheckbox = () => wrapper.find("[data-testid='fileReviewCheckbox']");
 
   const createComponent = ({ props, options = {} } = {}) => {
@@ -153,7 +154,7 @@ describe('DiffFileHeader component', () => {
     });
 
     it('displays a copy to clipboard button', () => {
-      expect(wrapper.find(ClipboardButton).exists()).toBe(true);
+      expect(wrapper.findComponent(ClipboardButton).exists()).toBe(true);
     });
 
     it('triggers the copy to clipboard tracking event', () => {

@@ -4,7 +4,7 @@ module ContainerRegistry
   class Tag
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :repository, :name
+    attr_reader :repository, :name, :updated_at
     attr_writer :created_at
 
     delegate :registry, :client, to: :repository
@@ -95,6 +95,17 @@ module ContainerRegistry
           nil
         end
       instance_variable_set(ivar(:memoized_created_at), date)
+    end
+
+    def updated_at=(string_value)
+      return unless string_value
+
+      @updated_at =
+        begin
+          DateTime.iso8601(string_value)
+        rescue ArgumentError
+          nil
+        end
     end
 
     def layers

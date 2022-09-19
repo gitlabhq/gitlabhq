@@ -23,6 +23,7 @@ module ErrorTracking
 
     self.reactive_cache_key = ->(setting) { [setting.class.model_name.singular, setting.project_id] }
     self.reactive_cache_work_type = :external_dependency
+    self.reactive_cache_hard_limit = ErrorTracking::SentryClient::RESPONSE_SIZE_LIMIT
 
     self.table_name = 'project_error_tracking_settings'
 
@@ -103,9 +104,18 @@ module ErrorTracking
       api_host
     end
 
+    def sentry_response_limit_enabled?
+      Feature.enabled?(:error_tracking_sentry_limit, project)
+    end
+
+    def reactive_cache_limit_enabled?
+      sentry_response_limit_enabled?
+    end
+
     def sentry_client
       strong_memoize(:sentry_client) do
-        ::ErrorTracking::SentryClient.new(api_url, token)
+        ::ErrorTracking::SentryClient
+          .new(api_url, token, validate_size_guarded_by_feature_flag: sentry_response_limit_enabled?)
       end
     end
 
@@ -127,14 +137,14 @@ module ErrorTracking
 
     def issue_details(opts = {})
       with_reactive_cache('issue_details', opts.stringify_keys) do |result|
-        ensure_issue_belongs_to_project!(result[:issue].project_id)
+        ensure_issue_belongs_to_project!(result[:issue].project_id) if result[:issue]
         result
       end
     end
 
     def issue_latest_event(opts = {})
       with_reactive_cache('issue_latest_event', opts.stringify_keys) do |result|
-        ensure_issue_belongs_to_project!(result[:latest_event].project_id)
+        ensure_issue_belongs_to_project!(result[:latest_event].project_id) if result[:latest_event]
         result
       end
     end

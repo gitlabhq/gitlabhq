@@ -2,7 +2,7 @@
 - if Feature.enabled?(:restyle_login_page, @project)
   .gl-text-center.gl-pt-5
     %label.gl-font-weight-normal
-      = _("Create an account using:")
+      = _("Register with:")
     .gl-text-center.gl-w-90p.gl-ml-auto.gl-mr-auto
       - providers.each do |provider|
         = link_to omniauth_authorize_path(:user, provider, register_omniauth_params), method: :post, class: "btn gl-button btn-default gl-ml-2 gl-mr-2 gl-mb-2 js-oauth-login #{qa_class_for_provider(provider)}", data: { provider: provider }, id: "oauth-login-#{provider}" do

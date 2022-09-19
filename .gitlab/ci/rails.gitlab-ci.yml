@@ -8,11 +8,13 @@
 
 .base-script:
   script:
+    - source ./scripts/rspec_helpers.sh
     # Only install knapsack after bundle install! Otherwise oddly some native
     # gems could not be found under some circumstance. No idea why, hours wasted.
     - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source ./scripts/rspec_helpers.sh
+    - echo -e "\e[0Ksection_start:`date +%s`:gitaly-test-spawn[collapsed=true]\r\e[0KStarting Gitaly"
+    - run_timed_command "scripts/gitaly-test-spawn"  # Do not use 'bundle exec' here
+    - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
 .minimal-rspec-tests:
   variables:
@@ -129,28 +131,28 @@
 ############################
 # rspec job parallel configs
 .rspec-migration-parallel:
-  parallel: 9
+  parallel: 12
 
 .rspec-ee-migration-parallel:
-  parallel: 3
-
-.rspec-unit-parallel:
-  parallel: 22
-
-.rspec-ee-unit-parallel:
-  parallel: 16
-
-.rspec-integration-parallel:
-  parallel: 10
-
-.rspec-ee-integration-parallel:
   parallel: 4
 
+.rspec-unit-parallel:
+  parallel: 28
+
+.rspec-ee-unit-parallel:
+  parallel: 18
+
+.rspec-integration-parallel:
+  parallel: 12
+
+.rspec-ee-integration-parallel:
+  parallel: 6
+
 .rspec-system-parallel:
-  parallel: 24
+  parallel: 28
 
 .rspec-ee-system-parallel:
-  parallel: 6
+  parallel: 10
 # rspec job parallel configs
 ############################
 
@@ -165,6 +167,7 @@ setup-test-env:
   variables:
     SETUP_DB: "false"
   script:
+    - echo $CI_MERGE_REQUEST_APPROVED
     - source scripts/gitlab_workhorse_component_helpers.sh
     - run_timed_command "download_and_extract_gitlab_workhorse_package" || true
     - run_timed_command "scripts/setup-test-env"
@@ -175,14 +178,10 @@ setup-test-env:
   artifacts:
     expire_in: 7d
     paths:
-      - config/secrets.yml
       - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
-      - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install
       - ${TMP_TEST_FOLDER}/gitaly/config.toml
       - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/internal/
-      - ${TMP_TEST_FOLDER}/gitaly/run/
-      - ${TMP_TEST_FOLDER}/gitaly/run2/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
@@ -379,51 +378,19 @@ db:migrate:reset single-db:
     - .single-db
     - .rails:rules:single-db
 
-db:migrate-from-previous-major-version:
-  extends: .db-job-base
-  variables:
-    USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
-    PROJECT_TO_CHECKOUT: "gitlab-foss"
-    TAG_TO_CHECKOUT: "v14.10.2"
-  before_script:
-    - !reference [.default-before_script, before_script]
-    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
-    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
-    - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
-    - git checkout -f FETCH_HEAD
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true ENABLE_BOOTSNAP=false bash scripts/prepare_build.sh
-    - run_timed_command "ENABLE_BOOTSNAP=false bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
-    - git checkout -f $CI_COMMIT_SHA
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
-  script:
-    - run_timed_command "scripts/db_tasks db:migrate"
-
-db:migrate-from-previous-major-version-single-db:
-  extends:
-    - db:migrate-from-previous-major-version
-    - .single-db
-    - .rails:rules:single-db
-
-.db:check-schema-base:
-  extends:
-    - .rails:rules:ee-mr-and-default-branch-only
-  variables:
-    TAG_TO_CHECKOUT: "v14.7.0"  # this version updated grpc to 1.42.0, which supports Ruby 2 & 3
-  script:
-    - run_timed_command "scripts/db_tasks db:migrate"
-    - scripts/schema_changed.sh
-    - scripts/validate_migration_timestamps
-
 db:check-schema:
   extends:
-    - db:migrate-from-previous-major-version
-    - .db:check-schema-base
+    - .db-job-base
+    - .rails:rules:ee-mr-and-default-branch-only
+  script:
+    - run_timed_command "bundle exec rake db:drop db:create"
+    - run_timed_command "scripts/db_tasks db:migrate"
 
 db:check-schema-single-db:
   extends:
-    - db:migrate-from-previous-major-version-single-db
-    - .db:check-schema-base
+    - db:check-schema
+    - .single-db
+    - .rails:rules:single-db
 
 db:check-migrations:
   extends:
@@ -624,7 +591,7 @@ rspec:feature-flags:
   stage: post-test
   needs:
     - job: "feature-flags-usage"
-    - job: "haml-lint foss"
+    - job: "haml-lint"
     - job: "haml-lint ee"
       optional: true
   script:
@@ -970,7 +937,7 @@ rspec fail-fast:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast tmp/matching_tests.txt "--tag ~quarantine"
+    - rspec_fail_fast "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine"
   artifacts:
     expire_in: 7d
     paths:
@@ -980,10 +947,10 @@ rspec foss-impact:
   extends:
     - .rspec-base-pg12-as-if-foss
     - .rails:rules:rspec-foss-impact
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests as-if-foss"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_matched_foss_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
+    - rspec_matched_foss_tests "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine"
   artifacts:
     expire_in: 7d
     paths:

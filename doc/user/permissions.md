@@ -88,6 +88,8 @@ The following table lists project permissions available for each role:
 | [Incident Management](../operations/incident_management/index.md):<br>View [escalation policies](../operations/incident_management/escalation_policies.md)                           |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)                              |          |          |           | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [escalation policies](../operations/incident_management/escalation_policies.md)                         |          |          |           | ✓          | ✓        |
+| [Issue boards](project/issue_board.md):<br>Create or delete lists                                                                                                                    |          | ✓        | ✓         | ✓          | ✓        |
+| [Issue boards](project/issue_board.md):<br>Move issues between lists                                                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                                                                                     | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Assign                                                                                                                                         | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Create (*18*)                                                                                                                                  | ✓        | ✓        | ✓         | ✓          | ✓        |
@@ -95,7 +97,7 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>View [Design Management](project/issues/design_management.md) pages                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [related issues](project/issues/related_issues.md)                                                                                        | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Set [weight](project/issues/issue_weight.md)                                                                                                   | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
-| [Issues]](project/issues/index.md):<br>Set [parent epic](group/epics/manage_epics.md#add-an-existing-issue-to-an-epic) |          | ✓        | ✓         | ✓          | ✓        |
+| [Issues](project/issues/index.md):<br>Set [parent epic](group/epics/manage_epics.md#add-an-existing-issue-to-an-epic) |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [confidential issues](project/issues/confidential_issues.md)                                                                              | (*2*)    | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Close / reopen (*19*)                                                                                                                          |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Lock threads                                                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
@@ -119,7 +121,7 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>Add labels                                                                                                                     |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Lock threads                                                                                                                   |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                                                                               |          |          | ✓         | ✓          | ✓        |
-| [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](discussions/#resolve-a-thread)                                                                              |          |          | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](discussions/index.md#resolve-a-thread)                                                                      |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage [merge approval rules](project/merge_requests/approvals/settings.md) (project settings)                                 |          |          |           | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Delete                                                                                                                         |          |          |           |            | ✓        |
 | [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Manage user-starred metrics dashboards (*6*)                                                                     | ✓        | ✓        | ✓         | ✓          | ✓        |
@@ -348,11 +350,6 @@ from pushing to a protected branch. Read through the documentation on
 Find the current permissions on the value stream analytics dashboard, as described in
 [related documentation](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics).
 
-### Issue board permissions
-
-Find the current permissions for interacting with the issue board feature in the
-[issue boards permissions page](project/issue_board.md#permissions).
-
 ### File Locking permissions **(PREMIUM)**
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
@@ -386,7 +383,7 @@ The following table lists group permissions available for each role:
 | Pull a container image using the dependency proxy                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Contribution analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group [epic](group/epics/index.md)                                                 | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View [group wiki](project/wiki/group.md) pages                                          | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
+| View [group wiki](project/wiki/group.md) pages                                          | ✓ (5) | ✓        | ✓         | ✓          | ✓     |
 | View [Insights](project/insights/index.md)                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View [Insights](project/insights/index.md) charts                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View [Issue analytics](analytics/issue_analytics.md)                                    | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -398,13 +395,13 @@ The following table lists group permissions available for each role:
 | Pull [packages](packages/index.md)                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |
 | Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages)                                                    |       |          |           | ✓          | ✓     |
-| Pull a Container Registry image                                                         | ✓ (7) | ✓        | ✓         | ✓          | ✓     |
+| Pull a Container Registry image                                                         | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
 | Remove a Container Registry image                                                       |       |          | ✓         | ✓          | ✓     |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit [group wiki](project/wiki/group.md) pages                               |       |          | ✓         | ✓          | ✓     |
-| Create project in group                                                                 |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
+| Create project in group                                                                 |       |          | ✓ (2)(4)  | ✓ (2)      | ✓ (2) |
 | Create/edit/delete group milestones                                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                                                           |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |
@@ -412,10 +409,10 @@ The following table lists group permissions available for each role:
 | Purge the dependency proxy for a group                                                  |       |          |           |            | ✓     |
 | Create/edit/delete dependency proxy [cleanup policies](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies)                                                  |       |          |           | ✓          | ✓     |
 | Use [security dashboard](application_security/security_dashboard/index.md)              |       |          | ✓         | ✓          | ✓     |
-| View group Audit Events                                                                 |       |          | ✓ (7)     | ✓ (7)      | ✓     |
+| View group Audit Events                                                                 |       |          | ✓ (6)     | ✓ (6)      | ✓     |
 | Create subgroup                                                                         |       |          |           | ✓ (1)      | ✓     |
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |
-| Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓ (2)      | ✓ (2) |
+| Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓          | ✓     |
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
 | Manage [group push rules](group/access_and_permissions.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
@@ -426,14 +423,14 @@ The following table lists group permissions available for each role:
 | Delete group [epic](group/epics/index.md)                                               |       |          |           |            | ✓     |
 | Disable notification emails                                                             |       |          |           |            | ✓     |
 | Edit group settings                                                                     |       |          |           |            | ✓     |
-| Edit [SAML SSO](group/saml_sso/index.md)                                                |       |          |           |            | ✓ (4) |
+| Edit [SAML SSO](group/saml_sso/index.md)                                                |       |          |           |            | ✓ (3) |
 | Filter members by 2FA status                                                            |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                                                      |       |          |           |            | ✓     |
 | Manage group members                                                                    |       |          |           |            | ✓     |
 | Share (invite) groups with groups                                                       |       |          |           |            | ✓     |
 | View 2FA status of members                                                              |       |          |           |            | ✓     |
-| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (4) |
-| View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (4) |
+| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (3) |
+| View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase CI/CD minutes and storage](../subscriptions/gitlab_com/index.md)         |       |          |           |            | ✓     |
@@ -441,14 +438,13 @@ The following table lists group permissions available for each role:
 <!-- markdownlint-disable MD029 -->
 
 1. Groups can be set to allow either Owners, or Owners and users with the Maintainer role, to [create subgroups](group/subgroups/index.md#create-a-subgroup).
-2. Introduced in GitLab 12.2.
-3. Default project creation role can be changed at:
+2. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
    - The [group level](group/manage.md#specify-who-can-add-projects-to-a-group).
-4. Does not apply to subgroups.
-5. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
-6. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
-7. Users can only view events based on their individual actions.
+3. Does not apply to subgroups.
+4. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
+5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
+6. Users can only view events based on their individual actions.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -470,7 +466,8 @@ project and should only have access to that project.
 
 External users:
 
-- Can only create projects (including forks), subgroups, and snippets within the top-level group to which they belong.
+- Cannot create project, groups, and snippets within their personal namespaces.
+- Can only create projects (including forks), subgroups, and snippets within top-level groups to which they are explicitly granted access.
 - Can only access public projects and projects to which they are explicitly granted access,
   thus hiding all other internal or private ones from them (like being
   logged out).
@@ -496,7 +493,7 @@ An administrator can flag a user as external by either of the following methods:
 
 - [Through the API](../api/users.md#user-modification).
 - Using the GitLab UI:
-  1. On the top bar, select **Menu > Admin**.
+  1. On the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Overview > Users** to create a new user or edit an existing one.
      There, you can find the option to flag the user as external.
 
@@ -510,7 +507,7 @@ Additionally, users can be set as external users using:
 By default, new users are not set as external users. This behavior can be changed
 by an administrator:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 

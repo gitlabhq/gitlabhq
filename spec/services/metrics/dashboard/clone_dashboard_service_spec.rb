@@ -62,7 +62,7 @@ RSpec.describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memor
             start_branch: project.default_branch,
             encoding: 'text',
             file_path: ".gitlab/dashboards/custom_dashboard.yml",
-            file_content:  file_content_hash.to_yaml
+            file_content: file_content_hash.to_yaml
           }
         end
 

@@ -2,13 +2,16 @@
 
 module Ci
   class PipelineVariable < Ci::ApplicationRecord
+    include Ci::Partitionable
     include Ci::HasVariable
 
     belongs_to :pipeline
 
+    partitionable scope: :pipeline
+
     alias_attribute :secret_value, :value
 
-    validates :key, presence: true
+    validates :key, :pipeline, presence: true
 
     def hook_attrs
       { key: key, value: value }

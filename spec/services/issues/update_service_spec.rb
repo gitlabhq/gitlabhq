@@ -48,6 +48,11 @@ RSpec.describe Issues::UpdateService, :mailer do
       described_class.new(project: project, current_user: user, params: opts).execute(issue)
     end
 
+    it_behaves_like 'issuable update service updating last_edited_at values' do
+      let(:issuable) { issue }
+      subject(:update_issuable) { update_issue(update_params) }
+    end
+
     context 'valid params' do
       let(:opts) do
         {
@@ -297,38 +302,6 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(issue.reload.relative_position).to eq(old_position)
           end
         end
-      end
-
-      it 'does not rebalance even if needed if the flag is disabled' do
-        stub_feature_flags(rebalance_issues: false)
-
-        range = described_class::NO_REBALANCING_NEEDED
-        issue1 = create(:issue, project: project, relative_position: range.first - 100)
-        issue2 = create(:issue, project: project, relative_position: range.first)
-        issue.update!(relative_position: RelativePositioning::START_POSITION)
-
-        opts[:move_between_ids] = [issue1.id, issue2.id]
-
-        expect(Issues::RebalancingWorker).not_to receive(:perform_async)
-
-        update_issue(opts)
-        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
-      end
-
-      it 'rebalances if needed if the flag is enabled for the project' do
-        stub_feature_flags(rebalance_issues: project)
-
-        range = described_class::NO_REBALANCING_NEEDED
-        issue1 = create(:issue, project: project, relative_position: range.first - 100)
-        issue2 = create(:issue, project: project, relative_position: range.first)
-        issue.update!(relative_position: RelativePositioning::START_POSITION)
-
-        opts[:move_between_ids] = [issue1.id, issue2.id]
-
-        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, project.root_namespace.id)
-
-        update_issue(opts)
-        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
 
       it 'rebalances if needed on the left' do

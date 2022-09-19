@@ -143,7 +143,7 @@ module DesignManagement
           gitaly_actions = version.actions.map do |action|
             design = action.design
             # Map the raw Action#event enum value to a Gitaly "action" for the
-            # `Repository#multi_action` call.
+            # `Repository#commit_files` call.
             gitaly_action_name = @event_enum_map[action.event_before_type_cast]
             # `content` will be the LfsPointer file and not the design file,
             # and can be nil for deletions.
@@ -157,7 +157,7 @@ module DesignManagement
             }.compact
           end
 
-          sha = target_repository.multi_action(
+          sha = target_repository.commit_files(
             git_user,
             branch_name: temporary_branch,
             message: commit_message(version),

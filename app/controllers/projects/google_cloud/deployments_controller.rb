@@ -12,7 +12,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
       enableCloudStorageUrl: project_google_cloud_deployments_cloud_storage_path(project)
     }
     @js_data = js_data.to_json
-    track_event('deployments#index', 'success', js_data)
+    track_event(:render_page)
   end
 
   def cloud_run
@@ -21,7 +21,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
                                   .new(project, current_user, params).execute
 
     if enable_cloud_run_response[:status] == :error
-      track_event('deployments#cloud_run', 'error_enable_cloud_run', enable_cloud_run_response)
+      track_event(:error_enable_services)
       flash[:error] = enable_cloud_run_response[:message]
       redirect_to project_google_cloud_deployments_path(project)
     else
@@ -30,17 +30,17 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
                                      .new(project, current_user, params).execute
 
       if generate_pipeline_response[:status] == :error
-        track_event('deployments#cloud_run', 'error_generate_pipeline', generate_pipeline_response)
+        track_event(:error_generate_cloudrun_pipeline)
         flash[:error] = 'Failed to generate pipeline'
         redirect_to project_google_cloud_deployments_path(project)
       else
         cloud_run_mr_params = cloud_run_mr_params(generate_pipeline_response[:branch_name])
-        track_event('deployments#cloud_run', 'success', cloud_run_mr_params)
+        track_event(:generate_cloudrun_pipeline)
         redirect_to project_new_merge_request_path(project, merge_request: cloud_run_mr_params)
       end
     end
-  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => e
-    track_event('deployments#cloud_run', 'error_gcp', e)
+  rescue Google::Apis::Error => e
+    track_event(:error_google_api)
     flash[:warning] = _('Google Cloud Error - %{error}') % { error: e }
     redirect_to project_google_cloud_deployments_path(project)
   end

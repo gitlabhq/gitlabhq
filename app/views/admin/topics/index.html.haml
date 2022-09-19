@@ -1,16 +1,16 @@
 - page_title _("Topics")
 
-= form_tag admin_topics_path, method: :get do |f|
-  .gl-py-3.gl-display-flex.gl-flex-direction-column-reverse.gl-md-flex-direction-row.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
-    .gl-flex-grow-1.gl-mt-3.gl-md-mt-0
-      .inline.gl-w-full.gl-md-w-auto
-        - search = params.fetch(:search, nil)
-        .search-field-holder
-          = search_field_tag :search, search, class: "form-control gl-form-input search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: _('Search by name'), data: { qa_selector: 'topic_search_field' }
-          = sprite_icon('search', css_class: 'search-icon')
-    .nav-controls
-      = link_to new_admin_topic_path, class: "gl-button btn btn-confirm gl-w-full gl-md-w-auto" do
-        = _('New topic')
+.top-area
+  .nav-controls.gl-w-full.gl-mt-3.gl-mb-3
+    = form_tag admin_topics_path, method: :get do |f|
+      - search = params.fetch(:search, nil)
+      .search-field-holder
+        = search_field_tag :search, search, class: "form-control gl-form-input search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: _('Search by name'), data: { qa_selector: 'topic_search_field' }
+        = sprite_icon('search', css_class: 'search-icon')
+    .gl-flex-grow-1
+    .js-merge-topics{ data: { path: merge_admin_topics_path } }
+    = link_to new_admin_topic_path, class: "gl-button btn btn-confirm gl-w-full gl-md-w-auto" do
+      = _('New topic')
 %ul.content-list
   = render partial: 'topic', collection: @topics
 

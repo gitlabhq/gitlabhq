@@ -49,7 +49,7 @@ module Ci
       {
         merge_train: s_('Pipeline|Merge train pipeline'),
         merged_result: s_('Pipeline|Merged result pipeline'),
-        detached: s_('Pipeline|Detached merge request pipeline')
+        detached: s_('Pipeline|Merge request pipeline')
       }.freeze
     end
 

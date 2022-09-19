@@ -3,6 +3,7 @@ extends:
   - plugin:@gitlab/i18n
   - plugin:no-jquery/slim
   - plugin:no-jquery/deprecated-3.4
+  - plugin:no-unsanitized/DOM
   - ./tooling/eslint-config/conditionally_ignore.js
 globals:
   __webpack_public_path__: true
@@ -116,6 +117,14 @@ rules:
   vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:
     - error
+  no-unsanitized/method:
+    - error
+    - escape:
+        methods: 'sanitize'
+  no-unsanitized/property:
+    - error
+    - escape:
+        methods: 'sanitize'
 overrides:
   - files:
     - '{,ee/,jh/}spec/frontend*/**/*'
@@ -134,6 +143,8 @@ overrides:
           message: 'Prefer explicit waitForPromises (or equivalent), or jest.runAllTimers (or equivalent) to vague setImmediate calls.'
         - selector: ImportSpecifier[imported.name='GlSkeletonLoading']
           message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
+      no-unsanitized/method: off
+      no-unsanitized/property: off
   - files:
       - 'config/**/*'
       - 'scripts/**/*'

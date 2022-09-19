@@ -4,23 +4,18 @@ require_relative "qa"
 
 Dir['tasks/*.rake'].each { |file| load file }
 
-desc "Revokes all personal access tokens"
-task :revoke_personal_access_tokens do
-  QA::Tools::RevokeAllPersonalAccessTokens.new.run
-end
-
 desc "Deletes subgroups within a provided group"
 task :delete_subgroups do
   QA::Tools::DeleteSubgroups.new.run
 end
 
 desc "Initialize GitLab with an access token"
-task :initialize_gitlab_auth, [:address] do |t, args|
+task :initialize_gitlab_auth, [:address] do |_, args|
   QA::Tools::InitializeGitLabAuth.new(args).run
 end
 
 desc "Generate Performance Testdata"
-task :generate_perf_testdata, :type do |t, args|
+task :generate_perf_testdata, :type do |_, args|
   args.with_defaults(type: :all)
   QA::Tools::GeneratePerfTestdata.new.method(args[:type]).call
 end
@@ -50,7 +45,7 @@ desc "Generate data and run load tests"
 task generate_data_and_run_load_test: [:generate_perf_testdata, :run_artillery_load_tests]
 
 desc "Deletes test ssh keys a user"
-task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |t, args|
+task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |_, args|
   QA::Tools::DeleteTestSSHKeys.new(args).run
 end
 
@@ -60,33 +55,38 @@ task :delete_projects do
 end
 
 desc "Deletes test users"
-task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |t, args|
+task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |_, args|
   QA::Tools::DeleteTestUsers.new(args).run
 end
 
 desc "Deletes snippets"
-task :delete_test_snippets, [:delete_before, :dry_run] do |t, args|
+task :delete_test_snippets, [:delete_before, :dry_run] do |_, args|
   QA::Tools::DeleteTestSnippets.new(args).run
 end
 
 namespace :test_resources do
   desc "Deletes resources created during E2E test runs"
-  task :delete, [:file_pattern] do |t, args|
+  task :delete, [:file_pattern] do |_, args|
     QA::Tools::TestResourcesHandler.new(args[:file_pattern]).run_delete
   end
 
   desc "Upload test resources JSON files to GCS"
-  task :upload, [:file_pattern, :ci_project_name] do |t, args|
+  task :upload, [:file_pattern, :ci_project_name] do |_, args|
     QA::Tools::TestResourcesHandler.new(args[:file_pattern]).upload(args[:ci_project_name])
   end
 
   desc "Download test resources JSON files from GCS"
-  task :download, [:ci_project_name] do |t, args|
+  task :download, [:ci_project_name] do |_, args|
     QA::Tools::TestResourcesHandler.new.download(args[:ci_project_name])
   end
 end
 
 desc "Deletes user's projects"
-task :delete_user_projects, [:delete_before, :dry_run] do |t, args|
+task :delete_user_projects, [:delete_before, :dry_run] do |_, args|
   QA::Tools::DeleteUserProjects.new(args).run
+end
+
+desc "Revokes user's personal access tokens"
+task :revoke_user_pats, [:revoke_before, :dry_run] do |_, args|
+  QA::Tools::RevokeUserPersonalAccessTokens.new(args).run
 end

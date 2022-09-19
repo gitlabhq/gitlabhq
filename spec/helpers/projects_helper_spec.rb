@@ -1147,37 +1147,23 @@ RSpec.describe ProjectsHelper do
     context 'with the setting enabled' do
       before do
         stub_application_setting(delete_inactive_projects: true)
+        stub_application_setting(inactive_projects_min_size_mb: 0)
+        stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
       end
 
-      context 'with the feature flag disabled' do
-        before do
-          stub_feature_flags(inactive_projects_deletion: false)
-        end
-
+      context 'with an active project' do
         it_behaves_like 'does not show the banner'
       end
 
-      context 'with the feature flag enabled' do
+      context 'with an inactive project' do
         before do
-          stub_feature_flags(inactive_projects_deletion: true)
-          stub_application_setting(inactive_projects_min_size_mb: 0)
-          stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
+          project.statistics.storage_size = 1.megabyte
+          project.last_activity_at = 1.year.ago
+          project.save!
         end
 
-        context 'with an active project' do
-          it_behaves_like 'does not show the banner'
-        end
-
-        context 'with an inactive project' do
-          before do
-            project.statistics.storage_size = 1.megabyte
-            project.last_activity_at = 1.year.ago
-            project.save!
-          end
-
-          it 'shows the banner' do
-            expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
-          end
+        it 'shows the banner' do
+          expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
         end
       end
     end
@@ -1304,7 +1290,7 @@ RSpec.describe ProjectsHelper do
       let_it_be(:has_active_license) { true }
 
       it 'displays the correct messagee' do
-        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.'))
+        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.'))
       end
     end
 
@@ -1312,7 +1298,7 @@ RSpec.describe ProjectsHelper do
       let_it_be(:has_active_license) { false }
 
       it 'displays the correct message' do
-        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.'))
+        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.'))
       end
     end
   end

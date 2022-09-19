@@ -35,13 +35,13 @@ describe('Batch comments diff file drafts component', () => {
   it('renders list of draft notes', () => {
     factory();
 
-    expect(vm.findAll(DraftNote).length).toEqual(2);
+    expect(vm.findAllComponents(DraftNote).length).toEqual(2);
   });
 
   it('renders index of draft note', () => {
     factory();
 
-    const elements = vm.findAll(DesignNotePin);
+    const elements = vm.findAllComponents(DesignNotePin);
 
     expect(elements.length).toEqual(2);
 

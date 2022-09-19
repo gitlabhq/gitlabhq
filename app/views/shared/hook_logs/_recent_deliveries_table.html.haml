@@ -23,7 +23,7 @@
 
 
 - if hook_logs.present?
-  = paginate hook_logs, theme: 'gitlab'
+  = paginate_without_count hook_logs
 - else
   .gl-text-center.gl-mt-7
     %h4= _('No webhook events')

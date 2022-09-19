@@ -47,6 +47,7 @@ export default {
       currentCiFileContent: '',
       failureType: null,
       failureReasons: [],
+      hasBranchLoaded: false,
       initialCiFileContent: '',
       isFetchingCommitSha: false,
       isLintUnavailable: false,
@@ -234,7 +235,7 @@ export default {
       return this.lastCommittedContent !== this.currentCiFileContent;
     },
     isBlobContentLoading() {
-      return this.$apollo.queries.initialCiFileContent.loading;
+      return !this.hasBranchLoaded || this.$apollo.queries.initialCiFileContent.loading;
     },
     isCiConfigDataLoading() {
       return this.$apollo.queries.ciConfigData.loading;
@@ -243,7 +244,7 @@ export default {
       return this.currentCiFileContent === '';
     },
     shouldSkipBlobContentQuery() {
-      return this.isNewCiConfigFile || this.lastCommittedContent || !this.currentBranch;
+      return this.isNewCiConfigFile || this.lastCommittedContent || !this.hasBranchLoaded;
     },
     shouldSkipCiConfigQuery() {
       return !this.currentCiFileContent || !this.commitSha;
@@ -264,6 +265,17 @@ export default {
     },
   },
   watch: {
+    currentBranch: {
+      immediate: true,
+      handler(branch) {
+        // currentBranch is a client query so it starts off undefined. In the index.js,
+        // write to the apollo cache. Once that operation is done, we can safely do operations
+        // that require the branch to have loaded.
+        if (branch) {
+          this.hasBranchLoaded = true;
+        }
+      },
+    },
     isEmpty(flag) {
       if (flag) {
         this.setAppStatus(EDITOR_APP_STATUS_EMPTY);

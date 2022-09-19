@@ -7,17 +7,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Custom domains and SSL/TLS certificates **(FREE)**
 
-Setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
-To use one or more custom domain names with your Pages site, you can:
+You can use custom domains:
 
-- Add a [custom **root domain** or a **subdomain**](#set-up-pages-with-a-custom-domain).
+- With GitLab Pages.
+- To [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
+  When using custom domains this way, you use the GitLab Pages feature but can skip the [requirements](#requirements).
+
+To use one or more custom domain names:
+
+- Add a [custom **root domain** or a **subdomain**](#set-up-a-custom-domain).
 - Add [SSL/TLS certification](#adding-an-ssltls-certificate-to-pages).
 
-## Set up Pages with a custom domain
+## Set up a custom domain
 
-To set up Pages with a custom domain name, read the requirements
-and steps below.
+To set up Pages with a custom domain name, read the requirements and steps below.
 
 ### Requirements
 
@@ -45,7 +50,7 @@ and steps below.
 Follow the steps below to add your custom domain to Pages. See also
 this document for an [overview on DNS records](dns_concepts.md).
 
-#### 1. Add a custom domain to Pages
+#### 1. Add a custom domain
 
 Navigate to your project's **Setting > Pages** and select **+ New domain**
 to add your custom domain to GitLab Pages. You can choose whether to:
@@ -64,7 +69,7 @@ and paste them in your domain's control panel as a `TXT` record on the next step
 
 ![Get the verification code](img/get_domain_verification_code_v12_0.png)
 
-#### 3. Set up DNS records for Pages
+#### 3. Set up DNS records
 
 Read this document for an [overview of DNS records for Pages](dns_concepts.md).
 If you're familiar with the subject, follow the instructions below
@@ -144,7 +149,7 @@ They require:
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 If you're using Cloudflare, check
-[Redirecting `www.domain.com` to `domain.com` with Cloudflare](#redirecting-wwwdomaincom-to-domaincom-with-cloudflare).
+[Redirecting `www.domain.com` to `domain.com` with Cloudflare](#redirect-wwwdomaincom-to-domaincom-with-cloudflare).
 
 > **Notes**:
 >
@@ -186,7 +191,7 @@ from the GitLab project.
   in place. Your domain is periodically reverified, and may be
   disabled if the record is removed.
 
-##### Troubleshooting Pages domain verification
+##### Troubleshoot domain verification
 
 To manually verify that you have properly configured the domain verification
 `TXT` DNS entry, you can run the following command in your terminal:
@@ -218,7 +223,7 @@ For a subdomain:
 | `www.example.com`                                 | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-### Adding more domain aliases
+### Add more domain aliases
 
 You can add more than one alias (custom domains and subdomains) to the same project.
 An alias can be understood as having many doors leading to the same room.
@@ -226,7 +231,7 @@ An alias can be understood as having many doors leading to the same room.
 All the aliases you've set to your site are listed on **Setting > Pages**.
 From that page, you can view, add, and remove them.
 
-### Redirecting `www.domain.com` to `domain.com` with Cloudflare
+### Redirect `www.domain.com` to `domain.com` with Cloudflare
 
 If you use Cloudflare, you can redirect `www` to `domain.com`
 without adding both `www.domain.com` and `domain.com` to GitLab.

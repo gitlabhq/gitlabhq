@@ -7,8 +7,9 @@ import PipelineSourceToken from '~/pipelines/components/pipelines_list/tokens/pi
 describe('Pipeline Source Token', () => {
   let wrapper;
 
-  const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
-  const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
+  const findFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
+  const findAllFilteredSearchSuggestions = () =>
+    wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
   const defaultProps = {
     config: {

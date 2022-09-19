@@ -72,7 +72,7 @@ describe('Stacked column chart component', () => {
       ]);
     });
 
-    it('chart options should configure data zoom and axis label ', () => {
+    it('chart options should configure data zoom and axis label', () => {
       const chartOptions = findChart().props('option');
       const xAxisType = findChart().props('xAxisType');
 

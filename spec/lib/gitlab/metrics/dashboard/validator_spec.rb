@@ -33,9 +33,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
         context 'with metric identifier present in current dashboard' do
           before do
             create(:prometheus_metric,
-              identifier:     'metric_a1',
+              identifier: 'metric_a1',
               dashboard_path: 'test/path.yml',
-              project:        project
+              project: project
             )
           end
 
@@ -45,9 +45,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
         context 'with metric identifier present in another dashboard' do
           before do
             create(:prometheus_metric,
-              identifier:     'metric_a1',
+              identifier: 'metric_a1',
               dashboard_path: 'some/other/dashboard/path.yml',
-              project:        project
+              project: project
             )
           end
 
@@ -94,9 +94,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
         context 'with metric identifier present in current dashboard' do
           before do
             create(:prometheus_metric,
-              identifier:     'metric_a1',
+              identifier: 'metric_a1',
               dashboard_path: 'test/path.yml',
-              project:        project
+              project: project
             )
           end
 
@@ -106,9 +106,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
         context 'with metric identifier present in another dashboard' do
           before do
             create(:prometheus_metric,
-              identifier:     'metric_a1',
+              identifier: 'metric_a1',
               dashboard_path: 'some/other/dashboard/path.yml',
-              project:        project
+              project: project
             )
           end
 
@@ -166,9 +166,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
         context 'with metric identifier present in current dashboard' do
           before do
             create(:prometheus_metric,
-                   identifier:     'metric_a1',
+                   identifier: 'metric_a1',
                    dashboard_path: 'test/path.yml',
-                   project:        project
+                   project: project
                   )
           end
 
@@ -178,9 +178,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
         context 'with metric identifier present in another dashboard' do
           before do
             create(:prometheus_metric,
-                   identifier:     'metric_a1',
+                   identifier: 'metric_a1',
                    dashboard_path: 'some/other/dashboard/path.yml',
-                   project:        project
+                   project: project
                   )
           end
 

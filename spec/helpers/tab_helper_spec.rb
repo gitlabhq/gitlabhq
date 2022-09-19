@@ -182,7 +182,7 @@ RSpec.describe TabHelper do
     context 'with data attributes' do
       it 'creates a tab counter badge with the data attributes' do
         expect(helper.gl_tab_counter_badge(1, { data: { some_attribute: 'foo' } })).to eq(
-          '<span data-some-attribute="foo" class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge">1</span>'
+          '<span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge" data-some-attribute="foo">1</span>'
         )
       end
     end

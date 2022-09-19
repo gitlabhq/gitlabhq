@@ -36,10 +36,10 @@ module Ci
       build.update_coverage
       Ci::BuildReportResultService.new.execute(build)
 
-      build.feature_flagged_execute_hooks
+      build.execute_hooks
       ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
       build.track_deployment_usage
-      build.track_verify_usage
+      build.track_verify_environment_usage
 
       if build.failed? && !build.auto_retry_expected?
         ::Ci::MergeRequests::AddTodoWhenBuildFailsWorker.perform_async(build.id)

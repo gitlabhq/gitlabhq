@@ -243,7 +243,7 @@ export default {
       v-for="(item, idx) in extraLinks"
       :key="idx"
       :href="item.url"
-      :is-check-item="true"
+      is-check-item
       data-testid="milestone-combobox-extra-links"
     >
       {{ item.text }}

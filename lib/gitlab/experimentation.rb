@@ -70,9 +70,9 @@ module Gitlab
 
         logger = Gitlab::ExperimentationLogger.build
         logger.warn message: 'Subject must conform to the rollout strategy',
-                     experiment_key: experiment_key,
-                     subject: subject.class.to_s,
-                     rollout_strategy: rollout_strategy(experiment_key)
+                    experiment_key: experiment_key,
+                    subject: subject.class.to_s,
+                    rollout_strategy: rollout_strategy(experiment_key)
       end
 
       def valid_subject_for_rollout_strategy?(experiment_key, subject)

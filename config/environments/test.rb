@@ -48,6 +48,8 @@ Rails.application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
+  config.action_mailer.preview_path = GitlabEdition.path_glob('app/mailers/previews')
+
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 

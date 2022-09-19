@@ -42,8 +42,8 @@ describe('stage column component', () => {
   const findStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const findStageColumnGroup = () => wrapper.find('[data-testid="stage-column-group"]');
   const findAllStageColumnGroups = () => wrapper.findAll('[data-testid="stage-column-group"]');
-  const findJobItem = () => wrapper.find(JobItem);
-  const findActionComponent = () => wrapper.find(ActionComponent);
+  const findJobItem = () => wrapper.findComponent(JobItem);
+  const findActionComponent = () => wrapper.findComponent(ActionComponent);
 
   const createComponent = ({ method = shallowMount, props = {} } = {}) => {
     wrapper = method(StageColumnComponent, {
@@ -126,9 +126,9 @@ describe('stage column component', () => {
         });
       });
 
-      it('capitalizes and escapes name', () => {
-        expect(findStageColumnTitle().text()).toBe(
-          'Test &lt;img src=x onerror=alert(document.domain)&gt;',
+      it('escapes name', () => {
+        expect(findStageColumnTitle().html()).toContain(
+          'test &lt;img src=x onerror=alert(document.domain)&gt;',
         );
       });
 

@@ -29,7 +29,7 @@ Complete these steps on GitHub:
 
 Complete these steps in GitLab:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **GitHub**.
 1. Ensure the **Active** checkbox is selected.
@@ -39,7 +39,7 @@ Complete these steps in GitLab:
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-After configuring the integration, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/#pipelines-for-external-pull-requests)
+After configuring the integration, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)
 to configure pipelines to run for open pull requests.
 
 ### Static or dynamic status check names

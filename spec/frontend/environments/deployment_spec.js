@@ -1,4 +1,6 @@
-import { GlCollapse } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { stubTransition } from 'helpers/stub_transition';
@@ -8,9 +10,13 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import Commit from '~/environments/components/commit.vue';
 import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
-import { resolvedEnvironment } from './graphql/mock_data';
+import createMockApollo from '../__helpers__/mock_apollo_helper';
+import waitForPromises from '../__helpers__/wait_for_promises';
+import getDeploymentDetails from '../../../app/assets/javascripts/environments/graphql/queries/deployment_details.query.graphql';
+import { resolvedEnvironment, resolvedDeploymentDetails } from './graphql/mock_data';
 
 describe('~/environments/components/deployment.vue', () => {
+  Vue.use(VueApollo);
   useFakeDate(2022, 0, 8, 16);
 
   let deployment;
@@ -20,14 +26,23 @@ describe('~/environments/components/deployment.vue', () => {
     deployment = resolvedEnvironment.lastDeployment;
   });
 
-  const createWrapper = ({ propsData = {} } = {}) =>
-    mountExtended(Deployment, {
+  const createWrapper = ({ propsData = {}, options = {} } = {}) => {
+    const mockApollo = createMockApollo([
+      [getDeploymentDetails, jest.fn().mockResolvedValue(resolvedDeploymentDetails)],
+    ]);
+
+    return mountExtended(Deployment, {
+      stubs: { transition: stubTransition() },
       propsData: {
         deployment,
+        visible: true,
         ...propsData,
       },
-      stubs: { transition: stubTransition() },
+      apolloProvider: mockApollo,
+      provide: { projectPath: '/1' },
+      ...options,
     });
+  };
 
   afterEach(() => {
     wrapper?.destroy();
@@ -102,10 +117,11 @@ describe('~/environments/components/deployment.vue', () => {
       });
 
       it('shows the short SHA for the commit of the deployment', () => {
-        const sha = wrapper.findByTitle(__('Commit SHA'));
+        const sha = wrapper.findByRole('link', { name: __('Commit SHA') });
 
         expect(sha.exists()).toBe(true);
         expect(sha.text()).toBe(deployment.commit.shortId);
+        expect(sha.attributes('href')).toBe(deployment.commit.commitPath);
       });
 
       it('shows the commit icon', () => {
@@ -183,29 +199,12 @@ describe('~/environments/components/deployment.vue', () => {
     });
   });
 
-  describe('collapse', () => {
-    let collapse;
-    let button;
-
+  describe('details', () => {
     beforeEach(() => {
       wrapper = createWrapper();
-      collapse = wrapper.findComponent(GlCollapse);
-      button = wrapper.findComponent({ ref: 'details-toggle' });
     });
 
-    it('is collapsed by default', () => {
-      expect(collapse.attributes('visible')).toBeUndefined();
-      expect(button.props('icon')).toBe('expand-down');
-      expect(button.text()).toBe(__('Show details'));
-    });
-
-    it('opens on click', async () => {
-      await button.trigger('click');
-
-      expect(button.text()).toBe(__('Hide details'));
-      expect(button.props('icon')).toBe('expand-up');
-      expect(collapse.attributes('visible')).toBe('visible');
-
+    it('shows information about the deployment', () => {
       const username = wrapper.findByRole('link', { name: `@${deployment.user.username}` });
 
       expect(username.attributes('href')).toBe(deployment.user.path);
@@ -221,24 +220,43 @@ describe('~/environments/components/deployment.vue', () => {
       const ref = wrapper.findByRole('link', { name: deployment.ref.name });
       expect(ref.attributes('href')).toBe(deployment.ref.refPath);
     });
+
+    it('shows information about tags related to the deployment', async () => {
+      expect(wrapper.findByText(__('Tags')).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+
+      await waitForPromises();
+
+      for (let i = 1; i < 6; i += 1) {
+        const tagName = __(`testTag${i}`);
+        const testTag = wrapper.findByText(tagName);
+        expect(testTag.exists()).toBe(true);
+        expect(testTag.attributes('href')).toBe(`tags/${tagName}`);
+      }
+      expect(wrapper.findByText(__('testTag6')).exists()).toBe(false);
+      expect(wrapper.findByText(__('Tag')).exists()).toBe(false);
+      // with more than 5 tags, show overflow marker
+      expect(wrapper.findByText('...').exists()).toBe(true);
+    });
   });
 
   describe('with tagged deployment', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createWrapper({ propsData: { deployment: { ...deployment, tag: true } } });
-      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
     });
 
-    it('shows tag instead of branch', () => {
-      const refLabel = wrapper.findByText(__('Tag'));
+    it('shows tags instead of branch', () => {
+      const refLabel = wrapper.findByText(__('Tags'));
       expect(refLabel.exists()).toBe(true);
+
+      const branchLabel = wrapper.findByText(__('Branch'));
+      expect(branchLabel.exists()).toBe(false);
     });
   });
 
   describe('with API deployment', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createWrapper({ propsData: { deployment: { ...deployment, deployable: null } } });
-      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
     });
 
     it('shows API instead of a job name', () => {
@@ -247,13 +265,12 @@ describe('~/environments/components/deployment.vue', () => {
     });
   });
   describe('without a job path', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createWrapper({
         propsData: {
           deployment: { ...deployment, deployable: { name: deployment.deployable.name } },
         },
       });
-      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
     });
 
     it('shows a span instead of a link', () => {

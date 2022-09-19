@@ -143,7 +143,7 @@ module API
 
           reject_if_build_artifacts_size_refreshing!(build.project)
 
-          build.erase_erasable_artifacts!
+          ::Ci::JobArtifacts::DeleteService.new(build).execute
 
           status :no_content
         end

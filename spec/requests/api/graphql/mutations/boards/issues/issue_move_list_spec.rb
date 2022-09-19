@@ -100,6 +100,20 @@ RSpec.describe 'Reposition and move issue within board lists' do
         expect(response_issue['labels']['edges'][0]['node']['title']).to eq(testing.title)
       end
     end
+
+    context 'when moving an issue using position_in_list' do
+      let(:issue_move_params) { { from_list_id: list1.id, to_list_id: list2.id, position_in_list: 0 } }
+
+      it 'repositions an issue' do
+        post_graphql_mutation(mutation(params), current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        response_issue = json_response['data'][mutation_result_identifier]['issue']
+        expect(response_issue['iid']).to eq(issue1.iid.to_s)
+        expect(response_issue['labels']['edges'][0]['node']['title']).to eq(testing.title)
+        expect(response_issue['relativePosition']).to be < existing_issue1.relative_position
+      end
+    end
   end
 
   context 'when user has no access to resources' do

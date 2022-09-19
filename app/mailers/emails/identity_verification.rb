@@ -13,3 +13,5 @@ module Emails
     end
   end
 end
+
+Emails::IdentityVerification.prepend_mod

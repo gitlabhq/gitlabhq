@@ -128,5 +128,76 @@ RSpec.describe Crm::OrganizationsFinder do
         end
       end
     end
+
+    context 'when sorting' do
+      let_it_be(:group) { create(:group, :crm_enabled) }
+
+      let_it_be(:sort_test_a) do
+        create(
+          :organization,
+          group: group,
+          name: "ABC",
+          description: "1"
+        )
+      end
+
+      let_it_be(:sort_test_b) do
+        create(
+          :organization,
+          group: group,
+          name: "DEF",
+          description: "2",
+          default_rate: 10
+        )
+      end
+
+      let_it_be(:sort_test_c) do
+        create(
+          :organization,
+          group: group,
+          name: "GHI",
+          default_rate: 20
+        )
+      end
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns the organiztions sorted by name in ascending order' do
+        finder = described_class.new(user, group: group, sort: { field: 'name', direction: :asc })
+
+        expect(finder.execute).to eq([sort_test_a, sort_test_b, sort_test_c])
+      end
+
+      it 'returns the organizations sorted by description in descending order' do
+        finder = described_class.new(user, group: group, sort: { field: 'description', direction: :desc })
+
+        expect(finder.execute).to eq([sort_test_b, sort_test_a, sort_test_c])
+      end
+
+      it 'returns the contacts sorted by default_rate in ascending order' do
+        finder = described_class.new(user, group: group, sort: { field: 'default_rate', direction: :asc })
+
+        expect(finder.execute).to eq([sort_test_b, sort_test_c, sort_test_a])
+      end
+    end
+  end
+
+  describe '.counts_by_state' do
+    let_it_be(:group) { create(:group, :crm_enabled) }
+    let_it_be(:active_organizations) { create_list(:organization, 3, group: group, state: :active) }
+    let_it_be(:inactive_organizations) { create_list(:organization, 2, group: group, state: :inactive) }
+
+    before do
+      group.add_developer(user)
+    end
+
+    it 'returns correct counts' do
+      counts = described_class.counts_by_state(user, group: group)
+
+      expect(counts["active"]).to eq(3)
+      expect(counts["inactive"]).to eq(2)
+    end
   end
 end

@@ -39,14 +39,14 @@ export default {
     :class="{ 'gl-cursor-text': disabled }"
     aria-labelledby="item-title"
   >
-    <div
+    <span
       id="item-title"
       ref="titleEl"
       role="textbox"
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
       :contenteditable="!disabled"
-      class="gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-border-white gl-rounded-base"
+      class="gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-border-white gl-rounded-base gl-display-block"
       :class="{ 'gl-hover-border-gray-200 gl-pseudo-placeholder': !disabled }"
       @blur="handleBlur"
       @keyup="handleInput"
@@ -55,8 +55,7 @@ export default {
       @keydown.meta.u.prevent
       @keydown.ctrl.b.prevent
       @keydown.meta.b.prevent
+      >{{ title }}</span
     >
-      {{ title }}
-    </div>
   </h2>
 </template>

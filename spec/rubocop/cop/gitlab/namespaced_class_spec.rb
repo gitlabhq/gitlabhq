@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/namespaced_class'
 
 RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass do
-  subject(:cop) { described_class.new }
-
   shared_examples 'enforces namespaced classes' do
     def namespaced(code)
       return code unless namespace

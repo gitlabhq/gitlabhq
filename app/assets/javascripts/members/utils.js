@@ -1,28 +1,36 @@
 import { isUndefined } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
 import {
   FIELDS,
   DEFAULT_SORT,
   GROUP_LINK_BASE_PROPERTY_NAME,
   GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
+  I18N_USER_YOU,
+  I18N_USER_BLOCKED,
+  I18N_USER_BOT,
+  I188N_USER_2FA,
 } from './constants';
 
 export const generateBadges = ({ member, isCurrentUser, canManageMembers }) => [
   {
     show: isCurrentUser,
-    text: __("It's you"),
+    text: I18N_USER_YOU,
     variant: 'success',
   },
   {
     show: member.user?.blocked,
-    text: __('Blocked'),
+    text: I18N_USER_BLOCKED,
     variant: 'danger',
   },
   {
+    show: member.user?.isBot,
+    text: I18N_USER_BOT,
+    variant: 'muted',
+  },
+  {
     show: member.user?.twoFactorEnabled && (canManageMembers || isCurrentUser),
-    text: __('2FA'),
+    text: I188N_USER_2FA,
     variant: 'info',
   },
 ];

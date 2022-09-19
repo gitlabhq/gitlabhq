@@ -71,3 +71,5 @@ module Types
     end
   end
 end
+
+Types::Clusters::AgentType.prepend_mod

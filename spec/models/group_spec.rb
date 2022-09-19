@@ -707,7 +707,8 @@ RSpec.describe Group do
   end
 
   describe '.public_or_visible_to_user' do
-    let!(:private_group)  { create(:group, :private)  }
+    let!(:private_group) { create(:group, :private) }
+    let!(:private_subgroup) { create(:group, :private, parent: private_group) }
     let!(:internal_group) { create(:group, :internal) }
 
     subject { described_class.public_or_visible_to_user(user) }
@@ -731,6 +732,10 @@ RSpec.describe Group do
         end
 
         it { is_expected.to match_array([private_group, internal_group, group]) }
+
+        it 'does not have access to subgroups (see accessible_to_user scope)' do
+          is_expected.not_to include(private_subgroup)
+        end
       end
 
       context 'when user is a member of private subgroup' do
@@ -837,6 +842,36 @@ RSpec.describe Group do
         new_group = create(:group)
 
         expect(described_class.by_ids_or_paths([new_group.id], [group_path])).to match_array([group, new_group])
+      end
+    end
+
+    describe 'accessible_to_user' do
+      subject { described_class.accessible_to_user(user) }
+
+      let_it_be(:public_group) { create(:group, :public) }
+      let_it_be(:unaccessible_group) { create(:group, :private) }
+      let_it_be(:unaccessible_subgroup) { create(:group, :private, parent: unaccessible_group) }
+      let_it_be(:accessible_group) { create(:group, :private) }
+      let_it_be(:accessible_subgroup) { create(:group, :private, parent: accessible_group) }
+
+      context 'when user is nil' do
+        let(:user) { nil }
+
+        it { is_expected.to match_array([group, public_group]) }
+      end
+
+      context 'when user is present' do
+        let(:user) { create(:user) }
+
+        it { is_expected.to match_array([group, internal_group, public_group]) }
+
+        context 'when user has access to accessible group' do
+          before do
+            accessible_group.add_developer(user)
+          end
+
+          it { is_expected.to match_array([group, internal_group, public_group, accessible_group, accessible_subgroup]) }
+        end
       end
     end
   end
@@ -1857,56 +1892,31 @@ RSpec.describe Group do
     end
   end
 
-  describe '#update_two_factor_requirement' do
-    let(:user) { create(:user) }
+  describe '#update_two_factor_requirement_for_members' do
+    let_it_be_with_reload(:user) { create(:user) }
 
     context 'group membership' do
-      before do
+      it 'enables two_factor_requirement for group members' do
         group.add_member(user, GroupMember::OWNER)
-      end
-
-      it 'is called when require_two_factor_authentication is changed' do
-        expect_any_instance_of(User).to receive(:update_two_factor_requirement)
-
         group.update!(require_two_factor_authentication: true)
-      end
 
-      it 'is called when two_factor_grace_period is changed' do
-        expect_any_instance_of(User).to receive(:update_two_factor_requirement)
-
-        group.update!(two_factor_grace_period: 23)
-      end
-
-      it 'is not called when other attributes are changed' do
-        expect_any_instance_of(User).not_to receive(:update_two_factor_requirement)
-
-        group.update!(description: 'foobar')
-      end
-
-      it 'calls #update_two_factor_requirement on each group member' do
-        other_user = create(:user)
-        group.add_member(other_user, GroupMember::OWNER)
-
-        calls = 0
-        allow_any_instance_of(User).to receive(:update_two_factor_requirement) do
-          calls += 1
-        end
-
-        group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
-
-        expect(calls).to eq 2
-      end
-    end
-
-    context 'sub groups and projects' do
-      it 'enables two_factor_requirement for group member' do
-        group.add_member(user, GroupMember::OWNER)
-
-        group.update!(require_two_factor_authentication: true)
+        group.update_two_factor_requirement_for_members
 
         expect(user.reload.require_two_factor_authentication_from_group).to be_truthy
       end
 
+      it 'disables two_factor_requirement for group members' do
+        user.update!(require_two_factor_authentication_from_group: true)
+        group.add_member(user, GroupMember::OWNER)
+        group.update!(require_two_factor_authentication: false)
+
+        group.update_two_factor_requirement_for_members
+
+        expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
+      end
+    end
+
+    context 'sub groups and projects' do
       context 'expanded group members' do
         let(:indirect_user) { create(:user) }
 
@@ -1915,8 +1925,9 @@ RSpec.describe Group do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: true)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1926,8 +1937,9 @@ RSpec.describe Group do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group, require_two_factor_authentication: true)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: false)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1936,8 +1948,9 @@ RSpec.describe Group do
               ancestor_group = create(:group)
               ancestor_group.add_member(indirect_user, GroupMember::OWNER)
               group.update!(parent: ancestor_group)
-
               group.update!(require_two_factor_authentication: true)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1949,8 +1962,9 @@ RSpec.describe Group do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: true)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
             end
@@ -1960,8 +1974,9 @@ RSpec.describe Group do
             it 'disables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
               subgroup.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: false)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
             end
@@ -1970,8 +1985,9 @@ RSpec.describe Group do
               ancestor_group = create(:group, require_two_factor_authentication: false)
               indirect_user.update!(require_two_factor_authentication_from_group: true)
               ancestor_group.add_member(indirect_user, GroupMember::OWNER)
-
               group.update!(require_two_factor_authentication: false)
+
+              group.update_two_factor_requirement_for_members
 
               expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
             end
@@ -1983,8 +1999,9 @@ RSpec.describe Group do
         it 'does not enable two_factor_requirement for child project member' do
           project = create(:project, group: group)
           project.add_maintainer(user)
-
           group.update!(require_two_factor_authentication: true)
+
+          group.update_two_factor_requirement_for_members
 
           expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
         end
@@ -1993,12 +2010,33 @@ RSpec.describe Group do
           subgroup = create(:group, :nested, parent: group)
           project = create(:project, group: subgroup)
           project.add_maintainer(user)
-
           group.update!(require_two_factor_authentication: true)
+
+          group.update_two_factor_requirement_for_members
 
           expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
         end
       end
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    it 'enqueues a job when require_two_factor_authentication is changed' do
+      expect(Groups::UpdateTwoFactorRequirementForMembersWorker).to receive(:perform_async).with(group.id)
+
+      group.update!(require_two_factor_authentication: true)
+    end
+
+    it 'enqueues a job when two_factor_grace_period is changed' do
+      expect(Groups::UpdateTwoFactorRequirementForMembersWorker).to receive(:perform_async).with(group.id)
+
+      group.update!(two_factor_grace_period: 23)
+    end
+
+    it 'does not enqueue a job when other attributes are changed' do
+      expect(Groups::UpdateTwoFactorRequirementForMembersWorker).not_to receive(:perform_async).with(group.id)
+
+      group.update!(description: 'foobar')
     end
   end
 
@@ -2038,201 +2076,6 @@ RSpec.describe Group do
           expect(group).not_to receive(:system_hook_service)
 
           group.update!(name: 'new name')
-        end
-      end
-    end
-  end
-
-  describe '#ci_variables_for' do
-    let(:project) { create(:project, group: group) }
-    let(:environment_scope) { '*' }
-
-    let!(:ci_variable) do
-      create(:ci_group_variable, value: 'secret', group: group, environment_scope: environment_scope)
-    end
-
-    let!(:protected_variable) do
-      create(:ci_group_variable, :protected, value: 'protected', group: group)
-    end
-
-    subject { group.ci_variables_for('ref', project) }
-
-    it 'memoizes the result by ref and environment', :request_store do
-      scoped_variable = create(:ci_group_variable, value: 'secret', group: group, environment_scope: 'scoped')
-
-      expect(project).to receive(:protected_for?).with('ref').once.and_return(true)
-      expect(project).to receive(:protected_for?).with('other').twice.and_return(false)
-
-      2.times do
-        expect(group.ci_variables_for('ref', project, environment: 'production')).to contain_exactly(ci_variable, protected_variable)
-        expect(group.ci_variables_for('other', project)).to contain_exactly(ci_variable)
-        expect(group.ci_variables_for('other', project, environment: 'scoped')).to contain_exactly(ci_variable, scoped_variable)
-      end
-    end
-
-    shared_examples 'ref is protected' do
-      it 'contains all the variables' do
-        is_expected.to contain_exactly(ci_variable, protected_variable)
-      end
-    end
-
-    context 'when the ref is not protected' do
-      before do
-        stub_application_setting(
-          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-      end
-
-      it 'contains only the CI variables' do
-        is_expected.to contain_exactly(ci_variable)
-      end
-    end
-
-    context 'when the ref is a protected branch' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(true)
-      end
-
-      it_behaves_like 'ref is protected'
-    end
-
-    context 'when the ref is a protected tag' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(true)
-      end
-
-      it_behaves_like 'ref is protected'
-    end
-
-    context 'when environment name is specified' do
-      let(:environment) { 'review/name' }
-
-      subject do
-        group.ci_variables_for('ref', project, environment: environment)
-      end
-
-      context 'when environment scope is exactly matched' do
-        let(:environment_scope) { 'review/name' }
-
-        it { is_expected.to contain_exactly(ci_variable) }
-      end
-
-      context 'when environment scope is matched by wildcard' do
-        let(:environment_scope) { 'review/*' }
-
-        it { is_expected.to contain_exactly(ci_variable) }
-      end
-
-      context 'when environment scope does not match' do
-        let(:environment_scope) { 'review/*/special' }
-
-        it { is_expected.not_to contain_exactly(ci_variable) }
-      end
-
-      context 'when environment scope has _' do
-        let(:environment_scope) { '*_*' }
-
-        it 'does not treat it as wildcard' do
-          is_expected.not_to contain_exactly(ci_variable)
-        end
-
-        context 'when environment name contains underscore' do
-          let(:environment) { 'foo_bar/test' }
-          let(:environment_scope) { 'foo_bar/*' }
-
-          it 'matches literally for _' do
-            is_expected.to contain_exactly(ci_variable)
-          end
-        end
-      end
-
-      # The environment name and scope cannot have % at the moment,
-      # but we're considering relaxing it and we should also make sure
-      # it doesn't break in case some data sneaked in somehow as we're
-      # not checking this integrity in database level.
-      context 'when environment scope has %' do
-        it 'does not treat it as wildcard' do
-          ci_variable.update_attribute(:environment_scope, '*%*')
-
-          is_expected.not_to contain_exactly(ci_variable)
-        end
-
-        context 'when environment name contains a percent' do
-          let(:environment) { 'foo%bar/test' }
-
-          it 'matches literally for %' do
-            ci_variable.update_attribute(:environment_scope, 'foo%bar/*')
-
-            is_expected.to contain_exactly(ci_variable)
-          end
-        end
-      end
-
-      context 'when variables with the same name have different environment scopes' do
-        let!(:partially_matched_variable) do
-          create(:ci_group_variable,
-                 key: ci_variable.key,
-                 value: 'partial',
-                 environment_scope: 'review/*',
-                 group: group)
-        end
-
-        let!(:perfectly_matched_variable) do
-          create(:ci_group_variable,
-                 key: ci_variable.key,
-                 value: 'prefect',
-                 environment_scope: 'review/name',
-                 group: group)
-        end
-
-        it 'puts variables matching environment scope more in the end' do
-          is_expected.to eq(
-            [ci_variable,
-             partially_matched_variable,
-             perfectly_matched_variable])
-        end
-      end
-    end
-
-    context 'when group has children' do
-      let(:group_child)      { create(:group, parent: group) }
-      let(:group_child_2)    { create(:group, parent: group_child) }
-      let(:group_child_3)    { create(:group, parent: group_child_2) }
-      let(:variable_child)   { create(:ci_group_variable, group: group_child) }
-      let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
-      let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
-
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(true)
-      end
-
-      context 'traversal queries' do
-        shared_examples 'correct ancestor order' do
-          it 'returns all variables belong to the group and parent groups' do
-            expected_array1 = [protected_variable, ci_variable]
-            expected_array2 = [variable_child, variable_child_2, variable_child_3]
-            got_array = group_child_3.ci_variables_for('ref', project).to_a
-
-            expect(got_array.shift(2)).to contain_exactly(*expected_array1)
-            expect(got_array).to eq(expected_array2)
-          end
-        end
-
-        context 'recursive' do
-          before do
-            stub_feature_flags(use_traversal_ids: false)
-          end
-
-          include_examples 'correct ancestor order'
-        end
-
-        context 'linear' do
-          before do
-            stub_feature_flags(use_traversal_ids: true)
-
-            group_child_3.reload # make sure traversal_ids are reloaded
-          end
-
-          include_examples 'correct ancestor order'
         end
       end
     end
@@ -2331,8 +2174,7 @@ RSpec.describe Group do
       let(:another_shared_with_group) { create(:group, parent: group) }
 
       before do
-        create(:group_group_link, shared_group: nested_group,
-               shared_with_group: another_shared_with_group)
+        create(:group_group_link, shared_group: nested_group, shared_with_group: another_shared_with_group)
       end
 
       it 'returns all shared with group ids' do
@@ -3461,6 +3303,23 @@ RSpec.describe Group do
         it 'returns correct group shares' do
           expect(subject_group.shared_with_group_links.of_ancestors_and_self.map(&:shared_with_group_id)).to match_array(result)
         end
+      end
+    end
+  end
+
+  describe '#packages_policy_subject' do
+    it 'returns wrapper' do
+      expect(group.packages_policy_subject).to be_a(Packages::Policies::Group)
+      expect(group.packages_policy_subject.group).to eq(group)
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(read_package_policy_rule: false)
+      end
+
+      it 'returns group' do
+        expect(group.packages_policy_subject).to eq(group)
       end
     end
   end

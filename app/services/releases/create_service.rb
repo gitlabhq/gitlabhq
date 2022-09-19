@@ -4,6 +4,7 @@ module Releases
   class CreateService < Releases::BaseService
     def execute
       return error('Access Denied', 403) unless allowed?
+      return error('You are not allowed to create this tag as it is protected.', 403) unless can_create_tag?
       return error('Release already exists', 409) if release
       return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
 
@@ -38,7 +39,7 @@ module Releases
     end
 
     def allowed?
-      Ability.allowed?(current_user, :create_release, project) && can_create_tag?
+      Ability.allowed?(current_user, :create_release, project)
     end
 
     def can_create_tag?

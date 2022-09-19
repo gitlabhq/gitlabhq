@@ -18,34 +18,10 @@ module API
 
     before do
       authenticate!
-      restrict_non_admins! unless current_user.admin?
+      restrict_non_admins! unless current_user.can_admin_all_resources?
     end
 
-    helpers do
-      def finder_params(current_user)
-        current_user.admin? ? { user: user(params[:user_id]) } : { user: current_user, impersonation: false }
-      end
-
-      def user(user_id)
-        UserFinder.new(user_id).find_by_id
-      end
-
-      def restrict_non_admins!
-        return if params[:user_id].blank?
-
-        unauthorized! unless Ability.allowed?(current_user, :read_user_personal_access_tokens, user(params[:user_id]))
-      end
-
-      def find_token(id)
-        PersonalAccessToken.find(id) || not_found!
-      end
-
-      def revoke_token(token)
-        service = ::PersonalAccessTokens::RevokeService.new(current_user, token: token).execute
-
-        service.success? ? no_content! : bad_request!(nil)
-      end
-    end
+    helpers ::API::Helpers::PersonalAccessTokensHelpers
 
     resources :personal_access_tokens do
       get do
@@ -63,12 +39,8 @@ module API
           present token, with: Entities::PersonalAccessToken
         else
           # Only admins should be informed if the token doesn't exist
-          current_user.admin? ? not_found! : unauthorized!
+          current_user.can_admin_all_resources? ? not_found! : unauthorized!
         end
-      end
-
-      delete 'self' do
-        revoke_token(access_token)
       end
 
       delete ':id' do

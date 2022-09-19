@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that prevents usage of `enable_lock_retries!` within the `disable_ddl_transaction!` method.
-      class PreventGlobalEnableLockRetriesWithDisableDdlTransaction < RuboCop::Cop::Cop
+      class PreventGlobalEnableLockRetriesWithDisableDdlTransaction < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`enable_lock_retries!` cannot be used with `disable_ddl_transaction!`. Use the `with_lock_retries` helper method to define retriable code blocks.'

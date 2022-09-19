@@ -20,7 +20,8 @@
     "artifacts",
     "artifacts_expire_at",
     "tag_list",
-    "runner"
+    "runner",
+    "project"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -64,6 +65,9 @@
         { "type": "null" },
         { "$ref": "runner.json" }
       ]
+    },
+    "project": {
+      "ci_job_token_scope_enabled": { "type": "boolean" }
     }
   },
   "additionalProperties":false

@@ -21,14 +21,14 @@ module Gitlab
       full_key = cache_key(key)
 
       with do |redis|
-        redis.multi do
-          redis.unlink(full_key)
+        redis.multi do |multi|
+          multi.unlink(full_key)
 
           # Splitting into groups of 1000 prevents us from creating a too-long
           # Redis command
-          value.each_slice(1000) { |subset| redis.sadd(full_key, subset) }
+          value.each_slice(1000) { |subset| multi.sadd(full_key, subset) }
 
-          redis.expire(full_key, expires_in)
+          multi.expire(full_key, expires_in)
         end
       end
 
@@ -39,9 +39,9 @@ module Gitlab
       full_key = cache_key(key)
 
       smembers, exists = with do |redis|
-        redis.multi do
-          redis.smembers(full_key)
-          redis.exists(full_key)
+        redis.multi do |multi|
+          multi.smembers(full_key)
+          multi.exists(full_key)
         end
       end
 

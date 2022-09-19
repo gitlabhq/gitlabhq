@@ -84,7 +84,8 @@ test-job:
       paths:
         - .yarn-cache/
   script:
-    - bundle install --path=vendor
+    - bundle config set --local path 'vendor/ruby'
+    - bundle install
     - yarn install --cache-folder .yarn-cache
     - echo Run tests...
 ```
@@ -301,8 +302,7 @@ test:
 
 If your project uses [pip](https://pip.pypa.io/en/stable/) to install
 Python dependencies, the following example defines `cache` globally so that
-all jobs inherit it. Python libraries are installed in a virtual environment under `venv/`.
-pip's cache is defined under `.cache/pip/` and both are cached per-branch:
+all jobs inherit it. pip's cache is defined under `.cache/pip/` and is cached per-branch:
 
 ```yaml
 #
@@ -317,13 +317,9 @@ variables:
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
-#
-# If you want to also cache the installed packages, you have to install
-# them in a virtualenv and cache it as well.
 cache:
   paths:
     - .cache/pip
-    - venv/
 
 before_script:
   - python -V               # Print out python version for debugging
@@ -358,7 +354,8 @@ cache:
 
 before_script:
   - ruby -v                                        # Print out ruby version for debugging
-  - bundle install -j $(nproc) --path vendor/ruby  # Install dependencies into ./vendor/ruby
+  - bundle config set --local path 'vendor/ruby'   # The location to install the specified gems to
+  - bundle install -j $(nproc)                     # Install dependencies into ./vendor/ruby
 
 rspec:
   script:
@@ -384,14 +381,16 @@ cache:
 test_job:
   stage: test
   before_script:
-    - bundle install --without production --path vendor/ruby
+    - bundle config set --local path 'vendor/ruby'
+    - bundle install --without production
   script:
     - bundle exec rspec
 
 deploy_job:
   stage: production
   before_script:
-    - bundle install --without test --path vendor/ruby
+    - bundle config set --local path 'vendor/ruby'   # The location to install the specified gems to
+    - bundle install --without test
   script:
     - bundle exec deploy
 ```
@@ -472,7 +471,7 @@ and should only be disabled in an environment where all users with Developer rol
 
 To use the same cache for all branches:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Clear the **Use separate caches for protected branches** checkbox.
@@ -569,7 +568,7 @@ The next time the pipeline runs, the cache is stored in a different location.
 
 You can clear the cache in the GitLab UI:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
 1. In the top right, select **Clear runner caches**.
 

@@ -288,6 +288,17 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
             end
           end
 
+          it 'no Auto DevOps button if builds feature is disabled' do
+            project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+
+            visit project_path(project)
+
+            page.within('.project-buttons') do
+              expect(page).not_to have_link('Enable Auto DevOps')
+              expect(page).not_to have_link('Auto DevOps enabled')
+            end
+          end
+
           it 'no "Enable Auto DevOps" button when .gitlab-ci.yml already exists' do
             Files::CreateService.new(
               project,

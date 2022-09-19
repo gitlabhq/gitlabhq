@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/datetime'
 
 RSpec.describe RuboCop::Cop::Migration::Datetime do
-  subject(:cop) { described_class.new }
-
   let(:create_table_migration_without_datetime) do
     %q(
       class Users < ActiveRecord::Migration[6.0]

@@ -16,8 +16,9 @@ module Gitlab
     # The duration for which a process may be above a given fragmentation
     # threshold is computed as `max_strikes * sleep_time_seconds`.
     class Watchdog
-      DEFAULT_SLEEP_TIME_SECONDS = 60
-      DEFAULT_HEAP_FRAG_THRESHOLD = 0.5
+      DEFAULT_SLEEP_TIME_SECONDS = 60 * 5
+      DEFAULT_MAX_HEAP_FRAG = 0.5
+      DEFAULT_MAX_MEM_GROWTH = 3.0
       DEFAULT_MAX_STRIKES = 5
 
       # This handler does nothing. It returns `false` to indicate to the
@@ -29,7 +30,7 @@ module Gitlab
       class NullHandler
         include Singleton
 
-        def on_high_heap_fragmentation(value)
+        def call
           # NOP
           false
         end
@@ -41,7 +42,7 @@ module Gitlab
           @pid = pid
         end
 
-        def on_high_heap_fragmentation(value)
+        def call
           Process.kill(:TERM, @pid)
           true
         end
@@ -55,7 +56,7 @@ module Gitlab
           @worker = ::Puma::Cluster::WorkerHandle.new(0, $$, 0, puma_options)
         end
 
-        def on_high_heap_fragmentation(value)
+        def call
           @worker.term
           true
         end
@@ -63,6 +64,9 @@ module Gitlab
 
       # max_heap_fragmentation:
       #   The degree to which the Ruby heap is allowed to be fragmented. Range [0,1].
+      # max_mem_growth:
+      #   A multiplier for how much excess private memory a worker can map compared to a reference process
+      #   (itself or the primary in a pre-fork server.)
       # max_strikes:
       #   How many times the process is allowed to be above max_heap_fragmentation before
       #   a handler is invoked.
@@ -71,7 +75,8 @@ module Gitlab
       def initialize(
         handler: NullHandler.instance,
         logger: Logger.new($stdout),
-        max_heap_fragmentation: ENV['GITLAB_MEMWD_MAX_HEAP_FRAG']&.to_f || DEFAULT_HEAP_FRAG_THRESHOLD,
+        max_heap_fragmentation: ENV['GITLAB_MEMWD_MAX_HEAP_FRAG']&.to_f || DEFAULT_MAX_HEAP_FRAG,
+        max_mem_growth: ENV['GITLAB_MEMWD_MAX_MEM_GROWTH']&.to_f || DEFAULT_MAX_MEM_GROWTH,
         max_strikes: ENV['GITLAB_MEMWD_MAX_STRIKES']&.to_i || DEFAULT_MAX_STRIKES,
         sleep_time_seconds: ENV['GITLAB_MEMWD_SLEEP_TIME_SEC']&.to_i || DEFAULT_SLEEP_TIME_SECONDS,
         **options)
@@ -79,17 +84,37 @@ module Gitlab
 
         @handler = handler
         @logger = logger
-        @max_heap_fragmentation = max_heap_fragmentation
         @sleep_time_seconds = sleep_time_seconds
         @max_strikes = max_strikes
+        @stats = {
+          heap_frag: {
+            max: max_heap_fragmentation,
+            strikes: 0
+          },
+          mem_growth: {
+            max: max_mem_growth,
+            strikes: 0
+          }
+        }
 
         @alive = true
-        @strikes = 0
 
         init_prometheus_metrics(max_heap_fragmentation)
       end
 
-      attr_reader :strikes, :max_heap_fragmentation, :max_strikes, :sleep_time_seconds
+      attr_reader :max_strikes, :sleep_time_seconds
+
+      def max_heap_fragmentation
+        @stats[:heap_frag][:max]
+      end
+
+      def max_mem_growth
+        @stats[:mem_growth][:max]
+      end
+
+      def strikes(stat)
+        @stats[stat][:strikes]
+      end
 
       def call
         @logger.info(log_labels.merge(message: 'started'))
@@ -97,7 +122,10 @@ module Gitlab
         while @alive
           sleep(@sleep_time_seconds)
 
-          monitor_heap_fragmentation if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
+          next unless Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
+
+          monitor_heap_fragmentation
+          monitor_memory_growth
         end
 
         @logger.info(log_labels.merge(message: 'stopped'))
@@ -109,32 +137,73 @@ module Gitlab
 
       private
 
-      def monitor_heap_fragmentation
-        heap_fragmentation = Gitlab::Metrics::Memory.gc_heap_fragmentation
+      def monitor_memory_condition(stat_key)
+        return unless @alive
 
-        if heap_fragmentation > @max_heap_fragmentation
-          @strikes += 1
-          @heap_frag_violations.increment
+        stat = @stats[stat_key]
+
+        ok, labels = yield(stat)
+
+        if ok
+          stat[:strikes] = 0
         else
-          @strikes = 0
+          stat[:strikes] += 1
+          @counter_violations.increment(reason: stat_key.to_s)
         end
 
-        if @strikes > @max_strikes
-          # If the handler returns true, it means the event is handled and we can shut down.
-          @alive = !handle_heap_fragmentation_limit_exceeded(heap_fragmentation)
-          @strikes = 0
+        if stat[:strikes] > @max_strikes
+          @alive = !memory_limit_exceeded_callback(stat_key, labels)
+          stat[:strikes] = 0
         end
       end
 
-      def handle_heap_fragmentation_limit_exceeded(value)
-        @logger.warn(
-          log_labels.merge(
-            message: 'heap fragmentation limit exceeded',
-            memwd_cur_heap_frag: value
-          ))
-        @heap_frag_violations_handled.increment
+      def monitor_heap_fragmentation
+        monitor_memory_condition(:heap_frag) do |stat|
+          heap_fragmentation = Gitlab::Metrics::Memory.gc_heap_fragmentation
+          [
+            heap_fragmentation <= stat[:max],
+            {
+              message: 'heap fragmentation limit exceeded',
+              memwd_cur_heap_frag: heap_fragmentation,
+              memwd_max_heap_frag: stat[:max]
+            }
+          ]
+        end
+      end
 
-        handler.on_high_heap_fragmentation(value)
+      def monitor_memory_growth
+        monitor_memory_condition(:mem_growth) do |stat|
+          worker_uss = Gitlab::Metrics::System.memory_usage_uss_pss[:uss]
+          reference_uss = reference_mem[:uss]
+          memory_limit = stat[:max] * reference_uss
+          [
+            worker_uss <= memory_limit,
+            {
+              message: 'memory limit exceeded',
+              memwd_uss_bytes: worker_uss,
+              memwd_ref_uss_bytes: reference_uss,
+              memwd_max_uss_bytes: memory_limit
+            }
+          ]
+        end
+      end
+
+      # On pre-fork systems this would be the primary process memory from which workers fork.
+      # Otherwise it is the current process' memory.
+      #
+      # We initialize this lazily because in the initializer the application may not have
+      # finished booting yet, which would yield an incorrect baseline.
+      def reference_mem
+        @reference_mem ||= Gitlab::Metrics::System.memory_usage_uss_pss(pid: Gitlab::Cluster::PRIMARY_PID)
+      end
+
+      def memory_limit_exceeded_callback(stat_key, handler_labels)
+        all_labels = log_labels.merge(handler_labels)
+          .merge(memwd_cur_strikes: strikes(stat_key))
+        @logger.warn(all_labels)
+        @counter_violations_handled.increment(reason: stat_key.to_s)
+
+        handler.call
       end
 
       def handler
@@ -151,9 +220,7 @@ module Gitlab
           worker_id: worker_id,
           memwd_handler_class: handler.class.name,
           memwd_sleep_time_s: @sleep_time_seconds,
-          memwd_max_heap_frag: @max_heap_fragmentation,
           memwd_max_strikes: @max_strikes,
-          memwd_cur_strikes: @strikes,
           memwd_rss_bytes: process_rss_bytes
         }
       end
@@ -174,14 +241,14 @@ module Gitlab
         @heap_frag_limit.set({}, max_heap_fragmentation)
 
         default_labels = { pid: worker_id }
-        @heap_frag_violations = Gitlab::Metrics.counter(
-          :gitlab_memwd_heap_frag_violations_total,
-          'Total number of times heap fragmentation in a Ruby process exceeded its allowed maximum',
+        @counter_violations = Gitlab::Metrics.counter(
+          :gitlab_memwd_violations_total,
+          'Total number of times a Ruby process violated a memory threshold',
           default_labels
         )
-        @heap_frag_violations_handled = Gitlab::Metrics.counter(
-          :gitlab_memwd_heap_frag_violations_handled_total,
-          'Total number of times heap fragmentation violations in a Ruby process were handled',
+        @counter_violations_handled = Gitlab::Metrics.counter(
+          :gitlab_memwd_violations_handled_total,
+          'Total number of times Ruby process memory violations were handled',
           default_labels
         )
       end

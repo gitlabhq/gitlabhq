@@ -359,10 +359,10 @@ RSpec.describe RemoteMirror, :mailer do
 
     it 'resets all the columns when URL changes' do
       remote_mirror.update!(last_error: Time.current,
-                           last_update_at: Time.current,
-                           last_successful_update_at: Time.current,
-                           update_status: 'started',
-                           error_notification_sent: true)
+                            last_update_at: Time.current,
+                            last_successful_update_at: Time.current,
+                            update_status: 'started',
+                            error_notification_sent: true)
 
       expect { remote_mirror.update_attribute(:url, 'http://new.example.com') }
         .to change { remote_mirror.last_error }.to(nil)

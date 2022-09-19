@@ -60,6 +60,34 @@ RSpec.describe Gitlab::GithubImport::MarkdownText do
     end
   end
 
+  describe '.fetch_attachment_urls' do
+    let(:image_extension) { described_class::MEDIA_TYPES.sample }
+    let(:image_attachment) do
+      "![special-image](https://user-images.githubusercontent.com/6833862/"\
+        "176685788-e7a93168-7ded-406a-82b5-eb1c56685a93.#{image_extension})"
+    end
+
+    let(:doc_extension) { described_class::DOC_TYPES.sample }
+    let(:doc_attachment) do
+      "[some-doc](https://github.com/nickname/public-test-repo/"\
+      "files/9020437/git-cheat-sheet.#{doc_extension})"
+    end
+
+    let(:text) do
+      <<-TEXT
+        Comment with an attachment
+        #{image_attachment}
+        #{FFaker::Lorem.sentence}
+        #{doc_attachment}
+      TEXT
+    end
+
+    it 'fetches attachment urls' do
+      expect(described_class.fetch_attachment_urls(text))
+        .to contain_exactly(image_attachment, doc_attachment)
+    end
+  end
+
   describe '#to_s' do
     it 'returns the text when the author was found' do
       author = double(:author, login: 'Alice')

@@ -29,7 +29,7 @@ RSpec.describe Releases::ManageEvidenceWorker do
 
     context 'when evidence has already been created' do
       let(:release) { create(:release, project: project, released_at: 1.hour.since) }
-      let!(:evidence) { create(:evidence, release: release )}
+      let!(:evidence) { create(:evidence, release: release ) }
 
       it_behaves_like 'does not create a new Evidence record'
     end

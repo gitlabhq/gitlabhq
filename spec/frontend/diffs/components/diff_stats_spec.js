@@ -87,7 +87,7 @@ describe('diff_stats', () => {
   describe('files changes', () => {
     const findIcon = (name) =>
       wrapper
-        .findAll(GlIcon)
+        .findAllComponents(GlIcon)
         .filter((c) => c.attributes('name') === name)
         .at(0).element.parentNode;
 

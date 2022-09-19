@@ -54,6 +54,12 @@ RSpec.describe Projects::BlameService, :aggregate_failures do
         it { is_expected.to eq(1..2) }
       end
 
+      context 'when user disabled the pagination' do
+        let(:params) { super().merge(no_pagination: 1) }
+
+        it { is_expected.to be_nil }
+      end
+
       context 'when feature flag disabled' do
         before do
           stub_feature_flags(blame_page_pagination: false)
@@ -73,6 +79,12 @@ RSpec.describe Projects::BlameService, :aggregate_failures do
       expect(subject.current_page).to eq(1)
       expect(subject.total_pages).to eq(2)
       expect(subject.total_count).to eq(4)
+    end
+
+    context 'when user disabled the pagination' do
+      let(:params) { super().merge(no_pagination: 1) }
+
+      it { is_expected.to be_nil }
     end
 
     context 'when feature flag disabled' do

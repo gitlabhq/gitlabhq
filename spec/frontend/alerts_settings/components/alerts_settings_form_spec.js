@@ -325,9 +325,9 @@ describe('AlertsSettingsForm', () => {
         });
 
         await nextTick();
-        expect(findSamplePayloadSection().find(GlFormTextarea).attributes('disabled')).toBe(
-          disabled,
-        );
+        expect(
+          findSamplePayloadSection().findComponent(GlFormTextarea).attributes('disabled'),
+        ).toBe(disabled);
       });
     });
 

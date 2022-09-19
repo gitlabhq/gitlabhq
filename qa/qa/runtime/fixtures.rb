@@ -49,3 +49,5 @@ module QA
     end
   end
 end
+
+QA::Runtime::Fixtures.prepend_mod_with('Runtime::Fixtures', namespace: QA)

@@ -1,7 +1,11 @@
 <script>
 import { GlButton, GlModal } from '@gitlab/ui';
+import $ from 'jquery';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
+import Autosave from '~/autosave';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 export default {
@@ -30,10 +34,20 @@ export default {
       required: false,
       default: true,
     },
+    noteableId: {
+      type: String,
+      required: true,
+    },
+    discussionId: {
+      type: String,
+      required: false,
+      default: 'new',
+    },
   },
   data() {
     return {
       formText: this.value,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -64,13 +78,19 @@ export default {
     markdownDocsPath() {
       return helpPagePath('user/markdown');
     },
+    shortDiscussionId() {
+      return isGid(this.discussionId) ? getIdFromGraphQLId(this.discussionId) : this.discussionId;
+    },
   },
   mounted() {
     this.focusInput();
   },
   methods: {
     submitForm() {
-      if (this.hasValue) this.$emit('submit-form');
+      if (this.hasValue) {
+        this.$emit('submit-form');
+        this.autosaveDiscussion.reset();
+      }
     },
     cancelComment() {
       if (this.hasValue && this.formText !== this.value) {
@@ -79,8 +99,22 @@ export default {
         this.$emit('cancel-form');
       }
     },
+    confirmCancelCommentModal() {
+      this.$emit('cancel-form');
+      this.autosaveDiscussion.reset();
+    },
     focusInput() {
       this.$refs.textarea.focus();
+      this.initAutosaveComment();
+    },
+    initAutosaveComment() {
+      if (this.isLoggedIn) {
+        this.autosaveDiscussion = new Autosave($(this.$refs.textarea), [
+          s__('DesignManagement|Discussion'),
+          getIdFromGraphQLId(this.noteableId),
+          this.shortDiscussionId,
+        ]);
+      }
     },
   },
 };
@@ -124,7 +158,7 @@ export default {
         type="submit"
         data-track-action="click_button"
         data-qa-selector="save_comment_button"
-        @click="$emit('submit-form')"
+        @click="submitForm"
       >
         {{ buttonText }}
       </gl-button>
@@ -144,7 +178,7 @@ export default {
       :ok-title="modalSettings.okTitle"
       :cancel-title="modalSettings.cancelTitle"
       modal-id="cancel-comment-modal"
-      @ok="$emit('cancel-form')"
+      @ok="confirmCancelCommentModal"
       >{{ modalSettings.content }}
     </gl-modal>
   </form>

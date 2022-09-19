@@ -42,7 +42,6 @@ export default {
     formInputGroupProps() {
       return {
         id: this.$options.tokenInputId,
-        class: 'qa-created-access-token',
         'data-qa-selector': 'created_access_token_field',
         name: this.$options.tokenInputId,
       };
@@ -82,7 +81,14 @@ export default {
 
       this.infoAlert = createAlert({ message: this.alertInfoMessage, variant: VARIANT_INFO });
 
-      this.form.reset();
+      // Selectively reset all input fields except for the date picker and submit.
+      // The form token creation is not controlled by Vue.
+      this.form.querySelectorAll('input[type=text]:not([id$=expires_at])').forEach((el) => {
+        el.value = '';
+      });
+      this.form.querySelectorAll('input[type=checkbox]').forEach((el) => {
+        el.checked = false;
+      });
     },
   },
 };

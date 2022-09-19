@@ -48,6 +48,7 @@ end
 
 RSpec.describe API::Projects do
   include ProjectForksHelper
+  include WorkhorseHelpers
   include StubRequests
 
   let_it_be(:user) { create(:user) }
@@ -1249,9 +1250,10 @@ RSpec.describe API::Projects do
       stub_application_setting(import_sources: nil)
 
       endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      stub_full_request(endpoint_url, method: :get).to_return({ status: 200,
-        body: '001e# service=git-upload-pack',
-        headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+      stub_full_request(endpoint_url, method: :get).to_return(
+        { status: 200,
+          body: '001e# service=git-upload-pack',
+          headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
 
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
       expect { post api('/projects', user), params: project_params }
@@ -1348,7 +1350,12 @@ RSpec.describe API::Projects do
     it 'uploads avatar for project a project' do
       project = attributes_for(:project, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
 
-      post api('/projects', user), params: project
+      workhorse_form_with_file(
+        api('/projects', user),
+        method: :post,
+        file_key: :avatar,
+        params: project
+      )
 
       project_id = json_response['id']
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
@@ -1924,8 +1931,6 @@ RSpec.describe API::Projects do
   end
 
   describe "POST /projects/:id/uploads/authorize" do
-    include WorkhorseHelpers
-
     let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
 
     context 'with authorized user' do
@@ -3583,18 +3588,77 @@ RSpec.describe API::Projects do
         end
       end
 
-      it 'updates avatar' do
-        project_param = {
-          avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
-                                      'image/gif')
-        }
+      context 'with changes to the avatar' do
+        let_it_be(:avatar_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+        let_it_be(:alternate_avatar_file) { fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png') }
+        let_it_be(:project_with_avatar, reload: true) do
+          create(:project,
+                 :private,
+                 :repository,
+                 name: 'project-with-avatar',
+                 creator_id: user.id,
+                 namespace: user.namespace,
+                 avatar: avatar_file)
+        end
 
-        put api("/projects/#{project3.id}", user), params: project_param
+        it 'uploads avatar to project without an avatar' do
+          workhorse_form_with_file(
+            api("/projects/#{project3.id}", user),
+            method: :put,
+            file_key: :avatar,
+            params: { avatar: avatar_file }
+          )
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
-                                                  '-/system/project/avatar/'\
-                                                  "#{project3.id}/banana_sample.gif")
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                      '-/system/project/avatar/'\
+                                                      "#{project3.id}/banana_sample.gif")
+          end
+        end
+
+        it 'uploads and changes avatar to project with an avatar' do
+          workhorse_form_with_file(
+            api("/projects/#{project_with_avatar.id}", user),
+            method: :put,
+            file_key: :avatar,
+            params: { avatar: alternate_avatar_file }
+          )
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                      '-/system/project/avatar/'\
+                                                      "#{project_with_avatar.id}/rails_sample.png")
+          end
+        end
+
+        it 'uploads and changes avatar to project among other changes' do
+          workhorse_form_with_file(
+            api("/projects/#{project_with_avatar.id}", user),
+            method: :put,
+            file_key: :avatar,
+            params: { description: 'changed description', avatar: avatar_file }
+          )
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['description']).to eq('changed description')
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                      '-/system/project/avatar/'\
+                                                      "#{project_with_avatar.id}/banana_sample.gif")
+          end
+        end
+
+        it 'removes avatar from project with an avatar' do
+          put api("/projects/#{project_with_avatar.id}", user), params: { avatar: '' }
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['avatar_url']).to be_nil
+            expect(project_with_avatar.reload.avatar_url).to be_nil
+          end
+        end
       end
 
       it 'updates auto_devops_deploy_strategy' do
@@ -4641,6 +4705,100 @@ RSpec.describe API::Projects do
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/transfer_locations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:source_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: source_group) }
+
+    let(:params) { {} }
+
+    subject(:request) do
+      get api("/projects/#{project.id}/transfer_locations", user), params: params
+    end
+
+    context 'when the user has rights to transfer the project' do
+      let_it_be(:guest_group) { create(:group) }
+      let_it_be(:maintainer_group) { create(:group, name: 'maintainer group', path: 'maintainer-group') }
+      let_it_be(:owner_group) { create(:group, name: 'owner group', path: 'owner-group') }
+
+      before do
+        source_group.add_owner(user)
+        guest_group.add_guest(user)
+        maintainer_group.add_maintainer(user)
+        owner_group.add_owner(user)
+      end
+
+      it 'returns 200' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+      end
+
+      it 'includes groups where the user has permissions to transfer a project to' do
+        request
+
+        expect(project_ids_from_response).to include(maintainer_group.id, owner_group.id)
+      end
+
+      it 'does not include groups where the user doesn not have permissions to transfer a project' do
+        request
+
+        expect(project_ids_from_response).not_to include(guest_group.id)
+      end
+
+      context 'with search' do
+        let(:params) { { search: 'maintainer' } }
+
+        it 'includes groups where the user has permissions to transfer a project to' do
+          request
+
+          expect(project_ids_from_response).to contain_exactly(maintainer_group.id)
+        end
+      end
+
+      context 'group shares' do
+        let_it_be(:shared_to_owner_group) { create(:group) }
+        let_it_be(:shared_to_guest_group) { create(:group) }
+
+        before do
+          create(:group_group_link, :owner,
+                 shared_with_group: owner_group,
+                 shared_group: shared_to_owner_group
+          )
+
+          create(:group_group_link, :guest,
+                 shared_with_group: guest_group,
+                 shared_group: shared_to_guest_group
+          )
+        end
+
+        it 'only includes groups arising from group shares where the user has permission to transfer a project to' do
+          request
+
+          expect(project_ids_from_response).to include(shared_to_owner_group.id)
+          expect(project_ids_from_response).not_to include(shared_to_guest_group.id)
+        end
+      end
+
+      def project_ids_from_response
+        json_response.map { |project| project['id'] }
+      end
+    end
+
+    context 'when the user does not have permissions to transfer the project' do
+      before do
+        source_group.add_developer(user)
+      end
+
+      it 'returns 403' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

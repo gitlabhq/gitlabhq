@@ -48,7 +48,7 @@ describe('merge conflicts actions', () => {
       );
     });
 
-    it('when data has type equal to error ', () => {
+    it('when data has type equal to error', () => {
       mock.onGet(conflictsPath).reply(200, { type: 'error', message: 'error message' });
       return testAction(
         actions.fetchConflictsData,
@@ -63,7 +63,7 @@ describe('merge conflicts actions', () => {
       );
     });
 
-    it('when request fails ', () => {
+    it('when request fails', () => {
       mock.onGet(conflictsPath).reply(400);
       return testAction(
         actions.fetchConflictsData,
@@ -80,7 +80,7 @@ describe('merge conflicts actions', () => {
   });
 
   describe('setConflictsData', () => {
-    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', () => {
+    it('INTERACTIVE_RESOLVE_MODE updates the correct file', () => {
       decorateFiles.mockReturnValue([{ bar: 'baz' }]);
       return testAction(
         actions.setConflictsData,
@@ -239,7 +239,7 @@ describe('merge conflicts actions', () => {
   });
 
   describe('setFileResolveMode', () => {
-    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', () => {
+    it('INTERACTIVE_RESOLVE_MODE updates the correct file', () => {
       return testAction(
         actions.setFileResolveMode,
         { file: files[0], mode: INTERACTIVE_RESOLVE_MODE },
@@ -257,7 +257,7 @@ describe('merge conflicts actions', () => {
       );
     });
 
-    it('EDIT_RESOLVE_MODE updates the correct file ', async () => {
+    it('EDIT_RESOLVE_MODE updates the correct file', async () => {
       restoreFileLinesState.mockReturnValue([]);
       const file = {
         ...files[0],
@@ -286,7 +286,7 @@ describe('merge conflicts actions', () => {
   });
 
   describe('setPromptConfirmationState', () => {
-    it('updates the correct file ', () => {
+    it('updates the correct file', () => {
       return testAction(
         actions.setPromptConfirmationState,
         { file: files[0], promptDiscardConfirmation: true },
@@ -315,7 +315,7 @@ describe('merge conflicts actions', () => {
       ],
     };
 
-    it('updates the correct file ', async () => {
+    it('updates the correct file', async () => {
       const marLikeMockReturn = { foo: 'bar' };
       markLine.mockReturnValue(marLikeMockReturn);
 

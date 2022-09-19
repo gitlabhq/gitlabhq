@@ -341,9 +341,9 @@ RSpec.describe Gitlab::Ci::Lint do
     let(:counters) do
       {
         'count' => a_kind_of(Numeric),
-        'avg'   => a_kind_of(Numeric),
-        'max'   => a_kind_of(Numeric),
-        'min'   => a_kind_of(Numeric)
+        'avg' => a_kind_of(Numeric),
+        'max' => a_kind_of(Numeric),
+        'min' => a_kind_of(Numeric)
       }
     end
 

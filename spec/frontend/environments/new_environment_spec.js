@@ -65,7 +65,7 @@ describe('~/environments/components/new.vue', () => {
     input         | value
     ${() => name} | ${'test'}
     ${() => url}  | ${'https://example.org'}
-  `('it changes the value of the input to $value', async ({ input, value }) => {
+  `('changes the value of the input to $value', async ({ input, value }) => {
     await input().setValue(value);
 
     expect(input().element.value).toBe(value);

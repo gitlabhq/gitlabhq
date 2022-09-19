@@ -1089,9 +1089,10 @@ lots of CI fetch traffic.
 
 The pack-objects cache wraps `git pack-objects`, an internal part of
 Git that gets invoked indirectly via the PostUploadPack and
-SSHUploadPack Gitaly RPCs. These are the RPCs that Gitaly runs when a
-user does a Git fetch via HTTP or SSH, respectively. When the cache is
-enabled, anything that uses PostUploadPack or SSHUploadPack can
+SSHUploadPack Gitaly RPCs. Gitaly runs PostUploadPack when a
+user does a Git fetch via HTTP, or SSHUploadPack when a
+user does a Git fetch via SSH.
+When the cache is enabled, anything that uses PostUploadPack or SSHUploadPack can
 benefit from it. It is orthogonal to:
 
 - The transport (HTTP or SSH).

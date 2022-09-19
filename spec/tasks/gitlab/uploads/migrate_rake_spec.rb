@@ -2,133 +2,93 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:uploads:migrate and migrate_to_local rake tasks', :silence_stdout do
-  let(:model_class) { nil }
-  let(:uploader_class) { nil }
-  let(:mounted_as) { nil }
-  let(:batch_size) { 3 }
-
+RSpec.describe 'gitlab:uploads:migrate and migrate_to_local rake tasks', :sidekiq_inline, :silence_stdout do
   before do
-    stub_env('MIGRATION_BATCH_SIZE', batch_size.to_s)
-    stub_uploads_object_storage(uploader_class)
+    stub_env('MIGRATION_BATCH_SIZE', 3.to_s)
+    stub_uploads_object_storage(AvatarUploader)
+    stub_uploads_object_storage(FileUploader)
     Rake.application.rake_require 'tasks/gitlab/uploads/migrate'
 
-    allow(ObjectStorage::MigrateUploadsWorker).to receive(:perform_async)
-  end
-
-  context "for AvatarUploader" do
-    let(:uploader_class) { AvatarUploader }
-    let(:mounted_as) { :avatar }
-
-    context "for Project" do
-      let(:model_class) { Project }
-      let!(:projects) { create_list(:project, 10, :with_avatar) }
-
-      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
-    end
-
-    context "for Group" do
-      let(:model_class) { Group }
-
-      before do
-        create_list(:group, 10, :with_avatar)
-      end
-
-      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
-    end
-
-    context "for User" do
-      let(:model_class) { User }
-
-      before do
-        create_list(:user, 10, :with_avatar)
-      end
-
-      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+    create_list(:project, 2, :with_avatar)
+    create_list(:group, 2, :with_avatar)
+    create_list(:project, 2) do |model|
+      FileUploader.new(model).store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
     end
   end
 
-  context "for AttachmentUploader" do
-    let(:uploader_class) { AttachmentUploader }
+  let(:total_uploads_count) { 6 }
 
-    context "for Note" do
-      let(:model_class) { Note }
-      let(:mounted_as) { :attachment }
+  it 'migrates all uploads to object storage in batches' do
+    expect(ObjectStorage::MigrateUploadsWorker)
+      .to receive(:perform_async).twice.and_call_original
 
-      before do
-        create_list(:note, 10, :with_attachment)
-      end
+    run_rake_task('gitlab:uploads:migrate:all')
 
-      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+    expect(Upload.with_files_stored_locally.count).to eq(0)
+    expect(Upload.with_files_stored_remotely.count).to eq(total_uploads_count)
+  end
+
+  it 'migrates all uploads to local storage in batches' do
+    run_rake_task('gitlab:uploads:migrate')
+    expect(Upload.with_files_stored_remotely.count).to eq(total_uploads_count)
+
+    expect(ObjectStorage::MigrateUploadsWorker)
+      .to receive(:perform_async).twice.and_call_original
+
+    run_rake_task('gitlab:uploads:migrate_to_local:all')
+
+    expect(Upload.with_files_stored_remotely.count).to eq(0)
+    expect(Upload.with_files_stored_locally.count).to eq(total_uploads_count)
+  end
+
+  shared_examples 'migrate task with filters' do
+    it 'migrates matching uploads to object storage' do
+      run_rake_task('gitlab:uploads:migrate', task_arguments)
+
+      migrated_count = matching_uploads.with_files_stored_remotely.count
+
+      expect(migrated_count).to eq(matching_uploads.count)
+      expect(Upload.with_files_stored_locally.count).to eq(total_uploads_count - migrated_count)
     end
 
-    context "for Appearance" do
-      let(:model_class) { Appearance }
-      let(:mounted_as) { :logo }
+    it 'migrates matching uploads to local storage' do
+      run_rake_task('gitlab:uploads:migrate')
+      expect(Upload.with_files_stored_remotely.count).to eq(total_uploads_count)
 
-      before do
-        create(:appearance, :with_logos)
-      end
+      run_rake_task('gitlab:uploads:migrate_to_local', task_arguments)
 
-      %i(logo header_logo).each do |mount|
-        it_behaves_like 'enqueue upload migration jobs in batch', batch: 1 do
-          let(:mounted_as) { mount }
-        end
-      end
+      migrated_count = matching_uploads.with_files_stored_locally.count
+
+      expect(migrated_count).to eq(matching_uploads.count)
+      expect(Upload.with_files_stored_remotely.count).to eq(total_uploads_count - migrated_count)
     end
   end
 
-  context "for FileUploader" do
-    let(:uploader_class) { FileUploader }
-    let(:model_class) { Project }
+  context 'when uploader_class is given' do
+    let(:task_arguments) { ['FileUploader'] }
+    let(:matching_uploads) { Upload.where(uploader: 'FileUploader') }
 
-    before do
-      create_list(:project, 10) do |model|
-        uploader_class.new(model)
-          .store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
-    end
-
-    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+    it_behaves_like 'migrate task with filters'
   end
 
-  context "for PersonalFileUploader" do
-    let(:uploader_class) { PersonalFileUploader }
-    let(:model_class) { PersonalSnippet }
+  context 'when model_class is given' do
+    let(:task_arguments) { [nil, 'Project'] }
+    let(:matching_uploads) { Upload.where(model_type: 'Project') }
 
-    before do
-      create_list(:personal_snippet, 10) do |model|
-        uploader_class.new(model)
-          .store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
-    end
-
-    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+    it_behaves_like 'migrate task with filters'
   end
 
-  context "for NamespaceFileUploader" do
-    let(:uploader_class) { NamespaceFileUploader }
-    let(:model_class) { Snippet }
+  context 'when mounted_as is given' do
+    let(:task_arguments) { [nil, nil, :avatar] }
+    let(:matching_uploads) { Upload.where(mount_point: :avatar) }
 
-    before do
-      create_list(:snippet, 10) do |model|
-        uploader_class.new(model)
-          .store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
-    end
-
-    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+    it_behaves_like 'migrate task with filters'
   end
 
-  context 'for DesignManagement::DesignV432x230Uploader' do
-    let(:uploader_class) { DesignManagement::DesignV432x230Uploader }
-    let(:model_class) {  DesignManagement::Action }
-    let(:mounted_as) { :image_v432x230 }
+  context 'when multiple filters are given' do
+    let(:task_arguments) { %w[AvatarUploader Project] }
+    let(:matching_uploads) { Upload.where(uploader: 'AvatarUploader', model_type: 'Project') }
 
-    before do
-      create_list(:design_action, 10, :with_image_v432x230)
-    end
-
-    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+    it_behaves_like 'migrate task with filters'
   end
 end

@@ -26,6 +26,7 @@ local computer. A GraphQL request can be made as a `POST` request to `/api/graph
 with the query as the payload. You can authorize your request by generating a
 [personal access token](../../user/profile/personal_access_tokens.md) to use as
 a bearer token.
+This token requires at least the `read_api` scope.
 
 Example:
 
@@ -34,6 +35,16 @@ GRAPHQL_TOKEN=<your-token>
 curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
      --header "Content-Type: application/json" --request POST \
      --data "{\"query\": \"query {currentUser {name}}\"}"
+```
+
+To nest strings in the query string,
+wrap the data in single quotes or escape the strings with `\\`:
+
+```shell
+curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+    --header "Content-Type: application/json" --request POST \
+    --data '{"query": "query {project(fullPath: \"<group>/<subgroup>/<project>\") {jobs {nodes {id duration}}}}"}'
+      # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
 ```
 
 ### GraphiQL

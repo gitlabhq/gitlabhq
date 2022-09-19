@@ -60,17 +60,17 @@ RSpec.describe 'query a single terraform state' do
     expect(data).to match a_graphql_entity_for(
       terraform_state,
       :name,
-      'lockedAt'      => terraform_state.locked_at.iso8601,
-      'createdAt'     => terraform_state.created_at.iso8601,
-      'updatedAt'     => terraform_state.updated_at.iso8601,
-      'lockedByUser'  => a_graphql_entity_for(terraform_state.locked_by_user),
+      'lockedAt' => terraform_state.locked_at.iso8601,
+      'createdAt' => terraform_state.created_at.iso8601,
+      'updatedAt' => terraform_state.updated_at.iso8601,
+      'lockedByUser' => a_graphql_entity_for(terraform_state.locked_by_user),
       'latestVersion' => a_graphql_entity_for(
         latest_version,
-        'serial'        => eq(latest_version.version),
-        'createdAt'     => eq(latest_version.created_at.iso8601),
-        'updatedAt'     => eq(latest_version.updated_at.iso8601),
+        'serial' => eq(latest_version.version),
+        'createdAt' => eq(latest_version.created_at.iso8601),
+        'updatedAt' => eq(latest_version.updated_at.iso8601),
         'createdByUser' => a_graphql_entity_for(latest_version.created_by_user),
-        'job'           => { 'name' => eq(latest_version.build.name) }
+        'job' => { 'name' => eq(latest_version.build.name) }
       )
     )
   end

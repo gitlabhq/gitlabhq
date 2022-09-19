@@ -159,6 +159,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :packages_and_registries, only: [:show] do
             get '/cleanup_image_tags', to: 'packages_and_registries#cleanup_tags'
           end
+          resource :merge_requests, only: [:show, :update]
         end
 
         resources :usage_quotas, only: [:index]
@@ -312,7 +313,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get '/deployments/cloud_run', to: 'deployments#cloud_run'
           get '/deployments/cloud_storage', to: 'deployments#cloud_storage'
 
-          get '/databases', to: 'databases#index'
+          resources :databases, only: [:index, :create, :new], path_names: { new: 'new/:product' }
         end
 
         resources :environments, except: [:destroy] do
@@ -466,7 +467,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :harbor do
-          resources :repositories, only: [:index, :show] do
+          resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do
             resources :artifacts, only: [:index] do
               resources :tags, only: [:index]
             end

@@ -81,15 +81,18 @@ export default {
         return 'loading';
       }
       if (!this.canPushToSourceBranch && !this.rebaseInProgress) {
-        return 'warning';
+        return 'failed';
       }
       return 'success';
     },
-    showDisabledButton() {
-      return ['failed', 'loading'].includes(this.status);
-    },
     fastForwardMergeText() {
       return __('Merge blocked: the source branch must be rebased onto the target branch.');
+    },
+    showRebaseWithoutPipeline() {
+      return (
+        !this.mr.onlyAllowMergeIfPipelineSucceeds ||
+        (this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.allowMergeOnSkippedPipeline)
+      );
     },
   },
   methods: {
@@ -149,7 +152,7 @@ export default {
 };
 </script>
 <template>
-  <state-container :status="status" :is-loading="isLoading">
+  <state-container :mr="mr" :status="status" :is-loading="isLoading">
     <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="3" width="24" height="24" rx="4" />
@@ -192,6 +195,7 @@ export default {
     </template>
     <template v-if="!isLoading" #actions>
       <gl-button
+        v-if="showRebaseWithoutPipeline"
         :loading="isMakingRequest"
         variant="confirm"
         size="small"

@@ -97,12 +97,12 @@ module Gitlab
       def add_instrument_for_cache_hit(status, route, request)
         payload = {
           etag_route: route.name,
-          params:     request.filtered_parameters,
-          headers:    request.headers,
-          format:     request.format.ref,
-          method:     request.request_method,
-          path:       request.filtered_path,
-          status:     status
+          params: request.filtered_parameters,
+          headers: request.headers,
+          format: request.format.ref,
+          method: request.request_method,
+          path: request.filtered_path,
+          status: status
         }
 
         ActiveSupport::Notifications.instrument(

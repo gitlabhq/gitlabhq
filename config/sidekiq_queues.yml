@@ -199,7 +199,11 @@
   - 2
 - - gitlab_subscriptions_notify_seats_exceeded
   - 1
+- - gitlab_subscriptions_trials_apply_trial
+  - 1
 - - google_cloud_create_cloudsql_instance
+  - 1
+- - google_cloud_fetch_google_ip_list
   - 1
 - - group_destroy
   - 1
@@ -220,6 +224,8 @@
 - - groups_update_repository_storage
   - 1
 - - groups_update_statistics
+  - 1
+- - groups_update_two_factor_requirement_for_members
   - 1
 - - hashed_storage
   - 1
@@ -247,6 +253,8 @@
   - 1
 - - integrations_irker
   - 1
+- - integrations_slack_event
+  - 1
 - - invalid_gpg_signature_update
   - 2
 - - issuable_export_csv
@@ -255,6 +263,8 @@
   - 1
 - - issuables_clear_groups_issue_counter
   - 1
+- - issues_close
+  - 2
 - - issues_placement
   - 2
 - - issues_rebalancing
@@ -288,6 +298,8 @@
 - - merge_requests_delete_source_branch
   - 1
 - - merge_requests_execute_approval_hooks
+  - 1
+- - merge_requests_fetch_suggested_reviewers
   - 1
 - - merge_requests_handle_assignees_change
   - 1
@@ -332,6 +344,8 @@
 - - object_pool
   - 1
 - - object_storage
+  - 1
+- - onboarding_create_learn_gitlab
   - 1
 - - package_cleanup
   - 1

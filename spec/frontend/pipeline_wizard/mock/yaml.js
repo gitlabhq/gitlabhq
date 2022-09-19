@@ -71,6 +71,7 @@ bar: barVal
 `;
 
 export const fullTemplate = `
+id: test/full-template
 title: some title
 description: some description
 filename: foo.yml
@@ -84,6 +85,7 @@ steps:
 `;
 
 export const fullTemplateWithoutFilename = `
+id: test/full-template-no-filename
 title: some title
 description: some description
 steps:

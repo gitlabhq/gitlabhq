@@ -30,16 +30,20 @@ module Ci
       end
 
       def all_projects
-        Project.from_union([
-          Project.id_in(source_project),
-          Project.id_in(target_project_ids)
-        ], remove_duplicates: false)
+        Project.from_union(target_projects, remove_duplicates: false)
       end
 
       private
 
       def target_project_ids
         Ci::JobToken::ProjectScopeLink.from_project(source_project).pluck(:target_project_id)
+      end
+
+      def target_projects
+        [
+          Project.id_in(source_project),
+          Project.id_in(target_project_ids)
+        ]
       end
     end
   end

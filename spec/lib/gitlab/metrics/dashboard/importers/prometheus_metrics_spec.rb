@@ -24,13 +24,13 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
       context 'with existing metrics' do
         let(:existing_metric_attributes) do
           {
-            project:        project,
-            identifier:     'metric_b',
-            title:          'overwrite',
-            y_label:        'overwrite',
-            query:          'overwrite',
-            unit:           'overwrite',
-            legend:         'overwrite',
+            project: project,
+            identifier: 'metric_b',
+            title: 'overwrite',
+            y_label: 'overwrite',
+            query: 'overwrite',
+            unit: 'overwrite',
+            legend: 'overwrite',
             dashboard_path: dashboard_path
           }
         end
@@ -43,11 +43,11 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
           subject.execute
 
           expect(existing_metric.reload.attributes.with_indifferent_access).to include({
-            title:   'Super Chart B',
+            title: 'Super Chart B',
             y_label: 'y_label',
-            query:   'query',
-            unit:    'unit',
-            legend:  'Legend Label'
+            query: 'query',
+            unit: 'unit',
+            legend: 'Legend Label'
           })
         end
 
@@ -69,11 +69,11 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
             subject.execute
 
             expect(existing_metric.reload.attributes.with_indifferent_access).to include({
-              title:   'Super Chart B',
+              title: 'Super Chart B',
               y_label: 'y_label',
-              query:   'query',
-              unit:    'unit',
-              legend:  'Legend Label'
+              query: 'query',
+              unit: 'unit',
+              legend: 'Legend Label'
             })
           end
 

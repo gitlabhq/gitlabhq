@@ -99,7 +99,9 @@ describe('CommitFormModal', () => {
       createComponent(shallowMount, {}, { prependedText: '_prepended_text_' });
 
       expect(findPrependedText().exists()).toBe(true);
-      expect(findPrependedText().find(GlSprintf).attributes('message')).toBe('_prepended_text_');
+      expect(findPrependedText().findComponent(GlSprintf).attributes('message')).toBe(
+        '_prepended_text_',
+      );
     });
 
     it('Does not show prepended text', () => {
@@ -124,7 +126,7 @@ describe('CommitFormModal', () => {
       createComponent(shallowMount, { pushCode: false });
 
       expect(findAppendedText().exists()).toBe(true);
-      expect(findAppendedText().find(GlSprintf).attributes('message')).toContain(
+      expect(findAppendedText().findComponent(GlSprintf).attributes('message')).toContain(
         mockData.modalPropsData.i18n.branchInFork,
       );
     });
@@ -133,7 +135,7 @@ describe('CommitFormModal', () => {
       createComponent(shallowMount, { pushCode: false, branchCollaboration: true });
 
       expect(findAppendedText().exists()).toBe(true);
-      expect(findAppendedText().find(GlSprintf).attributes('message')).toContain(
+      expect(findAppendedText().findComponent(GlSprintf).attributes('message')).toContain(
         mockData.modalPropsData.i18n.existingBranch,
       );
     });

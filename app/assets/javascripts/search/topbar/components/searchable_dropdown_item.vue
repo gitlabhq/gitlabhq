@@ -53,9 +53,9 @@ export default {
 
 <template>
   <gl-dropdown-item
-    :is-check-item="true"
+    is-check-item
     :is-checked="isSelected"
-    :is-check-centered="true"
+    is-check-centered
     @click="$emit('change', item)"
   >
     <div class="gl-display-flex gl-align-items-center">

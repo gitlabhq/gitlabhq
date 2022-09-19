@@ -37,27 +37,75 @@ For information about project and group milestones API, see:
 
 To view the milestone list:
 
-1. On the top bar, select **Menu > Projects** and find your project or
-   **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or
+   **Main menu > Groups** and find your group.
 1. Select **Issues > Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
 In a group, GitLab displays milestones that belong to the group and all projects in the group.
 
-NOTE:
+### View milestones in a project with issues turned off
+
 If a project has issue tracking
 [turned off](../settings/index.md#configure-project-visibility-features-and-permissions),
 you can get to the milestones page
-by going to its URL. To do so, add: `/-/milestones` to your project or group URL.
-For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/milestones`.
-This is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
+by going to its URL.
+
+To do so:
+
+1. Go to your project.
+1. Add: `/-/milestones` to your project URL.
+   For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/milestones`.
+
+Alternatively, this project's issues are visible in the group's milestone page.
+
+Improving this experience is tracked in issue [339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
 
 ### View all milestones
 
 You can view all the milestones you have access to in the entire GitLab namespace.
 You might not see some milestones because they're in projects or groups you're not a member of.
 
-To do so, on the top bar select **Menu > Milestones**.
+To do so, on the top bar select **Main menu > Milestones**.
+
+### View milestone details
+
+To view more information about a milestone,
+in the milestone list select the title of the milestone you want to view.
+
+The milestone view shows the title and description.
+
+There are also tabs below these that show the following:
+
+- **Issues**: Shows all issues assigned to the milestone. These are displayed in three columns named:
+  - Unstarted Issues (open and unassigned)
+  - Ongoing Issues (open and assigned)
+  - Completed Issues (closed)
+- **Merge Requests**: Shows all merge requests assigned to the milestone. These are displayed in four columns named:
+  - Work in progress (open and unassigned)
+  - Waiting for merge (open and assigned)
+  - Rejected (closed)
+  - Merged
+- **Participants**: Shows all assignees of issues assigned to the milestone.
+- **Labels**: Shows all labels that are used in issues assigned to the milestone.
+
+#### Burndown charts
+
+The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
+showing the progress of completing a milestone.
+
+![burndown chart](img/burndown_and_burnup_charts_v15_3.png)
+
+#### Milestone sidebar
+
+The milestone sidebar on the milestone view shows the following:
+
+- Percentage complete, which is calculated as number of closed issues divided by total number of issues.
+- The start date and due date.
+- The total time spent on all issues and merge requests assigned to the milestone.
+- The total issue weight of all issues assigned to the milestone.
+
+![Project milestone page](img/milestones_project_milestone_page_sidebar_v13_11.png)
 
 ## Create a milestone
 
@@ -71,7 +119,7 @@ Prerequisites:
 
 To create a milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
@@ -90,7 +138,7 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. Select a milestone's title.
 1. Select **Edit**.
 1. Edit the title, start date, due date, or description.
@@ -106,7 +154,7 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. Select a milestone's title.
 1. Select **Delete**.
 1. Select **Delete milestone**.
@@ -131,7 +179,7 @@ Prerequisites:
 
 To promote a project milestone:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. Either:
    - Select **Promote to Group Milestone** (**{level-up}**).
    - Select the milestone title, and then select **Promote**.
@@ -153,13 +201,13 @@ To assign or unassign a milestone:
 
 You can also use the `/assign` [quick action](../quick_actions.md) in a comment.
 
-## Filtering issues and merge requests by milestone
+## Filter issues and merge requests by milestone
 
-### Filtering in list pages
+### Filters in list pages
 
 From the project and group issue/merge request list pages, you can filter by both group and project milestones.
 
-### Filtering in issue boards
+### Filters in issue boards
 
 From [project issue boards](../issue_board.md), you can filter by both group milestones and project
 milestones in:
@@ -180,42 +228,6 @@ When filtering by milestone, in addition to choosing a specific project mileston
 - **Any**: Show issues or merge requests that have an assigned milestone.
 - **Upcoming**: Show issues or merge requests that have been assigned the open milestone and has the nearest due date in the future.
 - **Started**: Show issues or merge requests that have an open assigned milestone with a start date that is before today.
-
-## Milestone view
-
-The milestone view shows the title and description.
-
-There are also tabs below these that show the following:
-
-- **Issues**: Shows all issues assigned to the milestone. These are displayed in three columns named:
-  - Unstarted Issues (open and unassigned)
-  - Ongoing Issues (open and assigned)
-  - Completed Issues (closed)
-- **Merge Requests**: Shows all merge requests assigned to the milestone. These are displayed in four columns named:
-  - Work in progress (open and unassigned)
-  - Waiting for merge (open and assigned)
-  - Rejected (closed)
-  - Merged
-- **Participants**: Shows all assignees of issues assigned to the milestone.
-- **Labels**: Shows all labels that are used in issues assigned to the milestone.
-
-### Burndown Charts
-
-The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
-showing the progress of completing a milestone.
-
-![burndown chart](img/burndown_and_burnup_charts_v15_3.png)
-
-### Milestone sidebar
-
-The milestone sidebar on the milestone view shows the following:
-
-- Percentage complete, which is calculated as number of closed issues divided by total number of issues.
-- The start date and due date.
-- The total time spent on all issues and merge requests assigned to the milestone.
-- The total issue weight of all issues assigned to the milestone.
-
-![Project milestone page](img/milestones_project_milestone_page_sidebar_v13_11.png)
 
 <!-- ## Troubleshooting
 

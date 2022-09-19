@@ -9,6 +9,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:service) { described_class.new(project, user) }
+  let(:build_stage) { create(:ci_stage, name: 'build', position: 0, pipeline: pipeline) }
+  let(:test_stage) { create(:ci_stage, name: 'test', position: 1, pipeline: pipeline) }
+  let(:deploy_stage) { create(:ci_stage, name: 'deploy', position: 2, pipeline: pipeline) }
 
   context 'when user has full ability to modify pipeline' do
     before do
@@ -20,8 +23,8 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there are already retried jobs present' do
       before do
-        create_build('rspec', :canceled, 0, retried: true)
-        create_build('rspec', :failed, 0)
+        create_build('rspec', :canceled, build_stage, retried: true)
+        create_build('rspec', :failed, build_stage)
       end
 
       it 'does not retry jobs that has already been retried' do
@@ -33,9 +36,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there are failed builds in the last stage' do
       before do
-        create_build('rspec 1', :success, 0)
-        create_build('rspec 2', :failed, 1)
-        create_build('rspec 3', :canceled, 1)
+        create_build('rspec 1', :success, build_stage)
+        create_build('rspec 2', :failed, test_stage)
+        create_build('rspec 3', :canceled, test_stage)
       end
 
       it 'enqueues all builds in the last stage' do
@@ -49,10 +52,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there are failed or canceled builds in the first stage' do
       before do
-        create_build('rspec 1', :failed, 0)
-        create_build('rspec 2', :canceled, 0)
-        create_build('rspec 3', :canceled, 1)
-        create_build('spinach 1', :canceled, 2)
+        create_build('rspec 1', :failed, build_stage)
+        create_build('rspec 2', :canceled, build_stage)
+        create_build('rspec 3', :canceled, test_stage)
+        create_build('spinach 1', :canceled, deploy_stage)
       end
 
       it 'retries builds failed builds and marks subsequent for processing' do
@@ -80,10 +83,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there is failed build present which was run on failure' do
       before do
-        create_build('rspec 1', :failed, 0)
-        create_build('rspec 2', :canceled, 0)
-        create_build('rspec 3', :canceled, 1)
-        create_build('report 1', :failed, 2)
+        create_build('rspec 1', :failed, build_stage)
+        create_build('rspec 2', :canceled, build_stage)
+        create_build('rspec 3', :canceled, test_stage)
+        create_build('report 1', :failed, deploy_stage)
       end
 
       it 'retries builds only in the first stage' do
@@ -105,9 +108,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there is a failed test in a DAG' do
       before do
-        create_build('build', :success, 0)
-        create_build('build2', :success, 0)
-        test_build = create_build('test', :failed, 1, scheduling_type: :dag)
+        create_build('build', :success, build_stage)
+        create_build('build2', :success, build_stage)
+        test_build = create_build('test', :failed, test_stage, scheduling_type: :dag)
         create(:ci_build_need, build: test_build, name: 'build')
         create(:ci_build_need, build: test_build, name: 'build2')
       end
@@ -123,7 +126,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
       context 'when there is a failed DAG test without needs' do
         before do
-          create_build('deploy', :failed, 2, scheduling_type: :dag)
+          create_build('deploy', :failed, deploy_stage, scheduling_type: :dag)
         end
 
         it 'retries the test' do
@@ -139,10 +142,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when the last stage was skipped' do
       before do
-        create_build('build 1', :success, 0)
-        create_build('test 2', :failed, 1)
-        create_build('report 3', :skipped, 2)
-        create_build('report 4', :skipped, 2)
+        create_build('build 1', :success, build_stage)
+        create_build('test 2', :failed, test_stage)
+        create_build('report 3', :skipped, deploy_stage)
+        create_build('report 4', :skipped, deploy_stage)
       end
 
       it 'retries builds only in the first stage' do
@@ -160,9 +163,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
       context 'when there are optional manual actions only' do
         context 'when there is a canceled manual action in first stage' do
           before do
-            create_build('rspec 1', :failed, 0)
-            create_build('staging', :canceled, 0, when: :manual, allow_failure: true)
-            create_build('rspec 2', :canceled, 1)
+            create_build('rspec 1', :failed, build_stage)
+            create_build('staging', :canceled, build_stage, when: :manual, allow_failure: true)
+            create_build('rspec 2', :canceled, test_stage)
           end
 
           it 'retries failed builds and marks subsequent for processing' do
@@ -189,9 +192,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
       context 'when pipeline has blocking manual actions defined' do
         context 'when pipeline retry should enqueue builds' do
           before do
-            create_build('test', :failed, 0)
-            create_build('deploy', :canceled, 0, when: :manual, allow_failure: false)
-            create_build('verify', :canceled, 1)
+            create_build('test', :failed, build_stage)
+            create_build('deploy', :canceled, build_stage, when: :manual, allow_failure: false)
+            create_build('verify', :canceled, test_stage)
           end
 
           it 'retries failed builds' do
@@ -206,10 +209,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
         context 'when pipeline retry should block pipeline immediately' do
           before do
-            create_build('test', :success, 0)
-            create_build('deploy:1', :success, 1, when: :manual, allow_failure: false)
-            create_build('deploy:2', :failed, 1, when: :manual, allow_failure: false)
-            create_build('verify', :canceled, 2)
+            create_build('test', :success, build_stage)
+            create_build('deploy:1', :success, test_stage, when: :manual, allow_failure: false)
+            create_build('deploy:2', :failed, test_stage, when: :manual, allow_failure: false)
+            create_build('verify', :canceled, deploy_stage)
           end
 
           it 'reprocesses blocking manual action and blocks pipeline' do
@@ -225,9 +228,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
       context 'when there is a skipped manual action in last stage' do
         before do
-          create_build('rspec 1', :canceled, 0)
-          create_build('rspec 2', :skipped, 0, when: :manual, allow_failure: true)
-          create_build('staging', :skipped, 1, when: :manual, allow_failure: true)
+          create_build('rspec 1', :canceled, build_stage)
+          create_build('rspec 2', :skipped, build_stage, when: :manual, allow_failure: true)
+          create_build('staging', :skipped, test_stage, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and reprocesses manual actions' do
@@ -242,8 +245,8 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
       context 'when there is a created manual action in the last stage' do
         before do
-          create_build('rspec 1', :canceled, 0)
-          create_build('staging', :created, 1, when: :manual, allow_failure: true)
+          create_build('rspec 1', :canceled, build_stage)
+          create_build('staging', :created, test_stage, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and does not update the manual action' do
@@ -257,8 +260,8 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
       context 'when there is a created manual action in the first stage' do
         before do
-          create_build('rspec 1', :canceled, 0)
-          create_build('staging', :created, 0, when: :manual, allow_failure: true)
+          create_build('rspec 1', :canceled, build_stage)
+          create_build('staging', :created, build_stage, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and processes the manual action' do
@@ -285,9 +288,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
     end
 
     context 'when pipeline has processables with nil scheduling_type' do
-      let!(:build1) { create_build('build1', :success, 0) }
-      let!(:build2) { create_build('build2', :failed, 0) }
-      let!(:build3) { create_build('build3', :failed, 1) }
+      let!(:build1) { create_build('build1', :success, build_stage) }
+      let!(:build2) { create_build('build2', :failed, build_stage) }
+      let!(:build3) { create_build('build3', :failed, test_stage) }
       let!(:build3_needs_build1) { create(:ci_build_need, build: build3, name: build1.name) }
 
       before do
@@ -319,10 +322,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there are skipped jobs in later stages' do
       before do
-        create_build('build 1', :success, 0)
-        create_build('test 2', :failed, 1)
-        create_build('report 3', :skipped, 2)
-        create_bridge('deploy 4', :skipped, 2)
+        create_build('build 1', :success, build_stage)
+        create_build('test 2', :failed, test_stage)
+        create_build('report 3', :skipped, deploy_stage)
+        create_bridge('deploy 4', :skipped, deploy_stage)
       end
 
       it 'retries failed jobs and processes skipped jobs' do
@@ -374,9 +377,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there is a failed manual action present' do
       before do
-        create_build('test', :failed, 0)
-        create_build('deploy', :failed, 0, when: :manual)
-        create_build('verify', :canceled, 1)
+        create_build('test', :failed, build_stage)
+        create_build('deploy', :failed, build_stage, when: :manual)
+        create_build('verify', :canceled, test_stage)
       end
 
       it 'returns an error' do
@@ -390,9 +393,9 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
     context 'when there is a failed manual action in later stage' do
       before do
-        create_build('test', :failed, 0)
-        create_build('deploy', :failed, 1, when: :manual)
-        create_build('verify', :canceled, 2)
+        create_build('test', :failed, build_stage)
+        create_build('deploy', :failed, test_stage, when: :manual)
+        create_build('verify', :canceled, deploy_stage)
       end
 
       it 'returns an error' do
@@ -418,7 +421,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         target_project: project,
         source_branch: 'fixes',
         allow_collaboration: true)
-      create_build('rspec 1', :failed, 1)
+      create_build('rspec 1', :failed, test_stage)
     end
 
     it 'allows to retry failed pipeline' do
@@ -441,19 +444,19 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
     statuses.latest.find_by(name: name)
   end
 
-  def create_build(name, status, stage_num, **opts)
-    create_processable(:ci_build, name, status, stage_num, **opts)
+  def create_build(name, status, stage, **opts)
+    create_processable(:ci_build, name, status, stage, **opts)
   end
 
-  def create_bridge(name, status, stage_num, **opts)
-    create_processable(:ci_bridge, name, status, stage_num, **opts)
+  def create_bridge(name, status, stage, **opts)
+    create_processable(:ci_bridge, name, status, stage, **opts)
   end
 
-  def create_processable(type, name, status, stage_num, **opts)
+  def create_processable(type, name, status, stage, **opts)
     create(type, name: name,
                  status: status,
-                 stage: "stage_#{stage_num}",
-                 stage_idx: stage_num,
+                 ci_stage: stage,
+                 stage_idx: stage.position,
                  pipeline: pipeline, **opts) do |_job|
       ::Ci::ProcessPipelineService.new(pipeline).execute
     end

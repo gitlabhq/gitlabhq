@@ -3,9 +3,13 @@ import { GlAlert } from '@gitlab/ui';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
 import ZenMode from '~/zen_mode';
 import WorkItemDetail from '../components/work_item_detail.vue';
+import {
+  sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_DELETING,
+  I18N_WORK_ITEM_DELETED,
+} from '../constants';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
@@ -34,7 +38,7 @@ export default {
     this.ZenMode = new ZenMode();
   },
   methods: {
-    deleteWorkItem() {
+    deleteWorkItem(workItemType) {
       this.$apollo
         .mutate({
           mutation: deleteWorkItemMutation,
@@ -53,13 +57,12 @@ export default {
             throw new Error(workItemDelete.errors[0]);
           }
 
-          this.$toast.show(s__('WorkItem|Work item deleted'));
+          const msg = sprintfWorkItem(I18N_WORK_ITEM_DELETED, workItemType);
+          this.$toast.show(msg);
           visitUrl(this.issuesListPath);
         })
         .catch((e) => {
-          this.error =
-            e.message ||
-            s__('WorkItem|Something went wrong when deleting the work item. Please try again.');
+          this.error = e.message || sprintfWorkItem(I18N_WORK_ITEM_ERROR_DELETING, workItemType);
         });
     },
   },
@@ -69,6 +72,6 @@ export default {
 <template>
   <div>
     <gl-alert v-if="error" variant="danger" @dismiss="error = ''">{{ error }}</gl-alert>
-    <work-item-detail :work-item-id="gid" @deleteWorkItem="deleteWorkItem" />
+    <work-item-detail :work-item-id="gid" @deleteWorkItem="deleteWorkItem($event)" />
   </div>
 </template>

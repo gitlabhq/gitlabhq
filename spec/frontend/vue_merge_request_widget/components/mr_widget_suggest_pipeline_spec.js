@@ -128,7 +128,7 @@ describe('MRWidgetSuggestPipeline', () => {
       it('emits dismiss upon dismissal button click', () => {
         findDismissContainer().vm.$emit('dismiss');
 
-        expect(wrapper.emitted().dismiss).toBeTruthy();
+        expect(wrapper.emitted().dismiss).toHaveLength(1);
       });
     });
   });

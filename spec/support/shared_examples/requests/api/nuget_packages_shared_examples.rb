@@ -293,6 +293,8 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
 
     it_behaves_like 'a package tracking event', 'API::NugetPackages', 'pull_package'
 
+    it_behaves_like 'bumping the package last downloaded at field'
+
     it 'returns a valid package archive' do
       subject
 
@@ -315,6 +317,8 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
       end
 
       it_behaves_like 'a package tracking event', 'API::NugetPackages', 'pull_symbol_package'
+
+      it_behaves_like 'bumping the package last downloaded at field'
     end
 
     context 'with lower case package name' do

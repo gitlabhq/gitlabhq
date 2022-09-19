@@ -22,6 +22,7 @@ class CopyCodeButton extends HTMLElement {
       'data-clipboard-target': `pre#${this.for}`,
     });
 
+    // eslint-disable-next-line no-unsanitized/property
     button.innerHTML = spriteIcon('copy-to-clipboard');
 
     return button;

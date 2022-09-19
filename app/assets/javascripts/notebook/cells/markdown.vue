@@ -137,7 +137,7 @@ marked.setOptions({
 
 export default {
   components: {
-    prompt: Prompt,
+    Prompt,
   },
   directives: {
     SafeHtml,

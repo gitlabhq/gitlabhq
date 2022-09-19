@@ -46,13 +46,9 @@ class Project < ApplicationRecord
 
   extend Gitlab::ConfigHelper
 
-  ignore_columns :container_registry_enabled, remove_after: '2021-09-22', remove_with: '14.4'
-
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
 
-  ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
-  ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
   ignore_columns :build_coverage_regex, remove_after: '2022-10-22', remove_with: '15.5'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
@@ -123,6 +119,7 @@ class Project < ApplicationRecord
   before_validation :ensure_project_namespace_in_sync
 
   before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
+  before_validation :remove_leading_spaces_on_name
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -453,13 +450,16 @@ class Project < ApplicationRecord
            :metrics_dashboard_access_level, :analytics_access_level,
            :operations_access_level, :security_and_compliance_access_level,
            :container_registry_access_level, :environments_access_level, :feature_flags_access_level,
-           :releases_access_level,
+           :monitor_access_level, :releases_access_level,
            to: :project_feature, allow_nil: true
 
   delegate :show_default_award_emojis, :show_default_award_emojis=,
            :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=,
            :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
            to: :project_setting, allow_nil: true
+
+  delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
+           to: :project_setting
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
   delegate :squash_option, :squash_option=, to: :project_setting
@@ -565,26 +565,29 @@ class Project < ApplicationRecord
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
   scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
-    order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
-      { column: arel_table["path"], multiplier: 1 },
-      { column: arel_table["name"], multiplier: 0.7 },
-      { column: arel_table["description"], multiplier: 0.2 }
-    ])
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["path"], multiplier: 1 },
+        { column: arel_table["name"], multiplier: 0.7 },
+        { column: arel_table["description"], multiplier: 0.2 }
+      ])
 
-    order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'similarity',
-        column_expression: order_expression,
-        order_expression: order_expression.desc,
-        order_direction: :desc,
-        distinct: false,
-        add_to_projections: true
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'id',
-        order_expression: Project.arel_table[:id].desc
-      )
-    ])
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'similarity',
+          column_expression: order_expression,
+          order_expression: order_expression.desc,
+          order_direction: :desc,
+          distinct: false,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Project.arel_table[:id].desc
+        )
+      ])
 
     order.apply_cursor_conditions(reorder(order))
   end
@@ -611,7 +614,7 @@ class Project < ApplicationRecord
   scope :include_integration, -> (integration_association_name) { includes(integration_association_name) }
   scope :with_integration, -> (integration_class) { joins(:integrations).merge(integration_class.all) }
   scope :with_active_integration, -> (integration_class) { with_integration(integration_class).merge(integration_class.active) }
-  scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
+  scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
@@ -1163,7 +1166,7 @@ class Project < ApplicationRecord
     latest_pipeline = ci_pipelines.latest_successful_for_ref(ref)
     return unless latest_pipeline
 
-    latest_pipeline.build_with_artifacts_in_self_and_descendants(job_name)
+    latest_pipeline.build_with_artifacts_in_self_and_project_descendants(job_name)
   end
 
   def latest_successful_build_for_sha(job_name, sha)
@@ -1172,7 +1175,7 @@ class Project < ApplicationRecord
     latest_pipeline = ci_pipelines.latest_successful_for_sha(sha)
     return unless latest_pipeline
 
-    latest_pipeline.build_with_artifacts_in_self_and_descendants(job_name)
+    latest_pipeline.build_with_artifacts_in_self_and_project_descendants(job_name)
   end
 
   def latest_successful_build_for_ref!(job_name, ref = default_branch)
@@ -1564,9 +1567,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    disabled_integrations = []
-    disabled_integrations << 'shimo' unless Feature.enabled?(:shimo_integration, self)
-    disabled_integrations
+    []
   end
 
   def find_or_initialize_integration(name)
@@ -2369,28 +2370,6 @@ class Project < ApplicationRecord
       .first
   end
 
-  def ci_variables_for(ref:, environment: nil)
-    cache_key = "ci_variables_for:project:#{self&.id}:ref:#{ref}:environment:#{environment}"
-
-    ::Gitlab::SafeRequestStore.fetch(cache_key) do
-      uncached_ci_variables_for(ref: ref, environment: environment)
-    end
-  end
-
-  def uncached_ci_variables_for(ref:, environment: nil)
-    result = if protected_for?(ref)
-               variables
-             else
-               variables.unprotected
-             end
-
-    if environment
-      result.on_environment(environment)
-    else
-      result.where(environment_scope: '*')
-    end
-  end
-
   def protected_for?(ref)
     raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 
@@ -2582,10 +2561,7 @@ class Project < ApplicationRecord
   def badges
     return project_badges unless group
 
-    Badge.from_union([
-      project_badges,
-      GroupBadge.where(group: group.self_and_ancestors)
-    ])
+    Badge.from_union([project_badges, GroupBadge.where(group: group.self_and_ancestors)])
   end
 
   def merge_requests_allowing_push_to_user(user)
@@ -2631,11 +2607,7 @@ class Project < ApplicationRecord
 
   def gitlab_deploy_token
     strong_memoize(:gitlab_deploy_token) do
-      if Feature.enabled?(:ci_variable_for_group_gitlab_deploy_token, self)
-        deploy_tokens.gitlab_deploy_token || group&.gitlab_deploy_token
-      else
-        deploy_tokens.gitlab_deploy_token
-      end
+      deploy_tokens.gitlab_deploy_token || group&.gitlab_deploy_token
     end
   end
 
@@ -2693,7 +2665,12 @@ class Project < ApplicationRecord
   end
 
   def leave_pool_repository
-    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
+    return if pool_repository.blank?
+
+    # Disconnecting the repository can be expensive, so let's skip it if
+    # this repository is being deleted anyway.
+    pool_repository.unlink_repository(repository, disconnect: !pending_delete?)
+    update_column(:pool_repository_id, nil)
   end
 
   def link_pool_repository
@@ -3045,8 +3022,22 @@ class Project < ApplicationRecord
     licensed_feature_available?(:security_training)
   end
 
+  def packages_policy_subject
+    if Feature.enabled?(:read_package_policy_rule, group)
+      ::Packages::Policies::Project.new(self)
+    else
+      self
+    end
+  end
+
   def destroy_deployment_by_id(deployment_id)
     deployments.where(id: deployment_id).fast_destroy_all
+  end
+
+  def can_create_custom_domains?
+    return true if Gitlab::CurrentSettings.max_pages_custom_domains_per_project == 0
+
+    pages_domains.count < Gitlab::CurrentSettings.max_pages_custom_domains_per_project
   end
 
   private
@@ -3298,6 +3289,10 @@ class Project < ApplicationRecord
     if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
       raise ExportLimitExceeded, _('The project size exceeds the export limit.')
     end
+  end
+
+  def remove_leading_spaces_on_name
+    name&.lstrip!
   end
 
   def set_package_registry_access_level

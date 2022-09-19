@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Database
-      class EstablishConnection < RuboCop::Cop::Cop
+      class EstablishConnection < RuboCop::Cop::Base
         MSG = "Don't establish new database connections, as this slows down " \
           'tests and may result in new connections using an incorrect configuration'
 
@@ -12,7 +12,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, location: :expression) if establish_connection?(node)
+          add_offense(node) if establish_connection?(node)
         end
       end
     end

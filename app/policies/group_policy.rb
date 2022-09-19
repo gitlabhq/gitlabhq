@@ -59,6 +59,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
   end
 
+  condition(:observability_enabled) do
+    Feature.enabled?(:observability_group_tab, @subject)
+  end
+
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
@@ -80,10 +84,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   condition(:group_runner_registration_allowed) do
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
-  end
-
-  condition(:change_prevent_sharing_groups_outside_hierarchy_available) do
-    change_prevent_sharing_groups_outside_hierarchy_available?
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do
@@ -196,16 +196,14 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :change_prevent_sharing_groups_outside_hierarchy
+    enable :set_show_diff_preview_in_email
     enable :change_new_user_signups_cap
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
     enable :update_runners_registration_token
     enable :owner_access
-  end
-
-  rule { owner & change_prevent_sharing_groups_outside_hierarchy_available }.policy do
-    enable :change_prevent_sharing_groups_outside_hierarchy
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -299,6 +297,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_resource_access_tokens
   end
 
+  rule { can?(:developer_access) & observability_enabled }.policy do
+    enable :read_observability
+  end
+
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?
@@ -334,10 +336,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   def valid_dependency_proxy_deploy_token
     @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
-  end
-
-  def change_prevent_sharing_groups_outside_hierarchy_available?
-    true
   end
 end
 

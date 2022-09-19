@@ -41,7 +41,8 @@ Start by [importing the example project by URL](../../../project/import/repo_by_
 
 To import the project:
 
-1. On the top bar, select **Menu > Create new project**.
+1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Import project**.
 1. Select **Repository by URL**.
 1. For the **Git repository URL**, enter `https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke.git`.
@@ -107,7 +108,6 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_cluster_description`: Set a description for the cluster. We recommend setting this to `$CI_PROJECT_URL` to create a reference to your GitLab project on your GCP cluster detail page. This way you know which project was responsible for provisioning the cluster you see on the GCP dashboard.
 - `TF_VAR_machine_type`: Set the machine type for the Kubernetes nodes.
 - `TF_VAR_node_count`: Set the number of Kubernetes nodes.
-- `TF_VAR_agent_version`: Set the version of the GitLab agent.
 - `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
 
 Refer to the [Google Terraform provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference) and the [Kubernetes Terraform provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs) documentation for further resource options.

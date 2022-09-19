@@ -667,7 +667,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
                                                               column: :user_id,
                                                               on_delete: :cascade,
                                                               name: name,
-                                                             primary_key: :id).and_return(true)
+                                                              primary_key: :id).and_return(true)
 
           expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
           expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)

@@ -3,10 +3,10 @@
 module Gitlab
   module Abuse
     CONFIDENCE_LEVELS = {
-      certain:   1.0,
-      likely:    0.8,
+      certain: 1.0,
+      likely: 0.8,
       uncertain: 0.5,
-      unknown:   0.0
+      unknown: 0.0
     }.freeze
 
     class << self

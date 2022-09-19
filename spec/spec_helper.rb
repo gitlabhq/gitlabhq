@@ -36,6 +36,7 @@ require 'rspec-parameterized'
 require 'shoulda/matchers'
 require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/factory_default'
+require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 
 rspec_profiling_is_configured =
@@ -52,6 +53,9 @@ end
 # require rainbow gem String monkeypatch, so we can test SystemChecks
 require 'rainbow/ext/string'
 Rainbow.enabled = false
+
+# Enable zero monkey patching mode before loading any other RSpec code.
+RSpec.configure(&:disable_monkey_patching!)
 
 require_relative('../ee/spec/spec_helper') if Gitlab.ee?
 require_relative('../jh/spec/spec_helper') if Gitlab.jh?
@@ -89,30 +93,6 @@ RSpec.configure do |config|
     config.full_backtrace = true
   end
 
-  # Attempt to troubleshoot https://gitlab.com/gitlab-org/gitlab/-/issues/297359
-  if ENV['CI']
-    config.after do |example|
-      if example.exception.is_a?(GRPC::Unavailable)
-        warn "=== gRPC unavailable detected, process list:"
-        processes = `ps -ef | grep toml`
-        warn processes
-        warn "=== free memory"
-        warn `free -m`
-        warn "=== uptime"
-        warn `uptime`
-        warn "=== Prometheus metrics:"
-        warn `curl -s -o log/gitaly-metrics.log http://localhost:9236/metrics`
-        warn "=== Taking goroutine dump in log/goroutines.log..."
-        warn `curl -s -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
-      end
-    end
-  else
-    # Allow running `:focus` examples locally,
-    # falling back to all tests when there is no `:focus` example.
-    config.filter_run focus: true
-    config.run_all_when_everything_filtered = true
-  end
-
   # Attempt to troubleshoot  https://gitlab.com/gitlab-org/gitlab/-/issues/351531
   config.after do |example|
     if example.exception.is_a?(Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError)
@@ -121,9 +101,6 @@ RSpec.configure do |config|
       ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :after_example, example: example.description)
     end
   end
-
-  # Re-run failures locally with `--only-failures`
-  config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
 
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
@@ -170,6 +147,7 @@ RSpec.configure do |config|
   config.include TestEnv
   config.include FileReadHelpers
   config.include Database::MultipleDatabases
+  config.include Database::WithoutCheckConstraint
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature
@@ -397,6 +375,12 @@ RSpec.configure do |config|
     example.run unless GitalySetup.praefect_with_db?
   end
 
+  config.around(:example, :yaml_processor_feature_flag_corectness) do |example|
+    ::Gitlab::Ci::YamlProcessor::FeatureFlags.ensure_correct_usage do
+      example.run
+    end
+  end
+
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
@@ -478,8 +462,6 @@ RSpec.configure do |config|
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
   end
-
-  config.disable_monkey_patching!
 end
 
 ActiveRecord::Migration.maintain_test_schema!

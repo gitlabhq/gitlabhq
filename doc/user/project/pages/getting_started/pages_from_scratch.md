@@ -266,6 +266,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 ```
 
 Now add another job to the CI file, telling it to
@@ -289,6 +290,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 
 test:
   stage: test
@@ -342,6 +344,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 
 test:
   stage: test
@@ -386,6 +389,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+  environment: production
 
 test:
   stage: test
@@ -420,7 +424,7 @@ Now GitLab CI/CD not only builds the website, but also:
 
 For more information, see the following blog posts.
 
-- Use GitLab CI/CD `environments` to 
+- Use GitLab CI/CD `environments` to
   [deploy your web app to staging and production](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 - Learn how to run jobs
   [sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/).

@@ -106,7 +106,8 @@ RSpec.describe DesignManagement::SaveDesignsService do
       it 'creates a commit, an event in the activity stream and updates the creation count', :aggregate_failures do
         counter = Gitlab::UsageDataCounters::DesignsCounter
 
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_added_action).with(author: user)
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_added_action)
+                                                                           .with(author: user, project: project)
 
         expect { run_service }
           .to change { Event.count }.by(1)
@@ -117,6 +118,11 @@ RSpec.describe DesignManagement::SaveDesignsService do
           author: user,
           message: include(rails_sample_name)
         )
+      end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED }
+        subject(:service_action) { run_service }
       end
 
       it 'can run the same command in parallel' do
@@ -206,9 +212,15 @@ RSpec.describe DesignManagement::SaveDesignsService do
         end
 
         it 'updates UsageData for changed designs' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_modified_action).with(author: user)
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_modified_action)
+                                                                             .with(author: user, project: project)
 
           run_service
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_MODIFIED }
+          subject(:service_action) { run_service }
         end
 
         it 'records the correct events' do

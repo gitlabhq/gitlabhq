@@ -14,7 +14,7 @@ module Gitlab
         class << self
           def enabled?
             ::Feature::FlipperFeature.table_exists? &&
-              Feature.enabled?(:query_analyzer_gitlab_schema_metrics)
+              Feature.enabled?(:query_analyzer_gitlab_schema_metrics, type: :ops)
           end
 
           def analyze(parsed)

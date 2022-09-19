@@ -3,53 +3,54 @@
 module RuboCop
   module Cop
     module Gitlab
-      class KeysFirstAndValuesFirst < RuboCop::Cop::Cop
-        FIRST_PATTERN = /\Afirst\z/.freeze
+      # Detects the use of `.keys.first` or `.values.first` and suggests a
+      # change to `.each_key.first` or `.each_value.first`. This reduces
+      # memory usage and execution time.
+      #
+      # @example
+      #
+      # # bad
+      #
+      # hash.keys.first
+      # hash.values.first
+      #
+      # # good
+      #
+      # hash.each_key.first
+      # hash.each_value.first
+      #
+      class KeysFirstAndValuesFirst < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
 
-        def message(used_method)
-          <<~MSG
-          Don't use `.keys.first` and `.values.first`.
-          Instead use `.each_key.first` and `.each_value.first` (or `.first.first` and `first.second`)
+        MSG = 'Prefer `.%{autocorrect_method}.first` over `.%{current_method}.first`. ' \
+          'This reduces memory usage and execution time.'
 
-          This will reduce memory usage and execution time.
-          MSG
-        end
+        AUTOCORRECT_METHOD = {
+          keys: 'each_key',
+          values: 'each_value'
+        }.freeze
+
+        def_node_matcher :keys_or_values_first, <<~PATTERN
+          (send (send ({send const hash lvar} ...) ${:keys :values}) :first)
+        PATTERN
 
         def on_send(node)
-          if find_on_keys_or_values?(node)
-            add_offense(node, location: :selector, message: message(node.method_name))
+          current_method = keys_or_values_first(node)
+          return unless current_method
+
+          autocorrect_method = AUTOCORRECT_METHOD.fetch(current_method)
+          msg = format(MSG, autocorrect_method: autocorrect_method, current_method: current_method)
+
+          add_offense(node.loc.selector, message: msg) do |corrector|
+            replacement = "#{autocorrect_expression(node)}.#{autocorrect_method}.first"
+            corrector.replace(node, replacement)
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            replace_with = if node.descendants.first.method_name == :values
-                             '.each_value'
-                           elsif node.descendants.first.method_name == :keys
-                             '.each_key'
-                           else
-                             throw("Expect '.values.first' or '.keys.first', but get #{node.descendants.first.method_name}.first") # rubocop:disable Cop/BanCatchThrow
-                           end
+        private
 
-            upto_including_keys_or_values = node.descendants.first.source_range
-            before_keys_or_values = node.descendants[1].source_range
-            range_to_replace = node.source_range
-                                  .with(begin_pos: before_keys_or_values.end_pos,
-                                        end_pos: upto_including_keys_or_values.end_pos)
-            corrector.replace(range_to_replace, replace_with)
-          end
-        end
-
-        def find_on_keys_or_values?(node)
-          chained_on_node = node.descendants.first
-          node.method_name.to_s =~ FIRST_PATTERN &&
-              chained_on_node.is_a?(RuboCop::AST::SendNode) &&
-              [:keys, :values].include?(chained_on_node.method_name) &&
-              node.descendants[1]
-        end
-
-        def method_name_for_node(node)
-          children[1].to_s
+        def autocorrect_expression(node)
+          node.receiver.receiver.source
         end
       end
     end

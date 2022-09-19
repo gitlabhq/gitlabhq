@@ -69,6 +69,11 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
               expect(service).to receive(:read).with(merge_check: merge_check).and_return(success_result)
             end
 
+            expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
+              expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
+              expect(logger).to receive(:commit)
+            end
+
             expect(execute.success?).to eq(true)
           end
         end
@@ -78,6 +83,11 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
             expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
               expect(service).to receive(:read).with(merge_check: merge_check).and_return(nil)
               expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash).and_return(true)
+            end
+
+            expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
+              expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
+              expect(logger).to receive(:commit)
             end
 
             expect(execute.success?).to eq(true)

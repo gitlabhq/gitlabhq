@@ -30,6 +30,27 @@ RSpec.shared_examples 'a deploy token in settings' do
       expect(page).to have_selector("input[name='deploy-token-user'][value='deployer']")
       expect(page).to have_selector("input[name='deploy-token'][readonly='readonly']")
     end
+
+    expect(find("input#deploy_token_name").value).to eq nil
+    expect(find("input#deploy_token_read_repository").checked?).to eq false
+  end
+
+  context "with form errors" do
+    before do
+      visit page_path
+      fill_in "deploy_token_name", with: "new_deploy_key"
+      fill_in "deploy_token_username", with: "deployer"
+      click_button "Create deploy token"
+    end
+
+    it "shows form errors" do
+      expect(page).to have_text("Scopes can't be blank")
+    end
+
+    it "keeps form inputs" do
+      expect(find("input#deploy_token_name").value).to eq "new_deploy_key"
+      expect(find("input#deploy_token_username").value).to eq "deployer"
+    end
   end
 
   context 'when User#time_display_relative is false', :js do

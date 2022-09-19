@@ -12,13 +12,21 @@ Configure your groups to control group permissions and access.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
+> - [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
 
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
-To configure push rules for a group:
+In GitLab 15.4 and later, to configure push rules for a group:
 
-1. Go to the groups's **Push Rules** page.
+1. On the left sidebar, select **Push rules**.
+1. Select the settings you want.
+1. Select **Save Push Rules**.
+
+In GitLab 15.3 and earlier, to configure push rules for a group:
+
+1. On the left sidebar, select **Settings > Repository** page.
+1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
 1. Select **Save Push Rules**.
 
@@ -26,6 +34,27 @@ The group's new subgroups have push rules set for them based on either:
 
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
+
+## Restrict Git access protocols
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+[enable the feature flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. On GitLab.com,
+this feature is available.
+
+You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
+is disabled when the [instance setting](../admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
+configured by an administrator.
+
+To change the permitted Git access protocols for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Choose the permitted protocols from **Enabled Git access protocols**.
+1. Select **Save changes**.
 
 ## Restrict group access by IP address **(PREMIUM)**
 
@@ -43,8 +72,6 @@ applies to:
 
 You should consider some security implications before configuring IP address restrictions.
 
-- Restricting HTTP traffic on GitLab.com with IP address restrictions causes SSH requests (including Git operations over
-  SSH) to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
 - Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
   - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
@@ -57,14 +84,17 @@ You should consider some security implications before configuring IP address res
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
   push, merge, issue, or comment events.
+- IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
+  IP access restrictions applied to self-managed instances block SSH completely.
 
 ### Restrict group access by IP address
 
 To restrict group access by IP address:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. In the **Allow access to the following IP addresses** field, enter IPv4 or IPv6 address ranges in CIDR notation.
+1. In the **Restrict access by IP address** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
 
 In self-managed installations of GitLab 15.1 and later, you can also configure
@@ -81,7 +111,8 @@ You can prevent users with email addresses in specific domains from being added 
 
 To restrict group access by domain:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
 1. Select **Save changes**.
@@ -124,23 +155,24 @@ If you prevent group sharing outside the hierarchy for the **Animals** group:
 
 To prevent sharing outside of the group's hierarchy:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
+1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.
 
 ## Prevent a project from being shared with groups
 
-Prevent projects in a group from 
-[sharing a project with another group](../project/members/share_project_with_groups.md) 
+Prevent projects in a group from
+[sharing a project with another group](../project/members/share_project_with_groups.md)
 to enable tighter control over project access.
 
 To prevent a project from being shared with other groups:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Prevent sharing a project in `<group_name>` with other groups**.
+1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
 
 This setting applies to all subgroups unless overridden by a group owner. Groups already
@@ -151,7 +183,7 @@ added to a project lose access when the setting is enabled.
 As a group owner, you can prevent non-members from requesting access to
 your group.
 
-1. On the top bar, select **Menu > Groups**.
+1. On the top bar, **Main menu > Groups** and find your group.
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
@@ -173,7 +205,8 @@ If even one is set to `true`, then the group does not allow outside forks.
 
 To prevent projects from being forked outside the group:
 
-1. Go to the top-level group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
@@ -194,9 +227,9 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 
 To prevent members from being added to projects in a group:
 
-1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions and group features** section.
-1. Under **Membership**, select **Prevent adding new members to projects within this group**.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Membership**, select **Users cannot be added to projects in this group**.
 1. Select **Save changes**.
 
 All users who previously had permissions can no longer add members to a group.
@@ -241,7 +274,8 @@ To create group links via filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. Go to your group's **Group information > Members** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Group information > Members**.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
 1. Select **Edit permissions** in the modal.
 

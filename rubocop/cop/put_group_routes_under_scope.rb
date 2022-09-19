@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     # Checks for a group routes outside '/-/' scope.
     # For more information see: https://gitlab.com/gitlab-org/gitlab/issues/29572
-    class PutGroupRoutesUnderScope < RuboCop::Cop::Cop
+    class PutGroupRoutesUnderScope < RuboCop::Cop::Base
       include RoutesUnderScope
 
       MSG = 'Put new group routes under /-/ scope'

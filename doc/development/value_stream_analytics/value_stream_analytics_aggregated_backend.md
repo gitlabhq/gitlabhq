@@ -21,8 +21,7 @@ Value Stream Analytics (VSA).
 
 ## Current Status
 
-As of 14.8 the aggregated VSA backend is used only in the `gitlab-org` group, for testing purposes
-. We plan to gradually roll it out in the next major release (15.0) for the rest of the groups.
+The aggregated backend is used by default since GitLab 15.0 on the group-level.
 
 ## Motivation
 
@@ -52,44 +51,6 @@ database with a minimal development effort.
   - For example, the start event can be two timestamp columns where the earliest value would be
   used by the system.
   - Example: `MIN(issues.created_at, issues.updated_at)`
-
-## How does Value Stream Analytics work?
-
-Value Stream Analytics calculates the duration between two timestamp columns or timestamp
-expressions and runs various aggregations on the data.
-
-Examples:
-
-- Duration between the Merge Request creation time and Merge Request merge time.
-- Duration between the Issue creation time and Issue close time.
-
-This duration is exposed in various ways:
-
-- Aggregation: median, average
-- Listing: list the duration for individual Merge Request and Issue records
-
-Apart from the durations, we expose the record count within a stage.
-
-### Stages
-
-A stage represents an event pair (start and end events) with additional metadata, such as the name
-of the stage. Stages are configurable by the user within the pairing rules defined in the backend.
-
-**Example stage: Code Review**
-
-- Start event identifier: Merge Request creation time
-- Start event column: uses the `merge_requests.created_at` timestamp column.
-- End event identifier: Merge Request merge time
-- End event column: uses the `merge_request_metrics.merged_at` timestamp column.
-- Stage event hash ID: a calculated hash for the pair of start and end event identifiers.
-  - If two stages have the same configuration of start and end events, then their stage event hash
-  IDs are identical.
-  - The stage event hash ID is later used to store the aggregated data in partitioned database tables.
-
-### Value streams
-
-Value streams are container objects for the stages. There can be multiple value streams per group
-or project focusing on different aspects of the Dev Ops lifecycle.
 
 ### Example configuration
 

@@ -219,4 +219,43 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
       )
     }
   end
+
+  describe '#to_hash' do
+    subject(:to_hash) { remote_file.to_hash }
+
+    before do
+      stub_full_request(location).to_return(body: remote_file_content)
+    end
+
+    context 'with a valid remote file' do
+      it 'returns the content as a hash' do
+        expect(to_hash).to eql(
+          before_script: ["apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs",
+                          "ruby -v",
+                          "which ruby",
+                          "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""]
+        )
+      end
+    end
+
+    context 'when it has `include` with rules:exists' do
+      let(:remote_file_content) do
+        <<~HEREDOC
+        include:
+          - local: another-file.yml
+            rules:
+              - exists: [Dockerfile]
+        HEREDOC
+      end
+
+      it 'returns the content as a hash' do
+        expect(to_hash).to eql(
+          include: [
+            { local: 'another-file.yml',
+              rules: [{ exists: ['Dockerfile'] }] }
+          ]
+        )
+      end
+    end
+  end
 end

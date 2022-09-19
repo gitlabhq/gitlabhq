@@ -190,11 +190,16 @@ describe('Repository last commit component', () => {
     });
 
     it('expands commit description when clicking expander', async () => {
+      expect(findCommitRowDescription().classes('d-block')).toBe(false);
+      expect(findTextExpander().classes('open')).toBe(false);
+      expect(findTextExpander().props('selected')).toBe(false);
+
       findTextExpander().vm.$emit('click');
       await nextTick();
 
-      expect(findCommitRowDescription().isVisible()).toBe(true);
-      expect(findTextExpander().classes()).toContain('open');
+      expect(findCommitRowDescription().classes('d-block')).toBe(true);
+      expect(findTextExpander().classes('open')).toBe(true);
+      expect(findTextExpander().props('selected')).toBe(true);
     });
   });
 

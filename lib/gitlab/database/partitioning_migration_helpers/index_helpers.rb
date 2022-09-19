@@ -77,7 +77,41 @@ module Gitlab
           end
         end
 
+        # Finds duplicate indexes for a given schema and table. This finds
+        # indexes where the index definition is identical but the names are
+        # different. Returns an array of arrays containing duplicate index name
+        # pairs.
+        #
+        # Example:
+        #
+        #     find_duplicate_indexes('table_name_goes_here')
+        def find_duplicate_indexes(table_name, schema_name: connection.current_schema)
+          find_indexes(table_name, schema_name: schema_name)
+            .group_by { |r| r['index_id'] }
+            .select { |_, v| v.size > 1 }
+            .map { |_, indexes| indexes.map { |index| index['index_name'] } }
+        end
+
         private
+
+        def find_indexes(table_name, schema_name: connection.current_schema)
+          indexes = connection.select_all(<<~SQL, 'SQL', [schema_name, table_name])
+            SELECT n.nspname AS schema_name,
+                   c.relname AS table_name,
+                   i.relname AS index_name,
+                   regexp_replace(pg_get_indexdef(i.oid), 'INDEX .*? USING', '_') AS index_id
+            FROM pg_index x
+              JOIN pg_class c ON c.oid = x.indrelid
+              JOIN pg_class i ON i.oid = x.indexrelid
+              LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+            WHERE (c.relkind = ANY (ARRAY['r'::"char", 'm'::"char", 'p'::"char"]))
+              AND (i.relkind = ANY (ARRAY['i'::"char", 'I'::"char"]))
+              AND n.nspname = $1
+              AND c.relname = $2;
+          SQL
+
+          indexes.to_a
+        end
 
         def find_partitioned_table(table_name)
           partitioned_table = Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(table_name)

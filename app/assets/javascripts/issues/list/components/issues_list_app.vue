@@ -24,6 +24,7 @@ import axios from '~/lib/utils/axios_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS_ONLY,
@@ -37,6 +38,7 @@ import {
   TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
+  FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -462,6 +464,12 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
+    issuesHelpPagePath() {
+      return helpPagePath('user/project/issues/index');
+    },
+    shouldDisableSomeFilters() {
+      return this.isAnonymousSearchDisabled && !this.isSignedIn;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -578,13 +586,9 @@ export default {
       this.issuesError = null;
     },
     handleFilter(filter) {
-      if (this.isAnonymousSearchDisabled && !this.isSignedIn) {
-        this.showAnonymousSearchingMessage();
-        return;
-      }
+      this.setFilterTokens(filter);
 
       this.pageParams = getInitialPageParams(this.pageSize);
-      this.filterTokens = filter;
 
       this.$router.push({ query: this.urlParams });
     },
@@ -674,6 +678,28 @@ export default {
           Sentry.captureException(error);
         });
     },
+    setFilterTokens(filtersArg) {
+      const filters = this.removeDisabledSearchTerms(filtersArg);
+
+      this.filterTokens = filters;
+
+      // If we filtered something out, let's show a warning message
+      if (filters.length < filtersArg.length) {
+        this.showAnonymousSearchingMessage();
+      }
+    },
+    removeDisabledSearchTerms(filters) {
+      // If we shouldn't disable anything, let's return the same thing
+      if (!this.shouldDisableSomeFilters) {
+        return filters;
+      }
+
+      const filtersWithoutSearchTerms = filters.filter(
+        (token) => !(token.type === FILTERED_SEARCH_TERM && token.value?.data),
+      );
+
+      return filtersWithoutSearchTerms;
+    },
     showAnonymousSearchingMessage() {
       createFlash({
         message: this.$options.i18n.anonymousSearchingMessage,
@@ -720,17 +746,9 @@ export default {
         sortKey = defaultSortKey;
       }
 
-      const isSearchDisabled =
-        this.isAnonymousSearchDisabled &&
-        !this.isSignedIn &&
-        window.location.search.includes('search=');
-
-      if (isSearchDisabled) {
-        this.showAnonymousSearchingMessage();
-      }
-
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
-      this.filterTokens = isSearchDisabled ? [] : getFilterTokens(window.location.search);
+      this.setFilterTokens(getFilterTokens(window.location.search));
+
       this.pageParams = getInitialPageParams(
         this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
@@ -899,7 +917,9 @@ export default {
     <template v-else-if="isSignedIn">
       <gl-empty-state :title="$options.i18n.noIssuesSignedInTitle" :svg-path="emptyStateSvgPath">
         <template #description>
-          <p>{{ $options.i18n.noIssuesSignedInDescription }}</p>
+          <gl-link :href="issuesHelpPagePath" target="_blank">{{
+            $options.i18n.noIssuesSignedInDescription
+          }}</gl-link>
           <p v-if="canCreateProjects">
             <strong>{{ $options.i18n.noGroupIssuesSignedInDescription }}</strong>
           </p>

@@ -10,13 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.3.
 
-WARNING:
-Tasks are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features).
-
-The following list are the known limitations:
+Known limitation:
 
 - [Tasks currently cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)
-- An issue's tasks can only currently be accessed via a reference within a description, comment, or direct URL (`.../-/work_items/[global_id]`).
 
 For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
 
@@ -40,7 +36,7 @@ to work items and adding custom work item types, visit
 
 ## View tasks
 
-View tasks in issues, in the **Child items** section.
+View tasks in issues, in the **Tasks** section.
 
 You can also [filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = task`.
@@ -53,7 +49,7 @@ Prerequisites:
 
 To create a task:
 
-1. In an issue description, in the **Child items** section, select **Add a task**.
+1. In the issue description, in the **Tasks** section, select **Add**.
 1. Enter the task title.
 1. Select **Create task**.
 
@@ -65,7 +61,7 @@ Prerequisites:
 
 To edit a task:
 
-1. In the issue description, in the **Child items** section, select the task you want to edit.
+1. In the issue description, in the **Tasks** section, select the task you want to edit.
    The task window opens.
 1. Optional. To edit the title, select it and make your changes.
 1. Optional. To edit the description, select the edit icon (**{pencil}**), make your changes, and
@@ -83,7 +79,7 @@ It's not possible to connect them again.
 
 To remove a task from an issue:
 
-1. In the issue description, in the **Child items** section, next to the task you want to remove, select the options menu (**{ellipsis_v}**).
+1. In the issue description, in the **Tasks** section, next to the task you want to remove, select the options menu (**{ellipsis_v}**).
 1. Select **Remove task**.
 
 ## Delete a task
@@ -96,6 +92,75 @@ Prerequisites:
 
 To delete a task:
 
-1. In the issue description, in the **Child items** section, select the task you want to edit.
+1. In the issue description, in the **Tasks** section, select the task you want to edit.
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.
+
+## Assign users to a task
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
+
+To show who is responsible for a task, you can assign users to it.
+
+Users on GitLab Free can assign one user per task.
+Users on GitLab Premium and higher can assign multiple users to a single task.
+See also [multiple assignees for issues](project/issues/multiple_assignees_for_issues.md).
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To change the assignee on a task:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Assignees**, select **Add assignees**.
+1. From the dropdown list, select the user(s) to add as an assignee.
+1. Select any area outside the dropdown list.
+
+## Set a start and due date
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4.
+
+You can set a [start and due date](project/issues/due_dates.md) on a task.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can set start and due dates on a task to show when work should begin and end.
+
+To set a due date:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. If the task already has a due date next to **Due date**, select it. Otherwise, select **Add due date**.
+1. In the date picker, select the desired due date.
+
+To set a start date:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. If the task already has a start date next to **Start date**, select it. Otherwise, select **Add start date**.
+1. In the date picker, select the desired due date.
+
+   The due date must be the same or later than the start date.
+   If you select a start date to be later than the due date, the due date is then changed to the same day.
+
+## Set task weight **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can set weight on each task to show how much work it needs.
+This value is visible only when you view a task.
+
+To set issue weight of a task:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Weight**, enter a whole, positive number.
+1. Select the close icon (**{close}**).

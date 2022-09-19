@@ -6,7 +6,7 @@ module Sidebars
       class MonitorMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false unless context.project.feature_available?(:operations, context.current_user)
+          return false unless feature_enabled?
 
           add_item(metrics_dashboard_menu_item)
           add_item(error_tracking_menu_item)
@@ -40,6 +40,14 @@ module Sidebars
         end
 
         private
+
+        def feature_enabled?
+          if ::Feature.enabled?(:split_operations_visibility_permissions, context.project)
+            context.project.feature_available?(:monitor, context.current_user)
+          else
+            context.project.feature_available?(:operations, context.current_user)
+          end
+        end
 
         def metrics_dashboard_menu_item
           unless can?(context.current_user, :metrics_dashboard, context.project)

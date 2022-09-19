@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Vue
 
-To get started with Vue, read through [their documentation](https://vuejs.org/v2/guide/).
+To get started with Vue, read through [their documentation](https://v2.vuejs.org/v2/guide/index.html).
 
 ## Examples
 
@@ -23,8 +23,8 @@ The main goal we are trying to achieve is to have only one data flow, and only o
 To achieve this goal we use [Vuex](#vuex).
 
 You can also read about this architecture in Vue documentation about
-[state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
-and about [one way data flow](https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow).
+[state management](https://v2.vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
+and about [one way data flow](https://v2.vuejs.org/v2/guide/components-props.html#One-Way-Data-Flow).
 
 ### Components and Store
 
@@ -322,7 +322,7 @@ For example, tables are used in a quite amount of places across GitLab, a table
 would be a good fit for a component. On the other hand, a table cell used only
 in one table would not be a good use of this pattern.
 
-You can read more about components in Vue.js site, [Component System](https://vuejs.org/v2/guide/#Composing-with-Components).
+You can read more about components in Vue.js site, [Component System](https://v2.vuejs.org/v2/guide/#Composing-with-Components).
 
 ### A folder for the Store
 
@@ -348,8 +348,7 @@ recommended to observe objects with their own stateful behavior.
 
 Based on the Vue guidance:
 
-- **Do not** use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data),
-such as `user: new User()`.
+- **Do not** use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data).
 - **Do not** add new JavaScript class implementations.
 - **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if
 cannot use primitives or objects.
@@ -531,8 +530,7 @@ Each Vue component has a unique output. This output is always present in the ren
 Although each method of a Vue component can be tested individually, our goal is to test the output
 of the render function, which represents the state at all times.
 
-Visit the [Vue testing guide](https://v2.vuejs.org/v2/guide/testing.html#Unit-Testing) for help
-testing the rendered output.
+Visit the [Vue testing guide](https://v2.vuejs.org/v2/guide/testing.html#Unit-Testing) for help.
 
 Here's an example of a well structured unit test for [this Vue component](#appendix---vue-component-subject-under-test):
 
@@ -671,7 +669,7 @@ it('should fire the click event', () => {
 })
 ```
 
-When firing a Vue event, use [`emit`](https://vuejs.org/v2/guide/components-custom-events.html).
+When firing a Vue event, use [`emit`](https://v2.vuejs.org/v2/guide/components-custom-events.html).
 
 ```javascript
 wrapper = shallowMount(DropdownItem);

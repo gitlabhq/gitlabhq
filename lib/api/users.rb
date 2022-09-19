@@ -54,8 +54,7 @@ module API
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
-          # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
-          optional :avatar, type: File, desc: 'Avatar image for user' # rubocop:disable Scalability/FileUploads
+          optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user'
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
@@ -733,7 +732,7 @@ module API
         unless user.can_be_deactivated?
           forbidden!('A blocked user cannot be deactivated by the API') if user.blocked?
           forbidden!('An internal user cannot be deactivated by the API') if user.internal?
-          forbidden!("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+          forbidden!("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
         end
 
         if user.deactivate

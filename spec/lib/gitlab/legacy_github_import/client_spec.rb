@@ -98,6 +98,30 @@ RSpec.describe Gitlab::LegacyGithubImport::Client do
     end
   end
 
+  describe '#repository' do
+    it 'returns repository data as a hash' do
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:get, 'https://api.github.com/repositories/1')
+        .to_return(status: 200, body: { id: 1 }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.repository(1)).to eq({ id: 1 })
+    end
+  end
+
+  describe '#repos' do
+    it 'returns the user\'s repositories as a hash' do
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:get, 'https://api.github.com/user/repos')
+        .to_return(status: 200, body: [{ id: 1 }, { id: 2 }].to_json, headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.repos).to match_array([{ id: 1 }, { id: 2 }])
+    end
+  end
+
   context 'github rate limit' do
     it 'does not raise error when rate limit is disabled' do
       stub_request(:get, /api.github.com/)

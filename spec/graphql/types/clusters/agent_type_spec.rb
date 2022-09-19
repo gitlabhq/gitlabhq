@@ -9,5 +9,5 @@ RSpec.describe GitlabSchema.types['ClusterAgent'] do
 
   it { expect(described_class).to require_graphql_authorizations(:read_cluster) }
 
-  it { expect(described_class).to have_graphql_fields(fields) }
+  it { expect(described_class).to include_graphql_fields(*fields) }
 end

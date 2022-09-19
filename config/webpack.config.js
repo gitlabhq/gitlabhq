@@ -6,6 +6,7 @@ const path = require('path');
 
 const BABEL_VERSION = require('@babel/core/package.json').version;
 const SOURCEGRAPH_VERSION = require('@sourcegraph/code-host-integration/package.json').version;
+const GITLAB_WEB_IDE_VERSION = require('@gitlab/web-ide/package.json').version;
 
 const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -54,16 +55,30 @@ const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
-const NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
-const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
+let NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
+let NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
+let NO_HASHED_CHUNKS = process.env.NO_HASHED_CHUNKS && process.env.NO_HASHED_CHUNKS !== 'false';
+
+if (WEBPACK_REPORT) {
+  console.log('Webpack report enabled. Running a "slim" production build.');
+  // For our webpack report we need no source maps, compression _or_ hashed file names.
+  NO_SOURCEMAPS = true;
+  NO_COMPRESSION = true;
+  NO_HASHED_CHUNKS = true;
+}
 
 const WEBPACK_OUTPUT_PATH = path.join(ROOT_PATH, 'public/assets/webpack');
 const WEBPACK_PUBLIC_PATH = '/assets/webpack/';
 const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
+const GITLAB_WEB_IDE_PACKAGE = '@gitlab/web-ide';
 
 const SOURCEGRAPH_PATH = path.join('sourcegraph', SOURCEGRAPH_VERSION, '/');
 const SOURCEGRAPH_OUTPUT_PATH = path.join(WEBPACK_OUTPUT_PATH, SOURCEGRAPH_PATH);
 const SOURCEGRAPH_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, SOURCEGRAPH_PATH);
+
+const GITLAB_WEB_IDE_PATH = path.join('gitlab-vscode', GITLAB_WEB_IDE_VERSION, '/');
+const GITLAB_WEB_IDE_OUTPUT_PATH = path.join(WEBPACK_OUTPUT_PATH, GITLAB_WEB_IDE_PATH);
+const GITLAB_WEB_IDE_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, GITLAB_WEB_IDE_PATH);
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
@@ -245,8 +260,10 @@ module.exports = {
   output: {
     path: WEBPACK_OUTPUT_PATH,
     publicPath: WEBPACK_PUBLIC_PATH,
-    filename: IS_PRODUCTION ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
+    filename:
+      IS_PRODUCTION && !NO_HASHED_CHUNKS ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
+    chunkFilename:
+      IS_PRODUCTION && !NO_HASHED_CHUNKS ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
@@ -473,7 +490,9 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      filename: '[name].[contenthash:8].worker.js',
+    }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
 
@@ -583,6 +602,10 @@ module.exports = {
           },
         },
         {
+          from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
+          to: GITLAB_WEB_IDE_OUTPUT_PATH,
+        },
+        {
           from: path.join(
             ROOT_PATH,
             'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
@@ -677,6 +700,8 @@ module.exports = {
         statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
         statsOptions: {
           source: false,
+          errors: false,
+          warnings: false,
         },
       }),
 
@@ -689,6 +714,7 @@ module.exports = {
       IS_JH: IS_JH ? 'window.gon && window.gon.jh' : JSON.stringify(false),
       // This is used by Sourcegraph because these assets are loaded dnamically
       'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
+      'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
     }),
 

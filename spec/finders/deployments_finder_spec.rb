@@ -32,7 +32,17 @@ RSpec.describe DeploymentsFinder do
       it 'raises an error' do
         expect { subject }.to raise_error(
           described_class::InefficientQueryError,
-          '`finished_at` filter and `finished_at` sorting must be paired')
+          '`finished_at` filter requires `finished_at` sort.')
+      end
+    end
+
+    context 'when running status filter and finished_at sorting' do
+      let(:params) { { status: :running, order_by: :finished_at } }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(
+          described_class::InefficientQueryError,
+          '`finished_at` sort requires `finished_at` filter or a filter with at least one of the finished statuses.')
       end
     end
 
@@ -52,7 +62,17 @@ RSpec.describe DeploymentsFinder do
       it 'raises an error' do
         expect { subject }.to raise_error(
           described_class::InefficientQueryError,
-          '`environment` filter must be combined with `project` scope.')
+          '`environment` name filter must be combined with `project` scope.')
+      end
+    end
+
+    context 'when status filter with mixed finished and upcoming statuses' do
+      let(:params) { { status: [:success, :running] } }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(
+          described_class::InefficientQueryError,
+          'finished statuses and upcoming statuses must be separately queried.')
       end
     end
   end
@@ -97,6 +117,24 @@ RSpec.describe DeploymentsFinder do
           end
 
           let(:params) { { **base_params, environment: environment1.name } }
+
+          it 'returns deployments for the given environment' do
+            is_expected.to match_array([deployment1])
+          end
+        end
+
+        context 'when the environment ID is specified' do
+          let!(:environment1) { create(:environment, project: project) }
+          let!(:environment2) { create(:environment, project: project) }
+          let!(:deployment1) do
+            create(:deployment, project: project, environment: environment1)
+          end
+
+          let!(:deployment2) do
+            create(:deployment, project: project, environment: environment2)
+          end
+
+          let(:params) { { environment: environment1.id } }
 
           it 'returns deployments for the given environment' do
             is_expected.to match_array([deployment1])

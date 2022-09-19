@@ -8,17 +8,17 @@ import { __ } from '~/locale';
 import '~/behaviors/markdown/render_gfm';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import autosave from '../mixins/autosave';
-import noteAttachment from './note_attachment.vue';
-import noteAwardsList from './note_awards_list.vue';
-import noteEditedText from './note_edited_text.vue';
-import noteForm from './note_form.vue';
+import NoteAttachment from './note_attachment.vue';
+import NoteAwardsList from './note_awards_list.vue';
+import NoteEditedText from './note_edited_text.vue';
+import NoteForm from './note_form.vue';
 
 export default {
   components: {
-    noteEditedText,
-    noteAwardsList,
-    noteAttachment,
-    noteForm,
+    NoteEditedText,
+    NoteAwardsList,
+    NoteAttachment,
+    NoteForm,
     Suggestions,
   },
   directives: {
@@ -71,7 +71,7 @@ export default {
       return this.note.note;
     },
     saveButtonTitle() {
-      return this.note.confidential ? __('Save internal note') : __('Save comment');
+      return this.note.internal ? __('Save internal note') : __('Save comment');
     },
     hasSuggestion() {
       return this.note.suggestions && this.note.suggestions.length;

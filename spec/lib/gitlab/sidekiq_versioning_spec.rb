@@ -2,30 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqVersioning, :redis do
-  let(:foo_worker) do
-    Class.new do
-      def self.name
-        'FooWorker'
-      end
-
-      include ApplicationWorker
-    end
-  end
-
-  let(:bar_worker) do
-    Class.new do
-      def self.name
-        'BarWorker'
-      end
-
-      include ApplicationWorker
-    end
-  end
-
+RSpec.describe Gitlab::SidekiqVersioning, :clean_gitlab_redis_queues do
   before do
-    allow(Gitlab::SidekiqConfig).to receive(:workers).and_return([foo_worker, bar_worker])
-    allow(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return([foo_worker.queue, bar_worker.queue])
+    allow(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return(%w[foo bar])
   end
 
   describe '.install!' do

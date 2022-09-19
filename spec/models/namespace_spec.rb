@@ -336,6 +336,26 @@ RSpec.describe Namespace do
         expect(described_class.without_project_namespaces).to match_array([namespace, namespace1, namespace2, namespace1sub, namespace2sub, user_namespace, project_namespace.parent])
       end
     end
+
+    describe '.with_shared_runners_enabled' do
+      subject { described_class.with_shared_runners_enabled }
+
+      context 'when shared runners are enabled for namespace' do
+        let!(:namespace_inheriting_shared_runners) { create(:namespace, shared_runners_enabled: true) }
+
+        it "returns a namespace inheriting shared runners" do
+          is_expected.to include(namespace_inheriting_shared_runners)
+        end
+      end
+
+      context 'when shared runners are disabled for namespace' do
+        let!(:namespace_not_inheriting_shared_runners) { create(:namespace, shared_runners_enabled: false) }
+
+        it "does not return a namespace not inheriting shared runners" do
+          is_expected.not_to include(namespace_not_inheriting_shared_runners)
+        end
+      end
+    end
   end
 
   describe 'delegate' do
@@ -439,17 +459,52 @@ RSpec.describe Namespace do
 
   context 'traversal_ids on create' do
     shared_examples 'default traversal_ids' do
-      let(:namespace) { build(:namespace) }
+      let!(:namespace) { create(:group) }
+      let!(:child_namespace) { create(:group, parent: namespace) }
 
-      before do
-        namespace.save!
-        namespace.reload
-      end
-
-      it { expect(namespace.traversal_ids).to eq [namespace.id] }
+      it { expect(namespace.reload.traversal_ids).to eq [namespace.id] }
+      it { expect(child_namespace.reload.traversal_ids).to eq [namespace.id, child_namespace.id] }
+      it { expect(namespace.sync_events.count).to eq 1 }
+      it { expect(child_namespace.sync_events.count).to eq 1 }
     end
 
     it_behaves_like 'default traversal_ids'
+  end
+
+  context 'traversal_ids on update' do
+    let!(:namespace1) { create(:group) }
+    let!(:namespace2) { create(:group) }
+
+    it 'updates the traversal_ids when the parent_id is changed' do
+      expect do
+        namespace1.update!(parent: namespace2)
+      end.to change { namespace1.reload.traversal_ids }.from([namespace1.id]).to([namespace2.id, namespace1.id])
+    end
+
+    it 'creates a Namespaces::SyncEvent using triggers' do
+      Namespaces::SyncEvent.delete_all
+      namespace1.update!(parent: namespace2)
+      expect(namespace1.reload.sync_events.count).to eq(1)
+    end
+
+    it 'creates sync_events using database trigger on the table' do
+      expect { Group.update_all(traversal_ids: [-1]) }.to change(Namespaces::SyncEvent, :count).by(2)
+    end
+
+    it 'does not create sync_events using database trigger on the table when only the parent_id has changed' do
+      expect { Group.update_all(parent_id: -1) }.not_to change(Namespaces::SyncEvent, :count)
+    end
+
+    it 'triggers the callback sync_traversal_ids on the namespace' do
+      allow(namespace1).to receive(:run_callbacks).and_call_original
+      expect(namespace1).to receive(:run_callbacks).with(:sync_traversal_ids)
+      namespace1.update!(parent: namespace2)
+    end
+
+    it 'calls schedule_sync_event_worker on the updated namespace' do
+      expect(namespace1).to receive(:schedule_sync_event_worker)
+      namespace1.update!(parent: namespace2)
+    end
   end
 
   describe "after_commit :expire_child_caches" do
@@ -675,6 +730,24 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#any_project_with_shared_runners_enabled?' do
+    subject { namespace.any_project_with_shared_runners_enabled? }
+
+    let!(:project_not_inheriting_shared_runners) do
+      create(:project, namespace: namespace, shared_runners_enabled: false)
+    end
+
+    context 'when a child project has shared runners enabled' do
+      let!(:project_inheriting_shared_runners) { create(:project, namespace: namespace, shared_runners_enabled: true) }
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when all child projects have shared runners disabled' do
+      it { is_expected.to eq false }
+    end
+  end
+
   describe '.search' do
     let_it_be(:first_group) { create(:group, name: 'my first namespace', path: 'old-path') }
     let_it_be(:parent_group) { create(:group, name: 'my parent namespace', path: 'parent-path') }
@@ -744,30 +817,30 @@ RSpec.describe Namespace do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:               namespace,
-                               repository_size:         101,
-                               wiki_size:               505,
-                               lfs_objects_size:        202,
-                               build_artifacts_size:    303,
+                               namespace: namespace,
+                               repository_size: 101,
+                               wiki_size: 505,
+                               lfs_objects_size: 202,
+                               build_artifacts_size: 303,
                                pipeline_artifacts_size: 707,
-                               packages_size:           404,
-                               snippets_size:           605,
-                               uploads_size:            808))
+                               packages_size: 404,
+                               snippets_size: 605,
+                               uploads_size: 808))
     end
 
     let(:project2) do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:               namespace,
-                               repository_size:         10,
-                               wiki_size:               50,
-                               lfs_objects_size:        20,
-                               build_artifacts_size:    30,
+                               namespace: namespace,
+                               repository_size: 10,
+                               wiki_size: 50,
+                               lfs_objects_size: 20,
+                               build_artifacts_size: 30,
                                pipeline_artifacts_size: 70,
-                               packages_size:           40,
-                               snippets_size:           60,
-                               uploads_size:            80))
+                               packages_size: 40,
+                               snippets_size: 60,
+                               uploads_size: 80))
     end
 
     it "sums all project storage counters in the namespace" do
@@ -2214,6 +2287,20 @@ RSpec.describe Namespace do
         end.to change(Namespaces::SyncEvent, :count).by(1)
 
         expect(namespace.sync_events.count).to eq(2)
+      end
+
+      it 'creates a namespaces_sync_event for the parent and all the descendent namespaces' do
+        children_namespaces = create_list(:group, 2, parent_id: namespace.id)
+        grand_children_namespaces = create_list(:group, 2, parent_id: children_namespaces.first.id)
+        expect(Namespaces::ProcessSyncEventsWorker).to receive(:perform_async).exactly(:once)
+        Namespaces::SyncEvent.delete_all
+
+        expect do
+          namespace.update!(parent_id: new_namespace1.id)
+        end.to change(Namespaces::SyncEvent, :count).by(5)
+
+        expected_ids = [namespace.id] + children_namespaces.map(&:id) + grand_children_namespaces.map(&:id)
+        expect(Namespaces::SyncEvent.pluck(:namespace_id)).to match_array(expected_ids)
       end
 
       it 'enqueues ProcessSyncEventsWorker' do

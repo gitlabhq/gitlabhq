@@ -20,13 +20,18 @@ module Gitlab
           private
 
           def relation
-            return super.where(source_type: source_type) if source_type.present? # rubocop: disable CodeReuse/ActiveRecord
-
-            super
+            scope = super
+            scope = scope.where(source_type: source_type) if source_type.present?
+            scope = scope.where(status: status) if status.present?
+            scope
           end
 
           def source_type
             options[:source_type].to_s
+          end
+
+          def status
+            options[:status]
           end
 
           def allowed_source_types

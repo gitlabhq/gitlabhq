@@ -44,36 +44,43 @@ export default {
   },
   computed: {
     fields() {
+      const tdClass = 'gl-vertical-align-middle!';
       return [
         {
           key: 'name',
           label: this.$options.i18n.name,
           tdAttr: { 'data-testid': 'agent-token-name' },
+          tdClass,
         },
         {
           key: 'lastUsed',
           label: this.$options.i18n.lastUsed,
           tdAttr: { 'data-testid': 'agent-token-used' },
+          tdClass,
         },
         {
           key: 'createdAt',
           label: this.$options.i18n.dateCreated,
           tdAttr: { 'data-testid': 'agent-token-created-time' },
+          tdClass,
         },
         {
           key: 'createdBy',
           label: this.$options.i18n.createdBy,
           tdAttr: { 'data-testid': 'agent-token-created-user' },
+          tdClass,
         },
         {
           key: 'description',
           label: this.$options.i18n.description,
           tdAttr: { 'data-testid': 'agent-token-description' },
+          tdClass,
         },
         {
           key: 'actions',
           label: '',
           tdAttr: { 'data-testid': 'agent-token-revoke' },
+          tdClass,
         },
       ];
     },

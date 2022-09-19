@@ -68,6 +68,9 @@ Example response:
         "started_at": "2019-03-25T12:54:50.082Z",
         "finished_at": "2019-03-25T18:55:13.216Z",
         "duration": 21623.13423,
+        "project": {
+          "ci_job_token_scope_enabled": false
+        },
         "user": {
           "id": 1,
           "name": "Administrator",
@@ -180,6 +183,9 @@ Example of response
       "started_at": "2019-03-25T12:54:50.082Z",
       "finished_at": "2019-03-25T18:55:13.216Z",
       "duration": 21623.13423,
+      "project": {
+        "ci_job_token_scope_enabled": false
+      },
       "user": {
         "id": 1,
         "name": "Administrator",

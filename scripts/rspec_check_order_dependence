@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+## Usage: scripts/rspec_check_order_dependence <files...>
+#
+# List of RSpec files to be checked for their order dependency.
+#
+# If the files pass the following checks it's likely they are not
+# order-dependent and are removed from `spec/support/rspec_order_todo.yml`
+# to make them run in random order.
+#
+# The following checks are available:
+# * Run specs in _defined_ order
+# * Run specs in _reverse_ order
+# * Run specs in _random_ order
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <files...>"
+  exit
+fi
+
+TODO_YAML='./spec/support/rspec_order_todo.yml'
+RSPEC_ARGS=(--format progress)
+
+abort() {
+  echo "$@"
+  echo "Aborting..."
+  exit 1
+}
+
+for file in "$@"
+do
+  # Drop potential file prefix `./`
+  file=${file#./}
+
+  # Match only the prefix so we can specify a directory to match all the files
+  # under it. For example, `spec/rubocop` will match, test and remove all TODO
+  # entries starting with `./spec/rubocop`.
+  grep -E -- "- './$file" "$TODO_YAML" > /dev/null || abort "Could not find '$file' in '$TODO_YAML'"
+done
+
+set -xe
+
+bin/rspec --order defined "${RSPEC_ARGS[@]}" "$@"
+RSPEC_ORDER=reverse bin/rspec "${RSPEC_ARGS[@]}" "$@"
+bin/rspec --order random "${RSPEC_ARGS[@]}" "$@"
+
+set +xe
+
+green='\033[0;32m'
+clear='\033[0m' # No Color
+
+echo -e "$green"
+echo "
+The files passed all checks!
+
+They are likely not order-dependent and can be run in random order and thus
+are being removed from 'spec/support/rspec_order_todo.yml':
+"
+
+for file in "$@"
+do
+  # Drop potential file prefix `./`
+  file=${file#./}
+
+  echo "  * Removing '$file'"
+
+  # Escape forward slashes to make it compatible with sed below
+  escaped_file=${file//\//\\/}
+
+  # We must use -i.bak to make sed work on Linux and MacOS.
+  # See https://riptutorial.com/sed/topic/9436/bsd-macos-sed-vs--gnu-sed-vs--the-posix-sed-specification
+  sed -i.bak "/- '.\/$escaped_file/d" "$TODO_YAML"
+  rm "$TODO_YAML.bak"
+done
+
+echo -e "$clear"

@@ -5,7 +5,7 @@ module RuboCop
     module Gitlab
       # Cop that disallows the use of `Gitlab::SQL::Except`, in favour of using
       # the `FromExcept` module.
-      class Except < RuboCop::Cop::Cop
+      class Except < RuboCop::Cop::Base
         MSG = 'Use the `FromExcept` concern, instead of using `Gitlab::SQL::Except` directly'
 
         def_node_matcher :raw_except?, <<~PATTERN
@@ -15,7 +15,7 @@ module RuboCop
         def on_send(node)
           return unless raw_except?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

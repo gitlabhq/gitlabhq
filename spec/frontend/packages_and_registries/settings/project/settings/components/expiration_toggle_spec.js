@@ -10,7 +10,7 @@ import {
 describe('ExpirationToggle', () => {
   let wrapper;
 
-  const findToggle = () => wrapper.find(GlToggle);
+  const findToggle = () => wrapper.findComponent(GlToggle);
   const findDescription = () => wrapper.find('[data-testid="description"]');
 
   const mountComponent = (propsData) => {

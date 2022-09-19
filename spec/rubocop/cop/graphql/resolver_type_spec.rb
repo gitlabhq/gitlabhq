@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/graphql/resolver_type'
 
 RSpec.describe RuboCop::Cop::Graphql::ResolverType do
-  subject(:cop) { described_class.new }
-
   it 'adds an offense when there is no type annotation' do
     expect_offense(<<~SRC)
       module Resolvers

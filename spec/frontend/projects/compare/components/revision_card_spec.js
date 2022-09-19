@@ -32,10 +32,10 @@ describe('RepoDropdown component', () => {
   });
 
   it('renders RepoDropdown component', () => {
-    expect(wrapper.findAll(RepoDropdown).exists()).toBe(true);
+    expect(wrapper.findAllComponents(RepoDropdown).exists()).toBe(true);
   });
 
   it('renders RevisionDropdown component', () => {
-    expect(wrapper.findAll(RevisionDropdown).exists()).toBe(true);
+    expect(wrapper.findAllComponents(RevisionDropdown).exists()).toBe(true);
   });
 });

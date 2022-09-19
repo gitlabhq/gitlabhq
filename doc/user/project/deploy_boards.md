@@ -116,7 +116,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    Kubernetes.
 
    NOTE:
-   Matching based on the Kubernetes `app` label was removed in 
+   Matching based on the Kubernetes `app` label was removed in
    [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14020).
    To migrate, please apply the required annotations (see above) and
    re-deploy your application. If you are using Auto DevOps, this will

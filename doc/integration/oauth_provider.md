@@ -79,7 +79,7 @@ To add a new application for a group:
 
 To create an application for your GitLab instance:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Applications**.
 1. Select **New application**.
 
@@ -103,8 +103,11 @@ When applications are deleted, all grants and tokens associated with the applica
 
 ## Authorized applications
 
-Every application you authorize with your GitLab credentials is shown
-in the **Authorized applications** section under **Settings > Applications**.
+To see all the application you've authorized with your GitLab credentials:
+
+1. On the top bar, in the top right corner, select your avatar.
+1. Select **Edit profile** and then select **Applications**.
+1. Scroll down to the **Authorized applications** section.
 
 The GitLab OAuth 2 applications support scopes, which allow various actions that any given
 application can perform. Available scopes are depicted in the following table.
@@ -124,3 +127,13 @@ application can perform. Available scopes are depicted in the following table.
 | `email`            |  Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
 At any time you can revoke any access by clicking **Revoke**.
+
+## Hashed OAuth application secrets
+
+> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `hash_oauth_secrets`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default, this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `hash_oauth_secrets`.
+On GitLab.com, this feature is not available.
+
+By default, OAuth application secrets are stored as plain text in the database. When enabled, OAuth application secrets are stored in the database in hashed format and are only available to users immediately after creating OAuth applications.

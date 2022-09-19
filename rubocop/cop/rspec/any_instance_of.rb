@@ -24,7 +24,9 @@ module RuboCop
       #     expect(instance).to receive(:invalidate_issue_cache_counts)
       #   end
       #
-      class AnyInstanceOf < RuboCop::Cop::Cop
+      class AnyInstanceOf < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MESSAGE_EXPECT = 'Do not use `expect_any_instance_of` method, use `expect_next_instance_of` instead.'
         MESSAGE_ALLOW = 'Do not use `allow_any_instance_of` method, use `allow_next_instance_of` instead.'
 
@@ -37,22 +39,19 @@ module RuboCop
 
         def on_send(node)
           if expect_any_instance_of?(node)
-            add_offense(node, location: :expression, message: MESSAGE_EXPECT)
-          elsif allow_any_instance_of?(node)
-            add_offense(node, location: :expression, message: MESSAGE_ALLOW)
-          end
-        end
-
-        def autocorrect(node)
-          replacement =
-            if expect_any_instance_of?(node)
-              replacement_any_instance_of(node, 'expect')
-            elsif allow_any_instance_of?(node)
-              replacement_any_instance_of(node, 'allow')
+            add_offense(node, message: MESSAGE_EXPECT) do |corrector|
+              corrector.replace(
+                node.loc.expression,
+                replacement_any_instance_of(node, 'expect')
+              )
             end
-
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement)
+          elsif allow_any_instance_of?(node)
+            add_offense(node, message: MESSAGE_ALLOW) do |corrector|
+              corrector.replace(
+                node.loc.expression,
+                replacement_any_instance_of(node, 'allow')
+              )
+            end
           end
         end
 

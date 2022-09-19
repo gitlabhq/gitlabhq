@@ -43,12 +43,11 @@ module Users
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
       security_training_feature_promotion: 42, # EE-only
-      storage_enforcement_banner_first_enforcement_threshold: 43,
-      storage_enforcement_banner_second_enforcement_threshold: 44,
-      storage_enforcement_banner_third_enforcement_threshold: 45,
-      storage_enforcement_banner_fourth_enforcement_threshold: 46,
-      attention_requests_top_nav: 47,
-      attention_requests_side_nav: 48,
+      storage_enforcement_banner_first_enforcement_threshold: 43, # EE-only
+      storage_enforcement_banner_second_enforcement_threshold: 44, # EE-only
+      storage_enforcement_banner_third_enforcement_threshold: 45, # EE-only
+      storage_enforcement_banner_fourth_enforcement_threshold: 46, # EE-only
+      # 47 and 48 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
       # 49 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91533
       # because the banner was no longer relevant.
       # Records will be migrated with https://gitlab.com/gitlab-org/gitlab/-/issues/367293
@@ -61,7 +60,8 @@ module Users
       namespace_storage_limit_banner_warning_threshold: 56, # EE-only
       namespace_storage_limit_banner_alert_threshold: 57, # EE-only
       namespace_storage_limit_banner_error_threshold: 58, # EE-only
-      project_quality_summary_feedback: 59       # EE-only
+      project_quality_summary_feedback: 59,       # EE-only
+      merge_request_settings_moved_callout: 60
     }
 
     validates :feature_name,

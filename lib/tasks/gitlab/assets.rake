@@ -40,6 +40,7 @@ module Tasks
 
         asset_files
       end
+
       private_class_method :assets_impacting_webpack_compilation
     end
   end
@@ -84,9 +85,17 @@ namespace :gitlab do
       if head_assets_sha256 != master_assets_sha256 || !public_assets_webpack_dir_exists
         FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR) if public_assets_webpack_dir_exists
 
-        unless system('yarn webpack')
+        log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
+
+        cmd = 'yarn webpack'
+        cmd += " > #{log_path}" if log_path
+
+        unless system(cmd)
           abort 'Error: Unable to compile webpack production bundle.'.color(:red)
         end
+
+        puts "Written webpack stdout log to #{log_path}" if log_path
+        puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
       end
     end
 

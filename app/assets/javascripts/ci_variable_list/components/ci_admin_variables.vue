@@ -11,11 +11,11 @@ import {
 import addAdminVariable from '../graphql/mutations/admin_add_variable.mutation.graphql';
 import deleteAdminVariable from '../graphql/mutations/admin_delete_variable.mutation.graphql';
 import updateAdminVariable from '../graphql/mutations/admin_update_variable.mutation.graphql';
-import ciVariableSettings from './ci_variable_settings.vue';
+import CiVariableSettings from './ci_variable_settings.vue';
 
 export default {
   components: {
-    ciVariableSettings,
+    CiVariableSettings,
   },
   inject: ['endpoint'],
   data() {

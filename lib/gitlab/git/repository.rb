@@ -403,7 +403,7 @@ module Gitlab
 
         wrapped_gitaly_errors do
           gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT,
-                                        with_paths: with_paths, dynamic_timeout: dynamic_timeout)
+                                                   with_paths: with_paths, dynamic_timeout: dynamic_timeout)
         end
       end
 
@@ -701,7 +701,9 @@ module Gitlab
       # Delete the specified branch from the repository
       # Note: No Git hooks are executed for this action
       def delete_branch(branch_name)
-        write_ref(branch_name, Gitlab::Git::BLANK_SHA)
+        branch_name = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}" unless branch_name.start_with?("refs/")
+
+        delete_refs(branch_name)
       rescue CommandError => e
         raise DeleteBranchError, e
       end
@@ -913,8 +915,29 @@ module Gitlab
         true
       end
 
+      # Creates a commit
+      #
+      # @param [User] user The committer of the commit.
+      # @param [String] branch_name: The name of the branch to be created/updated.
+      # @param [String] message: The commit message.
+      # @param [Array<Hash>] actions: An array of files to be added/updated/removed.
+      # @option actions: [Symbol] :action One of :create, :create_dir, :update, :move, :delete, :chmod
+      # @option actions: [String] :file_path The path of the file or directory being added/updated/removed.
+      # @option actions: [String] :previous_path The path of the file being moved. Only used for the :move action.
+      # @option actions: [String,IO] :content The file content for :create or :update
+      # @option actions: [String] :encoding One of text, base64
+      # @option actions: [Boolean] :execute_filemode True sets the executable filemode on the file.
+      # @option actions: [Boolean] :infer_content True uses the existing file contents instead of using content on move.
+      # @param [String] author_email: The authors email, if unspecified the committers email is used.
+      # @param [String] author_name: The authors name, if unspecified the committers name is used.
+      # @param [String] start_branch_name: The name of the branch to be used as the parent of the commit. Only used if start_sha: is unspecified.
+      # @param [String] start_sha: The sha to be used as the parent of the commit.
+      # @param [Gitlab::Git::Repository] start_repository: The repository that contains the start branch or sha. Defaults to use this repository.
+      # @param [Boolean] force: Force update the branch.
+      # @return [Gitlab::Git::OperationService::BranchUpdate]
+      #
       # rubocop:disable Metrics/ParameterLists
-      def multi_action(
+      def commit_files(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_sha: nil, start_repository: nil,
@@ -989,8 +1012,8 @@ module Gitlab
         gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
-      def tag_names_contains_sha(sha)
-        gitaly_ref_client.tag_names_contains_sha(sha)
+      def tag_names_contains_sha(sha, limit: 0)
+        gitaly_ref_client.tag_names_contains_sha(sha, limit: limit)
       end
 
       def search_files_by_content(query, ref, options = {})
@@ -1011,22 +1034,44 @@ module Gitlab
       end
 
       def search_files_by_name(query, ref)
-        safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
+        safe_query = query.sub(%r{^/*}, "")
         ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        gitaly_repository_client.search_files_by_name(ref, safe_query)
+        gitaly_repository_client.search_files_by_name(ref, safe_query).map do |file|
+          Gitlab::EncodingHelper.encode_utf8(file)
+        end
       end
 
       def search_files_by_regexp(filter, ref = 'HEAD')
-        gitaly_repository_client.search_files_by_regexp(ref, filter)
+        gitaly_repository_client.search_files_by_regexp(ref, filter).map do |file|
+          Gitlab::EncodingHelper.encode_utf8(file)
+        end
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
         wrapped_gitaly_errors do
           gitaly_commit_client
             .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
+            .map { |c| commit(c) }
+        end
+      end
+
+      def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
+        params = {
+          author: author,
+          ignore_case: true,
+          commit_message_patterns: query,
+          before: before,
+          after: after,
+          reverse: false,
+          pagination_params: { limit: limit }
+        }
+
+        wrapped_gitaly_errors do
+          gitaly_commit_client
+            .list_commits([ref], params)
             .map { |c| commit(c) }
         end
       end

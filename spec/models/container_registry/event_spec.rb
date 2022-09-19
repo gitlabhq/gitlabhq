@@ -144,7 +144,7 @@ RSpec.describe ContainerRegistry::Event do
       let(:target) do
         {
           'mediaType' => ContainerRegistry::Client::DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE,
-          'repository' =>  repository_path,
+          'repository' => repository_path,
           'tag' => 'latest'
         }
       end

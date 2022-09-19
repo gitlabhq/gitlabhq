@@ -15,19 +15,20 @@ module SshKeys
 
     # rubocop: disable CodeReuse/ActiveRecord
     def perform
-      order = Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'expires_at_utc',
-          order_expression: Arel.sql("date(expires_at AT TIME ZONE 'UTC')").asc,
-          nullable: :not_nullable,
-          distinct: false,
-          add_to_projections: true
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id',
-          order_expression: Key.arel_table[:id].asc
-        )
-      ])
+      order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'expires_at_utc',
+            order_expression: Arel.sql("date(expires_at AT TIME ZONE 'UTC')").asc,
+            nullable: :not_nullable,
+            distinct: false,
+            add_to_projections: true
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            order_expression: Key.arel_table[:id].asc
+          )
+        ])
 
       scope = Key.expired_today_and_not_notified.order(order)
 

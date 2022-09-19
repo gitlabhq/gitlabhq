@@ -14,7 +14,10 @@ RSpec.describe 'Query.work_item(id)' do
       project: project,
       description: '- List item',
       start_date: Date.today,
-      due_date: 1.week.from_now
+      due_date: 1.week.from_now,
+      created_at: 1.week.ago,
+      last_edited_at: 1.day.ago,
+      last_edited_by: guest
     )
   end
 
@@ -67,6 +70,12 @@ RSpec.describe 'Query.work_item(id)' do
               ... on WorkItemWidgetDescription {
                 description
                 descriptionHtml
+                edited
+                lastEditedBy {
+                  webPath
+                  username
+                }
+                lastEditedAt
               }
             }
           GRAPHQL
@@ -79,7 +88,13 @@ RSpec.describe 'Query.work_item(id)' do
               hash_including(
                 'type' => 'DESCRIPTION',
                 'description' => work_item.description,
-                'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {})
+                'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {}),
+                'edited' => true,
+                'lastEditedAt' => work_item.last_edited_at.iso8601,
+                'lastEditedBy' => {
+                  'webPath' => "/#{guest.full_path}",
+                  'username' => guest.username
+                }
               )
             )
           )

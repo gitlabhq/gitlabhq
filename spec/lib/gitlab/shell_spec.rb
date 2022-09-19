@@ -9,9 +9,13 @@ RSpec.describe Gitlab::Shell do
   let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
 
+  before do
+    described_class.instance_variable_set(:@secret_token, nil)
+  end
+
   it { is_expected.to respond_to :remove_repository }
 
-  describe 'memoized secret_token' do
+  describe '.secret_token' do
     let(:secret_file) { 'tmp/tests/.secret_shell_test' }
     let(:link_file) { 'tmp/tests/shell-secret-test/.gitlab_shell_secret' }
 
@@ -19,7 +23,6 @@ RSpec.describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:secret_file).and_return(secret_file)
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-secret-test')
       FileUtils.mkdir('tmp/tests/shell-secret-test')
-      described_class.ensure_secret_token!
     end
 
     after do
@@ -27,13 +30,47 @@ RSpec.describe Gitlab::Shell do
       FileUtils.rm_rf(secret_file)
     end
 
-    it 'creates and links the secret token file' do
-      secret_token = described_class.secret_token
+    shared_examples 'creates and links the secret token file' do
+      it 'creates and links the secret token file' do
+        secret_token = described_class.secret_token
 
-      expect(File.exist?(secret_file)).to be(true)
-      expect(File.read(secret_file).chomp).to eq(secret_token)
-      expect(File.symlink?(link_file)).to be(true)
-      expect(File.readlink(link_file)).to eq(secret_file)
+        expect(File.exist?(secret_file)).to be(true)
+        expect(File.read(secret_file).chomp).to eq(secret_token)
+        expect(File.symlink?(link_file)).to be(true)
+        expect(File.readlink(link_file)).to eq(secret_file)
+      end
+    end
+
+    describe 'memoized secret_token' do
+      before do
+        described_class.ensure_secret_token!
+      end
+
+      it_behaves_like 'creates and links the secret token file'
+    end
+
+    context 'when link_file is a broken symbolic link' do
+      before do
+        File.symlink('tmp/tests/non_existing_file', link_file)
+        described_class.ensure_secret_token!
+      end
+
+      it_behaves_like 'creates and links the secret token file'
+    end
+
+    context 'when secret_file exists' do
+      let(:secret_token) { 'secret-token' }
+
+      before do
+        File.write(secret_file, 'secret-token')
+        described_class.ensure_secret_token!
+      end
+
+      it_behaves_like 'creates and links the secret token file'
+
+      it 'reads the token from the existing file' do
+        expect(described_class.secret_token).to eq(secret_token)
+      end
     end
   end
 

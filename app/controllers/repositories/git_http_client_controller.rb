@@ -3,7 +3,7 @@
 module Repositories
   class GitHttpClientController < Repositories::ApplicationController
     include ActionController::HttpAuthentication::Basic
-    include KerberosSpnegoHelper
+    include KerberosHelper
     include Gitlab::Utils::StrongMemoize
 
     attr_reader :authentication_result, :redirected_path
@@ -49,7 +49,7 @@ module Repositories
         if handle_basic_authentication(login, password)
           return # Allow access
         end
-      elsif allow_kerberos_spnego_auth? && spnego_provided?
+      elsif allow_kerberos_auth? && spnego_provided?
         kerberos_user = find_kerberos_user
 
         if kerberos_user
@@ -91,7 +91,7 @@ module Repositories
     def send_challenges
       challenges = []
       challenges << 'Basic realm="GitLab"' if allow_basic_auth?
-      challenges << spnego_challenge if allow_kerberos_spnego_auth?
+      challenges << spnego_challenge if allow_kerberos_auth?
       headers['Www-Authenticate'] = challenges.join("\n") if challenges.any?
     end
 

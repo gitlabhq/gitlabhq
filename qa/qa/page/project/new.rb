@@ -23,7 +23,7 @@ module QA
 
         view 'app/views/projects/project_templates/_template.html.haml' do
           element :use_template_button
-          element :template_option_row
+          element :template_option_container
         end
 
         view 'app/assets/javascripts/projects/new/components/new_project_url_select.vue' do

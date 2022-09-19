@@ -32,7 +32,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
   };
 
   const findLabel = () => wrapper.findComponent(GlFormGroup);
-  const findBlobEdits = () => wrapper.findAll(SnippetBlobEdit);
+  const findBlobEdits = () => wrapper.findAllComponents(SnippetBlobEdit);
   const findBlobsData = () =>
     findBlobEdits().wrappers.map((x) => ({
       blob: x.props('blob'),

@@ -19,6 +19,10 @@ class GroupGroupLink < ApplicationRecord
     where(group_access: [Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER])
   end
 
+  scope :with_owner_access, -> do
+    where(group_access: [Gitlab::Access::OWNER])
+  end
+
   scope :groups_accessible_via, -> (shared_with_group_ids) do
     links = where(shared_with_group_id: shared_with_group_ids)
     # a group share also gives you access to the descendants of the group being shared,

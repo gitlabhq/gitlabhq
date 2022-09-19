@@ -82,7 +82,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 #### Customizing GitLab appearance
 
-- [Header logo](../user/admin_area/appearance.md#navigation-bar): Change the logo on all pages and email headers.
+- [Header logo](../user/admin_area/appearance.md#top-bar): Change the logo on all pages and email headers.
 - [Favicon](../user/admin_area/appearance.md#favicon): Change the default favicon to your own logo.
 - [Branded login page](../user/admin_area/appearance.md#sign-in--sign-up-pages): Customize the login page with your own logo, title, and description.
 - ["New Project" page](../user/admin_area/appearance.md#new-project-pages): Customize the text to be displayed on the page that opens whenever your users create a new project.

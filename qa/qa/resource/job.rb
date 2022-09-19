@@ -22,6 +22,10 @@ module QA
         "/projects/#{project.id}/jobs/#{id}"
       end
 
+      def api_trace_path
+        "#{api_get_path}/trace"
+      end
+
       def api_post_path
       end
 
@@ -29,6 +33,11 @@ module QA
         {
           artifacts: artifacts
         }
+      end
+
+      # Job log
+      def trace
+        get(request_url(api_trace_path))
       end
     end
   end

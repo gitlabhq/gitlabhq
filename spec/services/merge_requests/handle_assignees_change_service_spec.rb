@@ -102,7 +102,7 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService do
     end
 
     context 'when execute_hooks option is set to true' do
-      let(:options) { { execute_hooks: true } }
+      let(:options) { { 'execute_hooks' => true } }
 
       it 'executes hooks and integrations' do
         expect(merge_request.project).to receive(:execute_hooks).with(anything, :merge_request_hooks)

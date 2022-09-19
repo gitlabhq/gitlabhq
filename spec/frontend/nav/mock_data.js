@@ -1,7 +1,7 @@
 import { range } from 'lodash';
 
 export const TEST_NAV_DATA = {
-  activeTitle: 'Test Active Title',
+  menuTitle: 'Test Menu Title',
   primary: [
     ...['projects', 'groups'].map((view) => ({
       id: view,

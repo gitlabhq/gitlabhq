@@ -22,7 +22,7 @@ module Types
           type: Types::CustomEmojiType.connection_type,
           null: true,
           description: 'Custom emoji within this namespace.',
-          _deprecated_feature_flag: :custom_emoji
+          alpha: { milestone: '13.6' }
 
     field :share_with_group_lock,
           type: GraphQL::Types::Boolean,
@@ -134,7 +134,7 @@ module Types
           description: 'Number of container repositories in the group.'
 
     field :packages,
-          description: 'Packages of the group.',
+          description: 'Packages of the group. This field can only be resolved for one group in any single request.',
           resolver: Resolvers::GroupPackagesResolver
 
     field :dependency_proxy_setting,
@@ -212,6 +212,12 @@ module Types
           description: "Find organizations of this group.",
           resolver: Resolvers::Crm::OrganizationsResolver
 
+    field :organization_state_counts,
+          Types::CustomerRelations::OrganizationStateCountsType,
+          null: true,
+          description: 'Counts of organizations by status for the group.',
+          resolver: Resolvers::Crm::OrganizationStateCountsResolver
+
     field :contacts, Types::CustomerRelations::ContactType.connection_type,
           null: true,
           description: "Find contacts of this group.",
@@ -270,6 +276,10 @@ module Types
 
     def dependency_proxy_setting
       group.dependency_proxy_setting || group.create_dependency_proxy_setting
+    end
+
+    def custom_emoji
+      object.custom_emoji if Feature.enabled?(:custom_emoji)
     end
 
     private

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [], pajamas_alert: true)
+  def form_errors(model, type: 'form', truncate: [])
     errors = model.errors
 
     return unless errors.any?
@@ -64,7 +64,7 @@ module FormHelper
         field_name: "#{issuable_type}[assignee_ids][]",
         default_label: _('Unassigned'),
         'max-select': 1,
-        'dropdown-header': _('Assignee'),
+        'dropdown-header': s_('SearchToken|Assignee'),
         multi_select: true,
         'input-meta': 'name',
         'always-show-selectbox': true,

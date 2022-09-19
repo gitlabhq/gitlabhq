@@ -19,12 +19,13 @@ RSpec.describe ErrorTracking::SentryClient::Repo do
     subject { client.repos(organization_slug) }
 
     it_behaves_like 'calls sentry api'
+    it_behaves_like 'Sentry API response size limit'
 
     it { is_expected.to all( be_a(Gitlab::ErrorTracking::Repo)) }
 
     it { expect(subject.length).to eq(1) }
 
-    context 'redirects' do
+    context 'with redirects' do
       let(:sentry_api_url) { sentry_repos_url }
 
       it_behaves_like 'no Sentry redirects'

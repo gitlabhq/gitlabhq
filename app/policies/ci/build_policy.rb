@@ -2,6 +2,8 @@
 
 module Ci
   class BuildPolicy < CommitStatusPolicy
+    delegate { @subject.project }
+
     condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, container: @subject.project)
 
@@ -23,6 +25,10 @@ module Ci
     # overridden in EE
     condition(:protected_environment) do
       false
+    end
+
+    condition(:prevent_rollback) do
+      @subject.prevent_rollback_deployment?
     end
 
     condition(:owner_of_job) do
@@ -71,7 +77,7 @@ module Ci
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment) }.policy do
+    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment | prevent_rollback) }.policy do
       prevent :update_build
       prevent :update_commit_status
       prevent :erase_build

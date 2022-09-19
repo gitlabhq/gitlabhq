@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Security::ReportSchemaVersionMatcher do
   let(:vendored_versions) { %w[14.0.0 14.0.1 14.0.2 14.1.0] }

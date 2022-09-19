@@ -232,7 +232,11 @@ export default {
         </span>
       </div>
       <div class="issuable-info">
-        <work-item-type-icon v-if="showWorkItemTypeIcon" :work-item-type="issuable.type" />
+        <work-item-type-icon
+          v-if="showWorkItemTypeIcon"
+          :work-item-type="issuable.type"
+          show-tooltip-on-hover
+        />
         <slot v-if="hasSlotContents('reference')" name="reference"></slot>
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}

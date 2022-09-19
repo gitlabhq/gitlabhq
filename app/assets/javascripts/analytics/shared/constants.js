@@ -1,8 +1,7 @@
-import { masks } from 'dateformat';
+import { masks } from '~/lib/dateformat';
 import { s__ } from '~/locale';
 
 export const DATE_RANGE_LIMIT = 180;
-export const OFFSET_DATE_BY_ONE = 1;
 export const PROJECTS_PER_PAGE = 50;
 
 const { isoDate, mediumDate } = masks;

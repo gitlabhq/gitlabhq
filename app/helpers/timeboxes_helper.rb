@@ -172,18 +172,19 @@ module TimeboxesHelper
 
   def timebox_date_range(timebox)
     if timebox.start_date && timebox.due_date
-      "#{timebox.start_date.to_s(:medium)}–#{timebox.due_date.to_s(:medium)}"
+      s_("DateRange|%{start_date}–%{end_date}") % { start_date: l(timebox.start_date, format: Date::DATE_FORMATS[:medium]),
+                                                    end_date: l(timebox.due_date, format: Date::DATE_FORMATS[:medium]) }
     elsif timebox.due_date
       if timebox.due_date.past?
-        _("expired on %{timebox_due_date}") % { timebox_due_date: timebox.due_date.to_s(:medium) }
+        _("expired on %{timebox_due_date}") % { timebox_due_date: l(timebox.due_date, format: Date::DATE_FORMATS[:medium]) }
       else
-        _("expires on %{timebox_due_date}") % { timebox_due_date: timebox.due_date.to_s(:medium) }
+        _("expires on %{timebox_due_date}") % { timebox_due_date: l(timebox.due_date, format: Date::DATE_FORMATS[:medium]) }
       end
     elsif timebox.start_date
       if timebox.start_date.past?
-        _("started on %{timebox_start_date}") % { timebox_start_date: timebox.start_date.to_s(:medium) }
+        _("started on %{timebox_start_date}") % { timebox_start_date: l(timebox.start_date, format: Date::DATE_FORMATS[:medium]) }
       else
-        _("starts on %{timebox_start_date}") % { timebox_start_date: timebox.start_date.to_s(:medium) }
+        _("starts on %{timebox_start_date}") % { timebox_start_date: l(timebox.start_date, format: Date::DATE_FORMATS[:medium]) }
       end
     end
   end

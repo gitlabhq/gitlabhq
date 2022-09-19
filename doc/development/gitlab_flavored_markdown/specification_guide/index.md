@@ -345,8 +345,50 @@ For the [Markdown snapshot testing](#markdown-snapshot-testing) to work
 properly, you must account for these differences in a way that ensures the tests are reliable,
 and always behave the same across different test runs or environments.
 
-To account for these differences, there is a process called **_normalization_**. Normalization
-allows custom regular expressions with
+To account for these differences, there is a process called **_normalization_**. Several ways to approach normalization exist:
+
+1. Fixture-based normalization
+1. Environment-variable-based normalization
+1. Regex-based normalization
+
+#### Fixture-based normalization
+
+Fixture-based normalization should be used whenever possible, because it is simpler and easier to
+understand than regex-based normalization.
+
+The [Markdown snapshot testing](#markdown-snapshot-testing) uses RSpec to generate the
+[example snapshot files](#example-snapshot-files). RSpec enables you to:
+
+- Use the same powerful fixture support and helpers as all the rest of the GitLab RSpec suite.
+- Use fixtures to control the state of the database when the example snapshots are generated.
+- Extract this fixture setup to an RSpec shared context. This shared context is used to ensure
+  the same database state exists wherever the snapshot tests are run, either by the CI suite, or
+  locally via [`run-snapshot-tests.sh`](#run-snapshot-testssh-script).
+
+You can see the RSpec shared context containing these fixtures in
+[`spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb).
+
+#### Environment-variable-based normalization
+
+In some cases, fixtures may not be usable, because they do not provide control over the varying
+values. In these cases, we can introduce support for a environment variable into the production
+code, which allows us to override the randommness in our test environment when we are
+generating the HTML for footnote examples. Even though it is in the production code path, it has
+no effect unless it is explicitly set, therefore it is innocuous. It allows us to avoid
+the more-complex regex-based normalization described below.
+
+The current example of this is when normally random footnote IDs are overridden to be deterministic
+by setting `GITLAB_TEST_FOOTNOTE_ID`. It is set along with the fixtures setup in the
+[`spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/shared_contexts/glfm/example_snapshot_fixtures.rb)
+shared context.
+
+#### Regex-based normalization
+
+If neither fixture-based nor environment-variable-based normalization can be used, use regex-based
+normalization. It is powerful, but more complex, and requires more maintenance.
+It requires referring to specific examples by name, and crafting the proper regexes.
+
+Regex-based normalization allows custom regular expressions with
 [_capturing groups_](https://ruby-doc.org/core-3.1.2/Regexp.html#class-Regexp-label-Capturing)
 to be applied to two different versions of HTML or JSON for a given Markdown example,
 and the contents of the captured groups can be replaced with the same fixed values.
@@ -653,10 +695,16 @@ is the manually updated canonical Markdown+HTML examples for GLFM extensions.
 
 - It contains examples in the [standard backtick-delimited `spec.txt` format](#various-markdown-specifications),
   each of which contain a Markdown example and the corresponding canonical HTML.
+- For all GitLab examples, the "extension" annotation after the backticks should consist of only
+  `example gitlab`. It does not currently include any additional extension annotations describing
+  the specific Markdown, unlike the GitHub Flavored Markdown examples, which do include
+  these additional annotations (such as `example strikethrough`).
 - The `update-specification.rb` script inserts it as new sections before the appendix
   of generated `spec.txt`.
-- It should consist of `H1` header sections, with all examples nested exactly 2 levels deep within `H2`
-  header sections.
+- It should consist of `H1` header sections, with all examples nested either 2 or 3 levels deep
+  within `H2` or `H3` header sections.
+- `H3` header sections must be nested within `H2` header sections. They cannot be
+   nested directly within `H1` header sections.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt` sample entries:
 
@@ -670,7 +718,7 @@ The actual file should not have these prefixed `|` characters.
 |
 |## Strong but with two asterisks
 |
-|```````````````````````````````` example
+|```````````````````````````````` example gitlab
 |**bold**
 |.
 |<p><strong>bold</strong></p>
@@ -680,7 +728,7 @@ The actual file should not have these prefixed `|` characters.
 |
 |## Strong but with HTML
 |
-|```````````````````````````````` example
+|```````````````````````````````` example gitlab
 |<strong>
 |bold
 |</strong>
@@ -738,7 +786,7 @@ The following optional entries are supported for each example. They all default 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` sample entry:
 
 ```yaml
-07_99_an_example_with_incomplete_wysiwyg_implementation_1:
+07_99_00_an_example_with_incomplete_wysiwyg_implementation_1:
   skip_update_example_snapshots: 'An explanation of the reason for skipping.'
   skip_update_example_snapshot_html_static: 'An explanation of the reason for skipping.'
   skip_update_example_snapshot_html_wysiwyg: 'An explanation of the reason for skipping.'
@@ -771,40 +819,73 @@ to be specified for a Markdown example.
   00_uri: &00_uri
     - regex: '(href|data-src)(=")(.*?)(test-file\.(png|zip)")'
       replacement: '\1\2URI_PREFIX\4'
-01_01__section_one__example_containing_a_uri__001:
+01_01_00__section_one__example_containing_a_uri__001:
   html:
     static:
       canonical:
-        01_01_uri: *00_uri
+        01_01_00_uri: *00_uri
       snapshot:
-        01_01_uri: *00_uri
+        01_01_00_uri: *00_uri
       wysiwyg:
-        01_01_uri: *00_uri
+        01_01_00_uri: *00_uri
   prosemirror_json:
-    01_01_uri: *00_uri
-07_01__gitlab_specific_markdown__footnotes__001:
+    01_01_00_uri: *00_uri
+07_01_00__gitlab_specific_markdown__footnotes__001:
   # YAML anchors which are only shared within a single example should be defined within the example
   shared:
-    07_01_href: &07_01_href
+    07_01_00_href: &07_01_00_href
       - regex: '(href)(=")(.+?)(")'
         replacement: '\1\2REF\4'
-    07_01_id: &07_01_id
+    07_01_00_id: &07_01_00_id
       - regex: '(id)(=")(.+?)(")'
         replacement: '\1\2ID\4'
   html:
     static:
       canonical:
-        07_01_href: *07_01_href
-        07_01_id: *07_01_id
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
       snapshot:
-        07_01_href: *07_01_href
-        07_01_id: *07_01_id
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
     wysiwyg:
-      07_01_href: *07_01_href
-      07_01_id: *07_01_id
+      07_01_00_href: *07_01_00_href
+      07_01_00_id: *07_01_00_id
   prosemirror_json:
-    07_01_href: *07_01_href
-    07_01_id: *07_01_id
+    07_01_00_href: *07_01_00_href
+    07_01_00_id: *07_01_00_id
+```
+
+##### `glfm_example_metadata.yml`
+
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_example_metadata.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_example_metadata.yml)
+allows control over other aspects of the snapshot example generation process.
+
+- It is manually updated.
+- The `ee` fields determine whether the example is an EE-only example. If the `ee` field is `true`,
+  the example will only be run by `ee/spec/requests/api/markdown_snapshot_spec.rb`, not by
+  `spec/requests/api/markdown_snapshot_spec.rb`.
+- The `api_request_override_path` field overrides the API endpoint path which is used to
+  generate the `static` HTML for the specifed example. Different endpoints can generate different
+  HTML in some cases, so we want to be able to exercise different API endpoints for the same
+  Markdown. By default, the `/markdown` endpoint is used.
+
+`glfm_specification/input/gitlab_flavored_markdown/glfm_example_metadata.yml` sample entries:
+
+```yaml
+---
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001:
+  api_request_override_path: /groups/glfm_group/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002:
+  api_request_override_path: /glfm_group/glfm_project/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003:
+  api_request_override_path: /glfm_group/glfm_project/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004:
+  api_request_override_path: /-/snippets/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005:
+  api_request_override_path: /glfm_group/glfm_project/-/wikis/new_page/preview_markdown
+08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__006:
+  ee: true
+  api_request_override_path: /groups/glfm_group/-/wikis/new_page/preview_markdown
 ```
 
 #### Output specification files
@@ -891,19 +972,19 @@ CommonMark, GFM, and GLFM example names, each with a unique canonical name.
 `glfm_specification/example_snapshots/examples_index.yml` sample entries:
 
 ```yaml
-02_01_preliminaries_characters_and_lines_1:
+02_01_00_preliminaries_characters_and_lines_1:
   spec_txt_example_position: 1
   source_specification: commonmark
-03_01_blocks_and_inlines_precedence_1:
+03_01_00_blocks_and_inlines_precedence_1:
   spec_txt_example_position: 12
   source_specification: commonmark
-05_03_container_blocks_task_list_items_1:
+05_03_00_container_blocks_task_list_items_1:
   spec_txt_example_position: 279
   source_specification: github
-06_04_inlines_emphasis_and_strong_emphasis_1:
+06_04_00_inlines_emphasis_and_strong_emphasis_1:
   spec_txt_example_position: 360
   source_specification: github
-07_01_audio_link_1:
+07_01_00_audio_link_1:
   spec_txt_example_position: 301
   source_specification: gitlab
 ```
@@ -923,7 +1004,7 @@ for each entry in `glfm_specification/example_snapshots/examples_index.yml`
 `glfm_specification/example_snapshots/markdown.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1: |
+06_04_00_inlines_emphasis_and_strong_emphasis_1: |
   *foo bar*
 ```
 
@@ -958,7 +1039,7 @@ Any exceptions or failures which occur when generating HTML are replaced with an
 `glfm_specification/example_snapshots/html.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1:
+06_04_00_inlines_emphasis_and_strong_emphasis_1:
   canonical: |
     <p><em>foo bar</em></p>
   static: |
@@ -983,7 +1064,7 @@ contains the ProseMirror JSON for each entry in `glfm_specification/example_snap
 `glfm_specification/example_snapshots/prosemirror_json.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1: |-
+06_04_00_inlines_emphasis_and_strong_emphasis_1: |-
   {
     "type": "doc",
     "content": [

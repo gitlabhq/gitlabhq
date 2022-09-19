@@ -30,7 +30,7 @@ describe('Release block header', () => {
   });
 
   const findHeader = () => wrapper.find('h2');
-  const findHeaderLink = () => findHeader().find(GlLink);
+  const findHeaderLink = () => findHeader().findComponent(GlLink);
   const findEditButton = () => wrapper.find('.js-edit-button');
   const findBadge = () => wrapper.findComponent(GlBadge);
 

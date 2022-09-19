@@ -417,6 +417,7 @@ GET /users/:user_id/projects
     "merge_method": "merge",
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -539,6 +540,7 @@ GET /users/:user_id/projects
     "service_desk_enabled": false,
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -671,6 +673,7 @@ Example response:
     "merge_method": "merge",
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -786,6 +789,7 @@ Example response:
     "service_desk_enabled": false,
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
@@ -962,6 +966,7 @@ GET /projects/:id
   "service_desk_address": null,
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "enforce_auth_checks_on_uploads": true,
   "merge_commit_template": null,
   "squash_commit_template": null,
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
@@ -1218,7 +1223,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `mirror` **(PREMIUM)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
-| `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds) in the project settings. |
+| `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge) in the project settings. |
 | `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
@@ -1277,6 +1282,7 @@ POST /projects/user/:user_id
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
+| `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
@@ -1370,6 +1376,7 @@ Supported attributes:
 | `default_branch`                                            | string         | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
+| `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `import_url`                                                | string         | **{dotted-circle}** No | URL the repository was imported from. |
@@ -1542,6 +1549,7 @@ Example responses:
     "merge_method": "merge",
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1648,6 +1656,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1752,6 +1761,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1952,6 +1962,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -2079,6 +2090,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
+  "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -2246,6 +2258,19 @@ Returned object:
 {
   "avatar_url": "https://gitlab.example.com/uploads/-/system/project/avatar/2/dk.png"
 }
+```
+
+## Remove a project avatar
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
+
+To remove a project avatar, use a blank value for the `avatar` attribute.
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "avatar=" "https://gitlab.example.com/api/v4/projects/5"
 ```
 
 ## Share project with group
@@ -2595,6 +2620,50 @@ DELETE /projects/:id/push_rule
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+
+## Get groups to which a user can transfer a project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
+
+Retrieve a list of groups to which the user can transfer a project.
+
+```plaintext
+GET /projects/:id/transfer_locations
+```
+
+| Attribute   | Type           | Required               | Description |
+|-------------|----------------|------------------------|-------------|
+| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `search` | string | **{dotted-circle}** No  | The group names to search for. |
+
+Example request:
+
+```shell
+curl --request GET "https://gitlab.example.com/api/v4/projects/1/transfer_locations"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 27,
+    "web_url": "https://gitlab.example.com/groups/gitlab",
+    "name": "GitLab",
+    "avatar_url": null,
+    "full_name": "GitLab",
+    "full_path": "GitLab"
+  },
+  {
+    "id": 31,
+    "web_url": "https://gitlab.example.com/groups/foobar",
+    "name": "FooBar",
+    "avatar_url": null,
+    "full_name": "FooBar",
+    "full_path": "FooBar"
+  }
+]
+```
 
 ## Transfer a project to a new namespace
 

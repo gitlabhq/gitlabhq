@@ -98,8 +98,8 @@ RSpec.describe 'DisableJoins' do
 
       primary_model.has_one :test_bridge, anonymous_class: bridge_model, foreign_key: :primary_record_id
       bridge_model.belongs_to :test_secondary, anonymous_class: secondary_model, foreign_key: :secondary_record_id
-      primary_model.has_one :test_secondary, through: :test_bridge, anonymous_class: secondary_model,
-        disable_joins: -> { joins_disabled_flag }
+      primary_model.has_one :test_secondary,
+        through: :test_bridge, anonymous_class: secondary_model, disable_joins: -> { joins_disabled_flag }
 
       primary_record = primary_model.create!
       secondary_record = secondary_model.create!
@@ -149,7 +149,7 @@ RSpec.describe 'DisableJoins' do
       primary_model.has_many :test_bridges, anonymous_class: bridge_model, foreign_key: :primary_record_id
       bridge_model.has_many :test_secondaries, anonymous_class: secondary_model, foreign_key: :bridge_record_id
       primary_model.has_many :test_secondaries, through: :test_bridges, anonymous_class: secondary_model,
-        disable_joins: -> { disabled_join_flag }
+                                                disable_joins: -> { disabled_join_flag }
 
       primary_record = primary_model.create!
       bridge_record = bridge_model.create!(primary_record_id: primary_record.id)

@@ -5,8 +5,10 @@ class ContextCommitsFinder
     @project = project
     @merge_request = merge_request
     @search = params[:search]
+    @author = params[:author]
+    @committed_before = params[:committed_before]
+    @committed_after = params[:committed_after]
     @limit = (params[:limit] || 40).to_i
-    @offset = (params[:offset] || 0).to_i
   end
 
   def execute
@@ -16,13 +18,13 @@ class ContextCommitsFinder
 
   private
 
-  attr_reader :project, :merge_request, :search, :limit, :offset
+  attr_reader :project, :merge_request, :search, :author, :committed_before, :committed_after, :limit
 
   def init_collection
     if search.present?
       search_commits
     else
-      project.repository.commits(merge_request.target_branch, { limit: limit, offset: offset })
+      project.repository.commits(merge_request.target_branch, { limit: limit })
     end
   end
 
@@ -41,7 +43,8 @@ class ContextCommitsFinder
         commits = [commit_by_sha] if commit_by_sha
       end
     else
-      commits = project.repository.find_commits_by_message(search, merge_request.target_branch, nil, 20)
+      commits = project.repository.list_commits_by(search, merge_request.target_branch,
+        author: author, before: committed_before, after: committed_after, limit: limit)
     end
 
     commits

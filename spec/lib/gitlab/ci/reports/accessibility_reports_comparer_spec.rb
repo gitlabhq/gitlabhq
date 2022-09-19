@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::AccessibilityReportsComparer do
   let(:comparer) { described_class.new(base_report, head_report) }

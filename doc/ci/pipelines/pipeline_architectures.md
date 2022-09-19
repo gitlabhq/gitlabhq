@@ -84,12 +84,14 @@ deploy_a:
   script:
     - echo "This job deploys something. It will only run when all jobs in the"
     - echo "test stage complete."
+  environment: production
 
 deploy_b:
   stage: deploy
   script:
     - echo "This job deploys something else. It will only run when all jobs in the"
     - echo "test stage complete. It will start at about the same time as deploy_a."
+  environment: production
 ```
 
 ## Directed Acyclic Graph Pipelines
@@ -151,18 +153,20 @@ deploy_a:
   script:
     - echo "Since build_a and test_a run quickly, this deploy job can run much earlier."
     - echo "It does not need to wait for build_b or test_b."
+  environment: production
 
 deploy_b:
   stage: deploy
   needs: [test_b]
   script:
     - echo "Since build_b and test_b run slowly, this deploy job will run much later."
+  environment: production
 ```
 
 ## Child / Parent Pipelines
 
 In the examples above, it's clear we've got two types of things that could be built independently.
-This is an ideal case for using [Child / Parent Pipelines](parent_child_pipelines.md)) via
+This is an ideal case for using [Child / Parent Pipelines](downstream_pipelines.md#parent-child-pipelines)) via
 the [`trigger` keyword](../yaml/index.md#trigger). It separates out the configuration
 into multiple files, keeping things very simple. You can also combine this with:
 
@@ -237,6 +241,7 @@ deploy_a:
   needs: [test_a]
   script:
     - echo "This job deploys something."
+  environment: production
 ```
 
 Example child `b` pipeline configuration, located in `/b/.gitlab-ci.yml`, making
@@ -266,6 +271,7 @@ deploy_b:
   needs: [test_b]
   script:
     - echo "This job deploys something else."
+  environment: production
 ```
 
 It's also possible to set jobs to run before or after triggering child pipelines,

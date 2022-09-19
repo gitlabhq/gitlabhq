@@ -58,11 +58,11 @@ describe('Author Select', () => {
     resetHTMLFixture();
   });
 
-  const findDropdownContainer = () => wrapper.find({ ref: 'dropdownContainer' });
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findDropdownHeader = () => wrapper.find(GlDropdownSectionHeader);
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
-  const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownContainer = () => wrapper.findComponent({ ref: 'dropdownContainer' });
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdownHeader = () => wrapper.findComponent(GlDropdownSectionHeader);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
 
   describe('user is searching via "filter by commit message"', () => {
     it('disables dropdown container', async () => {

@@ -2,6 +2,7 @@ import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerStatePausedBadge from '~/runner/components/runner_paused_badge.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { I18N_PAUSED } from '~/runner/constants';
 
 describe('RunnerTypeBadge', () => {
   let wrapper;
@@ -29,8 +30,8 @@ describe('RunnerTypeBadge', () => {
   });
 
   it('renders paused state', () => {
-    expect(wrapper.text()).toBe('paused');
-    expect(findBadge().props('variant')).toBe('danger');
+    expect(wrapper.text()).toBe(I18N_PAUSED);
+    expect(findBadge().props('variant')).toBe('warning');
   });
 
   it('renders tooltip', () => {

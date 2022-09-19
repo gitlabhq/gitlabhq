@@ -466,6 +466,48 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.jobs_count_in_alive_pipelines' do
+    before do
+      ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
+        alive_pipeline = create(:ci_pipeline, status: status, project: project)
+        create(:ci_build, pipeline: alive_pipeline)
+        create(:ci_bridge, pipeline: alive_pipeline)
+      end
+
+      completed_pipeline = create(:ci_pipeline, :success, project: project)
+      create(:ci_build, pipeline: completed_pipeline)
+
+      old_pipeline = create(:ci_pipeline, :running, project: project, created_at: 2.days.ago)
+      create(:ci_build, pipeline: old_pipeline)
+    end
+
+    it 'includes all jobs in alive pipelines created in the last 24 hours' do
+      expect(described_class.jobs_count_in_alive_pipelines)
+        .to eq(::Ci::HasStatus::ALIVE_STATUSES.count * 2)
+    end
+  end
+
+  describe '.builds_count_in_alive_pipelines' do
+    before do
+      ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
+        alive_pipeline = create(:ci_pipeline, status: status, project: project)
+        create(:ci_build, pipeline: alive_pipeline)
+        create(:ci_bridge, pipeline: alive_pipeline)
+      end
+
+      completed_pipeline = create(:ci_pipeline, :success, project: project)
+      create(:ci_build, pipeline: completed_pipeline)
+
+      old_pipeline = create(:ci_pipeline, :running, project: project, created_at: 2.days.ago)
+      create(:ci_build, pipeline: old_pipeline)
+    end
+
+    it 'includes all builds in alive pipelines created in the last 24 hours' do
+      expect(described_class.builds_count_in_alive_pipelines)
+        .to eq(::Ci::HasStatus::ALIVE_STATUSES.count)
+    end
+  end
+
   describe '#merge_request?' do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be_with_reload(:pipeline) do
@@ -686,7 +728,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
   describe '.with_reports' do
     context 'when pipeline has a test report' do
-      subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:test)) }
 
       let!(:pipeline_with_report) { create(:ci_pipeline, :with_test_reports) }
 
@@ -696,7 +738,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline has a coverage report' do
-      subject { described_class.with_reports(Ci::JobArtifact.coverage_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:coverage)) }
 
       let!(:pipeline_with_report) { create(:ci_pipeline, :with_coverage_reports) }
 
@@ -706,7 +748,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline has an accessibility report' do
-      subject { described_class.with_reports(Ci::JobArtifact.accessibility_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:accessibility)) }
 
       let(:pipeline_with_report) { create(:ci_pipeline, :with_accessibility_reports) }
 
@@ -716,7 +758,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline has a codequality report' do
-      subject { described_class.with_reports(Ci::JobArtifact.codequality_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:codequality)) }
 
       let(:pipeline_with_report) { create(:ci_pipeline, :with_codequality_reports) }
 
@@ -729,14 +771,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it 'selects the pipeline' do
         pipeline_with_report = create(:ci_pipeline, :with_terraform_reports)
 
-        expect(described_class.with_reports(Ci::JobArtifact.terraform_reports)).to eq(
+        expect(described_class.with_reports(Ci::JobArtifact.of_report_type(:terraform))).to eq(
           [pipeline_with_report]
         )
       end
     end
 
     context 'when pipeline does not have metrics reports' do
-      subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+      subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:test)) }
 
       let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
 
@@ -1375,32 +1417,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
       before do
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 position: 4,
-                                 name: 'deploy')
-
-        create(:ci_build, project: project,
-                          pipeline: pipeline,
-                          stage: 'test',
-                          stage_idx: 3,
-                          name: 'test')
-
-        create(:ci_build, project: project,
-                          pipeline: pipeline,
-                          stage: 'build',
-                          stage_idx: 2,
-                          name: 'build')
-
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 position: 1,
-                                 name: 'sanity')
-
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 position: 5,
-                                 name: 'cleanup')
+        create(:ci_stage, project: project, pipeline: pipeline, position: 4, name: 'deploy')
+        create(:ci_build, project: project, pipeline: pipeline, stage: 'test', stage_idx: 3, name: 'test')
+        create(:ci_build, project: project, pipeline: pipeline, stage: 'build', stage_idx: 2, name: 'build')
+        create(:ci_stage, project: project, pipeline: pipeline, position: 1, name: 'sanity')
+        create(:ci_stage, project: project, pipeline: pipeline, position: 5, name: 'cleanup')
       end
 
       subject { pipeline.stages }
@@ -1577,6 +1598,42 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    describe 'track artifact report' do
+      let(:pipeline) { create(:ci_pipeline, :running, :with_test_reports, status: :running, user: create(:user)) }
+
+      context 'when transitioning to completed status' do
+        %i[drop! skip! succeed! cancel!].each do |command|
+          it "performs worker on transition to #{command}" do
+            expect(Ci::JobArtifacts::TrackArtifactReportWorker).to receive(:perform_async).with(pipeline.id)
+            pipeline.send(command)
+          end
+        end
+      end
+
+      context 'when pipeline retried from failed to success', :clean_gitlab_redis_shared_state do
+        let(:test_event_name) { 'i_testing_test_report_uploaded' }
+        let(:start_time) { 1.week.ago }
+        let(:end_time) { 1.week.from_now }
+
+        it 'counts only one report' do
+          expect(Ci::JobArtifacts::TrackArtifactReportWorker).to receive(:perform_async).with(pipeline.id).twice.and_call_original
+
+          Sidekiq::Testing.inline! do
+            pipeline.drop!
+            pipeline.run!
+            pipeline.succeed!
+          end
+
+          unique_pipeline_pass = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
+            event_names: test_event_name,
+            start_date: start_time,
+            end_date: end_time
+          )
+          expect(unique_pipeline_pass).to eq(1)
+        end
+      end
+    end
+
     describe 'merge request metrics' do
       let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
 
@@ -1649,9 +1706,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       context 'when auto merge is enabled' do
         let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
         let_it_be_with_reload(:pipeline) do
-          create(:ci_pipeline, :running, project: merge_request.source_project,
-                                        ref: merge_request.source_branch,
-                                        sha: merge_request.diff_head_sha)
+          create(:ci_pipeline, :running,
+            project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)
         end
 
         before_all do
@@ -3615,8 +3671,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#environments_in_self_and_descendants' do
-    subject { pipeline.environments_in_self_and_descendants }
+  describe '#environments_in_self_and_project_descendants' do
+    subject { pipeline.environments_in_self_and_project_descendants }
 
     context 'when pipeline is not child nor parent' do
       let_it_be(:pipeline) { create(:ci_pipeline, :created) }
@@ -4022,13 +4078,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#self_and_descendants_complete?' do
+  describe '#self_and_project_descendants_complete?' do
     let_it_be(:pipeline) { create(:ci_pipeline, :success) }
     let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
     let_it_be_with_reload(:grandchild_pipeline) { create(:ci_pipeline, :success, child_of: child_pipeline) }
 
     context 'when all pipelines in the hierarchy is complete' do
-      it { expect(pipeline.self_and_descendants_complete?).to be(true) }
+      it { expect(pipeline.self_and_project_descendants_complete?).to be(true) }
     end
 
     context 'when a pipeline in the hierarchy is not complete' do
@@ -4036,12 +4092,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         grandchild_pipeline.update!(status: :running)
       end
 
-      it { expect(pipeline.self_and_descendants_complete?).to be(false) }
+      it { expect(pipeline.self_and_project_descendants_complete?).to be(false) }
     end
   end
 
-  describe '#builds_in_self_and_descendants' do
-    subject(:builds) { pipeline.builds_in_self_and_descendants }
+  describe '#builds_in_self_and_project_descendants' do
+    subject(:builds) { pipeline.builds_in_self_and_project_descendants }
 
     let(:pipeline) { create(:ci_pipeline) }
     let!(:build) { create(:ci_build, pipeline: pipeline) }
@@ -4073,7 +4129,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#build_with_artifacts_in_self_and_descendants' do
+  describe '#build_with_artifacts_in_self_and_project_descendants' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     let!(:build) { create(:ci_build, name: 'test', pipeline: pipeline) }
@@ -4081,14 +4137,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let!(:child_build) { create(:ci_build, :artifacts, name: 'test', pipeline: child_pipeline) }
 
     it 'returns the build with a given name, having artifacts' do
-      expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(child_build)
+      expect(pipeline.build_with_artifacts_in_self_and_project_descendants('test')).to eq(child_build)
     end
 
     context 'when same job name is present in both parent and child pipeline' do
       let!(:build) { create(:ci_build, :artifacts, name: 'test', pipeline: pipeline) }
 
       it 'returns the job in the parent pipeline' do
-        expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(build)
+        expect(pipeline.build_with_artifacts_in_self_and_project_descendants('test')).to eq(build)
       end
     end
   end
@@ -4158,7 +4214,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       test_build = create(:ci_build, :test_reports, pipeline: pipeline)
       create(:ci_build, :coverage_reports, pipeline: pipeline)
 
-      expect(pipeline.latest_report_builds(Ci::JobArtifact.test_reports)).to contain_exactly(test_build)
+      expect(pipeline.latest_report_builds(Ci::JobArtifact.of_report_type(:test))).to contain_exactly(test_build)
     end
 
     it 'only returns not retried builds' do
@@ -4169,7 +4225,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#latest_report_builds_in_self_and_descendants' do
+  describe '#latest_report_builds_in_self_and_project_descendants' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
     let_it_be(:grandchild_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
@@ -4179,26 +4235,57 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       child_build = create(:ci_build, :coverage_reports, pipeline: child_pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants).to contain_exactly(parent_build, child_build, grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_project_descendants).to contain_exactly(parent_build, child_build, grandchild_build)
     end
 
     it 'filters builds by scope' do
       create(:ci_build, :test_reports, pipeline: pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants(Ci::JobArtifact.codequality_reports)).to contain_exactly(grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality))).to contain_exactly(grandchild_build)
     end
 
     it 'only returns builds that are not retried' do
       create(:ci_build, :codequality_reports, :retried, pipeline: grandchild_pipeline)
       grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
 
-      expect(pipeline.latest_report_builds_in_self_and_descendants).to contain_exactly(grandchild_build)
+      expect(pipeline.latest_report_builds_in_self_and_project_descendants).to contain_exactly(grandchild_build)
     end
   end
 
   describe '#has_reports?' do
-    subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
+    subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
+
+    let(:pipeline) { create(:ci_pipeline, :running) }
+
+    context 'when pipeline has builds with test reports' do
+      before do
+        create(:ci_build, :test_reports, pipeline: pipeline)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when pipeline does not have builds with test reports' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when retried build has test reports but latest one has none' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline)
+        create(:ci_build, :artifacts, pipeline: pipeline)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#complete_and_has_reports?' do
+    subject { pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 
     context 'when pipeline has builds with test reports' do
       before do
@@ -4370,6 +4457,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         create(:ci_job_artifact, :junit_with_ant, job: build_java)
       end
 
+      it 'has a test suite for each job' do
+        expect(subject.test_suites.keys).to contain_exactly('rspec', 'java')
+      end
+
       it 'returns test reports with collected data' do
         expect(subject.total_count).to be(7)
         expect(subject.success_count).to be(5)
@@ -4385,6 +4476,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           expect(subject.success_count).to be(0)
           expect(subject.failed_count).to be(0)
         end
+      end
+    end
+
+    context 'when the pipeline has parallel builds with test reports' do
+      let!(:parallel_build_1) { create(:ci_build, name: 'build 1/2', pipeline: pipeline) }
+      let!(:parallel_build_2) { create(:ci_build, name: 'build 2/2', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: parallel_build_1)
+        create(:ci_job_artifact, :junit, job: parallel_build_2)
+      end
+
+      it 'merges the test suite from parallel builds' do
+        expect(subject.test_suites.keys).to contain_exactly('build')
+      end
+    end
+
+    context 'the pipeline has matrix builds with test reports' do
+      let!(:matrix_build_1) { create(:ci_build, :matrix, pipeline: pipeline) }
+      let!(:matrix_build_2) { create(:ci_build, :matrix, pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: matrix_build_1)
+        create(:ci_job_artifact, :junit, job: matrix_build_2)
+      end
+
+      it 'keeps separate test suites for each matrix build' do
+        expect(subject.test_suites.keys).to contain_exactly(matrix_build_1.name, matrix_build_2.name)
       end
     end
 
@@ -4472,10 +4591,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     context 'when the scheduling type is `dag`' do
-      it 'returns true' do
-        create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
+      context 'when the processable is a bridge' do
+        it 'returns true' do
+          create(:ci_bridge, pipeline: pipeline, scheduling_type: :dag)
 
-        expect(pipeline.uses_needs?).to eq(true)
+          expect(pipeline.uses_needs?).to eq(true)
+        end
+      end
+
+      context 'when the processable is a build' do
+        it 'returns true' do
+          create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
+
+          expect(pipeline.uses_needs?).to eq(true)
+        end
       end
     end
 
@@ -4911,8 +5040,58 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#self_and_ancestors' do
-    subject(:self_and_ancestors) { pipeline.self_and_ancestors }
+  describe '#self_and_downstreams' do
+    subject(:self_and_downstreams) { pipeline.self_and_downstreams }
+
+    let(:pipeline) { create(:ci_pipeline, :created) }
+
+    context 'when pipeline is not child nor parent' do
+      it 'returns just the pipeline itself' do
+        expect(self_and_downstreams).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is child' do
+      let(:parent)    { create(:ci_pipeline) }
+      let!(:pipeline) { create(:ci_pipeline, child_of: parent) }
+
+      it 'returns self and no ancestors' do
+        expect(self_and_downstreams).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is parent' do
+      let(:child) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns self and child' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, child)
+      end
+    end
+
+    context 'when pipeline is a grandparent pipeline' do
+      let(:child)      { create(:ci_pipeline, child_of: pipeline) }
+      let(:grandchild) { create(:ci_pipeline, child_of: child) }
+
+      it 'returns self, child, and grandchild' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, child, grandchild)
+      end
+    end
+
+    context 'when pipeline is a triggered pipeline from a different project' do
+      let(:downstream) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'returns self and cross-project downstream' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, downstream)
+      end
+    end
+  end
+
+  describe '#self_and_project_ancestors' do
+    subject(:self_and_project_ancestors) { pipeline.self_and_project_ancestors }
 
     context 'when pipeline is child' do
       let(:pipeline) { create(:ci_pipeline, :created) }
@@ -4925,7 +5104,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns parent and self' do
-        expect(self_and_ancestors).to contain_exactly(parent, pipeline)
+        expect(self_and_project_ancestors).to contain_exactly(parent, pipeline)
       end
     end
 
@@ -4939,7 +5118,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns only self' do
-        expect(self_and_ancestors).to contain_exactly(pipeline)
+        expect(self_and_project_ancestors).to contain_exactly(pipeline)
+      end
+    end
+  end
+
+  describe '#complete_hierarchy_count' do
+    context 'with a combination of ancestor, descendant and sibling pipelines' do
+      let!(:pipeline)            { create(:ci_pipeline) }
+      let!(:child_pipeline)      { create(:ci_pipeline, child_of: pipeline) }
+      let!(:sibling_pipeline)    { create(:ci_pipeline, child_of: pipeline) }
+      let!(:grandchild_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
+
+      it 'counts the whole tree' do
+        expect(sibling_pipeline.complete_hierarchy_count).to eq(4)
       end
     end
   end
@@ -5165,16 +5357,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it { is_expected.to be_falsey }
     end
 
-    context 'when the pipeline is still running' do
-      let(:pipeline) { create(:ci_pipeline, :running) }
+    context 'when the pipeline is still running and with test reports' do
+      let(:pipeline) { create(:ci_pipeline, :running, :with_test_reports) }
 
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when the pipeline is completed without test reports' do
-      let(:pipeline) { create(:ci_pipeline, :success) }
-
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -5295,6 +5481,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         pipeline_id = Ci::Pipeline.where(id: pipeline.id).select(:id).first
 
         expect { pipeline_id.age_in_minutes }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe 'partitioning' do
+    let(:pipeline) { build(:ci_pipeline) }
+
+    before do
+      allow(described_class).to receive(:current_partition_value) { 123 }
+    end
+
+    it 'sets partition_id to the current partition value' do
+      expect { pipeline.valid? }.to change(pipeline, :partition_id).to(123)
+    end
+
+    context 'when it is already set' do
+      let(:pipeline) { build(:ci_pipeline, partition_id: 125) }
+
+      it 'does not change the partition_id value' do
+        expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
+      end
+    end
+
+    context 'without current partition value' do
+      before do
+        allow(described_class).to receive(:current_partition_value) {}
+      end
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
       end
     end
   end

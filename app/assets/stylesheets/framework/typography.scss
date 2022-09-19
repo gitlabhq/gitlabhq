@@ -333,7 +333,7 @@
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
-    border-radius: 2px;
+    border-radius: $border-radius-default;
 
     // Multi-line code blocks should scroll horizontally
     code {
@@ -427,10 +427,11 @@
       padding-inline-start: 28px;
       margin-inline-start: 0 !important;
 
+      > p > input.task-list-item-checkbox,
       > input.task-list-item-checkbox {
         position: absolute;
-        inset-inline-start: 8px;
-        top: 5px;
+        inset-inline-start: $gl-padding-8;
+        inset-block-start: 5px;
       }
     }
   }

@@ -45,7 +45,8 @@ If you have already configured the agent and connected a cluster with GitLab:
 
 To create a project from the cluster management project template:
 
-1. On the top bar, select **Menu > Projects > Create new project**.
+1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
 1. Select **Create from template**.
 1. From the list of templates, next to **GitLab Cluster Management**, select **Use template**.
 1. Enter the project details.
@@ -80,7 +81,7 @@ If you remove everything below this comment, the pipeline will succeed.
 
 ### The main `helmfile.yml` file
 
-The template contains a [Helmfile](https://github.com/roboll/helmfile) you can use to manage
+The template contains a [Helmfile](https://github.com/helmfile/helmfile) you can use to manage
 cluster applications with [Helm v3](https://helm.sh/).
 
 This file has a list of paths to other Helm files for each app. They're all commented out by default, so you must uncomment
@@ -89,7 +90,7 @@ the paths for the apps that you would like to use in your cluster.
 By default, each `helmfile.yaml` in these sub-paths has the attribute `installed: true`. This means that every time
 the pipeline runs, Helmfile tries to either install or update your apps according to the current state of your
 cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile tries try to uninstall this app
-from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
+from your cluster. [Read more](https://helmfile.readthedocs.io/en/latest/) about how Helmfile works.
 
 ### Built-in applications
 

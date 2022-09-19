@@ -16,6 +16,10 @@ RSpec.describe Gitlab::UsageDataMetrics do
       allow_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
         allow(batch_counter).to receive(:transaction_open?).and_return(false)
       end
+
+      allow_next_instance_of(Gitlab::Database::BatchAverageCounter) do |instance|
+        allow(instance).to receive(:transaction_open?).and_return(false)
+      end
     end
 
     context 'with instrumentation_class' do
@@ -31,6 +35,10 @@ RSpec.describe Gitlab::UsageDataMetrics do
 
       it 'includes usage_activity_by_stage keys' do
         expect(subject[:usage_activity_by_stage][:plan]).to include(:issues)
+      end
+
+      it 'includes usage_activity_by_stage metrics' do
+        expect(subject[:usage_activity_by_stage][:manage]).to include(:count_user_auth)
       end
 
       it 'includes usage_activity_by_stage_monthly keys' do

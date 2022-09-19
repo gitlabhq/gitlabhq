@@ -20,17 +20,28 @@ export const removeItemFromList = ({ state, listId, itemId }) => {
   updateListItemsCount({ state, listId, value: -1 });
 };
 
-export const addItemToList = ({ state, listId, itemId, moveBeforeId, moveAfterId, atIndex }) => {
+export const addItemToList = ({
+  state,
+  listId,
+  itemId,
+  moveBeforeId,
+  moveAfterId,
+  atIndex,
+  positionInList,
+}) => {
   const listIssues = state.boardItemsByListId[listId];
   let newIndex = atIndex || 0;
+  const moveToStartOrLast = positionInList !== undefined;
   if (moveBeforeId) {
     newIndex = listIssues.indexOf(moveBeforeId) + 1;
   } else if (moveAfterId) {
     newIndex = listIssues.indexOf(moveAfterId);
+  } else if (moveToStartOrLast) {
+    newIndex = positionInList === -1 ? listIssues.length : 0;
   }
   listIssues.splice(newIndex, 0, itemId);
   Vue.set(state.boardItemsByListId, listId, listIssues);
-  updateListItemsCount({ state, listId, value: 1 });
+  updateListItemsCount({ state, listId, value: moveToStartOrLast ? 0 : 1 });
 };
 
 export default {
@@ -205,12 +216,34 @@ export default {
     Vue.set(state.boardItems, issue.id, formatIssue(issue));
   },
 
+  [mutationTypes.MUTATE_ISSUE_IN_PROGRESS](state, isLoading) {
+    state.isUpdateIssueOrderInProgress = isLoading;
+  },
+
   [mutationTypes.ADD_BOARD_ITEM_TO_LIST]: (
     state,
-    { itemId, listId, moveBeforeId, moveAfterId, atIndex, inProgress = false },
+    {
+      itemId,
+      listId,
+      moveBeforeId,
+      moveAfterId,
+      atIndex,
+      positionInList,
+      allItemsLoadedInList,
+      inProgress = false,
+    },
   ) => {
     Vue.set(state.listsFlags, listId, { ...state.listsFlags, addItemToListInProgress: inProgress });
-    addItemToList({ state, listId, itemId, moveBeforeId, moveAfterId, atIndex });
+    addItemToList({
+      state,
+      listId,
+      itemId,
+      moveBeforeId,
+      moveAfterId,
+      atIndex,
+      positionInList,
+      allItemsLoadedInList,
+    });
   },
 
   [mutationTypes.REMOVE_BOARD_ITEM_FROM_LIST]: (state, { itemId, listId }) => {

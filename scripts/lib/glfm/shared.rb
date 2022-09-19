@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'fileutils'
 require 'open3'
+require 'active_support/core_ext/hash/keys'
 
 module Glfm
   module Shared
@@ -38,6 +39,39 @@ module Glfm
       warn("Error running command `#{cmd}`\n")
       warn(stdout_and_stderr_str)
       raise
+    end
+
+    # Construct an AST so we can control YAML formatting for
+    # YAML block scalar literals and key quoting.
+    #
+    # Note that when Psych dumps the markdown to YAML, it will
+    # automatically use the default "clip" behavior of the Block Chomping Indicator (`|`)
+    # https://yaml.org/spec/1.2.2/#8112-block-chomping-indicator,
+    # when the markdown strings contain a trailing newline. The type of
+    # Block Chomping Indicator is automatically determined, you cannot specify it
+    # manually.
+    def dump_yaml_with_formatting(hash, literal_scalars: false)
+      stringified_keys_hash = hash.deep_stringify_keys
+      visitor = Psych::Visitors::YAMLTree.create
+      visitor << stringified_keys_hash
+      ast = visitor.tree
+
+      # Force all scalars to have literal formatting (using Block Chomping Indicator instead of quotes)
+      if literal_scalars
+        ast.grep(Psych::Nodes::Scalar).each do |node|
+          node.style = Psych::Nodes::Scalar::LITERAL
+        end
+      end
+
+      # Do not quote the keys
+      ast.grep(Psych::Nodes::Mapping).each do |node|
+        node.children.each_slice(2) do |k, _|
+          k.quoted = false
+          k.style = Psych::Nodes::Scalar::PLAIN
+        end
+      end
+
+      ast.to_yaml
     end
   end
 end

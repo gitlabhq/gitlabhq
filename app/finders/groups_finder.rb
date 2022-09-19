@@ -15,6 +15,7 @@
 #     exclude_group_ids: array of integers
 #     include_parent_descendants: boolean (defaults to false) - includes descendant groups when
 #                                 filtering by parent. The parent param must be present.
+#     include_ancestors: boolean (defaults to true)
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -52,15 +53,7 @@ class GroupsFinder < UnionFinder
     return [Group.all] if current_user&.can_read_all_resources? && all_available?
 
     groups = []
-
-    if current_user
-      if Feature.enabled?(:use_traversal_ids_groups_finder, current_user)
-        groups << current_user.authorized_groups.self_and_ancestors
-        groups << current_user.groups.self_and_descendants
-      else
-        groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects
-      end
-    end
+    groups = get_groups_for_user if current_user
 
     groups << Group.unscoped.public_to_user(current_user) if include_public_groups?
     groups << Group.none if groups.empty?
@@ -135,5 +128,30 @@ class GroupsFinder < UnionFinder
 
   def min_access_level?
     current_user && params[:min_access_level].present?
+  end
+
+  def include_ancestors?
+    params.fetch(:include_ancestors, true)
+  end
+
+  def get_groups_for_user
+    groups = []
+
+    if Feature.enabled?(:use_traversal_ids_groups_finder, current_user)
+      groups << if include_ancestors?
+                  current_user.authorized_groups.self_and_ancestors
+                else
+                  current_user.authorized_groups
+                end
+
+      groups << current_user.groups.self_and_descendants
+    elsif include_ancestors?
+      groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects
+    else
+      groups << current_user.authorized_groups
+      groups << Gitlab::ObjectHierarchy.new(groups_for_descendants).base_and_descendants
+    end
+
+    groups
   end
 end

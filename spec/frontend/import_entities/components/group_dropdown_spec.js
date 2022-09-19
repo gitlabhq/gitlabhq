@@ -42,7 +42,7 @@ describe('Import entities group dropdown component', () => {
     createComponent({ namespaces });
 
     namespacesTracker.mockReset();
-    wrapper.find(GlSearchBoxByType).vm.$emit('input', 'match');
+    wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'match');
 
     await nextTick();
 

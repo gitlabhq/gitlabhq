@@ -14,11 +14,32 @@ RSpec.describe 'File blame', :js do
     wait_for_all_requests
   end
 
+  context 'as a developer' do
+    let(:user) { create(:user) }
+    let(:role) { :developer }
+
+    before do
+      project.add_role(user, role)
+      sign_in(user)
+    end
+
+    it 'does not display lock, replace and delete buttons' do
+      visit_blob_blame(path)
+
+      expect(page).not_to have_button("Lock")
+      expect(page).not_to have_button("Replace")
+      expect(page).not_to have_button("Delete")
+    end
+  end
+
   it 'displays the blame page without pagination' do
     visit_blob_blame(path)
 
-    expect(page).to have_css('.blame-commit')
-    expect(page).not_to have_css('.gl-pagination')
+    within '[data-testid="blob-content-holder"]' do
+      expect(page).to have_css('.blame-commit')
+      expect(page).not_to have_css('.gl-pagination')
+      expect(page).not_to have_link _('View entire blame')
+    end
   end
 
   context 'when blob length is over the blame range limit' do
@@ -29,12 +50,15 @@ RSpec.describe 'File blame', :js do
     it 'displays two first lines of the file with pagination' do
       visit_blob_blame(path)
 
-      expect(page).to have_css('.blame-commit')
-      expect(page).to have_css('.gl-pagination')
+      within '[data-testid="blob-content-holder"]' do
+        expect(page).to have_css('.blame-commit')
+        expect(page).to have_css('.gl-pagination')
+        expect(page).to have_link _('View entire blame')
 
-      expect(page).to have_css('#L1')
-      expect(page).not_to have_css('#L3')
-      expect(find('.page-link.active')).to have_text('1')
+        expect(page).to have_css('#L1')
+        expect(page).not_to have_css('#L3')
+        expect(find('.page-link.active')).to have_text('1')
+      end
     end
 
     context 'when user clicks on the next button' do
@@ -45,15 +69,35 @@ RSpec.describe 'File blame', :js do
       end
 
       it 'displays next two lines of the file with pagination' do
-        expect(page).not_to have_css('#L1')
-        expect(page).to have_css('#L3')
-        expect(find('.page-link.active')).to have_text('2')
+        within '[data-testid="blob-content-holder"]' do
+          expect(page).not_to have_css('#L1')
+          expect(page).to have_css('#L3')
+          expect(find('.page-link.active')).to have_text('2')
+        end
       end
 
       it 'correctly redirects to the prior blame page' do
-        find('.version-link').click
+        within '[data-testid="blob-content-holder"]' do
+          find('.version-link').click
 
-        expect(find('.page-link.active')).to have_text('2')
+          expect(find('.page-link.active')).to have_text('2')
+        end
+      end
+    end
+
+    context 'when user clicks on View entire blame button' do
+      before do
+        visit_blob_blame(path)
+      end
+
+      it 'displays the blame page without pagination' do
+        within '[data-testid="blob-content-holder"]' do
+          click_link _('View entire blame')
+
+          expect(page).to have_css('#L1')
+          expect(page).to have_css('#L3')
+          expect(page).not_to have_css('.gl-pagination')
+        end
       end
     end
 
@@ -65,8 +109,11 @@ RSpec.describe 'File blame', :js do
       it 'displays the blame page without pagination' do
         visit_blob_blame(path)
 
-        expect(page).to have_css('.blame-commit')
-        expect(page).not_to have_css('.gl-pagination')
+        within '[data-testid="blob-content-holder"]' do
+          expect(page).to have_css('.blame-commit')
+          expect(page).not_to have_css('.gl-pagination')
+          expect(page).not_to have_link _('View entire blame')
+        end
       end
     end
   end
@@ -81,25 +128,29 @@ RSpec.describe 'File blame', :js do
     it 'displays two hundred lines of the file with pagination' do
       visit_blob_blame(path)
 
-      expect(page).to have_css('.blame-commit')
-      expect(page).to have_css('.gl-pagination')
+      within '[data-testid="blob-content-holder"]' do
+        expect(page).to have_css('.blame-commit')
+        expect(page).to have_css('.gl-pagination')
 
-      expect(page).to have_css('#L1')
-      expect(page).not_to have_css('#L201')
-      expect(find('.page-link.active')).to have_text('1')
+        expect(page).to have_css('#L1')
+        expect(page).not_to have_css('#L201')
+        expect(find('.page-link.active')).to have_text('1')
+      end
     end
 
     context 'when user clicks on the next button' do
       before do
         visit_blob_blame(path)
-
-        find('.js-next-button').click
       end
 
       it 'displays next two hundred lines of the file with pagination' do
-        expect(page).not_to have_css('#L1')
-        expect(page).to have_css('#L201')
-        expect(find('.page-link.active')).to have_text('2')
+        within '[data-testid="blob-content-holder"]' do
+          find('.js-next-button').click
+
+          expect(page).not_to have_css('#L1')
+          expect(page).to have_css('#L201')
+          expect(find('.page-link.active')).to have_text('2')
+        end
       end
     end
   end

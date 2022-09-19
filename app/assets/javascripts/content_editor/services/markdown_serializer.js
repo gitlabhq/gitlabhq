@@ -108,7 +108,10 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
-    [Audio.name]: renderPlayable,
+    [Audio.name]: preserveUnchanged({
+      render: renderPlayable,
+      inline: true,
+    }),
     [Blockquote.name]: preserveUnchanged((state, node) => {
       if (node.attrs.multiline) {
         state.write('>>>');
@@ -123,7 +126,7 @@ const defaultSerializerConfig = {
     }),
     [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
-    [Diagram.name]: renderCodeBlock,
+    [Diagram.name]: preserveUnchanged(renderCodeBlock),
     [DescriptionList.name]: renderHTMLNode('dl', true),
     [DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();
@@ -203,10 +206,10 @@ const defaultSerializerConfig = {
       },
       overwriteSourcePreservationStrategy: true,
     }),
-    [TableOfContents.name]: (state, node) => {
+    [TableOfContents.name]: preserveUnchanged((state, node) => {
       state.write('[[_TOC_]]');
       state.closeBlock(node);
-    },
+    }),
     [Table.name]: preserveUnchanged(renderTable),
     [TableCell.name]: renderTableCell,
     [TableHeader.name]: renderTableCell,
@@ -220,7 +223,10 @@ const defaultSerializerConfig = {
       else renderBulletList(state, node);
     }),
     [Text.name]: defaultMarkdownSerializer.nodes.text,
-    [Video.name]: renderPlayable,
+    [Video.name]: preserveUnchanged({
+      render: renderPlayable,
+      inline: true,
+    }),
     [WordBreak.name]: (state) => state.write('<wbr>'),
     ...HTMLNodes.reduce((serializers, htmlNode) => {
       return {

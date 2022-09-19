@@ -35,7 +35,7 @@ module API
 
         track_package_event('pull_package', package, category: 'API::NpmPackages', project: project, namespace: project.namespace)
 
-        present_carrierwave_file!(package_file.file)
+        present_package_file!(package_file)
       end
 
       desc 'Create NPM package' do

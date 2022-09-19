@@ -39,7 +39,7 @@ describe('LockPopovers', () => {
     wrapper = mountExtended(LockPopovers);
   };
 
-  const findPopover = () => extendedWrapper(wrapper.find(GlPopover));
+  const findPopover = () => extendedWrapper(wrapper.findComponent(GlPopover));
   const findByTextInPopover = (text, options) =>
     findPopover().findByText((_, element) => element.textContent === text, options);
 
@@ -143,7 +143,7 @@ describe('LockPopovers', () => {
     });
 
     it('mounts multiple popovers', () => {
-      const popovers = wrapper.findAll(GlPopover).wrappers;
+      const popovers = wrapper.findAllComponents(GlPopover).wrappers;
 
       expectCorrectPopoverTarget(popoverMountEl1, popovers[0]);
       expectCorrectPopoverTarget(popoverMountEl2, popovers[1]);

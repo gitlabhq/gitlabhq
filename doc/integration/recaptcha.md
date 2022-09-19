@@ -1,6 +1,6 @@
 ---
-stage: Ecosystem
-group: Integrations
+stage: Manage
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -17,7 +17,7 @@ To use reCAPTCHA, first create a site and private key.
 1. Go to the [Google reCAPTCHA page](https://www.google.com/recaptcha/admin).
 1. To get reCAPTCHA v2 keys, fill in the form and select **Submit**.
 1. Sign in to your GitLab server as an administrator.
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Reporting** (`admin/application_settings/reporting`).
 1. Expand **Spam and Anti-bot Protection**.
 1. In the reCAPTCHA fields, enter the keys you obtained in the previous steps.

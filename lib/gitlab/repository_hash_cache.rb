@@ -83,14 +83,14 @@ module Gitlab
       full_key = cache_key(key)
 
       with do |redis|
-        results = redis.pipelined do
+        results = redis.pipelined do |pipeline|
           # Set each hash key to the provided value
           hash.each do |h_key, h_value|
-            redis.hset(full_key, h_key, h_value)
+            pipeline.hset(full_key, h_key, h_value)
           end
 
           # Update the expiry time for this hset
-          redis.expire(full_key, expires_in)
+          pipeline.expire(full_key, expires_in)
         end
 
         results.all?

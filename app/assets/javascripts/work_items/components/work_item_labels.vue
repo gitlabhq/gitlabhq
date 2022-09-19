@@ -31,7 +31,6 @@ export default {
     LabelItem,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -39,6 +38,10 @@ export default {
     },
     canUpdate: {
       type: Boolean,
+      required: true,
+    },
+    fullPath: {
+      type: String,
       required: true,
     },
   },
@@ -189,7 +192,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-row gl-mb-5 work-item-labels gl-relative">
+  <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-nowrap">
     <span
       class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
       data-testid="labels-title"
@@ -216,7 +219,7 @@ export default {
           class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-400 gl-pr-4 gl-top-2"
           data-testid="empty-state"
         >
-          <span v-if="canUpdate" class="gl-ml-2">{{ __('Select labels') }}</span>
+          <span v-if="canUpdate" class="gl-ml-2">{{ __('Add labels') }}</span>
           <span v-else class="gl-ml-2">{{ __('None') }}</span>
         </div>
       </template>

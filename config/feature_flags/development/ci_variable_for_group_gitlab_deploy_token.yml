@@ -1,8 +1,0 @@
----
-name: ci_variable_for_group_gitlab_deploy_token
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88696
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363621
-milestone: '15.1'
-type: development
-group: group::pipeline authoring
-default_enabled: true

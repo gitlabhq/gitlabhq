@@ -5,4 +5,4 @@
 = content_for :after_content do
   #js-crm-form-portal
 
-#js-crm-organizations-app{ data: { base_path: group_crm_organizations_path(@group), can_admin_crm_organization: can?(current_user, :admin_crm_organization, @group).to_s, group_full_path: @group.full_path, group_id: @group.id, group_issues_path: issues_group_path(@group) } }
+#js-crm-organizations-app{ data: { base_path: group_crm_organizations_path(@group), can_admin_crm_organization: can?(current_user, :admin_crm_organization, @group).to_s, group_full_path: @group.full_path, group_id: @group.id, group_issues_path: issues_group_path(@group), text_query: params[:search] } }

@@ -21,11 +21,11 @@ module Gitlab
             def source
               return unless required_attributes_present?
 
-              {
-                'type' => :dependency_scanning,
-                'data' => data,
-                'fingerprint' => fingerprint
-              }
+              ::Gitlab::Ci::Reports::Sbom::Source.new(
+                type: :dependency_scanning,
+                data: data,
+                fingerprint: fingerprint
+              )
             end
 
             private

@@ -1,6 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { visitUrl } from '~/lib/utils/url_utility';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+}));
 
 describe('CI Badge Link Component', () => {
   let wrapper;
@@ -79,22 +84,33 @@ describe('CI Badge Link Component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  it.each(Object.keys(statuses))('should render badge for status: %s', (status) => {
+  it.each(Object.keys(statuses))('should render badge for status: %s', async (status) => {
     createComponent({ status: statuses[status] });
 
-    expect(wrapper.attributes('href')).toBe(statuses[status].details_path);
+    expect(wrapper.attributes('href')).toBe();
     expect(wrapper.text()).toBe(statuses[status].text);
     expect(wrapper.classes()).toContain('ci-status');
     expect(wrapper.classes()).toContain(`ci-${statuses[status].group}`);
     expect(findIcon().exists()).toBe(true);
+
+    await wrapper.trigger('click');
+
+    expect(visitUrl).toHaveBeenCalledWith(statuses[status].details_path);
   });
 
   it('should not render label', () => {
     createComponent({ status: statuses.canceled, showText: false });
 
     expect(wrapper.text()).toBe('');
+  });
+
+  it('should emit ciStatusBadgeClick event', async () => {
+    createComponent({ status: statuses.success });
+
+    await wrapper.trigger('click');
+
+    expect(wrapper.emitted('ciStatusBadgeClick')).toEqual([[]]);
   });
 });

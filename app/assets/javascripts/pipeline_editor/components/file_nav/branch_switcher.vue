@@ -237,7 +237,7 @@ export default {
           v-for="branch in availableBranches"
           :key="branch"
           :is-checked="currentBranch === branch"
-          :is-check-item="true"
+          is-check-item
           data-qa-selector="branch_menu_item_button"
           @click="selectBranch(branch)"
         >

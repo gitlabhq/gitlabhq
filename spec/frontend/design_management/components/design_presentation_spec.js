@@ -525,7 +525,7 @@ describe('Design management design presentation component', () => {
           { clientX: 10, clientY: 10 },
           { mouseup: true },
         ).then(() => {
-          expect(wrapper.emitted('openCommentForm')).toBeFalsy();
+          expect(wrapper.emitted('openCommentForm')).toBeUndefined();
         });
       });
 

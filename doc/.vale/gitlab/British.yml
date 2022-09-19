@@ -80,6 +80,9 @@ swap:
   neighbour: neighbor
   normalise: normalize
   offence: offense
+  optimise: optimize
+  optimised: optimized
+  optimising: optimizing
   organise: organize
   orientated: oriented
   paralyse: paralyze

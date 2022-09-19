@@ -20,24 +20,24 @@ describe('DiffCommentCell', () => {
   it('renders discussions if line has discussions', () => {
     const wrapper = createWrapper({ renderDiscussion: true });
 
-    expect(wrapper.find(DiffDiscussions).exists()).toBe(true);
+    expect(wrapper.findComponent(DiffDiscussions).exists()).toBe(true);
   });
 
   it('does not render discussions if line has no discussions', () => {
     const wrapper = createWrapper();
 
-    expect(wrapper.find(DiffDiscussions).exists()).toBe(false);
+    expect(wrapper.findComponent(DiffDiscussions).exists()).toBe(false);
   });
 
   it('renders discussion reply if line has no draft', () => {
     const wrapper = createWrapper();
 
-    expect(wrapper.find(DiffDiscussionReply).exists()).toBe(true);
+    expect(wrapper.findComponent(DiffDiscussionReply).exists()).toBe(true);
   });
 
   it('does not render discussion reply if line has draft', () => {
     const wrapper = createWrapper({ hasDraft: true });
 
-    expect(wrapper.find(DiffDiscussionReply).exists()).toBe(false);
+    expect(wrapper.findComponent(DiffDiscussionReply).exists()).toBe(false);
   });
 });

@@ -37,7 +37,7 @@ export default {
         :class="{
           'is-active': version.selected,
         }"
-        :is-check-item="true"
+        is-check-item
         :is-checked="version.selected"
         :href="version.href"
       >

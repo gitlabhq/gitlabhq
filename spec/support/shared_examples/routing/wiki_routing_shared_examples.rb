@@ -6,9 +6,9 @@ RSpec.shared_examples 'wiki routing' do
     let(:actions) { %i[show new create edit update destroy] }
     let(:additional_actions) do
       {
-        pages:            [:get, '/pages'],
-        history:          [:get, '/:id/history'],
-        git_access:       [:get, '/git_access'],
+        pages: [:get, '/pages'],
+        history: [:get, '/:id/history'],
+        git_access: [:get, '/git_access'],
         preview_markdown: [:post, '/:id/preview_markdown']
       }
     end

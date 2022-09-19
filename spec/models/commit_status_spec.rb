@@ -836,17 +836,11 @@ RSpec.describe CommitStatus do
 
     context 'when commit status does not have stage but it exists' do
       let!(:stage) do
-        create(:ci_stage, project: project,
-                                 pipeline: pipeline,
-                                 name: 'test')
+        create(:ci_stage, project: project, pipeline: pipeline, name: 'test')
       end
 
       let(:commit_status) do
-        create(:commit_status, project: project,
-                               pipeline: pipeline,
-                               name: 'rspec',
-                               stage: 'test',
-                               status: :success)
+        create(:commit_status, project: project, pipeline: pipeline, name: 'rspec', stage: 'test', status: :success)
       end
 
       it 'uses existing stage', :sidekiq_might_not_need_inline do
@@ -1006,6 +1000,55 @@ RSpec.describe CommitStatus do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:ci_runner) }
       let!(:model) { create(:ci_build, runner: parent) }
+    end
+  end
+
+  describe '.stage_name' do
+    subject(:stage_name) { commit_status.stage_name }
+
+    it 'returns the stage name' do
+      expect(stage_name).to eq('test')
+    end
+
+    context 'when ci stage is not present' do
+      before do
+        commit_status.ci_stage = nil
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe 'partitioning' do
+    context 'with pipeline' do
+      let(:pipeline) { build(:ci_pipeline, partition_id: 123) }
+      let(:status) { build(:commit_status, pipeline: pipeline) }
+
+      it 'copies the partition_id from pipeline' do
+        expect { status.valid? }.to change(status, :partition_id).to(123)
+      end
+
+      context 'when it is already set' do
+        let(:status) { build(:commit_status, pipeline: pipeline, partition_id: 125) }
+
+        it 'does not change the partition_id value' do
+          expect { status.valid? }.not_to change(status, :partition_id)
+        end
+      end
+    end
+
+    context 'without pipeline' do
+      subject(:status) do
+        build(:commit_status,
+          project: build_stubbed(:project),
+          pipeline: nil)
+      end
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { status.valid? }.not_to change(status, :partition_id)
+      end
     end
   end
 end

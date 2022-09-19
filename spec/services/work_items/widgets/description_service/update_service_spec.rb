@@ -13,7 +13,7 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService do
   let(:current_user) { author }
   let(:work_item) do
     create(:work_item, author: author, project: project, description: 'old description',
-      last_edited_at: Date.yesterday, last_edited_by: random_user
+                       last_edited_at: Date.yesterday, last_edited_by: random_user
     )
   end
 

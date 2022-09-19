@@ -43,6 +43,8 @@ class Namespace < ApplicationRecord
   # The first date in https://docs.gitlab.com/ee/user/usage_quotas.html#namespace-storage-limit-enforcement-schedule
   # Determines when we start enforcing namespace storage
   MIN_STORAGE_ENFORCEMENT_DATE = Date.new(2022, 10, 19)
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/367531
+  MIN_STORAGE_ENFORCEMENT_USAGE = 5.gigabytes
 
   cache_markdown_field :description, pipeline: :description
 
@@ -59,7 +61,7 @@ class Namespace < ApplicationRecord
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
-  has_one :onboarding_progress
+  has_one :onboarding_progress, class_name: 'Onboarding::Progress'
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
@@ -126,8 +128,9 @@ class Namespace < ApplicationRecord
   delegate :avatar_url, to: :owner, allow_nil: true
   delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,
            to: :namespace_settings, allow_nil: true
+  delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
+           to: :namespace_settings
 
-  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
   after_save :reload_namespace_details
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
@@ -136,6 +139,7 @@ class Namespace < ApplicationRecord
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
+  after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
   # Legacy Storage specific hooks
 
@@ -172,12 +176,16 @@ class Namespace < ApplicationRecord
   end
 
   scope :sorted_by_similarity_and_parent_id_desc, -> (search) do
-    order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
-      { column: arel_table["path"], multiplier: 1 },
-      { column: arel_table["name"], multiplier: 0.7 }
-    ])
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["path"], multiplier: 1 },
+        { column: arel_table["name"], multiplier: 0.7 }
+      ])
     reorder(order_expression.desc, Namespace.arel_table['parent_id'].desc.nulls_last, Namespace.arel_table['id'].desc)
   end
+
+  scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
@@ -362,7 +370,7 @@ class Namespace < ApplicationRecord
   end
 
   def any_project_with_shared_runners_enabled?
-    projects.with_shared_runners.any?
+    projects.with_shared_runners_enabled.any?
   end
 
   def user_ids_for_project_authorizations

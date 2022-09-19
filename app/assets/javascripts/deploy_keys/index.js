@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import deployKeysApp from './components/app.vue';
+import DeployKeysApp from './components/app.vue';
 
 export default () =>
   new Vue({
     el: document.getElementById('js-deploy-keys'),
     components: {
-      deployKeysApp,
+      DeployKeysApp,
     },
     data() {
       return {

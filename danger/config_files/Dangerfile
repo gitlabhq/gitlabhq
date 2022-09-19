@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+config_files.add_suggestion_for_missing_introduced_by_url

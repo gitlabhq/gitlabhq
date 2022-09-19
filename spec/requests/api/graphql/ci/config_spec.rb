@@ -173,7 +173,7 @@ RSpec.describe 'Query.ciConfig' do
                 {
                   "name" => "docker",
                   "size" => 1,
-                    "jobs" =>
+                  "jobs" =>
                     {
                       "nodes" => [
                       {
@@ -206,7 +206,7 @@ RSpec.describe 'Query.ciConfig' do
                 {
                   "name" => "deploy_job",
                   "size" => 1,
-                    "jobs" =>
+                  "jobs" =>
                     {
                       "nodes" => [
                       {
@@ -332,7 +332,7 @@ RSpec.describe 'Query.ciConfig' do
                           "only" => { "refs" => %w[branches tags] },
                           "when" => "on_success",
                           "tags" => [],
-                           "needs" => { "nodes" => [] } }
+                          "needs" => { "nodes" => [] } }
                       ]
                     }
                   }

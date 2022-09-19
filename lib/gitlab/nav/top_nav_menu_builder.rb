@@ -6,9 +6,15 @@ module Gitlab
       def initialize
         @primary = []
         @secondary = []
+        @last_header_added = nil
       end
 
-      def add_primary_menu_item(**args)
+      def add_primary_menu_item(header: nil, **args)
+        if header && (header != @last_header_added)
+          add_menu_header(dest: @primary, title: header)
+          @last_header_added = header
+        end
+
         add_menu_item(dest: @primary, **args)
       end
 
@@ -29,6 +35,12 @@ module Gitlab
         item = ::Gitlab::Nav::TopNavMenuItem.build(**args)
 
         dest.push(item)
+      end
+
+      def add_menu_header(dest:, **args)
+        header = ::Gitlab::Nav::TopNavMenuHeader.build(**args)
+
+        dest.push(header)
       end
     end
   end

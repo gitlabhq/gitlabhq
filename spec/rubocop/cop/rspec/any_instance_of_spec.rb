@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/any_instance_of'
 
 RSpec.describe RuboCop::Cop::RSpec::AnyInstanceOf do
-  subject(:cop) { described_class.new }
-
   context 'when calling allow_any_instance_of' do
     let(:source) do
       <<~SRC

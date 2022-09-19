@@ -40,9 +40,9 @@ module Gitlab
           cache_key = cache_key_for_hook(hook)
 
           ::Gitlab::Redis::SharedState.with do |redis|
-            redis.multi do
-              redis.sadd(cache_key, hook.id)
-              redis.expire(cache_key, TOUCH_CACHE_TTL)
+            redis.multi do |multi|
+              multi.sadd(cache_key, hook.id)
+              multi.expire(cache_key, TOUCH_CACHE_TTL)
             end
           end
         end

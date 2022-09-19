@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
         expect(redis_instance).to be_instance_of(::Gitlab::Redis::MultiStore)
 
         expect(redis_instance.primary_store.connection[:id]).to eq("redis://test-host:6379/99")
-        expect(redis_instance.secondary_store.connection[:id]).to eq("redis:///path/to/redis.sock/0")
+        expect(redis_instance.secondary_store.connection[:id]).to eq("unix:///path/to/redis.sock/0")
 
         expect(redis_instance.instance_name).to eq('SidekiqStatus')
       end

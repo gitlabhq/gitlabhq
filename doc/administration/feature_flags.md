@@ -117,7 +117,7 @@ Some feature flags can be enabled or disabled on a per project basis:
 Feature.enable(:<feature flag>, Project.find(<project id>))
 ```
 
-For example, to enable the [`:product_analytics`](../operations/product_analytics.md#enable-or-disable-product-analytics) feature flag for project `1234`:
+For example, to enable the [`:product_analytics`](../operations/product_analytics.md) feature flag for project `1234`:
 
 ```ruby
 Feature.enable(:product_analytics, Project.find(1234))
@@ -155,6 +155,9 @@ You can view all GitLab administrator set feature flags:
 ```ruby
 Feature.all
 => [#<Flipper::Feature:198220 name="my_awesome_feature", state=:on, enabled_gate_names=[:boolean], adapter=:memoizable>]
+
+# Nice output
+Feature.all.map {|f| [f.name, f.state]}
 ```
 
 ### Unset feature flag

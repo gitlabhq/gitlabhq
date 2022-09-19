@@ -72,22 +72,8 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
       end.not_to change { issues_in_position_order.map(&:id) }
     end
 
-    it 'does nothing if the feature flag is disabled' do
-      stub_feature_flags(rebalance_issues: false)
-      issue = project.issues.first
-      issue.project
-      issue.project.group
-      old_pos = issue.relative_position
-
-      # fetching root namespace in the initializer triggers 2 queries:
-      # for fetching a random project from collection and fetching the root namespace.
-      expect { service.execute }.not_to exceed_query_limit(2)
-      expect(old_pos).to eq(issue.reload.relative_position)
-    end
-
     it 'acts if the flag is enabled for the root namespace' do
       issue = create(:issue, project: project, author: user, relative_position: max_pos)
-      stub_feature_flags(rebalance_issues: project.root_namespace)
 
       expect { service.execute }.to change { issue.reload.relative_position }
     end
@@ -95,7 +81,6 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
     it 'acts if the flag is enabled for the group' do
       issue = create(:issue, project: project, author: user, relative_position: max_pos)
       project.update!(group: create(:group))
-      stub_feature_flags(rebalance_issues: issue.project.group)
 
       expect { service.execute }.to change { issue.reload.relative_position }
     end

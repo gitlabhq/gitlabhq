@@ -208,6 +208,7 @@ class ProjectPolicy < BasePolicy
     metrics_dashboard
     analytics
     operations
+    monitor
     security_and_compliance
     environments
     feature_flags
@@ -267,6 +268,7 @@ class ProjectPolicy < BasePolicy
     enable :set_note_created_at
     enable :set_emails_disabled
     enable :set_show_default_award_emojis
+    enable :set_show_diff_preview_in_email
     enable :set_warn_about_potentially_unwanted_characters
 
     enable :register_project_runners
@@ -399,6 +401,12 @@ class ProjectPolicy < BasePolicy
 
   rule { split_operations_visibility_permissions & releases_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:release))
+  end
+
+  rule { split_operations_visibility_permissions & monitor_disabled }.policy do
+    prevent(:metrics_dashboard)
+    prevent(*create_read_update_admin_destroy(:sentry_issue))
+    prevent(*create_read_update_admin_destroy(:alert_management_alert))
   end
 
   rule { can?(:metrics_dashboard) }.policy do

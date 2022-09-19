@@ -33,10 +33,10 @@ export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package.',
 );
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
-  'PackageRegistry|Something went wrong while deleting the package file.',
+  'PackageRegistry|Something went wrong while deleting the package asset.',
 );
 export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
-  'PackageRegistry|Package file deleted successfully',
+  'PackageRegistry|Package asset deleted successfully',
 );
 
 export const PACKAGE_ERROR_STATUS = 'error';

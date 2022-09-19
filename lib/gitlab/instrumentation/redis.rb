@@ -4,15 +4,20 @@ module Gitlab
   module Instrumentation
     # Aggregates Redis measurements from different request storage sources.
     class Redis
+      # Actioncable has it's separate instrumentation, but isn't configurable
+      # in the same way as all the other instances using a class.
       ActionCable = Class.new(RedisBase)
-      Cache = Class.new(RedisBase).enable_redis_cluster_validation
-      Queues = Class.new(RedisBase)
-      SharedState = Class.new(RedisBase).enable_redis_cluster_validation
-      TraceChunks = Class.new(RedisBase).enable_redis_cluster_validation
-      RateLimiting = Class.new(RedisBase).enable_redis_cluster_validation
-      Sessions = Class.new(RedisBase).enable_redis_cluster_validation
 
-      STORAGES = [ActionCable, Cache, Queues, SharedState, TraceChunks, RateLimiting, Sessions].freeze
+      STORAGES = (
+        Gitlab::Redis::ALL_CLASSES.map do |redis_instance_class|
+          instrumentation_class = Class.new(RedisBase)
+
+          instrumentation_class.enable_redis_cluster_validation unless redis_instance_class == Gitlab::Redis::Queues
+
+          const_set(redis_instance_class.store_name, instrumentation_class)
+          instrumentation_class
+        end << ActionCable
+      ).freeze
 
       # Milliseconds represented in seconds (from 1 millisecond to 2 seconds).
       QUERY_TIME_BUCKETS = [0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2].freeze

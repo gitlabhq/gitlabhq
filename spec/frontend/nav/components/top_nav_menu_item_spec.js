@@ -26,7 +26,7 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
   const findButtonIcons = () =>
     findButton()
       .findAllComponents(GlIcon)

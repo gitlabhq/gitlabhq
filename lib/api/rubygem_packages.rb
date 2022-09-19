@@ -65,7 +65,7 @@ module API
           requires :file_name, type: String, desc: 'Package file name'
         end
         get "gems/:file_name", requirements: FILE_NAME_REQUIREMENTS do
-          authorize!(:read_package, user_project)
+          authorize_read_package!(user_project)
 
           package_files = ::Packages::PackageFile
                             .for_rubygem_with_file_name(user_project, params[:file_name])
@@ -74,7 +74,7 @@ module API
 
           track_package_event('pull_package', :rubygems, project: user_project, namespace: user_project.namespace)
 
-          present_carrierwave_file!(package_file.file)
+          present_package_file!(package_file)
         end
 
         namespace 'api/v1' do

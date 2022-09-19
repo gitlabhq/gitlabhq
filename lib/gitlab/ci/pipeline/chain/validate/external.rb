@@ -57,7 +57,8 @@ module Gitlab
               }.compact
 
               Gitlab::HTTP.post(
-                validation_service_url, timeout: validation_service_timeout,
+                validation_service_url,
+                timeout: validation_service_timeout,
                 headers: headers,
                 body: validation_service_payload.to_json
               )
@@ -96,13 +97,17 @@ module Gitlab
                   last_sign_in_ip: current_user.last_sign_in_ip,
                   sign_in_count: current_user.sign_in_count
                 },
+                credit_card: {
+                  similar_cards_count: current_user.credit_card_validation&.similar_records&.count.to_i,
+                  similar_holder_names_count: current_user.credit_card_validation&.similar_holder_names_count.to_i
+                },
                 pipeline: {
                   sha: pipeline.sha,
                   ref: pipeline.ref,
                   type: pipeline.source
                 },
                 builds: builds_validation_payload,
-                total_builds_count: current_user.pipelines.jobs_count_in_alive_pipelines
+                total_builds_count: current_user.pipelines.builds_count_in_alive_pipelines
               }
             end
 

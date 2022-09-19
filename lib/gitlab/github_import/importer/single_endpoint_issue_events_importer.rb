@@ -7,7 +7,7 @@ module Gitlab
         include ParallelScheduling
         include SingleEndpointNotesImporting
 
-        PROCESSED_PAGE_CACHE_KEY = 'issues/%{issue_iid}/%{collection}'
+        PROCESSED_PAGE_CACHE_KEY = 'issues/%{issuable_iid}/%{collection}'
         BATCH_SIZE = 100
 
         def initialize(project, client, parallel: true)
@@ -27,10 +27,18 @@ module Gitlab
 
           Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
-          associated.issue = { 'number' => parent_record.iid }
+          pull_request = parent_record.is_a? MergeRequest
+          associated.issue = { 'number' => parent_record.iid, 'pull_request' => pull_request }
           yield(associated)
 
           mark_as_imported(associated)
+        end
+
+        # In Github Issues and MergeRequests uses the same API to get their events.
+        # Even more - they have commonly uniq iid
+        def each_associated_page(&block)
+          issues_collection.each_batch(of: BATCH_SIZE, column: :iid) { |batch| process_batch(batch, &block) }
+          merge_requests_collection.each_batch(of: BATCH_SIZE, column: :iid) { |batch| process_batch(batch, &block) }
         end
 
         def importer_class
@@ -53,16 +61,20 @@ module Gitlab
           :issue_timeline
         end
 
-        def parent_collection
+        def issues_collection
           project.issues.where.not(iid: already_imported_parents).select(:id, :iid) # rubocop: disable CodeReuse/ActiveRecord
+        end
+
+        def merge_requests_collection
+          project.merge_requests.where.not(iid: already_imported_parents).select(:id, :iid) # rubocop: disable CodeReuse/ActiveRecord
         end
 
         def parent_imported_cache_key
           "github-importer/issues/#{collection_method}/already-imported/#{project.id}"
         end
 
-        def page_counter_id(issue)
-          PROCESSED_PAGE_CACHE_KEY % { issue_iid: issue.iid, collection: collection_method }
+        def page_counter_id(issuable)
+          PROCESSED_PAGE_CACHE_KEY % { issuable_iid: issuable.iid, collection: collection_method }
         end
 
         def id_for_already_imported_cache(event)
@@ -74,10 +86,10 @@ module Gitlab
         end
 
         # Cross-referenced events on Github doesn't have id.
-        def compose_associated_id!(issue, event)
+        def compose_associated_id!(issuable, event)
           return if event.event != 'cross-referenced'
 
-          event.id = "cross-reference##{issue.id}-in-#{event.source.issue.id}"
+          event.id = "cross-reference##{issuable.iid}-in-#{event.source.issue.id}"
         end
       end
     end

@@ -13,6 +13,8 @@ RSpec.describe 'Merge request > Batch comments', :js do
   end
 
   before do
+    stub_feature_flags(moved_mr_sidebar: false)
+
     project.add_maintainer(user)
 
     sign_in(user)

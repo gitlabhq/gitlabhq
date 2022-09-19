@@ -102,7 +102,7 @@ FactoryBot.define do
         end
 
         if actions.present?
-          repository.multi_action(
+          repository.commit_files(
             evaluator.author,
             branch_name: 'master',
             message: "created #{actions.size} files",
@@ -123,7 +123,7 @@ FactoryBot.define do
           end
         end
 
-        sha = repository.multi_action(
+        sha = repository.commit_files(
           evaluator.author,
           branch_name: 'master',
           message: "edited #{version_actions.size} files",

@@ -129,6 +129,10 @@ RSpec.describe ConfirmationsController do
 
     subject(:perform_request) { post(:create, params: { user: { email: user.email } }) }
 
+    before do
+      stub_feature_flags(identity_verification: false)
+    end
+
     context 'when reCAPTCHA is disabled' do
       before do
         stub_application_setting(recaptcha_enabled: false)

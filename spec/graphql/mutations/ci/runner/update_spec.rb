@@ -6,10 +6,13 @@ RSpec.describe Mutations::Ci::Runner::Update do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:runner) { create(:ci_runner, active: true, locked: false, run_untagged: true) }
+  let_it_be(:project1) { create(:project) }
+  let_it_be(:runner) do
+    create(:ci_runner, :project, projects: [project1], active: true, locked: false, run_untagged: true)
+  end
 
   let(:current_ctx) { { current_user: user } }
-  let(:mutated_runner) { subject[:runner] }
+  let(:mutated_runner) { response[:runner] }
 
   let(:mutation_params) do
     {
@@ -21,14 +24,14 @@ RSpec.describe Mutations::Ci::Runner::Update do
   specify { expect(described_class).to require_graphql_authorizations(:update_runner) }
 
   describe '#resolve' do
-    subject do
+    subject(:response) do
       sync(resolve(described_class, args: mutation_params, ctx: current_ctx))
     end
 
     context 'when the user cannot admin the runner' do
       it 'generates an error' do
         expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
-          subject
+          response
         end
       end
     end
@@ -37,7 +40,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
       let(:mutation_params) { {} }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(ArgumentError, "Arguments must be provided: id")
+        expect { response }.to raise_error(ArgumentError, "Arguments must be provided: id")
       end
     end
 
@@ -45,41 +48,150 @@ RSpec.describe Mutations::Ci::Runner::Update do
       let(:admin_user) { create(:user, :admin) }
       let(:current_ctx) { { current_user: admin_user } }
 
-      let(:mutation_params) do
-        {
-          id: runner.to_global_id,
-          description: 'updated description',
-          maintenance_note: 'updated maintenance note',
-          maximum_timeout: 900,
-          access_level: 'ref_protected',
-          active: false,
-          locked: true,
-          run_untagged: false,
-          tag_list: %w(tag1 tag2)
-        }
-      end
-
       context 'with valid arguments' do
+        let(:mutation_params) do
+          {
+            id: runner.to_global_id,
+            description: 'updated description',
+            maintenance_note: 'updated maintenance note',
+            maximum_timeout: 900,
+            access_level: 'ref_protected',
+            active: false,
+            locked: true,
+            run_untagged: false,
+            tag_list: %w(tag1 tag2)
+          }
+        end
+
         it 'updates runner with correct values' do
           expected_attributes = mutation_params.except(:id, :tag_list)
 
-          subject
+          response
 
-          expect(subject[:errors]).to be_empty
-          expect(subject[:runner]).to be_an_instance_of(Ci::Runner)
-          expect(subject[:runner]).to have_attributes(expected_attributes)
-          expect(subject[:runner].tag_list).to contain_exactly(*mutation_params[:tag_list])
+          expect(response[:errors]).to be_empty
+          expect(response[:runner]).to be_an_instance_of(Ci::Runner)
+          expect(response[:runner]).to have_attributes(expected_attributes)
+          expect(response[:runner].tag_list).to contain_exactly(*mutation_params[:tag_list])
           expect(runner.reload).to have_attributes(expected_attributes)
           expect(runner.tag_list).to contain_exactly(*mutation_params[:tag_list])
         end
       end
 
-      context 'with out-of-range maximum_timeout and missing tag_list' do
-        it 'returns a descriptive error' do
-          mutation_params[:maximum_timeout] = 100
-          mutation_params.delete(:tag_list)
+      context 'with associatedProjects argument' do
+        let_it_be(:project2) { create(:project) }
 
-          expect(subject[:errors]).to contain_exactly(
+        context 'with id set to project runner' do
+          let(:mutation_params) do
+            {
+              id: runner.to_global_id,
+              description: 'updated description',
+              associated_projects: [project2.to_global_id.to_s]
+            }
+          end
+
+          it 'updates runner attributes and project relationships', :aggregate_failures do
+            expect_next_instance_of(
+              ::Ci::Runners::SetRunnerAssociatedProjectsService,
+              {
+                runner: runner,
+                current_user: admin_user,
+                project_ids: [project2.id]
+              }
+            ) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            expected_attributes = mutation_params.except(:id, :associated_projects)
+
+            response
+
+            expect(response[:errors]).to be_empty
+            expect(response[:runner]).to be_an_instance_of(Ci::Runner)
+            expect(response[:runner]).to have_attributes(expected_attributes)
+            expect(runner.reload).to have_attributes(expected_attributes)
+            expect(runner.projects).to match_array([project1, project2])
+          end
+
+          context 'with user not allowed to assign runner' do
+            before do
+              allow(admin_user).to receive(:can?).with(:assign_runner, runner).and_return(false)
+            end
+
+            it 'does not update runner', :aggregate_failures do
+              expect_next_instance_of(
+                ::Ci::Runners::SetRunnerAssociatedProjectsService,
+                {
+                  runner: runner,
+                  current_user: admin_user,
+                  project_ids: [project2.id]
+                }
+              ) do |service|
+                expect(service).to receive(:execute).and_call_original
+              end
+
+              expected_attributes = mutation_params.except(:id, :associated_projects)
+
+              response
+
+              expect(response[:errors]).to match_array(['user not allowed to assign runner'])
+              expect(response[:runner]).to be_an_instance_of(Ci::Runner)
+              expect(response[:runner]).not_to have_attributes(expected_attributes)
+              expect(runner.reload).not_to have_attributes(expected_attributes)
+              expect(runner.projects).to match_array([project1])
+            end
+          end
+        end
+
+        context 'with id set to instance runner' do
+          let(:instance_runner) { create(:ci_runner, :instance) }
+          let(:mutation_params) do
+            {
+              id: instance_runner.to_global_id,
+              description: 'updated description',
+              associated_projects: [project2.to_global_id.to_s]
+            }
+          end
+
+          it 'raises error', :aggregate_failures do
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+              response
+            end
+          end
+        end
+      end
+
+      context 'with non-existing project ID in associatedProjects argument' do
+        let(:mutation_params) do
+          {
+            id: runner.to_global_id,
+            associated_projects: ['gid://gitlab/Project/-1']
+          }
+        end
+
+        it 'does not change associated projects' do
+          expected_attributes = mutation_params.except(:id, :associated_projects)
+
+          response
+
+          expect(response[:errors]).to be_empty
+          expect(response[:runner]).to be_an_instance_of(Ci::Runner)
+          expect(response[:runner]).to have_attributes(expected_attributes)
+          expect(runner.reload).to have_attributes(expected_attributes)
+          expect(runner.projects).to match_array([project1])
+        end
+      end
+
+      context 'with out-of-range maximum_timeout and missing tag_list' do
+        let(:mutation_params) do
+          {
+            id: runner.to_global_id,
+            maximum_timeout: 100,
+            run_untagged: false
+          }
+        end
+
+        it 'returns a descriptive error' do
+          expect(response[:errors]).to contain_exactly(
             'Maximum timeout needs to be at least 10 minutes',
             'Tags list can not be empty when runner is not allowed to pick untagged jobs'
           )
@@ -90,7 +202,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
         it 'returns a descriptive error' do
           mutation_params[:maintenance_note] = '1' * 1025
 
-          expect(subject[:errors]).to contain_exactly(
+          expect(response[:errors]).to contain_exactly(
             'Maintenance note is too long (maximum is 1024 characters)'
           )
         end

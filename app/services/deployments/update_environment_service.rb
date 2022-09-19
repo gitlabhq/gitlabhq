@@ -61,12 +61,22 @@ module Deployments
       ExpandVariables.expand(environment_url, -> { variables.sort_and_expand_all })
     end
 
+    def expanded_auto_stop_in
+      return unless auto_stop_in
+
+      ExpandVariables.expand(auto_stop_in, -> { variables.sort_and_expand_all })
+    end
+
     def environment_url
       environment_options[:url]
     end
 
     def action
       environment_options[:action] || 'start'
+    end
+
+    def auto_stop_in
+      deployable&.environment_auto_stop_in
     end
 
     def renew_external_url
@@ -78,7 +88,9 @@ module Deployments
     def renew_auto_stop_in
       return unless deployable
 
-      environment.auto_stop_in = deployable.environment_auto_stop_in
+      if (value = expanded_auto_stop_in)
+        environment.auto_stop_in = value
+      end
     end
 
     def renew_deployment_tier

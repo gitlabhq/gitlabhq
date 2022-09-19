@@ -7,7 +7,7 @@ module CycleAnalyticsHelpers
 
   def path_nav_stage_names_without_median
     # Returns the path names with the median value stripped out
-    page.all('.gl-path-button').collect(&:text).map {|name_with_median| name_with_median.split("\n")[0] }
+    page.all('.gl-path-button').collect(&:text).map { |name_with_median| name_with_median.split("\n")[0] }
   end
 
   def fill_in_custom_stage_fields

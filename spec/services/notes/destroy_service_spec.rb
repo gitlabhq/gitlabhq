@@ -57,13 +57,11 @@ RSpec.describe Notes::DestroyService do
     context 'in a merge request' do
       let_it_be(:repo_project) { create(:project, :repository) }
       let_it_be(:merge_request) do
-        create(:merge_request, source_project: repo_project,
-               target_project: repo_project)
+        create(:merge_request, source_project: repo_project, target_project: repo_project)
       end
 
       let_it_be(:note) do
-        create(:diff_note_on_merge_request, project: repo_project,
-               noteable: merge_request)
+        create(:diff_note_on_merge_request, project: repo_project, noteable: merge_request)
       end
 
       it 'does not track issue comment removal usage data' do
@@ -84,9 +82,8 @@ RSpec.describe Notes::DestroyService do
         end
 
         it 'does not clear cache when note is not the first of the discussion' do
-          reply_note = create(:diff_note_on_merge_request, in_reply_to: note,
-                              project: repo_project,
-                              noteable: merge_request)
+          reply_note = create(:diff_note_on_merge_request,
+            in_reply_to: note, project: repo_project, noteable: merge_request)
 
           expect(merge_request).not_to receive(:diffs)
 

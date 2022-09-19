@@ -56,8 +56,8 @@ describe('CustomNotificationsModal', () => {
     );
   }
 
-  const findModalBodyDescription = () => wrapper.find(GlSprintf);
-  const findAllCheckboxes = () => wrapper.findAll(GlFormCheckbox);
+  const findModalBodyDescription = () => wrapper.findComponent(GlSprintf);
+  const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findCheckboxAt = (index) => findAllCheckboxes().at(index);
 
   beforeEach(() => {
@@ -111,7 +111,7 @@ describe('CustomNotificationsModal', () => {
           const checkbox = findCheckboxAt(index);
           expect(checkbox.text()).toContain(eventName);
           expect(checkbox.vm.$attrs.checked).toBe(enabled);
-          expect(checkbox.find(GlLoadingIcon).exists()).toBe(loading);
+          expect(checkbox.findComponent(GlLoadingIcon).exists()).toBe(loading);
         },
       );
     });
@@ -142,7 +142,7 @@ describe('CustomNotificationsModal', () => {
 
           wrapper = createComponent({ injectedProperties });
 
-          wrapper.find(GlModal).vm.$emit('show');
+          wrapper.findComponent(GlModal).vm.$emit('show');
 
           await waitForPromises();
 
@@ -159,7 +159,7 @@ describe('CustomNotificationsModal', () => {
 
         wrapper = createComponent();
 
-        wrapper.find(GlModal).vm.$emit('show');
+        wrapper.findComponent(GlModal).vm.$emit('show');
         expect(wrapper.vm.isLoading).toBe(true);
 
         await waitForPromises();
@@ -176,7 +176,7 @@ describe('CustomNotificationsModal', () => {
         mockAxios.onGet('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
         wrapper = createComponent();
 
-        wrapper.find(GlModal).vm.$emit('show');
+        wrapper.findComponent(GlModal).vm.$emit('show');
 
         await waitForPromises();
 
@@ -197,7 +197,7 @@ describe('CustomNotificationsModal', () => {
         ${null}   | ${1}    | ${'/api/v4/groups/1/notification_settings'}   | ${'group'}       | ${'a groupId is given'}
         ${null}   | ${null} | ${'/api/v4/notification_settings'}            | ${'global'}      | ${'neither projectId nor groupId are given'}
       `(
-        'updates the $notificationType notification settings when $condition and the user clicks the checkbox ',
+        'updates the $notificationType notification settings when $condition and the user clicks the checkbox',
         async ({ projectId, groupId, endpointUrl }) => {
           mockAxios
             .onGet(endpointUrl)

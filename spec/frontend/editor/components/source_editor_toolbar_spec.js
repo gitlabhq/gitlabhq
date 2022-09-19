@@ -68,7 +68,7 @@ describe('Source Editor Toolbar', () => {
   });
 
   describe('buttons update', () => {
-    it('it properly updates buttons on Apollo cache update', async () => {
+    it('properly updates buttons on Apollo cache update', async () => {
       const item = buildButton('first', {
         group: EDITOR_TOOLBAR_RIGHT_GROUP,
       });

@@ -58,4 +58,40 @@ RSpec.describe Settings do
       end
     end
   end
+
+  describe "#weak_passwords_digest_set" do
+    subject { described_class.gitlab.weak_passwords_digest_set }
+
+    it 'is a Set' do
+      expect(subject).to be_kind_of(Set)
+    end
+
+    it 'contains 4500 password digests' do
+      expect(subject.length).to eq(4500)
+    end
+
+    it 'includes 8 char weak password digest' do
+      expect(subject).to include(digest("password"))
+    end
+
+    it 'includes 16 char weak password digest' do
+      expect(subject).to include(digest("progressivehouse"))
+    end
+
+    it 'includes long char weak password digest' do
+      expect(subject).to include(digest("01234567890123456789"))
+    end
+
+    it 'does not include 7 char weak password digest' do
+      expect(subject).not_to include(digest("1234567"))
+    end
+
+    it 'does not include plaintext' do
+      expect(subject).not_to include("password")
+    end
+
+    def digest(plaintext)
+      Digest::SHA256.base64digest(plaintext)
+    end
+  end
 end

@@ -79,8 +79,8 @@ module Database
       SQL
     end
 
-    def find_partitions(partition, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
-      connection.select_rows(<<~SQL)
+    def find_partitions(partition, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA, conn: connection)
+      conn.select_rows(<<~SQL)
         select
           pg_class.relname
         from pg_class

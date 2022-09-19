@@ -17,6 +17,7 @@ class ProjectFeature < ApplicationRecord
     pages
     metrics_dashboard
     analytics
+    monitor
     operations
     security_and_compliance
     container_registry

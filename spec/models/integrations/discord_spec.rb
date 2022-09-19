@@ -23,10 +23,10 @@ RSpec.describe Integrations::Discord do
   describe '#execute' do
     include StubRequests
 
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
-    let(:webhook_url) { "https://example.gitlab.com/" }
+    let_it_be(:project) { create(:project, :repository) }
 
+    let(:user) { create(:user) }
+    let(:webhook_url) { "https://example.gitlab.com/" }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end

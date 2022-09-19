@@ -8,13 +8,14 @@ import {
 } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
-import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
-    timeAgoTooltip,
+    TimeAgoTooltip,
     GitlabTeamMemberBadge: () =>
       import('ee_component/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue'),
     GlIcon,
@@ -26,6 +27,7 @@ export default {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     author: {
       type: Object,
@@ -183,22 +185,35 @@ export default {
         :data-user-id="author.id"
         :data-username="author.username"
       >
-        <slot name="note-header-info"></slot>
+        <span
+          v-if="glFeatures.removeUserAttributesProjects || glFeatures.removeUserAttributesGroups"
+          class="note-header-author-name gl-font-weight-bold"
+        >
+          {{ authorName }}
+        </span>
         <user-name-with-status
+          v-else
           :name="authorName"
           :availability="userAvailability(author)"
           container-classes="note-header-author-name gl-font-weight-bold"
         />
       </a>
       <span
-        v-if="authorStatus"
+        v-if="
+          authorStatus &&
+          !glFeatures.removeUserAttributesProjects &&
+          !glFeatures.removeUserAttributesGroups
+        "
         ref="authorStatus"
         v-safe-html:[$options.safeHtmlConfig]="authorStatus"
         v-on="
           authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
         "
       ></span>
-      <span class="text-nowrap author-username">
+      <span
+        v-if="!glFeatures.removeUserAttributesProjects && !glFeatures.removeUserAttributesGroups"
+        class="text-nowrap author-username"
+      >
         <a
           ref="authorUsernameLink"
           class="author-username-link"
@@ -207,6 +222,7 @@ export default {
           @mouseleave="handleUsernameMouseLeave"
           ><span class="note-headline-light">@{{ author.username }}</span>
         </a>
+        <slot name="note-header-info"></slot>
         <gitlab-team-member-badge v-if="author && author.is_gitlab_employee" />
       </span>
     </template>

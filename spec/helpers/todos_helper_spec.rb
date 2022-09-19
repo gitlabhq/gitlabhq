@@ -258,6 +258,21 @@ RSpec.describe TodosHelper do
     end
   end
 
+  describe '#no_todos_messages' do
+    context 'when getting todos messsages' do
+      it 'return these sentences' do
+        expected_sentences = [
+          s_('Todos|Good job! Looks like you don\'t have anything left on your To-Do List'),
+          s_('Todos|Isn\'t an empty To-Do List beautiful?'),
+          s_('Todos|Give yourself a pat on the back!'),
+          s_('Todos|Nothing left to do. High five!'),
+          s_('Todos|Henceforth, you shall be known as "To-Do Destroyer"')
+        ]
+        expect(helper.no_todos_messages).to eq(expected_sentences)
+      end
+    end
+  end
+
   describe '#todo_author_display?' do
     using RSpec::Parameterized::TableSyntax
 

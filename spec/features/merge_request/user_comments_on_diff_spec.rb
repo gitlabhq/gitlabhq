@@ -14,6 +14,7 @@ RSpec.describe 'User comments on a diff', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(remove_user_attributes_projects: false)
     project.add_maintainer(user)
     sign_in(user)
 
@@ -256,9 +257,7 @@ RSpec.describe 'User comments on a diff', :js do
         click_button('Delete comment', match: :first)
       end
 
-      page.within('.merge-request-tabs') do
-        find('.notes-tab').click
-      end
+      find('.notes-tab', visible: true).click
 
       wait_for_requests
 

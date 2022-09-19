@@ -17,6 +17,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to nullify_if_blank(:external_url) }
 
   it { is_expected.to belong_to(:project).required }
+  it { is_expected.to belong_to(:merge_request).optional }
+
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
   it { is_expected.to have_many(:alert_management_alerts) }
@@ -39,6 +41,26 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       environment = build(:environment, external_url: nil)
 
       expect(environment).to be_valid
+    end
+
+    context 'does not allow changes to merge_request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it 'for an environment that has no merge request associated' do
+        environment = create(:environment)
+
+        environment.merge_request = merge_request
+
+        expect(environment).not_to be_valid
+      end
+
+      it 'for an environment that has a merge request associated' do
+        environment = create(:environment, merge_request: merge_request)
+
+        environment.merge_request = nil
+
+        expect(environment).not_to be_valid
+      end
     end
   end
 
@@ -315,6 +337,16 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     it 'returns nothing when searching for staging tier' do
       expect(described_class.for_tier(:staging)).to be_empty
+    end
+  end
+
+  describe '.for_type' do
+    it 'filters by type' do
+      create(:environment)
+      create(:environment, name: 'type1/prod')
+      env = create(:environment, name: 'type2/prod')
+
+      expect(described_class.for_type('type2')).to contain_exactly(env)
     end
   end
 
@@ -934,6 +966,26 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
           is_expected.to eq(deployment)
         end
+      end
+    end
+  end
+
+  describe 'Last deployment relations' do
+    Deployment::FINISHED_STATUSES.each do |status|
+      it "returns the last #{status} deployment" do
+        create(:deployment, status.to_sym, environment: environment, finished_at: 1.day.ago)
+        expected = create(:deployment, status.to_sym, environment: environment, finished_at: Time.current)
+
+        expect(environment.public_send(:"last_#{status}_deployment")).to eq(expected)
+      end
+    end
+
+    Deployment::UPCOMING_STATUSES.each do |status|
+      it "returns the last #{status} deployment" do
+        create(:deployment, status.to_sym, environment: environment)
+        expected = create(:deployment, status.to_sym, environment: environment)
+
+        expect(environment.public_send(:"last_#{status}_deployment")).to eq(expected)
       end
     end
   end
@@ -1573,7 +1625,34 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
             expect(environment.auto_stop_in).to eq(expected_result)
           else
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(expected_result),
+              project_id: environment.project_id,
+              environment_id: environment.id
+            )
+
             expect { subject }.to raise_error(expected_result)
+          end
+        end
+      end
+    end
+
+    context 'resets earlier value' do
+      let(:environment) { create(:environment, auto_stop_at: 1.day.since.round) }
+
+      where(:value, :expected_result) do
+        '2 days'   | 2.days.to_i
+        '1 week'   | 1.week.to_i
+        '2h20min'  | 2.hours.to_i + 20.minutes.to_i
+        ''         | nil
+        'never'    | nil
+      end
+      with_them do
+        it 'assigns new value' do
+          freeze_time do
+            subject
+
+            expect(environment.auto_stop_in).to eq(expected_result)
           end
         end
       end

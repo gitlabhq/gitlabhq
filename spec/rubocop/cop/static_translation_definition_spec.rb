@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require 'rspec-parameterized'
 
@@ -10,8 +10,6 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
   using RSpec::Parameterized::TableSyntax
 
   let(:msg) { described_class::MSG }
-
-  subject(:cop) { described_class.new }
 
   shared_examples 'offense' do |code|
     it 'registers an offense' do

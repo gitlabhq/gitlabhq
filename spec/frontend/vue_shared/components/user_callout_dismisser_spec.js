@@ -84,7 +84,7 @@ describe('UserCalloutDismisser', () => {
     });
 
     it('passes expected slot props to child', () => {
-      expect(defaultScopedSlotSpy).lastCalledWith(initialSlotProps());
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(initialSlotProps());
     });
   });
 
@@ -98,7 +98,7 @@ describe('UserCalloutDismisser', () => {
     });
 
     it('passes expected slot props to child', () => {
-      expect(defaultScopedSlotSpy).lastCalledWith(
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
         initialSlotProps({
           isDismissed: true,
           isLoadingQuery: false,
@@ -117,7 +117,7 @@ describe('UserCalloutDismisser', () => {
     });
 
     it('passes expected slot props to child', () => {
-      expect(defaultScopedSlotSpy).lastCalledWith(
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
         initialSlotProps({
           isLoadingQuery: false,
           shouldShowCallout: true,
@@ -136,7 +136,7 @@ describe('UserCalloutDismisser', () => {
     });
 
     it('passes expected slot props to child', () => {
-      expect(defaultScopedSlotSpy).lastCalledWith(
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
         initialSlotProps({
           isLoadingQuery: false,
           queryError: expect.any(Error),
@@ -155,7 +155,7 @@ describe('UserCalloutDismisser', () => {
     });
 
     it('passes expected slot props to child', () => {
-      expect(defaultScopedSlotSpy).lastCalledWith(
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
         initialSlotProps({
           isAnonUser: true,
           isLoadingQuery: false,
@@ -186,7 +186,7 @@ describe('UserCalloutDismisser', () => {
     });
 
     it('passes expected slot props to child', () => {
-      expect(defaultScopedSlotSpy).lastCalledWith(
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
         initialSlotProps({
           isLoadingQuery: false,
           shouldShowCallout: true,
@@ -217,7 +217,7 @@ describe('UserCalloutDismisser', () => {
       });
 
       it('passes expected slot props to child', async () => {
-        expect(defaultScopedSlotSpy).lastCalledWith(
+        expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
           initialSlotProps({
             isLoadingQuery: false,
             shouldShowCallout: true,
@@ -229,7 +229,7 @@ describe('UserCalloutDismisser', () => {
         // Wait for Vue re-render due to prop change
         await nextTick();
 
-        expect(defaultScopedSlotSpy).lastCalledWith(
+        expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
           initialSlotProps({
             isDismissed: true,
             isLoadingMutation: true,
@@ -240,7 +240,7 @@ describe('UserCalloutDismisser', () => {
         // Wait for mutation to resolve
         await waitForPromises();
 
-        expect(defaultScopedSlotSpy).lastCalledWith(
+        expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
           initialSlotProps({
             isDismissed: true,
             isLoadingQuery: false,
@@ -270,7 +270,7 @@ describe('UserCalloutDismisser', () => {
       });
 
       it('passes expected slot props to child', async () => {
-        expect(defaultScopedSlotSpy).lastCalledWith(
+        expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
           initialSlotProps({
             isLoadingQuery: false,
             shouldShowCallout: true,
@@ -282,7 +282,7 @@ describe('UserCalloutDismisser', () => {
         // Wait for Vue re-render due to prop change
         await nextTick();
 
-        expect(defaultScopedSlotSpy).lastCalledWith(
+        expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
           initialSlotProps({
             isDismissed: true,
             isLoadingMutation: true,
@@ -293,7 +293,7 @@ describe('UserCalloutDismisser', () => {
         // Wait for mutation to resolve
         await waitForPromises();
 
-        expect(defaultScopedSlotSpy).lastCalledWith(
+        expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
           initialSlotProps({
             isDismissed: true,
             isLoadingQuery: false,

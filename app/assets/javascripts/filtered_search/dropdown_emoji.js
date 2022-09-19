@@ -75,6 +75,7 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
         const name = valueElement.innerText;
         const emojiTag = this.glEmojiTag(name);
         const emojiElement = dropdownItem.querySelector('gl-emoji');
+        // eslint-disable-next-line no-unsanitized/property
         emojiElement.outerHTML = emojiTag;
       }
     });

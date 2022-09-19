@@ -68,7 +68,7 @@ describe('DuplicateDashboardForm', () => {
       await nextTick();
 
       expect(findByRef('fileNameFormGroup').classes()).toContain('is-invalid');
-      expect(findInvalidFeedback().text()).toBeTruthy();
+      expect(findInvalidFeedback().text()).toBe('The file name should have a .yml extension');
     });
   });
 

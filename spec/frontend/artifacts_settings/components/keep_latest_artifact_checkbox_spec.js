@@ -39,8 +39,8 @@ describe('Keep latest artifact checkbox', () => {
   const fullPath = 'gitlab-org/gitlab';
   const helpPagePath = '/help/ci/pipelines/job_artifacts';
 
-  const findCheckbox = () => wrapper.find(GlFormCheckbox);
-  const findHelpLink = () => wrapper.find(GlLink);
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findHelpLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = (handlers) => {
     requestHandlers = {

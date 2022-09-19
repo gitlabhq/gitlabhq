@@ -430,6 +430,44 @@ This command fails if:
 - The repository is already being tracked by the Praefect database.
 - The repository does not exist on disk.
 
+### Manually track large numbers of repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
+
+The `track-repositories` Praefect sub-command adds large batches of on-disk repositories to the Praefect database for tracking. This can
+be useful when migrating an existing instance to new infrastructure and ingesting all existing repositories into a fresh Gitaly Cluster.
+
+```shell
+# Omnibus GitLab install
+sudo gitlab-ctl praefect track-repositories --input-path /path/to/input.json
+
+# Source install
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repositories -input-path /path/to/input.json
+```
+
+The command validates that all entries:
+
+- Are formatted correctly and contain required fields.
+- Correspond to a valid Git repository on disk.
+- Are not currently tracked in the Praefect database.
+
+If any entry fails these checks, the command aborts prior to attempting to track a repository.
+
+- `input-path` is the path to a file containing a list of repositories formatted as newline-delimited JSON objects. Objects must contain the following keys:
+  - `relative_path`: corresponds with `repository` in [track-repositories](#manually-track-repositories).
+  - `authoritative-storage`: the storage Praefect is to treat as the primary.
+  - `virtual-storage`: the virtual storage the repository is located in.
+
+   For example:
+
+   ```json
+   {"relative_path":"@hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git","authoritative_storage":"gitaly-1","virtual_storage":"default"}
+   {"relative_path":"@hashed/f8/9f/f89f8d0e735a91c5269ab08d72fa27670d000e7561698d6e664e7b603f5c4e40.git","authoritative_storage":"gitaly-2","virtual_storage":"default"}
+   ```
+
+- `-replicate-immediately`, causes the command to replicate the repository to its secondaries immediately.
+   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
+
 ### List virtual storage details
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.

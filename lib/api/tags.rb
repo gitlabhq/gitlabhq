@@ -22,8 +22,8 @@ module API
       params do
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return tags sorted in updated by `asc` or `desc` order.'
-        optional :order_by, type: String, values: %w[name updated], default: 'updated',
-                            desc: 'Return tags ordered by `name` or `updated` fields.'
+        optional :order_by, type: String, values: %w[name updated version], default: 'updated',
+                            desc: 'Return tags ordered by `name`, `updated`, `version` fields.'
         optional :search, type: String, desc: 'Return list of tags matching the search criteria'
         optional :page_token, type: String, desc: 'Name of tag to start the paginaition from'
         use :pagination

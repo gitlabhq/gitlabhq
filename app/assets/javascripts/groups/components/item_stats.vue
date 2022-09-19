@@ -1,19 +1,19 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
 import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending_removal';
-import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   ITEM_TYPE,
   VISIBILITY_TYPE_ICON,
   GROUP_VISIBILITY_TYPE,
   PROJECT_VISIBILITY_TYPE,
 } from '../constants';
-import itemStatsValue from './item_stats_value.vue';
+import ItemStatsValue from './item_stats_value.vue';
 
 export default {
   components: {
-    timeAgoTooltip,
-    itemStatsValue,
+    TimeAgoTooltip,
+    ItemStatsValue,
     GlBadge,
   },
   mixins: [isProjectPendingRemoval],

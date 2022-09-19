@@ -49,16 +49,12 @@ class Admin::TopicsController < Admin::ApplicationController
     source_topic = Projects::Topic.find(merge_params[:source_topic_id])
     target_topic = Projects::Topic.find(merge_params[:target_topic_id])
 
-    begin
-      ::Topics::MergeService.new(source_topic, target_topic).execute
-    rescue ArgumentError => e
-      return render status: :bad_request, json: { type: :alert, message: e.message }
-    end
+    response = ::Topics::MergeService.new(source_topic, target_topic).execute
+    return render status: :bad_request, json: { type: :alert, message: response.message } if response.error?
 
     message = _('Topic %{source_topic} was successfully merged into topic %{target_topic}.')
-    redirect_to admin_topics_path,
-                status: :found,
-                notice: message % { source_topic: source_topic.name, target_topic: target_topic.name }
+    flash[:toast] = message % { source_topic: source_topic.name, target_topic: target_topic.name }
+    redirect_to admin_topics_path, status: :found
   end
 
   private

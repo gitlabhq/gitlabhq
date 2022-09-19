@@ -1,8 +1,0 @@
----
-name: inactive_projects_deletion
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357968
-milestone: '15.0'
-type: development
-group: group::compliance
-default_enabled: false

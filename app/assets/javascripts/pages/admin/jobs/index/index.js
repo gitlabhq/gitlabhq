@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
-import stopJobsModal from './components/stop_jobs_modal.vue';
+import StopJobsModal from './components/stop_jobs_modal.vue';
 
 Vue.use(Translate);
 
@@ -14,7 +14,7 @@ function initJobs() {
     new Vue({
       el: `#js-${modalId}`,
       components: {
-        stopJobsModal,
+        StopJobsModal,
       },
       mounted() {
         stopJobsButton.classList.remove('disabled');

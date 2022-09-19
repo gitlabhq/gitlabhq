@@ -8,9 +8,9 @@ class UserGroupsCounter
   def execute
     Namespace.unscoped do
       Namespace.from_union([
-        groups,
-        project_groups
-      ]).group(:user_id).count # rubocop: disable CodeReuse/ActiveRecord
+                             groups,
+                             project_groups
+                           ]).group(:user_id).count # rubocop: disable CodeReuse/ActiveRecord
     end
   end
 

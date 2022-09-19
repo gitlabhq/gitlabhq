@@ -54,6 +54,12 @@ RSpec.describe WorkItems::UpdateService do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_title_changed_action)
         expect(update_work_item[:status]).to eq(:success)
       end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TITLE_CHANGED }
+        let(:user) { current_user }
+        subject(:service_action) { update_work_item[:status] }
+      end
     end
 
     context 'when title is not changed' do
@@ -63,6 +69,12 @@ RSpec.describe WorkItems::UpdateService do
         expect(GraphqlTriggers).not_to receive(:issuable_title_updated)
         expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_title_changed_action)
         expect(update_work_item[:status]).to eq(:success)
+      end
+
+      it 'does not emit Snowplow event', :snowplow do
+        expect_no_snowplow_event
+
+        update_work_item
       end
     end
 

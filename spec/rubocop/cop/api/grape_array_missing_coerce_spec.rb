@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/api/grape_array_missing_coerce'
 
 RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
     "For more details, see " \
     "https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions"
   end
-
-  subject(:cop) { described_class.new }
 
   it 'adds an offense with a required parameter' do
     expect_offense(<<~TYPE)

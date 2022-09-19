@@ -1,8 +1,8 @@
 import { select } from 'd3-selection';
-import dateFormat from 'dateformat';
 import $ from 'jquery';
 import { last } from 'lodash';
 import createFlash from '~/flash';
+import dateFormat from '~/lib/dateformat';
 import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';

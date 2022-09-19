@@ -44,7 +44,7 @@ module Packages
         name, version, username, _ = query.split(%r{[@/]})
         full_path = Packages::Conan::Metadatum.full_path_from(package_username: username)
         project = Project.find_by_full_path(full_path)
-        return unless Ability.allowed?(current_user, :read_package, project)
+        return unless Ability.allowed?(current_user, :read_package, project&.packages_policy_subject)
 
         result = project.packages.with_name(name).with_version(version).order_created.last
         [result&.conan_recipe].compact

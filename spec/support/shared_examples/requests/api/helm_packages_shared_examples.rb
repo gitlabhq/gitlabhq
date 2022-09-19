@@ -191,14 +191,15 @@ RSpec.shared_examples 'process helm download content request' do |user_type, sta
       end
     end
 
-    it_behaves_like 'a package tracking event', 'API::HelmPackages', 'pull_package'
-
     it 'returns expected status and a valid package archive' do
       subject
 
       expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('application/octet-stream')
     end
+
+    it_behaves_like 'a package tracking event', 'API::HelmPackages', 'pull_package'
+    it_behaves_like 'bumping the package last downloaded at field'
   end
 end
 
@@ -278,7 +279,6 @@ RSpec.shared_examples 'handling helm chart index requests' do
   end
 
   it_behaves_like 'deploy token for package GET requests'
-
   it_behaves_like 'rejects helm access with unknown project id' do
     subject { get api(url) }
   end

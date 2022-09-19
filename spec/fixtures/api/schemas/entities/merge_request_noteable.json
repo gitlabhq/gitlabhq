@@ -12,6 +12,8 @@
     "state": { "type": "string" },
     "source_branch": { "type": "string" },
     "target_branch": { "type": "string" },
+    "source_branch_path": { "type": "string" },
+    "target_branch_path": { "type": "string" },
     "diff_head_sha": { "type": "string" },
     "create_note_path": { "type": ["string", "null"] },
     "preview_note_path": { "type": ["string", "null"] },
@@ -22,11 +24,13 @@
       "type": "object",
       "required": [
         "can_create_note",
-        "can_update"
+        "can_update",
+        "can_approve"
       ],
       "properties": {
         "can_create_note": { "type": "boolean" },
-        "can_update": { "type": "boolean" }
+        "can_update": { "type": "boolean" },
+        "can_approve": { "type": "boolean" }
       },
       "additionalProperties": false
     },

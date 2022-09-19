@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/distinct_count_by_large_foreign_key'
 
@@ -12,8 +12,6 @@ RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
                           'AllowedForeignKeys' => allowed_foreign_keys
                         })
   end
-
-  subject(:cop) { described_class.new(config) }
 
   context 'when counting by disallowed key' do
     it 'registers an offense' do

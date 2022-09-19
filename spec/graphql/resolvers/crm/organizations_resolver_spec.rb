@@ -55,8 +55,20 @@ RSpec.describe Resolvers::Crm::OrganizationsResolver do
       end
 
       context 'when no filter is provided' do
-        it 'returns all the organizations in the correct order' do
+        it 'returns all the organizations in the default order' do
           expect(resolve_organizations(group)).to eq([organization_a, organization_b])
+        end
+      end
+
+      context 'when a sort is provided' do
+        it 'returns all the organizations in the correct order' do
+          expect(resolve_organizations(group, { sort: 'NAME_DESC' })).to eq([organization_b, organization_a])
+        end
+      end
+
+      context 'when filtering for all states' do
+        it 'returns all the organizations' do
+          expect(resolve_organizations(group, { state: 'all' })).to contain_exactly(organization_a, organization_b)
         end
       end
 

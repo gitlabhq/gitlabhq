@@ -9,24 +9,53 @@ RSpec.describe 'Query.runner(id)' do
   let_it_be(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
-    create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
-           active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom,
-           maintenance_note: '**Test maintenance note**')
+    create(:ci_runner, :instance,
+      description: 'Runner 1',
+      contacted_at: 2.hours.ago,
+      active: true,
+      version: 'adfe156',
+      revision: 'a',
+      locked: true,
+      ip_address: '127.0.0.1',
+      maximum_timeout: 600,
+      access_level: 0,
+      tag_list: %w[tag1 tag2],
+      run_untagged: true,
+      executor_type: :custom,
+      maintenance_note: '**Test maintenance note**')
   end
 
   let_it_be(:inactive_instance_runner) do
-    create(:ci_runner, :instance, description: 'Runner 2', contacted_at: 1.day.ago, active: false,
-           version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+    create(:ci_runner, :instance,
+      description: 'Runner 2',
+      contacted_at: 1.day.ago,
+      active: false,
+      version: 'adfe157',
+      revision: 'b',
+      ip_address: '10.10.10.10',
+      access_level: 1,
+      run_untagged: true)
   end
 
   let_it_be(:active_group_runner) do
-    create(:ci_runner, :group, groups: [group], description: 'Group runner 1', contacted_at: 2.hours.ago,
-           active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :shell)
+    create(:ci_runner, :group,
+      groups: [group],
+      description: 'Group runner 1',
+      contacted_at: 2.hours.ago,
+      active: true,
+      version: 'adfe156',
+      revision: 'a',
+      locked: true,
+      ip_address: '127.0.0.1',
+      maximum_timeout: 600,
+      access_level: 0,
+      tag_list: %w[tag1 tag2],
+      run_untagged: true,
+      executor_type: :shell)
   end
 
-  let_it_be(:active_project_runner) { create(:ci_runner, :project) }
+  let_it_be(:project1) { create(:project) }
+  let_it_be(:active_project_runner) { create(:ci_runner, :project, projects: [project1]) }
 
   shared_examples 'runner details fetch' do
     let(:query) do
@@ -159,8 +188,16 @@ RSpec.describe 'Query.runner(id)' do
 
       with_them do
         let(:project_runner) do
-          create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
-                 version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+          create(:ci_runner, :project,
+            description: 'Runner 3',
+            contacted_at: 1.day.ago,
+            active: false,
+            locked: is_locked,
+            version: 'adfe157',
+            revision: 'b',
+            ip_address: '10.10.10.10',
+            access_level: 1,
+            run_untagged: true)
         end
 
         let(:query) do
@@ -187,7 +224,6 @@ RSpec.describe 'Query.runner(id)' do
     end
 
     describe 'ownerProject' do
-      let_it_be(:project1) { create(:project) }
       let_it_be(:project2) { create(:project) }
       let_it_be(:runner1) { create(:ci_runner, :project, projects: [project2, project1]) }
       let_it_be(:runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
@@ -301,7 +337,6 @@ RSpec.describe 'Query.runner(id)' do
   end
 
   describe 'for multiple runners' do
-    let_it_be(:project1) { create(:project, :test_repo) }
     let_it_be(:project2) { create(:project, :test_repo) }
     let_it_be(:project_runner1) { create(:ci_runner, :project, projects: [project1, project2], description: 'Runner 1') }
     let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [], description: 'Runner 2') }
@@ -394,6 +429,8 @@ RSpec.describe 'Query.runner(id)' do
           'jobs' => nil, # returning jobs not allowed for more than 1 runner (see RunnerJobsResolver)
           'projectCount' => nil,
           'projects' => nil)
+
+        expect_graphql_errors_to_include [/"jobs" field can be requested only for 1 CiRunner\(s\) at a time./]
       end
     end
   end
@@ -472,8 +509,8 @@ RSpec.describe 'Query.runner(id)' do
       <<~QUERY
         {
           instance_runner1: #{runner_query(active_instance_runner)}
-          project_runner1: #{runner_query(active_project_runner)}
           group_runner1: #{runner_query(active_group_runner)}
+          project_runner1: #{runner_query(active_project_runner)}
         }
       QUERY
     end
@@ -493,12 +530,13 @@ RSpec.describe 'Query.runner(id)' do
 
     it 'does not execute more queries per runner', :aggregate_failures do
       # warm-up license cache and so on:
-      post_graphql(double_query, current_user: user)
+      personal_access_token = create(:personal_access_token, user: user)
+      args = { current_user: user, token: { personal_access_token: personal_access_token } }
+      post_graphql(double_query, **args)
 
-      control = ActiveRecord::QueryRecorder.new { post_graphql(single_query, current_user: user) }
+      control = ActiveRecord::QueryRecorder.new { post_graphql(single_query, **args) }
 
-      expect { post_graphql(double_query, current_user: user) }
-        .not_to exceed_query_limit(control)
+      expect { post_graphql(double_query, **args) }.not_to exceed_query_limit(control)
 
       expect(graphql_data.count).to eq 6
       expect(graphql_data).to match(
@@ -526,6 +564,93 @@ RSpec.describe 'Query.runner(id)' do
             'ownerProject' => a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)
           )
         ))
+    end
+  end
+
+  describe 'sorting and pagination' do
+    let(:query) do
+      <<~GQL
+      query($id: CiRunnerID!, $projectSearchTerm: String, $n: Int, $cursor: String) {
+        runner(id: $id) {
+          #{fields}
+        }
+      }
+      GQL
+    end
+
+    before do
+      post_graphql(query, current_user: user, variables: variables)
+    end
+
+    context 'with project search term' do
+      let_it_be(:project1) { create(:project, description: 'abc') }
+      let_it_be(:project2) { create(:project, description: 'def') }
+      let_it_be(:project_runner) do
+        create(:ci_runner, :project, projects: [project1, project2])
+      end
+
+      let(:variables) { { id: project_runner.to_global_id.to_s, n: n, project_search_term: search_term } }
+
+      let(:fields) do
+        <<~QUERY
+        projects(search: $projectSearchTerm, first: $n, after: $cursor) {
+          count
+          nodes {
+            id
+          }
+          pageInfo {
+            hasPreviousPage
+            startCursor
+            endCursor
+            hasNextPage
+          }
+        }
+        QUERY
+      end
+
+      let(:projects_data) { graphql_data_at('runner', 'projects') }
+
+      context 'set to empty string' do
+        let(:search_term) { '' }
+
+        context 'with n = 1' do
+          let(:n) { 1 }
+
+          it_behaves_like 'a working graphql query'
+
+          it 'returns paged result' do
+            expect(projects_data).not_to be_nil
+            expect(projects_data['count']).to eq 2
+            expect(projects_data['pageInfo']['hasNextPage']).to eq true
+          end
+        end
+
+        context 'with n = 2' do
+          let(:n) { 2 }
+
+          it 'returns non-paged result' do
+            expect(projects_data).not_to be_nil
+            expect(projects_data['count']).to eq 2
+            expect(projects_data['pageInfo']['hasNextPage']).to eq false
+          end
+        end
+      end
+
+      context 'set to partial match' do
+        let(:search_term) { 'def' }
+
+        context 'with n = 1' do
+          let(:n) { 1 }
+
+          it_behaves_like 'a working graphql query'
+
+          it 'returns paged result with no additional pages' do
+            expect(projects_data).not_to be_nil
+            expect(projects_data['count']).to eq 1
+            expect(projects_data['pageInfo']['hasNextPage']).to eq false
+          end
+        end
+      end
     end
   end
 end

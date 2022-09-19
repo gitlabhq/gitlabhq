@@ -16,7 +16,7 @@ describe('ReportItem', () => {
         },
       });
 
-      expect(wrapper.find(IssueStatusIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(IssueStatusIcon).exists()).toBe(false);
     });
 
     it('shows status icon when unspecified', () => {
@@ -28,7 +28,7 @@ describe('ReportItem', () => {
         },
       });
 
-      expect(wrapper.find(IssueStatusIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(IssueStatusIcon).exists()).toBe(true);
     });
   });
 });

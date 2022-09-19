@@ -11,6 +11,13 @@ export default {
   components: {
     GlFilteredSearch,
   },
+  props: {
+    queryString: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   computed: {
     tokens() {
       return [
@@ -23,6 +30,20 @@ export default {
           operators: OPERATOR_IS_ONLY,
         },
       ];
+    },
+    filteredSearchValue() {
+      if (this.queryString?.statuses) {
+        return [
+          {
+            type: 'status',
+            value: {
+              data: this.queryString?.statuses,
+              operator: '=',
+            },
+          },
+        ];
+      }
+      return [];
     },
   },
   methods: {
@@ -37,6 +58,7 @@ export default {
   <gl-filtered-search
     :placeholder="s__('Jobs|Filter jobs')"
     :available-tokens="tokens"
+    :value="filteredSearchValue"
     @submit="onSubmit"
   />
 </template>

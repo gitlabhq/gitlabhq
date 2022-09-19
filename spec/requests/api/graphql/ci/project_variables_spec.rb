@@ -13,6 +13,7 @@ RSpec.describe 'Query.project(fullPath).ciVariables' do
       query {
         project(fullPath: "#{project.full_path}") {
           ciVariables {
+            limit
             nodes {
               id
               key
@@ -36,10 +37,11 @@ RSpec.describe 'Query.project(fullPath).ciVariables' do
 
     it "returns the project's CI variables" do
       variable = create(:ci_variable, project: project, key: 'TEST_VAR', value: 'test',
-                        masked: false, protected: true, raw: true, environment_scope: 'production')
+                                      masked: false, protected: true, raw: true, environment_scope: 'production')
 
       post_graphql(query, current_user: user)
 
+      expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(200)
       expect(graphql_data.dig('project', 'ciVariables', 'nodes')).to contain_exactly({
         'id' => variable.to_global_id.to_s,
         'key' => 'TEST_VAR',

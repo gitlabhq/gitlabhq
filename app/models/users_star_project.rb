@@ -3,7 +3,7 @@
 class UsersStarProject < ApplicationRecord
   include Sortable
 
-  belongs_to :project, counter_cache: :star_count, touch: true
+  belongs_to :project, counter_cache: :star_count
   belongs_to :user
 
   validates :user, presence: true

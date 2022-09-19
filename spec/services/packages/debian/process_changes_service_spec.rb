@@ -5,7 +5,8 @@ RSpec.describe Packages::Debian::ProcessChangesService do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, codename: 'unstable') }
-    let_it_be(:incoming) { create(:debian_incoming, project: distribution.project) }
+
+    let!(:incoming) { create(:debian_incoming, project: distribution.project) }
 
     let(:package_file) { incoming.package_files.last }
 
@@ -33,10 +34,11 @@ RSpec.describe Packages::Debian::ProcessChangesService do
           existing_package.update!(debian_distribution: distribution)
         end
 
-        it 'does not create a package' do
+        it 'does not create a package and assigns the package_file to the existing package' do
           expect { subject.execute }
             .to not_change { Packages::Package.count }
             .and not_change { Packages::PackageFile.count }
+            .and change(package_file, :package).to(existing_package)
         end
 
         context 'marked as pending_destruction' do

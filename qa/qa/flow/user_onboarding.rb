@@ -3,7 +3,7 @@
 module QA
   module Flow
     module UserOnboarding
-      module_function
+      extend self
 
       def onboard_user
         Page::Registration::Welcome.perform do |welcome_page|
@@ -17,3 +17,5 @@ module QA
     end
   end
 end
+
+QA::Flow::UserOnboarding.prepend_mod_with('Flow::UserOnboarding', namespace: QA)

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/index.md).
 
-See the already supported formats in the [Packages & Registries documentation](../../user/packages/index.md)
+See the already supported formats in the [Packages and registries documentation](../../user/packages/index.md)
 
 It is possible to add a new format with only backend changes.
 This guide is superficial and does not cover the way the code should be written.
@@ -91,7 +91,7 @@ extended when possible to keep the common package logic grouped as much as possi
 
 ### Configuration
 
-GitLab has a `packages` section in its configuration file (`gitlab.rb`).
+GitLab has a `packages` section in its configuration file (`gitlab.rb` or `gitlab.yml`).
 It applies to all package systems supported by GitLab. Usually you don't need
 to add anything there.
 

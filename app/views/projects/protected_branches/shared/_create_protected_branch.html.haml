@@ -4,7 +4,7 @@
     - c.header do
       = s_("ProtectedBranch|Protect a branch")
     - c.body do
-      = form_errors(@protected_branch, pajamas_alert: true)
+      = form_errors(@protected_branch)
       .form-group.row
         = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
         .col-sm-12

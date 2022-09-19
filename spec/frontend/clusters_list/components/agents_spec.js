@@ -334,7 +334,7 @@ describe('Agents', () => {
     });
 
     it('displays a loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 });

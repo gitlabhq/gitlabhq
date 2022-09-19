@@ -19,7 +19,7 @@ When both flags are enabled, the administrator receives an email when a user is 
 
 ## Configure Git abuse rate limiting
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Reporting**.
 1. Expand **Git abuse rate limit**.
 1. Update the Git abuse rate limit settings:

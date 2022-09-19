@@ -165,3 +165,10 @@ RSpec.shared_examples 'not a package tracking event' do
     expect_no_snowplow_event
   end
 end
+
+RSpec.shared_examples 'bumping the package last downloaded at field' do
+  it 'bumps last_downloaded_at' do
+    expect { subject }
+      .to change { package.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
+  end
+end

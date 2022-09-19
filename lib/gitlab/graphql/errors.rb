@@ -7,6 +7,7 @@ module Gitlab
       ArgumentError = Class.new(BaseError)
       ResourceNotAvailable = Class.new(BaseError)
       MutationError = Class.new(BaseError)
+      LimitError = Class.new(BaseError)
     end
   end
 end

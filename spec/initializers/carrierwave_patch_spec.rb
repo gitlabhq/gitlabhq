@@ -8,7 +8,7 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
   let(:storage) { CarrierWave::Storage::Fog.new(uploader) }
   let(:bucket_name) { 'some-bucket' }
   let(:connection) { ::Fog::Storage.new(connection_options) }
-  let(:bucket) { connection.directories.new(key: bucket_name )}
+  let(:bucket) { connection.directories.new(key: bucket_name ) }
   let(:test_filename) { 'test' }
   let(:test_data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
 
@@ -33,7 +33,7 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
     end
 
     describe '#copy_to' do
-      let(:dest_filename) { 'copied.txt'}
+      let(:dest_filename) { 'copied.txt' }
 
       it 'copies the file' do
         fog_file = subject.send(:file)
@@ -67,7 +67,7 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
     end
 
     describe '#copy_to' do
-      let(:dest_filename) { 'copied.txt'}
+      let(:dest_filename) { 'copied.txt' }
 
       it 'copies the file' do
         result = subject.copy_to(dest_filename)

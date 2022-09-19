@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Routing
 
-The GitLab backend is written primarily with Rails so it uses 
+The GitLab backend is written primarily with Rails so it uses
 [Rails routing](https://guides.rubyonrails.org/routing.html). Beside Rails best
 practices, there are few rules unique to the GitLab application. To
 support subgroups, GitLab project and group routes use the wildcard

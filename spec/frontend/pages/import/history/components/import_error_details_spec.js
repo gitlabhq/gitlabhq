@@ -41,7 +41,7 @@ describe('ImportErrorDetails', () => {
   describe('general behavior', () => {
     it('renders loading state when loading', () => {
       createComponent();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('renders import_error if it is available', async () => {
@@ -50,7 +50,7 @@ describe('ImportErrorDetails', () => {
       createComponent();
       await axios.waitForAll();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.find('pre').text()).toBe(FAKE_IMPORT_ERROR);
     });
 
@@ -59,7 +59,7 @@ describe('ImportErrorDetails', () => {
       createComponent();
       await axios.waitForAll();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.find('pre').text()).toBe('No additional information provided.');
     });
   });

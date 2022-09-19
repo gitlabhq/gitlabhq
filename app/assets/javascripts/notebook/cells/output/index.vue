@@ -6,11 +6,6 @@ import LatexOutput from './latex.vue';
 
 export default {
   props: {
-    codeCssClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     count: {
       type: Number,
       required: false,
@@ -96,7 +91,6 @@ export default {
       :index="index"
       :raw-code="rawCode(output)"
       :metadata="metadata"
-      :code-css-class="codeCssClass"
     />
   </div>
 </template>

@@ -69,15 +69,6 @@ RSpec.describe 'Query.runners' do
 
       it_behaves_like 'a working graphql query returning expected runner'
     end
-
-    context 'runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
-      let(:runner_type) { 'PROJECT_TYPE' }
-      let(:status) { 'NEVER_CONTACTED' }
-
-      let!(:expected_runner) { project_runner }
-
-      it_behaves_like 'a working graphql query returning expected runner'
-    end
   end
 
   describe 'pagination' do
@@ -141,8 +132,13 @@ RSpec.describe 'Group.runners' do
 
   describe 'edges' do
     let_it_be(:runner) do
-      create(:ci_runner, :group, active: false, version: 'def', revision: '456',
-             description: 'Project runner', groups: [group], ip_address: '127.0.0.1')
+      create(:ci_runner, :group,
+        active: false,
+        version: 'def',
+        revision: '456',
+        description: 'Project runner',
+        groups: [group],
+        ip_address: '127.0.0.1')
     end
 
     let(:query) do

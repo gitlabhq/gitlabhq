@@ -58,4 +58,20 @@ describe('~/access_tokens/components/expires_at_field', () => {
 
     expect(findDatepicker().props('defaultDate')).toStrictEqual(future);
   });
+
+  it('should set the default expiration date to be 365 days', () => {
+    const offset = 365;
+    const today = new Date();
+    const future = getDateInFuture(today, offset);
+    createComponent({ defaultDateOffset: offset });
+
+    expect(findDatepicker().props('defaultDate')).toStrictEqual(future);
+  });
+
+  it('should set the default expiration date to maxDate, ignoring defaultDateOffset', () => {
+    const maxDate = new Date();
+    createComponent({ maxDate, defaultDateOffset: 2 });
+
+    expect(findDatepicker().props('defaultDate')).toStrictEqual(maxDate);
+  });
 });

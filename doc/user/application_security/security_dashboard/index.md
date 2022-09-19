@@ -1,6 +1,6 @@
 ---
 type: reference, howto
-stage: Secure
+stage: Govern
 group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -49,12 +49,15 @@ To reduce false negatives in [dependency scans](../../../user/application_securi
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285477) in GitLab 13.11, date range slider to visualize data between given dates.
 
 The project Security Dashboard shows the total number of vulnerabilities
-over time, with up to 365 days of historical data. Data refreshes daily at 01:15 UTC.
-It shows statistics for all vulnerabilities.
+over time, with up to 365 days of historical data. Data refresh begins daily at 01:15 UTC via a scheduled job.
+Each refresh captures a snapshot of open vulnerabilities. Data is not backported to prior days
+so vulnerabilities opened after the job has already run for the day will not be reflected in the
+counts until the following day's refresh job.
+Project Security Dashboards show statistics for all vulnerabilities with a current status of `Needs triage` or `Confirmed` .
 
 To view total number of vulnerabilities over time:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Security Dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
@@ -67,7 +70,7 @@ To view total number of vulnerabilities over time:
 
 To download an SVG image of the vulnerabilities chart:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Security dashboard**.
 1. Select **Save chart as an image** (**{download}**).
 
@@ -78,7 +81,7 @@ branches of projects in a group and its subgroups.
 
 To view vulnerabilities over time for a group:
 
-1. On the top bar, select **Menu > Groups** and select a group.
+1. On the top bar, select **Main menu > Groups** and select a group.
 1. Select **Security > Security Dashboard**.
 1. Hover over the chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
@@ -88,15 +91,16 @@ To view vulnerabilities over time for a group:
 
 ## View project security status for a group
 
-Use the group Security Dashboard to view the security status of projects. The security status is based
-on the number of detected vulnerabilities.
+Use the group Security Dashboard to view the security status of projects.
 
 To view project security status for a group:
 
-1. On the top bar, select **Menu > Groups** and select a group.
+1. On the top bar, select **Main menu > Groups** and select a group.
 1. Select **Security > Security Dashboard**.
 
-Projects are [graded](#project-vulnerability-grades) by vulnerability severity. Dismissed vulnerabilities are excluded.
+Each project is assigned a letter [grade](#project-vulnerability-grades) according to the highest-severity open vulnerability.
+Dismissed or resolved vulnerabilities are excluded. Each project can receive only one letter grade and will appear only once
+in the Project security status report.
 
 To view vulnerabilities, go to the group's [vulnerability report](../vulnerability_report/index.md).
 
@@ -127,13 +131,13 @@ The Security Center includes:
 
 ### View the Security Center
 
-To view the Security Center, on the top bar, select **Menu > Security**.
+To view the Security Center, on the top bar, select **Main menu > Security**.
 
 ### Add projects to the Security Center
 
 To add projects to the Security Center:
 
-1. On the top bar, select **Menu > Security**.
+1. On the top bar, select **Main menu > Security**.
 1. On the left sidebar, select **Settings**, or select **Add projects**.
 1. Use the **Search your projects** text box to search for and select projects.
 1. Select **Add projects**.

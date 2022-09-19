@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/audit_events/types/type_schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique identifying name for the type of audit event"
+    },
+    "description": {
+      "type": "string",
+      "description": "A human-readable description of how this event is triggered"
+    },
+    "introduced_by_issue": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to GitLab issue that added this type of audit event",
+      "qt-uri-protocols": [
+        "https"
+      ]
+    },
+    "introduced_by_mr": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to GitLab merge request that added this type of audit event",
+      "qt-uri-protocols": [
+        "https"
+      ]
+    },
+    "group": {
+      "type": "string",
+      "description": "Name of the group that introduced this audit event. For example, manage::compliance"
+    },
+    "milestone": {
+      "type": "string",
+      "description": "Milestone that introduced this audit event type. For example, 15.8",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "saved_to_database": {
+      "type": "boolean",
+      "description": "Indicate whether to persist events to database and JSON logs"
+    },
+    "streamed": {
+      "type": "boolean",
+      "description": "Indicate that events should be streamed to external services (if configured)"
+    }
+  },
+  "required": [
+    "description",
+    "group",
+    "introduced_by_issue",
+    "introduced_by_mr",
+    "milestone",
+    "name",
+    "saved_to_database",
+    "streamed"
+  ],
+  "not": {
+    "properties": {
+      "saved_to_database": {
+        "enum": [
+          false
+        ]
+      },
+      "streamed": {
+        "enum": [
+          false
+        ]
+      }
+    }
+  },
+  "title": "GitLabAuditEventType"
+}

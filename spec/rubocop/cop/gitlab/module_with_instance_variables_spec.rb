@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/module_with_instance_variables'
 
 RSpec.describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do
   let(:msg) { "Do not use instance variables in a module. [...]" }
-
-  subject(:cop) { described_class.new }
 
   shared_examples('registering offense') do
     it 'registers an offense when instance variable is used in a module' do

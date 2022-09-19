@@ -75,9 +75,9 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
         end
 
         context 'when attribute is not a counter attribute' do
-          it 'delegates to ActiveRecord update!' do
+          it 'raises ArgumentError' do
             expect { model.delayed_increment_counter(:unknown_attribute, 10) }
-              .to raise_error(ActiveModel::MissingAttributeError)
+              .to raise_error(ArgumentError, 'unknown_attribute is not a counter attribute')
           end
         end
       end

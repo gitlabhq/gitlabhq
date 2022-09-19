@@ -424,9 +424,10 @@ RSpec.describe 'New project', :js do
 
         it 'keeps "Import project" tab open after form validation error' do
           collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return({ status: 200,
-            body: '001e# service=git-upload-pack',
-            headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(
+            { status: 200,
+              body: '001e# service=git-upload-pack',
+              headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
 
           fill_in 'project_import_url', with: 'http://foo/bar'
           fill_in 'project_name', with: collision_project.name
@@ -465,9 +466,10 @@ RSpec.describe 'New project', :js do
         end
 
         it 'initiates import when valid repo url is provided' do
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return({ status: 200,
-            body: '001e# service=git-upload-pack',
-            headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(
+            { status: 200,
+              body: '001e# service=git-upload-pack',
+              headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
 
           fill_in 'project_import_url', with: 'http://foo/bar'
 

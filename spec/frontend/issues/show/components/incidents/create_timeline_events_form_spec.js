@@ -1,13 +1,13 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlDatepicker } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateTimelineEvent from '~/issues/show/components/incidents/create_timeline_event.vue';
 import TimelineEventsForm from '~/issues/show/components/incidents/timeline_events_form.vue';
 import createTimelineEventMutation from '~/issues/show/components/incidents/graphql/queries/create_timeline_event.mutation.graphql';
 import getTimelineEvents from '~/issues/show/components/incidents/graphql/queries/get_timeline_events.query.graphql';
+import { timelineFormI18n } from '~/issues/show/components/incidents/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/flash';
 import { useFakeDate } from 'helpers/fake_date';
@@ -35,24 +35,21 @@ describe('Create Timeline events', () => {
   let responseSpy;
   let apolloProvider;
 
-  const findSubmitButton = () => wrapper.findByText(__('Save'));
-  const findSubmitAndAddButton = () =>
-    wrapper.findByText(s__('Incident|Save and add another event'));
-  const findCancelButton = () => wrapper.findByText(__('Cancel'));
+  const findSubmitButton = () => wrapper.findByText(timelineFormI18n.save);
+  const findSubmitAndAddButton = () => wrapper.findByText(timelineFormI18n.saveAndAdd);
+  const findCancelButton = () => wrapper.findByText(timelineFormI18n.cancel);
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findNoteInput = () => wrapper.findByTestId('input-note');
   const setNoteInput = () => {
-    const textarea = findNoteInput().element;
-    textarea.value = mockInputData.note;
-    textarea.dispatchEvent(new Event('input'));
+    findNoteInput().setValue(mockInputData.note);
   };
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
   const setDatetime = () => {
     const inputDate = new Date(mockInputData.occurredAt);
     findDatePicker().vm.$emit('input', inputDate);
-    findHourInput().vm.$emit('input', inputDate.getHours());
-    findMinuteInput().vm.$emit('input', inputDate.getMinutes());
+    findHourInput().setValue(inputDate.getHours());
+    findMinuteInput().setValue(inputDate.getMinutes());
   };
   const fillForm = () => {
     setDatetime();

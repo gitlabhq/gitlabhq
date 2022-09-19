@@ -39,6 +39,56 @@ RSpec.describe NotificationRecipient do
         expect(recipient.notifiable?).to eq true
       end
     end
+
+    context 'when recipient email is blocked', :clean_gitlab_redis_rate_limiting do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
+          .and_return(
+            temporary_email_failure: { threshold: 1, interval: 1.minute },
+            permanent_email_failure: { threshold: 1, interval: 1.minute }
+          )
+      end
+
+      context 'with permanent failures' do
+        before do
+          2.times { Gitlab::ApplicationRateLimiter.throttled?(:permanent_email_failure, scope: user.email) }
+        end
+
+        it 'returns false' do
+          expect(recipient.notifiable?).to eq(false)
+        end
+
+        context 'when block_emails_with_failures is disabled' do
+          before do
+            stub_feature_flags(block_emails_with_failures: false)
+          end
+
+          it 'returns true' do
+            expect(recipient.notifiable?).to eq(true)
+          end
+        end
+      end
+
+      context 'with temporary failures' do
+        before do
+          2.times { Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: user.email) }
+        end
+
+        it 'returns false' do
+          expect(recipient.notifiable?).to eq(false)
+        end
+
+        context 'when block_emails_with_failures is disabled' do
+          before do
+            stub_feature_flags(block_emails_with_failures: false)
+          end
+
+          it 'returns true' do
+            expect(recipient.notifiable?).to eq(true)
+          end
+        end
+      end
+    end
   end
 
   describe '#has_access?' do

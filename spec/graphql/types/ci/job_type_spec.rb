@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Types::Ci::JobType do
+  include GraphqlHelpers
+
   specify { expect(described_class.graphql_name).to eq('CiJob') }
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Ci::Job) }
 
@@ -45,8 +47,21 @@ RSpec.describe Types::Ci::JobType do
       tags
       triggered
       userPermissions
+      webPath
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
+  end
+
+  describe '#web_path' do
+    subject { resolve_field(:web_path, build, current_user: user, object_type: described_class) }
+
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:build) { create(:ci_build, project: project, user: user) }
+
+    it 'returns the web path of the job' do
+      is_expected.to eq("/#{project.full_path}/-/jobs/#{build.id}")
+    end
   end
 end

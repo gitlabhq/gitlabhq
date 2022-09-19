@@ -182,7 +182,7 @@ export default {
   <div class="md-header">
     <gl-tabs content-class="gl-display-none">
       <gl-tab
-        title-link-class="gl-pt-3 gl-px-3 js-md-write-button"
+        title-link-class="gl-py-4 gl-px-3 js-md-write-button"
         :title="$options.i18n.writeTabTitle"
         :active="!previewMarkdown"
         data-testid="write-tab"
@@ -190,7 +190,7 @@ export default {
       />
       <gl-tab
         v-if="enablePreview"
-        title-link-class="gl-pt-3 gl-px-3 js-md-preview-button"
+        title-link-class="gl-py-4 gl-px-3 js-md-preview-button"
         :title="$options.i18n.previewTabTitle"
         :active="previewMarkdown"
         data-testid="preview-tab"
@@ -201,7 +201,7 @@ export default {
         <div
           data-testid="md-header-toolbar"
           :class="{ 'gl-display-none!': previewMarkdown }"
-          class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center"
+          class="md-header-toolbar gl-ml-auto gl-py-2 gl-justify-content-center"
         >
           <template v-if="canSuggest">
             <toolbar-button

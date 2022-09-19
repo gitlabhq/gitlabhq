@@ -76,7 +76,7 @@ describe('IDE clientside preview navigator', () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
       await nextTick();
       findBackButton().trigger('click');
-      expect(findBackButton().attributes('disabled')).toBeFalsy();
+      expect(findBackButton().attributes()).not.toHaveProperty('disabled');
     });
 
     it('is disabled when there is no previous entry', async () => {
@@ -117,7 +117,7 @@ describe('IDE clientside preview navigator', () => {
       findBackButton().trigger('click');
 
       await nextTick();
-      expect(findForwardButton().attributes('disabled')).toBeFalsy();
+      expect(findForwardButton().attributes()).not.toHaveProperty('disabled');
     });
 
     it('is disabled when there is no next entry', async () => {

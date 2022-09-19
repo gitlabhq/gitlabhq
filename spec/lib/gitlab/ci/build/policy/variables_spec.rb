@@ -108,7 +108,8 @@ RSpec.describe Gitlab::Ci::Build::Policy::Variables do
                          project: project,
                          ref: 'master',
                          stage: 'review',
-                         environment: 'test/$CI_JOB_STAGE/1')
+                         environment: 'test/$CI_JOB_STAGE/1',
+                         ci_stage: build(:ci_stage, name: 'review', project: project, pipeline: pipeline))
       end
 
       before do

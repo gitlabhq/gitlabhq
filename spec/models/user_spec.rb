@@ -334,6 +334,58 @@ RSpec.describe User do
           end
         end
       end
+
+      context 'check_password_weakness' do
+        let(:weak_password) { "qwertyuiop" }
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(block_weak_passwords: false)
+          end
+
+          it 'does not add an error when password is weak' do
+            expect(Security::WeakPasswords).not_to receive(:weak_for_user?)
+
+            user.password = weak_password
+            expect(user).to be_valid
+          end
+        end
+
+        context 'when feature flag is enabled' do
+          before do
+            stub_feature_flags(block_weak_passwords: true)
+          end
+
+          it 'checks for password weakness when password changes' do
+            expect(Security::WeakPasswords).to receive(:weak_for_user?)
+              .with(weak_password, user).and_call_original
+            user.password = weak_password
+            expect(user).not_to be_valid
+          end
+
+          it 'adds an error when password is weak' do
+            user.password = weak_password
+            expect(user).not_to be_valid
+            expect(user.errors).to be_of_kind(:password, 'must not contain commonly used combinations of words and letters')
+          end
+
+          it 'is valid when password is not weak' do
+            user.password = ::User.random_password
+            expect(user).to be_valid
+          end
+
+          it 'is valid when weak password was already set' do
+            user = build(:user, password: weak_password)
+            user.save!(validate: false)
+
+            expect(Security::WeakPasswords).not_to receive(:weak_for_user?)
+
+            # Change an unrelated value
+            user.name = "Example McExampleFace"
+            expect(user).to be_valid
+          end
+        end
+      end
     end
 
     describe 'name' do
@@ -2071,11 +2123,12 @@ RSpec.describe User do
       context 'user has existing U2F registration' do
         it 'returns false' do
           device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration, name: 'my u2f device',
-                 user: user,
-                 certificate: Base64.strict_encode64(device.cert_raw),
-                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+          create(:u2f_registration,
+            name: 'my u2f device',
+            user: user,
+            certificate: Base64.strict_encode64(device.cert_raw),
+            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+            public_key: Base64.strict_encode64(device.origin_public_key_raw))
 
           expect(user.two_factor_u2f_enabled?).to eq(false)
         end
@@ -2094,11 +2147,12 @@ RSpec.describe User do
       context 'user has existing U2F registration' do
         it 'returns true' do
           device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration, name: 'my u2f device',
-                 user: user,
-                 certificate: Base64.strict_encode64(device.cert_raw),
-                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+          create(:u2f_registration,
+            name: 'my u2f device',
+            user: user,
+            certificate: Base64.strict_encode64(device.cert_raw),
+            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+            public_key: Base64.strict_encode64(device.origin_public_key_raw))
 
           expect(user.two_factor_u2f_enabled?).to eq(true)
         end
@@ -3601,15 +3655,15 @@ RSpec.describe User do
       user = create :user
       project = create(:project, :public)
 
-      expect(user.starred?(project)).to be_falsey
+      # starring
+      expect { user.toggle_star(project) }
+        .to change { user.starred?(project) }.from(false).to(true)
+        .and not_change { project.reload.updated_at }
 
-      user.toggle_star(project)
-
-      expect(user.starred?(project)).to be_truthy
-
-      user.toggle_star(project)
-
-      expect(user.starred?(project)).to be_falsey
+      # unstarring
+      expect { user.toggle_star(project) }
+        .to change { user.starred?(project) }.from(true).to(false)
+        .and not_change { project.reload.updated_at }
     end
   end
 
@@ -3810,8 +3864,8 @@ RSpec.describe User do
   describe '#can_be_deactivated?' do
     let(:activity) { {} }
     let(:user) { create(:user, name: 'John Smith', **activity) }
-    let(:day_within_minium_inactive_days_threshold) { User::MINIMUM_INACTIVE_DAYS.pred.days.ago }
-    let(:day_outside_minium_inactive_days_threshold) { User::MINIMUM_INACTIVE_DAYS.next.days.ago }
+    let(:day_within_minium_inactive_days_threshold) { Gitlab::CurrentSettings.deactivate_dormant_users_period.pred.days.ago }
+    let(:day_outside_minium_inactive_days_threshold) { Gitlab::CurrentSettings.deactivate_dormant_users_period.next.days.ago }
 
     shared_examples 'not eligible for deactivation' do
       it 'returns false' do
@@ -7193,8 +7247,8 @@ RSpec.describe User do
   describe '.dormant' do
     it 'returns dormant users' do
       freeze_time do
-        not_that_long_ago = (described_class::MINIMUM_INACTIVE_DAYS - 1).days.ago.to_date
-        too_long_ago = described_class::MINIMUM_INACTIVE_DAYS.days.ago.to_date
+        not_that_long_ago = (Gitlab::CurrentSettings.deactivate_dormant_users_period - 1).days.ago.to_date
+        too_long_ago = Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date
 
         create(:user, :deactivated, last_activity_on: too_long_ago)
 
@@ -7214,8 +7268,8 @@ RSpec.describe User do
   describe '.with_no_activity' do
     it 'returns users with no activity' do
       freeze_time do
-        active_not_that_long_ago = (described_class::MINIMUM_INACTIVE_DAYS - 1).days.ago.to_date
-        active_too_long_ago = described_class::MINIMUM_INACTIVE_DAYS.days.ago.to_date
+        active_not_that_long_ago = (Gitlab::CurrentSettings.deactivate_dormant_users_period - 1).days.ago.to_date
+        active_too_long_ago = Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date
         created_recently = (described_class::MINIMUM_DAYS_CREATED - 1).days.ago.to_date
         created_not_recently = described_class::MINIMUM_DAYS_CREATED.days.ago.to_date
 
@@ -7394,25 +7448,6 @@ RSpec.describe User do
 
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :user }
-  end
-
-  describe 'mr_attention_requests_enabled?' do
-    let(:user) { create(:user) }
-
-    before do
-      stub_feature_flags(mr_attention_requests: false)
-    end
-
-    it { expect(user.mr_attention_requests_enabled?).to be(false) }
-
-    it 'feature flag is enabled for user' do
-      stub_feature_flags(mr_attention_requests: user)
-
-      another_user = create(:user)
-
-      expect(user.mr_attention_requests_enabled?).to be(true)
-      expect(another_user.mr_attention_requests_enabled?).to be(false)
-    end
   end
 
   describe 'user age' do

@@ -211,6 +211,8 @@ merge_requests:
 - user_note_authors
 - cleanup_schedule
 - compliance_violations
+- created_environments
+- predictions
 external_pull_requests:
 - project
 merge_request_diff:
@@ -315,6 +317,7 @@ statuses:
 - user
 - auto_canceled_by
 - needs
+- ci_stage
 variables:
 - project
 triggers:
@@ -654,11 +657,9 @@ search_data:
 merge_request_assignees:
 - merge_request
 - assignee
-- updated_state_by
 merge_request_reviewers:
 - merge_request
 - reviewer
-- updated_state_by
 lfs_file_locks:
 - user
 project_badges:
@@ -821,3 +822,28 @@ service_desk_setting:
 approvals:
   - user
   - merge_request
+resource_milestone_events:
+  - user
+  - issue
+  - merge_request
+  - milestone
+resource_state_events:
+  - user
+  - issue
+  - merge_request
+  - source_merge_request
+  - epic
+iteration:
+  - group
+  - iterations_cadence
+  - issues
+  - labels
+  - merge_requests
+resource_iteration_events:
+  - user
+  - issue
+  - merge_request
+  - iteration
+iterations_cadence:
+  - group
+  - iterations

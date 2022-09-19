@@ -233,7 +233,7 @@ The first thing that appears is the sign-in page. GitLab creates an administrato
 The credentials are:
 
 - Username: `root`
-- Password: the password is automatically created, and there are 
+- Password: the password is automatically created, and there are
   [two ways to find it](https://docs.bitnami.com/azure/faq/get-started/find-credentials/).
 
 After signing in, be sure to immediately [change the password](../../user/profile/index.md#change-your-password).
@@ -248,7 +248,7 @@ in this section whenever you need to update GitLab.
 
 To determine the version of GitLab you're currently running:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Dashboard**.
 1. Find the version under the **Components** table.
 
@@ -294,7 +294,7 @@ up-to-date GitLab instance.
 ## Next steps and further configuration
 
 Now that you have a functional GitLab instance, follow the
-[next steps](../index.md#next-steps) to learn what more you can do with your
+[next steps](../next_steps.md) to learn what more you can do with your
 new installation.
 
 ## Troubleshooting

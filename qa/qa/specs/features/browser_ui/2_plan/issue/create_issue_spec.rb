@@ -64,7 +64,7 @@ module QA
         it(
           'comments on an issue with an attachment',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946',
-          except: { job: 'review-qa-smoke' }
+          except: { job: 'review-qa-*' }
         ) do
           Page::Project::Issue::Show.perform do |show|
             show.comment('See attached image for scale', attachment: file_to_attach)

@@ -79,14 +79,14 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
       let(:relation_definition) { { 'notes' => {} } }
 
       it 'saves valid subrelations and logs invalid subrelation' do
-        expect(relation_object.notes).to receive(:<<).and_call_original
+        expect(relation_object.notes).to receive(:<<).twice.and_call_original
         expect(Gitlab::Import::Logger)
           .to receive(:info)
           .with(
             message: '[Project/Group Import] Invalid subrelation',
             project_id: project.id,
             relation_key: 'issues',
-            error_messages: "Noteable can't be blank and Project does not match noteable project"
+            error_messages: "Project does not match noteable project"
           )
 
         saver.execute
@@ -94,9 +94,28 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
         issue = project.issues.last
         import_failure = project.import_failures.last
 
+        expect(invalid_note.persisted?).to eq(false)
         expect(issue.notes.count).to eq(5)
         expect(import_failure.source).to eq('RelationObjectSaver#save!')
-        expect(import_failure.exception_message).to eq("Noteable can't be blank and Project does not match noteable project")
+        expect(import_failure.exception_message).to eq('Project does not match noteable project')
+      end
+
+      context 'when invalid subrelation can still be persisted' do
+        let(:relation_key) { 'merge_requests' }
+        let(:relation_definition) { { 'approvals' => {} } }
+        let(:approval_1) { build(:approval, merge_request_id: nil, user: create(:user)) }
+        let(:approval_2) { build(:approval, merge_request_id: nil, user: create(:user)) }
+        let(:relation_object) { build(:merge_request, source_project: project, target_project: project, approvals: [approval_1, approval_2]) }
+
+        it 'saves the subrelation' do
+          expect(approval_1.valid?).to eq(false)
+          expect(Gitlab::Import::Logger).not_to receive(:info)
+
+          saver.execute
+
+          expect(project.merge_requests.first.approvals.count).to eq(2)
+          expect(project.merge_requests.first.approvals.first.persisted?).to eq(true)
+        end
       end
 
       context 'when importable is group' do

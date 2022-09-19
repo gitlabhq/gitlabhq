@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
-  let(:issue) { create(:issue, project: project) }
+  let(:issuable) { create(:issue, project: project) }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
@@ -19,7 +19,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
       'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => 'reopened',
       'created_at' => '2022-04-26 18:30:53 UTC',
-      'issue' => { 'number' => issue.iid }
+      'issue' => { 'number' => issuable.iid, pull_request: issuable.is_a?(MergeRequest) }
     )
   end
 
@@ -27,40 +27,61 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
     {
       project_id: project.id,
       author_id: user.id,
-      target_id: issue.id,
-      target_type: Issue.name,
+      target_id: issuable.id,
+      target_type: issuable.class.name,
       action: 'reopened',
       created_at: issue_event.created_at,
       updated_at: issue_event.created_at
     }.stringify_keys
   end
 
-  let(:expected_state_event_attrs) do
-    {
-      user_id: user.id,
-      state: 'reopened',
-      created_at: issue_event.created_at
-    }.stringify_keys
-  end
-
   before do
     allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
-      allow(finder).to receive(:database_id).and_return(issue.id)
+      allow(finder).to receive(:database_id).and_return(issuable.id)
     end
     allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
       allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
     end
   end
 
-  it 'creates expected event and state event' do
-    importer.execute(issue_event)
+  shared_examples 'new event' do
+    it 'creates expected event and state event' do
+      importer.execute(issue_event)
 
-    expect(issue.events.count).to eq 1
-    expect(issue.events[0].attributes)
-      .to include expected_event_attrs
+      expect(issuable.events.count).to eq 1
+      expect(issuable.events[0].attributes)
+        .to include expected_event_attrs
 
-    expect(issue.resource_state_events.count).to eq 1
-    expect(issue.resource_state_events[0].attributes)
-      .to include expected_state_event_attrs
+      expect(issuable.resource_state_events.count).to eq 1
+      expect(issuable.resource_state_events[0].attributes)
+        .to include expected_state_event_attrs
+    end
+  end
+
+  context 'with Issue' do
+    let(:expected_state_event_attrs) do
+      {
+        user_id: user.id,
+        issue_id: issuable.id,
+        state: 'reopened',
+        created_at: issue_event.created_at
+      }.stringify_keys
+    end
+
+    it_behaves_like 'new event'
+  end
+
+  context 'with MergeRequest' do
+    let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+    let(:expected_state_event_attrs) do
+      {
+        user_id: user.id,
+        merge_request_id: issuable.id,
+        state: 'reopened',
+        created_at: issue_event.created_at
+      }.stringify_keys
+    end
+
+    it_behaves_like 'new event'
   end
 end

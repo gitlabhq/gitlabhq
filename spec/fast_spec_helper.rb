@@ -11,6 +11,9 @@ require_relative '../config/bundler_setup'
 ENV['GITLAB_ENV'] = 'test'
 ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
 
+# Enable zero monkey patching mode before loading any other RSpec code.
+RSpec.configure(&:disable_monkey_patching!)
+
 require 'active_support/dependencies'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 require_relative '../config/settings'
@@ -29,13 +32,6 @@ end
 ActiveSupport::XmlMini.backend = 'Nokogiri'
 
 RSpec.configure do |config|
-  unless ENV['CI']
-    # Allow running `:focus` examples locally,
-    # falling back to all tests when there is no `:focus` example.
-    config.filter_run focus: true
-    config.run_all_when_everything_filtered = true
-  end
-
   # Makes diffs show entire non-truncated values.
   config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
     config.expect_with :rspec do |c|

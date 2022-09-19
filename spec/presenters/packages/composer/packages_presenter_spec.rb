@@ -50,7 +50,7 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
   end
 
   describe '#provider' do
-    subject { presenter.provider}
+    subject { presenter.provider }
 
     let(:expected_json) do
       {

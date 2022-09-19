@@ -11,7 +11,7 @@ module RuboCop
       # # bad
       # histogram(Issue, buckets: 1..100)
       # histogram(User.active, buckets: 1..100)
-      class HistogramWithLargeTable < RuboCop::Cop::Cop
+      class HistogramWithLargeTable < RuboCop::Cop::Base
         MSG = 'Avoid histogram method on %{model_name}'
 
         # Match one level const as Issue, Gitlab
@@ -38,9 +38,9 @@ module RuboCop
 
           class_name = two_level_matches ? two_level_matches.join('::').to_sym : one_level_matches
 
-          if large_table?(class_name)
-            add_offense(node, location: :expression, message: format(MSG, model_name: class_name))
-          end
+          return unless large_table?(class_name)
+
+          add_offense(node, message: format(MSG, model_name: class_name))
         end
 
         private

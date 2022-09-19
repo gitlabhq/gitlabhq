@@ -71,7 +71,7 @@ This worker imports all pull requests. For every pull request a job for the
 
 ### 5. Stage::ImportPullRequestsMergedByWorker
 
-This worker imports the pull requests' _merged-by_ user information. The 
+This worker imports the pull requests' _merged-by_ user information. The
 [_List pull requests_](https://docs.github.com/en/rest/pulls#list-pull-requests)
 API doesn't provide this information. Therefore, this stage must fetch each merged pull request
 individually to import this information. A
@@ -101,7 +101,20 @@ label links in the same worker removes the need for performing a separate crawl
 through the API data, reducing the number of API calls necessary to import a
 project.
 
-### 8. Stage::ImportNotesWorker
+### 8. Stage::ImportIssueEventsWorker
+
+This worker imports all issues and pull request events. For every event, we
+schedule a job for the `Gitlab::GithubImport::ImportIssueEventWorker` worker.
+
+We can import both issues and pull request events by single stage because of a specific aspect of the GitHub API. It looks like that under the hood, issues and pull requests
+GitHub are stored in a single table. Therefore, they have globally-unique IDs and so:
+
+- Every pull request is an issue.
+- Issues aren't pull requests.
+
+Therefore, both issues and pull requests have a common API for most related things.
+
+### 9. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
 every comment, we schedule a job for the
@@ -112,7 +125,28 @@ returns comments for both issues and pull requests. This means we have to wait
 for all issues and pull requests to be imported before we can import regular
 comments.
 
-### 9. Stage::FinishImportWorker
+### 10. Stage::ImportAttachmentsWorker
+
+This worker imports release notes attachments that are linked inside Markdown.
+For every release of the project, we schedule a job of
+`Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every comment.
+
+Each job:
+
+1. Iterates over all attachment links inside of a specific release note.
+1. Downloads the attachment.
+1. Replaces the old link with a newly-generated link to GitLab.
+
+### 11. Stage::ImportProtectedBranchesWorker
+
+This worker imports protected branch rules.
+For every rule that exists on GitHub, we schedule a job of
+`Gitlab::GithubImport::ImportProtectedBranchWorker`.
+
+Each job compares the branch protection rules from GitHub and GitLab and applies
+the strictest of the rules to the branches in GitLab.
+
+### 12. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.

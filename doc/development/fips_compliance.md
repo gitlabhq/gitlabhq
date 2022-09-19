@@ -65,7 +65,7 @@ listed here that also do not work properly in FIPS mode:
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
   for yarn projects.
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
-  supports a reduced set of [analyzers](../user/application_security/sast/#fips-enabled-images)
+  supports a reduced set of [analyzers](../user/application_security/sast/index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
 - Advanced Search is currently not included in FIPS mode. It must not be enabled in order to be FIPS-compliant.  
 - [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
@@ -578,6 +578,6 @@ Merge requests that can trigger Package and QA, can trigger a FIPS package and a
 Reference Architecture test pipeline. The base image used for the trigger is
 Ubuntu 20.04 FIPS:
 
-1. Trigger `package-and-qa`, if not already triggered.
+1. Trigger `e2e:package-and-test` job, if not already triggered.
 1. On the `gitlab-omnibus-mirror` child pipeline, manually trigger `Trigger:package:fips`.
 1. When the package job is complete, manually trigger the `RAT:FIPS` job.

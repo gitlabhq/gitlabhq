@@ -167,6 +167,7 @@ module API
 
       # Keep in alphabetical order
       mount ::API::AccessRequests
+      mount ::API::Admin::BatchedBackgroundMigrations
       mount ::API::Admin::Ci::Variables
       mount ::API::Admin::InstanceClusters
       mount ::API::Admin::PlanLimits
@@ -237,7 +238,6 @@ module API
       mount ::API::ImportGithub
       mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions
-      mount ::API::Integrations::Slack::Events
       mount ::API::Invitations
       mount ::API::IssueLinks
       mount ::API::Issues
@@ -263,6 +263,7 @@ module API
       mount ::API::PackageFiles
       mount ::API::Pages
       mount ::API::PagesDomains
+      mount ::API::PersonalAccessTokens::SelfRevocation
       mount ::API::PersonalAccessTokens
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
@@ -290,6 +291,7 @@ module API
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceMilestoneEvents
       mount ::API::ResourceStateEvents
+      mount ::API::RpmProjectPackages
       mount ::API::RubygemPackages
       mount ::API::Search
       mount ::API::Settings
@@ -316,6 +318,7 @@ module API
       mount ::API::Users
       mount ::API::Version
       mount ::API::Wikis
+      mount ::API::Ml::Mlflow
     end
 
     mount ::API::Internal::Base

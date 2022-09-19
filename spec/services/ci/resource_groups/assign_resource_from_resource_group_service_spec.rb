@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService do
+  include ConcurrentHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -132,6 +134,19 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService do
             expect(build.reload).to be_created
             expect(build.resource).to be_nil
           end
+        end
+      end
+
+      context 'when parallel services are running' do
+        it 'can run the same command in parallel' do
+          parallel_num = 4
+
+          blocks = Array.new(parallel_num).map do
+            -> { subject }
+          end
+
+          run_parallel(blocks)
+          expect(build.reload).to be_pending
         end
       end
     end

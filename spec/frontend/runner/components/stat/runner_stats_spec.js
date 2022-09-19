@@ -1,13 +1,20 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { s__ } from '~/locale';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RunnerSingleStat from '~/runner/components/stat/runner_single_stat.vue';
-import { INSTANCE_TYPE, STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '~/runner/constants';
+import {
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
+  INSTANCE_TYPE,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
+} from '~/runner/constants';
 
 describe('RunnerStats', () => {
   let wrapper;
 
-  const findSingleStats = () => wrapper.findAllComponents(RunnerSingleStat).wrappers;
+  const findSingleStats = () => wrapper.findAllComponents(RunnerSingleStat);
 
   const createComponent = ({ props = {}, mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(RunnerStats, {
@@ -46,16 +53,28 @@ describe('RunnerStats', () => {
     });
 
     const text = wrapper.text();
-    expect(text).toMatch(`${s__('Runners|Online runners')} 3`);
-    expect(text).toMatch(`${s__('Runners|Offline runners')} 2`);
-    expect(text).toMatch(`${s__('Runners|Stale runners')} 1`);
+    expect(text).toContain(`${I18N_STATUS_ONLINE} 3`);
+    expect(text).toContain(`${I18N_STATUS_OFFLINE} 2`);
+    expect(text).toContain(`${I18N_STATUS_STALE} 1`);
+  });
+
+  it('Skips query for other stats', () => {
+    createComponent({
+      props: {
+        variables: { status: STATUS_ONLINE },
+      },
+    });
+
+    expect(findSingleStats().at(0).props('skip')).toBe(false);
+    expect(findSingleStats().at(1).props('skip')).toBe(true);
+    expect(findSingleStats().at(2).props('skip')).toBe(true);
   });
 
   it('Displays all counts for filtered searches', () => {
     const mockVariables = { paused: true };
     createComponent({ props: { variables: mockVariables } });
 
-    findSingleStats().forEach((stat) => {
+    findSingleStats().wrappers.forEach((stat) => {
       expect(stat.props('variables')).toMatchObject(mockVariables);
     });
   });

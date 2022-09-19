@@ -30,16 +30,10 @@ import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
-import getPerformanceInsights from '~/pipelines/graphql/queries/get_performance_insights.query.graphql';
 import * as sentryUtils from '~/pipelines/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
-import {
-  mapCallouts,
-  mockCalloutsResponse,
-  mockPipelineResponse,
-  mockPerformanceInsightsResponse,
-} from './mock_data';
+import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {
   graphqlResourceEtag: 'frog/amphibirama/etag/',
@@ -57,11 +51,11 @@ describe('Pipeline graph wrapper', () => {
   const getDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
   const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const getLinksLayer = () => wrapper.findComponent(LinksLayer);
-  const getGraph = () => wrapper.find(PipelineGraph);
+  const getGraph = () => wrapper.findComponent(PipelineGraph);
   const getStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const getAllStageColumnGroupsInColumn = () =>
-    wrapper.find(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
-  const getViewSelector = () => wrapper.find(GraphViewSelector);
+    wrapper.findComponent(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
+  const getViewSelector = () => wrapper.findComponent(GraphViewSelector);
   const getViewSelectorTrip = () => getViewSelector().findComponent(GlAlert);
   const getLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
@@ -95,15 +89,11 @@ describe('Pipeline graph wrapper', () => {
     const callouts = mapCallouts(calloutsList);
     const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
     const getPipelineHeaderDataHandler = jest.fn().mockResolvedValue(mockRunningPipelineHeaderData);
-    const getPerformanceInsightsHandler = jest
-      .fn()
-      .mockResolvedValue(mockPerformanceInsightsResponse);
 
     const requestHandlers = [
       [getPipelineHeaderData, getPipelineHeaderDataHandler],
       [getPipelineDetails, getPipelineDetailsHandler],
       [getUserCallouts, getUserCalloutsHandler],
-      [getPerformanceInsights, getPerformanceInsightsHandler],
     ];
 
     const apolloProvider = createMockApollo(requestHandlers);
@@ -309,7 +299,7 @@ describe('Pipeline graph wrapper', () => {
         const groupsInFirstColumn =
           mockPipelineResponse.data.project.pipeline.stages.nodes[0].groups.nodes.length;
         expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn);
-        expect(getStageColumnTitle().text()).toBe('Build');
+        expect(getStageColumnTitle().text()).toBe('build');
         await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
         expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn + 1);
         expect(getStageColumnTitle().text()).toBe('');
@@ -418,7 +408,7 @@ describe('Pipeline graph wrapper', () => {
 
       it('reads the view type from localStorage when available', () => {
         const viewSelectorNeedsSegment = wrapper
-          .find(GlButtonGroup)
+          .findComponent(GlButtonGroup)
           .findAllComponents(GlButton)
           .at(1);
         expect(viewSelectorNeedsSegment.classes()).toContain('selected');
@@ -564,7 +554,7 @@ describe('Pipeline graph wrapper', () => {
           mock.restore();
         });
 
-        it('it calls reportPerformance with expected arguments', () => {
+        it('calls reportPerformance with expected arguments', () => {
           expect(markAndMeasure).toHaveBeenCalled();
           expect(reportPerformance).toHaveBeenCalled();
           expect(reportPerformance).toHaveBeenCalledWith(metricsPath, metricsData);

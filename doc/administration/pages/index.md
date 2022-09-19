@@ -156,7 +156,7 @@ Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 **Requirements:**
 
 - [Wildcard DNS setup](#dns-configuration)
-- Wildcard TLS certificate
+- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
 
 ---
 
@@ -190,6 +190,12 @@ to use the HTTPS protocol.
 
 WARNING:
 Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
+
+WARNING:
+GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
+Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
+then run `gitlab-ctl reconfigure`. For more information, read
+[GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
 ### Wildcard domains with TLS-terminating Load Balancer
 
@@ -368,7 +374,7 @@ world. Custom domains and TLS are supported.
 
    If you don't have IPv6, you can omit the IPv6 address.
 
-1. If you haven't named your certificate and key `example.io.crt` and `example.io.key` respectively,
+1. If you haven't named your certificate `example.io.crt` and your key `example.io.key`,
 then you need to also add the full paths as shown below:
 
    ```ruby
@@ -397,7 +403,7 @@ domain as a custom domain to their project.
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
@@ -414,7 +420,7 @@ sites served under a custom domain.
 To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service.
@@ -467,7 +473,7 @@ pre-existing applications must modify the GitLab Pages OAuth application. Follow
 this:
 
 1. Enable [access control](#access-control).
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Applications**.
 1. Expand **GitLab Pages**.
 1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
@@ -486,7 +492,7 @@ This can be helpful to restrict information published with Pages websites to the
 of your instance only.
 To do that:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
@@ -523,7 +529,7 @@ For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https:/
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) in GitLab 14.8.
 
-If GitLab has been [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-2-way-ssl-client-authentication), you need to add the client certificates to Pages:
+If GitLab has been [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/ssl.html#enable-2-way-ssl-client-authentication), you need to add the client certificates to Pages:
 
 1. Configure in `/etc/gitlab/gitlab.rb`:
 
@@ -699,7 +705,7 @@ Prerequisites:
 
 To set the global maximum pages size for a project:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size of pages**.
@@ -713,7 +719,7 @@ Prerequisites:
 
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size** in MB.
@@ -727,9 +733,22 @@ Prerequisites:
 
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Pages**.
 1. Enter a value under **Maximum size of pages** in MB.
+1. Select **Save changes**.
+
+## Set maximum number of GitLab Pages custom domains for a project
+
+Prerequisite:
+
+- You must be an administrator of a self-managed GitLab instance.
+
+To set the maximum number of GitLab Pages custom domains for a project:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > Preferences**, and expand **Pages**.
+1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
 1. Select **Save changes**.
 
 ## Running GitLab Pages on a separate server
@@ -933,7 +952,7 @@ The following settings are:
 | `connection` | Various connection options described below. | |
 
 NOTE:
-If you want to stop using and disconnect the NFS server, you need to 
+If you want to stop using and disconnect the NFS server, you need to
 [explicitly disable local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
 
 #### S3-compatible connection settings
@@ -1379,7 +1398,7 @@ Upgrading to an [officially supported operating system](https://about.gitlab.com
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Applications > GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
@@ -1502,3 +1521,12 @@ To fix that:
    - Store your deployments locally, by commenting out that line.
 
 1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+### 404 error `The page you're looking for could not be found`
+
+If you get a `404 Page Not Found` response from GitLab Pages:
+
+1. Check `.gitlab-ci.yml` contains the job `pages:`.
+1. Check the current project's pipeline to confirm the job `pages:deploy` is being run.
+
+Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.

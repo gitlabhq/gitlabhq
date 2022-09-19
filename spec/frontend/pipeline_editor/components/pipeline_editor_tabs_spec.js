@@ -256,7 +256,7 @@ describe('Pipeline editor tabs component', () => {
       ${EDITOR_APP_STATUS_INVALID} | ${true} | ${false} | ${true}  | ${false}
       ${EDITOR_APP_STATUS_VALID}   | ${true} | ${true}  | ${true}  | ${true}
     `(
-      'when status is $appStatus, we show - editor:$editor | viz:$viz | validate:$validate | merged:$merged ',
+      'when status is $appStatus, we show - editor:$editor | viz:$viz | validate:$validate | merged:$merged',
       ({ appStatus, editor, viz, validate, merged }) => {
         createComponent({ appStatus });
 

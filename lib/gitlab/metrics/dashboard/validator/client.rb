@@ -34,8 +34,8 @@ module Gitlab
 
           def post_schema_validator
             PostSchemaValidator.new(
-              project:        project,
-              metric_ids:     custom_formats.metric_ids_cache,
+              project: project,
+              metric_ids: custom_formats.metric_ids_cache,
               dashboard_path: dashboard_path
             )
           end

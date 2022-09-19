@@ -43,14 +43,14 @@ RSpec.describe ServiceResponse do
   end
 
   describe '.error' do
-    it 'creates a failed response without HTTP status' do
+    it 'creates an error response without HTTP status' do
       response = described_class.error(message: 'Bad apple')
 
       expect(response).to be_error
       expect(response.message).to eq('Bad apple')
     end
 
-    it 'creates a failed response with HTTP status' do
+    it 'creates an error response with HTTP status' do
       response = described_class.error(message: 'Bad apple', http_status: 400)
 
       expect(response).to be_error
@@ -58,13 +58,22 @@ RSpec.describe ServiceResponse do
       expect(response.http_status).to eq(400)
     end
 
-    it 'creates a failed response with payload' do
+    it 'creates an error response with payload' do
       response = described_class.error(message: 'Bad apple',
                                        payload: { bad: 'apple' })
 
       expect(response).to be_error
       expect(response.message).to eq('Bad apple')
       expect(response.payload).to eq(bad: 'apple')
+    end
+
+    it 'creates an error response with a reason' do
+      response = described_class.error(message: 'Bad apple',
+                                       reason: :permission_denied)
+
+      expect(response).to be_error
+      expect(response.message).to eq('Bad apple')
+      expect(response.reason).to eq(:permission_denied)
     end
   end
 

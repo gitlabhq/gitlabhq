@@ -42,7 +42,7 @@ To deploy GitLab on GCP you must create a virtual machine:
 
    ![Launch on Compute Engine](img/vm_details.png)
 
-1. To select the size, type, and desired [operating system](../requirements.md#supported-linux-distributions),
+1. To select the size, type, and desired [operating system](../../administration/package_information/supported_os.md#supported-operating-systems),
    select **Change** under `Boot disk`. select **Select** when finished.
 
 1. As a last step allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.
@@ -117,8 +117,8 @@ here's how you configure GitLab to be aware of the change:
 
 ### Configuring HTTPS with the domain name
 
-Although not needed, it's strongly recommended to secure GitLab with a TLS
-certificate. Follow the steps in the [Omnibus documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+Although not needed, it's strongly recommended to secure GitLab with a
+[TLS certificate](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
 ### Configuring the email SMTP settings
 

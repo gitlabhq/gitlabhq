@@ -352,6 +352,32 @@ describe('Release edit/new actions', () => {
         });
       });
 
+      describe('when the GraphQL returns errors as data', () => {
+        beforeEach(() => {
+          gqClient.mutate.mockResolvedValue({ data: { releaseCreate: { errors: ['Yikes!'] } } });
+        });
+
+        it(`commits ${types.RECEIVE_SAVE_RELEASE_ERROR} with an error object`, () => {
+          return testAction(actions.createRelease, undefined, state, [
+            {
+              type: types.RECEIVE_SAVE_RELEASE_ERROR,
+              payload: expect.any(Error),
+            },
+          ]);
+        });
+
+        it(`shows a flash message`, () => {
+          return actions
+            .createRelease({ commit: jest.fn(), dispatch: jest.fn(), state, getters: {} })
+            .then(() => {
+              expect(createFlash).toHaveBeenCalledTimes(1);
+              expect(createFlash).toHaveBeenCalledWith({
+                message: 'Yikes!',
+              });
+            });
+        });
+      });
+
       describe('when the GraphQL network request fails', () => {
         beforeEach(() => {
           gqClient.mutate.mockRejectedValue(error);

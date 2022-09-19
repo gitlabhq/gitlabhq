@@ -157,13 +157,13 @@ describe('GlModalVuex', () => {
 
       const handler = modalFooterSlotContent.mock.calls[0][0][handlerName];
 
-      expect(wrapper.emitted(handlerName)).toBeFalsy();
+      expect(wrapper.emitted(handlerName)).toBeUndefined();
       expect(actions.hide).not.toHaveBeenCalled();
 
       handler();
 
       expect(actions.hide).toHaveBeenCalledTimes(1);
-      expect(wrapper.emitted(handlerName)).toBeTruthy();
+      expect(wrapper.emitted(handlerName)).toHaveLength(1);
     },
   );
 });

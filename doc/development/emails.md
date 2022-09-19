@@ -160,9 +160,9 @@ and Helm Chart configuration (see [example merge request](https://gitlab.com/git
 #### Rationale
 
 This was done because to avoid [thread deadlocks](https://github.com/ruby/net-imap/issues/14), `MailRoom` needs
-an updated version of the `net-imap` gem. However, this 
-[version of the net-imap cannot be installed by an unprivileged user](https://github.com/ruby/net-imap/issues/14) due to 
-[an error installing the digest gem](https://github.com/ruby/digest/issues/14). 
+an updated version of the `net-imap` gem. However, this
+[version of the net-imap cannot be installed by an unprivileged user](https://github.com/ruby/net-imap/issues/14) due to
+[an error installing the digest gem](https://github.com/ruby/digest/issues/14).
 [This bug in the Ruby interpreter](https://bugs.ruby-lang.org/issues/17761) was fixed in Ruby
 3.0.2.
 

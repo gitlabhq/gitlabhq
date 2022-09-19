@@ -97,9 +97,7 @@ As a result, to create a plan and later use the same plan in another CI job, you
 `Error: Error acquiring the state lock` errors when using `-backend-config=password=$CI_JOB_TOKEN`.
 This happens because the value of `$CI_JOB_TOKEN` is only valid for the duration of the current job.
 
-Another possible error message for the same problem could be: `Error: Error loading state: HTTP remote state endpoint requires auth`.
-
-As a workaround, use [http backend configuration variables](https://www.terraform.io/docs/language/settings/backends/http.html#configuration-variables) in your CI job,
+As a workaround, use [http backend configuration variables](https://www.terraform.io/language/settings/backends/http#configuration-variables) in your CI job,
 which is what happens behind the scenes when following the
 [Get started using GitLab CI](terraform_state.md#initialize-a-terraform-state-as-a-backend-by-using-gitlab-cicd) instructions.
 
@@ -112,8 +110,8 @@ If you don't set `TF_STATE_NAME` or `TF_ADDRESS` in your job, the job fails with
 To resolve this, ensure that either `TF_ADDRESS` or `TF_STATE_NAME` is accessible in the
 job that returned the error:
 
-1. Configure the [CI/CD environment scope](../../../ci/variables/#add-a-cicd-variable-to-a-project) for the job.
-1. Set the job's [environment](../../../ci/yaml/#environment), matching the environment scope from the previous step.
+1. Configure the [CI/CD environment scope](../../../ci/variables/index.md#add-a-cicd-variable-to-a-project) for the job.
+1. Set the job's [environment](../../../ci/yaml/index.md#environment), matching the environment scope from the previous step.
 
 ### Error refreshing state: HTTP remote state endpoint requires auth
 

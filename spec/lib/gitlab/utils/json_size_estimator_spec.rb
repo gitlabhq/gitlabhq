@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Utils::JsonSizeEstimator do
   RSpec::Matchers.define :match_json_bytesize_of do |expected|

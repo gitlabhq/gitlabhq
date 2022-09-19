@@ -18,7 +18,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
 
     skip_before_action :authenticate_user!, only: :show
     track_event(:index, :show, name: 'g_analytics_valuestream', destinations: [:redis_hll, :snowplow],
-                          conditions: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
+                               conditions: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
 
     def index
       render html: 'index'

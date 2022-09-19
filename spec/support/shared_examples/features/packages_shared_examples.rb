@@ -14,7 +14,7 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 
   def package_table_row(index)
-    page.all("#{packages_table_selector} > [data-qa-selector=\"package_row\"]")[index].text # rubocop:disable QA/SelectorUsage
+    page.all("#{packages_table_selector} > [data-testid=\"package-row\"]")[index].text
   end
 end
 
@@ -84,7 +84,7 @@ RSpec.shared_examples 'shared package sorting' do
 end
 
 def packages_table_selector
-  '[data-qa-selector="packages-table"]' # rubocop:disable QA/SelectorUsage
+  '[data-testid="packages-table"]'
 end
 
 def click_sort_option(option, ascending)

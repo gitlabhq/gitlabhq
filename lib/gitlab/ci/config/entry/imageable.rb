@@ -13,7 +13,6 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
 
           IMAGEABLE_ALLOWED_KEYS = %i[name entrypoint ports pull_policy].freeze
-          IMAGEABLE_LEGACY_ALLOWED_KEYS = %i[name entrypoint ports].freeze
 
           included do
             include ::Gitlab::Config::Entry::Validatable
@@ -45,10 +44,6 @@ module Gitlab
 
           def with_image_ports?
             opt(:with_image_ports)
-          end
-
-          def ci_docker_image_pull_policy_enabled?
-            ::Feature.enabled?(:ci_docker_image_pull_policy)
           end
 
           def skip_config_hash_validation?

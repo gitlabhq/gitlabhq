@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def get_issue
-  json_response.is_a?(Array) ? json_response.detect {|issue| issue['id'] == target_issue.id} : json_response
+  json_response.is_a?(Array) ? json_response.detect { |issue| issue['id'] == target_issue.id } : json_response
 end
 
 RSpec.shared_examples 'accessible merge requests count' do

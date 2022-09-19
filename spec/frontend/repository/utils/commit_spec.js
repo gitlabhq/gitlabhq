@@ -15,7 +15,7 @@ const mockData = [
 
 describe('normalizeData', () => {
   it('normalizes data into LogTreeCommit object', () => {
-    expect(normalizeData(mockData, '')).toEqual([
+    expect(normalizeData(mockData, '/')).toEqual([
       {
         sha: '123',
         message: 'testing message',

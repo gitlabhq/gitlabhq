@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/database/rescue_query_canceled'
 
 RSpec.describe RuboCop::Cop::Database::RescueQueryCanceled do
-  subject(:cop) { described_class.new }
-
   it 'flags the use of ActiveRecord::QueryCanceled' do
     expect_offense(<<~CODE)
       begin

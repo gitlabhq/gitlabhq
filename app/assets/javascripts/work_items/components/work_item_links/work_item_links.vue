@@ -5,22 +5,17 @@ import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import SidebarEventHub from '~/sidebar/event_hub';
 
-import {
-  STATE_OPEN,
-  WIDGET_ICONS,
-  WORK_ITEM_STATUS_TEXT,
-  WIDGET_TYPE_HIERARCHY,
-} from '../../constants';
+import { WIDGET_ICONS, WORK_ITEM_STATUS_TEXT, WIDGET_TYPE_HIERARCHY } from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemQuery from '../../graphql/work_item.query.graphql';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
+import WorkItemLinkChild from './work_item_link_child.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
-import WorkItemLinksMenu from './work_item_links_menu.vue';
 
 export default {
   components: {
@@ -28,14 +23,14 @@ export default {
     GlIcon,
     GlAlert,
     GlLoadingIcon,
+    WorkItemLinkChild,
     WorkItemLinksForm,
-    WorkItemLinksMenu,
     WorkItemDetailModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'iid'],
   props: {
     workItemId: {
       type: String,
@@ -63,6 +58,18 @@ export default {
         this.error = e.message || this.$options.i18n.fetchError;
       },
     },
+    parentIssue: {
+      query: issueConfidentialQuery,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          iid: String(this.iid),
+        };
+      },
+      update(data) {
+        return data.workspace?.issuable;
+      },
+    },
   },
   data() {
     return {
@@ -72,9 +79,13 @@ export default {
       activeToast: null,
       prefetchedWorkItem: null,
       error: undefined,
+      parentIssue: null,
     };
   },
   computed: {
+    confidential() {
+      return this.parentIssue?.confidential || this.workItem?.confidential || false;
+    },
     children() {
       return (
         this.workItem?.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
@@ -84,9 +95,6 @@ export default {
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
     },
-    confidential() {
-      return this.workItem?.confidential || false;
-    },
     // Only used for children for now but should be extended later to support parents and siblings
     isChildrenEmpty() {
       return this.children?.length === 0;
@@ -95,9 +103,7 @@ export default {
       return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
     },
     toggleLabel() {
-      return this.isOpen
-        ? s__('WorkItem|Collapse child items')
-        : s__('WorkItem|Expand child items');
+      return this.isOpen ? s__('WorkItem|Collapse tasks') : s__('WorkItem|Expand tasks');
     },
     issuableGid() {
       return this.issuableId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issuableId) : null;
@@ -112,22 +118,7 @@ export default {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
   },
-  mounted() {
-    SidebarEventHub.$on('confidentialityUpdated', this.refetchWorkItems);
-  },
-  destroyed() {
-    SidebarEventHub.$off('confidentialityUpdated', this.refetchWorkItems);
-  },
   methods: {
-    refetchWorkItems() {
-      this.$apollo.queries.workItem.refetch();
-    },
-    iconClass(state) {
-      return state === STATE_OPEN ? 'gl-text-green-500' : 'gl-text-blue-500';
-    },
-    iconName(state) {
-      return state === STATE_OPEN ? 'issue-open-m' : 'issue-close';
-    },
     toggle() {
       this.isOpen = !this.isOpen;
     },
@@ -168,9 +159,6 @@ export default {
         url: setUrlParams({ work_item_id: getIdFromGraphQLId(childItemId) }),
         replace: true,
       });
-    },
-    childPath(childItemId) {
-      return `/${this.projectPath}/-/work_items/${getIdFromGraphQLId(childItemId)}`;
     },
     toggleChildFromCache(workItem, childId, store) {
       const sourceData = store.readQuery({
@@ -242,14 +230,12 @@ export default {
     },
   },
   i18n: {
-    title: s__('WorkItem|Child items'),
-    fetchError: s__(
-      'WorkItem|Something went wrong when fetching the items list. Please refresh this page.',
-    ),
+    title: s__('WorkItem|Tasks'),
+    fetchError: s__('WorkItem|Something went wrong when fetching tasks. Please refresh this page.'),
     emptyStateMessage: s__(
-      'WorkItem|No child items are currently assigned. Use child items to prioritize tasks that your team should complete in order to accomplish your goals!',
+      'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
     ),
-    addChildButtonLabel: s__('WorkItem|Add a task'),
+    addChildButtonLabel: s__('WorkItem|Add'),
   },
   WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
   WORK_ITEM_STATUS_TEXT,
@@ -257,7 +243,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10">
+  <div
+    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-5"
+    data-testid="work-item-links"
+  >
     <div
       class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
       :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
@@ -319,48 +308,18 @@ export default {
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />
-        <div
+        <work-item-link-child
           v-for="child in children"
           :key="child.id"
-          class="gl-relative gl-display-flex gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
-          data-testid="links-child"
-        >
-          <div class="gl-overflow-hidden gl-display-flex gl-align-items-center gl-flex-grow-1">
-            <gl-icon
-              :name="iconName(child.state)"
-              class="gl-mr-3"
-              :class="iconClass(child.state)"
-            />
-            <gl-icon
-              v-if="child.confidential"
-              v-gl-tooltip.top
-              name="eye-slash"
-              class="gl-mr-2 gl-text-orange-500"
-              data-testid="confidential-icon"
-              :title="__('Confidential')"
-            />
-            <gl-button
-              :href="childPath(child.id)"
-              category="tertiary"
-              variant="link"
-              class="gl-text-truncate gl-max-w-80 gl-text-black-normal!"
-              @click="openChild(child.id, $event)"
-              @mouseover="prefetchWorkItem(child.id)"
-              @mouseout="clearPrefetching"
-            >
-              {{ child.title }}
-            </gl-button>
-          </div>
-          <div class="gl-ml-0 gl-sm-ml-auto! gl-display-inline-flex gl-align-items-center">
-            <work-item-links-menu
-              v-if="canUpdate"
-              :work-item-id="child.id"
-              :parent-work-item-id="issuableGid"
-              data-testid="links-menu"
-              @removeChild="removeChild(child.id)"
-            />
-          </div>
-        </div>
+          :project-path="projectPath"
+          :can-update="canUpdate"
+          :issuable-gid="issuableGid"
+          :child-item="child"
+          @click="openChild"
+          @mouseover="prefetchWorkItem"
+          @mouseout="clearPrefetching"
+          @remove="removeChild"
+        />
         <work-item-detail-modal
           ref="modal"
           :work-item-id="activeChildId"

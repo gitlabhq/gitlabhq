@@ -105,6 +105,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     before do
       stub_application_setting(send_user_confirmation_email: true)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
+      stub_feature_flags(identity_verification: false)
     end
 
     context 'within the grace period' do
@@ -862,7 +863,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       context 'when the user already enabled 2FA' do
         before do
           user.update!(otp_required_for_login: true,
-                       otp_secret:  User.generate_otp_secret(32))
+                       otp_secret: User.generate_otp_secret(32))
         end
 
         it 'asks the user to accept the terms' do
@@ -954,6 +955,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     before do
       stub_application_setting(send_user_confirmation_email: true)
       stub_feature_flags(soft_email_confirmation: true)
+      stub_feature_flags(identity_verification: false)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end
 

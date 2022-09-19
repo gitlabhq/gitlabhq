@@ -62,7 +62,7 @@ repository.
 After setting up Grafana, you can enable a link to access it easily from the
 GitLab sidebar:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    and expand **Metrics - Grafana**.
 1. Select the **Add a link to Grafana** checkbox.
@@ -72,14 +72,14 @@ GitLab sidebar:
    - *Otherwise,* enter the full URL of the Grafana instance.
 1. Select **Save changes**.
 
-GitLab displays your link in the **Menu > Admin > Monitoring > Metrics Dashboard**.
+GitLab displays your link in the **Main menu > Admin > Monitoring > Metrics Dashboard**.
 
 ## Required Scopes
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5822) in GitLab 13.10.
 
 When setting up Grafana through the process above, no scope shows in the screen at
-**Menu > Admin > Applications > GitLab Grafana**. However, the `read_user` scope is
+**Main menu > Admin > Applications > GitLab Grafana**. However, the `read_user` scope is
 required and is provided to the application automatically. Setting any scope other than
 `read_user` without also including `read_user` leads to this error when you try to log in using
 GitLab as the OAuth provider:

@@ -46,4 +46,12 @@ RSpec.describe Banzai::Filter::KrokiFilter do
 
     expect(doc.to_s).to start_with '<img src="http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KyJyVNQiE5KTSxKidXVjS5ILCrKL4lFFrSyi07LL81RyM0vLckAysRGjxo8avCowaMGjxo8avCowaMGU8lgAE7mIdc=" hidden="" class="js-render-kroki" data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,W1BpcmF0ZXxleWVDb3VudDog'
   end
+
+  it 'allows the lang attribute on the code tag to support RST files processed by gitlab-markup gem' do
+    stub_application_setting(kroki_enabled: true, kroki_url: "http://localhost:8000")
+    text = '[Pirate|eyeCount: Int|raid();pillage()|\n  [beard]--[parrot]\n  [beard]-:>[foul mouth]\n]' * 25
+    doc = filter("<pre><code lang='nomnoml'>#{text}</code></pre>")
+
+    expect(doc.to_s).to start_with '<img src="http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KyJyVNQiE5KTSxKidXVjS5ILCrKL4lFFrSyi07LL81RyM0vLckAysRGjxo8avCowaMGjxo8avCowaMGU8lgAE7mIdc=" hidden="" class="js-render-kroki" data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,W1BpcmF0ZXxleWVDb3VudDog'
+  end
 end

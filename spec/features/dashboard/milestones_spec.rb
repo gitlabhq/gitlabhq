@@ -41,7 +41,12 @@ RSpec.describe 'Dashboard > Milestones' do
           first('.select2-result-label').click
         end
 
-        find('.js-new-project-item-link').click
+        a_el = find('.js-new-project-item-link')
+
+        expect(a_el).to have_content('New Milestone in ')
+        expect(a_el).to have_no_content('New New Milestone in ')
+
+        a_el.click
 
         expect(page).to have_current_path(new_group_milestone_path(group), ignore_query: true)
       end

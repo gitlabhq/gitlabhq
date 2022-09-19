@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 Static Application Security Testing (SAST) uses analyzers
-to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/#scanner), a third-party code analysis tool.
+to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/index.md#scanner), a third-party code analysis tool.
 
 The analyzers are published as Docker images that SAST uses to launch dedicated containers for each
 analysis.
@@ -20,7 +20,7 @@ For each scanner, an analyzer:
 
 - Exposes its detection logic.
 - Handles its execution.
-- Converts its output to a [standard format](../terminology/#secure-report-format).
+- Converts its output to a [standard format](../terminology/index.md#secure-report-format).
 
 ## SAST analyzers
 
@@ -77,7 +77,7 @@ You can choose to disable the other analyzers early and use Semgrep-based scanni
 - You'll enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
 - However, vulnerabilities previously reported by language-specific analyzers will be reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
   - whether you've excluded the Semgrep-based analyzer from running in the past.
-  - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/).
+  - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/index.md).
 
 ### Vulnerability translation
 
@@ -103,7 +103,7 @@ You can choose to use Semgrep-based scanning instead of language-specific analyz
 
 We recommend taking this approach if any of these cases applies:
 
-- You haven't used SAST before on a project, so you don't already have SAST vulnerabilities in your [Vulnerability Report](../vulnerability_report/).
+- You haven't used SAST before on a project, so you don't already have SAST vulnerabilities in your [Vulnerability Report](../vulnerability_report/index.md).
 - You're having trouble configuring one of the analyzers whose coverage overlaps with Semgrep-based coverage. For example, you might have trouble setting up the SpotBugs-based analyzer to compile your code.
 - You've already seen and dismissed vulnerabilities created by ESLint, Gosec, or Flawfinder scanning, and you've kept the re-created vulnerabilities created by Semgrep.
 
@@ -119,6 +119,36 @@ To switch to Semgrep-based scanning early, you can:
 1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
 1. Merge the MR and wait for the default-branch pipeline to run.
 1. Use the Vulnerability Report to dismiss the findings that are no longer detected by the language-specific analyzers.
+
+#### Preview Semgrep-based scanning
+
+You can see how Semgrep-based scanning will work in your projects before the GitLab-managed Stable CI/CD template for SAST is updated.
+We recommend that you test this change in a merge request but continue using the Stable template in your default branch pipeline configuration.
+
+In GitLab 15.3, we [activated a feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/362179) to migrate security findings on the default branch from other analyzers to Semgrep.
+We plan to [plan to remove the deprecated analyzers](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) from the Stable CI/CD template in GitLab 15.4.
+
+To preview the upcoming changes to the CI/CD configuration:
+
+1. Open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yaml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yaml`.
+    - On GitLab.com, use the latest template directly:
+
+      ```yaml
+      include:
+        template: 'SAST.latest.gitlab-ci.yaml'
+      ```
+
+    - On a Self-Managed instance, download the template from GitLab.com:
+
+      ```yaml
+      include:
+        remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
+      ```
+
+1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
+1. Close the MR.
+
+To learn more about Stable and Latest templates, see documentation on [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
 
 ## Customize analyzers
 

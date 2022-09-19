@@ -4,8 +4,9 @@
 #js-harbor-registry-list-project{ data: { endpoint: project_harbor_repositories_path(@project),
   "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
   "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
-  "repository_url" => 'demo.harbor.com/gitlab-cn/build/cng-images/gitlab-kas',
-  "registry_host_url_with_port" => 'demo.harbor.com',
+  "repository_url" => @project.harbor_integration.hostname,
+  "harbor_integration_project_name" => @project.harbor_integration.project_name,
+  "project_name" => @project.name,
   connection_error: (!!@connection_error).to_s,
   invalid_path_error: (!!@invalid_path_error).to_s,
   is_group_page: false.to_s, } }

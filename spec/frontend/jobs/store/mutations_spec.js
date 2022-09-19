@@ -83,7 +83,7 @@ describe('Jobs Store Mutations', () => {
     describe('with new job log', () => {
       describe('log.lines', () => {
         describe('when append is true', () => {
-          it('sets the parsed log ', () => {
+          it('sets the parsed log', () => {
             mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: true,
               size: 511846,
@@ -107,7 +107,7 @@ describe('Jobs Store Mutations', () => {
         });
 
         describe('when it is defined', () => {
-          it('sets the parsed log ', () => {
+          it('sets the parsed log', () => {
             mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: false,
               size: 511846,

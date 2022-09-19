@@ -1,4 +1,4 @@
-import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -29,7 +29,6 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
-
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
@@ -58,6 +57,10 @@ import {
   WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+
+import('~/issuable/bulk_update_sidebar');
+import('~/users_select');
 
 jest.mock('@sentry/browser');
 jest.mock('~/flash');
@@ -122,7 +125,6 @@ describe('CE IssuesListApp component', () => {
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findGlLink = () => wrapper.findComponent(GlLink);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
 
@@ -430,8 +432,9 @@ describe('CE IssuesListApp component', () => {
           });
         });
 
-        it('is not set from url params', () => {
-          expect(findIssuableList().props('initialFilterValue')).toEqual([]);
+        it('is set from url params and removes search terms', () => {
+          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
+          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
@@ -562,15 +565,16 @@ describe('CE IssuesListApp component', () => {
 
         it('shows Jira integration information', () => {
           const paragraphs = wrapper.findAll('p');
-          expect(paragraphs.at(2).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(3).text()).toContain(
+          const links = wrapper.findAll('.gl-link');
+          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
+          expect(paragraphs.at(2).text()).toContain(
             'Enable the Jira integration to view your Jira issues in GitLab.',
           );
-          expect(paragraphs.at(4).text()).toContain(
+          expect(paragraphs.at(3).text()).toContain(
             IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
           );
-          expect(findGlLink().text()).toBe('Enable the Jira integration');
-          expect(findGlLink().attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
+          expect(links.at(1).text()).toBe('Enable the Jira integration');
+          expect(links.at(1).attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
         });
       });
 
@@ -1006,8 +1010,9 @@ describe('CE IssuesListApp component', () => {
           findIssuableList().vm.$emit('filter', filteredTokens);
         });
 
-        it('does not update url params', () => {
-          expect(router.push).not.toHaveBeenCalled();
+        it('removes search terms', () => {
+          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
+          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {

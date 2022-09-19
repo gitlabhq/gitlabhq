@@ -53,28 +53,45 @@ module QA
           element :search_term_field
         end
 
+        view 'app/views/layouts/header/_new_dropdown.html.haml' do
+          element :new_menu_toggle
+        end
+
+        view 'app/helpers/nav/new_dropdown_helper.rb' do
+          element :global_new_group_link
+          element :global_new_project_link
+        end
+
         def go_to_groups
           within_groups_menu do
-            click_element(:menu_item_link, title: 'Your groups')
+            # Remove if statement once :remove_extra_primary_submenu_options ff is enabled by default
+            if has_element?(:menu_item_link, title: 'Your groups')
+              click_element(:menu_item_link, title: 'Your groups')
+            else
+              click_element(:menu_item_link, title: 'View all groups')
+            end
           end
         end
 
         def go_to_create_group
-          within_groups_menu do
-            click_element(:menu_item_link, title: 'Create group')
-          end
+          click_element(:new_menu_toggle)
+          click_element(:global_new_group_link)
         end
 
         def go_to_projects
           within_projects_menu do
-            click_element(:menu_item_link, title: 'Your projects')
+            # Remove if statement once :remove_extra_primary_submenu_options ff is enabled by default
+            if has_element?(:menu_item_link, title: 'Your projects')
+              click_element(:menu_item_link, title: 'Your projects')
+            else
+              click_element(:menu_item_link, title: 'View all projects')
+            end
           end
         end
 
         def go_to_create_project
-          within_projects_menu do
-            click_element(:menu_item_link, title: 'Create new project')
-          end
+          click_element(:new_menu_toggle)
+          click_element(:global_new_project_link)
         end
 
         def go_to_menu_dropdown_option(option_name)

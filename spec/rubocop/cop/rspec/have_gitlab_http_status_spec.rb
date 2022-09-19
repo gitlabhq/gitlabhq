@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/rspec/have_gitlab_http_status'
@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
   using RSpec::Parameterized::TableSyntax
 
   let(:source_file) { 'spec/foo_spec.rb' }
-
-  subject(:cop) { described_class.new }
 
   shared_examples 'offense' do |bad, good|
     it 'registers an offense', :aggregate_failures do

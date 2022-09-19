@@ -1,7 +1,7 @@
 - if @related_branches.any?
   %h2.gl-font-lg
     = pluralize(@related_branches.size, 'Related Branch')
-  %ul.related-merge-requests.gl-pl-0
+  %ul.related-merge-requests.gl-pl-0.gl-mb-3
     - @related_branches.each do |branch|
       %li.gl-display-flex.gl-align-items-center
         - if branch[:pipeline_status].present?

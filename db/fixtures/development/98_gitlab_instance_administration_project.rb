@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 response = Sidekiq::Worker.skipping_transaction_check do
-  ::Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService.new.execute
+  result = ::Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService.new.execute
+  AuthorizedProjectUpdate::ProjectRecalculateService.new(result[:project]).execute
+
+  result
 end
 
 if response[:status] == :success

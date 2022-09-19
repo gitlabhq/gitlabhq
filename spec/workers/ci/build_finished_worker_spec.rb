@@ -27,19 +27,6 @@ RSpec.describe Ci::BuildFinishedWorker do
         subject
       end
 
-      context 'when the execute_build_hooks_inline feature flag is disabled' do
-        before do
-          stub_feature_flags(execute_build_hooks_inline: false)
-        end
-
-        it 'uses the BuildHooksWorker' do
-          expect(build).not_to receive(:execute_hooks)
-          expect(BuildHooksWorker).to receive(:perform_async).with(build)
-
-          subject
-        end
-      end
-
       context 'when build is failed' do
         before do
           build.update!(status: :failed)

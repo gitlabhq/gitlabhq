@@ -62,7 +62,7 @@ describe('Stacktrace Entry', () => {
       );
     });
 
-    it('should render only lineNo:columnNO when there is no errorFn ', () => {
+    it('should render only lineNo:columnNO when there is no errorFn', () => {
       const extraInfo = { errorLine: 34, errorFn: null, errorColumn: 77 };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
       const fileHeaderContent = trimText(findFileHeaderContent());
@@ -70,7 +70,7 @@ describe('Stacktrace Entry', () => {
       expect(fileHeaderContent).toContain(`${extraInfo.errorLine}:${extraInfo.errorColumn}`);
     });
 
-    it('should render only lineNo when there is no errorColumn ', () => {
+    it('should render only lineNo when there is no errorColumn', () => {
       const extraInfo = { errorLine: 34, errorFn: 'errorFn', errorColumn: null };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
       const fileHeaderContent = trimText(findFileHeaderContent());

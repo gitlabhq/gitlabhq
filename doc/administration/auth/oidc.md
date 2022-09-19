@@ -250,7 +250,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
    <OutputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
    ```
 
-1. For OIDC discovery to work with B2C, the policy must be configured with an issuer compatible with the 
+1. For OIDC discovery to work with B2C, the policy must be configured with an issuer compatible with the
   [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
    See the [token compatibility settings](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
    In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:

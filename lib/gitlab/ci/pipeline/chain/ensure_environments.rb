@@ -18,7 +18,9 @@ module Gitlab
           def ensure_environment(build)
             return unless build.instance_of?(::Ci::Build) && build.has_environment?
 
-            environment = ::Gitlab::Ci::Pipeline::Seed::Environment.new(build).to_resource
+            environment = ::Gitlab::Ci::Pipeline::Seed::Environment
+                            .new(build, merge_request: @command.merge_request)
+                            .to_resource
 
             if environment.persisted?
               build.persisted_environment = environment

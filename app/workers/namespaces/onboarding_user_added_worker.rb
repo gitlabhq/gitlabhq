@@ -15,7 +15,7 @@ module Namespaces
 
     def perform(namespace_id)
       namespace = Namespace.find(namespace_id)
-      OnboardingProgressService.new(namespace).execute(action: :user_added)
+      Onboarding::ProgressService.new(namespace).execute(action: :user_added)
     end
   end
 end

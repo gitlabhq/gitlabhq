@@ -26,25 +26,18 @@ module QA
         end
 
         def api_get_path
-          "gid://gitlab/Clusters::Agent/#{id}"
+          "/projects/#{project.id}/cluster_agents/#{id}"
         end
 
         def api_post_path
-          "/graphql"
+          "/projects/#{project.id}/cluster_agents"
         end
 
         def api_post_body
-          <<~GQL
-          mutation createAgent {
-            createClusterAgent(input: { projectPath: "#{project.full_path}", name: "#{@name}" }) {
-              clusterAgent {
-                id
-                name
-              }
-              errors
-            }
+          {
+            id: project.id,
+            name: name
           }
-          GQL
         end
       end
     end

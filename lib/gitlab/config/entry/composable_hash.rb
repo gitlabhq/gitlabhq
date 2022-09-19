@@ -25,9 +25,9 @@ module Gitlab
               entry_class_name = entry_class.name.demodulize.underscore
 
               factory = ::Gitlab::Config::Entry::Factory.new(entry_class)
-                .value(config || {})
+                .value(config.nil? ? {} : config)
                 .with(key: name, parent: self, description: "#{name} #{entry_class_name} definition") # rubocop:disable CodeReuse/ActiveRecord
-                .metadata(name: name)
+                .metadata(composable_metadata.merge(name: name))
 
               @entries[name] = factory.create!
             end
@@ -38,8 +38,14 @@ module Gitlab
           end
         end
 
+        private
+
         def composable_class(name, config)
           opt(:composable_class)
+        end
+
+        def composable_metadata
+          {}
         end
       end
     end

@@ -5,15 +5,14 @@ import HarborListHeader from '~/packages_and_registries/harbor_registry/componen
 import HarborRegistryList from '~/packages_and_registries/harbor_registry/pages/list.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-// import { harborListResponse } from '~/packages_and_registries/harbor_registry/mock_api.js';
 import HarborList from '~/packages_and_registries/harbor_registry/components/list/harbor_list.vue';
 import CliCommands from '~/packages_and_registries/shared/components/cli_commands.vue';
 import { SORT_FIELDS } from '~/packages_and_registries/harbor_registry/constants/index';
-import { harborListResponse, dockerCommands } from '../mock_data';
+import { harborImagesResponse, defaultConfig, harborImagesList } from '../mock_data';
 
 let mockHarborListResponse;
-jest.mock('~/packages_and_registries/harbor_registry/mock_api.js', () => ({
-  harborListResponse: () => mockHarborListResponse,
+jest.mock('~/rest_api', () => ({
+  getHarborRepositoriesList: () => mockHarborListResponse,
 }));
 
 describe('Harbor List Page', () => {
@@ -24,33 +23,42 @@ describe('Harbor List Page', () => {
     await nextTick();
   };
 
-  beforeEach(() => {
-    mockHarborListResponse = Promise.resolve(harborListResponse);
-  });
-
   const findHarborListHeader = () => wrapper.findComponent(HarborListHeader);
   const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findHarborList = () => wrapper.findComponent(HarborList);
   const findCliCommands = () => wrapper.findComponent(CliCommands);
 
+  const defaultHeaders = {
+    'x-page': '1',
+    'X-Per-Page': '20',
+    'X-TOTAL': '1',
+    'X-Total-Pages': '1',
+  };
+
   const fireFirstSortUpdate = () => {
     findPersistedSearch().vm.$emit('update', { sort: 'UPDATED_DESC', filters: [] });
   };
 
-  const mountComponent = ({ config = { isGroupPage: false } } = {}) => {
+  const mountComponent = ({ config = defaultConfig } = {}) => {
     wrapper = shallowMount(HarborRegistryList, {
       stubs: {
         HarborListHeader,
       },
       provide() {
         return {
-          config,
-          ...dockerCommands,
+          ...config,
         };
       },
     });
   };
+
+  beforeEach(() => {
+    mockHarborListResponse = Promise.resolve({
+      data: harborImagesResponse,
+      headers: defaultHeaders,
+    });
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -64,7 +72,7 @@ describe('Harbor List Page', () => {
 
     expect(findHarborListHeader().exists()).toBe(true);
     expect(findHarborListHeader().props()).toMatchObject({
-      imagesCount: 3,
+      imagesCount: 1,
       metadataLoading: false,
     });
   });
@@ -117,6 +125,16 @@ describe('Harbor List Page', () => {
         await nextTick();
 
         expect(findHarborList().exists()).toBe(true);
+        expect(findHarborList().props()).toMatchObject({
+          images: harborImagesList,
+          metadataLoading: false,
+          pageInfo: {
+            page: 1,
+            perPage: 20,
+            total: 1,
+            totalPages: 1,
+          },
+        });
       });
     });
 

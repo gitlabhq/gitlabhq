@@ -35,7 +35,7 @@ import (
 )
 
 const scratchDir = "testdata/scratch"
-const testRepoRoot = "testdata/data"
+const testRepoRoot = "testdata/repo"
 const testDocumentRoot = "testdata/public"
 const testAltDocumentRoot = "testdata/alt-public"
 
@@ -799,7 +799,7 @@ func startWorkhorseServer(authBackend string) *httptest.Server {
 
 func startWorkhorseServerWithConfig(cfg *config.Config) *httptest.Server {
 	testhelper.ConfigureSecret()
-	u := upstream.NewUpstream(*cfg, logrus.StandardLogger())
+	u := upstream.NewUpstream(*cfg, logrus.StandardLogger(), nil)
 	return httptest.NewServer(u)
 }
 

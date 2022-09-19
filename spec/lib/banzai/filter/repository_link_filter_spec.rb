@@ -8,14 +8,14 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter do
 
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
-      commit:         commit,
-      project:        project,
-      current_user:   user,
-      group:          group,
-      wiki:           wiki,
-      ref:            ref,
+      commit: commit,
+      project: project,
+      current_user: user,
+      group: group,
+      wiki: wiki,
+      ref: ref,
       requested_path: requested_path,
-      only_path:      only_path
+      only_path: only_path
     })
 
     described_class.call(doc, contexts)

@@ -40,7 +40,7 @@ export default {
     <gl-dropdown-item
       v-for="project in projects"
       :key="project.id"
-      :is-check-item="true"
+      is-check-item
       :is-checked="project.id === selectedProject.id"
       @click="selectProject(project)"
     >

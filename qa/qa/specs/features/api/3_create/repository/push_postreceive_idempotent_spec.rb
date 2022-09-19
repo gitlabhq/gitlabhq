@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'PostReceive idempotent' do
+    describe 'PostReceive idempotent', product_group: :source_code do
       # Tests that a push does not result in multiple changes from repeated PostReceive executions.
       # One of the consequences would be duplicate push events
 

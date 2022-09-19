@@ -26,9 +26,6 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
     expect(FlushCounterIncrementsWorker)
       .to receive(:perform_in)
       .with(CounterAttribute::WORKER_DELAY, project.statistics.class.name, project.statistics.id, project_statistics_name)
-    expect(FlushCounterIncrementsWorker)
-      .to receive(:perform_in)
-      .with(CounterAttribute::WORKER_DELAY, project.statistics.class.name, project.statistics.id, :storage_size)
 
     yield
 

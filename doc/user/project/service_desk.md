@@ -150,7 +150,7 @@ The templates are inherited. For example, in a project, you can also access temp
 
 To use a custom description template with Service Desk:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. [Create a description template](description_templates.md#create-an-issue-template).
 1. On the left sidebar, select **Settings > General > Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
@@ -164,7 +164,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General > Service Desk**.
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
@@ -358,9 +358,23 @@ to everyone who can view the project.
 Behind the scenes, Service Desk works by the special Support Bot user creating issues. This user
 does not count toward the license limit count.
 
+### Moving a Service Desk issue
+
+Service Desk issues can be moved like any other issue in GitLab.
+
+You can move a Service Desk issue the same way you
+[move a regular issue](issues/managing_issues.md#move-an-issue) in GitLab.
+
+If a Service Desk issue is moved to a different project the customer who created the issue stops receiving emails.
+
 ## Troubleshooting Service Desk
 
 ### Emails to Service Desk do not create issues
 
 Your emails might be ignored because they contain one of the
 [email headers that GitLab ignores](../../administration/incoming_email.md#rejected-headers).
+
+### Responses to a Service Desk issue do not generate emails
+
+Your issue might have been moved to a different project.
+Moved Service Desk issues do not retain email participants.

@@ -6,6 +6,8 @@ module Mutations
       class PromoteFromNote < Base
         graphql_name 'TimelineEventPromoteFromNote'
 
+        include NotesHelper
+
         argument :note_id, Types::GlobalIDType[::Note],
                  required: true,
                  description: 'Note ID from which the timeline event promoted.'
@@ -20,7 +22,7 @@ module Mutations
             incident,
             current_user,
             promoted_from_note: note,
-            note: note.note,
+            note: build_note_string(note),
             occurred_at: note.created_at,
             editable: true
           ).execute
@@ -36,6 +38,11 @@ module Mutations
           raise_noteable_not_incident! if object && !object.try(:incident?)
 
           super
+        end
+
+        def build_note_string(note)
+          commented = _('commented')
+          "@#{note.author.username} [#{commented}](#{noteable_note_url(note)}): '#{note.note}'"
         end
 
         def raise_noteable_not_incident!

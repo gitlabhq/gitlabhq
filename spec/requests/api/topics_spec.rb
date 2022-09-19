@@ -317,4 +317,66 @@ RSpec.describe API::Topics do
       end
     end
   end
+
+  describe 'POST /topics/merge', :aggregate_failures do
+    context 'as administrator' do
+      let_it_be(:api_url) { api('/topics/merge', admin) }
+
+      it 'merge topics' do
+        post api_url, params: { source_topic_id: topic_3.id, target_topic_id: topic_2.id }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect { topic_2.reload }.not_to raise_error
+        expect { topic_3.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(json_response['id']).to eq(topic_2.id)
+        expect(json_response['total_projects_count']).to eq(topic_2.total_projects_count)
+      end
+
+      it 'returns 404 for non existing source topic id' do
+        post api_url, params: { source_topic_id: non_existing_record_id, target_topic_id: topic_2.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 404 for non existing target topic id' do
+        post api_url, params: { source_topic_id: topic_3.id, target_topic_id: non_existing_record_id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 400 for identical topic ids' do
+        post api_url, params: { source_topic_id: topic_2.id, target_topic_id: topic_2.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eql('The source topic and the target topic are identical.')
+      end
+
+      it 'returns 400 if merge failed' do
+        allow_next_found_instance_of(Projects::Topic) do |topic|
+          allow(topic).to receive(:destroy!).and_raise(ActiveRecord::RecordNotDestroyed)
+        end
+
+        post api_url, params: { source_topic_id: topic_3.id, target_topic_id: topic_2.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eql('Topics could not be merged!')
+      end
+    end
+
+    context 'as normal user' do
+      it 'returns 403 Forbidden' do
+        post api('/topics/merge', user), params: { source_topic_id: topic_3.id, target_topic_id: topic_2.id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'as anonymous' do
+      it 'returns 401 Unauthorized' do
+        post api('/topics/merge'), params: { source_topic_id: topic_3.id, target_topic_id: topic_2.id }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
 end

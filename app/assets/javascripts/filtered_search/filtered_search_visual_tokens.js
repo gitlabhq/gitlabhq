@@ -122,6 +122,7 @@ export default class FilteredSearchVisualTokens {
     const hasOperator = Boolean(operator);
 
     if (value) {
+      // eslint-disable-next-line no-unsanitized/property
       li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML({
         canEdit,
         uppercaseTokenName,
@@ -138,6 +139,7 @@ export default class FilteredSearchVisualTokens {
         operatorHTML = '<div class="operator"></div>';
       }
 
+      // eslint-disable-next-line no-unsanitized/property
       li.innerHTML = nameHTML + operatorHTML;
     }
 
@@ -160,6 +162,8 @@ export default class FilteredSearchVisualTokens {
     if (!isLastVisualTokenValid && lastVisualToken.classList.contains('filtered-search-token')) {
       const name = FilteredSearchVisualTokens.getLastTokenPartial();
       const operator = FilteredSearchVisualTokens.getLastTokenOperator();
+
+      // eslint-disable-next-line no-unsanitized/property
       lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML({
         hasOperator: Boolean(operator),
       });
@@ -293,6 +297,7 @@ export default class FilteredSearchVisualTokens {
         const button = lastVisualToken.querySelector('.selectable');
         const valueContainer = lastVisualToken.querySelector('.value-container');
         button.removeChild(valueContainer);
+        // eslint-disable-next-line no-unsanitized/property
         lastVisualToken.innerHTML = button.innerHTML;
       } else if (operator) {
         lastVisualToken.removeChild(operator);

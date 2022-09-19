@@ -42,11 +42,14 @@ module Gitlab
       def build
         menu = @menu_builder.build
 
+        hide_menu_text = Feature.enabled?(:new_navbar_layout)
+
         menu.merge({
           views: @views,
           shortcuts: @shortcuts,
-          activeTitle: _('Menu')
-        })
+          menuTitle: (_('Menu') unless hide_menu_text),
+          menuTooltip: (_('Main menu') if hide_menu_text)
+        }.compact)
       end
     end
   end

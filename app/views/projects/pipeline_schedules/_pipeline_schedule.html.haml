@@ -2,7 +2,7 @@
   %tr.pipeline-schedule-table-row
     %td
       = pipeline_schedule.description
-    %td.branch-name-cell
+    %td.branch-name-cell.gl-text-truncate
       - if pipeline_schedule.for_tag?
         = sprite_icon('tag', size: 12)
       - else
@@ -17,7 +17,7 @@
             %span ##{pipeline_schedule.last_pipeline.id}
       - else
         = s_("PipelineSchedules|None")
-    %td.next-run-cell
+    %td.gl-text-gray-500{ 'data-testid': 'next-run-cell' }
       - if pipeline_schedule.active? && pipeline_schedule.next_run_at
         = time_ago_with_tooltip(pipeline_schedule.real_next_run)
       - else

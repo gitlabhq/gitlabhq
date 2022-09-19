@@ -54,14 +54,14 @@ RSpec.describe Groups::ProjectsRequiringAuthorizationsRefresh::OnDirectMembershi
       it 'includes only the expected projects' do
         expected_projects = Project.id_in(
           [
-              project_b_subgroup_1, # direct member of Group B gets access to this project due to group hierarchy
-              project_b_subgroup_2, # direct member of Group B gets access to this project due to group hierarchy
-              project_c,            # direct member of Group B gets access to this project via project-group share
-              project_a_subgroup_1, # direct member of Group B gets access to this project via group share
-              project_a_subgroup_2, # direct member of Group B gets access to this project via group share
+            project_b_subgroup_1, # direct member of Group B gets access to this project due to group hierarchy
+            project_b_subgroup_2, # direct member of Group B gets access to this project due to group hierarchy
+            project_c,            # direct member of Group B gets access to this project via project-group share
+            project_a_subgroup_1, # direct member of Group B gets access to this project via group share
+            project_a_subgroup_2, # direct member of Group B gets access to this project via group share
 
-              # direct member of Group B gets access to any projects shared with groups within its shared groups.
-              project_x_subgroup_1
+            # direct member of Group B gets access to any projects shared with groups within its shared groups.
+            project_x_subgroup_1
           ]
         )
         # project_c_subgroup_1 is not included in the list because only 'direct' members of

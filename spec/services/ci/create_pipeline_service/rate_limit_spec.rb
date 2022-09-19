@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :freeze_time, :clean_gitlab_redis_rate_limiting do
+RSpec.describe Ci::CreatePipelineService, :freeze_time,
+                                          :clean_gitlab_redis_rate_limiting,
+                                          :yaml_processor_feature_flag_corectness do
   describe 'rate limiting' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }

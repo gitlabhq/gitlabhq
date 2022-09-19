@@ -7,7 +7,8 @@ module Gitlab
 
       TAGS_SORT_KEY = {
         'name' => Gitaly::FindAllTagsRequest::SortBy::Key::REFNAME,
-        'updated' => Gitaly::FindAllTagsRequest::SortBy::Key::CREATORDATE
+        'updated' => Gitaly::FindAllTagsRequest::SortBy::Key::CREATORDATE,
+        'version' => Gitaly::FindAllTagsRequest::SortBy::Key::VERSION_REFNAME
       }.freeze
 
       TAGS_SORT_DIRECTION = {
@@ -104,7 +105,7 @@ module Gitlab
         return unless branch
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
-        Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
+        Gitlab::Git::Branch.new(@repository, branch.name.dup, branch.target_commit.id, target_commit)
       end
 
       def find_tag(tag_name)
@@ -258,7 +259,7 @@ module Gitlab
       end
 
       def sort_tags_by_param(sort_by)
-        match = sort_by.match(/^(?<key>name|updated)_(?<direction>asc|desc)$/)
+        match = sort_by.match(/^(?<key>name|updated|version)_(?<direction>asc|desc)$/)
 
         return unless match
 
@@ -269,14 +270,23 @@ module Gitlab
       end
 
       def consume_find_local_branches_response(response)
-        response.flat_map do |message|
-          message.branches.map do |gitaly_branch|
-            Gitlab::Git::Branch.new(
-              @repository,
-              encode!(gitaly_branch.name.dup),
-              gitaly_branch.commit_id,
-              commit_from_local_branches_response(gitaly_branch)
-            )
+        if Feature.enabled?(:gitaly_simplify_find_local_branches_response, type: :undefined)
+          response.flat_map do |message|
+            message.local_branches.map do |branch|
+              target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+              Gitlab::Git::Branch.new(@repository, branch.name, branch.target_commit.id, target_commit)
+            end
+          end
+        else
+          response.flat_map do |message|
+            message.branches.map do |gitaly_branch|
+              Gitlab::Git::Branch.new(
+                @repository,
+                gitaly_branch.name.dup,
+                gitaly_branch.commit_id,
+                commit_from_local_branches_response(gitaly_branch)
+              )
+            end
           end
         end
       end

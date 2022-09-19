@@ -118,7 +118,7 @@ module Gitlab
         def predefined_variables(job)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
-            variables.append(key: 'CI_JOB_STAGE', value: job.stage)
+            variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
 
@@ -127,7 +127,7 @@ module Gitlab
 
             # legacy variables
             variables.append(key: 'CI_BUILD_NAME', value: job.name)
-            variables.append(key: 'CI_BUILD_STAGE', value: job.stage)
+            variables.append(key: 'CI_BUILD_STAGE', value: job.stage_name)
             variables.append(key: 'CI_BUILD_TRIGGERED', value: 'true') if job.trigger_request
             variables.append(key: 'CI_BUILD_MANUAL', value: 'true') if job.action?
           end

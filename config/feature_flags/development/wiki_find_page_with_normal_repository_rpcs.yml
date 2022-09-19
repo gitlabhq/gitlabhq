@@ -1,0 +1,8 @@
+---
+name: wiki_find_page_with_normal_repository_rpcs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95897
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371487
+milestone: '15.4'
+type: development
+group: group::gitaly
+default_enabled: false

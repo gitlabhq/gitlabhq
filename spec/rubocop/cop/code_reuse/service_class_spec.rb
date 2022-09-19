@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/code_reuse/service_class'
 
 RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
-  subject(:cop) { described_class.new }
-
   it 'flags the use of a Service class in a Finder' do
     allow(cop)
       .to receive(:in_finder?)

@@ -72,9 +72,9 @@ RSpec.describe 'Pipeline', :js do
       visit_pipeline
 
       expect(page).to have_selector('.js-pipeline-graph')
-      expect(page).to have_content('Build')
-      expect(page).to have_content('Test')
-      expect(page).to have_content('Deploy')
+      expect(page).to have_content('build')
+      expect(page).to have_content('test')
+      expect(page).to have_content('deploy')
       expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel running')
     end
@@ -793,9 +793,9 @@ RSpec.describe 'Pipeline', :js do
 
       it 'shows the pipeline graph' do
         expect(page).to have_selector('.js-pipeline-graph')
-        expect(page).to have_content('Build')
-        expect(page).to have_content('Test')
-        expect(page).to have_content('Deploy')
+        expect(page).to have_content('build')
+        expect(page).to have_content('test')
+        expect(page).to have_content('deploy')
         expect(page).to have_content('Retry')
         expect(page).to have_content('Cancel running')
       end
@@ -895,12 +895,12 @@ RSpec.describe 'Pipeline', :js do
 
     let!(:test_job) do
       create(:ci_build, :pending, stage: 'test', name: 'test',
-        stage_idx: 1, pipeline: pipeline, project: project)
+                                  stage_idx: 1, pipeline: pipeline, project: project)
     end
 
     let!(:deploy_job) do
       create(:ci_build, :created, stage: 'deploy', name: 'deploy',
-        stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+                                  stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
     end
 
     describe 'GET /:project/-/pipelines/:id' do
@@ -998,8 +998,14 @@ RSpec.describe 'Pipeline', :js do
 
         context 'when deploy job is a bridge to trigger a downstream pipeline' do
           let!(:deploy_job) do
-            create(:ci_bridge, :created, stage: 'deploy', name: 'deploy',
-              stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+            create(:ci_bridge, :created,
+              stage: 'deploy',
+              name: 'deploy',
+              stage_idx: 2,
+              pipeline: pipeline,
+              project: project,
+              resource_group: resource_group
+            )
           end
 
           it 'shows deploy job as waiting for resource' do
@@ -1126,7 +1132,7 @@ RSpec.describe 'Pipeline', :js do
         subject
 
         expect(page).to have_content(failed_build.name)
-        expect(page).to have_content(failed_build.stage)
+        expect(page).to have_content(failed_build.stage_name)
       end
 
       it 'shows build failure logs' do
@@ -1172,7 +1178,7 @@ RSpec.describe 'Pipeline', :js do
         subject
 
         expect(page).to have_content(failed_build.name)
-        expect(page).to have_content(failed_build.stage)
+        expect(page).to have_content(failed_build.stage_name)
       end
 
       it 'does not show log' do

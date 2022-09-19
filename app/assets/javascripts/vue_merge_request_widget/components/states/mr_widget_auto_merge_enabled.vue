@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import createFlash from '~/flash';
@@ -28,7 +28,6 @@ export default {
   components: {
     MrWidgetAuthor,
     GlSkeletonLoader,
-    GlIcon,
     GlSprintf,
     StateContainer,
   },
@@ -151,7 +150,7 @@ export default {
 };
 </script>
 <template>
-  <state-container status="scheduled" :is-loading="loading" :actions="actions">
+  <state-container :mr="mr" status="scheduled" :is-loading="loading" :actions="actions">
     <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="3" width="24" height="24" rx="4" />
@@ -167,9 +166,6 @@ export default {
           </template>
         </gl-sprintf>
       </h4>
-    </template>
-    <template v-if="!loading" #icon>
-      <gl-icon name="status_scheduled" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
     </template>
   </state-container>
 </template>

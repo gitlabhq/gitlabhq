@@ -18,7 +18,7 @@ class Deployment < ApplicationRecord
   belongs_to :environment, optional: false
   belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
   belongs_to :user
-  belongs_to :deployable, polymorphic: true, optional: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :deployable, polymorphic: true, optional: true, inverse_of: :deployment # rubocop:disable Cop/PolymorphicAssociations
   has_many :deployment_merge_requests
 
   has_many :merge_requests,
@@ -36,6 +36,7 @@ class Deployment < ApplicationRecord
   delegate :name, to: :environment, prefix: true
   delegate :kubernetes_namespace, to: :deployment_cluster, allow_nil: true
 
+  scope :for_iid, -> (project, iid) { where(project: project, iid: iid) }
   scope :for_environment, -> (environment) { where(environment_id: environment) }
   scope :for_environment_name, -> (project, name) do
     where('deployments.environment_id = (?)',
@@ -58,9 +59,11 @@ class Deployment < ApplicationRecord
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
 
   scope :ordered, -> { order(finished_at: :desc) }
+  scope :ordered_as_upcoming, -> { order(id: :desc) }
 
   VISIBLE_STATUSES = %i[running success failed canceled blocked].freeze
   FINISHED_STATUSES = %i[success failed canceled].freeze
+  UPCOMING_STATUSES = %i[created blocked running].freeze
 
   state_machine :status, initial: :created do
     event :run do
@@ -220,6 +223,10 @@ class Deployment < ApplicationRecord
     Ci::Build.where(id: deployable_ids)
   end
 
+  def build
+    deployable if deployable.is_a?(::Ci::Build)
+  end
+
   class << self
     ##
     # FastDestroyAll concerns
@@ -308,6 +315,16 @@ class Deployment < ApplicationRecord
     return false unless sha
 
     project.repository.ancestor?(ancestor_sha, sha)
+  end
+
+  def older_than_last_successful_deployment?
+    last_deployment_id = environment.last_deployment&.id
+
+    return false unless last_deployment_id.present?
+
+    return false if self.id == last_deployment_id
+
+    self.id < last_deployment_id
   end
 
   def update_merge_request_metrics!
@@ -435,6 +452,12 @@ class Deployment < ApplicationRecord
 
     deployable.environment_tier_from_options
   end
+
+  # default tag limit is 100, 0 means no limit
+  def tags(limit: 100)
+    project.repository.tag_names_contains(sha, limit: limit)
+  end
+  strong_memoize_attr :tags
 
   private
 

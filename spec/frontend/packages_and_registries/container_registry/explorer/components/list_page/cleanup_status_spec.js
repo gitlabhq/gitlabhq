@@ -16,7 +16,7 @@ describe('cleanup_status', () => {
   let wrapper;
 
   const findMainIcon = () => wrapper.findByTestId('main-icon');
-  const findMainIconName = () => wrapper.findByTestId('main-icon').find(GlIcon);
+  const findMainIconName = () => wrapper.findByTestId('main-icon').findComponent(GlIcon);
   const findExtraInfoIcon = () => wrapper.findByTestId('extra-info');
   const findPopover = () => wrapper.findComponent(GlPopover);
 

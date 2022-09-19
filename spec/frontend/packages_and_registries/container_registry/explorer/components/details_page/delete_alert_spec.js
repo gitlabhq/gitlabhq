@@ -13,8 +13,8 @@ import {
 describe('Delete alert', () => {
   let wrapper;
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findLink = () => wrapper.find(GlLink);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   const mountComponent = (propsData) => {
     wrapper = shallowMount(component, { stubs: { GlSprintf }, propsData });

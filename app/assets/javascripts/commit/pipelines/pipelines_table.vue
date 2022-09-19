@@ -293,7 +293,7 @@ export default {
     </div>
 
     <gl-modal
-      v-if="canRenderPipelineButton"
+      v-if="canRenderPipelineButton || shouldRenderEmptyState"
       :id="modalId"
       ref="modal"
       :modal-id="modalId"

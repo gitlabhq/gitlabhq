@@ -35,6 +35,7 @@ FactoryBot.define do
       end
       metrics_dashboard_access_level { ProjectFeature::PRIVATE }
       operations_access_level { ProjectFeature::ENABLED }
+      monitor_access_level { ProjectFeature::ENABLED }
       container_registry_access_level { ProjectFeature::ENABLED }
       security_and_compliance_access_level { ProjectFeature::PRIVATE }
       environments_access_level { ProjectFeature::ENABLED }

@@ -36,7 +36,7 @@ describe('AgentTable', () => {
 
   const findAgentLink = (at) => wrapper.findAllByTestId('cluster-agent-name-link').at(at);
   const findStatusText = (at) => wrapper.findAllByTestId('cluster-agent-connection-status').at(at);
-  const findStatusIcon = (at) => findStatusText(at).find(GlIcon);
+  const findStatusIcon = (at) => findStatusText(at).findComponent(GlIcon);
   const findLastContactText = (at) => wrapper.findAllByTestId('cluster-agent-last-contact').at(at);
   const findVersionText = (at) => wrapper.findAllByTestId('cluster-agent-version').at(at);
   const findConfiguration = (at) =>
@@ -113,7 +113,7 @@ describe('AgentTable', () => {
         texts,
         lineNumber,
       }) => {
-        const findIcon = () => findVersionText(lineNumber).find(GlIcon);
+        const findIcon = () => findVersionText(lineNumber).findComponent(GlIcon);
         const findPopover = () => wrapper.findByTestId(`popover-${agent}`);
         const versionWarning = versionMismatch || versionOutdated;
 
@@ -151,7 +151,7 @@ describe('AgentTable', () => {
     `(
       'displays config file path as "$agentPath" at line $lineNumber',
       ({ agentConfig, link, lineNumber }) => {
-        const findLink = findConfiguration(lineNumber).find(GlLink);
+        const findLink = findConfiguration(lineNumber).findComponent(GlLink);
 
         expect(findLink.attributes('href')).toBe(link);
         expect(findConfiguration(lineNumber).text()).toBe(agentConfig);

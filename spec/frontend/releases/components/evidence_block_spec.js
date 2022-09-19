@@ -32,19 +32,19 @@ describe('Evidence Block', () => {
   });
 
   it('renders the evidence icon', () => {
-    expect(wrapper.find(GlIcon).props('name')).toBe('review-list');
+    expect(wrapper.findComponent(GlIcon).props('name')).toBe('review-list');
   });
 
   it('renders the title for the dowload link', () => {
-    expect(wrapper.find(GlLink).text()).toBe(`v1.1-evidences-1.json`);
+    expect(wrapper.findComponent(GlLink).text()).toBe(`v1.1-evidences-1.json`);
   });
 
   it('renders the correct hover text for the download', () => {
-    expect(wrapper.find(GlLink).attributes('title')).toBe('Download evidence JSON');
+    expect(wrapper.findComponent(GlLink).attributes('title')).toBe('Download evidence JSON');
   });
 
   it('renders the correct file link for download', () => {
-    expect(wrapper.find(GlLink).attributes().download).toBe(`v1.1-evidences-1.json`);
+    expect(wrapper.findComponent(GlLink).attributes().download).toBe(`v1.1-evidences-1.json`);
   });
 
   describe('sha text', () => {
@@ -62,15 +62,15 @@ describe('Evidence Block', () => {
 
   describe('copy to clipboard button', () => {
     it('renders button', () => {
-      expect(wrapper.find(ClipboardButton).exists()).toBe(true);
+      expect(wrapper.findComponent(ClipboardButton).exists()).toBe(true);
     });
 
     it('renders the correct hover text', () => {
-      expect(wrapper.find(ClipboardButton).attributes('title')).toBe('Copy evidence SHA');
+      expect(wrapper.findComponent(ClipboardButton).attributes('title')).toBe('Copy evidence SHA');
     });
 
     it('copies the sha', () => {
-      expect(wrapper.find(ClipboardButton).attributes('data-clipboard-text')).toBe(
+      expect(wrapper.findComponent(ClipboardButton).attributes('data-clipboard-text')).toBe(
         release.evidences[0].sha,
       );
     });

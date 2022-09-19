@@ -20,7 +20,7 @@ RSpec.describe Groups::LabelsController do
     it 'returns group and project labels by default' do
       get :index, params: { group_id: group }, format: :json
 
-      label_ids = json_response.map {|label| label['title']}
+      label_ids = json_response.map { |label| label['title'] }
       expect(label_ids).to match_array([label_1.title, group_label_1.title])
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Groups::LabelsController do
         params = { group_id: subgroup, only_group_labels: true }
         get :index, params: params, format: :json
 
-        label_ids = json_response.map {|label| label['title']}
+        label_ids = json_response.map { |label| label['title'] }
         expect(label_ids).to match_array([group_label_1.title, subgroup_label_1.title])
       end
     end

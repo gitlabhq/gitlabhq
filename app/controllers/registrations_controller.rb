@@ -32,6 +32,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     set_user_state
+    token = set_custom_confirmation_token
 
     super do |new_user|
       accept_pending_invitations if new_user.persisted?
@@ -39,6 +40,7 @@ class RegistrationsController < Devise::RegistrationsController
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
       track_experiment_event(new_user)
+      send_custom_confirmation_instructions(new_user, token)
 
       if pending_approval?
         NotificationService.new.new_instance_access_request(new_user)
@@ -118,8 +120,10 @@ class RegistrationsController < Devise::RegistrationsController
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
     return new_user_session_path(anchor: 'login-pane') if resource.blocked_pending_approval?
+    return dashboard_projects_path if Feature.enabled?(:soft_email_confirmation)
+    return identity_verification_redirect_path if custom_confirmation_enabled?(resource)
 
-    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path(email: resource.email)
+    users_almost_there_path(email: resource.email)
   end
 
   private
@@ -235,6 +239,22 @@ class RegistrationsController < Devise::RegistrationsController
     # have a funnel of visitors clicking on the header and those visitors
     # signing up and becoming users
     experiment(:logged_out_marketing_header, actor: new_user).track(:signed_up) if new_user.persisted?
+  end
+
+  def identity_verification_redirect_path
+    # overridden by EE module
+  end
+
+  def custom_confirmation_enabled?(resource)
+    # overridden by EE module
+  end
+
+  def set_custom_confirmation_token
+    # overridden by EE module
+  end
+
+  def send_custom_confirmation_instructions(user, token)
+    # overridden by EE module
   end
 end
 

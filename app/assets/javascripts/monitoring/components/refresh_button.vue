@@ -163,7 +163,7 @@ export default {
       :text="dropdownText"
     >
       <gl-dropdown-item
-        :is-check-item="true"
+        is-check-item
         :is-checked="refreshInterval === null"
         @click="removeRefreshInterval()"
         >{{ __('Off') }}</gl-dropdown-item
@@ -172,7 +172,7 @@ export default {
       <gl-dropdown-item
         v-for="(option, i) in $options.refreshIntervals"
         :key="i"
-        :is-check-item="true"
+        is-check-item
         :is-checked="isChecked(option)"
         @click="setRefreshInterval(option)"
         >{{ option.label }}</gl-dropdown-item

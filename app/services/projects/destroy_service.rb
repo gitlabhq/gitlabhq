@@ -67,9 +67,9 @@ module Projects
     end
 
     def remove_snippets
-      # We're setting the hard_delete param because we dont need to perform the access checks within the service since
+      # We're setting the skip_authorization param because we dont need to perform the access checks within the service since
       # the user has enough access rights to remove the project and its resources.
-      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(hard_delete: true)
+      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(skip_authorization: true)
 
       if response.error?
         log_error("Snippet deletion failed on #{project.full_path} with the following message: #{response.message}")
@@ -134,6 +134,8 @@ module Projects
       destroy_ci_records!
       destroy_mr_diff_relations!
 
+      destroy_merge_request_diffs! if ::Feature.enabled?(:extract_mr_diff_deletions)
+
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
       # This ensures we delete records in batches.
@@ -158,10 +160,9 @@ module Projects
     #
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_mr_diff_relations!
-      mr_batch_size = 100
       delete_batch_size = 1000
 
-      project.merge_requests.each_batch(column: :iid, of: mr_batch_size) do |relation_ids|
+      project.merge_requests.each_batch(column: :iid, of: BATCH_SIZE) do |relation_ids|
         [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
           loop do
             inner_query = model
@@ -175,6 +176,23 @@ module Projects
 
             break if deleted_rows == 0
           end
+        end
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def destroy_merge_request_diffs!
+      delete_batch_size = 1000
+
+      project.merge_requests.each_batch(column: :iid, of: BATCH_SIZE) do |relation|
+        loop do
+          deleted_rows = MergeRequestDiff
+            .where(merge_request: relation)
+            .limit(delete_batch_size)
+            .delete_all
+
+          break if deleted_rows == 0
         end
       end
     end

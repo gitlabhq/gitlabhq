@@ -143,7 +143,9 @@ as described in the section on [Security](#security). Otherwise, your users are 
 1. Change the value of `issuer` to a unique name, which identifies the application
    to the IdP.
 
-1. For the changes to take effect, you must [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab if you installed via Omnibus or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) if you installed from source.
+1. For the changes to take effect:
+   - If you installed via Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - If you installed from source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 1. Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
    in `issuer`.
@@ -169,7 +171,8 @@ is returned to GitLab and signed in.
 
 You can configure GitLab to use multiple SAML identity providers if:
 
-- Each provider has a unique name set that matches a name set in `args`.
+- Each provider has a unique name set that matches a name set in `args`. At least one provider **must** have the name `saml` to mitigate a
+  [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450) in GitLab 14.6 and newer.
 - The providers' names are:
   - Used in OmniAuth configuration for properties based on the provider name. For example, `allowBypassTwoFactor`, `allowSingleSignOn`, and
     `syncProfileFromProvider`.
@@ -182,9 +185,9 @@ Example multiple providers configuration for Omnibus GitLab:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: 'saml_1',
+    name: 'saml',
     args: {
-            name: 'saml_1', # This is mandatory and must match the provider name
+            name: 'saml', # This is mandatory and must match the provider name
             strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
@@ -192,9 +195,9 @@ gitlab_rails['omniauth_providers'] = [
     label: 'Provider 1' # Differentiate the two buttons and providers in the UI
   },
   {
-    name: 'saml_2',
+    name: 'saml1',
     args: {
-            name: 'saml_2', # This is mandatory and must match the provider name
+            name: 'saml1', # This is mandatory and must match the provider name
             strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
@@ -210,9 +213,9 @@ Example providers configuration for installations from source:
 omniauth:
   providers:
     - {
-      name: 'saml_1',
+      name: 'saml',
       args: {
-        name: 'saml_1', # This is mandatory and must match the provider name
+        name: 'saml', # This is mandatory and must match the provider name
         strategy_class: 'OmniAuth::Strategies::SAML',
         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
         ... # Put here all the required arguments similar to a single provider
@@ -220,9 +223,9 @@ omniauth:
       label: 'Provider 1' # Differentiate the two buttons and providers in the UI
     }
     - {
-      name: 'saml_2',
+      name: 'saml1',
       args: {
-        name: 'saml_2', # This is mandatory and must match the provider name
+        name: 'saml1', # This is mandatory and must match the provider name
         strategy_class: 'OmniAuth::Strategies::SAML',
         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
         ... # Put here all the required arguments similar to a single provider
@@ -800,8 +803,8 @@ If you have any questions on configuring the SAML app, please contact your provi
 
 ### Okta setup notes
 
-1. In the Okta administrator section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
-1. When the app screen comes up you see another button to **Create an App** and
+1. In the Okta administrator section choose **Applications**.
+1. When the app screen comes up you see another button to **Create App Integration** and
    choose SAML 2.0 on the next screen.
 1. Optionally, you can add a logo
    (you can choose it from <https://about.gitlab.com/press/>). You must
@@ -859,117 +862,4 @@ connect to the Google Workspace SAML app.
 
 ## Troubleshooting
 
-### SAML Response
-
-You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs/index.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
-
-### GitLab+SAML Testing Environments
-
-To troubleshoot, [a complete GitLab+SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/tree/master/compose_files)
-is available.
-
-If you only require a SAML provider for testing, a [quick start guide to start a Docker container](../administration/troubleshooting/test_environments.md#saml) with a plug and play SAML 2.0 Identity Provider (IdP) is available.
-
-### 500 error after login
-
-If you see a "500 error" in GitLab when you are redirected back from the SAML
-sign-in page, this could indicate that:
-
-- GitLab couldn't get the email address for the SAML user. Ensure the IdP provides a claim containing the user's
-  email address using the claim name `email` or `mail`.
-- The certificate set your `gitlab.rb` file for `idp_cert_fingerprint` or `idp_cert` file is incorrect.
-- Your `gitlab.rb` file is set to enable `idp_cert_fingerprint`, and `idp_cert` is being provided, or the reverse.
-
-### 422 error after login
-
-If you see a "422 error" in GitLab when you are redirected from the SAML
-sign-in page, you might have an incorrectly configured Assertion Consumer
-Service (ACS) URL on the identity provider.
-
-Make sure the ACS URL points to `https://gitlab.example.com/users/auth/saml/callback`, where
-`gitlab.example.com` is the URL of your GitLab instance.
-
-If the ACS URL is correct, and you still have errors, review the other
-[Troubleshooting](#troubleshooting) sections.
-
-If you are sure that the ACS URL is correct, proceed to the [Redirect back to the login screen with no evident error](#redirect-back-to-the-login-screen-with-no-evident-error)
-section for further troubleshooting steps.
-
-### Redirect back to the login screen with no evident error
-
-If after signing in into your SAML server you are redirected back to the sign in page and
-no error is displayed, check your `production.log` file. It most likely contains the
-message `Can't verify CSRF token authenticity`. This means that there is an error during
-the SAML request, but in GitLab 11.7 and earlier this error never reaches GitLab due to
-the CSRF check.
-
-To bypass this you can add `skip_before_action :verify_authenticity_token` to the
-`omniauth_callbacks_controller.rb` file immediately before the `after_action :verify_known_sign_in` line and
-comment out the `protect_from_forgery` line using a `#`. Restart Puma for this
-change to take effect. This allows the error to hit GitLab, where it can then
-be seen in the usual logs, or as a flash message on the login screen.
-
-That file is located in `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
-for Omnibus installations and by default in `/home/git/gitlab/app/controllers` for
-installations from source. Restart Puma using the `sudo gitlab-ctl restart puma`
-command on Omnibus installations and `sudo service gitlab restart` on installations
-from source.
-
-You may also find the [SAML Tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/)
-(Firefox) and [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
-(Chrome) browser extensions useful in your debugging.
-
-### Invalid audience
-
-This error means that the IdP doesn't recognize GitLab as a valid sender and
-receiver of SAML requests. Make sure to:
-
-- Add the GitLab callback URL to the approved audiences of the IdP server.
-- Avoid trailing whitespace in the `issuer` string.
-
-### Missing claims, or `Email can't be blank` errors
-
-The IdP server needs to pass certain information in order for GitLab to either
-create an account, or match the login information to an existing account. `email`
-is the minimum amount of information that needs to be passed. If the IdP server
-is not providing this information, all SAML requests fail.
-
-Make sure this information is provided.
-
-Another issue that can result in this error is when the correct information is being sent by
-the IdP, but the attributes don't match the names in the OmniAuth `info` hash. In this case,
-you must set `attribute_statements` in the SAML configuration to 
-[map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
-
-### Key validation error, Digest mismatch or Fingerprint mismatch
-
-These errors all come from a similar place, the SAML certificate. SAML requests
-must be validated using either a fingerprint, a certificate, or a validator.
-
-For this requirement, be sure to take the following into account:
-
-- If a fingerprint is used, it must be the SHA1 fingerprint
-- If no certificate is provided in the settings, a fingerprint or fingerprint
-  validator needs to be provided and the response from the server must contain
-  a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)
-- If a certificate is provided in the settings, it is no longer necessary for
-  the request to contain one. In this case the fingerprint or fingerprint
-  validators are optional
-
-If none of the above described scenarios is valid, the request
-fails with one of the mentioned errors.
-
-### User is blocked when signing in through SAML
-
-The following are the most likely reasons that a user is blocked when signing in through SAML:
-
-- In the configuration, `gitlab_rails['omniauth_block_auto_created_users'] = true` is set and this is the user's first time signing in.
-- There are [`required_groups`](#required-groups) configured, but the user is not a member of one.
-
-### Google workspace troubleshooting tips
-
-The Google Workspace documentation on [SAML app error messages](https://support.google.com/a/answer/6301076?hl=en) is helpful for debugging if you are seeing an error from Google while signing in.
-Pay particular attention to the following 403 errors:
-
-- `app_not_configured`
-- `app_not_configured_for_user`
+See our [troubleshooting SAML guide](../user/group/saml_sso/troubleshooting.md).

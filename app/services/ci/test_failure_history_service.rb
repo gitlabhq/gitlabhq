@@ -80,8 +80,8 @@ module Ci
     end
 
     def generate_test_suite!(build)
-      # Returns an instance of Gitlab::Ci::Reports::TestSuite
-      build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
+      test_report = build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
+      test_report.get_suite(build.test_suite_name)
     end
 
     def ci_unit_test_attrs(batch)

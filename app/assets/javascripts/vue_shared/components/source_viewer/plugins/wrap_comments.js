@@ -3,6 +3,8 @@ import { HLJS_COMMENT_SELECTOR } from '../constants';
 const createWrapper = (content) => {
   const span = document.createElement('span');
   span.className = HLJS_COMMENT_SELECTOR;
+
+  // eslint-disable-next-line no-unsanitized/property
   span.innerHTML = content;
   return span.outerHTML;
 };

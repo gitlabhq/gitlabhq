@@ -16,7 +16,7 @@
         %span.gl-text-truncate.gl-sm-ml-3
           = key.fingerprint
 
-      .gl-mt-3= s_('Profiles|Created%{time_ago}'.html_safe) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2')}
+      .gl-mt-3= html_escape(s_('Profiles|Created%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2').html_safe}
 
       .key-list-item-dates
         %span.last-used-at.gl-mr-3

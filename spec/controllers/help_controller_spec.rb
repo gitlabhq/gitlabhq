@@ -139,6 +139,39 @@ RSpec.describe HelpController do
     end
   end
 
+  describe 'GET #drawers' do
+    subject { get :drawers, params: { markdown_file: path } }
+
+    context 'when requested file exists' do
+      let(:path) { 'user/ssh' }
+      let(:file_name) { "#{path}.md" }
+
+      before do
+        subject
+      end
+
+      it 'assigns variables', :aggregate_failures do
+        expect(assigns[:path]).not_to be_empty
+        expect(assigns[:clean_path]).not_to be_empty
+      end
+
+      it 'renders HTML', :aggregate_failures do
+        is_expected.to render_template('help/drawers')
+        expect(response.media_type).to eq 'text/html'
+      end
+    end
+
+    context 'when requested file is missing' do
+      let(:path) { 'foo/bar' }
+
+      it 'renders not found' do
+        subject
+
+        expect(response).to be_not_found
+      end
+    end
+  end
+
   describe 'GET #show' do
     context 'for Markdown formats' do
       subject { get :show, params: { path: path }, format: :md }

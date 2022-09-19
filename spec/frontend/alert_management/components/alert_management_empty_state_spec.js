@@ -25,7 +25,7 @@ describe('AlertManagementEmptyState', () => {
     }
   });
 
-  const EmptyState = () => wrapper.find(GlEmptyState);
+  const EmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('Empty state', () => {
     it('shows empty state', () => {

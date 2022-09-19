@@ -164,6 +164,9 @@ class Note < ApplicationRecord
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
 
   before_validation :nullify_blank_type, :nullify_blank_line_code
+  # Syncs `confidential` with `internal` as we rename the column.
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
+  before_create :set_internal_flag
   after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
   after_save :expire_etag_cache, unless: :importing?
   after_save :touch_noteable, unless: :importing?
@@ -812,6 +815,10 @@ class Note < ApplicationRecord
 
   def noteable_can_have_confidential_note?
     for_issue?
+  end
+
+  def set_internal_flag
+    self.internal = confidential if confidential
   end
 end
 

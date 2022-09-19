@@ -302,6 +302,33 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(findModal()).not.toBeNull();
       });
     });
+
+    describe('when no pipelines were created on a forked merge request', () => {
+      beforeEach(async () => {
+        mock.onGet('endpoint.json').reply(200, []);
+
+        createComponent({
+          projectId: '5',
+          mergeRequestId: 3,
+          canCreatePipelineInTargetProject: true,
+          sourceProjectFullPath: 'test/parent-project',
+          targetProjectFullPath: 'test/fork-project',
+        });
+
+        jest.spyOn(findModal().vm, 'show').mockReturnValue();
+
+        await waitForPromises();
+      });
+
+      it('should show security modal from empty state run pipeline button', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findModal().exists()).toBe(true);
+
+        findRunPipelineBtn().trigger('click');
+
+        expect(findModal().vm.show).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('unsuccessfull request', () => {

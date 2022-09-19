@@ -254,6 +254,8 @@ A public and private key are generated.
 
 ## Add an SSH key to your GitLab account
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4, default expiration date suggested in UI.
+
 To use SSH with GitLab, copy your public key to your GitLab account:
 
 1. Copy the contents of your public key file. You can do this manually or use a script.
@@ -289,7 +291,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    `ssh-ed25519`, `sk-ecdsa-sha2-nistp256@openssh.com`, or `sk-ssh-ed25519@openssh.com`, and may end with a comment.
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
-1. Optional. In the **Expires at** box, select an expiration date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36243) in GitLab 12.9.)
+1. Optional. Update **Expiration date** to modify the default expiration date.
    In:
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
      you from using the key. Administrators can view expiration dates and use them for
@@ -419,6 +421,9 @@ as both have a different home directory:
 
 You can either copy over the `.ssh/` directory to use the same key, or generate a key in each environment.
 
+If you're running Windows 11 and using [OpenSSH for Windows](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview), ensure the `HOME`
+environment variable is set correctly. Otherwise, your private SSH key might not be found.
+
 Alternative tools include:
 
 - [Cygwin](https://www.cygwin.com)
@@ -468,6 +473,7 @@ This indicates that something is wrong with your SSH setup.
 - Try to manually register your private SSH key by using `ssh-agent`.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.
+- Ensure you followed all the instructions in [Use SSH on Microsoft Windows](#use-ssh-on-microsoft-windows).
 
 ### `Could not resolve hostname` error
 

@@ -4,7 +4,7 @@
 .sub-section
   %h4.warning-title= s_('GroupSettings|Change group URL')
   = form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
-    = form_errors(@group, pajamas_alert: true)
+    = form_errors(@group)
     .form-group
       %p
         = s_("GroupSettings|Changing a group's URL can have unintended side effects.")

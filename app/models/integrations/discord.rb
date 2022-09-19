@@ -6,6 +6,24 @@ module Integrations
   class Discord < BaseChatNotification
     ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/.freeze
 
+    undef :notify_only_broken_pipelines
+
+    field :webhook,
+      section: SECTION_TYPE_CONNECTION,
+      placeholder: 'https://discordapp.com/api/webhooks/…',
+      help: 'URL to the webhook for the Discord channel.',
+      required: true
+
+    field :notify_only_broken_pipelines,
+      type: 'checkbox',
+      section: SECTION_TYPE_CONFIGURATION
+
+    field :branches_to_be_notified,
+      type: 'select',
+      section: SECTION_TYPE_CONFIGURATION,
+      title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      choices: -> { branch_choices }
+
     def title
       s_("DiscordService|Discord Notifications")
     end
@@ -16,6 +34,10 @@ module Integrations
 
     def self.to_param
       "discord"
+    end
+
+    def fields
+      self.class.fields + build_event_channels
     end
 
     def help
@@ -29,30 +51,6 @@ module Integrations
 
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]
-    end
-
-    def default_fields
-      [
-        {
-          type: 'text',
-          section: SECTION_TYPE_CONNECTION,
-          name: 'webhook',
-          placeholder: 'https://discordapp.com/api/webhooks/…',
-          help: 'URL to the webhook for the Discord channel.'
-        },
-        {
-          type: 'checkbox',
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'notify_only_broken_pipelines'
-        },
-        {
-          type: 'select',
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'branches_to_be_notified',
-          title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: self.class.branch_choices
-        }
-      ]
     end
 
     def sections

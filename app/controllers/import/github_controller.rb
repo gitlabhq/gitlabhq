@@ -130,7 +130,7 @@ class Import::GithubController < Import::BaseController
                         if sanitized_filter_param
                           client.search_repos_by_name(sanitized_filter_param, pagination_options)[:items]
                         else
-                          client.octokit.repos(nil, pagination_options)
+                          client.repos(pagination_options)
                         end
                       else
                         filtered(client.repos)

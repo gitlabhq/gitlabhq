@@ -1,0 +1,63 @@
+config:
+  build:
+    script: exit $(($RANDOM % 2))
+
+  test1:
+    script: exit 0
+    needs: [build]
+
+  test2:
+    script: exit 0
+    when: manual
+
+  deploy:
+    script: exit 0
+    needs: [test1, test2]
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      test: pending
+    jobs:
+      build: pending
+      test1: created
+      test2: manual
+      deploy: skipped
+
+transitions:
+  - event: drop
+    jobs: [build]
+    expect:
+      pipeline: failed
+      stages:
+        test: failed
+      jobs:
+        build: failed
+        test1: skipped
+        test2: manual
+        deploy: skipped
+
+  - event: retry
+    jobs: [build]
+    expect:
+      pipeline: running
+      stages:
+        test: pending
+      jobs:
+        build: pending
+        test1: created
+        test2: manual
+        deploy: skipped
+
+  - event: success
+    jobs: [build]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+      jobs:
+        build: success
+        test1: pending
+        test2: manual
+        deploy: skipped

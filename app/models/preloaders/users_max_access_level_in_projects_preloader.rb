@@ -51,4 +51,4 @@ module Preloaders
   end
 end
 
-# Preloaders::UsersMaxAccessLevelInProjectsPreloader.prepend_mod
+Preloaders::UsersMaxAccessLevelInProjectsPreloader.prepend_mod

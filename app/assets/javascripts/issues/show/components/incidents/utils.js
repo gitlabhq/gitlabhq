@@ -21,13 +21,14 @@ export const getEventIcon = (actionName) => {
 };
 
 /**
- * Returns a date shifted by the current timezone offset. Allows
- * date.getHours() and similar to return UTC values.
- *
+ * Returns a date shifted by the current timezone offset set to now
+ * by default but can accept an existing date as an ISO date string
+ * @param {string} ISOString
  * @returns {Date}
  */
-export const getUtcShiftedDateNow = () => {
-  const date = new Date();
+export const getUtcShiftedDate = (ISOString = null) => {
+  const date = ISOString ? new Date(ISOString) : new Date();
   date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
   return date;
 };

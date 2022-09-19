@@ -4,6 +4,8 @@ import { GlDatepicker } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsForm from '~/issues/show/components/incidents/timeline_events_form.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { timelineFormI18n } from '~/issues/show/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -13,6 +15,8 @@ jest.mock('~/flash');
 
 const fakeDate = '2020-07-08T00:00:00.000Z';
 
+const mockInputDate = new Date('2021-08-12');
+
 describe('Timeline events form', () => {
   // July 8 2020
   useFakeDate(fakeDate);
@@ -21,7 +25,7 @@ describe('Timeline events form', () => {
   const mountComponent = ({ mountMethod = shallowMountExtended }) => {
     wrapper = mountMethod(TimelineEventsForm, {
       propsData: {
-        hasTimelineEvents: true,
+        showSaveAndAdd: true,
         isEventProcessed: false,
       },
     });
@@ -32,17 +36,17 @@ describe('Timeline events form', () => {
     wrapper.destroy();
   });
 
-  const findSubmitButton = () => wrapper.findByText('Save');
-  const findSubmitAndAddButton = () => wrapper.findByText('Save and add another event');
-  const findCancelButton = () => wrapper.findByText('Cancel');
+  const findMarkdownField = () => wrapper.findComponent(MarkdownField);
+  const findSubmitButton = () => wrapper.findByText(timelineFormI18n.save);
+  const findSubmitAndAddButton = () => wrapper.findByText(timelineFormI18n.saveAndAdd);
+  const findCancelButton = () => wrapper.findByText(timelineFormI18n.cancel);
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
-  const findDatePickerInput = () => wrapper.findByTestId('input-datepicker');
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
   const setDatetime = () => {
-    findDatePicker().vm.$emit('input', new Date('2021-08-12'));
-    findHourInput().vm.$emit('input', 5);
-    findMinuteInput().vm.$emit('input', 45);
+    findDatePicker().vm.$emit('input', mockInputDate);
+    findHourInput().setValue(5);
+    findMinuteInput().setValue(45);
   };
 
   const submitForm = async () => {
@@ -57,6 +61,22 @@ describe('Timeline events form', () => {
     findCancelButton().trigger('click');
     await waitForPromises();
   };
+
+  it('renders markdown-field component with correct list of toolbar items', () => {
+    mountComponent({ mountMethod: mountExtended });
+
+    expect(findMarkdownField().props('restrictedToolBarItems')).toEqual([
+      'quote',
+      'strikethrough',
+      'bullet-list',
+      'numbered-list',
+      'task-list',
+      'collapsible-section',
+      'table',
+      'attach-file',
+      'full-screen',
+    ]);
+  });
 
   describe('form button behaviour', () => {
     beforeEach(() => {
@@ -87,14 +107,14 @@ describe('Timeline events form', () => {
       setDatetime();
       await nextTick();
 
-      expect(findDatePickerInput().element.value).toBe('2021-08-12');
+      expect(findDatePicker().props('value')).toBe(mockInputDate);
       expect(findHourInput().element.value).toBe('5');
       expect(findMinuteInput().element.value).toBe('45');
 
       wrapper.vm.clear();
       await nextTick();
 
-      expect(findDatePickerInput().element.value).toBe('2020-07-08');
+      expect(findDatePicker().props('value')).toStrictEqual(new Date(fakeDate));
       expect(findHourInput().element.value).toBe('0');
       expect(findMinuteInput().element.value).toBe('0');
     });

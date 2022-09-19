@@ -125,6 +125,26 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(project.namespace).to eq(user.namespace)
       expect(project.project_namespace).to be_in_sync_with_project(project)
     end
+
+    context 'project_authorizations record creation' do
+      context 'when the project_authrizations records are not created via the callback' do
+        it 'still creates project_authrizations record for the user' do
+          # stub out the callback that creates project_authorizations records on the `ProjectMember` model.
+          expect_next_instance_of(ProjectMember) do |member|
+            expect(member).to receive(:refresh_member_authorized_projects).and_return(nil)
+          end
+
+          project = create_project(user, opts)
+
+          expected_record = project.project_authorizations.where(
+            user: user,
+            access_level: ProjectMember::OWNER
+          )
+
+          expect(expected_record).to exist
+        end
+      end
+    end
   end
 
   describe 'after create actions' do
@@ -417,10 +437,10 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(imported_project.import_url).to eq('http://import-url')
     end
 
-    it 'tracks for the combined_registration experiment', :experiment do
-      expect(experiment(:combined_registration)).to track(:import_project).on_next_instance
-
+    it 'tracks for imported project' do
       imported_project
+
+      expect_snowplow_event(category: described_class.name, action: 'import_project', user: user)
     end
 
     describe 'import scheduling' do

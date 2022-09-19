@@ -108,8 +108,8 @@ RSpec.describe 'Query' do
             design_at_version,
             'filename' => design_at_version.design.filename,
             'version' => a_graphql_entity_for(version, :sha),
-            'design'  => a_graphql_entity_for(design),
-            'issue'   => { 'title' => issue.title, 'iid' => issue.iid.to_s },
+            'design' => a_graphql_entity_for(design),
+            'issue' => { 'title' => issue.title, 'iid' => issue.iid.to_s },
             'project' => a_graphql_entity_for(project, :full_path)
           )
         end

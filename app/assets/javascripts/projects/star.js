@@ -22,11 +22,14 @@ export default class Star {
             starSpan.classList.remove('starred');
             starSpan.textContent = s__('StarProject|Star');
             starIcon.remove();
+            // eslint-disable-next-line no-unsanitized/method
             starSpan.insertAdjacentHTML('beforebegin', spriteIcon('star-o', iconClasses));
           } else {
             starSpan.classList.add('starred');
             starSpan.textContent = __('Unstar');
             starIcon.remove();
+
+            // eslint-disable-next-line no-unsanitized/method
             starSpan.insertAdjacentHTML('beforebegin', spriteIcon('star', iconClasses));
           }
         })

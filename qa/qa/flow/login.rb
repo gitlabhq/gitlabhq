@@ -3,7 +3,7 @@
 module QA
   module Flow
     module Login
-      module_function
+      extend self
 
       def while_signed_in(as: nil, address: :gitlab, admin: false)
         sign_in(as: as, address: address, admin: admin)
@@ -52,3 +52,5 @@ module QA
     end
   end
 end
+
+QA::Flow::Login.prepend_mod_with('Flow::Login', namespace: QA)

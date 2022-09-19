@@ -49,7 +49,7 @@ Prorated charges are not possible without a quarterly usage report.
 
 You can view users for your license and determine if you've gone over your subscription.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left menu, select **Subscription**.
 
 The lists of users are displayed.
@@ -218,7 +218,7 @@ to IP address `104.18.26.123:443` (`customers.gitlab.com`).
 
 You can manually sync your subscription details at any time.
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Subscription**.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
@@ -241,7 +241,7 @@ instance, ensure you're purchasing enough seats to
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Subscription**.
 
 The **Subscription** page includes the following details:
@@ -265,7 +265,7 @@ It also displays the following information:
 
 If you are an administrator, you can export your license usage into a CSV:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Subscription**.
 1. In the top right, select **Export license usage file**.
 

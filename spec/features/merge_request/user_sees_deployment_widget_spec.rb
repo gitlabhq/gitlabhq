@@ -111,7 +111,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
     context 'with stop action' do
       let(:manual) do
         create(:ci_build, :manual, pipeline: pipeline,
-               name: 'close_app', environment: environment.name)
+                                   name: 'close_app', environment: environment.name)
       end
 
       before do

@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     trait :remote_store do
-      file_store { JobArtifactUploader::Store::REMOTE}
+      file_store { JobArtifactUploader::Store::REMOTE }
     end
 
     after :build do |artifact|
@@ -99,28 +99,6 @@ FactoryBot.define do
         file = double('file', path: '/path/to/job.log')
         artifact.file = file
         allow(artifact.file).to receive(:file).and_return(CarrierWave::SanitizedFile.new(file))
-      end
-    end
-
-    trait :zip_with_single_file do
-      file_type { :archive }
-      file_format { :zip }
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/lib/gitlab/ci/build/artifacts/adapters/zip_stream/single_file.zip'),
-          'application/zip')
-      end
-    end
-
-    trait :zip_with_multiple_files do
-      file_type { :archive }
-      file_format { :zip }
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/lib/gitlab/ci/build/artifacts/adapters/zip_stream/multiple_files.zip'),
-          'application/zip')
       end
     end
 
@@ -381,6 +359,15 @@ FactoryBot.define do
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report.json'), 'application/json')
+      end
+    end
+
+    trait :common_security_report_without_top_level_scanner do
+      common_security_report
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report-without-top-level-scanner.json'), 'application/json')
       end
     end
 

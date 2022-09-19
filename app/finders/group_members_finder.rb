@@ -47,7 +47,7 @@ class GroupMembersFinder < UnionFinder
     related_groups << Group.by_id(group.id) if include_relations&.include?(:direct)
     related_groups << group.ancestors if include_relations&.include?(:inherited)
     related_groups << group.descendants if include_relations&.include?(:descendants)
-    related_groups << group.shared_with_groups.public_or_visible_to_user(user) if include_relations&.include?(:shared_from_groups)
+    related_groups << Group.shared_into_ancestors(group).public_or_visible_to_user(user) if include_relations&.include?(:shared_from_groups)
 
     find_union(related_groups, Group)
   end

@@ -71,7 +71,7 @@ Migration file for adding `NOT VALID` foreign key:
 ```ruby
 class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[2.0]
   def up
-    add_concurrent_foreign_key :emails, :users, on_delete: :cascade, validate: false
+    add_concurrent_foreign_key :emails, :users, column: :user_id, on_delete: :cascade, validate: false
   end
 
   def down

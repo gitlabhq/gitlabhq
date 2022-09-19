@@ -36,10 +36,6 @@ RSpec.describe 'Value Stream Analytics', :js do
     wait_for_all_requests
   end
 
-  before do
-    stub_feature_flags(use_vsa_aggregated_tables: false)
-  end
-
   context 'as an allowed user' do
     context 'when project is new' do
       before do

@@ -366,12 +366,35 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to include_module(Sortable) }
   end
 
+  describe 'before_validation' do
+    context 'with removal of leading spaces' do
+      subject(:project) { build(:project, name: ' space first', path: 'some_path') }
+
+      it 'removes the leading space' do
+        expect(project.name).to eq ' space first'
+
+        expect(project).to be_valid # triggers before_validation and assures we automatically handle the bad format
+
+        expect(project.name).to eq 'space first'
+      end
+
+      context 'when name is nil' do
+        it 'falls through to the presence validation' do
+          project.name = nil
+
+          expect(project).not_to be_valid
+        end
+      end
+    end
+  end
+
   describe 'validation' do
     let!(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to allow_value('space last ').for(:name) }
     it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
@@ -1736,8 +1759,8 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '.with_shared_runners' do
-    subject { described_class.with_shared_runners }
+  describe '.with_shared_runners_enabled' do
+    subject { described_class.with_shared_runners_enabled }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:project, shared_runners_enabled: true) }
@@ -3922,162 +3945,6 @@ RSpec.describe Project, factory_default: :keep do
 
     it 'returns nil when no available environment exists' do
       expect(project.default_environment).to be_nil
-    end
-  end
-
-  describe '#ci_variables_for' do
-    let_it_be(:project) { create(:project) }
-
-    let(:environment_scope) { '*' }
-
-    let!(:ci_variable) do
-      create(:ci_variable, value: 'secret', project: project, environment_scope: environment_scope)
-    end
-
-    let!(:protected_variable) do
-      create(:ci_variable, :protected, value: 'protected', project: project)
-    end
-
-    subject { project.reload.ci_variables_for(ref: 'ref') }
-
-    before do
-      stub_application_setting(
-        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-    end
-
-    shared_examples 'ref is protected' do
-      it 'contains all the variables' do
-        is_expected.to contain_exactly(ci_variable, protected_variable)
-      end
-    end
-
-    it 'memoizes the result by ref and environment', :request_store do
-      scoped_variable = create(:ci_variable, value: 'secret', project: project, environment_scope: 'scoped')
-
-      expect(project).to receive(:protected_for?).with('ref').once.and_return(true)
-      expect(project).to receive(:protected_for?).with('other').twice.and_return(false)
-
-      2.times do
-        expect(project.reload.ci_variables_for(ref: 'ref', environment: 'production')).to contain_exactly(ci_variable, protected_variable)
-        expect(project.reload.ci_variables_for(ref: 'other')).to contain_exactly(ci_variable)
-        expect(project.reload.ci_variables_for(ref: 'other', environment: 'scoped')).to contain_exactly(ci_variable, scoped_variable)
-      end
-    end
-
-    context 'when the ref is not protected' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(false)
-      end
-
-      it 'contains only the CI variables' do
-        is_expected.to contain_exactly(ci_variable)
-      end
-    end
-
-    context 'when the ref is a protected branch' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(true)
-      end
-
-      it_behaves_like 'ref is protected'
-    end
-
-    context 'when the ref is a protected tag' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(true)
-      end
-
-      it_behaves_like 'ref is protected'
-    end
-
-    context 'when environment name is specified' do
-      let(:environment) { 'review/name' }
-
-      subject do
-        project.ci_variables_for(ref: 'ref', environment: environment)
-      end
-
-      context 'when environment scope is exactly matched' do
-        let(:environment_scope) { 'review/name' }
-
-        it { is_expected.to contain_exactly(ci_variable) }
-      end
-
-      context 'when environment scope is matched by wildcard' do
-        let(:environment_scope) { 'review/*' }
-
-        it { is_expected.to contain_exactly(ci_variable) }
-      end
-
-      context 'when environment scope does not match' do
-        let(:environment_scope) { 'review/*/special' }
-
-        it { is_expected.not_to contain_exactly(ci_variable) }
-      end
-
-      context 'when environment scope has _' do
-        let(:environment_scope) { '*_*' }
-
-        it 'does not treat it as wildcard' do
-          is_expected.not_to contain_exactly(ci_variable)
-        end
-
-        context 'when environment name contains underscore' do
-          let(:environment) { 'foo_bar/test' }
-          let(:environment_scope) { 'foo_bar/*' }
-
-          it 'matches literally for _' do
-            is_expected.to contain_exactly(ci_variable)
-          end
-        end
-      end
-
-      # The environment name and scope cannot have % at the moment,
-      # but we're considering relaxing it and we should also make sure
-      # it doesn't break in case some data sneaked in somehow as we're
-      # not checking this integrity in database level.
-      context 'when environment scope has %' do
-        it 'does not treat it as wildcard' do
-          ci_variable.update_attribute(:environment_scope, '*%*')
-
-          is_expected.not_to contain_exactly(ci_variable)
-        end
-
-        context 'when environment name contains a percent' do
-          let(:environment) { 'foo%bar/test' }
-
-          it 'matches literally for _' do
-            ci_variable.environment_scope = 'foo%bar/*'
-
-            is_expected.to contain_exactly(ci_variable)
-          end
-        end
-      end
-
-      context 'when variables with the same name have different environment scopes' do
-        let!(:partially_matched_variable) do
-          create(:ci_variable,
-                 key: ci_variable.key,
-                 value: 'partial',
-                 environment_scope: 'review/*',
-                 project: project)
-        end
-
-        let!(:perfectly_matched_variable) do
-          create(:ci_variable,
-                 key: ci_variable.key,
-                 value: 'prefect',
-                 environment_scope: 'review/name',
-                 project: project)
-        end
-
-        it 'puts variables matching environment scope more in the end' do
-          is_expected.to eq(
-            [ci_variable,
-             partially_matched_variable,
-             perfectly_matched_variable])
-        end
-      end
     end
   end
 
@@ -6290,14 +6157,6 @@ RSpec.describe Project, factory_default: :keep do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
 
       it { is_expected.to eq(deploy_token) }
-
-      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
-        before do
-          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
-        end
-
-        it { is_expected.to be_nil }
-      end
     end
 
     context 'when the project and its group has a gitlab deploy token associated' do
@@ -6307,14 +6166,6 @@ RSpec.describe Project, factory_default: :keep do
       let!(:group_deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
 
       it { is_expected.to eq(project_deploy_token) }
-
-      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
-        before do
-          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
-        end
-
-        it { is_expected.to eq(project_deploy_token) }
-      end
     end
   end
 
@@ -6624,10 +6475,26 @@ RSpec.describe Project, factory_default: :keep do
     let(:pool) { create(:pool_repository) }
     let(:project) { create(:project, :repository, pool_repository: pool) }
 
-    it 'removes the membership' do
-      project.leave_pool_repository
+    subject { project.leave_pool_repository }
+
+    it 'removes the membership and disconnects alternates' do
+      expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: true).and_call_original
+
+      subject
 
       expect(pool.member_projects.reload).not_to include(project)
+    end
+
+    context 'when the project is pending delete' do
+      it 'removes the membership and does not disconnect alternates' do
+        project.pending_delete = true
+
+        expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: false).and_call_original
+
+        subject
+
+        expect(pool.member_projects.reload).not_to include(project)
+      end
     end
   end
 
@@ -8434,6 +8301,25 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#packages_policy_subject' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns wrapper' do
+      expect(project.packages_policy_subject).to be_a(Packages::Policies::Project)
+      expect(project.packages_policy_subject.project).to eq(project)
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(read_package_policy_rule: false)
+      end
+
+      it 'returns project' do
+        expect(project.packages_policy_subject).to eq(project)
+      end
+    end
+  end
+
   describe '#destroy_deployment_by_id' do
     let(:project) { create(:project, :repository) }
 
@@ -8448,6 +8334,25 @@ RSpec.describe Project, factory_default: :keep do
       end.to change { project.deployments.count }.by(-1)
 
       expect(project.deployments).to match_array([old_deployment])
+    end
+  end
+
+  describe '#can_create_custom_domains?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:pages_domain) { create(:pages_domain, project: project) }
+
+    subject { project.can_create_custom_domains? }
+
+    context 'when max custom domain setting is set to 0' do
+      it { is_expected.to be true }
+    end
+
+    context 'when max custom domain setting is not set to 0' do
+      before do
+        Gitlab::CurrentSettings.update!(max_pages_custom_domains_per_project: 1)
+      end
+
+      it { is_expected.to be false }
     end
   end
 

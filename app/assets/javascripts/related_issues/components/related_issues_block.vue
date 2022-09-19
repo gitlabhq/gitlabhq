@@ -3,7 +3,6 @@ import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   issuableIconMap,
-  issuableQaClassMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
   issuablesBlockHeaderTextMap,
@@ -142,9 +141,6 @@ export default {
     issuableTypeIcon() {
       return issuableIconMap[this.issuableType];
     },
-    qaClass() {
-      return issuableQaClassMap[this.issuableType];
-    },
     toggleIcon() {
       return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
     },
@@ -166,11 +162,15 @@ export default {
 </script>
 
 <template>
-  <div id="related-issues" class="related-issues-block gl-mt-5">
-    <div class="card card-slim gl-overflow-hidden">
+  <div id="related-issues" class="related-issues-block">
+    <div class="card card-slim gl-overflow-hidden gl-mt-5 gl-mb-0">
       <div
-        :class="{ 'panel-empty-heading border-bottom-0': !hasBody, 'gl-border-b-0': !isOpen }"
-        class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-py-3 gl-px-5 gl-bg-gray-10 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+        :class="{
+          'panel-empty-heading border-bottom-0': !hasBody,
+          'gl-border-b-1': isOpen,
+          'gl-border-b-0': !isOpen,
+        }"
+        class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-py-3 gl-px-5 gl-bg-gray-10 gl-border-b-solid gl-border-b-gray-100"
       >
         <h3 class="card-title h5 gl-my-0 gl-display-flex gl-align-items-center gl-flex-grow-1">
           <gl-link
@@ -205,7 +205,6 @@ export default {
           data-qa-selector="related_issues_plus_button"
           data-testid="related-issues-plus-button"
           :aria-label="addIssuableButtonText"
-          :class="qaClass"
           class="gl-ml-3"
           @click="addButtonClick"
         >

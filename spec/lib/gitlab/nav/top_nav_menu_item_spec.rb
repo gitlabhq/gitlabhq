@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ::Gitlab::Nav::TopNavMenuItem do
   describe '.build' do
@@ -17,7 +17,7 @@ RSpec.describe ::Gitlab::Nav::TopNavMenuItem do
         emoji: 'smile'
       }
 
-      expect(described_class.build(**item)).to eq(item)
+      expect(described_class.build(**item)).to eq(item.merge(type: :item))
     end
   end
 end

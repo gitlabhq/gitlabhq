@@ -430,7 +430,7 @@ describe('Dashboard Panel', () => {
       expect(findTimeChart().props().projectPath).toBe(mockProjectPath);
     });
 
-    it('it renders a time series chart with no errors', () => {
+    it('renders a time series chart with no errors', () => {
       expect(wrapper.findComponent(MonitorTimeSeriesChart).exists()).toBe(true);
     });
   });

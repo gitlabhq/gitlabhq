@@ -41,9 +41,9 @@ module Gitlab
 
       def options
         {
-          "Guest"      => GUEST,
-          "Reporter"   => REPORTER,
-          "Developer"  => DEVELOPER,
+          "Guest" => GUEST,
+          "Reporter" => REPORTER,
+          "Developer" => DEVELOPER,
           "Maintainer" => MAINTAINER
         }
       end
@@ -62,9 +62,9 @@ module Gitlab
 
       def sym_options
         {
-          guest:      GUEST,
-          reporter:   REPORTER,
-          developer:  DEVELOPER,
+          guest: GUEST,
+          reporter: REPORTER,
+          developer: DEVELOPER,
           maintainer: MAINTAINER
         }
       end
@@ -120,9 +120,9 @@ module Gitlab
 
       def project_creation_string_options
         {
-          'noone'       => NO_ONE_PROJECT_ACCESS,
-          'maintainer'  => MAINTAINER_PROJECT_ACCESS,
-          'developer'   => DEVELOPER_MAINTAINER_PROJECT_ACCESS
+          'noone' => NO_ONE_PROJECT_ACCESS,
+          'maintainer' => MAINTAINER_PROJECT_ACCESS,
+          'developer' => DEVELOPER_MAINTAINER_PROJECT_ACCESS
         }
       end
 
@@ -147,7 +147,7 @@ module Gitlab
 
       def subgroup_creation_string_options
         {
-          'owner'      => OWNER_SUBGROUP_ACCESS,
+          'owner' => OWNER_SUBGROUP_ACCESS,
           'maintainer' => MAINTAINER_SUBGROUP_ACCESS
         }
       end

@@ -21,7 +21,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     # them optional there.
 
     expect(experiment(:example)).to register_behavior(:control).with(nil)
-    expect { experiment(:example) { } }.not_to raise_error
+    expect { experiment(:example) {} }.not_to raise_error
   end
 
   describe "#publish" do
@@ -129,7 +129,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       expect_snowplow_event(
         category: 'namespaced/stub',
-        action: 'action',
+        action: :action,
         property: '_property_',
         context: [
           {
@@ -162,7 +162,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
         expect_snowplow_event(
           category: 'namespaced/stub',
-          action: 'action',
+          action: :action,
           user: user,
           project: project,
           namespace: namespace,
@@ -177,7 +177,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
         expect_snowplow_event(
           category: 'namespaced/stub',
-          action: 'action',
+          action: :action,
           user: user,
           project: project,
           namespace: group,
@@ -193,7 +193,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
           expect_snowplow_event(
             category: 'namespaced/stub',
-            action: 'action',
+            action: :action,
             user: actor,
             project: project,
             namespace: namespace,
@@ -208,7 +208,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
           expect_snowplow_event(
             category: 'namespaced/stub',
-            action: 'action',
+            action: :action,
             project: project,
             namespace: namespace,
             context: an_instance_of(Array)
@@ -289,15 +289,15 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     it "doesn't raise an exception" do
-      expect { experiment(:top) { |e| e.control { experiment(:nested) { } } } }.not_to raise_error
+      expect { experiment(:top) { |e| e.control { experiment(:nested) {} } } }.not_to raise_error
     end
 
     it "tracks an event", :snowplow do
-      experiment(:top) { |e| e.control { experiment(:nested) { } } }
+      experiment(:top) { |e| e.control { experiment(:nested) {} } }
 
       expect(Gitlab::Tracking).to have_received(:event).with( # rubocop:disable RSpec/ExpectGitlabTracking
         'top',
-        'nested',
+        :nested,
         hash_including(label: 'nested')
       )
     end
@@ -311,8 +311,8 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       cache.clear(key: application_experiment.name)
 
-      application_experiment.control { }
-      application_experiment.candidate { }
+      application_experiment.control {}
+      application_experiment.candidate {}
     end
 
     it "caches the variant determined by the variant resolver" do
@@ -378,7 +378,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     it "doesn't warn on non dev/test environments" do
       allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
 
-      expect { experiment(:example) { |e| e.use { } } }.not_to raise_error
+      expect { experiment(:example) { |e| e.use {} } }.not_to raise_error
       expect(ActiveSupport::Deprecation).not_to have_received(:new).with(anything, 'Gitlab::Experiment')
     end
 
@@ -387,7 +387,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       # This will eventually raise an ActiveSupport::Deprecation exception,
       # it's ok to change it when that happens.
-      expect { experiment(:example) { |e| e.use { } } }.not_to raise_error
+      expect { experiment(:example) { |e| e.use {} } }.not_to raise_error
 
       expect(ActiveSupport::Deprecation).to have_received(:new).with(anything, 'Gitlab::Experiment')
     end

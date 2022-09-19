@@ -63,7 +63,7 @@ module Gitlab
       end
 
       def init_from_gitaly
-        @name = encode!(@raw_tag.name.dup)
+        @name = encode_utf8_with_escaping!(@raw_tag.name.dup)
         @target = @raw_tag.id
         @message = message_from_gitaly_tag
 

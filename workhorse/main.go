@@ -220,9 +220,10 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	secret.SetPath(boot.secretPath)
 
+	keyWatcher := redis.NewKeyWatcher()
 	if cfg.Redis != nil {
 		redis.Configure(cfg.Redis, redis.DefaultDialFunc)
-		go redis.Process()
+		go keyWatcher.Process()
 	}
 
 	if err := cfg.RegisterGoCloudURLOpeners(); err != nil {
@@ -237,7 +238,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	gitaly.InitializeSidechannelRegistry(accessLogger)
 
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger))
+	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, keyWatcher.WatchKey))
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
@@ -271,7 +272,7 @@ func run(boot bootConfig, cfg config.Config) error {
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
 		defer cancel()
 
-		redis.Shutdown()
+		keyWatcher.Shutdown()
 		return srv.Shutdown(ctx)
 	}
 }

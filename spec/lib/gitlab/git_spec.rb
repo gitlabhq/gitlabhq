@@ -7,10 +7,18 @@ RSpec.describe Gitlab::Git do
   let(:committer_name) { 'John Doe' }
 
   describe '.ref_name' do
-    it 'ensure ref is a valid UTF-8 string' do
-      utf8_invalid_ref = Gitlab::Git::BRANCH_REF_PREFIX + "an_invalid_ref_\xE5"
+    let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + "an_invalid_ref_\xE5" }
 
-      expect(described_class.ref_name(utf8_invalid_ref)).to eq("an_invalid_ref_å")
+    it 'ensure ref is a valid UTF-8 string' do
+      expect(described_class.ref_name(ref)).to eq("an_invalid_ref_%E5")
+    end
+
+    context 'when ref contains characters \x80 - \xFF' do
+      let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + "\x90" }
+
+      it 'correctly converts it' do
+        expect(described_class.ref_name(ref)).to eq("%90")
+      end
     end
   end
 

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Create a new project from a template' do
+    describe 'Create a new project from a template', product_group: :source_code do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'templated-project'

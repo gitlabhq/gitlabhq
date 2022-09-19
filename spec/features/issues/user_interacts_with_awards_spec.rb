@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User interacts with awards' do
+  include MobileHelpers
+
   let(:user) { create(:user) }
 
   describe 'User interacts with awards in an issue', :js do
@@ -130,6 +132,7 @@ RSpec.describe 'User interacts with awards' do
       end
 
       it 'allows adding a new emoji' do
+        resize_window(1200, 800)
         page.within('.note-actions') do
           find('.note-emoji-button').click
         end
@@ -140,6 +143,7 @@ RSpec.describe 'User interacts with awards' do
           expect(page).to have_emoji('8ball')
         end
         expect(note.reload.award_emoji.size).to eq(2)
+        restore_window_size
       end
 
       context 'when the project is archived' do

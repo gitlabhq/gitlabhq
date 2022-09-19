@@ -2,10 +2,10 @@
 import pdfjsLib from 'pdfjs-dist/build/pdf';
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min';
 
-import page from './page/index.vue';
+import Page from './page/index.vue';
 
 export default {
-  components: { page },
+  components: { Page },
   props: {
     pdf: {
       type: [String, Uint8Array],

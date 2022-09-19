@@ -5,7 +5,7 @@ import eventHub from '~/issues/show/event_hub';
 describe('Title field component', () => {
   let wrapper;
 
-  const findInput = () => wrapper.find({ ref: 'input' });
+  const findInput = () => wrapper.findComponent({ ref: 'input' });
 
   beforeEach(() => {
     jest.spyOn(eventHub, '$emit');

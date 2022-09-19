@@ -14,7 +14,7 @@ RSpec.describe "projects/imports/new.html.haml" do
       project.add_maintainer(user)
     end
 
-    it "escapes HTML in import errors" do
+    it "escapes HTML in import errors", :skip_html_escaped_tags_check do
       assign(:project, project)
 
       render

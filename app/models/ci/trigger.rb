@@ -6,6 +6,8 @@ module Ci
     include Limitable
     include IgnorableColumns
 
+    TRIGGER_TOKEN_PREFIX = 'glptt-'
+
     ignore_column :ref, remove_with: '15.4', remove_after: '2022-08-22'
 
     self.limit_name = 'pipeline_triggers'
@@ -22,7 +24,7 @@ module Ci
     before_validation :set_default_values
 
     def set_default_values
-      self.token = SecureRandom.hex(15) if self.token.blank?
+      self.token = "#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}" if self.token.blank?
     end
 
     def last_trigger_request
@@ -34,7 +36,7 @@ module Ci
     end
 
     def short_token
-      token[0...4] if token.present?
+      token.delete_prefix(TRIGGER_TOKEN_PREFIX)[0...4] if token.present?
     end
 
     def can_access_project?

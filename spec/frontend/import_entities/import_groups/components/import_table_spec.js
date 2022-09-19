@@ -99,7 +99,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('does not renders loading icon when request is completed', async () => {
@@ -108,7 +108,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     });
   });
 
@@ -123,7 +123,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.find(GlEmptyState).props().title).toBe(i18n.NO_GROUPS_FOUND);
+      expect(wrapper.findComponent(GlEmptyState).props().title).toBe(i18n.NO_GROUPS_FOUND);
     });
   });
 
@@ -268,7 +268,7 @@ describe('import table', () => {
     });
 
     it('correctly passes pagination info from query', () => {
-      expect(wrapper.find(PaginationLinks).props().pageInfo).toStrictEqual(FAKE_PAGE_INFO);
+      expect(wrapper.findComponent(PaginationLinks).props().pageInfo).toStrictEqual(FAKE_PAGE_INFO);
     });
 
     it('renders pagination dropdown', () => {
@@ -293,7 +293,7 @@ describe('import table', () => {
 
     it('updates page when page change is requested', async () => {
       const REQUESTED_PAGE = 2;
-      wrapper.find(PaginationLinks).props().change(REQUESTED_PAGE);
+      wrapper.findComponent(PaginationLinks).props().change(REQUESTED_PAGE);
 
       await waitForPromises();
       expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
@@ -316,7 +316,7 @@ describe('import table', () => {
         },
         versionValidation: FAKE_VERSION_VALIDATION,
       });
-      wrapper.find(PaginationLinks).props().change(REQUESTED_PAGE);
+      wrapper.findComponent(PaginationLinks).props().change(REQUESTED_PAGE);
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Showing 21-21 of 38 groups that you own from');
@@ -539,8 +539,8 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.find(GlAlert).exists()).toBe(true);
-      expect(wrapper.find(GlAlert).text()).toContain('projects (require v14.8.0)');
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
+      expect(wrapper.findComponent(GlAlert).text()).toContain('projects (require v14.8.0)');
     });
 
     it('does not renders alert when there are no unavailable features', async () => {
@@ -558,7 +558,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.find(GlAlert).exists()).toBe(false);
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
     });
   });
 });

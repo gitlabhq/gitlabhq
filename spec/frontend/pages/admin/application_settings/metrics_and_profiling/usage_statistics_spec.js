@@ -48,7 +48,7 @@ describe('UsageStatistics', () => {
       expectEnabledservicePingFeaturesCheckBox();
     });
 
-    it('is switched to disabled when Service Ping checkbox is unchecked ', () => {
+    it('is switched to disabled when Service Ping checkbox is unchecked', () => {
       servicePingCheckBox.click();
       servicePingFeaturesCheckBox.click();
       expectEnabledservicePingFeaturesCheckBox();

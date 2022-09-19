@@ -1,4 +1,9 @@
-import { variableTypes, groupString, instanceString } from '~/ci_variable_list/constants';
+import {
+  variableTypes,
+  groupString,
+  instanceString,
+  projectString,
+} from '~/ci_variable_list/constants';
 
 export const devName = 'dev';
 export const prodName = 'prod';
@@ -11,8 +16,8 @@ export const mockVariables = (kind) => {
       key: 'my-var',
       masked: false,
       protected: true,
-      value: 'env_val',
-      variableType: variableTypes.variableType,
+      value: 'variable_value',
+      variableType: variableTypes.envType,
     },
     {
       __typename: `Ci${kind}Variable`,
@@ -20,7 +25,7 @@ export const mockVariables = (kind) => {
       key: 'secret',
       masked: true,
       protected: false,
-      value: 'the_secret_value',
+      value: 'another_value',
       variableType: variableTypes.fileType,
     },
   ];
@@ -77,7 +82,7 @@ export const mockProjectVariables = {
     project: {
       __typename: 'Project',
       id: 1,
-      ciVariables: createDefaultVars(),
+      ciVariables: createDefaultVars({ kind: projectString }),
     },
   },
 };

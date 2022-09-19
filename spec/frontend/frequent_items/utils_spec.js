@@ -10,25 +10,25 @@ import { mockProject, unsortedFrequentItems, sortedFrequentItems } from './mock_
 
 describe('Frequent Items utils spec', () => {
   describe('isMobile', () => {
-    it('returns true when the screen is medium ', () => {
+    it('returns true when the screen is medium', () => {
       jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('md');
 
       expect(isMobile()).toBe(true);
     });
 
-    it('returns true when the screen is small ', () => {
+    it('returns true when the screen is small', () => {
       jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('sm');
 
       expect(isMobile()).toBe(true);
     });
 
-    it('returns true when the screen is extra-small ', () => {
+    it('returns true when the screen is extra-small', () => {
       jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('xs');
 
       expect(isMobile()).toBe(true);
     });
 
-    it('returns false when the screen is larger than medium ', () => {
+    it('returns false when the screen is larger than medium', () => {
       jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('lg');
 
       expect(isMobile()).toBe(false);

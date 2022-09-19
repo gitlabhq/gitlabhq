@@ -220,7 +220,7 @@ describe('Release edit/new component', () => {
     });
 
     it('renders a checkbox to include release notes', () => {
-      expect(wrapper.find(GlFormCheckbox).exists()).toBe(true);
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
     });
   });
 
@@ -238,7 +238,7 @@ describe('Release edit/new component', () => {
     beforeEach(factory);
 
     it('renders the asset links portion of the form', () => {
-      expect(wrapper.find(AssetLinksForm).exists()).toBe(true);
+      expect(wrapper.findComponent(AssetLinksForm).exists()).toBe(true);
     });
   });
 

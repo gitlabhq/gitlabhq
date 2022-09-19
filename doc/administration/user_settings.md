@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab administrators can modify user settings for the entire GitLab instance.
 
-## Prevent users from creating top-level groups
+## Prevent new users from creating top-level groups
 
-By default, new users can create top-level groups. To disable your users'
-ability to create top-level groups:
+By default, new users can create top-level groups. To disable new users'
+ability to create top-level groups (does not affect existing users' setting):
 
 **Omnibus GitLab installations**
 
@@ -32,6 +32,13 @@ ability to create top-level groups:
    ```
 
 1. [Restart GitLab](restart_gitlab.md#installations-from-source).
+
+### Prevent existing users from creating top-level groups
+
+Administrators can:
+
+- Use the Admin Area to [prevent an existing user from creating top-level groups](../user/admin_area/index.md#prevent-a-user-from-creating-groups).
+- Use the [modify an existing user API endpoint](../api/users.md#user-modification) to change the `can_create_group` setting.
 
 ## Prevent users from changing their usernames
 

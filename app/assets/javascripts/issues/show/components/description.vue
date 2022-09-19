@@ -7,6 +7,7 @@ import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
 import { IssuableType } from '~/issues/constants';
+import { isMetaKey } from '~/lib/utils/common_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -20,6 +21,8 @@ import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_ite
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import {
+  sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_CREATING,
   TRACKING_CATEGORY_SHOW,
   TASK_TYPE_NAME,
   WIDGET_TYPE_DESCRIPTION,
@@ -226,6 +229,7 @@ export default {
     },
     createDragIconElement() {
       const container = document.createElement('div');
+      // eslint-disable-next-line no-unsanitized/property
       container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-visibility-hidden" role="img" aria-hidden="true">
         <use href="${gon.sprite_icons}#drag-vertical"></use>
       </svg>`;
@@ -330,6 +334,9 @@ export default {
           this.addHoverListeners(taskLink, workItemId);
           taskLink.classList.add('gl-link');
           taskLink.addEventListener('click', (e) => {
+            if (isMetaKey(e)) {
+              return;
+            }
             e.preventDefault();
             this.openWorkItemDetailModal(taskLink);
             this.workItemId = workItemId;
@@ -358,6 +365,7 @@ export default {
         );
         button.id = `js-task-button-${index}`;
         this.taskButtons.push(button.id);
+        // eslint-disable-next-line no-unsanitized/property
         button.innerHTML = `
           <svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14">
             <use href="${gon.sprite_icons}#doc-new"></use>
@@ -460,7 +468,7 @@ export default {
         this.openWorkItemDetailModal(el);
       } catch (error) {
         createFlash({
-          message: s__('WorkItem|Something went wrong when creating a work item. Please try again'),
+          message: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemTypes.TASK),
           error,
           captureError: true,
         });

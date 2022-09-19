@@ -7,10 +7,6 @@ module Groups
     end
 
     def execute
-      if Feature.disabled?(:include_groups_from_group_shares_in_project_transfer_locations)
-        return current_user.manageable_groups
-      end
-
       groups_accepting_project_transfers =
         [
           current_user.manageable_groups,

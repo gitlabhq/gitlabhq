@@ -30,7 +30,7 @@ describe('Pipeline Wizard -- Input Wrapper', () => {
 
     beforeEach(() => {
       createComponent({});
-      inputChild = wrapper.find(TextWidget);
+      inputChild = wrapper.findComponent(TextWidget);
     });
 
     afterEach(() => {

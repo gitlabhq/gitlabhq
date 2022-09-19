@@ -29,8 +29,6 @@ module Glfm
     def process(skip_static_and_wysiwyg: false)
       output('Updating example snapshots...')
 
-      setup_environment
-
       output('(Skipping static HTML generation)') if skip_static_and_wysiwyg
 
       output("Reading #{GLFM_SPEC_TXT_PATH}...")
@@ -49,19 +47,11 @@ module Glfm
 
     private
 
-    def setup_environment
-      # Set 'GITLAB_TEST_FOOTNOTE_ID' in order to override random number generation in
-      # Banzai::Filter::FootnoteFilter#random_number, and thus avoid the need to
-      # perform normalization on the value. See:
-      # https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
-      ENV['GITLAB_TEST_FOOTNOTE_ID'] = '42'
-    end
-
     def add_example_names(all_examples)
       # NOTE: This method and the parse_examples method assume:
       # 1. Section 2 is the first section which contains examples
-      # 2. Examples are always nested exactly 2 levels deep in an H2
-      # 3. There may exist H3 headings with no examples (e.g. "Motivation" in the GLFM spec.txt)
+      # 2. Examples are always nested in an H2 or an H3, never directly in an H1
+      # 3. There may exist headings with no examples (e.g. "Motivation" in the GLFM spec.txt)
       # 4. The Appendix doesn't ever contain any examples, so it doesn't show up
       #    in the H1 header count. So, even though due to the concatenation it appears before the
       #    GitLab examples sections, it doesn't result in their header counts being off by +1.
@@ -70,35 +60,49 @@ module Glfm
       #    GFM `spec_test.py` script (but it's NOT in the original CommonMark `spec_test.py`).
       # 6. If a section contains ONLY disabled examples, the section numbering will still be
       #    incremented to match the rendered HTML specification section numbering.
-      # 7. Every H2 must contain at least one example, but it is allowed that they are all disabled.
+      # 7. Every H2 or H3 must contain at least one example, but it is allowed that they are
+      #    all disabled.
 
       h1_count = 1 # examples start in H1 section 2; section 1 is the overview with no examples.
       h2_count = 0
+      h3_count = 0
       previous_h1 = ''
       previous_h2 = ''
-      index_within_h2 = 0
+      previous_h3 = ''
+      index_within_current_heading = 0
       all_examples.each do |example|
         headers = example[:headers]
 
         if headers[0] != previous_h1
           h1_count += 1
           h2_count = 0
+          h3_count = 0
           previous_h1 = headers[0]
         end
 
         if headers[1] != previous_h2
           h2_count += 1
+          h3_count = 0
           previous_h2 = headers[1]
-          index_within_h2 = 0
+          index_within_current_heading = 0
         end
 
-        index_within_h2 += 1
+        if headers[2] && headers[2] != previous_h3
+          h3_count += 1
+          previous_h3 = headers[2]
+          index_within_current_heading = 0
+        end
+
+        index_within_current_heading += 1
 
         # convert headers array to lowercase string with underscores, and double underscores between headers
         formatted_headers_text = headers.join('__').tr('-', '_').tr(' ', '_').downcase
 
-        hierarchy_level = "#{h1_count.to_s.rjust(2, '0')}_#{h2_count.to_s.rjust(2, '0')}"
-        position_within_section = index_within_h2.to_s.rjust(3, '0')
+        hierarchy_level =
+          "#{h1_count.to_s.rjust(2, '0')}_" \
+          "#{h2_count.to_s.rjust(2, '0')}_" \
+          "#{h3_count.to_s.rjust(2, '0')}"
+        position_within_section = index_within_current_heading.to_s.rjust(3, '0')
         name = "#{hierarchy_level}__#{formatted_headers_text}__#{position_within_section}"
         converted_name = name.tr('(', '').tr(')', '') # remove any parens from the name
         example[:name] = converted_name
@@ -111,7 +115,7 @@ module Glfm
 
     def write_snapshot_example_files(all_examples, skip_static_and_wysiwyg:)
       output("Reading #{GLFM_EXAMPLE_STATUS_YML_PATH}...")
-      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH))
+      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH), symbolize_names: true)
       validate_glfm_example_status_yml(glfm_examples_statuses)
 
       write_examples_index_yml(all_examples)
@@ -123,9 +127,13 @@ module Glfm
         return
       end
 
-      markdown_yml_tempfile_path = write_markdown_yml_tempfile
-      static_html_hash = generate_static_html(markdown_yml_tempfile_path)
-      wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json(markdown_yml_tempfile_path)
+      # NOTE: We pass the INPUT_MARKDOWN_YML_PATH and INPUT_METADATA_YML_PATH via
+      # environment variables to the static/wysiwyg HTML generation scripts. This is because they
+      # are implemented as subprocesses which invoke rspec/jest scripts, and rspec/jest do not make
+      # it straightforward to pass arguments via the command line.
+      ENV['INPUT_MARKDOWN_YML_PATH'], ENV['INPUT_METADATA_YML_PATH'] = copy_tempfiles_for_subprocesses
+      static_html_hash = generate_static_html
+      wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json
 
       write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
 
@@ -135,8 +143,8 @@ module Glfm
     def validate_glfm_example_status_yml(glfm_examples_statuses)
       glfm_examples_statuses.each do |example_name, statuses|
         next unless statuses &&
-          statuses['skip_update_example_snapshots'] &&
-          statuses.any? { |key, value| key.include?('skip_update_example_snapshot_') && !!value }
+          statuses[:skip_update_example_snapshots] &&
+          statuses.any? { |key, value| key.to_s.include?('skip_update_example_snapshot_') && !!value }
 
         raise "Error: '#{example_name}' must not have any 'skip_update_example_snapshot_*' values specified " \
                 "if 'skip_update_example_snapshots' is truthy"
@@ -147,65 +155,89 @@ module Glfm
       generate_and_write_for_all_examples(
         all_examples, ES_EXAMPLES_INDEX_YML_PATH, literal_scalars: false
       ) do |example, hash|
-        hash[example.fetch(:name)] = {
+        name = example.fetch(:name).to_sym
+        hash[name] = {
           'spec_txt_example_position' => example.fetch(:example),
-          'source_specification' =>
-            if example[:extensions].empty?
-              'commonmark'
-            elsif example[:extensions].include?('gitlab')
-              'gitlab'
-            else
-              'github'
-            end
+          'source_specification' => source_specification_for_extensions(example.fetch(:extensions))
         }
       end
     end
 
+    def source_specification_for_extensions(extensions)
+      unprocessed_extensions = extensions.map(&:to_sym)
+      unprocessed_extensions.delete(:disabled)
+
+      source_specification =
+        if unprocessed_extensions.empty?
+          'commonmark'
+        elsif unprocessed_extensions.include?(:gitlab)
+          unprocessed_extensions.delete(:gitlab)
+          'gitlab'
+        else
+          'github'
+        end
+
+      # We should only be left with at most one extension, which is an optional name for the example
+      raise "Error: Invalid extension(s) found: #{unprocessed_extensions.join(', ')}" if unprocessed_extensions.size > 1
+
+      source_specification
+    end
+
     def write_markdown_yml(all_examples)
       generate_and_write_for_all_examples(all_examples, ES_MARKDOWN_YML_PATH) do |example, hash|
-        hash[example.fetch(:name)] = example.fetch(:markdown)
+        name = example.fetch(:name).to_sym
+        hash[name] = example.fetch(:markdown)
       end
     end
 
-    def write_markdown_yml_tempfile
-      # NOTE: We must copy the markdown YAML file to a separate temporary file for the
-      # `render_static_html.rb` script to read it, because the script is run in a
-      # separate process, and during unit testing we are unable to substitute the mock
-      # StringIO when reading the input file in the subprocess.
-      Dir::Tmpname.create(MARKDOWN_TEMPFILE_BASENAME) do |path|
-        io = File.open(ES_MARKDOWN_YML_PATH)
-        io.seek(0) # rewind the file. This is necessary when testing with a mock StringIO
-        contents = io.read
-        write_file(path, contents)
+    def copy_tempfiles_for_subprocesses
+      # NOTE: We must copy the input YAML files used by the `render_static_html.rb`
+      # and `render_wysiwyg_html_and_json.js` scripts to a separate temporary file in order for
+      # the scripts to read them, because the scripts are run in
+      # separate subprocesses, and during unit testing we are unable to substitute the mock
+      # StringIO when reading the input files in the subprocess.
+      {
+        ES_MARKDOWN_YML_PATH => MARKDOWN_TEMPFILE_BASENAME,
+        GLFM_EXAMPLE_METADATA_YML_PATH => METADATA_TEMPFILE_BASENAME
+      }.map do |original_file_path, tempfile_basename|
+        Dir::Tmpname.create(tempfile_basename) do |path|
+          io = File.open(original_file_path)
+          io.seek(0) # rewind the file. This is necessary when testing with a mock StringIO
+          contents = io.read
+          write_file(path, contents)
+        end
       end
     end
 
-    def generate_static_html(markdown_yml_tempfile_path)
+    def generate_static_html
       output("Generating static HTML from markdown examples...")
 
-      # NOTE 1: We shell out to perform the conversion of markdown to static HTML via the internal Rails app
-      # helper method. This allows us to avoid using the Rails API or environment in this script,
-      # which makes developing and running the unit tests for this script much faster,
+      # NOTE 1: We shell out to perform the conversion of markdown to static HTML by invoking a
+      # separate subprocess. This allows us to avoid using the Rails API or environment in this
+      # script, which makes developing and running the unit tests for this script much faster,
       # because they can use 'fast_spec_helper' which does not require the entire Rails environment.
 
-      # NOTE 2: We pass the input file path as a command line argument, and receive the output
-      # tempfile path as a return value. This is simplest in the case where we are invoking Ruby.
-      cmd = %(rails runner #{__dir__}/render_static_html.rb #{markdown_yml_tempfile_path})
-      cmd_output = run_external_cmd(cmd)
-      # NOTE: Running under a debugger can add extra output, only take the last line
-      static_html_tempfile_path = cmd_output.split("\n").last
+      # NOTE 2: We run this as an RSpec process, for the same reasons we run via Jest process below:
+      # because that's the easiest way to ensure a reliable, fully-configured environment in which
+      # to execute the markdown-generation logic. Also, in the static/backend case, Rspec
+      # provides the easiest and most reliable way to generate example data via Factorybot
+      # creation of stable model records. This ensures consistent snapshot values across
+      # machines/environments.
+
+      # Dir::Tmpname.create requires a block, but we are using the non-block form to get the path
+      # via the return value, so we pass an empty block to avoid an error.
+      static_html_tempfile_path = Dir::Tmpname.create(STATIC_HTML_TEMPFILE_BASENAME) {}
+      ENV['OUTPUT_STATIC_HTML_TEMPFILE_PATH'] = static_html_tempfile_path
+
+      cmd = %(bin/rspec #{__dir__}/render_static_html.rb)
+      run_external_cmd(cmd)
 
       output("Reading generated static HTML from tempfile #{static_html_tempfile_path}...")
-      YAML.load_file(static_html_tempfile_path)
+      YAML.safe_load(File.open(static_html_tempfile_path), symbolize_names: true)
     end
 
-    def generate_wysiwyg_html_and_json(markdown_yml_tempfile_path)
+    def generate_wysiwyg_html_and_json
       output("Generating WYSIWYG HTML and prosemirror JSON from markdown examples...")
-
-      # NOTE: Unlike when we invoke a Ruby script, here we pass the input and output file paths
-      # via environment variables. This is because it's not straightforward/clean to pass command line
-      # arguments when we are invoking `yarn jest ...`
-      ENV['INPUT_MARKDOWN_YML_PATH'] = markdown_yml_tempfile_path
 
       # Dir::Tmpname.create requires a block, but we are using the non-block form to get the path
       # via the return value, so we pass an empty block to avoid an error.
@@ -217,26 +249,26 @@ module Glfm
 
       output("Reading generated WYSIWYG HTML and prosemirror JSON from tempfile " \
         "#{wysiwyg_html_and_json_tempfile_path}...")
-      YAML.load_file(wysiwyg_html_and_json_tempfile_path)
+      YAML.safe_load(File.open(wysiwyg_html_and_json_tempfile_path), symbolize_names: true)
     end
 
     def write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
       generate_and_write_for_all_examples(
-        all_examples, ES_HTML_YML_PATH, glfm_examples_statuses
+        all_examples, ES_HTML_YML_PATH, glfm_examples_statuses: glfm_examples_statuses
       ) do |example, hash, existing_hash|
-        name = example.fetch(:name)
+        name = example.fetch(:name).to_sym
         example_statuses = glfm_examples_statuses[name] || {}
 
-        static = if example_statuses['skip_update_example_snapshot_html_static']
-                   existing_hash.dig(name, 'static')
+        static = if example_statuses[:skip_update_example_snapshot_html_static]
+                   existing_hash.dig(name, :static)
                  else
                    static_html_hash[name]
                  end
 
-        wysiwyg = if example_statuses['skip_update_example_snapshot_html_wysiwyg']
-                    existing_hash.dig(name, 'wysiwyg')
+        wysiwyg = if example_statuses[:skip_update_example_snapshot_html_wysiwyg]
+                    existing_hash.dig(name, :wysiwyg)
                   else
-                    wysiwyg_html_and_json_hash.dig(name, 'html')
+                    wysiwyg_html_and_json_hash.dig(name, :html)
                   end
 
         hash[name] = {
@@ -249,14 +281,14 @@ module Glfm
 
     def write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash, glfm_examples_statuses)
       generate_and_write_for_all_examples(
-        all_examples, ES_PROSEMIRROR_JSON_YML_PATH, glfm_examples_statuses
+        all_examples, ES_PROSEMIRROR_JSON_YML_PATH, glfm_examples_statuses: glfm_examples_statuses
       ) do |example, hash, existing_hash|
-        name = example.fetch(:name)
+        name = example.fetch(:name).to_sym
 
-        json = if glfm_examples_statuses.dig(name, 'skip_update_example_snapshot_prosemirror_json')
+        json = if glfm_examples_statuses.dig(name, :skip_update_example_snapshot_prosemirror_json)
                  existing_hash[name]
                else
-                 wysiwyg_html_and_json_hash.dig(name, 'json')
+                 wysiwyg_html_and_json_hash.dig(name, :json)
                end
 
         # Do not assign nil values
@@ -265,15 +297,15 @@ module Glfm
     end
 
     def generate_and_write_for_all_examples(
-      all_examples, output_file_path, glfm_examples_statuses = {}, literal_scalars: true
+      all_examples, output_file_path, glfm_examples_statuses: {}, literal_scalars: true
     )
       preserve_existing = !glfm_examples_statuses.empty?
       output("#{preserve_existing ? 'Creating/Updating' : 'Creating/Overwriting'} #{output_file_path}...")
-      existing_hash = preserve_existing ? YAML.safe_load(File.open(output_file_path)) : {}
+      existing_hash = preserve_existing ? YAML.safe_load(File.open(output_file_path), symbolize_names: true) : {}
 
       output_hash = all_examples.each_with_object({}) do |example, hash|
-        name = example.fetch(:name)
-        if (reason = glfm_examples_statuses.dig(name, 'skip_update_example_snapshots'))
+        name = example.fetch(:name).to_sym
+        if (reason = glfm_examples_statuses.dig(name, :skip_update_example_snapshots))
           # Output the reason for skipping the example, but only once, not multiple times for each file
           output("Skipping '#{name}'. Reason: #{reason}") unless glfm_examples_statuses.dig(name, :already_printed)
           # We just store the `:already_printed` flag in the hash entry itself. Then we
@@ -292,38 +324,6 @@ module Glfm
 
       yaml_string = dump_yaml_with_formatting(output_hash, literal_scalars: literal_scalars)
       write_file(output_file_path, yaml_string)
-    end
-
-    # Construct an AST so we can control YAML formatting for
-    # YAML block scalar literals and key quoting.
-    #
-    # Note that when Psych dumps the markdown to YAML, it will
-    # automatically use the default "clip" behavior of the Block Chomping Indicator (`|`)
-    # https://yaml.org/spec/1.2.2/#8112-block-chomping-indicator,
-    # when the markdown strings contain a trailing newline. The type of
-    # Block Chomping Indicator is automatically determined, you cannot specify it
-    # manually.
-    def dump_yaml_with_formatting(hash, literal_scalars:)
-      visitor = Psych::Visitors::YAMLTree.create
-      visitor << hash
-      ast = visitor.tree
-
-      # Force all scalars to have literal formatting (using Block Chomping Indicator instead of quotes)
-      if literal_scalars
-        ast.grep(Psych::Nodes::Scalar).each do |node|
-          node.style = Psych::Nodes::Scalar::LITERAL
-        end
-      end
-
-      # Do not quote the keys
-      ast.grep(Psych::Nodes::Mapping).each do |node|
-        node.children.each_slice(2) do |k, _|
-          k.quoted = false
-          k.style = Psych::Nodes::Scalar::ANY
-        end
-      end
-
-      ast.to_yaml
     end
   end
 end

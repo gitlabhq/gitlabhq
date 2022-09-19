@@ -86,8 +86,7 @@ module QA
 
         File.open(filename, 'w') { |f| f.write(total_examples) } if total_examples.to_i > 0
 
-        saved_file_msg = total_examples.to_i > 0 ? ". Saved to file: #{filename}" : ''
-        $stdout.puts "Total examples in #{Runtime::Scenario.klass}: #{total_examples}#{saved_file_msg}"
+        $stdout.puts total_examples
       end
 
       def test_metadata_only(args)

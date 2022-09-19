@@ -58,7 +58,7 @@ RSpec.describe 'trusted_proxies' do
   end
 
   def stub_request(headers = {})
-    ActionDispatch::RemoteIp.new(proc { }, false, Rails.application.config.action_dispatch.trusted_proxies).call(headers)
+    ActionDispatch::RemoteIp.new(proc {}, false, Rails.application.config.action_dispatch.trusted_proxies).call(headers)
     ActionDispatch::Request.new(headers)
   end
 

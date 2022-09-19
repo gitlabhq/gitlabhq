@@ -56,7 +56,7 @@ for Push and Tag events, but we never display commits.
 
 To create a system hook:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **System Hooks**.
 1. Provide the **URL** and **Secret Token**.
 1. Select the checkbox next to each optional **Trigger** you want to enable.

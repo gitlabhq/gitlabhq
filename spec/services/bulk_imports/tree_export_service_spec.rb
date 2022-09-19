@@ -8,7 +8,7 @@ RSpec.describe BulkImports::TreeExportService do
 
   let(:relation) { 'issues' }
 
-  subject(:service) { described_class.new(project, export_path, relation) }
+  subject(:service) { described_class.new(project, export_path, relation, project.owner) }
 
   describe '#execute' do
     it 'executes export service and archives exported data' do
@@ -21,7 +21,7 @@ RSpec.describe BulkImports::TreeExportService do
 
     context 'when unsupported relation is passed' do
       it 'raises an error' do
-        service = described_class.new(project, export_path, 'unsupported')
+        service = described_class.new(project, export_path, 'unsupported', project.owner)
 
         expect { service.execute }.to raise_error(BulkImports::Error, 'Unsupported relation export type')
       end

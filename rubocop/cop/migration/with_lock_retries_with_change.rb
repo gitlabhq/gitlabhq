@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that prevents usage of `with_lock_retries` within the `change` method.
-      class WithLockRetriesWithChange < RuboCop::Cop::Cop
+      class WithLockRetriesWithChange < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`with_lock_retries` cannot be used within `change` so you must manually define ' \
@@ -17,12 +17,8 @@ module RuboCop
           return unless node.children[1] == :with_lock_retries
 
           node.each_ancestor(:def) do |def_node|
-            add_offense(def_node, location: :name) if method_name(def_node) == :change
+            add_offense(def_node.loc.name) if def_node.method_name == :change
           end
-        end
-
-        def method_name(node)
-          node.children.first
         end
       end
     end

@@ -17,6 +17,9 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-submit-license-usage-data-banner',
   '.js-project-usage-limitations-callout',
   '.js-namespace-storage-alert',
+  '.js-web-hook-disabled-callout',
+  '.js-merge-request-settings-callout',
+  '.js-ultimate-feature-removal-banner',
 ];
 
 const initCallouts = () => {

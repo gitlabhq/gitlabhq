@@ -289,7 +289,6 @@ RSpec.describe ApplicationWorker do
         perform_action
 
         expect(worker.jobs.count).to eq args.count
-        expect(worker.jobs).to all(include('enqueued_at'))
       end
     end
 
@@ -302,7 +301,6 @@ RSpec.describe ApplicationWorker do
         perform_action
 
         expect(worker.jobs.count).to eq args.count
-        expect(worker.jobs).to all(include('enqueued_at'))
       end
     end
 

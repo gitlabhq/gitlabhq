@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/safe_params'
 
 RSpec.describe RuboCop::Cop::SafeParams do
-  subject(:cop) { described_class.new }
-
   it 'flags the params as an argument of url_for' do
     expect_offense(<<~SOURCE)
       url_for(params)

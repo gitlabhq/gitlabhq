@@ -3,7 +3,7 @@
 module QA
   module Flow
     module Saml
-      module_function
+      extend self
 
       def page
         Capybara.current_session
@@ -72,3 +72,5 @@ module QA
     end
   end
 end
+
+QA::Flow::Saml.prepend_mod_with('Flow::Saml', namespace: QA)

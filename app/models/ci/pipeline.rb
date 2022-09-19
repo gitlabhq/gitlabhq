@@ -2,6 +2,7 @@
 
 module Ci
   class Pipeline < Ci::ApplicationRecord
+    include Ci::Partitionable
     include Ci::HasStatus
     include Importable
     include AfterCommitQueue
@@ -31,7 +32,7 @@ module Ci
 
     sha_attribute :source_sha
     sha_attribute :target_sha
-
+    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
     # is used for storing the processed metadata for linting purposes.
@@ -296,6 +297,12 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          ::Ci::JobArtifacts::TrackArtifactReportWorker.perform_async(pipeline.id)
+        end
+      end
+
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
           pipeline.persistent_ref.delete
@@ -422,6 +429,10 @@ module Ci
     end
 
     def self.jobs_count_in_alive_pipelines
+      created_after(24.hours.ago).alive.joins(:statuses).count
+    end
+
+    def self.builds_count_in_alive_pipelines
       created_after(24.hours.ago).alive.joins(:builds).count
     end
 
@@ -472,8 +483,12 @@ module Ci
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
+    def self.current_partition_value
+      100
+    end
+
     def uses_needs?
-      builds.where(scheduling_type: :dag).any?
+      processables.where(scheduling_type: :dag).any?
     end
 
     def stages_count
@@ -605,7 +620,7 @@ module Ci
 
       if cascade_to_children
         # cancel any bridges that could spin up new child pipelines
-        cancel_jobs(bridges_in_self_and_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
+        cancel_jobs(bridges_in_self_and_project_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
         cancel_children(auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id, execute_async: execute_async)
       end
     end
@@ -937,26 +952,26 @@ module Ci
       ).base_and_descendants.select(:id)
     end
 
-    def build_with_artifacts_in_self_and_descendants(name)
-      builds_in_self_and_descendants
+    def build_with_artifacts_in_self_and_project_descendants(name)
+      builds_in_self_and_project_descendants
         .ordered_by_pipeline # find job in hierarchical order
         .with_downloadable_artifacts
         .find_by_name(name)
     end
 
-    def builds_in_self_and_descendants
-      Ci::Build.latest.where(pipeline: self_and_descendants)
+    def builds_in_self_and_project_descendants
+      Ci::Build.latest.where(pipeline: self_and_project_descendants)
     end
 
-    def bridges_in_self_and_descendants
-      Ci::Bridge.latest.where(pipeline: self_and_descendants)
+    def bridges_in_self_and_project_descendants
+      Ci::Bridge.latest.where(pipeline: self_and_project_descendants)
     end
 
-    def environments_in_self_and_descendants(deployment_status: nil)
+    def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
-        builds_in_self_and_descendants.joins(:metadata)
+        builds_in_self_and_project_descendants.joins(:metadata)
                                       .where.not('ci_builds_metadata.expanded_environment_name' => nil)
                                       .distinct('ci_builds_metadata.expanded_environment_name')
                                       .limit(100)
@@ -971,17 +986,22 @@ module Ci
     end
 
     # With multi-project and parent-child pipelines
-    def all_pipelines_in_hierarchy
+    def self_and_downstreams
+      object_hierarchy.base_and_descendants
+    end
+
+    # With multi-project and parent-child pipelines
+    def upstream_and_all_downstreams
       object_hierarchy.all_objects
     end
 
     # With only parent-child pipelines
-    def self_and_ancestors
+    def self_and_project_ancestors
       object_hierarchy(project_condition: :same).base_and_ancestors
     end
 
     # With only parent-child pipelines
-    def self_and_descendants
+    def self_and_project_descendants
       object_hierarchy(project_condition: :same).base_and_descendants
     end
 
@@ -990,8 +1010,8 @@ module Ci
       object_hierarchy(project_condition: :same).descendants
     end
 
-    def self_and_descendants_complete?
-      self_and_descendants.all?(&:complete?)
+    def self_and_project_descendants_complete?
+      self_and_project_descendants.all?(&:complete?)
     end
 
     # Follow the parent-child relationships and return the top-level parent
@@ -1006,7 +1026,12 @@ module Ci
     # Follow the upstream pipeline relationships, regardless of multi-project or
     # parent-child, and return the top-level ancestor.
     def upstream_root
-      object_hierarchy.base_and_ancestors(hierarchy_order: :desc).first
+      @upstream_root ||= object_hierarchy.base_and_ancestors(hierarchy_order: :desc).first
+    end
+
+    # Applies to all parent-child and multi-project pipelines
+    def complete_hierarchy_count
+      upstream_root.self_and_downstreams.count
     end
 
     def bridge_triggered?
@@ -1052,11 +1077,11 @@ module Ci
     end
 
     def latest_test_report_builds
-      latest_report_builds(Ci::JobArtifact.test_reports).preload(:project, :metadata)
+      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata)
     end
 
-    def latest_report_builds_in_self_and_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
-      builds_in_self_and_descendants.with_artifacts(reports_scope)
+    def latest_report_builds_in_self_and_project_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
+      builds_in_self_and_project_descendants.with_artifacts(reports_scope)
     end
 
     def builds_with_coverage
@@ -1068,10 +1093,14 @@ module Ci
     end
 
     def has_reports?(reports_scope)
+      latest_report_builds(reports_scope).exists?
+    end
+
+    def complete_and_has_reports?(reports_scope)
       if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
         latest_report_builds(reports_scope).exists?
       else
-        complete? && latest_report_builds(reports_scope).exists?
+        complete? && has_reports?(reports_scope)
       end
     end
 
@@ -1084,7 +1113,7 @@ module Ci
     end
 
     def can_generate_codequality_reports?
-      has_reports?(Ci::JobArtifact.codequality_reports)
+      complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
     end
 
     def test_report_summary
@@ -1103,7 +1132,7 @@ module Ci
 
     def accessibility_reports
       Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
-        latest_report_builds(Ci::JobArtifact.accessibility_reports).each do |build|
+        latest_report_builds(Ci::JobArtifact.of_report_type(:accessibility)).each do |build|
           build.collect_accessibility_reports!(accessibility_reports)
         end
       end
@@ -1111,7 +1140,7 @@ module Ci
 
     def codequality_reports
       Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-        latest_report_builds(Ci::JobArtifact.codequality_reports).each do |build|
+        latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
           build.collect_codequality_reports!(codequality_reports)
         end
       end
@@ -1119,7 +1148,7 @@ module Ci
 
     def terraform_reports
       ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-        latest_report_builds(::Ci::JobArtifact.terraform_reports).each do |build|
+        latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
           build.collect_terraform_reports!(terraform_reports)
         end
       end
@@ -1307,7 +1336,7 @@ module Ci
 
     def has_test_reports?
       strong_memoize(:has_test_reports) do
-        has_reports?(::Ci::JobArtifact.test_reports)
+        has_reports?(::Ci::JobArtifact.of_report_type(:test))
       end
     end
 

@@ -17,11 +17,11 @@ import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';
 import Store from '../stores';
-import descriptionComponent from './description.vue';
-import editedComponent from './edited.vue';
-import formComponent from './form.vue';
+import DescriptionComponent from './description.vue';
+import EditedComponent from './edited.vue';
+import FormComponent from './form.vue';
 import PinnedLinks from './pinned_links.vue';
-import titleComponent from './title.vue';
+import TitleComponent from './title.vue';
 
 export default {
   WorkspaceType,
@@ -29,9 +29,9 @@ export default {
     GlIcon,
     GlBadge,
     GlIntersectionObserver,
-    titleComponent,
-    editedComponent,
-    formComponent,
+    TitleComponent,
+    EditedComponent,
+    FormComponent,
     PinnedLinks,
     ConfidentialityBadge,
   },
@@ -51,16 +51,7 @@ export default {
       required: true,
       type: Boolean,
     },
-    canDestroy: {
-      required: true,
-      type: Boolean,
-    },
     showInlineEditButton: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    showDeleteButton: {
       type: Boolean,
       required: false,
       default: true,
@@ -181,7 +172,7 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return descriptionComponent;
+        return DescriptionComponent;
       },
     },
     showTitleBorder: {
@@ -494,14 +485,12 @@ export default {
         :endpoint="endpoint"
         :form-state="formState"
         :initial-description-text="initialDescriptionText"
-        :can-destroy="canDestroy"
         :issuable-templates="issuableTemplates"
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
         :project-path="projectPath"
         :project-id="projectId"
         :project-namespace="projectNamespace"
-        :show-delete-button="showDeleteButton"
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"

@@ -243,8 +243,8 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `external`                    | When you use CI services other than GitLab.                                                                                                                                                                                        |
 | `external_pull_request_event` | When an external pull request on GitHub is created or updated. See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).                                            |
 | `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
-| `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../pipelines/parent_child_pipelines.md) with `rules`. Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline.                |
-| `pipeline`                    | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
+| `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) with `rules`. Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline.                |
+| `pipeline`                    | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
 | `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                            |
 | `trigger`                     | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines).                                                                                                                                           |
@@ -578,6 +578,8 @@ To run a manual job, you must have permission to merge to the assigned branch:
    or deployment view.
 1. Next to the manual job, select **Play** (**{play}**).
 
+You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
+
 ### Protect manual jobs **(PREMIUM)**
 
 Use [protected environments](../environments/protected_environments.md)
@@ -645,6 +647,7 @@ timed rollout 10%:
   script: echo 'Rolling out 10% ...'
   when: delayed
   start_in: 30 minutes
+  environment: production
 ```
 
 To stop the active timer of a delayed job, select **Unschedule** (**{time-out}**).
@@ -698,6 +701,7 @@ deploystacks:
   parallel:
     matrix:
       - PROVIDER: [aws, ovh, gcp, vultr]
+  environment: production/$PROVIDER
 ```
 
 You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix).
@@ -722,6 +726,7 @@ deploystacks:
         STACK: [monitoring, backup]
       - PROVIDER: [gcp, vultr]
         STACK: [data]
+  environment: $PROVIDER/$STACK
 ```
 
 This example generates 6 parallel `deploystacks` trigger jobs, each with different values
@@ -754,6 +759,7 @@ deploystacks:
         STACK: [data]
   tags:
     - ${PROVIDER}-${STACK}
+  environment: $PROVIDER/$STACK
 ```
 
 #### Fetch artifacts from a `parallel:matrix` job
@@ -784,6 +790,7 @@ deploy:
   dependencies:
     - "ruby: [2.7, aws]"
   script: echo hello
+  environment: production
 ```
 
 Quotes around the `dependencies` entry are required.
@@ -956,6 +963,33 @@ For example:
 
 Pattern matching is case-sensitive by default. Use the `i` flag modifier to make a
 pattern case-insensitive. For example: `/pattern/i`.
+
+#### Store the regex pattern in a variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35438) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `ci_fix_rules_if_comparison_with_regexp_variable`, disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/359740) and feature flag `ci_fix_rules_if_comparison_with_regexp_variable` removed in GitLab 15.1.
+
+Variables on the right side of `=~` and `!~` expressions are evaluated as regular expressions.
+The regular expression must be enclosed in forward slashes (`/`). For example:
+
+```yaml
+variables:
+  pattern: '/^ab.*/'
+
+regex-job1:
+  variables:
+    teststring: 'abcde'
+  script: echo "This job will run, because 'abcde' matches the /^ab.*/ pattern."
+  rules:
+    - if: '$teststring =~ $pattern'
+
+regex-job2:
+  variables:
+    teststring: 'fghij'
+  script: echo "This job will not run, because 'fghi' does not match the /^ab.*/ pattern."
+  rules:
+    - if: '$teststring =~ $pattern'
+```
 
 ### Join variable expressions together with `&&` or `||`
 

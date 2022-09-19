@@ -15,6 +15,8 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
 import BoardBlockedIcon from './board_blocked_icon.vue';
@@ -34,6 +36,10 @@ export default {
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     BoardBlockedIcon,
     GlSprintf,
+    BoardCardMoveToPosition,
+    WorkItemTypeIcon,
+    IssueHealthStatus: () =>
+      import('ee_component/related_items_tree/components/issue_health_status.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -51,6 +57,15 @@ export default {
       default: () => ({}),
     },
     updateFilters: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    index: {
+      type: Number,
+      required: true,
+    },
+    showWorkItemTypeIcon: {
       type: Boolean,
       required: false,
       default: false,
@@ -202,7 +217,7 @@ export default {
 <template>
   <div>
     <div class="gl-display-flex" dir="auto">
-      <h4 class="board-card-title gl-mb-0 gl-mt-0">
+      <h4 class="board-card-title gl-mb-0 gl-mt-0 gl-mr-3 gl-font-base gl-overflow-break-word">
         <board-blocked-icon
           v-if="item.blocked"
           :item="item"
@@ -215,7 +230,7 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon gl-mr-2"
+          class="confidential-icon gl-mr-2 gl-text-orange-500 gl-cursor-help"
           :aria-label="__('Confidential')"
         />
         <gl-icon
@@ -223,24 +238,25 @@ export default {
           v-gl-tooltip
           name="spam"
           :title="__('This issue is hidden because its author has been banned')"
-          class="gl-mr-2 hidden-icon"
+          class="gl-mr-2 hidden-icon gl-text-orange-500 gl-cursor-help"
           data-testid="hidden-icon"
         />
         <a
           :href="item.path || item.webUrl || ''"
           :title="item.title"
           :class="{ 'gl-text-gray-400!': item.isLoading }"
-          class="js-no-trigger"
+          class="js-no-trigger gl-text-body gl-hover-text-gray-900"
           @mousemove.stop
           >{{ item.title }}</a
         >
       </h4>
+      <board-card-move-to-position :item="item" :list="list" :index="index" />
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
-          class="js-no-trigger"
+          class="js-no-trigger gl-mt-2 gl-mr-2"
           :background-color="label.color"
           :title="label.title"
           :description="label.description"
@@ -260,9 +276,14 @@ export default {
         <gl-loading-icon v-if="item.isLoading" size="lg" class="gl-mt-5" />
         <span
           v-if="item.referencePath"
-          class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"
+          class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3 gl-text-secondary"
           :class="{ 'gl-font-base': isEpicBoard }"
         >
+          <work-item-type-icon
+            v-if="showWorkItemTypeIcon"
+            :work-item-type="item.type"
+            show-tooltip-on-hover
+          />
           <tooltip-on-truncate
             v-if="showReferencePath"
             :title="itemReferencePath"
@@ -321,7 +342,10 @@ export default {
               </p>
             </gl-tooltip>
 
-            <span ref="countBadge" class="board-card-info gl-mr-0 gl-pr-0 gl-pl-3">
+            <span
+              ref="countBadge"
+              class="board-card-info gl-mr-0 gl-pr-0 gl-pl-3 gl-text-secondary gl-cursor-help"
+            >
               <span v-if="allowSubEpics" class="gl-mr-3">
                 <gl-icon name="epic" />
                 {{ totalEpicsCount }}
@@ -339,7 +363,7 @@ export default {
             <span
               v-if="shouldRenderEpicProgress"
               ref="progressBadge"
-              class="board-card-info gl-pl-0"
+              class="board-card-info gl-pl-0 gl-text-secondary gl-cursor-help"
             >
               <span class="gl-mr-3" data-testid="epic-progress">
                 <gl-icon name="progress" />
@@ -359,10 +383,11 @@ export default {
               :weight="item.weight"
               @click="filterByWeight(item.weight)"
             />
+            <issue-health-status v-if="item.healthStatus" :health-status="item.healthStatus" />
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-display-flex gl-gap-3">
+      <div class="board-card-assignee gl-display-flex gl-gap-3 gl-mb-n2">
         <user-avatar-link
           v-for="assignee in cappedAssignees"
           :key="assignee.id"
@@ -370,7 +395,7 @@ export default {
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="avatarUrl(assignee)"
           :img-size="avatarSize"
-          class="js-no-trigger"
+          class="js-no-trigger user-avatar-link"
           tooltip-placement="bottom"
           :enforce-gl-avatar="true"
         >
@@ -384,7 +409,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter"
+          class="avatar-counter gl-bg-gray-400 gl-cursor-help gl-font-weight-bold gl-ml-n4 gl-border-0 gl-line-height-24"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

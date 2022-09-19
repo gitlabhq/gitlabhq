@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
 const name = 'Administrator';

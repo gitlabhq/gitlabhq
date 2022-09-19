@@ -50,9 +50,9 @@ describe('UsageTrendsCountChart', () => {
     wrapper = null;
   });
 
-  const findLoader = () => wrapper.find(ChartSkeletonLoader);
-  const findChart = () => wrapper.find(GlLineChart);
-  const findAlert = () => wrapper.find(GlAlert);
+  const findLoader = () => wrapper.findComponent(ChartSkeletonLoader);
+  const findChart = () => wrapper.findComponent(GlLineChart);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('while loading', () => {
     beforeEach(() => {
@@ -61,7 +61,7 @@ describe('UsageTrendsCountChart', () => {
     });
 
     it('requests data', () => {
-      expect(queryHandler).toBeCalledTimes(1);
+      expect(queryHandler).toHaveBeenCalledTimes(1);
     });
 
     it('displays the skeleton loader', () => {
@@ -105,7 +105,7 @@ describe('UsageTrendsCountChart', () => {
     });
 
     it('requests data', () => {
-      expect(queryHandler).toBeCalledTimes(1);
+      expect(queryHandler).toHaveBeenCalledTimes(1);
     });
 
     it('hides the skeleton loader', () => {
@@ -141,7 +141,7 @@ describe('UsageTrendsCountChart', () => {
       });
 
       it('requests data twice', () => {
-        expect(queryHandler).toBeCalledTimes(2);
+        expect(queryHandler).toHaveBeenCalledTimes(2);
       });
 
       it('passes the data to the line chart', () => {

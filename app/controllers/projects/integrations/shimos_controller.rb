@@ -12,7 +12,7 @@ module Projects
       private
 
       def ensure_renderable
-        render_404 unless Feature.enabled?(:shimo_integration, project) && project.has_shimo? && project.shimo_integration&.render?
+        render_404 unless project.has_shimo? && project.shimo_integration&.render?
       end
     end
   end

@@ -42,7 +42,7 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       }
     end
 
-    def go(extra_params = {})
+    def go(headers: {}, **extra_params)
       params = {
         namespace_id: project.namespace.to_param,
         project_id: project,
@@ -56,10 +56,20 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       get diffs_batch_namespace_project_json_merge_request_path(params.merge(extra_params)), headers: headers
     end
 
-    context 'with caching', :use_clean_rails_memory_store_caching do
-      subject { go(page: 0, per_page: 5) }
+    context 'without caching' do
+      subject { go(headers: headers, page: 0, per_page: 5) }
 
+      let(:headers) { {} }
+      let(:collection) { Gitlab::Diff::FileCollection::Compare }
+      let(:expected_options) { collection_arguments }
+
+      it_behaves_like 'serializes diffs with expected arguments'
+    end
+
+    context 'with caching', :use_clean_rails_memory_store_caching do
       context 'when the request has not been cached' do
+        subject { go(headers: { 'If-None-Match' => '' }, page: 0, per_page: 5) }
+
         it_behaves_like 'serializes diffs with expected arguments' do
           let(:collection) { Gitlab::Diff::FileCollection::Compare }
           let(:expected_options) { collection_arguments }
@@ -67,16 +77,18 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
       end
 
       context 'when the request has already been cached' do
+        subject { go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5) }
+
         before do
           go(page: 0, per_page: 5)
         end
 
         it 'does not serialize diffs' do
-          expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-            expect(instance).not_to receive(:represent)
-          end
+          expect(PaginatedDiffSerializer).not_to receive(:new)
 
-          subject
+          go(headers: { 'If-None-Match' => response.etag }, page: 0, per_page: 5)
+
+          expect(response).to have_gitlab_http_status(:not_modified)
         end
 
         context 'with the different user' do

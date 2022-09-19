@@ -13,7 +13,7 @@ module Emails
     def group_email(current_user, group, subj, errors: nil)
       @group = group
       @errors = errors
-      mail(to: current_user.notification_email_for(@group), subject: subject(subj))
+      mail_with_locale(to: current_user.notification_email_for(@group), subject: subject(subj))
     end
   end
 end

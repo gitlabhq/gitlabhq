@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlForm, GlSkeletonLoader } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { __ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -47,6 +48,7 @@ describe('RunnerUpdateForm', () => {
 
   const findSubmit = () => wrapper.find('[type="submit"]');
   const findSubmitDisabledAttr = () => findSubmit().attributes('disabled');
+  const findCancelBtn = () => wrapper.findByRole('link', { name: __('Cancel') });
   const submitForm = () => findForm().trigger('submit');
   const submitFormAndWait = () => submitForm().then(waitForPromises);
 
@@ -115,6 +117,11 @@ describe('RunnerUpdateForm', () => {
 
   it('Form fields match data', () => {
     expect(mockRunner).toMatchObject(getFieldsModel());
+  });
+
+  it('Form shows a cancel button', () => {
+    expect(runnerUpdateHandler).not.toHaveBeenCalled();
+    expect(findCancelBtn().attributes('href')).toBe(mockRunnerPath);
   });
 
   it('Form prevent multiple submissions', async () => {

@@ -60,6 +60,7 @@ class Member < ApplicationRecord
     if: :project_bot?
   validate :access_level_inclusion
   validate :validate_member_role_access_level
+  validate :validate_access_level_locked_for_member_role, on: :update
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -73,10 +74,7 @@ class Member < ApplicationRecord
     projects = source.root_ancestor.all_projects
     project_members = Member.default_scoped.where(source: projects).select(*Member.cached_column_list)
 
-    Member.default_scoped.from_union([
-      group_members,
-      project_members
-    ]).merge(self)
+    Member.default_scoped.from_union([group_members, project_members]).merge(self)
   end
 
   scope :excluding_users, ->(user_ids) do
@@ -186,14 +184,85 @@ class Member < ApplicationRecord
     unscoped.from(distinct_members, :members)
   end
 
-  scope :order_name_asc, -> { left_join_users.reorder(User.arel_table[:name].asc.nulls_last) }
-  scope :order_name_desc, -> { left_join_users.reorder(User.arel_table[:name].desc.nulls_last) }
-  scope :order_recent_sign_in, -> { left_join_users.reorder(User.arel_table[:last_sign_in_at].desc.nulls_last) }
-  scope :order_oldest_sign_in, -> { left_join_users.reorder(User.arel_table[:last_sign_in_at].asc.nulls_last) }
-  scope :order_recent_last_activity, -> { left_join_users.reorder(User.arel_table[:last_activity_on].desc.nulls_last) }
-  scope :order_oldest_last_activity, -> { left_join_users.reorder(User.arel_table[:last_activity_on].asc.nulls_first) }
-  scope :order_recent_created_user, -> { left_join_users.reorder(User.arel_table[:created_at].desc.nulls_last) }
-  scope :order_oldest_created_user, -> { left_join_users.reorder(User.arel_table[:created_at].asc.nulls_first) }
+  scope :order_name_asc, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_full_name',
+      column: User.arel_table[:name],
+      direction: :asc,
+      nullable: :nulls_last
+    )
+  end
+
+  scope :order_name_desc, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_full_name',
+      column: User.arel_table[:name],
+      direction: :desc,
+      nullable: :nulls_last
+    )
+  end
+
+  scope :order_oldest_sign_in, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_last_sign_in_at',
+      column: User.arel_table[:last_sign_in_at],
+      direction: :asc,
+      nullable: :nulls_last
+    )
+  end
+
+  scope :order_recent_sign_in, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_last_sign_in_at',
+      column: User.arel_table[:last_sign_in_at],
+      direction: :desc,
+      nullable: :nulls_last
+    )
+  end
+
+  scope :order_oldest_last_activity, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_last_activity_on',
+      column: User.arel_table[:last_activity_on],
+      direction: :asc,
+      nullable: :nulls_first
+    )
+  end
+
+  scope :order_recent_last_activity, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_last_activity_on',
+      column: User.arel_table[:last_activity_on],
+      direction: :desc,
+      nullable: :nulls_last
+    )
+  end
+
+  scope :order_oldest_created_user, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_created_at',
+      column: User.arel_table[:created_at],
+      direction: :asc,
+      nullable: :nulls_first
+    )
+  end
+
+  scope :order_recent_created_user, -> do
+    build_keyset_order_on_joined_column(
+      scope: left_join_users,
+      attribute_name: 'member_user_created_at',
+      column: User.arel_table[:created_at],
+      direction: :desc,
+      nullable: :nulls_last
+    )
+  end
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
@@ -435,6 +504,14 @@ class Member < ApplicationRecord
 
     if access_level != member_role.base_access_level
       errors.add(:member_role_id, _("role's base access level does not match the access level of the membership"))
+    end
+  end
+
+  def validate_access_level_locked_for_member_role
+    return unless member_role_id
+
+    if access_level_changed?
+      errors.add(:access_level, _("cannot be changed since member is associated with a custom role"))
     end
   end
 

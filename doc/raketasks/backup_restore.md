@@ -12,7 +12,7 @@ An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
 You can only restore a backup to **exactly the same version and type (CE/EE)**
-of GitLab on which it was created. The best way to 
+of GitLab on which it was created. The best way to
 [migrate your projects from one server to another](#migrate-to-a-new-server) is through a backup and restore.
 
 WARNING:
@@ -79,10 +79,18 @@ For detailed information on restoring GitLab, see [Restore GitLab](restore_gitla
 
 ## Alternative backup strategies
 
-If your GitLab instance contains a lot of Git repository data, you may find the
-GitLab backup script to be too slow. If your GitLab instance has a lot of forked
-projects, the regular backup task also duplicates the Git data for all of them.
-In these cases, consider using file system snapshots as part of your backup strategy.
+In the following cases, consider using file system data transfer or snapshots as part of your backup strategy:
+
+- Your GitLab instance contains a lot of Git repository data and the GitLab backup script is too slow.
+- Your GitLab instance has a lot of forked projects and the regular backup task duplicates the Git data for all of them.
+- Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
+
+When considering using file system data transfer or snapshots:
+
+- Don't use these methods to migrate from one operating system to another. The operating systems of the source and destination should be as similar as possible. For example,
+  don't use these methods to migrate from Ubuntu to Fedora.
+- Data consistency is very important. We recommend stopping GitLab with `sudo gitlab-ctl stop` before taking doing a file system transfer (with rsync, for example) or taking a
+  snapshot.
 
 Example: Amazon Elastic Block Store (EBS)
 
@@ -190,7 +198,7 @@ tables will [be logged by PostgreSQL](../administration/logs/index.md#postgresql
 ERROR: relation "tablename" does not exist at character 123
 ```
 
-This happens because the task uses `pg_dump`, which 
+This happens because the task uses `pg_dump`, which
 [sets a null search path and explicitly includes the schema in every SQL query](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
 to address [CVE-2018-1058](https://www.postgresql.org/about/news/postgresql-103-968-9512-9417-and-9322-released-1834/).
 
@@ -318,7 +326,7 @@ To prepare the new server:
       ```
 
 1. Disable periodic background jobs:
-   1. On the top bar, select **Menu > Admin**.
+   1. On the top bar, select **Main menu > Admin**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. Under the Sidekiq dashboard, select **Cron** tab and then
       **Disable All**.
@@ -398,7 +406,7 @@ To prepare the new server:
 
 1. [Restore the GitLab backup](#restore-gitlab).
 1. Verify that the Redis database restored correctly:
-   1. On the top bar, select **Menu > Admin**.
+   1. On the top bar, select **Main menu > Admin**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
       match with what was shown on the old server.

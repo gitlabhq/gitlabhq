@@ -6,7 +6,8 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
   let(:client) { double }
 
   let_it_be(:project) { create(:project, :import_started, import_source: 'http://somegithub.com') }
-  let_it_be(:issue) { create(:issue, project: project) }
+
+  let!(:issuable) { create(:issue, project: project) }
 
   subject { described_class.new(project, client, parallel: parallel) }
 
@@ -35,7 +36,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
   end
 
   describe '#page_counter_id' do
-    it { expect(subject.page_counter_id(issue)).to eq("issues/#{issue.iid}/issue_timeline") }
+    it { expect(subject.page_counter_id(issuable)).to eq("issues/#{issuable.iid}/issue_timeline") }
   end
 
   describe '#id_for_already_imported_cache' do
@@ -48,6 +49,39 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     it do
       expect(subject.collection_options)
         .to eq({ state: 'all', sort: 'created', direction: 'asc' })
+    end
+  end
+
+  describe '#compose_associated_id!' do
+    let(:issuable) { build_stubbed(:issue, iid: 99) }
+    let(:event_resource) { Struct.new(:id, :event, :source, keyword_init: true) }
+
+    context 'when event type is cross-referenced' do
+      let(:event) do
+        source_resource = Struct.new(:issue, keyword_init: true)
+        issue_resource = Struct.new(:id, keyword_init: true)
+        event_resource.new(
+          id: nil,
+          event: 'cross-referenced',
+          source: source_resource.new(issue: issue_resource.new(id: '100500'))
+        )
+      end
+
+      it 'assigns event id' do
+        subject.compose_associated_id!(issuable, event)
+
+        expect(event.id).to eq 'cross-reference#99-in-100500'
+      end
+    end
+
+    context "when event type isn't cross-referenced" do
+      let(:event) { event_resource.new(id: nil, event: 'labeled') }
+
+      it "doesn't assign event id" do
+        subject.compose_associated_id!(issuable, event)
+
+        expect(event.id).to eq nil
+      end
     end
   end
 
@@ -72,19 +106,37 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
         .with(
           :issue_timeline,
           project.import_source,
-          issue.iid,
+          issuable.iid,
           { state: 'all', sort: 'created', direction: 'asc', page: 1 }
         ).and_yield(page)
     end
 
-    it 'imports each issue event page by page' do
-      counter = 0
-      subject.each_object_to_import do |object|
-        expect(object).to eq issue_event
-        expect(issue_event.issue['number']).to eq issue.iid
-        counter += 1
+    context 'with issues' do
+      it 'imports each issue event page by page' do
+        counter = 0
+        subject.each_object_to_import do |object|
+          expect(object).to eq issue_event
+          expect(issue_event.issue['number']).to eq issuable.iid
+          expect(issue_event.issue['pull_request']).to eq false
+          counter += 1
+        end
+        expect(counter).to eq 1
       end
-      expect(counter).to eq 1
+    end
+
+    context 'with merge requests' do
+      let!(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+      it 'imports each merge request event page by page' do
+        counter = 0
+        subject.each_object_to_import do |object|
+          expect(object).to eq issue_event
+          expect(issue_event.issue['number']).to eq issuable.iid
+          expect(issue_event.issue['pull_request']).to eq true
+          counter += 1
+        end
+        expect(counter).to eq 1
+      end
     end
 
     it 'triggers page number increment' do
@@ -103,7 +155,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     context 'when page is already processed' do
       before do
         page_counter = Gitlab::GithubImport::PageCounter.new(
-          project, subject.page_counter_id(issue)
+          project, subject.page_counter_id(issuable)
         )
         page_counter.set(page.number)
       end

@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/timecop_travel'
 
 RSpec.describe RuboCop::Cop::RSpec::TimecopTravel do
-  subject(:cop) { described_class.new }
-
   context 'when calling Timecop.travel' do
     it 'registers an offense and corrects', :aggregate_failures do
       expect_offense(<<~CODE)

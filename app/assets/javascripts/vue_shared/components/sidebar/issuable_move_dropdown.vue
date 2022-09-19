@@ -180,7 +180,7 @@ export default {
             <gl-dropdown-item
               v-for="project in projects"
               :key="project.id"
-              :is-check-item="true"
+              is-check-item
               :is-checked="isSelectedProject(project)"
               @click.stop.prevent="handleProjectSelect(project)"
               >{{ project.name_with_namespace }}</gl-dropdown-item

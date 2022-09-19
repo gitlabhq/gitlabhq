@@ -14,6 +14,7 @@ module Environments
 
     def execute
       environments = project.environments
+      environments = by_type(environments)
       environments = by_name(environments)
       environments = by_search(environments)
       environments = by_ids(environments)
@@ -23,6 +24,12 @@ module Environments
     end
 
     private
+
+    def by_type(environments)
+      return environments unless params[:type].present?
+
+      environments.for_type(params[:type])
+    end
 
     def by_name(environments)
       if params[:name].present?

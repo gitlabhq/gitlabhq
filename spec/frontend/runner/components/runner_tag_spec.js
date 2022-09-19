@@ -1,6 +1,8 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+
+import { RUNNER_TAG_BADGE_VARIANT } from '~/runner/constants';
 import RunnerTag from '~/runner/components/runner_tag.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
@@ -48,7 +50,7 @@ describe('RunnerTag', () => {
   it('Displays tags with correct style', () => {
     expect(findBadge().props()).toMatchObject({
       size: 'sm',
-      variant: 'neutral',
+      variant: RUNNER_TAG_BADGE_VARIANT,
     });
   });
 

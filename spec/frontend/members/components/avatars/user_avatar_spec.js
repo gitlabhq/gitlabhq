@@ -1,7 +1,7 @@
 import { GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserAvatar from '~/members/components/avatars/user_avatar.vue';
-import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 
 import { member as memberMock, member2faEnabled, orphanedMember } from '../../mock_data';
 

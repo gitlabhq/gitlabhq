@@ -123,7 +123,7 @@ or the UI.
 
 In the UI:
 
-1. For your group, go to **Settings > Packages & Registries**.
+1. For your group, go to **Settings > Packages and registries**.
 1. Expand the **Package Registry** section.
 1. Turn on the **Reject duplicates** toggle.
 1. Optional. To allow some duplicate packages, in the **Exceptions** box enter a regex pattern that
@@ -215,7 +215,7 @@ It also demonstrates how to manage a semantic version for the generic package: s
 
 ### Internal Server error on large file uploads to S3
 
-S3-compatible object storage [limits the size of a single PUT request to 5GB](https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html). If the `aws_signature_version` is set to `2` in the [object storage connection settings](../../../administration/object_storage.md), attempting to publish a package file larger than the 5GB limit can result in a `HTTP 500: Internal Server Error` response. 
+S3-compatible object storage [limits the size of a single PUT request to 5GB](https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html). If the `aws_signature_version` is set to `2` in the [object storage connection settings](../../../administration/object_storage.md), attempting to publish a package file larger than the 5GB limit can result in a `HTTP 500: Internal Server Error` response.
 
 If you are receiving `HTTP 500: Internal Server Error` responses when publishing large files to S3, set the `aws_signature_version` to `4`:
 

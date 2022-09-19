@@ -36,10 +36,5 @@ module AlertManagement
         )
       end
     end
-
-    override :resolving_alert?
-    def resolving_alert?
-      incoming_payload.resolved?
-    end
   end
 end

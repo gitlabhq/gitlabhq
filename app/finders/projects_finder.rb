@@ -119,9 +119,9 @@ class ProjectsFinder < UnionFinder
   # This is an optimization - surprisingly PostgreSQL does not optimize
   # for this.
   #
-  # If the default visiblity level and desired visiblity level filter cancels
+  # If the default visibility level and desired visibility level filter cancels
   # each other out, don't use the SQL clause for visibility level in
-  # `Project.public_or_visible_to_user`. In fact, this then becames equivalent
+  # `Project.public_or_visible_to_user`. In fact, this then becomes equivalent
   # to just authorized projects for the user.
   #
   # E.g.

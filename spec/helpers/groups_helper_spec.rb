@@ -520,6 +520,29 @@ RSpec.describe GroupsHelper do
     end
   end
 
+  describe '#group_overview_tabs_app_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
+      allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
+    end
+
+    it 'returns expected hash' do
+      expect(helper.group_overview_tabs_app_data(group)).to match(
+        {
+          subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json"),
+          shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
+          archived_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
+          current_group_visibility: group.visibility
+        }.merge(helper.group_overview_tabs_app_data(group))
+      )
+    end
+  end
+
   describe "#enabled_git_access_protocol_options_for_group" do
     subject { helper.enabled_git_access_protocol_options_for_group }
 

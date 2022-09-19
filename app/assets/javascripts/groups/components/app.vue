@@ -17,11 +17,6 @@ export default {
     GlLoadingIcon,
     EmptyState,
   },
-  inject: {
-    renderEmptyState: {
-      default: false,
-    },
-  },
   props: {
     action: {
       type: String,
@@ -44,6 +39,11 @@ export default {
     hideProjects: {
       type: Boolean,
       required: true,
+    },
+    renderEmptyState: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -224,6 +224,9 @@ export default {
     },
     showLegacyEmptyState() {
       const { containerEl } = this;
+
+      if (!containerEl) return;
+
       const contentListEl = containerEl.querySelector(CONTENT_LIST_CLASS);
       const emptyStateEl = containerEl.querySelector('.empty-state');
 

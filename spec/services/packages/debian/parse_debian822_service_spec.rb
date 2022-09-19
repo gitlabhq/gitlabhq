@@ -77,7 +77,7 @@ RSpec.describe Packages::Debian::ParseDebian822Service do
           'Depends' => '${shlibs:Depends}, ${misc:Depends}',
           'Description' => "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
          },
-         'Package: sample-udeb' => {
+        'Package: sample-udeb' => {
            'Package' => 'sample-udeb',
            'Package-Type' => 'udeb',
            'Architecture' => 'any',

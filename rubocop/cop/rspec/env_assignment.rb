@@ -16,7 +16,9 @@ module RuboCop
       #   before do
       #     stub_env('FOO', 'bar')
       #   end
-      class EnvAssignment < RuboCop::Cop::Cop
+      class EnvAssignment < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         MESSAGE = "Don't assign to ENV, use `stub_env` instead."
 
         def_node_search :env_assignment?, <<~PATTERN
@@ -28,11 +30,7 @@ module RuboCop
         def on_send(node)
           return unless env_assignment?(node)
 
-          add_offense(node, location: :expression, message: MESSAGE)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: MESSAGE) do |corrector|
             corrector.replace(node.loc.expression, stub_env(env_key(node), env_value(node)))
           end
         end

@@ -10,7 +10,7 @@ RSpec.describe Ci::Lint::JobEntity, :aggregate_failures do
         stage: 'test',
         before_script: ['bundle install', 'bundle exec rake db:create'],
         script: ["rake spec"],
-        after_script:  ["rake spec"],
+        after_script: ["rake spec"],
         tag_list: %w[ruby postgres],
         environment: { name: 'hello', url: 'world' },
         when: 'on_success',

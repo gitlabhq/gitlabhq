@@ -407,6 +407,25 @@ RSpec.describe ProjectStatistics do
     end
   end
 
+  describe '#refresh_storage_size!' do
+    it 'recalculates storage size from its components and save it' do
+      statistics.update_columns(
+        repository_size: 2,
+        wiki_size: 4,
+        lfs_objects_size: 3,
+        snippets_size: 2,
+        pipeline_artifacts_size: 3,
+        build_artifacts_size: 3,
+        packages_size: 6,
+        uploads_size: 5,
+
+        storage_size: 0
+      )
+
+      expect { statistics.refresh_storage_size! }.to change { statistics.storage_size }.from(0).to(28)
+    end
+  end
+
   describe '.increment_statistic' do
     shared_examples 'a statistic that increases storage_size' do
       it 'increases the statistic by that amount' do
@@ -432,16 +451,15 @@ RSpec.describe ProjectStatistics do
         end
       end
 
-      it 'schedules a worker to update the statistic and storage_size async' do
+      it 'schedules a worker to update the statistic and storage_size async', :sidekiq_inline do
         expect(FlushCounterIncrementsWorker)
           .to receive(:perform_in)
           .with(CounterAttribute::WORKER_DELAY, described_class.name, statistics.id, stat)
+          .and_call_original
 
-        expect(FlushCounterIncrementsWorker)
-          .to receive(:perform_in)
-          .with(CounterAttribute::WORKER_DELAY, described_class.name, statistics.id, :storage_size)
-
-        described_class.increment_statistic(project, stat, 20)
+        expect { described_class.increment_statistic(project, stat, 20) }
+          .to change { statistics.reload.send(stat) }.by(20)
+          .and change { statistics.reload.send(:storage_size) }.by(20)
       end
     end
 

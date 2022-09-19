@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: {
+  RSpec.describe 'Create', product_group: :source_code, quarantine: {
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/352525',
     type: :test_environment,
     only: { job: 'review-qa-*' }

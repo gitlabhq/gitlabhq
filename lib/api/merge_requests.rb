@@ -212,7 +212,17 @@ module API
 
         recheck_mergeability_of(merge_requests: merge_requests) unless options[:skip_merge_status_recheck]
 
-        present_cached merge_requests, expires_in: 8.hours, cache_context: -> (mr) { "#{current_user&.cache_key}:#{mr.merge_status}" }, **options
+        present_cached merge_requests,
+          expires_in: 8.hours,
+          cache_context: -> (mr) do
+            [
+              current_user&.cache_key,
+              mr.merge_status,
+              mr.merge_request_assignees.map(&:cache_key),
+              mr.merge_request_reviewers.map(&:cache_key)
+            ].join(":")
+          end,
+          **options
       end
 
       desc 'Create a merge request' do
@@ -542,6 +552,19 @@ module API
         present rebase_in_progress: merge_request.rebase_in_progress?
       rescue ::MergeRequest::RebaseLockTimeout => e
         render_api_error!(e.message, 409)
+      end
+
+      desc 'Remove merge request approvals' do
+        detail 'This feature was added in GitLab 15.4'
+      end
+      put ':id/merge_requests/:merge_request_iid/reset_approvals', feature_category: :code_review, urgency: :low do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
+
+        unauthorized! unless current_user.bot? && merge_request.can_be_approved_by?(current_user)
+
+        merge_request.approvals.delete_all
+
+        status :accepted
       end
 
       desc 'List issues that will be closed on merge' do

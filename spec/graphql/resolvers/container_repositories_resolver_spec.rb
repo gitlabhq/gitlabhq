@@ -17,7 +17,7 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
 
     subject do
       resolve(described_class, ctx: { current_user: user }, args: args, obj: object,
-              arg_style: :internal)
+                               arg_style: :internal)
     end
 
     shared_examples 'returning container repositories' do

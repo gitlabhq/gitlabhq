@@ -33,7 +33,7 @@ describe('Feature flags New Module Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagSuccess ', () => {
+      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagSuccess', () => {
         const actionParams = {
           name: 'name',
           description: 'description',
@@ -68,7 +68,7 @@ describe('Feature flags New Module Actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagError ', () => {
+      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagError', () => {
         const actionParams = {
           name: 'name',
           description: 'description',

@@ -21,15 +21,15 @@ describe('JiraImportApp', () => {
 
   const setupIllustration = 'setup-illustration.svg';
 
-  const getFormComponent = () => wrapper.find(JiraImportForm);
+  const getFormComponent = () => wrapper.findComponent(JiraImportForm);
 
-  const getProgressComponent = () => wrapper.find(JiraImportProgress);
+  const getProgressComponent = () => wrapper.findComponent(JiraImportProgress);
 
-  const getSetupComponent = () => wrapper.find(JiraImportSetup);
+  const getSetupComponent = () => wrapper.findComponent(JiraImportSetup);
 
-  const getAlert = () => wrapper.find(GlAlert);
+  const getAlert = () => wrapper.findComponent(GlAlert);
 
-  const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const mountComponent = ({
     isJiraConfigured = true,

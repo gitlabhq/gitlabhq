@@ -1006,7 +1006,7 @@ RSpec.describe ApplicationController do
   end
 
   describe '.endpoint_id_for_action' do
-    controller(described_class) { }
+    controller(described_class) {}
 
     it 'returns an expected endpoint id' do
       expect(controller.class.endpoint_id_for_action('hello')).to eq('AnonymousController#hello')

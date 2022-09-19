@@ -2,15 +2,6 @@
 
 Gitlab::Application.configure do |config|
   config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
-
-  # We need re-rerun the setup when code reloads in development
-  config.reloader.to_prepare do
-    if Rails.env.development? || Rails.env.test?
-      Gitlab::Database::LoadBalancing.base_models.each do |model|
-        Gitlab::Database::LoadBalancing::Setup.new(model).setup
-      end
-    end
-  end
 end
 
 Gitlab::Database::LoadBalancing.base_models.each do |model|
@@ -23,8 +14,9 @@ Gitlab::Database::LoadBalancing.base_models.each do |model|
   # information.
   Gitlab::Database::LoadBalancing::Setup.new(model).setup
 
+  # We need re-rerun the setup when code reloads in development
   Rails.application.reloader.to_prepare do
-    if Rails.env.development?
+    if Rails.env.development? || Rails.env.test?
       Gitlab::Database::LoadBalancing::Setup.new(model).setup
     end
   end

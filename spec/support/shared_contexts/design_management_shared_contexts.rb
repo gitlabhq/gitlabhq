@@ -14,23 +14,23 @@ RSpec.shared_context 'four designs in three versions' do
 
   let_it_be(:first_version) do
     create(:design_version, issue: issue,
-           created_designs: [design_a],
-           modified_designs: [],
-           deleted_designs: [])
+                            created_designs: [design_a],
+                            modified_designs: [],
+                            deleted_designs: [])
   end
 
   let_it_be(:second_version) do
     create(:design_version, issue: issue,
-           created_designs: [design_b, design_c, design_d],
-           modified_designs: [design_a],
-           deleted_designs: [])
+                            created_designs: [design_b, design_c, design_d],
+                            modified_designs: [design_a],
+                            deleted_designs: [])
   end
 
   let_it_be(:third_version) do
     create(:design_version, issue: issue,
-           created_designs: [],
-           modified_designs: [design_a],
-           deleted_designs: [design_d])
+                            created_designs: [],
+                            modified_designs: [design_a],
+                            deleted_designs: [design_d])
   end
 
   before do

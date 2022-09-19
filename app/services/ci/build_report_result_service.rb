@@ -22,7 +22,8 @@ module Ci
     private
 
     def generate_test_suite_report(build)
-      build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
+      test_report = build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
+      test_report.get_suite(build.test_suite_name)
     end
 
     def tests_params(test_suite)

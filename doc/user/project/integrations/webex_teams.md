@@ -27,7 +27,7 @@ notifications:
 1. Navigate to:
    - **Settings > Integrations** in a project to enable the integration at the project level.
    - **Settings > Integrations** in a group to enable the integration at the group level.
-   - On the top bar, select **Menu > Admin**. Then, in the left sidebar,
+   - On the top bar, select **Main menu > Admin**. Then, in the left sidebar,
      select **Settings > Integrations** to enable an instance-level integration.
 1. Select the **Webex Teams** integration.
 1. Ensure that the **Active** toggle is enabled.

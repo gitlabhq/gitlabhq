@@ -12,6 +12,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
+import createFlash from '~/flash';
 import Description from '~/issues/show/components/description.vue';
 import { updateHistory } from '~/lib/utils/url_utility';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -71,7 +72,11 @@ describe('Description component', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
 
-  function createComponent({ props = {}, provide } = {}) {
+  function createComponent({
+    props = {},
+    provide,
+    createWorkItemFromTaskHandler = createWorkItemFromTaskSuccessHandler,
+  } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
         issueId: 1,
@@ -85,7 +90,7 @@ describe('Description component', () => {
       apolloProvider: createMockApollo([
         [workItemQuery, queryHandler],
         [workItemTypesQuery, workItemTypesQueryHandler],
-        [createWorkItemFromTaskMutation, createWorkItemFromTaskSuccessHandler],
+        [createWorkItemFromTaskMutation, createWorkItemFromTaskHandler],
       ]),
       mocks: {
         $toast,
@@ -317,7 +322,28 @@ describe('Description component', () => {
         expect(findModal().exists()).toBe(false);
       });
 
+      it('shows toast after delete success', async () => {
+        const newDesc = 'description';
+        findWorkItemDetailModal().vm.$emit('workItemDeleted', newDesc);
+
+        expect(wrapper.emitted('updateDescription')).toEqual([[newDesc]]);
+        expect($toast.show).toHaveBeenCalledWith('Task deleted');
+      });
+    });
+
+    describe('creating work item from checklist item', () => {
       it('emits `updateDescription` after creating new work item', async () => {
+        createComponent({
+          props: {
+            descriptionHtml: descriptionHtmlWithCheckboxes,
+          },
+          provide: {
+            glFeatures: {
+              workItemsCreateFromMarkdown: true,
+            },
+          },
+        });
+
         const newDescription = `<p>New description</p>`;
 
         await findConvertToTaskButton().trigger('click');
@@ -327,12 +353,28 @@ describe('Description component', () => {
         expect(wrapper.emitted('updateDescription')).toEqual([[newDescription]]);
       });
 
-      it('shows toast after delete success', async () => {
-        const newDesc = 'description';
-        findWorkItemDetailModal().vm.$emit('workItemDeleted', newDesc);
+      it('shows flash message when creating task fails', async () => {
+        createComponent({
+          props: {
+            descriptionHtml: descriptionHtmlWithCheckboxes,
+          },
+          provide: {
+            glFeatures: {
+              workItemsCreateFromMarkdown: true,
+            },
+          },
+          createWorkItemFromTaskHandler: jest.fn().mockRejectedValue({}),
+        });
 
-        expect(wrapper.emitted('updateDescription')).toEqual([[newDesc]]);
-        expect($toast.show).toHaveBeenCalledWith('Task deleted');
+        await findConvertToTaskButton().trigger('click');
+
+        await waitForPromises();
+
+        expect(createFlash).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: 'Something went wrong when creating task. Please try again.',
+          }),
+        );
       });
     });
 

@@ -127,7 +127,7 @@ export const createContentEditor = ({
     MathInline,
     OrderedList,
     Paragraph,
-    PasteMarkdown,
+    PasteMarkdown.configure({ eventHub, renderMarkdown }),
     Reference,
     ReferenceDefinition,
     Sourcemap,

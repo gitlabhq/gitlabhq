@@ -24,11 +24,11 @@ describe('CI Lint Results', () => {
     });
   };
 
-  const findTable = () => wrapper.find(GlTableLite);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findByTestId = (selector) => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
   const findAllByTestId = (selector) => () =>
     wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);
-  const findLinkToDoc = () => wrapper.find(GlLink);
+  const findLinkToDoc = () => wrapper.findComponent(GlLink);
   const findErrors = findByTestId('errors');
   const findWarnings = findByTestId('warnings');
   const findStatus = findByTestId('status');

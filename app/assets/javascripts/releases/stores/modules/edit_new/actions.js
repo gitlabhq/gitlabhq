@@ -16,6 +16,8 @@ import {
 
 import * as types from './mutation_types';
 
+class GraphQLError extends Error {}
+
 export const initializeRelease = ({ commit, dispatch, state }) => {
   if (state.isExistingRelease) {
     // When editing an existing release,
@@ -110,35 +112,35 @@ export const saveRelease = ({ commit, dispatch, state }) => {
  *
  * @param {Object} gqlResponse The response object returned by the GraphQL client
  * @param {String} mutationName The name of the mutation that was executed
- * @param {String} messageIfError An message to build into the error object if something went wrong
  */
-const checkForErrorsAsData = (gqlResponse, mutationName, messageIfError) => {
+const checkForErrorsAsData = (gqlResponse, mutationName) => {
   const allErrors = gqlResponse.data[mutationName].errors;
   if (allErrors.length > 0) {
-    const allErrorMessages = JSON.stringify(allErrors);
-    throw new Error(`${messageIfError}: ${allErrorMessages}`);
+    throw new GraphQLError(allErrors[0]);
   }
 };
 
-export const createRelease = async ({ commit, dispatch, state, getters }) => {
+export const createRelease = async ({ commit, dispatch, getters }) => {
   try {
     const response = await gqClient.mutate({
       mutation: createReleaseMutation,
       variables: getters.releaseCreateMutatationVariables,
     });
 
-    checkForErrorsAsData(
-      response,
-      'releaseCreate',
-      `Something went wrong while creating a new release with projectPath "${state.projectPath}" and tagName "${state.release.tagName}"`,
-    );
+    checkForErrorsAsData(response, 'releaseCreate');
 
     dispatch('receiveSaveReleaseSuccess', response.data.releaseCreate.release.links.selfUrl);
   } catch (error) {
     commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
-    createFlash({
-      message: s__('Release|Something went wrong while creating a new release.'),
-    });
+    if (error instanceof GraphQLError) {
+      createFlash({
+        message: error.message,
+      });
+    } else {
+      createFlash({
+        message: s__('Release|Something went wrong while creating a new release.'),
+      });
+    }
   }
 };
 
@@ -146,7 +148,7 @@ export const createRelease = async ({ commit, dispatch, state, getters }) => {
  * Deletes a single release link.
  * Throws an error if any network or validation errors occur.
  */
-const deleteReleaseLinks = async ({ state, id }) => {
+const deleteReleaseLinks = async ({ id }) => {
   const deleteResponse = await gqClient.mutate({
     mutation: deleteReleaseAssetLinkMutation,
     variables: {
@@ -154,11 +156,7 @@ const deleteReleaseLinks = async ({ state, id }) => {
     },
   });
 
-  checkForErrorsAsData(
-    deleteResponse,
-    'releaseAssetLinkDelete',
-    `Something went wrong while deleting release asset link for release with projectPath "${state.projectPath}", tagName "${state.tagName}", and link id "${id}"`,
-  );
+  checkForErrorsAsData(deleteResponse, 'releaseAssetLinkDelete');
 };
 
 /**
@@ -180,11 +178,7 @@ const createReleaseLink = async ({ state, link }) => {
     },
   });
 
-  checkForErrorsAsData(
-    createResponse,
-    'releaseAssetLinkCreate',
-    `Something went wrong while creating a release asset link for release with projectPath "${state.projectPath}" and tagName "${state.tagName}"`,
-  );
+  checkForErrorsAsData(createResponse, 'releaseAssetLinkCreate');
 };
 
 export const updateRelease = async ({ commit, dispatch, state, getters }) => {
@@ -210,11 +204,7 @@ export const updateRelease = async ({ commit, dispatch, state, getters }) => {
       variables: getters.releaseUpdateMutatationVariables,
     });
 
-    checkForErrorsAsData(
-      updateReleaseResponse,
-      'releaseUpdate',
-      `Something went wrong while updating release with projectPath "${state.projectPath}" and tagName "${state.tagName}"`,
-    );
+    checkForErrorsAsData(updateReleaseResponse, 'releaseUpdate');
 
     // Delete all links currently associated with this Release
     await Promise.all(
@@ -266,7 +256,7 @@ export const deleteRelease = ({ commit, getters, dispatch, state }) => {
       mutation: deleteReleaseMutation,
       variables: getters.releaseDeleteMutationVariables,
     })
-    .then((response) => checkForErrorsAsData(response, 'releaseDelete', ''))
+    .then((response) => checkForErrorsAsData(response, 'releaseDelete'))
     .then(() => {
       window.sessionStorage.setItem(
         deleteReleaseSessionKey(state.projectPath),

@@ -11,6 +11,7 @@ import {
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -80,6 +81,9 @@ export default {
   methods: {
     handleTitleClick(event) {
       if (this.workItemType === 'TASK') {
+        if (isMetaKey(event)) {
+          return;
+        }
         event.preventDefault();
         this.$refs.modal.show();
         this.updateWorkItemIdUrlQuery(this.idKey);

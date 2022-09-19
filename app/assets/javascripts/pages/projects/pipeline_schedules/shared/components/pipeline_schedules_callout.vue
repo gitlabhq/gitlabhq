@@ -29,7 +29,7 @@ export default {
 </script>
 <template>
   <div v-if="!calloutDismissed" class="pipeline-schedules-user-callout user-callout">
-    <div class="bordered-box landing content-block" data-testid="innerContent">
+    <div class="bordered-box landing content-block gl-p-5!" data-testid="innerContent">
       <gl-button
         category="tertiary"
         icon="close"

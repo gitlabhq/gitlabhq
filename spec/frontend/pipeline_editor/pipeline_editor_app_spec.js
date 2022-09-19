@@ -149,8 +149,7 @@ describe('Pipeline editor app component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
-  const findEmptyStateButton = () =>
-    wrapper.findComponent(PipelineEditorEmptyState).findComponent(GlButton);
+  const findEmptyStateButton = () => findEmptyState().findComponent(GlButton);
   const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
 
   beforeEach(() => {

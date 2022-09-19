@@ -14,7 +14,7 @@ export default {
       description: '',
       milestones: [],
       groupMilestones: [],
-      releasedAt: new Date(),
+      releasedAt: state.originalReleasedAt,
       assets: {
         links: [],
       },
@@ -29,6 +29,7 @@ export default {
     state.isFetchingRelease = false;
     state.release = data;
     state.originalRelease = Object.freeze(cloneDeep(state.release));
+    state.originalReleasedAt = state.originalRelease.releasedAt;
   },
   [types.RECEIVE_RELEASE_ERROR](state, error) {
     state.fetchError = error;

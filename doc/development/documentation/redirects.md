@@ -16,12 +16,7 @@ description: Learn how to contribute to GitLab Documentation.
 # Redirects in GitLab documentation
 
 When you move, rename, or delete a page, you must add a redirect. Redirects reduce
-how often users get 404s when visiting the documentation site from out-of-date links, like:
-
-- Bookmarks
-- Links from external sites
-- Links from old blog posts
-- Links in the documentation site global navigation
+how often users get 404s when they visit the documentation site from out-of-date links.
 
 Add a redirect to ensure:
 
@@ -36,9 +31,11 @@ Add a redirect to ensure:
 Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
 Technical Writers can help with any questions and can review your change.
 
+## Types of redirects
+
 There are two types of redirects:
 
-- [Redirect added into the documentation files themselves](#add-a-redirect), for users who
+- [Redirects added into the documentation files themselves](#redirect-to-a-page-that-already-exists), for users who
   view the docs in `/help` on self-managed instances. For example,
   [`/help` on GitLab.com](https://gitlab.com/help). These must be added in the same
   MR that renames or moves a doc. Redirects to internal pages expire after three months
@@ -52,96 +49,109 @@ Expired redirect files are removed from the documentation projects by the
 [`clean_redirects` Rake task](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects),
 as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
 
-## Add a redirect
+## Redirect to a page that already exists
 
-NOTE:
-If the renamed page is new, you can sometimes skip the following steps and ask a
-Technical Writer to manually add the redirect to [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
-For example, if you add a new page and then rename it before it's added to a release
-on the 18th. The old page is not in any version's `/help` section, so a technical writer
-can jump straight to the [Pages redirect](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md#pages-redirects).
+To redirect a page to another page in the same repository:
 
-To add a redirect:
+1. In the Markdown file that you want to direct to a new location:
 
-1. In the repository (`gitlab`, `gitlab-runner`, `omnibus-gitlab`, or `charts`),
-   create a new documentation file. Don't delete the old one. The easiest
-   way is to copy it. For example:
+   - Delete all of the content.
+   - Add this content:
 
-   ```shell
-   cp doc/user/search/old_file.md doc/api/new_file.md
-   ```
+     ```markdown
+     ---
+     redirect_to: '../newpath/to/file/index.md'
+     remove_date: 'YYYY-MM-DD'
+     ---
 
-1. Add the redirect code to the old documentation file by running the
-   following Rake task. The first argument is the path of the old file,
-   and the second argument is the path of the new file:
+     This document was moved to [another location](../path/to/file/index.md).
 
-   - To redirect to a page in the same project, use relative paths and
-     the `.md` extension. Both old and new paths start from the same location.
-     In the following example, both paths are relative to `doc/`:
-
-     ```shell
-     bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, doc/api/new_file.md]"
+     <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
+     <!-- Redirects that point to other docs in the same project expire in three months. -->
+     <!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+     <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
      ```
-
-   - To redirect to a page in a different project or site, use the full URL (with `https://`) :
-
-     ```shell
-     bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, https://example.com]"
-     ```
-
-   - Alternatively, you can omit the arguments and be prompted to enter the values:
-
-     ```shell
-     bundle exec rake gitlab:docs:redirect
-     ```
-
-   If you don't want to use the Rake task, you can use the following template:
-
-   ```markdown
-   ---
-   redirect_to: '../newpath/to/file/index.md'
-   remove_date: 'YYYY-MM-DD'
-   ---
-
-   This document was moved to [another location](../path/to/file/index.md).
-
-   <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
-   <!-- Redirects that point to other docs in the same project expire in three months. -->
-   <!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
-   <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
-   ```
 
    - Replace both instances of `../newpath/to/file/index.md` with the new file path.
-   - Replace `YYYY-MM-DD` with the expiry date, as explained in the template.
+   - Replace both instances of `YYYY-MM-DD` with the expiration date, as explained in the template.
 
-1. If the documentation page being moved has any Disqus comments, follow the steps
-   described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
-1. Open a merge request with your changes. If a documentation page
-   you're removing includes images that aren't used
-   with any other documentation pages, be sure to use your merge request to delete
-   those images from the repository.
-1. Assign the merge request to a technical writer for review and merge.
-1. Search for links to the old documentation file. You must find and update all
-   links that point to the old documentation file:
+1. If the page has Disqus comments, follow [the steps for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
+1. If the page had images that aren't used on any other pages, delete them.
 
-   - In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
-     `grep -r "docs.gitlab.com/ee/path/to/file.html" .`
-   - In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
-     search the navigation bar configuration files for the path with `.html`:
-     `grep -r "path/to/file.html" .`
-   - In any of the four internal projects, search for links in the docs
-     and codebase. Search for all variations, including full URL and just the path.
-     For example, go to the root directory of the `gitlab` project and run:
+After your changes are committed, search for and update all links that point to the old file:
 
-     ```shell
-     grep -r "docs.gitlab.com/ee/path/to/file.html" .
-     grep -r "path/to/file.html" .
-     grep -r "path/to/file.md" .
-     grep -r "path/to/file" .
-     ```
+- In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
 
-     You may need to try variations of relative links, such as `../path/to/file` or
-     `../file` to find every case.
+  ```shell
+  grep -r "docs.gitlab.com/ee/path/to/file.html" .
+  ```
+
+- In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
+  search the navigation bar configuration files for the path with `.html`:
+
+  ```shell
+  grep -r "path/to/file.html" .
+   ```
+
+- In any of the four internal projects, search for links in the docs
+  and codebase. Search for all variations, including full URL and just the path.
+  For example, go to the root directory of the `gitlab` project and run:
+
+  ```shell
+  grep -r "docs.gitlab.com/ee/path/to/file.html" .
+  grep -r "path/to/file.html" .
+  grep -r "path/to/file.md" .
+  grep -r "path/to/file" .
+  ```
+
+  You might need to try variations of relative links, such as `../path/to/file` or
+  `../file` to find every case.
+
+### Move a file's location
+
+If you want to move a file from one location to another, you do not move it.
+Instead, you duplicate the file, and add the redirect code to the old file.
+
+1. Create the new file.
+1. Copy the contents of the old file to the new one.
+1. In the old file, delete all the content.
+1. In the old file, add the redirect code and follow the rest of the steps in
+   the [Redirect to a page that already exists](#redirect-to-a-page-that-already-exists) topic.
+
+## Use code to add a redirect
+
+If you prefer to use a script to create the redirect:
+
+Add the redirect code to the old documentation file by running the
+following Rake task. The first argument is the path of the old file,
+and the second argument is the path of the new file:
+
+- To redirect to a page in the same project, use relative paths and
+  the `.md` extension. Both old and new paths start from the same location.
+  In the following example, both paths are relative to `doc/`:
+
+  ```shell
+  bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, doc/api/new_file.md]"
+  ```
+
+- To redirect to a page in a different project or site, use the full URL (with `https://`) :
+
+  ```shell
+  bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, https://example.com]"
+  ```
+
+- Alternatively, you can omit the arguments and be prompted to enter the values:
+
+  ```shell
+  bundle exec rake gitlab:docs:redirect
+  ```
+
+## Redirecting a page created before the release
+
+If you create a new page and then rename it before it's added to a release on the 18th:
+
+Instead of following that procedure, ask a Technical Writer to manually add the redirect
+to [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
 
 ## Redirections for pages with Disqus comments
 

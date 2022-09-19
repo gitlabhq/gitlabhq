@@ -36,6 +36,12 @@ describe('Release edit/new mutations', () => {
         },
       });
     });
+
+    it('saves the original released at date as well', () => {
+      mutations[types.INITIALIZE_EMPTY_RELEASE](state);
+
+      expect(state.originalReleasedAt).toEqual(new Date());
+    });
   });
 
   describe(`${types.REQUEST_RELEASE}`, () => {
@@ -57,6 +63,7 @@ describe('Release edit/new mutations', () => {
       expect(state.release).toEqual(release);
 
       expect(state.originalRelease).toEqual(release);
+      expect(state.originalReleasedAt).toEqual(release.releasedAt);
     });
   });
 

@@ -205,6 +205,18 @@
         "iid": 1,
         "group_id": 100
       },
+      "iteration": {
+        "created_at": "2022-08-15T12:55:42.607Z",
+        "updated_at": "2022-08-15T12:56:19.269Z",
+        "start_date": "2022-08-15",
+        "due_date": "2022-08-21",
+        "group_id": 260,
+        "iid": 5,
+        "description": "iteration description",
+        "iterations_cadence": {
+          "title": "iterations cadence"
+        }
+      },
       "epic_issue": {
         "id": 78,
         "relative_position": 1073740323,
@@ -239,7 +251,26 @@
           "due_date_sourcing_epic_id": null,
           "milestone_id": null
         }
-      }
+      },
+      "resource_iteration_events": [
+        {
+          "user_id": 1,
+          "created_at": "2022-08-17T13:04:02.495Z",
+          "action": "add",
+          "iteration": {
+            "created_at": "2022-08-15T12:55:42.607Z",
+            "updated_at": "2022-08-15T12:56:19.269Z",
+            "start_date": "2022-08-15",
+            "due_date": "2022-08-21",
+            "group_id": 260,
+            "iid": 5,
+            "description": "iteration description",
+            "iterations_cadence": {
+              "title": "iterations cadence"
+            }
+          }
+        }
+      ]
     }
   ],
   "snippets": [

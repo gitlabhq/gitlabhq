@@ -298,7 +298,7 @@ describe('Reusable form component', () => {
     `(
       'should render the correct component for #$id with the value "$value"',
       ({ index, id, component, value }) => {
-        const findFormElement = () => findFormGroup(index).find(component);
+        const findFormElement = () => findFormGroup(index).findComponent(component);
 
         expect(findFormElement().attributes('id')).toBe(id);
         expect(findFormElement().attributes('value')).toBe(value);
@@ -307,7 +307,8 @@ describe('Reusable form component', () => {
 
     it('should render a checked GlFormCheckbox for #active', () => {
       const activeCheckboxIndex = 6;
-      const findFormElement = () => findFormGroup(activeCheckboxIndex).find(GlFormCheckbox);
+      const findFormElement = () =>
+        findFormGroup(activeCheckboxIndex).findComponent(GlFormCheckbox);
 
       expect(findFormElement().attributes('id')).toBe('active');
       expect(findFormElement().attributes('checked')).toBe('true');

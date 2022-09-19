@@ -22,7 +22,7 @@ Prerequisites:
 
 To configure your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Jira**.
 1. Select **Enable integration**.

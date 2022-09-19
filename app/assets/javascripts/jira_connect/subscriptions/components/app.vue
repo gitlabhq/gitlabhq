@@ -83,7 +83,7 @@ export default {
      * if the jiraConnectOauth flag is enabled.
      */
     fetchSubscriptionsOauth() {
-      if (!this.isOauthEnabled) return;
+      if (!this.isOauthEnabled || !this.userSignedIn) return;
 
       this.fetchSubscriptions(this.subscriptionsPath);
     },
@@ -146,12 +146,12 @@ export default {
 
         <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
           <sign-in-page
-            v-if="!userSignedIn"
+            v-show="!userSignedIn"
             :has-subscriptions="hasSubscriptions"
             @sign-in-oauth="onSignInOauth"
             @error="onSignInError"
           />
-          <subscriptions-page v-else :has-subscriptions="hasSubscriptions" />
+          <subscriptions-page v-if="userSignedIn" :has-subscriptions="hasSubscriptions" />
         </div>
       </div>
     </main>

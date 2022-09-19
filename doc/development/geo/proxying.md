@@ -128,7 +128,7 @@ Secondary-->>Client: admin/geo/replication/projects logged in response (session 
 
 ## Git pull
 
-For historical reasons, the `push_from_secondary` path is used to forward a Git pull. There is 
+For historical reasons, the `push_from_secondary` path is used to forward a Git pull. There is
 [an issue proposing to rename this route](https://gitlab.com/gitlab-org/gitlab/-/issues/292690) to avoid confusion.
 
 ### Git pull over HTTP(s)

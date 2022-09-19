@@ -81,12 +81,6 @@ module RuboCop
       in_app_directory?(node, 'graphql')
     end
 
-    # Returns true if the given node resides in app/graphql/types,
-    # ee/app/graphql/types, or ee/app/graphql/ee/types.
-    def in_graphql_types?(node)
-      in_graphql_directory?(node, 'types')
-    end
-
     # Returns true if the given node resides in lib/api or ee/lib/api.
     def in_api?(node)
       in_lib_directory?(node, 'api')
@@ -169,7 +163,7 @@ module RuboCop
       each_send_node(node) do |send_node|
         next unless send_receiver_name_ends_with?(send_node, suffix)
 
-        add_offense(send_node, location: :expression, message: message)
+        add_offense(send_node, message: message)
       end
     end
 

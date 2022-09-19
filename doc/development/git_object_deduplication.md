@@ -18,7 +18,7 @@ GitLab implements Git object deduplication.
 
 ### Understanding Git alternates
 
-At the Git level, we achieve deduplication by using 
+At the Git level, we achieve deduplication by using
 [Git alternates](https://git-scm.com/docs/gitrepository-layout#gitrepository-layout-objects).
 Git alternates is a mechanism that lets a repository borrow objects from
 another repository on the same machine.
@@ -99,7 +99,7 @@ are as follows:
 
 ### Assumptions
 
-- All repositories in a pool must use [hashed storage](../administration/repository_storage_types.md). 
+- All repositories in a pool must use [hashed storage](../administration/repository_storage_types.md).
   This is so that we don't have to ever worry about updating paths in
   `object/info/alternates` files.
 - All repositories in a pool must be on the same Gitaly storage shard.

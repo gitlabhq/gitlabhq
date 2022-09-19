@@ -201,7 +201,7 @@ describe('Value stream analytics component', () => {
     it('renders the stage table with a loading icon', () => {
       const tableWrapper = findStageTable();
       expect(tableWrapper.exists()).toBe(true);
-      expect(tableWrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(tableWrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('renders the path navigation loading state', () => {

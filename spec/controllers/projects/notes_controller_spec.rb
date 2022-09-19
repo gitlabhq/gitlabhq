@@ -659,7 +659,7 @@ RSpec.describe Projects::NotesController do
 
     context 'when target_id and noteable_id do not match' do
       let(:locked_issue) { create(:issue, :locked, project: project) }
-      let(:issue) {create(:issue, project: project)}
+      let(:issue) { create(:issue, project: project) }
 
       it 'uses target_id and ignores noteable_id' do
         request_params = {

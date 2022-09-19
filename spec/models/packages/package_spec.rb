@@ -21,6 +21,7 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
+    it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
   end
 
   describe '.with_debian_codename' do
@@ -1354,6 +1355,18 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       it { is_expected.to eq(normalized_name) }
+    end
+  end
+
+  describe '#touch_last_downloaded_at' do
+    let_it_be(:package) { create(:package) }
+
+    subject { package.touch_last_downloaded_at }
+
+    it 'updates the downloaded_at' do
+      expect(::Gitlab::Database::LoadBalancing::Session).to receive(:without_sticky_writes).and_call_original
+      expect { subject }
+        .to change(package, :last_downloaded_at).from(nil).to(instance_of(ActiveSupport::TimeWithZone))
     end
   end
 end

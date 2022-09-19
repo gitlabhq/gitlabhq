@@ -28,7 +28,7 @@ describe('tooltips/components/tooltips.vue', () => {
     return target;
   };
 
-  const allTooltips = () => wrapper.findAll(GlTooltip);
+  const allTooltips = () => wrapper.findAllComponents(GlTooltip);
 
   afterEach(() => {
     wrapper.destroy();
@@ -68,7 +68,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.findAll(GlTooltip)).toHaveLength(1);
+      expect(wrapper.findAllComponents(GlTooltip)).toHaveLength(1);
     });
 
     it('sets tooltip content from title attribute', async () => {

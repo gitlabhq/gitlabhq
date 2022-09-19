@@ -77,7 +77,7 @@ export default {
     <template v-for="(action, index) in actions">
       <gl-dropdown-item
         :key="action.key"
-        :is-check-item="true"
+        is-check-item
         :is-checked="action.key === selectedAction.key"
         :secondary-text="action.secondaryText"
         :data-qa-selector="`${action.key}_menu_item`"

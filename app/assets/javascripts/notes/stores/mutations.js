@@ -425,4 +425,7 @@ export default {
   [types.SET_DONE_FETCHING_BATCH_DISCUSSIONS](state, value) {
     state.doneFetchingBatchDiscussions = value;
   },
+  [types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS](state, value) {
+    state.isPromoteCommentToTimelineEventInProgress = value;
+  },
 };

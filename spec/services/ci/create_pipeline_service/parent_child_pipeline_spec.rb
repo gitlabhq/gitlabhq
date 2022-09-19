@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, '#execute' do
+RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -36,7 +36,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
       expect(pipeline.statuses).to match_array [test, bridge]
       expect(bridge.options).to eq(expected_bridge_options)
       expect(bridge.yaml_variables)
-        .to include(key: 'CROSS', value: 'downstream', public: true)
+        .to include(key: 'CROSS', value: 'downstream')
     end
   end
 

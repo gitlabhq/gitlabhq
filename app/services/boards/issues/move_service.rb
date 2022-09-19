@@ -54,6 +54,10 @@ module Boards
       def update(issue, issue_modification_params)
         ::Issues::UpdateService.new(project: issue.project, current_user: current_user, params: issue_modification_params).execute(issue)
       end
+
+      def moving_to_list_items_relation
+        Boards::Issues::ListService.new(board.resource_parent, current_user, board_id: board.id, id: moving_to_list.id).execute
+      end
     end
   end
 end

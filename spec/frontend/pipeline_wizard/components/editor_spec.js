@@ -11,7 +11,7 @@ describe('Pages Yaml Editor wrapper', () => {
     const wrapper = mount(YamlEditor, defaultOptions);
 
     it('editor is mounted', () => {
-      expect(wrapper.vm.editor).not.toBeFalsy();
+      expect(wrapper.vm.editor).not.toBeUndefined();
       expect(wrapper.find('.gl-source-editor').exists()).toBe(true);
     });
   });
@@ -55,15 +55,6 @@ describe('Pages Yaml Editor wrapper', () => {
         await wrapper.setProps({ highlight });
         expect(highlightSpy).toHaveBeenCalledWith(expect.anything(), highlight, true);
       });
-    });
-  });
-
-  describe('events', () => {
-    const wrapper = mount(YamlEditor, defaultOptions);
-
-    it('emits touch if content is changed in editor', async () => {
-      await wrapper.vm.editor.setValue('foo: boo');
-      expect(wrapper.emitted('touch')).toEqual([expect.any(Array)]);
     });
   });
 });

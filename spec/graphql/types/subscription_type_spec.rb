@@ -10,8 +10,9 @@ RSpec.describe GitlabSchema.types['Subscription'] do
       issuable_title_updated
       issuable_labels_updated
       issuable_dates_updated
+      merge_request_reviewers_updated
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields).only
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

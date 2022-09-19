@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/active_record_association_reload'
 
 RSpec.describe RuboCop::Cop::ActiveRecordAssociationReload do
-  subject(:cop) { described_class.new }
-
   context 'when using ActiveRecord::Base' do
     it 'registers an offense on reload usage' do
       expect_offense(<<~PATTERN)

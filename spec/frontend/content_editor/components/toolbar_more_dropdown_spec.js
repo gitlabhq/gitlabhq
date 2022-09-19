@@ -1,8 +1,10 @@
+import { GlDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarMoreDropdown from '~/content_editor/components/toolbar_more_dropdown.vue';
 import Diagram from '~/content_editor/extensions/diagram';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import { stubComponent } from 'helpers/stub_component';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 describe('content_editor/components/toolbar_more_dropdown', () => {
@@ -23,9 +25,14 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
         tiptapEditor,
         eventHub,
       },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown),
+      },
       propsData,
     });
   };
+
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   beforeEach(() => {
     buildEditor();
@@ -65,6 +72,16 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
       expect(commands.run).toHaveBeenCalled();
 
       expect(wrapper.emitted('execute')).toEqual([[{ contentType }]]);
+    });
+  });
+
+  describe('a11y tests', () => {
+    it('sets text, title, and text-sr-only properties to the table button dropdown', () => {
+      expect(findDropdown().props()).toMatchObject({
+        text: 'More',
+        textSrOnly: true,
+      });
+      expect(findDropdown().attributes('title')).toBe('More');
     });
   });
 });

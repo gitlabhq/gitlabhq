@@ -139,6 +139,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_security_container_scanning_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_security_api_fuzzing
   category: ci_templates
   redis_slot: ci_templates
@@ -231,6 +235,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_katalon
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_mono
   category: ci_templates
   redis_slot: ci_templates
@@ -319,6 +327,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_jobs_license_scanning_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_jobs_deploy
   category: ci_templates
   redis_slot: ci_templates
@@ -328,6 +340,10 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_browser_performance_testing
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_jobs_dependency_scanning_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
@@ -523,6 +539,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_implicit_jobs_license_scanning_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_implicit_jobs_deploy
   category: ci_templates
   redis_slot: ci_templates
@@ -532,6 +552,10 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_browser_performance_testing
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_implicit_jobs_dependency_scanning_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
@@ -632,6 +656,10 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_dast_api_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_implicit_security_container_scanning_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

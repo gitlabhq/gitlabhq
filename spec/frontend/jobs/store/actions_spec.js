@@ -111,7 +111,7 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJob and receiveJobSuccess ', () => {
+      it('dispatches requestJob and receiveJobSuccess', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
 
         return testAction(
@@ -137,7 +137,7 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestJob and receiveJobError ', () => {
+      it('dispatches requestJob and receiveJobError', () => {
         return testAction(
           fetchJob,
           null,
@@ -291,7 +291,7 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(500);
       });
 
-      it('dispatches requestJobLog and receiveJobLogError ', () => {
+      it('dispatches requestJobLog and receiveJobLogError', () => {
         return testAction(
           fetchJobLog,
           null,
@@ -355,7 +355,7 @@ describe('Job State actions', () => {
       window.clearTimeout = origTimeout;
     });
 
-    it('should commit STOP_POLLING_JOB_LOG mutation ', async () => {
+    it('should commit STOP_POLLING_JOB_LOG mutation', async () => {
       const jobLogTimeout = 7;
 
       await testAction(
@@ -370,7 +370,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobLogSuccess', () => {
-    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation ', () => {
+    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation', () => {
       return testAction(
         receiveJobLogSuccess,
         'hello world',
@@ -388,7 +388,7 @@ describe('Job State actions', () => {
   });
 
   describe('toggleCollapsibleLine', () => {
-    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation ', () => {
+    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation', () => {
       return testAction(
         toggleCollapsibleLine,
         { isClosed: true },
@@ -400,7 +400,7 @@ describe('Job State actions', () => {
   });
 
   describe('requestJobsForStage', () => {
-    it('should commit REQUEST_JOBS_FOR_STAGE mutation ', () => {
+    it('should commit REQUEST_JOBS_FOR_STAGE mutation', () => {
       return testAction(
         requestJobsForStage,
         { name: 'deploy' },
@@ -423,7 +423,7 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJobsForStage and receiveJobsForStageSuccess ', () => {
+      it('dispatches requestJobsForStage and receiveJobsForStageSuccess', () => {
         mock
           .onGet(`${TEST_HOST}/jobs.json`)
           .replyOnce(200, { latest_statuses: [{ id: 121212, name: 'build' }], retried: [] });
@@ -473,7 +473,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobsForStageSuccess', () => {
-    it('should commit RECEIVE_JOBS_FOR_STAGE_SUCCESS mutation ', () => {
+    it('should commit RECEIVE_JOBS_FOR_STAGE_SUCCESS mutation', () => {
       return testAction(
         receiveJobsForStageSuccess,
         [{ id: 121212, name: 'karma' }],
@@ -485,7 +485,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobsForStageError', () => {
-    it('should commit RECEIVE_JOBS_FOR_STAGE_ERROR mutation ', () => {
+    it('should commit RECEIVE_JOBS_FOR_STAGE_ERROR mutation', () => {
       return testAction(
         receiveJobsForStageError,
         null,

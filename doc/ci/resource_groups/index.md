@@ -171,6 +171,7 @@ deploy:
     include: deploy.gitlab-ci.yml
     strategy: depend
   resource_group: AWS-production
+  environment: production
 ```
 
 ```yaml
@@ -187,6 +188,7 @@ provision:
 deployment:
   stage: deploy
   script: echo "Deploying..."
+  environment: production
 ```
 
 You must define [`strategy: depend`](../yaml/index.md#triggerstrategy)
@@ -208,7 +210,7 @@ Read more how you can use GitLab for [safe deployments](../environments/deployme
 Because [`oldest_first` process mode](#process-modes) enforces the jobs to be executed in a pipeline order,
 there is a case that it doesn't work well with the other CI features.
 
-For example, when you run [a child pipeline](../pipelines/parent_child_pipelines.md)
+For example, when you run [a child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 that requires the same resource group with the parent pipeline,
 a dead lock could happen. Here is an example of a _bad_ setup:
 
@@ -224,6 +226,7 @@ deploy:
   stage: deploy
   script: echo
   resource_group: production
+  environment: production
 ```
 
 In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
@@ -250,4 +253,5 @@ deploy:
   stage: deploy
   script: echo
   resource_group: production
+  environment: production
 ```

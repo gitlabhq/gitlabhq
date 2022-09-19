@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
+RSpec.describe Gitlab::Git::DiffCollection do
   before do
     stub_const('MutatingConstantIterator', Class.new)
 

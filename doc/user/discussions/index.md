@@ -91,7 +91,7 @@ For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes
 
 You can add comments and threads to a particular commit.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Commits**.
 1. Below the commits, in the **Comment** field, enter a comment.
 1. Select **Comment** or select the down arrow (**{chevron-down}**) to select **Start thread**.
@@ -309,15 +309,15 @@ To resolve a thread:
 
 At the top of the page, the number of unresolved threads is updated:
 
-![Count of unresolved threads](img/unresolved_threads_v15.png)
+![Count of unresolved threads](img/unresolved_threads_v15_4.png)
 
 ### Move all unresolved threads in a merge request to an issue
 
 If you have multiple unresolved threads in a merge request, you can
 create an issue to resolve them separately. In the merge request, at the top of the page,
-select **Create issue to resolve all threads** (**{issue-new}**):
+click the ellipsis icon button (**{ellipsis_v}**) in the threads control and then select **Create issue to resolve all threads**:
 
-![Open new issue for all unresolved threads](img/create-new-issue_v15.png)
+![Open new issue for all unresolved threads](img/create_new_issue_v15_4.png)
 
 All threads are marked as resolved, and a link is added from the merge request to
 the newly created issue.
@@ -339,10 +339,9 @@ You can prevent merge requests from being merged until all threads are
 resolved. When this setting is enabled, the **Unresolved threads** counter in a merge request
 is shown in orange when at least one thread remains unresolved.
 
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
-1. Under **Merge checks**, select the **All threads must be resolved** checkbox.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
 
 ### Automatically resolve threads in a merge request when they become outdated
@@ -350,11 +349,10 @@ is shown in orange when at least one thread remains unresolved.
 You can set merge requests to automatically resolve threads when lines are modified
 with a new push.
 
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
-1. Under **Merge options**, select the
-   **Automatically resolve merge request diff threads when they become outdated** checkbox.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge options** section, select
+   **Automatically resolve merge request diff threads when they become outdated**.
 1. Select **Save changes**.
 
 Threads are now resolved if a push makes a diff section outdated.

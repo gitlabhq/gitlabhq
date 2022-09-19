@@ -2,6 +2,7 @@
 
 module Ci
   class JobArtifact < Ci::ApplicationRecord
+    include Ci::Partitionable
     include IgnorableColumns
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
@@ -9,6 +10,7 @@ module Ci
     include UsageStatistics
     include Sortable
     include Artifactable
+    include Lockable
     include FileStoreMounter
     include EachBatch
     include Gitlab::Utils::StrongMemoize
@@ -22,8 +24,7 @@ module Ci
       accessibility: %w[accessibility],
       coverage: %w[cobertura],
       codequality: %w[codequality],
-      terraform: %w[terraform],
-      sbom: %w[cyclonedx]
+      terraform: %w[terraform]
     }.freeze
 
     DEFAULT_FILE_NAMES = {
@@ -54,7 +55,7 @@ module Ci
       requirements: 'requirements.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json',
-      cyclonedx: 'gl-sbom.cdx.zip'
+      cyclonedx: 'gl-sbom.cdx.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -72,6 +73,7 @@ module Ci
       cobertura: :gzip,
       cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       lsif: :zip,
+      cyclonedx: :gzip,
 
       # Security reports and license scanning reports are raw artifacts
       # because they used to be fetched by the frontend, but this is not the case anymore.
@@ -94,8 +96,7 @@ module Ci
       terraform: :raw,
       requirements: :raw,
       coverage_fuzzing: :raw,
-      api_fuzzing: :raw,
-      cyclonedx: :zip
+      api_fuzzing: :raw
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[
@@ -134,14 +135,16 @@ module Ci
 
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
+    before_save :set_size, if: :file_changed?
     after_save :store_file_in_transaction!, unless: :store_after_commit?
     after_commit :store_file_after_transaction!, on: [:create, :update], if: :store_after_commit?
 
+    validates :job, presence: true
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
-    before_save :set_size, if: :file_changed?
 
     update_project_statistics project_statistics_name: :build_artifacts_size
+    partitionable scope: :job
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
@@ -158,12 +161,6 @@ module Ci
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
 
       where(file_type: types)
-    end
-
-    REPORT_FILE_TYPES.each do |report_type, file_types|
-      scope "#{report_type}_reports", -> do
-        with_file_types(file_types)
-      end
     end
 
     scope :all_reports, -> do
@@ -229,25 +226,20 @@ module Ci
       hashed_path: 2
     }
 
-    # `locked` will be populated from the source of truth on Ci::Pipeline
-    # in order to clean up expired job artifacts in a performant way.
-    # The values should be the same as `Ci::Pipeline.lockeds` with the
-    # additional value of `unknown` to indicate rows that have not
-    # yet been populated from the parent Ci::Pipeline
-    enum locked: {
-      unlocked: 0,
-      artifacts_locked: 1,
-      unknown: 2
-    }, _prefix: :artifact
-
     def validate_file_format!
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
         errors.add(:base, _('Invalid file format with specified file type'))
       end
     end
 
+    def self.of_report_type(report_type)
+      file_types = file_types_for_report(report_type)
+
+      with_file_types(file_types)
+    end
+
     def self.file_types_for_report(report_type)
-      REPORT_FILE_TYPES.fetch(report_type)
+      REPORT_FILE_TYPES.fetch(report_type) { raise ArgumentError, "Unrecognized report type: #{report_type}" }
     end
 
     def self.associated_file_types_for(file_type)

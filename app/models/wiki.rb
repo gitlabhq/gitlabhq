@@ -103,6 +103,17 @@ class Wiki
     def find_by_id(container_id)
       container_class.find_by_id(container_id)&.wiki
     end
+
+    def sluggified_full_path(title, extension)
+      sluggified_title(title) + '.' + extension
+    end
+
+    def sluggified_title(title)
+      title = Gitlab::EncodingHelper.encode_utf8_no_detect(title)
+      title = File.expand_path(title, '/')
+      title = Pathname.new(title).relative_path_from('/').to_s
+      title.tr(' ', '-')
+    end
   end
 
   def initialize(container, user = nil)
@@ -206,10 +217,11 @@ class Wiki
   #
   # Returns an initialized WikiPage instance or nil
   def find_page(title, version = nil, load_content: true)
-    page_title, page_dir = page_title_and_dir(title)
-
-    if page = wiki.page(title: page_title, version: version, dir: page_dir, load_content: load_content)
-      WikiPage.new(self, page)
+    if find_page_with_repository_rpcs?
+      create_wiki_repository unless repository_exists?
+      find_page_with_repository_rpcs(title, version, load_content: load_content)
+    else
+      find_page_with_legacy_wiki_service(title, version, load_content: load_content)
     end
   end
 
@@ -419,19 +431,83 @@ class Wiki
   end
 
   def sluggified_full_path(title, extension)
-    sluggified_title(title) + '.' + extension
+    self.class.sluggified_full_path(title, extension)
   end
 
   def sluggified_title(title)
-    utf8_encoded_title = Gitlab::EncodingHelper.encode_utf8_no_detect(title)
-
-    sanitized_title(utf8_encoded_title).tr(' ', '-')
+    self.class.sluggified_title(title)
   end
 
-  def sanitized_title(title)
-    clean_absolute_path = File.expand_path(title, '/')
+  def canonicalize_filename(filename)
+    Gitlab::Git::Wiki::GollumSlug.canonicalize_filename(filename)
+  end
 
-    Pathname.new(clean_absolute_path).relative_path_from('/').to_s
+  def find_page_with_legacy_wiki_service(title, version, load_content: false)
+    page_title, page_dir = page_title_and_dir(title)
+
+    if page = wiki.page(title: page_title, version: version, dir: page_dir, load_content: load_content)
+      WikiPage.new(self, page)
+    end
+  end
+
+  def find_matched_file(title, version)
+    escaped_path = RE2::Regexp.escape(sluggified_title(title))
+    # We could not use ALLOWED_EXTENSIONS_REGEX constant or similar regexp with
+    # Regexp.union. The result combination complicated modifiers:
+    # /(?i-mx:md|mkdn?|mdown|markdown)|(?i-mx:rdoc).../
+    # Regexp used by Gitaly is Go's Regexp package. It does not support those
+    # features. So, we have to compose another more-friendly regexp to pass to
+    # Gitaly side.
+    extension_regexp = Wiki::MARKUPS.map { |_, format| format[:extension_regex].source }.join("|")
+    path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{extension_regexp})$")
+
+    matched_files = repository.search_files_by_regexp(path_regexp, version)
+    return if matched_files.blank?
+
+    Gitlab::EncodingHelper.encode_utf8_no_detect(matched_files.first)
+  end
+
+  def find_page_format(path)
+    ext = File.extname(path).downcase[1..]
+    MARKUPS.find { |_, markup| markup[:extension_regex].match?(ext) }&.first
+  end
+
+  def check_page_historical(path, commit)
+    repository.last_commit_for_path('HEAD', path).id != commit.id
+  end
+
+  def find_page_with_repository_rpcs(title, version, load_content: true)
+    version = version.presence || 'HEAD'
+    path = find_matched_file(title, version)
+    return if path.blank?
+
+    blob_options = load_content ? {} : { limit: 0 }
+    blob = repository.blob_at(version, path, **blob_options)
+    commit = repository.commit(blob.commit_id)
+    format = find_page_format(path)
+
+    page = Gitlab::Git::WikiPage.new(
+      url_path: sluggified_title(path.sub(/\.[^.]+\z/, "")),
+      title: canonicalize_filename(path),
+      format: format,
+      path: sluggified_title(path),
+      raw_data: blob.data,
+      name: canonicalize_filename(path),
+      historical: version == 'HEAD' ? false : check_page_historical(path, commit),
+      version: Gitlab::Git::WikiPageVersion.new(commit, format)
+    )
+    WikiPage.new(self, page)
+  end
+
+  def find_page_with_repository_rpcs?
+    group =
+      if container.is_a?(::Group)
+        container
+      else
+        container.group
+      end
+
+    Feature.enabled?(:wiki_find_page_with_normal_repository_rpcs, group, type: :development)
   end
 end
 

@@ -17,8 +17,8 @@ RSpec.describe Gitlab::Redis::Cache do
   end
 
   describe '.active_support_config' do
-    it 'has a default ttl of 2 weeks' do
-      expect(described_class.active_support_config[:expires_in]).to eq(2.weeks)
+    it 'has a default ttl of 8 hours' do
+      expect(described_class.active_support_config[:expires_in]).to eq(8.hours)
     end
 
     it 'allows configuring the TTL through an env variable' do

@@ -58,6 +58,9 @@ Example response:
       "started_at": null,
       "status": "success",
       "tag": false,
+      "project": {
+        "ci_job_token_scope_enabled": false
+      },
       "user": {
         "id": 1,
         "name": "Administrator",
@@ -128,6 +131,9 @@ Example response:
       "started_at": null,
       "status": "success",
       "tag": false,
+      "project": {
+        "ci_job_token_scope_enabled": false
+      },  
       "user": {
         "id": 1,
         "name": "Administrator",
@@ -226,6 +232,9 @@ Example response:
     "created_at": "2016-08-11T11:32:24.456Z",
     "started_at": null,
     "finished_at": "2016-08-11T11:32:35.145Z",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",

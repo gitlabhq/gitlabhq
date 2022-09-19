@@ -180,6 +180,7 @@ describe('Batch comments store actions', () => {
     });
 
     it('calls service with notes data', () => {
+      mock.onAny().reply(200);
       jest.spyOn(axios, 'post');
 
       return actions
@@ -192,7 +193,7 @@ describe('Batch comments store actions', () => {
     it('dispatches error commits', () => {
       mock.onAny().reply(500);
 
-      return actions.publishReview({ dispatch, commit, getters, rootGetters }).then(() => {
+      return actions.publishReview({ dispatch, commit, getters, rootGetters }).catch(() => {
         expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
         expect(commit.mock.calls[1]).toEqual(['RECEIVE_PUBLISH_REVIEW_ERROR']);
       });

@@ -126,7 +126,8 @@ RSpec.describe DesignManagement::DeleteDesignsService do
         end
 
         it 'updates UsageData for removed designs' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_removed_action).with(author: user)
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_removed_action)
+                                                                             .with(author: user, project: project)
 
           run_service
         end
@@ -170,6 +171,11 @@ RSpec.describe DesignManagement::DeleteDesignsService do
           expect(TodosDestroyer::DestroyedDesignsWorker).to receive(:perform_async).with([designs.first.id])
 
           run_service
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED }
+          subject(:service_action) { run_service }
         end
       end
 

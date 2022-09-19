@@ -42,6 +42,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:incident_timeline, project)
+    push_frontend_feature_flag(:remove_user_attributes_projects, project)
   end
 
   before_action only: [:index, :show] do
@@ -53,6 +54,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:work_items_hierarchy, project)
+    push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
 
@@ -63,19 +65,19 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :designs, :show
 
   feature_category :team_planning, [
-                     :index, :calendar, :show, :new, :create, :edit, :update,
-                     :destroy, :move, :reorder, :designs, :toggle_subscription,
-                     :discussions, :bulk_update, :realtime_changes,
-                     :toggle_award_emoji, :mark_as_spam, :related_branches,
-                     :can_create_branch, :create_merge_request
-                   ]
+    :index, :calendar, :show, :new, :create, :edit, :update,
+    :destroy, :move, :reorder, :designs, :toggle_subscription,
+    :discussions, :bulk_update, :realtime_changes,
+    :toggle_award_emoji, :mark_as_spam, :related_branches,
+    :can_create_branch, :create_merge_request
+  ]
   urgency :low, [
-                     :index, :calendar, :show, :new, :create, :edit, :update,
-                     :destroy, :move, :reorder, :designs, :toggle_subscription,
-                     :discussions, :bulk_update, :realtime_changes,
-                     :toggle_award_emoji, :mark_as_spam, :related_branches,
-                     :can_create_branch, :create_merge_request
-                   ]
+    :index, :calendar, :show, :new, :create, :edit, :update,
+    :destroy, :move, :reorder, :designs, :toggle_subscription,
+    :discussions, :bulk_update, :realtime_changes,
+    :toggle_award_emoji, :mark_as_spam, :related_branches,
+    :can_create_branch, :create_merge_request
+  ]
 
   feature_category :service_desk, [:service_desk]
   urgency :low, [:service_desk]

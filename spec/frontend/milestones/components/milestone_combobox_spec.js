@@ -96,19 +96,19 @@ describe('Milestone combobox component', () => {
 
   const findNoResults = () => wrapper.find('[data-testid="milestone-combobox-no-results"]');
 
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   const findProjectMilestonesSection = () =>
     wrapper.find('[data-testid="project-milestones-section"]');
   const findProjectMilestonesDropdownItems = () =>
-    findProjectMilestonesSection().findAll(GlDropdownItem);
+    findProjectMilestonesSection().findAllComponents(GlDropdownItem);
   const findFirstProjectMilestonesDropdownItem = () => findProjectMilestonesDropdownItems().at(0);
 
   const findGroupMilestonesSection = () => wrapper.find('[data-testid="group-milestones-section"]');
   const findGroupMilestonesDropdownItems = () =>
-    findGroupMilestonesSection().findAll(GlDropdownItem);
+    findGroupMilestonesSection().findAllComponents(GlDropdownItem);
   const findFirstGroupMilestonesDropdownItem = () => findGroupMilestonesDropdownItems().at(0);
 
   //

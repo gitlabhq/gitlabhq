@@ -44,7 +44,7 @@ search, or choose a specific group or project.
 
 To search through code or other documents in a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the top bar, in the search field, type the string you want to search for.
 1. Press **Enter**.
 
@@ -68,7 +68,7 @@ where the results were found.
 
 You can search for a commit SHA.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the top bar, in the search field, type the SHA.
 
 If a single result is returned, GitLab redirects to the commit result

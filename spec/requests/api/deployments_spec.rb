@@ -14,9 +14,10 @@ RSpec.describe API::Deployments do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:production) { create(:environment, :production, project: project) }
     let_it_be(:staging) { create(:environment, :staging, project: project) }
-    let_it_be(:deployment_1) { create(:deployment, :success, project: project, environment: production, ref: 'master', created_at: Time.now, updated_at: Time.now) }
-    let_it_be(:deployment_2) { create(:deployment, :success, project: project, environment: staging, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-    let_it_be(:deployment_3) { create(:deployment, :success, project: project, environment: staging, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+    let_it_be(:build) { create(:ci_build, :success, project: project) }
+    let_it_be(:deployment_1) { create(:deployment, :success, project: project, environment: production, deployable: build, ref: 'master', created_at: Time.now, updated_at: Time.now) }
+    let_it_be(:deployment_2) { create(:deployment, :success, project: project, environment: staging, deployable: build, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
+    let_it_be(:deployment_3) { create(:deployment, :success, project: project, environment: staging, deployable: build, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
 
     def perform_request(params = {})
       get api("/projects/#{project.id}/deployments", user), params: params
@@ -104,7 +105,7 @@ RSpec.describe API::Deployments do
 
         control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
 
-        create(:deployment, :success, project: project, iid: 21, ref: 'master')
+        create(:deployment, :success, project: project, deployable: build, iid: 21, ref: 'master')
 
         expect { perform_request }.not_to exceed_query_limit(control_count)
       end

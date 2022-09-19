@@ -312,7 +312,7 @@ RSpec.describe Projects::ReleasesController do
       end
 
       context 'suffix path abuse' do
-        let(:suffix_path) { 'downloads/zips/../../../../../../../robots.txt'}
+        let(:suffix_path) { 'downloads/zips/../../../../../../../robots.txt' }
 
         it 'raises attack error' do
           expect do

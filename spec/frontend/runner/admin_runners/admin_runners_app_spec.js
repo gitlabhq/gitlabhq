@@ -17,6 +17,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
 import { createLocalState } from '~/runner/graphql/list/local_state';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
+import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
@@ -33,6 +34,12 @@ import {
   CREATED_ASC,
   CREATED_DESC,
   DEFAULT_SORT,
+  I18N_STATUS_ONLINE,
+  I18N_STATUS_OFFLINE,
+  I18N_STATUS_STALE,
+  I18N_INSTANCE_TYPE,
+  I18N_GROUP_TYPE,
+  I18N_PROJECT_TYPE,
   INSTANCE_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
@@ -80,6 +87,7 @@ describe('AdminRunnersApp', () => {
   let localMutations;
   let showToast;
 
+  const findRunnerStackedLayoutBanner = () => wrapper.findComponent(RunnerStackedLayoutBanner);
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
@@ -139,6 +147,11 @@ describe('AdminRunnersApp', () => {
     wrapper.destroy();
   });
 
+  it('shows the feedback banner', () => {
+    createComponent();
+    expect(findRunnerStackedLayoutBanner().exists()).toBe(true);
+  });
+
   it('shows the runner setup instructions', () => {
     createComponent();
 
@@ -156,21 +169,16 @@ describe('AdminRunnersApp', () => {
     });
 
     it('shows the runner tabs', () => {
-      expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-        `All ${mockRunnersCount} Instance ${mockRunnersCount} Group ${mockRunnersCount} Project ${mockRunnersCount}`,
+      const tabs = findRunnerTypeTabs().text();
+      expect(tabs).toMatchInterpolatedText(
+        `All ${mockRunnersCount} ${I18N_INSTANCE_TYPE} ${mockRunnersCount} ${I18N_GROUP_TYPE} ${mockRunnersCount} ${I18N_PROJECT_TYPE} ${mockRunnersCount}`,
       );
     });
 
     it('shows the total', () => {
-      expect(findRunnerStats().text()).toContain(
-        `${s__('Runners|Online runners')} ${mockRunnersCount}`,
-      );
-      expect(findRunnerStats().text()).toContain(
-        `${s__('Runners|Offline runners')} ${mockRunnersCount}`,
-      );
-      expect(findRunnerStats().text()).toContain(
-        `${s__('Runners|Stale runners')} ${mockRunnersCount}`,
-      );
+      expect(findRunnerStats().text()).toContain(`${I18N_STATUS_ONLINE} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${I18N_STATUS_OFFLINE} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${I18N_STATUS_STALE} ${mockRunnersCount}`);
     });
   });
 

@@ -68,7 +68,7 @@ Prerequisite:
 
 To add a user to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite members**.
 1. Enter an email address and select a [role](../../permissions.md).
@@ -106,7 +106,7 @@ Prerequisite:
 
 To add groups to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite a group**.
 1. Select a group.
@@ -131,7 +131,7 @@ Prerequisite:
 
 To import users:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Import from a project**.
 1. Select the project. You can view only the projects for which you're a maintainer.
@@ -175,7 +175,7 @@ Prerequisites:
 
 To remove a member from a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Next to the project member you want to remove, select **Remove member**.
 1. Optional. In the confirmation box, select the
@@ -197,7 +197,7 @@ You can filter and sort members in a project.
 
 ### Display inherited members
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. In the **Filter members** box, select `Membership` `=` `Inherited`.
 1. Press <kbd>Enter</kbd>.
@@ -206,7 +206,7 @@ You can filter and sort members in a project.
 
 ### Display direct members
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
@@ -229,7 +229,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 GitLab users can request to become a member of a project.
 
-1. On the top bar, select **Menu > Projects** and find the project you want to be a member of.
+1. On the top bar, select **Main menu > Projects** and find the project you want to be a member of.
 1. By the project name, select **Request Access**.
 
 ![Request access button](img/request_access_button.png)
@@ -253,7 +253,7 @@ Prerequisite:
 
 - You must be the project owner.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Project visibility**, select **Users can request access**.

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Users do
+  include WorkhorseHelpers
+
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user, reload: true) { create(:user, username: 'user.withdot') }
   let_it_be(:key) { create(:key, user: user) }
@@ -116,7 +118,7 @@ RSpec.describe API::Users do
         end
 
         it "returns a 403 if the target user is an admin" do
-          expect(TwoFactor::DestroyService).to receive(:new).never
+          expect(TwoFactor::DestroyService).not_to receive(:new)
 
           expect do
             patch api("/users/#{admin_with_2fa.id}/disable_two_factor", admin)
@@ -127,7 +129,7 @@ RSpec.describe API::Users do
         end
 
         it "returns a 404 if the target user cannot be found" do
-          expect(TwoFactor::DestroyService).to receive(:new).never
+          expect(TwoFactor::DestroyService).not_to receive(:new)
 
           patch api("/users/#{non_existing_record_id}/disable_two_factor", admin)
 
@@ -1180,6 +1182,22 @@ RSpec.describe API::Users do
       expect(new_user.user_preference.view_diffs_file_by_file?).to eq(true)
     end
 
+    it "creates user with avatar" do
+      workhorse_form_with_file(
+        api('/users', admin),
+        method: :post,
+        file_key: :avatar,
+        params: attributes_for(:user, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
+      )
+
+      expect(response).to have_gitlab_http_status(:created)
+
+      new_user = User.find_by(id: json_response['id'])
+
+      expect(new_user).not_to eq(nil)
+      expect(json_response['avatar_url']).to include(new_user.avatar_path)
+    end
+
     it "does not create user with invalid email" do
       post api('/users', admin),
         params: {
@@ -1478,7 +1496,12 @@ RSpec.describe API::Users do
     end
 
     it 'updates user with avatar' do
-      put api("/users/#{user.id}", admin), params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      workhorse_form_with_file(
+        api("/users/#{user.id}", admin),
+        method: :put,
+        file_key: :avatar,
+        params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      )
 
       user.reload
 
@@ -2479,14 +2502,32 @@ RSpec.describe API::Users do
   describe "DELETE /users/:id" do
     let_it_be(:issue) { create(:issue, author: user) }
 
-    it "deletes user", :sidekiq_inline do
-      namespace_id = user.namespace.id
+    context 'user deletion' do
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it "deletes user", :sidekiq_inline do
+          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
-      perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(Users::GhostUserMigration.where(user: user,
+                                                 initiator_user: admin)).to be_exists
+        end
+      end
 
-      expect(response).to have_gitlab_http_status(:no_content)
-      expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
-      expect { Namespace.find(namespace_id) }.to raise_error ActiveRecord::RecordNotFound
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+        end
+
+        it "deletes user", :sidekiq_inline do
+          namespace_id = user.namespace.id
+
+          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+          expect { Namespace.find(namespace_id) }.to raise_error ActiveRecord::RecordNotFound
+        end
+      end
     end
 
     context "sole owner of a group" do
@@ -2550,22 +2591,55 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    context "hard delete disabled" do
-      it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
-        perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+    context 'hard delete' do
+      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        context "hard delete disabled" do
+          it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(issue.reload).to be_persisted
-        expect(issue.author.ghost?).to be_truthy
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(issue.reload).to be_persisted
+            expect(Users::GhostUserMigration.where(user: user,
+                                                   initiator_user: admin,
+                                                   hard_delete: false)).to be_exists
+          end
+        end
+
+        context "hard delete enabled" do
+          it "removes contributions", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(Users::GhostUserMigration.where(user: user,
+                                                   initiator_user: admin,
+                                                   hard_delete: true)).to be_exists
+          end
+        end
       end
-    end
 
-    context "hard delete enabled" do
-      it "removes contributions", :sidekiq_might_not_need_inline do
-        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
+        before do
+          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
+        end
 
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(Issue.exists?(issue.id)).to be_falsy
+        context "hard delete disabled" do
+          it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(issue.reload).to be_persisted
+            expect(issue.author.ghost?).to be_truthy
+          end
+        end
+
+        context "hard delete enabled" do
+          it "removes contributions", :sidekiq_might_not_need_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(Issue.exists?(issue.id)).to be_falsy
+          end
+        end
       end
     end
   end
@@ -3238,7 +3312,7 @@ RSpec.describe API::Users do
           let(:user) { create(:user, **activity) }
 
           context 'with no recent activity' do
-            let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.next.days.ago } }
+            let(:activity) { { last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.next.days.ago } }
 
             it 'deactivates an active user' do
               deactivate
@@ -3249,13 +3323,13 @@ RSpec.describe API::Users do
           end
 
           context 'with recent activity' do
-            let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.pred.days.ago } }
+            let(:activity) { { last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.pred.days.ago } }
 
             it 'does not deactivate an active user' do
               deactivate
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
               expect(user.reload.state).to eq('active')
             end
           end

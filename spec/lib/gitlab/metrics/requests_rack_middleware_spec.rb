@@ -194,9 +194,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
             let(:endpoint) do
               route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
-              double(:endpoint, route: route,
-                     options: { for: api_handler, path: [":id/archive"] },
-                     namespace: "/projects")
+              double(:endpoint,
+                route: route, options: { for: api_handler, path: [":id/archive"] }, namespace: "/projects")
             end
 
             let(:env) { { 'api.endpoint' => endpoint, 'REQUEST_METHOD' => 'GET' } }
@@ -256,9 +255,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         context 'Grape API without expected duration' do
           let(:endpoint) do
             route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
-            double(:endpoint, route: route,
-                   options: { for: api_handler, path: [":id/archive"] },
-                   namespace: "/projects")
+            double(:endpoint,
+              route: route, options: { for: api_handler, path: [":id/archive"] }, namespace: "/projects")
           end
 
           let(:env) { { 'api.endpoint' => endpoint, 'REQUEST_METHOD' => 'GET' } }

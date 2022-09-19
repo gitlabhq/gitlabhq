@@ -40,7 +40,9 @@ describe('Grouped Test Reports Modal', () => {
   });
 
   it('renders code block', () => {
-    expect(wrapper.find(CodeBlock).props().code).toEqual(modalDataStructure.system_output.value);
+    expect(wrapper.findComponent(CodeBlock).props().code).toEqual(
+      modalDataStructure.system_output.value,
+    );
   });
 
   it('renders link', () => {

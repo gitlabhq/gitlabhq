@@ -64,6 +64,11 @@ export default {
       type: Function,
       required: true,
     },
+    codeQualityExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   classNameMap: memoize(
     (props) => {
@@ -272,6 +277,7 @@ export default {
           <component
             :is="$options.CodeQualityGutterIcon"
             v-if="$options.showCodequalityLeft(props)"
+            :code-quality-expanded="props.codeQualityExpanded"
             :codequality="props.line.left.codequality"
             :file-path="props.filePath"
             @showCodeQualityFindings="

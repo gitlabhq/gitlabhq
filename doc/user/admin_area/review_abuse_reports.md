@@ -16,7 +16,7 @@ reports in the Admin Area.
 
 To receive notifications of new abuse reports by email:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Reporting**.
 1. Expand the **Abuse reports** section.
 1. Provide an email address and select **Save changes**.
@@ -26,14 +26,14 @@ The notification email address can also be set and retrieved
 
 ## Reporting abuse
 
-To find out more about reporting abuse, see 
+To find out more about reporting abuse, see
 [abuse reports user documentation](../report_abuse.md).
 
 ## Resolving abuse reports
 
 To access abuse reports:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Abuse Reports**.
 
 There are 3 ways to resolve an abuse report, with a button for each method:

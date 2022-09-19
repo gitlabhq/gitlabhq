@@ -5,7 +5,7 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module Gitlab
-      class AvoidFeatureCategoryNotOwned < RuboCop::Cop::Cop
+      class AvoidFeatureCategoryNotOwned < RuboCop::Cop::Base
         include ::RuboCop::CodeReuseHelpers
 
         MSG = 'Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization'
@@ -25,7 +25,7 @@ module RuboCop
           return unless file_needs_feature_category?(node)
           return unless setting_not_owned?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
 
         private

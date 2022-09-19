@@ -34,7 +34,7 @@ describe('pipeline graph component', () => {
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findAllJobPills = () => wrapper.findAll(JobPill);
+  const findAllJobPills = () => wrapper.findAllComponents(JobPill);
   const findAllStageNames = () => wrapper.findAllComponents(StageName);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findPipelineGraph = () => wrapper.find('[data-testid="graph-container"]');

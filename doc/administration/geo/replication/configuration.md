@@ -202,7 +202,7 @@ keys must be manually replicated to the **secondary** site.
    ```
 
 1. Navigate to the Primary Node GitLab Instance:
-   1. On the top bar, select **Menu > Admin**.
+   1. On the top bar, select **Main menu > Admin**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
    ![Add secondary site](img/adding_a_secondary_v13_3.png)
@@ -222,18 +222,22 @@ keys must be manually replicated to the **secondary** site.
    gitlab-ctl restart
    ```
 
-   Check if there are any common issue with your Geo setup by running:
+   Check if there are any common issues with your Geo setup by running:
 
    ```shell
    gitlab-rake gitlab:geo:check
    ```
+
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting.md).
 
 1. SSH into a **Rails or Sidekiq server on your primary** site and login as root to verify the
-   **secondary** site is reachable or there are any common issue with your Geo setup:
+   **secondary** site is reachable or there are any common issues with your Geo setup:
 
    ```shell
    gitlab-rake gitlab:geo:check
    ```
+
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting.md).
 
 Once added to the Geo administration page and restarted, the **secondary** site automatically starts
 replicating missing data from the **primary** site in a process known as **backfill**.
@@ -305,7 +309,7 @@ method to be enabled. This is enabled by default, but if converting an existing 
 
 On the **primary** site:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Ensure "Enabled Git access protocols" is set to either "Both SSH and HTTP(S)" or "Only HTTP(S)".
@@ -315,7 +319,7 @@ On the **primary** site:
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.

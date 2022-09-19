@@ -37,7 +37,7 @@ RSpec.shared_examples 'cluster application core specs' do |application_name|
     with_them do
       subject { described_class.new(cluster: cluster).helm_command_module }
 
-      let(:cluster) { build(:cluster, helm_major_version: helm_major_version)}
+      let(:cluster) { build(:cluster, helm_major_version: helm_major_version) }
 
       it { is_expected.to eq(expected_helm_command_module) }
     end

@@ -45,6 +45,10 @@ export default {
       required: false,
       default: '',
     },
+    noteableId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -160,6 +164,7 @@ export default {
         :is-saving="loading"
         :markdown-preview-path="markdownPreviewPath"
         :is-new-comment="false"
+        :noteable-id="noteableId"
         class="gl-mt-5"
         @submit-form="mutate"
         @cancel-form="hideForm"

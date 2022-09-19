@@ -25,7 +25,7 @@ module Ci
       {
         page_path: project_job_path(@project, @build),
         build_status: @build.status,
-        build_stage: @build.stage,
+        build_stage: @build.stage_name,
         log_state: ''
       }
     end

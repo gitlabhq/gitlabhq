@@ -9,6 +9,8 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
   let(:project_maintainer) { project.first_owner }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     sign_in(project_maintainer)
   end
 

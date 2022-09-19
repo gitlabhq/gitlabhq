@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/httparty_basic_auth'
 
 RSpec.describe RuboCop::Cop::RSpec::HTTPartyBasicAuth do
-  subject(:cop) { described_class.new }
-
   context 'when passing `basic_auth: { user: ... }`' do
     it 'registers an offense and corrects', :aggregate_failures do
       expect_offense(<<~SOURCE, 'spec/foo.rb')

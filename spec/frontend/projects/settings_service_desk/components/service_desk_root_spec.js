@@ -1,4 +1,4 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -23,11 +23,16 @@ describe('ServiceDeskRoot', () => {
     selectedTemplate: 'Bug',
     selectedFileTemplateProjectId: 42,
     templates: ['Bug', 'Documentation'],
+    publicProject: false,
   };
 
-  const getAlertText = () => wrapper.find(GlAlert).text();
+  const getAlertText = () => wrapper.findComponent(GlAlert).text();
 
-  const createComponent = () => shallowMount(ServiceDeskRoot, { provide: provideData });
+  const createComponent = (customInject = {}) =>
+    shallowMount(ServiceDeskRoot, {
+      provide: { ...provideData, ...customInject },
+      stubs: { GlSprintf },
+    });
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
@@ -46,7 +51,7 @@ describe('ServiceDeskRoot', () => {
     it('is rendered', () => {
       wrapper = createComponent();
 
-      expect(wrapper.find(ServiceDeskSetting).props()).toEqual({
+      expect(wrapper.findComponent(ServiceDeskSetting).props()).toEqual({
         customEmail: provideData.customEmail,
         customEmailEnabled: provideData.customEmailEnabled,
         incomingEmail: provideData.initialIncomingEmail,
@@ -60,12 +65,31 @@ describe('ServiceDeskRoot', () => {
       });
     });
 
+    it('shows alert about email inference when current project is public', () => {
+      wrapper = createComponent({
+        publicProject: true,
+      });
+
+      const alertEl = wrapper.find('[data-testid="public-project-alert"]');
+      expect(alertEl.exists()).toBe(true);
+      expect(alertEl.text()).toContain(
+        'This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name.',
+      );
+
+      const alertBodyLink = alertEl.findComponent(GlLink);
+      expect(alertBodyLink.exists()).toBe(true);
+      expect(alertBodyLink.attributes('href')).toBe(
+        '/help/user/project/service_desk.html#using-a-custom-email-address',
+      );
+      expect(alertBodyLink.text()).toBe('How do I create a custom email address?');
+    });
+
     describe('toggle event', () => {
       describe('when toggling service desk on', () => {
         beforeEach(async () => {
           wrapper = createComponent();
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('toggle', true);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('toggle', true);
 
           await waitForPromises();
         });
@@ -87,7 +111,7 @@ describe('ServiceDeskRoot', () => {
         beforeEach(async () => {
           wrapper = createComponent();
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('toggle', false);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('toggle', false);
 
           await waitForPromises();
         });
@@ -119,7 +143,7 @@ describe('ServiceDeskRoot', () => {
             projectKey: 'key',
           };
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('save', payload);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('save', payload);
 
           await waitForPromises();
         });
@@ -150,7 +174,7 @@ describe('ServiceDeskRoot', () => {
             projectKey: 'key',
           };
 
-          wrapper.find(ServiceDeskSetting).vm.$emit('save', payload);
+          wrapper.findComponent(ServiceDeskSetting).vm.$emit('save', payload);
 
           await waitForPromises();
         });

@@ -23,7 +23,7 @@ describe('FrequentItemsSearchInputComponent', () => {
       },
     });
 
-  const findSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
+  const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
 
   beforeEach(() => {
     store = createStore();

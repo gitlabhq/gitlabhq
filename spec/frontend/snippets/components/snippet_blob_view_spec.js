@@ -15,7 +15,7 @@ import {
   BLOB_RENDER_ERRORS,
 } from '~/blob/components/constants';
 import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
-import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
 import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 
 describe('Blob Embeddable', () => {
@@ -23,7 +23,7 @@ describe('Blob Embeddable', () => {
   const snippet = {
     id: 'gid://foo.bar/snippet',
     webUrl: 'https://foo.bar',
-    visibilityLevel: SNIPPET_VISIBILITY_PUBLIC,
+    visibilityLevel: VISIBILITY_LEVEL_PUBLIC_STRING,
   };
   const dataMock = {
     activeViewerType: SimpleViewerMock.type,

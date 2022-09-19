@@ -84,7 +84,7 @@ describe('BulkImportsHistoryApp', () => {
   describe('general behavior', () => {
     it('renders loading state when loading', () => {
       createComponent();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('renders empty state when no data is available', async () => {
@@ -92,8 +92,8 @@ describe('BulkImportsHistoryApp', () => {
       createComponent();
       await axios.waitForAll();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlEmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlEmptyState).exists()).toBe(true);
     });
 
     it('renders table with data when history is available', async () => {
@@ -101,7 +101,7 @@ describe('BulkImportsHistoryApp', () => {
       createComponent();
       await axios.waitForAll();
 
-      const table = wrapper.find(GlTable);
+      const table = wrapper.findComponent(GlTable);
       expect(table.exists()).toBe(true);
       // can't use .props() or .attributes() here
       expect(table.vm.$attrs.items).toHaveLength(DUMMY_RESPONSE.length);

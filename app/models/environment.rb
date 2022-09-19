@@ -13,6 +13,7 @@ class Environment < ApplicationRecord
   self.reactive_cache_work_type = :external_dependency
 
   belongs_to :project, optional: false
+  belongs_to :merge_request, optional: true
 
   use_fast_destroy :all_deployments
   nullify_if_blank :external_url
@@ -29,6 +30,16 @@ class Environment < ApplicationRecord
   # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
+
+  Deployment::FINISHED_STATUSES.each do |status|
+    has_one :"last_#{status}_deployment", -> { where(status: status).ordered },
+            class_name: 'Deployment', inverse_of: :environment
+  end
+
+  Deployment::UPCOMING_STATUSES.each do |status|
+    has_one :"last_#{status}_deployment", -> { where(status: status).ordered_as_upcoming },
+            class_name: 'Deployment', inverse_of: :environment
+  end
 
   has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
@@ -58,6 +69,7 @@ class Environment < ApplicationRecord
             allow_nil: true
 
   validate :safe_external_url
+  validate :merge_request_not_changed
 
   delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
@@ -84,11 +96,12 @@ class Environment < ApplicationRecord
   # Search environments which have names like the given query.
   # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.
   scope :for_name_like, -> (query, limit: 5) do
-    where(arel_table[:name].matches("#{sanitize_sql_like query}%")).limit(limit)
+    where('LOWER(environments.name) LIKE LOWER(?) || \'%\'', sanitize_sql_like(query)).limit(limit)
   end
 
   scope :for_project, -> (project) { where(project_id: project) }
   scope :for_tier, -> (tier) { where(tier: tier).where.not(tier: nil) }
+  scope :for_type, -> (type) { where(environment_type: type) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
@@ -431,9 +444,13 @@ class Environment < ApplicationRecord
     return unless value
 
     parser = ::Gitlab::Ci::Build::DurationParser.new(value)
-    return if parser.seconds_from_now.nil?
+
+    return if parser.seconds_from_now.nil? && auto_stop_at.nil?
 
     self.auto_stop_at = parser.seconds_from_now
+  rescue ChronicDuration::DurationParseError => ex
+    Gitlab::ErrorTracking.track_exception(ex, project_id: self.project_id, environment_id: self.id)
+    raise ex
   end
 
   def rollout_status
@@ -507,6 +524,12 @@ class Environment < ApplicationRecord
 
   def ensure_environment_tier
     self.tier ||= guess_tier
+  end
+
+  def merge_request_not_changed
+    if merge_request_id_changed? && persisted?
+      errors.add(:merge_request, 'merge_request cannot be changed')
+    end
   end
 
   # Guessing the tier of the environment if it's not explicitly specified by users.

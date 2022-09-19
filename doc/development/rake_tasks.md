@@ -188,6 +188,8 @@ Alternatively you can use the following on each spec run,
 bundle exec spring rspec some_spec.rb
 ```
 
+## RuboCop tasks
+
 ## Generate initial RuboCop TODO list
 
 One way to generate the initial list is to run the Rake task `rubocop:todo:generate`:
@@ -208,6 +210,18 @@ Some shells require brackets to be escaped or quoted.
 
 See [Resolving RuboCop exceptions](contributing/style_guides.md#resolving-rubocop-exceptions)
 on how to proceed from here.
+
+### Run RuboCop in graceful mode
+
+You can run RuboCop in "graceful mode". This means all enabled cop rules are
+silenced which have "grace period" activated (via `Details: grace period`).
+
+Run:
+
+```shell
+bundle exec rake 'rubocop:check:graceful'
+bundle exec rake 'rubocop:check:graceful[Gitlab/NamespacedClass]'
+```
 
 ## Compile Frontend Assets
 

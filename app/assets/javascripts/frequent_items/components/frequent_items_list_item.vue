@@ -79,16 +79,19 @@ export default {
         :project-name="itemName"
         aria-hidden="true"
       />
-      <div ref="frequentItemsItemMetadataContainer" class="frequent-items-item-metadata-container">
+      <div
+        data-testid="frequent-items-item-metadata-container"
+        class="frequent-items-item-metadata-container"
+      >
         <div
-          ref="frequentItemsItemTitle"
           v-safe-html="highlightedItemName"
+          data-testid="frequent-items-item-title"
           :title="itemName"
           class="frequent-items-item-title"
         ></div>
         <div
           v-if="namespace"
-          ref="frequentItemsItemNamespace"
+          data-testid="frequent-items-item-namespace"
           :title="namespace"
           class="frequent-items-item-namespace"
         >

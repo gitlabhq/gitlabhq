@@ -175,7 +175,7 @@
                 %strong.fly-out-top-item-name
                   = _('Kubernetes')
 
-      - if akismet_enabled?
+      - if anti_spam_service_enabled?
         = nav_link(controller: :spam_logs) do
           = link_to admin_spam_logs_path do
             .nav-icon-container

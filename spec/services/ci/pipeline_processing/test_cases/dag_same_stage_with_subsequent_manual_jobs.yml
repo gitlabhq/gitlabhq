@@ -1,0 +1,65 @@
+config:
+  job1:
+    script: exit 0
+    when: manual
+
+  job2:
+    script: exit 0
+    needs: [job1]
+
+  job3:
+    script: exit 0
+    when: manual
+    needs: [job2]
+
+  job4:
+    script: exit 0
+    needs: [job3]
+
+init:
+  expect:
+    pipeline: skipped
+    stages:
+      test: skipped
+    jobs:
+      job1: manual
+      job2: skipped
+      job3: skipped
+      job4: skipped
+
+transitions:
+  - event: play
+    jobs: [job1]
+    expect:
+      pipeline: pending
+      stages:
+        test: pending
+      jobs:
+        job1: pending
+        job2: created
+        job3: created
+        job4: created
+
+  - event: success
+    jobs: [job1]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+      jobs:
+        job1: success
+        job2: pending
+        job3: created
+        job4: created
+
+  - event: success
+    jobs: [job2]
+    expect:
+      pipeline: success
+      stages:
+        test: success
+      jobs:
+        job1: success
+        job2: success
+        job3: manual
+        job4: skipped

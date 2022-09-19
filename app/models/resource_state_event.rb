@@ -3,8 +3,9 @@
 class ResourceStateEvent < ResourceEvent
   include IssueResourceEvent
   include MergeRequestResourceEvent
+  include Importable
 
-  validate :exactly_one_issuable
+  validate :exactly_one_issuable, unless: :importing?
 
   belongs_to :source_merge_request, class_name: 'MergeRequest', foreign_key: :source_merge_request_id
 
@@ -32,9 +33,9 @@ class ResourceStateEvent < ResourceEvent
 
     case state
     when 'closed'
-      issue_usage_counter.track_issue_closed_action(author: user)
+      issue_usage_counter.track_issue_closed_action(author: user, project: issue.project)
     when 'reopened'
-      issue_usage_counter.track_issue_reopened_action(author: user)
+      issue_usage_counter.track_issue_reopened_action(author: user, project: issue.project)
     else
       # no-op, nothing to do, not a state we're tracking
     end

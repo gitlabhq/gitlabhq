@@ -10,8 +10,7 @@ Use groups to manage one or more related projects at the same time.
 
 ## View groups
 
-1. On the top bar, select **Menu > Groups**.
-1. Select **Explore groups**.
+To view groups, on the top bar, select **Main menu > Groups > View all groups**.
 
 The **Groups** page shows a list of groups, sorted by last updated date.
 
@@ -25,7 +24,7 @@ The **Groups** page shows a list of groups, sorted by last updated date.
 To create a group:
 
 1. On the top bar, either:
-   - Select **Menu > Groups**, and on the right, select **Create group**.
+   - Select **Main menu > Groups > View all groups**, and on the right, select **New group**.
    - To the left of the search box, select the plus sign and then **New group**.
 1. Select **Create group**.
 1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
@@ -45,7 +44,7 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 To remove a group and its contents:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Remove group**.
@@ -54,7 +53,7 @@ To remove a group and its contents:
 
 A group can also be removed from the groups dashboard:
 
-1. On the top bar, select **Menu > Groups**.
+1. On the top bar, select **Main menu > Groups > View all groups**.
 1. Select **Your Groups**.
 1. Select (**{ellipsis_v}**) for the group you want to delete.
 1. Select **Delete**.
@@ -83,7 +82,7 @@ Prerequisites:
 
 To immediately remove a group marked for deletion:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Permanently remove group" section, select **Remove group**.
@@ -98,7 +97,8 @@ are deleted.
 
 To restore a group that is marked for deletion:
 
-1. Go to your group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. Select **Settings > General**.
 1. Expand the **Path, transfer, remove** section.
 1. In the Restore group section, select **Restore group**.
 
@@ -106,7 +106,7 @@ To restore a group that is marked for deletion:
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Under the group name, select **Request Access**.
 
 As many as ten of the most-recently-active group owners receive an email with your request.
@@ -127,7 +127,7 @@ To find members in a group, you can sort, filter, or search.
 
 Filter a group to find members. By default, all members in the group and subgroups are displayed.
 
-1. Go to the group and select **Group information > Members**.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
@@ -138,7 +138,8 @@ Filter a group to find members. By default, all members in the group and subgrou
 
 You can search for members by name, username, or email.
 
-1. Go to the group and select **Group information > Members**.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Group information > Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
 
@@ -146,7 +147,8 @@ You can search for members by name, username, or email.
 
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
 
-1. Go to the group and select **Group information > Members**.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Group information > Members**.
 1. Above the list of members, on the top right, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -156,7 +158,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 You can give a user access to all projects in a group.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
 1. Select **Invite members**.
 1. Fill in the fields.
@@ -182,11 +184,12 @@ Prerequisites:
 
 To remove a member from a group:
 
-1. Go to the group.
-1. From the left menu, select **Group information > Members**.
-1. Next to the member you want to remove, select **Delete**.
-1. Optional. On the **Remove member** confirmation box, select the
-  **Also unassign this user from linked issues and merge requests** checkbox.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Group information > Members**.
+1. Next to the member you want to remove, select **Remove member**.
+1. Optional. On the **Remove member** confirmation box:
+   - To remove direct user membership from subgroups and projects, select the **Also remove direct user membership from subgroups and projects** checkbox.
+   - To unassign the user from linked issues and merge requests, select the **Also unassign this user from linked issues and merge requests** checkbox.
 1. Select **Remove member**.
 
 ## Add projects to a group
@@ -207,12 +210,12 @@ By default, users with at least the Developer role can create projects under a g
 
 To change this setting for a specific group:
 
-1. On the top bar, select **Menu > Groups**.
+1. On the top bar, select **Main menu > Groups > View all groups**.
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select the desired option in the **Allowed to create projects** dropdown list.
+1. Select the desired option in the **Roles allowed to create projects** dropdown list.
 1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
@@ -223,11 +226,13 @@ You can change the owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
-  1. Go to the group and from the left menu, select **Group information > Members**.
+  1. On the top bar, select **Main menu > Groups** and find your group.
+  1. On the left sidebar, select **Group information > Members**.
   1. Give a different member the **Owner** role.
   1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
-  1. Go to the group and from the left menu, select **Group information > Members**.
+  1. On the top bar, select **Main menu > Groups** and find your group.
+  1. On the left sidebar, select **Group information > Members**.
   1. Give a different member the **Owner** role.
   1. Have the new owner sign in and remove the **Owner** role from you.
 
@@ -246,7 +251,8 @@ create a new group and transfer projects to it instead.
 
 To change your group path (group URL):
 
-1. Go to your group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General** page.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
 1. Select **Change group URL**.
@@ -326,7 +332,7 @@ When transferring groups, note:
 
 To transfer a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Transfer group**.
@@ -342,7 +348,7 @@ To transfer a group:
 > - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
-[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) is enabled for either groups only or groups and projects.
+[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
 When enabled on groups, projects in the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored.
 The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#retention-period).
 
@@ -356,7 +362,8 @@ the default setting.
 
 To enable delayed deletion of projects in a group:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Scroll to:
    - (GitLab 15.1 and later) **Deletion protection** and select **Keep deleted projects**.
@@ -377,9 +384,10 @@ You can disable all email notifications related to the group, which includes its
 
 To disable email notifications:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Disable email notifications**.
+1. Select **Email notifications are disabled**.
 1. Select **Save changes**.
 
 ## Disable group mentions
@@ -396,9 +404,10 @@ This is particularly helpful for groups with a large number of users.
 
 To disable group mentions:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Disable group mentions**.
+1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
 ## Export members as CSV **(PREMIUM)**
@@ -408,7 +417,8 @@ To disable group mentions:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. Go to your group or subgroup and select either **Group information > Members** or **Subgroup information > Members**.
+1. On the top bar, select **Main menu > Groups** and find your group or subgroup.
+1. On the left sidebar, select either **Group information > Members** or **Subgroup information > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
@@ -434,7 +444,7 @@ Prerequisite:
 
 To specify a user cap:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
    You can set a cap on the top-level group only.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
@@ -456,7 +466,7 @@ Prerequisite:
 
 To remove the user cap:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. In the **User cap** box, delete the value.
@@ -477,7 +487,7 @@ Prerequisite:
 
 To approve members that are pending because they've exceeded the user cap:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
@@ -508,7 +518,8 @@ Define project templates at a group level by setting a group as the template sou
 
 To enable group file templates:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
@@ -525,7 +536,8 @@ that belong to the group.
 
 To view the merge request approval settings for a group:
 
-1. Go to the top-level group's **Settings > General** page.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
 1. Select **Save changes**.
@@ -548,7 +560,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
-1. On the top bar, select **Menu > Groups**.
+1. On the top bar, select **Main menu > Groups > View all groups**.
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. On the left sidebar, select **Group information > Activity**.
@@ -568,3 +580,13 @@ the following checks when creating or updating namespaces or groups:
 
 In the unlikely event that you see these errors in your GitLab installation,
 [contact Support](https://about.gitlab.com/support/) so that we can improve this validation.
+
+### Find groups using an SQL query
+
+To find and store an array of groups based on an SQL query in the [rails console](../../administration/operations/rails_console.md):
+
+```ruby
+# Finds groups and subgroups that end with '%oup'
+Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
+=> [#<Group id:3 @test-group>, #<Group id:4 @template-group/template-subgroup>]
+```

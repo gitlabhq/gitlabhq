@@ -16,15 +16,15 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
-import { VISIBILITY_LEVELS_ENUM } from '~/visibility_level/constants';
+import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE, ITEM_TYPE } from '../constants';
 
 import eventHub from '../event_hub';
 
-import itemActions from './item_actions.vue';
-import itemCaret from './item_caret.vue';
-import itemStats from './item_stats.vue';
-import itemTypeIcon from './item_type_icon.vue';
+import ItemActions from './item_actions.vue';
+import ItemCaret from './item_caret.vue';
+import ItemStats from './item_stats.vue';
+import ItemTypeIcon from './item_type_icon.vue';
 
 export default {
   directives: {
@@ -41,10 +41,10 @@ export default {
     GlPopover,
     GlLink,
     UserAccessRoleBadge,
-    itemCaret,
-    itemTypeIcon,
-    itemActions,
-    itemStats,
+    ItemCaret,
+    ItemTypeIcon,
+    ItemActions,
+    ItemStats,
   },
   inject: ['currentGroupVisibility'],
   props: {
@@ -111,8 +111,8 @@ export default {
     shouldShowVisibilityWarning() {
       return (
         this.action === 'shared' &&
-        VISIBILITY_LEVELS_ENUM[this.group.visibility] >
-          VISIBILITY_LEVELS_ENUM[this.currentGroupVisibility]
+        VISIBILITY_LEVELS_STRING_TO_INTEGER[this.group.visibility] >
+          VISIBILITY_LEVELS_STRING_TO_INTEGER[this.currentGroupVisibility]
       );
     },
   },

@@ -1,0 +1,21 @@
+stages:
+  - upload
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  variables:
+    TERRAFORM_MODULE_DIR: ${CI_PROJECT_DIR} # The path to your Terraform module
+    TERRAFORM_MODULE_NAME: ${CI_PROJECT_NAME} # The name of your Terraform module
+    TERRAFORM_MODULE_SYSTEM: local # The system or provider your Terraform module targets (ex. local, aws, google)
+    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG} # Tag commits with SemVer for the version of your Terraform module to be published
+  script:
+    - TERRAFORM_MODULE_NAME=$(echo "${TERRAFORM_MODULE_NAME}" | tr " _" -) # module-name must not have spaces or underscores, so translate them to hyphens
+    - tar -vczf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
+    - 'curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
+         --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
+         ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
+  rules:
+    - if: $CI_COMMIT_TAG
+  tags:
+    - runner-for-<%= imported_project.name %> 

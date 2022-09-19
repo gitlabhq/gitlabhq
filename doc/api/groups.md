@@ -62,7 +62,8 @@ GET /groups
     "full_path": "foo-bar",
     "file_template_project_id": 1,
     "parent_id": null,
-    "created_at": "2020-01-15T12:36:29.590Z"
+    "created_at": "2020-01-15T12:36:29.590Z",
+    "ip_restriction_ranges": null
   }
 ]
 ```
@@ -684,7 +685,8 @@ Example response:
         }
       ]
     }
-  ]
+  ],
+  "ip_restriction_ranges": null
 }
 ```
 
@@ -874,6 +876,50 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/4/projects/56"
 ```
 
+## Get groups to which a user can transfer a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 15.4
+
+Retrieve a list of groups to which the user can transfer a group.
+
+```plaintext
+GET /groups/:id/transfer_locations
+```
+
+| Attribute   | Type           | Required               | Description |
+|-------------|----------------|------------------------|-------------|
+| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the group to be transferred](index.md#namespaced-path-encoding). |
+| `search` | string | **{dotted-circle}** No  | The group names to search for. |
+
+Example request:
+
+```shell
+curl --request GET "https://gitlab.example.com/api/v4/groups/1/transfer_locations"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 27,
+    "web_url": "https://gitlab.example.com/groups/gitlab",
+    "name": "GitLab",
+    "avatar_url": null,
+    "full_name": "GitLab",
+    "full_path": "GitLab"
+  },
+  {
+    "id": 31,
+    "web_url": "https://gitlab.example.com/groups/foobar",
+    "name": "FooBar",
+    "avatar_url": null,
+    "full_name": "FooBar",
+    "full_path": "FooBar"
+  }
+]
+```
+
 ## Transfer a group to a new parent group / Turn a subgroup to a top-level group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23831) in GitLab 14.6.
@@ -882,7 +928,7 @@ Transfer a group to a new parent group or turn a subgroup to a top-level group. 
 
 - With the Owner role for the group to transfer.
 - With permission to [create a subgroup](../user/group/subgroups/index.md#create-a-subgroup) in the new parent group if transferring a group.
-- With [permission to create a top-level group](../administration/user_settings.md#prevent-users-from-creating-top-level-groups) if turning a subgroup into a top-level group.
+- With [permission to create a top-level group](../administration/user_settings.md) if turning a subgroup into a top-level group.
 
 ```plaintext
 POST  /groups/:id/transfer
@@ -905,7 +951,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` are not available.
+On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
 To make them available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
 named `limit_unique_project_downloads_per_namespace_user`.
 
@@ -944,6 +990,8 @@ PUT /groups/:id
 | `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
 | `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
 | `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
+| `auto_ban_user_on_excessive_projects_download` **(ULTIMATE)** | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. |
+| `ip_restriction_ranges` **(PREMIUM)**                   | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1019,7 +1067,8 @@ Example response:
       "shared_with_groups": [],
       "request_access_enabled": false
     }
-  ]
+  ],
+  "ip_restriction_ranges": null
 }
 ```
 
@@ -1064,14 +1113,32 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
      --form "avatar=@/tmp/example.png"
 ```
 
+### Remove a group avatar
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96421) in GitLab 15.4.
+
+To remove a group avatar, use a blank value for the `avatar` attribute.
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" \
+     --data "avatar="
+```
+
 ## Remove group
+
+> - Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `immediate_delete_subgroup_api`. Disabled by default.
+> - Immediately deleting subgroups was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
+> - Immediately deleting subgroups was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) by default in GitLab 15.4.
 
 Only available to group owners and administrators.
 
-This endpoint either:
+This endpoint:
 
-- Removes group, and queues a background job to delete all projects in the group as well.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion happens 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- On Premium and higher tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- On Free tier, removes the group immediately and queues a background job to delete all projects in the group.
+- Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 
 ```plaintext
 DELETE /groups/:id
@@ -1079,9 +1146,11 @@ DELETE /groups/:id
 
 Parameters:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| Attribute            | Type             | Required | Description                                                                                                                                                 |
+|----------------------|------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)                                                                                |
+| `permanently_remove` **(PREMIUM)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
+| `full_path` **(PREMIUM)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
 
 The response is `202 Accepted` if the user has authorization.
 
@@ -1232,6 +1301,7 @@ GET /groups/:id/hooks/:hook_id
   "url": "http://example.com/hook",
   "group_id": 3,
   "push_events": true,
+  "push_events_branch_filter": "",
   "issues_events": true,
   "confidential_issues_events": true,
   "merge_requests_events": true,
@@ -1258,10 +1328,11 @@ POST /groups/:id/hooks
 ```
 
 | Attribute                    | Type           | Required | Description |
-| -----------------------------| -------------- | ---------| ----------- |
+| -----------------------------| -------------- |----------| ----------- |
 | `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `url`                        | string         | yes      | The hook URL |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
+| `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
@@ -1291,6 +1362,7 @@ PUT /groups/:id/hooks/:hook_id
 | `hook_id`                    | integer        | yes      | The ID of the group hook |
 | `url`                        | string         | yes      | The hook URL |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
+| `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
@@ -1369,7 +1441,7 @@ POST /groups/:id/ldap_group_links
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
-| `group_access` | integer   | yes      | Minimum [access level](members.md#valid-access-levels) for members of the LDAP group |
+| `group_access` | integer   | yes      | [Access level](members.md#valid-access-levels) for members of the LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
 NOTE:
@@ -1420,7 +1492,8 @@ To delete the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 ## SAML Group Links **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
+> - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
 
 List, get, add, and delete SAML group links.
 
@@ -1438,13 +1511,12 @@ Supported attributes:
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 
-If successful, returns [`200`](index.md#status-codes) and the following
-response attributes:
+If successful, returns [`200`](index.md#status-codes) and the following response attributes:
 
-| Attribute          | Type   | Description                                                                          |
-|:-------------------|:-------|:-------------------------------------------------------------------------------------|
-| `[].name`          | string | Name of the SAML group                                                               |
-| `[].access_level`  | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute          | Type    | Description                                                                  |
+|:-------------------|:--------|:-----------------------------------------------------------------------------|
+| `[].name`          | string  | Name of the SAML group                                                       |
+| `[].access_level`  | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1482,13 +1554,12 @@ Supported attributes:
 | `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
 
-If successful, returns [`200`](index.md#status-codes) and the following
-response attributes:
+If successful, returns [`200`](index.md#status-codes) and the following response attributes:
 
-| Attribute      | Type   | Description                                                                          |
-|:---------------|:-------|:-------------------------------------------------------------------------------------|
-| `name`         | string | Name of the SAML group                                                               |
-| `access_level` | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute      | Type    | Description                                                                  |
+|:---------------|:--------|:-----------------------------------------------------------------------------|
+| `name`         | string  | Name of the SAML group                                                       |
+| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1515,19 +1586,18 @@ POST /groups/:id/saml_group_links
 
 Supported attributes:
 
-| Attribute          | Type           | Required | Description                                                                          |
-|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------------------|
-| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)             |
-| `saml_group_name`  | string         | yes      | Name of a SAML group                                                                 |
-| `access_level`     | integer         | yes      | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute          | Type           | Required | Description                                                                  |
+|:-------------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`               | integer or string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)     |
+| `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
+| `access_level`     | integer        | yes      | [Access level](members.md#valid-access-levels) for members of the SAML group |
 
-If successful, returns [`201`](index.md#status-codes) and the following
-response attributes:
+If successful, returns [`201`](index.md#status-codes) and the following response attributes:
 
-| Attribute      | Type   | Description                                                                          |
-|:---------------|:-------|:-------------------------------------------------------------------------------------|
-| `name`         | string | Name of the SAML group                                                               |
-| `access_level` | integer | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+| Attribute      | Type    | Description                                                                  |
+|:---------------|:--------|:-----------------------------------------------------------------------------|
+| `name`         | string  | Name of the SAML group                                                       |
+| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1557,7 +1627,7 @@ Supported attributes:
 | Attribute          | Type           | Required | Description                                                              |
 |:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
 | `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
+| `saml_group_name`  | string         | yes      | Name of a SAML group                                                     |
 
 If successful, returns [`204`](index.md#status-codes) status code without any response body.
 

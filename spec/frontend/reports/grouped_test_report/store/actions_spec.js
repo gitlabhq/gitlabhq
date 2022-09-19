@@ -61,7 +61,7 @@ describe('Reports Store Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestReports and receiveReportsSuccess ', () => {
+      it('dispatches requestReports and receiveReportsSuccess', () => {
         mock
           .onGet(`${TEST_HOST}/endpoint.json`)
           .replyOnce(200, { summary: {}, suites: [{ name: 'rspec' }] });
@@ -89,7 +89,7 @@ describe('Reports Store Actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestReports and receiveReportsError ', () => {
+      it('dispatches requestReports and receiveReportsError', () => {
         return testAction(
           fetchReports,
           null,

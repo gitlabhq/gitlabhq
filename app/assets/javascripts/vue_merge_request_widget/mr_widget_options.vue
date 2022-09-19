@@ -59,28 +59,28 @@ export default {
     Loading,
     ExtensionsContainer,
     WidgetContainer,
-    'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
+    MrWidgetSuggestPipeline: WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
-    'mr-widget-merged': MergedState,
-    'mr-widget-closed': ClosedState,
-    'mr-widget-merging': MergingState,
-    'mr-widget-failed-to-merge': FailedToMerge,
-    'mr-widget-wip': WorkInProgressState,
-    'mr-widget-archived': ArchivedState,
-    'mr-widget-conflicts': ConflictsState,
-    'mr-widget-nothing-to-merge': NothingToMergeState,
-    'mr-widget-not-allowed': NotAllowedState,
-    'mr-widget-missing-branch': MissingBranchState,
-    'mr-widget-ready-to-merge': () => import('./components/states/new_ready_to_merge.vue'),
-    'sha-mismatch': ShaMismatch,
-    'mr-widget-checking': CheckingState,
-    'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
-    'mr-widget-pipeline-blocked': PipelineBlockedState,
-    'mr-widget-pipeline-failed': PipelineFailedState,
+    MrWidgetMerged: MergedState,
+    MrWidgetClosed: ClosedState,
+    MrWidgetMerging: MergingState,
+    MrWidgetFailedToMerge: FailedToMerge,
+    MrWidgetWip: WorkInProgressState,
+    MrWidgetArchived: ArchivedState,
+    MrWidgetConflicts: ConflictsState,
+    MrWidgetNothingToMerge: NothingToMergeState,
+    MrWidgetNotAllowed: NotAllowedState,
+    MrWidgetMissingBranch: MissingBranchState,
+    MrWidgetReadyToMerge: () => import('./components/states/new_ready_to_merge.vue'),
+    ShaMismatch,
+    MrWidgetChecking: CheckingState,
+    MrWidgetUnresolvedDiscussions: UnresolvedDiscussionsState,
+    MrWidgetPipelineBlocked: PipelineBlockedState,
+    MrWidgetPipelineFailed: PipelineFailedState,
     MrWidgetAutoMergeEnabled,
-    'mr-widget-auto-merge-failed': AutoMergeFailed,
-    'mr-widget-rebase': RebaseState,
+    MrWidgetAutoMergeFailed: AutoMergeFailed,
+    MrWidgetRebase: RebaseState,
     SourceBranchRemovalStatus,
     GroupedCodequalityReportsApp: () =>
       import('../reports/codequality_report/grouped_codequality_reports_app.vue'),
@@ -230,6 +230,11 @@ export default {
     shouldShowCodeQualityExtension() {
       return window.gon?.features?.refactorCodeQualityExtension;
     },
+    shouldShowMergeDetails() {
+      if (this.mr.state === 'readyToMerge') return true;
+
+      return !this.mr.mergeDetailsCollapsed;
+    },
   },
   watch: {
     'mr.machineValue': {
@@ -318,6 +323,12 @@ export default {
       this.initPolling();
       this.bindEventHubListeners();
       eventHub.$on('mr.discussion.updated', this.checkStatus);
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          this.mr.toggleMergeDetails(false);
+        }
+      });
     },
     getServiceEndpoints(store) {
       return {
@@ -428,6 +439,7 @@ export default {
         .then((res) => {
           if (res.data) {
             const el = document.createElement('div');
+            // eslint-disable-next-line no-unsanitized/property
             el.innerHTML = res.data;
             document.body.appendChild(el);
             document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
@@ -620,7 +632,12 @@ export default {
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />
-        <ready-to-merge v-if="mr.commitsCount" :mr="mr" :service="service" />
+        <ready-to-merge
+          v-if="mr.commitsCount"
+          v-show="shouldShowMergeDetails"
+          :mr="mr"
+          :service="service"
+        />
       </div>
     </div>
     <mr-widget-pipeline-container

@@ -39,8 +39,8 @@ describe('Repository breadcrumbs component', () => {
     });
   };
 
-  const findUploadBlobModal = () => wrapper.find(UploadBlobModal);
-  const findNewDirectoryModal = () => wrapper.find(NewDirectoryModal);
+  const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
+  const findNewDirectoryModal = () => wrapper.findComponent(NewDirectoryModal);
 
   afterEach(() => {
     wrapper.destroy();
@@ -55,7 +55,7 @@ describe('Repository breadcrumbs component', () => {
   `('renders $linkCount links for path $path', ({ path, linkCount }) => {
     factory(path);
 
-    expect(wrapper.findAll(RouterLinkStub).length).toEqual(linkCount);
+    expect(wrapper.findAllComponents(RouterLinkStub).length).toEqual(linkCount);
   });
 
   it.each`
@@ -68,14 +68,14 @@ describe('Repository breadcrumbs component', () => {
     'links to the correct router path when routeName is $routeName',
     ({ routeName, path, linkTo }) => {
       factory(path, {}, { name: routeName });
-      expect(wrapper.findAll(RouterLinkStub).at(3).props('to')).toEqual(linkTo);
+      expect(wrapper.findAllComponents(RouterLinkStub).at(3).props('to')).toEqual(linkTo);
     },
   );
 
   it('escapes hash in directory path', () => {
     factory('app/assets/javascripts#');
 
-    expect(wrapper.findAll(RouterLinkStub).at(3).props('to')).toEqual(
+    expect(wrapper.findAllComponents(RouterLinkStub).at(3).props('to')).toEqual(
       '/-/tree/app/assets/javascripts%23',
     );
   });
@@ -83,7 +83,9 @@ describe('Repository breadcrumbs component', () => {
   it('renders last link as active', () => {
     factory('app/assets');
 
-    expect(wrapper.findAll(RouterLinkStub).at(2).attributes('aria-current')).toEqual('page');
+    expect(wrapper.findAllComponents(RouterLinkStub).at(2).attributes('aria-current')).toEqual(
+      'page',
+    );
   });
 
   it('does not render add to tree dropdown when permissions are false', async () => {
@@ -95,7 +97,7 @@ describe('Repository breadcrumbs component', () => {
 
     await nextTick();
 
-    expect(wrapper.find(GlDropdown).exists()).toBe(false);
+    expect(wrapper.findComponent(GlDropdown).exists()).toBe(false);
   });
 
   it.each`
@@ -109,7 +111,7 @@ describe('Repository breadcrumbs component', () => {
     'does render add to tree dropdown $isRendered when route is $routeName',
     ({ routeName, isRendered }) => {
       factory('app/assets/javascripts.js', { canCollaborate: true }, { name: routeName });
-      expect(wrapper.find(GlDropdown).exists()).toBe(isRendered);
+      expect(wrapper.findComponent(GlDropdown).exists()).toBe(isRendered);
     },
   );
 
@@ -122,7 +124,7 @@ describe('Repository breadcrumbs component', () => {
 
     await nextTick();
 
-    expect(wrapper.find(GlDropdown).exists()).toBe(true);
+    expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
   });
 
   describe('renders the upload blob modal', () => {

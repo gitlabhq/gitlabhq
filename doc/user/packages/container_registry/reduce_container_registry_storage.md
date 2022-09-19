@@ -113,7 +113,7 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 
 To create a cleanup policy in the UI:
 
-1. For your project, go to **Settings > Packages & Registries**.
+1. For your project, go to **Settings > Packages and registries**.
 1. Expand the **Clean up image tags** section.
 1. Complete the fields.
 
@@ -206,7 +206,7 @@ For self-managed instances, those settings can be updated in the [Rails console]
 
 They are also available in the [administrator area](../../admin_area/index.md):
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. Go to **Settings > CI/CD > Container Registry**.
 
 ### Use the cleanup policy API
@@ -219,7 +219,7 @@ Examples:
 
   ```shell
   curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
-       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-main"}}' \
+       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*","name_regex_keep":".*-main"}}' \
        "https://gitlab.example.com/api/v4/projects/2"
   ```
 

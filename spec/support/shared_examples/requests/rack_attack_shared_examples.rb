@@ -518,7 +518,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
     context 'when the request is to the api internal endpoints' do
       it 'allows requests over the rate limit' do
         (1 + requests_per_period).times do
-          get '/api/v4/internal/check', params: { secret_token: Gitlab::Shell.secret_token }
+          get '/api/v4/internal/check', headers: GitlabShellHelpers.gitlab_shell_internal_api_request_header
           expect(response).to have_gitlab_http_status(:ok)
         end
       end

@@ -135,7 +135,7 @@ export default {
       <div
         class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-flex-grow-1 gl-min-w-0"
       >
-        <div class="commit-content qa-commit-content">
+        <div class="commit-content" data-qa-selector="commit_content">
           <gl-link
             v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
             :href="commit.webPath"
@@ -148,6 +148,7 @@ export default {
             :class="{ open: showDescription }"
             :title="__('Toggle commit description')"
             :aria-label="__('Toggle commit description')"
+            :selected="showDescription"
             class="text-expander gl-vertical-align-bottom!"
             icon="ellipsis_h"
             @click="toggleShowDescription"

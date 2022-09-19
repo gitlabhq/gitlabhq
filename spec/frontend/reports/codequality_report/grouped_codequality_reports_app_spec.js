@@ -30,7 +30,7 @@ describe('Grouped code quality reports app', () => {
   };
 
   const findWidget = () => wrapper.find('.js-codequality-widget');
-  const findIssueBody = () => wrapper.find(CodequalityIssueBody);
+  const findIssueBody = () => wrapper.findComponent(CodequalityIssueBody);
 
   beforeEach(() => {
     const { state, ...storeConfig } = getStoreConfig();

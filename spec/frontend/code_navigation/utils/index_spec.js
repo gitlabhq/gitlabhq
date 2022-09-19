@@ -17,7 +17,7 @@ describe('getCurrentHoverElement', () => {
     value
     ${'test'}
     ${undefined}
-  `('it returns cached current key', ({ value }) => {
+  `('returns cached current key', ({ value }) => {
     if (value) {
       cachedData.set('current', value);
     }
@@ -52,7 +52,7 @@ describe('addInteractionClass', () => {
     ${1} | ${0} | ${0}
     ${1} | ${0} | ${0}
   `(
-    'it sets code navigation attributes for line $line and character $char',
+    'sets code navigation attributes for line $line and character $char',
     ({ line, char, index }) => {
       addInteractionClass({ path: 'index.js', d: { start_line: line, start_char: char } });
 

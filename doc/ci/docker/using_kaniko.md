@@ -39,8 +39,6 @@ few important details:
   GitLab CI/CD.
 - The entrypoint needs to be [overridden](using_docker_images.md#override-the-entrypoint-of-an-image),
   otherwise the build script doesn't run.
-- A Docker `config.json` file needs to be created with the authentication
-  information for the desired container registry.
 
 In the following example, kaniko is used to:
 
@@ -50,7 +48,7 @@ In the following example, kaniko is used to:
 The job runs only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
 [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
-GitLab CI/CD provides.
+GitLab CI/CD provides. These are automatically read by the Kaniko tool.
 
 In the last step, kaniko uses the `Dockerfile` under the
 root directory of the project, builds the Docker image and pushes it to the
@@ -60,13 +58,10 @@ project's Container Registry while tagging it with the Git tag:
 build:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
   script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 -w 0)\"}}}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
+    - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
@@ -86,7 +81,6 @@ you must add the corresponding CI/CD variables for authentication to the `config
 If you use a custom GitLab Runner behind an http(s) proxy, kaniko needs to be set
 up accordingly. This means:
 
-- Adding the proxy to `/kaniko/.docker/config.json`
 - Passing the `http_proxy` environment variables as build arguments so the Dockerfile
   instructions can use the proxy when building the image.
 
@@ -95,25 +89,20 @@ The previous example can be extended as follows:
 ```yaml
 build:
   stage: build
+  variables:
+    http_proxy: <your-proxy>
+    https_proxy: <your-proxy>
+    no_proxy: <your-no-proxy>
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
   script:
-    - mkdir -p /kaniko/.docker
-    - |-
-       KANIKOPROXYBUILDARGS=""
-       KANIKOCFG="\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}"
-       if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
-         KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
-         KANIKOPROXYBUILDARGS="--build-arg http_proxy=${http_proxy} --build-arg https_proxy=${https_proxy} --build-arg no_proxy=${no_proxy}"
-       fi
-       KANIKOCFG="{ ${KANIKOCFG} }"
-       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
+    - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
+      --build-arg http_proxy=$http_proxy
+      --build-arg https_proxy=$https_proxy
+      --build-arg no_proxy=$no_proxy
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      "${KANIKOPROXYBUILDARGS}"
       --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
   rules:
     - if: $CI_COMMIT_TAG
@@ -142,8 +131,6 @@ store:
 
 ```yaml
 before_script:
-  - mkdir -p /kaniko/.docker
-  - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   - |
     echo "-----BEGIN CERTIFICATE-----
     ...

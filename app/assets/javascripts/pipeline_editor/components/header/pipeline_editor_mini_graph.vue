@@ -1,6 +1,6 @@
 <script>
 import { __ } from '~/locale';
-import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
 import { PIPELINE_FAILURE } from '../../constants';
 
@@ -10,8 +10,6 @@ export default {
   },
   components: {
     PipelineMiniGraph,
-    LinkedPipelinesMiniList: () =>
-      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
   },
   inject: ['projectFullPath'],
   props: {
@@ -46,9 +44,6 @@ export default {
   computed: {
     downstreamPipelines() {
       return this.linkedPipelines?.downstream?.nodes || [];
-    },
-    hasDownstreamPipelines() {
-      return this.downstreamPipelines.length > 0;
     },
     hasPipelineStages() {
       return this.pipelineStages.length > 0;
@@ -87,23 +82,11 @@ export default {
 </script>
 
 <template>
-  <div
+  <pipeline-mini-graph
     v-if="hasPipelineStages"
-    class="gl-align-items-center gl-display-inline-flex gl-flex-wrap stage-cell gl-mr-5"
-  >
-    <linked-pipelines-mini-list
-      v-if="upstreamPipeline"
-      :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
-        upstreamPipeline,
-      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-      data-testid="pipeline-editor-mini-graph-upstream"
-    />
-    <pipeline-mini-graph :stages="pipelineStages" />
-    <linked-pipelines-mini-list
-      v-if="hasDownstreamPipelines"
-      :triggered="downstreamPipelines"
-      :pipeline-path="pipelinePath"
-      data-testid="pipeline-editor-mini-graph-downstream"
-    />
-  </div>
+    :downstream-pipelines="downstreamPipelines"
+    :pipeline-path="pipelinePath"
+    :stages="pipelineStages"
+    :upstream-pipeline="upstreamPipeline"
+  />
 </template>

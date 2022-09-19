@@ -12,9 +12,8 @@ merge requests are merged into an existing branch.
 
 ## Configure a project's merge method
 
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge method** section, select your desired merge method.
 1. Select **Save changes**.
 
@@ -110,7 +109,7 @@ gitGraph
 ```
 
 This method is equivalent to `git merge --ff <source-branch>` for regular merges, and to
-`git merge -squash <source-branch>` for squash merges.
+`git merge --squash <source-branch>` for squash merges.
 
 When the fast-forward merge
 ([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting

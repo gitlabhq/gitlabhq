@@ -6,7 +6,7 @@ import { generateResponse, mockPipelineResponse } from '../graph/mock_data';
 describe('links layer component', () => {
   let wrapper;
 
-  const findLinksInner = () => wrapper.find(LinksInner);
+  const findLinksInner = () => wrapper.findComponent(LinksInner);
 
   const pipeline = generateResponse(mockPipelineResponse, 'root/fungi-xoxo');
   const containerId = `pipeline-links-container-${pipeline.id}`;

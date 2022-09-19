@@ -46,7 +46,7 @@ To purge files from a GitLab repository:
    [`git-sizer`](https://github.com/github/git-sizer#getting-started)
    using a supported package manager or from source.
 
-1. Generate a fresh 
+1. Generate a fresh
    [export from the project](../settings/import_export.md#export-a-project-and-its-data) and download it.
    This project export contains a backup copy of your repository *and* refs
    we can use to purge files from your repository.

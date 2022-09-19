@@ -25,7 +25,7 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
       empty_relation = User.none.select(:id)
       set_operator = described_class.new([empty_relation, relation_1, relation_2])
 
-      expect {User.where("users.id IN (#{set_operator.to_sql})").to_a}.not_to raise_error
+      expect { User.where("users.id IN (#{set_operator.to_sql})").to_a }.not_to raise_error
       expect(set_operator.to_sql).to eq("(#{to_sql(relation_1)})\n#{operator_keyword}\n(#{to_sql(relation_2)})")
     end
 

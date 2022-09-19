@@ -45,6 +45,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:paginated_mr_discussions, project)
     push_frontend_feature_flag(:mr_review_submit_comment, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
+    push_frontend_feature_flag(:remove_user_attributes_projects, @project)
   end
 
   before_action do
@@ -56,11 +57,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   after_action :log_merge_request_show, only: [:show]
 
   feature_category :code_review, [
-                     :assign_related_issues, :bulk_update, :cancel_auto_merge,
-                     :commit_change_content, :commits, :context_commits, :destroy,
-                     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-                     :show, :toggle_award_emoji, :toggle_subscription, :update
-                   ]
+    :assign_related_issues, :bulk_update, :cancel_auto_merge,
+    :commit_change_content, :commits, :context_commits, :destroy,
+    :discussions, :edit, :index, :merge, :rebase, :remove_wip,
+    :show, :toggle_award_emoji, :toggle_subscription, :update
+  ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
   feature_category :code_quality, [:codequality_reports, :codequality_mr_diff_reports]
@@ -219,7 +220,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def context_commits
     # Get commits from repository
     # or from cache if already merged
-    commits = ContextCommitsFinder.new(project, @merge_request, { search: params[:search], limit: params[:limit], offset: params[:offset] }).execute
+    commits = ContextCommitsFinder.new(project, @merge_request, {
+                                         search: params[:search],
+                                         author: params[:author],
+                                         committed_before: convert_date_to_epoch(params[:committed_before]),
+                                         committed_after: convert_date_to_epoch(params[:committed_after]),
+                                         limit: params[:limit]
+                                       }).execute
     render json: CommitEntity.represent(commits, { type: :full, request: merge_request })
   end
 
@@ -551,6 +558,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     params = request.query_parameters.merge(view: 'inline', diff_head: true)
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
+  end
+
+  def convert_date_to_epoch(date)
+    Date.strptime(date, "%Y-%m-%d")&.to_time&.to_i if date
+  rescue Date::Error, TypeError
   end
 end
 

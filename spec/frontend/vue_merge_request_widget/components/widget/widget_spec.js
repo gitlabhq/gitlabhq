@@ -3,16 +3,21 @@ import * as Sentry from '@sentry/browser';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 
 describe('MR Widget', () => {
   let wrapper;
 
   const findStatusIcon = () => wrapper.findComponent(StatusIcon);
+  const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
+  const findActionButtons = () => wrapper.findComponent(ActionButtons);
+  const findToggleButton = () => wrapper.findByTestId('toggle-button');
 
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
       propsData: {
+        isCollapsible: false,
         loadingText: 'Loading widget',
         widgetName: 'MyWidget',
         value: {
@@ -38,14 +43,15 @@ describe('MR Widget', () => {
       createComponent({ propsData: { fetchCollapsedData } });
       await waitForPromises();
       expect(fetchCollapsedData).toHaveBeenCalled();
-      expect(wrapper.vm.error).toBe(null);
+      expect(wrapper.vm.summaryError).toBe(null);
     });
 
     it('sets the error text when fetch method fails', async () => {
       const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
       createComponent({ propsData: { fetchCollapsedData } });
       await waitForPromises();
-      expect(wrapper.vm.error).toBe('Failed to load');
+      expect(wrapper.findByText('Failed to load').exists()).toBe(true);
+      expect(findStatusIcon().props()).toMatchObject({ iconName: 'failed', isLoading: false });
     });
 
     it('displays loading icon until request is made and then displays status icon when the request is complete', async () => {
@@ -111,7 +117,7 @@ describe('MR Widget', () => {
       jest.spyOn(Sentry, 'captureException').mockImplementation();
       createComponent({
         propsData: {
-          fetchCollapsedData: async () => Promise.reject(error),
+          fetchCollapsedData: () => Promise.reject(error),
         },
       });
       await waitForPromises();
@@ -125,7 +131,7 @@ describe('MR Widget', () => {
       createComponent({
         propsData: {
           summary: 'Hello world',
-          fetchCollapsedData: async () => Promise.resolve(),
+          fetchCollapsedData: () => Promise.resolve(),
         },
       });
 
@@ -137,7 +143,7 @@ describe('MR Widget', () => {
     it('displays the summary slot when provided', () => {
       createComponent({
         propsData: {
-          fetchCollapsedData: async () => Promise.resolve(),
+          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           summary: '<b>More complex summary</b>',
@@ -149,19 +155,167 @@ describe('MR Widget', () => {
       );
     });
 
-    it('displays the content slot when provided', () => {
+    it('does not display action buttons if actionButtons is not provided', () => {
       createComponent({
         propsData: {
-          fetchCollapsedData: async () => Promise.resolve(),
+          fetchCollapsedData: () => Promise.resolve(),
+        },
+      });
+
+      expect(findActionButtons().exists()).toBe(false);
+    });
+
+    it('does display action buttons if actionButtons is provided', () => {
+      const actionButtons = [{ text: 'click-me', href: '#' }];
+
+      createComponent({
+        propsData: {
+          fetchCollapsedData: () => Promise.resolve(),
+          actionButtons,
+        },
+      });
+
+      expect(findActionButtons().props('tertiaryButtons')).toEqual(actionButtons);
+    });
+  });
+
+  describe('handle collapse toggle', () => {
+    it('displays the toggle button correctly', () => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           content: '<b>More complex content</b>',
         },
       });
 
-      expect(wrapper.findByTestId('widget-extension-collapsed-section').text()).toBe(
-        'More complex content',
-      );
+      expect(findToggleButton().attributes('title')).toBe('Show details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Show details');
+    });
+
+    it('does not display the content slot until toggle is clicked', async () => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve(),
+        },
+        slots: {
+          content: '<b>More complex content</b>',
+        },
+      });
+
+      expect(findExpandedSection().exists()).toBe(false);
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+      expect(findExpandedSection().text()).toBe('More complex content');
+    });
+
+    it('does not display the toggle button if isCollapsible is false', () => {
+      createComponent({
+        propsData: {
+          isCollapsible: false,
+          fetchCollapsedData: () => Promise.resolve(),
+        },
+      });
+
+      expect(findToggleButton().exists()).toBe(false);
+    });
+
+    it('fetches expanded data when clicked for the first time', async () => {
+      const mockDataCollapsed = {
+        headers: {},
+        status: 200,
+        data: { vulnerabilities: [{ vuln: 1 }] },
+      };
+
+      const mockDataExpanded = {
+        headers: {},
+        status: 200,
+        data: { vulnerabilities: [{ vuln: 2 }] },
+      };
+
+      const fetchExpandedData = jest.fn().mockResolvedValue(mockDataExpanded);
+
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve(mockDataCollapsed),
+          fetchExpandedData,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      // First fetches the collapsed data
+      expect(wrapper.emitted('input')[0][0]).toEqual({
+        collapsed: mockDataCollapsed.data,
+        expanded: null,
+      });
+
+      // Then fetches the expanded data
+      expect(wrapper.emitted('input')[1][0]).toEqual({
+        collapsed: null,
+        expanded: mockDataExpanded.data,
+      });
+
+      // Triggering a click does not call the expanded data again
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(fetchExpandedData).toHaveBeenCalledTimes(1);
+    });
+
+    it('allows refetching when fetch expanded data returns an error', async () => {
+      const fetchExpandedData = jest.fn().mockRejectedValue({ error: true });
+
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve([]),
+          fetchExpandedData,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      // First fetches the collapsed data
+      expect(wrapper.emitted('input')[0][0]).toEqual({
+        collapsed: undefined,
+        expanded: null,
+      });
+
+      expect(fetchExpandedData).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted('input')).toHaveLength(1); // Should not an emit an input call because request failed
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(fetchExpandedData).toHaveBeenCalledTimes(2);
+    });
+
+    it('resets the error message when another request is fetched', async () => {
+      const fetchExpandedData = jest.fn().mockRejectedValue({ error: true });
+
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchCollapsedData: () => Promise.resolve([]),
+          fetchExpandedData,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.findByText('Failed to load').exists()).toBe(true);
+      fetchExpandedData.mockImplementation(() => new Promise(() => {}));
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.findByText('Failed to load').exists()).toBe(false);
     });
   });
 });

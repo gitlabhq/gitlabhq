@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require 'parser/current'
 require_relative '../../rubocop/code_reuse_helpers'
 
@@ -169,31 +169,6 @@ RSpec.describe RuboCop::CodeReuseHelpers do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_graphql?(node)).to eq(false)
-    end
-  end
-
-  describe '#in_graphql_types?' do
-    %w[
-      app/graphql/types
-      ee/app/graphql/ee/types
-      ee/app/graphql/types
-    ].each do |path|
-      it "returns true for a node in #{path}" do
-        node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
-
-        expect(cop.in_graphql_types?(node)).to eq(true)
-      end
-    end
-
-    %w[
-      app/graphql/resolvers
-      app/foo
-    ].each do |path|
-      it "returns false for a node in #{path}" do
-        node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
-
-        expect(cop.in_graphql_types?(node)).to eq(false)
-      end
     end
   end
 
@@ -367,7 +342,7 @@ RSpec.describe RuboCop::CodeReuseHelpers do
 
       expect(cop)
         .to receive(:add_offense)
-        .with(send_node, location: :expression, message: 'oops')
+        .with(send_node, message: 'oops')
 
       cop.disallow_send_to(def_node, 'Finder', 'oops')
     end

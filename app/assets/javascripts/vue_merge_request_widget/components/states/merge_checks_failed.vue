@@ -34,7 +34,7 @@ export default {
 
 <template>
   <div class="mr-widget-body media gl-flex-wrap">
-    <status-icon status="warning" />
+    <status-icon status="failed" />
     <p class="media-body gl-m-0! gl-font-weight-bold gl-text-black-normal!">
       {{ failedText }}
     </p>

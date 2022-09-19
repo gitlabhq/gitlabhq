@@ -43,6 +43,15 @@ RSpec.describe PoolRepository do
       end
     end
 
+    context 'when skipping disconnect' do
+      it 'does not change the alternates file' do
+        before = File.read(alternates_file)
+        pool.unlink_repository(pool.source_project.repository, disconnect: false)
+
+        expect(File.read(alternates_file)).to eq(before)
+      end
+    end
+
     context 'when the second member leaves' do
       it 'does not schedule pool removal' do
         other_project = create(:project, :repository, pool_repository: pool)

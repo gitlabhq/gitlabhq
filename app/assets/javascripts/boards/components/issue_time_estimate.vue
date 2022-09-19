@@ -36,7 +36,7 @@ export default {
 
 <template>
   <span>
-    <span ref="issueTimeEstimate" class="board-card-info card-number">
+    <span ref="issueTimeEstimate" class="board-card-info gl-mr-3 gl-text-secondary gl-cursor-help">
       <gl-icon name="hourglass" class="board-card-info-icon gl-mr-2" />
       <time class="board-card-info-text">{{ timeEstimate }}</time>
     </span>

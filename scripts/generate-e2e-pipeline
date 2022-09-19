@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+
+# Script to generate e2e test child pipeline
+# This is required because environment variables that are generated dynamically are not picked up by rules in child pipelines
+
+source $ENV_FILE
+
+echo "Generating child pipeline yml definitions for review-app and package-and-test child pipelines"
+
+if [ "$QA_SKIP_ALL_TESTS" == "true" ]; then
+  skip_pipeline=".gitlab/ci/_skip.yml"
+
+  echo "Using ${skip_pipeline} due to QA_SKIP_ALL_TESTS set to 'true'"
+  cp $skip_pipeline "$OMNIBUS_PIPELINE_YML"
+  cp $skip_pipeline "$REVIEW_PIPELINE_YML"
+  exit
+fi
+
+variables=$(cat <<YML
+variables:
+  GITLAB_VERSION: "$(cat VERSION)"
+  COLORIZED_LOGS: "true"
+  QA_TESTS: "$QA_TESTS"
+  QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
+  QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"
+  QA_SUITES: "$QA_SUITES"
+YML
+)
+
+echo "Using .gitlab/ci/review-apps/main.gitlab-ci.yml and .gitlab/ci/package-and-test/main.gitlab-ci.yml"
+cp .gitlab/ci/review-apps/main.gitlab-ci.yml "$REVIEW_PIPELINE_YML"
+echo "$variables" >>"$REVIEW_PIPELINE_YML"
+cp .gitlab/ci/package-and-test/main.gitlab-ci.yml "$OMNIBUS_PIPELINE_YML"
+echo "$variables" >>"$OMNIBUS_PIPELINE_YML"
+
+echo "Successfully generated review-app and package-and-test pipeline with following variables section:"
+echo "$variables"

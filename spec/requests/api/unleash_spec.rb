@@ -218,8 +218,7 @@ RSpec.describe API::Unleash do
 
       context 'with version 2 feature flags' do
         it 'does not return a flag without any strategies' do
-          create(:operations_feature_flag, project: project,
-                 name: 'feature1', active: true, version: 2)
+          create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' }
 
@@ -228,10 +227,8 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns a flag with a default strategy' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'feature1', active: true, version: 2)
-          strategy = create(:operations_strategy, feature_flag: feature_flag,
-                            name: 'default', parameters: {})
+          feature_flag = create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
+          strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
           create(:operations_scope, strategy: strategy, environment_scope: 'production')
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' }
@@ -248,10 +245,9 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns a flag with a userWithId strategy' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'feature1', active: true, version: 2)
-          strategy = create(:operations_strategy, feature_flag: feature_flag,
-                            name: 'userWithId', parameters: { userIds: 'user123,user456' })
+          feature_flag = create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
+          strategy = create(:operations_strategy,
+            feature_flag: feature_flag, name: 'userWithId', parameters: { userIds: 'user123,user456' })
           create(:operations_scope, strategy: strategy, environment_scope: 'production')
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' }
@@ -268,12 +264,13 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns a flag with multiple strategies' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'feature1', active: true, version: 2)
-          strategy_a = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'userWithId', parameters: { userIds: 'user_a,user_b' })
-          strategy_b = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'gradualRolloutUserId', parameters: { groupId: 'default', percentage: '45' })
+          feature_flag = create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
+          strategy_a = create(:operations_strategy,
+            feature_flag: feature_flag, name: 'userWithId', parameters: { userIds: 'user_a,user_b' })
+          strategy_b = create(:operations_strategy,
+            feature_flag: feature_flag,
+            name: 'gradualRolloutUserId',
+            parameters: { groupId: 'default', percentage: '45' })
           create(:operations_scope, strategy: strategy_a, environment_scope: 'production')
           create(:operations_scope, strategy: strategy_b, environment_scope: 'production')
 
@@ -298,12 +295,12 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns only flags matching the environment scope' do
-          feature_flag_a = create(:operations_feature_flag, project: project,
-                                  name: 'feature1', active: true, version: 2)
+          feature_flag_a = create(:operations_feature_flag,
+            project: project, name: 'feature1', active: true, version: 2)
           strategy_a = create(:operations_strategy, feature_flag: feature_flag_a)
           create(:operations_scope, strategy: strategy_a, environment_scope: 'production')
-          feature_flag_b = create(:operations_feature_flag, project: project,
-                                  name: 'feature2', active: true, version: 2)
+          feature_flag_b = create(:operations_feature_flag,
+            project: project, name: 'feature2', active: true, version: 2)
           strategy_b = create(:operations_strategy, feature_flag: feature_flag_b)
           create(:operations_scope, strategy: strategy_b, environment_scope: 'staging')
 
@@ -322,13 +319,11 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns only strategies matching the environment scope' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'feature1', active: true, version: 2)
-          strategy_a = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'userWithId', parameters: { userIds: 'user2,user8,user4' })
+          feature_flag = create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
+          strategy_a = create(:operations_strategy,
+            feature_flag: feature_flag, name: 'userWithId', parameters: { userIds: 'user2,user8,user4' })
           create(:operations_scope, strategy: strategy_a, environment_scope: 'production')
-          strategy_b = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'default', parameters: {})
+          strategy_b = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
           create(:operations_scope, strategy: strategy_b, environment_scope: 'staging')
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' }
@@ -346,10 +341,12 @@ RSpec.describe API::Unleash do
 
         it 'returns only flags for the given project' do
           project_b = create(:project)
-          feature_flag_a = create(:operations_feature_flag, project: project, name: 'feature_a', active: true, version: 2)
+          feature_flag_a = create(:operations_feature_flag,
+            project: project, name: 'feature_a', active: true, version: 2)
           strategy_a = create(:operations_strategy, feature_flag: feature_flag_a)
           create(:operations_scope, strategy: strategy_a, environment_scope: 'sandbox')
-          feature_flag_b = create(:operations_feature_flag, project: project_b, name: 'feature_b', active: true, version: 2)
+          feature_flag_b = create(:operations_feature_flag,
+            project: project_b, name: 'feature_b', active: true, version: 2)
           strategy_b = create(:operations_strategy, feature_flag: feature_flag_b)
           create(:operations_scope, strategy: strategy_b, environment_scope: 'sandbox')
 
@@ -367,16 +364,16 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns all strategies with a matching scope' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'feature1', active: true, version: 2)
-          strategy_a = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'userWithId', parameters: { userIds: 'user2,user8,user4' })
+          feature_flag = create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
+          strategy_a = create(:operations_strategy,
+            feature_flag: feature_flag, name: 'userWithId', parameters: { userIds: 'user2,user8,user4' })
           create(:operations_scope, strategy: strategy_a, environment_scope: '*')
-          strategy_b = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'default', parameters: {})
+          strategy_b = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
           create(:operations_scope, strategy: strategy_b, environment_scope: 'review/*')
-          strategy_c = create(:operations_strategy, feature_flag: feature_flag,
-                              name: 'gradualRolloutUserId', parameters: { groupId: 'default', percentage: '15' })
+          strategy_c = create(:operations_strategy,
+            feature_flag: feature_flag,
+            name: 'gradualRolloutUserId',
+            parameters: { groupId: 'default', percentage: '15' })
           create(:operations_scope, strategy: strategy_c, environment_scope: 'review/patch-1')
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'review/patch-1' }
@@ -395,10 +392,8 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns a strategy with more than one matching scope' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'feature1', active: true, version: 2)
-          strategy = create(:operations_strategy, feature_flag: feature_flag,
-                            name: 'default', parameters: {})
+          feature_flag = create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
+          strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
           create(:operations_scope, strategy: strategy, environment_scope: 'production')
           create(:operations_scope, strategy: strategy, environment_scope: '*')
 
@@ -416,10 +411,9 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns a disabled flag with a matching scope' do
-          feature_flag = create(:operations_feature_flag, project: project,
-                                name: 'myfeature', active: false, version: 2)
-          strategy = create(:operations_strategy, feature_flag: feature_flag,
-                            name: 'default', parameters: {})
+          feature_flag = create(:operations_feature_flag,
+            project: project, name: 'myfeature', active: false, version: 2)
+          strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
           create(:operations_scope, strategy: strategy, environment_scope: 'production')
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' }
@@ -436,12 +430,12 @@ RSpec.describe API::Unleash do
         end
 
         it 'returns a userWithId strategy for a gitlabUserList strategy' do
-          feature_flag = create(:operations_feature_flag, :new_version_flag, project: project,
-                                name: 'myfeature', active: true)
-          user_list = create(:operations_feature_flag_user_list, project: project,
-                             name: 'My List', user_xids: 'user1,user2')
-          strategy = create(:operations_strategy, feature_flag: feature_flag,
-                            name: 'gitlabUserList', parameters: {}, user_list: user_list)
+          feature_flag = create(:operations_feature_flag, :new_version_flag,
+            project: project, name: 'myfeature', active: true)
+          user_list = create(:operations_feature_flag_user_list,
+            project: project, name: 'My List', user_xids: 'user1,user2')
+          strategy = create(:operations_strategy,
+            feature_flag: feature_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list)
           create(:operations_scope, strategy: strategy, environment_scope: 'production')
 
           get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' }

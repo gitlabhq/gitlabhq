@@ -190,7 +190,7 @@ describe('packages_list', () => {
     });
   });
 
-  describe('pagination ', () => {
+  describe('pagination', () => {
     beforeEach(() => {
       mountComponent({ pageInfo: { hasPreviousPage: true } });
     });

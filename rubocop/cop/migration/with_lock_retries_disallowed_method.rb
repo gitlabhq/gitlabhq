@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class WithLockRetriesDisallowedMethod < RuboCop::Cop::Cop
+      class WithLockRetriesDisallowedMethod < RuboCop::Cop::Base
         include MigrationHelpers
 
         ALLOWED_MIGRATION_METHODS = %i[
@@ -60,8 +60,8 @@ module RuboCop
           return unless send_node?(node)
 
           name = node.children[1]
-          add_offense(node, location: :expression) unless ALLOWED_MIGRATION_METHODS.include?(name)
-          add_offense(node, location: :selector, message: MSG_ONLY_ONE_FK_ALLOWED) if multiple_fks?(node)
+          add_offense(node) unless ALLOWED_MIGRATION_METHODS.include?(name)
+          add_offense(node.loc.selector, message: MSG_ONLY_ONE_FK_ALLOWED) if multiple_fks?(node)
         end
 
         def multiple_fks?(node)

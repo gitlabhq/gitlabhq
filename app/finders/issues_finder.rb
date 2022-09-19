@@ -60,10 +60,10 @@ class IssuesFinder < IssuableFinder
     # count of issues assigned to the user for the header bar.
     return issues.all if current_user && assignee_filter.includes_user?(current_user)
 
-    return issues.where('issues.confidential IS NOT TRUE') if params.user_cannot_see_confidential_issues?
+    return issues.public_only if params.user_cannot_see_confidential_issues?
 
     issues.where('
-      issues.confidential IS NOT TRUE
+      issues.confidential = FALSE
       OR (issues.confidential = TRUE
         AND (issues.author_id = :user_id
           OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)

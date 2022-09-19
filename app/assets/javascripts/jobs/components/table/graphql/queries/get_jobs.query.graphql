@@ -11,6 +11,7 @@ query getJobs($fullPath: ID!, $after: String, $first: Int = 30, $statuses: [CiJo
       }
       nodes {
         artifacts {
+          # eslint-disable-next-line @graphql-eslint/require-id-when-available
           nodes {
             downloadPath
             fileType

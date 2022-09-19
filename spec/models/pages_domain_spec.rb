@@ -21,6 +21,15 @@ RSpec.describe PagesDomain do
     end
   end
 
+  describe '.verified' do
+    let!(:verified) { create(:pages_domain) }
+    let!(:unverified) { create(:pages_domain, :unverified) }
+
+    it 'finds verified' do
+      expect(described_class.verified).to match_array(verified)
+    end
+  end
+
   describe 'validate domain' do
     subject(:pages_domain) { build(:pages_domain, domain: domain) }
 
@@ -32,17 +41,17 @@ RSpec.describe PagesDomain do
 
     describe "hostname" do
       {
-        'my.domain.com'    => true,
-        '123.456.789'      => true,
-        '0x12345.com'      => true,
-        '0123123'          => true,
-        'a-reserved.com'   => true,
+        'my.domain.com' => true,
+        '123.456.789' => true,
+        '0x12345.com' => true,
+        '0123123' => true,
+        'a-reserved.com' => true,
         'a.b-reserved.com' => true,
-        'reserved.com'     => true,
-        '_foo.com'         => false,
-        'a.reserved.com'   => false,
+        'reserved.com' => true,
+        '_foo.com' => false,
+        'a.reserved.com' => false,
         'a.b.reserved.com' => false,
-        nil                => false
+        nil => false
       }.each do |value, validity|
         context "domain #{value.inspect} validity" do
           before do
@@ -62,12 +71,11 @@ RSpec.describe PagesDomain do
       let(:domain) { 'my.domain.com' }
 
       let(:project) do
-        instance_double(Project, pages_https_only?: pages_https_only)
+        instance_double(Project, pages_https_only?: pages_https_only, can_create_custom_domains?: true)
       end
 
       let(:pages_domain) do
-        build(:pages_domain, certificate: certificate, key: key,
-              auto_ssl_enabled: auto_ssl_enabled).tap do |pd|
+        build(:pages_domain, certificate: certificate, key: key, auto_ssl_enabled: auto_ssl_enabled).tap do |pd|
           allow(pd).to receive(:project).and_return(project)
           pd.valid?
         end
@@ -568,6 +576,32 @@ RSpec.describe PagesDomain do
           expect(virtual_domain.lookup_paths).not_to be_empty
           expect(virtual_domain.cache_key).to be_nil
         end
+      end
+    end
+  end
+
+  describe '#validate_custom_domain_count_per_project' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when max custom domain setting is set to 0' do
+      it 'returns without an error' do
+        pages_domain = create(:pages_domain, project: project)
+
+        expect(pages_domain).to be_valid
+      end
+    end
+
+    context 'when max custom domain setting is not set to 0' do
+      it 'returns with an error for extra domains' do
+        Gitlab::CurrentSettings.update!(max_pages_custom_domains_per_project: 1)
+
+        pages_domain = create(:pages_domain, project: project)
+        expect(pages_domain).to be_valid
+
+        pages_domain = build(:pages_domain, project: project)
+        expect(pages_domain).not_to be_valid
+        expect(pages_domain.errors.full_messages)
+          .to contain_exactly('This project reached the limit of custom domains. (Max 1)')
       end
     end
   end

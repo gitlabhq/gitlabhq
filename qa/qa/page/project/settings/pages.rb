@@ -14,6 +14,7 @@ module QA
           def go_to_access_page
             within_element(:access_page_container) do
               find('a').click
+              page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
             end
           end
         end

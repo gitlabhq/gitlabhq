@@ -21,7 +21,7 @@ describe('RepoDropdown component', () => {
     wrapper = null;
   });
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 
   describe('Source Revision', () => {
@@ -73,7 +73,7 @@ describe('RepoDropdown component', () => {
     });
 
     it('emits `selectProject` event when another target project is selected', async () => {
-      findGlDropdown().findAll(GlDropdownItem).at(0).vm.$emit('click');
+      findGlDropdown().findAllComponents(GlDropdownItem).at(0).vm.$emit('click');
       await nextTick();
 
       expect(wrapper.emitted('selectProject')[0][0]).toEqual({

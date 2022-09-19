@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'html/pipeline'
+require 'addressable'
 
 RSpec.describe Gitlab::Utils::SanitizeNodeLink do
   let(:klass) do

@@ -32,7 +32,7 @@ module Mutations
 
       argument :released_at, Types::TimeType,
                required: false,
-               description: 'Date and time for the release. Defaults to the current date and time.'
+               description: 'Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an upcoming or historical release.'
 
       argument :milestones, [GraphQL::Types::String],
                required: false,

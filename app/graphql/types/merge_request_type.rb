@@ -94,9 +94,10 @@ module Types
           method: :public_merge_status, null: true,
           description: 'Merge status of the merge request.'
 
-    field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, method: :detailed_merge_status, null: true,
+    field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
                                                                                    calls_gitaly: true,
-                                                                                   description: 'Detailed merge status of the merge request.', alpha: { milestone: '15.3' }
+                                                                                   description: 'Detailed merge status of the merge request.',
+                                                                                   alpha: { milestone: '15.3' }
 
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
                                                                  calls_gitaly: true,
@@ -279,6 +280,10 @@ module Types
 
     def merge_user
       object.metrics&.merged_by || object.merge_user
+    end
+
+    def detailed_merge_status
+      ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: object).execute
     end
   end
 end

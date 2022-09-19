@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import JSZipUtils from 'jszip-utils';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
 export default class SketchLoader {
@@ -7,35 +7,28 @@ export default class SketchLoader {
     this.container = container;
     this.loadingIcon = this.container.querySelector('.js-loading-icon');
 
-    this.load();
-  }
-
-  load() {
-    return this.getZipFile()
-      .then((data) => JSZip.loadAsync(data))
-      .then((asyncResult) => asyncResult.files['previews/preview.png'].async('uint8array'))
-      .then((content) => {
-        const url = window.URL || window.webkitURL;
-        const blob = new Blob([new Uint8Array(content)], {
-          type: 'image/png',
-        });
-        const previewUrl = url.createObjectURL(blob);
-
-        this.render(previewUrl);
-      })
-      .catch(this.error.bind(this));
-  }
-
-  getZipFile() {
-    return new Promise((resolve, reject) => {
-      JSZipUtils.getBinaryContent(this.container.dataset.endpoint, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
+    this.load().catch(() => {
+      this.error();
     });
+  }
+
+  async load() {
+    const zipContents = await this.getZipContents();
+    const previewContents = await zipContents.files['previews/preview.png'].async('uint8array');
+
+    const blob = new Blob([previewContents], {
+      type: 'image/png',
+    });
+
+    this.render(window.URL.createObjectURL(blob));
+  }
+
+  async getZipContents() {
+    const { data } = await axios.get(this.container.dataset.endpoint, {
+      responseType: 'arraybuffer',
+    });
+
+    return JSZip.loadAsync(data);
   }
 
   render(previewUrl) {

@@ -247,6 +247,7 @@ export default class LabelsSelect {
           }
 
           linkEl.className = selectedClass.join(' ');
+          // eslint-disable-next-line no-unsanitized/property
           linkEl.innerHTML = `${colorEl} ${escape(label.title)}`;
 
           const listItemEl = document.createElement('li');

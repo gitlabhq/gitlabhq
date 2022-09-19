@@ -31,14 +31,14 @@ module MigrationHelpers
         "links" => [
           {
             "name" => "Cipher does not check for integrity first?",
-             "url" => "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
+            "url" => "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
           }
         ],
         "assets" => [
           {
             "type" => "postman",
             "name" => "Test Postman Collection",
-             "url" => "http://localhost/test.collection"
+            "url" => "http://localhost/test.collection"
           }
         ],
         "evidence" => {
@@ -50,7 +50,7 @@ module MigrationHelpers
             "headers" => [
               {
                  "name" => "Accept",
-                "value" => "*/*"
+                 "value" => "*/*"
               }
             ]
           },
@@ -61,7 +61,7 @@ module MigrationHelpers
             "headers" => [
               {
                  "name" => "Content-Length",
-                "value" => "0"
+                 "value" => "0"
               }
             ]
           },

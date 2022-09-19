@@ -39,8 +39,6 @@ module Projects
             raise TimeoutError
           end
 
-          next unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
-
           with_context(project: project, user: admin_user) do
             deletion_warning_email_sent_on = notified_inactive_projects["project:#{project.id}"]
 

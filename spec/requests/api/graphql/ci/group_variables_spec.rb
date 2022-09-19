@@ -13,6 +13,7 @@ RSpec.describe 'Query.group(fullPath).ciVariables' do
       query {
         group(fullPath: "#{group.full_path}") {
           ciVariables {
+            limit
             nodes {
               id
               key
@@ -35,11 +36,18 @@ RSpec.describe 'Query.group(fullPath).ciVariables' do
     end
 
     it "returns the group's CI variables" do
-      variable = create(:ci_group_variable, group: group, key: 'TEST_VAR', value: 'test',
-                        masked: false, protected: true, raw: true, environment_scope: 'staging')
+      variable = create(:ci_group_variable,
+        group: group,
+        key: 'TEST_VAR',
+        value: 'test',
+        masked: false,
+        protected: true,
+        raw: true,
+        environment_scope: 'staging')
 
       post_graphql(query, current_user: user)
 
+      expect(graphql_data.dig('group', 'ciVariables', 'limit')).to be(200)
       expect(graphql_data.dig('group', 'ciVariables', 'nodes')).to contain_exactly({
         'id' => variable.to_global_id.to_s,
         'key' => 'TEST_VAR',

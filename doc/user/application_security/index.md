@@ -98,7 +98,7 @@ approach.
 ## Security scanning with Auto DevOps
 
 To enable all GitLab Security scanning tools, with default settings, enable
-[Auto DevOps](../../topics/autodevops/):
+[Auto DevOps](../../topics/autodevops/index.md):
 
 - [Auto SAST](../../topics/autodevops/stages.md#auto-sast)
 - [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
@@ -361,7 +361,7 @@ Learn more on overriding security jobs:
 - [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 - [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
 - [Overriding Container Scanning jobs](container_scanning/index.md#overriding-the-container-scanning-template).
-- [Overriding Secret Detection jobs](secret_detection/index.md#customizing-settings).
+- [Overriding Secret Detection jobs](secret_detection/index.md#configure-scan-settings).
 - [Overriding DAST jobs](dast/index.md#customize-dast-settings).
 - [Overriding License Compliance jobs](../compliance/license_compliance/index.md#overriding-the-template).
 
@@ -397,15 +397,6 @@ Validation depends on the schema version declared in the security report artifac
 
 You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
 
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-### Enable security report validation (removed)
-
-   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9
-   and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85400) in GitLab 15.0.
-
-   <!--- end_remove -->
-
 ## Interact with findings and vulnerabilities
 
 You can interact with the results of the security scanning tools in several locations:
@@ -414,7 +405,7 @@ You can interact with the results of the security scanning tools in several loca
 - [Project Security Dashboard](security_dashboard/index.md)
 - [Security pipeline tab](security_dashboard/index.md)
 - [Group Security Dashboard](security_dashboard/index.md)
-- [Security Center](security_dashboard/#security-center)
+- [Security Center](security_dashboard/index.md#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)
 - [Vulnerability Pages](vulnerabilities/index.md)
 - [Dependency List](dependency_list/index.md)
@@ -455,7 +446,7 @@ Security and compliance teams must ensure that security scans:
 
 GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
 
-- [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
+- [Compliance framework pipelines](../project/settings/index.md#compliance-pipeline-configuration)
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
@@ -497,6 +488,11 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 -->
 ### Secure job failing with exit code 1
 
+WARNING:
+Debug logging can be a serious security risk. The output may contain the content of
+environment variables and other secrets available to the job. The output is uploaded
+to the GitLab server and visible in job logs.
+
 If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for
 more verbose output that is helpful for troubleshooting.
 
@@ -533,6 +529,11 @@ Select **new pipeline** to run a new pipeline.
 ![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
 ### Getting warning messages `… report.json: no matching files`
+
+WARNING:
+Debug logging can be a serious security risk. The output may contain the content of
+environment variables and other secrets available to the job. The output is uploaded
+to the GitLab server and visible in job logs.
 
 This message is often followed by the [error `No files to upload`](../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check

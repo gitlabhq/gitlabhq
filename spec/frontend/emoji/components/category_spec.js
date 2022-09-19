@@ -22,7 +22,7 @@ describe('Emoji category component', () => {
   });
 
   it('renders emoji groups', () => {
-    expect(wrapper.findAll(EmojiGroup).length).toBe(2);
+    expect(wrapper.findAllComponents(EmojiGroup).length).toBe(2);
   });
 
   it('renders group', async () => {
@@ -30,19 +30,19 @@ describe('Emoji category component', () => {
     // eslint-disable-next-line no-restricted-syntax
     await wrapper.setData({ renderGroup: true });
 
-    expect(wrapper.find(EmojiGroup).attributes('rendergroup')).toBe('true');
+    expect(wrapper.findComponent(EmojiGroup).attributes('rendergroup')).toBe('true');
   });
 
   it('renders group on appear', async () => {
-    wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+    wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
     await nextTick();
 
-    expect(wrapper.find(EmojiGroup).attributes('rendergroup')).toBe('true');
+    expect(wrapper.findComponent(EmojiGroup).attributes('rendergroup')).toBe('true');
   });
 
   it('emits appear event on appear', async () => {
-    wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+    wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
     await nextTick();
 

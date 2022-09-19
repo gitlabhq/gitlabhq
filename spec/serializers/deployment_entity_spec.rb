@@ -61,8 +61,7 @@ RSpec.describe DeploymentEntity do
 
   context 'when the pipeline has another manual action' do
     let!(:other_build) do
-      create(:ci_build, :manual, name: 'another deploy',
-             pipeline: pipeline, environment: build.environment)
+      create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline, environment: build.environment)
     end
 
     let!(:other_deployment) { create(:deployment, deployable: build) }

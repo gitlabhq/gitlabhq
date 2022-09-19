@@ -10,7 +10,7 @@ Use [Redmine](https://www.redmine.org/) as the issue tracker.
 
 To enable the Redmine integration in a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Redmine**.
 1. Select the checkbox under **Enable integration**.

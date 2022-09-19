@@ -1,6 +1,6 @@
 ---
-stage: Ecosystem
-group: Integrations
+stage: Configure
+group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -114,7 +114,7 @@ they receive a `Connection failed` message.
 By default, terminal sessions do not expire. To limit the terminal session
 lifetime in your GitLab instance:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. Select
    [**Settings > Web terminal**](../../user/admin_area/settings/index.md#general).
 1. Set a `max session time`.

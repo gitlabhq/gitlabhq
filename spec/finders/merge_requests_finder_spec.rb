@@ -408,25 +408,6 @@ RSpec.describe MergeRequestsFinder do
         end
       end
 
-      context 'attention' do
-        subject { described_class.new(user, params).execute }
-
-        before do
-          reviewer = merge_request1.find_reviewer(user2)
-          reviewer.update!(state: :reviewed)
-
-          merge_request2.find_reviewer(user2).update!(state: :attention_requested)
-          merge_request3.find_assignee(user2).update!(state: :attention_requested)
-        end
-
-        context 'by username' do
-          let(:params) { { attention: user2.username } }
-          let(:expected_mr) { [merge_request2, merge_request3] }
-
-          it { is_expected.to contain_exactly(*expected_mr) }
-        end
-      end
-
       context 'reviewer filtering' do
         subject { described_class.new(user, params).execute }
 
@@ -512,7 +493,7 @@ RSpec.describe MergeRequestsFinder do
         end
       end
 
-      context 'filtering by approved by' do
+      context 'filtering by approved by username' do
         let(:params) { { approved_by_usernames: user2.username } }
 
         before do
@@ -523,6 +504,16 @@ RSpec.describe MergeRequestsFinder do
           merge_requests = described_class.new(user, params).execute
 
           expect(merge_requests).to contain_exactly(merge_request3)
+        end
+
+        context 'with sorting by milestone' do
+          let(:params) { { approved_by_usernames: user2.username, sort: 'milestone' } }
+
+          it 'returns merge requests approved by that user' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request3)
+          end
         end
 
         context 'not filter' do
@@ -546,6 +537,30 @@ RSpec.describe MergeRequestsFinder do
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request5)
+          end
+        end
+      end
+
+      context 'filtering by approved by user ID' do
+        let(:params) { { approved_by_ids: user2.id } }
+
+        before do
+          create(:approval, merge_request: merge_request3, user: user2)
+        end
+
+        it 'returns merge requests approved by that user' do
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request3)
+        end
+
+        context 'with sorting by milestone' do
+          let(:params) { { approved_by_usernames: user2.username, sort: 'milestone' } }
+
+          it 'returns merge requests approved by that user' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request3)
           end
         end
       end
@@ -751,7 +766,8 @@ RSpec.describe MergeRequestsFinder do
           release_tag: 'none',
           label_names: 'none',
           my_reaction_emoji: 'none',
-          draft: 'no'
+          draft: 'no',
+          sort: 'milestone'
         }
 
         merge_requests = described_class.new(user, params).execute

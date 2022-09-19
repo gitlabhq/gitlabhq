@@ -10,8 +10,10 @@ module Users
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
+    MERGE_REQUEST_SETTINGS_MOVED_CALLOUT = 'merge_request_settings_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
+    ULTIMATE_FEATURE_REMOVAL_BANNER = 'ultimate_feature_removal_banner'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -71,18 +73,28 @@ module Users
 
       last_failure = DateTime.parse(last_failure) if last_failure
 
-      user_dismissed?(WEB_HOOK_DISABLED, last_failure, namespace: project.namespace)
+      user_dismissed?(WEB_HOOK_DISABLED, last_failure, project: project)
+    end
+
+    def show_merge_request_settings_callout?
+      !user_dismissed?(MERGE_REQUEST_SETTINGS_MOVED_CALLOUT)
+    end
+
+    def ultimate_feature_removal_banner_dismissed?(project)
+      return false unless project
+
+      user_dismissed?(ULTIMATE_FEATURE_REMOVAL_BANNER, project: project)
     end
 
     private
 
-    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, namespace: nil)
+    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, project: nil)
       return false unless current_user
 
       query = { feature_name: feature_name, ignore_dismissal_earlier_than: ignore_dismissal_earlier_than }
 
-      if namespace
-        current_user.dismissed_callout_for_namespace?(namespace: namespace, **query)
+      if project
+        current_user.dismissed_callout_for_project?(project: project, **query)
       else
         current_user.dismissed_callout?(**query)
       end

@@ -24,12 +24,12 @@ RSpec.describe Oauth::TokenInfoController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)).to eq(
-          'scope'              => %w[api],
-          'scopes'             => %w[api],
-          'created_at'         => access_token.created_at.to_i,
-          'expires_in'         => access_token.expires_in,
-          'application'        => { 'uid' => application.uid },
-          'resource_owner_id'  => access_token.resource_owner_id,
+          'scope' => %w[api],
+          'scopes' => %w[api],
+          'created_at' => access_token.created_at.to_i,
+          'expires_in' => access_token.expires_in,
+          'application' => { 'uid' => application.uid },
+          'resource_owner_id' => access_token.resource_owner_id,
           'expires_in_seconds' => access_token.expires_in
         )
       end

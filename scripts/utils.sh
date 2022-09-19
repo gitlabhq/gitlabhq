@@ -38,6 +38,8 @@ function bundle_install_script() {
     exit 1;
   fi;
 
+  echo -e "section_start:`date +%s`:bundle-install[collapsed=true]\r\e[0KInstalling gems"
+
   gem --version
   bundle --version
   gem install bundler --no-document --conservative --version 2.3.15
@@ -48,7 +50,7 @@ function bundle_install_script() {
   echo "${BUNDLE_WITHOUT}"
   bundle config
 
-  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args} && bundle check"
+  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
 
   if [[ $(bundle info pg) ]]; then
     # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
@@ -56,6 +58,8 @@ function bundle_install_script() {
     # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
     run_timed_command "bundle pristine pg"
   fi
+
+  echo -e "section_end:`date +%s`:bundle-install\r\e[0K"
 }
 
 function setup_db_user_only() {

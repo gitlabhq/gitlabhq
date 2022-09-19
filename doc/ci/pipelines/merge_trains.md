@@ -59,7 +59,7 @@ changes that are included in the target branch, and the `C` changes that are fro
 the merge request already in the train.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch this video for a demonstration on 
+Watch this video for a demonstration on
 [how parallel execution of merge trains can prevent commits from breaking the default branch](https://www.youtube.com/watch?v=D4qCqXgZkHQ).
 
 ## Prerequisites
@@ -81,9 +81,8 @@ To enable merge trains for your project:
 1. If you are on a self-managed GitLab instance, ensure the [feature flag](#merge-trains-feature-flag) is set correctly.
 1. [Configure your CI/CD configuration file](merge_request_pipelines.md#prerequisites)
    so that the pipeline or individual jobs run for merge requests.
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge method** section, verify that **Merge commit** is selected.
 1. In the **Merge options** section, select **Enable merged results pipelines** (if not already selected) and **Enable merge trains**.
 1. Select **Save changes**.
@@ -210,7 +209,7 @@ If it succeeds after a retry, the merge request is not removed from the merge tr
 Sometimes the **Start/Add to merge train** button is not available and the merge request says,
 "The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure."
 
-This issue occurs when [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+This issue occurs when [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
 is enabled in **Settings > General > Merge requests**. This option requires that you
 run a new successful pipeline before you can re-add a merge request to a merge train.
 

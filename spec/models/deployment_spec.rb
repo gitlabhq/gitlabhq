@@ -74,6 +74,27 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '.for_iid' do
+    subject { described_class.for_iid(project, iid) }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment) { create(:deployment, project: project) }
+
+    let(:iid) { deployment.iid }
+
+    it 'finds the deployment' do
+      is_expected.to contain_exactly(deployment)
+    end
+
+    context 'when iid does not match' do
+      let(:iid) { non_existing_record_id }
+
+      it 'does not find the deployment' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.for_environment_name' do
     subject { described_class.for_environment_name(project, environment_name) }
 
@@ -142,8 +163,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'running',
-              status_changed_at: Time.current)
+            .to receive(:perform_async)
+            .with(deployment_id: deployment.id, status: 'running', status_changed_at: Time.current)
 
           deployment.run!
         end
@@ -179,8 +200,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-          .to receive(:perform_async).with(deployment_id: deployment.id, status: 'success',
-            status_changed_at: Time.current)
+          .to receive(:perform_async)
+          .with(deployment_id: deployment.id, status: 'success', status_changed_at: Time.current)
 
           deployment.succeed!
         end
@@ -209,8 +230,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'failed',
-              status_changed_at: Time.current)
+            .to receive(:perform_async)
+            .with(deployment_id: deployment.id, status: 'failed', status_changed_at: Time.current)
 
           deployment.drop!
         end
@@ -239,8 +260,8 @@ RSpec.describe Deployment do
       it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
           expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'canceled',
-              status_changed_at: Time.current)
+            .to receive(:perform_async)
+            .with(deployment_id: deployment.id, status: 'canceled', status_changed_at: Time.current)
 
           deployment.cancel!
         end
@@ -340,6 +361,31 @@ RSpec.describe Deployment do
           end
         end
       end
+    end
+  end
+
+  describe '#older_than_last_successful_deployment?' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:environment) { create(:environment, project: project) }
+
+    subject { deployment.older_than_last_successful_deployment? }
+
+    context 'when deployment is current deployment' do
+      let(:deployment) { create(:deployment, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when deployment is behind current deployment' do
+      let!(:deployment) do
+        create(:deployment, :success, project: project, environment: environment, finished_at: 1.year.ago)
+      end
+
+      let!(:last_deployment) do
+        create(:deployment, :success, project: project, environment: environment)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -514,6 +560,16 @@ RSpec.describe Deployment do
 
       it 'sorts by finished at' do
         expect(described_class.ordered).to eq([deployment1, deployment2, deployment3, deployment4])
+      end
+    end
+
+    describe '.ordered_as_upcoming' do
+      let!(:deployment1) { create(:deployment, status: :running) }
+      let!(:deployment2) { create(:deployment, status: :blocked) }
+      let!(:deployment3) { create(:deployment, status: :created) }
+
+      it 'sorts by ID DESC' do
+        expect(described_class.ordered_as_upcoming).to eq([deployment3, deployment2, deployment1])
       end
     end
 
@@ -876,6 +932,22 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '#build' do
+    let!(:deployment) { create(:deployment) }
+
+    subject { deployment.build }
+
+    it 'retrieves build for the deployment' do
+      is_expected.to eq(deployment.deployable)
+    end
+
+    it 'returns nil when the associated build is not found' do
+      deployment.update!(deployable_id: nil, deployable_type: nil)
+
+      is_expected.to be_nil
+    end
+  end
+
   describe '#previous_deployment' do
     using RSpec::Parameterized::TableSyntax
 
@@ -1230,6 +1302,19 @@ RSpec.describe Deployment do
 
         it_behaves_like 'ignoring build'
       end
+    end
+  end
+
+  describe '#tags' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment) { create(:deployment, project: project) }
+
+    subject { deployment.tags }
+
+    it 'will return tags related to this deployment' do
+      expect(project.repository).to receive(:tag_names_contains).with(deployment.sha, limit: 100).and_return(['test'])
+
+      is_expected.to match_array(['test'])
     end
   end
 

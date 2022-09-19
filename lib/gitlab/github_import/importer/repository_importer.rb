@@ -17,7 +17,7 @@ module Gitlab
         # Returns true if we should import the wiki for the project.
         # rubocop: disable CodeReuse/ActiveRecord
         def import_wiki?
-          client_repository&.has_wiki &&
+          client_repository[:has_wiki] &&
             !project.wiki_repository_exists? &&
             Gitlab::GitalyClient::RemoteService.exists?(wiki_url)
         end
@@ -86,7 +86,7 @@ module Gitlab
         private
 
         def default_branch
-          client_repository&.default_branch
+          client_repository[:default_branch]
         end
 
         def client_repository

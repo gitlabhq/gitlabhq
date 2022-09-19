@@ -36,7 +36,10 @@ If the removal creates a [breaking change](https://about.gitlab.com/handbook/pro
 
 ---
 
-Please review the [guidelines for removals](https://about.gitlab.com/handbook/marketing/blog/release-posts/#removals).
+Please review:
+
+- The definitions of ["Deprecation", "End of Support", and "Removal"](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology).
+- The [guidelines for removals](https://about.gitlab.com/handbook/marketing/blog/release-posts/#removals).
 
 ## EM/PM release post item checklist
 

@@ -12,6 +12,9 @@ QA::Runtime::Browser.configure! unless QA::Runtime::Env.dry_run
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 
+# Enable zero monkey patching mode before loading any other RSpec code.
+RSpec.configure(&:disable_monkey_patching!)
+
 Dir[::File.join(__dir__, "features/shared_examples/*.rb")].sort.each { |f| require f }
 Dir[::File.join(__dir__, "features/shared_contexts/*.rb")].sort.each { |f| require f }
 
@@ -119,7 +122,6 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
-  config.disable_monkey_patching!
   config.expose_dsl_globally = true
   config.profile_examples = 10
   config.order = :random

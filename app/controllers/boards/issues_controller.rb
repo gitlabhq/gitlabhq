@@ -77,10 +77,10 @@ module Boards
         :milestone,
         :assignees,
         project: [
-            :route,
-            {
-                namespace: [:route]
-            }
+          :route,
+          {
+              namespace: [:route]
+          }
         ],
         labels: [:priorities],
         notes: [:award_emoji, :author]

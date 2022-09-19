@@ -215,14 +215,28 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         groups: 2,
         users_created: 10,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
+        user_auth_by_provider: {
+          'group_saml' => 2,
+          'ldap' => 4,
+          'standard' => 0,
+          'two-factor' => 0,
+          'two-factor-via-u2f-device' => 0,
+          "two-factor-via-webauthn-device" => 0
+        }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         events: be_within(error_rate).percent_of(2),
         groups: 1,
         users_created: 6,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
+        user_auth_by_provider: {
+          'group_saml' => 1,
+          'ldap' => 2,
+          'standard' => 0,
+          'two-factor' => 0,
+          'two-factor-via-u2f-device' => 0,
+          "two-factor-via-webauthn-device" => 0
+        }
       )
     end
 
@@ -583,10 +597,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     it 'gathers object store usage correctly' do
       expect(subject[:object_store]).to eq(
         { artifacts: { enabled: true, object_store: { enabled: true, direct_upload: true, background_upload: false, provider: "AWS" } },
-         external_diffs: { enabled: false },
-         lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
-         uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
-         packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
+          external_diffs: { enabled: false },
+          lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
+          uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
+          packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
       )
     end
 
@@ -749,9 +763,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     it { is_expected.to include(:kubernetes_agent_gitops_sync) }
     it { is_expected.to include(:kubernetes_agent_k8s_api_proxy_request) }
-    it { is_expected.to include(:package_events_i_package_pull_package) }
-    it { is_expected.to include(:package_events_i_package_delete_package_by_user) }
-    it { is_expected.to include(:package_events_i_package_conan_push_package) }
   end
 
   describe '.usage_data_counters' do

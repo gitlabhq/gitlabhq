@@ -1,17 +1,16 @@
 import { s__, __ } from '~/locale';
-
-export const visibilityOptions = {
-  PRIVATE: 0,
-  INTERNAL: 10,
-  PUBLIC: 20,
-};
+import {
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_INTERNAL_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
+} from '~/visibility_level/constants';
 
 export const visibilityLevelDescriptions = {
-  [visibilityOptions.PRIVATE]: __(
+  [VISIBILITY_LEVEL_PRIVATE_INTEGER]: __(
     `Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted to each user.`,
   ),
-  [visibilityOptions.INTERNAL]: __('Accessible by any user who is logged in.'),
-  [visibilityOptions.PUBLIC]: __('Accessible by anyone, regardless of authentication.'),
+  [VISIBILITY_LEVEL_INTERNAL_INTEGER]: __('Accessible by any user who is logged in.'),
+  [VISIBILITY_LEVEL_PUBLIC_INTEGER]: __('Accessible by anyone, regardless of authentication.'),
 };
 
 export const featureAccessLevel = {

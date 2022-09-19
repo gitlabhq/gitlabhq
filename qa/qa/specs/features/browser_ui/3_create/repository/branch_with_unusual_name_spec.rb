@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Branch with unusual name' do
+    describe 'Branch with unusual name', product_group: :source_code do
       let(:branch_name) { 'unUsually/named#br--anch' }
       let(:project) do
         Resource::Project.fabricate_via_api! do |resource|

@@ -9,8 +9,8 @@ module Banzai
           Filter::AssetProxyFilter,
           Filter::ExternalLinkFilter,
           Filter::PlantumlFilter,
-          Filter::SyntaxHighlightFilter,
-          Filter::KrokiFilter
+          Filter::KrokiFilter,
+          Filter::SyntaxHighlightFilter
         ]
       end
 

@@ -11,7 +11,7 @@ module Ci
     include Presentable
     include Importable
     include Ci::HasRef
-    include HasDeploymentName
+    include Ci::TrackEnvironmentUsage
 
     extend ::Gitlab::Utils::Override
 
@@ -34,7 +34,7 @@ module Ci
 
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
-    has_one :deployment, as: :deployable, class_name: 'Deployment'
+    has_one :deployment, as: :deployable, class_name: 'Deployment', inverse_of: :deployable
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
@@ -194,7 +194,7 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      run_after_commit { build.feature_flagged_execute_hooks }
+      run_after_commit { build.execute_hooks }
     end
 
     class << self
@@ -214,10 +214,11 @@ module Ci
 
       def clone_accessors
         %i[pipeline project ref tag options name
-           allow_failure stage stage_id stage_idx trigger_request
+           allow_failure stage stage_idx trigger_request
            yaml_variables when environment coverage_regex
            description tag_list protected needs_attributes
-           job_variables_attributes resource_group scheduling_type].freeze
+           job_variables_attributes resource_group scheduling_type
+           ci_stage partition_id].freeze
       end
     end
 
@@ -285,7 +286,7 @@ module Ci
 
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
-          build.feature_flagged_execute_hooks
+          build.execute_hooks
         end
       end
 
@@ -313,7 +314,7 @@ module Ci
         build.run_after_commit do
           build.ensure_persistent_ref
 
-          build.feature_flagged_execute_hooks
+          build.execute_hooks
         end
       end
 
@@ -440,6 +441,15 @@ module Ci
 
     def waiting_for_deployment_approval?
       manual? && starts_environment? && deployment&.blocked?
+    end
+
+    def prevent_rollback_deployment?
+      strong_memoize(:prevent_rollback_deployment) do
+        Feature.enabled?(:prevent_outdated_deployment_jobs, project) &&
+          starts_environment? &&
+          project.ci_forward_deployment_enabled? &&
+          deployment&.older_than_last_successful_deployment?
+      end
     end
 
     def schedulable?
@@ -703,25 +713,7 @@ module Ci
     end
 
     def has_test_reports?
-      job_artifacts.test_reports.exists?
-    end
-
-    def has_old_trace?
-      old_trace.present?
-    end
-
-    def trace=(data)
-      raise NotImplementedError
-    end
-
-    def old_trace
-      read_attribute(:trace)
-    end
-
-    def erase_old_trace!
-      return unless has_old_trace?
-
-      update_column(:trace, nil)
+      job_artifacts.of_report_type(:test).exists?
     end
 
     def ensure_trace_metadata!
@@ -780,14 +772,6 @@ module Ci
       pending? && !any_runners_online?
     end
 
-    def feature_flagged_execute_hooks
-      if Feature.enabled?(:execute_build_hooks_inline, project)
-        execute_hooks
-      else
-        BuildHooksWorker.perform_async(self)
-      end
-    end
-
     def execute_hooks
       return unless project
       return if user&.blocked?
@@ -821,41 +805,6 @@ module Ci
 
         metadata.to_entry
       end
-    end
-
-    def erase_erasable_artifacts!
-      if project.refreshing_build_artifacts_size?
-        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
-          method: 'Ci::Build#erase_erasable_artifacts!',
-          project_id: project_id
-        )
-      end
-
-      destroyed_artifacts = job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
-
-      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase_erasable_artifacts!')
-
-      destroyed_artifacts
-    end
-
-    def erase(opts = {})
-      return false unless erasable?
-
-      if project.refreshing_build_artifacts_size?
-        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
-          method: 'Ci::Build#erase',
-          project_id: project_id
-        )
-      end
-
-      # TODO: We should use DestroyBatchService here
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/369132
-      destroyed_artifacts = job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
-
-      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase')
-
-      erase_trace!
-      update_erased!(opts[:erased_by])
     end
 
     def erasable?
@@ -1004,15 +953,11 @@ module Ci
     end
 
     def collect_test_reports!(test_reports)
-      test_reports.get_suite(test_suite_name).tap do |test_suite|
-        each_report(Ci::JobArtifact.file_types_for_report(:test)) do |file_type, blob|
-          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
-            blob,
-            test_suite,
-            job: self
-          )
-        end
+      each_report(Ci::JobArtifact.file_types_for_report(:test)) do |file_type, blob|
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_reports, job: self)
       end
+
+      test_reports
     end
 
     def collect_accessibility_reports!(accessibility_report)
@@ -1154,18 +1099,6 @@ module Ci
         .include?(exit_code)
     end
 
-    def track_deployment_usage
-      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
-    end
-
-    def track_verify_usage
-      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_verify_environment_job', user_id) if user_id.present? && count_user_verification?
-    end
-
-    def count_user_verification?
-      has_environment? && environment_action == 'verify'
-    end
-
     def each_report(report_types)
       job_artifacts_for_types(report_types).each do |report_artifact|
         report_artifact.each_blob do |blob|
@@ -1189,6 +1122,14 @@ module Ci
       job_artifacts.map(&:file_type)
     end
 
+    def test_suite_name
+      if matrix_build?
+        name
+      else
+        group_name
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1198,14 +1139,6 @@ module Ci
     end
 
     private
-
-    def test_suite_name
-      if matrix_build?
-        name
-      else
-        group_name
-      end
-    end
 
     def matrix_build?
       options.dig(:parallel, :matrix).present?
@@ -1243,14 +1176,6 @@ module Ci
     def job_artifacts_for_types(report_types)
       # Use select to leverage cached associations and avoid N+1 queries
       job_artifacts.select { |artifact| artifact.file_type.in?(report_types) }
-    end
-
-    def erase_trace!
-      trace.erase!
-    end
-
-    def update_erased!(user = nil)
-      self.update(erased_by: user, erased_at: Time.current, artifacts_expire_at: nil)
     end
 
     def environment_url
@@ -1298,7 +1223,7 @@ module Ci
     end
 
     def observe_report_types
-      return unless ::Gitlab.com? && Feature.enabled?(:report_artifact_build_completed_metrics_on_build_completion)
+      return unless ::Gitlab.com?
 
       report_types = options&.dig(:artifacts, :reports)&.keys || []
 

@@ -33,6 +33,7 @@ export default class UserOverviewBlock {
     const containerEl = document.querySelector(this.container);
     const contentList = containerEl.querySelector('.overview-content-list');
 
+    // eslint-disable-next-line no-unsanitized/property
     contentList.innerHTML += html;
 
     const loadingEl = containerEl.querySelector('.loading');

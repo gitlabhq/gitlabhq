@@ -96,6 +96,7 @@ RSpec.describe PgFullTextSearchable do
 
     it 'ignores accents' do
       expect(model_class.pg_full_text_search('jurgen')).to contain_exactly(with_accent)
+      expect(model_class.pg_full_text_search('Jürgen')).to contain_exactly(with_accent)
     end
 
     it 'does not support searching by non-Latin characters' do

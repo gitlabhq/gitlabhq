@@ -74,7 +74,7 @@ describe('Notes Store mutations', () => {
   });
 
   describe('DELETE_NOTE', () => {
-    it('should delete a note ', () => {
+    it('should delete a note', () => {
       const state = { discussions: [discussionMock] };
       const toDelete = discussionMock.notes[0];
       const lengthBefore = discussionMock.notes.length;

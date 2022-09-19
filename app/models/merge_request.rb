@@ -20,7 +20,7 @@ class MergeRequest < ApplicationRecord
   include IgnorableColumns
   include MilestoneEventable
   include StateEventable
-  include ApprovableBase
+  include Approvable
   include IdInOrdered
   include Todoable
 
@@ -67,6 +67,8 @@ class MergeRequest < ApplicationRecord
   has_one :merge_head_diff,
     -> { merge_head }, inverse_of: :merge_request, class_name: 'MergeRequestDiff'
   has_one :cleanup_schedule, inverse_of: :merge_request
+  has_one :predictions, inverse_of: :merge_request
+  delegate :suggested_reviewers, to: :predictions
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
@@ -116,6 +118,7 @@ class MergeRequest < ApplicationRecord
 
   has_many :draft_notes
   has_many :reviews, inverse_of: :merge_request
+  has_many :created_environments, class_name: 'Environment', foreign_key: :merge_request_id, inverse_of: :merge_request
 
   KNOWN_MERGE_PARAMS = [
     :auto_merge_strategy,
@@ -343,23 +346,24 @@ class MergeRequest < ApplicationRecord
     column_expression = MergeRequest::Metrics.arel_table[metric]
     column_expression_with_direction = direction == 'ASC' ? column_expression.asc : column_expression.desc
 
-    order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: "merge_request_metrics_#{metric}",
-        column_expression: column_expression,
-        order_expression: column_expression_with_direction.nulls_last,
-        reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
-        order_direction: direction,
-        nullable: :nulls_last,
-        distinct: false,
-        add_to_projections: true
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'merge_request_metrics_id',
-        order_expression: MergeRequest::Metrics.arel_table[:id].desc,
-        add_to_projections: true
-      )
-    ])
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: "merge_request_metrics_#{metric}",
+          column_expression: column_expression,
+          order_expression: column_expression_with_direction.nulls_last,
+          reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
+          order_direction: direction,
+          nullable: :nulls_last,
+          distinct: false,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'merge_request_metrics_id',
+          order_expression: MergeRequest::Metrics.arel_table[:id].desc,
+          add_to_projections: true
+        )
+      ])
 
     order.apply_cursor_conditions(join_metrics).order(order)
   end
@@ -415,17 +419,6 @@ class MergeRequest < ApplicationRecord
         .exists
         .not
     )
-  end
-
-  scope :attention, ->(user) do
-    # rubocop: disable Gitlab/Union
-    union = Gitlab::SQL::Union.new([
-      MergeRequestReviewer.select(:merge_request_id).where(user_id: user.id, state: MergeRequestReviewer.states[:attention_requested]),
-      MergeRequestAssignee.select(:merge_request_id).where(user_id: user.id, state: MergeRequestAssignee.states[:attention_requested])
-    ])
-    # rubocop: enable Gitlab/Union
-
-    with(Gitlab::SQL::CTE.new(:reviewers_and_assignees, union).to_arel).where('merge_requests.id in (select merge_request_id from reviewers_and_assignees)')
   end
 
   def self.total_time_to_merge
@@ -1187,41 +1180,13 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
-  def detailed_merge_status
-    if cannot_be_merged_rechecking? || preparing? || checking?
-      return :checking
-    elsif unchecked?
-      return :unchecked
-    end
-
-    checks = execute_merge_checks
-
-    if checks.success?
-      :mergeable
-    else
-      checks.failure_reason
-    end
-  end
-
-  # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
-    if Feature.enabled?(:improved_mergeability_checks, self.project)
-      additional_checks = execute_merge_checks(params: {
-                                                 skip_ci_check: skip_ci_check,
-                                                 skip_discussions_check: skip_discussions_check
-                                               })
-      additional_checks.execute.success?
-    else
-      return false unless open?
-      return false if draft?
-      return false if broken?
-      return false unless skip_discussions_check || mergeable_discussions_state?
-      return false unless skip_ci_check || mergeable_ci_state?
-
-      true
-    end
+    additional_checks = execute_merge_checks(params: {
+                                               skip_ci_check: skip_ci_check,
+                                               skip_discussions_check: skip_discussions_check
+                                             })
+    additional_checks.success?
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def ff_merge_possible?
     project.repository.ancestor?(target_branch_sha, diff_head_sha)
@@ -1318,7 +1283,6 @@ class MergeRequest < ApplicationRecord
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
   def cache_merge_request_closes_issues!(current_user = self.author)
-    return unless project.issues_enabled?
     return if closed? || merged?
 
     transaction do
@@ -1489,7 +1453,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
-    actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
+    actual_head_pipeline&.environments_in_self_and_project_descendants(deployment_status: deployment_status) || Environment.none
   end
 
   def fetch_ref!
@@ -1589,7 +1553,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.test_reports)
+    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
   def predefined_variables
@@ -1619,7 +1583,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_accessibility_reports?
-    actual_head_pipeline.present? && actual_head_pipeline.has_reports?(Ci::JobArtifact.accessibility_reports)
+    actual_head_pipeline.present? && actual_head_pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:accessibility))
   end
 
   def has_coverage_reports?
@@ -1627,7 +1591,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.terraform_reports)
+    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports
@@ -1667,7 +1631,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
+    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
   def compare_codequality_reports
@@ -1717,11 +1681,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.sast_reports)
+    !!actual_head_pipeline&.complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
   end
 
   def has_secret_detection_reports?
-    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.secret_detection_reports)
+    !!actual_head_pipeline&.complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
   end
 
   def compare_sast_reports(current_user)
@@ -2019,6 +1983,12 @@ class MergeRequest < ApplicationRecord
     false # Overridden in EE
   end
 
+  def execute_merge_checks(params: {})
+    # rubocop: disable CodeReuse/ServiceClass
+    MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
+    # rubocop: enable CodeReuse/ServiceClass
+  end
+
   private
 
   attr_accessor :skip_fetch_ref
@@ -2071,12 +2041,6 @@ class MergeRequest < ApplicationRecord
 
   def report_type_enabled?(report_type)
     !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
-  end
-
-  def execute_merge_checks(params: {})
-    # rubocop: disable CodeReuse/ServiceClass
-    MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
-    # rubocop: enable CodeReuse/ServiceClass
   end
 end
 

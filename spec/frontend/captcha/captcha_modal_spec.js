@@ -40,7 +40,7 @@ describe('Captcha Modal', () => {
   });
 
   const findGlModal = () => {
-    const glModal = wrapper.find(GlModal);
+    const glModal = wrapper.findComponent(GlModal);
 
     jest.spyOn(glModal.vm, 'show').mockImplementation(() => glModal.vm.$emit('shown'));
     jest

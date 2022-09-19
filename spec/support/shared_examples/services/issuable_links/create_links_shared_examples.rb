@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable link creation' do
+RSpec.shared_examples 'issuable link creation' do
   describe '#execute' do
     subject { described_class.new(issuable, user, params).execute }
 

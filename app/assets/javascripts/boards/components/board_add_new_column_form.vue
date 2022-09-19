@@ -102,7 +102,7 @@ export default {
     data-qa-selector="board_add_new_list"
   >
     <div
-      class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
+      class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
     >
       <h3 class="gl-font-size-h2 gl-px-5 gl-py-5 gl-m-0" data-testid="board-add-column-form-title">
         {{ $options.i18n.newList }}

@@ -5,6 +5,7 @@ import {
   HARBOR_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
   imagesCountInfoText,
+  HARBOR_REGISTRY_HELP_PAGE_PATH,
 } from '~/packages_and_registries/harbor_registry/constants';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 
@@ -20,11 +21,6 @@ export default {
       default: 0,
       required: false,
     },
-    helpPagePath: {
-      type: String,
-      default: '',
-      required: false,
-    },
     metadataLoading: {
       type: Boolean,
       required: false,
@@ -32,7 +28,7 @@ export default {
     },
   },
   i18n: {
-    HARBOR_REGISTRY_TITLE,
+    harborRegistryTitle: HARBOR_REGISTRY_TITLE,
   },
   computed: {
     imagesCountText() {
@@ -40,7 +36,7 @@ export default {
       return sprintf(pluralisedString, { count: this.imagesCount });
     },
     infoMessages() {
-      return [{ text: LIST_INTRO_TEXT, link: this.helpPagePath }];
+      return [{ text: LIST_INTRO_TEXT, link: HARBOR_REGISTRY_HELP_PAGE_PATH }];
     },
   },
 };
@@ -48,7 +44,7 @@ export default {
 
 <template>
   <title-area
-    :title="$options.i18n.HARBOR_REGISTRY_TITLE"
+    :title="$options.i18n.harborRegistryTitle"
     :info-messages="infoMessages"
     :metadata-loading="metadataLoading"
   >

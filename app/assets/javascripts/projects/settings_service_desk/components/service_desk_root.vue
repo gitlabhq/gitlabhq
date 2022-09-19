@@ -1,12 +1,18 @@
 <script>
-import { GlAlert, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlAlert, GlSprintf, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, sprintf } from '~/locale';
 import ServiceDeskSetting from './service_desk_setting.vue';
 
 export default {
+  customEmailHelpPath: helpPagePath('/user/project/service_desk.html', {
+    anchor: 'using-a-custom-email-address',
+  }),
   components: {
     GlAlert,
+    GlSprintf,
+    GlLink,
     ServiceDeskSetting,
   },
   directives: {
@@ -42,6 +48,9 @@ export default {
     },
     templates: {
       default: [],
+    },
+    publicProject: {
+      default: false,
     },
   },
   data() {
@@ -127,6 +136,27 @@ export default {
 
 <template>
   <div>
+    <gl-alert
+      v-if="publicProject && isEnabled"
+      class="mb-3"
+      variant="warning"
+      data-testid="public-project-alert"
+      :dismissible="false"
+    >
+      <gl-sprintf
+        :message="
+          __(
+            'This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name. %{linkStart}How do I create a custom email address?%{linkEnd}',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="$options.customEmailHelpPath" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <gl-alert v-if="isAlertShowing" class="mb-3" :variant="alertVariant" @dismiss="onDismiss">
       <span v-safe-html="alertMessage"></span>
     </gl-alert>

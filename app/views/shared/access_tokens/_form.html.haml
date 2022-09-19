@@ -13,7 +13,7 @@
 
 = gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
 
-  = form_errors(token, pajamas_alert: true)
+  = form_errors(token)
 
   .row
     .form-group.col

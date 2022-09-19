@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Migration
       # Cop that prevents adding columns to wide tables.
-      class AddColumnsToWideTables < RuboCop::Cop::Cop
+      class AddColumnsToWideTables < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = '`%s` is a wide table with several columns, adding more should be avoided unless absolutely necessary.' \
@@ -26,7 +26,7 @@ module RuboCop
 
           return unless offense?(method_name, table_name)
 
-          add_offense(node, location: :selector, message: format(MSG, table_name.value))
+          add_offense(node.loc.selector, message: format(MSG, table_name.value))
         end
 
         private

@@ -8,8 +8,12 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 # Recommended word list
 
 To help ensure consistency in the documentation, the Technical Writing team
-recommends these wording choices. The GitLab handbook also maintains a list of
-[top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
+recommends these word choices. In addition:
+
+- The GitLab handbook contains a list of
+  [top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
+- The documentation [style guide](../styleguide#language) includes details
+  about language and capitalization.
 
 For guidance not on this page, we defer to these style guides:
 
@@ -18,6 +22,10 @@ For guidance not on this page, we defer to these style guides:
 
 <!-- vale off -->
 <!-- markdownlint-disable -->
+
+## `&`
+
+Do not use Latin abbreviations. Use **and** instead, unless you are documenting a UI element that uses an `&`.
 
 ## `@mention`
 
@@ -75,7 +83,7 @@ Instead of:
 
 ## Admin Area
 
-Use title case **Admin Area** to refer to the area of the UI that you access when you select **Menu > Admin**.
+Use title case **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## agent
@@ -138,6 +146,18 @@ Do not use **and so on**. Instead, be more specific. For details, see
 ## area
 
 Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
+
+## as
+
+Do not use **as** to mean **because**.
+
+Use:
+
+- Because none of the endpoints return an ID...
+
+Instead of:
+
+- As none of the endpoints return an ID...
 
 ## associate
 
@@ -264,6 +284,13 @@ Use title case for the GitLab Container Registry.
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
+
+## default branch
+
+Use **default branch** to refer generically to the primary branch in the repository.
+Users can set the default branch by using a UI setting.
+
+For examples that use the default branch, use `main` instead of [`master`](#master).
 
 ## Dependency Proxy
 
@@ -394,7 +421,7 @@ Information in FAQs belongs with other similar information, under an easily sear
 
 ## field
 
-Use **box** instead of **field** or **text box**.
+Use **text box** instead of **field** or **box**.
 
 Use:
 
@@ -407,7 +434,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you need to refer to all
 of the fields at once. For example:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -604,6 +631,10 @@ Instead of:
   - Buy a license.
   - Purchase a license.
 
+## limitations
+
+Do not use **limitations**. Use **known issues** instead.
+
 ## log in, log on
 
 Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
@@ -644,7 +675,8 @@ Do not use **manpower**. Use words like **workforce** or **GitLab team members**
 
 ## master
 
-Do not use **master**. Options are **primary** or **main**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+Do not use `master`. Use `main` when you need a sample [default branch name](#default-branch).
+([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## may, might
 

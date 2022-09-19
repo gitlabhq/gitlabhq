@@ -206,7 +206,7 @@ module ObjectStorage
 
     def requires_multipart_upload?
       return false unless config.aws?
-      return false if use_workhorse_s3_client? && Feature.enabled?(:s3_omit_multipart_urls)
+      return false if use_workhorse_s3_client?
 
       !has_length
     end

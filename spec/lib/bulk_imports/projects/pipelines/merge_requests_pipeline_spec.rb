@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
   let_it_be(:user) { create(:user) }
+  let_it_be(:another_user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -85,6 +86,9 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
   describe '#run' do
     before do
       group.add_owner(user)
+      group.add_maintainer(another_user)
+
+      ::BulkImports::UsersMapper.new(context: context).cache_source_user_id(42, another_user.id)
 
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:remove_tmp_dir)
@@ -291,6 +295,53 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
 
       it 'imports milestone' do
         expect(imported_mr.milestone.title).to eq(attributes.dig('milestone', 'title'))
+      end
+    end
+
+    context 'user assignments' do
+      let(:attributes) do
+        {
+          key => [
+            {
+              'user_id' => 22,
+              'created_at' => '2020-01-07T11:21:21.235Z'
+            },
+            {
+              'user_id' => 42,
+              'created_at' => '2020-01-08T12:21:21.235Z'
+            }
+          ]
+        }
+      end
+
+      context 'assignees' do
+        let(:key) { 'merge_request_assignees' }
+
+        it 'imports mr assignees' do
+          assignees = imported_mr.merge_request_assignees
+
+          expect(assignees.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
+        end
+      end
+
+      context 'approvals' do
+        let(:key) { 'approvals' }
+
+        it 'imports mr approvals' do
+          approvals = imported_mr.approvals
+
+          expect(approvals.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
+        end
+      end
+
+      context 'reviewers' do
+        let(:key) { 'merge_request_reviewers' }
+
+        it 'imports mr reviewers' do
+          reviewers = imported_mr.merge_request_reviewers
+
+          expect(reviewers.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
+        end
       end
     end
   end

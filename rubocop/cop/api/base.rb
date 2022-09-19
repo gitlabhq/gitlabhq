@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module API
-      class Base < RuboCop::Cop::Cop
+      class Base < RuboCop::Cop::Base
+        extend RuboCop::Cop::AutoCorrector
+
         # This cop checks that APIs subclass API::Base.
         #
         # @example
@@ -38,13 +40,9 @@ module RuboCop
 
         def on_class(node)
           grape_api_definition(node) do
-            add_offense(node.children[1])
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, '::API::Base')
+            add_offense(node.children[1]) do |corrector|
+              corrector.replace(node.children[1], '::API::Base')
+            end
           end
         end
       end

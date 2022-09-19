@@ -13,7 +13,7 @@ Use the **Settings** page to manage the configuration options in your [project](
 
 You must have at least the Maintainer role to view project settings.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. To display all settings in a section, select **Expand**.
 1. Optional. Use the search box to find a setting.
@@ -23,7 +23,7 @@ You must have at least the Maintainer role to view project settings.
 Use the project general settings to edit your project details.
 
 1. Sign in to GitLab with at least the Maintainer role.
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. In the **Project name** text box, enter your project name.
 1. In the **Project description** text box, enter your project description.
@@ -35,7 +35,7 @@ Use topics to categorize projects and find similar new projects.
 
 To assign topics to a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings** > **General**.
 1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
 1. Select **Save changes**.
@@ -51,7 +51,7 @@ requirements or needs additional oversight. The label can optionally apply
 
 Group owners can create, edit, and delete compliance frameworks:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 
@@ -170,7 +170,7 @@ include:  # Execute individual project's configuration (if project contains .git
 When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
-[Enforce scan execution](../../application_security/#enforce-scan-execution).
+[Enforce scan execution](../../application_security/index.md#enforce-scan-execution).
 
 ### Ensure compliance jobs are always run
 
@@ -214,10 +214,10 @@ Compliance pipelines start on the run of _every_ pipeline in a relevant project.
 triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
 
 Therefore, in projects with compliance frameworks, we recommend replacing
-[parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md) with the following:
+[parent-child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
 
 - Direct [`include`](../../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
-- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/) rather than the parent-child
+- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/index.md) rather than the parent-child
   pipeline feature.
 
 This alternative ensures the compliance pipeline does not re-start the parent pipeline.
@@ -226,7 +226,7 @@ This alternative ensures the compliance pipeline does not re-start the parent pi
 
 To configure visibility, features, and permissions for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. To change the project visibility, select the dropdown list. If you select to **Public**, you limit access to some features to **Only Project Members**.
@@ -241,17 +241,17 @@ Use the toggles to enable or disable features in the project.
 | Option                           | More access limit options | Description   |
 |:---------------------------------|:--------------------------|:--------------|
 | **Issues**                       | ✓                         | Activates the GitLab issues tracker. |
-| **Repository**                   | ✓                         | Enables [repository](../repository/) functionality |
-| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
+| **Repository**                   | ✓                         | Enables [repository](../repository/index.md) functionality |
+| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
 | **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality. |
 | **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs). |
 | **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality. |
 | **CI/CD**                        | ✓                         | Enables [CI/CD](../../../ci/index.md) functionality. |
-| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/) for your Docker images. |
-| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/). |
+| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/index.md) for your Docker images. |
+| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/index.md). |
 | **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md). |
 | **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md). |
-| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
+| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
 | **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
@@ -286,7 +286,7 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 
 To disable the CVE identifier request option in issues in your project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
@@ -298,7 +298,7 @@ Prerequisites:
 
 - You must be an Owner of the project to disable email notifications related to the project.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear the **Disable email notifications** checkbox.
@@ -339,7 +339,7 @@ other features are read-only. Archived projects are also hidden from project lis
 
 To archive a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive project**.
@@ -355,7 +355,7 @@ Prerequisites:
 - To unarchive a project, you must be an administrator or a project Owner.
 
 1. Find the archived project.
-   1. On the top bar, select **Menu > Project**.
+   1. On the top bar, select **Main menu > Projects > View all projects**.
    1. Select **Explore projects**.
    1. In the **Sort projects** dropdown list, select **Show archived projects**.
    1. In the **Filter by name** field, enter the project name.
@@ -380,7 +380,7 @@ When you change the repository path, users may experience issues if they push to
 
 To rename a repository:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Change path** text box, edit the path.
@@ -402,7 +402,7 @@ Prerequisites:
 
 To transfer a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
@@ -420,7 +420,7 @@ to move any project to any namespace.
 When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free, the following paid feature data is deleted:
 
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked
-- [Pipeline subscriptions](../../../ci/pipelines/multi_project_pipelines.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
+- [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
 and [test cases](../../../ci/test_cases/index.md) are deleted.
 
 ## Delete a project
@@ -433,7 +433,7 @@ Prerequisite:
 
 To delete a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Delete project" section, select **Delete project**.
@@ -472,7 +472,7 @@ Prerequisites:
 
 To immediately delete a project marked for deletion:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Permanently delete project" section, select **Delete project**.
@@ -504,7 +504,7 @@ To restore the fork relationship, [use the API](../../../api/projects.md#create-
 
 To remove a fork relationship:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.

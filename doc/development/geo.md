@@ -653,8 +653,7 @@ on, check out our [self-service framework](geo/framework.md).
 
 ### GET:Geo pipeline
 
-As part of the [package-and-qa](testing_guide/end_to_end/index.md#using-the-package-and-qa-job) pipeline, there is an option to manually trigger a job named `GET:Geo`. This
-pipeline uses [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin up a
+As part of the [e2e:package-and-test](testing_guide/end_to_end/index.md#using-the-package-and-test-job) pipeline, there is an option to manually trigger a job named `GET:Geo`. This pipeline uses [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin up a
 [1k](../administration/reference_architectures/1k_users.md) Geo installation,
 and run the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) Geo scenario against the instance.
 When working on Geo features, it is a good idea to ensure the `qa-geo` job passes in a triggered `GET:Geo pipeline`.
@@ -669,7 +668,7 @@ see the [QA documentation](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa
 
 The pipeline involves the interaction of multiple different projects:
 
-- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [package-and-qa job](testing_guide/end_to_end/index.md#using-the-package-and-qa-job) is launched from merge requests in this project.
+- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:package-and-test` job](testing_guide/end_to_end/index.md#using-the-package-and-test-job) is launched from merge requests in this project.
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) - Builds relevant artifacts containing the changes from the triggering merge request pipeline.
 - [GET-Configs/Geo](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/Geo) - Coordinates the lifecycle of a short-lived Geo installation that can be evaluated.
 - [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Contains the necessary logic for creating and destroying Geo installations. Used by `GET-Configs/Geo`.

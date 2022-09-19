@@ -38,7 +38,7 @@ describe('RevisionDropdown component', () => {
     axiosMock.restore();
   });
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
 
   it('sets hidden input', () => {
     expect(wrapper.find('input[type="hidden"]').attributes('value')).toBe(
@@ -99,7 +99,7 @@ describe('RevisionDropdown component', () => {
     });
 
     it('emits a "selectRevision" event when a revision is selected', async () => {
-      const findGlDropdownItems = () => wrapper.findAll(GlDropdownItem);
+      const findGlDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
       const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details

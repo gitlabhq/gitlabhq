@@ -32,7 +32,7 @@ describe('tags list row', () => {
   const findShortRevision = () => wrapper.find('[data-testid="digest"]');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const findDetailsRows = () => wrapper.findAll(DetailsRow);
+  const findDetailsRows = () => wrapper.findAllComponents(DetailsRow);
   const findPublishedDateDetail = () => wrapper.find('[data-testid="published-date-detail"]');
   const findManifestDetail = () => wrapper.find('[data-testid="manifest-detail"]');
   const findConfigurationDetail = () => wrapper.find('[data-testid="configuration-detail"]');
@@ -359,7 +359,7 @@ describe('tags list row', () => {
             mountComponent();
             await nextTick();
 
-            expect(finderFunction().find(ClipboardButton).exists()).toBe(clipboard);
+            expect(finderFunction().findComponent(ClipboardButton).exists()).toBe(clipboard);
           });
 
           it('is disabled when the component is disabled', async () => {

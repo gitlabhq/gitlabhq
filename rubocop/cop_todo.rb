@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'formatter/graceful_formatter'
+
 module RuboCop
   class CopTodo
-    attr_accessor :previously_disabled
+    attr_accessor :previously_disabled, :grace_period
 
     attr_reader :cop_name, :files, :offense_count
 
@@ -12,6 +14,7 @@ module RuboCop
       @offense_count = 0
       @cop_class = self.class.find_cop_by_name(cop_name)
       @previously_disabled = false
+      @grace_period = false
     end
 
     def record(file, offense_count)
@@ -35,6 +38,7 @@ module RuboCop
         yaml << '  Enabled: false'
       end
 
+      yaml << "  #{RuboCop::Formatter::GracefulFormatter.grace_period_key_value}" if grace_period
       yaml << '  Exclude:'
       yaml.concat files.sort.map { |file| "    - '#{file}'" }
       yaml << ''

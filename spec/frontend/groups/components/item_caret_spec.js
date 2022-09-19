@@ -22,8 +22,8 @@ describe('ItemCaret', () => {
     }
   });
 
-  const findAllGlIcons = () => wrapper.findAll(GlIcon);
-  const findGlIcon = () => wrapper.find(GlIcon);
+  const findAllGlIcons = () => wrapper.findAllComponents(GlIcon);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   describe('template', () => {
     it('renders component template correctly', () => {

@@ -25,6 +25,8 @@ module Gitlab
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
         issue_events: Stage::ImportIssueEventsWorker,
         notes: Stage::ImportNotesWorker,
+        attachments: Stage::ImportAttachmentsWorker,
+        protected_branches: Stage::ImportProtectedBranchesWorker,
         lfs_objects: Stage::ImportLfsObjectsWorker,
         finish: Stage::FinishImportWorker
       }.freeze

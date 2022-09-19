@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/ruby_interpolation_in_translation'
 
@@ -8,8 +8,6 @@ require_relative '../../../rubocop/cop/ruby_interpolation_in_translation'
 # rubocop:disable Lint/InterpolationCheck
 RSpec.describe RuboCop::Cop::RubyInterpolationInTranslation do
   let(:msg) { "Don't use ruby interpolation \#{} inside translated strings, instead use %{}" }
-
-  subject(:cop) { described_class.new }
 
   it 'does not add an offense for a regular messages' do
     expect_no_offenses('_("Hello world")')

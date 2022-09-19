@@ -31,9 +31,9 @@ describe('packages_list_app', () => {
   const GlLoadingIcon = { name: 'gl-loading-icon', template: '<div>loading</div>' };
 
   const emptyListHelpUrl = 'helpUrl';
-  const findEmptyState = () => wrapper.find(GlEmptyState);
-  const findListComponent = () => wrapper.find(PackageList);
-  const findInfrastructureSearch = () => wrapper.find(InfrastructureSearch);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findListComponent = () => wrapper.findComponent(PackageList);
+  const findInfrastructureSearch = () => wrapper.findComponent(InfrastructureSearch);
 
   const createStore = ({ filter = [], packageCount = 0 } = {}) => {
     store = new Vuex.Store({
@@ -151,7 +151,7 @@ describe('packages_list_app', () => {
 
   describe('empty state', () => {
     it('generate the correct empty list link', () => {
-      const link = findListComponent().find(GlLink);
+      const link = findListComponent().findComponent(GlLink);
 
       expect(link.attributes('href')).toBe(emptyListHelpUrl);
       expect(link.text()).toBe('publish and share your packages');

@@ -131,17 +131,32 @@ RSpec.describe Ci::RunnersHelper do
   describe '#group_runners_data_attributes' do
     let(:group) { create(:group) }
 
-    it 'returns group data to render a runner list' do
-      expect(helper.group_runners_data_attributes(group)).to include(
-        registration_token: group.runners_token,
-        group_id: group.id,
-        group_full_path: group.full_path,
-        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        online_contact_timeout_secs: 7200,
-        stale_timeout_secs: 7889238,
-        empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
-        empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
-      )
+    context 'when user can register group runners' do
+      before do
+        allow(helper).to receive(:can?).with(user, :register_group_runners, group).and_return(true)
+      end
+
+      it 'returns group data to render a runner list' do
+        expect(helper.group_runners_data_attributes(group)).to include(
+          group_id: group.id,
+          group_full_path: group.full_path,
+          runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+          online_contact_timeout_secs: 7200,
+          stale_timeout_secs: 7889238,
+          empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
+          empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+        )
+      end
+    end
+
+    context 'when user cannot register group runners' do
+      before do
+        allow(helper).to receive(:can?).with(user, :register_group_runners, group).and_return(false)
+      end
+
+      it 'returns empty registration token' do
+        expect(helper.group_runners_data_attributes(group)).not_to include(registration_token: group.runners_token)
+      end
     end
   end
 

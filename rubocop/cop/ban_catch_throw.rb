@@ -19,7 +19,7 @@ module RuboCop
     #     # ...
     #   end
     #
-    class BanCatchThrow < RuboCop::Cop::Cop
+    class BanCatchThrow < RuboCop::Cop::Base
       MSG = "Do not use catch or throw unless a gem's API demands it."
 
       def on_send(node)
@@ -27,7 +27,7 @@ module RuboCop
 
         return unless receiver.nil? && %i[catch throw].include?(method_name)
 
-        add_offense(node, location: :expression)
+        add_offense(node)
       end
     end
   end

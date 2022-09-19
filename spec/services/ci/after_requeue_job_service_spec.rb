@@ -112,12 +112,32 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       check_jobs_statuses(
         a1: 'pending',
         a2: 'created',
-        a3: 'skipped',
+        a3: 'created',
         b1: 'success',
         b2: 'created',
         c1: 'created',
         c2: 'created'
       )
+    end
+
+    context 'when the FF ci_requeue_with_dag_object_hierarchy is disabled' do
+      before do
+        stub_feature_flags(ci_requeue_with_dag_object_hierarchy: false)
+      end
+
+      it 'marks subsequent skipped jobs as processable but leaves a3 created' do
+        execute_after_requeue_service(a1)
+
+        check_jobs_statuses(
+          a1: 'pending',
+          a2: 'created',
+          a3: 'skipped',
+          b1: 'success',
+          b2: 'created',
+          c1: 'created',
+          c2: 'created'
+        )
+      end
     end
 
     context 'when executed by a different user than the original owner' do
@@ -140,7 +160,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         expect(jobs_name_status_owner_needs).to contain_exactly(
           { 'name' => 'a1', 'status' => 'pending', 'user_id' => user.id,    'needs' => [] },
           { 'name' => 'a2', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['a1'] },
-          { 'name' => 'a3', 'status' => 'skipped', 'user_id' => user.id,    'needs' => ['a2'] },
+          { 'name' => 'a3', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['a2'] },
           { 'name' => 'b1', 'status' => 'success', 'user_id' => user.id,    'needs' => [] },
           { 'name' => 'b2', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['a2'] },
           { 'name' => 'c1', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['b2'] },
@@ -234,6 +254,79 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         c1: 'created',
         c2: 'created'
       )
+    end
+  end
+
+  context 'with same-stage needs' do
+    let(:config) do
+      <<-EOY
+      a:
+        script: exit $(($RANDOM % 2))
+
+      b:
+        script: exit 0
+        needs: [a]
+
+      c:
+        script: exit 0
+        needs: [b]
+      EOY
+    end
+
+    let(:pipeline) do
+      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+    end
+
+    let(:a) { find_job('a') }
+
+    before do
+      stub_ci_pipeline_yaml_file(config)
+      check_jobs_statuses(
+        a: 'pending',
+        b: 'created',
+        c: 'created'
+      )
+
+      a.drop!
+      check_jobs_statuses(
+        a: 'failed',
+        b: 'skipped',
+        c: 'skipped'
+      )
+
+      new_a = Ci::RetryJobService.new(project, user).clone!(a)
+      new_a.enqueue!
+      check_jobs_statuses(
+        a: 'pending',
+        b: 'skipped',
+        c: 'skipped'
+      )
+    end
+
+    it 'marks subsequent skipped jobs as processable' do
+      execute_after_requeue_service(a)
+
+      check_jobs_statuses(
+        a: 'pending',
+        b: 'created',
+        c: 'created'
+      )
+    end
+
+    context 'when the FF ci_requeue_with_dag_object_hierarchy is disabled' do
+      before do
+        stub_feature_flags(ci_requeue_with_dag_object_hierarchy: false)
+      end
+
+      it 'marks the next subsequent skipped job as processable but leaves c skipped' do
+        execute_after_requeue_service(a)
+
+        check_jobs_statuses(
+          a: 'pending',
+          b: 'created',
+          c: 'skipped'
+        )
+      end
     end
   end
 

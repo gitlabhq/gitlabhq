@@ -62,7 +62,7 @@ GitLab can use these to access the resource. More information about authenticati
 service account can be found at Google's documentation for
 [Authenticating from a service account](https://cloud.google.com/iap/docs/authentication-howto#authenticating_from_a_service_account).
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Prometheus**.
 1. For **API URL**, provide the domain name or IP address of your server, such as
@@ -83,7 +83,7 @@ You can configure [Thanos](https://thanos.io/) as a drop-in replacement for Prom
 with GitLab. Use the domain name or IP address of the Thanos server you'd like
 to integrate with.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Prometheus**.
 1. Provide the domain name or IP address of your server, for example

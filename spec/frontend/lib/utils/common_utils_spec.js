@@ -476,7 +476,7 @@ describe('common_utils', () => {
         });
     });
 
-    it('catches the rejected promise from the callback ', () => {
+    it('catches the rejected promise from the callback', () => {
       const errorMessage = 'Mistakes were made!';
       return commonUtils
         .backOff((next, stop) => {

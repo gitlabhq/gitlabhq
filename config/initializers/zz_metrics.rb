@@ -17,7 +17,6 @@
 if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && defined?(Rails::Generators))
   require 'pathname'
   require 'connection_pool'
-  require 'method_source'
 
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.
@@ -40,6 +39,9 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
 
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
+    Gitlab::Metrics::GlobalSearchSlis.initialize_slis!
+  elsif Gitlab.ee? && Gitlab::Runtime.sidekiq?
+    Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis!
   end
 
   GC::Profiler.enable

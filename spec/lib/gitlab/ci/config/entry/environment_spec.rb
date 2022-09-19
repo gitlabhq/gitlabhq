@@ -230,12 +230,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Environment do
       end
     end
 
-    context 'when auto_stop_in is invalid format' do
-      let(:auto_stop_in) { 'invalid' }
+    context 'when variables are used for auto_stop_in' do
+      let(:auto_stop_in) { '$TTL' }
 
-      it 'becomes invalid' do
-        expect(entry).not_to be_valid
-        expect(entry.errors).to include 'environment auto stop in should be a duration'
+      it 'becomes valid' do
+        expect(entry).to be_valid
+        expect(entry.auto_stop_in).to eq(auto_stop_in)
       end
     end
   end

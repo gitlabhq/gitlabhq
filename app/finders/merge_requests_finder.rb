@@ -30,6 +30,8 @@
 #     updated_before: datetime
 #
 class MergeRequestsFinder < IssuableFinder
+  extend ::Gitlab::Utils::Override
+
   include MergedAtFilter
 
   def self.scalar_params
@@ -44,8 +46,7 @@ class MergeRequestsFinder < IssuableFinder
       :reviewer_id,
       :reviewer_username,
       :target_branch,
-      :wip,
-      :attention
+      :wip
     ]
   end
 
@@ -70,7 +71,6 @@ class MergeRequestsFinder < IssuableFinder
     items = by_approvals(items)
     items = by_deployments(items)
     items = by_reviewer(items)
-    items = by_attention(items)
 
     by_source_project_id(items)
   end
@@ -83,6 +83,16 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   private
+
+  override :sort
+  def sort(items)
+    items = super(items)
+
+    return items unless use_grouping_columns?
+
+    grouping_columns = klass.grouping_columns(params[:sort])
+    items.group(grouping_columns) # rubocop:disable CodeReuse/ActiveRecord
+  end
 
   def by_commit(items)
     return items unless params[:commit_sha].presence
@@ -220,17 +230,17 @@ class MergeRequestsFinder < IssuableFinder
     end
   end
 
-  def by_attention(items)
-    return items unless params.attention?
-
-    items.attention(params.attention)
-  end
-
   def parse_datetime(input)
     # To work around http://www.ruby-lang.org/en/news/2021/11/15/date-parsing-method-regexp-dos-cve-2021-41817/
     DateTime.parse(input.byteslice(0, 128)) if input
   rescue Date::Error
     nil
+  end
+
+  def use_grouping_columns?
+    return false unless params[:sort].present?
+
+    params[:approved_by_usernames].present? || params[:approved_by_ids].present?
   end
 end
 

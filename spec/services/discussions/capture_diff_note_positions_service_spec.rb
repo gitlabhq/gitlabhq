@@ -18,8 +18,8 @@ RSpec.describe Discussions::CaptureDiffNotePositionsService do
 
     def build_position(diff_refs, new_line: nil, old_line: nil)
       path = 'files/markdown/ruby-style-guide.md'
-      Gitlab::Diff::Position.new(old_path: path, new_path: path,
-        new_line: new_line, old_line: old_line, diff_refs: diff_refs)
+      Gitlab::Diff::Position.new(
+        old_path: path, new_path: path, new_line: new_line, old_line: old_line, diff_refs: diff_refs)
     end
 
     def note_for(new_line: nil, old_line: nil)

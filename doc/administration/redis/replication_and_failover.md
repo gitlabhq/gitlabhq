@@ -343,7 +343,7 @@ NOTE:
 If you are using an external Redis Sentinel instance, be sure
 to exclude the `requirepass` parameter from the Sentinel
 configuration. This parameter causes clients to report `NOAUTH
-Authentication required.`. 
+Authentication required.`.
 [Redis Sentinel 3.2.x does not support password authentication](https://github.com/antirez/redis/issues/3279).
 
 Now that the Redis servers are all set up, let's configure the Sentinel

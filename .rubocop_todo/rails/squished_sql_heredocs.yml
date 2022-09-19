@@ -136,7 +136,6 @@ Rails/SquishedSQLHeredocs:
     - 'lib/gitlab/background_migration/backfill_project_settings.rb'
     - 'lib/gitlab/background_migration/backfill_projects_with_coverage.rb'
     - 'lib/gitlab/background_migration/backfill_upvotes_count_on_issues.rb'
-    - 'lib/gitlab/background_migration/copy_ci_builds_columns_to_security_scans.rb'
     - 'lib/gitlab/background_migration/disable_expiration_policies_linked_to_no_container_images.rb'
     - 'lib/gitlab/background_migration/encrypt_static_object_token.rb'
     - 'lib/gitlab/background_migration/fix_duplicate_project_name_and_path.rb'

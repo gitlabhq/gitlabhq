@@ -31,6 +31,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it { is_expected.to have_many(:draft_notes) }
     it { is_expected.to have_many(:reviews).inverse_of(:merge_request) }
     it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
+    it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
 
     context 'for forks' do
       let!(:project) { create(:project) }
@@ -141,22 +142,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it 'returns MRs that the user has not been requested to review' do
         expect(described_class.no_review_requested_to(user1))
           .to eq([merge_request2, merge_request3, merge_request4])
-      end
-    end
-
-    describe '.attention' do
-      let_it_be(:merge_request5) { create(:merge_request, :unique_branches, assignees: [user2]) }
-      let_it_be(:merge_request6) { create(:merge_request, :unique_branches, assignees: [user2]) }
-
-      before do
-        assignee = merge_request6.find_assignee(user2)
-        assignee.update!(state: :reviewed)
-        merge_request2.find_reviewer(user2).update!(state: :attention_requested)
-        merge_request5.find_assignee(user2).update!(state: :attention_requested)
-      end
-
-      it 'returns MRs that have any attention requests' do
-        expect(described_class.attention(user2)).to eq([merge_request2, merge_request5])
       end
     end
 
@@ -883,6 +868,16 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         expect { subject.cache_merge_request_closes_issues!(subject.author) }
           .not_to change(subject.merge_requests_closing_issues, :count)
+      end
+
+      it 'caches issues from another project with issues enabled' do
+        project = create(:project, :public, issues_enabled: true)
+        issue = create(:issue, project: project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference(full: true)}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }
+          .to change(subject.merge_requests_closing_issues, :count).by(1)
       end
     end
   end
@@ -3232,72 +3227,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe '#detailed_merge_status' do
-    subject(:detailed_merge_status) { merge_request.detailed_merge_status }
-
-    context 'when merge status is cannot_be_merged_rechecking' do
-      let(:merge_request) { create(:merge_request, merge_status: :cannot_be_merged_rechecking) }
-
-      it 'returns :checking' do
-        expect(detailed_merge_status).to eq(:checking)
-      end
-    end
-
-    context 'when merge status is preparing' do
-      let(:merge_request) { create(:merge_request, merge_status: :preparing) }
-
-      it 'returns :checking' do
-        expect(detailed_merge_status).to eq(:checking)
-      end
-    end
-
-    context 'when merge status is checking' do
-      let(:merge_request) { create(:merge_request, merge_status: :checking) }
-
-      it 'returns :checking' do
-        expect(detailed_merge_status).to eq(:checking)
-      end
-    end
-
-    context 'when merge status is unchecked' do
-      let(:merge_request) { create(:merge_request, merge_status: :unchecked) }
-
-      it 'returns :unchecked' do
-        expect(detailed_merge_status).to eq(:unchecked)
-      end
-    end
-
-    context 'when merge checks are a success' do
-      let(:merge_request) { create(:merge_request) }
-
-      it 'returns :mergeable' do
-        expect(detailed_merge_status).to eq(:mergeable)
-      end
-    end
-
-    context 'when merge status have a failure' do
-      let(:merge_request) { create(:merge_request) }
-
-      before do
-        merge_request.close!
-      end
-
-      it 'returns the failure reason' do
-        expect(detailed_merge_status).to eq(:not_open)
-      end
-    end
-  end
-
   describe '#mergeable_state?' do
     it_behaves_like 'for mergeable_state'
-
-    context 'when improved_mergeability_checks is off' do
-      before do
-        stub_feature_flags(improved_mergeability_checks: false)
-      end
-
-      it_behaves_like 'for mergeable_state'
-    end
 
     context 'when merge state caching is off' do
       before do
@@ -3743,9 +3674,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       let(:expected_diff_refs) do
         Gitlab::Diff::DiffRefs.new(
-          base_sha:  subject.merge_request_diff.base_commit_sha,
+          base_sha: subject.merge_request_diff.base_commit_sha,
           start_sha: subject.merge_request_diff.start_commit_sha,
-          head_sha:  subject.merge_request_diff.head_commit_sha
+          head_sha: subject.merge_request_diff.head_commit_sha
         )
       end
 

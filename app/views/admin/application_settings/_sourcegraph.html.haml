@@ -17,7 +17,7 @@
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-sourcegraph-settings'), html: { class: 'fieldset-form', id: 'sourcegraph-settings' } do |f|
-      = form_errors(@application_setting, pajamas_alert: true)
+      = form_errors(@application_setting)
 
       %fieldset
         .form-group

@@ -4,11 +4,20 @@ import TopNavMenuSections from '~/nav/components/top_nav_menu_sections.vue';
 const TEST_SECTIONS = [
   {
     id: 'primary',
-    menuItems: [{ id: 'test', href: '/test/href' }, { id: 'foo' }, { id: 'bar' }],
+    menuItems: [
+      { type: 'header', title: 'Heading' },
+      { type: 'item', id: 'test', href: '/test/href' },
+      { type: 'header', title: 'Another Heading' },
+      { type: 'item', id: 'foo' },
+      { type: 'item', id: 'bar' },
+    ],
   },
   {
     id: 'secondary',
-    menuItems: [{ id: 'lorem' }, { id: 'ipsum' }],
+    menuItems: [
+      { type: 'item', id: 'lorem' },
+      { type: 'item', id: 'ipsum' },
+    ],
   },
 ];
 
@@ -25,10 +34,20 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
   };
 
   const findMenuItemModels = (parent) =>
-    parent.findAll('[data-testid="menu-item"]').wrappers.map((x) => ({
-      menuItem: x.props('menuItem'),
-      classes: x.classes(),
-    }));
+    parent.findAll('[data-testid="menu-header"],[data-testid="menu-item"]').wrappers.map((x) => {
+      return {
+        menuItem: x.vm
+          ? {
+              type: 'item',
+              ...x.props('menuItem'),
+            }
+          : {
+              type: 'header',
+              title: x.text(),
+            },
+        classes: x.classes(),
+      };
+    });
   const findSectionModels = () =>
     wrapper.findAll('[data-testid="menu-section"]').wrappers.map((x) => ({
       classes: x.classes(),
@@ -45,32 +64,31 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
     });
 
     it('renders sections with menu items', () => {
+      const headerClasses = ['gl-px-4', 'gl-py-2', 'gl-text-gray-900', 'gl-display-block'];
+      const itemClasses = ['gl-w-full'];
+
       expect(findSectionModels()).toEqual([
         {
           classes: [],
-          menuItems: [
-            {
-              menuItem: TEST_SECTIONS[0].menuItems[0],
-              classes: ['gl-w-full'],
-            },
-            ...TEST_SECTIONS[0].menuItems.slice(1).map((menuItem) => ({
+          menuItems: TEST_SECTIONS[0].menuItems.map((menuItem, index) => {
+            const classes = menuItem.type === 'header' ? [...headerClasses] : [...itemClasses];
+            if (index > 0) classes.push(menuItem.type === 'header' ? 'gl-pt-3!' : 'gl-mt-1');
+            return {
               menuItem,
-              classes: ['gl-w-full', 'gl-mt-1'],
-            })),
-          ],
+              classes,
+            };
+          }),
         },
         {
           classes: [...TopNavMenuSections.BORDER_CLASSES.split(' '), 'gl-mt-3'],
-          menuItems: [
-            {
-              menuItem: TEST_SECTIONS[1].menuItems[0],
-              classes: ['gl-w-full'],
-            },
-            ...TEST_SECTIONS[1].menuItems.slice(1).map((menuItem) => ({
+          menuItems: TEST_SECTIONS[1].menuItems.map((menuItem, index) => {
+            const classes = menuItem.type === 'header' ? [...headerClasses] : [...itemClasses];
+            if (index > 0) classes.push(menuItem.type === 'header' ? 'gl-pt-3!' : 'gl-mt-1');
+            return {
               menuItem,
-              classes: ['gl-w-full', 'gl-mt-1'],
-            })),
-          ],
+              classes,
+            };
+          }),
         },
       ]);
     });
@@ -88,7 +106,7 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
 
       menuItem.vm.$emit('click');
 
-      expect(wrapper.emitted('menu-item-click')).toEqual([[TEST_SECTIONS[0].menuItems[1]]]);
+      expect(wrapper.emitted('menu-item-click')).toEqual([[TEST_SECTIONS[0].menuItems[3]]]);
     });
   });
 

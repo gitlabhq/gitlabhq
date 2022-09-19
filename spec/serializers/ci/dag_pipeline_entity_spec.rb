@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Ci::DagPipelineEntity do
   let_it_be(:request) { double(:request) }
 
-  let(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+
   let(:entity) { described_class.new(pipeline, request: request) }
 
   describe '#as_json' do
@@ -28,9 +29,13 @@ RSpec.describe Ci::DagPipelineEntity do
     end
 
     context 'when pipeline has jobs' do
-      let!(:build_job)  { create(:ci_build, stage: 'build',  pipeline: pipeline) }
-      let!(:test_job)   { create(:ci_build, stage: 'test',   pipeline: pipeline) }
-      let!(:deploy_job) { create(:ci_build, stage: 'deploy', pipeline: pipeline) }
+      let_it_be(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+      let_it_be(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
+      let_it_be(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
+
+      let!(:build_job)  { create(:ci_build, ci_stage: build_stage,  pipeline: pipeline) }
+      let!(:test_job)   { create(:ci_build, ci_stage: test_stage,   pipeline: pipeline) }
+      let!(:deploy_job) { create(:ci_build, ci_stage: deploy_stage, pipeline: pipeline) }
 
       it 'contains 3 stages' do
         stages = subject[:stages]
@@ -47,28 +52,31 @@ RSpec.describe Ci::DagPipelineEntity do
       let!(:stage_test)   { create(:ci_stage, name: 'test',   position: 2, pipeline: pipeline) }
       let!(:stage_deploy) { create(:ci_stage, name: 'deploy', position: 3, pipeline: pipeline) }
 
-      let!(:job_build_1)   { create(:ci_build, name: 'build 1', stage: 'build', pipeline: pipeline) }
-      let!(:job_build_2)   { create(:ci_build, name: 'build 2', stage: 'build', pipeline: pipeline) }
-      let!(:commit_status) { create(:generic_commit_status, stage: 'build', pipeline: pipeline) }
+      let!(:job_build_1)   { create(:ci_build, name: 'build 1', ci_stage: stage_build, pipeline: pipeline) }
+      let!(:job_build_2)   { create(:ci_build, name: 'build 2', ci_stage: stage_build, pipeline: pipeline) }
+      let!(:commit_status) { create(:generic_commit_status, ci_stage: stage_build, pipeline: pipeline) }
 
-      let!(:job_rspec_1) { create(:ci_build, name: 'rspec 1/2', stage: 'test', pipeline: pipeline) }
-      let!(:job_rspec_2) { create(:ci_build, name: 'rspec 2/2', stage: 'test', pipeline: pipeline) }
+      let!(:job_rspec_1) { create(:ci_build, name: 'rspec 1/2', ci_stage: stage_test, pipeline: pipeline) }
+      let!(:job_rspec_2) { create(:ci_build, name: 'rspec 2/2', ci_stage: stage_test, pipeline: pipeline) }
 
       let!(:job_jest) do
-        create(:ci_build, name: 'jest', stage: 'test', scheduling_type: 'dag', pipeline: pipeline).tap do |job|
+        create(:ci_build, name: 'jest', ci_stage: stage_test, scheduling_type: 'dag', pipeline: pipeline)
+          .tap do |job|
           create(:ci_build_need, name: 'build 1', build: job)
         end
       end
 
       let!(:job_deploy_ruby) do
-        create(:ci_build, name: 'deploy_ruby', stage: 'deploy', scheduling_type: 'dag', pipeline: pipeline).tap do |job|
+        create(:ci_build, name: 'deploy_ruby', ci_stage: stage_deploy, scheduling_type: 'dag', pipeline: pipeline)
+          .tap do |job|
           create(:ci_build_need, name: 'rspec 1/2', build: job)
           create(:ci_build_need, name: 'rspec 2/2', build: job)
         end
       end
 
       let!(:job_deploy_js) do
-        create(:ci_build, name: 'deploy_js', stage: 'deploy', scheduling_type: 'dag', pipeline: pipeline).tap do |job|
+        create(:ci_build, name: 'deploy_js', ci_stage: stage_deploy, scheduling_type: 'dag', pipeline: pipeline)
+          .tap do |job|
           create(:ci_build_need, name: 'jest', build: job)
         end
       end

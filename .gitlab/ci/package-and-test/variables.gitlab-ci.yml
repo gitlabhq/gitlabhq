@@ -1,0 +1,9 @@
+# Default variables for package-and-test
+
+variables:
+  RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
+  SKIP_REPORT_IN_ISSUES: "true"
+  OMNIBUS_GITLAB_CACHE_UPDATE: "false"
+  QA_LOG_LEVEL: "info"
+  QA_TESTS: ""
+  QA_FEATURE_FLAGS: ""

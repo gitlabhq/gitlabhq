@@ -1,7 +1,10 @@
 <script>
-import { GlIntersperse } from '@gitlab/ui';
+import { GlIntersperse, GlLink } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { ACCESS_LEVEL_REF_PROTECTED, GROUP_TYPE, PROJECT_TYPE } from '../constants';
 import RunnerDetail from './runner_detail.vue';
@@ -12,6 +15,8 @@ import RunnerTags from './runner_tags.vue';
 export default {
   components: {
     GlIntersperse,
+    GlLink,
+    HelpPopover,
     RunnerDetail,
     RunnerMaintenanceNoteDetail: () =>
       import('ee_component/runner/components/runner_maintenance_note_detail.vue'),
@@ -24,6 +29,7 @@ export default {
     RunnerTags,
     TimeAgo,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     runner: {
       type: Object,
@@ -59,6 +65,16 @@ export default {
     },
     isProjectRunner() {
       return this.runner?.runnerType === PROJECT_TYPE;
+    },
+    tokenExpirationHelpPopoverOptions() {
+      return {
+        title: s__('Runners|Runner authentication token expiration'),
+      };
+    },
+    tokenExpirationHelpUrl() {
+      return helpPagePath('ci/runners/configure_runners', {
+        anchor: 'authentication-token-security',
+      });
     },
   },
   ACCESS_LEVEL_REF_PROTECTED,
@@ -101,6 +117,34 @@ export default {
           </template>
         </runner-detail>
         <runner-detail :label="s__('Runners|Maximum job timeout')" :value="maximumTimeout" />
+        <runner-detail
+          v-if="glFeatures.enforceRunnerTokenExpiresAt"
+          :empty-value="s__('Runners|Never expires')"
+        >
+          <template #label>
+            {{ s__('Runners|Token expiry') }}
+            <help-popover :options="tokenExpirationHelpPopoverOptions">
+              <p>
+                {{
+                  s__(
+                    'Runners|Runner authentication tokens will expire based on a set interval. They will automatically rotate once expired.',
+                  )
+                }}
+              </p>
+              <p class="gl-mb-0">
+                <gl-link
+                  :href="tokenExpirationHelpUrl"
+                  target="_blank"
+                  class="gl-reset-font-size"
+                  >{{ __('Learn more') }}</gl-link
+                >
+              </p>
+            </help-popover>
+          </template>
+          <template v-if="runner.tokenExpiresAt" #value>
+            <time-ago :time="runner.tokenExpiresAt" />
+          </template>
+        </runner-detail>
         <runner-detail :label="s__('Runners|Tags')">
           <template v-if="tagList.length" #value>
             <runner-tags class="gl-vertical-align-middle" :tag-list="tagList" size="sm" />

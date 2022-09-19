@@ -385,7 +385,7 @@ end
 ## Additional steps with new log files
 
 1. Consider log retention settings. By default, Omnibus rotates any
-   logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and 
+   logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and
    [keep at most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
    On GitLab.com, that setting is only 6 compressed files. These settings should suffice
    for most users, but you may need to tweak them in [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
@@ -395,7 +395,7 @@ end
    a merge request to the [`gitlab_fluentd`](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
    project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
-1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/index.md) and the 
+1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/index.md) and the
    [GitLab.com runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).
 
 ## Control logging visibility

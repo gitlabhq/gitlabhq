@@ -93,6 +93,13 @@ export const getUserDataByProp = (state) => (prop) => state.userData && state.us
 
 export const descriptionVersions = (state) => state.descriptionVersions;
 
+export const canUserAddIncidentTimelineEvents = (state) => {
+  return (
+    state.userData.can_add_timeline_events &&
+    state.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident
+  );
+};
+
 export const notesById = (state) =>
   state.discussions.reduce((acc, note) => {
     note.notes.every((n) => Object.assign(acc, { [n.id]: n }));

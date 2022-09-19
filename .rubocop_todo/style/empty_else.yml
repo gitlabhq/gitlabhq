@@ -29,7 +29,7 @@ Style/EmptyElse:
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'ee/app/controllers/admin/audit_logs_controller.rb'
     - 'ee/app/controllers/ee/groups_controller.rb'
-    - 'ee/app/helpers/ee/kerberos_spnego_helper.rb'
+    - 'ee/app/helpers/ee/kerberos_helper.rb'
     - 'ee/app/helpers/ee/trial_helper.rb'
     - 'ee/app/models/ee/audit_event.rb'
     - 'ee/app/services/ee/users/update_service.rb'

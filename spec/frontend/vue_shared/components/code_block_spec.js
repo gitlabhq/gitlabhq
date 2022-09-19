@@ -4,41 +4,77 @@ import CodeBlock from '~/vue_shared/components/code_block.vue';
 describe('Code Block', () => {
   let wrapper;
 
-  const defaultProps = {
-    code: 'test-code',
-  };
+  const code = 'test-code';
 
-  const createComponent = (props = {}) => {
+  const createComponent = (propsData, slots = {}) => {
     wrapper = shallowMount(CodeBlock, {
-      propsData: {
-        ...defaultProps,
-        ...props,
-      },
+      slots,
+      propsData,
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  describe('with default props', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+  it('overwrites the default slot', () => {
+    createComponent({}, { default: 'DEFAULT SLOT' });
 
-    it('renders correctly', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    expect(wrapper.element).toMatchInlineSnapshot(`
+        <pre
+          class="code-block rounded code"
+        >
+          DEFAULT SLOT
+        </pre>
+      `);
   });
 
-  describe('with maxHeight set to "200px"', () => {
-    beforeEach(() => {
-      createComponent({ maxHeight: '200px' });
-    });
+  it('renders with empty code prop', () => {
+    createComponent({});
 
-    it('renders correctly', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    expect(wrapper.element).toMatchInlineSnapshot(`
+      <pre
+        class="code-block rounded code"
+      >
+        <code
+          class="d-block"
+        >
+          
+        </code>
+      </pre>
+    `);
+  });
+
+  it('renders code prop when provided', () => {
+    createComponent({ code });
+
+    expect(wrapper.element).toMatchInlineSnapshot(`
+        <pre
+          class="code-block rounded code"
+        >
+          <code
+            class="d-block"
+          >
+            test-code
+          </code>
+        </pre>
+      `);
+  });
+
+  it('sets maxHeight properly when provided', () => {
+    createComponent({ code, maxHeight: '200px' });
+
+    expect(wrapper.element).toMatchInlineSnapshot(`
+        <pre
+          class="code-block rounded code"
+          style="max-height: 200px; overflow-y: auto;"
+        >
+          <code
+            class="d-block"
+          >
+            test-code
+          </code>
+        </pre>
+      `);
   });
 });

@@ -78,16 +78,17 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 |------------------------------------------------|-----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
 | .NET Core                                      | [Security Code Scan](https://security-code-scan.github.io)                                                | 11.0                                                                                    |
 | .NET Framework<sup>1</sup>                     | [Security Code Scan](https://security-code-scan.github.io)                                                | 13.0                                                                                    |
+| .NET (all versions, C# only)                   | [Semgrep](https://semgrep.dev)                                                                            | 15.4                                                                                    |
 | Apex (Salesforce)                              | [PMD](https://pmd.github.io/pmd/index.html)                                                               | 12.1                                                                                    |
 | C                                              | [Semgrep](https://semgrep.dev)                                                                            | 14.2                                                                                    |
 | C/C++                                          | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                                               | 10.7                                                                                    |
 | Elixir (Phoenix)                               | [Sobelow](https://github.com/nccgroup/sobelow)                                                            | 11.1                                                                                    |
 | Go                                             | [Gosec](https://github.com/securego/gosec)                                                                | 10.7                                                                                    |
 | Go                                             | [Semgrep](https://semgrep.dev)                                                                            | 14.4                                                                                    |
-| Groovy<sup>2</sup>                             | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT)                                                  |
+| Groovy<sup>2</sup>                             | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Maven, SBT)                                                  |
 | Helm Charts                                    | [Kubesec](https://github.com/controlplaneio/kubesec)                                                      | 13.1                                                                                    |
 | Java (any build system)                        | [Semgrep](https://semgrep.dev)                                                                            | 14.10                                                                                   |
-| Java<sup>2</sup>                               | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT)                                           |
+| Java<sup>2</sup>                               | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT)                                           |
 | Java (Android)                                 | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
 | JavaScript                                     | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.8                                                                                    |
 | JavaScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
@@ -103,16 +104,16 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | React                                          | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
 | Ruby                                           | [brakeman](https://brakemanscanner.org)                                                                   | 13.9                                                                                    |
 | Ruby on Rails                                  | [brakeman](https://brakemanscanner.org)                                                                   | 10.3                                                                                    |
-| Scala<sup>2</sup>                              | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven)                                                  |
+| Scala<sup>2</sup>                              | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                  |
 | Swift (iOS)                                    | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
 | TypeScript                                     | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
 | TypeScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
 
-1. .NET 4 support is limited. The analyzer runs in a Linux container and does not have access to Windows-specific libraries or features. We currently plan to [migrate C# coverage to Semgrep-based scanning](https://gitlab.com/gitlab-org/gitlab/-/issues/347258) to make it easier to scan C# projects.
-1. The SpotBugs-based analyzer supports [Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
+1. .NET 4 support is limited. The analyzer runs in a Linux container and does not have access to Windows-specific libraries or features. Use the Semgrep-based scanner if you need .NET 4 support.
+1. The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
 [Grails](https://grails.org/),
-and the [Maven wrapper](https://github.com/takari/maven-wrapper).
+and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java projects.
 
 ### Multi-project support
 
@@ -242,7 +243,7 @@ successfully, and an error may occur.
 
 To enable and configure SAST with default settings:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance** > **Configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 1. Review and merge the merge request to enable SAST.
@@ -262,7 +263,7 @@ successfully, and an error may occur.
 
 To enable and configure SAST with customizations:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. If the project does not have a `.gitlab-ci.yml` file, select **Enable SAST** in the Static
    Application Security Testing (SAST) row, otherwise select **Configure SAST**.
@@ -337,7 +338,7 @@ False positive detection is available in a subset of the [supported languages](#
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
 
 Source code is volatile; as developers make changes, source code may move within files or between files.
-Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/).
+Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/index.md).
 These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
 If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
 
@@ -550,8 +551,8 @@ Some analyzers can be customized with CI/CD variables.
 | `KUBESEC_HELM_CHARTS_PATH`  | Kubesec    | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`      | Kubesec    | Additional arguments for the `helm` executable.                                                                                                                                                                                    |
 | `COMPILE`                   | Gosec, SpotBugs   | Set to `false` to disable project compilation and dependency fetching. [Introduced for `SpotBugs`](https://gitlab.com/gitlab-org/gitlab/-/issues/195252) analyzer in GitLab 13.1 and [`Gosec`](https://gitlab.com/gitlab-org/gitlab/-/issues/330678) analyzer in GitLab 14.0.  |
-| `ANT_HOME`                  | SpotBugs   | The `ANT_HOME` variable.                                                                                                                                                                                                           |
-| `ANT_PATH`                  | SpotBugs   | Path to the `ant` executable.                                                                                                                                                                                                      |
+| `ANT_HOME`                  | SpotBugs   | The `ANT_HOME` variable.                                                                                                                                                                                                        |
+| `ANT_PATH`                  | SpotBugs   | Path to the `ant` executable.                                                                                                                                                                                                     |
 | `GRADLE_PATH`               | SpotBugs   | Path to the `gradle` executable.                                                                                                                                                                                                   |
 | `JAVA_OPTS`                 | SpotBugs   | Additional arguments for the `java` executable.                                                                                                                                                                                    |
 | `JAVA_PATH`                 | SpotBugs   | Path to the `java` executable.                                                                                                                                                                                                     |
@@ -565,6 +566,22 @@ Some analyzers can be customized with CI/CD variables.
 | `PHPCS_SECURITY_AUDIT_PHP_EXTENSIONS` | phpcs-security-audit | Comma separated list of additional PHP Extensions.                                                                                                                                                             |
 | `SAST_DISABLE_BABEL`        | NodeJsScan | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64025)** in GitLab 13.5 |
 | `SAST_SEMGREP_METRICS` | Semgrep | Set to `"false"` to disable sending anonymized scan metrics to [r2c](https://r2c.dev/). Default: `true`. Introduced in GitLab 14.0 from the [confidential issue](../../project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab/-/issues/330565`.      |
+| `SAST_SCANNER_ALLOWED_CLI_OPTS`        | Semgrep | CLI options (arguments with value, or flags) that are passed to the underlying security scanner when running scan operation. Only a limited set of [options](#security-scanner-configuration) are accepted. Separate a CLI option and its value using either a blank space or equals (`=`) character. For example: `name1 value1` or `name1=value1`. Multiple options must be separated by blank spaces. For example: `name1 value1 name2 value2`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368565) in GitLab 15.3. |
+
+#### Security scanner configuration
+
+SAST analyzers internally use OSS security scanners to perform the analysis. We set the recommended
+configuration for the security scanner so that you need not to worry about tuning them. However,
+there can be some rare cases where our default scanner configuration does not suit your
+requirements.
+
+To allow some customization of scanner behavior, you can add a limited set of flags to the
+underlying scanner. Specify the flags in the `SAST_SCANNER_ALLOWED_CLI_OPTS` CI/CD variable. These
+flags are added to the scanner's CLI options.
+
+| Analyzer                                                                     | CLI option         | Description |
+|------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------|
+| [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) | `--max-memory`     | Sets the maximum system memory to use when running a rule on a single file. Measured in MB. |
 
 #### Custom CI/CD variables
 
@@ -728,6 +745,31 @@ Increase the [Secure scanner log verbosity](#logging-level) to `debug` in a glob
 variables:
   SECURE_LOG_LEVEL: "debug"
 ```
+
+### Pipeline errors related to changes in the GitLab-managed CI/CD template
+
+The [GitLab-managed SAST CI/CD template](#configure-sast-manually) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+
+- See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
+- Experience another type of unexpected issue with your CI/CD pipeline configuration.
+
+If you're experiencing a job failure or seeing a SAST-related `yaml invalid` pipeline status, you can temporarily revert to an older version of the template so your pipelines keep working while you investigate the issue. To use an older version of the template, change the existing `include` statement in your CI/CD YAML file to refer to a specific template version, such as `v15.3.3-ee`:
+
+```yaml
+include:
+  remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/v15.3.3-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml'
+```
+
+If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
+
+We recommend that you only use this solution temporarily and that you return to [the standard template](#configure-sast-manually) as soon as possible.
+
+### Errors in a specific analyzer job
+
+GitLab SAST [analyzers](analyzers.md) are released as container images.
+If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-manually) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
+
+Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 

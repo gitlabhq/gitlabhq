@@ -42,6 +42,9 @@ export default {
     steps() {
       return this.parsedTemplate?.get('steps');
     },
+    templateId() {
+      return this.parsedTemplate?.get('id');
+    },
   },
 };
 </script>
@@ -60,6 +63,7 @@ export default {
       :filename="filename"
       :project-path="projectPath"
       :steps="steps"
+      :template-id="templateId"
       @done="$emit('done')"
     />
   </div>

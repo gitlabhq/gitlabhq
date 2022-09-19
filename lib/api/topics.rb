@@ -94,5 +94,25 @@ module API
 
       destroy_conditionally!(topic)
     end
+
+    desc 'Merge topics' do
+      detail 'This feature was introduced in GitLab 15.4.'
+      success Entities::Projects::Topic
+    end
+    params do
+      requires :source_topic_id, type: Integer, desc: 'ID of source project topic'
+      requires :target_topic_id, type: Integer, desc: 'ID of target project topic'
+    end
+    post 'topics/merge' do
+      authenticated_as_admin!
+
+      source_topic = ::Projects::Topic.find(params[:source_topic_id])
+      target_topic = ::Projects::Topic.find(params[:target_topic_id])
+
+      response = ::Topics::MergeService.new(source_topic, target_topic).execute
+      render_api_error!(response.message, :bad_request) if response.error?
+
+      present target_topic, with: Entities::Projects::Topic
+    end
   end
 end

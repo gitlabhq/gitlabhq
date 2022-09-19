@@ -82,7 +82,9 @@ export default {
           :stage-name="stageName"
         />
 
-        <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4">{{ group.size }}</div>
+        <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4 gl-align-self-center">
+          {{ group.size }}
+        </div>
       </div>
     </button>
 

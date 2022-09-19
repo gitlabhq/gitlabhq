@@ -26,4 +26,13 @@ class OauthAccessToken < Doorkeeper::AccessToken
 
     super
   end
+
+  # Override Doorkeeper::AccessToken.matching_token_for since we
+  # have `reuse_access_tokens` disabled and we also hash tokens.
+  # This ensures we don't accidentally return a hashed token value.
+  def self.matching_token_for(application, resource_owner, scopes)
+    return if Feature.enabled?(:hash_oauth_tokens)
+
+    super
+  end
 end

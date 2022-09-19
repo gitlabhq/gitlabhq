@@ -1,12 +1,12 @@
 # GitLab QA - End-to-end tests for GitLab
 
-This directory contains [end-to-end tests](../../../doc/development/testing_guide/end_to_end/index.md)
+This directory contains [end-to-end tests](../doc/development/testing_guide/end_to_end/index.md)
 for GitLab. It includes the test framework and the tests themselves.
 
 The tests can be found in `qa/specs/features` (not to be confused with the unit
 tests for the test framework, which are in `spec/`).
 
-It is part of the [GitLab QA project](https://gitlab.com/gitlab-org/gitlab-qa).
+Tests use [GitLab QA project](https://gitlab.com/gitlab-org/gitlab-qa) for environment orchestration in CI jobs.
 
 ## What is it?
 
@@ -46,7 +46,7 @@ Note that tests are using `Chrome` web browser by default so it should be instal
 Tests are executed in merge request pipelines as part of the development lifecycle.
 
 - [Review app environment](../doc/development/testing_guide/review_apps.md)
-- [package-and-qa](../doc/development/testing_guide/end_to_end/index.md#testing-code-in-merge-requests)
+- [e2e:package-and-test](../doc/development/testing_guide/end_to_end/index.md#testing-code-in-merge-requests)
 
 ### Logging
 

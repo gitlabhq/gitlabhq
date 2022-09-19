@@ -187,9 +187,38 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe '#reactive_cache_limit_enabled?' do
+    subject { setting.reactive_cache_limit_enabled? }
+
+    it { is_expected.to eq(true) }
+
+    context 'when feature flag disabled' do
+      before do
+        stub_feature_flags(error_tracking_sentry_limit: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe '#sentry_client' do
-    it 'returns sentry client' do
-      expect(subject.sentry_client).to be_a(ErrorTracking::SentryClient)
+    subject { setting.sentry_client }
+
+    it { is_expected.to be_a(ErrorTracking::SentryClient) }
+    it { is_expected.to have_attributes(url: setting.api_url, token: setting.token) }
+
+    describe '#validate_size_guarded_by_feature_flag?' do
+      subject { setting.sentry_client.validate_size_guarded_by_feature_flag? }
+
+      it { is_expected.to eq(true) }
+
+      context 'when feature flag disabled' do
+        before do
+          stub_feature_flags(error_tracking_sentry_limit: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 
@@ -222,70 +251,39 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
       end
     end
 
-    context 'when sentry client raises ErrorTracking::SentryClient::Error' do
-      before do
-        synchronous_reactive_cache(subject)
+    describe 'client errors' do
+      using RSpec::Parameterized::TableSyntax
 
-        allow(subject).to receive(:sentry_client).and_return(sentry_client)
-        allow(sentry_client).to receive(:list_issues).with(opts)
-          .and_raise(ErrorTracking::SentryClient::Error, 'error message')
-      end
-
-      it 'returns error' do
-        expect(result).to eq(
-          error: 'error message',
-          error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE
-        )
-      end
-    end
-
-    context 'when sentry client raises ErrorTracking::SentryClient::MissingKeysError' do
-      before do
-        synchronous_reactive_cache(subject)
-
-        allow(subject).to receive(:sentry_client).and_return(sentry_client)
-        allow(sentry_client).to receive(:list_issues).with(opts)
-          .and_raise(ErrorTracking::SentryClient::MissingKeysError,
-                     'Sentry API response is missing keys. key not found: "id"')
-      end
-
-      it 'returns error' do
-        expect(result).to eq(
-          error: 'Sentry API response is missing keys. key not found: "id"',
-          error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_MISSING_KEYS
-        )
-      end
-    end
-
-    context 'when sentry client raises ErrorTracking::SentryClient::ResponseInvalidSizeError' do
-      let(:error_msg) { "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}." }
+      sc = ErrorTracking::SentryClient
+      pets = described_class
+      msg = 'something'
 
       before do
         synchronous_reactive_cache(subject)
 
         allow(subject).to receive(:sentry_client).and_return(sentry_client)
-        allow(sentry_client).to receive(:list_issues).with(opts)
-          .and_raise(ErrorTracking::SentryClient::ResponseInvalidSizeError, error_msg)
       end
 
-      it 'returns error' do
-        expect(result).to eq(
-          error: error_msg,
-          error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_INVALID_SIZE
-        )
-      end
-    end
-
-    context 'when sentry client raises StandardError' do
-      before do
-        synchronous_reactive_cache(subject)
-
-        allow(subject).to receive(:sentry_client).and_return(sentry_client)
-        allow(sentry_client).to receive(:list_issues).with(opts).and_raise(StandardError)
+      where(:exception, :error_type, :error_message) do
+        sc::Error                    | pets::SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE | msg
+        sc::MissingKeysError         | pets::SENTRY_API_ERROR_TYPE_MISSING_KEYS     | msg
+        sc::ResponseInvalidSizeError | pets::SENTRY_API_ERROR_INVALID_SIZE          | msg
+        sc::BadRequestError          | pets::SENTRY_API_ERROR_TYPE_BAD_REQUEST      | msg
+        StandardError                | nil                                          | 'Unexpected Error'
       end
 
-      it 'returns error' do
-        expect(result).to eq(error: 'Unexpected Error')
+      with_them do
+        it 'returns an error' do
+          allow(sentry_client).to receive(:list_issues).with(opts)
+            .and_raise(exception, msg)
+
+          expected_result = {
+            error: error_message,
+            error_type: error_type
+          }.compact
+
+          expect(result).to eq(expected_result)
+        end
       end
     end
   end

@@ -46,7 +46,8 @@ module Gitlab
             group,
             group_tree,
             json_writer,
-            exportable_path: "groups/#{group.id}"
+            exportable_path: "groups/#{group.id}",
+            current_user: @current_user
           ).execute
         end
 

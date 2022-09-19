@@ -108,6 +108,7 @@ module PgFullTextSearchable
       # This fixes an inconsistency with how to_tsvector and websearch_to_tsquery process URLs
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/354784#note_905431920
       search_term = remove_url_scheme(search_term)
+      search_term = ActiveSupport::Inflector.transliterate(search_term)
 
       joins(:search_data).where(
         Arel::Nodes::InfixOperation.new(

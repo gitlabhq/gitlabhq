@@ -30,8 +30,7 @@ RSpec.describe 'User sees feature flag list', :js do
           create(:operations_scope, strategy: strat, environment_scope: 'production')
         end
       end
-      create(:operations_feature_flag, :new_version_flag, project: project,
-             name: 'my_flag', active: false)
+      create(:operations_feature_flag, :new_version_flag, project: project, name: 'my_flag', active: false)
     end
 
     it 'shows the user the first flag' do
@@ -91,7 +90,7 @@ RSpec.describe 'User sees feature flag list', :js do
     it 'shows the empty page' do
       expect(page).to have_text 'Get started with feature flags'
       expect(page).to have_selector('.btn-confirm', text: 'New feature flag')
-      expect(page).to have_selector('[data-qa-selector="configure_feature_flags_button"]', text: 'Configure') # rubocop:disable QA/SelectorUsage
+      expect(page).to have_selector('[data-testid="ff-configure-button"]', text: 'Configure')
     end
   end
 end

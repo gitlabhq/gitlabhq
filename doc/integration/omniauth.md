@@ -46,7 +46,7 @@ configure the settings that are common for all providers.
 Setting                    | Description | Default value
 ---------------------------|-------------|--------------
 `allow_single_sign_on`     | Enables you to list the providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | The default is `false`. If `false`, users must be created manually, or they can't sign in using OmniAuth.
-`auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have the [LDAP (ActiveDirectory)](../administration/auth/ldap/index.md) integration enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
+`auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
 `block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
 
 To change these settings:
@@ -195,7 +195,7 @@ By default, sign-in is enabled for all the OAuth providers configured in `config
 
 To enable or disable an OmniAuth provider:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings**.
 1. Expand **Sign-in restrictions**.
 1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.
@@ -436,6 +436,34 @@ then override the icon in one of two ways:
              ...
            }
      ```
+
+## Change apps or configuration
+
+Because GitLab doesn't support having multiple providers in OAuth, GitLab configuration and user identification must be
+updated at the same time if the provider or app is changed.
+
+These instructions apply to all methods of authentication where GitLab stores an `extern_uid` and it is the only data used
+for user authentication.
+
+When changing apps within a provider, if the user `extern_uid` does not change, only the GitLab configuration must be
+updated.
+
+To swap configurations:
+
+1. Change provider configuration in your `gitlab.rb` file.
+1. Update `extern_uid` for all users that have an identity in GitLab for the previous provider.
+
+To find the `extern_uid`, look at an existing user's current `extern_uid` for an ID that matches the appropriate field in
+your current provider for the same user.
+
+There are two methods to update the `extern_uid`:
+
+- Using the [Users API](../api/users.md#user-modification). Pass the provider name and the new `extern_uid`.
+- Using the [Rails console](../administration/operations/rails_console.md):
+
+  ```ruby
+  Identity.where(extern_uid: 'old-id').update!(extern_uid: 'new-id')`
+  ```
 
 ## Limitations
 

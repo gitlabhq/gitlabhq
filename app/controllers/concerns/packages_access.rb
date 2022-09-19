@@ -15,6 +15,6 @@ module PackagesAccess
   end
 
   def verify_read_package!
-    authorize_read_package!(project)
+    access_denied! unless can?(current_user, :read_package, project&.packages_policy_subject)
   end
 end

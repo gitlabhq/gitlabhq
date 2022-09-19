@@ -363,7 +363,7 @@ describe('Environment table', () => {
   });
 
   describe('sortedEnvironments', () => {
-    it('it should sort children as well', () => {
+    it('should sort children as well', () => {
       const mockItems = [
         {
           name: 'production',

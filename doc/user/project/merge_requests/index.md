@@ -27,7 +27,7 @@ You can view merge requests for your project, group, or yourself.
 
 To view all merge requests for a project:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**.
 
 Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>m</kbd>.
@@ -36,7 +36,7 @@ Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>
 
 To view merge requests for all projects in a group:
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Merge requests**.
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
@@ -160,13 +160,11 @@ change and whether you need access to a development environment:
 
 ## Assign a user to a merge request
 
-When a merge request is created, it's assigned by default to the person who created it.
-This person owns the merge request, but isn't responsible for [reviewing it](reviews/index.md).
-To assign the merge request to someone else, use the `/assign @user`
+To assign the merge request to a user, use the `/assign @user`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area in
 a merge request, or:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests** and find your merge request.
 1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit**.
@@ -186,7 +184,7 @@ accountable for it:
 To assign multiple assignees to a merge request, use the `/assign @user`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area, or:
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests** and find your merge request.
 1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit** and, from the dropdown list, select all users you want

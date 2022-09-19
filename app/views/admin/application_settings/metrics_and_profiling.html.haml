@@ -11,7 +11,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Monitor the health and performance of GitLab with Prometheus.')
+      = _('Monitor GitLab with Prometheus.')
   .settings-content
     = render 'prometheus'
 

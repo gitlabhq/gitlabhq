@@ -11,12 +11,12 @@
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form js-requires-input" do
   .form-group.row
-    = label_tag :branch_name, nil, class: 'col-form-label col-sm-2'
+    = label_tag :branch_name, _('Branch name'), class: 'col-form-label col-sm-2'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name monospace'
       .form-text.text-muted.text-danger.js-branch-name-error
   .form-group.row
-    = label_tag :ref, 'Create from', class: 'col-form-label col-sm-2'
+    = label_tag :ref, _('Create from'), class: 'col-form-label col-sm-2'
     .col-sm-10.create-from
       .dropdown
         = hidden_field_tag :ref, default_ref
@@ -24,7 +24,8 @@
           .text-left.dropdown-toggle-text= default_ref
           = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
-      .form-text.text-muted Existing branch name, tag, or commit SHA
+      .form-text.text-muted
+        = _('Existing branch name, tag, or commit SHA')
   .form-actions
     = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
       = _('Create branch')

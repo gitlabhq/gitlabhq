@@ -144,9 +144,9 @@ export default {
       />
       <gl-dropdown-item
         class="gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2! gl-mb-2"
-        :is-check-item="true"
+        is-check-item
         :is-checked="isSelected($options.ANY_OPTION)"
-        :is-check-centered="true"
+        is-check-centered
         @click="updateDropdown($options.ANY_OPTION)"
       >
         <span data-testid="item-title">{{ $options.ANY_OPTION.name }}</span>

@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/json'
 
 RSpec.describe RuboCop::Cop::Gitlab::Json do
-  subject(:cop) { described_class.new }
-
   context 'when ::JSON is called' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

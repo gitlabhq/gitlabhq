@@ -130,7 +130,7 @@ export const releaseUpdateMutatationVariables = (state, getters) => {
       projectPath: state.projectPath,
       tagName: state.release.tagName,
       name,
-      releasedAt: state.release.releasedAt,
+      releasedAt: getters.releasedAtChanged ? state.release.releasedAt : null,
       description: state.includeTagNotes
         ? getters.formattedReleaseNotes
         : state.release.description,
@@ -167,3 +167,6 @@ export const formattedReleaseNotes = ({ includeTagNotes, release: { description 
   includeTagNotes && tagNotes
     ? `${description}\n\n### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`
     : description;
+
+export const releasedAtChanged = ({ originalReleasedAt, release }) =>
+  originalReleasedAt !== release.releasedAt;

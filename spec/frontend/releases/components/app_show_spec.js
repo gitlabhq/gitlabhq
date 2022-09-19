@@ -36,8 +36,8 @@ describe('Release show component', () => {
     wrapper = null;
   });
 
-  const findLoadingSkeleton = () => wrapper.find(ReleaseSkeletonLoader);
-  const findReleaseBlock = () => wrapper.find(ReleaseBlock);
+  const findLoadingSkeleton = () => wrapper.findComponent(ReleaseSkeletonLoader);
+  const findReleaseBlock = () => wrapper.findComponent(ReleaseBlock);
 
   const expectLoadingIndicator = () => {
     it('renders a loading indicator', () => {

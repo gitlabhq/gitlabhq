@@ -311,9 +311,6 @@ kbd kbd {
   color: #fff;
   background-color: #ab6100;
 }
-.bg-transparent {
-  background-color: transparent !important;
-}
 .rounded-circle {
   border-radius: 50% !important;
 }
@@ -438,7 +435,7 @@ a.gl-badge.badge-warning:active {
 .gl-form-input:disabled,
 .gl-form-input.form-control:disabled {
   cursor: not-allowed;
-  color: #868686;
+  color: #666;
 }
 .gl-form-input::placeholder,
 .gl-form-input.form-control::placeholder {
@@ -572,9 +569,6 @@ svg {
 }
 html {
   overflow-y: scroll;
-}
-body {
-  text-decoration-skip: ink;
 }
 .btn {
   border-radius: 4px;
@@ -794,19 +788,16 @@ kbd {
 .navbar-gitlab .header-content .title img {
   height: 24px;
 }
-.navbar-gitlab .header-content .title a {
+.navbar-gitlab .header-content .title a:not(.canary-badge) {
   display: flex;
   align-items: center;
   padding: 2px 8px;
   margin: 4px 2px 4px -8px;
   border-radius: 4px;
 }
-.navbar-gitlab .header-content .title a:active {
+.navbar-gitlab .header-content .title a:not(.canary-badge):active {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 0 3px #63a6e9;
   outline: none;
-}
-.navbar-gitlab .header-content .title .canary-badge {
-  margin-left: -8px;
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
@@ -991,9 +982,6 @@ kbd {
   visibility: hidden;
   top: 3px;
 }
-.top-nav-toggle .dropdown-icon {
-  margin-right: 0.5rem;
-}
 .tanuki-logo .tanuki {
   fill: #e24329;
 }
@@ -1116,7 +1104,7 @@ kbd {
   font-weight: 600;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: rgba(41, 41, 97, 0.08);
+  background-color: rgba(0, 0, 0, 0.08);
 }
 .nav-sidebar ul {
   padding-left: 0;
@@ -1750,6 +1738,12 @@ svg.s16 {
 }
 .gl-pt-0 {
   padding-top: 0;
+}
+.gl-mr-auto {
+  margin-right: auto;
+}
+.gl-mr-3 {
+  margin-right: 0.5rem;
 }
 .gl-ml-n2 {
   margin-left: -0.25rem;

@@ -5,8 +5,21 @@ import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in
 import VersionSelectForm from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/version_select_form.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 
+import { updateInstallation } from '~/jira_connect/subscriptions/api';
+import { reloadPage, persistBaseUrl, retrieveBaseUrl } from '~/jira_connect/subscriptions/utils';
+
+jest.mock('~/jira_connect/subscriptions/api', () => {
+  return {
+    updateInstallation: jest.fn(),
+    setApiBaseURL: jest.fn(),
+  };
+});
+jest.mock('~/jira_connect/subscriptions/utils');
+
 describe('SignInGitlabMultiversion', () => {
   let wrapper;
+
+  const mockBasePath = 'gitlab.mycompany.com';
 
   const findVersionSelectForm = () => wrapper.findComponent(VersionSelectForm);
   const findSignInOauthButton = () => wrapper.findComponent(SignInOauthButton);
@@ -29,30 +42,32 @@ describe('SignInGitlabMultiversion', () => {
       });
 
       describe('when form emits "submit" event', () => {
-        it('hides the version select form and shows the sign in button', async () => {
+        it('updates the backend, then saves the baseUrl and reloads', async () => {
+          updateInstallation.mockResolvedValue({});
+
           createComponent();
 
-          findVersionSelectForm().vm.$emit('submit', 'gitlab.mycompany.com');
+          findVersionSelectForm().vm.$emit('submit', mockBasePath);
           await nextTick();
 
-          expect(findVersionSelectForm().exists()).toBe(false);
-          expect(findSignInOauthButton().exists()).toBe(true);
+          expect(updateInstallation).toHaveBeenCalled();
+          expect(persistBaseUrl).toHaveBeenCalledWith(mockBasePath);
+          expect(reloadPage).toHaveBeenCalled();
         });
       });
     });
   });
 
   describe('when version is selected', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
+      retrieveBaseUrl.mockReturnValue(mockBasePath);
       createComponent();
-
-      findVersionSelectForm().vm.$emit('submit', 'gitlab.mycompany.com');
-      await nextTick();
     });
 
     describe('sign in button', () => {
       it('renders sign in button', () => {
         expect(findSignInOauthButton().exists()).toBe(true);
+        expect(findSignInOauthButton().props('gitlabBasePath')).toBe(mockBasePath);
       });
 
       describe('when button emits `sign-in` event', () => {
@@ -71,7 +86,7 @@ describe('SignInGitlabMultiversion', () => {
           const button = findSignInOauthButton();
           button.vm.$emit('error');
 
-          expect(wrapper.emitted('error')).toBeTruthy();
+          expect(wrapper.emitted('error')).toHaveLength(1);
         });
       });
     });

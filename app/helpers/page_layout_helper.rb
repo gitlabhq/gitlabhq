@@ -150,6 +150,10 @@ module PageLayoutHelper
     css_class.join(' ')
   end
 
+  def full_content_class
+    "#{container_class} #{@content_class}" # rubocop:disable Rails/HelperInstanceVariable
+  end
+
   def page_itemtype(itemtype = nil)
     if itemtype
       @page_itemtype = { itemscope: true, itemtype: itemtype }

@@ -7,12 +7,12 @@ module Projects
 
       before_action :integration, only: [:show, :retry]
 
-      def retry
-        execute_hook
-        redirect_to edit_project_settings_integration_path(@project, @integration)
-      end
-
       private
+
+      override :after_retry_redirect_path
+      def after_retry_redirect_path
+        edit_project_settings_integration_path(@project, @integration)
+      end
 
       def integration
         @integration ||= @project.find_or_initialize_integration(params[:integration_id])

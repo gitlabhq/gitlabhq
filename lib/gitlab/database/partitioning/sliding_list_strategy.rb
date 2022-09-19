@@ -14,7 +14,7 @@ module Gitlab
           @next_partition_if = next_partition_if
           @detach_partition_if = detach_partition_if
 
-          ensure_partitioning_column_ignored!
+          ensure_partitioning_column_ignored_or_readonly!
         end
 
         def current_partitions
@@ -26,7 +26,7 @@ module Gitlab
         def missing_partitions
           if no_partitions_exist?
             [initial_partition]
-          elsif next_partition_if.call(active_partition.value)
+          elsif next_partition_if.call(active_partition)
             [next_partition]
           else
             []
@@ -44,7 +44,7 @@ module Gitlab
         def extra_partitions
           possibly_extra = current_partitions[0...-1] # Never consider the most recent partition
 
-          extra = possibly_extra.take_while { |p| detach_partition_if.call(p.value) }
+          extra = possibly_extra.take_while { |p| detach_partition_if.call(p) }
 
           default_value = current_default_value
           if extra.any? { |p| p.value == default_value }
@@ -128,10 +128,15 @@ module Gitlab
           Integer(value)
         end
 
-        def ensure_partitioning_column_ignored!
-          unless model.ignored_columns.include?(partitioning_key.to_s)
-            raise "Add #{partitioning_key} to #{model.name}.ignored_columns to use it with SlidingListStrategy"
+        def ensure_partitioning_column_ignored_or_readonly!
+          unless key_ignored_or_readonly?
+            raise "Add #{partitioning_key} to #{model.name}.ignored_columns or " \
+                  "mark it as readonly to use it with SlidingListStrategy"
           end
+        end
+
+        def key_ignored_or_readonly?
+          model.ignored_columns.include?(partitioning_key.to_s) || model.readonly_attribute?(partitioning_key.to_s)
         end
 
         def with_lock_retries(&block)

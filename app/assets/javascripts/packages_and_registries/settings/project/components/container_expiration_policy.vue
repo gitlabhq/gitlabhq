@@ -1,9 +1,11 @@
 <script>
-import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { isEqual, get, isEmpty } from 'lodash';
+import { GlAlert, GlSprintf, GlLink, GlCard, GlButton } from '@gitlab/ui';
 import {
   CONTAINER_CLEANUP_POLICY_TITLE,
   CONTAINER_CLEANUP_POLICY_DESCRIPTION,
+  CONTAINER_CLEANUP_POLICY_EDIT_RULES,
+  CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
+  CONTAINER_CLEANUP_POLICY_SET_RULES,
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_TITLE,
   UNAVAILABLE_FEATURE_INTRO_TEXT,
@@ -13,20 +15,29 @@ import {
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 
-import ContainerExpirationPolicyForm from './container_expiration_policy_form.vue';
-
 export default {
   components: {
     SettingsBlock,
     GlAlert,
     GlSprintf,
     GlLink,
-    ContainerExpirationPolicyForm,
+    GlCard,
+    GlButton,
   },
-  inject: ['projectPath', 'isAdmin', 'adminSettingsPath', 'enableHistoricEntries', 'helpPagePath'],
+  inject: [
+    'projectPath',
+    'isAdmin',
+    'adminSettingsPath',
+    'enableHistoricEntries',
+    'helpPagePath',
+    'cleanupSettingsPath',
+  ],
   i18n: {
     CONTAINER_CLEANUP_POLICY_TITLE,
     CONTAINER_CLEANUP_POLICY_DESCRIPTION,
+    CONTAINER_CLEANUP_POLICY_EDIT_RULES,
+    CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
+    CONTAINER_CLEANUP_POLICY_SET_RULES,
     UNAVAILABLE_FEATURE_TITLE,
     UNAVAILABLE_FEATURE_INTRO_TEXT,
     FETCH_SETTINGS_ERROR_MESSAGE,
@@ -40,9 +51,6 @@ export default {
         };
       },
       update: (data) => data.project?.containerExpirationPolicy,
-      result({ data }) {
-        this.workingCopy = { ...get(data, 'project.containerExpirationPolicy', {}) };
-      },
       error(e) {
         this.fetchSettingsError = e;
       },
@@ -52,29 +60,25 @@ export default {
     return {
       fetchSettingsError: false,
       containerExpirationPolicy: null,
-      workingCopy: {},
     };
   },
   computed: {
-    isDisabled() {
-      return !(this.containerExpirationPolicy || this.enableHistoricEntries);
+    isCleanupEnabled() {
+      return this.containerExpirationPolicy?.enabled ?? false;
+    },
+    isEnabled() {
+      return this.containerExpirationPolicy || this.enableHistoricEntries;
     },
     showDisabledFormMessage() {
-      return this.isDisabled && !this.fetchSettingsError;
+      return !this.isEnabled && !this.fetchSettingsError;
     },
     unavailableFeatureMessage() {
       return this.isAdmin ? UNAVAILABLE_ADMIN_FEATURE_TEXT : UNAVAILABLE_USER_FEATURE_TEXT;
     },
-    isEdited() {
-      if (isEmpty(this.containerExpirationPolicy) && isEmpty(this.workingCopy)) {
-        return false;
-      }
-      return !isEqual(this.containerExpirationPolicy, this.workingCopy);
-    },
-  },
-  methods: {
-    restoreOriginal() {
-      this.workingCopy = { ...this.containerExpirationPolicy };
+    cleanupRulesButtonText() {
+      return this.isCleanupEnabled
+        ? this.$options.i18n.CONTAINER_CLEANUP_POLICY_EDIT_RULES
+        : this.$options.i18n.CONTAINER_CLEANUP_POLICY_SET_RULES;
     },
   },
 };
@@ -93,13 +97,19 @@ export default {
       </span>
     </template>
     <template #default>
-      <container-expiration-policy-form
-        v-if="!isDisabled"
-        v-model="workingCopy"
-        :is-loading="$apollo.queries.containerExpirationPolicy.loading"
-        :is-edited="isEdited"
-        @reset="restoreOriginal"
-      />
+      <gl-card v-if="isEnabled">
+        <p data-testid="description">
+          {{ $options.i18n.CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION }}
+        </p>
+        <gl-button
+          data-testid="rules-button"
+          :href="cleanupSettingsPath"
+          category="secondary"
+          variant="confirm"
+        >
+          {{ cleanupRulesButtonText }}
+        </gl-button>
+      </gl-card>
       <template v-else>
         <gl-alert
           v-if="showDisabledFormMessage"

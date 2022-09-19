@@ -9,7 +9,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
   let(:admin) { create(:admin) }
-  let(:user) { create(:user)}
+  let(:user) { create(:user) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -360,6 +360,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
         expect(response).to redirect_to(general_admin_application_settings_path)
         expect(application_settings.reload.pipeline_limit_per_project_user_sha).to eq(25)
+      end
+    end
+
+    context 'invitation flow enforcement setting' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates invitation_flow_enforcement setting' do
+        put :update, params: { application_setting: { invitation_flow_enforcement: true } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.invitation_flow_enforcement).to eq(true)
       end
     end
   end

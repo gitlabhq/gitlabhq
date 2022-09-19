@@ -2,6 +2,7 @@
 - page_title _("Members")
 
 = render_if_exists 'projects/free_user_cap_alert', project: @project
+= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
 .row.gl-mt-3
   .col-lg-12

@@ -65,7 +65,7 @@ export default {
   data() {
     if (!this.iid) return { state: this.initialState };
 
-    if (this.initialState) {
+    if (this.initialState && !badgeState.state) {
       badgeState.state = this.initialState;
     }
 

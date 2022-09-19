@@ -1,8 +1,9 @@
 <script>
 import { GlCard, GlButton, GlSprintf } from '@gitlab/ui';
+import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
-  UPDATE_SETTINGS_SUCCESS_MESSAGE,
+  SHOW_SETUP_SUCCESS_ALERT,
   SET_CLEANUP_POLICY_BUTTON,
   KEEP_HEADER_TEXT,
   KEEP_INFO_TEXT,
@@ -37,7 +38,7 @@ export default {
     ExpirationRunText,
   },
   mixins: [Tracking.mixin()],
-  inject: ['projectPath'],
+  inject: ['projectPath', 'projectSettingsPath'],
   props: {
     value: {
       type: Object,
@@ -95,10 +96,10 @@ export default {
       return Object.values(this.localErrors).every((error) => error);
     },
     isSubmitButtonDisabled() {
-      return !this.fieldsAreValid || this.showLoadingIcon;
+      return !this.isEdited || !this.fieldsAreValid || this.showLoadingIcon;
     },
     isCancelButtonDisabled() {
-      return !this.isEdited || this.isLoading || this.mutationLoading;
+      return this.isLoading || this.mutationLoading;
     },
     isFieldDisabled() {
       return this.showLoadingIcon || !this.value.enabled;
@@ -118,12 +119,6 @@ export default {
   methods: {
     findDefaultOption(option) {
       return this.value[option] || this.$options.formOptions[option].find((f) => f.default)?.key;
-    },
-    reset() {
-      this.track('reset_form');
-      this.apiErrors = {};
-      this.localErrors = {};
-      this.$emit('reset');
     },
     setApiErrors(response) {
       this.apiErrors = response.graphQLErrors.reduce((acc, curr) => {
@@ -168,7 +163,7 @@ export default {
             const customError = this.encapsulateError('nameRegex', errorMessage);
             throw customError;
           } else {
-            this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+            this.navigateToSettingsWithSuccessAlert();
           }
         })
         .catch((error) => {
@@ -183,12 +178,17 @@ export default {
       this.$emit('input', { ...this.value, [model]: newValue });
       this.apiErrors[model] = undefined;
     },
+    navigateToSettingsWithSuccessAlert() {
+      const alertQuery = objectToQuery({ [SHOW_SETUP_SUCCESS_ALERT]: true });
+
+      visitUrl(`${this.projectSettingsPath}?${alertQuery}`);
+    },
   },
 };
 </script>
 
 <template>
-  <form ref="form-element" @submit.prevent="submit" @reset.prevent="reset">
+  <form @submit.prevent="submit">
     <expiration-toggle
       :value="prefilledForm.enabled"
       :disabled="showLoadingIcon"
@@ -199,7 +199,7 @@ export default {
 
     <div class="gl-display-flex gl-mt-7">
       <expiration-dropdown
-        v-model="prefilledForm.cadence"
+        :value="prefilledForm.cadence"
         :disabled="isFieldDisabled"
         :form-options="$options.formOptions.cadence"
         :label="$options.i18n.CADENCE_LABEL"
@@ -231,7 +231,7 @@ export default {
             </gl-sprintf>
           </p>
           <expiration-dropdown
-            v-model="prefilledForm.keepN"
+            :value="prefilledForm.keepN"
             :disabled="isFieldDisabled"
             :form-options="$options.formOptions.keepN"
             :label="$options.i18n.KEEP_N_LABEL"
@@ -270,7 +270,7 @@ export default {
             </gl-sprintf>
           </p>
           <expiration-dropdown
-            v-model="prefilledForm.olderThan"
+            :value="prefilledForm.olderThan"
             :disabled="isFieldDisabled"
             :form-options="$options.formOptions.olderThan"
             :label="$options.i18n.EXPIRATION_SCHEDULE_LABEL"
@@ -306,7 +306,7 @@ export default {
       </gl-button>
       <gl-button
         data-testid="cancel-button"
-        type="reset"
+        :href="projectSettingsPath"
         :disabled="isCancelButtonDisabled"
         class="gl-mr-4"
       >

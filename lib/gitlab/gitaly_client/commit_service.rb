@@ -232,7 +232,7 @@ module Gitlab
           msg.paths.map do |path|
             Gitlab::Git::ChangedPath.new(
               status: path.status,
-              path:  EncodingHelper.encode!(path.path)
+              path: EncodingHelper.encode!(path.path)
             )
           end
         end
@@ -251,13 +251,22 @@ module Gitlab
         consume_commits_response(response)
       end
 
-      def list_commits(revisions, reverse: false, pagination_params: nil)
+      def list_commits(revisions, params = {})
         request = Gitaly::ListCommitsRequest.new(
           repository: @gitaly_repo,
           revisions: Array.wrap(revisions),
-          reverse: reverse,
-          pagination_params: pagination_params
+          reverse: !!params[:reverse],
+          ignore_case: params[:ignore_case],
+          pagination_params: params[:pagination_params]
         )
+
+        if params[:commit_message_patterns]
+          request.commit_message_patterns += Array.wrap(params[:commit_message_patterns])
+        end
+
+        request.author = encode_binary(params[:author]) if params[:author]
+        request.before = GitalyClient.timestamp(params[:before]) if params[:before]
+        request.after = GitalyClient.timestamp(params[:after]) if params[:after]
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
@@ -396,12 +405,12 @@ module Gitlab
 
       def find_commits(options)
         request = Gitaly::FindCommitsRequest.new(
-          repository:   @gitaly_repo,
-          limit:        options[:limit],
-          offset:       options[:offset],
-          follow:       options[:follow],
-          skip_merges:  options[:skip_merges],
-          all:          !!options[:all],
+          repository: @gitaly_repo,
+          limit: options[:limit],
+          offset: options[:offset],
+          follow: options[:follow],
+          skip_merges: options[:skip_merges],
+          all: !!options[:all],
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.

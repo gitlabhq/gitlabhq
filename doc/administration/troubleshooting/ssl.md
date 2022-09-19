@@ -13,7 +13,7 @@ main SSL documentation:
 
 - [Omnibus SSL Configuration](https://docs.gitlab.com/omnibus/settings/ssl.html).
 - [Self-signed certificates or custom Certification Authorities for GitLab Runner](https://docs.gitlab.com/runner/configuration/tls-self-signed.html).
-- [Manually configuring HTTPS](https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https).
+- [Configure HTTPS manually](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-https-manually).
 
 ## Using an internal CA certificate with GitLab
 
@@ -250,4 +250,14 @@ You must specify that Git should use OpenSSL:
 
 ```shell
 git config --system http.sslbackend openssl
+```
+
+Alternatively, you can ignore SSL verification by running:
+
+WARNING:
+Proceed with caution when [ignoring SSL](https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpsslVerify)
+due to the potential security issues associated with disabling this option at global level. Use this option _only_ when troubleshooting, and reinstate SSL verification immediately after.
+
+```shell
+git config --global http.sslVerify false
 ```

@@ -43,7 +43,8 @@
       - if milestone.merge_requests_enabled?
         &middot;
         = link_to pluralize(milestone.total_merge_requests_count, _('Merge request')), merge_requests_path
-      .float-lg-right.light #{milestone.percent_complete}% complete
+      .float-lg-right.light
+        = format(s_('Milestone|%{percentage}%{percent} complete'), percentage: milestone.percent_complete, percent: '%')
     .col-md-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
         - if @project # if in milestones list on project level

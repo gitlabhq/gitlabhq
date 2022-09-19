@@ -1,0 +1,50 @@
+{
+  "vulnerabilities": [
+    {
+      "category": "dependency_scanning",
+      "name": "Vulnerability for remediation testing 1",
+      "message": "This vulnerability should have ONE remediation",
+      "description": "",
+      "cve": "CVE-2137",
+      "severity": "High",
+      "solution": "Upgrade to latest version.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {},
+      "identifiers": [
+        {
+          "type": "GitLab",
+          "name": "Foo vulnerability",
+          "value": "foo"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2137"
+        }
+      ],
+      "details": {
+        "commit": {
+          "name": [
+            {
+              "lang": "en",
+              "value": "The Commit"
+            }
+          ],
+          "description": [
+            {
+              "lang": "en",
+              "value": "Commit where the vulnerability was identified"
+            }
+          ],
+          "type": "commit",
+          "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
+        }
+      }
+    }
+  ],
+  "dependency_files": [],
+  "version": "14.0.2"
+}

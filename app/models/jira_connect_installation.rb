@@ -24,4 +24,10 @@ class JiraConnectInstallation < ApplicationRecord
   def client
     Atlassian::JiraConnect::Client.new(base_url, shared_secret)
   end
+
+  def oauth_authorization_url
+    return Gitlab.config.gitlab.url if instance_url.blank? || Feature.disabled?(:jira_connect_oauth_self_managed)
+
+    instance_url
+  end
 end

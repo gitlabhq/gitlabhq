@@ -74,7 +74,6 @@ Slack user on GitLab.com.
 
 The only difference with the [manually configurable Slack slash commands](slack_slash_commands.md)
 is that all the commands should be prefixed with the `/gitlab` keyword.
-We are working on making this configurable in the future.
 
 For example, to show the issue number `1001` under the `gitlab-org/gitlab`
 project, you would do:

@@ -71,6 +71,21 @@ module Gitlab
       encode_utf8(data, replace: UNICODE_REPLACEMENT_CHARACTER)
     end
 
+    # This method escapes unsupported UTF-8 characters instead of deleting them
+    def encode_utf8_with_escaping!(message)
+      return encode!(message) if Feature.disabled?(:escape_gitaly_refs)
+
+      message = force_encode_utf8(message)
+      return message if message.valid_encoding?
+
+      unless message.valid_encoding?
+        message = message.chars.map { |char| char.valid_encoding? ? char : escape_chars(char) }.join
+      end
+
+      # encode and clean the bad chars
+      message.replace clean(message)
+    end
+
     def encode_utf8(message, replace: "")
       message = force_encode_utf8(message)
       return message if message.valid_encoding?
@@ -143,6 +158,15 @@ module Gitlab
       message = message.dup if message.respond_to?(:frozen?) && message.frozen?
 
       message.force_encoding("UTF-8")
+    end
+
+    # Escapes \x80 - \xFF characters not supported by UTF-8
+    def escape_chars(char)
+      bytes = char.bytes
+
+      return char unless bytes.one?
+
+      "%#{bytes.first.to_s(16).upcase}"
     end
 
     def clean(message, replace: "")

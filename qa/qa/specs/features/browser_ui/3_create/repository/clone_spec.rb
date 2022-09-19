@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Git clone over HTTP' do
+    describe 'Git clone over HTTP', product_group: :source_code do
       let(:project) do
         Resource::Project.fabricate_via_api! do |scenario|
           scenario.name = 'project-with-code'

@@ -47,6 +47,7 @@ const Api = {
   projectSharePath: '/api/:version/projects/:id/share',
   projectMilestonesPath: '/api/:version/projects/:id/milestones',
   projectIssuePath: '/api/:version/projects/:id/issues/:issue_iid',
+  projectCreateIssuePath: '/api/:version/projects/:id/issues',
   mergeRequestsPath: '/api/:version/merge_requests',
   groupLabelsPath: '/api/:version/groups/:namespace_path/labels',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',

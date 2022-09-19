@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
 
 RSpec.describe Gitlab::Memory::Jemalloc do
   let(:outdir) { Dir.mktmpdir }
+  let(:tmp_outdir) { Dir.mktmpdir }
 
   after do
     FileUtils.rm_f(outdir)
+    FileUtils.rm_f(tmp_outdir)
   end
 
   context 'when jemalloc is loaded' do
@@ -28,7 +31,7 @@ RSpec.describe Gitlab::Memory::Jemalloc do
 
       describe '.dump_stats' do
         it 'writes stats JSON file' do
-          file_path = described_class.dump_stats(path: outdir, format: format)
+          file_path = described_class.dump_stats(path: outdir, tmp_dir: tmp_outdir, format: format)
 
           file = Dir.entries(outdir).find { |e| e.match(/jemalloc_stats\.#{$$}\.\d+\.json$/) }
           expect(file).not_to be_nil
@@ -55,7 +58,8 @@ RSpec.describe Gitlab::Memory::Jemalloc do
       describe '.dump_stats' do
         shared_examples 'writes stats text file' do |filename_label, filename_pattern|
           it do
-            described_class.dump_stats(path: outdir, format: format, filename_label: filename_label)
+            described_class.dump_stats(
+              path: outdir, tmp_dir: tmp_outdir, format: format, filename_label: filename_label)
 
             file = Dir.entries(outdir).find { |e| e.match(filename_pattern) }
             expect(file).not_to be_nil
@@ -87,7 +91,7 @@ RSpec.describe Gitlab::Memory::Jemalloc do
       describe '.dump_stats' do
         it 'raises an error' do
           expect do
-            described_class.dump_stats(path: outdir, format: format)
+            described_class.dump_stats(path: outdir, tmp_dir: tmp_outdir, format: format)
           end.to raise_error(/format must be one of/)
         end
       end
@@ -109,7 +113,7 @@ RSpec.describe Gitlab::Memory::Jemalloc do
       it 'does nothing' do
         stub_env('LD_PRELOAD', nil)
 
-        described_class.dump_stats(path: outdir)
+        described_class.dump_stats(path: outdir, tmp_dir: tmp_outdir)
 
         expect(Dir.empty?(outdir)).to be(true)
       end

@@ -30,7 +30,7 @@ describe('Grouped Issues List', () => {
       },
     });
 
-    expect(wrapper.find(SmartVirtualList).props()).toMatchSnapshot();
+    expect(wrapper.findComponent(SmartVirtualList).props()).toMatchSnapshot();
   });
 
   describe('without data', () => {
@@ -43,7 +43,7 @@ describe('Grouped Issues List', () => {
     });
 
     it.each(['resolved', 'unresolved'])('does not render report items for %s issues', () => {
-      expect(wrapper.find(ReportItem).exists()).toBe(false);
+      expect(wrapper.findComponent(ReportItem).exists()).toBe(false);
     });
   });
 
@@ -67,7 +67,7 @@ describe('Grouped Issues List', () => {
         propsData: { [`${issueName}Issues`]: issues },
       });
 
-      expect(wrapper.findAll(ReportItem)).toHaveLength(issues.length);
+      expect(wrapper.findAllComponents(ReportItem)).toHaveLength(issues.length);
     });
 
     it('renders a report item with the correct props', () => {
@@ -81,7 +81,7 @@ describe('Grouped Issues List', () => {
         },
       });
 
-      expect(wrapper.find(ReportItem).props()).toMatchSnapshot();
+      expect(wrapper.findComponent(ReportItem).props()).toMatchSnapshot();
     });
   });
 });

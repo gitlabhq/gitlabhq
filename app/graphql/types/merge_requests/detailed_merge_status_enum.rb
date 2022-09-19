@@ -21,6 +21,9 @@ module Types
       value 'CI_MUST_PASS',
             value: :ci_must_pass,
             description: 'Pipeline must succeed before merging.'
+      value 'CI_STILL_RUNNING',
+            value: :ci_still_running,
+            description: 'Pipeline is still running.'
       value 'DISCUSSIONS_NOT_RESOLVED',
             value: :discussions_not_resolved,
             description: 'Discussions must be resolved before merging.'

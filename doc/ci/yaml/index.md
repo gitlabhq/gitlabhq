@@ -156,6 +156,12 @@ the time limit to resolve all files is 30 seconds.
 - You can override included configuration by having the same job name or global keyword
   in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
   configuration in the `.gitlab-ci.yml` file takes precedence over the included configuration.
+- If you rerun a:
+  - Job, the `include` files are not fetched again. All jobs in a pipeline use the configuration
+    fetched when the pipeline was created. Any changes to the source `include` files
+    do not affect job reruns.
+  - Pipeline, the `include` files are fetched again. If they changed after the last
+    pipeline run, the new pipeline uses the changed configuration.
 
 **Related topics**:
 
@@ -607,6 +613,7 @@ job3:
   stage: deploy
   script:
     - deploy_to_staging
+  environment: staging
 ```
 
 In this example, `job1` and `job2` run in parallel:
@@ -1384,7 +1391,7 @@ In this example:
   for the coverage number.
 - If there are multiple coverage numbers found in the matched fragment, the first number is used.
 - Leading zeros are removed.
-- Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md)
+- Coverage output from [child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
   is not recorded or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
   for more details.
 
@@ -1478,6 +1485,7 @@ test linux:
 deploy:
   stage: deploy
   script: make deploy
+  environment: production
 ```
 
 In this example, two jobs have artifacts: `build osx` and `build linux`. When `test osx` is executed,
@@ -1632,6 +1640,7 @@ these are all equivalent:
 - `168 hours`
 - `7 days`
 - `one week`
+- `never`
 
 **Example of `environment:auto_stop_in`**:
 
@@ -1896,12 +1905,9 @@ image:
 #### `image:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
 > - Requires GitLab Runner 15.1 or later.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`.
-The feature is not ready for production use.
 
 The pull policy that the runner uses to fetch the Docker image.
 
@@ -2123,6 +2129,7 @@ mac:rspec:
 production:
   stage: deploy
   script: echo "Running production..."
+  environment: production
 ```
 
 This example creates four paths of execution:
@@ -2286,14 +2293,14 @@ build_job:
 
 **Related topics**:
 
-- To download artifacts between [parent-child pipelines](../pipelines/parent_child_pipelines.md),
+- To download artifacts between [parent-child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines),
   use [`needs:pipeline:job`](#needspipelinejob).
 
 #### `needs:pipeline:job`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab 13.7.
 
-A [child pipeline](../pipelines/parent_child_pipelines.md) can download artifacts from a job in
+A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a job in
 its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -2385,12 +2392,14 @@ deploy-job:
     - job: test-job2
       optional: true
     - job: test-job1
+  environment: production
 
 review-job:
   stage: deploy
   needs:
     - job: test-job2
       optional: true
+  environment: review
 ```
 
 In this example:
@@ -2472,7 +2481,7 @@ when to add jobs to pipelines.
   | `external`               | When you use CI services other than GitLab. |
   | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
   | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
-  | `pipelines`              | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
+  | `pipelines`              | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
@@ -2620,7 +2629,7 @@ docker build:
 **Related topics**:
 
 - [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
-- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
+- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge),
   you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
 - [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
@@ -2671,6 +2680,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
 ```
 
 This example moves all files from the root of the project to the `public/` directory.
@@ -2752,6 +2762,7 @@ deploystacks:
         STACK: [monitoring, backup, app]
       - PROVIDER: [gcp, vultr]
         STACK: [data, processing]
+  environment: $PROVIDER/$STACK
 ```
 
 The example generates 10 parallel `deploystacks` jobs, each with different values
@@ -3224,8 +3235,7 @@ job:
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
-- In [GitLab 15.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/35438),
-  variables on the right side of `=~` and `!~` expressions are evaluated as regular expressions.
+- CI/CD variables on the right side of `=~` and `!~` expressions are [evaluated as regular expressions](../jobs/job_control.md#store-the-regex-pattern-in-a-variable).
 
 **Related topics**:
 
@@ -3643,11 +3653,8 @@ in that container.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
 > - Requires GitLab Runner 15.1 or later.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`.
 
 The pull policy that the runner uses to fetch the Docker image.
 
@@ -3725,6 +3732,7 @@ job4:
   stage: deploy
   script:
     - echo "This job deploys the code. It runs when the test stage completes."
+  environment: production
 ```
 
 **Additional details**:
@@ -3881,54 +3889,46 @@ test:
 
 ### `trigger`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in GitLab Premium 11.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
+Use `trigger` to declare that a job is a "trigger job" which starts a
+[downstream pipeline](../pipelines/downstream_pipelines.md) that is either:
 
-Use `trigger` to start a downstream pipeline that is either:
+- [A multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
+- [A child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines).
 
-- [A multi-project pipeline](../pipelines/multi_project_pipelines.md).
-- [A child pipeline](../pipelines/parent_child_pipelines.md).
+Trigger jobs can use only a limited set of GitLab CI/CD configuration keywords.
+The keywords available for use in trigger jobs are:
+
+- [`trigger`](#trigger).
+- [`stage`](#stage).
+- [`allow_failure`](#allow_failure).
+- [`rules`](#rules).
+- [`only` and `except`](#only--except).
+- [`when`](#when) (only with a value of `on_success`, `on_failure`, or `always`).
+- [`extends`](#extends).
+- [`needs`](#needs), but not [`needs:project`](#needsproject).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**:
 
-- For multi-project pipelines, path to the downstream project. CI/CD variables
-  [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later.
-- For child pipelines, path to the child pipeline CI/CD configuration file.
+- For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
+  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
+  Alternatively, use [`trigger:project](#triggerproject).
+- For child pipelines, use [`trigger:include`](#triggerinclude).
 
-**Example of `trigger` for multi-project pipeline**:
-
-```yaml
-rspec:
-  stage: test
-  script: bundle exec rspec
-
-staging:
-  stage: deploy
-  trigger: my/deployment
-```
-
-**Example of `trigger` for child pipelines**:
+**Example of `trigger`**:
 
 ```yaml
-trigger_job:
-  trigger:
-    include: path/to/child-pipeline.yml
+trigger-multi-project-pipeline:
+  trigger: my-group/my-project
 ```
 
 **Additional details**:
 
-- Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
-  For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
-  or [`after_script`](#after_script). Also, [`environment`](#environment) is not supported with `trigger`.
 - You [cannot use the API to start `when:manual` trigger jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 - In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
   can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
   earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-- In [GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
-  view which job triggered a downstream pipeline in the [pipeline graph](../pipelines/index.md#visualize-pipelines).
 - [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
@@ -3938,9 +3938,72 @@ trigger_job:
 
 **Related topics**:
 
-- [Multi-project pipeline configuration examples](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
-- [Child pipeline configuration examples](../pipelines/parent_child_pipelines.md#examples).
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
 - To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/index.md)
+  to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
+  The trigger token is different than the `trigger` keyword.
+
+#### `trigger:include`
+
+Use `trigger:include` to declare that a job is a "trigger job" which starts a
+[child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines).
+
+Use `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- The path to the child pipeline's configuration file.
+
+**Example of `trigger:include`**:
+
+```yaml
+trigger-child-pipeline:
+  trigger:
+    include: path/to/child-pipeline.gitlab-ci.yml
+```
+
+**Related topics**:
+
+- [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-parent-child-pipeline).
+
+#### `trigger:project`
+
+Use `trigger:project` to declare that a job is a "trigger job" which starts a
+[multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
+
+By default, the multi-project pipeline triggers for the default branch. Use `trigger:branch`
+to specify a different branch.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- The path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
+  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
+
+**Example of `trigger:project`**:
+
+```yaml
+trigger-multi-project-pipeline:
+  trigger:
+    project: my-group/my-project
+```
+
+**Example of `trigger:project` for a different branch**:
+
+```yaml
+trigger-multi-project-pipeline:
+  trigger:
+    project: my-group/my-project
+    branch: development
+```
+
+**Related topics**:
+
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
+- To run a pipeline for a specific branch, tag, or commit, you can also use a [trigger token](../triggers/index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
 
@@ -3984,8 +4047,8 @@ successfully complete before starting.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 15.1. [Feature flag `ci_trigger_forward_variables`](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) removed.
 
 Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control
-what is forwarded to both [parent-child pipelines](../pipelines/parent_child_pipelines.md)
-and [multi-project pipelines](../pipelines/multi_project_pipelines.md).
+what is forwarded to both [parent-child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
+and [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines).
 
 **Possible inputs**:
 
@@ -4062,6 +4125,7 @@ deploy_job:
   stage: deploy
   script:
     - deploy-script --url $DEPLOY_SITE --path "/"
+  environment: production
 
 deploy_review_job:
   stage: deploy
@@ -4069,6 +4133,7 @@ deploy_review_job:
     REVIEW_PATH: "/review"
   script:
     - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
+  environment: production
 ```
 
 **Additional details**:
@@ -4161,6 +4226,7 @@ deploy_job:
   script:
     - make deploy
   when: manual
+  environment: production
 
 cleanup_job:
   stage: cleanup
@@ -4193,20 +4259,6 @@ In this example, the script:
 ## Deprecated keywords
 
 The following keywords are deprecated.
-
-<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-
-### Globally-defined `types` (removed)
-
-The `types` keyword was deprecated in GitLab 9.0, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
-Use [`stages`](#stages) instead.
-
-### Job-defined `type` (removed)
-
-The `type` keyword was deprecated in GitLab 9.0, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
-Use [`stage`](#stage) instead.
-
-<!--- end_remove -->
 
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 

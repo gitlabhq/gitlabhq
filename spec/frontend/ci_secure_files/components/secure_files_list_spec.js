@@ -83,7 +83,9 @@ describe('SecureFilesList', () => {
       const [secureFile] = secureFiles;
 
       expect(findCell(0, 0).text()).toBe(secureFile.name);
-      expect(findCell(0, 1).find(TimeAgoTooltip).props('time')).toBe(secureFile.created_at);
+      expect(findCell(0, 1).findComponent(TimeAgoTooltip).props('time')).toBe(
+        secureFile.created_at,
+      );
     });
 
     describe('event tracking', () => {

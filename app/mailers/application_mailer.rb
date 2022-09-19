@@ -34,4 +34,23 @@ class ApplicationMailer < ActionMailer::Base
     address.display_name = Gitlab.config.gitlab.email_display_name
     address
   end
+
+  def mail_with_locale(headers = {}, &block)
+    locale = recipient_locale headers
+
+    Gitlab::I18n.with_locale(locale) do
+      mail(headers, &block)
+    end
+  end
+
+  def recipient_locale(headers = {})
+    to = Array(headers[:to])
+    locale = I18n.locale
+    locale = preferred_language_by_email(to.first) if to.one?
+    locale
+  end
+
+  def preferred_language_by_email(email)
+    User.find_by_any_email(email)&.preferred_language || I18n.locale
+  end
 end

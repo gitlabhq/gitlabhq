@@ -24,6 +24,8 @@ Public projects can be cloned **without any** authentication over HTTPS.
 
 They are listed in the public access directory (`/public`) for all users.
 
+Public groups can have public, internal, or private subgroups.
+
 **Any signed-in user** has the Guest role on the repository.
 
 NOTE:
@@ -37,6 +39,8 @@ Internal projects can be cloned by any signed-in user except
 [external users](permissions.md#external-users).
 
 They are also listed in the public access directory (`/public`), but only for signed-in users.
+
+Internal groups can have internal or private subgroups.
 
 Any signed-in users except [external users](permissions.md#external-users) have the
 Guest role on the repository.
@@ -53,13 +57,15 @@ Private projects can only be cloned and viewed by project members (except for gu
 
 They appear in the public access directory (`/public`) for project members only.
 
+Private groups can only have private subgroups.
+
 ## Change project visibility
 
 Prerequisite:
 
 - You must have the Owner role for a project.
 
-1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
@@ -71,9 +77,9 @@ Prerequisite:
 
 - You must have the Owner role for a group.
 - Subgroups and projects must already have visibility settings that are at least as
-  restrictive as the new setting for the group.
+  restrictive as the new setting of the parent group.
 
-1. On the top bar, select **Menu > Groups** and find your project.
+1. On the top bar, select **Main menu > Groups** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Naming, visibility**.
 1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.

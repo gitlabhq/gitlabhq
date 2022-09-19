@@ -207,19 +207,22 @@ module Gitlab
 
         desc { _('Add Zoom meeting') }
         explanation { _('Adds a Zoom meeting.') }
-        params '<Zoom URL>'
+        params do
+          zoom_link_params
+        end
         types Issue
         condition do
           @zoom_service = zoom_link_service
+
           @zoom_service.can_add_link?
         end
-        parse_params do |link|
-          @zoom_service.parse_link(link)
+        parse_params do |link_params|
+          @zoom_service.parse_link(link_params)
         end
-        command :zoom do |link|
-          result = @zoom_service.add_link(link)
+        command :zoom do |link, link_text = nil|
+          result = add_zoom_link(link, link_text)
           @execution_message[:zoom] = result.message
-          @updates.merge!(result.payload) if result.payload
+          merge_updates(result, @updates)
         end
 
         desc { _('Remove Zoom meeting') }
@@ -315,11 +318,51 @@ module Gitlab
           @updates[:remove_contacts] = contact_emails.split(' ')
         end
 
-        private
-
-        def zoom_link_service
-          ::Issues::ZoomLinkService.new(project: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })
+        desc { _('Add a timeline event to incident') }
+        explanation { _('Adds a timeline event to incident.') }
+        params '<timeline comment> | <date(YYYY-MM-DD)> <time(HH:MM)>'
+        types Issue
+        condition do
+          quick_action_target.incident? &&
+            current_user.can?(:admin_incident_management_timeline_event, quick_action_target)
         end
+        parse_params do |event_params|
+          Gitlab::QuickActions::TimelineTextAndDateTimeSeparator.new(event_params).execute
+        end
+        command :timeline do |event_text, date_time|
+          if event_text && date_time
+            timeline_event = timeline_event_create_service(event_text, date_time).execute
+
+            @execution_message[:timeline] =
+              if timeline_event.success?
+                _('Timeline event added successfully.')
+              else
+                _('Something went wrong while adding timeline event.')
+              end
+          end
+        end
+      end
+
+      private
+
+      def zoom_link_service
+        ::Issues::ZoomLinkService.new(project: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })
+      end
+
+      def zoom_link_params
+        '<Zoom URL>'
+      end
+
+      def add_zoom_link(link, _link_text)
+        zoom_link_service.add_link(link)
+      end
+
+      def merge_updates(result, update_hash)
+        update_hash.merge!(result.payload) if result.payload
+      end
+
+      def timeline_event_create_service(event_text, event_date_time)
+        ::IncidentManagement::TimelineEvents::CreateService.new(quick_action_target, current_user, { note: event_text, occurred_at: event_date_time, editable: true })
       end
     end
   end

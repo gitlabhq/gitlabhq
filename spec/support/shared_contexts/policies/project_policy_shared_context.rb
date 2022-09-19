@@ -6,13 +6,19 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
+  let_it_be(:inherited_guest) { create(:user) }
+  let_it_be(:inherited_reporter) { create(:user) }
+  let_it_be(:inherited_developer) { create(:user) }
+  let_it_be(:inherited_maintainer) { create(:user) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_member) { create(:user) }
+  let_it_be_with_refind(:group) { create(:group, :public) }
   let_it_be_with_refind(:private_project) { create(:project, :private, namespace: owner.namespace) }
   let_it_be_with_refind(:internal_project) { create(:project, :internal, namespace: owner.namespace) }
   let_it_be_with_refind(:public_project) { create(:project, :public, namespace: owner.namespace) }
-  let_it_be_with_refind(:public_project_in_group) { create(:project, :public, namespace: create(:group, :public)) }
+  let_it_be_with_refind(:public_project_in_group) { create(:project, :public, namespace: group) }
+  let_it_be_with_refind(:private_project_in_group) { create(:project, :private, namespace: group) }
 
   let(:base_guest_permissions) do
     %i[
@@ -95,6 +101,11 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:owner_permissions) { base_owner_permissions + additional_owner_permissions }
 
   before_all do
+    group.add_guest(inherited_guest)
+    group.add_reporter(inherited_reporter)
+    group.add_developer(inherited_developer)
+    group.add_maintainer(inherited_maintainer)
+
     [private_project, internal_project, public_project, public_project_in_group].each do |project|
       project.add_guest(guest)
       project.add_reporter(reporter)

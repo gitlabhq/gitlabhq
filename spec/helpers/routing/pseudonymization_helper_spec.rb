@@ -70,7 +70,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'with controller for groups with subgroups and project' do
-      let(:masked_url) { "http://localhost/namespace#{subgroup.id}/project#{subproject.id}"}
+      let(:masked_url) { "http://localhost/namespace#{subgroup.id}/project#{subproject.id}" }
       let(:group) { subgroup }
       let(:project) { subproject }
       let(:request) do
@@ -94,7 +94,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'with controller for groups and subgroups' do
-      let(:masked_url) { "http://localhost/groups/namespace#{subgroup.id}/-/shared"}
+      let(:masked_url) { "http://localhost/groups/namespace#{subgroup.id}/-/shared" }
       let(:group) { subgroup }
       let(:request) do
         double(:Request,

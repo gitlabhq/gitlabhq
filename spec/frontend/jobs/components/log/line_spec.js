@@ -42,7 +42,7 @@ describe('Job Log Line', () => {
   });
 
   it('renders the line number component', () => {
-    expect(wrapper.find(LineNumber).exists()).toBe(true);
+    expect(wrapper.findComponent(LineNumber).exists()).toBe(true);
   });
 
   it('renders a span the provided text', () => {

@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class MigrationRecord < RuboCop::Cop::Cop
+      class MigrationRecord < RuboCop::Cop::Base
         include MigrationHelpers
 
         ENFORCED_SINCE = 2022_04_26_00_00_00
@@ -27,7 +27,7 @@ module RuboCop
           return unless relevant_migration?(node)
           return unless inherits_from_active_record_base?(node) || inherits_from_application_record?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
 
         private

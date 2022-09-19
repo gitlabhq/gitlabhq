@@ -103,7 +103,7 @@ When you need to revert a merge request, to get accelerated feedback, you can ad
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
-- The `package-and-qa` job.
+- The `e2e:package-and-test` job.
 - The `rspec:undercoverage` job.
 - The entire [Review Apps process](testing_guide/review_apps.md).
 
@@ -221,8 +221,8 @@ that includes `rspec-profile` in their name.
 
 ### Logging
 
-- Rails logging to `log/test.log` is disabled by default in CI 
-  [for performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4). 
+- Rails logging to `log/test.log` is disabled by default in CI
+  [for performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4).
   To override this setting, provide the
   `RAILS_ENABLE_TEST_LOG` environment variable.
 
@@ -341,13 +341,20 @@ We also run our test suite against PG11 upon specific database library changes i
 
 ### Current versions testing
 
-| Where? | PostgreSQL version | Ruby version |
-| ------ | ------------------ | ------------ |
-| Merge requests    | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `master` branch commits | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines (every 2 hours at even hour) | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines (every 2 hours at odd hour) | 12 (default version), 11 for DB library changes | 3.0 (set in the schedule variables) |
-| `nightly` scheduled pipelines | 12 (default version), 11, 13 | 2.7 (default version) |
+| Where?                                                                                         | PostgreSQL version                              | Ruby version |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
+| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `maintenance` scheduled pipelines for the `ruby3` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 3.0 (coded in the branch) |
+| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 2.7 (default version) |
+
+The pipeline configuration for the scheduled pipeline testing Ruby 3 is
+stored in the `ruby3-sync` branch. The pipeline updates the `ruby3` branch
+with latest `master`, and then it triggers a regular branch pipeline for
+`ruby3`. Any changes in `ruby3` are only for running the pipeline. It should
+never be merged back to `master`. Any other Ruby 3 changes should go into
+`master` directly, which should be compatible with Ruby 2.7.
 
 ### Long-term plan
 
@@ -489,7 +496,7 @@ graph RL;
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_4-1["package-and-qa (102 minutes)"];
+  2_4-1["e2e:package-and-test (102 minutes)"];
   class 2_4-1 criticalPath;
   click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   2_4-1 --> 1-2 & 2_3-1 & 1-15;

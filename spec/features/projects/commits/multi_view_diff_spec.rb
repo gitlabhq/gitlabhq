@@ -11,8 +11,9 @@ RSpec.shared_examples "no multiple viewers" do |commit_ref|
 end
 
 RSpec.describe 'Multiple view Diffs', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
   let(:ref) { '5d6ed1503801ca9dc28e95eeb85a7cf863527aee' }
   let(:path) { project_commit_path(project, ref) }
   let(:feature_flag_on) { false }

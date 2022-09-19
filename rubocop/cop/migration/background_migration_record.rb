@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      class BackgroundMigrationRecord < RuboCop::Cop::Cop
+      class BackgroundMigrationRecord < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = <<~MSG
@@ -26,14 +26,14 @@ module RuboCop
           return unless in_background_migration?(node)
           return unless inherits_from_active_record_base?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
 
         def on_send(node)
           return unless in_background_migration?(node)
           return unless class_new_active_record_base?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

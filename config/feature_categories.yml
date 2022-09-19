@@ -13,7 +13,6 @@
 - application_performance
 - attack_emulation
 - audit_events
-- audit_reports
 - authentication_and_authorization
 - auto_devops
 - backup_restore
@@ -116,7 +115,7 @@
 - secret_detection
 - secrets_management
 - security_benchmarking
-- security_orchestration
+- security_policy_management
 - service_desk
 - service_ping
 - snippets

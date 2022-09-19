@@ -8,26 +8,22 @@ module MergeRequests
   # Executed when you do fast-forward merge via GitLab UI
   #
   class FfMergeService < MergeRequests::MergeService
+    extend ::Gitlab::Utils::Override
+
     private
 
-    def commit
-      ff_merge = repository.ff_merge(current_user,
-                                     source,
-                                     merge_request.target_branch,
-                                     merge_request: merge_request)
+    override :execute_git_merge
+    def execute_git_merge
+      repository.ff_merge(current_user,
+                          source,
+                          merge_request.target_branch,
+                          merge_request: merge_request)
+    end
 
-      if merge_request.squash_on_merge?
-        merge_request.update_column(:squash_commit_sha, merge_request.in_progress_merge_commit_sha)
-      end
-
-      ff_merge
-    rescue Gitlab::Git::PreReceiveError => e
-      Gitlab::ErrorTracking.track_exception(e, pre_receive_message: e.raw_message, merge_request_id: merge_request&.id)
-      raise MergeError, e.message
-    rescue StandardError => e
-      raise MergeError, "Something went wrong during merge: #{e.message}"
-    ensure
-      merge_request.update_and_mark_in_progress_merge_commit_sha(nil)
+    override :merge_success_data
+    def merge_success_data(commit_id)
+      # There is no merge commit to update, so this is just blank.
+      {}
     end
   end
 end

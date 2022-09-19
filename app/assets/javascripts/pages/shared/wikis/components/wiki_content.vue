@@ -87,7 +87,7 @@ export default {
     v-else-if="!loadingContentFailed && !isLoadingContent"
     ref="content"
     data-qa-selector="wiki_page_content"
-    data-testid="wiki_page_content"
+    data-testid="wiki-page-content"
     class="js-wiki-page-content md"
     v-html="content /* eslint-disable-line vue/no-v-html */"
   ></div>

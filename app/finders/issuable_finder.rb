@@ -46,8 +46,7 @@ class IssuableFinder
 
   requires_cross_project_access unless: -> { params.project? }
 
-  FULL_TEXT_SEARCH_TERM_PATTERN = '[\u0000-\u218F]*'
-  FULL_TEXT_SEARCH_TERM_REGEX = /\A#{FULL_TEXT_SEARCH_TERM_PATTERN}\z/.freeze
+  FULL_TEXT_SEARCH_TERM_REGEX = /\A[\p{ASCII}|\p{Latin}]+\z/.freeze
   NEGATABLE_PARAMS_HELPER_KEYS = %i[project_id scope status include_subgroups].freeze
 
   attr_accessor :current_user, :params
@@ -59,19 +58,19 @@ class IssuableFinder
   class << self
     def scalar_params
       @scalar_params ||= %i[
-      assignee_id
-      assignee_username
-      author_id
-      author_username
-      crm_contact_id
-      crm_organization_id
-      label_name
-      milestone_title
-      release_tag
-      my_reaction_emoji
-      search
-      in
-    ]
+        assignee_id
+        assignee_username
+        author_id
+        author_username
+        crm_contact_id
+        crm_organization_id
+        label_name
+        milestone_title
+        release_tag
+        my_reaction_emoji
+        search
+        in
+      ]
     end
 
     def array_params

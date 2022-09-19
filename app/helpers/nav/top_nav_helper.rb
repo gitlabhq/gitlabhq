@@ -48,6 +48,13 @@ module Nav
 
     private
 
+    def top_nav_localized_headers
+      {
+        explore: s_('TopNav|Explore'),
+        switch_to: s_('TopNav|Switch to')
+      }.freeze
+    end
+
     def build_base_view_model(builder:, project:, group:)
       if current_user
         build_view_model(builder: builder, project: project, group: group)
@@ -60,6 +67,7 @@ module Nav
       # These come from `app/views/layouts/nav/_explore.html.ham`
       if explore_nav_link?(:projects)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           href: explore_root_path,
           active: nav == 'project' || active_nav_link?(path: %w[dashboard#show root#show projects#trending projects#starred projects#index]),
           **projects_menu_item_attrs
@@ -68,6 +76,7 @@ module Nav
 
       if explore_nav_link?(:groups)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           href: explore_groups_path,
           active: nav == 'group' || active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
           **groups_menu_item_attrs
@@ -76,6 +85,7 @@ module Nav
 
       if explore_nav_link?(:snippets)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           active: active_nav_link?(controller: :snippets),
           href: explore_snippets_path,
           **snippets_menu_item_attrs
@@ -89,6 +99,7 @@ module Nav
         current_item = project ? current_project(project: project) : {}
 
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:switch_to],
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
           css_class: 'qa-projects-dropdown',
           data: { track_label: "projects_dropdown", track_action: "click_dropdown" },
@@ -103,6 +114,7 @@ module Nav
         current_item = group ? current_group(group: group) : {}
 
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:switch_to],
           active: nav == 'group' || active_nav_link?(path: %w[dashboard/groups explore/groups]),
           css_class: 'qa-groups-dropdown',
           data: { track_label: "groups_dropdown", track_action: "click_dropdown" },
@@ -116,6 +128,7 @@ module Nav
       if dashboard_nav_link?(:milestones)
         builder.add_primary_menu_item_with_shortcut(
           id: 'milestones',
+          header: top_nav_localized_headers[:explore],
           title: _('Milestones'),
           href: dashboard_milestones_path,
           active: active_nav_link?(controller: 'dashboard/milestones'),
@@ -127,6 +140,7 @@ module Nav
 
       if dashboard_nav_link?(:snippets)
         builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
           active: active_nav_link?(controller: 'dashboard/snippets'),
           data: { qa_selector: 'snippets_link', **menu_data_tracking_attrs('snippets') },
           href: dashboard_snippets_path,
@@ -137,6 +151,7 @@ module Nav
       if dashboard_nav_link?(:activity)
         builder.add_primary_menu_item_with_shortcut(
           id: 'activity',
+          header: top_nav_localized_headers[:explore],
           title: _('Activity'),
           href: activity_dashboard_path,
           active: active_nav_link?(path: 'dashboard#activity'),
@@ -266,52 +281,74 @@ module Nav
     end
 
     def projects_submenu_items(builder:)
-      # These project links come from `app/views/layouts/nav/projects_dropdown/_show.html.haml`
-      [
-        { id: 'your', title: _('Your projects'), href: dashboard_projects_path },
-        { id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path },
-        { id: 'explore', title: _('Explore projects'), href: explore_root_path },
-        { id: 'topics', title: _('Explore topics'), href: topics_explore_projects_path }
-      ].each do |item|
+      if Feature.enabled?(:remove_extra_primary_submenu_options)
+        title = _('View all projects')
+
         builder.add_primary_menu_item(
-          **item,
-          data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
+          id: 'your',
+          title: title,
+          href: dashboard_projects_path,
+          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+        )
+      else
+        # These project links come from `app/views/layouts/nav/projects_dropdown/_show.html.haml`
+        [
+          { id: 'your', title: _('Your projects'), href: dashboard_projects_path },
+          { id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path },
+          { id: 'explore', title: _('Explore projects'), href: explore_root_path },
+          { id: 'topics', title: _('Explore topics'), href: topics_explore_projects_path }
+        ].each do |item|
+          builder.add_primary_menu_item(
+            **item,
+            data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
+          )
+        end
+
+        title = _('Create new project')
+
+        builder.add_secondary_menu_item(
+          id: 'create',
+          title: title,
+          href: new_project_path,
+          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
         )
       end
-
-      title = _('Create new project')
-
-      builder.add_secondary_menu_item(
-        id: 'create',
-        title: title,
-        href: new_project_path,
-        data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
-      )
     end
 
     def groups_submenu
       # These group links come from `app/views/layouts/nav/groups_dropdown/_show.html.haml`
       builder = ::Gitlab::Nav::TopNavMenuBuilder.new
 
-      [
-        { id: 'your', title: _('Your groups'), href: dashboard_groups_path },
-        { id: 'explore', title: _('Explore groups'), href: explore_groups_path }
-      ].each do |item|
+      if Feature.enabled?(:remove_extra_primary_submenu_options)
+        title = _('View all groups')
+
         builder.add_primary_menu_item(
-          **item,
-          data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
-        )
-      end
-
-      if current_user.can_create_group?
-        title = _('Create group')
-
-        builder.add_secondary_menu_item(
-          id: 'create',
+          id: 'your',
           title: title,
-          href: new_group_path,
+          href: dashboard_groups_path,
           data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
         )
+      else
+        [
+          { id: 'your', title: _('Your groups'), href: dashboard_groups_path },
+          { id: 'explore', title: _('Explore groups'), href: explore_groups_path }
+        ].each do |item|
+          builder.add_primary_menu_item(
+            **item,
+            data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
+          )
+        end
+
+        if current_user.can_create_group?
+          title = _('Create group')
+
+          builder.add_secondary_menu_item(
+            id: 'create',
+            title: title,
+            href: new_group_path,
+            data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+          )
+        end
       end
 
       builder.build

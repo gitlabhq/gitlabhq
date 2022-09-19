@@ -7,16 +7,16 @@ module Gitlab
         class Common
           SecurityReportParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
 
-          def self.parse!(json_data, report, vulnerability_finding_signatures_enabled = false, validate: false)
-            new(json_data, report, vulnerability_finding_signatures_enabled, validate: validate).parse!
+          def self.parse!(json_data, report, signatures_enabled: false, validate: false)
+            new(json_data, report, signatures_enabled: signatures_enabled, validate: validate).parse!
           end
 
-          def initialize(json_data, report, vulnerability_finding_signatures_enabled = false, validate: false)
+          def initialize(json_data, report, signatures_enabled: false, validate: false)
             @json_data = json_data
             @report = report
             @project = report.project
             @validate = validate
-            @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
+            @signatures_enabled = signatures_enabled
           end
 
           def parse!
@@ -26,7 +26,7 @@ module Gitlab
 
             raise SecurityReportParserError, "Invalid report format" unless report_data.is_a?(Hash)
 
-            create_scanner
+            create_scanner(top_level_scanner_data)
             create_scan
             create_analyzer
 
@@ -77,7 +77,7 @@ module Gitlab
               report_data,
               report.version,
               project: @project,
-              scanner: top_level_scanner
+              scanner: top_level_scanner_data
             )
           end
 
@@ -89,8 +89,8 @@ module Gitlab
             @report_version ||= report_data['version']
           end
 
-          def top_level_scanner
-            @top_level_scanner ||= report_data.dig('scan', 'scanner')
+          def top_level_scanner_data
+            @top_level_scanner_data ||= report_data.dig('scan', 'scanner')
           end
 
           def scan_data
@@ -119,7 +119,7 @@ module Gitlab
             evidence = create_evidence(data['evidence'])
             signatures = create_signatures(tracking_data(data))
 
-            if @vulnerability_finding_signatures_enabled && !signatures.empty?
+            if @signatures_enabled && !signatures.empty?
               # NOT the signature_sha - the compare key is hashed
               # to create the project_fingerprint
               highest_priority_signature = signatures.max_by(&:priority)
@@ -138,7 +138,7 @@ module Gitlab
                 evidence: evidence,
                 severity: parse_severity_level(data['severity']),
                 confidence: parse_confidence_level(data['confidence']),
-                scanner: create_scanner(data['scanner']),
+                scanner: create_scanner(top_level_scanner_data || data['scanner']),
                 scan: report&.scan,
                 identifiers: identifiers,
                 flags: flags,
@@ -149,7 +149,7 @@ module Gitlab
                 details: data['details'] || {},
                 signatures: signatures,
                 project_id: @project.id,
-                vulnerability_finding_signatures_enabled: @vulnerability_finding_signatures_enabled))
+                vulnerability_finding_signatures_enabled: @signatures_enabled))
           end
 
           def create_signatures(tracking)
@@ -208,7 +208,7 @@ module Gitlab
             report.analyzer = ::Gitlab::Ci::Reports::Security::Analyzer.new(**params)
           end
 
-          def create_scanner(scanner_data = top_level_scanner)
+          def create_scanner(scanner_data)
             return unless scanner_data.is_a?(Hash)
 
             report.add_scanner(

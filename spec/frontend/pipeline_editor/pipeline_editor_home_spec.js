@@ -254,7 +254,7 @@ describe('Pipeline editor home wrapper', () => {
 
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(true);
 
-      findPipelineEditorDrawer().find(GlDrawer).vm.$emit('close');
+      findPipelineEditorDrawer().findComponent(GlDrawer).vm.$emit('close');
       await nextTick();
 
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(false);

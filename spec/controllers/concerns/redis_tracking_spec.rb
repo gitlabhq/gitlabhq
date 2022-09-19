@@ -11,7 +11,8 @@ RSpec.describe RedisTracking do
     include RedisTracking
 
     skip_before_action :authenticate_user!, only: :show
-    track_redis_hll_event(:index, :show, name: 'g_compliance_approval_rules',
+    track_redis_hll_event(:index, :show,
+      name: 'g_compliance_approval_rules',
       if: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
 
     def index

@@ -12,6 +12,7 @@ module Gitlab
         @methods = config[:methods] || {}
         @preloads = config[:preloads] || {}
         @export_reorders = config[:export_reorders] || {}
+        @include_if_exportable = config[:include_if_exportable] || {}
       end
 
       def find_root(model_key)
@@ -35,7 +36,8 @@ module Gitlab
           methods: @methods[model_key],
           include: resolve_model_tree(model_tree),
           preload: resolve_preloads(model_key, model_tree),
-          export_reorder: @export_reorders[model_key]
+          export_reorder: @export_reorders[model_key],
+          include_if_exportable: @include_if_exportable[model_key]
         }.compact
       end
 

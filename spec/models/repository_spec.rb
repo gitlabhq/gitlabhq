@@ -161,6 +161,33 @@ RSpec.describe Repository do
       end
     end
 
+    context 'semantic versioning sort' do
+      let(:version_two) { 'v2.0.0' }
+      let(:version_ten) { 'v10.0.0' }
+
+      before do
+        repository.add_tag(user, version_two, repository.commit.id)
+        repository.add_tag(user, version_ten, repository.commit.id)
+      end
+
+      after do
+        repository.rm_tag(user, version_two)
+        repository.rm_tag(user, version_ten)
+      end
+
+      context 'desc' do
+        subject { repository.tags_sorted_by('version_desc').map(&:name) & (tags_to_compare + [version_two, version_ten]) }
+
+        it { is_expected.to eq([version_ten, version_two, 'v1.1.0', 'v1.0.0']) }
+      end
+
+      context 'asc' do
+        subject { repository.tags_sorted_by('version_asc').map(&:name) & (tags_to_compare + [version_two, version_ten]) }
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', version_two, version_ten]) }
+      end
+    end
+
     context 'unknown option' do
       subject { repository.tags_sorted_by('unknown_desc').map(&:name) & tags_to_compare }
 
@@ -514,6 +541,54 @@ RSpec.describe Repository do
     describe 'when storage is broken', :broken_storage do
       it 'raises a storage error' do
         expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
+      end
+    end
+  end
+
+  describe '#list_commits_by' do
+    it 'returns commits with messages containing a given string' do
+      commit_ids = repository.list_commits_by('test text', 'master').map(&:id)
+
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        '498214de67004b1da3d820901307bed2a68a8ef6'
+      )
+      expect(commit_ids).not_to include('c84ff944ff4529a70788a5e9003c2b7feae29047')
+    end
+
+    it 'is case insensitive' do
+      commit_ids = repository.list_commits_by('TEST TEXT', 'master').map(&:id)
+
+      expect(commit_ids).to include('b83d6e391c22777fca1ed3012fce84f633d7fed0')
+    end
+
+    it 'returns commits based in before filter' do
+      commit_ids = repository.list_commits_by('test text', 'master', before: 1474828200).map(&:id)
+      expect(commit_ids).to include(
+        '498214de67004b1da3d820901307bed2a68a8ef6'
+      )
+      expect(commit_ids).not_to include('b83d6e391c22777fca1ed3012fce84f633d7fed0')
+    end
+
+    it 'returns commits based in after filter' do
+      commit_ids = repository.list_commits_by('test text', 'master', after: 1474828200).map(&:id)
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      )
+      expect(commit_ids).not_to include('498214de67004b1da3d820901307bed2a68a8ef6')
+    end
+
+    it 'returns commits based in author filter' do
+      commit_ids = repository.list_commits_by('test text', 'master', author: 'Job van der Voort').map(&:id)
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      )
+      expect(commit_ids).not_to include('498214de67004b1da3d820901307bed2a68a8ef6')
+    end
+
+    describe 'when storage is broken', :broken_storage do
+      it 'raises a storage error' do
+        expect_to_raise_storage_error { broken_repository.list_commits_by('s') }
       end
     end
   end
@@ -3306,7 +3381,7 @@ RSpec.describe Repository do
     before do
       storages = {
         'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
-        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
+        'picked' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
       }
 
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)

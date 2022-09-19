@@ -135,6 +135,33 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  context 'deleting a project with merge request diffs' do
+    let!(:merge_request) { create(:merge_request, source_project: project) }
+    let!(:another_project_mr) { create(:merge_request, source_project: create(:project)) }
+
+    it 'deletes merge request diffs' do
+      merge_request_diffs = merge_request.merge_request_diffs
+      expect(merge_request_diffs.size).to eq(1)
+
+      expect { destroy_project(project, user, {}) }.to change(MergeRequestDiff, :count).by(-1)
+      expect { another_project_mr.reload }.not_to raise_error
+    end
+
+    context 'when extract_mr_diff_deletions feature flag is disabled' do
+      before do
+        stub_feature_flags(extract_mr_diff_deletions: false)
+      end
+
+      it 'also deletes merge request diffs' do
+        merge_request_diffs = merge_request.merge_request_diffs
+        expect(merge_request_diffs.size).to eq(1)
+
+        expect { destroy_project(project, user, {}) }.to change(MergeRequestDiff, :count).by(-1)
+        expect { another_project_mr.reload }.not_to raise_error
+      end
+    end
+  end
+
   it_behaves_like 'deleting the project'
 
   it 'invalidates personal_project_count cache' do
@@ -312,7 +339,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       before do
         stub_container_registry_tags(repository: project.full_path + '/image',
-                                      tags: ['tag'])
+                                     tags: ['tag'])
         project.container_repositories << container_repository
       end
 
@@ -350,7 +377,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     context 'when there are tags for legacy root repository' do
       before do
         stub_container_registry_tags(repository: project.full_path,
-                                      tags: ['tag'])
+                                     tags: ['tag'])
       end
 
       context 'when image repository tags deletion succeeds' do
@@ -423,11 +450,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       destroy_project(project, user)
     end
 
-    it 'calls the bulk snippet destroy service with the hard_delete param set to true' do
+    it 'calls the bulk snippet destroy service with the skip_authorization param set to true' do
       expect(project.snippets.count).to eq 2
 
       expect_next_instance_of(Snippets::BulkDestroyService, user, project.snippets) do |instance|
-        expect(instance).to receive(:execute).with(hard_delete: true).and_call_original
+        expect(instance).to receive(:execute).with(skip_authorization: true).and_call_original
       end
 
       expect do
@@ -485,9 +512,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     let!(:project_bot) { create(:user, :project_bot).tap { |user| project.add_maintainer(user) } }
 
     it 'deletes bot user as well' do
-      expect do
-        destroy_project(project, user)
-      end.to change { User.find_by(id: project_bot.id) }.to(nil)
+      expect_next_instance_of(Users::DestroyService, user) do |instance|
+        expect(instance).to receive(:execute).with(project_bot, skip_authorization: true).and_call_original
+      end
+
+      destroy_project(project, user)
     end
   end
 

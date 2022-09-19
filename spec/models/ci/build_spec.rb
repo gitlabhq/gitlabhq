@@ -67,31 +67,6 @@ RSpec.describe Ci::Build do
 
         create(:ci_build)
       end
-
-      context 'when the execute_build_hooks_inline flag is disabled' do
-        before do
-          stub_feature_flags(execute_build_hooks_inline: false)
-        end
-
-        it 'uses the old job hooks worker' do
-          expect(::BuildHooksWorker).to receive(:perform_async).with(Ci::Build)
-
-          create(:ci_build)
-        end
-      end
-
-      context 'when the execute_build_hooks_inline flag is enabled for a project' do
-        before do
-          stub_feature_flags(execute_build_hooks_inline: project)
-        end
-
-        it 'executes hooks inline' do
-          expect(::BuildHooksWorker).not_to receive(:perform_async)
-          expect_next(described_class).to receive(:execute_hooks)
-
-          create(:ci_build, project: project)
-        end
-      end
     end
   end
 
@@ -591,6 +566,51 @@ RSpec.describe Ci::Build do
           expect(build.failure_reason).to eq 'script_failure'
         end
       end
+    end
+  end
+
+  describe '#prevent_rollback_deployment?' do
+    subject { build.prevent_rollback_deployment? }
+
+    let(:build) { create(:ci_build, :created, :with_deployment, project: project, environment: 'production') }
+
+    context 'when build has no environment' do
+      let(:build) { create(:ci_build, :created, project: project, environment: nil) }
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when project has forward deployment disabled' do
+      before do
+        project.ci_cd_settings.update!(forward_deployment_enabled: false)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when deployment cannot rollback' do
+      before do
+        expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when prevent_outdated_deployment_jobs FF is disabled' do
+      before do
+        stub_feature_flags(prevent_outdated_deployment_jobs: false)
+        expect(build.deployment).not_to receive(:rollback?)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when build can prevent rollback deployment' do
+      before do
+        expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
+      end
+
+      it { expect(subject).to be_truthy }
     end
   end
 
@@ -1250,70 +1270,6 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#has_old_trace?' do
-    subject { build.has_old_trace? }
-
-    context 'when old trace exists' do
-      before do
-        build.update_column(:trace, 'old trace')
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when old trace does not exist' do
-      it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '#trace=' do
-    it "expect to fail trace=" do
-      expect { build.trace = "new" }.to raise_error(NotImplementedError)
-    end
-  end
-
-  describe '#old_trace' do
-    subject { build.old_trace }
-
-    before do
-      build.update_column(:trace, 'old trace')
-    end
-
-    it "expect to receive data from database" do
-      is_expected.to eq('old trace')
-    end
-  end
-
-  describe '#erase_old_trace!' do
-    subject { build.erase_old_trace! }
-
-    context 'when old trace exists' do
-      before do
-        build.update_column(:trace, 'old trace')
-      end
-
-      it "erases old trace" do
-        subject
-
-        expect(build.old_trace).to be_nil
-      end
-
-      it "executes UPDATE query" do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-
-        expect(recorded.log.count { |l| l.match?(/UPDATE.*ci_builds/) }).to eq(1)
-      end
-    end
-
-    context 'when old trace does not exist' do
-      it 'does not execute UPDATE query' do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-
-        expect(recorded.log.count { |l| l.match?(/UPDATE.*ci_builds/) }).to eq(0)
-      end
-    end
-  end
-
   describe '#hide_secrets' do
     let(:metrics) { spy('metrics') }
     let(:subject) { build.hide_secrets(data) }
@@ -1370,13 +1326,12 @@ RSpec.describe Ci::Build do
 
     subject { build.send(event) }
 
-    where(:ff_enabled, :state, :report_count, :trait) do
-      true  | :success! | 1 | :sast
-      true  | :cancel!  | 1 | :sast
-      true  | :drop!    | 2 | :multiple_report_artifacts
-      true  | :success! | 0 | :allowed_to_fail
-      true  | :skip!    | 0 | :pending
-      false | :success! | 0 | :sast
+    where(:state, :report_count, :trait) do
+      :success! | 1 | :sast
+      :cancel!  | 1 | :sast
+      :drop!    | 2 | :multiple_report_artifacts
+      :success! | 0 | :allowed_to_fail
+      :skip!    | 0 | :pending
     end
 
     with_them do
@@ -1386,7 +1341,6 @@ RSpec.describe Ci::Build do
       context "when transitioning to #{params[:state]}" do
         before do
           allow(Gitlab).to receive(:com?).and_return(true)
-          stub_feature_flags(report_artifact_build_completed_metrics_on_build_completion: ff_enabled)
         end
 
         it 'increments build_completed_report_type metric' do
@@ -1645,32 +1599,6 @@ RSpec.describe Ci::Build do
       end
     end
 
-    describe '#count_user_verification?' do
-      subject { build.count_user_verification? }
-
-      context 'when build is the verify action for the environment' do
-        let(:build) do
-          create(:ci_build,
-                 ref: 'master',
-                 environment: 'staging',
-                 options: { environment: { action: 'verify' } })
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when build is not the verify action for the environment' do
-        let(:build) do
-          create(:ci_build,
-                 ref: 'master',
-                 environment: 'staging',
-                 options: { environment: { action: 'start' } })
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
     describe '#expanded_environment_name' do
       subject { build.expanded_environment_name }
 
@@ -1873,12 +1801,6 @@ RSpec.describe Ci::Build do
     context 'build is not erasable' do
       let!(:build) { create(:ci_build) }
 
-      describe '#erase' do
-        subject { build.erase }
-
-        it { is_expected.to be false }
-      end
-
       describe '#erasable?' do
         subject { build.erasable? }
 
@@ -1887,70 +1809,8 @@ RSpec.describe Ci::Build do
     end
 
     context 'build is erasable' do
-      context 'logging erase' do
-        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
-
-        it 'logs erased artifacts' do
-          expect(Gitlab::Ci::Artifacts::Logger)
-            .to receive(:log_deleted)
-            .with(
-              match_array(build.job_artifacts.to_a),
-              'Ci::Build#erase'
-            )
-
-          build.erase
-        end
-      end
-
-      context 'when project is undergoing stats refresh' do
-        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
-
-        describe '#erase' do
-          before do
-            allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
-          end
-
-          it 'logs and continues with deleting the artifacts' do
-            expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
-              method: 'Ci::Build#erase',
-              project_id: build.project.id
-            )
-
-            build.erase
-
-            expect(build.job_artifacts.count).to eq(0)
-          end
-        end
-      end
-
       context 'new artifacts' do
         let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
-
-        describe '#erase' do
-          before do
-            build.erase(erased_by: erased_by)
-          end
-
-          context 'erased by user' do
-            let!(:erased_by) { create(:user, username: 'eraser') }
-
-            include_examples 'erasable'
-
-            it 'records user who erased a build' do
-              expect(build.erased_by).to eq erased_by
-            end
-          end
-
-          context 'erased by system' do
-            let(:erased_by) { nil }
-
-            include_examples 'erasable'
-
-            it 'does not set user who erased a build' do
-              expect(build.erased_by).to be_nil
-            end
-          end
-        end
 
         describe '#erasable?' do
           subject { build.erasable? }
@@ -1969,76 +1829,12 @@ RSpec.describe Ci::Build do
 
           context 'job has been erased' do
             before do
-              build.erase
+              build.update!(erased_at: 1.minute.ago)
             end
 
             it { is_expected.to be_truthy }
           end
         end
-
-        context 'metadata and build trace are not available' do
-          let!(:build) { create(:ci_build, :success, :artifacts) }
-
-          before do
-            build.erase_erasable_artifacts!
-          end
-
-          describe '#erase' do
-            it 'does not raise error' do
-              expect { build.erase }.not_to raise_error
-            end
-          end
-        end
-      end
-    end
-  end
-
-  describe '#erase_erasable_artifacts!' do
-    let!(:build) { create(:ci_build, :success) }
-
-    subject { build.erase_erasable_artifacts! }
-
-    before do
-      Ci::JobArtifact.file_types.keys.each do |file_type|
-        create(:ci_job_artifact, job: build, file_type: file_type, file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[file_type.to_sym])
-      end
-    end
-
-    it "erases erasable artifacts and logs them" do
-      expect(Gitlab::Ci::Artifacts::Logger)
-        .to receive(:log_deleted)
-        .with(
-          match_array(build.job_artifacts.erasable.to_a),
-          'Ci::Build#erase_erasable_artifacts!'
-        )
-
-      subject
-
-      expect(build.job_artifacts.erasable).to be_empty
-    end
-
-    it "keeps non erasable artifacts" do
-      subject
-
-      Ci::JobArtifact::NON_ERASABLE_FILE_TYPES.each do |file_type|
-        expect(build.send("job_artifacts_#{file_type}")).not_to be_nil
-      end
-    end
-
-    context 'when the project is undergoing stats refresh' do
-      before do
-        allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
-      end
-
-      it 'logs and continues with deleting the artifacts' do
-        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
-          method: 'Ci::Build#erase_erasable_artifacts!',
-          project_id: build.project.id
-        )
-
-        subject
-
-        expect(build.job_artifacts.erasable).to be_empty
       end
     end
   end
@@ -2689,17 +2485,17 @@ RSpec.describe Ci::Build do
 
   describe '#ref_slug' do
     {
-      'master'                => 'master',
-      '1-foo'                 => '1-foo',
-      'fix/1-foo'             => 'fix-1-foo',
-      'fix-1-foo'             => 'fix-1-foo',
-      'a' * 63                => 'a' * 63,
-      'a' * 64                => 'a' * 63,
-      'FOO'                   => 'foo',
-      '-' + 'a' * 61 + '-'    => 'a' * 61,
-      '-' + 'a' * 62 + '-'    => 'a' * 62,
-      '-' + 'a' * 63 + '-'    => 'a' * 62,
-      'a' * 62 + ' '          => 'a' * 62
+      'master' => 'master',
+      '1-foo' => '1-foo',
+      'fix/1-foo' => 'fix-1-foo',
+      'fix-1-foo' => 'fix-1-foo',
+      'a' * 63 => 'a' * 63,
+      'a' * 64 => 'a' * 63,
+      'FOO' => 'foo',
+      '-' + 'a' * 61 + '-' => 'a' * 61,
+      '-' + 'a' * 62 + '-' => 'a' * 62,
+      '-' + 'a' * 63 + '-' => 'a' * 62,
+      'a' * 62 + ' ' => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -3634,17 +3430,6 @@ RSpec.describe Ci::Build do
           it 'includes deploy token variables' do
             is_expected.to include(*deploy_token_variables)
           end
-
-          context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
-            before do
-              stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
-            end
-
-            it 'does not include deploy token variables' do
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER' }).to be_nil
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD' }).to be_nil
-            end
-          end
         end
       end
     end
@@ -3921,18 +3706,6 @@ RSpec.describe Ci::Build do
       build.enqueue
     end
 
-    context 'when the execute_build_hooks_inline flag is disabled' do
-      before do
-        stub_feature_flags(execute_build_hooks_inline: false)
-      end
-
-      it 'queues BuildHooksWorker' do
-        expect(BuildHooksWorker).to receive(:perform_async).with(build)
-
-        build.enqueue
-      end
-    end
-
     it 'executes hooks' do
       expect(build).to receive(:execute_hooks)
 
@@ -4048,10 +3821,6 @@ RSpec.describe Ci::Build do
       context 'when artifacts of depended job has been erased' do
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
 
-        before do
-          pre_stage_job.erase
-        end
-
         it { expect(job).not_to have_valid_build_dependencies }
       end
     end
@@ -4071,10 +3840,6 @@ RSpec.describe Ci::Build do
 
       context 'when artifacts of depended job has been erased' do
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
-
-        before do
-          pre_stage_job.erase
-        end
 
         it { expect(job).to have_valid_build_dependencies }
       end
@@ -4405,9 +4170,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#collect_test_reports!' do
-    subject { build.collect_test_reports!(test_reports) }
-
-    let(:test_reports) { Gitlab::Ci::Reports::TestReport.new }
+    subject(:test_reports) { build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new) }
 
     it { expect(test_reports.get_suite(build.name).total_count).to eq(0) }
 
@@ -4452,56 +4215,6 @@ RSpec.describe Ci::Build do
           expect(test_reports.get_suite(build.name).success_count).to eq(0)
           expect(test_reports.get_suite(build.name).failed_count).to eq(0)
           expect(test_reports.get_suite(build.name).suite_error).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
-        end
-      end
-    end
-
-    context 'when build is part of parallel build' do
-      let(:build_1) { create(:ci_build, name: 'build 1/2') }
-      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
-
-      before do
-        build_1.collect_test_reports!(test_report)
-      end
-
-      it 'uses the group name for test suite name' do
-        expect(test_report.test_suites.keys).to contain_exactly('build')
-      end
-
-      context 'when there are more than one parallel builds' do
-        let(:build_2) { create(:ci_build, name: 'build 2/2') }
-
-        before do
-          build_2.collect_test_reports!(test_report)
-        end
-
-        it 'merges the test suite from parallel builds' do
-          expect(test_report.test_suites.keys).to contain_exactly('build')
-        end
-      end
-    end
-
-    context 'when build is part of matrix build' do
-      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
-      let(:matrix_build_1) { create(:ci_build, :matrix) }
-
-      before do
-        matrix_build_1.collect_test_reports!(test_report)
-      end
-
-      it 'uses the job name for the test suite' do
-        expect(test_report.test_suites.keys).to contain_exactly(matrix_build_1.name)
-      end
-
-      context 'when there are more than one matrix builds' do
-        let(:matrix_build_2) { create(:ci_build, :matrix) }
-
-        before do
-          matrix_build_2.collect_test_reports!(test_report)
-        end
-
-        it 'keeps separate test suites' do
-          expect(test_report.test_suites.keys).to match_array([matrix_build_1.name, matrix_build_2.name])
         end
       end
     end
@@ -5620,7 +5333,7 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#runner_features' do
+  describe '#runtime_runner_features' do
     subject do
       build.save!
       build.cancel_gracefully?
@@ -5698,6 +5411,30 @@ RSpec.describe Ci::Build do
         expect(new_build.job_variables.count).to be(1)
         expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY')
         expect(new_build.job_variables.map(&:value)).to contain_exactly('old value')
+      end
+    end
+  end
+
+  describe '#test_suite_name' do
+    let(:build) { create(:ci_build, name: 'test') }
+
+    it 'uses the group name for test suite name' do
+      expect(build.test_suite_name).to eq('test')
+    end
+
+    context 'when build is part of parallel build' do
+      let(:build) { create(:ci_build, name: 'build 1/2') }
+
+      it 'uses the group name for test suite name' do
+        expect(build.test_suite_name).to eq('build')
+      end
+    end
+
+    context 'when build is part of matrix build' do
+      let!(:matrix_build) { create(:ci_build, :matrix) }
+
+      it 'uses the job name for the test suite' do
+        expect(matrix_build.test_suite_name).to eq(matrix_build.name)
       end
     end
   end

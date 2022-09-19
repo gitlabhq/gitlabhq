@@ -41,7 +41,7 @@ RSpec.describe Projects::BlameController do
     end
 
     context "invalid branch, valid file" do
-      let(:id) { 'invalid-branch/files/ruby/missing_file.rb'}
+      let(:id) { 'invalid-branch/files/ruby/missing_file.rb' }
 
       it { is_expected.to respond_with(:not_found) }
     end

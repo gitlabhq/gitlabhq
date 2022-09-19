@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::Security::Link do
   subject(:security_link) { described_class.new(name: 'CVE-2020-0202', url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-0202') }

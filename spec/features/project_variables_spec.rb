@@ -14,11 +14,37 @@ RSpec.describe 'Project variables', :js do
     project.variables << variable
   end
 
-  # TODO: Add same tests but with FF enabled context when
-  # the new graphQL app for variable settings is enabled.
   context 'with disabled ff `ci_variable_settings_graphql' do
     before do
       stub_feature_flags(ci_variable_settings_graphql: false)
+      visit page_path
+    end
+
+    it_behaves_like 'variable list'
+
+    it 'adds a new variable with an environment scope' do
+      click_button('Add variable')
+
+      page.within('#add-ci-variable') do
+        fill_in 'Key', with: 'akey'
+        find('#ci-variable-value').set('akey_value')
+        find('[data-testid="environment-scope"]').click
+        find('[data-testid="ci-environment-search"]').set('review/*')
+        find('[data-testid="create-wildcard-button"]').click
+
+        click_button('Add variable')
+      end
+
+      wait_for_requests
+
+      page.within('[data-testid="ci-variable-table"]') do
+        expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
+      end
+    end
+  end
+
+  context 'with enabled ff `ci_variable_settings_graphql' do
+    before do
       visit page_path
     end
 

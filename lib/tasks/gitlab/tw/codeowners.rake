@@ -19,16 +19,15 @@ namespace :tw do
     end
 
     CODE_OWNER_RULES = [
-      CodeOwnerRule.new('Activation', '@kpaizee'),
-      CodeOwnerRule.new("Adoption", '@kpaizee'),
-      CodeOwnerRule.new('Activation', '@kpaizee'),
-      CodeOwnerRule.new('Adoption', '@kpaizee'),
+      CodeOwnerRule.new('Activation', '@phillipwells'),
+      CodeOwnerRule.new('Acquisition', '@phillipwells'),
+      CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
       CodeOwnerRule.new('Authentication and Authorization', '@eread'),
       CodeOwnerRule.new('Certify', '@msedlakjakubowski'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Configure', '@sselhorn'),
+      CodeOwnerRule.new('Configure', '@phillipwells'),
       CodeOwnerRule.new('Container Security', '@claytoncornell'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Conversion', '@kpaizee'),
@@ -41,7 +40,6 @@ namespace :tw do
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
       CodeOwnerRule.new('Ecosystem', '@kpaizee'),
       CodeOwnerRule.new('Editor', '@aqualls'),
-      CodeOwnerRule.new('Expansion', '@kpaizee'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),

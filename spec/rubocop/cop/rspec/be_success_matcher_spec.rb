@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/be_success_matcher'
 
 RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher do
   let(:source_file) { 'spec/foo_spec.rb' }
-
-  subject(:cop) { described_class.new }
 
   shared_examples 'cop' do |good:, bad:|
     context "using #{bad} call" do

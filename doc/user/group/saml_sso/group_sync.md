@@ -70,9 +70,9 @@ role.
 Users granted:
 
 - A higher role with Group Sync are displayed as having
-  [direct membership](../../project/members/#display-direct-members) of the group.
+  [direct membership](../../project/members/index.md#display-direct-members) of the group.
 - A lower or the same role with Group Sync are displayed as having
-  [inherited membership](../../project/members/#display-inherited-members) of the group.
+  [inherited membership](../../project/members/index.md#display-inherited-members) of the group.
 
 ### Automatic member removal
 
@@ -167,3 +167,18 @@ graph TB
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
 
 You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.
+
+## Troubleshooting
+
+This section contains possible solutions for problems you might encounter.
+
+### User that belongs to many SAML groups automatically removed from GitLab group
+
+When using Azure AD as the SAML identity provider, users that belong to many SAML groups can be automatically removed from your GitLab group. Users are removed from GitLab
+groups if the group claim is missing from the user's SAML assertion.
+
+Because of a [known issue with Azure AD](https://support.esri.com/en/technical-article/000022190), if a user belongs to more than 150 SAML groups, the group claim is not sent
+in the user's SAML assertion.
+
+To work around this issue, allow more than 150 group IDs to be sent in SAML token using configuration steps in the
+[Azure AD documentation](https://support.esri.com/en/technical-article/000022190).  

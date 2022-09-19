@@ -49,7 +49,7 @@ Prerequisite:
 
 To change the default quota that applies to all namespaces:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Quota of CI/CD minutes** box, enter the maximum number of CI/CD minutes.
@@ -70,7 +70,7 @@ Prerequisite:
 
 To set a quota of CI/CD minutes for a namespace:
 
-1. On the top bar, select **Menu > Admin**.
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Quota of CI/CD minutes** box, enter the maximum number of CI/CD minutes.
@@ -95,7 +95,7 @@ Prerequisite:
 
 To view CI/CD minutes being used for your group:
 
-1. On the top bar, select **Menu > Groups** and find your group. The group must not be a subgroup.
+1. On the top bar, select **Main menu > Groups** and find your group. The group must not be a subgroup.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Pipelines** tab.
 
@@ -148,7 +148,7 @@ You can purchase additional CI/CD minutes for your group.
 You cannot transfer purchased CI/CD minutes from one group to another,
 so be sure to select the correct group.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional minutes**.
@@ -201,9 +201,12 @@ can be higher than the end-to-end duration of a pipeline.
 
 The cost factors for jobs running on shared runners on GitLab.com are:
 
-- `0.008` for public projects, and projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
-  For every 125 minutes of job execution time, you use 1 CI/CD minute.
 - `1` for internal and private projects.
+- `0.5` for public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
+- `0.008` for public forks of public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source). For every 125 minutes of job execution time,
+  you use 1 CI/CD minute.
+- `0.04` for other public projects, after September 1, 2022 (previously `0.008`).
+  For every 25 minutes of job execution time, you use 1 CI/CD minute.
 - Calculated differently for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
@@ -236,12 +239,14 @@ GitLab administrators can add a namespace to the reduced cost factor
 
 ### Additional costs on GitLab SaaS
 
-GitLab SaaS shared runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
+GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type  | Virtual machine configuration   | CI/CD minutes cost factor  |
+| GitLab SaaS runner type  | Machine Type   | CI/CD minutes cost factor  |
 | :--------- | :------------------- | :--------- |
-| Linux OS + Docker executor| 1 vCPU, 3.75 GB RAM   |1|
-| macOS + shell executor   | 4 vCPU, 10 GB RAM| 6 |
+| Linux OS + Docker executor| Small  |1|
+| Linux OS + Docker executor| Medium  |2|
+| Linux OS + Docker executor| Large |3|
+| macOS + shell executor   | Large| 6 |
 
 ### Monthly reset of CI/CD minutes
 

@@ -1,4 +1,4 @@
-import { GlLink, GlTokenSelector, GlSkeletonLoader } from '@gitlab/ui';
+import { GlLink, GlTokenSelector, GlSkeletonLoader, GlIntersectionObserver } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -8,12 +8,17 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
+import { temporaryConfig } from '~/graphql_shared/issuable_client';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import { i18n, TASK_TYPE_NAME, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import { temporaryConfig } from '~/work_items/graphql/provider';
+import {
+  i18n,
+  TASK_TYPE_NAME,
+  TRACKING_CATEGORY_SHOW,
+  DEFAULT_PAGE_SIZE_ASSIGNEES,
+} from '~/work_items/constants';
 import {
   projectMembersResponseWithCurrentUser,
   mockAssignees,
@@ -22,6 +27,8 @@ import {
   currentUserNullResponse,
   projectMembersResponseWithoutCurrentUser,
   updateWorkItemMutationResponse,
+  projectMembersResponseWithCurrentUserWithNextPage,
+  projectMembersResponseWithNoMatchingUsers,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -40,15 +47,25 @@ describe('WorkItemAssignees component', () => {
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
   const findAssigneesTitle = () => wrapper.findByTestId('assignees-title');
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+
+  const triggerInfiniteScroll = () =>
+    wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
   const successSearchQueryHandler = jest
     .fn()
     .mockResolvedValue(projectMembersResponseWithCurrentUser);
+  const successSearchQueryHandlerWithMoreAssignees = jest
+    .fn()
+    .mockResolvedValue(projectMembersResponseWithCurrentUserWithNextPage);
   const successCurrentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
   const noCurrentUserQueryHandler = jest.fn().mockResolvedValue(currentUserNullResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
+  const successSearchWithNoMatchingUsers = jest
+    .fn()
+    .mockResolvedValue(projectMembersResponseWithNoMatchingUsers);
 
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
@@ -82,9 +99,6 @@ describe('WorkItemAssignees component', () => {
     });
 
     wrapper = mountExtended(WorkItemAssignees, {
-      provide: {
-        fullPath: 'test-project-path',
-      },
       propsData: {
         assignees,
         workItemId,
@@ -92,6 +106,7 @@ describe('WorkItemAssignees component', () => {
         workItemType: TASK_TYPE_NAME,
         canUpdate,
         canInviteMembers,
+        fullPath: 'test-project-path',
       },
       attachTo: document.body,
       apolloProvider,
@@ -457,6 +472,58 @@ describe('WorkItemAssignees component', () => {
       createComponent({ canInviteMembers: true });
 
       expect(findInviteMembersTrigger().exists()).toBe(true);
+    });
+  });
+
+  describe('load more assignees', () => {
+    it('does not have intersection observer when no matching users', async () => {
+      createComponent({ searchQueryHandler: successSearchWithNoMatchingUsers });
+      findTokenSelector().vm.$emit('focus');
+      await nextTick();
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+
+      await waitForPromises();
+
+      expect(findSkeletonLoader().exists()).toBe(false);
+      expect(findIntersectionObserver().exists()).toBe(false);
+    });
+
+    it('does not trigger load more when does not have next page', async () => {
+      createComponent();
+      findTokenSelector().vm.$emit('focus');
+      await nextTick();
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+
+      await waitForPromises();
+
+      expect(findSkeletonLoader().exists()).toBe(false);
+
+      expect(findIntersectionObserver().exists()).toBe(false);
+    });
+
+    it('triggers load more when there are more users', async () => {
+      createComponent({ searchQueryHandler: successSearchQueryHandlerWithMoreAssignees });
+      findTokenSelector().vm.$emit('focus');
+      await nextTick();
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+
+      await waitForPromises();
+
+      expect(findSkeletonLoader().exists()).toBe(false);
+      expect(findIntersectionObserver().exists()).toBe(true);
+
+      triggerInfiniteScroll();
+
+      expect(successSearchQueryHandlerWithMoreAssignees).toHaveBeenCalledWith({
+        first: DEFAULT_PAGE_SIZE_ASSIGNEES,
+        after:
+          projectMembersResponseWithCurrentUserWithNextPage.data.workspace.users.pageInfo.endCursor,
+        search: '',
+        fullPath: 'test-project-path',
+      });
     });
   });
 });

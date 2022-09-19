@@ -70,8 +70,11 @@ InitializerConnections.with_disabled_database_connections do
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
-        resources :groups, only: [:new, :create]
-        resources :projects, only: [:new, :create]
+
+        # legacy - to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/371996
+        get 'groups/new', to: redirect('users/sign_up/groups_projects/new')
+        get 'projects/new', to: redirect('users/sign_up/groups_projects/new')
+
         resources :groups_projects, only: [:new, :create] do
           collection do
             post :import

@@ -4,8 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Image do
   before do
-    stub_feature_flags(ci_docker_image_pull_policy: true)
-
     entry.compose!
   end
 
@@ -129,18 +127,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
         it 'is valid' do
           expect(entry).to be_valid
         end
-
-        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-          before do
-            stub_feature_flags(ci_docker_image_pull_policy: false)
-            entry.compose!
-          end
-
-          it 'is not valid' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include('image config contains unknown keys: pull_policy')
-          end
-        end
       end
 
       describe '#value' do
@@ -149,19 +135,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
             name: 'image:1.0',
             pull_policy: ['if-not-present']
           )
-        end
-
-        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
-          before do
-            stub_feature_flags(ci_docker_image_pull_policy: false)
-            entry.compose!
-          end
-
-          it 'is not valid' do
-            expect(entry.value).to eq(
-              name: 'image:1.0'
-            )
-          end
         end
       end
     end

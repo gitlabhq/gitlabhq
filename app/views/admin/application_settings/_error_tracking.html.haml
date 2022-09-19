@@ -25,7 +25,7 @@
                   data: { confirm: _('Are you sure you want to reset the error tracking access token?') }
 
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-error-tracking-settings'), html: { class: 'fieldset-form', id: 'error-tracking-settings' } do |f|
-      = form_errors(@application_setting, pajamas_alert: true) if expanded
+      = form_errors(@application_setting) if expanded
 
       %fieldset
         .sub-section

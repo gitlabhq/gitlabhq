@@ -47,6 +47,7 @@ export default class VisualTokenValue {
 
           /* eslint-disable no-param-reassign */
           tokenValueContainer.dataset.originalValue = tokenValue;
+          // eslint-disable-next-line no-unsanitized/property
           tokenValueElement.innerHTML = `
           <img class="avatar s20" src="${user.avatar_url}" alt="">
           ${escape(user.name)}
@@ -152,6 +153,7 @@ export default class VisualTokenValue {
       }
 
       container.dataset.originalValue = value;
+      // eslint-disable-next-line no-unsanitized/property
       element.innerHTML = Emoji.glEmojiTag(value);
     });
   }

@@ -110,13 +110,13 @@ describe('DiffContent', () => {
         props: { diffFile: textDiffFile },
       });
 
-      expect(wrapper.find(DiffView).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffView).exists()).toBe(true);
     });
 
     it('renders rendering more lines loading icon', () => {
       createComponent({ props: { diffFile: { ...textDiffFile, renderingLines: true } } });
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 
@@ -133,7 +133,7 @@ describe('DiffContent', () => {
         props: { diffFile: { ...emptyDiffFile, viewer: { name: diffViewerModes.no_preview } } },
       });
 
-      expect(wrapper.find(NoPreviewViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(NoPreviewViewer).exists()).toBe(true);
     });
 
     it('should render not diffable view if viewer set to non_diffable', () => {
@@ -141,7 +141,7 @@ describe('DiffContent', () => {
         props: { diffFile: { ...emptyDiffFile, viewer: { name: diffViewerModes.not_diffable } } },
       });
 
-      expect(wrapper.find(NotDiffableViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(NotDiffableViewer).exists()).toBe(true);
     });
   });
 
@@ -156,7 +156,7 @@ describe('DiffContent', () => {
         },
       });
 
-      expect(wrapper.find(DiffDiscussions).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffDiscussions).exists()).toBe(true);
     });
 
     it('emits saveDiffDiscussion when note-form emits `handleFormUpdate`', () => {
@@ -169,7 +169,7 @@ describe('DiffContent', () => {
         },
       });
 
-      wrapper.find(NoteForm).vm.$emit('handleFormUpdate', noteStub);
+      wrapper.findComponent(NoteForm).vm.$emit('handleFormUpdate', noteStub);
       expect(saveDiffDiscussionMock).toHaveBeenCalledWith(expect.any(Object), {
         note: noteStub,
         formData: {

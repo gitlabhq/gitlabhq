@@ -9,6 +9,8 @@ RSpec.describe 'Multi-file editor upload file', :js do
   let(:img_file) { File.join(Rails.root, 'spec', 'fixtures', 'dk.png') }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
+
     project.add_maintainer(user)
     sign_in(user)
 

@@ -6,11 +6,6 @@
   .file-actions.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-md-justify-content-end<
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
     = render 'shared/web_ide_button', blob: blob
-    .btn-group{ role: "group", class: ("gl-ml-3" if current_user) }>
-      = render_if_exists 'projects/blob/header_file_locks_link'
-      - if current_user
-        = replace_blob_link(@project, @ref, @path, blob: blob)
-        = delete_blob_link(@project, @ref, @path, blob: blob)
     .btn-group.gl-ml-3{ role: "group" }
       = copy_blob_source_button(blob) unless blame
       = open_raw_blob_button(blob)

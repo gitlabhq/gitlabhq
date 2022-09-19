@@ -152,7 +152,7 @@ describe('Pipeline Editor | Commit Form', () => {
     });
 
     it('emits "scrolled-to-commit-form"', () => {
-      expect(wrapper.emitted()['scrolled-to-commit-form']).toBeTruthy();
+      expect(wrapper.emitted()['scrolled-to-commit-form']).toHaveLength(1);
     });
   });
 });

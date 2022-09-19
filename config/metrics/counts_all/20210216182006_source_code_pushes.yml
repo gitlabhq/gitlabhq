@@ -12,7 +12,7 @@ time_frame: all
 data_source: redis
 instrumentation_class: RedisMetric
 options:
-  counter_class: SourceCodeCounter
+  prefix: source_code
   event: pushes
 distribution:
 - ce

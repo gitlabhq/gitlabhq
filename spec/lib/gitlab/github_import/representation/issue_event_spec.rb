@@ -43,7 +43,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         let(:with_actor) { false }
 
         it 'does not return such info' do
-          expect(issue_event.actor).to eq nil
+          expect(issue_event.actor).to be_nil
         end
       end
 
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         let(:with_label) { false }
 
         it 'does not return such info' do
-          expect(issue_event.label_title).to eq nil
+          expect(issue_event.label_title).to be_nil
         end
       end
 
@@ -72,8 +72,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         let(:with_rename) { false }
 
         it 'does not return such info' do
-          expect(issue_event.old_title).to eq nil
-          expect(issue_event.new_title).to eq nil
+          expect(issue_event.old_title).to be_nil
+          expect(issue_event.new_title).to be_nil
         end
       end
 
@@ -87,30 +87,47 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         let(:with_milestone) { false }
 
         it 'does not return such info' do
-          expect(issue_event.milestone_title).to eq nil
+          expect(issue_event.milestone_title).to be_nil
         end
       end
 
-      context 'when assignee and assigner data is present' do
-        it 'includes assignee and assigner details' do
+      context 'when assignee data is present' do
+        it 'includes assignee details' do
           expect(issue_event.assignee)
             .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
           expect(issue_event.assignee.id).to eq(5)
           expect(issue_event.assignee.login).to eq('tom')
-
-          expect(issue_event.assigner)
-            .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
-          expect(issue_event.assigner.id).to eq(6)
-          expect(issue_event.assigner.login).to eq('jerry')
         end
       end
 
-      context 'when assignee and assigner data is empty' do
+      context 'when assignee data is empty' do
         let(:with_assignee) { false }
 
         it 'does not return such info' do
-          expect(issue_event.assignee).to eq nil
-          expect(issue_event.assigner).to eq nil
+          expect(issue_event.assignee).to be_nil
+        end
+      end
+
+      context 'when requested_reviewer and review_requester data is present' do
+        it 'includes requested_reviewer and review_requester details' do
+          expect(issue_event.requested_reviewer)
+            .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
+          expect(issue_event.requested_reviewer.id).to eq(6)
+          expect(issue_event.requested_reviewer.login).to eq('mickey')
+
+          expect(issue_event.review_requester)
+            .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
+          expect(issue_event.review_requester.id).to eq(7)
+          expect(issue_event.review_requester.login).to eq('minnie')
+        end
+      end
+
+      context 'when requested_reviewer and review_requester data is empty' do
+        let(:with_reviewer) { false }
+
+        it 'does not return such info' do
+          expect(issue_event.requested_reviewer).to be_nil
+          expect(issue_event.review_requester).to be_nil
         end
       end
 
@@ -148,7 +165,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:response) do
       event_resource = Struct.new(
         :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone,
-        :source, :assignee, :assigner, :issue, :created_at, :performed_via_github_app,
+        :source, :assignee, :requested_reviewer, :review_requester, :issue, :created_at,
+        :performed_via_github_app,
         keyword_init: true
       )
       user_resource = Struct.new(:id, :login, keyword_init: true)
@@ -166,7 +184,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         milestone: with_milestone ? { title: 'milestone title' } : nil,
         source: { type: 'issue', id: 123456 },
         assignee: with_assignee ? user_resource.new(id: 5, login: 'tom') : nil,
-        assigner: with_assignee ? user_resource.new(id: 6, login: 'jerry') : nil,
+        requested_reviewer: with_reviewer ? user_resource.new(id: 6, login: 'mickey') : nil,
+        review_requester: with_reviewer ? user_resource.new(id: 7, login: 'minnie') : nil,
         issue: { 'number' => 2, 'pull_request' => pull_request },
         created_at: '2022-04-26 18:30:53 UTC',
         performed_via_github_app: nil
@@ -178,6 +197,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:with_rename) { true }
     let(:with_milestone) { true }
     let(:with_assignee) { true }
+    let(:with_reviewer) { true }
     let(:pull_request) { nil }
 
     it_behaves_like 'an IssueEvent' do
@@ -203,7 +223,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
           'milestone_title' => (with_milestone ? 'milestone title' : nil),
           'source' => { 'type' => 'issue', 'id' => 123456 },
           'assignee' => (with_assignee ? { 'id' => 5, 'login' => 'tom' } : nil),
-          'assigner' => (with_assignee ? { 'id' => 6, 'login' => 'jerry' } : nil),
+          'requested_reviewer' => (with_reviewer ? { 'id' => 6, 'login' => 'mickey' } : nil),
+          'review_requester' => (with_reviewer ? { 'id' => 7, 'login' => 'minnie' } : nil),
           'issue' => { 'number' => 2, 'pull_request' => pull_request },
           'created_at' => '2022-04-26 18:30:53 UTC',
           'performed_via_github_app' => nil
@@ -215,6 +236,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
       let(:with_rename) { true }
       let(:with_milestone) { true }
       let(:with_assignee) { true }
+      let(:with_reviewer) { true }
       let(:pull_request) { nil }
 
       let(:issue_event) { described_class.from_json_hash(hash) }

@@ -6,13 +6,16 @@ import translateMixin from '~/vue_shared/translate';
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
   true,
-  /(application|application_utilities)\.scss$/,
+  /(application|application_utilities|highlight\/themes\/white)\.scss$/,
 );
 
-window.gon = {};
+window.gon = {
+  user_color_scheme: 'white',
+};
 translateMixin(Vue);
 
 stylesheetsRequireCtx('./application.scss');
 stylesheetsRequireCtx('./application_utilities.scss');
+stylesheetsRequireCtx('./highlight/themes/white.scss');
 
 export const decorators = [withServer(createMockServer)];

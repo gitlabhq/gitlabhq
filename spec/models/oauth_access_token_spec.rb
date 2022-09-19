@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe OauthAccessToken do
-  let(:user) { create(:user) }
   let(:app_one) { create(:oauth_application) }
   let(:app_two) { create(:oauth_application) }
   let(:app_three) { create(:oauth_application) }
@@ -66,6 +65,22 @@ RSpec.describe OauthAccessToken do
 
       it 'does not find a token that was previously stored as hashed' do
         expect(described_class.by_token(hashed_token.plaintext_token)).to be_nil
+      end
+    end
+  end
+
+  describe '.matching_token_for' do
+    it 'does not find existing tokens' do
+      expect(described_class.matching_token_for(app_one, token.resource_owner, token.scopes)).to be_nil
+    end
+
+    context 'when hash oauth tokens is disabled' do
+      before do
+        stub_feature_flags(hash_oauth_tokens: false)
+      end
+
+      it 'finds an existing token' do
+        expect(described_class.matching_token_for(app_one, token.resource_owner, token.scopes)).to be_present
       end
     end
   end

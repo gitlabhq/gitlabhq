@@ -6,6 +6,17 @@ import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisse
 import MergeRequestExperienceSurveyApp from '~/surveys/merge_request_experience/app.vue';
 import SatisfactionRate from '~/surveys/components/satisfaction_rate.vue';
 
+const createRenderTrackedArguments = () => [
+  undefined,
+  'survey:mr_experience',
+  {
+    label: 'render',
+    extra: {
+      accountAge: 0,
+    },
+  },
+];
+
 describe('MergeRequestExperienceSurveyApp', () => {
   let trackingSpy;
   let wrapper;
@@ -24,6 +35,7 @@ describe('MergeRequestExperienceSurveyApp', () => {
       dismiss,
       shouldShowCallout,
     });
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
     wrapper = shallowMountExtended(MergeRequestExperienceSurveyApp, {
       propsData: {
         accountAge: 0,
@@ -35,10 +47,13 @@ describe('MergeRequestExperienceSurveyApp', () => {
     });
   };
 
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   describe('when user callout is visible', () => {
     beforeEach(() => {
       createWrapper();
-      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     it('shows survey', async () => {
@@ -47,14 +62,46 @@ describe('MergeRequestExperienceSurveyApp', () => {
       expect(wrapper.emitted().close).toBe(undefined);
     });
 
-    it('triggers user callout on close', async () => {
-      findCloseButton().vm.$emit('click');
-      expect(dismiss).toHaveBeenCalledTimes(1);
+    it('tracks render once', async () => {
+      expect(trackingSpy).toHaveBeenCalledWith(...createRenderTrackedArguments());
     });
 
-    it('emits close event on close button click', async () => {
-      findCloseButton().vm.$emit('click');
-      expect(wrapper.emitted()).toMatchObject({ close: [[]] });
+    it("doesn't track subsequent renders", async () => {
+      createWrapper();
+      expect(trackingSpy).toHaveBeenCalledWith(...createRenderTrackedArguments());
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when close button clicked', () => {
+      beforeEach(() => {
+        findCloseButton().vm.$emit('click');
+      });
+
+      it('triggers user callout on close', async () => {
+        expect(dismiss).toHaveBeenCalledTimes(1);
+      });
+
+      it('emits close event on close button click', async () => {
+        expect(wrapper.emitted()).toMatchObject({ close: [[]] });
+      });
+
+      it('tracks dismissal', async () => {
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
+          label: 'dismiss',
+          extra: {
+            accountAge: 0,
+          },
+        });
+      });
+
+      it('tracks subsequent renders', async () => {
+        createWrapper();
+        expect(trackingSpy.mock.calls).toEqual([
+          createRenderTrackedArguments(),
+          expect.anything(),
+          createRenderTrackedArguments(),
+        ]);
+      });
     });
 
     it('applies correct feature name for user callout', () => {
@@ -135,6 +182,10 @@ describe('MergeRequestExperienceSurveyApp', () => {
     it('emits close event', async () => {
       expect(wrapper.emitted()).toMatchObject({ close: [[]] });
     });
+
+    it("doesn't track anything", async () => {
+      expect(trackingSpy).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('when Escape key is pressed', () => {
@@ -147,6 +198,15 @@ describe('MergeRequestExperienceSurveyApp', () => {
     it('emits close event', async () => {
       expect(wrapper.emitted()).toMatchObject({ close: [[]] });
       expect(dismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('tracks dismissal', async () => {
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
+        label: 'dismiss',
+        extra: {
+          accountAge: 0,
+        },
+      });
     });
   });
 });

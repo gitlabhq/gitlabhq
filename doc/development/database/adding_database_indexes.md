@@ -328,8 +328,8 @@ asynchronously during weekend hours. Due to generally lower traffic and fewer de
 index destruction can proceed at a lower level of risk.
 
 1. [Schedule the index to be removed](#schedule-the-index-to-be-removed).
-1. [Verify the MR was deployed and the index exists in production](#verify-the-mr-was-deployed-and-the-index-exists-in-production).
-1. [Add a migration to create the index synchronously](#add-a-migration-to-create-the-index-synchronously).
+1. [Verify the MR was deployed and the index exists in production](#verify-the-mr-was-deployed-and-the-index-no-longer-exists-in-production).
+1. [Add a migration to destroy the index synchronously](#add-a-migration-to-destroy-the-index-synchronously).
 
 ### Schedule the index to be removed
 
@@ -357,21 +357,21 @@ to remove them.
 
 You must test the database index changes locally before creating a merge request.
 
-### Verify the MR was deployed and the index exists in production
+### Verify the MR was deployed and the index no longer exists in production
 
 You can verify if the MR was deployed to GitLab.com with
 `/chatops run auto_deploy status <merge_sha>`. To verify the existence of
 the index, you can:
 
 - Use a meta-command in `#database-lab`, for example: `\d <index_name>`.
-  - Make sure the index is not [`invalid`](https://www.postgresql.org/docs/12/sql-createindex.html#:~:text=The%20psql%20%5Cd%20command%20will%20report%20such%20an%20index%20as%20INVALID).
+- Make sure the index no longer exists
 - Ask someone in `#database` to check if the index exists.
 - If you have access, you can verify directly on production or in a
   production clone.
 
 ### Add a migration to destroy the index synchronously
 
-After you verify the index exists in the production database, create a second
+After you verify the index no longer exists in the production database, create a second
 merge request that removes the index synchronously. The schema changes must be
 updated and committed to `structure.sql` in this second merge request.
 The synchronous migration results in a no-op on GitLab.com, but you should still add the
@@ -379,7 +379,7 @@ migration as expected for other installations. For example, to
 create the second migration for the previous asynchronous example:
 
 **WARNING:**
-Verify that the index no longer exist in production before merging a second migration with `remove_concurrent_index_by_name`.
+Verify that the index no longer exists in production before merging a second migration with `remove_concurrent_index_by_name`.
 If the second migration is deployed before the index has been destroyed,
 the index is destroyed synchronously when the second migration executes.
 
@@ -395,7 +395,7 @@ def up
 end
 
 def down
-  add_concurrent_index :ci_builds, :some_column, INDEX_NAME
+  add_concurrent_index :ci_builds, :some_column, name: INDEX_NAME
 end
 ```
 
@@ -403,7 +403,7 @@ end
 
 To test changes for removing an index, use the asynchronous index helpers on your local environment:
 
-1. Enable the feature flags by running `Feature.enable(:database_async_index_destruction)` and `Feature.enable(:database_reindexing)` in the Rails console.
+1. Enable the feature flags by running `Feature.enable(:database_reindexing)` in the Rails console.
 1. Run `bundle exec rails db:migrate` which should create an entry in the `postgres_async_indexes` table.
 1. Run `bundle exec rails gitlab:db:reindex` destroy the index asynchronously.
 1. To verify the index, open the PostgreSQL console by using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md)

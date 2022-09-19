@@ -140,6 +140,7 @@ export default {
 
         <template #cell(action)="{ item: { revokePath } }">
           <gl-button
+            v-if="revokePath"
             category="tertiary"
             :aria-label="$options.i18n.revokeButton"
             :data-confirm="modalMessage"

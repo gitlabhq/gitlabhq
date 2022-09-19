@@ -18,6 +18,6 @@
                     %td{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; color: #d22f57; font-weight: 500; font-size: 16px; vertical-align: middle; padding-right: 8px; line-height: 10px" }
                       %img{ alt: "✖", height: "10", src: image_url('mailers/ci_pipeline_notif_v1/icon-x-red.gif'), style: "display: block;", width: "10" }/
                     %td{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; color: #8c8c8c; font-weight: 500; font-size: 14px; vertical-align: middle;" }
-                      = build.stage
+                      = build.stage_name
             %td{ align: "right", style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; padding: 16px 0; color: #8c8c8c; font-weight: 500; font-size: 14px;" }
               = render "notify/links/#{build.to_partial_path}", pipeline: pipeline, build: build

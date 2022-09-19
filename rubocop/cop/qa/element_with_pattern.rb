@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   element :some_element
       #   element :some_element, required: true
-      class ElementWithPattern < RuboCop::Cop::Cop
+      class ElementWithPattern < RuboCop::Cop::Base
         include QAHelpers
 
         MESSAGE = "Don't use a pattern for element, create a corresponding `%s` instead."

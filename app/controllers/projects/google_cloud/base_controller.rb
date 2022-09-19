@@ -12,7 +12,7 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
 
   def admin_project_google_cloud!
     unless can?(current_user, :admin_project_google_cloud, project)
-      track_event('admin_project_google_cloud!', 'error_access_denied', 'invalid_user')
+      track_event(:error_invalid_user)
       access_denied!
     end
   end
@@ -20,11 +20,7 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
   def google_oauth2_enabled!
     config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
     if config.app_id.blank? || config.app_secret.blank?
-      track_event(
-        'google_oauth2_enabled!',
-        'error_access_denied',
-        { reason: 'google_oauth2_not_configured', config: config }
-      )
+      track_event(:error_google_oauth2_not_enabled)
       access_denied! 'This GitLab instance not configured for Google Oauth2.'
     end
   end
@@ -35,7 +31,7 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
     enabled_for_project = Feature.enabled?(:incubation_5mp_google_cloud, project)
     feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
     unless feature_is_enabled
-      track_event('feature_flag_enabled!', 'error_access_denied', 'feature_flag_not_enabled')
+      track_event(:error_feature_flag_not_enabled)
       access_denied!
     end
   end
@@ -69,16 +65,14 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
     session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
   end
 
-  def track_event(action, label, property)
-    options = { label: label, project: project, user: current_user }
-
-    if property.is_a?(String)
-      options[:property] = property
-    else
-      options[:extra] = property
-    end
-
-    Gitlab::Tracking.event('Projects::GoogleCloud', action, **options)
+  def track_event(action, label = nil)
+    Gitlab::Tracking.event(
+      self.class.name,
+      action.to_s,
+      label: label,
+      project: project,
+      user: current_user
+    )
   end
 
   def gcp_projects

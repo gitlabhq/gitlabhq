@@ -17,6 +17,7 @@ RSpec.describe 'User uses header search field', :js do
   end
 
   before do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(0)
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
     sign_in(user)

@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
 RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
-  subject(:cop) { described_class.new }
-
   it 'flags violation for return inside a block' do
     expect_offense(<<~RUBY)
       call do

@@ -305,6 +305,29 @@ export_reorders:
       nulls_position: :nulls_last
 ```
 
+### Conditional export
+
+When associated resources are from outside the project, you might need to
+validate that a user who is exporting the project or group can access these
+associations. `include_if_exportable` accepts an array of associations for a
+resource. During export, the `exportable_association?` method on the resource
+is called with the association's name and user to validate if associated
+resource can be included in the export.
+
+For example:
+
+```yaml
+include_if_exportable:
+  project:
+    issues:
+      - epic_issue
+```
+
+This definition:
+
+1. Calls the issue's `exportable_association?(:epic_issue, current_user: current_user)` method.
+1. If the method returns true, includes the issue's `epic_issue` association for the issue.
+
 ### Import
 
 The import job status moves from `none` to `finished` or `failed` into different states:

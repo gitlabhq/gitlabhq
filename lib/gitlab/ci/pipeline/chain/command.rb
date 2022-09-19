@@ -80,6 +80,10 @@ module Gitlab
             bridge&.parent_pipeline
           end
 
+          def parent_pipeline_partition_id
+            parent_pipeline.partition_id if creates_child_pipeline?
+          end
+
           def creates_child_pipeline?
             bridge&.triggers_child_pipeline?
           end
@@ -117,8 +121,14 @@ module Gitlab
           end
 
           def observe_jobs_count_in_alive_pipelines
+            jobs_count = if Feature.enabled?(:ci_limit_active_jobs_early, project)
+                           project.all_pipelines.jobs_count_in_alive_pipelines
+                         else
+                           project.all_pipelines.builds_count_in_alive_pipelines
+                         end
+
             metrics.active_jobs_histogram
-              .observe({ plan: project.actual_plan_name }, project.all_pipelines.jobs_count_in_alive_pipelines)
+              .observe({ plan: project.actual_plan_name }, jobs_count)
           end
 
           def increment_pipeline_failure_reason_counter(reason)

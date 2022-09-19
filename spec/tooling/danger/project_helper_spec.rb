@@ -31,6 +31,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     end
 
     where(:path, :expected_categories) do
+      'glfm_specification/example_snapshots/prosemirror_json.yml' | [:frontend]
+      'glfm_specification/input/glfm_anything.yml' | [:frontend, :backend]
       'usage_data.rb'   | [:database, :backend, :product_intelligence]
       'doc/foo.md'      | [:docs]
       'CONTRIBUTING.md' | [:docs]

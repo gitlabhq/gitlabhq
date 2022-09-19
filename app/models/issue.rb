@@ -254,31 +254,6 @@ class Issue < ApplicationRecord
     alias_method :with_state, :with_state_id
     alias_method :with_states, :with_state_ids
 
-    def build_keyset_order_on_joined_column(scope:, attribute_name:, column:, direction:, nullable:)
-      reversed_direction = direction == :asc ? :desc : :asc
-
-      # rubocop: disable GitlabSecurity/PublicSend
-      order = ::Gitlab::Pagination::Keyset::Order.build([
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: attribute_name,
-          column_expression: column,
-          order_expression: column.send(direction).send(nullable),
-          reversed_order_expression: column.send(reversed_direction).send(nullable),
-          order_direction: direction,
-          distinct: false,
-          add_to_projections: true,
-          nullable: nullable
-        ),
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id',
-          order_expression: arel_table['id'].desc
-        )
-      ])
-      # rubocop: enable GitlabSecurity/PublicSend
-
-      order.apply_cursor_conditions(scope).order(order)
-    end
-
     override :order_upvotes_desc
     def order_upvotes_desc
       reorder(upvotes_count: :desc)
@@ -292,16 +267,6 @@ class Issue < ApplicationRecord
     override :pg_full_text_search
     def pg_full_text_search(search_term)
       super.where('issue_search_data.project_id = issues.project_id')
-    end
-
-    override :full_search
-    def full_search(query, matched_columns: nil, use_minimum_char_limit: true)
-      return super if query.match?(IssuableFinder::FULL_TEXT_SEARCH_TERM_REGEX)
-
-      super.where(
-        'issues.title NOT SIMILAR TO :pattern OR issues.description NOT SIMILAR TO :pattern',
-        pattern: IssuableFinder::FULL_TEXT_SEARCH_TERM_PATTERN
-      )
     end
   end
 
@@ -406,8 +371,6 @@ class Issue < ApplicationRecord
       attribute_name: 'relative_position',
       column_expression: arel_table[:relative_position],
       order_expression: Issue.arel_table[:relative_position].asc.nulls_last,
-      reversed_order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
-      order_direction: :asc,
       nullable: :nulls_last,
       distinct: false
     )
@@ -695,11 +658,11 @@ class Issue < ApplicationRecord
     return unless persisted?
 
     if confidential? && WorkItems::ParentLink.has_public_children?(id)
-      errors.add(:confidential, _('confidential parent can not be used if there are non-confidential children.'))
+      errors.add(:base, _('A confidential issue cannot have a parent that already has non-confidential children.'))
     end
 
     if !confidential? && WorkItems::ParentLink.has_confidential_parent?(id)
-      errors.add(:confidential, _('associated parent is confidential and can not have non-confidential children.'))
+      errors.add(:base, _('A non-confidential issue cannot have a confidential parent.'))
     end
   end
 
@@ -722,7 +685,7 @@ class Issue < ApplicationRecord
   end
 
   def record_create_action
-    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author)
+    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author, project: project)
   end
 
   # Returns `true` if this Issue is visible to everybody.

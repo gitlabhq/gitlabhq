@@ -35,7 +35,7 @@ RSpec.describe Suggestions::ApplyService do
   def apply(suggestions, custom_message = nil)
     result = apply_service.new(user, *suggestions, message: custom_message).execute
 
-    suggestions.map { |suggestion| suggestion.reload }
+    suggestions.map(&:reload)
 
     expect(result[:status]).to eq(:success)
   end
@@ -136,21 +136,20 @@ RSpec.describe Suggestions::ApplyService do
   end
 
   let(:merge_request) do
-    create(:merge_request, source_project: project,
-           target_project: project,
-           source_branch: 'master')
+    create(:merge_request,
+      source_project: project, target_project: project, source_branch: 'master')
   end
 
   let(:position) { build_position }
 
   let(:diff_note) do
-    create(:diff_note_on_merge_request, noteable: merge_request,
-           position: position, project: project)
+    create(:diff_note_on_merge_request,
+      noteable: merge_request, position: position, project: project)
   end
 
   let(:suggestion) do
-    create(:suggestion, :content_from_repo, note: diff_note,
-           to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?\n")
+    create(:suggestion, :content_from_repo,
+      note: diff_note, to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?\n")
   end
 
   let(:suggestion2) do
@@ -311,9 +310,9 @@ RSpec.describe Suggestions::ApplyService do
 
       context 'when HEAD from position is different from source branch HEAD on repo' do
         it 'returns error message' do
-          allow(suggestion).to receive(:appliable?) { true }
-          allow(suggestion.position).to receive(:head_sha) { 'old-sha' }
-          allow(suggestion.noteable).to receive(:source_branch_sha) { 'new-sha' }
+          allow(suggestion).to receive(:appliable?).and_return(true)
+          allow(suggestion.position).to receive(:head_sha).and_return('old-sha')
+          allow(suggestion.noteable).to receive(:source_branch_sha).and_return('new-sha')
 
           result = apply_service.new(user, suggestion).execute
 
@@ -430,7 +429,6 @@ RSpec.describe Suggestions::ApplyService do
           suggestion1_diff = fetch_raw_diff(suggestion1)
           suggestion2_diff = fetch_raw_diff(suggestion2)
 
-          # rubocop: disable Layout/TrailingWhitespace
           expected_suggestion1_diff = <<-CONTENT.strip_heredoc
             @@ -10,7 +10,7 @@ module Popen
                  end
@@ -442,9 +440,6 @@ RSpec.describe Suggestions::ApplyService do
                    "PWD" => path
                  }
           CONTENT
-          # rubocop: enable Layout/TrailingWhitespace
-
-          # rubocop: disable Layout/TrailingWhitespace
           expected_suggestion2_diff = <<-CONTENT.strip_heredoc
             @@ -28,7 +28,7 @@ module Popen
              
@@ -455,8 +450,6 @@ RSpec.describe Suggestions::ApplyService do
                    @cmd_status = wait_thr.value.exitstatus
                  end
           CONTENT
-          # rubocop: enable Layout/TrailingWhitespace
-
           expect(suggestion1_diff.strip).to eq(expected_suggestion1_diff.strip)
           expect(suggestion2_diff.strip).to eq(expected_suggestion2_diff.strip)
         end
@@ -508,10 +501,8 @@ RSpec.describe Suggestions::ApplyService do
         end
 
         let(:suggestion) do
-          create(:suggestion, :content_from_repo, note: diff_note,
-                 lines_above: 2,
-                 lines_below: 3,
-                 to_content: "# multi\n# line\n")
+          create(:suggestion, :content_from_repo,
+            note: diff_note, lines_above: 2, lines_below: 3, to_content: "# multi\n# line\n")
         end
 
         let(:suggestions) { [suggestion] }
@@ -568,7 +559,7 @@ RSpec.describe Suggestions::ApplyService do
         end
 
         let(:suggestion) do
-          create_suggestion( to_content: "", new_line: 13)
+          create_suggestion(to_content: "", new_line: 13)
         end
 
         let(:suggestions) { [suggestion] }
@@ -616,14 +607,12 @@ RSpec.describe Suggestions::ApplyService do
 
   context 'no permission' do
     let(:merge_request) do
-      create(:merge_request, source_project: project,
-             target_project: project)
+      create(:merge_request, source_project: project, target_project: project)
     end
 
     let(:diff_note) do
-      create(:diff_note_on_merge_request, noteable: merge_request,
-             position: position,
-             project: project)
+      create(:diff_note_on_merge_request,
+        noteable: merge_request, position: position, project: project)
     end
 
     context 'user cannot write in project repo' do
@@ -642,14 +631,12 @@ RSpec.describe Suggestions::ApplyService do
 
   context 'patch is not appliable' do
     let(:merge_request) do
-      create(:merge_request, source_project: project,
-             target_project: project)
+      create(:merge_request, source_project: project, target_project: project)
     end
 
     let(:diff_note) do
-      create(:diff_note_on_merge_request, noteable: merge_request,
-             position: position,
-             project: project)
+      create(:diff_note_on_merge_request,
+        noteable: merge_request, position: position, project: project)
     end
 
     before do
@@ -669,7 +656,7 @@ RSpec.describe Suggestions::ApplyService do
       let(:result) { apply_service.new(user, suggestion).execute }
 
       before do
-        expect(suggestion.note).to receive(:latest_diff_file) { nil }
+        expect(suggestion.note).to receive(:latest_diff_file).and_return(nil)
       end
 
       it 'returns error message' do

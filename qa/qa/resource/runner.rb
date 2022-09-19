@@ -32,7 +32,10 @@ module QA
 
       def fabricate_via_api!
         @docker_container = Service::DockerRun::GitlabRunner.new(name).tap do |runner|
-          runner.pull
+          QA::Support::Retrier.retry_on_exception(sleep_interval: 5) do
+            runner.pull
+          end
+
           runner.token = @token ||= project.runners_token
           runner.address = Runtime::Scenario.gitlab_address
           runner.tags = @tags if @tags

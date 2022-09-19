@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -x
+set -e
+
+# Check there's no differences after re-initialising
+ruby -I ../../lib ../../bin/bundler-checksum init
+git diff --exit-code Gemfile.checksum
+
+# Verify against rubygems.org
+ruby -I ../../lib ../../bin/bundler-checksum verify
+
+# Test installing with bundler-checksum
+export BUNDLER_CHECKSUM_VERIFICATION_OPT_IN=1
+bundle install

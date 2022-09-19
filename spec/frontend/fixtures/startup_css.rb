@@ -69,8 +69,22 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
     it_behaves_like 'startup css project fixtures', 'dark'
   end
 
-  describe RegistrationsController, '(Startup CSS fixtures)', type: :controller do
+  describe SessionsController, '(Startup CSS fixtures)', type: :controller do
+    include DeviseHelpers
+
+    before do
+      set_devise_mapping(context: request)
+    end
+
     it 'startup_css/sign-in.html' do
+      get :new
+
+      expect(response).to be_successful
+    end
+
+    it 'startup_css/sign-in-old.html' do
+      stub_feature_flags(restyle_login_page: false)
+
       get :new
 
       expect(response).to be_successful

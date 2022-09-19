@@ -75,7 +75,16 @@ RSpec.shared_examples 'rebase quick action' do
       end
 
       context 'when the merge request branch is protected from force push' do
-        let!(:protected_branch) { create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false) }
+        let!(:protected_branch) do
+          ProtectedBranches::CreateService.new(
+            project,
+            user,
+            name: merge_request.source_branch,
+            allow_force_push: false,
+            push_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }],
+            merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }]
+          ).execute
+        end
 
         it 'does not rebase the MR' do
           add_note("/rebase")

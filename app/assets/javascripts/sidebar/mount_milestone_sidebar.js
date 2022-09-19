@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { IssuableType } from '~/issues/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import timeTracker from './components/time_tracking/time_tracker.vue';
+import TimeTracker from './components/time_tracking/time_tracker.vue';
 
 export default class SidebarMilestone {
   constructor() {
@@ -23,13 +23,13 @@ export default class SidebarMilestone {
       el,
       name: 'SidebarMilestoneRoot',
       components: {
-        timeTracker,
+        TimeTracker,
       },
       provide: {
         issuableType: IssuableType.Milestone,
       },
       render: (createElement) =>
-        createElement('timeTracker', {
+        createElement('time-tracker', {
           props: {
             limitToHours: parseBoolean(limitToHours),
             issuableIid: iid.toString(),

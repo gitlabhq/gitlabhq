@@ -80,7 +80,7 @@ RSpec.describe Ci::BuildsHelper do
       expect(subject).to eq({
         page_path: project_job_path(project, ci_build),
         build_status: ci_build.status,
-        build_stage: ci_build.stage,
+        build_stage: ci_build.stage_name,
         log_state: ''
       })
     end
@@ -106,7 +106,7 @@ RSpec.describe Ci::BuildsHelper do
       expect(subject).to eq([{
         id: failed_build.id,
         failure: failed_build.present.callout_failure_message,
-        failure_summary:  helper.build_summary(failed_build)
+        failure_summary: helper.build_summary(failed_build)
       }].to_json)
     end
   end

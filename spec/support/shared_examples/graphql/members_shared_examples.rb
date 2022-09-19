@@ -40,7 +40,7 @@ RSpec.shared_examples 'querying members with a group' do
 
   subject do
     resolve(described_class, obj: resource, args: base_args.merge(args),
-            ctx: { current_user: user_4 }, arg_style: :internal)
+                             ctx: { current_user: user_4 }, arg_style: :internal)
   end
 
   describe '#resolve' do
@@ -50,6 +50,15 @@ RSpec.shared_examples 'querying members with a group' do
 
     it 'finds all resource members' do
       expect(subject).to contain_exactly(resource_member, group_1_member, root_group_member)
+    end
+
+    context 'with sort options' do
+      let(:args) { { sort: 'name_asc' } }
+
+      it 'searches users by user name' do
+        # the order is important here
+        expect(subject.items).to eq([root_group_member, resource_member, group_1_member])
+      end
     end
 
     context 'with search' do
@@ -75,7 +84,7 @@ RSpec.shared_examples 'querying members with a group' do
 
       subject do
         resolve(described_class, obj: resource, args: base_args.merge(args),
-                ctx: { current_user: other_user }, arg_style: :internal)
+                                 ctx: { current_user: other_user }, arg_style: :internal)
       end
 
       it 'generates an error' do
