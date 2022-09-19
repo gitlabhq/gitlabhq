@@ -143,10 +143,11 @@ RSpec.describe Projects::Ci::LintsController do
       it_behaves_like 'returns a successful validation'
 
       it 'assigns result with errors' do
-        expect(parsed_body['errors']).to match_array([
-          'jobs rubocop config should implement a script: or a trigger: keyword',
-          'jobs config should contain at least one visible job'
-        ])
+        expect(parsed_body['errors']).to match_array(
+          [
+            'jobs rubocop config should implement a script: or a trigger: keyword',
+            'jobs config should contain at least one visible job'
+          ])
       end
 
       context 'with dry_run mode' do

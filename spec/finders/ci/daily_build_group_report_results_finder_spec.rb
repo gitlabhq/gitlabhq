@@ -50,12 +50,13 @@ RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
         let(:current_user) { user_with_permission }
 
         it 'returns matching coverages within the given date range' do
-          expect(coverages).to match_array([
-            karma_coverage_2,
-            rspec_coverage_2,
-            karma_coverage_1,
-            rspec_coverage_1
-          ])
+          expect(coverages).to match_array(
+            [
+              karma_coverage_2,
+              rspec_coverage_2,
+              karma_coverage_1,
+              rspec_coverage_1
+            ])
         end
 
         context 'when ref_path is nil' do
@@ -73,10 +74,11 @@ RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
           let(:limit) { 2 }
 
           it 'returns limited number of matching coverages within the given date range' do
-            expect(coverages).to match_array([
-              karma_coverage_2,
-              rspec_coverage_2
-            ])
+            expect(coverages).to match_array(
+              [
+                karma_coverage_2,
+                rspec_coverage_2
+              ])
           end
         end
 

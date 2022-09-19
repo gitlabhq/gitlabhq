@@ -88,10 +88,11 @@ RSpec.describe BulkImports::EntitiesFinder do
         let(:order) { :asc }
 
         it 'returns entities sorted ascending' do
-          expect(subject.execute).to eq([
-            started_entity_1, finished_entity_1, failed_entity_1,
-            started_entity_2, finished_entity_2, failed_entity_2
-          ])
+          expect(subject.execute).to eq(
+            [
+              started_entity_1, finished_entity_1, failed_entity_1,
+              started_entity_2, finished_entity_2, failed_entity_2
+            ])
         end
       end
 
@@ -99,10 +100,11 @@ RSpec.describe BulkImports::EntitiesFinder do
         let(:order) { :desc }
 
         it 'returns entities sorted descending' do
-          expect(subject.execute).to eq([
-            failed_entity_2, finished_entity_2, started_entity_2,
-            failed_entity_1, finished_entity_1, started_entity_1
-          ])
+          expect(subject.execute).to eq(
+            [
+              failed_entity_2, finished_entity_2, started_entity_2,
+              failed_entity_1, finished_entity_1, started_entity_1
+            ])
         end
       end
     end

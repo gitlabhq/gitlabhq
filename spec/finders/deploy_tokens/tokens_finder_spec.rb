@@ -30,24 +30,26 @@ RSpec.describe DeployTokens::TokensFinder do
 
       it 'returns all deploy tokens' do
         expect(subject.size).to eq(6)
-        is_expected.to match_array([
-          project_deploy_token,
-          revoked_project_deploy_token,
-          expired_project_deploy_token,
-          group_deploy_token,
-          revoked_group_deploy_token,
-          expired_group_deploy_token
-        ])
+        is_expected.to match_array(
+          [
+            project_deploy_token,
+            revoked_project_deploy_token,
+            expired_project_deploy_token,
+            group_deploy_token,
+            revoked_group_deploy_token,
+            expired_group_deploy_token
+          ])
       end
 
       context 'and active filter is applied' do
         let(:params) { { active: true } }
 
         it 'returns only active tokens' do
-          is_expected.to match_array([
-            project_deploy_token,
-            group_deploy_token
-          ])
+          is_expected.to match_array(
+            [
+              project_deploy_token,
+              group_deploy_token
+            ])
         end
       end
 
@@ -68,11 +70,12 @@ RSpec.describe DeployTokens::TokensFinder do
       end
 
       it 'returns all deploy tokens for the project' do
-        is_expected.to match_array([
-          project_deploy_token,
-          revoked_project_deploy_token,
-          expired_project_deploy_token
-        ])
+        is_expected.to match_array(
+          [
+            project_deploy_token,
+            revoked_project_deploy_token,
+            expired_project_deploy_token
+          ])
       end
 
       context 'and active filter is applied' do
@@ -100,11 +103,12 @@ RSpec.describe DeployTokens::TokensFinder do
       end
 
       it 'returns all deploy tokens for the group' do
-        is_expected.to match_array([
-          group_deploy_token,
-          revoked_group_deploy_token,
-          expired_group_deploy_token
-        ])
+        is_expected.to match_array(
+          [
+            group_deploy_token,
+            revoked_group_deploy_token,
+            expired_group_deploy_token
+          ])
       end
 
       context 'and active filter is applied' do

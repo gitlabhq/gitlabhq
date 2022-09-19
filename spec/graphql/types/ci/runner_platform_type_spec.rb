@@ -7,9 +7,9 @@ RSpec.describe Types::Ci::RunnerPlatformType do
 
   it 'exposes the expected fields' do
     expected_fields = %i[
-    name
-    human_readable_name
-    architectures
+      name
+      human_readable_name
+      architectures
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

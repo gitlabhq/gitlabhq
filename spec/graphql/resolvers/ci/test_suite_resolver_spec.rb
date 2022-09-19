@@ -32,11 +32,12 @@ RSpec.describe Resolvers::Ci::TestSuiteResolver do
 
         # Each test failure in this pipeline has a matching failure in the default branch
         recent_failures = test_suite[:test_cases].map { |tc| tc[:recent_failures] }
-        expect(recent_failures).to eq([
-          { count: 1, base_branch: 'master' },
-          { count: 1, base_branch: 'master' },
-          { count: 1, base_branch: 'master' }
-        ])
+        expect(recent_failures).to eq(
+          [
+            { count: 1, base_branch: 'master' },
+            { count: 1, base_branch: 'master' },
+            { count: 1, base_branch: 'master' }
+          ])
       end
     end
 

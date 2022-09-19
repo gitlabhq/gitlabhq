@@ -59,12 +59,13 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Type']).to eq('text/csv; charset=utf-8')
 
-        expect(csv_response).to eq([
-          %w[date group_name coverage],
-          ['2020-03-09', 'rspec', '79.0'],
-          ['2020-03-08', 'rspec', '77.0'],
-          ['2019-12-10', 'karma', '81.0']
-        ])
+        expect(csv_response).to eq(
+          [
+            %w[date group_name coverage],
+            ['2020-03-09', 'rspec', '79.0'],
+            ['2020-03-08', 'rspec', '77.0'],
+            ['2019-12-10', 'karma', '81.0']
+          ])
       end
 
       context 'when given date range spans more than 90 days' do
@@ -72,12 +73,13 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
         let(:end_date) { '2020-03-09' }
 
         it 'limits the result to 90 days from the given start_date' do
-          expect(csv_response).to eq([
-            %w[date group_name coverage],
-            ['2020-03-09', 'rspec', '79.0'],
-            ['2020-03-08', 'rspec', '77.0'],
-            ['2019-12-10', 'karma', '81.0']
-          ])
+          expect(csv_response).to eq(
+            [
+              %w[date group_name coverage],
+              ['2020-03-09', 'rspec', '79.0'],
+              ['2020-03-08', 'rspec', '77.0'],
+              ['2019-12-10', 'karma', '81.0']
+            ])
         end
       end
 
@@ -89,29 +91,8 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
       it 'serves the results in JSON' do
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(json_response).to eq([
-          {
-            'group_name' => 'rspec',
-            'data' => [
-              { 'date' => '2020-03-09', 'coverage' => 79.0 },
-              { 'date' => '2020-03-08', 'coverage' => 77.0 }
-            ]
-          },
-          {
-            'group_name' => 'karma',
-            'data' => [
-              { 'date' => '2019-12-10', 'coverage' => 81.0 }
-            ]
-          }
-        ])
-      end
-
-      context 'when given date range spans more than 90 days' do
-        let(:start_date) { '2019-12-09' }
-        let(:end_date) { '2020-03-09' }
-
-        it 'limits the result to 90 days from the given start_date' do
-          expect(json_response).to eq([
+        expect(json_response).to eq(
+          [
             {
               'group_name' => 'rspec',
               'data' => [
@@ -126,6 +107,29 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
               ]
             }
           ])
+      end
+
+      context 'when given date range spans more than 90 days' do
+        let(:start_date) { '2019-12-09' }
+        let(:end_date) { '2020-03-09' }
+
+        it 'limits the result to 90 days from the given start_date' do
+          expect(json_response).to eq(
+            [
+              {
+                'group_name' => 'rspec',
+                'data' => [
+                  { 'date' => '2020-03-09', 'coverage' => 79.0 },
+                  { 'date' => '2020-03-08', 'coverage' => 77.0 }
+                ]
+              },
+              {
+                'group_name' => 'karma',
+                'data' => [
+                  { 'date' => '2019-12-10', 'coverage' => 81.0 }
+                ]
+              }
+            ])
         end
       end
 

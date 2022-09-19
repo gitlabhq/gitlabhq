@@ -7,8 +7,8 @@ RSpec.describe Types::Ci::RunnerArchitectureType do
 
   it 'exposes the expected fields' do
     expected_fields = %i[
-    name
-    download_location
+      name
+      download_location
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

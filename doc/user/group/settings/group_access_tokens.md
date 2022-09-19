@@ -162,8 +162,9 @@ to groups instead of projects. Bot users for groups:
 - Do not count as licensed seats.
 - Can have a maximum role of Owner for a group. For more information, see
   [Create a group access token](../../../api/group_access_tokens.md#create-a-group-access-token).
-- The username is set to `group_{project_id}_bot` for the first access token. For example, `project_123_bot`.  
-- The email is set to `group{group_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot@noreply.example.com`.
-- All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects)
+- Have a username set to `group_{group_id}_bot` for the first access token. For example, `group_123_bot`.  
+- Have an email set to `group{group_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot@noreply.example.com`.
+
+All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).
 
 For more information, see [Bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).
