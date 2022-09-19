@@ -498,7 +498,7 @@ input.btn-block[type="button"] {
   .custom-control-input:checked:disabled
   ~ .custom-control-label::before,
 .gl-form-checkbox.custom-control
-  .custom-control-input:indeterminate:disabled
+  .custom-control-input[type="checkbox"]:indeterminate:disabled
   ~ .custom-control-label::before {
   background-color: #dbdbdb;
   border-color: #dbdbdb;
@@ -507,7 +507,7 @@ input.btn-block[type="button"] {
   .custom-control-input:checked:disabled
   ~ .custom-control-label::after,
 .gl-form-checkbox.custom-control
-  .custom-control-input:indeterminate:disabled
+  .custom-control-input[type="checkbox"]:indeterminate:disabled
   ~ .custom-control-label::after {
   background-color: #5e5e5e;
 }

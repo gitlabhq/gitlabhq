@@ -1,4 +1,4 @@
-import { GlAlert, GlDropdown, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlDropdown, GlSprintf, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -46,6 +46,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
         },
         stubs: {
           GlSprintf,
+          GlDropdown,
         },
       }),
     );
@@ -56,6 +57,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAllArtifactItems = () => wrapper.findAllByTestId(artifactItemTestId);
   const findFirstArtifactItem = () => wrapper.findByTestId(artifactItemTestId);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findEmptyMessage = () => wrapper.findByTestId('artifacts-empty-message');
 
   beforeEach(() => {
@@ -75,7 +77,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
   });
 
   describe('Artifacts', () => {
-    it('should fetch artifacts on dropdown click', async () => {
+    it('should fetch artifacts and show search box on dropdown click', async () => {
       const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
       mockAxios.onGet(endpoint).replyOnce(200, { artifacts });
       createComponent();
@@ -84,6 +86,16 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
       expect(mockAxios.history.get).toHaveLength(1);
       expect(wrapper.vm.artifacts).toEqual(artifacts);
+      expect(findSearchBox().exists()).toBe(true);
+    });
+
+    it('should focus the search box when opened with artifacts', () => {
+      createComponent({ mockData: { artifacts } });
+      wrapper.vm.$refs.searchInput.focusInput = jest.fn();
+
+      findDropdown().vm.$emit('shown');
+
+      expect(wrapper.vm.$refs.searchInput.focusInput).toHaveBeenCalled();
     });
 
     it('should render all the provided artifacts when search query is empty', () => {
@@ -109,10 +121,11 @@ describe('Pipeline Multi Actions Dropdown', () => {
       expect(findFirstArtifactItem().text()).toBe(artifacts[0].name);
     });
 
-    it('should render empty message when no artifacts are found', () => {
+    it('should render empty message and no search box when no artifacts are found', () => {
       createComponent({ mockData: { artifacts: [] } });
 
       expect(findEmptyMessage().exists()).toBe(true);
+      expect(findSearchBox().exists()).toBe(false);
     });
 
     describe('while loading artifacts', () => {

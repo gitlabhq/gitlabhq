@@ -8,12 +8,12 @@ RSpec.describe Repository do
 
   TestBlob = Struct.new(:path)
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
   let(:broken_repository) { create(:project, :broken_storage).repository }
-  let(:user) { create(:user) }
   let(:git_user) { Gitlab::Git::User.from_gitlab(user) }
-
   let(:message) { 'Test message' }
 
   let(:merge_commit) do
@@ -40,10 +40,6 @@ RSpec.describe Repository do
   end
 
   describe '#branch_names_contains' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:repository) { project.repository }
-
     subject { repository.branch_names_contains(sample_commit.id) }
 
     it { is_expected.to include('master') }
@@ -359,6 +355,8 @@ RSpec.describe Repository do
   end
 
   describe '#commits' do
+    let_it_be(:project) { create(:project, :repository) }
+
     context 'when neither the all flag nor a ref are specified' do
       it 'returns every commit from default branch' do
         expect(repository.commits(nil, limit: 60).size).to eq(37)
@@ -431,10 +429,6 @@ RSpec.describe Repository do
   end
 
   describe '#new_commits' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:repository) { project.repository }
-
     subject { repository.new_commits(rev) }
 
     context 'when there are no new commits' do
@@ -498,6 +492,8 @@ RSpec.describe Repository do
   end
 
   describe '#commits_between' do
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:commit) { project.commit }
 
     it 'delegates to Gitlab::Git::Commit#between, returning decorated commits' do
@@ -614,6 +610,8 @@ RSpec.describe Repository do
   end
 
   describe '#merged_to_root_ref?' do
+    let_it_be(:project) { create(:project, :repository) }
+
     context 'merged branch without ff' do
       subject { repository.merged_to_root_ref?('branch-merged') }
 
@@ -843,14 +841,16 @@ RSpec.describe Repository do
   end
 
   describe "#create_dir" do
+    let_it_be(:project) { create(:project, :repository) }
+
     it "commits a change that creates a new directory" do
       expect do
-        repository.create_dir(user, 'newdir',
+        repository.create_dir(user, 'newdir1',
           message: 'Create newdir', branch_name: 'master')
       end.to change { repository.count_commits(ref: 'master') }.by(1)
 
-      newdir = repository.tree('master', 'newdir')
-      expect(newdir.path).to eq('newdir')
+      newdir = repository.tree('master', 'newdir1')
+      expect(newdir.path).to eq('newdir1')
     end
 
     context "when committing to another project" do
@@ -858,7 +858,7 @@ RSpec.describe Repository do
 
       it "creates a fork and commit to the forked project" do
         expect do
-          repository.create_dir(user, 'newdir',
+          repository.create_dir(user, 'newdir2',
             message: 'Create newdir', branch_name: 'patch',
             start_branch_name: 'master', start_project: forked_project)
         end.to change { repository.count_commits(ref: 'master') }.by(0)
@@ -866,15 +866,15 @@ RSpec.describe Repository do
         expect(repository.branch_exists?('patch')).to be_truthy
         expect(forked_project.repository.branch_exists?('patch')).to be_falsy
 
-        newdir = repository.tree('patch', 'newdir')
-        expect(newdir.path).to eq('newdir')
+        newdir = repository.tree('patch', 'newdir2')
+        expect(newdir.path).to eq('newdir2')
       end
     end
 
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.create_dir(user, 'newdir',
+          repository.create_dir(user, 'newdir3',
             message: 'Add newdir',
             branch_name: 'master',
             author_email: author_email, author_name: author_name)
@@ -987,6 +987,8 @@ RSpec.describe Repository do
   end
 
   describe "#delete_file" do
+    let(:project) { create(:project, :repository) }
+
     it 'removes file successfully' do
       expect do
         repository.delete_file(user, 'README',
@@ -1013,6 +1015,8 @@ RSpec.describe Repository do
   end
 
   describe "search_files_by_content" do
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:results) { repository.search_files_by_content('feature', 'master') }
 
     subject { results }
@@ -1248,6 +1252,8 @@ RSpec.describe Repository do
   end
 
   describe "#changelog", :use_clean_rails_memory_store_caching do
+    let(:project) { create(:project, :repository) }
+
     it 'accepts changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
 
@@ -1280,6 +1286,8 @@ RSpec.describe Repository do
   end
 
   describe "#license_blob", :use_clean_rails_memory_store_caching do
+    let(:project) { create(:project, :repository) }
+
     before do
       repository.delete_file(
         user, 'LICENSE', message: 'Remove LICENSE', branch_name: 'master')
@@ -1324,6 +1332,8 @@ RSpec.describe Repository do
   end
 
   describe '#license_key', :use_clean_rails_memory_store_caching do
+    let(:project) { create(:project, :repository) }
+
     before do
       repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'master')
@@ -1368,6 +1378,8 @@ RSpec.describe Repository do
   end
 
   describe '#license' do
+    let(:project) { create(:project, :repository) }
+
     before do
       repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'master')
@@ -1411,6 +1423,8 @@ RSpec.describe Repository do
   end
 
   describe "#gitlab_ci_yml", :use_clean_rails_memory_store_caching do
+    let(:project) { create(:project, :repository) }
+
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
       expect(repository.tree).to receive(:blobs).and_return(files)
@@ -1430,11 +1444,11 @@ RSpec.describe Repository do
   end
 
   describe '#ambiguous_ref?' do
-    let(:ref) { 'ref' }
-
     subject { repository.ambiguous_ref?(ref) }
 
     context 'when ref is ambiguous' do
+      let(:ref) { 'ref' }
+
       before do
         repository.add_tag(project.creator, ref, 'master')
         repository.add_branch(project.creator, ref, 'master')
@@ -1446,6 +1460,8 @@ RSpec.describe Repository do
     end
 
     context 'when ref is not ambiguous' do
+      let(:ref) { 'another_ref' }
+
       before do
         repository.add_tag(project.creator, ref, 'master')
       end
@@ -1457,6 +1473,8 @@ RSpec.describe Repository do
   end
 
   describe '#has_ambiguous_refs?' do
+    let(:project) { create(:project, :repository) }
+
     using RSpec::Parameterized::TableSyntax
 
     where(:branch_names, :tag_names, :result) do
@@ -1484,6 +1502,7 @@ RSpec.describe Repository do
   end
 
   describe '#expand_ref' do
+    let(:project) { create(:project, :repository) }
     let(:ref) { 'ref' }
 
     subject { repository.expand_ref(ref) }
@@ -1520,6 +1539,7 @@ RSpec.describe Repository do
   describe '#add_branch' do
     let(:branch_name) { 'new_feature' }
     let(:target) { 'master' }
+    let(:project) { create(:project, :repository) }
 
     subject { repository.add_branch(user, branch_name, target) }
 
@@ -1604,6 +1624,8 @@ RSpec.describe Repository do
   end
 
   describe '#exists?' do
+    let(:project) { create(:project, :repository) }
+
     it 'returns true when a repository exists' do
       expect(repository.exists?).to be(true)
     end
@@ -1624,6 +1646,8 @@ RSpec.describe Repository do
   end
 
   describe '#has_visible_content?' do
+    let(:project) { create(:project, :repository) }
+
     it 'delegates to raw_repository when true' do
       expect(repository.raw_repository).to receive(:has_visible_content?)
         .and_return(true)
@@ -1690,6 +1714,8 @@ RSpec.describe Repository do
   end
 
   describe '#branch_names', :clean_gitlab_redis_cache do
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:fake_branch_names) { ['foobar'] }
 
     it 'gets cached across Repository instances' do
@@ -1706,6 +1732,7 @@ RSpec.describe Repository do
   end
 
   describe '#empty?' do
+    let(:project) { create(:project, :repository) }
     let(:empty_repository) { create(:project_empty_repo).repository }
 
     it 'returns true for an empty repository' do
@@ -1752,6 +1779,8 @@ RSpec.describe Repository do
   end
 
   describe '#root_ref' do
+    let(:project) { create(:project, :repository) }
+
     it 'returns a branch name' do
       expect(repository.root_ref).to be_an_instance_of(String)
     end
@@ -1792,6 +1821,8 @@ RSpec.describe Repository do
   describe '#expire_branch_cache' do
     # This method is private but we need it for testing purposes. Sadly there's
     # no other proper way of testing caching operations.
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:cache) { repository.send(:cache) }
 
     it 'expires the cache for all branches' do
@@ -2003,6 +2034,7 @@ RSpec.describe Repository do
   end
 
   describe '#revert' do
+    let(:project) { create(:project, :repository) }
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
     let(:message) { 'revert message' }
@@ -2039,6 +2071,7 @@ RSpec.describe Repository do
   end
 
   describe '#cherry_pick' do
+    let(:project) { create(:project, :repository) }
     let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
     let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
     let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
@@ -2404,7 +2437,7 @@ RSpec.describe Repository do
       end
 
       it 'returns a Gitlab::Git::Tag object' do
-        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+        tag = repository.add_tag(user, '8.6', 'master', 'foo')
 
         expect(tag).to be_a(Gitlab::Git::Tag)
       end
@@ -2412,12 +2445,14 @@ RSpec.describe Repository do
 
     context 'with an invalid target' do
       it 'returns false' do
-        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+        expect(repository.add_tag(user, '8.7', 'bar', 'foo')).to be false
       end
     end
   end
 
   describe '#rm_branch' do
+    let(:project) { create(:project, :repository) }
+
     it 'removes a branch' do
       expect(repository).to receive(:before_remove_branch)
       expect(repository).to receive(:after_remove_branch)
@@ -2452,6 +2487,8 @@ RSpec.describe Repository do
   end
 
   describe '#find_tag' do
+    let_it_be(:project) { create(:project, :repository) }
+
     before do
       allow(Gitlab::GitalyClient).to receive(:call).and_call_original
     end
@@ -2477,6 +2514,8 @@ RSpec.describe Repository do
   end
 
   describe '#avatar' do
+    let(:project) { create(:project, :repository) }
+
     it 'returns nil if repo does not exist' do
       allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
@@ -2519,6 +2558,8 @@ RSpec.describe Repository do
   end
 
   describe '#xcode_project?' do
+    let(:project) { create(:project, :repository) }
+
     before do
       allow(repository).to receive(:tree).with(:head).and_return(double(:tree, trees: [tree]))
     end
@@ -2831,6 +2872,8 @@ RSpec.describe Repository do
   end
 
   describe '#gitlab_ci_yml_for' do
+    let(:project) { create(:project, :repository) }
+
     before do
       repository.create_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
     end
@@ -2849,7 +2892,7 @@ RSpec.describe Repository do
   end
 
   describe '#changelog_config' do
-    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
     let(:changelog_config_path) { Gitlab::Changelog::Config::DEFAULT_FILE_PATH }
 
     before do
@@ -2865,6 +2908,7 @@ RSpec.describe Repository do
     context 'when there is a changelog_config_path at the commit' do
       it 'returns the content' do
         expect(repository.changelog_config(repository.commit.sha, changelog_config_path)).to eq('CONTENT')
+        expect(repository.changelog_config(repository.commit.parent.sha, changelog_config_path)).to be_nil
       end
     end
 
@@ -2876,6 +2920,8 @@ RSpec.describe Repository do
   end
 
   describe '#route_map_for' do
+    let(:project) { create(:project, :repository) }
+
     before do
       repository.create_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master')
     end
@@ -3148,7 +3194,6 @@ RSpec.describe Repository do
 
   describe '#create_if_not_exists' do
     let(:project) { create(:project) }
-    let(:repository) { project.repository }
 
     it 'creates the repository if it did not exist' do
       expect { repository.create_if_not_exists }.to change { repository.exists? }.from(false).to(true)
@@ -3204,7 +3249,6 @@ RSpec.describe Repository do
 
   describe '#create_from_bundle' do
     let(:project) { create(:project) }
-    let(:repository) { project.repository }
     let(:valid_bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
     let(:raw_repository) { repository.raw }
 
@@ -3243,8 +3287,6 @@ RSpec.describe Repository do
 
   describe "#blobs_metadata" do
     let_it_be(:project) { create(:project, :repository) }
-
-    let(:repository) { project.repository }
 
     def expect_metadata_blob(thing)
       expect(thing).to be_a(Blob)
@@ -3313,8 +3355,6 @@ RSpec.describe Repository do
     subject { repository.lfs_enabled? }
 
     context 'for a project repository' do
-      let(:repository) { project.repository }
-
       it 'returns true when LFS is enabled' do
         stub_lfs_setting(enabled: true)
 
@@ -3425,6 +3465,8 @@ RSpec.describe Repository do
   end
 
   describe '#change_head' do
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:branch) { repository.container.default_branch }
 
     context 'when the branch exists' do

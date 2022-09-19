@@ -94,22 +94,6 @@ module API
           end
 
           resource :runs do
-            desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
-              success Entities::Ml::Mlflow::Run
-              detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#get-run'
-            end
-            params do
-              optional :run_id, type: String, desc: 'UUID of the candidate.'
-              optional :run_uuid, type: String, desc: 'This parameter is ignored'
-            end
-            get 'get', urgency: :low do
-              candidate = ::Ml::Candidate.with_project_id_and_iid(user_project.id, params[:run_id])
-
-              resource_not_found! unless candidate
-
-              present candidate, with: Entities::Ml::Mlflow::Run
-            end
-
             desc 'Creates a Run.' do
               success Entities::Ml::Mlflow::Run
               detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#create-run',
@@ -129,8 +113,7 @@ module API
 
               resource_not_found! unless experiment
 
-              candidate = ::Ml::Candidate.create!(
-                experiment: experiment,
+              candidate = experiment.candidates.create!(
                 user: current_user,
                 start_time: params[:start_time] || 0
               )
@@ -138,30 +121,73 @@ module API
               present candidate, with: Entities::Ml::Mlflow::Run
             end
 
-            desc 'Updates a Run.' do
-              success Entities::Ml::Mlflow::UpdateRun
-              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run',
-                       'MLFlow Runs map to GitLab Candidates']
-            end
-            params do
-              optional :run_id, type: String, desc: 'UUID of the candidate.'
-              optional :status, type: String,
-                                values: ::Ml::Candidate.statuses.keys.map(&:upcase),
-                                desc: "Status of the run. Accepts: " \
-                                      "#{::Ml::Candidate.statuses.keys.map(&:upcase)}."
-              optional :end_time, type: Integer, desc: 'Ending time of the run'
-            end
-            post 'update', urgency: :low do
-              candidate = ::Ml::Candidate.with_project_id_and_iid(user_project.id, params[:run_id])
+            namespace do
+              after_validation do
+                @candidate = ::Ml::Candidate.with_project_id_and_iid(
+                  user_project.id,
+                  params[:run_id]
+                )
 
-              resource_not_found! unless candidate
+                resource_not_found! unless @candidate
+              end
 
-              candidate.status = params[:status].downcase if params[:status]
-              candidate.end_time = params[:end_time] if params[:end_time]
+              desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
+                success Entities::Ml::Mlflow::Run
+                detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#get-run'
+              end
+              params do
+                requires :run_id, type: String, desc: 'UUID of the candidate.'
+                optional :run_uuid, type: String, desc: 'This parameter is ignored'
+              end
+              get 'get', urgency: :low do
+                present @candidate, with: Entities::Ml::Mlflow::Run
+              end
 
-              candidate.save if candidate.valid?
+              desc 'Updates a Run.' do
+                success Entities::Ml::Mlflow::UpdateRun
+                detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run',
+                         'MLFlow Runs map to GitLab Candidates']
+              end
+              params do
+                requires :run_id, type: String, desc: 'UUID of the candidate.'
+                optional :status, type: String,
+                                  values: ::Ml::Candidate.statuses.keys.map(&:upcase),
+                                  desc: "Status of the run. Accepts: " \
+                                        "#{::Ml::Candidate.statuses.keys.map(&:upcase)}."
+                optional :end_time, type: Integer, desc: 'Ending time of the run'
+              end
+              post 'update', urgency: :low do
+                @candidate.status = params[:status].downcase if params[:status]
+                @candidate.end_time = params[:end_time] if params[:end_time]
 
-              present candidate, with: Entities::Ml::Mlflow::UpdateRun
+                @candidate.save if @candidate.valid?
+
+                present @candidate, with: Entities::Ml::Mlflow::UpdateRun
+              end
+
+              desc 'Logs a metric to a run.' do
+                summary 'Log a metric for a run. A metric is a key-value pair (string key, float value) with an '\
+                        'associated timestamp. Examples include the various metrics that represent ML model accuracy. '\
+                        'A metric can be logged multiple times.'
+                detail  'https://www.mlflow.org/docs/1.28.0/rest-api.html#log-metric'
+              end
+              params do
+                requires :run_id, type: String, desc: 'UUID of the run.'
+                requires :key, type: String, desc: 'Name for the metric.'
+                requires :value, type: Float, desc: 'Value of the metric.'
+                requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
+                optional :step, type: Integer, desc: 'Step at which the metric was recorded'
+              end
+              post 'log-metric', urgency: :low do
+                @candidate.metrics.create!(
+                  name: params[:key],
+                  value: params[:value],
+                  tracked_at: params[:timestamp],
+                  step: params[:step]
+                )
+
+                {}
+              end
             end
           end
         end

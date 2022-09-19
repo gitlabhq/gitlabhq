@@ -72,3 +72,5 @@ module Types
     end
   end
 end
+
+Types::EnvironmentType.prepend_mod_with('Types::EnvironmentType')

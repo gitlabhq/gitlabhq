@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Ml::Candidate do
+RSpec.describe Ml::Candidate, factory_default: :keep do
+  let_it_be(:candidate) { create_default(:ml_candidates, :with_metrics) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }
     it { is_expected.to belong_to(:user) }
@@ -12,13 +14,11 @@ RSpec.describe Ml::Candidate do
 
   describe '#new' do
     it 'iid is not null' do
-      expect(create(:ml_candidates).iid).not_to be_nil
+      expect(candidate.iid).not_to be_nil
     end
   end
 
-  describe 'by_project_id_and_iid' do
-    let_it_be(:candidate) { create(:ml_candidates) }
-
+  describe '#by_project_id_and_iid' do
     let(:project_id) { candidate.experiment.project_id }
     let(:iid) { candidate.iid }
 

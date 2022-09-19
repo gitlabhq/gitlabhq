@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['Environment'] do
   specify { expect(described_class.graphql_name).to eq('Environment') }
 
-  it 'has the expected fields' do
+  it 'includes the expected fields' do
     expected_fields = %w[
       name id state metrics_dashboard latest_opened_most_severe_alert path external_url deployments
       slug createdAt updatedAt autoStopAt autoDeleteAt tier environmentType lastDeployment
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
   specify { expect(described_class).to require_graphql_authorizations(:read_environment) }

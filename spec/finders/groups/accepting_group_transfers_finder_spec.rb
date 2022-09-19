@@ -117,19 +117,6 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder do
           expect(result).to contain_exactly(great_grandparent_group)
         end
       end
-
-      context 'when the feature flag `include_groups_from_group_shares_in_group_transfer_locations` is turned off' do
-        before do
-          stub_feature_flags(include_groups_from_group_shares_in_group_transfer_locations: false)
-        end
-
-        it 'excludes the groups where the user has OWNER access through group shares' do
-          expect(result).not_to include(
-            shared_with_group_where_direct_owner_as_owner,
-            subgroup_of_shared_with_group_where_direct_owner_as_owner
-          )
-        end
-      end
     end
   end
 end

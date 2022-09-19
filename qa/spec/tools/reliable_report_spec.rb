@@ -145,7 +145,8 @@ describe QA::Tools::ReliableReport do
     let(:common_api_args) do
       {
         verify_ssl: false,
-        headers: { "PRIVATE-TOKEN" => "gitlab_token" }
+        headers: { "PRIVATE-TOKEN" => "gitlab_token" },
+        cookies: {}
       }
     end
 
