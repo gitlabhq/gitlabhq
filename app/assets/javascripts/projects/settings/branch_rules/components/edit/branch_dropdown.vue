@@ -10,7 +10,7 @@ import {
 import { createAlert } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import branchesQuery from '../queries/branches.query.graphql';
+import branchesQuery from '../../queries/branches.query.graphql';
 
 export const i18n = {
   fetchBranchesError: s__('BranchRules|An error occurred while fetching branches.'),

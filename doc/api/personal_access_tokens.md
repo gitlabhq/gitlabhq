@@ -12,23 +12,55 @@ You can read more about [personal access tokens](../user/profile/personal_access
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227264) in GitLab 13.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/270200) from GitLab Ultimate to GitLab Free in 13.6.
+> - `created_after`, `created_before`, `last_used_after`, `last_used_before`, `revoked`, `search` and `state` filters were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362248) in GitLab 15.4.
 
-Get a list of personal access tokens.
+Get all personal access tokens the authenticated user has access to. By default, returns an unfiltered list of:
+
+- Only personal access tokens created by the current user to a non-administrator.
+- All personal access tokens to an administrator.
+
+Administrators:
+
+- Can use the `user_id` parameter to filter by a user.
+- Can use other filters on all personal access tokens (GitLab 15.3 and later).
+
+Non-administrators:
+
+- Cannot use the `user_id` parameter to filter on any user except themselves, otherwise they receive a `401 Unauthorized` response.
+- Can only filter on their own personal access tokens (GitLab 15.3 and later).
 
 ```plaintext
 GET /personal_access_tokens
+GET /personal_access_tokens?created_after=2022-01-01T00:00:00
+GET /personal_access_tokens?created_before=2022-01-01T00:00:00
+GET /personal_access_tokens?last_used_after=2022-01-01T00:00:00
+GET /personal_access_tokens?last_used_before=2022-01-01T00:00:00
+GET /personal_access_tokens?revoked=true
+GET /personal_access_tokens?search=name
+GET /personal_access_tokens?state=inactive
+GET /personal_access_tokens?user_id=1
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `user_id` | integer/string | no | The ID of the user to filter by |
+Supported attributes:
 
-NOTE:
-Administrators can use the `user_id` parameter to filter by a user. Non-administrators cannot filter by any user except themselves. Attempting to do so will result in a `401 Unauthorized` response.
+| Attribute           | Type           | Required | Description         |
+|---------------------|----------------|----------|---------------------|
+| `created_after`     | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs created after specified time. |
+| `created_before`    | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs created before specified time. |
+| `last_used_after`   | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs last used after specified time. |
+| `last_used_before`  | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs last used before specified time. |
+| `revoked`           | boolean             | **{dotted-circle}** No | Limit results to PATs with specified revoked state. Valid values are `true` and `false`. |
+| `search`            | string              | **{dotted-circle}** No | Limit results to PATs with name containing search string. |
+| `state`             | string              | **{dotted-circle}** No | Limit results to PATs with specified state. Valid values are `active` and `inactive`. |
+| `user_id`           | integer or string   | **{dotted-circle}** No | Limit results to PATs owned by specified user. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens"
 ```
+
+Example response:
 
 ```json
 [
@@ -48,9 +80,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
+Example request:
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens?user_id=3"
 ```
+
+Example response:
 
 ```json
 [
@@ -70,6 +106,38 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens?revoked=true"
+```
+
+Example response:
+
+```json
+[
+    {
+        "id": 41,
+        "name": "Revoked Test Token",
+        "revoked": true,
+        "created_at": "2022-01-01T14:31:47.729Z",
+        "scopes": [
+            "api"
+        ],
+        "user_id": 8,
+        "last_used_at": "2022-05-18T17:58:37.550Z",
+        "active": false,
+        "expires_at": null
+    }
+]
+```
+
+You can filter by merged attributes with:
+
+```plaintext
+GET /personal_access_tokens?revoked=true&created_before=2022-01-01
+```
+
 ## Get single personal access token by ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
@@ -81,7 +149,7 @@ Administrators can get any token.
 GET /personal_access_tokens/:id
 ```
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer/string | yes | ID of personal access token |
 
@@ -116,7 +184,7 @@ Revoke a personal access token using its ID.
 DELETE /personal_access_tokens/:id
 ```
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer/string | yes | ID of personal access token |
 

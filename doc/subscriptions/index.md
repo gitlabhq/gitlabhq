@@ -73,25 +73,29 @@ click E "./self_managed/index.html#view-your-subscription"
 
 With the [Customers Portal](https://customers.gitlab.com/) you can:
 
-- [Change your personal details](#change-your-personal-details)
+- [Change account owner information](#change-account-owner-information)
 - [Change your company details](#change-your-company-details)
 - [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the namespace the subscription is linked to](#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
-### Change your personal details
+### Change account owner information
 
-Your personal details are used on invoices. Your email address is used for the Customers Portal
-login and license-related email.
+Account owner personal details are used on invoices. The account owner email
+address is used for the Customers Portal login and license-related email. 
 
-To change your personal details, including name, billing address, and email address:
+To change account owner information, including name, billing address, and email address:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My account > Account details**.
 1. Expand the **Personal details** section.
-1. Edit your personal details.
+1. Edit the personal details.
 1. Select **Save changes**.
+
+If you want to transfer ownership of the Customers Portal account
+to another person, after you enter that person's personal details, you must also
+[change the Customers Portal account password](#change-customers-portal-account-password). 
 
 ### Change your company details
 

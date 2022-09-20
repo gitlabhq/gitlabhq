@@ -18,6 +18,12 @@ class PersonalAccessTokensFinder
     tokens = by_impersonation(tokens)
     tokens = by_state(tokens)
     tokens = by_owner_type(tokens)
+    tokens = by_revoked_state(tokens)
+    tokens = by_created_before(tokens)
+    tokens = by_created_after(tokens)
+    tokens = by_last_used_before(tokens)
+    tokens = by_last_used_after(tokens)
+    tokens = by_search(tokens)
 
     sort(tokens)
   end
@@ -82,5 +88,41 @@ class PersonalAccessTokensFinder
     else
       tokens
     end
+  end
+
+  def by_revoked_state(tokens)
+    return tokens unless params.has_key?(:revoked)
+
+    params[:revoked] ? tokens.revoked : tokens.not_revoked
+  end
+
+  def by_created_before(tokens)
+    return tokens unless params[:created_before]
+
+    tokens.created_before(params[:created_before])
+  end
+
+  def by_created_after(tokens)
+    return tokens unless params[:created_after]
+
+    tokens.created_after(params[:created_after])
+  end
+
+  def by_last_used_before(tokens)
+    return tokens unless params[:last_used_before]
+
+    tokens.last_used_before(params[:last_used_before])
+  end
+
+  def by_last_used_after(tokens)
+    return tokens unless params[:last_used_after]
+
+    tokens.last_used_after(params[:last_used_after])
+  end
+
+  def by_search(tokens)
+    return tokens unless params[:search]
+
+    tokens.search(params[:search])
   end
 end

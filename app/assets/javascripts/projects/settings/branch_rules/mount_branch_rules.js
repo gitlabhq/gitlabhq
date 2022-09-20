@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import RuleEdit from './components/rule_edit.vue';
+import RuleEdit from './components/edit/index.vue';
 
 export default function mountBranchRules(el) {
   if (!el) {

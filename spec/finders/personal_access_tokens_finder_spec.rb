@@ -7,6 +7,50 @@ RSpec.describe PersonalAccessTokensFinder do
     described_class.new(options, current_user)
   end
 
+  describe '# searches PATs' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:time_token) do
+      create(:personal_access_token, created_at: DateTime.new(2022, 01, 02),
+                                     last_used_at: DateTime.new(2022, 01, 02))
+    end
+
+    let_it_be(:name_token) { create(:personal_access_token, name: 'test_1') }
+
+    let_it_be(:impersonated_token) do
+      create(:personal_access_token, :impersonation,
+        created_at: DateTime.new(2022, 01, 02),
+        last_used_at: DateTime.new(2022, 01, 02),
+        name: 'imp_token'
+      )
+    end
+
+    shared_examples 'finding tokens by user and options' do
+      subject { finder(option, user).execute }
+
+      it 'finds exactly' do
+        subject
+
+        is_expected.to contain_exactly(*result)
+      end
+    end
+
+    context 'by' do
+      where(:option, :user, :result) do
+        { created_before: DateTime.new(2022, 01, 03) } | create(:admin) | lazy { [time_token, impersonated_token] }
+        { created_after: DateTime.new(2022, 01, 01) }    | create(:admin) | lazy { [time_token, name_token, impersonated_token] }
+        { last_used_before: DateTime.new(2022, 01, 03) } | create(:admin) | lazy { [time_token, impersonated_token] }
+        { last_used_before: DateTime.new(2022, 01, 03) } | create(:admin) | lazy { [time_token, impersonated_token] }
+        { impersonation: true }                          | create(:admin) | lazy { [impersonated_token] }
+        { search: 'test' }                               | create(:admin) | lazy { [name_token] }
+      end
+
+      with_them do
+        it_behaves_like 'finding tokens by user and options'
+      end
+    end
+  end
+
   describe '#execute' do
     let(:user) { create(:user) }
     let(:params) { {} }

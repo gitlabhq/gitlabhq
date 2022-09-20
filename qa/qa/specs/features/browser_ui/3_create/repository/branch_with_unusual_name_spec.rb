@@ -22,9 +22,7 @@ module QA
             commit.branch = branch_name
             commit.start_branch = project.default_branch
             commit.commit_message = 'Add new file'
-            commit.add_files([
-                                 { file_path: 'test-folder/test-file.md', content: 'new content' }
-                             ])
+            commit.add_files([{ file_path: 'test-folder/test-file.md', content: 'new content' }])
           end
 
           project.visit!

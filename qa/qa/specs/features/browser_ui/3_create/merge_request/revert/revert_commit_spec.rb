@@ -16,9 +16,7 @@ module QA
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add new file'
-          commit.add_files([
-            { file_path: file_name, content: 'pssst!' }
-          ])
+          commit.add_files([{ file_path: file_name, content: 'pssst!' }])
         end
       end
 

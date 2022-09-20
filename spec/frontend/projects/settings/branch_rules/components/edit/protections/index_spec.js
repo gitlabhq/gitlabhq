@@ -3,10 +3,10 @@ import { GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import Protections, {
   i18n,
-} from '~/projects/settings/branch_rules/components/protections/index.vue';
-import PushProtections from '~/projects/settings/branch_rules/components/protections/push_protections.vue';
-import MergeProtections from '~/projects/settings/branch_rules/components/protections/merge_protections.vue';
-import { protections } from '../../mock_data';
+} from '~/projects/settings/branch_rules/components/edit/protections/index.vue';
+import PushProtections from '~/projects/settings/branch_rules/components/edit/protections/push_protections.vue';
+import MergeProtections from '~/projects/settings/branch_rules/components/edit/protections/merge_protections.vue';
+import { protections } from '../../../mock_data';
 
 describe('Branch Protections', () => {
   let wrapper;

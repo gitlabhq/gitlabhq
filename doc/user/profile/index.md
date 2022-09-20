@@ -27,6 +27,12 @@ To access your user settings:
 
 ## Change your password
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23610) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `block_weak_passwords`, weak passwords aren't accepted. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default blocking weak passwords is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `block_weak_passwords`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+The feature is not ready for production use.
+
 To change your password:
 
 1. On the top bar, in the top-right corner, select your avatar.

@@ -20,13 +20,13 @@ const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const IS_EE = require('./helpers/is_ee_env');
 const IS_JH = require('./helpers/is_jh_env');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
-const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
@@ -250,6 +250,20 @@ if (VENDOR_DLL && !IS_PRODUCTION) {
   };
 }
 
+const defaultJsOptions = {
+  cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
+  cacheIdentifier: [
+    process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
+    webpack.version,
+    BABEL_VERSION,
+    BABEL_LOADER_VERSION,
+    // Ensure that changing supported browsers will refresh the cache
+    // in order to not pull in outdated files that import core-js
+    SUPPORTED_BROWSERS_HASH,
+  ].join('|'),
+  cacheCompression: false,
+};
+
 module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
@@ -285,18 +299,18 @@ module.exports = {
         exclude: (modulePath) =>
           /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
         loader: 'babel-loader',
+        options: defaultJsOptions,
+      },
+      {
+        test: /\.js$/,
+        include: (modulePath) =>
+          /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
+            modulePath,
+          ) || /node_modules\/yaml/.test(modulePath),
+        loader: 'babel-loader',
         options: {
-          cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
-          cacheIdentifier: [
-            process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
-            webpack.version,
-            BABEL_VERSION,
-            BABEL_LOADER_VERSION,
-            // Ensure that changing supported browsers will refresh the cache
-            // in order to not pull in outdated files that import core-js
-            SUPPORTED_BROWSERS_HASH,
-          ].join('|'),
-          cacheCompression: false,
+          plugins: ['@babel/plugin-proposal-numeric-separator'],
+          ...defaultJsOptions,
         },
       },
       {
@@ -492,6 +506,16 @@ module.exports = {
     // automatically configure monaco editor web workers
     new MonacoWebpackPlugin({
       filename: '[name].[contenthash:8].worker.js',
+      customLanguages: [
+        {
+          label: 'yaml',
+          entry: 'monaco-yaml',
+          worker: {
+            id: 'monaco-yaml/yamlWorker',
+            entry: 'monaco-yaml/yaml.worker',
+          },
+        },
+      ],
     }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),

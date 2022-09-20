@@ -54,20 +54,12 @@ module QA
 
                 commit.project = package_project
                 commit.commit_message = 'Add files'
-                commit.add_files([
-                  {
-                    file_path: '.gitlab-ci.yml',
-                    content: maven_upload_package_yaml
-                  },
-                  {
-                    file_path: 'pom.xml',
-                    content: package_pom_xml
-                  },
-                  {
-                    file_path: 'settings.xml',
-                    content: settings_xml
-                  }
-                ])
+                commit.add_files(
+                  [
+                    { file_path: '.gitlab-ci.yml', content: maven_upload_package_yaml },
+                    { file_path: 'pom.xml', content: package_pom_xml },
+                    { file_path: 'settings.xml', content: settings_xml }
+                  ])
               end
             end
 
@@ -103,20 +95,12 @@ module QA
 
                 commit.project = client_project
                 commit.commit_message = 'Add files'
-                commit.add_files([
-                  {
-                    file_path: '.gitlab-ci.yml',
-                    content: maven_install_package_yaml
-                  },
-                  {
-                    file_path: 'pom.xml',
-                    content: client_pom_xml
-                  },
-                  {
-                    file_path: 'settings.xml',
-                    content: settings_xml
-                  }
-                ])
+                commit.add_files(
+                  [
+                    { file_path: '.gitlab-ci.yml', content: maven_install_package_yaml },
+                    { file_path: 'pom.xml', content: client_pom_xml },
+                    { file_path: 'settings.xml', content: settings_xml }
+                  ])
               end
             end
 
@@ -251,15 +235,15 @@ module QA
           package_pom_xml = ERB.new(read_fixture('package_managers/maven', 'package_pom.xml.erb')).result(binding)
 
           with_fixtures([
-              {
-                file_path: 'pom.xml',
-                content: package_pom_xml
-              },
-              {
-                file_path: 'settings.xml',
-                content: settings_xml_with_pat
-              }
-            ]) do |dir|
+                          {
+                            file_path: 'pom.xml',
+                            content: package_pom_xml
+                          },
+                          {
+                            file_path: 'settings.xml',
+                            content: settings_xml_with_pat
+                          }
+                        ]) do |dir|
             Service::DockerRun::Maven.new(dir).publish!
           end
 
@@ -281,20 +265,12 @@ module QA
 
               commit.project = client_project
               commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([
-                                {
-                                  file_path: '.gitlab-ci.yml',
-                                  content: maven_upload_package_yaml
-                                },
-                                {
-                                  file_path: 'pom.xml',
-                                  content: package_pom_xml
-                                },
-                                {
-                                  file_path: 'settings.xml',
-                                  content: settings_xml
-                                }
-              ])
+              commit.add_files(
+                [
+                  { file_path: '.gitlab-ci.yml', content: maven_upload_package_yaml },
+                  { file_path: 'pom.xml', content: package_pom_xml },
+                  { file_path: 'settings.xml', content: settings_xml }
+                ])
             end
           end
         end

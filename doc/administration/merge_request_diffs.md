@@ -271,3 +271,11 @@ By default, `sudo` does not preserve existing environment variables. You should 
 ```shell
 sudo gitlab-rake gitlab:external_diffs:force_object_storage START_ID=59946109 END_ID=59946109 UPDATE_DELAY=5
 ```
+
+## Switching from external storage to object storage
+
+Automatic migration moves diffs stored in the database, but it does not move diffs between storage types.
+To switch from external storage to object storage:
+
+1. Move files stored on local or NFS storage to object storage manually.
+1. Run the Rake task in the [previous section](#correcting-incorrectly-migrated-diffs) to change their location in the database.

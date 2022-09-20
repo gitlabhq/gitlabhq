@@ -21,7 +21,8 @@ module Preloaders
 
       ActiveRecord::Associations::Preloader.new.preload(@projects, :namespace)
       @projects.each do |project|
-        project.namespace.root_ancestor = root_ancestors_by_id[project.id]&.first
+        root_ancestor = root_ancestors_by_id[project.id]&.first
+        project.namespace.root_ancestor = root_ancestor if root_ancestor.present?
       end
     end
 

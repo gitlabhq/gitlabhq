@@ -2,8 +2,8 @@ import { GlFormGroup, GlSprintf, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PushProtections, {
   i18n,
-} from '~/projects/settings/branch_rules/components/protections/push_protections.vue';
-import { membersAllowedToPush, allowForcePush } from '../../mock_data';
+} from '~/projects/settings/branch_rules/components/edit/protections/push_protections.vue';
+import { membersAllowedToPush, allowForcePush } from '../../../mock_data';
 
 describe('Push Protections', () => {
   let wrapper;

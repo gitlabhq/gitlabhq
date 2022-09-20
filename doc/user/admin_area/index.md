@@ -270,10 +270,12 @@ To [Create a new group](../group/manage.md#create-a-group) select **New group**.
 
 ### Administering Topics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+- > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+- > Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
-You can administer all [topics](../project/working_with_projects.md#explore-topics) in the
-GitLab instance from the Admin Area's Topics page.
+[Topics](../project/working_with_projects.md#explore-topics) are used to categorize and find similar projects.
+
+You can administer all topics in the GitLab instance from the Admin Area's Topics page.
 
 To access the Topics page:
 
@@ -295,7 +297,7 @@ insensitive and applies partial matching.
 
 NOTE:
 The assigned topics are visible only to everyone with access to the project,
-but everyone can see which topics exist at all on the GitLab instance.
+but everyone can see which topics exist on the GitLab instance.
 Do not include sensitive information in the name of a topic.
 
 ### Administering Jobs

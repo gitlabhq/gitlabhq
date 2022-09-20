@@ -4,18 +4,18 @@ module QA
   RSpec.describe 'Create' do
     describe 'Open Web IDE from Diff Tab' do
       files = [
-          {
-              file_path: 'file1',
-              content: 'test1'
-          },
-          {
-              file_path: 'file2',
-              content: 'test2'
-          },
-          {
-              file_path: 'file3',
-              content: 'test3'
-          }
+        {
+            file_path: 'file1',
+            content: 'test1'
+        },
+        {
+            file_path: 'file2',
+            content: 'test2'
+        },
+        {
+            file_path: 'file3',
+            content: 'test3'
+        }
       ]
 
       let(:project) do

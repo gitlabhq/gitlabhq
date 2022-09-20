@@ -40,6 +40,9 @@ To assign topics to a project:
 1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
 1. Select **Save changes**.
 
+If you're an instance administrator, you can administer all project topics from the
+[Admin Area's Topics page](../../admin_area/index.md#administering-topics).
+
 ## Compliance frameworks **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.

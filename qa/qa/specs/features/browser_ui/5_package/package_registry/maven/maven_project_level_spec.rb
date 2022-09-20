@@ -171,11 +171,12 @@ module QA
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.project = package_project
               commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([
-                gitlab_ci_file,
-                pom_file,
-                settings_xml
-              ])
+              commit.add_files(
+                [
+                  gitlab_ci_file,
+                  pom_file,
+                  settings_xml
+                ])
             end
           end
 

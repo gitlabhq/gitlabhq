@@ -4,7 +4,7 @@ import { GlDropdown, GlSearchBoxByType, GlDropdownItem, GlSprintf } from '@gitla
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BranchDropdown, {
   i18n,
-} from '~/projects/settings/branch_rules/components/branch_dropdown.vue';
+} from '~/projects/settings/branch_rules/components/edit/branch_dropdown.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import branchesQuery from '~/projects/settings/branch_rules/queries/branches.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';

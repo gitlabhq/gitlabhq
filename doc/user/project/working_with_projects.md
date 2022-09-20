@@ -13,6 +13,11 @@ code are saved in projects, and most features are in the scope of projects.
 
 To view projects, on the top bar, select **Main menu > Projects > View all projects**.
 
+NOTE:
+The **Explore projects** tab is visible to unauthenticated users unless the
+[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
+is restricted. Then the tab is visible only to signed-in users.
+
 ### Who can view the Projects page
 
 When you select a project, the project landing page shows the project contents.
@@ -45,11 +50,6 @@ To explore project topics:
 1. To view projects associated with a topic, select a topic.
 
 The **Explore topics** tab shows a list of topics sorted by the number of associated projects.
-
-NOTE:
-The **Explore projects** tab is visible to unauthenticated users unless the
-[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted. Then the tab is visible only to signed-in users.
 
 You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 

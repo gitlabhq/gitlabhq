@@ -39,15 +39,10 @@ module QA
 
               commit.project = package_project
               commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([
-                                {
-                                  file_path: '.gitlab-ci.yml',
-                                  content: gradle_upload_yaml
-                                },
-                                {
-                                  file_path: 'build.gradle',
-                                  content: build_upload_gradle
-                                }
+              commit.add_files(
+                [
+                  { file_path: '.gitlab-ci.yml', content: gradle_upload_yaml },
+                  { file_path: 'build.gradle', content: build_upload_gradle }
                 ])
             end
           end
@@ -83,16 +78,11 @@ module QA
 
               commit.project = client_project
               commit.commit_message = 'Add files'
-              commit.add_files([
-                                {
-                                  file_path: '.gitlab-ci.yml',
-                                  content: gradle_install_yaml
-                                },
-                                {
-                                  file_path: 'build.gradle',
-                                  content: build_install_gradle
-                                }
-            ])
+              commit.add_files(
+                [
+                  { file_path: '.gitlab-ci.yml', content: gradle_install_yaml },
+                  { file_path: 'build.gradle', content: build_install_gradle }
+                ])
             end
           end
 

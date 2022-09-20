@@ -2,8 +2,8 @@ import { GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MergeProtections, {
   i18n,
-} from '~/projects/settings/branch_rules/components/protections/merge_protections.vue';
-import { membersAllowedToMerge, requireCodeOwnersApproval } from '../../mock_data';
+} from '~/projects/settings/branch_rules/components/edit/protections/merge_protections.vue';
+import { membersAllowedToMerge, requireCodeOwnersApproval } from '../../../mock_data';
 
 describe('Merge Protections', () => {
   let wrapper;

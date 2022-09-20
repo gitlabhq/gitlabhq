@@ -19,7 +19,8 @@ Note that:
 - Existing projects are skipped.
 - Projects in hashed storage may be skipped. For more information, see
   [Importing bare repositories from hashed storage](#importing-bare-repositories-from-hashed-storage).
-- The existing Git repositories ware moved from disk (removed from the original path).
+- The existing Git repositories are moved from disk (removed from the original path).
+- You must manually [push Git LFS objects](#push-git-lfs-objects).
 
 To import bare repositories into a GitLab instance:
 
@@ -151,4 +152,13 @@ projects (this may take a while if there are 1000s of projects in a namespace):
 ```ruby
 namespace = Namespace.find_by_full_path('gitlab-org')
 namespace.send(:write_projects_repository_config)
+```
+
+## Push Git LFS objects
+
+The import task doesn't import Git LFS objects. You must manually push the LFS objects to the newly 
+created GitLab repository using the following command:
+
+```shell
+git lfs push --all
 ```

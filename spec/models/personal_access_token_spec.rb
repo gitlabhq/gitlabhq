@@ -105,6 +105,31 @@ RSpec.describe PersonalAccessToken do
       end
     end
 
+    describe '.last_used_before' do
+      context 'last_used_*' do
+        let_it_be(:date) { DateTime.new(2022, 01, 01) }
+        let_it_be(:token) { create(:personal_access_token, last_used_at: date ) }
+        # This token should never occur in the following tests and indicates that filtering was done correctly with it
+        let_it_be(:never_used_token) { create(:personal_access_token) }
+
+        describe '.last_used_before' do
+          it 'returns personal access tokens used before the specified date only' do
+            expect(described_class.last_used_before(date + 1)).to contain_exactly(token)
+          end
+        end
+
+        it 'does not return token that is last_used_at after given date' do
+          expect(described_class.last_used_before(date + 1)).not_to contain_exactly(never_used_token)
+        end
+
+        describe '.last_used_after' do
+          it 'returns personal access tokens used after the specified date only' do
+            expect(described_class.last_used_after(date - 1)).to contain_exactly(token)
+          end
+        end
+      end
+    end
+
     describe '.last_used_before_or_unused' do
       let(:last_used_at) { 1.month.ago.beginning_of_hour }
       let!(:unused_token)  { create(:personal_access_token) }

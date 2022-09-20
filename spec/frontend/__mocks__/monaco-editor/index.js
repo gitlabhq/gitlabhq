@@ -8,10 +8,8 @@ import 'monaco-editor/esm/vs/language/css/monaco.contribution';
 import 'monaco-editor/esm/vs/language/json/monaco.contribution';
 import 'monaco-editor/esm/vs/language/html/monaco.contribution';
 import 'monaco-editor/esm/vs/basic-languages/monaco.contribution';
-import 'monaco-yaml/lib/esm/monaco.contribution';
 
 // This language starts trying to spin up web workers which obviously breaks in Jest environment
 jest.mock('monaco-editor/esm/vs/language/typescript/tsMode');
-jest.mock('monaco-yaml/lib/esm/yamlMode');
 
 export * from 'monaco-editor/esm/vs/editor/editor.api';
