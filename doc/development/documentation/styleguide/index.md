@@ -676,125 +676,66 @@ For other punctuation rules, refer to the
 [Pajamas Design System Punctuation section](https://design.gitlab.com/content/punctuation/).
 This is overridden by the [documentation-specific punctuation rules](#punctuation).
 
-### Anchor links
-
-Headings generate anchor links when rendered. `## This is an example` generates
-the anchor `#this-is-an-example`.
-
-NOTE:
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39717) in
-GitLab 13.4, [product badges](#product-tier-badges) used in headings aren't
-included in the generated anchor links. For example, when you link to
-`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
-
-Keep in mind that the GitLab user interface links to many documentation pages
-and anchor links to take the user to the right spot. When you change
-a heading, search `doc/*`, `app/views/*`, and `ee/app/views/*` for the old
-anchor. If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
-in your merge request fails.
-
-Important:
-
-- Avoid crosslinking documentation to headings unless you need to link to a
-  specific section of the document. This avoids breaking anchors in the
-  future in case the heading is changed.
-- If possible, avoid changing headings, because they're not only linked internally.
-  There are various links to GitLab documentation on the internet, such as
-  tutorials, presentations, StackOverflow posts, and other sources.
-- Do not link to `h1` headings.
-
-Note that with Kramdown, it's possible to add a custom ID to an HTML element
-with Markdown markup, but they don't work in `/help`. Because of this, don't use
-this option.
-
 ## Links
 
-Links are important in GitLab documentation. Use links instead of
-summarizing to help preserve a [single source of truth](#documentation-is-the-single-source-of-truth-ssot)
-in GitLab documentation.
+Links help the docs adhere to the
+[single source of truth](#documentation-is-the-single-source-of-truth-ssot) principle.
 
-We include guidance for links in these categories:
+### Links within the same repository
 
-- How to set up [anchor links](#anchor-links) for headings.
-- How to set up [criteria](#basic-link-criteria) for configuring a link.
-- What to set up when [linking to a `help`](../../documentation/index.md#linking-to-help)
-  page.
-- How to set up [links to internal documentation](#links-to-internal-documentation)
-  for cross-references.
-- How to set up [links to external documentation](#links-to-external-documentation)
-  for authoritative sources.
-- When to use [links requiring permissions](#links-requiring-permissions).
-- How to set up a [link to a video](#link-to-video).
-- How to [link to specific lines of code](#link-to-specific-lines-of-code)
+To link to another page in the same repository,
+use a relative file path. For example, `../user/gitlab_com/index.md`.
 
-### Basic link criteria
+Use inline link Markdown markup `[Text](https://example.com)`,
+rather than reference-style links, like `[Text][identifier]`.
 
-- Use inline link Markdown markup `[Text](https://example.com)`.
-  It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
-- Use meaningful anchor text.
-  For example, instead of writing something like `Read more about merge requests [here](LINK)`,
-  write `Read more about [merge requests](LINK)`.
-- Put the entire link on a single line. Some of our [linters](../testing.md) do not
-  validate links when split over multiple lines, and incorrect or broken links could
-  slip through.
+Put the entire link on a single line so that [linters](../testing.md) can find it.
 
-### Links to internal documentation
+### Links in separate repositories
 
-NOTE:
-**Internal** refers to documentation in the same project. When linking to
-documentation in separate projects (for example, linking to Omnibus documentation
-from GitLab documentation), you must use absolute URLs.
+To link to a page in a different repository, use an absolute URL.
+For example, to link from a page in the GitLab repo to the Charts repo,
+use a URL like `https://docs.gitlab.com/charts/`.
 
-Do not use absolute URLs like `https://docs.gitlab.com/ee/index.html` to
-cross-link to other documentation in the same project. Use relative links to
-the file, like `../index.md`. (These are converted to HTML when the site is
-rendered.)
+### Anchor links
 
-Relative linking enables crosslinks to work:
+Each heading has an anchor link. For example, a topic with the title
+`## This is an example` has the anchor `#this-is-an-example`.
 
-- in Review Apps, local previews, and `/help`.
-- when working on the documentation locally, so you can verify that they work as
-  early as possible in the process.
-- in the GitLab user interface when browsing doc files in their respective
-  repositories. For example, the links displayed at
-  `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md`.
+The first topic on a page (the `h1`) has an anchor link,
+but do not use it. Link to the page instead.
 
-To link to internal documentation:
+If a heading has a [product tier badge](#product-tier-badges),
+do not include it in the anchor link. For example, for the heading
+`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
 
-- Use relative links to Markdown files in the same repository.
-- Do not use absolute URLs or URLs from `docs.gitlab.com`.
-- Use `../` to navigate to higher-level directories.
-- Don't prepend `./` to links to files or directories. To link to a file in the
-  same directory or one of its sub-directories, use the syntax `path/to/file.md`.
-- Don't link relative to root. For example, `/ee/user/gitlab_com/index.md`.
+With Kramdown, you can add a custom ID to an HTML element, but these IDs
+don't work in `/help`, so you should not use them.
 
-  Don't:
+#### Changing links and titles
 
-  - `https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html`
-  - `/ee/administration/geo/replication/troubleshooting.md`
-  - `./troubleshooting.md`
+When you change a heading, the anchor link changes. To ensure you update
+any related links, search these directories:
 
-  Do: `../../geo/replication/troubleshooting.md`
+- `doc/*`
+- `app/views/*`
+- `ee/app/views/*`
 
-- Always add the filename `file.md` at the end of the link with the `.md`
-  extension, not `.html`.
+If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
+in your merge request fails.
 
-  Don't:
+### Text for links
 
-  - `../../merge_requests/`
-  - `../../issues/tags.html`
-  - `../../issues/tags.html#stages`
+Use descriptive text for links, rather than words like `here` or `this page.`
 
-  Do:
+For example, instead of:
 
-  - `../../merge_requests/index.md`
-  - `../../issues/tags.md`
-  - `../../issues/tags.md#stages`
-  - `issues/tags.md`
+- `For more information, see [this page](LINK).`
+- `For more information, go [here](LINK).`
 
-NOTE:
-Using the Markdown extension is necessary for the [`/help`](../index.md#gitlab-help)
-section of GitLab.
+Use:
+
+- `For more information, see [merge requests](LINK)`.
 
 ### Links to external documentation
 

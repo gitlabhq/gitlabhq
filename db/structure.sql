@@ -17514,8 +17514,7 @@ CREATE TABLE merge_request_reviewers (
     user_id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    updated_state_by_user_id bigint
+    state smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE merge_request_reviewers_id_seq
@@ -29545,8 +29544,6 @@ CREATE INDEX index_on_merge_request_assignees_updated_state_by_user_id ON merge_
 
 CREATE INDEX index_on_merge_request_assignees_user_id_and_state ON merge_request_assignees USING btree (user_id, state) WHERE (state = 2);
 
-CREATE INDEX index_on_merge_request_reviewers_updated_state_by_user_id ON merge_request_reviewers USING btree (updated_state_by_user_id);
-
 CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request_reviewers USING btree (user_id, state) WHERE (state = 2);
 
 CREATE INDEX index_on_merge_requests_for_latest_diffs ON merge_requests USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id);
@@ -32511,9 +32508,6 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY merge_request_reviewers
-    ADD CONSTRAINT fk_3d674b9f23 FOREIGN KEY (updated_state_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_405568b491 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -414,7 +414,6 @@ RSpec/PredicateMatcher:
     - 'spec/requests/api/users_spec.rb'
     - 'spec/requests/git_http_spec.rb'
     - 'spec/requests/lfs_http_spec.rb'
-    - 'spec/serializers/pipeline_serializer_spec.rb'
     - 'spec/services/branches/create_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service/needs_spec.rb'
     - 'spec/services/ci/create_pipeline_service/rate_limit_spec.rb'

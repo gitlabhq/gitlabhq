@@ -1,0 +1,8 @@
+---
+name: container_registry_tags_list_default_page_size
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98215
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/374073
+milestone: '15.5'
+type: development
+group: group::package
+default_enabled: false

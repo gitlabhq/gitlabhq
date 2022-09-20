@@ -8,7 +8,6 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
   include AdminModeHelper
 
   let(:user) { create(:user) }
-
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
   let(:repository_path) { "#{project.full_path}.git" }
@@ -29,6 +28,17 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
       def download_ability
         :download_code
       end
+    end
+  end
+
+  shared_examples 'logs userless ci' do
+    it 'logs' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        message: 'Actor was :ci',
+        project_id: project.id
+      ).once
+
+      pull_access_check
     end
   end
 
@@ -144,21 +154,28 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
           let(:actor) { :ci }
           let(:authentication_abilities) { build_authentication_abilities }
 
-          it 'allows pull access' do
-            expect { pull_access_check }.not_to raise_error
+          it 'disallows pull access' do
+            expect { pull_access_check }.to raise_error(Gitlab::GitAccess::NotFoundError)
           end
 
           it 'does not block pushes with "not found"' do
             expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
           end
 
-          it 'logs' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              message: 'Actor was :ci',
-              project_id: project.id
-            ).once
+          context 'when ci_remove_userless_ci is disabled' do
+            before do
+              stub_feature_flags(ci_remove_userless_ci: false)
+            end
 
-            pull_access_check
+            it 'allows pull access' do
+              expect { pull_access_check }.not_to raise_error
+            end
+
+            it 'does not block pushes with "not found"' do
+              expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
+            end
+
+            it_behaves_like 'logs userless ci'
           end
         end
 
@@ -741,17 +758,16 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
       describe 'generic CI (build without a user)' do
         let(:actor) { :ci }
 
-        context 'pull code' do
-          it { expect { pull_access_check }.not_to raise_error }
+        specify { expect { pull_access_check }.to raise_error Gitlab::GitAccess::NotFoundError }
 
-          it 'logs' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              message: 'Actor was :ci',
-              project_id: project.id
-            ).once
-
-            pull_access_check
+        context 'when ci_remove_userless_ci disabled' do
+          before do
+            stub_feature_flags(ci_remove_userless_ci: false)
           end
+
+          specify { expect { pull_access_check }.not_to raise_error }
+
+          it_behaves_like 'logs userless ci'
         end
       end
     end

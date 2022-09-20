@@ -171,7 +171,6 @@ RSpec/InstanceVariable:
     - spec/requests/openid_connect_spec.rb
     - spec/requests/projects/issues/discussions_spec.rb
     - spec/rubocop/cop/migration/update_column_in_batches_spec.rb
-    - spec/serializers/pipeline_serializer_spec.rb
     - spec/services/ci/create_pipeline_service/logger_spec.rb
     - spec/services/ci/process_sync_events_service_spec.rb
     - spec/services/labels/update_service_spec.rb

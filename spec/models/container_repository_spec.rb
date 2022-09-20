@@ -17,7 +17,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
                                    api_url: 'http://registry.gitlab',
                                    host_port: 'registry.gitlab')
 
-    stub_request(:get, 'http://registry.gitlab/v2/group/test/my_image/tags/list')
+    stub_request(:get, "http://registry.gitlab/v2/group/test/my_image/tags/list?n=#{::ContainerRegistry::Client::DEFAULT_TAGS_PAGE_SIZE}")
       .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
       .to_return(
         status: 200,

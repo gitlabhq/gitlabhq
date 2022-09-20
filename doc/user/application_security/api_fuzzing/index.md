@@ -1109,7 +1109,6 @@ profile increases as the number of tests increases.
 |[`FUZZAPI_GRAPHQL_SCHEMA`](#graphql-schema)                  | A URL or filename for a GraphQL schema in JSON format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
 |[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)          | Postman Collection file. |
 |[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. The support for comma-separated (`,`) files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1. |
-|[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. |
 |[`FUZZAPI_OVERRIDES_FILE`](#overrides)                       | Path to a JSON file containing overrides. |
 |[`FUZZAPI_OVERRIDES_ENV`](#overrides)                        | JSON string containing headers to override. |
 |[`FUZZAPI_OVERRIDES_CMD`](#overrides)                        | Overrides command. |
