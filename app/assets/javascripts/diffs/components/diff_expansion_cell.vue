@@ -224,6 +224,7 @@ export default {
       <button
         v-if="showExpandDown"
         :title="s__('Diffs|Next 20 lines')"
+        :aria-label="s__('Diffs|Next 20 lines')"
         :disabled="loading.down"
         type="button"
         class="js-unfold-down gl-rounded-0 gl-border-0 diff-line-expand-button"
@@ -235,6 +236,7 @@ export default {
       <button
         v-if="lineCountBetween !== -1 && lineCountBetween < 20"
         :title="s__('Diffs|Expand all lines')"
+        :aria-label="s__('Diffs|Expand all lines')"
         :disabled="loading.all"
         type="button"
         class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"
@@ -246,6 +248,7 @@ export default {
       <button
         v-if="showExpandUp"
         :title="s__('Diffs|Previous 20 lines')"
+        :aria-label="s__('Diffs|Previous 20 lines')"
         :disabled="loading.up"
         type="button"
         class="js-unfold gl-rounded-0 gl-border-0 diff-line-expand-button"

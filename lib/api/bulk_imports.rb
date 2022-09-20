@@ -32,7 +32,11 @@ module API
       end
     end
 
-    before { authenticate! }
+    before do
+      not_found! unless ::BulkImports::Features.enabled?
+
+      authenticate!
+    end
 
     resource :bulk_imports do
       desc 'Start a new GitLab Migration' do

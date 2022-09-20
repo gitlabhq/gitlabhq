@@ -21,6 +21,7 @@ module Gitlab
       :related_class,
       :feature_category,
       :artifact_size,
+      :artifact_used_cdn,
       :artifacts_dependencies_size,
       :artifacts_dependencies_count,
       :root_caller_id
@@ -38,6 +39,7 @@ module Gitlab
       Attribute.new(:related_class, String),
       Attribute.new(:feature_category, String),
       Attribute.new(:artifact, ::Ci::JobArtifact),
+      Attribute.new(:artifact_used_cdn, Object),
       Attribute.new(:artifacts_dependencies_size, Integer),
       Attribute.new(:artifacts_dependencies_count, Integer),
       Attribute.new(:root_caller_id, String)
@@ -91,6 +93,7 @@ module Gitlab
         assign_hash_if_value(hash, :remote_ip)
         assign_hash_if_value(hash, :related_class)
         assign_hash_if_value(hash, :feature_category)
+        assign_hash_if_value(hash, :artifact_used_cdn)
         assign_hash_if_value(hash, :artifacts_dependencies_size)
         assign_hash_if_value(hash, :artifacts_dependencies_count)
 

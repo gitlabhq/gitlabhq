@@ -937,23 +937,6 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#remove_project_authorizations' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:user_1) { create(:user) }
-    let_it_be(:user_2) { create(:user) }
-    let_it_be(:user_3) { create(:user) }
-
-    it 'removes the project authorizations of the specified users in the current project' do
-      create(:project_authorization, user: user_1, project: project)
-      create(:project_authorization, user: user_2, project: project)
-      create(:project_authorization, user: user_3, project: project)
-
-      project.remove_project_authorizations([user_1.id, user_2.id])
-
-      expect(project.project_authorizations.pluck(:user_id)).not_to include(user_1.id, user_2.id)
-    end
-  end
-
   describe '#merge_commit_template_or_default' do
     let_it_be(:project) { create(:project) }
 
@@ -8307,16 +8290,6 @@ RSpec.describe Project, factory_default: :keep do
     it 'returns wrapper' do
       expect(project.packages_policy_subject).to be_a(Packages::Policies::Project)
       expect(project.packages_policy_subject.project).to eq(project)
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(read_package_policy_rule: false)
-      end
-
-      it 'returns project' do
-        expect(project.packages_policy_subject).to eq(project)
-      end
     end
   end
 

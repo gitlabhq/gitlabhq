@@ -332,7 +332,7 @@ module API
             authenticate_job!(require_running: false)
           end
 
-          present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
+          present_artifacts_file!(current_job.artifacts_file, project: current_job.project, supports_direct_download: params[:direct_download])
         end
       end
     end

@@ -273,6 +273,7 @@ Domain experts:
 |------------------------------|------------------------|
 | Verify / Pipeline execution  | Fabio Pitino           |
 | Verify / Pipeline execution  | Marius Bobin           |
+| Verify / Pipeline insights   | Maxime Orefice         |
 | PostgreSQL Database          | Andreas Brandl         |
 
 <!-- vale gitlab.Spelling = YES -->

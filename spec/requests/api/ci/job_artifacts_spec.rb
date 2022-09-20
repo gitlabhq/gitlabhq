@@ -389,6 +389,49 @@ RSpec.describe API::Ci::JobArtifacts do
             end
           end
 
+          context 'when Google CDN is enabled' do
+            let(:cdn_enabled) { true }
+            let(:cdn_config) do
+              {
+                'provider' => 'Google',
+                'url' => 'https://cdn.example.org',
+                'key_name' => 'stanhu-key',
+                'key' => Base64.urlsafe_encode64(SecureRandom.hex)
+              }
+            end
+
+            before do
+              stub_feature_flags(ci_job_artifacts_cdn: cdn_enabled)
+              stub_object_storage_uploader(config: Gitlab.config.artifacts.object_store,
+                                           uploader: JobArtifactUploader,
+                                           proxy_download: proxy_download,
+                                           cdn: cdn_config)
+              allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
+            end
+
+            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), env: { 'REMOTE_ADDR': '18.245.0.1' } }
+
+            it 'returns CDN-signed URL' do
+              expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
+
+              subject
+
+              expect(response.redirect_url).to start_with("https://cdn.example.org/#{artifact.file.path}")
+            end
+
+            context 'when ci_job_artifacts_cdn feature flag is disabled' do
+              let(:cdn_enabled) { false }
+
+              it 'returns the file remote URL' do
+                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
+
+                subject
+
+                expect(response).to redirect_to(artifact.file.url)
+              end
+            end
+          end
+
           context 'authorized user' do
             it 'returns the file remote URL' do
               expect(response).to redirect_to(artifact.file.url)

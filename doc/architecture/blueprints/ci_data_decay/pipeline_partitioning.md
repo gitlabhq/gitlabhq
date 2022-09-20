@@ -403,7 +403,7 @@ partition, `auto_canceled_by_partition_id`, and the FK becomes:
 
 ```sql
 ALTER TABLE ONLY p_ci_pipelines
-    ADD CONSTRAINT fk_cancel_redundant_pieplines
+    ADD CONSTRAINT fk_cancel_redundant_pipelines
     FOREIGN KEY (auto_canceled_by_id, auto_canceled_by_partition_id)
     REFERENCES p_ci_pipelines(id, partition_id) ON DELETE SET NULL;
 ```

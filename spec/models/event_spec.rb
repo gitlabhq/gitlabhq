@@ -16,6 +16,35 @@ RSpec.describe Event do
     it { is_expected.to respond_to(:design_title) }
   end
 
+  describe '.first' do
+    let(:recorded_query) do
+      recorder = ActiveRecord::QueryRecorder.new do
+        described_class.first(3)
+      end
+      recorder.data.each_value.first[:occurrences].first
+    end
+
+    context 'when skip_default_scope_for_events FF is on' do
+      before do
+        stub_feature_flags(skip_default_scope_for_events: true)
+      end
+
+      it 'orders by id' do
+        expect(recorded_query).to include('FROM "events" ORDER BY "events"."id" ASC LIMIT 3')
+      end
+    end
+
+    context 'when skip_default_scope_for_events FF is off' do
+      before do
+        stub_feature_flags(skip_default_scope_for_events: false)
+      end
+
+      it 'does not have ORDER BY clause' do
+        expect(recorded_query).to include('FROM "events" LIMIT 3')
+      end
+    end
+  end
+
   describe 'Callbacks' do
     let(:project) { create(:project) }
 

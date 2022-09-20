@@ -1,8 +1,0 @@
----
-name: allow_non_blocking_member_refresh
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83619
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357281
-milestone: '14.10'
-type: development
-group: group::authentication and authorization
-default_enabled: false

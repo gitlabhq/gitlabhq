@@ -51,23 +51,13 @@ class ProcessCommitWorker
   end
 
   def close_issues(project, user, author, commit, issues)
-    if Feature.enabled?(:process_issue_closure_in_background, project)
-      Issues::CloseWorker.bulk_perform_async_with_contexts(
-        issues,
-        arguments_proc: -> (issue) {
-          [project.id, issue.id, issue.class.to_s, { closed_by: author.id, commit_hash: commit.to_hash }]
-        },
-        context_proc: -> (issue) { { project: project } }
-      )
-    else
-      # We don't want to run permission related queries for every single issue,
-      # therefore we use IssueCollection here and skip the authorization check in
-      # Issues::CloseService#execute.
-      IssueCollection.new(issues).updatable_by_user(user).each do |issue|
-        Issues::CloseService.new(project: project, current_user: author)
-          .close_issue(issue, closed_via: commit)
-      end
-    end
+    Issues::CloseWorker.bulk_perform_async_with_contexts(
+      issues,
+      arguments_proc: -> (issue) {
+        [project.id, issue.id, issue.class.to_s, { closed_by: author.id, commit_hash: commit.to_hash }]
+      },
+      context_proc: -> (issue) { { project: project } }
+    )
   end
 
   def issues_to_close(project, commit, user)

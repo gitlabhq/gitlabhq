@@ -35,26 +35,6 @@ RSpec.describe API::Helpers::PackagesHelpers do
         expect(helper.send('authorize_read_package!', subject)).to eq nil
       end
     end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(read_package_policy_rule: false)
-      end
-
-      where(:subject, :expected_class) do
-        ref(:project) | ::Project
-        ref(:group)   | ::Group
-        ref(:package) | ::Packages::Package
-      end
-
-      with_them do
-        it 'calls authorize! with correct subject' do
-          expect(helper).to receive(:authorize!).with(:read_package, have_attributes(id: subject.id, class: expected_class))
-
-          expect(helper.send('authorize_read_package!', subject)).to eq nil
-        end
-      end
-    end
   end
 
   %i[create_package destroy_package].each do |action|

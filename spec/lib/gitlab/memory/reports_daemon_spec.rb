@@ -2,8 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::ReportsDaemon do
+RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
   let(:daemon) { described_class.new }
+
+  let_it_be(:tmp_dir) { Dir.mktmpdir }
+
+  after(:all) do
+    FileUtils.remove_entry(tmp_dir)
+  end
 
   describe '#run_thread' do
     let(:report_duration_counter) { instance_double(::Prometheus::Client::Counter) }
@@ -22,13 +28,10 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
       allow(File).to receive(:size).with(/#{daemon.reports_path}.*\.json/).and_return(file_size)
     end
 
-    it 'runs reports' do
-      expect(daemon.send(:reports)).to all(receive(:run).twice.and_call_original)
+    it 'runs reports, logs and sets gauge' do
+      expect(daemon.send(:reports))
+        .to all(receive(:run).twice { Tempfile.new("report.json", tmp_dir).path })
 
-      daemon.send(:run_thread)
-    end
-
-    it 'logs report execution' do
       expect(::Prometheus::PidProvider).to receive(:worker_id).at_least(:once).and_return('worker_1')
 
       expect(Gitlab::AppLogger).to receive(:info).with(
@@ -42,6 +45,8 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
           perf_report: 'jemalloc_stats'
         )).twice
 
+      expect(report_duration_counter).to receive(:increment).with({ report: 'jemalloc_stats' }, an_instance_of(Float))
+
       daemon.send(:run_thread)
     end
 
@@ -51,16 +56,13 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
       end
 
       it 'logs `0` as `perf_report_size_bytes`' do
+        expect(daemon.send(:reports))
+          .to all(receive(:run).twice { Tempfile.new("report.json", tmp_dir).path })
+
         expect(Gitlab::AppLogger).to receive(:info).with(hash_including(perf_report_size_bytes: 0)).twice
 
         daemon.send(:run_thread)
       end
-    end
-
-    it 'sets real time duration gauge' do
-      expect(report_duration_counter).to receive(:increment).with({ report: 'jemalloc_stats' }, an_instance_of(Float))
-
-      daemon.send(:run_thread)
     end
 
     it 'allows configure and run multiple reports' do
@@ -74,8 +76,8 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
 
       allow(daemon).to receive(:reports).and_return([active_report_1, inactive_report, active_report_2])
 
-      expect(active_report_1).to receive(:run).and_return('/tmp/report_1.json').twice
-      expect(active_report_2).to receive(:run).and_return('/tmp/report_2.json').twice
+      expect(active_report_1).to receive(:run).and_return(File.join(tmp_dir, 'report_1.json')).twice
+      expect(active_report_2).to receive(:run).and_return(File.join(tmp_dir, 'report_2.json')).twice
       expect(inactive_report).not_to receive(:run)
 
       daemon.send(:run_thread)
@@ -86,6 +88,9 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_MAX_DELTA_S', 1) # rand(1) == 0, so we will have fixed sleep interval
         daemon = described_class.new
         allow(daemon).to receive(:alive).and_return(true, true, false)
+
+        expect(daemon.send(:reports))
+          .to all(receive(:run).twice { Tempfile.new("report.json", tmp_dir).path })
 
         expect(daemon).to receive(:sleep).with(described_class::DEFAULT_SLEEP_S).ordered
         expect(daemon).to receive(:sleep).with(described_class::DEFAULT_SLEEP_BETWEEN_REPORTS_S).ordered
@@ -120,7 +125,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_S', 100)
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_MAX_DELTA_S', 50)
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_BETWEEN_REPORTS_S', 2)
-        stub_env('GITLAB_DIAGNOSTIC_REPORTS_PATH', '/empty-dir')
+        stub_env('GITLAB_DIAGNOSTIC_REPORTS_PATH', tmp_dir)
       end
 
       it 'uses provided values' do
@@ -129,7 +134,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
         expect(daemon.sleep_s).to eq(100)
         expect(daemon.sleep_max_delta_s).to eq(50)
         expect(daemon.sleep_between_reports_s).to eq(2)
-        expect(daemon.reports_path).to eq('/empty-dir')
+        expect(daemon.reports_path).to eq(tmp_dir)
       end
     end
   end

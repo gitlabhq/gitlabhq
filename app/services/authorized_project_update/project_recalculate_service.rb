@@ -64,7 +64,12 @@ module AuthorizedProjectUpdate
     end
 
     def refresh_authorizations
-      project.remove_project_authorizations(user_ids_to_remove) if user_ids_to_remove.any?
+      if user_ids_to_remove.any?
+        ProjectAuthorization.delete_all_in_batches_for_project(
+          project: project,
+          user_ids: user_ids_to_remove)
+      end
+
       ProjectAuthorization.insert_all_in_batches(authorizations_to_create) if authorizations_to_create.any?
     end
 

@@ -6767,6 +6767,9 @@ msgstr ""
 msgid "BranchRules|Branch"
 msgstr ""
 
+msgid "BranchRules|Branch rules details"
+msgstr ""
+
 msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -6783,6 +6786,9 @@ msgid "BranchRules|Reject code pushes that change files listed in the CODEOWNERS
 msgstr ""
 
 msgid "BranchRules|Require approval from code owners."
+msgstr ""
+
+msgid "BranchRules|Target Branch"
 msgstr ""
 
 msgid "BranchRules|default"

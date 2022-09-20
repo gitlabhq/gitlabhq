@@ -1129,12 +1129,6 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def remove_project_authorizations(project_ids, per_batch = 1000)
-    project_ids.each_slice(per_batch) do |project_ids_batch|
-      project_authorizations.where(project_id: project_ids_batch).delete_all
-    end
-  end
-
   def authorized_projects(min_access_level = nil)
     # We're overriding an association, so explicitly call super with no
     # arguments or it would be passed as `force_reload` to the association

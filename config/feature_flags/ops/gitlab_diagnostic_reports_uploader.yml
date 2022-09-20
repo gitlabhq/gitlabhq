@@ -1,0 +1,8 @@
+---
+name: gitlab_diagnostic_reports_uploader
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97155
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372771
+milestone: '15.4'
+type: ops
+group: group::application performance
+default_enabled: false

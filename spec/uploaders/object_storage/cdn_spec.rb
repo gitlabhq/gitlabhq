@@ -10,7 +10,7 @@ RSpec.describe ObjectStorage::CDN do
           'provider' => 'google',
           'url' => 'https://gitlab.example.com',
           'key_name' => 'test-key',
-          'key' => '12345'
+          'key' => Base64.urlsafe_encode64('12345')
         }
       }
     }.freeze
@@ -31,21 +31,49 @@ RSpec.describe ObjectStorage::CDN do
   end
 
   let(:object) { build_stubbed(:user) }
+  let(:public_ip) { '18.245.0.1' }
+
+  let_it_be(:project) { build(:project) }
 
   subject { uploader_class.new(object, :file) }
 
   context 'with CDN config' do
     before do
+      stub_artifacts_object_storage(enabled: true)
       uploader_class.options = Settingslogic.new(Gitlab.config.uploads.deep_merge(cdn_options))
+    end
+
+    describe '#cdn_enabled_url' do
+      context 'with ci_job_artifacts_cdn feature flag disabled' do
+        before do
+          stub_feature_flags(ci_job_artifacts_cdn: false)
+        end
+
+        it 'calls #url' do
+          expect(subject).to receive(:url).and_call_original
+          expect(subject).not_to receive(:cdn_signed_url)
+
+          result = subject.cdn_enabled_url(project, public_ip)
+
+          expect(result.used_cdn).to be false
+        end
+      end
+
+      context 'with ci_job_artifacts_cdn feature flag enabled' do
+        it 'calls #cdn_signed_url' do
+          expect(subject).not_to receive(:url)
+          expect(subject).to receive(:cdn_signed_url).and_call_original
+
+          result = subject.cdn_enabled_url(project, public_ip)
+
+          expect(result.used_cdn).to be true
+        end
+      end
     end
 
     describe '#use_cdn?' do
       it 'returns true' do
-        expect_next_instance_of(ObjectStorage::CDN::GoogleCDN) do |cdn|
-          expect(cdn).to receive(:use_cdn?).and_return(true)
-        end
-
-        expect(subject.use_cdn?('18.245.0.1')).to be true
+        expect(subject.use_cdn?(public_ip)).to be true
       end
     end
 
@@ -67,7 +95,7 @@ RSpec.describe ObjectStorage::CDN do
 
     describe '#use_cdn?' do
       it 'returns false' do
-        expect(subject.use_cdn?('18.245.0.1')).to be false
+        expect(subject.use_cdn?(public_ip)).to be false
       end
     end
   end
@@ -79,7 +107,7 @@ RSpec.describe ObjectStorage::CDN do
     end
 
     it 'raises an error' do
-      expect { subject.use_cdn?('18.245.0.1') }.to raise_error("Unknown CDN provider: amazon")
+      expect { subject.use_cdn?(public_ip) }.to raise_error("Unknown CDN provider: amazon")
     end
   end
 end

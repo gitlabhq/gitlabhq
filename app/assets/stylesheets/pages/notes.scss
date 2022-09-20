@@ -337,7 +337,7 @@ $system-note-svg-size: 16px;
       --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
 
       &.is-sidebar-moved {
-        --initial-top: calc(#{$header-height} + #{$mr-tabs-height + 28px});
+        --initial-top: calc(#{$header-height} + #{$mr-tabs-height + 24px});
       }
 
       .with-performance-bar & {

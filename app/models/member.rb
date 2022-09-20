@@ -627,7 +627,6 @@ class Member < ApplicationRecord
   end
 
   def blocking_refresh
-    return true unless Feature.enabled?(:allow_non_blocking_member_refresh)
     return true if @blocking_refresh.nil?
 
     @blocking_refresh

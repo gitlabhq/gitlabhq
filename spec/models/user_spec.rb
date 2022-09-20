@@ -4838,23 +4838,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#remove_project_authorizations' do
-    let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
-    let_it_be(:project3) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
-    it 'removes the project authorizations of the user, in specified projects' do
-      create(:project_authorization, user: user, project: project1)
-      create(:project_authorization, user: user, project: project2)
-      create(:project_authorization, user: user, project: project3)
-
-      user.remove_project_authorizations([project1.id, project2.id])
-
-      expect(user.project_authorizations.pluck(:project_id)).to match_array([project3.id])
-    end
-  end
-
   describe '#access_level=' do
     let(:user) { build(:user) }
 

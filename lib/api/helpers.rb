@@ -602,23 +602,33 @@ module API
       end
     end
 
-    def present_artifacts_file!(file, **args)
+    def present_artifacts_file!(file, project:, **args)
       log_artifacts_filesize(file&.model)
 
-      present_carrierwave_file!(file, **args)
+      present_carrierwave_file!(file, project: project, **args)
     end
 
-    def present_carrierwave_file!(file, supports_direct_download: true)
+    def present_carrierwave_file!(file, project: nil, supports_direct_download: true)
       return not_found! unless file&.exists?
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename)
       elsif supports_direct_download && file.class.direct_download_enabled?
-        redirect(file.url)
+        redirect(cdn_fronted_url(file, project))
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
+      end
+    end
+
+    def cdn_fronted_url(file, project)
+      if file.respond_to?(:cdn_enabled_url)
+        result = file.cdn_enabled_url(project, ip_address)
+        Gitlab::ApplicationContext.push(artifact_used_cdn: result.used_cdn)
+        result.url
+      else
+        file.url
       end
     end
 

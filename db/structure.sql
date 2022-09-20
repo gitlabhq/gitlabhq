@@ -22144,7 +22144,6 @@ CREATE TABLE user_preferences (
     setup_for_company boolean,
     render_whitespace_in_code boolean,
     tab_width smallint,
-    experience_level smallint,
     view_diffs_file_by_file boolean DEFAULT false NOT NULL,
     gitpod_enabled boolean DEFAULT false NOT NULL,
     markdown_surround_selection boolean DEFAULT true NOT NULL,

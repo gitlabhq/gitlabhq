@@ -113,7 +113,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def ensure_group_import_enabled
-    render_404 unless Feature.enabled?(:bulk_import)
+    render_404 unless ::BulkImports::Features.enabled?
   end
 
   def access_token_key

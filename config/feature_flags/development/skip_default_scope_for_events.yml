@@ -1,0 +1,8 @@
+---
+name: skip_default_scope_for_events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96874
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372464
+milestone: '15.4'
+type: development
+group: group::optimize
+default_enabled: false
