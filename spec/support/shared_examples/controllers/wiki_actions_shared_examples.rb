@@ -300,7 +300,7 @@ RSpec.shared_examples 'wiki controller actions' do
           expect(response.headers['Content-Disposition']).to match(/^inline/)
           expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq('true')
           expect(response.cache_control[:public]).to be(false)
-          expect(response.headers['Cache-Control']).to eq('max-age=60, private')
+          expect(response.headers['Cache-Control']).to eq('max-age=60, private, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60')
         end
       end
     end

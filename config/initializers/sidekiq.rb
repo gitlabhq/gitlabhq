@@ -23,8 +23,6 @@ queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?
-use_sidekiq_daemon_memory_killer = ENV.fetch("SIDEKIQ_DAEMON_MEMORY_KILLER", 1).to_i.nonzero?
-use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
 
 Sidekiq.configure_server do |config|
   config.options[:strict] = false
@@ -45,8 +43,7 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator(
     metrics: Settings.monitoring.sidekiq_exporter,
-    arguments_logger: SidekiqLogArguments.enabled? && !enable_json_logs,
-    memory_killer: enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer
+    arguments_logger: SidekiqLogArguments.enabled? && !enable_json_logs
   ))
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
@@ -62,7 +59,7 @@ Sidekiq.configure_server do |config|
     # To cancel job, it requires `SIDEKIQ_MONITOR_WORKER=1` to enable notification channel
     Gitlab::SidekiqDaemon::Monitor.instance.start
 
-    Gitlab::SidekiqDaemon::MemoryKiller.instance.start if enable_sidekiq_memory_killer && use_sidekiq_daemon_memory_killer
+    Gitlab::SidekiqDaemon::MemoryKiller.instance.start if enable_sidekiq_memory_killer
 
     first_sidekiq_worker = !ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0'
     health_checks = Settings.monitoring.sidekiq_health_checks

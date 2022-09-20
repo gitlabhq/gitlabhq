@@ -132,7 +132,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
         subject
 
         expect(response.header['ETag']).to be_present
-        expect(response.header['Cache-Control']).to eq("max-age=60, private")
+        expect(response.header['Cache-Control']).to eq("max-age=60, private, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60")
       end
     end
 

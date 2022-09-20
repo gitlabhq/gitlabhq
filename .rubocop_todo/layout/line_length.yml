@@ -3573,7 +3573,6 @@ Layout/LineLength:
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/deduplicates_when_scheduling.rb'
-    - 'lib/gitlab/sidekiq_middleware/memory_killer.rb'
     - 'lib/gitlab/sidekiq_middleware/server_metrics.rb'
     - 'lib/gitlab/sidekiq_middleware/size_limiter/compressor.rb'
     - 'lib/gitlab/sidekiq_versioning.rb'

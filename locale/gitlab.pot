@@ -14400,6 +14400,9 @@ msgstr ""
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
 msgstr ""
 
+msgid "Edit your search and try again"
+msgstr ""
+
 msgid "Edit your search filter and try again."
 msgstr ""
 

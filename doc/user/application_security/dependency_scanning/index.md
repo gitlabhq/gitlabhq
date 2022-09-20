@@ -895,12 +895,11 @@ include:
 
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
-  image: alpine:latest
+  image:
+    name: cyclonedx/cyclonedx-cli:0.22.0
+    entrypoint: [""]
   script:
-    - wget https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.22.0/cyclonedx-linux-musl-x64 -O /usr/local/bin/cyclonedx-cli
-    - chmod 755 /usr/local/bin/cyclonedx-cli
-    - apk --update add --no-cache icu-dev libstdc++
-    - find * -name "gl-sbom-*.cdx.json" -exec cyclonedx-cli merge --input-files {} --output-file gl-sbom-all.cdx.json +
+    - find . -name "gl-sbom-*.cdx.json" -exec /cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
   artifacts:
     paths:
       - gl-sbom-all.cdx.json

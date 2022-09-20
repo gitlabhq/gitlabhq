@@ -87,7 +87,7 @@ describe('Customer relations contacts root app', () => {
         editButtonLabel: 'Edit',
         title: 'Customer relations contacts',
         newContact: 'New contact',
-        errorText: 'Something went wrong. Please try again.',
+        errorMsg: 'Something went wrong. Please try again.',
       },
       serverErrorMessage: '',
       filterSearchKey: 'contacts',
@@ -116,6 +116,18 @@ describe('Customer relations contacts root app', () => {
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Something went wrong. Please try again.');
+    });
+
+    it('should be removed on error-alert-dismissed event', async () => {
+      mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Something went wrong. Please try again.');
+
+      findTable().vm.$emit('error-alert-dismissed');
+      await waitForPromises();
+
+      expect(wrapper.text()).not.toContain('Something went wrong. Please try again.');
     });
   });
 

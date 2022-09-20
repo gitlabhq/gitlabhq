@@ -22,11 +22,14 @@ describe('Timeline events form', () => {
   useFakeDate(fakeDate);
   let wrapper;
 
-  const mountComponent = ({ mountMethod = shallowMountExtended }) => {
+  const mountComponent = ({ mountMethod = shallowMountExtended } = {}) => {
     wrapper = mountMethod(TimelineEventsForm, {
       propsData: {
         showSaveAndAdd: true,
         isEventProcessed: false,
+      },
+      stubs: {
+        GlButton: true,
       },
     });
   };
@@ -48,17 +51,18 @@ describe('Timeline events form', () => {
     findHourInput().setValue(5);
     findMinuteInput().setValue(45);
   };
+  const findTextarea = () => wrapper.findByTestId('input-note');
 
   const submitForm = async () => {
-    findSubmitButton().trigger('click');
+    findSubmitButton().vm.$emit('click');
     await waitForPromises();
   };
   const submitFormAndAddAnother = async () => {
-    findSubmitAndAddButton().trigger('click');
+    findSubmitAndAddButton().vm.$emit('click');
     await waitForPromises();
   };
   const cancelForm = async () => {
-    findCancelButton().trigger('click');
+    findCancelButton().vm.$emit('click');
     await waitForPromises();
   };
 
@@ -117,6 +121,18 @@ describe('Timeline events form', () => {
       expect(findDatePicker().props('value')).toStrictEqual(new Date(fakeDate));
       expect(findHourInput().element.value).toBe('0');
       expect(findMinuteInput().element.value).toBe('0');
+    });
+
+    it('should disable the save buttons when event content does not exist', async () => {
+      expect(findSubmitButton().props('disabled')).toBe(true);
+      expect(findSubmitAndAddButton().props('disabled')).toBe(true);
+    });
+
+    it('should enable the save buttons when event content exists', async () => {
+      await findTextarea().setValue('hello');
+
+      expect(findSubmitButton().props('disabled')).toBe(false);
+      expect(findSubmitAndAddButton().props('disabled')).toBe(false);
     });
   });
 });

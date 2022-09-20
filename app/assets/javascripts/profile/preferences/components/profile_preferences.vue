@@ -131,9 +131,9 @@ export default {
         :message-url="view.message_url"
         :config="$options.integrationViewConfigs[view.name]"
       />
-    </div>
-    <div class="col-sm-12">
       <hr />
+    </div>
+    <div class="col-sm-12 js-hide-when-nothing-matches-search">
       <gl-button
         category="primary"
         variant="confirm"

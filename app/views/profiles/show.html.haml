@@ -133,9 +133,11 @@
         = f.gitlab_ui_checkbox_component :include_private_contributions,
           s_('Profiles|Include private contributions on my profile'),
           help_text: s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.")
-  %hr
-  = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3 js-password-prompt-btn'
-  = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
+  .row.js-hide-when-nothing-matches-search
+    .col-lg-12
+      %hr
+      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3 js-password-prompt-btn'
+      = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
 
 #password-prompt-modal
 

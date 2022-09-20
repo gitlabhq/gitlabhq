@@ -352,8 +352,6 @@ To create an [untarred](#skipping-tar-creation) incremental backup from a tarred
 sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 ```
 
-You can't create an incremental backup from an [untarred](#skipping-tar-creation) backup.
-
 ### Back up specific repository storages
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.

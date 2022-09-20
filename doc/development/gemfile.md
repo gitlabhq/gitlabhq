@@ -15,6 +15,19 @@ We do not allow gems that are fetched from Git repositories. All gems have
 to be available in the RubyGems index. We want to minimize external build
 dependencies and build times.
 
+## Review the new dependency for quality
+
+We should not add 3rd-party dependencies to GitLab that would not pass our own quality standards.
+This means that new dependencies should, at a minimum, meet the following criteria:
+
+- They have an active developer community. At the minimum a maintainer should still be active
+  to merge change requests in case of emergencies.
+- There are no issues open that we know may impact the availablity or performance of GitLab.
+- The project is tested using some form of test automation. The test suite must be passing
+  using the Ruby version currently used by GitLab.
+- If the project uses a C extension, consider requesting an additional review from a C or MRI
+  domain expert. C extensions can greatly impact GitLab stability and performance.
+
 ## Request an Appsec review
 
 When adding a new gem to our `Gemfile` or even changing versions in

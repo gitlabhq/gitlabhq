@@ -592,7 +592,6 @@ Style/PercentLiteralDelimiters:
     - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/search_context.rb'
     - 'lib/gitlab/sidekiq_daemon/memory_killer.rb'
-    - 'lib/gitlab/sidekiq_middleware/memory_killer.rb'
     - 'lib/gitlab/slash_commands/presenters/base.rb'
     - 'lib/gitlab/ssh_public_key.rb'
     - 'lib/gitlab/task_helpers.rb'

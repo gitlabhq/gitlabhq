@@ -1,5 +1,5 @@
 <script>
-import { GlSearchBoxByType } from '@gitlab/ui';
+import { GlEmptyState, GlSearchBoxByType } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import {
   EXCLUDED_NODES,
@@ -96,6 +96,8 @@ const displayResults = ({ sectionSelector, expandSection, searchTerm }, matching
   hideSectionsExcept(sectionSelector, sections);
   sections.forEach(expandSection);
   highlightText(matchingTextNodes, searchTerm);
+
+  return sections.length > 0;
 };
 
 const clearResults = (params) => {
@@ -126,6 +128,7 @@ const search = (root, searchTerm) => {
 
 export default {
   components: {
+    GlEmptyState,
     GlSearchBoxByType,
   },
   props: {
@@ -137,6 +140,11 @@ export default {
       type: String,
       required: true,
     },
+    hideWhenEmptySelector: {
+      type: String,
+      required: true,
+      default: null,
+    },
     isExpandedFn: {
       type: Function,
       required: false,
@@ -147,7 +155,15 @@ export default {
   data() {
     return {
       searchTerm: '',
+      hasMatches: true,
     };
+  },
+  watch: {
+    hasMatches(newHasMatches) {
+      document.querySelectorAll(this.hideWhenEmptySelector).forEach((section) => {
+        section.classList.toggle(HIDE_CLASS, !newHasMatches);
+      });
+    },
   },
   methods: {
     search(value) {
@@ -161,11 +177,12 @@ export default {
       };
 
       clearResults(displayOptions);
+      this.hasMatches = true;
 
       if (value.length) {
         saveExpansionState(document.querySelectorAll(this.sectionSelector), displayOptions);
 
-        displayResults(displayOptions, search(this.searchRoot, this.searchTerm));
+        this.hasMatches = displayResults(displayOptions, search(this.searchRoot, this.searchTerm));
       } else {
         restoreExpansionState(displayOptions);
       }
@@ -181,10 +198,18 @@ export default {
 };
 </script>
 <template>
-  <gl-search-box-by-type
-    :value="searchTerm"
-    :debounce="$options.TYPING_DELAY"
-    :placeholder="__('Search page')"
-    @input="search"
-  />
+  <div>
+    <gl-search-box-by-type
+      :value="searchTerm"
+      :debounce="$options.TYPING_DELAY"
+      :placeholder="__('Search page')"
+      @input="search"
+    />
+
+    <gl-empty-state
+      v-if="!hasMatches"
+      :title="__('No results found')"
+      :description="__('Edit your search and try again')"
+    />
+  </div>
 </template>

@@ -58,7 +58,7 @@ moved to your configured `uploads_directory`. Every 24 hours, a worker deletes t
 ### Items that are exported
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
-file lists the items exported and imported when migrating projects using file exports. View this file in the branch
+file for projects lists many of the items exported and imported when migrating projects using file exports. View this file in the branch
 for your version of GitLab to see the list of items relevant to you. For example,
 [`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/project/import_export.yml).
 
@@ -137,16 +137,15 @@ To import a project:
 To get the status of an import, you can query it through the [Project import/export API](../../../api/project_import_export.md#import-status).
 As described in the API documentation, the query may return an import error or exceptions.
 
-### Items that are imported
+### Changes to imported items
 
-The following items are imported but changed slightly:
+Exported items are imported with the following changes:
 
-- Project members with the Owner role are imported as Maintainers.
-- If an imported project contains merge requests originating from forks, then new branches
-  associated with such merge requests are created in a project during the import/export. Thus, the
-  number of branches in the exported project might be bigger than in the original project.
-- If use of the `Internal` visibility level
-  [is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects),
+- Project members with the Owner role are imported with the Maintainer role.
+- If an imported project contains merge requests originating from forks, new branches associated with these merge
+  requests are created in the project. Therefore, the number of branches in the new project can be more than in the
+  source project.
+- If the `Internal` visibility level [is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects),
   all imported projects are given `Private` visibility.
 
 Deploy keys aren't imported. To use deploy keys, you must enable them in your imported project and update protected branches.
