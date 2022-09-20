@@ -263,7 +263,7 @@ module API
       mount ::API::PackageFiles
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::PersonalAccessTokens::SelfRevocation
+      mount ::API::PersonalAccessTokens::SelfInformation
       mount ::API::PersonalAccessTokens
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories

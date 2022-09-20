@@ -1862,7 +1862,6 @@ Layout/LineLength:
     - 'ee/spec/controllers/registrations/welcome_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions/groups_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions_controller_spec.rb'
-    - 'ee/spec/controllers/trials_controller_spec.rb'
     - 'ee/spec/elastic/migrate/20210201104800_migrate_notes_to_separate_index_spec.rb'
     - 'ee/spec/elastic/migrate/20210421140400_add_new_data_to_merge_requests_documents_spec.rb'
     - 'ee/spec/elastic/migrate/20210429154500_migrate_merge_requests_to_separate_index_spec.rb'

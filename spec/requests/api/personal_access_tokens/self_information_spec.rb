@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PersonalAccessTokens::SelfRevocation do
+RSpec.describe API::PersonalAccessTokens::SelfInformation do
+  let(:path) { '/personal_access_tokens/self' }
+  let(:token) { create(:personal_access_token, user: current_user) }
+
   let_it_be(:current_user) { create(:user) }
 
   describe 'DELETE /personal_access_tokens/self' do
-    let(:path) { '/personal_access_tokens/self' }
-    let(:token) { create(:personal_access_token, user: current_user) }
-
     subject(:delete_token) { delete api(path, personal_access_token: token) }
 
     shared_examples 'revoking token succeeds' do
@@ -63,6 +63,39 @@ RSpec.describe API::PersonalAccessTokens::SelfRevocation do
         let(:token) { create(:personal_access_token, scopes: [scope], user: current_user) }
 
         it_behaves_like 'revoking token succeeds'
+      end
+    end
+  end
+
+  describe 'GET /personal_access_tokens/self' do
+    Gitlab::Auth.all_available_scopes.each do |scope|
+      context "with a '#{scope}' scoped token" do
+        let(:token) { create(:personal_access_token, scopes: [scope], user: current_user) }
+
+        it 'shows token info' do
+          get api(path, personal_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['scopes']).to match_array([scope.to_s])
+        end
+      end
+    end
+
+    context 'when token is invalid' do
+      it 'returns 401' do
+        get api(path, personal_access_token: instance_double(PersonalAccessToken, token: 'invalidtoken'))
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when token is expired' do
+      it 'returns 401' do
+        token = create(:personal_access_token, expires_at: 1.day.ago, user: current_user)
+
+        get api(path, personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end

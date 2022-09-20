@@ -277,15 +277,15 @@ export const secondsToDays = (seconds) => Math.round(seconds / 86400);
  *
  * @param {Number} offset UTC offset in seconds as a integer
  *
- * @return {String} the + or - offset in hours
+ * @return {String} the + or - offset in hours, e.g. `- 10`, `0`, `+ 4`
  */
-export const secondsToHours = (offset) => {
+export const formatUtcOffset = (offset) => {
   const parsed = parseInt(offset, 10);
   if (Number.isNaN(parsed) || parsed === 0) {
     return `0`;
   }
-  const num = offset / 3600;
-  return parseInt(num, 10) !== num ? num.toFixed(1) : num;
+  const prefix = offset > 0 ? '+' : '-';
+  return `${prefix} ${Math.abs(offset / 3600)}`;
 };
 
 /**

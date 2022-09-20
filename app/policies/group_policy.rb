@@ -35,15 +35,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
-  condition(:create_projects_disabled) do
+  condition(:create_projects_disabled, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
   end
 
-  condition(:developer_maintainer_access) do
+  condition(:developer_maintainer_access, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
   end
 
-  condition(:maintainer_can_create_group) do
+  condition(:maintainer_can_create_group, scope: :subject) do
     @subject.subgroup_creation_level == ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
   end
 
@@ -51,7 +51,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     group_projects_for(user: @user, group: @subject, only_owned: false).any? { |p| p.design_management_enabled? }
   end
 
-  condition(:dependency_proxy_available) do
+  condition(:dependency_proxy_available, scope: :subject) do
     @subject.dependency_proxy_feature_available?
   end
 
@@ -59,7 +59,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
   end
 
-  condition(:observability_enabled) do
+  condition(:observability_enabled, scope: :subject) do
     Feature.enabled?(:observability_group_tab, @subject)
   end
 
@@ -80,9 +80,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:has_project_with_service_desk_enabled) { @subject.has_project_with_service_desk_enabled? }
 
+  with_scope :subject
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
-  condition(:group_runner_registration_allowed) do
+  condition(:group_runner_registration_allowed, scope: :global) do
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
   end
 

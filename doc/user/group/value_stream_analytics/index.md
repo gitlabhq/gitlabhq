@@ -28,7 +28,7 @@ Value stream analytics is also available for [projects](../../analytics/value_st
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role to view value stream analytics for groups.
 - You must create a [custom value stream](#create-a-value-stream-with-gitlab-default-stages). Value stream analytics only shows custom value streams created for your group.
@@ -68,7 +68,9 @@ The table shows a list of related workflow items for the selected stage. Based o
 The **Overview** dashboard in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select,
 the dashboard automatically aggregates DORA metrics and displays the current status of the value stream. Select a DORA metric to view its chart.
 
-To view deployment metrics, you must have a
+Prerequisite:
+
+- To view deployment metrics, you must have a
 [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
 To view the DORA metrics and key metrics:
@@ -248,7 +250,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
 
-When you create a value stream, you can use GitLab default stages and hide or re-order them to customize. You can also
+When you create a value stream, you can use GitLab default stages and hide or re-order them. You can also
 create custom stages in addition to those provided in the default template.
 
 1. On the top bar, select **Main menu > Groups** and find your group.

@@ -70,7 +70,6 @@ RSpec/ContextWording:
     - 'ee/spec/controllers/security/vulnerabilities_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions_controller_spec.rb'
     - 'ee/spec/controllers/trial_registrations_controller_spec.rb'
-    - 'ee/spec/controllers/trials_controller_spec.rb'
     - 'ee/spec/controllers/users_controller_spec.rb'
     - 'ee/spec/elastic/migrate/20220119120500_populate_commit_permissions_in_main_index_spec.rb'
     - 'ee/spec/elastic/migrate/20220512150000_pause_indexing_for_unsupported_es_versions_spec.rb'

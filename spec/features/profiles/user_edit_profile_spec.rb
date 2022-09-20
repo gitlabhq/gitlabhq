@@ -551,13 +551,13 @@ RSpec.describe 'User edit profile' do
       it 'allows the user to select a time zone from a dropdown list of options' do
         expect(page.find('.user-time-preferences .dropdown')).not_to have_css('.show')
 
-        page.find('.user-time-preferences .js-timezone-dropdown').click
+        page.find('.user-time-preferences .dropdown').click
 
         expect(page.find('.user-time-preferences .dropdown')).to have_css('.show')
 
-        page.find("a", text: "Nuku'alofa").click
+        page.find("button", text: "Arizona").click
 
-        expect(page).to have_field(:user_timezone, with: 'Pacific/Tongatapu', type: :hidden)
+        expect(page).to have_field(:user_timezone, with: 'America/Phoenix', type: :hidden)
       end
 
       it 'timezone defaults to empty' do

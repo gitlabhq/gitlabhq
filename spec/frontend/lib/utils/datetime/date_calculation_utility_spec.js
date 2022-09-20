@@ -1,4 +1,8 @@
-import { getDateWithUTC, newDateAsLocaleTime } from '~/lib/utils/datetime/date_calculation_utility';
+import {
+  getDateWithUTC,
+  newDateAsLocaleTime,
+  formatUtcOffset,
+} from '~/lib/utils/datetime/date_calculation_utility';
 
 describe('newDateAsLocaleTime', () => {
   it.each`
@@ -29,5 +33,24 @@ describe('getDateWithUTC', () => {
     ${undefined}                            | ${null}
   `('returns $expected given $string', ({ date, expected }) => {
     expect(getDateWithUTC(date)).toEqual(expected);
+  });
+});
+
+describe('formatUtcOffset', () => {
+  it.each`
+    offset       | expected
+    ${-32400}    | ${'- 9'}
+    ${'-12600'}  | ${'- 3.5'}
+    ${0}         | ${'0'}
+    ${'10800'}   | ${'+ 3'}
+    ${19800}     | ${'+ 5.5'}
+    ${0}         | ${'0'}
+    ${[]}        | ${'0'}
+    ${{}}        | ${'0'}
+    ${true}      | ${'0'}
+    ${null}      | ${'0'}
+    ${undefined} | ${'0'}
+  `('returns $expected given $offset', ({ offset, expected }) => {
+    expect(formatUtcOffset(offset)).toEqual(expected);
   });
 });

@@ -138,7 +138,14 @@ You can filter by merged attributes with:
 GET /personal_access_tokens?revoked=true&created_before=2022-01-01
 ```
 
-## Get single personal access token by ID
+## Get single personal access token
+
+Get a personal access token by either:
+
+- Using the ID of the personal access token.
+- Passing it to the API in a header.
+
+### Using a personal access token ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
 
@@ -157,7 +164,7 @@ GET /personal_access_tokens/:id
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<id>"
 ```
 
-### Responses
+#### Responses
 
 > `404` HTTP status code [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93650) in GitLab 15.3.
 
@@ -165,6 +172,38 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
   - The user doesn't have access to the token with the specified ID.
   - The token with the specified ID doesn't exist.
 - `404: Not Found` if the user is an administrator but the token with the specified ID doesn't exist.
+
+### Using a request header
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
+
+Get a single personal access token by using passing the token in a header.
+
+```plaintext
+GET /personal_access_tokens/self
+```
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/self"
+```
+
+Example response:
+
+```json
+{
+    "id": 4,
+    "name": "Test Token",
+    "revoked": false,
+    "created_at": "2020-07-23T14:31:47.729Z",
+    "scopes": [
+        "api"
+    ],
+    "user_id": 3,
+    "last_used_at": "2021-10-06T17:58:37.550Z",
+    "active": true,
+    "expires_at": null
+}
+```
 
 ## Revoke a personal access token
 

@@ -78,6 +78,9 @@ e2e:package-and-test:
     SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
   trigger:
     strategy: depend
+    forward:
+      yaml_variables: true
+      pipeline_variables: true
     include:
       - artifact: package-and-test-pipeline.yml
         job: e2e-test-pipeline-generate

@@ -252,7 +252,6 @@ Rails/SkipsModelValidations:
     - 'ee/spec/controllers/groups/dependency_proxy_for_containers_controller_spec.rb'
     - 'ee/spec/controllers/groups/ldaps_controller_spec.rb'
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
-    - 'ee/spec/controllers/trials_controller_spec.rb'
     - 'ee/spec/factories/import_states.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/epic_boards/epic_boards_sidebar_spec.rb'

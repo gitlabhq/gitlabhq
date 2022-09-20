@@ -54,9 +54,8 @@
       %h4.gl-mt-0= s_("Profiles|Time settings")
       %p= s_("Profiles|Set your local time zone.")
     .col-lg-8
-      %h5= _("Time zone")
-      = dropdown_tag(_("Select a time zone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg gl-w-full!', title: _("Select a time zone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
-      %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
+      = f.label :user_timezone, _("Time zone")
+      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone } }
     .col-lg-12
       %hr
   .row.js-search-settings-section
