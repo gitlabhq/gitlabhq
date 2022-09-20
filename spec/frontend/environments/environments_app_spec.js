@@ -71,7 +71,7 @@ describe('~/environments/components/environments_app.vue', () => {
       previousPage: 1,
       __typename: 'LocalPageInfo',
     },
-    location = '?scope=available&page=2',
+    location = '?scope=available&page=2&search=prod',
   }) => {
     setWindowLocation(location);
     environmentAppMock.mockReturnValue(environmentsApp);
@@ -104,7 +104,7 @@ describe('~/environments/components/environments_app.vue', () => {
     await createWrapperWithMocked({
       environmentsApp: resolvedEnvironmentsApp,
       folder: resolvedFolder,
-      location: '?scope=bad&page=2',
+      location: '?scope=bad&page=2&search=prod',
     });
 
     expect(environmentAppMock).toHaveBeenCalledWith(
@@ -350,7 +350,54 @@ describe('~/environments/components/environments_app.vue', () => {
       next.trigger('click');
 
       await nextTick();
-      expect(window.location.search).toBe('?scope=available&page=3');
+      expect(window.location.search).toBe('?scope=available&page=3&search=prod');
+    });
+  });
+
+  describe('search', () => {
+    let searchBox;
+
+    const waitForDebounce = async () => {
+      await nextTick();
+      jest.runOnlyPendingTimers();
+    };
+
+    beforeEach(async () => {
+      await createWrapperWithMocked({
+        environmentsApp: resolvedEnvironmentsApp,
+        folder: resolvedFolder,
+      });
+      searchBox = wrapper.findByRole('searchbox', {
+        name: s__('Environments|Search by environment name'),
+      });
+    });
+
+    it('should sync the query params to the new search', async () => {
+      searchBox.setValue('hello');
+
+      await waitForDebounce();
+
+      expect(window.location.search).toBe('?scope=available&page=1&search=hello');
+    });
+
+    it('should query for the entered parameter', async () => {
+      const search = 'hello';
+
+      searchBox.setValue(search);
+
+      await waitForDebounce();
+      await waitForPromises();
+
+      expect(environmentAppMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ search }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('should sync search term from query params on load', async () => {
+      expect(searchBox.element.value).toBe('prod');
     });
   });
 });

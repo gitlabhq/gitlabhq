@@ -43,6 +43,18 @@ To view a list of environments and deployments:
 
 Deployments show up in this list only after a deployment job has created them.
 
+## Search environments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+
+To search environments by name:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. In the search bar, enter your search term. Matching applies from the
+   beginning of the environment name. For example, `devel` matches the
+   environment name `development`, but `elop` does not.
+
 ## Types of environments
 
 There are two types of environments:

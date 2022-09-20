@@ -41,11 +41,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should fetch environments and map them to frontend data', async () => {
       const cache = { writeQuery: jest.fn() };
       const scope = 'available';
+      const search = '';
       mock
-        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search } })
         .reply(200, environmentsApp, {});
 
-      const app = await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
+      const app = await mockResolvers.Query.environmentApp(
+        null,
+        { scope, page: 1, search },
+        { cache },
+      );
       expect(app).toEqual(resolvedEnvironmentsApp);
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pollIntervalQuery,
@@ -57,12 +62,12 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const scope = 'stopped';
       const interval = 3000;
       mock
-        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search: '' } })
         .reply(200, environmentsApp, {
           'poll-interval': interval,
         });
 
-      await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
+      await mockResolvers.Query.environmentApp(null, { scope, page: 1, search: '' }, { cache });
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pollIntervalQuery,
         data: { interval },
@@ -72,7 +77,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const cache = { writeQuery: jest.fn() };
       const scope = 'stopped';
       mock
-        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search: '' } })
         .reply(200, environmentsApp, {
           'x-next-page': '2',
           'x-page': '1',
@@ -82,7 +87,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           'X-Total-Pages': '5',
         });
 
-      await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
+      await mockResolvers.Query.environmentApp(null, { scope, page: 1, search: '' }, { cache });
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pageInfoQuery,
         data: {
@@ -102,10 +107,10 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const cache = { writeQuery: jest.fn() };
       const scope = 'stopped';
       mock
-        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search: '' } })
         .reply(200, environmentsApp, {});
 
-      await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
+      await mockResolvers.Query.environmentApp(null, { scope, page: 1, search: '' }, { cache });
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pageInfoQuery,
         data: {
@@ -124,11 +129,14 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('folder', () => {
     it('should fetch the folder url passed to it', async () => {
-      mock.onGet(ENDPOINT, { params: { per_page: 3, scope: 'available' } }).reply(200, folder);
+      mock
+        .onGet(ENDPOINT, { params: { per_page: 3, scope: 'available', search: '' } })
+        .reply(200, folder);
 
       const environmentFolder = await mockResolvers.Query.folder(null, {
         environment: { folderPath: ENDPOINT },
         scope: 'available',
+        search: '',
       });
 
       expect(environmentFolder).toEqual(resolvedFolder);
