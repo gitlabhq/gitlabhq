@@ -1,9 +1,11 @@
 import { GlTab } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { createLocalVue } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import OverviewTabs from '~/groups/components/overview_tabs.vue';
 import GroupsApp from '~/groups/components/app.vue';
+import GroupFolderComponent from '~/groups/components/group_folder.vue';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
 import { createRouter } from '~/groups/init_overview_tabs';
@@ -14,10 +16,13 @@ import {
 } from '~/groups/constants';
 import axios from '~/lib/utils/axios_utils';
 
+const localVue = createLocalVue();
+localVue.component('GroupFolder', GroupFolderComponent);
 const router = createRouter();
 
 describe('OverviewTabs', () => {
   let wrapper;
+  let axiosMock;
 
   const endpoints = {
     subgroups_and_projects: '/groups/foobar/-/children.json',
@@ -36,7 +41,15 @@ describe('OverviewTabs', () => {
       router,
       provide: {
         endpoints,
+        newSubgroupPath: '/groups/new',
+        newProjectPath: 'projects/new',
+        newSubgroupIllustration: '',
+        newProjectIllustration: '',
+        emptySubgroupIllustration: '',
+        canCreateSubgroups: false,
+        canCreateProjects: false,
       },
+      localVue,
       mocks: { $route: route, $router: routerMock },
     });
 
@@ -47,13 +60,13 @@ describe('OverviewTabs', () => {
   const findTab = (name) => wrapper.findByRole('tab', { name });
   const findSelectedTab = () => wrapper.findByRole('tab', { selected: true });
 
-  afterEach(() => {
-    wrapper.destroy();
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
   });
 
-  beforeEach(async () => {
-    // eslint-disable-next-line no-new
-    new AxiosMockAdapter(axios);
+  afterEach(() => {
+    wrapper.destroy();
+    axiosMock.restore();
   });
 
   it('renders `Subgroups and projects` tab with `GroupsApp` component', async () => {
