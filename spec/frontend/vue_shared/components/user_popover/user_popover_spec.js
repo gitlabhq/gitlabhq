@@ -239,6 +239,18 @@ describe('User Popover Component', () => {
       expect(wrapper.html()).toContain('<gl-emoji data-name="basketball_player"');
     });
 
+    it('should show only emoji', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        status: { emoji: 'basketball_player' },
+      };
+
+      createWrapper({ user });
+
+      expect(findUserStatus().exists()).toBe(true);
+      expect(wrapper.html()).toContain('<gl-emoji data-name="basketball_player"');
+    });
+
     it('hides the div when status is null', () => {
       const user = { ...DEFAULT_PROPS.user, status: null };
 

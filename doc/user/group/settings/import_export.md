@@ -60,6 +60,7 @@ The following items are exported:
 - Events
 - [Wikis](../../project/wiki/group.md)
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)
+- Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95372) in 15.4)
 
 The following items are **not** exported:
 

@@ -1,8 +1,8 @@
 %p
-  Project #{@project.name} was exported successfully.
+  = s_('Notify|Project %{project_name} was exported successfully.') % {project_name: @project.name}
 %p
-  The project export can be downloaded from:
-  = link_to download_export_project_url(@project), rel: 'nofollow', download: '' do
-    = @project.full_name + " export"
+  - project_link_url = download_export_project_url(@project)
+  - project_link_start = '<a href="%{url}" target="_blank" rel="nofollow" download="">'.html_safe % { url: project_link_url }
+  = html_escape(s_('Notify|%{project_link_start}Download%{project_link_end} the project export.')) % {project_link_start: project_link_start, project_link_end: '</a>'.html_safe}
 %p
-  The download link will expire in 24 hours.
+  = s_('Notify|The download link will expire in 24 hours.')

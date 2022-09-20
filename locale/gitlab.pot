@@ -27111,6 +27111,9 @@ msgstr ""
 msgid "Notify|%{paragraph_start}Hi %{name}!%{paragraph_end} %{paragraph_start}A new public key was added to your account:%{paragraph_end} %{paragraph_start}title: %{key_title}%{paragraph_end} %{paragraph_start}If this key was added in error, you can remove it under %{removal_link}%{paragraph_end}"
 msgstr ""
 
+msgid "Notify|%{project_link_start}Download%{project_link_end} the project export."
+msgstr ""
+
 msgid "Notify|%{update_at_start} Last update at %{update_at_mid} %{last_update_at} %{update_at_end}"
 msgstr ""
 
@@ -27240,6 +27243,9 @@ msgstr ""
 msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
 msgstr ""
 
+msgid "Notify|Project %{project_name} was exported successfully."
+msgstr ""
+
 msgid "Notify|Remote mirror"
 msgstr ""
 
@@ -27253,6 +27259,9 @@ msgid "Notify|The diff for this file was not included because it is too large."
 msgstr ""
 
 msgid "Notify|The diff was not included because it is too large."
+msgstr ""
+
+msgid "Notify|The download link will expire in 24 hours."
 msgstr ""
 
 msgid "Notify|The push did not contain any new commits, but force pushed to delete the commits and changes below."
