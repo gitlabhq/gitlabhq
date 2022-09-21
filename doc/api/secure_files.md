@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, api
 ---
 
@@ -127,7 +127,7 @@ Example response:
 Download the contents of a project's secure file.
 
 ```plaintext
-GET /projects/:project_id/download/:id
+GET /projects/:project_id/secure_files/:id/download
 ```
 
 Supported attributes:

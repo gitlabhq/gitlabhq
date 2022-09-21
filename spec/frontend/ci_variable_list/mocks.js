@@ -45,6 +45,12 @@ const createDefaultVars = ({ withScope = true, kind } = {}) => {
 
   return {
     __typename: `Ci${kind}VariableConnection`,
+    pageInfo: {
+      startCursor: 'adsjsd12kldpsa',
+      endCursor: 'adsjsd12kldpsa',
+      hasPreviousPage: false,
+      hasNextPage: true,
+    },
     nodes: base,
   };
 };

@@ -3,7 +3,7 @@ import {
   convertObjectPropsToCamelCase,
   convertObjectPropsToSnakeCase,
 } from '../../lib/utils/common_utils';
-import { getIdFromGraphQLId } from '../../graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '../../graphql_shared/utils';
 import {
   GRAPHQL_GROUP_TYPE,
   GRAPHQL_PROJECT_TYPE,
@@ -30,6 +30,7 @@ const mapVariableTypes = (variables = [], kind) => {
     return {
       __typename: `Ci${kind}Variable`,
       ...convertObjectPropsToCamelCase(ciVar),
+      id: convertToGraphQLId('Ci::Variable', ciVar.id),
       variableType: ciVar.variable_type ? ciVar.variable_type.toUpperCase() : ciVar.variableType,
     };
   });
@@ -40,9 +41,16 @@ const prepareProjectGraphQLResponse = ({ data, projectId, errors = [] }) => {
     errors,
     project: {
       __typename: GRAPHQL_PROJECT_TYPE,
-      id: projectId,
+      id: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, projectId),
       ciVariables: {
-        __typename: 'CiVariableConnection',
+        __typename: `Ci${GRAPHQL_PROJECT_TYPE}VariableConnection`,
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: '',
+          endCursor: '',
+        },
         nodes: mapVariableTypes(data.variables, projectString),
       },
     },
@@ -54,9 +62,16 @@ const prepareGroupGraphQLResponse = ({ data, groupId, errors = [] }) => {
     errors,
     group: {
       __typename: GRAPHQL_GROUP_TYPE,
-      id: groupId,
+      id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, groupId),
       ciVariables: {
-        __typename: 'CiVariableConnection',
+        __typename: `Ci${GRAPHQL_GROUP_TYPE}VariableConnection`,
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: '',
+          endCursor: '',
+        },
         nodes: mapVariableTypes(data.variables, groupString),
       },
     },
@@ -68,24 +83,42 @@ const prepareAdminGraphQLResponse = ({ data, errors = [] }) => {
     errors,
     ciVariables: {
       __typename: `Ci${instanceString}VariableConnection`,
+      pageInfo: {
+        __typename: 'PageInfo',
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: '',
+        endCursor: '',
+      },
       nodes: mapVariableTypes(data.variables, instanceString),
     },
   };
 };
 
-const callProjectEndpoint = async ({
+async function callProjectEndpoint({
   endpoint,
   fullPath,
   variable,
   projectId,
   cache,
   destroy = false,
-}) => {
+}) {
   try {
     const { data } = await axios.patch(endpoint, {
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
-    return prepareProjectGraphQLResponse({ data, projectId });
+
+    const graphqlData = prepareProjectGraphQLResponse({ data, projectId });
+
+    cache.writeQuery({
+      query: getProjectVariables,
+      variables: {
+        fullPath,
+        after: null,
+      },
+      data: graphqlData,
+    });
+    return graphqlData;
   } catch (e) {
     return prepareProjectGraphQLResponse({
       data: cache.readQuery({ query: getProjectVariables, variables: { fullPath } }),
@@ -93,7 +126,7 @@ const callProjectEndpoint = async ({
       errors: [...e.response.data],
     });
   }
-};
+}
 
 const callGroupEndpoint = async ({
   endpoint,
@@ -107,7 +140,15 @@ const callGroupEndpoint = async ({
     const { data } = await axios.patch(endpoint, {
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
-    return prepareGroupGraphQLResponse({ data, groupId });
+
+    const graphqlData = prepareGroupGraphQLResponse({ data, groupId });
+
+    cache.writeQuery({
+      query: getGroupVariables,
+      data: graphqlData,
+    });
+
+    return graphqlData;
   } catch (e) {
     return prepareGroupGraphQLResponse({
       data: cache.readQuery({ query: getGroupVariables, variables: { fullPath } }),
@@ -123,7 +164,14 @@ const callAdminEndpoint = async ({ endpoint, variable, cache, destroy = false })
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
 
-    return prepareAdminGraphQLResponse({ data });
+    const graphqlData = prepareAdminGraphQLResponse({ data });
+
+    cache.writeQuery({
+      query: getAdminVariables,
+      data: graphqlData,
+    });
+
+    return graphqlData;
   } catch (e) {
     return prepareAdminGraphQLResponse({
       data: cache.readQuery({ query: getAdminVariables }),
@@ -160,6 +208,49 @@ export const resolvers = {
     },
     deleteAdminVariable: async (_, { endpoint, variable }, { cache }) => {
       return callAdminEndpoint({ endpoint, variable, cache, destroy: true });
+    },
+  },
+};
+
+export const mergeVariables = (existing, incoming, { args }) => {
+  if (!existing || !args?.after) {
+    return incoming;
+  }
+
+  const { nodes, ...rest } = incoming;
+  const result = rest;
+  result.nodes = [...existing.nodes, ...nodes];
+
+  return result;
+};
+
+export const cacheConfig = {
+  cacheConfig: {
+    typePolicies: {
+      Query: {
+        fields: {
+          ciVariables: {
+            keyArgs: false,
+            merge: mergeVariables,
+          },
+        },
+      },
+      Project: {
+        fields: {
+          ciVariables: {
+            keyArgs: ['fullPath', 'endpoint', 'projectId'],
+            merge: mergeVariables,
+          },
+        },
+      },
+      Group: {
+        fields: {
+          ciVariables: {
+            keyArgs: ['fullPath'],
+            merge: mergeVariables,
+          },
+        },
+      },
     },
   },
 };

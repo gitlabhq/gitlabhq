@@ -5,7 +5,7 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
-import { resolvers } from '~/ci_variable_list/graphql/resolvers';
+import { resolvers } from '~/ci_variable_list/graphql/settings';
 
 import ciAdminVariables from '~/ci_variable_list/components/ci_admin_variables.vue';
 import ciVariableSettings from '~/ci_variable_list/components/ci_variable_settings.vue';

@@ -138,7 +138,7 @@ describe('Multi-file store actions', () => {
           name: 'testing/test',
           type: 'tree',
         });
-        expect(tree.tree[0].tempFile).toBeTruthy();
+        expect(tree.tree[0].tempFile).toBe(true);
         expect(tree.tree[0].name).toBe('test');
         expect(tree.tree[0].type).toBe('tree');
       });
@@ -173,7 +173,7 @@ describe('Multi-file store actions', () => {
         });
         const f = store.state.entries[name];
 
-        expect(f.tempFile).toBeTruthy();
+        expect(f.tempFile).toBe(true);
         expect(f.mimeType).toBe('test/mime');
         expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
       });

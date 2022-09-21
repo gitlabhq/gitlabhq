@@ -186,8 +186,8 @@ RSpec.configure do |config|
   include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
-    # This includes the first try, i.e. tests will be run 4 times before failing.
-    config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+    # This includes the first try, i.e. tests will be run 2 times before failing.
+    config.default_retry_count = ENV.fetch('RETRIES', 1).to_i + 1
 
     # Do not retry controller tests because rspec-retry cannot properly
     # reset the controller which may contain data from last attempt. See

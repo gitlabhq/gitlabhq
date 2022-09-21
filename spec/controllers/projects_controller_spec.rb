@@ -299,16 +299,14 @@ RSpec.describe ProjectsController do
       end
 
       it "renders files even with invalid license" do
-        invalid_license = ::Gitlab::Git::DeclaredLicense.new(key: 'woozle', name: 'woozle wuzzle')
-
         controller.instance_variable_set(:@project, public_project)
-        expect(public_project.repository).to receive(:license).and_return(invalid_license).at_least(:once)
+        expect(public_project.repository).to receive(:license_key).and_return('woozle wuzzle').at_least(:once)
 
         get_show
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('_files')
-        expect(response.body).to have_content('woozle wuzzle')
+        expect(response.body).to have_content('LICENSE') # would be 'MIT license' if stub not works
       end
 
       describe 'tracking events', :snowplow do

@@ -1784,32 +1784,22 @@ RSpec.describe Gitlab::Git::Repository do
     end
   end
 
-  describe '#license' do
-    where(from_gitaly: [true, false])
-    with_them do
-      subject(:license) { repository.license(from_gitaly) }
+  describe '#license_short_name' do
+    subject { repository.license_short_name }
 
-      context 'when no license file can be found' do
-        let(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
+    context 'when no license file can be found' do
+      let(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
 
-        before do
-          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
-        end
-
-        it { is_expected.to be_nil }
+      before do
+        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
       end
 
-      context 'when an mit license is found' do
-        it { is_expected.to have_attributes(key: 'mit') }
-      end
+      it { is_expected.to be_nil }
     end
 
-    it 'does not crash when license is not recognized' do
-      expect(Licensee::License).to receive(:new)
-        .and_raise(Licensee::InvalidLicense)
-
-      expect(repository.license(false)).to be_nil
+    context 'when an mit license is found' do
+      it { is_expected.to eq('mit') }
     end
   end
 

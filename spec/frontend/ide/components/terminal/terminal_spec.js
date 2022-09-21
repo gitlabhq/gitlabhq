@@ -171,7 +171,7 @@ describe('IDE Terminal', () => {
 
     it('creates the terminal', () => {
       expect(GLTerminal).toHaveBeenCalledWith(wrapper.vm.$refs.terminal);
-      expect(wrapper.vm.glterminal).toBeTruthy();
+      expect(wrapper.vm.glterminal).toBeInstanceOf(GLTerminal);
     });
 
     describe('scroll listener', () => {

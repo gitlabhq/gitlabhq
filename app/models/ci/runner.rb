@@ -99,27 +99,26 @@ module Ci
     }
 
     scope :belonging_to_group, -> (group_id) {
-      joins(:runner_namespaces)
-        .where(ci_runner_namespaces: { namespace_id: group_id })
+      joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
     }
 
     scope :belonging_to_group_or_project_descendants, -> (group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
-      group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_ids })
-      project_runners = joins(:runner_projects).where(ci_runner_projects: { project_id: project_ids })
+      group_runners = belonging_to_group(group_ids)
+      project_runners = belonging_to_project(project_ids).distinct
 
-      union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
-
-      from("(#{union_sql}) #{table_name}")
+      from_union(
+        [group_runners, project_runners],
+        remove_duplicates: false
+      )
     }
 
     scope :belonging_to_group_and_ancestors, -> (group_id) {
       group_self_and_ancestors_ids = ::Group.find_by(id: group_id)&.self_and_ancestor_ids
 
-      joins(:runner_namespaces)
-        .where(ci_runner_namespaces: { namespace_id: group_self_and_ancestors_ids })
+      belonging_to_group(group_self_and_ancestors_ids)
     }
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {

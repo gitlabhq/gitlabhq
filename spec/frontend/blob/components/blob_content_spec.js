@@ -91,13 +91,13 @@ describe('Blob Content component', () => {
       it(`properly proxies ${BLOB_RENDER_EVENT_LOAD} event`, () => {
         expect(wrapper.emitted(BLOB_RENDER_EVENT_LOAD)).toBeUndefined();
         findErrorEl().vm.$emit(BLOB_RENDER_EVENT_LOAD);
-        expect(wrapper.emitted(BLOB_RENDER_EVENT_LOAD)).toBeTruthy();
+        expect(wrapper.emitted(BLOB_RENDER_EVENT_LOAD)).toHaveLength(1);
       });
 
       it(`properly proxies ${BLOB_RENDER_EVENT_SHOW_SOURCE} event`, () => {
         expect(wrapper.emitted(BLOB_RENDER_EVENT_SHOW_SOURCE)).toBeUndefined();
         findErrorEl().vm.$emit(BLOB_RENDER_EVENT_SHOW_SOURCE);
-        expect(wrapper.emitted(BLOB_RENDER_EVENT_SHOW_SOURCE)).toBeTruthy();
+        expect(wrapper.emitted(BLOB_RENDER_EVENT_SHOW_SOURCE)).toHaveLength(1);
       });
     });
   });

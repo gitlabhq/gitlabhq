@@ -532,6 +532,71 @@ for more details.
 
 ## Additional tips and strategies
 
+### ChatOps integration
+
+The batched background migrations framework has ChatOps support. Using ChatOps, GitLab engineers can interact with the batched background migrations present in the system.
+
+#### List batched background migrations
+
+To list the batched background migrations in the system, run this command:
+
+`/chatops run batched_background_migrations list`
+
+Output example:
+
+![List command](img/list_v15_4.png)
+
+NOTE:
+ChatOps returns 20 batched background migrations order by `created_at` (DESC).
+
+#### Monitor the progress and status of a batched background migration
+
+To see the status and progress of a specific batched background migration, run this command:
+
+`/chatops run batched_background_migrations status MIGRATION_ID`
+
+Output example:
+
+![Status command](img/status_v15_4.png)
+
+`Progress` represents the percentage of the background migration that has been completed.
+
+Definitions of the batched background migration states:
+
+- **Active:** Either:
+  - Ready to be picked by the runner.
+  - Running batched jobs.
+- **Finalizing:** Running batched jobs.
+- **Failed:** Failed batched background migration.
+- **Finished:** Completed batched background migration.
+- **Paused:** Not visible to the runner.
+
+#### Pause a batched background migration
+
+If you want to pause a batched background migration, you need to run the following command:
+
+`/chatops run batched_background_migrations pause MIGRATION_ID`
+
+Output example:
+
+![Pause command](img/pause_v15_4.png)
+
+NOTE:
+You can pause only `active` batched background migrations.
+
+#### Resume a batched background migration
+
+If you want to resume a batched background migration, you need to run the following command:
+
+`/chatops run batched_background_migrations resume MIGRATION_ID`
+
+Output example:
+
+![Resume command](img/resume_v15_4.png)
+
+NOTE:
+You can resume only `active` batched background migrations
+
 ### Viewing failure error logs
 
 You can view failures in two ways:

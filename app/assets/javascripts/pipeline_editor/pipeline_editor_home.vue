@@ -162,7 +162,7 @@ export default {
       </div>
     </div>
     <commit-section
-      v-if="showCommitForm"
+      v-show="showCommitForm"
       :ref="$options.commitSectionRef"
       :ci-file-content="ciFileContent"
       :commit-sha="commitSha"

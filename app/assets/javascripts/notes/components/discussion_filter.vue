@@ -168,7 +168,7 @@ export default {
       id="discussion-preferences-dropdown"
       class="full-width-mobile"
       data-qa-selector="discussion_preferences_dropdown"
-      text="Sort or filter"
+      :text="__('Sort or filter')"
       :disabled="isLoading"
       right
     >

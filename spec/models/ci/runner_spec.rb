@@ -1186,7 +1186,7 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  context 'Project-related queries' do
+  describe 'Project-related queries' do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
 
@@ -1206,14 +1206,14 @@ RSpec.describe Ci::Runner do
       end
     end
 
-    describe "belongs_to_one_project?" do
+    describe '#belongs_to_one_project?' do
       it "returns false if there are two projects runner is assigned to" do
         runner = create(:ci_runner, :project, projects: [project1, project2])
 
         expect(runner.belongs_to_one_project?).to be_falsey
       end
 
-      it "returns true if there is only one project runner is assigned to" do
+      it 'returns true if there is only one project runner is assigned to' do
         runner = create(:ci_runner, :project, projects: [project1])
 
         expect(runner.belongs_to_one_project?).to be_truthy
@@ -1537,47 +1537,118 @@ RSpec.describe Ci::Runner do
     it { is_expected.to eq(contacted_at_stored) }
   end
 
-  describe '.belonging_to_group' do
-    it 'returns the specific group runner' do
-      group = create(:group)
-      runner = create(:ci_runner, :group, groups: [group])
-      unrelated_group = create(:group)
-      create(:ci_runner, :group, groups: [unrelated_group])
+  describe 'Group-related queries' do
+    # Groups
+    let_it_be(:top_level_group) { create(:group) }
+    let_it_be(:child_group) { create(:group, parent: top_level_group) }
+    let_it_be(:child_group2) { create(:group, parent: top_level_group) }
+    let_it_be(:other_top_level_group) { create(:group) }
 
-      expect(described_class.belonging_to_group(group.id)).to contain_exactly(runner)
+    # Projects
+    let_it_be(:top_level_group_project) { create(:project, group: top_level_group) }
+    let_it_be(:child_group_project) { create(:project, group: child_group) }
+    let_it_be(:other_top_level_group_project) { create(:project, group: other_top_level_group) }
+
+    # Runners
+    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+    let_it_be(:top_level_group_runner) { create(:ci_runner, :group, groups: [top_level_group]) }
+    let_it_be(:child_group_runner) { create(:ci_runner, :group, groups: [child_group]) }
+    let_it_be(:child_group2_runner) { create(:ci_runner, :group, groups: [child_group2]) }
+    let_it_be(:other_top_level_group_runner) do
+      create(:ci_runner, :group, groups: [other_top_level_group])
     end
-  end
 
-  describe '.belonging_to_group_and_ancestors' do
-    let_it_be(:parent_group) { create(:group) }
-    let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
-    let_it_be(:group) { create(:group, parent: parent_group) }
-
-    it 'returns the group runner from the parent group' do
-      expect(described_class.belonging_to_group_and_ancestors(group.id)).to contain_exactly(parent_runner)
+    let_it_be(:top_level_group_project_runner) do
+      create(:ci_runner, :project, projects: [top_level_group_project])
     end
-  end
 
-  describe '.belonging_to_group_or_project_descendants' do
-    it 'returns the specific group runners' do
-      group1 = create(:group)
-      group2 = create(:group, parent: group1)
-      group3 = create(:group)
+    let_it_be(:child_group_project_runner) do
+      create(:ci_runner, :project, projects: [child_group_project])
+    end
 
-      project1 = create(:project, namespace: group1)
-      project2 = create(:project, namespace: group2)
-      project3 = create(:project, namespace: group3)
+    let_it_be(:other_top_level_group_project_runner) do
+      create(:ci_runner, :project, projects: [other_top_level_group_project])
+    end
 
-      runner1 = create(:ci_runner, :group, groups: [group1])
-      runner2 = create(:ci_runner, :group, groups: [group2])
-      _runner3 = create(:ci_runner, :group, groups: [group3])
-      runner4 = create(:ci_runner, :project, projects: [project1])
-      runner5 = create(:ci_runner, :project, projects: [project2])
-      _runner6 = create(:ci_runner, :project, projects: [project3])
+    let_it_be(:shared_top_level_group_project_runner) do
+      create(:ci_runner, :project, projects: [top_level_group_project, child_group_project])
+    end
 
-      expect(described_class.belonging_to_group_or_project_descendants(group1.id)).to contain_exactly(
-        runner1, runner2, runner4, runner5
-      )
+    describe '.belonging_to_group' do
+      subject(:relation) { described_class.belonging_to_group(scope.id) }
+
+      context 'with scope set to top_level_group' do
+        let(:scope) { top_level_group }
+
+        it 'returns the group runners from the top_level_group' do
+          is_expected.to contain_exactly(top_level_group_runner)
+        end
+      end
+
+      context 'with scope set to child_group' do
+        let(:scope) { child_group }
+
+        it 'returns the group runners from the child_group' do
+          is_expected.to contain_exactly(child_group_runner)
+        end
+      end
+    end
+
+    describe '.belonging_to_group_and_ancestors' do
+      subject(:relation) { described_class.belonging_to_group_and_ancestors(scope.id) }
+
+      context 'with scope set to top_level_group' do
+        let(:scope) { top_level_group }
+
+        it 'returns the group runners from the group' do
+          is_expected.to contain_exactly(top_level_group_runner)
+        end
+      end
+
+      context 'with scope set to child_group' do
+        let(:scope) { child_group }
+
+        it 'returns the group runners from the group and parent group' do
+          is_expected.to contain_exactly(child_group_runner, top_level_group_runner)
+        end
+      end
+    end
+
+    describe '.belonging_to_group_or_project_descendants' do
+      subject(:relation) { described_class.belonging_to_group_or_project_descendants(scope.id) }
+
+      context 'with scope set to top_level_group' do
+        let(:scope) { top_level_group }
+
+        it 'returns the expected group and project runners without duplicates', :aggregate_failures do
+          expect(relation).to contain_exactly(
+            top_level_group_runner,
+            top_level_group_project_runner,
+            child_group_runner,
+            child_group_project_runner,
+            child_group2_runner,
+            shared_top_level_group_project_runner
+          )
+
+          # Ensure no duplicates are returned
+          expect(relation.distinct).to match_array(relation)
+        end
+      end
+
+      context 'with scope set to child_group' do
+        let(:scope) { child_group }
+
+        it 'returns the expected group and project runners without duplicates', :aggregate_failures do
+          expect(relation).to contain_exactly(
+            child_group_runner,
+            child_group_project_runner,
+            shared_top_level_group_project_runner
+          )
+
+          # Ensure no duplicates are returned
+          expect(relation.distinct).to match_array(relation)
+        end
+      end
     end
   end
 

@@ -2,7 +2,6 @@
 
 module API
   module Entities
-    # Serializes a Licensee::License
     class License < Entities::LicenseBasic
       expose :popular?, as: :popular
       expose(:description) { |license| license.meta['description'] }

@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -83,7 +83,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 ### Change account owner information
 
 Account owner personal details are used on invoices. The account owner email
-address is used for the Customers Portal login and license-related email. 
+address is used for the Customers Portal login and license-related email.
 
 To change account owner information, including name, billing address, and email address:
 
@@ -95,7 +95,7 @@ To change account owner information, including name, billing address, and email 
 
 If you want to transfer ownership of the Customers Portal account
 to another person, after you enter that person's personal details, you must also
-[change the Customers Portal account password](#change-customers-portal-account-password). 
+[change the Customers Portal account password](#change-customers-portal-account-password).
 
 ### Change your company details
 

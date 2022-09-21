@@ -37,7 +37,7 @@ describe('IDE commit module mutations', () => {
     it('updates submitCommitLoading', () => {
       mutations.UPDATE_LOADING(state, true);
 
-      expect(state.submitCommitLoading).toBeTruthy();
+      expect(state.submitCommitLoading).toBe(true);
     });
   });
 

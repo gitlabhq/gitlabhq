@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import bare repositories **(FREE SELF)**
@@ -156,7 +156,7 @@ namespace.send(:write_projects_repository_config)
 
 ## Push Git LFS objects
 
-The import task doesn't import Git LFS objects. You must manually push the LFS objects to the newly 
+The import task doesn't import Git LFS objects. You must manually push the LFS objects to the newly
 created GitLab repository using the following command:
 
 ```shell

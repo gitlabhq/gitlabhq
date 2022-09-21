@@ -115,7 +115,7 @@ class ResourceLabelEvent < ResourceEvent
   end
 
   def discussion_id_key
-    [self.class.name, created_at, user_id]
+    [self.class.name, created_at.to_f, user_id]
   end
 end
 

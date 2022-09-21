@@ -2516,7 +2516,7 @@ RSpec.describe API::Projects do
           'name' => project.repository.license.name,
           'nickname' => project.repository.license.nickname,
           'html_url' => project.repository.license.url,
-          'source_url' => nil
+          'source_url' => project.repository.license.meta['source']
         })
       end
 
