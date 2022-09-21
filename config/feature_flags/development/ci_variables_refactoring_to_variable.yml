@@ -1,8 +1,0 @@
----
-name: ci_variables_refactoring_to_variable
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95390
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371559
-milestone: '15.4'
-type: development
-group: group::pipeline authoring
-default_enabled: false

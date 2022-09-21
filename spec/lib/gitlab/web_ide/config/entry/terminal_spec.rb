@@ -150,29 +150,6 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
               }
             )
         end
-
-        context 'when the FF ci_variables_refactoring_to_variable is disabled' do
-          let(:entry_without_ff) { described_class.new(config, with_image_ports: true) }
-
-          before do
-            stub_feature_flags(ci_variables_refactoring_to_variable: false)
-            entry_without_ff.compose!
-          end
-
-          it 'returns correct value' do
-            expect(entry_without_ff.value)
-              .to eq(
-                tag_list: ['webide'],
-                job_variables: [{ key: 'KEY', value: 'value', public: true }],
-                options: {
-                  image: { name: "image:1.0" },
-                  services: [{ name: "mysql" }],
-                  before_script: %w[ls pwd],
-                  script: ['sleep 100']
-                }
-              )
-          end
-        end
       end
     end
   end

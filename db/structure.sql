@@ -28034,6 +28034,10 @@ CREATE INDEX index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts ON c
 
 CREATE INDEX index_ci_builds_metadata_on_build_id_and_id_and_interruptible ON ci_builds_metadata USING btree (build_id) INCLUDE (id) WHERE (interruptible = true);
 
+CREATE UNIQUE INDEX index_ci_builds_metadata_on_build_id_partition_id_unique ON ci_builds_metadata USING btree (build_id, partition_id);
+
+CREATE UNIQUE INDEX index_ci_builds_metadata_on_id_partition_id_unique ON ci_builds_metadata USING btree (id, partition_id);
+
 CREATE INDEX index_ci_builds_metadata_on_project_id ON ci_builds_metadata USING btree (project_id);
 
 CREATE INDEX index_ci_builds_on_auto_canceled_by_id ON ci_builds USING btree (auto_canceled_by_id);

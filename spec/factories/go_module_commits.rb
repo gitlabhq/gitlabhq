@@ -7,12 +7,12 @@ FactoryBot.define do
     transient do
       files { { 'foo.txt' => 'content' } }
       message { 'Message' }
-      # rubocop: disable FactoryBot/InlineAssociation
+      # rubocop: disable RSpec/FactoryBot/InlineAssociation
       # We need a persisted project so we can create commits and tags
       # in `commit` otherwise linting this factory with `build` strategy
       # will fail.
       project { create(:project, :repository) }
-      # rubocop: enable FactoryBot/InlineAssociation
+      # rubocop: enable RSpec/FactoryBot/InlineAssociation
 
       service do
         Files::MultiService.new(

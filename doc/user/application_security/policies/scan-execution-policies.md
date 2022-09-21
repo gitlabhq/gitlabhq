@@ -96,7 +96,7 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
+Other elements of the CRON syntax may work in the cadence field, however, GitLab does not officially test or support them. The CRON expression is evaluated in UTC by default. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
 
 ## `scan` action type
 

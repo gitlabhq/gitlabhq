@@ -1033,8 +1033,7 @@ module Gitlab
         end
       end
 
-      # Change this to a `describe` block when removing the FF ci_variables_refactoring_to_variable
-      shared_examples 'Variables' do
+      describe 'Variables' do
         subject(:execute) { described_class.new(config).execute }
 
         let(:build) { execute.builds.first }
@@ -1161,18 +1160,6 @@ module Gitlab
             expect(root_variables_inheritance).to eq(true)
           end
         end
-      end
-
-      context 'when ci_variables_refactoring_to_variable is enabled' do
-        it_behaves_like 'Variables'
-      end
-
-      context 'when ci_variables_refactoring_to_variable is disabled' do
-        before do
-          stub_feature_flags(ci_variables_refactoring_to_variable: false)
-        end
-
-        it_behaves_like 'Variables'
       end
 
       context 'when using `extends`' do

@@ -11138,6 +11138,9 @@ msgstr ""
 msgid "Create user"
 msgstr ""
 
+msgid "Create wildcard"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -26321,6 +26324,9 @@ msgstr ""
 msgid "New Project"
 msgstr ""
 
+msgid "New Protected Branch"
+msgstr ""
+
 msgid "New Requirement"
 msgstr ""
 
@@ -32296,6 +32302,9 @@ msgstr ""
 msgid "ProtectedBranch|What are protected branches?"
 msgstr ""
 
+msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
+msgstr ""
+
 msgid "ProtectedBranch|default"
 msgstr ""
 
@@ -35127,6 +35136,9 @@ msgstr ""
 msgid "Search projects..."
 msgstr ""
 
+msgid "Search protected branches"
+msgstr ""
+
 msgid "Search rate limits"
 msgstr ""
 
@@ -36254,6 +36266,9 @@ msgid "Select assignee(s)"
 msgstr ""
 
 msgid "Select branch"
+msgstr ""
+
+msgid "Select branch or create wildcard"
 msgstr ""
 
 msgid "Select branches"

@@ -1,11 +1,13 @@
 ---
 # Cop supports --auto-correct.
 Layout/FirstArrayElementIndentation:
+  Details: grace period
   Exclude:
     - 'lib/gitlab/email/message/in_product_marketing/trial.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/issue/custom_issue_template_spec.rb'
     - 'spec/controllers/concerns/send_file_upload_spec.rb'
     - 'spec/graphql/types/packages/tag_type_spec.rb'
+    - 'spec/lib/gitlab/ci/config/external/mapper_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/security/common_spec.rb'
     - 'spec/lib/gitlab/ci/reports/codequality_reports_comparer_spec.rb'
     - 'spec/lib/gitlab/ci/reports/codequality_reports_spec.rb'
@@ -83,7 +85,6 @@ Layout/FirstArrayElementIndentation:
     - 'spec/models/concerns/noteable_spec.rb'
     - 'spec/models/diff_note_spec.rb'
     - 'spec/models/discussion_spec.rb'
-    - 'spec/models/group_group_link_spec.rb'
     - 'spec/models/group_spec.rb'
     - 'spec/models/integration_spec.rb'
     - 'spec/models/integrations/chat_message/issue_message_spec.rb'
@@ -138,7 +139,6 @@ Layout/FirstArrayElementIndentation:
     - 'spec/services/repositories/changelog_service_spec.rb'
     - 'spec/services/resource_events/synthetic_milestone_notes_builder_service_spec.rb'
     - 'spec/services/security/merge_reports_service_spec.rb'
-    - 'spec/services/users/destroy_service_spec.rb'
     - 'spec/simplecov_env.rb'
     - 'spec/support/atlassian/jira_connect/schemata.rb'
     - 'spec/support/capybara.rb'

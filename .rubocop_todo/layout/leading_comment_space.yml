@@ -1,0 +1,6 @@
+---
+# Cop supports --auto-correct.
+Layout/LeadingCommentSpace:
+  Exclude:
+    - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'
+    - 'lib/uploaded_file.rb'

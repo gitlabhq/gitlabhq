@@ -8,13 +8,23 @@ require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 
-RSpec.configure do |config|
-  config.include RuboCop::RSpec::ExpectOffense, type: :rubocop
+require_relative './support/shared_contexts/rubocop_default_rspec_language_config_context'
 
+RSpec.configure do |config|
   config.define_derived_metadata(file_path: %r{spec/rubocop}) do |metadata|
-    metadata[:type] = :rubocop
+    # TODO: move DuplicateSpecLocation cop to RSpec::DuplicateSpecLocation
+    unless metadata[:type] == :rubocop_rspec
+      metadata[:type] = :rubocop
+    end
   end
 
-  # Include config shared context for all cop specs.
+  config.define_derived_metadata(file_path: %r{spec/rubocop/cop/rspec}) do |metadata|
+    metadata[:type] = :rubocop_rspec
+  end
+
+  config.include RuboCop::RSpec::ExpectOffense, type: :rubocop
+  config.include RuboCop::RSpec::ExpectOffense, type: :rubocop_rspec
+
   config.include_context 'config', type: :rubocop
+  config.include_context 'with default RSpec/Language config', type: :rubocop_rspec
 end

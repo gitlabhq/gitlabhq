@@ -40,11 +40,14 @@ AllCops:
     - 'plugins/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
+    - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 35000
+  NewCops: disable
+  SuggestExtensions: false
 
 Metrics/ParameterLists:
   Exclude:
@@ -690,7 +693,7 @@ Gitlab/RailsLogger:
     - 'ee/spec/**/*.rb'
 
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
-FactoryBot/InlineAssociation:
+RSpec/FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'
     - 'ee/spec/factories/**/*.rb'
@@ -775,3 +778,7 @@ Fips/OpenSSL:
 
 Gemspec/AvoidExecutingGit:
   Enabled: false
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - '{,ee/,qa/}spec/**/*_{spec,shared_examples,shared_context}.rb'

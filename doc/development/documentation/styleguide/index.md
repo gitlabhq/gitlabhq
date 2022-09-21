@@ -17,7 +17,7 @@ In addition to this page, the following resources can help you craft and contrib
 - [Doc contribution guidelines](../index.md)
 - [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
-- [UI text guidelines](https://design.gitlab.com/content/error-messages/)
+- [Guidelines for UI error messages](https://design.gitlab.com/content/error-messages/)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 - [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
@@ -839,6 +839,28 @@ To open group settings:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
+```
+
+To open either project or group settings:
+
+```markdown
+1. On the top bar, select **Main menu**, and:
+   - For a project, select ***Projects** and find your project.
+   - For a group, select **Groups** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+```
+
+To create a project:
+
+```markdown
+1. On the top bar, select **Create new... > New project**.
+```
+
+To create a group:
+
+```markdown
+1. On the top bar, select **Create new... > New group**.
 ```
 
 To open the Admin Area:

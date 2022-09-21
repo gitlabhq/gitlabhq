@@ -1,9 +1,38 @@
 ---
 RSpec/MultipleMemoizedHelpers:
+  Details: grace period
   Exclude:
-  - spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb
-  - spec/lib/gitlab/diff/position_tracer/line_strategy_spec.rb
-  - spec/requests/api/ci/runner/jobs_artifacts_spec.rb
-  - ee/spec/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids_spec.rb
-  - ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb
-  - ee/spec/services/ee/boards/issues/move_service_spec.rb
+    - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
+    - 'ee/spec/finders/epics_finder_spec.rb'
+    - 'ee/spec/finders/incident_management/oncall_users_finder_spec.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids_spec.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb'
+    - 'ee/spec/lib/gitlab/graphql/loaders/bulk_epic_aggregate_loader_spec.rb'
+    - 'ee/spec/requests/api/analytics/project_deployment_frequency_spec.rb'
+    - 'ee/spec/services/ee/boards/issues/list_service_spec.rb'
+    - 'ee/spec/services/ee/boards/issues/move_service_spec.rb'
+    - 'ee/spec/services/security/ingestion/tasks/update_vulnerability_uuids_spec.rb'
+    - 'spec/features/boards/boards_spec.rb'
+    - 'spec/finders/ci/runners_finder_spec.rb'
+    - 'spec/finders/labels_finder_spec.rb'
+    - 'spec/finders/user_recent_events_finder_spec.rb'
+    - 'spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb'
+    - 'spec/lib/gitlab/diff/position_tracer/line_strategy_spec.rb'
+    - 'spec/migrations/backfill_escalation_policies_for_oncall_schedules_spec.rb'
+    - 'spec/models/event_spec.rb'
+    - 'spec/models/milestone_spec.rb'
+    - 'spec/models/packages/package_file_spec.rb'
+    - 'spec/requests/api/ci/runner/jobs_artifacts_spec.rb'
+    - 'spec/requests/api/issues/get_group_issues_spec.rb'
+    - 'spec/requests/api/issues/get_project_issues_spec.rb'
+    - 'spec/requests/api/issues/issues_spec.rb'
+    - 'spec/requests/api/issues/put_projects_issues_spec.rb'
+    - 'spec/requests/api/maven_packages_spec.rb'
+    - 'spec/services/boards/issues/list_service_spec.rb'
+    - 'spec/services/labels/promote_service_spec.rb'
+    - 'spec/services/merge_requests/push_options_handler_service_spec.rb'
+    - 'spec/services/packages/cleanup/execute_policy_service_spec.rb'
+    - 'spec/services/todo_service_spec.rb'
+    - 'spec/services/todos/destroy/entity_leave_service_spec.rb'
+    - 'spec/support/shared_contexts/policies/project_policy_shared_context.rb'
+    - 'spec/support/shared_contexts/requests/api/debian_repository_shared_context.rb'

@@ -884,9 +884,40 @@ point to the correct registry URL and copy the `registry.key` file to each Sidek
 information, see the [Sidekiq configuration](../sidekiq.md)
 page.
 
-To reduce the amount of [Container Registry disk space used by a given project](../troubleshooting/gitlab_rails_cheat_sheet.md#registry-disk-space-usage-by-project),
+To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
 administrators can clean up image tags
 and [run garbage collection](#container-registry-garbage-collection).
+
+### Registry Disk Space Usage by Project
+
+To find the disk space used by each project, run the following in the
+[GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "project path"]]
+# You need to specify the projects that you want to look through. You can get these in any manner.
+projects = Project.last(100)
+
+projects.each do |p|
+   project_total_size = 0
+   container_repositories = p.container_repositories
+
+   container_repositories.each do |c|
+       c.tags.each do |t|
+          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
+       end
+   end
+
+   if project_total_size > 0
+      projects_and_size << [p.project_id, p.creator.id, project_total_size, p.full_path]
+   end
+end
+
+# print it as comma separated output
+projects_and_size.each do |ps|
+   puts "%s,%s,%s,%s" % ps
+end
+```
 
 To remove image tags by running the cleanup policy, run the following commands in the
 [GitLab Rails console](../operations/rails_console.md):

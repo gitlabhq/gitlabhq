@@ -6,27 +6,60 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Flavored Markdown (GLFM) Specification Guide **(FREE)**
 
+## Summary
+
+- _GitLab_ Flavored Markdown (GLFM) is based on
+  [_GitHub_ Flavored Markdown](https://github.github.com/gfm/) (GFM),
+  which is based on [CommonMark](https://spec.commonmark.org/current/).
+- GLFM is divided into two "sets" of Markdown syntax:
+  - An "[official specification](#official-specifications)",
+    which is not dependent upon any specific
+    implementation or environment, and can be supported in any editor.
+  - "[Internal extensions](#internal-extensions)", which may be
+    dependent upon the GitLab environment and metadata.
+- Everything in each of these sets of syntax is specified by
+  [special Markdown files](#input-specification-files)
+  based on the [CommonMark specification syntax](https://spec.commonmark.org/0.30/#about-this-document),
+  which contain side-by-side "examples" of Markdown and the corresponding
+  generated HTML, and associated documentation describing each example.
+- There are also [YAML metadata files](#input-specification-files), which
+  may contain additional information on how individual Markdown/HTML examples
+  should be processed and rendered.
+- These Markdown/YAML files and the examples they contain serve multiple goals:
+  - They are the canonical "source of truth" for how GLFM should be rendered.
+  - They support rendering a [formatted HTML document](#spechtml) containing all
+    of the examples and associated documentation, as the
+    [GFM and CommonMark specs](#various-markdown-specifications) also do.
+  - They support running standard CommonMark [conformance testing](#markdown-conformance-testing)
+    against the official specification.
+  - They support [snapshot testing](#markdown-snapshot-testing) of GitLab
+    internal GLFM processing logic. This is accomplished by automatically
+    generating YAML ["example snapshot files"](#example-snapshot-files)
+    which are used as fixtures to drive automated testing within the GitLab app.
+- There are [various scripts and logic](#scripts)
+  which are used to accomplish the above goals.
+
+## Introduction
+
 GitLab supports Markdown in various places. The Markdown dialect we use is called
-GitLab Flavored Markdown, or GLFM.
-
-The specification for the GLFM dialect is based on the
-[GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/),
-which is in turn based on the [CommonMark specification](https://spec.commonmark.org/current/).
-The GLFM specification includes
-[several extensions](../../../user/markdown.md#differences-between-gitlab-flavored-markdown-and-standard-markdown)
-to the GFM specification.
-
-See the [section on acronyms](#acronyms-glfm-ghfm-gfm-commonmark) for a
-detailed explanation of the various acronyms used in this document.
-This guide is a developer-facing document that describes the various terms and
-definitions, goals, tools, and implementations related to the GLFM specification.
-It is intended to support and augment the [user-facing documentation](../../../user/markdown.md)
-for GitLab Flavored Markdown.
+GitLab Flavored Markdown (GLFM).
 
 NOTE:
 In this document, _GFM_ refers to _GitHub_ Flavored Markdown, not _GitLab_ Flavored Markdown.
 Refer to the [section on acronyms](#acronyms-glfm-ghfm-gfm-commonmark)
 for a detailed explanation of the various acronyms used in this document.
+
+The specification for the GLFM dialect is based on the
+[GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/),
+which is in turn based on the [CommonMark specification](https://spec.commonmark.org/current/).
+The GLFM specification includes
+[many additions](../../../user/markdown.md#differences-between-gitlab-flavored-markdown-and-standard-markdown)
+compared to the GFM specification.
+
+This guide is a developer-facing document that describes the various terms and
+definitions, goals, tools, and implementations related to the GLFM specification.
+It is intended to support and augment the [user-facing documentation](../../../user/markdown.md)
+for GitLab Flavored Markdown.
 
 NOTE:
 This guide and the implementation and files described in it are still a work in

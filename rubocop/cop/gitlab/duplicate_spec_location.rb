@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'rubocop/rspec/top_level_describe'
+require 'rubocop/cop/rspec/base'
+require 'rubocop/cop/rspec/mixin/top_level_group'
 
 module RuboCop
   module Cop
@@ -19,17 +20,17 @@ module RuboCop
       #  # good, spec for EE only code
       #  ee/spec/controllers/my_spec.rb      # describe MyClass
       #
-      class DuplicateSpecLocation < RuboCop::Cop::Cop
-        include RuboCop::RSpec::TopLevelDescribe
+      class DuplicateSpecLocation < RuboCop::Cop::RSpec::Base
+        include RuboCop::Cop::RSpec::TopLevelGroup
 
         MSG = 'Duplicate spec location in `%<path>s`.'
 
-        def on_top_level_describe(node, _args)
-          path = file_path_for_node(node).sub(%r{\A#{rails_root}/}, '')
+        def on_top_level_group(node)
+          path = file_path_for_node(node.send_node).sub(%r{\A#{rails_root}/}, '')
           duplicate_path = find_duplicate_path(path)
 
           if duplicate_path && File.exist?(File.join(rails_root, duplicate_path))
-            add_offense(node, message: format(MSG, path: duplicate_path))
+            add_offense(node.send_node, message: format(MSG, path: duplicate_path))
           end
         end
 

@@ -19,7 +19,6 @@ Rails/TimeZone:
   - ee/spec/lib/gitlab/auth/ldap/access_spec.rb
   - ee/spec/lib/gitlab/auth/smartcard/san_extension_spec.rb
   - ee/spec/lib/gitlab/auth/smartcard/session_spec.rb
-  - ee/spec/lib/gitlab/ci/pipeline/chain/limit/job_activity_spec.rb
   - ee/spec/lib/gitlab/elastic/client_spec.rb
   - ee/spec/lib/gitlab/geo/base_request_spec.rb
   - ee/spec/lib/gitlab/geo/log_cursor/events/cache_invalidation_event_spec.rb

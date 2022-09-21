@@ -1,0 +1,5 @@
+---
+# Cop supports --auto-correct.
+Layout/SpaceInsideBlockBraces:
+  Exclude:
+    - 'spec/requests/api/groups_spec.rb'
