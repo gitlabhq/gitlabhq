@@ -246,9 +246,15 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
     end
 
     it 'drops duplicates and related records', :aggregate_failures do
-      expect(vulnerability_findings.pluck(:id)).to match_array([
-        finding_with_correct_uuid.id, finding_with_incorrect_uuid.id, finding_with_correct_uuid2.id, finding_with_incorrect_uuid2.id, finding_with_incorrect_uuid3.id, duplicate_not_in_the_same_batch.id
-      ])
+      expect(vulnerability_findings.pluck(:id)).to match_array(
+        [
+          finding_with_correct_uuid.id,
+          finding_with_incorrect_uuid.id,
+          finding_with_correct_uuid2.id,
+          finding_with_incorrect_uuid2.id,
+          finding_with_incorrect_uuid3.id,
+          duplicate_not_in_the_same_batch.id
+        ])
 
       expect { subject }.to change(vulnerability_finding_pipelines, :count).from(16).to(8)
         .and change(vulnerability_findings, :count).from(6).to(3)
@@ -306,7 +312,8 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
       it 'retries the recalculation' do
         subject
 
-        expect(Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid::VulnerabilitiesFinding).to have_received(:find_by).with(uuid: uuid).once
+        expect(Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid::VulnerabilitiesFinding)
+          .to have_received(:find_by).with(uuid: uuid).once
       end
 
       it 'logs the conflict' do

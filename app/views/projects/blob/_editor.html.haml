@@ -28,7 +28,7 @@
 
     .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
       - if is_markdown
-        = render 'shared/blob/markdown_buttons', show_fullscreen_button: false
+        = render 'shared/blob/markdown_buttons', show_fullscreen_button: false, supports_file_upload: false
       = button_tag class: 'soft-wrap-toggle btn gl-button btn-default', type: 'button', tabindex: '-1' do
         .no-wrap
           = sprite_icon('soft-unwrap', css_class: 'gl-button-icon')

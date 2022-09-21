@@ -174,9 +174,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
 
       context 'when job is provided as a variable' do
         let(:variables) do
-          Gitlab::Ci::Variables::Collection.new([
-            { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
-          ])
+          Gitlab::Ci::Variables::Collection.new(
+            [
+              { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
+            ])
         end
 
         let(:params) { { artifact: 'generated.yml', job: 'a_secret_variable_value' } }

@@ -1,4 +1,5 @@
 - modifier_key = client_js_flags[:isMac] ? '⌘' : s_('KeyboardKey|Ctrl+')
+- supports_file_upload = local_assigns.fetch(:supports_file_upload, true)
 
 .md-header-toolbar.active
   = markdown_toolbar_button({ icon: "bold",
@@ -27,10 +28,12 @@
                               data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-prepend" => true, "md-select" => "Click to expand" },
                               title: _("Add a collapsible section") })
   = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _("Add a table") })
-  = markdown_toolbar_button({ icon: "paperclip",
-                              data: { "testid" => "button-attach-file" },
-                              css_class: 'js-attach-file-button markdown-selector',
-                              title: _("Attach a file or image") })
+  - if supports_file_upload
+    %button.gl-button.btn.btn-default-tertiary.btn-icon.has-tooltip.js-attach-file-button{ type: 'button',
+      title: _("Attach a file or image"),
+      aria: { label: _("Attach a file or image") },
+      data: { testid: 'button-attach-file', container: 'body' } }
+      = sprite_icon('paperclip')
   - if show_fullscreen_button
     %button.gl-button.btn.btn-default-tertiary.btn-icon.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: _("Go full screen"), data: { container: "body" } }
       = sprite_icon("maximize")

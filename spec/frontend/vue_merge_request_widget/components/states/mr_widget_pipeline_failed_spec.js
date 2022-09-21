@@ -6,17 +6,16 @@ import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_i
 describe('PipelineFailed', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = (mr = {}) => {
     wrapper = shallowMount(PipelineFailed, {
+      propsData: {
+        mr,
+      },
       stubs: {
         GlSprintf,
       },
     });
   };
-
-  beforeEach(() => {
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -24,13 +23,25 @@ describe('PipelineFailed', () => {
   });
 
   it('should render error status icon', () => {
+    createComponent();
+
     expect(wrapper.findComponent(StatusIcon).exists()).toBe(true);
     expect(wrapper.findComponent(StatusIcon).props().status).toBe('failed');
   });
 
   it('should render error message with a disabled merge button', () => {
+    createComponent();
+
     expect(wrapper.text()).toContain('Merge blocked: pipeline must succeed.');
     expect(wrapper.text()).toContain('Push a commit that fixes the failure');
     expect(wrapper.findComponent(GlLink).text()).toContain('learn about other solutions');
+  });
+
+  it('should render pipeline blocked message', () => {
+    createComponent({ isPipelineBlocked: true });
+
+    expect(wrapper.text()).toContain(
+      "Merge blocked: pipeline must succeed. It's waiting for a manual action to continue.",
+    );
   });
 });

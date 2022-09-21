@@ -1,3 +1,4 @@
+import { DETAILED_MERGE_STATUS } from '../constants';
 import { stateKey } from './state_maps';
 
 export default function deviseState() {
@@ -7,7 +8,7 @@ export default function deviseState() {
     return stateKey.archived;
   } else if (this.branchMissing) {
     return stateKey.missingBranch;
-  } else if (this.mergeStatus === 'unchecked' || this.mergeStatus === 'checking') {
+  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CHECKING) {
     return stateKey.checking;
   } else if (this.hasConflicts) {
     return stateKey.conflicts;
@@ -15,19 +16,20 @@ export default function deviseState() {
     return stateKey.rebase;
   } else if (this.hasMergeChecksFailed && !this.autoMergeEnabled) {
     return stateKey.mergeChecksFailed;
-  } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
+  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_MUST_PASS) {
     return stateKey.pipelineFailed;
-  } else if (this.draft) {
+  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DRAFT_STATUS) {
     return stateKey.draft;
-  } else if (this.hasMergeableDiscussionsState && !this.autoMergeEnabled) {
+  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DISCUSSIONS_NOT_RESOLVED) {
     return stateKey.unresolvedDiscussions;
-  } else if (this.isPipelineBlocked) {
-    return stateKey.pipelineBlocked;
   } else if (this.canMerge && this.isSHAMismatch) {
     return stateKey.shaMismatch;
   } else if (this.autoMergeEnabled && !this.mergeError) {
     return stateKey.autoMergeEnabled;
-  } else if (this.canBeMerged) {
+  } else if (
+    this.detailedMergeStatus === DETAILED_MERGE_STATUS.MERGEABLE ||
+    this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_STILL_RUNNING
+  ) {
     return stateKey.readyToMerge;
   }
   return null;

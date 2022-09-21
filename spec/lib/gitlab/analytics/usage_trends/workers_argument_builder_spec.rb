@@ -23,10 +23,11 @@ RSpec.describe Gitlab::Analytics::UsageTrends::WorkersArgumentBuilder do
     subject { described_class.new(measurement_identifiers: measurement_identifiers, recorded_at: recorded_at).execute }
 
     it 'returns worker arguments' do
-      expect(subject).to eq([
-        [projects_measurement_identifier, project_1.id, project_3.id, recorded_at],
-        [users_measurement_identifier, user_1.id, user_1.id, recorded_at]
-      ])
+      expect(subject).to eq(
+        [
+          [projects_measurement_identifier, project_1.id, project_3.id, recorded_at],
+          [users_measurement_identifier, user_1.id, user_1.id, recorded_at]
+        ])
     end
 
     context 'when bogus measurement identifiers are given' do
@@ -36,10 +37,11 @@ RSpec.describe Gitlab::Analytics::UsageTrends::WorkersArgumentBuilder do
       end
 
       it 'skips bogus measurement identifiers' do
-        expect(subject).to eq([
-          [projects_measurement_identifier, project_1.id, project_3.id, recorded_at],
-          [users_measurement_identifier, user_1.id, user_1.id, recorded_at]
-        ])
+        expect(subject).to eq(
+          [
+            [projects_measurement_identifier, project_1.id, project_3.id, recorded_at],
+            [users_measurement_identifier, user_1.id, user_1.id, recorded_at]
+          ])
       end
     end
 

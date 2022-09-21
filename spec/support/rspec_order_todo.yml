@@ -8848,7 +8848,6 @@
 - './spec/presenters/award_emoji_presenter_spec.rb'
 - './spec/presenters/blob_presenter_spec.rb'
 - './spec/presenters/blobs/notebook_presenter_spec.rb'
-- './spec/presenters/blobs/unfold_presenter_spec.rb'
 - './spec/presenters/ci/bridge_presenter_spec.rb'
 - './spec/presenters/ci/build_presenter_spec.rb'
 - './spec/presenters/ci/build_runner_presenter_spec.rb'

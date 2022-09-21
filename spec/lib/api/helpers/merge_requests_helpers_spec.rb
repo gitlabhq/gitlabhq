@@ -25,9 +25,7 @@ RSpec.describe API::Helpers::MergeRequestsHelpers do
     context 'when merge request is invalid' do
       before do
         allow(merge_request).to receive(:valid?).and_return(false)
-        allow(helper).to receive_messages([
-          :unprocessable_entity!, :conflict!, :render_validation_error!
-        ])
+        allow(helper).to receive_messages([:unprocessable_entity!, :conflict!, :render_validation_error!])
       end
 
       API::Helpers::MergeRequestsHelpers::UNPROCESSABLE_ERROR_KEYS.each do |error_key|

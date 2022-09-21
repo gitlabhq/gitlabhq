@@ -226,9 +226,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context 'when passing max number of files' do
       let(:values) do
         { include: [
-            { 'local' => local_file },
-            { 'remote' => remote_url }
-          ],
+          { 'local' => local_file },
+          { 'remote' => remote_url }
+        ],
           image: 'image:1.0' }
       end
 
@@ -242,9 +242,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when too many 'includes' are defined" do
       let(:values) do
         { include: [
-            { 'local' => local_file },
-            { 'remote' => remote_url }
-          ],
+          { 'local' => local_file },
+          { 'remote' => remote_url }
+        ],
           image: 'image:1.0' }
       end
 
@@ -416,10 +416,11 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
     context "when locations are same after masking variables" do
       let(:variables) do
-        Gitlab::Ci::Variables::Collection.new([
-          { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file1', 'masked' => true },
-          { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file2', 'masked' => true }
-        ])
+        Gitlab::Ci::Variables::Collection.new(
+          [
+            { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file1', 'masked' => true },
+            { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file2', 'masked' => true }
+          ])
       end
 
       let(:values) do

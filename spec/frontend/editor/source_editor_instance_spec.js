@@ -160,7 +160,7 @@ describe('Source Editor Instance', () => {
   });
 
   describe('public API', () => {
-    it.each(['use', 'unuse'], 'provides "%s" as public method by default', (method) => {
+    it.each(['use', 'unuse'])('provides "%s" as public method by default', (method) => {
       seInstance = new SourceEditorInstance();
       expect(seInstance[method]).toBeDefined();
     });

@@ -309,11 +309,12 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter do
       it 'links to valid references' do
         doc = reference_filter("See #{references}")
 
-        expect(doc.css('a').map { |a| a.attr('href') }).to match_array([
-          urls.project_issues_url(project, label_name: bug.name),
-          urls.project_issues_url(project, label_name: feature_proposal.name),
-          urls.project_issues_url(project, label_name: technical_debt.name)
-        ])
+        expect(doc.css('a').map { |a| a.attr('href') }).to match_array(
+          [
+            urls.project_issues_url(project, label_name: bug.name),
+            urls.project_issues_url(project, label_name: feature_proposal.name),
+            urls.project_issues_url(project, label_name: technical_debt.name)
+          ])
         expect(doc.text).to eq 'See bug, feature proposal, technical debt'
       end
     end
@@ -324,11 +325,12 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter do
       it 'links to valid references' do
         doc = reference_filter("See #{references}")
 
-        expect(doc.css('a').map { |a| a.attr('href') }).to match_array([
-          urls.project_issues_url(project, label_name: bug.name),
-          urls.project_issues_url(project, label_name: feature_proposal.name),
-          urls.project_issues_url(project, label_name: technical_debt.name)
-        ])
+        expect(doc.css('a').map { |a| a.attr('href') }).to match_array(
+          [
+            urls.project_issues_url(project, label_name: bug.name),
+            urls.project_issues_url(project, label_name: feature_proposal.name),
+            urls.project_issues_url(project, label_name: technical_debt.name)
+          ])
         expect(doc.text).to eq 'See bug feature proposal technical debt'
       end
     end

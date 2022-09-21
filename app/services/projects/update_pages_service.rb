@@ -66,7 +66,8 @@ module Projects
       GenericCommitStatus.new(
         user: build.user,
         ci_stage: stage,
-        name: 'pages:deploy'
+        name: 'pages:deploy',
+        stage: 'deploy'
       )
     end
 

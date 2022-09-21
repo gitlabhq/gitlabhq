@@ -121,7 +121,7 @@ describe('date time picker lib', () => {
       const utcResult = '2019-09-08T01:01:01Z';
       const localResult = '2019-09-08T08:01:01Z';
 
-      test.each`
+      it.each`
         val      | locatTimezone   | utc          | result
         ${value} | ${'UTC'}        | ${undefined} | ${utcResult}
         ${value} | ${'UTC'}        | ${false}     | ${utcResult}
@@ -167,7 +167,7 @@ describe('date time picker lib', () => {
       const utcResult = '2019-09-08 08:01:01';
       const localResult = '2019-09-08 01:01:01';
 
-      test.each`
+      it.each`
         val      | locatTimezone   | utc          | result
         ${value} | ${'UTC'}        | ${undefined} | ${utcResult}
         ${value} | ${'UTC'}        | ${false}     | ${utcResult}

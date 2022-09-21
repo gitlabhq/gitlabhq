@@ -2541,7 +2541,6 @@ RSpec/ContextWording:
     - 'spec/policies/terraform/state_version_policy_spec.rb'
     - 'spec/policies/user_policy_spec.rb'
     - 'spec/presenters/blob_presenter_spec.rb'
-    - 'spec/presenters/blobs/unfold_presenter_spec.rb'
     - 'spec/presenters/ci/build_presenter_spec.rb'
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
     - 'spec/presenters/clusters/cluster_presenter_spec.rb'

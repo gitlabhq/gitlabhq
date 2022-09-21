@@ -33,7 +33,16 @@ RSpec::Matchers.define :publish_event do |expected_event_class|
   end
 
   failure_message do
-    "expected #{expected_event_class} with #{@expected_data} to be published, but got #{@events}"
+    message = "expected #{expected_event_class} with #{@expected_data} to be published"
+
+    if @events.present?
+      <<~MESSAGE
+      #{message}, but only the following events were published:
+      #{events_list}
+      MESSAGE
+    else
+      "#{message}, but no events were published."
+    end
   end
 
   match_when_negated do |proc|
@@ -44,5 +53,11 @@ RSpec::Matchers.define :publish_event do |expected_event_class|
     proc.call
 
     expect(Gitlab::EventStore).not_to have_received(:publish).with(instance_of(expected_event_class))
+  end
+
+  def events_list
+    @events.map do |event|
+      " - #{event.class.name} #{event.data}"
+    end.join("\n")
   end
 end

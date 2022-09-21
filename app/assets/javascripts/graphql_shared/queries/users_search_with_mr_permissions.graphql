@@ -8,7 +8,11 @@ query projectUsersSearchWithMRPermissions(
 ) {
   workspace: project(fullPath: $fullPath) {
     id
-    users: projectMembers(search: $search, relations: [DIRECT, INHERITED, INVITED_GROUPS]) {
+    users: projectMembers(
+      search: $search
+      relations: [DIRECT, INHERITED, INVITED_GROUPS]
+      sort: USER_FULL_NAME_ASC
+    ) {
       nodes {
         id
         mergeRequestInteraction(id: $mergeRequestId) {

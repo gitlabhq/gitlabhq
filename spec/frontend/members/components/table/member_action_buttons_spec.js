@@ -27,7 +27,7 @@ describe('MemberActionButtons', () => {
     wrapper.destroy();
   });
 
-  test.each`
+  it.each`
     memberType                    | member           | expectedComponent             | expectedComponentName
     ${MEMBER_TYPES.user}          | ${memberMock}    | ${UserActionButtons}          | ${'UserActionButtons'}
     ${MEMBER_TYPES.group}         | ${group}         | ${GroupActionButtons}         | ${'GroupActionButtons'}

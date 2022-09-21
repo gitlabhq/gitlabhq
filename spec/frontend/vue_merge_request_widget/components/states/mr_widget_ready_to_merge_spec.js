@@ -300,6 +300,48 @@ describe('ReadyToMerge', () => {
         expect(wrapper.vm.isMergeButtonDisabled).toBe(true);
       });
     });
+
+    describe('sourceBranchDeletedText', () => {
+      const should = 'Source branch will be deleted.';
+      const shouldNot = 'Source branch will not be deleted.';
+      const did = 'Deleted the source branch.';
+      const didNot = 'Did not delete the source branch.';
+      const scenarios = [
+        "the MR hasn't merged yet, and the backend-provided value expects to delete the branch",
+        "the MR hasn't merged yet, and the backend-provided value expects to leave the branch",
+        "the MR hasn't merged yet, and the backend-provided value is a non-boolean falsey value",
+        "the MR hasn't merged yet, and the backend-provided value is a non-boolean truthy value",
+        'the MR has merged, and the backend reports that the branch has been removed',
+        'the MR has been merged, and the backend reports that the branch has not been removed',
+        'the MR has been merged, and the backend reports a non-boolean falsey value',
+        'the MR has been merged, and the backend reports a non-boolean truthy value',
+      ];
+
+      it.each`
+        describe        | premerge | mrShould  | mrRemoved | output
+        ${scenarios[0]} | ${true}  | ${true}   | ${null}   | ${should}
+        ${scenarios[1]} | ${true}  | ${false}  | ${null}   | ${shouldNot}
+        ${scenarios[2]} | ${true}  | ${null}   | ${null}   | ${shouldNot}
+        ${scenarios[3]} | ${true}  | ${'yeah'} | ${null}   | ${should}
+        ${scenarios[4]} | ${false} | ${null}   | ${true}   | ${did}
+        ${scenarios[5]} | ${false} | ${null}   | ${false}  | ${didNot}
+        ${scenarios[6]} | ${false} | ${null}   | ${null}   | ${didNot}
+        ${scenarios[7]} | ${false} | ${null}   | ${'yep'}  | ${did}
+      `(
+        'in the case that $describe, returns "$output"',
+        ({ premerge, mrShould, mrRemoved, output }) => {
+          createComponent({
+            mr: {
+              state: !premerge ? 'merged' : 'literally-anything-else',
+              shouldRemoveSourceBranch: mrShould,
+              sourceBranchRemoved: mrRemoved,
+            },
+          });
+
+          expect(wrapper.vm.sourceBranchDeletedText).toBe(output);
+        },
+      );
+    });
   });
 
   describe('methods', () => {

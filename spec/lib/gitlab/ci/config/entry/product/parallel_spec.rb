@@ -91,10 +91,11 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Parallel do
 
       describe '#value' do
         it 'returns job needs configuration' do
-          expect(parallel.value).to match(matrix: [
-            { PROVIDER: 'aws', STACK: %w[monitoring app1 app2] },
-            { PROVIDER: 'gcp', STACK: %w[data processing] }
-          ])
+          expect(parallel.value).to match(matrix:
+            [
+              { PROVIDER: 'aws', STACK: %w[monitoring app1 app2] },
+              { PROVIDER: 'gcp', STACK: %w[data processing] }
+            ])
         end
       end
 

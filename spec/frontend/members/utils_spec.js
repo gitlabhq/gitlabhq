@@ -89,7 +89,7 @@ describe('Members Utils', () => {
   });
 
   describe('isGroup', () => {
-    test.each`
+    it.each`
       member        | expected
       ${group}      | ${true}
       ${memberMock} | ${false}
@@ -99,7 +99,7 @@ describe('Members Utils', () => {
   });
 
   describe('isDirectMember', () => {
-    test.each`
+    it.each`
       member             | expected
       ${directMember}    | ${true}
       ${inheritedMember} | ${false}
@@ -109,7 +109,7 @@ describe('Members Utils', () => {
   });
 
   describe('isCurrentUser', () => {
-    test.each`
+    it.each`
       currentUserId             | expected
       ${IS_CURRENT_USER_ID}     | ${true}
       ${IS_NOT_CURRENT_USER_ID} | ${false}
@@ -119,7 +119,7 @@ describe('Members Utils', () => {
   });
 
   describe('canRemove', () => {
-    test.each`
+    it.each`
       member                                     | expected
       ${{ ...directMember, canRemove: true }}    | ${true}
       ${{ ...inheritedMember, canRemove: true }} | ${false}
@@ -130,7 +130,7 @@ describe('Members Utils', () => {
   });
 
   describe('canResend', () => {
-    test.each`
+    it.each`
       member                                                           | expected
       ${invite}                                                        | ${true}
       ${{ ...invite, invite: { ...invite.invite, canResend: false } }} | ${false}
@@ -140,7 +140,7 @@ describe('Members Utils', () => {
   });
 
   describe('canUpdate', () => {
-    test.each`
+    it.each`
       member                                     | currentUserId             | expected
       ${{ ...directMember, canUpdate: true }}    | ${IS_NOT_CURRENT_USER_ID} | ${true}
       ${{ ...directMember, canUpdate: true }}    | ${IS_CURRENT_USER_ID}     | ${false}

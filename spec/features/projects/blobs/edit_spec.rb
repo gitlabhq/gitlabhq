@@ -82,6 +82,34 @@ RSpec.describe 'Editing file blob', :js do
       end
     end
 
+    context 'blob edit toolbar' do
+      toolbar_buttons = [
+        "Add bold text",
+        "Add italic text",
+        "Add strikethrough text",
+        "Insert a quote",
+        "Insert code",
+        "Add a link",
+        "Add a bullet list",
+        "Add a numbered list",
+        "Add a checklist",
+        "Add a collapsible section",
+        "Add a table"
+      ]
+
+      before do
+        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+      end
+
+      it "has defined set of toolbar buttons" do
+        buttons = page.all('.file-buttons .md-header-toolbar button[type="button"]')
+        expect(buttons.length).to eq(toolbar_buttons.length)
+        toolbar_buttons.each_with_index do |button_title, i|
+          expect(buttons[i]['title']).to include(button_title)
+        end
+      end
+    end
+
     context 'from blob file path' do
       before do
         visit project_blob_path(project, tree_join(branch, file_path))

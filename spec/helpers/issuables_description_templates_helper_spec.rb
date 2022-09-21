@@ -64,12 +64,12 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
 
       it 'returns project templates' do
         value = [
-            "",
-            [
-              { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
-              { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
-            ]
-          ].to_json
+          "",
+          [
+            { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
+            { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
+          ]
+        ].to_json
         expect(helper.available_service_desk_templates_for(@project)).to eq(value)
       end
     end

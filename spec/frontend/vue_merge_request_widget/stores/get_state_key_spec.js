@@ -16,12 +16,13 @@ describe('getStateKey', () => {
       commitsCount: 2,
       hasConflicts: false,
       draft: false,
+      detailedMergeStatus: null,
     };
     const bound = getStateKey.bind(context);
 
     expect(bound()).toEqual(null);
 
-    context.canBeMerged = true;
+    context.detailedMergeStatus = 'MERGEABLE';
 
     expect(bound()).toEqual('readyToMerge');
 
@@ -36,21 +37,15 @@ describe('getStateKey', () => {
     expect(bound()).toEqual('shaMismatch');
 
     context.canMerge = false;
-    context.isPipelineBlocked = true;
-
-    expect(bound()).toEqual('pipelineBlocked');
-
-    context.hasMergeableDiscussionsState = true;
-    context.autoMergeEnabled = false;
+    context.detailedMergeStatus = 'DISCUSSIONS_NOT_RESOLVED';
 
     expect(bound()).toEqual('unresolvedDiscussions');
 
-    context.draft = true;
+    context.detailedMergeStatus = 'DRAFT_STATUS';
 
     expect(bound()).toEqual('draft');
 
-    context.onlyAllowMergeIfPipelineSucceeds = true;
-    context.isPipelineFailed = true;
+    context.detailedMergeStatus = 'CI_MUST_PASS';
 
     expect(bound()).toEqual('pipelineFailed');
 
@@ -62,7 +57,7 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('conflicts');
 
-    context.mergeStatus = 'unchecked';
+    context.detailedMergeStatus = 'CHECKING';
 
     expect(bound()).toEqual('checking');
 

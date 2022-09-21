@@ -245,19 +245,14 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.group-list-tree')).toBeDefined();
     });
   });
+
   describe('schema.org props', () => {
     describe('when showSchemaMarkup is disabled on the group', () => {
-      it.each(['itemprop', 'itemtype', 'itemscope'], 'it does not set %s', (attr) => {
+      it.each(['itemprop', 'itemtype', 'itemscope'])('does not set %s', (attr) => {
         expect(wrapper.attributes(attr)).toBeUndefined();
       });
-      it.each(
-        ['.js-group-avatar', '.js-group-name', '.js-group-description'],
-        'it does not set `itemprop` on sub-nodes',
-        (selector) => {
-          expect(wrapper.find(selector).attributes('itemprop')).toBeUndefined();
-        },
-      );
     });
+
     describe('when group has microdata', () => {
       beforeEach(() => {
         const group = withMicrodata({

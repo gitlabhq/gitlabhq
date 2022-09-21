@@ -163,9 +163,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
     context 'when non-existing project is used with a masked variable' do
       let(:variables) do
-        Gitlab::Ci::Variables::Collection.new([
-          { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
-        ])
+        Gitlab::Ci::Variables::Collection.new([{ key: 'VAR1', value: 'a_secret_variable_value', masked: true }])
       end
 
       let(:params) do
@@ -180,9 +178,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
     context 'when a project contained in an array is used with a masked variable' do
       let(:variables) do
-        Gitlab::Ci::Variables::Collection.new([
-          { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
-        ])
+        Gitlab::Ci::Variables::Collection.new([{ key: 'VAR1', value: 'a_secret_variable_value', masked: true }])
       end
 
       let(:params) do
@@ -231,10 +227,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
     context 'when project name and ref include masked variables' do
       let(:variables) do
-        Gitlab::Ci::Variables::Collection.new([
-          { key: 'VAR1', value: 'a_secret_variable_value1', masked: true },
-          { key: 'VAR2', value: 'a_secret_variable_value2', masked: true }
-        ])
+        Gitlab::Ci::Variables::Collection.new(
+          [
+            { key: 'VAR1', value: 'a_secret_variable_value1', masked: true },
+            { key: 'VAR2', value: 'a_secret_variable_value2', masked: true }
+          ])
       end
 
       let(:params) { { project: 'a_secret_variable_value1', ref: 'a_secret_variable_value2', file: '/file.yml' } }

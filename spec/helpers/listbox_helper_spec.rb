@@ -26,13 +26,14 @@ RSpec.describe ListboxHelper do
 
   describe '#gl_redirect_listbox_tag' do
     it 'creates root element with expected classes' do
-      expect(subject.classes).to include(*%w[
-         dropdown
-         b-dropdown
-         gl-new-dropdown
-         btn-group
-         js-redirect-listbox
-      ])
+      expect(subject.classes).to include(
+        *%w[
+          dropdown
+          b-dropdown
+          gl-new-dropdown
+          btn-group
+          js-redirect-listbox
+        ])
     end
 
     it 'sets data attributes for items and selected' do
@@ -41,14 +42,15 @@ RSpec.describe ListboxHelper do
     end
 
     it 'adds styled button' do
-      expect(subject.at_css('button').classes).to include(*%w[
-        btn
-        dropdown-toggle
-        btn-default
-        btn-md
-        gl-button
-        gl-dropdown-toggle
-      ])
+      expect(subject.at_css('button').classes).to include(
+        *%w[
+          btn
+          dropdown-toggle
+          btn-default
+          btn-md
+          gl-button
+          gl-dropdown-toggle
+        ])
     end
 
     it 'sets button text to selected item' do

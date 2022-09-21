@@ -7264,6 +7264,9 @@ msgstr ""
 msgid "CICD|Deployment strategy"
 msgstr ""
 
+msgid "CICD|Enable feature to limit job token access to the following projects."
+msgstr ""
+
 msgid "CICD|Jobs"
 msgstr ""
 

@@ -368,6 +368,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :incidents, only: [:index]
 
+        namespace :incident_management do
+          resources :timeline_events, only: [] do
+            collection do
+              post :preview_markdown
+            end
+          end
+        end
+
         get 'issues/incident/:id' => 'incidents#show', as: :issues_incident
 
         namespace :error_tracking do

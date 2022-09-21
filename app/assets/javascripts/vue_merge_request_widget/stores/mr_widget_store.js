@@ -219,6 +219,7 @@ export default class MergeRequestStore {
     this.shouldBeRebased = mergeRequest.shouldBeRebased;
     this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
+    this.detailedMergeStatus = mergeRequest.detailedMergeStatus;
 
     this.setState();
   }

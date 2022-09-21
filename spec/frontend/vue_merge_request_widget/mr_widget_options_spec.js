@@ -771,34 +771,40 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('security widget', () => {
-    describe.each`
-      context                  | hasPipeline | shouldRender
-      ${'there is a pipeline'} | ${true}     | ${true}
-      ${'no pipeline'}         | ${false}    | ${false}
-    `('given $context', ({ hasPipeline, shouldRender }) => {
-      beforeEach(() => {
-        const mrData = {
-          ...mockData,
-          ...(hasPipeline ? {} : { pipeline: null }),
-        };
+    const setup = async (hasPipeline) => {
+      const mrData = {
+        ...mockData,
+        ...(hasPipeline ? {} : { pipeline: null }),
+      };
 
-        // Override top-level mocked requests, which always use a fresh copy of
-        // mockData, which always includes the full pipeline object.
-        mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
-        mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
+      // Override top-level mocked requests, which always use a fresh copy of
+      // mockData, which always includes the full pipeline object.
+      mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
+      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
 
-        return createComponent(mrData, {
-          apolloProvider: createMockApollo([
-            [
-              securityReportMergeRequestDownloadPathsQuery,
-              async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
-            ],
-          ]),
-        });
+      return createComponent(mrData, {
+        apolloProvider: createMockApollo([
+          [
+            securityReportMergeRequestDownloadPathsQuery,
+            async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
+          ],
+        ]),
       });
+    };
 
-      it(shouldRender ? 'renders' : 'does not render', () => {
-        expect(findSecurityMrWidget().exists()).toBe(shouldRender);
+    describe('with a pipeline', () => {
+      it('renders the security widget', async () => {
+        await setup(true);
+
+        expect(findSecurityMrWidget().exists()).toBe(true);
+      });
+    });
+
+    describe('with no pipeline', () => {
+      it('does not render the security widget', async () => {
+        await setup(false);
+
+        expect(findSecurityMrWidget().exists()).toBe(false);
       });
     });
   });

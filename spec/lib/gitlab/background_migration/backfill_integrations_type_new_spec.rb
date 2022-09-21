@@ -7,13 +7,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsTypeNew, :migrat
   let(:integrations) { table(:integrations) }
 
   let(:namespaced_integrations) do
-    Set.new(%w[
-      Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
-      Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Harbor Irker Jenkins Jira Mattermost
-      MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
-      Prometheus Pushover Redmine Shimo Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack Zentao
-      Github GitlabSlackApplication
-    ]).freeze
+    Set.new(
+      %w[
+        Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
+        Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Harbor Irker Jenkins Jira Mattermost
+        MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
+        Prometheus Pushover Redmine Shimo Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack Zentao
+        Github GitlabSlackApplication
+      ]).freeze
   end
 
   before do
@@ -40,13 +41,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsTypeNew, :migrat
     expect(queries.count).to be(16)
     expect(queries.log.grep(/^SELECT/).size).to be(11)
     expect(queries.log.grep(/^UPDATE/).size).to be(5)
-    expect(queries.log.grep(/^UPDATE/).join.scan(/WHERE .*/)).to eq([
-      'WHERE integrations.id BETWEEN 2 AND 3',
-      'WHERE integrations.id BETWEEN 4 AND 5',
-      'WHERE integrations.id BETWEEN 6 AND 7',
-      'WHERE integrations.id BETWEEN 8 AND 9',
-      'WHERE integrations.id BETWEEN 10 AND 10'
-    ])
+    expect(queries.log.grep(/^UPDATE/).join.scan(/WHERE .*/)).to eq(
+      [
+        'WHERE integrations.id BETWEEN 2 AND 3',
+        'WHERE integrations.id BETWEEN 4 AND 5',
+        'WHERE integrations.id BETWEEN 6 AND 7',
+        'WHERE integrations.id BETWEEN 8 AND 9',
+        'WHERE integrations.id BETWEEN 10 AND 10'
+      ])
 
     expect(integrations.where(id: 2..10).pluck(:type, :type_new)).to contain_exactly(
       ['AssemblaService',           'Integrations::Assembla'],
